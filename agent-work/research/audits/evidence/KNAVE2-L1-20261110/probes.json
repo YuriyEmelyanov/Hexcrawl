@@ -1,0 +1,127 @@
+{
+  "source_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "method": "Actual public modules + actual App generation/import/history harness; final JSX replaced by harness; synthetic table wording only",
+  "checks": [
+    {
+      "id": "KNA-P01",
+      "action": "Create Knave profile",
+      "expected": "6 miles; measurement convention unknown",
+      "actual": {
+        "length": 6,
+        "unit": "mile",
+        "measurementConvention": null
+      },
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P02",
+      "action": "Mark hex0,0 difficult",
+      "expected": "One stored annotation; original immutable",
+      "actual": {
+        "0,0": "difficult"
+      },
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P03",
+      "action": "Save interaction discovery with clue; also try blank clue",
+      "expected": "Nonblank clue retained; blank rejected",
+      "actual": {
+        "mode": "interaction",
+        "clueText": "Tracks stop at the rock"
+      },
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P04",
+      "action": "Try independent clue-target association in existing profile",
+      "expected": "Current strict profile rejects unsupported association",
+      "actual": "Rejected; only mode + clueText accepted (capability limit, not product defect)",
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P05",
+      "action": "Generate synthetic site/property where each source row refers to page27",
+      "expected": "References preserved unresolved; no downstream table generated",
+      "actual": {
+        "siteRef": [
+          {
+            "printedPage": 27,
+            "resolution": "unresolved_source_reference"
+          }
+        ],
+        "traitRef": [
+          {
+            "printedPage": 27,
+            "resolution": "unresolved_source_reference"
+          }
+        ],
+        "contentKeys": [
+          "catalogVersion",
+          "sourceId",
+          "category",
+          "site",
+          "trait"
+        ]
+      },
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P06",
+      "action": "Try retaining two identical independent prompts",
+      "expected": "Current closed shape rejects prompt list",
+      "actual": "Rejected; one site and one trait only (capability limit)",
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P07",
+      "action": "Try fifth arbitrary table in catalog",
+      "expected": "Current four-table catalog rejects it",
+      "actual": "Rejected; locations/structures/place_traits/dungeons only",
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P08",
+      "action": "Reroll only property",
+      "expected": "Site unchanged; property counter2; primary counter1",
+      "actual": {
+        "category": 1,
+        "primary": 1,
+        "trait": 2
+      },
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P09",
+      "action": "Actual App: choose profile, generate initial tract, export",
+      "expected": "v10 with physical profile and generated POI snapshots",
+      "actual": {
+        "version": 10,
+        "physicalHex": {
+          "length": 6,
+          "unit": "mile",
+          "measurementConvention": null
+        },
+        "poiCount": 1
+      },
+      "result": "pass"
+    },
+    {
+      "id": "KNA-P10",
+      "action": "Actual App: import saved map; undo; redo",
+      "expected": "Exact profile/content restored, no reroll, no import alert",
+      "actual": {
+        "alerts": 0,
+        "exactKnaveRoundtrip": true,
+        "undoRemovedProfile": true,
+        "redoExact": true
+      },
+      "result": "pass"
+    }
+  ],
+  "limitations": [
+    "Not rendered browser or live-site verification.",
+    "Negative probes characterize current allowed data and selected code/UI, not an assertion that generic notes cannot hold arbitrary text.",
+    "No source text/corpus copied in this script."
+  ]
+}

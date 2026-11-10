@@ -1,0 +1,23 @@
+{
+  "sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "node": "v24.22.1",
+  "meaningful_tests": 10,
+  "runner_entries": 12,
+  "runner_empty_file_entries": 2,
+  "tests_command": "node --test --test-name-pattern='Knave|knave|E8 v8 authored' test/tags.test.mjs test/saveSafety.test.mjs test/regionEditing.test.mjs test/mapTransactions.test.mjs",
+  "exit_code": 0,
+  "separate_probes": 10,
+  "build": {
+    "command": "npm run build",
+    "exit_code": 0,
+    "limitation": "Bundle-size advisory present, not an audit failure."
+  },
+  "browser": {
+    "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium node test/browser/tags.smoke.mjs",
+    "status": "blocked_before_page_load",
+    "error": "chrome/browser/process_singleton_posix.cc:297 socket() failed: Operation not permitted (1)",
+    "new_visual_claim": false
+  },
+  "unused_broad_suite": "Full four-file attempts interrupted after no progress/output; no pass claimed, no product source changed. Targeted matching bodies subsequently passed.",
+  "portable_probe_reproduction": "Checkout exactsha, install existing dependencies, run HEXCRAWL_AUDIT_REPO=/absolute/repo node probes.mjs; output defaults toknave-probes-result.json"
+}

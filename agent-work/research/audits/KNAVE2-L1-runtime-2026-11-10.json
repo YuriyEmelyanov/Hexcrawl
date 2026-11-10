@@ -1,0 +1,1360 @@
+{
+  "schema_version": 1,
+  "audit_id": "HX-RSR-KNAVE2-L1-IMPLEMENTATION-20261110-v1",
+  "run_id": "2026-11-10-KNAVE2-L1-runtime-audit",
+  "kind": "derived_evidence_audit_not_rule_registry",
+  "status": "completed_all28_existing_L1_translations",
+  "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "scope": {
+    "requirements": 28,
+    "source_inventory_ref": "agent-work/market/rules/Knave-2e.json",
+    "previous_disposition_ref": "agent-work/research/audits/KNAVE2-L1-disposition-2026-11-09.json",
+    "not_a_new_full_book_read": true,
+    "not_mandatory_software_features": true,
+    "not_whole_game_compatibility": true
+  },
+  "summary": {
+    "verdict_counts": {
+      "full": 2,
+      "partial": 9,
+      "absent": 17
+    },
+    "before": "All28 full profiles runtime-unknown in previous disposition; only package boundaries mapped.",
+    "after": "All28 assessed against exact published code:2 complete translated operations verified,9 partial,17 specialized operations absent from audited product workflow. Manual preparation remains possible.",
+    "meaningful_existing_tests_passed": 10,
+    "node_runner_reported_entries": 12,
+    "empty_test_file_entries": 2,
+    "separate_runtime_probes_passed": 10,
+    "browser": "blocked_before_page_load; no new visual evidence",
+    "score_delta": null
+  },
+  "definitions": {
+    "full": "Полное соответствие существующей L1-операции по инспекции кода и выборочным runtime-пробам. Не означает выполнение всех AC в браузере или поддержку всей игры.",
+    "partial": "Useful component exists; at least one other translated component absent or unproved. Mixed L1/L2 rows retained with explicit boundary.",
+    "absent": "Specialized translated operation absent from inspected workflow/schema/commands. Free text/markers remain possible; not necessarily desired feature or approved defect."
+  },
+  "sources": [
+    {
+      "id": "KNA-SRC-INVENTORY",
+      "url_or_ref": "agent-work/market/rules/Knave-2e.json",
+      "locator": "All28 applicableL1 requirements and operational_requirement; full thematic inventory reused",
+      "access_level": "full_text",
+      "author_project_key": "ben-milton/questing-beast/knave2/core2024",
+      "observed_fact": "Existing RussianTorbin1.0 extraction contains60 source groups/78 applicable requirements including28L1.",
+      "interpretation": "Reusable baseline to compare with product; no new literal source obligations invented.",
+      "unknown": "Final English text/errata collation not performed."
+    },
+    {
+      "id": "KNA-SRC-PRIMARY-RECHECK",
+      "url_or_ref": "owner supplied Knave 2e Spreads Rus.pdf; SHA25630cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+      "locator": "PDF4–8 re-extracted, printed1/2/8 table/reference/preparation/travel context checked; other rules reused from existing full inventory",
+      "access_level": "full_text",
+      "author_project_key": "ben-milton/questing-beast/knave2/core2024",
+      "observed_fact": "Source bytes match stored inventory hash; printed1 explicitly permits chosen results, references and combinations.",
+      "interpretation": "Supports comparison with existing translated table operations; no book text redistributed.",
+      "unknown": "No new whole-book read or English collation."
+    },
+    {
+      "id": "KNA-SRC-PRODUCT",
+      "url_or_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/tree/1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "locator": "src/knaveClassic.ts; src/tags/knave.ts; src/App.tsx; existing tests; individual line locators in rows",
+      "access_level": "full_text",
+      "author_project_key": "YuriyEmelyanov/Hexcrawl:release1962fb9",
+      "observed_fact": "Knave uses four-table catalog; content has one site and one trait; references remain unresolved; selected runtime checks pass.",
+      "interpretation": "Current bounded mode is useful but not full translatedL1 profile.",
+      "unknown": "Rendered/browser behavior not verified in this environment."
+    }
+  ],
+  "findings": [
+    {
+      "id": "KNA-F01",
+      "kind": "verified_component",
+      "finding": "Six-mile profile and manual difficulty are persisted; actual App import/undo/redo restores accepted state exactly.",
+      "evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json"
+    },
+    {
+      "id": "KNA-F02",
+      "kind": "capability_boundary",
+      "finding": "General table preparation is not implemented: no arbitrary table-row selection, linked result resolution or retained list of repeated prompts. One-site/one-trait reroll replaces its previous component.",
+      "affected_requirements": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1",
+        "KNAVE2-071-L1"
+      ],
+      "evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json"
+    },
+    {
+      "id": "KNA-F03",
+      "kind": "development_consequence",
+      "finding": "17 unavailable specialized operations are outside approvedCLASSIC1; do not reopen published043, create17bugs or start a full Knave engine. Generic notes/markers are useful preparation alternatives."
+    }
+  ],
+  "unknowns": [
+    "Browser UI is unverified here; Chromium failed socket creation before page load.",
+    "Abstract path condition preservation and player-safe presentation not fully verified; later-layer presentation intentionally separated.",
+    "Source translation questions and EN errata remain separate from code comparison; audit does not resolve them."
+  ],
+  "rows": [
+    {
+      "requirement_id": "KNAVE2-005-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-005-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-005",
+      "source_pages": 8,
+      "canonical_rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-005-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S04-C04",
+        "S06-C04"
+      ],
+      "verdict": "full",
+      "assessment_basis": "Full functional correspondence by exact code inspection plus selected matching runtime probes; not all acceptance cases or rendered UI executed.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "A Knave layer always records physicalHex={length:6,unit:mile,measurementConvention:null}; save version10 and exact validation preserve it independently of ui.mapScale."
+      ],
+      "unavailable_or_unproved_components": [],
+      "code_locators": [
+        "src/knaveClassic.ts:4",
+        "src/knaveClassic.ts:37",
+        "src/knaveClassic.ts:50",
+        "src/App.tsx:471",
+        "src/App.tsx:13361"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:153"
+      ],
+      "existing_gap_task_id": "HX-BL-051",
+      "approved_scope_disposition": "existing_051_scale_no_new_task",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-005-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-005-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [
+        "KNA-P01",
+        "KNA-P09",
+        "KNA-P10"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json",
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-006-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006",
+      "source_pages": 8,
+      "canonical_rule_ids": [
+        "map.terrain_zones"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-006-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "verdict": "full",
+      "assessment_basis": "Full functional correspondence by exact code inspection plus selected matching runtime probes; not all acceptance cases or rendered UI executed.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "Sparse normal/difficult per dry hex; unspecified removes override; setters preserve all sibling data; map snapshot/history includes the layer."
+      ],
+      "unavailable_or_unproved_components": [],
+      "code_locators": [
+        "src/knaveClassic.ts:8",
+        "src/knaveClassic.ts:65",
+        "src/App.tsx:13361"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:165"
+      ],
+      "existing_gap_task_id": "HX-BL-044",
+      "approved_scope_disposition": "existing_044_CLASSIFY1_partial_scope_no_full_profile_claim",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [
+        "KNA-P02",
+        "KNA-P10"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json",
+      "formal_score_or_coverage_status_changed": false,
+      "runtime_test_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/targeted-tests.txt#Knave difficulty is sparse and detached"
+    },
+    {
+      "requirement_id": "KNAVE2-010-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010",
+      "source_pages": 8,
+      "canonical_rule_ids": [
+        "content.discovery_levels",
+        "content.site_links",
+        "map.audience_views"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-010-L1",
+      "criterion_ids": [
+        "S04-C03",
+        "S05-C02",
+        "S05-C03",
+        "S06-C05"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "A POI can carry discovery mode interaction and a required trimmed clue; mode changes preserve clue; moving POI remaps its discovery annotation."
+      ],
+      "unavailable_or_unproved_components": [
+        "No separate clue object C with independent location and stable C-to-S relation; no player-safe presentation/export in this release. The GM-only component is useful but does not prove the entire mixed-layer acceptance."
+      ],
+      "code_locators": [
+        "src/knaveClassic.ts:9",
+        "src/knaveClassic.ts:74",
+        "src/knaveClassic.ts:90",
+        "src/App.tsx:11919"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:177",
+        "test/tags.test.mjs:189"
+      ],
+      "existing_gap_task_id": "HX-BL-044",
+      "approved_scope_disposition": "044_GM_preparation_only_player_view_L2_deferred",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [
+        "KNA-P03",
+        "KNA-P04"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json",
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-013-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013",
+      "source_pages": 8,
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-013-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No region/biome assignment operation for an encounter table. Hex notes can hold a manually typed reference, but are coordinate-owned text, not a region table binding; no generated encounter-table profile."
+      ],
+      "code_locators": [
+        "src/App.tsx:471",
+        "src/App.tsx:13423",
+        "src/knaveClassic.ts:11",
+        "src/tags/knave.ts:24"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-013-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-017-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017",
+      "source_pages": 8,
+      "canonical_rule_ids": [
+        "content.tracks_and_ground",
+        "content.discovery_levels"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-017-L1",
+      "criterion_ids": [
+        "S04-C03",
+        "S05-C01",
+        "S05-C03",
+        "S06-C03",
+        "S06-C05"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "Existing POI discovery annotation stores an authored clue and detection mode."
+      ],
+      "unavailable_or_unproved_components": [
+        "No Signs table p10 in the four-table Knave catalog; no selected sign row/roll, next-encounter binding or separate sign object. An authored clue is not evidence that the source sign procedure is implemented."
+      ],
+      "code_locators": [
+        "src/knaveClassic.ts:9",
+        "src/tags/knave.ts:9",
+        "src/tags/knave.ts:24"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:177"
+      ],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-017-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [
+        "KNA-P03"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json",
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-020-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020",
+      "source_pages": 10,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.static_hazard",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-020-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C01"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "Generation fills new live sites from compatible location/structure/dungeon pools plus one saved trait; accepted source rows/references survive generation and JSON, independently rerollable; accepted locations are not re-generated by table text."
+      ],
+      "unavailable_or_unproved_components": [
+        "No arbitrary manual row selection; no fill of an arbitrary already accepted empty site through this interface; no site-owned freely editable combined interpretation field (GM notes are hex-owned). Source record row100/00 exists but direct source-row selection is not a product action."
+      ],
+      "code_locators": [
+        "src/tags/knave.ts:24",
+        "src/tags/knave.ts:89",
+        "src/tags/knave.ts:117",
+        "src/App.tsx:1090",
+        "src/App.tsx:13794",
+        "src/App.tsx:13423"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:23",
+        "test/tags.test.mjs:112",
+        "test/tags.test.mjs:370"
+      ],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_CLASSIC1_bounded_tables_only_not_full_resolver",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-020-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [
+        "KNA-P05",
+        "KNA-P07",
+        "KNA-P08",
+        "KNA-P09",
+        "KNA-P10"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json",
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-024-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024",
+      "source_pages": 21,
+      "canonical_rule_ids": [
+        "content.static_hazard"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-024-L1",
+      "criterion_ids": [
+        "S05-C02",
+        "S07-C01"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "Manual POI placement and GM notes can represent an authored dangerous place; discovery/clue annotation can be attached to that POI without resolving damage."
+      ],
+      "unavailable_or_unproved_components": [
+        "No hazard-type/freezing/fire profile reference field or rule p21 hazard assignment operation; do not count a cursed-place marker as all source hazards or infer hit-point integration."
+      ],
+      "code_locators": [
+        "src/App.tsx:382",
+        "src/App.tsx:14402",
+        "src/App.tsx:13423",
+        "src/knaveClassic.ts:9"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-044",
+      "approved_scope_disposition": "existing_044_CLASSIFY1_partial_scope_no_full_profile_claim",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-025-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025",
+      "source_pages": 21,
+      "canonical_rule_ids": [
+        "map.resource_availability"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-025-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S07-C01"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No very_arid or water-availability override profile. Surface lake/sea editing describes geographic water, not the Knave assumption that drinking water is unavailable in a very arid area."
+      ],
+      "code_locators": [
+        "src/App.tsx:451",
+        "src/App.tsx:471",
+        "src/knaveClassic.ts:11"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-044",
+      "approved_scope_disposition": "044_resource_component_excluded_from_CLASSIFY1_not_missing_approved_scope",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-025-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-034-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034",
+      "source_pages": [
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "canonical_rule_ids": [
+        "map.routes_and_barriers",
+        "content.static_hazard",
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-034-L1",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S05-C01",
+        "S05-C02",
+        "S06-C04",
+        "S07-C01"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No operation places spell27 wall with source/level/material and 80x5x10ft dimensions. General hex-scale obstacles are not a confirmed local spell geometry/profile. No need to implement spell engine as a L1 defect."
+      ],
+      "code_locators": [
+        "src/App.tsx:471",
+        "src/knaveClassic.ts:11",
+        "src/manualObstacles.ts:1"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-034-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-035-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035",
+      "source_pages": [
+        21,
+        23
+      ],
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-035-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No temporary spell45 house with source/level/three rooms, one-day expiry, safe_haven=false and supply exception. Hut marker plus manually typed notes is a workaround, not that temporal operation."
+      ],
+      "code_locators": [
+        "src/App.tsx:382",
+        "src/App.tsx:471",
+        "src/knaveClassic.ts:11"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-035-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-037-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-037-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-037",
+      "source_pages": [
+        32,
+        33
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-037-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "Holy-place marker/name/hex note exists, but no shrine-to-patron/domain/relic relation operation; text coordinates are not durable linked identities."
+      ],
+      "code_locators": [
+        "src/App.tsx:382",
+        "src/manualPois.ts:7",
+        "src/knaveClassic.ts:11",
+        "src/tags/knave.ts:24"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-037-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-037-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-038-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038",
+      "source_pages": [
+        32
+      ],
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-038-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No settlement-class shrine count operation using d6=1/4/6 or explicit city patron set. General POI density/generation does not imply those source profiles."
+      ],
+      "code_locators": [
+        "src/App.tsx:382",
+        "src/knaveClassic.ts:11",
+        "src/tags/knave.ts:89"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-038-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-039-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-039-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-039",
+      "source_pages": [
+        32
+      ],
+      "canonical_rule_ids": [
+        "content.adventure_hooks",
+        "content.site_links"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-039-L1",
+      "criterion_ids": [
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No quest linking origin shrine, patron/relic, target and return shrine. A textual hex note can describe the task but does not provide the requested linked operation."
+      ],
+      "code_locators": [
+        "src/App.tsx:471",
+        "src/knaveClassic.ts:11",
+        "src/tags/knave.ts:24"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-039-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-039-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-040-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-040-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-040",
+      "source_pages": [
+        35
+      ],
+      "canonical_rule_ids": [
+        "map.resource_availability",
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-040-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C01"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No place-owned ingredient-resource record with explicit unknown yield/respawn and source/visibility; manually written hex notes remain a useful workaround. No evidence to infer density or replenishment."
+      ],
+      "code_locators": [
+        "src/App.tsx:471",
+        "src/knaveClassic.ts:11",
+        "src/tags/knave.ts:24"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-040-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-040-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-044-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044",
+      "source_pages": [
+        38
+      ],
+      "canonical_rule_ids": [
+        "map.settlement_resources",
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-044-L1",
+      "criterion_ids": [
+        "S01-C05",
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No settlement supply category eligibility/price-reference/unknown-stock operation. City/town/village marker identity is insufficient evidence for common/uncommon/rare availability."
+      ],
+      "code_locators": [
+        "src/App.tsx:382",
+        "src/tags/knave.ts:97",
+        "src/knaveClassic.ts:11"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-044-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-045-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045",
+      "source_pages": [
+        27,
+        28,
+        29,
+        30,
+        31,
+        33,
+        35,
+        36,
+        37,
+        39,
+        40,
+        41,
+        42,
+        43
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.tracks_and_ground",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-045-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S06-C03"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "Catalog has only locations, structures, place_traits, dungeons; reference objects are explicitly unresolved_source_reference. No auxiliary Color/Qualities/etc table lookup or next-row reference resolution."
+      ],
+      "code_locators": [
+        "src/tags/knave.ts:9",
+        "src/tags/knave.ts:18",
+        "src/tags/knave.ts:35",
+        "src/tags/knave.ts:89"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-045-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-050-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050",
+      "source_pages": [
+        46,
+        47
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-050-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No city_theme/street_detail/building-table lookup and separately editable selected fields; settlement receives only a place trait. Existing user-authored name/hex notes do not produce requested source rows."
+      ],
+      "code_locators": [
+        "src/tags/knave.ts:9",
+        "src/tags/knave.ts:24",
+        "src/tags/knave.ts:97",
+        "src/App.tsx:13423"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-050-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-051-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051",
+      "source_pages": [
+        48,
+        49
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-051-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No tavern name/food lexical table operation and independent component provenance/menu reroll. Generic tavern marker and manual naming work, but do not look up the source values."
+      ],
+      "code_locators": [
+        "src/App.tsx:408",
+        "src/tags/knave.ts:9",
+        "src/tags/knave.ts:24",
+        "src/manualPois.ts:54"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-051-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-052-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052",
+      "source_pages": [
+        50
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-052-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No faction/trait table selection or one shared faction context linking selected POIs P/Q; manual notes cannot establish shared identity."
+      ],
+      "code_locators": [
+        "src/tags/knave.ts:9",
+        "src/tags/knave.ts:24",
+        "src/knaveClassic.ts:11"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-052-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-053-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053",
+      "source_pages": [
+        51
+      ],
+      "canonical_rule_ids": [
+        "content.adventure_hooks",
+        "content.site_links",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-053-L1",
+      "criterion_ids": [
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No mission/reward table operation with explicit existing origin/target and needs_target state; source-related quest metadata cannot be inferred from arbitrary generated dungeon."
+      ],
+      "code_locators": [
+        "src/tags/knave.ts:9",
+        "src/tags/knave.ts:24",
+        "src/knaveClassic.ts:11"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-053-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-054-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054",
+      "source_pages": 53,
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-054-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No village/city source-category worker/mercenary dice profile; settlement marker does not calculate 1d10/1d6 or10d10/10d6. Monthly regeneration belongs laterL2."
+      ],
+      "code_locators": [
+        "src/App.tsx:382",
+        "src/tags/knave.ts:97",
+        "src/knaveClassic.ts:11"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-054-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-056-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056",
+      "source_pages": 53,
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-056-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No expert rarity/service availability and monthly fee operation for600/2400coins; source-category mapping remains unresolved in extraction and cannot be inferred from marker names."
+      ],
+      "code_locators": [
+        "src/App.tsx:382",
+        "src/tags/knave.ts:97",
+        "src/knaveClassic.ts:11"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-056-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-058-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058",
+      "source_pages": [
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59
+      ],
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.adventure_hooks",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-058-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "absent",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [],
+      "unavailable_or_unproved_components": [
+        "No NPC/contact profession/goals/surname table selection on a contact associated with a place. Name editor applies to POI names, not source-contact prompt fields."
+      ],
+      "code_locators": [
+        "src/tags/knave.ts:9",
+        "src/tags/knave.ts:24",
+        "src/manualPois.ts:54"
+      ],
+      "existing_test_locators": [],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-058-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-062-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062",
+      "source_pages": 66,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.tracks_and_ground",
+        "content.discovery_levels",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-062-L1",
+      "criterion_ids": [
+        "S04-C03",
+        "S05-C01",
+        "S05-C02",
+        "S05-C03",
+        "S06-C03",
+        "S06-C05"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "POI clue text and discovery mode can hold an authored sensory description and remain attached during relocation."
+      ],
+      "unavailable_or_unproved_components": [
+        "No Smell/Sound/Element auxiliary tables or explicit row/reference resolution; no separate visible clue object linked to hidden target. A typed smell is not proof of table profile."
+      ],
+      "code_locators": [
+        "src/knaveClassic.ts:9",
+        "src/knaveClassic.ts:74",
+        "src/tags/knave.ts:9",
+        "src/tags/knave.ts:18"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:177",
+        "test/tags.test.mjs:189"
+      ],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_legacy_membership_outside_CLASSIC1_no_reactivation_of_PLACE1",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-062-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-070-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070",
+      "source_pages": 1,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-070-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "Saved site/trait store source rows and unresolved references; traits are genuine1..100 rolls, primary is honestly a compatible pool; rerolls preserve siblings, RNG and history."
+      ],
+      "unavailable_or_unproved_components": [
+        "No manual arbitrary row lookup; no linked-table result or source next-row policy. Only original primary+trait snapshots, not the multi-step source trail inAC02/03. Unknown row100/repeated-reference policy remains unknown rather than silently wrapping."
+      ],
+      "code_locators": [
+        "src/tags/knave.ts:18",
+        "src/tags/knave.ts:22",
+        "src/tags/knave.ts:34",
+        "src/tags/knave.ts:89",
+        "src/tags/knave.ts:117"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:23",
+        "test/tags.test.mjs:58",
+        "test/tags.test.mjs:81"
+      ],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_CLASSIC1_bounded_tables_only_not_full_resolver",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [
+        "KNA-P05",
+        "KNA-P07"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json",
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-071-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071",
+      "source_pages": 1,
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-071-L1",
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "Combines exactly one compatible primary site and one trait for nonsettlement land POI; settlement/water receive trait only; manual GM notes can describe a chosen interpretation."
+      ],
+      "unavailable_or_unproved_components": [
+        "No variable list of chosen prompts and no repeated invocation of same table retained as multiple prompts; reroll replaces the one trait/site. Thus two identical Ravens plus a Bell tower cannot be represented as three accepted source prompt components by this content model. Hex-owned notes are not a site-owned component list."
+      ],
+      "code_locators": [
+        "src/tags/knave.ts:24",
+        "src/tags/knave.ts:97",
+        "src/tags/knave.ts:117",
+        "src/App.tsx:13423"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:23",
+        "test/tags.test.mjs:58"
+      ],
+      "existing_gap_task_id": "HX-BL-043",
+      "approved_scope_disposition": "043_CLASSIC1_bounded_tables_only_not_full_resolver",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [
+        "KNA-P06",
+        "KNA-P08"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json",
+      "formal_score_or_coverage_status_changed": false
+    },
+    {
+      "requirement_id": "KNAVE2-072-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-072-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-072",
+      "source_pages": 2,
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-072-L1",
+      "criterion_ids": [
+        "S01-C04",
+        "S06-C04"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "General road/trail graph supports redundant connections and stores distinct edges; editor preserves existing graph and crossings, including a tested triangle deletion contract.",
+        "New one-off actual prepareRoadEdit probe passed A-B road plus A-C-B trail with three distinct edges, preservation and JSON structural roundtrip."
+      ],
+      "unavailable_or_unproved_components": [
+        "Whole App import/export/history and arbitrary path-condition preservation remain unverified by this detached probe; no blanket full source profile claimed. Abstract paths are not all automatically physical roads."
+      ],
+      "code_locators": [
+        "src/manualRoads.ts:1",
+        "src/manualRoads.ts:71",
+        "src/App.tsx:471"
+      ],
+      "existing_test_locators": [
+        "test/manualRoads.test.mjs:31"
+      ],
+      "existing_gap_task_id": "HX-BL-018",
+      "approved_scope_disposition": "existing_018_routes_runtime_unknown_no_new_task",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "new_detached_runtime_probe": {
+        "method": "One-off Node actual prepareRoadEdit; no repository change",
+        "sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "given": "A=(0,0),B=(1,0),C=(0,1), one region, all destination endpoints accepted, no water/obstacles",
+        "when": "Create road[A,B], then trail[A,C,B]",
+        "expected": "Three distinct edges; first road preserved; input unchanged; exact JSON structural roundtrip",
+        "actual": "passed",
+        "limitation": "Not real App import/export/history; generic roads/trails only, no proof of all abstract path conditions"
+      },
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-072-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-072-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [],
+      "runtime_evidence_ref": null,
+      "formal_score_or_coverage_status_changed": false,
+      "detached_probe_note": "Subagent reports actual prepareRoadEdit triangle preservation/JSON structure; not used as full App save/history acceptance. Static road component also inspected."
+    },
+    {
+      "requirement_id": "KNAVE2-073-L1",
+      "requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073-L1",
+      "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073",
+      "source_pages": 2,
+      "canonical_rule_ids": [
+        "content.static_hazard",
+        "content.discovery_levels",
+        "map.audience_views"
+      ],
+      "binding_ref": "agent-work/rules/game-bindings.json#KNAVE2-073-L1",
+      "criterion_ids": [
+        "S07-C01",
+        "S05-C03",
+        "S04-C03"
+      ],
+      "verdict": "partial",
+      "assessment_basis": "Exact code/schema/command inspection; runtime probes only where explicitly referenced. Static negative disposition is not a performed browser test.",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "positively_supported_components": [
+        "GM-only discovery annotation separates authored clue text from mode and permits editing/persisting it without source damage resolution."
+      ],
+      "unavailable_or_unproved_components": [
+        "No distinct warning cue object with its own visibility and hidden hazard mechanism fields, no player view/export. This missing laterL2 presentation is not a regression of currentL1 scope."
+      ],
+      "code_locators": [
+        "src/knaveClassic.ts:9",
+        "src/knaveClassic.ts:74",
+        "src/App.tsx:11919"
+      ],
+      "existing_test_locators": [
+        "test/tags.test.mjs:177"
+      ],
+      "existing_gap_task_id": "HX-BL-044",
+      "approved_scope_disposition": "044_GM_preparation_only_player_view_L2_deferred",
+      "manual_text_workaround": "GM may manually describe source results in coordinate-owned hex notes; that does not prove structured rule-profile or linked-object behavior.",
+      "missing_is_approved_defect": false,
+      "source_interpretation_limit": "Verdict concerns this existing operational_requirement, which is a proposed product translation. It is not a claim that the literal game requires this software behavior, or that the game cannot be played with the current map.",
+      "operational_requirement_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073-L1/operational_requirement",
+      "acceptance_cases_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-073-L1/operational_requirement/acceptance_cases",
+      "runtime_probe_ids": [
+        "KNA-P03",
+        "KNA-P04"
+      ],
+      "runtime_evidence_ref": "agent-work/research/audits/evidence/KNAVE2-L1-20261110/probes.json",
+      "formal_score_or_coverage_status_changed": false
+    }
+  ],
+  "development_recommendation": {
+    "existing_task_id": "HX-BL-043",
+    "action": "Record bounded support boundary and residual table workflow for future owner prioritization. PLACE1 stays deferred; do not launch/respecify it.",
+    "concrete_residual_operation": "At one selected place retain two selected results from the same table plus a third result from another table; obtain referenced-table result when selected; edit interpretation; save/reopen without losing any component.",
+    "known_expected_example": "Two independently selected synthetic Raven results and Bell tower remain three components after save/reopen; rerolling one does not replace the others. No source content or mandatory number of prompts inferred.",
+    "requirement_refs": [
+      "agent-work/market/rules/Knave-2e.json#KNAVE2-070-L1",
+      "agent-work/market/rules/Knave-2e.json#KNAVE2-071-L1"
+    ],
+    "status": "research_gap_recorded_existing_deferred_scope",
+    "implementation_authorized": false,
+    "strategy_or_analyst_should_decide": "Whether the generalized preparation workflow is worth reprioritizing versus approved044/051 and pending047/054/029, with no invented demand share."
+  },
+  "rating_changed": false,
+  "numeric_method_changed": false,
+  "score_changed": false,
+  "queue_changed": false,
+  "new_tasks": 0
+}
