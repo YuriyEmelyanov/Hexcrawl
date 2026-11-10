@@ -613,3 +613,7 @@ Legacy fixtures replacing owners/geometry must omit stale active DETAIL1 state; 
 
 ### 2026-11-10 — separate view controller proof from rendered UI proof
 One existing real adaptation transaction case can verify viewStep changes retain the entire accepted map/RNG/zoom and JSON, no-op/stale guards and exact Undo/Redo. Derived grid is clipped to accepted territory and old borders hidden, without changing terrain; renderer still needs browser/desktop390/320 proof.385 passing Node cases and build do not certify hit targets, compact summaries or repeated icons. Browser and RNG launch socket denial are separate0-case checks. Evidence: agent-work/results/2026-11-10T0700-programmer-HX-BL-051-view-controls.json.
+
+
+### 2026-11-10 — a summary is a spatial query, not a child-count assumption
+Use positive-area intersections of the actual current cell with accepted source geography. Deduplicate by stable POI identity, distinguish an intersected footprint cell from a complete object, and keep a fixed1mile selection address across view steps. Controller/import/history evidence and rendered pointer/keyboard evidence are separate. Source polygons must actually receive the computed gridStyle; computing it alone does not hide old borders.386 Node checks passed; browser/RNG socket denial leaves actual UI unverified. Evidence: agent-work/results/2026-11-10T0711-programmer-HX-BL-051-spatial-summary.json.

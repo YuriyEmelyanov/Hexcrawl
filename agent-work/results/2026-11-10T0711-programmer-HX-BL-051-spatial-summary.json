@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-10T0711-programmer-HX-BL-051-spatial-summary",
+  "role": "programmer",
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-spatial-summary",
+  "status": "spatial_summary_selection_implemented_UI_completion_pending",
+  "role_selection_reason": "Own paused claim, no competing running execution, clean local7f5f755 equals remote7a56625. Approved DTL1.0 next ready stage is fine/overview selection and compact summary.",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
+  "base_sha": "7a5662558958b46c269e3e50a3ddb87ca9a0146c",
+  "head_sha": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
+  "tree_sha": "4a2eb65611905054547b544397ad9ad1c5e315f5",
+  "local_sha": "2c40d55716af2199087ebb1a767e22ef8c982fd0",
+  "branch": "agent/hx-bl-051-activation-wip",
+  "pr": 496,
+  "pr_updated": false,
+  "pr_head_unchanged": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "full_task_complete": false,
+  "review_ready": false,
+  "main_changed": false,
+  "changes": [
+    "Read-only summary uses actual positive-area intersections; lists mixed source cells and explicit whole/fragment status; unique POI IDs with intersected/total footprint cells and whole/part distinction.",
+    "Optional v11 selectedCell stores canonical one-mile address, independent of display step. Old v11 without field remains valid; malformed values refuse. Actual controller+save/import/history preserves selection/RNG/zoom.",
+    "Derived1/12/24 targets support pointer/Enter/Space; source view pointer uses SVG screen transform. Show detail selects that POI's own footprint cell in one transaction, not overview centre.",
+    "Summary rows disclose size provenance and accepted water/route links. Coarse-border suppression now actually reaches source polygons through gridStyle."
+  ],
+  "checks": {
+    "full_check": {
+      "status": "passed",
+      "exit_code": 0,
+      "runner": "Node24.22.1 npm run check",
+      "executed": 386,
+      "passed": 386,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 611532.071087,
+      "SHA": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
+      "tree": "4a2eb65611905054547b544397ad9ad1c5e315f5"
+    },
+    "build": "passed",
+    "typecheck": "passed",
+    "focused_node": {
+      "executed": 13,
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "limitation": "Before final import/detail-button assertion extension; final full run is authoritative."
+    },
+    "browser": {
+      "status": "blocked_at_launch",
+      "executed": 0,
+      "reason": "Chromium socket() Operation not permitted"
+    },
+    "browser_rng": {
+      "status": "blocked_at_launch",
+      "executed": 0,
+      "reason": "Same Chromium socket refusal"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "7a5662558958b46c269e3e50a3ddb87ca9a0146c",
+    "head_sha": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node node:test",
+    "scenario_risk": "DTL04/20/22/23/24: mixed positive-area source fragments, unique multi-cell POI and whole/part counts, stable selected1mile address across view changes, exact history and actual v11 import.",
+    "reuse_or_new_reason": "Extend existing real adaptation/controller callback for selection/import/history. New pure summary case addresses a distinct absent contract: geometry primitives do not establish unique summary counts or mixed-source membership. No parallel generator or browser case added.",
+    "count_source": "git diff base7a56625..head: one new node:test callback in detailGrid.test.mjs, one existing callback extended in detailGeography.test.mjs; harness export is not a test; parameter variations not added as cases.",
+    "executions": {
+      "full_node": {
+        "executed": 386,
+        "passed": 386,
+        "failed": 0,
+        "skipped": 0
+      },
+      "focused_node": {
+        "executed": 13,
+        "passed": 13,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser": {
+        "executed": 0,
+        "status": "blocked_at_launch"
+      },
+      "browser_rng": {
+        "executed": 0,
+        "status": "blocked_at_launch"
+      }
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "programmer_partial_evidence_not_independent_assessment",
+    "criteria": [
+      {
+        "criterion_id": "S01-C04",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-spatial-summary",
+        "limitations": "Partial programmer evidence only. No actual renderer/desktop390/320/export evidence; repeated markers, extent form, focus/highlight and full keyboard route remain incomplete. Whole quality/breadth unknown.",
+        "SHA": "e1217b1396c88700afbbfbc80d88caecf2c93aba"
+      },
+      {
+        "criterion_id": "S01-C05",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-spatial-summary",
+        "limitations": "Partial programmer evidence only. No actual renderer/desktop390/320/export evidence; repeated markers, extent form, focus/highlight and full keyboard route remain incomplete. Whole quality/breadth unknown.",
+        "SHA": "e1217b1396c88700afbbfbc80d88caecf2c93aba"
+      },
+      {
+        "criterion_id": "S03-C01",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-spatial-summary",
+        "limitations": "Partial programmer evidence only. No actual renderer/desktop390/320/export evidence; repeated markers, extent form, focus/highlight and full keyboard route remain incomplete. Whole quality/breadth unknown.",
+        "SHA": "e1217b1396c88700afbbfbc80d88caecf2c93aba"
+      },
+      {
+        "criterion_id": "S04-C03",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-spatial-summary",
+        "limitations": "Partial programmer evidence only. No actual renderer/desktop390/320/export evidence; repeated markers, extent form, focus/highlight and full keyboard route remain incomplete. Whole quality/breadth unknown.",
+        "SHA": "e1217b1396c88700afbbfbc80d88caecf2c93aba"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-spatial-summary",
+        "limitations": "Partial programmer evidence only. No actual renderer/desktop390/320/export evidence; repeated markers, extent form, focus/highlight and full keyboard route remain incomplete. Whole quality/breadth unknown.",
+        "SHA": "e1217b1396c88700afbbfbc80d88caecf2c93aba"
+      },
+      {
+        "criterion_id": "S05-C01",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-spatial-summary",
+        "limitations": "Partial programmer evidence only. No actual renderer/desktop390/320/export evidence; repeated markers, extent form, focus/highlight and full keyboard route remain incomplete. Whole quality/breadth unknown.",
+        "SHA": "e1217b1396c88700afbbfbc80d88caecf2c93aba"
+      }
+    ],
+    "awarded_points": 0,
+    "score_changed": false
+  },
+  "ui_actual_pending": true,
+  "ui_shown_for_this_SHA": false,
+  "remaining": [
+    "Repeated POI markers per occupied fine cell without duplicate source icons; overlapping object choice and visible selected/focus highlight.",
+    "Addressed extent edit form, accessible6mile target coverage, collapse legacy source context for overview12/24.",
+    "ExactSHA browser desktop1500/390/320, pointer/touch/keyboard/rotation/zoom and selected-view PNG evidence.",
+    "Update existing PR496 only after coherent implementation; independent combined review+score_assessment1.2; separate owner publication gate."
+  ],
+  "authority_status": "Approved DETAIL1 implementation only; no new product task, heavy measurement beyond limits, spending or publication.",
+  "next_role": "programmer",
+  "next_step": "Программист продолжает HX-BL-051/DETAIL1 с e1217b1396c88700afbbfbc80d88caecf2c93aba/tree4a2eb65611905054547b544397ad9ad1c5e315f5 в agent/hx-bl-051-activation-wip. Реализованы selectedCell в устойчивых1mileкоординатах, реальные пересечения/фрагменты местности, уникальные POI, раскрытие extent/воды/путей, переход к клетке нужногоPOI и pointer/keyboard цели для производных1/12/24. Следующий ограниченный этап D: завершить повторяемые маркеры POI в клетках и общий контур, выбор пересекающихся объектов, адресную форму правки охвата, клавиатурные цели6mile и видимый selected/focus highlight, сворачивание исходной6mileкарточки при обзорном12/24. Затем actual desktop1500/390/320, pointer/touch/keyboard/zoom/rotation и PNG выбранного вида на exactSHA. Новая отрисовка не проверена браузером: обычный/RNG launch socket denied; использовать доступную разрешённую CI/browser среду, не объявлять screenshots выполненными. После завершения обновить существующий PR496 (покаhead09b3c9b), независимый combined review+score_assessment1.2. Новой продуктовой задачи/измерений сверхлимита/публикации не разрешено.",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-spatial-summary-resume.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10T07:11:14.664Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10T07:26:25.408Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time checks only; no guarantee after completion."
+  },
+  "completed_at": "2026-11-10T07:26:36.817Z"
+}
