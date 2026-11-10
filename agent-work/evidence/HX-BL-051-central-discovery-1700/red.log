@@ -1,0 +1,36 @@
+✔ CLASSIFY1 all existing biome defaults and unknown are explicit, dangerous includes terrain risk (3.687503ms)
+✔ CLASSIFY1 discovery uses exact context and semantic IDs independent of language (0.29971ms)
+✔ CLASSIFY1 overrides validate version/live ownership, preserve unknown and remap only POI (1.258302ms)
+✖ CLASSIFY1 real document import/commit/history preserves map/RNG and authored overrides across modes (460.677711ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1742.846461
+
+✖ failing tests:
+
+test at test/classification.test.mjs:29:1
+✖ CLASSIFY1 real document import/commit/history preserves map/RNG and authored overrides across modes (460.677711ms)
+  AssertionError [ERR_ASSERTION]: central capital
+  + actual - expected
+  
+  + []
+  - [
+  -   'При прохождении'
+  - ]
+  
+      at verify (file:///tmp/hx-central-fix/test/classification.test.mjs:39:27)
+      at TestContext.<anonymous> (file:///tmp/hx-central-fix/test/classification.test.mjs:40:47)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 'При прохождении' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
