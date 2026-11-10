@@ -173,8 +173,19 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
   // Expansion may assign an additional real path to an accepted site. Add
   // only that new access inside the existing shape; retain every old port.
   const source=parseWaterHex(alias.slice(alias.lastIndexOf(':')+1)),routes=assignedRoutes(map,source,state.grid.origin);
-  const attached=new Set(prior.attachments.filter(a=>a.kind==='route').map(a=>a.routeId));
-  const attachments=[...prior.attachments];
+  // Generation can merge road records while retaining their physical segments.
+  // Rebind only an identical live subdivision port, never mere proximity.
+  const attachments=prior.attachments.map(ref=>{
+   if(ref.kind!=='route')return ref;
+   const samePort=(r:DetailRouteAccess)=>r.accessNodeId===ref.accessNodeId&&r.kind===ref.routeKind&&prior.cells.some(cell=>{
+    const span=detailSegmentSpan(createDetailGrid(1,state.grid.origin),cell,r.segment);
+    return span&&Math.hypot(span.from.x-ref.entry.x,span.from.y-ref.entry.y)<=1e-9;
+   });
+   if(routes.some(r=>r.routeId===ref.routeId&&samePort(r)))return ref;
+   const exact=routes.find(samePort);
+   return exact?{...ref,routeId:exact.routeId}:ref;
+  }).filter((ref,index,all)=>ref.kind!=='route'||all.findIndex(a=>a.kind==='route'&&a.routeId===ref.routeId)===index);
+  const attached=new Set(attachments.filter(a=>a.kind==='route').map(a=>a.routeId));
   for(const routeId of [...new Set(routes.map(r=>r.routeId))].sort())if(!attached.has(routeId)){
    const options=routes.filter(r=>r.routeId===routeId);
    let entry:Extract<DetailPoiFootprint['attachments'][number],{kind:'route'}>|undefined;
@@ -184,7 +195,7 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
    }
    if(!entry)fail('new_route_outside_accepted_footprint');attachments.push(entry!);
   }
-  footprints.push(prior.legacyRef===alias&&attachments.length===prior.attachments.length?prior:{...prior,legacyRef:alias,attachments});
+  footprints.push(prior.legacyRef===alias&&attachments.length===prior.attachments.length&&attachments.every((a,i)=>a===prior.attachments[i])?prior:{...prior,legacyRef:alias,attachments});
  }
  const next=parseDetail1StateV11({...state,poiIdentities:identities,poiFootprints:footprints});
  validateDetailGeographyFootprints(map,rivers,next);

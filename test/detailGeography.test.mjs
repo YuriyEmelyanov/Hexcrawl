@@ -141,6 +141,16 @@ test('active DETAIL1 generated candidate places only new owners after accepted K
  h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid),structuredClone(result.physicalGrid));
  const withRoad=structuredClone(h.render().captureDocument().map);withRoad.roads.push({id:1,regionId:1,segments:[{from:{q:2,r:0},to:{q:3,r:0},kind:'road'}]});withRoad.nextRoadId=2;
  const connected=h.render().recordGenerated(h.render().captureDocument().map,withRoad,{q:3,r:0});assert.deepEqual(structuredClone(connected.physicalGrid.poiFootprints.find(v=>v.poiId===p.poiId).cells),before.map.physicalGrid.poiFootprints[0].cells);assert.equal(connected.physicalGrid.poiFootprints.find(v=>v.poiId===p.poiId).attachments.filter(a=>a.kind==='route').length,1);h.render().applyDocument({...h.render().captureDocument(),map:connected});h.render();
+ // ROAD-02/DTL-14: a generator may merge records, preserving the exact
+ // physical segment. Reuse this live-handler case, not a parallel fixture.
+ const mergeBefore=structuredClone(h.render().captureDocument()),merged=structuredClone(mergeBefore.map);merged.roads[0].id=2;merged.nextRoadId=3;
+ const rebound=h.render().recordGenerated(mergeBefore.map,merged,{q:3,r:0});
+ const oldPort=mergeBefore.map.physicalGrid.poiFootprints.find(v=>v.poiId===p.poiId).attachments.find(a=>a.kind==='route');
+ const newPort=rebound.physicalGrid.poiFootprints.find(v=>v.poiId===p.poiId).attachments.find(a=>a.kind==='route');
+ assert.deepEqual(structuredClone(newPort),{...oldPort,routeId:'road:2'});h.geometry.validateDetailMapFootprints(rebound,rebound.physicalGrid);
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),mergeBefore);h.render().redoMap();
+ h.render().applyDocument({...h.render().captureDocument(),map:rebound});h.render();
+ const lost=structuredClone(rebound);lost.roads=[];assert.throws(()=>h.render().recordGenerated(rebound,lost,{q:3,r:0}),/DETAIL1/,'missing physical access cannot be silently dropped');
  const saved=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]),bad=structuredClone(saved.map);bad.roads[0].segments[0].kind='trail';
  assert.throws(()=>h.render().recordGenerated(saved.map,bad,{q:3,r:0}),/DETAIL1/);assert.deepEqual(structuredClone(h.render().captureDocument()),saved);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
 });
