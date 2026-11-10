@@ -15519,7 +15519,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const acceptedDiscovery=knaveDiscoveryKey?classification?.discoveryByPoi[knaveDiscoveryKey]??knave?.discoveryByPoi[knaveDiscoveryKey]:undefined;
   const authoredDifficulty=selectedHexKey?classification?.difficultyByHex[selectedHexKey]??knave?.difficultyByHex[selectedHexKey]:undefined;
   const onSelectedRoad=!!selectedHexKey&&roads.some(r=>r.segments.some(s=>hexKey(s.from)===selectedHexKey||hexKey(s.to)===selectedHexKey));
-  const inferredDiscovery=discoveryDefault({kind:selectedPoiKind??selectedWaterPoiKind,biome:selectedEffectiveBiomeId,onRoad:onSelectedRoad,water:isSelectedLake||isSelectedSea,hidden:!!knaveDiscoveryKey&&discoveryTagEffect(knaveDiscoveryKey,tags?.instances??[],selectedKnaveContent)});
+  const inferredDiscovery=discoveryDefault({kind:(selectedHasCentralPoi?selectedRegion?.centralPoiKind:selectedPoiKind)??selectedWaterPoiKind,biome:selectedEffectiveBiomeId,onRoad:onSelectedRoad,water:isSelectedLake||isSelectedSea,hidden:!!knaveDiscoveryKey&&discoveryTagEffect(knaveDiscoveryKey,tags?.instances??[],selectedKnaveContent)});
   const knaveDifficulty=knaveDraft?.difficulty??classification?.difficultyByHex[selectedHexKey??'']??knave?.difficultyByHex[selectedHexKey??'']??'auto';
   const displayedDifficulty=knaveDraft?.difficulty&&knaveDraft.difficulty!=='auto'?knaveDraft.difficulty:authoredDifficulty??terrainDefault(selectedEffectiveBiomeId);
   const knaveDiscovery=knaveDraft?.mode??classification?.discoveryByPoi[knaveDiscoveryKey??'']?.mode??knave?.discoveryByPoi[knaveDiscoveryKey??'']?.mode??'auto',knaveClue=knaveDraft?.clueText??acceptedDiscovery?.clueText??'';

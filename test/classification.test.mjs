@@ -27,6 +27,21 @@ test('CLASSIFY1 overrides validate version/live ownership, preserve unknown and 
  const moved=remapClassification(d,new Map([['poi:1:2,0','poi:2:0,0']]));assert.deepEqual(moved.difficultyByHex,d.difficultyByHex);assert.equal(moved.discoveryByPoi['poi:2:0,0'].clueText,'Tracks');assert.equal(d.discoveryByPoi['poi:2:0,0'],undefined);
 });
 test('CLASSIFY1 real document import/commit/history preserves map/RNG and authored overrides across modes',async()=>{
+ // CENTRAL-DISCOVERY: policy unit coverage supplied kind explicitly and missed
+ // actual App central-kind resolution. Reuse this real import/history callback.
+ const panelRows=node=>{if(!node||typeof node!=='object')return [];if(Array.isArray(node))return node.flatMap(panelRows);return node.props?[...(Object.hasOwn(node.props,'data-discovery-classification')?[node.props.children]:[]),...panelRows(node.props.children)]:[];};
+ const text=node=>node==null?'':Array.isArray(node)?node.map(text).join(' '):typeof node==='object'?text(node.props?.children):String(node);
+ for(const kind of ['capital','city','lair','dungeon'])for(const central of [true,false]){
+  const d=regionFixture();Object.assign(d.map.regions[0],{centerHex:{q:2,r:0},biomeId:'open_plains',suppressCentralPoi:!central,centralPoiKind:central?kind:undefined,pointsOfInterest:central?[]:[{q:2,r:0}],pointOfInterestKinds:central?{}:{'2,0':kind}});d.map.biomeOverrideByHexKey={'2,0':'open_plains'};d.map.roads=[];d.map.crossings=[];delete d.map.classification;delete d.map.knave;d.ui.selectedHex={q:2,r:0};
+  const app=createGenerationHarness(42);app.render();app.guardRandom();const alerts=[];app.setWindow({alert:m=>alerts.push(m)});app.injectFunction('readTextFile',async f=>f.text);
+  await app.render().handleImportJson({target:{files:[{text:JSON.stringify(d)}],value:'x'}});assert.deepEqual(alerts,[]);
+  const expected=kind==='capital'||kind==='city'?'При прохождении':'Нужно исследование';
+  const verify=()=>assert.deepEqual(panelRows(app.render().knavePanel).map(text),[expected],`${central?'central':'secondary'} ${kind}`);
+  const before=app.render().captureDocument();verify();assert.deepEqual(app.render().captureDocument(),before,'derived discovery is read-only');
+  if(central){assert.equal(app.render().startDetailAdaptation(),true);assert.equal(app.render().applyDetailAdaptation(),true);const footprint=app.render().captureDocument().map.physicalGrid.poiFootprints.find(x=>x.legacyRef==='poi:1:2,0');assert.ok(footprint);assert.equal(app.render().selectDetailCell(footprint.cells[0],undefined,1,footprint.poiId),true);verify();}
+  const saved=app.render().createSaveData();saved.version=11;saved.map.classification={version:1,difficultyByHex:{},discoveryByPoi:{'poi:1:2,0':{mode:'unknown',clueText:''}}};await app.render().handleImportJson({target:{files:[{text:JSON.stringify(saved)}],value:'x'}});assert.deepEqual(panelRows(app.render().knavePanel),[],'explicit unknown suppresses default');
+  saved.map.classification.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'CENTRAL-MANUAL-CLUE'};await app.render().handleImportJson({target:{files:[{text:JSON.stringify(saved)}],value:'x'}});assert.ok(text(app.render().knavePanel).includes('CENTRAL-MANUAL-CLUE'));
+ }
  const h=createGenerationHarness(42);h.render();h.setWindow({alert:()=>{},confirm:()=>true,matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
  await h.render().handleImportJson({target:{files:[{text:JSON.stringify(regionFixture())}],value:'x'}});
  const snapshot=()=>{const d=JSON.parse(JSON.stringify(h.render().createSaveData()));delete d.savedAt;return d;},before=snapshot();
