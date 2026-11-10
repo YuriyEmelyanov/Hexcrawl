@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "temporary_diagnostic": true,
+  "forced_full_network_refusal": true,
+  "fullCalls": 120,
+  "partialCalls": 60,
+  "forcedCalls": 60,
+  "regularRejected": 30,
+  "tractAttempt": 30,
+  "success": false,
+  "diagnostic": {
+    "kind": "constraint-rejection",
+    "reason": "full_river_network",
+    "result": "rolled-back",
+    "action": "add",
+    "anchorHex": {
+      "q": 0,
+      "r": 0
+    },
+    "options": {
+      "mode": "classic",
+      "targetSize": 8,
+      "landType": "auto",
+      "biomeId": "auto",
+      "coastalPreference": "mainland"
+    },
+    "attempt": 30,
+    "tractAttempt": 30,
+    "stage": "tract_river_endpoints",
+    "seaRecoveryAttempt": 0,
+    "reclaimedSeaKeys": [],
+    "random": {
+      "before": {
+        "generatorVersion": "regions-2026-10-24-rng.1",
+        "rngVersion": "mulberry32-v1",
+        "masterSeed": 41,
+        "streams": {
+          "geography": 41,
+          "poi": 2654435728
+        }
+      },
+      "after": {
+        "generatorVersion": "regions-2026-10-24-rng.1",
+        "rngVersion": "mulberry32-v1",
+        "masterSeed": 41,
+        "streams": {
+          "geography": 41,
+          "poi": 2654435728
+        }
+      }
+    },
+    "inputOptions": {
+      "sizeCategory": "auto",
+      "landType": "auto",
+      "biome": "auto",
+      "coastal": "mainland",
+      "mode": "classic"
+    },
+    "targetSize": 8,
+    "rejectionCounts": {
+      "full_river_network": 30
+    },
+    "algorithmVersion": "regions-2026-10-24-rng.1",
+    "maxAttempts": 30,
+    "warningCounts": {}
+  },
+  "exactDocumentRollback": true,
+  "exactUndoRedoRollback": true,
+  "notes": "One fixed action with verifier injection of invalid complete=true network issues; partial numerical solver is untouched; baseline empty map remains unmodified, so this is a new candidate issue rather than a grandfathered old issue. Existing bounded attempts exercised both regular and tract branches; not permanent test growth."
+}

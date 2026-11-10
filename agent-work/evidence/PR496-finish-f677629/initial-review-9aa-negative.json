@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "role": "independent_reviewer",
+  "task_id": "HX-BL-051",
+  "related_task_ids": [
+    "HX-BL-044",
+    "HX-BL-003"
+  ],
+  "stage_id": "PR496-bounded-river-release-disposition",
+  "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+  "tree_sha": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
+  "published_base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "reviewer_authored_implementation": false,
+  "scope": "One known saved CI before/after with exact actual handler replay on main/head; one closed-mouth fixture and explicit real-sink variant on main/head. No random sample series, browser reruns, source mutation, push, main or score writes.",
+  "verdict": "current_9aa_has_confirmed_preexisting_Classic_CYCLE_requires_fix_or_explicit_owner_risk_acceptance",
+  "RIV016": {
+    "status": "confirmed_preexisting_product_defect",
+    "original_evidence": "agent-work/evidence/TABLES1-domain-1957/generation-failure/",
+    "seed": 1702308986,
+    "action": {
+      "generation_mode": "classic",
+      "size": "locality",
+      "anchor": {
+        "q": 2,
+        "r": -2
+      }
+    },
+    "before": {
+      "regions": 3,
+      "network_valid": true
+    },
+    "after": {
+      "regions": 4,
+      "network_valid": false,
+      "rule": "RIV-016",
+      "code": "CYCLE"
+    },
+    "same_input_main_head": {
+      "adapter_network_identical": true,
+      "actual_import_and_generation_reproduced_on_both": true,
+      "actual_replay_network_equals_original_saved_after": true,
+      "main_serialization_adjustment": "v11→v10 and remove unsupported physicalGrid only; all geographical river/terrain/region/candidate data and saved RNG/streams are unchanged.",
+      "alerts": [],
+      "generationError": null
+    },
+    "root_cause": {
+      "confirmed": "Classic precommit validates physical river cycles but numerical whole network after lake contraction is guarded only for options.mode==='mythic'. A new lake unifies ports of accepted river1 and newriver4 into a directed cycle. The valid3-regionbefore becomes accepted invalid4-regionafter.",
+      "source_correspondence": "buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, validateRiverCycleSafety, core.ts and worldRandom.ts have equal exact function/file hashes on main/head.",
+      "not_a_TABLES1_or_DETAIL1_regression": true,
+      "not_merely_evidence_gap": true
+    },
+    "candidate_minimal_fix": {
+      "regular": "src/App.tsx13422: apply current full buildRegionRiverNetwork+validate guard to Classic as well before recordGenerated; preserve rejection+continue.",
+      "fallback": "src/App.tsx12573: apply full guard before river ID allocation/recordGenerated; preserve bounded tract retries and final constraintFailure.",
+      "limits": "No new river construction algorithm, numeric rule, RNG change or allowance. Whole invalid legacy maps can now refuse continuation; never mutate old geometry or hide invalidity.",
+      "retry_and_rollback": {
+        "regular": "maxRegionAttempts then existing fallback",
+        "fallback": "tractAttempt toMAX_REGION_ATTEMPTS thenconstraintFailure",
+        "outer": "safelyAddRegionToMap14182→restoreGenerationBackup; restores document, both history branches, generation checkpoints and RNG"
+      },
+      "recheck_required": "Exact savedbefore continuation must yield a fully valid acceptednetwork OR a normal exactrollback. Independently review changedSHA and both regular/fallback paths before release."
+    }
+  },
+  "RIV011": {
+    "status": "original_historical_cause_unknown_preserved",
+    "original_input_available": false,
+    "historical_evidence": "agent-work/evidence/HX-BL-044-CLASSIFY1/ci-r4-browser-negative.json",
+    "fixture": "Existing regionFixture(classic,{river:directed}); adapter complete=true, no frontier; compare no lake to one real sink hex3,0 lake7.",
+    "fixture_result": "Both main/head emit LAKE_AREA/RIV-011 for closedmouth145.492,-28 with sentinellakeHexCount0; adding actual one-hexsink produces valid lake7 with area1.",
+    "meaning": "Demonstrates assertion can describe missing actual sink, not corrupted stored area. Does not identify original72.746,-14 map, prove generator reachability of that historical input, or close originalfinding.",
+    "technical_disposition": "No direct CLASSIFY/DETAIL1 cause established. Source equality+bounded fixture support preexisting general river topology risk. The proposed all-mode full precommit guard mitigates this invalid-terminal class too, but its exactSHA acceptance needs own evidence. Keep original unknown history even after mitigation; no fictitious recreation or random-until-green loop."
+  },
+  "evidence": {
+    "directory": "/workspace/scratch/50f278832674/finish496-river-review/",
+    "files": [
+      "diagnostic.mjs",
+      "river-diagnostic.json",
+      "replay-main.json",
+      "replay-head.json",
+      "lake-diagnostic.mjs",
+      "lake-diagnostic.json",
+      "source-correspondence.json"
+    ]
+  },
+  "test_governance": {
+    "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "temporary_diagnostics": "2 separate temporary scripts, two exact actual-handler replay runs; not permanent suite growth.",
+    "recommended_reuse": [
+      "test/riverIntegration.test.mjs:RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes — extend existingcallback with saved CIbefore, actualimport/click/fullnetwork check ORexactrollback; no newrandomseries.",
+      "test/riverEndpoints.test.mjs:insufficient source lake area is an atomic expected rejection, never a broken success — reuse for fullnetwork fallbackrefusal/history.",
+      "test/generationDiagnostics.test.mjs:last rejection records lake reentry rather than a stale earlier river failure — relevant diagnostic rejection/counter contract."
+    ]
+  },
+  "score": {
+    "model_version": "1.2",
+    "points_changed": false,
+    "current_9criteria_unknown_preserved": true,
+    "regression_evidence_must_be_attached": true,
+    "no_new_grade_or_numeric_delta_assigned": true
+  },
+  "limitations": [
+    "No original RIV011 seed/map exists; deterministic fixture is explicitly synthetic and not the original CI input.",
+    "The same-input replay uses the repository's real App callbacks with existing React-hook harness, not a browser DOM; original source CI captures came from production browser.",
+    "Finite evidence does not certify all maps, legacy scenarios or all river invariants. Prior functionalacceptance must be qualified by newly recordedCYCLE evidence."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10T21:20:10.129Z",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "end": {
+      "checked_at": "2026-11-10T21:24:01.130Z",
+      "status": "checked",
+      "is_enabled": true
+    }
+  },
+  "completed_at": "2026-11-10T21:24:01.130Z"
+}
