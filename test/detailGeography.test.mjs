@@ -232,6 +232,8 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  assert.equal(h.render().setDetailViewStep(12),true);assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid.selectedCell),{q:12,r:0});
  const loaded=await importMap(JSON.parse(JSON.stringify(h.render().createSaveData())));assert.deepEqual(structuredClone(loaded.render().captureDocument().map.physicalGrid.selectedCell),{q:12,r:0});
  assert.equal(h.render().selectDetailCell({q:12,r:0},undefined,1),true);assert.equal(h.render().captureDocument().map.physicalGrid.viewStep,1);
+ h.render().clickSourceHex({q:3,r:0});assert.deepEqual(structuredClone(h.render().selectedHex),{q:3,r:0});assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid.selectedCell),{q:18,r:0});assert.deepEqual(structuredClone(h.render().captureDocument().map.generation),chosen.map.generation);
+
 
 
 });

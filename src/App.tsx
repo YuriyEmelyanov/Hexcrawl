@@ -15768,6 +15768,9 @@ retainPoiNames(checkpoint,editorNamesRef.current);
       finishNotesGroup(); closeEditors(); updateObstacleDraft(pendingObstacle); clearNotesDraft();
       setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
       if(physicalGridRef.current?.active&&!editMode&&event){
+        // Keyboard/programmatic source-cell activation has no pointer position.
+        // Use the addressed source centre, never screen(0,0).
+        if(event.detail===0){const origin=physicalGridRef.current.grid.origin;selectDetailCell(worldToDetailCell(createDetailGrid(1,origin),detailCellCenter(createDetailGrid(6,origin),hex)));return;}
         const node=event.currentTarget,svg=node.ownerSVGElement,matrix=node.getScreenCTM();
         if(svg&&matrix){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;const at=p.matrixTransform(matrix.inverse()),origin=physicalGridRef.current.grid.origin;
           selectDetailCell(worldToDetailCell(createDetailGrid(1,origin),{x:(at.x-riverOffset.x)*6/(Math.sqrt(3)*HEX_SIZE)+origin.x,y:(at.y-riverOffset.y)*6/(Math.sqrt(3)*HEX_SIZE)+origin.y}));return;
