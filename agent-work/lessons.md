@@ -602,3 +602,6 @@ Road ID alone is not a physical port: regeneration can merge records or reuse th
 
 ### 2026-11-10 — PR499 score event: unknown is not a zero grade
 Exact accepted/released tree42483336 and verified live assets permit applying the existing independent assessment once by task+releaseSHA+model+criterion. EN availability and legacy compatibility improve bounded usage, while whole S05-C02/S08-C04 quality/breadth remain insufficient_evidence. Record null deltas and0awarded points without converting unknown to G0 or importing1.1grades. Release claim completed; approved051 checkpoint resumes next. Evidence: agent-work/results/2026-11-10T0400-strategist-score-PR499.json.
+
+### 2026-11-10 — provisional placement waits for final water
+The dry-site failure was central holy_place27:13,2 under final lake6, not an ordinary-site-only issue. Resolve provisional centers/sites before roads/kind rolls without extraRNG; retain fixed/mouth centers or refuse. Existing three-seed actual-handler case verifies counts/history/old footprints;37focused cases pass. Automatic activation also invalidates hand-crafted old fixture spreads carrying stale physical identities: isolate those before broad reruns, never loosen the real validator. Full suite is still not accepted. Evidence: agent-work/results/2026-11-10T0502-programmer-HX-BL-051-final-water.json.

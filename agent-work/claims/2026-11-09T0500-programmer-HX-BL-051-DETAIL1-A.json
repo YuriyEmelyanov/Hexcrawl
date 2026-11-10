@@ -3,7 +3,7 @@
   "run_id": "2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A",
   "task_id": "HX-BL-051",
   "stage_id": "DETAIL1",
-  "substage": "two_activation_fixes_verified_remaining_regressions",
+  "substage": "final_water_verified_compatibility_triage_pending",
   "role": "programmer",
   "status": "active",
   "last_pause_for": "HX-BL-043/OWNERFIX1",
@@ -16,37 +16,37 @@
   "branch": "agent/hx-bl-051-detail1",
   "release_approved": false,
   "foreign_claim_preserved": "2026-11-03-developer-HX-BL-041-presentation: walkthroughonly, no source changes",
-  "execution_running": true,
+  "execution_running": false,
   "checkpoint_status": "saved_safe_to_resume_same_task_chat",
-  "checkpoint_at": "2026-11-10T02:15:21.912Z",
+  "checkpoint_at": "2026-11-10T05:12:36.851Z",
   "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
   "tree_sha": "b181679aac4fc4a1baffe1151b0446eb8233bf4a",
   "pr": 496,
-  "result_ref": "agent-work/results/2026-11-10T0203-programmer-HX-BL-051-activation-fixes.json",
-  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-activation-fixes.json",
-  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 с ff2c838/tree44a5d8f7 в agent/hx-bl-051-activation-wip. Сначала устранить размещение нового land POI под финальным озером (existing mythicKingdom seed7, poi:27:13,2/lake6) до построения обслуживающих дорог/Knave, сохранив старые объекты, географию, квоты и строгую валидацию; не маскировать переносом старого POI или перебросом принятых текстов. Затем разобрать 8 наблюдавшихся отрицательных случаев полного прогона: checkpoints/notes, E5 river edits, RIV expansion, legacy save version — отделить несовместимые fixtures от дефектов по точному SHA, расширять существующие проверки. Исправленные ports merge и empty-layer/sea-ID ordering не откатывать. После этого полный npm check, actual browser в доступной среде и оставшийся UI1/6/12/24; независимая проверка объединённого SHA перед отдельным разрешением выпуска.",
+  "result_ref": "agent-work/results/2026-11-10T0502-programmer-HX-BL-051-final-water.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-final-water-resume.json",
+  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 с bc220e4/treeb60cac98 (WIP интегрирует main1962fb9a; PR496 всё ещё09b3c9b). Размещение нового land POI после финальной воды исправлено: не повторять этот разбор. До нового полного прогона адресно разобрать7оставшихся отрицательных случаев. Первый: mapTransactions:111 искусственно заменяет регионы/POI после addFallbackTractToMap, сохраняя несовместимый physicalGrid; validator правильно отказывает POI identities do not match live owners. Проверить ту же причину в riverBackendFixture:560 для3E5cases; явно оформить legacy fixture без spatial layer либо построить согласованный слой, не ослабляя production validation и не удаляя активные DETAIL1 tests. Отдельно проверить NotesLossConflict приоритет/fixtures, реальный RIV expansion и future save version: notes fixture не должна считать поддержаннуюv11 будущей без проверки контракта. Затем обязательные check/browser, оставшийся фактический UI1/6/12/24 и независимый combined exactSHAreview/score_assessment1.2. Публикация отдельно не разрешена.",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-10T02:03:36.397Z",
+      "checked_at": "2026-11-10T05:02:35.110Z",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "end": {
-      "checked_at": "2026-11-10T02:14:20.153Z",
+      "checked_at": "2026-11-10T05:11:10.310Z",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time observations only."
+    "limitation": "Point-in-time checks only; no guarantee after completion."
   },
   "task_completed": false,
   "review_ready": false,
   "last_resume_at": "2026-11-10T05:02:35.110Z",
-  "local_sha": "31225018b53f54e4bf6e062da0056cf4f9991050",
+  "local_sha": "320a381e9b9aa5e1fc6995f91421b5a29d9761e5",
   "previous_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -66,9 +66,10 @@
     "limitation": "Point-in-time observations only, no guarantee of later service state. Schedule/prompt unchanged."
   },
   "last_run_id": "2026-11-10T0502-programmer-HX-BL-051-final-water",
-  "evidence_ref": "agent-work/results/2026-11-10T0203-programmer-HX-BL-051-activation-fixes.json",
-  "last_progress_at": "2026-11-10T02:15:21.912Z",
+  "evidence_ref": "agent-work/results/2026-11-10T0502-programmer-HX-BL-051-final-water.json",
+  "last_progress_at": "2026-11-10T05:12:36.851Z",
   "working_branch": "agent/hx-bl-051-activation-wip",
-  "wip_head_sha": "ff2c838e95f6ad29f10cc1068a85a4432a95dc3e",
-  "wip_tree_sha": "44a5d8f7a749a0c462bd73cb4a63fbfb47d80b42"
+  "wip_head_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
+  "wip_tree_sha": "b60cac98582cc2ae35f03bf715d78b649563f47f",
+  "integration_parent_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9"
 }

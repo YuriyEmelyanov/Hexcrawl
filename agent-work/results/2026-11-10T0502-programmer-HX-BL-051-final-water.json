@@ -1,0 +1,221 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-10T0502-programmer-HX-BL-051-final-water",
+  "role": "programmer",
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-final-water",
+  "status": "final_water_placement_verified_remaining_compatibility_triage",
+  "role_selection_reason": "Own clean saved checkpoint tree44a5d8f7, execution_running=false and no competing programmer. PR499 release/score completed; resume approved051.",
+  "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "branch": "agent/hx-bl-051-activation-wip",
+  "base_sha": "ff2c838e95f6ad29f10cc1068a85a4432a95dc3e",
+  "head_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
+  "tree_sha": "b60cac98582cc2ae35f03bf715d78b649563f47f",
+  "local_sha": "320a381e9b9aa5e1fc6995f91421b5a29d9761e5",
+  "integration_parent_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "pr": 496,
+  "pr_updated": false,
+  "pr_head_unchanged": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
+  "implementation_authorized": true,
+  "release_authorized": false,
+  "main_changed": false,
+  "full_task_complete": false,
+  "review_ready": false,
+  "changes": [
+    "Integrated published main1962fb9a. Resolved App path-error conflict by retaining DETAIL1 refusal explanation and main's localized road error.",
+    "Final provisional central/ordinary land POIs now use actual dry terrain before access roads and kind/Knave rolls. Central tie-break maximizes regional neighbors, then previous-center distance and coordinates; ordinary valid positions reserved, unsuitable replaced deterministically. No new RNG, water edits, accepted POI migration or count loss.",
+    "Fixed source-defined/fixed river-mouth centers stay locked; impossible fixed placement/no dry capacity refuses atomically. Updated downstream selection to final central position.",
+    "Existing seed7/42/103 extended real-handler case passes, preserving earlier footprints/extent, valid save and exact Undo/Redo."
+  ],
+  "checks": {
+    "typecheck": "passed Node24",
+    "production_build": "passed exact source",
+    "focused_node": "37/37 on integrated current code",
+    "full_check": "7observed failures, no final summary; stopped after confirmed negatives, not accepted full run",
+    "browser": "blocked at process launch, no UI verification"
+  },
+  "remaining_findings": [
+    {
+      "status": "confirmed_fixture_incompatibility_one_case",
+      "source": "test/mapTransactions.test.mjs:111",
+      "error": "DETAIL1 POI identities do not match live owners",
+      "evidence": "agent-work/evidence/HX-BL-051-final-water/editor-triage.log",
+      "interpretation": "Hand-built replacement of region/POI retains generated physicalGrid; production validator rejects inconsistent snapshot. No fix/waiver applied."
+    },
+    {
+      "status": "source_based_fixture_lead_not_yet_independently_repeated",
+      "source": "test/mapTransactions.test.mjs:560 riverBackendFixture",
+      "interpretation": "Same base-map spread pattern with manual region/water/roads replacement; inspect three E5 negatives before treating them as production defects."
+    },
+    {
+      "status": "unresolved",
+      "cases": [
+        "notes/deletion conflict ordering",
+        "RIV expansion",
+        "legacy/future save versions"
+      ],
+      "interpretation": "Named failures recorded; not all proven defects, no acceptance weakened."
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "ff2c838e95f6ad29f10cc1068a85a4432a95dc3e",
+    "head_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
+    "added": 0,
+    "removed": 0,
+    "modified": 5,
+    "suites": [
+      {
+        "suite": "Node node:test",
+        "added": 0,
+        "removed": 0,
+        "modified": 4,
+        "breakdown": {
+          "own_final_water_case": 1,
+          "previously_published_EN_cases_integrated_from_main": 3
+        },
+        "scenario_risk": "Existing Mythic→Classic quotas case now checks final dry sites, spatial validity and unchanged accepted footprints; EN integration retains legacy save/display/material contracts."
+      },
+      {
+        "suite": "browser myth-material-lifecycle workflow",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "origin": "Published PR499 merged unchanged; no new browser scenario authored in this run."
+      }
+    ],
+    "count_source": "Comparable ff2c838..exact new tree: one existing mythicKingdom callback extended; three existing Node callbacks and one browser workflow from published PR499. Imported assertions are not new coverage growth.",
+    "reuse_or_new_reason": "Existing seed7/42/103 actual generation case reproduced target error; extended it instead of adding duplicate permanent cases. Temporary diagnostic code removed.",
+    "executions": {
+      "focused_node": {
+        "executed": 37,
+        "passed": 37,
+        "failed": 0,
+        "skipped": 0
+      },
+      "target_case": {
+        "executed": 1,
+        "passed": 1,
+        "variants": "seed7/42/103; not added to permanent-case count"
+      },
+      "full_check": {
+        "status": "failed_then_interrupted_after_confirmed_failures",
+        "observed_passed": 337,
+        "observed_failed": 7,
+        "observed_completed_cases": 344,
+        "complete_summary": false,
+        "exit_code": 130,
+        "skipped": null
+      },
+      "temporary_editor_diagnostic": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "permanent_case_growth": 0,
+        "reason": "Actual restoreSnapshot rejects hand-built map carrying stale physical identities; isolated confirmation of one remaining fixture issue."
+      },
+      "browser": {
+        "executed": 0,
+        "status": "blocked_at_launch",
+        "reason": "Chromium socket Operation not permitted"
+      }
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "programmer_partial_evidence_not_independent_assessment",
+    "criteria": [
+      {
+        "criterion_id": "S01-C04",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-final-water",
+        "limitations": "Partial integration; whole quality/breadth unknown,7negative cases and full1/6/12/24UI pending."
+      },
+      {
+        "criterion_id": "S01-C05",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-final-water",
+        "limitations": "Partial integration; whole quality/breadth unknown,7negative cases and full1/6/12/24UI pending."
+      },
+      {
+        "criterion_id": "S03-C01",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-final-water",
+        "limitations": "Partial integration; whole quality/breadth unknown,7negative cases and full1/6/12/24UI pending."
+      },
+      {
+        "criterion_id": "S04-C03",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-final-water",
+        "limitations": "Partial integration; whole quality/breadth unknown,7negative cases and full1/6/12/24UI pending."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-final-water",
+        "limitations": "Partial integration; whole quality/breadth unknown,7negative cases and full1/6/12/24UI pending."
+      },
+      {
+        "criterion_id": "S05-C01",
+        "grade_before": "unknown",
+        "points_before": null,
+        "grade_after": "unknown",
+        "points_after": null,
+        "delta": null,
+        "evidence": "agent-work/evidence/HX-BL-051-final-water",
+        "limitations": "Partial integration; whole quality/breadth unknown,7negative cases and full1/6/12/24UI pending."
+      }
+    ],
+    "awarded_points": 0,
+    "score_changed": false
+  },
+  "feedback_disposition": {
+    "id": "HX-FB-002",
+    "action": "reuse_existing_case",
+    "reason": "No new permanent callback; existing actual generator case reproduces defect. Existing completed audit not repeated."
+  },
+  "ui_actual_pending": true,
+  "ui_shown_for_this_SHA": false,
+  "authority_status": "Approved051 implementation only; English main integration is already published. No new product scope, paid service or deployment.",
+  "next_role": "programmer",
+  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 с bc220e4/treeb60cac98 (WIP интегрирует main1962fb9a; PR496 всё ещё09b3c9b). Размещение нового land POI после финальной воды исправлено: не повторять этот разбор. До нового полного прогона адресно разобрать7оставшихся отрицательных случаев. Первый: mapTransactions:111 искусственно заменяет регионы/POI после addFallbackTractToMap, сохраняя несовместимый physicalGrid; validator правильно отказывает POI identities do not match live owners. Проверить ту же причину в riverBackendFixture:560 для3E5cases; явно оформить legacy fixture без spatial layer либо построить согласованный слой, не ослабляя production validation и не удаляя активные DETAIL1 tests. Отдельно проверить NotesLossConflict приоритет/fixtures, реальный RIV expansion и future save version: notes fixture не должна считать поддержаннуюv11 будущей без проверки контракта. Затем обязательные check/browser, оставшийся фактический UI1/6/12/24 и независимый combined exactSHAreview/score_assessment1.2. Публикация отдельно не разрешена.",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-final-water-resume.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10T05:02:35.110Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10T05:11:10.310Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time checks only; no guarantee after completion."
+  }
+}
