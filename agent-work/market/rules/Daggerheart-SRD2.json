@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
   "game_id": "DH",
-  "date": "2026-11-09",
-  "status": "bounded_source_inventory_product_unverified",
-  "scope": "SRD2 p203 optional d12 region geometry and d20 habitat/corruption only; not full Hex Crawl/game",
+  "date": "2026-11-10",
+  "status": "bounded_L1_preparation_extracted_runtime_unverified",
+  "scope": "All L1 map-preparation clauses in SRD2 Hex Crawl Campaigns pp203–205 read and translated; L2/L3 classified, not fully operationalized. Not full DH or Hope & Fear/Journey to Horizon.",
   "source": {
     "id": "DH-SRD2-20260825",
     "url": "https://www.daggerheart.com/wp-content/uploads/2026/08/DH_SRD_2_2026_08_25.pdf",
@@ -12,8 +12,8 @@
     "published_at": "2026-08-25",
     "access_level": "full_text",
     "author_project_key": "critical-role:darrington-press:daggerheart:srd2",
-    "locator": "PDF page203 (zero-based202), d12 bullet; web lines17304–17332",
-    "accessed_at": "2026-11-09T11:31:23.833Z"
+    "locator": "Printed203–205 / PDF pages203–205 (zero-based202–204); L1 preparation on203, L2 on204, L3 habitat features on205",
+    "accessed_at": "2026-11-10T11:41:20.911052+00:00"
   },
   "evaluation_policy": "Source reading is not product evidence or population calibration; active numbers unchanged.",
   "rules": [
@@ -414,28 +414,352 @@
           "reason": "No numeric check/damage rule in selected clause; not invented."
         }
       ]
+    },
+    {
+      "id": "DH-SRD2-003",
+      "title": "Завершить подготовку региона: встреча, terrain и слух",
+      "corpus": "SRD2_Hex_Crawl_Campaigns_bounded",
+      "rule": {
+        "source_id": "DH-SRD2-20260825",
+        "printed_page": 203,
+        "pdf_page": 203,
+        "section": "Preparing the GM’s Key Map / Filling Wilderness Hexes, remaining d8+d6,d4,d100 clauses; lines17304–17360",
+        "url": "https://www.daggerheart.com/wp-content/uploads/2026/08/DH_SRD_2_2026_08_25.pdf",
+        "paraphrase": "Мастер может подготовить карту вручную, бросками или смешанно. Для региона задаются потенциальная встреча, трудность пути в днях и слух; содержание/правдивость/сообщение остаются за мастером.",
+        "normative_kind": "optional_procedure",
+        "quotation": null
+      },
+      "parameters": {
+        "encounter_dice": [
+          "d8",
+          "d6"
+        ],
+        "encounter_combination": "sum",
+        "encounter_sum2": "roll twice and combine; nested2 termination policy unspecified",
+        "encounter_types": {
+          "3": "fellow_travelers",
+          "4": "temporary_setback",
+          "5": "powerful_adversaries",
+          "6": "extreme_weather",
+          "7": "potential_adversaries",
+          "8": "territorial_creatures",
+          "9": "environmental_hazard_or_obstacle",
+          "10": "enemy_NPCs",
+          "11": "wondrous_or_dangerous_site",
+          "12": "lucky_break",
+          "13": "settlement_or_outpost",
+          "14": "loot_or_treasure"
+        },
+        "terrain": [
+          {
+            "d4": 1,
+            "name": "Optimal",
+            "travel_days_to_enter_one_hex": 1
+          },
+          {
+            "d4": 2,
+            "name": "Fair",
+            "travel_days_to_enter_one_hex": 2
+          },
+          {
+            "d4": 3,
+            "name": "Rough",
+            "travel_days_to_enter_one_hex": 3
+          },
+          {
+            "d4": 4,
+            "name": "Extreme",
+            "travel_days_to_enter_one_hex": 4
+          }
+        ],
+        "rumor_die": "d100",
+        "rumor_source": "Journey to Horizon table OR own100-rumor list; referenced table not supplied by this corpus",
+        "rumor_truth_and_reveal": "GM decision",
+        "placement": "one multihex region at a time; no perhex POI count or sanctuary density specified"
+      },
+      "comparison": {
+        "baseline": "Existing canonical operations and043 published generic table/POI slice; exact DH profile not verified",
+        "relation": "reuse_with_game_profile",
+        "parameter_equivalence": "unknown; generic support and source rule are not profile runtime evidence"
+      },
+      "requirements": [
+        {
+          "id": "DH-SRD2-003-L1",
+          "layer": "L1",
+          "requirement": "Завершить подготовку региона: встреча, terrain и слух",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones",
+            "content.roll_table_resolution",
+            "content.place_description"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#DH-SRD2-003-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-003",
+            "normative_kind": "optional_procedure",
+            "applicability": "SRD2 supplemental Hex Crawl Campaigns, GM key-map preparation; not compulsory across all DH campaigns",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер завершает наполнение уже выбранного региона и при необходимости правит подготовленный материал.",
+            "inputs_and_units": {
+              "region": "existing contiguous region; size/habitat from DH-SRD2-001/002 or manual",
+              "encounter": "one pair d8(1–8)+d6(1–6), added; sum2 opens two further pairs",
+              "terrain": "d4(1–4); unit full Travel Days per entered hex",
+              "rumor": "d100(1–100), chosen own100-entry list or separately accessible referenced table",
+              "manual_choices": "encounter text, terrain, rumor wording/truth/revelation chosen by GM"
+            },
+            "product_operation": "Получить для региона заготовку встречи, terrain с числом дней и слух; дать мастеру принять или изменить материал и сохранить его вместе с картой. Сохранить различие исходного броска и принятого мастером содержания.",
+            "expected_output": "При входах примера01: регион7 Forest, заготовка поселения/форпоста, Extreme/4, слух42; это подготовка мастера, а не семь автоматически возникших поселений и не проведённая встреча.",
+            "constraints_and_exceptions": [
+              "Только один потенциальный метод подготовки; ручной и смешанный способы допустимы.",
+              "Одна заготовка типа встречи для региона не означает фиксированное число точек/поселений в каждом его гексе.",
+              "Сумма2 порождает две ветки. Политика остановки повторных2 источником не задана; не вводить молчаливую глубину как правило.",
+              "Habitat и terrain — разные признаки. Четыре travel-day категории не являются универсальной тройкой проходимости владельца.",
+              "Слух может быть ложным и не сообщённым; он не исправляет географию автоматически.",
+              "Генерация/сохранение материала L1 не активирует встречу, отдых, счётчики персонажей или раскрытие игрокам.",
+              "Изменение/сохранение и защита соседей — перевод в полезную операцию продукта, не дополнительная игровая норма."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "DH-SRD2-003-L1-AC01",
+                "given": "Подготовлен связный регион7 гексов Forest по существующим DH-SRD2-001/002; d8=7,d6=6; d4=4; d100=42. В собственном списке100 слухов строка42: «Мост поёт ночью». Мастер считает слух ложным и пока не сообщает его игрокам.",
+                "when": "Завершить подготовку записи региона.",
+                "expected": "Одна заготовка встречи «поселение или форпост», terrain Extreme/4 полных дня на вход в гекс, слух42 с принятым текстом и решением мастера. Семь гексов относятся к этой записи региона; не создаются автоматически семь поселений. Forest, размер и форма не меняются; карта игроков не раскрывается."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC02",
+                "given": "Заданы пары d8/d6:1/2 и8/6.",
+                "when": "Определить тип заготовки встречи для двух регионов.",
+                "expected": "Суммы3 и14 дают соответственно попутчиков и добычу/сокровище. Это потенциальные встречи, ещё не состоявшиеся события; содержимое/награда не выдуманы."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC03",
+                "given": "Первая пара1/1 даёт сумму2; следующие пары1/2 и8/6 дают3 и14.",
+                "when": "Определить тип встречи по необязательному рецепту.",
+                "expected": "Получены и объединены попутчики и добыча/сокровище; мастер формулирует совместную ситуацию. Не выдаётся единичный тип «2», не складываются суммы3+14 в индекс17."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC04",
+                "given": "После начальной суммы2 одна из двух следующих пар снова дала2; дальнейших результатов нет.",
+                "when": "Продолжить подготовку.",
+                "expected": "Незавершённая ветка явно остаётся для продолжения/решения мастера; результат не объявляется готовым. Источник не задаёт максимальную глубину или правило замены повторной2, поэтому продуктовый лимит не выдаётся за правило DH."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC05",
+                "given": "Четыре региона с одинаковым habitat Forest; фиксированные d4=1,2,3,4.",
+                "when": "Подготовить их terrain.",
+                "expected": "Соответственно Optimal/1, Fair/2, Rough/3, Extreme/4 полных дня на вход в гекс. Habitat Forest сохраняется во всех четырёх; значения не переводятся автоматически в ordinary/difficult/dangerous из CLASSIFY1. Списание дней относится к L2."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC06",
+                "given": "Есть собственный список ровно100 слухов, строка1 «Есть мост», строка100 «Моста нет»; заданы d100=1 и100.",
+                "when": "Подготовить слухи двух регионов.",
+                "expected": "Выбраны соответствующие две строки; правдивость и сообщение игрокам определяет мастер. Другие сведения о регионе не переписываются ради соответствия слуху."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC07",
+                "given": "Мастер не предоставил список100 слухов; таблица Journey to Horizon в прочитанных203–205 отсутствует.",
+                "when": "Выпал d100=42.",
+                "expected": "Текст слуха не выдуман и платный/непрочитанный корпус не объявлен доступным; можно оставить результат42 незавершённым или вручную описать слух. География и прочая подготовка сохраняются."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC08",
+                "given": "Мастер выбирает ручную либо смешанную подготовку: вручную записывает «караван у моста», terrain Fair/2 и свой слух; броски не заданы.",
+                "when": "Принять эту подготовку региона.",
+                "expected": "Принятые текст и terrain доступны без обязательного случайного броска. Ручная ситуация не превращается в случайный боевой энкаунтер."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC09",
+                "given": "Подготовка случая01 принята; мастер меняет «поселение или форпост» на «покинутая сторожевая башня», слух оставляет прежним. Рядом другой регион и ручная река.",
+                "when": "Сохранить и вновь открыть карту.",
+                "expected": "Сохранились башня, Extreme/4, текст слуха и принятое решение мастера, исходы и происхождение; автоматического переброса нет. Соседний регион, река, семь гексов Forest и их форма прежние. Сохранение — продуктовая приёмка, не цитата правила."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC10",
+                "given": "Предложены пары d8/d6 0/6,9/1,1/7,1.5/1; d4=0/5; d100=0/101.",
+                "when": "Принять их как результаты указанных кубов.",
+                "expected": "Ни один недопустимый исход не считается успешным результатом. Карта прежняя; d8+d6 не подменяется равномерным выбором индекса2–14."
+              }
+            ],
+            "source_vs_product_interpretation": "Три броска, сумма/ветвление, четыре terrain-категории и решение о правдивости/сообщении — источник. Редактируемая сохраняемая региональная запись и приведённый совместный пример — предлагаемая возможность генератора; UI/API/архитектура не проектируются.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.terrain_zones",
+              "agent-work/rules/common-rules.json#content.roll_table_resolution",
+              "agent-work/rules/common-rules.json#content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Nested sum2 stop policy unspecified.",
+              "Journey to Horizon rumor table not read; own100-list path is independently allowed.",
+              "Geographic placement/density of encounter13 and safe places not supplied by these clauses.",
+              "Mapping habitats/terrain to product biomes and CLASSIFY1 remains unverified."
+            ]
+          },
+          "acceptance_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-003-L1",
+          "proposed_task_ref": "agent-work/backlog.json#HX-BL-054",
+          "finding": "Source verified; exact profile output/save evidence unknown on current SHA. No score uplift."
+        },
+        {
+          "layer": "L2",
+          "status": "separate_future_scope",
+          "reason": "Actual movement, encounter activation, audience reveal/rests classified separately; not current L1 implementation."
+        },
+        {
+          "layer": "L3",
+          "status": "separate_future_scope",
+          "reason": "Combat, stress and adversary effects not part of map preparation."
+        }
+      ]
+    },
+    {
+      "id": "DH-SRD2-004",
+      "title": "Задать примерный масштаб24 мили между сторонами",
+      "corpus": "SRD2_Hex_Crawl_Campaigns_bounded",
+      "rule": {
+        "source_id": "DH-SRD2-20260825",
+        "printed_page": 203,
+        "pdf_page": 203,
+        "section": "The Hex Crawl, lines17282–17288",
+        "url": "https://www.daggerheart.com/wp-content/uploads/2026/08/DH_SRD_2_2026_08_25.pdf",
+        "paraphrase": "Масштаб примерно24мили от одной стороны гекса до другой; повествование важнее буквальной геометрии.",
+        "normative_kind": "default_with_narrative_override",
+        "quotation": null
+      },
+      "parameters": {
+        "hex_length": 24,
+        "unit": "mile",
+        "axis": "side_to_opposite_side",
+        "approximate": true,
+        "narrative_override": true
+      },
+      "comparison": {
+        "baseline": "Existing canonical operations and043 published generic table/POI slice; exact DH profile not verified",
+        "relation": "reuse_with_game_profile",
+        "parameter_equivalence": "unknown; generic support and source rule are not profile runtime evidence"
+      },
+      "requirements": [
+        {
+          "id": "DH-SRD2-004-L1",
+          "layer": "L1",
+          "requirement": "Задать примерный масштаб24 мили между сторонами",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S06-C04",
+            "S04-C04",
+            "S01-C02",
+            "S01-C04",
+            "S01-C05"
+          ],
+          "canonical_rule_ids": [
+            "map.physical_hex_scale"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#DH-SRD2-004-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-004",
+            "normative_kind": "default_with_narrative_override",
+            "applicability": "SRD2 supplemental hex-crawl campaign map, not all DH combat maps",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер подготавливает карту с физическим масштабом Daggerheart.",
+            "inputs_and_units": {
+              "length": 24,
+              "unit": "mile",
+              "geometry": "roughly side-to-opposite-side of hex",
+              "override": "narrative may supersede literal representation"
+            },
+            "product_operation": "Показать/сохранить физический масштаб24 мили между противоположными сторонами, отдельно от экранного зума и иных игровых профилей.",
+            "expected_output": "После сохранения карта остаётся в выбранном масштабе;24 мили не объявляются расстоянием между противоположными вершинами.",
+            "constraints_and_exceptions": [
+              "Примерный масштаб с приоритетом повествования, а не жёсткий маршрутный симулятор.",
+              "Не менять PF2 профиль12миль между вершинами, Knave6миль или текущую051.",
+              "Проверка сохранения/геометрической подписи — продуктовая интерпретация."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "DH-SRD2-004-L1-AC01",
+                "given": "Мастер выбрал масштаб этого supplemental профиля.",
+                "when": "Посмотреть и сохранить карту, затем открыть её.",
+                "expected": "24 мили между противоположными сторонами остаются24; это не24 между вершинами и не увеличение зума."
+              },
+              {
+                "id": "DH-SRD2-004-L1-AC02",
+                "given": "Существует другая карта с профилемPF2:12миль между противоположными вершинами.",
+                "when": "Подготовить отдельную картуDH в24миль side-to-side.",
+                "expected": "ПрофильPF2 не изменён. Обе конвенции различимы; перевод в дни пути не выполняется на этапе задания масштаба."
+              }
+            ],
+            "source_vs_product_interpretation": "Число24, приблизительность, стороны и приоритет повествования — источник. Сохранение/отделение от зума и PF2 — критерии полезного поведения; существующие042/051 переиспользуются без расширения утверждённого этапа.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.physical_hex_scale"
+            ],
+            "unresolved_parameters": [
+              "No exact runtime evidence for this24-mile profile."
+            ]
+          },
+          "acceptance_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-004-L1",
+          "proposed_task_ref": "agent-work/backlog.json#HX-BL-042",
+          "finding": "Source verified; exact profile output/save evidence unknown on current SHA. No score uplift."
+        },
+        {
+          "layer": "L2",
+          "status": "separate_future_scope",
+          "reason": "Actual movement, encounter activation, audience reveal/rests classified separately; not current L1 implementation."
+        },
+        {
+          "layer": "L3",
+          "status": "separate_future_scope",
+          "reason": "Combat, stress and adversary effects not part of map preparation."
+        }
+      ]
     }
   ],
   "completeness": {
     "full_game_read": false,
     "read_corpus": [
-      "Official SRD landing version/changelog",
-      "PDF cover/TOC and p203 headings/context through d12 bullet",
-      "p203 d20 habitat bullet lines17313–17328; landing version/date rechecked"
+      "Official SRD2 cover/TOC; printed203 entire GM-key preparation and scale",
+      "Printed204 entire travel/rest/encounter/endurance/water/doom page",
+      "Printed205 habitat-based adversary features; appendix starts206"
     ],
-    "context_only": [
-      "24mile scale",
-      "GM/player copies",
-      "manual/random/mixed preparation"
-    ],
+    "context_only": [],
     "not_extracted": [
-      "d8+d6 encounters",
-      "d4 terrain",
-      "Sanctuaries and settlements",
-      "Travel days and rest rules",
-      "p204–205 other hex-crawl content"
+      "Full L2/L3 operational profiles classified in audit; outside chosen L1 deliverable",
+      "Journey to Horizon rumor table and other external cross-reference contents"
     ],
-    "next_locator": "p203 d8+d6 encounter type or d4 terrain, if reprioritized"
+    "next_locator": "No further L1 clauses in this bounded section. If later selected: L2 Tracking the Party’s Location, printed204; first apply owner player-map boundary. External Journey to Horizon rumors only upon lawful source access.",
+    "bounded_section_read": true,
+    "bounded_section": "Hex Crawl Campaigns printed203–205 only",
+    "L1_preparation_extraction": "complete_for_this_three_page_section; external rumor table unavailable in corpus",
+    "classified_clauses": [
+      {
+        "printed_page": 203,
+        "locator": "Hex Maps lines17294–17303",
+        "layer": "L2",
+        "disposition": "GM key prepares terrain/places in L1; player copy/reveal deferred common map.audience_views under owner09Nov boundary. Not a missing current-generator L1 rule."
+      },
+      {
+        "printed_page": 203,
+        "locator": "opening rests lines17289–17393",
+        "layer": "L2/L3",
+        "disposition": "Sanctuary/settlement are safe-rest destinations; no preparation density/count algorithm specified here."
+      },
+      {
+        "printed_page": 204,
+        "locator": "Tracking location; Travel Days; Resources & Resting; Encounter Rolls; Endurance; Water; Doom Tracks, lines17361–17455",
+        "layer": "L2/L3",
+        "disposition": "Read and classified only. Movement/reveal/day accounting belongsL2; roll resolution/rest/stress/doom integrationL3. No new requirement claimed implemented."
+      },
+      {
+        "printed_page": 205,
+        "locator": "Habitat-Based Features lines17456–17505",
+        "layer": "L3",
+        "disposition": "Blighted/Enviromancer and habitat effects are adversary/combat features, not automatic L1 map generation. Read/classified; full parameters not operationalized in this bounded L1 run."
+      }
+    ]
   },
   "product_evidence": {
     "status": "unknown",
@@ -448,15 +772,25 @@
   "score_impact": null,
   "rating_impact": {
     "active_changed": false,
-    "pool_changed": false,
-    "proposal_refs": [],
-    "finding": "Confirms an explicit own-map preparation option, not incidence among GMs or new M/p/T."
+    "proposal_ref": null,
+    "reason": "Rules and survey relevance do not measure activeGM population or hex-crawl prevalence; no numerical change."
   },
   "research_history": [
     {
       "run_id": "2026-11-09T1127-DH-habitat",
       "source_rule_id": "DH-SRD2-002",
       "status": "bounded_source_complete_runtime_unknown"
+    },
+    {
+      "run_id": "2026-11-10T1132-DH-preparation-corpus",
+      "ref": "agent-work/research/runs/2026-11-10T1132-DH-preparation-corpus.json",
+      "change": "Finish whole bounded L1 preparation; keep existing size/habitat profiles, add compound fill and scale; classify L2/L3 without implementation."
     }
-  ]
+  ],
+  "latest_profile_evidence": {
+    "checked_against_sha": "651a1c38e2a0b51d6544fc9b0d637e301ea82530",
+    "evidence_sha": null,
+    "status": "unknown",
+    "reason": "Existing generic043 evidence does not certify these DH compound operations; no product execution in researcher run."
+  }
 }
