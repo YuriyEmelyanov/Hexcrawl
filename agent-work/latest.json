@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-10T0600-programmer-HX-BL-051-compatibility",
+  "run_id": "2026-11-10T0700-programmer-HX-BL-051-view-controls",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "compatibility_fixed_full_UI_pending",
+  "status": "view_controls_implemented_overview_UI_pending",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -39,7 +39,7 @@
   "confirmed_points": null,
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
-  "operational_state_write": "confirmed_data_commit_latest_written_last",
+  "operational_state_write": "data_confirmed_latest_written_last",
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
@@ -51,10 +51,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-041-MC1-EN.md",
   "spec_version": "EN-1.0 + current owner translation instruction",
-  "result_path": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json",
-  "handoff_commit_sha": "f2bd148361b4479c39c44bd3be8f945cca923e9a",
+  "result_path": "agent-work/results/2026-11-10T0700-programmer-HX-BL-051-view-controls.json",
+  "handoff_commit_sha": "afde03daeb02fb562b3e93588d6c412f5d4b74ae",
   "active_claim": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 с 1ba518307909d7953aa9f653fb59c60beaa09712 (tree 7fbe644446c9b9f6fcf1a5922b3d80c731b11e1e) в agent/hx-bl-051-activation-wip. Семь прежних отрицательных cases разобраны; не повторять триаж старых fixtures. Завершить фактический UI1/6/12/24 по DTL-1.0 и предъявить desktop/390/320 на точном SHA, включая сводки, части POI, воду/входы и состояния. После реализации обновить существующий PR496 и необходимые check/browser/RNG, затем независимая combined exactSHA проверка со score_assessment1.2. Локальный Chromium блокируется окружением socket() Operation not permitted; нужна разрешённая CI/browser среда, а не ослабление проверки. Публикация отдельно не разрешена.",
+  "next_step": "Программист продолжает HX-BL-051/DETAIL1 с 7a5662558958b46c269e3e50a3ddb87ca9a0146c/tree7f5f7558507ae2303d4eb47b979c12923e6ba429 (agent/hx-bl-051-activation-wip; PR496 пока09b3c9b). Контроллер viewStep1/6/12/24, JSON/UndoRedo, обрезанная по территории сетка и внешние границы охватов реализованы. Не повторять исправленные7случаев совместимости. Следующий ограниченный этап D: выбор фактической1mileклетки/части POI и обзорной12/24ячейки, компактная сводка смешанной местности и уникальных POI с раскрытием происхождения/воды/входов, повторяемые значки охватов и переход к подробному виду. Затем actual desktop1500/390/320, PNG выбранного вида и keyboard/touch на exactSHA, обновление существующего PR496, независимый combined review+score_assessment1.2. Browser/RNG сейчас0cases: Chromium socket denied; использовать доступную разрешённую CI/browser среду, без ослабления проверок. Публикация не разрешена.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -123,12 +123,12 @@
     "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/results/2026-11-10T0502-programmer-HX-BL-051-final-water.json",
+  "evidence_path": "agent-work/evidence/HX-BL-051-view-controls",
   "branch_name": "agent/hx-bl-051-activation-wip",
   "pr": 496,
-  "head_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
-  "tree_sha": "7fbe644446c9b9f6fcf1a5922b3d80c731b11e1e",
-  "checks_status": "npm_check_passed385of385_typecheck_build_passed_browser_launch_blocked",
+  "head_sha": "7a5662558958b46c269e3e50a3ddb87ca9a0146c",
+  "tree_sha": "7f5f7558507ae2303d4eb47b979c12923e6ba429",
+  "checks_status": "Node385pass_typecheck_build_passed_browser_and_RNG_launch_blocked",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42744399241",
   "review_verdict": "not_requested_incomplete_DETAIL1",
   "role_selection_mode": "ready_work_priority",
@@ -229,7 +229,7 @@
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/release-PR499/score-assessment1.2.json",
-  "role_selection_reason": "Own same-task saved claim execution_running=false, clean local320a381 treeb60cac98 equals remote bc220e4; current approved DETAIL1 implementation has seven unresolved compatibility cases; no competing running programmer.",
+  "role_selection_reason": "Own paused claim, no running competing programmer, saved local tree7fbe644 equals remote1ba5183; usable DTL1.0 and owner-approved scope. Continue remaining implementation.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -249,24 +249,24 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
+  "base_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-10T05:57:44.064Z",
+      "checked_at": "2026-11-10T06:56:32.706Z",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "end": {
-      "checked_at": "2026-11-10T06:17:09.606Z",
+      "checked_at": "2026-11-10T07:09:30.509Z",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time checks only; no guarantee after completion. Schedule/prompt unchanged."
+    "limitation": "Point-in-time checks only; no guarantee after completion."
   },
   "open_findings": [
     "CLASSIFY1-VALIDATION-RIV011"
@@ -880,7 +880,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-10T06:17:40.763Z",
+  "updated_at": "2026-11-10T07:10:30.475Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1142,29 +1142,15 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
-    "head_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
+    "base_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
+    "head_sha": "7a5662558958b46c269e3e50a3ddb87ca9a0146c",
     "added": 0,
     "removed": 0,
-    "modified": 7,
+    "modified": 1,
     "suite": "Node node:test",
-    "suites": [
-      {
-        "suite": "Node node:test",
-        "added": 0,
-        "removed": 0,
-        "modified": 7,
-        "breakdown": {
-          "mapTransactions": 4,
-          "saveSafety": 1,
-          "detailGeography": 1,
-          "riverIntegration": 1
-        }
-      }
-    ],
-    "scenario_risk": "Legacy river fixtures must not carry stale DETAIL1 owners; old save versions omit v11 layer, future12 refuses; accepted sea merge retains exact shape/contact and Undo/Redo; rejected expansion preserves complete document/RNG/both histories.",
-    "reuse_or_new_reason": "Reused seven existing logical callbacks. Shared river fixture affects three E5 callbacks; parameter/coast/seed variants are not counted as new tests. Existing note-loss callback passed without test edits. No new permanent callback or removed scenario.",
-    "count_source": "git diff bc220e4..exact tree7fbe644: four test files, direct callback edits plus shared riverBackendFixture callers. No file/line/run counting.",
+    "scenario_risk": "DTL20/22/23: actual view controller changes only persisted viewStep, retains complete document/RNG/zoom, valid save, exact undo/redo, stale-command and no-op guards.",
+    "reuse_or_new_reason": "Extend existing actual legacy adaptation transaction callback; no new logical case. Harness exposes existing handler only. No duplicate geometry algorithm test.",
+    "count_source": "git diff base1ba5183..head7a56625: one existing callback in test/detailGeography.test.mjs extended; helper export is not a test; parameter loop is not new cases.",
     "executions": {
       "full_node": {
         "executed": 385,
@@ -1172,26 +1158,15 @@
         "failed": 0,
         "skipped": 0
       },
-      "focused_sea_merge": {
-        "executed": 1,
-        "passed": 1,
-        "failed": 0,
-        "skipped": 0
-      },
-      "focused_river": {
-        "executed": 1,
-        "passed": 1,
-        "failed": 0,
-        "skipped": 0
-      },
       "browser": {
         "executed": 0,
-        "passed": 0,
-        "skipped": null,
-        "status": "blocked_at_launch",
-        "reason": "Chromium socket() Operation not permitted"
+        "status": "blocked_at_launch"
       },
-      "intermediate_diagnostics": "Initial seven known negatives reproduced; fixture follow-up4pass/1fail preserved, later all seven passed in complete exact-tree run. Repeats/variants are not permanent test growth."
+      "browser_rng": {
+        "executed": 0,
+        "status": "blocked_at_launch"
+      },
+      "temporary_test_diagnostic": "Initial extension inserted ahead of the original Undo assertion; moved after original assertions to preserve the existing contract. Final full run passed; not a production defect."
     }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/497",
@@ -1272,7 +1247,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-051-compatibility",
+  "evidence_ref": "agent-work/evidence/HX-BL-051-view-controls",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1572,7 +1547,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-compatibility-resume.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-view-controls-resume.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1872,7 +1847,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-06-developer-release-PR491.json",
-  "handoff_path": "agent-work/handoffs/2026-11-10-HX-BL-051-compatibility-resume.json",
+  "handoff_path": "agent-work/handoffs/2026-11-10-HX-BL-051-view-controls-resume.json",
   "ui_actual_preview": {
     "status": "actual_presented_in_task_chat",
     "public_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
@@ -2136,7 +2111,7 @@
     "completed_at": "2026-10-29T18:36:47.812Z",
     "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json"
   },
-  "active_slice": "DETAIL1 actual1/6/12/24 UI",
+  "active_slice": "DETAIL1 compact fine/overview selection and actual UI",
   "last_completed_stage_task_id": "HX-BL-051",
   "ui_preview": {
     "version": "UI2-1.0",
@@ -2382,8 +2357,8 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/HX-BL-051-compatibility/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json#score_evidence",
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-051-view-controls/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/results/2026-11-10T0700-programmer-HX-BL-051-view-controls.json#score_evidence",
   "completed_claim_result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
   "review_evidence_ref": null,
   "github_review_state": "not_review_ready_incomplete_DETAIL1",
@@ -2464,7 +2439,7 @@
   "implementation_started": false,
   "current_stage_release_approved": false,
   "review_ready": false,
-  "current_stage_ui_status": "actual_DETAIL1_UI_pending_no_design_hold",
+  "current_stage_ui_status": "View selector/grid/footprint artwork implemented; browser visual proof and compact spatial selection remain pending",
   "completed_claim": "agent-work/claims/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
   "evidence_commit_sha": "ea439c72a31d5b95aac6d36b745194602e30aa2e",
   "finding_ids": [],
@@ -4054,7 +4029,7 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "compatibility_verified_full_UI_pending",
+  "current_stage_status": "view_controls_implemented_overview_UI_pending",
   "current_stage_review_status": "independent_full_combined_review_pending_implementation",
   "accepted": false,
   "full_UI_pending": true,
@@ -4294,7 +4269,7 @@
   "ui_actual_responsible": "programmer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
-  "checks_summary": "Node385/385; tsc/build passed; browser0 executed socket denied",
+  "checks_summary": "385/385 Node, typecheck/build passed; browser and RNG0cases socket denied",
   "full_E5_UI_pending": true,
   "materials_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
   "latest_HX_BL_023_E5_features_ui_20261104": {
@@ -5526,7 +5501,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Approved DETAIL1 implementation only, no publication or extra spending.",
+  "authority_status": "Approved DETAIL1 implementation only; no publication or new product scope/spending.",
   "analysis_baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "analysis_baseline_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -5984,7 +5959,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json",
+  "result_ref": "agent-work/results/2026-11-10T0700-programmer-HX-BL-051-view-controls.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6407,7 +6382,7 @@
   },
   "published_scope": "MYTH-CARD1 full72RU reference slice; overall041 has remaining categories",
   "public_book_corpus_approval_scope": "Only exact72MC1 corpus/tree98970e; NATURE2/other corpora excluded",
-  "previous_run_id": "2026-11-10T0502-programmer-HX-BL-051-final-water",
+  "previous_run_id": "2026-11-10T0600-programmer-HX-BL-051-compatibility",
   "next_role_after_approval": "business_analyst",
   "latest_MC1_EN_intake": {
     "schema_version": 1,
@@ -6775,25 +6750,32 @@
   },
   "fix_handoff_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/programmer-fix-handoff.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json",
+  "latest_result_ref": "agent-work/results/2026-11-10T0700-programmer-HX-BL-051-view-controls.json",
   "checks": {
-    "typecheck": "passed Node24",
-    "production_build": "passed",
     "full_check": {
       "status": "passed",
       "exit_code": 0,
       "executed": 385,
       "passed": 385,
       "failed": 0,
-      "cancelled": 0,
       "skipped": 0,
-      "duration_ms": 582416.249208,
-      "source_tree": "7fbe644446c9b9f6fcf1a5922b3d80c731b11e1e",
-      "source_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
-      "runner": "Node24.22.1 npm run check: tsc --noEmit && npm test && npm run build"
+      "duration_ms": 608114.952691,
+      "runner": "Node24.22.1 npm run check",
+      "SHA": "7a5662558958b46c269e3e50a3ddb87ca9a0146c",
+      "tree": "7f5f7558507ae2303d4eb47b979c12923e6ba429"
     },
-    "browser": "blocked at Chromium launch, socket Operation not permitted",
-    "browser_executed": 0
+    "browser": {
+      "status": "blocked_at_launch",
+      "executed": 0,
+      "reason": "Chromium socket() Operation not permitted"
+    },
+    "browser_rng": {
+      "status": "blocked_at_launch",
+      "executed": 0,
+      "reason": "Same Chromium socket refusal"
+    },
+    "build": "passed",
+    "typecheck": "passed"
   },
   "score_assessment_status": "insufficient_evidence_six_whole_criteria_unknown",
   "review_report_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
@@ -7762,7 +7744,7 @@
   "release_readiness": false,
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_due_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-compatibility-resume.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-view-controls-resume.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -7810,8 +7792,8 @@
     "full_task_complete": false,
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
-  "local_sha": "fb17d5d124d27f42a1de60cff977bed1d5e76d6c",
-  "checks_evidence_ref": "agent-work/evidence/HX-BL-051-compatibility/full-check.log",
+  "local_sha": "83b8af0df5788c78c6a7bc344cd4e1af9c536905",
+  "checks_evidence_ref": "agent-work/evidence/HX-BL-051-view-controls/full-check.log",
   "execution_status": "checkpoint_saved",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
@@ -7949,12 +7931,12 @@
   "pr_updated": false,
   "execution_routing": {
     "task_id": "HX-BL-051",
-    "role": "programmer",
     "stage_id": "DETAIL1",
+    "role": "programmer",
     "next_role": "programmer",
-    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-compatibility-resume.json",
-    "authority": "approved_DETAIL1_no_release",
-    "execution_running": false
+    "execution_running": false,
+    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-view-controls-resume.json",
+    "authority": "approved_DETAIL1_no_release"
   },
   "last_team_coordination": {
     "run_id": "2026-11-10T0300-strategist-release-routing",
@@ -8134,5 +8116,26 @@
     "result_ref": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json",
     "full_check": "385/385 passed",
     "remaining": "Actual1/6/12/24 UI and browser verification, then independent exactSHA combined review"
+  },
+  "ui_shown_for_this_SHA": false,
+  "current_stage_owner_decision_required": false,
+  "latest_DETAIL1_view_controls": {
+    "run_id": "2026-11-10T0700-programmer-HX-BL-051-view-controls",
+    "head_sha": "7a5662558958b46c269e3e50a3ddb87ca9a0146c",
+    "tree_sha": "7f5f7558507ae2303d4eb47b979c12923e6ba429",
+    "result_ref": "agent-work/results/2026-11-10T0700-programmer-HX-BL-051-view-controls.json",
+    "implemented": [
+      "persisted view controller",
+      "clipped selected grid",
+      "accepted footprint outlines"
+    ],
+    "verified": "Node controller, JSON, exact history;385 Node checks",
+    "unverified": "Rendered UI, touch/keyboard, narrow screens, PNG",
+    "remaining": [
+      "Fine-cell/part selection and overview-cell selection; compact mixed-terrain/unique POI summary with source/water/route details.",
+      "Repeated footprint icons and detail navigation; addressed extent controls and overlapping-site choice as DTL1.0 requires.",
+      "Actual desktop1500/390/320, keyboard/touch and selected-view export browser evidence on exactSHA. No screenshot or visual success claimed.",
+      "Independent combined exactSHA review and score_assessment1.2 after full implementation; separate owner release gate."
+    ]
   }
 }
