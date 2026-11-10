@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-041",
+  "stage_id": "MC1-EN",
+  "pr": 499,
+  "role": "reviewer",
+  "model_version": "1.2",
+  "model_path": "agent-work/strategy/score-model.md",
+  "assessed_at": "2026-11-10T02:40:04.871Z",
+  "head_sha": "4824e6cb1446e52d766811372370e6e1941bac5c",
+  "tree_sha": "42483336ab5d1fa407d2a797f68d3fe5048cefd1",
+  "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+  "verdict": "bounded_score_assessment_complete_insufficient_evidence_for_whole_criterion_grades",
+  "blocking_findings": [],
+  "recommended_points_awarded": 0,
+  "whole_criterion_delta": null,
+  "independence": {
+    "separate_agent": true,
+    "fresh_task_context": true,
+    "full_parent_history_inherited": true,
+    "implementation_authorship": false,
+    "methods": "Independently fetched exact PR metadata, full diff, Git objects, CI run/jobs and code review comment; inspected changed tests and selected source contracts. No implementation changes.",
+    "limitation": "This is a separate reviewer turn with inherited project/task history; not a blind full review or independent re-reading of all72external book pages."
+  },
+  "criteria": [
+    {
+      "criterion_id": "S05-C02",
+      "weight": 35,
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unverified",
+        "source": "agent-work/score/current-score.json at agent-operations6bdd610; model1.2"
+      },
+      "after": {
+        "grade": null,
+        "points": null,
+        "status": "insufficient_evidence"
+      },
+      "delta": null,
+      "quality": {
+        "status": "bounded_EN_access_improvement_confirmed",
+        "scope": "72existing Mythic Bastionland myth cards now have English narrative material; language availability is improved without changing RU corpus or generated geography.",
+        "evidence": [
+          "Independently parsed exact base/head mythMaterialData.ts:72records each; all RU locales byte-equivalent as parsed data, entryId/sourcePage invariant; head EN432omens/219roles, no Cyrillic in EN locales.",
+          "Changed Node material-selection case checks all72identities, same omen/role IDs, no Cyrillic EN, unchanged snapshots and missing-translation rejection.",
+          "CI42736194155 check/browser/world-random completed success; browser workflow exercises productionEN material and state immutability."
+        ]
+      },
+      "breadth": {
+        "status": "unverified",
+        "game": "MB2025 core only",
+        "top5": "unverified",
+        "top10": "unverified",
+        "top20": "unverified"
+      },
+      "method": "Inspect actual localized corpus, selection/display contracts and regression checks; compare scope with whole S05-C02 contract.",
+      "limitations": [
+        "Translation of existing narrative content does not establish100%of significantPOI/naturalfeatures have causes, choices, risk/stakes, consequences and geographic compatibility.",
+        "No new independent semantic full-book or geographic coverage audit.",
+        "Publisher-source translation correctness reviewed via existing provenance ledger only; not independently re-read for all72cards."
+      ]
+    },
+    {
+      "criterion_id": "S08-C04",
+      "weight": 10,
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unverified",
+        "source": "agent-work/score/current-score.json at agent-operations6bdd610; model1.2"
+      },
+      "after": {
+        "grade": null,
+        "points": null,
+        "status": "insufficient_evidence"
+      },
+      "delta": null,
+      "quality": {
+        "status": "bounded_locale_legacy_compatibility_confirmed",
+        "scope": "Same definitions/version/tuple identities retain old RU-only accepted snapshots while displaying EN by stabledefinition/entrymatch. Locale is transient, not a new game-mode adapter.",
+        "evidence": [
+          "engine.ts accepts only exact current or explicitly retained legacy rows for same definition/version/result; wrong alteredRU is rejected in extended saved-tags case.",
+          "tagPresentation.ts gates EN lookup on definitionId/version/resolver/tuple/entryIds; authoredENoverride wins; unknown version returns Translation unavailable.",
+          "mythMaterial.ts returns explicit missing-translation for absentEN, preserving same material selection identity.",
+          "Changed browser productionEN path asserts fullworld counters/snapshots unchanged; CIbrowser success."
+        ]
+      },
+      "breadth": {
+        "status": "unverified",
+        "scope": "MB RU/EN and known legacy snapshot subset; no full cross-game/mode compatibility matrix",
+        "top5": "unverified",
+        "top10": "unverified",
+        "top20": "unverified"
+      },
+      "method": "Inspect validator/display lookup and locale boundary tests; do not treat one locale addition as overall rules-mode independence proof.",
+      "limitations": [
+        "Independent game-rule profiles, all incompatible mode transitions and top5/10/20applicable combinations remain unverified.",
+        "No score for geography quality/narrative coverage credited again to compatibility."
+      ]
+    }
+  ],
+  "regressions": {
+    "status": "no_blocking_regression_found_within_bounded_scope",
+    "evidence": [
+      "Exacthead4824e6c CIcheck/browser/world-random success independently fetched.",
+      "Codexreviewcomment6756455854 code_review completed at exacthead with has_any_findings=false and has_unresolved_findings=false.",
+      "RU corpus/identities invariant independently compared."
+    ],
+    "limitations": [
+      "CIresults are finite regression evidence; no claim allpossiblebehavior or content is correct.",
+      "No independent browser execution in this reviewer turn; exactheadCIbrowser and code inspected."
+    ]
+  },
+  "no_double_counting": {
+    "status": "checked_no_award",
+    "rules": [
+      "No generic MB support grade inferred from presence of EN translation.",
+      "Language accessibility improvement distinguished from already-existing RU narrative content.",
+      "Compatibility credit not reused as geography/content-quality credit.",
+      "No previous1.1grades transferred; model weights andG0-G4 untouched."
+    ],
+    "post_release_application": "Strategist must record exact releaseSHA +task_id +model1.2 +criterion_id idempotently after publication; unknown remains unknown, no positive points awarded."
+  },
+  "test_change_summary": {
+    "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+    "head_sha": "4824e6cb1446e52d766811372370e6e1941bac5c",
+    "added": 0,
+    "removed": 0,
+    "modified": 4,
+    "suites": [
+      {
+        "suite": "Node test/tags.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "logical_cases": [
+          "saved tags validate references, tuples, counts and known snapshots; future dictionary is read-only data",
+          "myth material selects only the exact compatible snapshot without mutating accepted state (existingcase)",
+          "equal independent dice expose visible purpose before dice and currentlocale (existingcase)"
+        ],
+        "scenario_risk": "Legacy acceptedsave rejection; ENcorpus completeness/noRussianfallback; display-only localization preservingoverrides/snapshots."
+      },
+      {
+        "suite": "browser test/browser/myth-material-lifecycle.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario_risk": "ActualENmaterial display, missingtranslation, immutableworld/history and1500/390/320layout."
+      }
+    ],
+    "count_source": "Independently inspected exact PRdiff:3existing Node testcallbacks have changed assertions, oneexisting browser workflow changed; loops/parametercases not separately counted or added toNode totals.",
+    "reuse_or_new_reason": "Existing cases expanded for new language/legacy contracts; no new permanent suite or duplicate testcallback.",
+    "necessity_verdict": "keep",
+    "sensitivity": "Removing ENdata or reintroducingRUfallback fails selection/UIchecks; rejecting oldRUrows fails saved-tagchecks; mutatingsnapshots or losingENoverride fails display assertions.",
+    "cost_stability": "Exhaustive finite72-rowdictionary checks are data-contractcoverage, no network/time dependency introduced. Existingbrowser capture adds3viewports and uses pre-existingworkflow. No unrelated per-run audit requirement.",
+    "executed": {
+      "reviewer_local_permanent_tests": 0,
+      "ci_node": {
+        "reported_executed": 363,
+        "reported_passed": 363,
+        "failed": 0,
+        "source": "accepted runresult corroborated jobchecksuccess"
+      },
+      "ci_jobs": {
+        "check": "success",
+        "browser": "success",
+        "world-random": "success"
+      },
+      "separate_counts": true
+    }
+  },
+  "evidence_urls": [
+    "https://github.com/YuriyEmelyanov/Hexcrawl/pull/499",
+    "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42736194155",
+    "https://github.com/YuriyEmelyanov/Hexcrawl/pull/499#issuecomment-6756455854"
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10T02:38:23.312Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10T02:40:04.871Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time observations only; no guarantee of state after completion."
+  }
+}
