@@ -566,6 +566,7 @@ const SVG_EXPORT_STYLES = `
   .hex.click-prompt { stroke:#f7dc6f; stroke-width:2; }
   .click-prompt-label { fill:#fff7bf; stroke:#0c1423; stroke-width:3px; paint-order:stroke; font-size:12px; font-weight:800; pointer-events:none; }
   .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
+  .detail-marker-count { fill:#fff; stroke:#123; stroke-width:.7px; paint-order:stroke; font-weight:bold; }
   .hex-coordinate-label { fill:#253247; font-size:7px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:var(--water-color); stroke-linecap:round; stroke-linejoin:round; }
