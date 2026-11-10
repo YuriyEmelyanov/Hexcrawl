@@ -1,0 +1,125 @@
+✖ kingdom quotas, d12 sizes, save, classic extension and atomic undo (4256.243858ms)
+✖ classic to mythic, second kingdom and regeneration preserve earlier regions (17311.483097ms)
+✔ late exception rolls back entire kingdom (329.315465ms)
+✔ nearest free rectangle and disjoint territory (0.597969ms)
+✔ first settled region starts at the rectangle center, including its throne (2925.0965ms)
+✔ Mythic growth fills an enclosed pocket even when the target is already reached (229.005805ms)
+✔ real Mythic handler absorbs a pocket beyond the roll and undo restores it (694.820183ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 27215.357809
+
+✖ failing tests:
+
+test at test/mythicKingdom.test.mjs:41:1
+✖ kingdom quotas, d12 sizes, save, classic extension and atomic undo (4256.243858ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:53:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/mythicKingdom.test.mjs:58:1
+✖ classic to mythic, second kingdom and regeneration preserve earlier regions (17311.483097ms)
+  AssertionError [ERR_ASSERTION]: {"kind":"programming-error","reason":"Error: DETAIL1 incomplete_route_coverage","result":"rolled-back","action":"add","anchorHex":{"q":-20,"r":14},"options":{"mode":"mythic","targetSize":"auto","landType":"auto","biomeId":"auto","coastalPreference":"auto"},"attempt":0,"tractAttempt":0,"stage":"region","seaRecoveryAttempt":0,"reclaimedSeaKeys":[],"random":{"before":{"generatorVersion":"regions-2026-10-24-rng.1","rngVersion":"mulberry32-v1","masterSeed":16,"streams":{"geography":1330615323,"poi":3037168229}},"after":{"generatorVersion":"regions-2026-10-24-rng.1","rngVersion":"mulberry32-v1","masterSeed":16,"streams":{"geography":1330615323,"poi":3037168229}}},"inputOptions":{"sizeCategory":"auto","landType":"auto","biome":"auto","coastal":"mainland","mode":"mythic"},"targetSize":null,"rejectionCounts":{},"message":"Error: DETAIL1 incomplete_route_coverage","stack":"Error: DETAIL1 incomplete_route_coverage\n    at fail (evalmachine.<anonymous>:18:32)\n    at validateDetailGeographyFootprints (evalmachine.<anonymous>:303:13)\n    at reconcileDetailGeography (evalmachine.<anonymous>:243:5)\n    at reconcileDetailMapIdentities (evalmachine.<anonymous>:856:65)\n    at recordGenerated (evalmachine.<anonymous>:12572:19)\n    at finishKingdom (evalmachine.<anonymous>:12884:9)\n    at Object.advanceKingdom (evalmachine.<anonymous>:12941:17)\n    at finish (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:11:83)\n    at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:72:51)\n    at Test.runInAsyncScope (node:async_hooks:227:14)","algorithmVersion":"regions-2026-10-24-rng.1","maxAttempts":30,"warningCounts":{}}
+  + actual - expected
+  
+  + {
+  +   action: 'add',
+  +   algorithmVersion: 'regions-2026-10-24-rng.1',
+  +   anchorHex: {
+  +     q: -20,
+  +     r: 14
+  +   },
+  +   attempt: 0,
+  +   inputOptions: {
+  +     biome: 'auto',
+  +     coastal: 'mainland',
+  +     landType: 'auto',
+  +     mode: 'mythic',
+  +     sizeCategory: 'auto'
+  +   },
+  +   kind: 'programming-error',
+  +   maxAttempts: 30,
+  +   message: 'Error: DETAIL1 incomplete_route_coverage',
+  +   options: {
+  +     biomeId: 'auto',
+  +     coastalPreference: 'auto',
+  +     landType: 'auto',
+  +     mode: 'mythic',
+  +     targetSize: 'auto'
+  +   },
+  +   random: {
+  +     after: {
+  +       generatorVersion: 'regions-2026-10-24-rng.1',
+  +       masterSeed: 16,
+  +       rngVersion: 'mulberry32-v1',
+  +       streams: {
+  +         geography: 1330615323,
+  +         poi: 3037168229
+  +       }
+  +     },
+  +     before: {
+  +       generatorVersion: 'regions-2026-10-24-rng.1',
+  +       masterSeed: 16,
+  +       rngVersion: 'mulberry32-v1',
+  +       streams: {
+  +         geography: 1330615323,
+  +         poi: 3037168229
+  +       }
+  +     }
+  +   },
+  +   reason: 'Error: DETAIL1 incomplete_route_coverage',
+  +   reclaimedSeaKeys: [],
+  +   rejectionCounts: {},
+  +   result: 'rolled-back',
+  +   seaRecoveryAttempt: 0,
+  +   stack: 'Error: DETAIL1 incomplete_route_coverage\n' +
+  +     '    at fail (evalmachine.<anonymous>:18:32)\n' +
+  +     '    at validateDetailGeographyFootprints (evalmachine.<anonymous>:303:13)\n' +
+  +     '    at reconcileDetailGeography (evalmachine.<anonymous>:243:5)\n' +
+  +     '    at reconcileDetailMapIdentities (evalmachine.<anonymous>:856:65)\n' +
+  +     '    at recordGenerated (evalmachine.<anonymous>:12572:19)\n' +
+  +     '    at finishKingdom (evalmachine.<anonymous>:12884:9)\n' +
+  +     '    at Object.advanceKingdom (evalmachine.<anonymous>:12941:17)\n' +
+  +     '    at finish (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:11:83)\n' +
+  +     '    at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:72:51)\n' +
+  +     '    at Test.runInAsyncScope (node:async_hooks:227:14)',
+  +   stage: 'region',
+  +   targetSize: null,
+  +   tractAttempt: 0,
+  +   warningCounts: {}
+  + }
+  - null
+  
+      at finish (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:11:162)
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:72:51)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { kind: 'programming-error', reason: 'Error: DETAIL1 incomplete_route_coverage', result: 'rolled-back', action: 'add', anchorHex: { q: -20, r: 14 }, options: { mode: 'mythic', targetSize: 'auto', landType: 'auto', biomeId: 'auto', coastalPreference: 'auto' }, attempt: 0, tractAttempt: 0, stage: 'region', seaRecoveryAttempt: 0, reclaimedSeaKeys: [], random: { before: [Object], after: [Object] }, inputOptions: { sizeCategory: 'auto', landType: 'auto', biome: 'auto', coastal: 'mainland', mode: 'mythic' }, targetSize: null, rejectionCounts: {}, message: 'Error: DETAIL1 incomplete_route_coverage', stack: 'Error: DETAIL1 incomplete_route_coverage\n    at fail (evalmachine.<anonymous>:18:32)\n    at validateDetailGeographyFootprints (evalmachine.<anonymous>:303:13)\n    at reconcileDetailGeography (evalmachine.<anonymous>:243:5)\n    at reconcileDetailMapIdentities (evalmachine.<anonymous>:856:65)\n    at recordGenerated (evalmachine.<anonymous>:12572:19)\n    at finishKingdom (evalmachine.<anonymous>:12884:9)\n    at Object.advanceKingdom (evalmachine.<anonymous>:12941:17)\n    at finish (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:11:83)\n    at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:72:51)\n    at Test.runInAsyncScope (node:async_hooks:227:14)', algorithmVersion: 'regions-2026-10-24-rng.1', maxAttempts: 30, warningCounts: {} },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

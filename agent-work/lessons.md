@@ -593,3 +593,6 @@ Detached-подготовка не доказывает историю: отде
 - Vite readiness logs may contain ANSI formatting betweenLocal and colon. Strip terminal escapes before readiness matching; forced-color control proved the mismatch. Startup timeout is bounded.
 - Node controller atomicity and actual browser panel/focus are distinct useful contracts; existing fixtures reused. Node+1, browser+1 counted separately;384Node/9browser/1RNG are different suites, screenshots/retries are not coverage growth.
 - Partial legacy preview shown at exactSHA does not certify complete1/6/12/24 UI or grant release. Evidence: agent-work/results/2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation.json.
+
+### 2026-11-10 — first-map activation exposes lifecycle gaps
+Automatic activation must test continuation/regeneration, not just first generation and Undo. Existing Mythic continuation cases exposed route coverage refusals after accepted quotas; strict validation retained. A passing25-case subset is not full acceptance. Keep sparse v10 fixtures unadapted when removing source content; a v11 footprint cannot remain justified after deleting that source. Evidence: agent-work/results/2026-11-10T0100-programmer-HX-BL-051-DETAIL1-activation.json.
