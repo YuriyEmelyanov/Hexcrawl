@@ -1,0 +1,57 @@
+{
+  "evidence_kind": "bounded_research_runtime_verification_not_score_evidence",
+  "source_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "method": "Existing production App handlers exercised through generation harness; Node24.22.1. No actual DOM/PNG screenshot verification.",
+  "command": "node --test --test-name-pattern='E8 real POI move is one exact transaction with full payload and literal hex notes' test/regionEditing.test.mjs",
+  "cases": [
+    {
+      "name": "E8 real POI move is one exact transaction with full payload and literal hex notes classic",
+      "status": "passed",
+      "duration_ms": 2004.850746
+    },
+    {
+      "name": "E8 real POI move is one exact transaction with full payload and literal hex notes mythic",
+      "status": "passed",
+      "duration_ms": 9308.875824
+    }
+  ],
+  "counts": {
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0
+  },
+  "runner_duration_ms": 12783.687286,
+  "test_change_summary": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "reason": "Reused bounded existing coverage; no new tests or product changes"
+  },
+  "verified_assertions": [
+    "Move2,0→3,0 as one accepted transaction, previous placement removed",
+    "Paired authored name and object-owned tags/counters migrate",
+    "Hex notes stay literally unchanged; terrain and generation/counters unchanged",
+    "Draft not exported; oneUndo and exactRedo restore snapshots",
+    "Exported JSON reload equals accepted snapshot",
+    "Subsequent content edit and real generation continuation retain consistency in each tested fixture"
+  ],
+  "locators": [
+    {
+      "path": "test/regionEditing.test.mjs",
+      "lines": "137–160"
+    },
+    {
+      "path": "docs/poi-editor-data.md",
+      "locator": "E8.1 location operation; names/tags move, both hex notes stay"
+    }
+  ],
+  "limits": [
+    "Existing canonical fixtures include classicKnave payload and Mythic monument; not a new DND5 source-profile verification.",
+    "No actual Tower-specific fixture, PNG alignment check, central/water/path-attached/explicit051 extent audit.",
+    "No runtime claim for unpublished051 or current working branch.",
+    "No automatic synchronization with external paper/journal."
+  ],
+  "captured_from": "Completed exec tool result; not a rerun or developer assertion",
+  "checked_at": "2026-11-10T04:36:17.452534+00:00"
+}

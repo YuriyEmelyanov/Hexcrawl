@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "audit_id": "HX-RSR-POI-RELOCATION-DISPOSITION-01",
+  "run_id": "2026-11-10T0431-POI-relocation-disposition",
+  "kind": "derived_existing_feature_disposition_not_rule_registry",
+  "source_context_refs": [
+    "agent-work/research/market/DND5-map-reconciliation-2026-11-10.json",
+    "agent-work/research/market/PIRATE-map-practice-2026-11-09.json"
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/research/market/DND5-map-reconciliation-2026-11-10.json#obs-DND5-SCALES-MAP-20261110; source problem, not game rule",
+    "normative_kind": "corrected product interpretation grounded in existing approved E8 semantics",
+    "applicability": "L1 correcting an existing ordinary unattached noncentral POI on an admissible target",
+    "layer": "L1",
+    "trigger_or_user_action": "Choose the existing POI location action and accept a legal destination.",
+    "inputs_and_units": {
+      "selected_fixture": "ordinary land POI2,0→3,0",
+      "object_content": "paired authored name and object-owned tags",
+      "coordinate_content": "hex notes and terrain at source/destination stay with those hexes"
+    },
+    "product_operation": "Use existing E8 relocation; migrate object-owned content only, leaving hex-owned notes/terrain literal.",
+    "expected_output": "One POI at3,0, no old POI at2,0; name/tags retained, hex notes unchanged, accepted JSON reload and Undo/Redo exact.",
+    "constraints_and_exceptions": [
+      "Do not translate ambiguous previous research word note into a requirement that hex notes move. Object-owned tag text and hex-owned notes are distinct.",
+      "Source author used an external journal; automatic external-note synchronization remains unknown and not required by this check.",
+      "Centers/path-attached/water targets and explicit051 extents retain their existing constraints; not exercised or expanded here.",
+      "Historical source reports do not prove current competitor defects or switching demand."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Ordinary noncentral unattached land POI at2,0 with paired name/tags; legal empty target3,0",
+        "when": "Accept existing E8 relocation",
+        "expected": "One POI at3,0 with same name/tags; no old placement; source/destination terrain and hex notes unchanged"
+      },
+      {
+        "given": "The accepted moved document",
+        "when": "Export/reimport JSON and perform oneUndo/Redo in the original history",
+        "expected": "Reload equals accepted snapshot; Undo equals before; Redo equals accepted after; no reroll of object content"
+      }
+    ],
+    "source_vs_product_interpretation": "No new DND5 rule is inferred. This closes a generic implementation uncertainty from a GM-practice lead and corrects an overbroad research acceptance phrase. It does not establish game-wide support.",
+    "canonical_rule_refs": [
+      "content.relocate"
+    ],
+    "criterion_ids": [
+      "S03-C01",
+      "S03-C04",
+      "S04-C04"
+    ],
+    "unresolved_parameters": [
+      "Tower-specific literal book profile not tested",
+      "PNG/DOM presentation not checked in this run",
+      "Current051 explicit/water/attached cases outside scope",
+      "External journal semantics and switching demand"
+    ],
+    "runtime_evidence": {
+      "sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "ref": "agent-work/research/audits/POI-relocation-1962fb9-evidence.json",
+      "status": "passed_bounded_existing_harness"
+    }
+  },
+  "evidence_ref": "agent-work/research/audits/POI-relocation-1962fb9-evidence.json",
+  "source_vs_inference": {
+    "source_fact": "Prior primary GM case describes reconciliation friction; no game-core operation was prescribed.",
+    "prior_inference": "Research examples used the unqualified word note alongside movable object content.",
+    "correction": "Hex notes intentionally remain coordinate-owned in E8; do not turn an ambiguous note phrase into a new moving-notes feature or release defect.",
+    "current_fact": "Two selected existing App harness cases pass at released1962fb9.",
+    "unknown": "Broad game coverage, browserPNG and current051 integration."
+  },
+  "dispositions": [
+    {
+      "item": "Ordinary named/tagged POI move plus JSON lifecycle",
+      "disposition": "existing_delivery_verified_bounded",
+      "task_ref": "HX-BL-013",
+      "recommendation": "Do not create duplicate basic relocation task from these market reports."
+    },
+    {
+      "item": "Move hex notes automatically with a POI",
+      "disposition": "research_interpretation_corrected_not_product_gap",
+      "recommendation": "Retain current coordinate-owned notes; new object-note behavior would need its own explicit product need/decision."
+    },
+    {
+      "item": "PF2 fixed export frame / WWN Obsidian / fixed-world underlay",
+      "disposition": "outside_this_slice",
+      "recommendation": "Do not bundle051/029/027 into a generic relocation fix; preserve their current scope/status."
+    }
+  ],
+  "supersedes_interpretation_only": [
+    {
+      "ref": "agent-work/research/market/DND5-map-reconciliation-2026-11-10.json#operational_requirement",
+      "part": "Unqualified note moves with tower; read only as object-owned content, not gmNotesByHexKey."
+    },
+    {
+      "ref": "agent-work/research/market/PIRATE-map-practice-2026-11-09.json#operational_requirement",
+      "part": "Same distinction; do not infer a generic moving-hex-notes obligation."
+    }
+  ],
+  "registry_disposition": "Existing common content.relocate and bindings preserved; no new rules/profile or score evidence written.",
+  "rating_disposition": "No active inputs/ranks/cohorts/method change; existing delivery is not a numerical rating update.",
+  "product_disposition": "Append research annotation to existing013 only; keep partially_implemented status because broader013 not audited.",
+  "active_rating_changed": false,
+  "score_changed": false
+}
