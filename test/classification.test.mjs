@@ -20,6 +20,7 @@ test('CLASSIFY1 discovery uses exact context and semantic IDs independent of lan
  assert.equal(discoveryDefault({...lair,water:true}),'unknown');
  const owner={kind:'poi',regionId:1,hexKey:'2,0'},tag={owner,definitionVersion:1,definitionId:'mb.ruin',entryIds:['mb.ruin:42']};
  assert.equal(discoveryTagEffect('poi:1:2,0',[tag]),true);assert.equal(discoveryTagEffect('poi:2:2,0',[tag]),false);assert.equal(discoveryTagEffect('poi:1:2,0',[{...tag,overrides:[{en:'Not lost'}]}]),false);assert.equal(discoveryTagEffect('poi:1:2,0',[],{trait:{sourceRow:43}}),true);
+ assert.equal(discoveryTagEffect('poi:1:2,0',[],{calls:[{table:'place_traits',sourceRow:43}]}),true);assert.equal(discoveryTagEffect('poi:1:2,0',[],{calls:[{table:'structures',sourceRow:43}]}),false);
 });
 test('CLASSIFY1 overrides validate version/live ownership, preserve unknown and remap only POI',()=>{
  const c={hexes:new Set(['0,0','2,0']),pois:new Set(['poi:1:2,0'])},d=emptyClassification();d.difficultyByHex['0,0']='unknown';d.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'Tracks'};

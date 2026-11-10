@@ -19,7 +19,7 @@ export type PreparationCommand=
  |{kind:'description';owner:string;value:string};
 export class PreparationError extends Error {readonly code:string;constructor(code:string){super(code);this.code=code;this.name='PreparationError';}}
 function fail(code:string):never {throw new PreparationError(code);}
-const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Object.getPrototypeOf(v)===Object.prototype;
+const object=(v:unknown):v is Record<string,unknown>=>!!v&&typeof v==='object'&&!Array.isArray(v)&&Object.prototype.toString.call(v)==='[object Object]';
 const hasOwn=(v:object,k:PropertyKey)=>Object.prototype.hasOwnProperty.call(v,k);
 const keys=(v:Record<string,unknown>,required:string[],optional:string[]=[])=>required.every(k=>hasOwn(v,k))&&Object.keys(v).every(k=>required.includes(k)||optional.includes(k));
 const integer=(v:unknown,min=0,max=Number.MAX_SAFE_INTEGER):v is number=>typeof v==='number'&&Number.isSafeInteger(v)&&v>=min&&v<=max;

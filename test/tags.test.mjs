@@ -11,6 +11,7 @@ import {selectMythMaterial,materialIdentity,MYTH_MATERIAL_EDITION,mythMaterialMa
 import mythMaterialRecords from '../src/tags/mythMaterialData.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
+import {preparationView} from '../src/tags/tablePreparation.ts';
 import {newKnaveLayer,validateKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,remapKnavePois,knaveLosses,dropKnaveLoss} from '../src/knaveClassic.ts';
 import {emptyKnaveContent,fillKnaveContent,validateKnaveContent,validateKnaveCatalog,knaveCompatibleRows,rerollKnaveContent,knaveResultText} from '../src/tags/knave.ts';
 import knaveCatalogData from '../src/tags/knaveCatalogData.ts';
@@ -201,6 +202,9 @@ test('Knave POI remapping preserves coordinate flags, refuses collisions and pre
  assert.deepEqual(knaveLosses(layer,removed),[{kind:'difficulty',key:'0,0'},{kind:'discovery',key:from},{kind:'content',key:from}]);
  const detached=structuredClone(layer);for(const loss of knaveLosses(layer,removed))dropKnaveLoss(detached,loss);assert.deepEqual(detached.content,{schemaVersion:1,byPoi:{},rollCounters:{}});assert.deepEqual(layer,before);
  assert.throws(()=>remapKnavePois(layer,source,removed,new Map()));assert.deepEqual(layer,before);
+ const v2=structuredClone(layer);v2.content=preparationView(layer.content,knaveCatalogFixture(),source.pois);
+ const moved2=remapKnavePois(v2,source,target,new Map([[from,to]]));assert.deepEqual(moved2.content.byPoi[to],v2.content.byPoi[from]);assert.equal(moved2.content.nextCallId,v2.content.nextCallId);
+ const detached2=structuredClone(v2);for(const loss of knaveLosses(v2,removed))dropKnaveLoss(detached2,loss);assert.deepEqual(detached2.content.byPoi,{});assert.equal(detached2.content.nextCallId,v2.content.nextCallId);validateKnaveLayer(detached2,removed,12,'classic');
 });
 const owner={kind:'region',id:1};
 test('independent columns preserve sibling overrides and counters; product tuple selects one of 72 complete records',()=>{
@@ -451,4 +455,41 @@ test('actual tag commands do not consume world RNG, double click is one command,
  assert.deepEqual(withoutTags(h.render()),withoutTags(control.render()));
  const invalid=h.render().createSaveData();invalid.map.tags.instances[0].values[0][0]=13;
  const prior=stable(h);await assert.rejects(()=>load(h,invalid));assert.deepEqual(stable(h),prior);
+});
+
+// TABLES1: helper shape tests cannot prove the real document/history boundary.
+// Reuse the tiny existing import and the real App handlers, not a mock history.
+test('TABLES1 App migrates once to v12 and preserves exact import/history with stale and duplicate command refusal',async()=>{
+ const d=regionFixture();d.version=10;d.generation=createGenerationState(42);d.map.seas=[];d.map.nextSeaId=1;d.map.knave=newKnaveLayer();
+ const owner='poi:1:2,0';d.map.regions[0].pointOfInterestKinds['2,0']='ruins';d.map.knave.content=knaveContentFixture(owner);
+ d.map.regions[1].pointsOfInterest=[{q:3,r:1}];d.map.regions[1].pointOfInterestKinds={'3,1':'ruins'};
+ const h=createGenerationHarness(42);await load(h,d);h.guardRandom();h.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
+ const complete=stable(h);complete.map.knave.content=fillKnaveContent(emptyKnaveContent(),knaveCatalogFixture(),h.geometry.knaveFactsForMap(complete.map),42);h.render().applyDocument(complete);
+ const before=stable(h),history=h.render().undoHistory.length,initialSave=h.render().createSaveData();
+ const stale=h.render().preparationContext(owner),draft=h.render().preparationContext(owner);
+ assert.equal(h.render().mutatePreparation({kind:'add',owner,table:'structures',choice:{kind:'manual',row:27}},draft),true);
+ const after=stable(h),saved=h.render().createSaveData();
+ assert.equal(saved.version,12);assert.equal(after.map.knave.content.schemaVersion,2);
+ assert.deepEqual(Object.keys(after.map.knave.content.byPoi).sort(),Object.keys(before.map.knave.content.byPoi).sort());
+ assert.equal(after.map.knave.content.byPoi[owner].calls.length,3);assert.equal(h.render().undoHistory.length,history+1);
+ assert.deepEqual(after.map.regions,before.map.regions);assert.deepEqual(after.map.generation,before.map.generation);
+ assert.equal(h.render().mutatePreparation({kind:'description',owner,value:'Stale edit'},stale),false);
+ assert.equal(h.render().mutatePreparation({kind:'add',owner,table:'locations',choice:{kind:'roll'}},draft),false);assert.deepEqual(stable(h),after);
+ h.render().undoMap();assert.deepEqual(stable(h),before);assert.equal(h.render().createSaveData().version,initialSave.version);
+ h.render().redoMap();assert.deepEqual(stable(h),after);
+ const restored=createGenerationHarness(99);await load(restored,saved);assert.deepEqual(stable(restored).map,after.map);
+ const bad=structuredClone(saved);bad.version=11;
+ const intact=stable(restored),stacks=structuredClone([restored.render().undoHistory,restored.render().redoHistory]);
+ const alerts=[];restored.setWindow({alert:m=>alerts.push(m),matchMedia:()=>({matches:false})});
+ await restored.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});
+ assert.ok(alerts.length);assert.deepEqual(stable(restored),intact);assert.deepEqual(structuredClone([restored.render().undoHistory,restored.render().redoHistory]),stacks);
+ const retry=restored.render().preparationContext(owner);restored.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
+ assert.equal(restored.render().mutatePreparation({kind:'description',owner,value:'Author text'},retry),true);
+ assert.equal(restored.render().createSaveData().map.knave.content.byPoi[owner].description,'Author text');
+ const candidate=structuredClone(after.map);const live=h.geometry.knaveFactsForMap(candidate).map(f=>f.owner),missing=live.find(k=>k!==owner);assert.ok(missing);delete candidate.knave.content.byPoi[missing];
+ const originalOwner=structuredClone(candidate.knave.content.byPoi[owner]),nextId=candidate.knave.content.nextCallId;
+ const filled=h.geometry.prepareKnaveGeneratedMap(candidate,knaveCatalogFixture());assert.deepEqual(filled.knave.content.byPoi[owner],originalOwner);assert.ok(filled.knave.content.byPoi[missing].calls.every(c=>c.id>=nextId));
+ const persisted=h.render().createSaveData();await load(h,persisted);const oldOwners=structuredClone(h.render().captureDocument().map.knave.content.byPoi);
+ const generated=h.render().safelyAddRegionToMap({q:-1,r:0},{targetSize:18,landType:'wild',coastalPreference:'mainland'});assert.equal(generated.success,true);
+ const continued=h.render().captureDocument().map.knave.content;for(const [key,value]of Object.entries(oldOwners))assert.deepEqual(continued.byPoi[key],value);assert.ok(Object.keys(continued.byPoi).length>Object.keys(oldOwners).length);assert.equal(h.render().createSaveData().version,12);
 });
