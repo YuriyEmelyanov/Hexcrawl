@@ -609,3 +609,7 @@ The dry-site failure was central holy_place27:13,2 under final lake6, not an ord
 
 ### 2026-11-10 — distinguish registry merges from lost spatial owners
 Legacy fixtures replacing owners/geometry must omit stale active DETAIL1 state; keep strict active-layer coverage in existing real-controller cases. SEA02 component merges can change a waterbody ID without moving a POI contact: apply only the resolved merge mapping, keep cell/shore/contact/extent and revalidate. Disappearing accepted POI is a separate explicit generation constraint, not permission to silently delete or invent a relocation. Note loss is checked before derived identities. All385 Node cases/typecheck/build passed; browser socket denial remains unchecked UI, not a product verdict. Seven existing logical callbacks modified, no permanent callback added. Evidence: agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json.
+
+
+### 2026-11-10 — separate view controller proof from rendered UI proof
+One existing real adaptation transaction case can verify viewStep changes retain the entire accepted map/RNG/zoom and JSON, no-op/stale guards and exact Undo/Redo. Derived grid is clipped to accepted territory and old borders hidden, without changing terrain; renderer still needs browser/desktop390/320 proof.385 passing Node cases and build do not certify hit targets, compact summaries or repeated icons. Browser and RNG launch socket denial are separate0-case checks. Evidence: agent-work/results/2026-11-10T0700-programmer-HX-BL-051-view-controls.json.

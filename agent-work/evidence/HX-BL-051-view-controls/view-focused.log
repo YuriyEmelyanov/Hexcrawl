@@ -1,0 +1,95 @@
+✔ live DETAIL1 preview projects actual capital/Seat and every assigned road without changing the document or RNG (922.262564ms)
+✔ live DETAIL1 preview retains actual sea/river identities and source requirements, refusing missing mandatory water atomically (1210.966872ms)
+✔ actual DETAIL1 extent command records one exact undo/redo transaction and refuses invalid or stale commands atomically (381.947452ms)
+✔ active DETAIL1 lifecycle preserves manual extents through E7 and allocates/removes POIs without recycling IDs (518.343182ms)
+✔ active DETAIL1 route and water mutations retain exact attachments or refuse both histories atomically (1227.837425ms)
+✔ active DETAIL1 E8 relocates an assumed unattached site once and refuses translating accepted explicit extents (389.760751ms)
+✔ active DETAIL1 generated candidate places only new owners after accepted Knave content and refuses invalid candidates before history (529.95217ms)
+✔ ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt spatial references atomically (2720.113933ms)
+✖ legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact document transaction (473.116811ms)
+✔ new maps activate DETAIL1 at final generation, preserving legacy continuation and exact undo (4909.739307ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 9
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14622.465079
+
+✖ failing tests:
+
+test at test/detailGeography.test.mjs:193:1
+✖ legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact document transaction (473.116811ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      generationHistory: [],
+      generationMode: 'classic',
+      isMapRotated: false,
+      knaveEnabled: false,
+  ...
+        obstacles: [],
+  +     physicalGrid: {
+  +       active: true,
+  +       grid: {
+  +         convention: 'across_flats',
+  +         orientation: 'pointy',
+  +         origin: {
+  +           x: 0,
+  +           y: 0
+  +         }
+  +       },
+  +       poiFootprints: [
+  +         {
+  +           attachments: [],
+  +           cells: [
+  +             {
+  +               q: 12,
+  +               r: 0
+  +             }
+  +           ],
+  +           extent: {
+  +             kind: 'default',
+  +             policy: 'one_cell',
+  +             reason: 'unknown_size'
+  +           },
+  +           legacyRef: 'poi:1:2,0',
+  +           poiId: 'detail-poi:1'
+  +         }
+  +       ],
+  +       poiIdentities: {
+  +         byLegacyRef: {
+  +           'poi:1:2,0': 'detail-poi:1'
+  +         },
+  +         nextId: 2,
+  +         version: 1
+  +       },
+  +       schema: 'hexcrawl.detail1',
+  +       source: {
+  +         displayAssumption: 'project_across_flats_6mi',
+  +         physicalConvention: 'unknown',
+  +         stepMiles: 6
+  +       },
+  +       version: 1,
+  +       viewStep: 24
+  +     },
+  -     physicalGrid: undefined,
+        regions: [
+          {
+            anchorHex: {
+              q: 1,
+              r: 0
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/detailGeography.test.mjs:215:30)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { map: { physicalGrid: [Object], classification: undefined, knave: undefined, seas: [], nextSeaId: 1, editorNames: {}, riverFeatures: [Object], nextRiverId: 1, tags: [Object], gmNotesByHexKey: [Object], generation: [Object], kingdoms: [], obstacles: [], nextObstacleId: 1, regions: [Array], candidateHexes: [Array], rivers: [], roads: [], crossings: [], hexTerrainByKey: Map(0) {}, waterPoiByKey: Map(0) {}, biomeOverrideByHexKey: [Map], toponyms: [Object], toponymSeed: 42, nextLakeId: 20, nextRoadId: 1 }, generationHistory: [], selectedHex: { q: 2, r: 0 }, generationMode: 'classic', knaveEnabled: false, isMapRotated: false, mapScale: 1.1 },
+    expected: { map: { physicalGrid: undefined, classification: undefined, knave: undefined, seas: [], nextSeaId: 1, editorNames: {}, riverFeatures: [Object], nextRiverId: 1, tags: [Object], gmNotesByHexKey: [Object], generation: [Object], kingdoms: [], obstacles: [], nextObstacleId: 1, regions: [Array], candidateHexes: [Array], rivers: [], roads: [], crossings: [], hexTerrainByKey: Map(0) {}, waterPoiByKey: Map(0) {}, biomeOverrideByHexKey: [Map], toponyms: [Object], toponymSeed: 42, nextLakeId: 20, nextRoadId: 1 }, generationHistory: [], selectedHex: { q: 2, r: 0 }, generationMode: 'classic', knaveEnabled: false, isMapRotated: false, mapScale: 1.1 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
