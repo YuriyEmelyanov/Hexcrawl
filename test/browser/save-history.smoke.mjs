@@ -172,8 +172,10 @@ try {
  assert.ok(scroll.amount>0);assert.equal(scroll.controls,scroll.info,'controls and information scroll together');
  assert.equal(await button('Найти объект').getAttribute('aria-expanded'),'false');
  assert.equal(await namesSection.evaluate(el=>el.parentElement.lastElementChild===el),true,'find object follows info and notes');
- // Owner correction01.11: mode toggle must preserve existing information-row geometry.
- const rowGeometry=()=>info.evaluate(el=>{const top=el.getBoundingClientRect().top;return [...el.children].filter(x=>x.matches('p,.direct-line')).map(x=>{const r=x.getBoundingClientRect();return {top:r.top-top,height:r.height};});});
+ // Keep existing information rows compact in both modes. CLASSIFY1 adds an
+ // explicit edit-only classification form between groups; its height is not
+ // a change to the spacing of the information rows on either side.
+ const rowGeometry=()=>info.evaluate(el=>{const top=el.getBoundingClientRect().top;let previous=null,first=true;return [...el.children].flatMap(x=>{if(x.matches('.knave-properties'))previous=null;if(!x.matches('p,.direct-line'))return [];const r=x.getBoundingClientRect(),gap=previous===null?(first?r.top-top:null):r.top-previous;previous=r.bottom;first=false;return [{gap,height:r.height}];});});
  for(const width of [1500,390]) {
   await page.setViewportSize({width,height:1100});
   const before=await rowGeometry();await ensureEdit();const after=await rowGeometry();

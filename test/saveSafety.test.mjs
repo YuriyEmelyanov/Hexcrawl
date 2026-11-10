@@ -165,6 +165,11 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  // Extend this lifecycle case: UI drafts must not enter accepted JSON/history,
  // and stale closures must never retarget a clue to another document.
  g.render().setEditMode(true);g.render().setSelectedHex(Object.fromEntries(['q','r'].map((axis,i)=>[axis,Number(key.split(':')[2].split(',')[i])])));
+ // CLASSIFY1 reviewer regression: editing only a legacy clue must retain interaction.
+ assert.equal(g.render().changeKnaveDraft({clueText:'Only revised clue'}),true);assert.equal(g.render().finishKnaveDraft(),true);
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].mode,'interaction');
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].clueText,'Only revised clue');
+ g.render().undoMap();assert.deepEqual(structuredClone(g.render().captureDocument().map),accepted.map);
  const uiBefore=structuredClone(g.render().createSaveData().map),uiHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction',clueText:''}),true);
  const stale=g.render().knaveDraft;
@@ -174,7 +179,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.equal(g.render().changeKnaveDraft({clueText:'  <Authored UI clue>  '}),true);
  assert.equal(g.render().changeKnaveDraft({clueText:'stale'},stale),false);
  assert.equal(g.render().finishKnaveDraft(),true);
- assert.equal(g.render().createSaveData().map.knave.discoveryByPoi[key].clueText,'<Authored UI clue>');
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].clueText,'<Authored UI clue>');
  g.render().undoMap();assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);
  const noOpHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction'}),true);assert.equal(g.render().finishKnaveDraft(),true);assert.equal(g.render().undoHistory.length,noOpHistory);
@@ -271,7 +276,7 @@ test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic imp
   const saved=structuredClone(g.render().createSaveData());assert.equal(saved.version,10);assert.deepEqual(saved.map.seas,[{id:1,hexKeys:['-1,2','0,2','1,2','2,2','3,2','3,3']}]);assert.equal(saved.map.nextSeaId,2);assert.deepEqual(saved.generation,data.generation);assert.deepEqual(saved.map.terrainByHexKey,data.map.terrainByHexKey);
  }
  const valid=structuredClone(g.render().createSaveData()),before=structuredClone(g.render().captureDocument()),stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=11,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
+ for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=12,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
   const bad=structuredClone(valid);mutate(bad);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
  }
 });
