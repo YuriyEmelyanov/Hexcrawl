@@ -40,7 +40,7 @@ const sharedTarget=page.locator('[data-detail-cell="18,0"]');await sharedTarget.
 assert.equal(await page.locator('[data-detail-summary] [data-detail-poi-select]').count(),2);
 // Open both owner rows explicitly before selecting their content.
 for(const detail of await page.locator('[data-detail-summary] > details').all()){if(!await detail.getAttribute('open'))await detail.locator('summary').click();}
-const firstButton=page.locator(`[data-detail-poi-select="${firstId}"]`);await firstButton.focus();await page.keyboard.press('Enter');await page.locator('[data-knave-panel]').getByText('OWNER-ONE-CLUE',{exact:false}).waitFor();
+const firstButton=page.locator(`[data-detail-poi-select="${firstId}"]`);await firstButton.focus();await page.keyboard.press('Enter');await page.locator('[data-knave-panel]').getByText('OWNER-ONE-CLUE',{exact:false}).waitFor();assert.equal(await sharedTarget.getAttribute('aria-pressed'),'true');assert.equal(await page.locator('[data-detail-poi-select]').count(),2,'owner selection keeps the shared fine cell');
 await page.locator('[data-detail-summary]').scrollIntoViewIfNeeded();await page.screenshot({path:dir+'/review-owner-desktop.png',fullPage:true});
 await sharedTarget.focus();await page.keyboard.press('Enter');for(const detail of await page.locator('[data-detail-summary] > details').all()){if(!await detail.getAttribute('open'))await detail.locator('summary').click();}
 await page.locator(`[data-detail-poi-select]:not([data-detail-poi-select="${firstId}"])`).click();await page.locator('[data-knave-panel]').getByText('OWNER-TWO-CLUE',{exact:false}).waitFor();
