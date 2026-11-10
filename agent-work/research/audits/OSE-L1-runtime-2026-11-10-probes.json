@@ -1,0 +1,109 @@
+{
+  "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "method": "Actual App handlers through existing production-source harness; outer JSX not rendered, RNG guarded; small authored map, not generated survey.",
+  "checks": [
+    {
+      "id": "OSE-P01",
+      "expected": "Use existing generic POI editor to create/name a town; no automatic base-town role inferred",
+      "actual": {
+        "kind": "town",
+        "name": "Ольховый брод"
+      },
+      "result": "pass"
+    },
+    {
+      "id": "OSE-P02",
+      "expected": "Record allfive service categories, base role and deliberate location; unknown is literal prose, not auto-filled with services",
+      "actual": "База кампании: Ольховый брод; выбран мастером на краю карты.\nЧёрный рынок: есть, скупка сокровищ; гильдия неизвестна.\nСтража: есть; взятки неизвестны; патрули площадь вечером.\nЛечение: раны; болезни/воскрешение неизвестны.\nНочлег: неизвестно.\nМесто слухов: доска у ворот; тексты и истинность неизвестны.",
+      "result": "pass"
+    },
+    {
+      "id": "OSE-P03",
+      "expected": "Edit only lodging; other services, geography and RNG unchanged",
+      "actual": {
+        "otherCategoriesPreserved": true,
+        "geometryPreserved": true,
+        "RNGPreserved": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "OSE-P04",
+      "expected": "Undo/Redo exact manual category edit without regenerating services",
+      "actual": {
+        "undoExact": true,
+        "redoExact": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "OSE-P05",
+      "expected": "Place two dungeons and retain authored base references/travel descriptions as text; no inferred radius or new road",
+      "actual": {
+        "dungeons": [
+          "0,0",
+          "3,0"
+        ],
+        "reference": "T=2,0",
+        "preciseMiles": null
+      },
+      "result": "pass"
+    },
+    {
+      "id": "OSE-P06",
+      "expected": "Accepted ruler/nomad prose can be edited independently; this does not create a political extent layer",
+      "actual": {
+        "ruler": "Лига купцов",
+        "nomadNoteUnchanged": true,
+        "geometryUnchanged": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "OSE-P07",
+      "expected": "Actual JSON import restores town, two dungeons, all authored unknowns/references and unchanged generation state",
+      "actual": {
+        "mapExact": true,
+        "generationExact": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "OSE-P08",
+      "expected": "POI moves with its identity, but GM notes intentionally remain attached to hex coordinates; manually maintained base/service text does not automatically follow the town",
+      "actual": {
+        "townMoved": "2,0→1,0",
+        "serviceNoteStays": "2,0",
+        "areaNoteAtTargetPreserved": true,
+        "kind": "scope_boundary_not_confirmed_bug"
+      },
+      "result": "pass"
+    },
+    {
+      "id": "OSE-P09",
+      "expected": "Published zoom is distinct from physical scale; current strict Knave profile is6mile and rejects declaring24mile through it; accepted051not published yet",
+      "actual": {
+        "publishedKnaveLength": 6,
+        "invalid24Rejected": true,
+        "zoomField": "mapScale",
+        "notAnOSEProfile": true
+      },
+      "result": "pass"
+    }
+  ],
+  "browser_checked": false,
+  "existing_test_summary": {
+    "run": 65,
+    "passed": 65,
+    "failed": 0,
+    "suites": [
+      "entityNames",
+      "manualRegions",
+      "saveSafety"
+    ],
+    "new_permanent_test_cases": 0
+  },
+  "diagnostic_corrections": [
+    "Initial probe used wrong harness name-target shape and changePoiTarget call signature; both corrected before successful final execution. These discarded harness errors are not product findings."
+  ]
+}
