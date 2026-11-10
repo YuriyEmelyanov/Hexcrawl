@@ -1140,6 +1140,7 @@ function reconcileDetailMapIdentities<T extends MapSnapshot>(map:T,moves:Readonl
 function detailCommandError(error:unknown,language:Language):string|undefined {
  const reason=error instanceof Error?error.message:'';if(!reason.startsWith('DETAIL1 '))return undefined;
  const ru=language==='ru';
+ if(reason.includes('accepted_poi_loss'))return ru?'Расширение удалит принятый POI. Выберите другое место или явно измените объект. Карта не изменена.':'Expansion would remove an accepted POI. Choose another location or explicitly edit the object. Your map is unchanged.';
  if(reason.includes('extent_relocation'))return ru?'Перенос POI с явным охватом или обязательными привязками требует отдельной адаптации охвата. Карта не изменена.':'Moving a POI with an explicit footprint or required attachments needs explicit footprint adaptation. Your map is unchanged.';
  if(reason.includes('route'))return ru?'Изменение нарушит принятый вход пути в охват POI. Карта не изменена.':'This edit would break an accepted path access to a POI footprint. Your map is unchanged.';
  if(reason.includes('water')||reason.includes('crossing'))return ru?'Изменение нарушит обязательную привязку охвата POI к прежнему водоёму или речному элементу. Карта не изменена.':'This edit would break the POI footprint attachment to its accepted water body or river feature. Your map is unchanged.';
@@ -1917,6 +1918,13 @@ class NotesLossConflict extends Error {
   }
 }
 
+
+// Expected refusal when expansion would silently remove an accepted spatial owner.
+class DetailGenerationConflict extends Error {
+  constructor(readonly code: 'accepted_poi_loss') {
+    super(`DETAIL1 ${code}`);this.name = 'DetailGenerationConflict';
+  }
+}
 
 function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
   const entities: ToponymEntity[] = [];
@@ -13906,7 +13914,20 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
-    const acceptedSpatial=map.physicalGrid; // Empty active layers also wait for final sea identities and Knave.
+    if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
+    const before = kingdomJob && !backup ? undefined : backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
+    const notes = before?.map.gmNotesByHexKey ?? gmNotesByHexKey;
+    // Reject loss of authored notes before derived spatial owners are reconciled.
+    // Provisional kingdom steps still form a single transaction at finish.
+    if (before) {
+      const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
+      if (missing.length) throw new NotesLossConflict(missing);
+    }
+    let acceptedSpatial=map.physicalGrid; // Empty active layers also wait for final sea identities and Knave.
+    if(acceptedSpatial&&(!kingdomJob||backup)){
+      const live=poiNameLocators(map,true);
+      if(Object.keys(acceptedSpatial.poiIdentities?.byLegacyRef??{}).some(alias=>!live.has(alias)))throw new DetailGenerationConflict('accepted_poi_loss');
+    }
     if(acceptedSpatial)map={...map,physicalGrid:{...acceptedSpatial,poiFootprints:[],poiIdentities:reconcileDetailPoiIdentities(poiNameLocators(map,true),acceptedSpatial.poiIdentities)}};
     else map=reconcileDetailMapIdentities(map);
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
@@ -13917,11 +13938,16 @@ export function App() {
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
     map.seas=sea.seas;map.nextSeaId=sea.nextSeaId;
+    if(acceptedSpatial){
+      // SEA02 has resolved a real component merge, including named-sea guards.
+      // Only remap that registry identity; retain the exact cell/shore contact.
+      const mergedIds=new Map<string,string>(sea.choices.flatMap(choice=>choice.type==='merge'?choice.allowed.map(id=>[`sea:${id}`,`sea:${choice.value}`] as const):[]));
+      if(mergedIds.size)acceptedSpatial={...acceptedSpatial,poiFootprints:acceptedSpatial.poiFootprints.map(p=>({...p,attachments:p.attachments.map(ref=>ref.kind==='water'&&mergedIds.has(ref.waterId)?{...ref,waterId:mergedIds.get(ref.waterId)!}:ref)}))};
+    }
     if(acceptedSpatial&&(!kingdomJob||backup))map=reconcileDetailMapIdentities({...map,physicalGrid:acceptedSpatial});
     checkedRiverMap(map);
     assertGeneratedIds(map);
-    if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
-    if (kingdomJob && !backup) {updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);return map;} // internal kingdom steps form one transaction at finish
+    if (!before) {updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);return map;} // internal kingdom steps form one transaction at finish
     // New maps acquire their deterministic layer only at the accepted boundary:
     // Knave has resolved its owners, and Mythic has assigned its final quotas.
     // Continuing an imported legacy map never implicitly adapts it.
@@ -13931,10 +13957,6 @@ export function App() {
       map={...map,physicalGrid:parseDetail1StateV11({schema:'hexcrawl.detail1',version:1,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints})};
       checkedRiverMap(map);
     }
-    const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
-    const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
-    const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
-    if (missing.length) throw new NotesLossConflict(missing);
     map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
     map.gmNotesByHexKey = {...notes};
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
@@ -14044,12 +14066,13 @@ export function App() {
   const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup, context?: GenerationActionContext) => {
     restoreGenerationBackup(backup);
     const seaConflict=error instanceof WaterEditError&&error.code.startsWith('sea_');
-    const authored=authoredNameError(error,language);if(authored)setEditError(authored);else if(seaConflict)setEditError(waterCommandError(error));
+    const detail=error instanceof DetailGenerationConflict?detailCommandError(error,language):undefined;
+    const authored=authoredNameError(error,language);if(detail)setEditError(detail);else if(authored)setEditError(authored);else if(seaConflict)setEditError(waterCommandError(error));
     activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
     const notesLossHexKeys = error instanceof NotesLossConflict ? [...error.hexKeys] : undefined;
     const diagnostic = generationLog.finish({
-      ...generationEvent(anchorHex, options, notesLossHexKeys||authored||seaConflict||error instanceof RiverFeatureConflict ? 'constraint-rejection' : 'programming-error',
-        notesLossHexKeys ? 'notes_loss_conflict' : seaConflict ? 'sea_identity_conflict' : authored ? 'authored_name_loss' : error instanceof RiverFeatureConflict ? 'river_feature_conflict' : String(error), 'rolled-back', context),
+      ...generationEvent(anchorHex, options, notesLossHexKeys||detail||authored||seaConflict||error instanceof RiverFeatureConflict ? 'constraint-rejection' : 'programming-error',
+        notesLossHexKeys ? 'notes_loss_conflict' : detail ? 'detail_accepted_poi_loss' : seaConflict ? 'sea_identity_conflict' : authored ? 'authored_name_loss' : error instanceof RiverFeatureConflict ? 'river_feature_conflict' : String(error), 'rolled-back', context),
       ...(notesLossHexKeys ? { notesLossHexKeys } : {}),
       message: String(error),
       stack: error && typeof error === 'object' && 'stack' in error ? String(error.stack) : undefined

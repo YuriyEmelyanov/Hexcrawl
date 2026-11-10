@@ -116,6 +116,16 @@ test('active DETAIL1 route and water mutations retain exact attachments or refus
  const sea=seaFixture();sea.map.waterPoiByHexKey={'1,2':'shipwreck'};const w=await importMap(sea),waterDoc=structuredClone(w.render().captureDocument());waterDoc.map.physicalGrid=state(prepare(w));w.render().applyDocument(waterDoc);w.render().setEditMode(true);w.render().setSelectedHex({q:1,r:2});w.render();w.guardRandom();
  const accepted=structuredClone(w.render().captureDocument()),waterStacks=structuredClone([w.render().undoHistory,w.render().redoHistory]);
  assert.equal(w.render().startWaterDraft('land','1,2'),true);const d=w.render().waterDraft;w.render().finishWaterDraft(d,true);w.render();assert.deepEqual(structuredClone(w.render().captureDocument()),accepted);assert.deepEqual(structuredClone([w.render().undoHistory,w.render().redoHistory]),waterStacks);
+ // Reuse the live water/history case for SEA02 identity merges: contacts and
+ // extents stay literal, only an explicitly resolved component ID may change.
+ const joining=seaFixture('classic',true);joining.map.waterPoiByHexKey={'1,2':'shipwreck','-3,3':'rocks'};
+ const j=await importMap(joining),jd=structuredClone(j.render().captureDocument());jd.map.physicalGrid=state(prepare(j));j.render().applyDocument(jd);j.render();j.guardRandom();
+ const jb=structuredClone(j.render().captureDocument()),candidate=structuredClone(jb.map);candidate.hexTerrainByKey.set('-2,2',{terrainOverride:'sea'});
+ const joined=j.render().recordGenerated(jb.map,candidate,{q:1,r:2},j.render().captureGenerationBackup());
+ assert.equal(joined.seas.length,1);assert.equal(joined.seas[0].id,7);
+ assert.deepEqual(structuredClone(joined.physicalGrid.poiFootprints),jb.map.physicalGrid.poiFootprints.map(p=>({...p,attachments:p.attachments.map(ref=>ref.kind==='water'?{...ref,waterId:'sea:7'}:ref)})));
+ j.geometry.validateDetailMapFootprints(joined,joined.physicalGrid);j.render().applyDocument(j.render().undoHistory.at(-1).after);j.render();
+ const ja=structuredClone(j.render().captureDocument());j.render().undoMap();assert.deepEqual(structuredClone(j.render().captureDocument()),jb);j.render().redoMap();assert.deepEqual(structuredClone(j.render().captureDocument()),ja);
 });
 
 // DTL-21/23: E7 address remapping is not proof of physical E8 relocation.

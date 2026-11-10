@@ -106,9 +106,10 @@ test('manual edits do not replace generation checkpoints, regenerate rollback re
     const {h}=setup(42),g=h.geometry;h.render().setLanguage(language);
     h.render().addFallbackTractToMap({q:0,r:0});
     const base=h.render().captureDocument().map,a={q:0,r:0},b={q:1,r:0};
+    // This handcrafted checkpoint exercises legacy river history, without DETAIL1 owners.
     const region={...base.regions[0],hexes:[a,b],centerHex:a,anchorHex:a,finalSize:2,targetSize:2,pointsOfInterest:[],pointOfInterestKinds:{},heightLevel:1};
     const other=new Set(g.getHexCornerPoints(b).map(v=>v.key)),path=g.getHexCornerPoints(a).filter(v=>other.has(v.key));
-    h.render().restoreSnapshot({...base,regions:[region],rivers:[],roads:[],crossings:[],hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),candidateHexes:g.getCandidateHexes([a,b],new Set()),nextRiverId:1,nextRoadId:1});
+    h.render().restoreSnapshot({...base,physicalGrid:undefined,regions:[region],rivers:[],roads:[],crossings:[],hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),candidateHexes:g.getCandidateHexes([a,b],new Set()),nextRiverId:1,nextRoadId:1});
     assert.equal(h.render().editRiverDocument({type:'create',regionId:region.id,path,fullness:2}),true);
     const id=h.render().rivers[0].id;
     h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
@@ -170,7 +171,7 @@ for(const command of ['deleteLastRegion','regenerateLastRegion'])for(const langu
  h.render().addFallbackTractToMap({q:0,r:0});
  const base=h.render().captureDocument().map,a={q:0,r:0},b={q:1,r:0};
  const region={...base.regions[0],hexes:[a,b],centerHex:a,anchorHex:a,finalSize:2,targetSize:2,pointsOfInterest:[],pointOfInterestKinds:{},heightLevel:1};
- h.render().restoreSnapshot({...base,regions:[region],rivers:[],roads:[],crossings:[],riverFeatures:{rapids:[],waterfalls:[]},hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),candidateHexes:g.getCandidateHexes([a,b],new Set()),nextRiverId:1,nextRoadId:1});
+ h.render().restoreSnapshot({...base,physicalGrid:undefined,regions:[region],rivers:[],roads:[],crossings:[],riverFeatures:{rapids:[],waterfalls:[]},hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),candidateHexes:g.getCandidateHexes([a,b],new Set()),nextRiverId:1,nextRoadId:1});
  h.render().addFallbackTractToMap(h.render().candidateHexes[0]);assert.equal(h.render().regions.length,2);
  const current=h.render().captureDocument().map,last=current.regions[1];
  assert.equal(h.render().history.at(-1).rivers.length,0);
@@ -551,13 +552,15 @@ test('E5 native v7 feature intentions and counter survive real import, edits, hi
   }
 });
 
+// Legacy river fixtures replace owners/geometry; an auto-generated DETAIL1 layer
+// cannot be carried over. Active DETAIL1 integration has its own document tests.
 function riverBackendFixture(withCrossing){
  const {h}=setup();h.render().addFallbackTractToMap({q:0,r:0});const g=h.geometry,base=h.render().captureDocument().map,a={q:0,r:0},b={q:1,r:0};
  const region={...base.regions[0],hexes:[a,b],centerHex:a,anchorHex:a,finalSize:2,targetSize:2,pointsOfInterest:[],pointOfInterestKinds:{},heightLevel:1};
  const corners=g.getHexCornerPoints(a),other=new Set(g.getHexCornerPoints(b).map(v=>v.key)),path=corners.filter(v=>other.has(v.key));assert.equal(path.length,2);
  const edge=path.map(v=>v.key).sort().join('|'),river={id:1,regionId:region.id,vertexPath:path,sectors:g.createInitialRiverSectors(1,path,2,{},region.id)},key='1:0,0|1,0:1';
  const road={id:1,regionId:region.id,segments:[{from:a,to:b,kind:'road'}]};
- h.render().restoreSnapshot({...base,regions:[region],rivers:[river],roads:withCrossing?[road]:[],crossings:withCrossing?[{key,roadId:1,roadSegmentKey:'0,0|1,0',riverId:1,riverEdgeKey:edge,kind:'ford'}]:[],hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),candidateHexes:g.getCandidateHexes([a,b],new Set()),nextRiverId:2,nextRoadId:withCrossing?2:1});
+ h.render().restoreSnapshot({...base,physicalGrid:undefined,regions:[region],rivers:[river],roads:withCrossing?[road]:[],crossings:withCrossing?[{key,roadId:1,roadSegmentKey:'0,0|1,0',riverId:1,riverEdgeKey:edge,kind:'ford'}]:[],hexTerrainByKey:new Map(),waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),candidateHexes:g.getCandidateHexes([a,b],new Set()),nextRiverId:2,nextRoadId:withCrossing?2:1});
  return {h,g,path,edge,key,a,b};
 }
 // New contracts: real river backend with crossings/history and same-transaction

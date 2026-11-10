@@ -122,6 +122,7 @@ test('notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require
   const land=valid.map.regions[0].hexes[0], k=`${land.q},${land.r}`;
   for(const version of [2,3,4,5]) {
     const data=structuredClone(valid); data.version=version;
+    delete data.map.physicalGrid; // Legacy versions predate the v11 spatial layer.
     data.map.terrainByHexKey['-999,0']={terrainOverride:'sea'};
     data.map.gmNotesByHexKey={[k]:'  🗝 <script>not HTML</script>\r\n ', '-999,0':'sea'};
     assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(data));
@@ -130,6 +131,8 @@ test('notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require
   const bad=structuredClone(valid);bad.version=4;delete bad.generation;
   assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
   bad.version=7;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
+  const future=structuredClone(valid);future.version=12;
+  assert.throws(()=>h.geometry.assertHexcrawlSaveData(future),/version|верси/i);
 });
 
 const loadAuthoredMap=async()=>{

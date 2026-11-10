@@ -69,11 +69,14 @@ test('RIV-EX-01/12/13/15 real map expansion validates each extension in all coas
     for (let i = 0; i < 8; i++) {
       const before = h.render(), anchor = before.candidateHexes[0] ?? (i === 0 ? { q: 0, r: 0 } : null);
       if (!anchor) break;
+      const document=structuredClone(before.captureDocument()),stacks=structuredClone([before.undoHistory,before.redoHistory]);
       const result = before.safelyAddRegionToMap(anchor, { coastalPreference: i ? mode : 'mainland', targetSize: 15 });
       if (!result.success) {
         // A constrained coastal pocket may have no room for a required source
         // lake. RIV-017 forbids the former fallback that silently closed it.
-        assert.equal(result.diagnostic.kind, 'constraint-rejection');
+        assert.equal(result.diagnostic.kind, 'constraint-rejection', `${mode}/${seed}/${i}: ${result.diagnostic.message}`);
+        assert.deepEqual(structuredClone(h.render().captureDocument()),document,'refusal keeps accepted spatial owners, RNG and generation checkpoints');
+        assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
         assert.equal(JSON.stringify(h.render().regions), JSON.stringify(before.regions));
         assert.equal(JSON.stringify(h.render().rivers), JSON.stringify(before.rivers));
         assert.equal(JSON.stringify(h.render().history), JSON.stringify(before.history));
