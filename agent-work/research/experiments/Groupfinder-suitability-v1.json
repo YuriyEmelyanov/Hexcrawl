@@ -1,0 +1,93 @@
+{
+  "experiment_id": "HX-RSR-EXP-GROUPFINDER-SUITABILITY-v1",
+  "version": 1,
+  "status": "qualitative_only_reject_M_p_trend_conversion",
+  "id": "lfg_posts_experimental",
+  "definition": "Evaluate whether primary recruitment aggregates/listings supply a stable unit, edition, GMdedup and playedstatus for market calibration.",
+  "unit": "group/ad post; interested playerprofile; account organizer; closure response, kept separate",
+  "period": "April6 active snapshot vs October6 report(updated25Oct), exact latercutoffunknown; live10Novrender",
+  "geography_language": "English public pages; platform users self-select. Report says halfUS,56countries among locatedusers; not population weighting.",
+  "population_or_sampling_frame": "Self-selected Groupfinder recruitment users/posts, not all TTRPGplayers or GMs",
+  "availability_and_access": "Public report, public list, one resolveddetail and one organizerpage; no login/fullcrawl/rawdataset",
+  "deduplication": "Canonical .gg/.eu/.groupmanager sourcefamily; postURL+organizer account; report andpost/profile not independentpopulation samples; crossplatform ad aliases not additive",
+  "biases": [
+    "Recruitment andduration bias: fulltables may disappear while hard-to-fillads persist",
+    "Paid professional organizers may have manyads",
+    "Country/language skew, editions and aggregate scopes differ",
+    "Closure answers self-reported, unknown repeatresponse policy"
+  ],
+  "target_variable": "Suitability for M, p_create, activity trends and residual L1productneed",
+  "calibration_or_qualitative_only": "Qualitative only; no weight, conversion or active numericalmethodchange",
+  "uncertainty": "Exact extractionwindow, alltimevsactive denominators, humanidentity/GMrole, conducted dates and ownmap tags",
+  "validation_or_falsification": [
+    {
+      "id": "GF01",
+      "input": "Aprilactive688 versus later2686 mixedscope",
+      "expected": "block growthratio",
+      "observed": "Different declared populations andcutoffs; blocked",
+      "result": "pass_rejection"
+    },
+    {
+      "id": "GF02",
+      "input": "PF1/PF2 combinedApril versus splitOctober104/48",
+      "expected": "block editiontrend and Remaster conversion",
+      "observed": "PF2 split useful boundedlabel; noRemaster field",
+      "result": "pass_rejection"
+    },
+    {
+      "id": "GF03",
+      "input": "List GM0/1 cards",
+      "expected": "reject onepost=oneGM",
+      "observed": "GM can be explicitly missing",
+      "result": "pass_counterexample"
+    },
+    {
+      "id": "GF04",
+      "input": "Two gamecards under organizer10579",
+      "expected": "count distinctposts separately, dedup organizer key fororganizers only",
+      "observed": "two advertisedgames,one observableorganizer account; actual uniquehuman/GM unknown",
+      "result": "pass_counterexample"
+    },
+    {
+      "id": "GF05",
+      "input": "Weekly label plus session0 awaitingplayers",
+      "expected": "do not count conducted weeklysession",
+      "observed": "Schedule is intent, not dated play record",
+      "result": "pass_rejection"
+    },
+    {
+      "id": "GF06",
+      "input": "Closure survey909 and filled percentage",
+      "expected": "retain author unit; blockuniqueGM/session extrapolation",
+      "observed": "No perrespondentdedup or per-system conducted-session cross-tab",
+      "result": "pass_rejection"
+    },
+    {
+      "id": "GF07",
+      "input": "Header576 versus filter1036",
+      "expected": "no computed systemshare from mismatchedscope",
+      "observed": "Counter scopes not documented; store separately",
+      "result": "pass_rejection"
+    },
+    {
+      "id": "GF08",
+      "input": "Campaign/WestMarches/homebrew tags",
+      "expected": "do not assign regionalhex p_create or newmap need",
+      "observed": "None specifies own regionalmap creation or residual generatorneed",
+      "result": "pass_rejection"
+    },
+    {
+      "id": "GF09",
+      "input": "Samecampaign linked onGroupfinder andStartPlaying, or .gg/.eu mirrors",
+      "expected": "same sourceproject/GM/post dedup, not additive audiences",
+      "observed": "Externalad links present; no joinedrowexport; treat asdependent source",
+      "result": "pass_rejection"
+    }
+  ],
+  "numeric_effect_proposal_ref": null,
+  "active_numeric_method_changed": false,
+  "candidate_numeric_method": null,
+  "result": "Primaryplatform evidence supports listinginterest only; directcounterexamples reject playedGM/campaigngrowth and ownhexmap calibration.",
+  "evidence_ref": "agent-work/research/market/Groupfinder-denominator-2026-11-10.json",
+  "rule_or_product_requirement": "None invented from listingmetadata; no new rules or producttask."
+}

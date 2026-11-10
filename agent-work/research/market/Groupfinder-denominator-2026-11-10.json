@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-10T1228-Groupfinder-denominator",
+  "status": "completed_bounded_denominator_falsification",
+  "sources": [
+    {
+      "id": "GF-REPORT-20261006",
+      "url": "https://groupfinder.gg/library/state-of-tabletop-2026",
+      "published_at": "2026-10-06",
+      "updated_at": "2026-10-25",
+      "locator": "Overview; dominance; PF split; counting note; How people play; Do groups actually fill up; footer",
+      "access_level": "full_text",
+      "author_project_key": "holger-mets:groupfinder:state-of-tabletop2026"
+    },
+    {
+      "id": "GF-REPORT-20260406",
+      "url": "https://groupfinder.gg/library/is-dnd-still-king-a-deep-dive-into-groupfinders-2026-matchmaking-data",
+      "published_at": "2026-04-06",
+      "locator": "Overview lines83–100",
+      "access_level": "full_text",
+      "author_project_key": "groupfinder:state-of-tabletop2026-series"
+    },
+    {
+      "id": "GF-LIST-20261110",
+      "url": "https://groupfinder.gg/list",
+      "published_at": null,
+      "locator": "Header/filter counts; Campaign cards incl GM0/1; search-rendered snapshot, not full export",
+      "access_level": "full_text",
+      "author_project_key": "groupfinder:live-list"
+    },
+    {
+      "id": "GF-POST-8f4fc780ff",
+      "url": "https://groupfinder.gg/list/detective-domains-of-dread-8f4fc780ff",
+      "published_at": "2026-09-29",
+      "updated_at": "2026-11-09",
+      "locator": "Description; Game info; Organizer; Game Master",
+      "access_level": "full_text",
+      "author_project_key": "groupfinder:user10579:post8f4fc780ff"
+    },
+    {
+      "id": "GF-USER10579",
+      "url": "https://groupfinder.gg/users/10579/games",
+      "published_at": null,
+      "locator": "Games added by user; two distinct advertised games",
+      "access_level": "full_text",
+      "author_project_key": "groupfinder:user10579"
+    }
+  ],
+  "observations": [
+    {
+      "id": "obs-GF-OCT-DENOMINATOR-20261110",
+      "game_ids": [
+        "PF2",
+        "PF1",
+        "DND5",
+        "DH",
+        "SD"
+      ],
+      "source": {
+        "url_or_ref": "https://groupfinder.gg/library/state-of-tabletop-2026",
+        "locator": "Overview; dominance; PF split; counting note; How people play; Do groups actually fill up; footer",
+        "published_at": "2026-10-06"
+      },
+      "observed_fact": "Report describes4277 playerprofiles and2686 groups. D&D share wording explicitly refers to all group posts ever. PF2 is104 groups/663 profiles; PF1 is48 groups. Campaign and frequency labels and a909-response closure survey are also reported.",
+      "interpretation": "Platform recruitment corpus with mixed/insufficiently specified time bases, not a census of played campaigns or uniqueGMs. PF editions separated here; Remaster distinction unavailable.",
+      "signal_type": "lfg_aggregate_experimental",
+      "quantity": 2686,
+      "unit": "reported_group_posts_with_ambiguous_active_vs_cumulative_scope",
+      "period": "Report2026-10-06,updated10-25; exact extraction cutoff not stated",
+      "geography_language": "English public pages; platform users self-select. Report says halfUS,56countries among locatedusers; not population weighting.",
+      "author_project_key": "holger-mets:groupfinder:state-of-tabletop2026",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "unknown"
+      ],
+      "limitations": [
+        "No row-level export or uniqueGM denominator in report.",
+        "909 called GMs by author, but per-post closure collection and repeat-response dedup not specified; do not relabel as909verifieduniqueGMs.",
+        "Closure filled status is not a dated session attendance record.",
+        "No own regionalmap/hexcrawl/newmap field or cross-tab; p_create unknown."
+      ],
+      "observed_at": "2026-11-10T12:32:24.413483+00:00"
+    },
+    {
+      "id": "obs-GF-APR-COMPARE-20261110",
+      "game_ids": [
+        "PF2",
+        "PF1",
+        "DND5"
+      ],
+      "source": {
+        "url_or_ref": "https://groupfinder.gg/library/is-dnd-still-king-a-deep-dive-into-groupfinders-2026-matchmaking-data",
+        "locator": "Overview lines83–100",
+        "published_at": "2026-04-06"
+      },
+      "observed_fact": "April6 report uses1560 activeplayer posts and688 activegroup posts; PF1/PF2 combined.",
+      "interpretation": "Cannot divide2686 by688 as campaign growth: stock/timebase and edition bins differ.",
+      "signal_type": "lfg_aggregate_experimental",
+      "quantity": 688,
+      "unit": "active_group_posts_on_report_date",
+      "period": "2026-04-06",
+      "geography_language": "English public pages; platform users self-select. Report says halfUS,56countries among locatedusers; not population weighting.",
+      "author_project_key": "groupfinder:state-of-tabletop2026-series",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "unknown"
+      ],
+      "limitations": [
+        "Later report is not a matched panel; additions/deletions/closures/recruitment bias unknown.",
+        "PF combined figure cannot calibrate PF2Remaster alone."
+      ],
+      "observed_at": "2026-11-10T12:32:24.413483+00:00"
+    },
+    {
+      "id": "obs-GF-LIVE-SCOPE-20261110",
+      "game_ids": [
+        "DND5",
+        "PF2"
+      ],
+      "source": {
+        "url_or_ref": "https://groupfinder.gg/list",
+        "locator": "Header/filter counts; Campaign cards incl GM0/1; search-rendered snapshot, not full export",
+        "published_at": null
+      },
+      "observed_fact": "Rendered list header576 active posts; filter options include1036 DND5 games and93 PF2 games. Cards include groups seeking a GM, with GM0/1.",
+      "interpretation": "Filter count timebase differs or is undocumented. No shares computed from unlike counters. Existence of GM0/1 directly refutes onepost=oneavailableGM.",
+      "signal_type": "lfg_listing_experimental",
+      "quantity": 576,
+      "unit": "rendered_active_post_header_not_verified_global_total",
+      "period": "Retrieved2026-11-10; dynamic listing",
+      "geography_language": "English public pages; platform users self-select. Report says halfUS,56countries among locatedusers; not population weighting.",
+      "author_project_key": "groupfinder:live-list",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "unknown"
+      ],
+      "limitations": [
+        "Single renderedpage, not complete census; timezone/default filters/caching unknown.",
+        "Live link indices shifted between reads; record resolved URL/title, never assume index identity.",
+        "No quantitative estimate of GM0/1 prevalence from this purposive check."
+      ],
+      "observed_at": "2026-11-10T12:32:24.413483+00:00"
+    },
+    {
+      "id": "obs-GF-POST-STATUS-20261110",
+      "game_ids": [
+        "DND5"
+      ],
+      "source": {
+        "url_or_ref": "https://groupfinder.gg/list/detective-domains-of-dread-8f4fc780ff",
+        "locator": "Description; Game info; Organizer; Game Master",
+        "published_at": "2026-09-29"
+      },
+      "observed_fact": "Resolved post uses D&D2024 tag, weekly schedule, organizer user10579,GM1/1, and says session0 waits for enough players. Organizer page shows two different advertised games.",
+      "interpretation": "One organizer can produce several posts. Schedule/level text alone does not verify played date; one may contain ongoing-play self-report while another awaits start. DND2024 not evidence for DND5-2014 ruleprofile.",
+      "signal_type": "lfg_listing_experimental",
+      "quantity": null,
+      "unit": "post_and_organizer_relationship_not_people_count",
+      "period": "Postadded2026-09-29,edited2026-11-09; retrieved2026-11-10",
+      "geography_language": "English public pages; platform users self-select. Report says halfUS,56countries among locatedusers; not population weighting.",
+      "author_project_key": "groupfinder:user10579:post8f4fc780ff",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "unknown"
+      ],
+      "limitations": [
+        "No session log or attendance proof read.",
+        "Account is observable organizer key, not verified person; do not equate organizer and GM in every post.",
+        "Paid professionalGM example is purposeful counterexample, not a representative sample.",
+        "Two resolved sources refer to the same post/account; not independent campaigns/people samples."
+      ],
+      "observed_at": "2026-11-10T12:32:24.413483+00:00"
+    }
+  ],
+  "experiment_ref": "agent-work/research/experiments/Groupfinder-suitability-v1.json",
+  "findings": [
+    {
+      "kind": "source",
+      "observation_refs": [
+        "obs-GF-OCT-DENOMINATOR-20261110",
+        "obs-GF-APR-COMPARE-20261110",
+        "obs-GF-LIVE-SCOPE-20261110",
+        "obs-GF-POST-STATUS-20261110"
+      ]
+    },
+    {
+      "kind": "inference",
+      "finding": "At least two separate obstacles to activeGM census: posts can lackGM and one organizer has severalgames. Active/cumulative counters also differ. No multiplication or global extrapolation justified."
+    },
+    {
+      "kind": "unknown",
+      "finding": "Played-session dates, verifiedhuman dedup, GMrole perpost and own regionalmap/newhexcreation need remain unknown."
+    }
+  ],
+  "ranking_consequence": "No new M/p/T/R/C numbers or rank changes proposed.104PF2 posts are a bounded recruitment signal, not104RemasterGMs and not a replacement for Foundryproxy. No OSRfamily sum becomes a singlegame score.",
+  "development_consequence": "PendingPF2-FILL1/EXPORT1 not reprioritized by this dataset. Campaign/homebrew tags do not prove unmet mapgeneration/export need; no new backlogtasks.",
+  "selection_scope": "No comprehensive scrape or campaigncensus; two reportdefinitions and purposeful unitcounterexamples only.",
+  "source_access_errors": [
+    "One dynamiclist click resolved a differenttitle as indices shifted; recorded actualresolved URL and itscontent. Second staleclick failed; no data inferred from it."
+  ],
+  "completed_at": "2026-11-10T12:32:24.413483+00:00"
+}
