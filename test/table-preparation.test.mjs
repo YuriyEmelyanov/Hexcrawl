@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {applyPreparation,preparationView,preparationLink,validatePreparation,retainPreparation,remapPreparation} from '../src/tags/tablePreparation.ts';
+import {fillPreparation,applyPreparation,preparationView,preparationLink,validatePreparation,retainPreparation,remapPreparation} from '../src/tags/tablePreparation.ts';
 import {emptyKnaveContent,fillKnaveContent,knaveCompatibleRows} from '../src/tags/knave.ts';
 import {drawTagIndex} from '../src/tags/engine.ts';
 import {knaveCatalogFixture,knaveFactsFixture} from './helpers/knave-fixture.mjs';
@@ -92,4 +92,34 @@ test('TABLES1 identity remap and confirmed retention preserve calls and monotoni
  moved.byPoi[target].description='Independent clone';assert.equal(state.byPoi[owner].description,'');
  const retained=retainPreparation(state,new Set([other]));assert.deepEqual(Object.keys(retained.byPoi),[other]);assert.equal(retained.nextCallId,state.nextCallId);retained.byPoi[other].description='Detached retained owner';assert.deepEqual(state,before);
  assert.throws(()=>remapPreparation(state,new Map([[owner,other]]),ctx.live),error('owner_collision'));
+});
+
+
+test('TABLES1 automatic continuation reuses legacy generation, preserves accepted content and reserves global IDs atomically',()=>{
+ const ctx=setup(),extra='poi:3:3,0',facts=[ctx.facts[owner],ctx.facts[other],ctx.facts[water],knaveFactsFixture(extra)];
+ const live=new Set(facts.map(f=>f.owner));
+ let accepted=add(undefined,ctx,'structures',27);
+ accepted=applyPreparation(accepted,ctx,{kind:'link',owner,id:1,choice:{kind:'manual',row:84}});
+ accepted=applyPreparation(accepted,ctx,{kind:'description',owner,value:'An authored interpretation'});
+ const before=structuredClone(accepted),preserved=new Set([other]);
+ const old=fillKnaveContent(emptyKnaveContent(),ctx.catalog,facts,ctx.seed,new Set([owner,other]));
+ const expected=preparationView(old,ctx.catalog,live);
+ const random=Math.random;Math.random=()=>{throw Error('ambient RNG used');};
+ let result;
+ try{result=fillPreparation(accepted,ctx.catalog,facts,ctx.seed,preserved);}finally{Math.random=random;}
+ assert.deepEqual(accepted,before);assert.deepEqual(result.byPoi[owner],before.byPoi[owner]);assert.equal(result.byPoi[other],undefined);
+ let nextId=before.nextCallId;
+ for(const key of Object.keys(expected.byPoi).sort()){
+  const place=structuredClone(expected.byPoi[key]);for(const call of place.calls)call.id=nextId++;
+  assert.deepEqual(result.byPoi[key],place);
+ }
+ assert.equal(result.nextCallId,nextId);assert.deepEqual(fillPreparation(accepted,ctx.catalog,[...facts].reverse(),ctx.seed,preserved),result);
+ const roundtrip=JSON.parse(JSON.stringify(result));assert.equal(fillPreparation(roundtrip,ctx.catalog,facts,ctx.seed,preserved),roundtrip);
+ result.byPoi[owner].calls[0].ru='Detached edit';assert.deepEqual(accepted,before);
+ const exhausted={...accepted,nextCallId:Number.MAX_SAFE_INTEGER-1},snapshot=structuredClone(exhausted);
+ assert.throws(()=>fillPreparation(exhausted,ctx.catalog,facts,ctx.seed,preserved),error('id_overflow'));assert.deepEqual(exhausted,snapshot);
+ const removed=retainPreparation(accepted,new Set());assert.equal(removed.schemaVersion,2);assert.equal(removed.nextCallId,before.nextCallId);
+ const refilled=fillPreparation(removed,ctx.catalog,facts,ctx.seed);assert.ok(Object.values(refilled.byPoi).flatMap(p=>p.calls).every(c=>c.id>=before.nextCallId));
+ assert.throws(()=>fillPreparation(accepted,ctx.catalog,[...facts,facts[0]],ctx.seed));
+ assert.throws(()=>fillPreparation(accepted,ctx.catalog,facts.filter(f=>f.owner!==owner),ctx.seed));
 });

@@ -1,7 +1,7 @@
 /** TABLES1 detached preparation contract. App/history/save-v12 activation is
  * deliberately separate: these commands never mutate geometry or world RNG. */
 import {drawTagIndex} from './engine.ts';
-import {KNAVE_CATALOG_VERSION,KNAVE_SOURCE_ID,knaveResultText,validateKnaveCatalog,validateKnaveContent,knaveCompatibleRows,type KnaveCatalog,type KnaveContentState,type KnaveFacts,type KnaveTable,type KnavePoiContent,type KnaveReference} from './knave.ts';
+import {emptyKnaveContent,fillKnaveContent,KNAVE_CATALOG_VERSION,KNAVE_SOURCE_ID,knaveResultText,validateKnaveCatalog,validateKnaveContent,knaveCompatibleRows,type KnaveCatalog,type KnaveContentState,type KnaveFacts,type KnaveTable,type KnavePoiContent,type KnaveReference} from './knave.ts';
 export type TableSnapshot={table:KnaveTable;sourceRow:number;printedResult:string;ru:string;en?:string;sourceRef:{pdfPage:number;printedPage:number;table:KnaveTable;row:number};references:KnaveReference[]};
 export type TableCall=TableSnapshot&{id:number;selection:'manual'|'d100'|'legacy_compatible_pool';rollCounter:number;rollValue?:number;parentId?:number;edgeId?:string;nextEntry?:TableSnapshot&{policy:'confirmed_next_entry'};legacySelection?:{role:'primary'|'trait';representation?:string}};
 export type PreparedPlace={catalogVersion:typeof KNAVE_CATALOG_VERSION;sourceId:typeof KNAVE_SOURCE_ID;category:KnavePoiContent['category'];calls:TableCall[];description:string;migrationMeta?:{categoryCounter:number}};
@@ -136,4 +136,29 @@ export function retainPreparation(input:PreparationState,live:ReadonlySet<string
 export function remapPreparation(input:PreparationState,moves:ReadonlyMap<string,string>,live:ReadonlySet<string>):PreparationState {
  validatePreparation(input,new Set(Object.keys(input.byPoi)));const entries=Object.entries(input.byPoi).map(([k,v])=>[moves.get(k)??k,v]as const);
  if(new Set(entries.map(([k])=>k)).size!==entries.length)fail('owner_collision');const next={...structuredClone(input),byPoi:Object.fromEntries(structuredClone(entries))};validatePreparation(next,live);return next;
+}
+
+/** Continue automatic generation after materialization without redrawing accepted
+ * calls. Reuse the schema1 algorithm, including its namespaces and pool policy,
+ * only for missing, non-preserved owners; then allocate new global IDs.
+ * The caller still owns the map transaction and marker changes for new owners. */
+export function fillPreparation(state:PreparationState,catalog:KnaveCatalog,facts:readonly KnaveFacts[],seed:number,preservedOwners?:ReadonlySet<string>):PreparationState {
+ const live=new Set(facts.map(f=>f.owner));
+ validatePreparation(state,live);
+ const excluded=new Set([...Object.keys(state.byPoi),...(preservedOwners??[])]);
+ // This validates all facts/catalog even when no owners need filling. Existing
+ // user-authored snapshots are never revalidated against a current table row.
+ const generated=fillKnaveContent(emptyKnaveContent(),catalog,facts,seed,excluded);
+ if(!Object.keys(generated.byPoi).length)return state;
+ const pending=preparationView(generated,catalog,live),next=structuredClone(state);
+ for(const key of Object.keys(pending.byPoi).sort()){
+  const place=pending.byPoi[key];
+  for(const call of place.calls){
+   if(!integer(next.nextCallId,1,Number.MAX_SAFE_INTEGER-1))fail('id_overflow');
+   call.id=next.nextCallId++;
+  }
+  next.byPoi[key]=place;
+ }
+ validatePreparation(next,live);
+ return next;
 }
