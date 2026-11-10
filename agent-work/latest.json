@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-10T0502-programmer-HX-BL-051-final-water",
+  "run_id": "2026-11-10T0600-programmer-HX-BL-051-compatibility",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "final_water_placement_verified_remaining_compatibility_triage",
+  "status": "compatibility_fixed_full_UI_pending",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -39,11 +39,7 @@
   "confirmed_points": null,
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
-  "operational_state_write": {
-    "latest_written_last": true,
-    "data_commit_sha": "3d41da7b0eb0deaac3f9396b8dc493ab9b44985c",
-    "foreign_claims_preserved": true
-  },
+  "operational_state_write": "confirmed_data_commit_latest_written_last",
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
@@ -55,10 +51,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-041-MC1-EN.md",
   "spec_version": "EN-1.0 + current owner translation instruction",
-  "result_path": "agent-work/results/2026-11-10T0502-programmer-HX-BL-051-final-water.json",
-  "handoff_commit_sha": "a95c4baa4cab4788955b1cfe13469ee569c24e0c",
+  "result_path": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json",
+  "handoff_commit_sha": "f2bd148361b4479c39c44bd3be8f945cca923e9a",
   "active_claim": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 с bc220e4/treeb60cac98 (WIP интегрирует main1962fb9a; PR496 всё ещё09b3c9b). Размещение нового land POI после финальной воды исправлено: не повторять этот разбор. До нового полного прогона адресно разобрать7оставшихся отрицательных случаев. Первый: mapTransactions:111 искусственно заменяет регионы/POI после addFallbackTractToMap, сохраняя несовместимый physicalGrid; validator правильно отказывает POI identities do not match live owners. Проверить ту же причину в riverBackendFixture:560 для3E5cases; явно оформить legacy fixture без spatial layer либо построить согласованный слой, не ослабляя production validation и не удаляя активные DETAIL1 tests. Отдельно проверить NotesLossConflict приоритет/fixtures, реальный RIV expansion и future save version: notes fixture не должна считать поддержаннуюv11 будущей без проверки контракта. Затем обязательные check/browser, оставшийся фактический UI1/6/12/24 и независимый combined exactSHAreview/score_assessment1.2. Публикация отдельно не разрешена.",
+  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 с 1ba518307909d7953aa9f653fb59c60beaa09712 (tree 7fbe644446c9b9f6fcf1a5922b3d80c731b11e1e) в agent/hx-bl-051-activation-wip. Семь прежних отрицательных cases разобраны; не повторять триаж старых fixtures. Завершить фактический UI1/6/12/24 по DTL-1.0 и предъявить desktop/390/320 на точном SHA, включая сводки, части POI, воду/входы и состояния. После реализации обновить существующий PR496 и необходимые check/browser/RNG, затем независимая combined exactSHA проверка со score_assessment1.2. Локальный Chromium блокируется окружением socket() Operation not permitted; нужна разрешённая CI/browser среда, а не ослабление проверки. Публикация отдельно не разрешена.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -130,9 +126,9 @@
   "evidence_path": "agent-work/results/2026-11-10T0502-programmer-HX-BL-051-final-water.json",
   "branch_name": "agent/hx-bl-051-activation-wip",
   "pr": 496,
-  "head_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
-  "tree_sha": "b60cac98582cc2ae35f03bf715d78b649563f47f",
-  "checks_status": "typecheck_build_focused37pass_full7observedfail_interrupted_browserblocked",
+  "head_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
+  "tree_sha": "7fbe644446c9b9f6fcf1a5922b3d80c731b11e1e",
+  "checks_status": "npm_check_passed385of385_typecheck_build_passed_browser_launch_blocked",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42744399241",
   "review_verdict": "not_requested_incomplete_DETAIL1",
   "role_selection_mode": "ready_work_priority",
@@ -233,7 +229,7 @@
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/release-PR499/score-assessment1.2.json",
-  "role_selection_reason": "Current explicit owner instruction '499 публикуй' authorizes exact accepted package release; paused DETAIL1 and foreign research/presentation claims preserved.",
+  "role_selection_reason": "Own same-task saved claim execution_running=false, clean local320a381 treeb60cac98 equals remote bc220e4; current approved DETAIL1 implementation has seven unresolved compatibility cases; no competing running programmer.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -253,29 +249,24 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+  "base_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-10T05:02:35.110Z",
+      "checked_at": "2026-11-10T05:57:44.064Z",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "end": {
-      "checked_at": "2026-11-10T05:11:10.310Z",
+      "checked_at": "2026-11-10T06:17:09.606Z",
       "is_enabled": true,
       "status": "checked",
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time checks only; no guarantee after completion.",
-    "final_observation": {
-      "checked_at": "2026-11-10T05:13:02.992Z",
-      "is_enabled": true,
-      "method": "automations.peek"
-    }
+    "limitation": "Point-in-time checks only; no guarantee after completion. Schedule/prompt unchanged."
   },
   "open_findings": [
     "CLASSIFY1-VALIDATION-RIV011"
@@ -889,7 +880,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-10T00:51:29.014Z",
+  "updated_at": "2026-11-10T06:17:40.763Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1151,102 +1142,56 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "6862807d89790fa301026a7dfff153ca54224108",
-    "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
-    "tree_sha": "b181679aac4fc4a1baffe1151b0446eb8233bf4a",
-    "local_sha": "a60a0a0c813b052490137c1adb7e1b777b2f35bf",
-    "suite": "Node --test test/*.test.mjs",
-    "added": 1,
+    "base_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
+    "head_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
+    "added": 0,
     "removed": 0,
-    "modified": 0,
-    "scenario_risk": "Real explicit legacy preview/Cancel/Apply atomic history, no draft export, guarded other mutations, stale callbacks and clone-fault refusal.",
-    "reuse_or_new_reason": "Existing detached geometry/import/extent cases do not activate the layer. Reuse existing regionFixture and real generation harness; one new controller contract. Helper exports add zero logical cases.",
-    "count_source": "TypeScript AST top-level callback diff: base8, head9, one added callback, no old callback changes; separate new browser workflow below. Files/lines/assertions/screenshots/repeated runs are not cases.",
-    "other_suites": [
+    "modified": 7,
+    "suite": "Node node:test",
+    "suites": [
       {
-        "suite": "browser test/browser/detail-adaptation.smoke.mjs",
-        "added": 1,
-        "removed": 0,
-        "modified": 0,
-        "scenario_risk": "Actual visible overlay, Cancel/Escape/Apply, export-menu clearance and1500/390/320 button layout; DOM rendering cannot be proved by Node harness.",
-        "reuse_or_new_reason": "Same Playwright workflow pattern and authored regionFixture; no second browser framework or random series.",
-        "input_variants": [
-          "1500x1100",
-          "390x950",
-          "320x950"
-        ],
-        "workflows_before": 8,
-        "workflows_after": 9
-      }
-    ],
-    "execution": {
-      "node": {
-        "executed": 384,
-        "passed": 384,
-        "failed": 0,
-        "skipped": 0,
-        "duration_ms": 498185.281358,
-        "version": "24.22.1",
-        "exit_code": 0,
-        "typescript": "passed",
-        "build": "passed",
-        "source_note": "Final local source a60a0a0 treeb181 identical to public09b3 and CI merge9527e765; npm run check exited0.",
-        "log_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/npm-check-final.log"
-      },
-      "focused": {
-        "executed": 9,
-        "passed": 9,
-        "failed": 0,
-        "skipped": 0,
-        "duration_ms": 8891.338912,
-        "log_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/focused-final.log"
-      },
-      "base_negative": {
-        "executed": 1,
-        "passed": 0,
-        "failed": 1,
-        "skipped": 0,
-        "classification": "Missing approved explicit activation controller on base6862807; not attributed to released main."
-      },
-      "local_UI_diagnostic": {
-        "status": "launch_error",
-        "executed_workflows": 0,
-        "reason": "Chromium ProcessSingleton socket() Operation not permitted; no product test executed.",
-        "evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/local-browser-launch-error.log"
-      },
-      "browser": {
-        "status": "success",
-        "executed": 9,
-        "passed": 9,
-        "failed": 0,
-        "skipped": 0,
-        "job_id": 129543937949,
-        "workflow_count_source": "package.json scripts and final CI log; one new detail-adaptation workflow after eight existing",
-        "log_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/CI-browser-final.log"
-      },
-      "rng_browser": {
-        "status": "success",
-        "workflows": 1,
-        "passed": 1,
-        "failed": 0,
-        "skipped": 0,
-        "job_id": 129543938228,
+        "suite": "Node node:test",
         "added": 0,
         "removed": 0,
-        "modified": 0,
-        "log_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/CI-RNG-final.log"
-      },
-      "ci_node": {
-        "executed": 384,
-        "passed": 384,
-        "failed": 0,
-        "skipped": 0,
-        "duration_ms": 672683.056231,
-        "job_id": 129543938044,
-        "status": "success",
-        "typescript": "passed",
-        "build": "passed"
+        "modified": 7,
+        "breakdown": {
+          "mapTransactions": 4,
+          "saveSafety": 1,
+          "detailGeography": 1,
+          "riverIntegration": 1
+        }
       }
+    ],
+    "scenario_risk": "Legacy river fixtures must not carry stale DETAIL1 owners; old save versions omit v11 layer, future12 refuses; accepted sea merge retains exact shape/contact and Undo/Redo; rejected expansion preserves complete document/RNG/both histories.",
+    "reuse_or_new_reason": "Reused seven existing logical callbacks. Shared river fixture affects three E5 callbacks; parameter/coast/seed variants are not counted as new tests. Existing note-loss callback passed without test edits. No new permanent callback or removed scenario.",
+    "count_source": "git diff bc220e4..exact tree7fbe644: four test files, direct callback edits plus shared riverBackendFixture callers. No file/line/run counting.",
+    "executions": {
+      "full_node": {
+        "executed": 385,
+        "passed": 385,
+        "failed": 0,
+        "skipped": 0
+      },
+      "focused_sea_merge": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "focused_river": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser": {
+        "executed": 0,
+        "passed": 0,
+        "skipped": null,
+        "status": "blocked_at_launch",
+        "reason": "Chromium socket() Operation not permitted"
+      },
+      "intermediate_diagnostics": "Initial seven known negatives reproduced; fixture follow-up4pass/1fail preserved, later all seven passed in complete exact-tree run. Repeats/variants are not permanent test growth."
     }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/497",
@@ -1327,7 +1272,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/results/2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-051-compatibility",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1627,7 +1572,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-DETAIL1-adaptation-resume.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-compatibility-resume.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1927,7 +1872,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-06-developer-release-PR491.json",
-  "handoff_path": "agent-work/handoffs/2026-11-10-HX-BL-051-DETAIL1-adaptation-resume.json",
+  "handoff_path": "agent-work/handoffs/2026-11-10-HX-BL-051-compatibility-resume.json",
   "ui_actual_preview": {
     "status": "actual_presented_in_task_chat",
     "public_sha": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
@@ -2191,7 +2136,7 @@
     "completed_at": "2026-10-29T18:36:47.812Z",
     "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json"
   },
-  "active_slice": "KNAVE2-CLASSIC1",
+  "active_slice": "DETAIL1 actual1/6/12/24 UI",
   "last_completed_stage_task_id": "HX-BL-051",
   "ui_preview": {
     "version": "UI2-1.0",
@@ -2321,7 +2266,7 @@
   "full_editor_ready": false,
   "current_task_score_assessment_status": "pending_independent_full_package_review_model1.2",
   "published": true,
-  "main_changed": true,
+  "main_changed": false,
   "ui_actual": {
     "shown": true,
     "sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
@@ -2437,8 +2382,8 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/score-evidence1.2.json",
+  "test_change_summary_ref": "agent-work/evidence/HX-BL-051-compatibility/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json#score_evidence",
   "completed_claim_result_ref": "agent-work/results/2026-11-09T1425-reviewer-HX-BL-044-CLASSIFY1.json",
   "review_evidence_ref": null,
   "github_review_state": "not_review_ready_incomplete_DETAIL1",
@@ -4109,7 +4054,7 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "implementation_in_progress",
+  "current_stage_status": "compatibility_verified_full_UI_pending",
   "current_stage_review_status": "independent_full_combined_review_pending_implementation",
   "accepted": false,
   "full_UI_pending": true,
@@ -4343,28 +4288,13 @@
     "materials_commit_sha": "317189e45278245dfced11645c528b5bff8320a9",
     "result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-solver.json"
   },
-  "stage_id": "MC1-EN",
+  "stage_id": "DETAIL1",
   "release_approved": false,
-  "ui_actual_shown": true,
+  "ui_actual_shown": false,
   "ui_actual_responsible": "programmer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
-  "checks_summary": {
-    "node": {
-      "passed": 384,
-      "failed": 0,
-      "skipped": 0
-    },
-    "browser": {
-      "passed": 9,
-      "failed": 0,
-      "skipped": 0
-    },
-    "RNG": {
-      "passed": 1,
-      "failed": 0
-    }
-  },
+  "checks_summary": "Node385/385; tsc/build passed; browser0 executed socket denied",
   "full_E5_UI_pending": true,
   "materials_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
   "latest_HX_BL_023_E5_features_ui_20261104": {
@@ -5586,7 +5516,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Approved051/DETAIL1 implementation continues; full independent review and separate publication approval required; no design gate",
+  "authority_status": "Approved DETAIL1 implementation only, no publication or extra spending.",
   "analysis_baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
   "analysis_baseline_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -6044,7 +5974,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation.json",
+  "result_ref": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6467,7 +6397,7 @@
   },
   "published_scope": "MYTH-CARD1 full72RU reference slice; overall041 has remaining categories",
   "public_book_corpus_approval_scope": "Only exact72MC1 corpus/tree98970e; NATURE2/other corpora excluded",
-  "previous_run_id": "2026-11-09T2305-programmer-HX-BL-051-DETAIL1-import",
+  "previous_run_id": "2026-11-10T0502-programmer-HX-BL-051-final-water",
   "next_role_after_approval": "business_analyst",
   "latest_MC1_EN_intake": {
     "schema_version": 1,
@@ -6835,73 +6765,25 @@
   },
   "fix_handoff_ref": "agent-work/evidence/KNAVE2-CLASSIC1-review-c5b3c38/programmer-fix-handoff.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation.json",
+  "latest_result_ref": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json",
   "checks": {
-    "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
-    "tree_sha": "b181679aac4fc4a1baffe1151b0446eb8233bf4a",
-    "run_id": 42729558446,
-    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42729558446",
-    "jobs": [
-      {
-        "id": 129543937949,
-        "name": "browser",
-        "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
-        "status": "completed",
-        "conclusion": "success",
-        "started_at": "2026-11-10T00:36:33Z",
-        "completed_at": "2026-11-10T00:42:58Z"
-      },
-      {
-        "id": 129543938044,
-        "name": "check",
-        "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
-        "status": "completed",
-        "conclusion": "success",
-        "started_at": "2026-11-10T00:36:33Z",
-        "completed_at": "2026-11-10T00:48:12Z"
-      },
-      {
-        "id": 129543938228,
-        "name": "world-random",
-        "head_sha": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
-        "status": "completed",
-        "conclusion": "success",
-        "started_at": "2026-11-10T00:36:33Z",
-        "completed_at": "2026-11-10T00:42:22Z"
-      }
-    ],
-    "source_bridge": {
-      "public_head": "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc",
-      "local_sha": "a60a0a0c813b052490137c1adb7e1b777b2f35bf",
-      "local_tree": "b181679aac4fc4a1baffe1151b0446eb8233bf4a",
-      "merge_sha": "9527e76551472dc1a618abc3cb34937bc539d692",
-      "merge_tree": "b181679aac4fc4a1baffe1151b0446eb8233bf4a",
-      "parents": [
-        "90afe931d9e9f8a2482febf77eaed20b401ceece",
-        "09b3c9bdb886e0a49eaae6af5a28877a0ea7addc"
-      ],
-      "main_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
-      "trees_equal": true
+    "typecheck": "passed Node24",
+    "production_build": "passed",
+    "full_check": {
+      "status": "passed",
+      "exit_code": 0,
+      "executed": 385,
+      "passed": 385,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 582416.249208,
+      "source_tree": "7fbe644446c9b9f6fcf1a5922b3d80c731b11e1e",
+      "source_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
+      "runner": "Node24.22.1 npm run check: tsc --noEmit && npm test && npm run build"
     },
-    "all_required_passed": true,
-    "superseded_attempts": [
-      {
-        "head": "25d6356901c3f019bfab83b709657c441f0b5461",
-        "run_id": 42725725114,
-        "status": "cancelled_source_changed"
-      },
-      {
-        "head": "3d9a60dc4709360da6cb185e637d7e709f5ad008",
-        "run_id": 42726799698,
-        "status": "cancelled_source_changed_after_CI_startup_readiness_fix"
-      },
-      {
-        "head": "e8244e1e99ceddabe1a0b51f8c6b10d76a86292e",
-        "run_id": 42728202664,
-        "browser": "failure_confirmed_focus_defect",
-        "finding_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/focus-finding.json"
-      }
-    ]
+    "browser": "blocked at Chromium launch, socket Operation not permitted",
+    "browser_executed": 0
   },
   "score_assessment_status": "insufficient_evidence_six_whole_criteria_unknown",
   "review_report_ref": "agent-work/evidence/HX-BL-044-CLASSIFY1/review-9dab995/independent-review.json",
@@ -7870,27 +7752,8 @@
   "release_readiness": false,
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_due_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-final-water-resume.json",
-  "open_validation_findings": [
-    {
-      "run_id": 42612175536,
-      "job_id": 129143080882,
-      "original_head": "6fd58bd14e47b1c9c7463f96965801cb9efeb15b",
-      "independently_retrieved_log": true,
-      "log_time": "2026-11-09T11:51:15.8300853Z",
-      "exact_issue": {
-        "code": "LAKE_AREA",
-        "rule": "RIV-011",
-        "message": "Lake area must be a positive integer.",
-        "nodeId": "72.746,-14"
-      },
-      "original_seed_save_streams": "unavailable",
-      "disposition": "Genuine failed invariant; cause and impact unresolved. No classification cause proven; no justified fixed/preexisting/flaky claim.",
-      "source_facts": "Current and main buildRegionRiverNetwork are byte-identical and explicitly create lakeHexCount0 sentinel for closed inland one-input/no-output mouth without real lake. Core validator/RNG/manual water/rivers unchanged. This explains a possible diagnostic path, not original input reachability or safe product state.",
-      "new_evidence": "Current CI independently passes same assertions; capture guard does not weaken them. Prior38-snapshot sample and one19-click diagnostic success do not reproduce original; no new random sample run here.",
-      "remaining_gate": "Before marking release handoff ready, record a reasoned risk disposition for this exact package: deterministic source/fixture explanation with justified acceptance or approved fix/new exact-SHA review, OR owner's explicit acceptance of the named unresolved risk as part of concrete package publication decision. Lost input cannot be demanded indefinitely and is not silently waived."
-    }
-  ],
+  "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-compatibility-resume.json",
+  "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
     "task_id": "HX-BL-023",
@@ -7937,9 +7800,9 @@
     "full_task_complete": false,
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
-  "local_sha": "320a381e9b9aa5e1fc6995f91421b5a29d9761e5",
-  "checks_evidence_ref": "agent-work/evidence/HX-BL-051-DETAIL1-adaptation/CI-final.json",
-  "execution_status": "safe_checkpoint_compatibility_triage_pending",
+  "local_sha": "fb17d5d124d27f42a1de60cff977bed1d5e76d6c",
+  "checks_evidence_ref": "agent-work/evidence/HX-BL-051-compatibility/full-check.log",
+  "execution_status": "checkpoint_saved",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8076,14 +7939,12 @@
   "pr_updated": false,
   "execution_routing": {
     "task_id": "HX-BL-051",
+    "role": "programmer",
     "stage_id": "DETAIL1",
     "next_role": "programmer",
-    "status": "ready_safe_own_checkpoint_resume",
-    "claim_ref": "agent-work/claims/2026-11-09T0500-programmer-HX-BL-051-DETAIL1-A.json",
-    "execution_running": false,
-    "head_sha": "bc220e48341723ac6509ddb29832b02226a74ed8",
-    "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 с bc220e4/treeb60cac98 (WIP интегрирует main1962fb9a; PR496 всё ещё09b3c9b). Размещение нового land POI после финальной воды исправлено: не повторять этот разбор. До нового полного прогона адресно разобрать7оставшихся отрицательных случаев. Первый: mapTransactions:111 искусственно заменяет регионы/POI после addFallbackTractToMap, сохраняя несовместимый physicalGrid; validator правильно отказывает POI identities do not match live owners. Проверить ту же причину в riverBackendFixture:560 для3E5cases; явно оформить legacy fixture без spatial layer либо построить согласованный слой, не ослабляя production validation и не удаляя активные DETAIL1 tests. Отдельно проверить NotesLossConflict приоритет/fixtures, реальный RIV expansion и future save version: notes fixture не должна считать поддержаннуюv11 будущей без проверки контракта. Затем обязательные check/browser, оставшийся фактический UI1/6/12/24 и независимый combined exactSHAreview/score_assessment1.2. Публикация отдельно не разрешена.",
-    "result_ref": "agent-work/results/2026-11-10T0502-programmer-HX-BL-051-final-water.json"
+    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-compatibility-resume.json",
+    "authority": "approved_DETAIL1_no_release",
+    "execution_running": false
   },
   "last_team_coordination": {
     "run_id": "2026-11-10T0300-strategist-release-routing",
@@ -8255,5 +8116,13 @@
     }
   },
   "last_completed_release_score_task": "HX-BL-041/MC1-EN/PR499",
-  "completed_release_claim": "agent-work/claims/2026-11-10-manual-programmer-release-PR499.json"
+  "completed_release_claim": "agent-work/claims/2026-11-10-manual-programmer-release-PR499.json",
+  "latest_DETAIL1_compatibility": {
+    "run_id": "2026-11-10T0600-programmer-HX-BL-051-compatibility",
+    "head_sha": "1ba518307909d7953aa9f653fb59c60beaa09712",
+    "tree_sha": "7fbe644446c9b9f6fcf1a5922b3d80c731b11e1e",
+    "result_ref": "agent-work/results/2026-11-10T0600-programmer-HX-BL-051-compatibility.json",
+    "full_check": "385/385 passed",
+    "remaining": "Actual1/6/12/24 UI and browser verification, then independent exactSHA combined review"
+  }
 }
