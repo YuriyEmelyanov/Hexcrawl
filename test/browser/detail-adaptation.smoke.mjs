@@ -29,6 +29,10 @@ const metrics=[];for(const width of [390,320]){await page.setViewportSize({width
 const shared=structuredClone(data);shared.version=11;shared.map.seas=[];shared.map.nextSeaId=1;
 shared.map.regions[1].pointsOfInterest=[{q:3,r:0}];shared.map.regions[1].pointOfInterestKinds={'3,0':'village'};
 shared.map.classification={version:1,difficultyByHex:{},discoveryByPoi:{'poi:1:2,0':{mode:'interaction',clueText:'OWNER-ONE-CLUE'},'poi:2:3,0':{mode:'interaction',clueText:'OWNER-TWO-CLUE'}}};
+// UI-EVIDENCE2 reuses these two owners and five source hexes, not another
+// generated map or runner. Paired names exercise wrapping, including one word.
+const longNames={one:'Северная столица старой переправы через Серебряную реку',two:'Деревнядревнихсмотрителейторговойдорогиусеверныхсосен'};
+shared.map.editorNames={'poi:1:2,0':{ru:longNames.one,en:'Northern capital at the old crossing of the Silver River'},'poi:2:3,0':{ru:longNames.two,en:'VillageOfTheAncientKeepersOfTheNorthernTradingRoad'}};
 await page.setViewportSize({width:1500,height:1100});await page.locator('input[type=file]').setInputFiles({name:'shared.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(shared))});
 await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.locator('[data-detail-step="1"]').click();
 const firstId=await page.locator('[data-detail-marker-cell]').first().getAttribute('data-detail-marker-owners');
@@ -45,4 +49,56 @@ await page.locator('[data-detail-summary]').scrollIntoViewIfNeeded();await page.
 await sharedTarget.focus();await page.keyboard.press('Enter');for(const detail of await page.locator('[data-detail-summary] > details').all()){if(await detail.getAttribute('open')===null)await detail.locator('summary').click();}
 await page.locator(`[data-detail-poi-select]:not([data-detail-poi-select="${firstId}"])`).click();await page.locator('[data-knave-panel]').getByText('OWNER-TWO-CLUE',{exact:false}).waitFor();await page.locator('.detail-source-context').screenshot({path:dir+'/review-owner-two-context.png'});
 for(const width of [390,320]){await page.setViewportSize({width,height:950});await page.locator('[data-detail-summary]').scrollIntoViewIfNeeded();await page.screenshot({path:dir+`/review-owner-${width}.png`,fullPage:true});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));}
+const uiEvidence={fixture:'existing regionFixture/shared owners;5 source hexes; no new generation',longNames,layouts:[],overviews:[],responseObservations:[],limits:['Instrumented existing actions only; timing includes Playwright/scroll/frame overhead, no universal threshold.','Raster equality checks actual internal export SVG against downloaded PNG; screen/PNG visual comparison remains a reviewer observation.']};
+const settled=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+for(const width of [1500,390,320]){
+  await page.setViewportSize({width,height:width===1500?1100:950});
+  for(const detail of await page.locator('[data-detail-summary] > details').all())if(await detail.getAttribute('open')===null)await detail.locator('summary').click();
+  const choice=page.locator(`[data-detail-poi-select="${firstId}"]`);await choice.scrollIntoViewIfNeeded();await choice.focus();await page.keyboard.press('Enter');
+  await page.locator('[data-knave-panel]').getByText('OWNER-ONE-CLUE',{exact:false}).waitFor();
+  const text=await page.locator('[data-detail-summary]').innerText();assert.ok(text.includes(longNames.one)&&text.includes(longNames.two));
+  const layout=await page.locator('[data-detail-summary]').evaluate(e=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,panelWidth:e.getBoundingClientRect().width,buttons:[...e.querySelectorAll('button')].map(b=>({text:b.textContent,width:b.getBoundingClientRect().width,height:b.getBoundingClientRect().height}))}));
+  assert.ok(layout.documentWidth<=width&&layout.panelWidth<=width);assert.ok(layout.buttons.every(b=>b.height>=44));
+  await page.locator('[data-detail-summary]').screenshot({path:dir+`/long-names-${width}.png`});uiEvidence.layouts.push(layout);
+}
+await page.setViewportSize({width:1500,height:1100});
+// Capture the real SVG blob handed to the PNG pipeline, not a reconstructed
+// whitelist. This observer does not alter the production renderer/exporter.
+await page.evaluate(()=>{const original=URL.createObjectURL;window.__detailSvgBlobs=[];URL.createObjectURL=function(blob){if(blob.type.startsWith('image/svg+xml'))window.__detailSvgBlobs.push(blob.text());return original.call(this,blob);};});
+for(const step of [6,12,24,6]){
+  const start=await page.evaluate(()=>performance.now());await page.locator(`[data-detail-step="${step}"]`).click();await page.locator(`[data-detail-view="${step}"]`).waitFor();await settled();
+  uiEvidence.responseObservations.push({step,elapsedMs:(await page.evaluate(()=>performance.now()))-start,method:'locator click to requested view present plus two animation frames; includes automation overhead'});
+  if(step!==12&&step!==24)continue;
+  let selected;
+  for(const cell of await page.locator('[data-detail-cell]').all()){
+    await cell.focus();await page.keyboard.press('Enter');await settled();
+    const rows=await page.locator('[data-detail-summary] > details').first().locator('li').allTextContents();
+    const owners=await page.locator('[data-detail-summary] [data-detail-poi-select]').evaluateAll(es=>es.map(e=>e.getAttribute('data-detail-poi-select')));
+    if(new Set(rows.map(x=>x.split('·')[1]?.trim())).size>1&&owners.length===2){selected={cell:await cell.getAttribute('data-detail-cell'),rows,owners};break;}
+  }
+  assert.ok(selected,`${step}: small fixture has a selectable mixed cell containing both owners`);assert.equal(new Set(selected.owners).size,2);
+  for(const detail of await page.locator('[data-detail-summary] > details').all())if(await detail.getAttribute('open')!==null)await detail.locator('summary').click();
+  await page.locator('[data-detail-summary] > details').first().locator('summary').click();
+  assert.equal(await page.locator('.detail-source-context').getAttribute('open'),null,'overview keeps legacy full source card collapsed');
+  await page.locator('[data-detail-summary]').screenshot({path:dir+`/overview-${step}-summary.png`});
+  await page.screenshot({path:dir+`/overview-${step}-desktop.png`,fullPage:true});
+  const svg=page.locator('svg[data-biome-display]');await svg.screenshot({path:dir+`/overview-${step}-screen-map.png`});
+  const screen=await svg.evaluate(e=>({viewBox:e.getAttribute('viewBox'),view:e.querySelector('[data-detail-view]')?.getAttribute('data-detail-view'),footprints:[...e.querySelectorAll('[data-detail-footprint]')].map(n=>n.getAttribute('data-detail-footprint')),counts:[...e.querySelectorAll('.detail-marker-count')].map(n=>n.textContent)}));
+  assert.equal(screen.footprints.length,2);assert.ok(screen.counts.length>0);
+  await page.evaluate(()=>{window.__detailSvgBlobs=[];});
+  const ready=page.waitForEvent('download');await page.locator('.export-menu summary').click();await page.locator('[data-poi-export]').filter({hasText:'PNG'}).click();const png=await ready;await png.saveAs(dir+`/overview-${step}-export.png`);await page.locator('.export-menu summary').click();
+  const texts=await page.evaluate(()=>Promise.all(window.__detailSvgBlobs));const exported=texts.findLast(t=>t.includes(`data-detail-view="${step}"`));assert.ok(exported,'actual export SVG blob captured');await fs.writeFile(dir+`/overview-${step}-export.svg`,exported);
+  const pngBase64=(await fs.readFile(dir+`/overview-${step}-export.png`)).toString('base64');
+  const exportProof=await page.evaluate(async({xml,pngBase64})=>{
+    const doc=new DOMParser().parseFromString(xml,'image/svg+xml'),root=doc.documentElement;
+    const image=async src=>{const i=new Image();await new Promise((resolve,reject)=>{i.onload=resolve;i.onerror=reject;i.src=src;});return i;};
+    const [pngImage,svgImage]=await Promise.all([image('data:image/png;base64,'+pngBase64),image('data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(xml))))]);
+    const pixels=i=>{const c=document.createElement('canvas');c.width=pngImage.width;c.height=pngImage.height;const ctx=c.getContext('2d');ctx.fillStyle='#0c1423';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(i,0,0,c.width,c.height);return ctx.getImageData(0,0,c.width,c.height).data;};
+    const a=pixels(pngImage),b=pixels(svgImage);let differingPixels=0,nonBackgroundPixels=0;for(let i=0;i<a.length;i+=4){if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]||a[i+3]!==b[i+3])differingPixels++;if(a[i]!==12||a[i+1]!==20||a[i+2]!==35)nonBackgroundPixels++;}
+    return {viewBox:root.getAttribute('viewBox'),view:root.querySelector('[data-detail-view]')?.getAttribute('data-detail-view'),footprints:[...root.querySelectorAll('[data-detail-footprint]')].map(n=>n.getAttribute('data-detail-footprint')),counts:[...root.querySelectorAll('.detail-marker-count')].map(n=>n.textContent),countRule:root.querySelector('style')?.textContent.match(/\.detail-marker-count\s*\{[^}]+\}/)?.[0],editorOnly:root.querySelectorAll('[data-editor-only]').length,width:pngImage.width,height:pngImage.height,differingPixels,nonBackgroundPixels};
+  },{xml:exported,pngBase64});
+  assert.equal(exportProof.viewBox,screen.viewBox);assert.equal(exportProof.view,screen.view);assert.deepEqual(exportProof.footprints,screen.footprints);assert.deepEqual(exportProof.counts,screen.counts);assert.match(exportProof.countRule,/fill:#fff/);assert.match(exportProof.countRule,/stroke:#123/);assert.match(exportProof.countRule,/font-weight:bold/);assert.equal(exportProof.editorOnly,0);assert.equal(exportProof.differingPixels,0);assert.ok(exportProof.nonBackgroundPixels>0);
+  uiEvidence.overviews.push({step,...selected,screen,exportProof});
+}
+await fs.writeFile(dir+'/ui-evidence2.json',JSON.stringify(uiEvidence,null,2));
 assert.deepEqual(errors,[]);assert.deepEqual(dialogs,[]);const report={status:'passed',temporary_programmer_diagnostic:false,permanent_test_cases_added:0,permanent_test_cases_modified:1,suite:'browser',scenarios:['actual file import','preview overlay outside exported artwork','Cancel','Escape','Apply status','1500/390/320 panel and44px buttons','1/6/12/24 targets and keyboard selection','repeated marker references','conditional extent Cancel/Apply','actual summary narrow screenshots','active markers stay upright on rotation','selected DETAIL1 PNG export','cross-source and shared owner selection by keyboard/touch'],metrics,errors,dialogs};await fs.writeFile(dir+'/walkthrough.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));}finally{await browser?.close();server.kill();}
