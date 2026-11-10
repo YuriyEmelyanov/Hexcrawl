@@ -11913,6 +11913,8 @@ export function App() {
   const [physicalGrid,setPhysicalGrid]=useState<Detail1State|undefined>(undefined);
   const [detailAdaptation,setDetailAdaptation]=useState<{revision:number;state:Detail1State}|null>(null);
   const detailAdaptationRef=useRef(detailAdaptation);detailAdaptationRef.current=detailAdaptation;
+  const detailAdaptationFocusRef=useRef<HTMLElement|null>(null),detailAdaptationStartRef=useRef<HTMLButtonElement|null>(null);
+  useEffect(()=>{if(detailAdaptation)detailAdaptationFocusRef.current?.focus();},[detailAdaptation]);
   const [detailAdaptationError,setDetailAdaptationError]=useState<string|null>(null);
   const updateDetailAdaptation=(value:typeof detailAdaptation)=>{detailAdaptationRef.current=value;setDetailAdaptation(value);};
   const physicalGridRef=useRef(physicalGrid);physicalGridRef.current=physicalGrid;
@@ -13640,16 +13642,16 @@ export function App() {
   };
   const cancelDetailAdaptation=(expected=detailAdaptation):boolean=>{
     if(!expected||detailAdaptationRef.current!==expected)return false;
-    updateDetailAdaptation(null);setDetailAdaptationError(null);return true;
+    updateDetailAdaptation(null);setDetailAdaptationError(null);setTimeout(()=>detailAdaptationStartRef.current?.focus(),0);return true;
   };
   const applyDetailAdaptation=(expected=detailAdaptation):boolean=>{
     if(!expected||detailAdaptationRef.current!==expected||expected.revision!==documentRevision.current||documentStateBusy()||notesComposingRef.current)return false;
     try{
       const before=captureDocument(),after=copyDocument({...before,map:{...before.map,physicalGrid:expected.state}});
-      recordTransaction(before,after);applyPreparedDocument(after);return true;
+      recordTransaction(before,after);applyPreparedDocument(after);setTimeout(()=>detailAdaptationFocusRef.current?.focus(),0);return true;
     }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось применить охваты. Карта не изменена.':'Could not apply footprints. Your map is unchanged.'));return false;}
   };
-  /** One explicit extent operation; ordinary import remains separately gated. */
+  /** One explicit extent operation with full live geography validation. */
   const editDetailFootprintExtent=(poiId:string,extent:DetailExtent,cells?:readonly AxialHex[],expectedRevision=renderedDocumentRevision):boolean=>{
     if(!editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesComposingRef.current||notesEditorKey!==null||obstacleDraftRef.current)return false;
     try{
@@ -16654,7 +16656,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               {(waterDraft||regionDraft||poiDraft)&&<span className="water-export-notice">{poiDraft?(language==='ru'?'Черновик переноса не входит в JSON и PNG.':'The point-move draft is excluded from JSON and PNG.'):regionDraft?(language==='ru'?'Черновик региона не входит в JSON и PNG.':'The region draft is excluded from JSON and PNG.'):(language==='ru'?'Черновик воды не входит в JSON и PNG.':'The water draft is excluded from JSON and PNG.')}</span>}
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
-            {(regions.length>0||hexTerrainByKey.size>0)&&<section className="detail-adaptation" data-detail-adaptation aria-label={language==='ru'?'Охваты точек интереса':'Point footprints'}>
+            {(regions.length>0||hexTerrainByKey.size>0)&&<section ref={detailAdaptationFocusRef} tabIndex={-1} className="detail-adaptation" data-detail-adaptation aria-label={language==='ru'?'Охваты точек интереса':'Point footprints'}>
               <strong>{language==='ru'?'Охваты точек интереса':'Point footprints'}</strong>
               {detailAdaptation?<>
                 <p>{language==='ru'?'Предлагаемые охваты показаны бирюзовым. Карта ещё не изменена.':'Proposed footprints are shown in turquoise. Your map is unchanged.'}</p>
@@ -16662,7 +16664,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <p>{language==='ru'?'1 миля между сторонами мелкой клетки. Для старой сетки принимаем 6 миль; исходная физическая конвенция остаётся неизвестной. Размеры без измерений — условные.':'One mile across each fine cell. We assume six miles for the old grid; its source convention remains unknown. Unmeasured extents are assumptions.'}</p>
                 <div className="detail-adaptation__actions"><button type="button" data-detail-apply onClick={()=>applyDetailAdaptation()}>{language==='ru'?'Применить охваты':'Apply footprints'}</button><button type="button" data-detail-cancel className="secondary" onClick={()=>cancelDetailAdaptation()}>{language==='ru'?'Отмена':'Cancel'}</button></div>
                 <small>{language==='ru'?'Escape — отмена. Применение можно вернуть одной Undo.':'Escape cancels. Undo restores the previous document after applying.'}</small>
-              </>:physicalGrid?.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
+              </>:physicalGrid?.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button ref={detailAdaptationStartRef} type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
               {detailAdaptationError&&<p role="alert">{detailAdaptationError}</p>}
             </section>}
             <div className="control-block world-seed-control">
