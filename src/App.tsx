@@ -13713,7 +13713,7 @@ export function App() {
       recordTransaction(before,prepared);applyExactMap(prepared.map);closeEditors();return true;
     }catch(error){
       const reason=error instanceof Error?error.message:'';
-      setEditError(language==='ru'?(reason.includes('capital_manual')?'Для столицы без измеренного контура нужны хотя бы две соседние клетки.':reason.includes('attachment')||reason.includes('route_coverage')?'Охват должен сохранять обязательный контакт с водой и входы путей.':'Не удалось изменить охват POI. Карта не изменена.'):(reason.includes('capital_manual')?'An unmeasured capital needs at least two adjacent cells.':reason.includes('attachment')||reason.includes('route_coverage')?'The footprint must retain required water and route accesses.':'Could not change the POI footprint. Your map is unchanged.'));
+      setEditError(language==='ru'?(reason.includes('capital_manual')?'Для столицы без измеренного контура нужны хотя бы две соседние клетки.':reason.includes('attachment')||reason.includes('route_coverage')?'Охват должен сохранять обязательный контакт с водой и входы путей.':reason.includes('Disconnected')||reason.includes('Duplicate')?'Выберите уникальные клетки, соединённые общими рёбрами.':reason.includes('compatible_geography')?'Охват должен оставаться на принятой совместимой суше или в том же водоёме.':'Не удалось изменить охват POI. Карта не изменена.'):(reason.includes('capital_manual')?'An unmeasured capital needs at least two adjacent cells.':reason.includes('attachment')||reason.includes('route_coverage')?'The footprint must retain required water and route accesses.':reason.includes('Disconnected')||reason.includes('Duplicate')?'Choose unique cells connected by shared edges.':reason.includes('compatible_geography')?'The extent must stay on accepted compatible land or in the same water body.':'Could not change the POI footprint. Your map is unchanged.'));
       return false;
     }
   };
@@ -15734,6 +15734,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   // Artwork is independent of panel selection; candidate actions always use current options.
   const mapHexClickRef = useRef<(hex: typeof positionedHexes.hexes[number],event?:MouseEvent<SVGGElement>) => void>(() => {});
   mapHexClickRef.current = (hex,event) => {
+    if(event&&event.detail>1)return; // The second click of a generation gesture is inert.
     if (regionDraftRef.current!==regionDraft || documentBusy()||knaveDraftRef.current) return;
     if((poiDraftRef.current||regionDraftRef.current||waterDraftRef.current||riverDraftRef.current)&&riverDraftGesture.current?.moved&&event)return;
     const moving=poiDraftRef.current;
@@ -16182,6 +16183,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     for(const [key,t]of hexTerrainByKey)if(t.terrainOverride)terrain.set(key,t.terrainOverride);
     return summarizeDetailCell(physicalGrid,physicalGrid.selectedCell,terrain);
   },[physicalGrid,regions,hexTerrainByKey,biomeOverrideByHexKey]);
+  const detailMiles=(step:number)=>language==='ru'?(step===1?'миля':step===24?'мили':'миль'):'mi';
   const mapArtwork = useMemo(() => (<>
             <defs>
               <filter id="poi-white-outline" x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
@@ -16567,7 +16569,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                     aria-pressed={physicalGrid.selectedCell?hexKey(worldToDetailCell(grid,detailCellCenter(fine,physicalGrid.selectedCell)))===key:false}
                     fill="transparent" pointerEvents={editMode?'none':'all'} role={editMode?undefined:'button'} tabIndex={editMode?undefined:0}
                     aria-label={`${physicalGrid.viewStep} ${language==='ru'?'миль, ячейка':'mile cell'} ${key}`}
-                    onClick={event=>{event.stopPropagation();detailCellClickRef.current(worldToDetailCell(fine,detailCellCenter(grid,c)));}}
+                    onClick={event=>{event.stopPropagation();if(event.detail>1)return;detailCellClickRef.current(worldToDetailCell(fine,detailCellCenter(grid,c)));}}
                     onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();detailCellClickRef.current(worldToDetailCell(fine,detailCellCenter(grid,c)));}}}/>)}
                 </g>
                 {detailMarkerGroups(physicalGrid).map(({cell,owners})=>{
@@ -16835,7 +16837,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               </>:physicalGrid?.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button ref={detailAdaptationStartRef} type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
               {physicalGrid?.active&&!detailAdaptation&&<fieldset className="detail-view-controls" disabled={mutationBlocked(false)}>
                 <legend>{language==='ru'?'Сетка карты':'Map grid'}</legend>
-                <div className="detail-adaptation__actions">{([1,6,12,24] as const).map(step=><button type="button" key={step} data-detail-step={step} aria-pressed={physicalGrid.viewStep===step} onClick={()=>setDetailViewStep(step)}>{step} {language==='ru'?'миль':'mi'}</button>)}</div>
+                <div className="detail-adaptation__actions">{([1,6,12,24] as const).map(step=><button type="button" key={step} data-detail-step={step} aria-pressed={physicalGrid.viewStep===step} onClick={()=>setDetailViewStep(step)}>{step} {detailMiles(step)}</button>)}</div>
                 <small>{language==='ru'?'Мили между сторонами. Сетка и масштаб приближения независимы; местность и места сохраняются.':'Miles across flats. Grid and zoom are independent; terrain and places are retained.'}</small>
               </fieldset>}
               {detailAdaptationError&&<p role="alert">{detailAdaptationError}</p>}
@@ -16877,7 +16879,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
               {physicalGrid?.active&&<section className="info-block detail-summary" aria-label={language==='ru'?'Сводка ячейки':'Cell summary'} data-detail-summary>
-                <strong>{language==='ru'?'Область':'Area'} · {physicalGrid.viewStep} {language==='ru'?'миль':'mi'}</strong>
+                <strong>{language==='ru'?'Область':'Area'} · {physicalGrid.viewStep} {detailMiles(physicalGrid.viewStep)}</strong>
                 {!detailSummary?<p>{language==='ru'?'Выберите ячейку на карте.':'Choose a cell on the map.'}</p>:<>
                   <p>{hexKey(detailSummary.cell)} · {language==='ru'?'мест':'places'}: {detailSummary.pois.length}</p>
                   <details><summary>{language==='ru'?'Местность и исходные гексы':'Terrain and source cells'} ({detailSummary.sources.length})</summary>
