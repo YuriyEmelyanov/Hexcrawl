@@ -1,0 +1,70 @@
+{
+  "independent_targeted": [
+    {
+      "command": "node --test test/detail*.test.mjs test/classification.test.mjs test/saveSafety.test.mjs test/regionEditing.test.mjs",
+      "runtime": "Node v24.22.1",
+      "passed": 74,
+      "failed": 0,
+      "duration_ms": 36794.325327,
+      "log": "agent-work/evidence/review-HX-BL-051-f17236b/targeted-tests.log"
+    },
+    {
+      "command": "node agent-work/evidence/review-HX-BL-051-f17236b/independent-diagnostic.mjs",
+      "status": "passed",
+      "log": "agent-work/evidence/review-HX-BL-051-f17236b/independent-diagnostic.jsonl",
+      "script": "agent-work/evidence/review-HX-BL-051-f17236b/independent-diagnostic.mjs",
+      "probes": [
+        "unique remote footprint retains source owner clue at both12,0 and18,0",
+        "repeated selection no history",
+        "captured stale selection command atomic refusal",
+        "exact selection Undo/Redo and generation RNG snapshots",
+        "footprints[] with live owners rejected atomically",
+        "missing identity registry rejected atomically",
+        "empty identity map with live owners rejected atomically",
+        "future v12 rejected atomically",
+        "legitimate active empty/no-owner layer imports",
+        "two coincident owners explicitly selected in reverse order retain correct independent clues and same fine cell",
+        "unknown explicit owner rejected atomically"
+      ]
+    }
+  ],
+  "root_build": {
+    "command": "npm run build",
+    "status": "passed",
+    "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+    "log": "agent-work/evidence/review-HX-BL-051-f17236b/build.log"
+  },
+  "ci": {
+    "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+    "run_id": 42797910390,
+    "status": "success",
+    "jobs": [
+      {
+        "id": 129767845646,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 129767846081,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 129767846261,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42797910390",
+    "source_evidence_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/checks.json"
+  },
+  "export_style_probe": {
+    "status": "confirmed_serialization_style_omission",
+    "artifact": "agent-work/evidence/review-HX-BL-051-f17236b/export-style.json",
+    "raster_readability": "unverified",
+    "method": "Actual export helper extracted unchanged with TS AST, minimal detached SVG DOM stub. No browser/raster pass claimed."
+  }
+}

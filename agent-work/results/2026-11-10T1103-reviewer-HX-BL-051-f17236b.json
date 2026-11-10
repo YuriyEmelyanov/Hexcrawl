@@ -1,0 +1,306 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-10T1103-reviewer-HX-BL-051-f17236b",
+  "role": "reviewer",
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1",
+  "status": "changes_requested_bounded_evidence_incomplete",
+  "verdict": "two_old_defects_closed_on_exact_sha; whole_package_acceptance_withheld_pending_bounded_UI_export_evidence",
+  "role_selection_reason": "Priority4: approved task review_ready on exactf172 with required CI; no executing own-scope foreign claim. Fresh-context independent reviewer explicitly required and used.",
+  "started_at": "2026-11-10T11:03:51.425Z",
+  "pr": 496,
+  "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+  "tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
+  "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "review_delta_base": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "acceptance_ref": "agent-work/specs/HX-BL-051-DETAIL1.acceptance.json",
+  "review_scope": "Full combined DETAIL1 plus integratedCLASSIFY1, narrowly replaying previous defects first; incomplete requiredUI/export evidence remains explicit.",
+  "independence": {
+    "fresh_context_agent": "/root/review_f172_fresh",
+    "source_edits": false,
+    "report_ref": "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json",
+    "root_supplement": "agent-work/evidence/review-HX-BL-051-f17236b/export-style.json",
+    "limits": [
+      "Fresh reviewer did not execute rendered browser UI. Cloud browser URL gate denied this root's local navigation; no workaround used.",
+      "Existing exact-SHA CI verified via GitHub, not represented as independently executed UI.",
+      "Fresh agent automation start timestamp not explicitly recorded, retained as null with limitation."
+    ]
+  },
+  "closed_findings": [
+    {
+      "id": "DETAIL1-REVIEW-POI-CONTEXT",
+      "status": "closed_on_exact_sha",
+      "evidence": "Independent unique remote footprint reproducer now shows OWNER-ONE-CLUE at both fine-cell ends with selectedHex2,0; overlap explicit owner one/two show respective source clues, preserve fine18,0, and have exact history."
+    },
+    {
+      "id": "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER",
+      "status": "closed_on_exact_sha",
+      "evidence": "Actual importer rejects live-owner active state with footprints[] before changing document or both stacks. Valid no-owner empty layer still accepted. Unconditional validateSpatial at src/detailModel.ts112 and complete live footprint count src/detailGeography.ts213 now enforce boundary."
+    }
+  ],
+  "confirmed_observations": [
+    {
+      "id": "DETAIL1-REVIEW-EXPORT-COUNT-STYLE",
+      "severity": "low; actual raster contrast impact unverified",
+      "status": "confirmed serialization style omission, not a demonstrated unreadable raster",
+      "files": [
+        "src/styles.css:402",
+        "src/App.tsx:561",
+        "src/App.tsx:1571",
+        "src/App.tsx:1584",
+        "src/App.tsx:16594"
+      ],
+      "expected": "Overview collapsed/overlap count retains page white fill, dark outline and bold styling in self-contained SVG used for PNG export.",
+      "actual": "count markup only carries class detail-marker-count and coordinates/fontSize. Rule exists only in external styles.css. createExportSvgClone inserts SVG_EXPORT_STYLES whitelist, which omits detail-marker-count, and does not inline computed CSS. Exported standalone SVG loses those styling properties.",
+      "repro": "Activate capital multi-cell footprint, select6/12/24 overview with count>1, export PNG. Inspect intermediate createExportSvgClone SVG text: count element remains but matching CSS/inlined fill/stroke/font-weight is absent. Page and export differ; browser raster readability not executed here.",
+      "next_step": "Reuse existing browser export workflow and inspect clone/count styling; preserve styles or demonstrate equivalent export styling. Do not demand a new SVG-download feature: current UI exposes PNG/JSON and SVG is internal PNG stage.",
+      "priority": "P3",
+      "category": "confirmed_style_omission",
+      "blocking_acceptance": false,
+      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+      "requirements": [
+        "DTL-26"
+      ],
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-051-f17236b/export-style.json",
+        "agent-work/evidence/review-HX-BL-051-f17236b/export-style.mjs",
+        "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json"
+      ],
+      "acceptance": "Preserve equivalent count styling in the existing internal SVG/PNG pipeline; verify on existing fixture. Actual raster contrast is unverified, so do not claim a readability failure."
+    }
+  ],
+  "evidence_gaps": [
+    {
+      "id": "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE",
+      "category": "evidence_gap",
+      "status": "required_bounded_evidence_pending",
+      "blocking_acceptance": true,
+      "requirements": [
+        "DTL-24",
+        "DTL-26"
+      ],
+      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+      "observations": [
+        "DTL-24/26: actual12/24 rendered mixed terrain + compact unique multiple-owner summaries, not merely step toggle/target existence",
+        "DTL-26: long-name corpus at1500/390/320 with keyboard/touch targets and overflow observation",
+        "DTL-26: selected-level and footprint PNG/internal-SVG export contents/style verification; current browser asserts only PNG file size>1000",
+        "Any bounded response-time claims require actual measured named workflow evidence; no threshold or pass claim invented"
+      ],
+      "not_a_confirmed_product_defect": true,
+      "input_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-review-fixes-rereview.json",
+      "evidence_ref": "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json"
+    }
+  ],
+  "historic_risks": [
+    {
+      "id": "CLASSIFY1-VALIDATION-RIV011",
+      "status": "unknown",
+      "reopened_as_new_defect": false,
+      "new_heavy_measurement_authorized": false
+    }
+  ],
+  "checks": {
+    "independent_targeted": [
+      {
+        "command": "node --test test/detail*.test.mjs test/classification.test.mjs test/saveSafety.test.mjs test/regionEditing.test.mjs",
+        "runtime": "Node v24.22.1",
+        "passed": 74,
+        "failed": 0,
+        "duration_ms": 36794.325327,
+        "log": "agent-work/evidence/review-HX-BL-051-f17236b/targeted-tests.log"
+      },
+      {
+        "command": "node agent-work/evidence/review-HX-BL-051-f17236b/independent-diagnostic.mjs",
+        "status": "passed",
+        "log": "agent-work/evidence/review-HX-BL-051-f17236b/independent-diagnostic.jsonl",
+        "script": "agent-work/evidence/review-HX-BL-051-f17236b/independent-diagnostic.mjs",
+        "probes": [
+          "unique remote footprint retains source owner clue at both12,0 and18,0",
+          "repeated selection no history",
+          "captured stale selection command atomic refusal",
+          "exact selection Undo/Redo and generation RNG snapshots",
+          "footprints[] with live owners rejected atomically",
+          "missing identity registry rejected atomically",
+          "empty identity map with live owners rejected atomically",
+          "future v12 rejected atomically",
+          "legitimate active empty/no-owner layer imports",
+          "two coincident owners explicitly selected in reverse order retain correct independent clues and same fine cell",
+          "unknown explicit owner rejected atomically"
+        ]
+      }
+    ],
+    "root_build": {
+      "command": "npm run build",
+      "status": "passed",
+      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+      "log": "agent-work/evidence/review-HX-BL-051-f17236b/build.log"
+    },
+    "ci": {
+      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+      "run_id": 42797910390,
+      "status": "success",
+      "jobs": [
+        {
+          "id": 129767845646,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129767846081,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129767846261,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42797910390",
+      "source_evidence_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/checks.json"
+    },
+    "export_style_probe": {
+      "status": "confirmed_serialization_style_omission",
+      "artifact": "agent-work/evidence/review-HX-BL-051-f17236b/export-style.json",
+      "raster_readability": "unverified",
+      "method": "Actual export helper extracted unchanged with TS AST, minimal detached SVG DOM stub. No browser/raster pass claimed."
+    }
+  },
+  "score_model_version": "1.2",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-f17236b/score-assessment1.2.json",
+  "score_assessment_status": "insufficient_evidence_for_whole_criterion_grades",
+  "score_awarded_points": 0,
+  "score_delta": null,
+  "score_changed": false,
+  "current_package_score_update_status": "not_due_unpublished",
+  "test_change_summary": {
+    "base_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+    "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "reviewer read-only exact-SHA review",
+    "scenario_risk": "Owner identity/coverage import boundary and bounded UI/export acceptance",
+    "reuse_or_new_reason": "Existing74 Node cases rerun; temporary reviewer diagnostics only, not permanent suite growth.",
+    "count_source": "Tracked source/test diff HEAD is empty in exact-SHA detached worktree; reviewed incoming delta counted separately.",
+    "executions": [
+      {
+        "suite": "Node targeted subset",
+        "executed": 74,
+        "passed": 74,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Existing CI check/browser/RNG",
+        "run_id": 42797910390,
+        "status": "success",
+        "count_aggregation": "Separate suites, not added to targeted74"
+      }
+    ],
+    "reviewed_incoming_change": {
+      "base_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+      "added": 0,
+      "removed": 0,
+      "modified": null,
+      "suites": [
+        {
+          "suite": "Node logical callbacks",
+          "added": 0,
+          "removed": 0,
+          "modified": 6
+        },
+        {
+          "suite": "Browser workflows",
+          "added": 0,
+          "removed": 0,
+          "modified": 1
+        }
+      ],
+      "scenario_risk": "Owner-specific remote/overlap selection and active-layer completeness while retaining valid legacy/empty states",
+      "reuse_or_new_reason": "Necessary targeted reuse. One existing detail controller callback gains owner-content/overlap regression assertions. Four parameterized E7/E8 callbacks replace invalid identity-only active fixtures with real accepted adaptation, strengthening valid-state lifecycle coverage. One existing save/history callback now starts from a complete active layer and rejects missing footprints/identities. One existing browser workflow extends keyboard/touch owner-context and invalid-extent evidence. No separate lifecycle framework or duplicate callback added.",
+      "count_source": "Independent static callback/body diff a4e8..f172; exactCI386 total unchanged. Existing programmer test-change-summary retained as source.",
+      "source_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/test-change-summary.json",
+      "count_units": "Per-suite only: Node logical callbacks and browser workflows have different units; no combined case count."
+    },
+    "temporary_diagnostics": {
+      "permanent_cases_added": 0,
+      "artifacts": [
+        "agent-work/evidence/review-HX-BL-051-f17236b/independent-diagnostic.mjs",
+        "agent-work/evidence/review-HX-BL-051-f17236b/export-style.mjs"
+      ],
+      "count_aggregation": "Temporary probes excluded from permanent Node/browser case counts."
+    }
+  },
+  "github_review": {
+    "state": "COMMENT",
+    "review_id": 5840931050,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5840931050",
+    "formal_request_changes": false,
+    "reason": "Connected author identity cannot formally REQUEST_CHANGES on own PR; operational incomplete acceptance explicitly recorded.",
+    "submitted": true
+  },
+  "accepted": false,
+  "full_task_complete": false,
+  "published": false,
+  "main_changed": false,
+  "release_approved": false,
+  "next_role": "programmer",
+  "next_task_id": "HX-BL-051",
+  "next_stage_id": "DETAIL1-bounded-ui-export",
+  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 в PR496: сохранить эквивалентное оформление счётчика POI в существующем SVG→PNG экспорте либо доказать его эквивалентность; на тех же малых fixtures дополнить существующий UI/export walkthrough фактическими 12/24 со смешанной местностью и уникальными POI, длинными именами на1500/390/320, клавиатурой/touch/overflow и содержимым PNG/внутреннегоSVG выбранного уровня/footprint. Измерение реакции — только существующий согласованный fixture, без нового порога/тяжёлой серии003/500карт. Результат: evidence точного SHA, ограничений и diff; затем новая независимая проверка общего DETAIL1+CLASSIFY1 и score1.2. Два старых дефекта закрыты наf172; RIV011unknown. Новое начало/дизайн-согласование не требуется, публикация отдельно не разрешена.",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
+  "authority_status": "Approved HX-BL-051/DETAIL1 implementation and bounded acceptance continuation; no new task/design approval. Separate owner exact-package publication permission remains absent. No new heavy003/500-map series, paid expense, new SVG-download product feature or automatic test-count expansion.",
+  "owner_decision_needed_for_next_bounded_stage": false,
+  "claim_ref": "agent-work/claims/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
+  "operational_constraints": {
+    "foreign_claims_results_research_preserved": true,
+    "latest_json_written_last": true,
+    "no_source_edits": true,
+    "score_current_history_unchanged": true
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10T11:03:51.425Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10 11:20:25 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "timestamp_note": "clock immediately before peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time automations.peek checks only; no guarantee of later service state. Schedule/instructions unchanged."
+  },
+  "completed_at": "2026-11-10 11:20:25 UTC",
+  "independent_reviewer_automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "status": "checked",
+      "is_enabled": true,
+      "checked_at": null,
+      "timestamp_limitation": "Initial peek executed as second tool call before source review; exact wall timestamp was not explicitly recorded. No timestamp invented."
+    },
+    "end": {
+      "status": "checked",
+      "is_enabled": true,
+      "checked_at": "2026-11-10 11:09:25 UTC",
+      "method": "automations.peek",
+      "timestamp_note": "clock immediately before end peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time checks only. Persistent team untouched."
+  }
+}

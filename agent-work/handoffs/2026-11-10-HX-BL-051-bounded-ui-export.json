@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-bounded-ui-export",
+  "run_id": "2026-11-10T1103-reviewer-HX-BL-051-f17236b",
+  "next_role": "programmer",
+  "status": "ready_approved_scope",
+  "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+  "tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
+  "pr": 496,
+  "branch": "agent/hx-bl-051-detail1",
+  "combined_base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "acceptance_ref": "agent-work/specs/HX-BL-051-DETAIL1.acceptance.json",
+  "review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5840931050",
+  "input_evidence": [
+    "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json",
+    "agent-work/evidence/review-HX-BL-051-f17236b/export-style.json",
+    "agent-work/evidence/review-HX-BL-051-f17236b/targeted-tests.log",
+    "agent-work/evidence/HX-BL-051-review-fixes-0957/checks.json",
+    "agent-work/evidence/HX-BL-051-review-fixes-0957/ui/walkthrough.json"
+  ],
+  "closed_on_head": [
+    {
+      "id": "DETAIL1-REVIEW-POI-CONTEXT",
+      "status": "closed_on_exact_sha",
+      "evidence": "Independent unique remote footprint reproducer now shows OWNER-ONE-CLUE at both fine-cell ends with selectedHex2,0; overlap explicit owner one/two show respective source clues, preserve fine18,0, and have exact history."
+    },
+    {
+      "id": "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER",
+      "status": "closed_on_exact_sha",
+      "evidence": "Actual importer rejects live-owner active state with footprints[] before changing document or both stacks. Valid no-owner empty layer still accepted. Unconditional validateSpatial at src/detailModel.ts112 and complete live footprint count src/detailGeography.ts213 now enforce boundary."
+    }
+  ],
+  "confirmed_low_observation": {
+    "id": "DETAIL1-REVIEW-EXPORT-COUNT-STYLE",
+    "severity": "low; actual raster contrast impact unverified",
+    "status": "confirmed serialization style omission, not a demonstrated unreadable raster",
+    "files": [
+      "src/styles.css:402",
+      "src/App.tsx:561",
+      "src/App.tsx:1571",
+      "src/App.tsx:1584",
+      "src/App.tsx:16594"
+    ],
+    "expected": "Overview collapsed/overlap count retains page white fill, dark outline and bold styling in self-contained SVG used for PNG export.",
+    "actual": "count markup only carries class detail-marker-count and coordinates/fontSize. Rule exists only in external styles.css. createExportSvgClone inserts SVG_EXPORT_STYLES whitelist, which omits detail-marker-count, and does not inline computed CSS. Exported standalone SVG loses those styling properties.",
+    "repro": "Activate capital multi-cell footprint, select6/12/24 overview with count>1, export PNG. Inspect intermediate createExportSvgClone SVG text: count element remains but matching CSS/inlined fill/stroke/font-weight is absent. Page and export differ; browser raster readability not executed here.",
+    "next_step": "Reuse existing browser export workflow and inspect clone/count styling; preserve styles or demonstrate equivalent export styling. Do not demand a new SVG-download feature: current UI exposes PNG/JSON and SVG is internal PNG stage.",
+    "priority": "P3",
+    "category": "confirmed_style_omission",
+    "blocking_acceptance": false,
+    "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+    "requirements": [
+      "DTL-26"
+    ],
+    "evidence": [
+      "agent-work/evidence/review-HX-BL-051-f17236b/export-style.json",
+      "agent-work/evidence/review-HX-BL-051-f17236b/export-style.mjs",
+      "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json"
+    ],
+    "acceptance": "Preserve equivalent count styling in the existing internal SVG/PNG pipeline; verify on existing fixture. Actual raster contrast is unverified, so do not claim a readability failure."
+  },
+  "evidence_gap": {
+    "id": "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE",
+    "category": "evidence_gap",
+    "status": "required_bounded_evidence_pending",
+    "blocking_acceptance": true,
+    "requirements": [
+      "DTL-24",
+      "DTL-26"
+    ],
+    "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+    "observations": [
+      "DTL-24/26: actual12/24 rendered mixed terrain + compact unique multiple-owner summaries, not merely step toggle/target existence",
+      "DTL-26: long-name corpus at1500/390/320 with keyboard/touch targets and overflow observation",
+      "DTL-26: selected-level and footprint PNG/internal-SVG export contents/style verification; current browser asserts only PNG file size>1000",
+      "Any bounded response-time claims require actual measured named workflow evidence; no threshold or pass claim invented"
+    ],
+    "not_a_confirmed_product_defect": true,
+    "input_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-review-fixes-rereview.json",
+    "evidence_ref": "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json"
+  },
+  "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 в PR496: сохранить эквивалентное оформление счётчика POI в существующем SVG→PNG экспорте либо доказать его эквивалентность; на тех же малых fixtures дополнить существующий UI/export walkthrough фактическими 12/24 со смешанной местностью и уникальными POI, длинными именами на1500/390/320, клавиатурой/touch/overflow и содержимым PNG/внутреннегоSVG выбранного уровня/footprint. Измерение реакции — только существующий согласованный fixture, без нового порога/тяжёлой серии003/500карт. Результат: evidence точного SHA, ограничений и diff; затем новая независимая проверка общего DETAIL1+CLASSIFY1 и score1.2. Два старых дефекта закрыты наf172; RIV011unknown. Новое начало/дизайн-согласование не требуется, публикация отдельно не разрешена.",
+  "scope": [
+    "Reuse approved small fixture and existing browser/export workflow; show actual12/24 mixed terrain, compact unique multiple-owner summaries; maintain owner-context and import boundaries.",
+    "Inspect/preserve internal standalone SVG count styling used by PNG. No new SVG-download action required by this handoff.",
+    "Show long-name desktop1500/390/320, keyboard/touch/overflow states and selected-level/footprint PNG contents; compare source view/export, not file size alone.",
+    "Only bounded response measurement on existing agreed fixtures; no invented threshold; report actual values/limitations.",
+    "Before adding a permanent callback, map uncovered risk and reuse current coverage; no automatic new-test requirement."
+  ],
+  "completion_criteria": [
+    "Exact branch SHA and reproducible checks/artifacts/UI before-after shown to owner; no claim that screenshot after returning1 proves rendered12/24.",
+    "Export clone includes equivalent count fill/stroke/weight styling or evidence shows equivalent existing behavior; raster outcomes verified separately.",
+    "Required UI/export evidence completed or precise residual limitation stated, sufficient for independent acceptance decision.",
+    "Combined DETAIL1+CLASSIFY1 exact newSHA submitted to fresh independent reviewer with updated model1.2 assessment; historicalRIV011 remains unknown without evidence."
+  ],
+  "authority_status": "Approved HX-BL-051/DETAIL1 implementation and bounded acceptance continuation; no new task/design approval. Separate owner exact-package publication permission remains absent. No new heavy003/500-map series, paid expense, new SVG-download product feature or automatic test-count expansion.",
+  "release_approved": false,
+  "main_change_allowed": false,
+  "heavy_measurement_allowed": false,
+  "paid_expenses_allowed": false,
+  "expected_outcome": "Owner-specific selection/import fixes stay closed; bounded actual UI/export evidence and any narrowly required style correction reach independent re-review. No new product task or release.",
+  "browser_review_limitation": "This reviewer's cloud browser navigation was explicitly denied by Browser security policy URL gate. No workaround or alternative browser was used; actual fresh browser UI not executed here. Existing connector CI evidence remains separately attributed.",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-f17236b/score-assessment1.2.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10T11:03:51.425Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10 11:20:25 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "timestamp_note": "clock immediately before peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time automations.peek checks only; no guarantee of later service state. Schedule/instructions unchanged."
+  },
+  "automation_health_owner_role": "reviewer",
+  "created_at": "2026-11-10 11:20:25 UTC"
+}

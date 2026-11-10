@@ -1,0 +1,12 @@
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';import ts from '/workspace/scratch/50f278832674/hexcrawl/node_modules/typescript/lib/typescript.js';
+const root='/tmp/hx-rereview-f172',source=fs.readFileSync(root+'/src/App.tsx','utf8'),css=fs.readFileSync(root+'/src/styles.css','utf8');
+const ast=ts.createSourceFile('App.tsx',source,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
+const style=ast.statements.find(n=>ts.isVariableStatement(n)&&n.declarationList.declarations.some(d=>d.name.getText(ast)==='SVG_EXPORT_STYLES'));
+const fn=ast.statements.find(n=>ts.isFunctionDeclaration(n)&&n.name?.text==='createExportSvgClone');assert.ok(style&&fn);
+const marker={tagName:'text',className:'detail-marker-count',textContent:'7',attributes:{fontSize:'7.7'}};
+function svg(){return {viewBox:{baseVal:{width:100,height:100}},style:{width:'',height:'',transform:'',willChange:''},children:[structuredClone(marker)],setAttribute(k,v){this[k]=v;},querySelectorAll(){return [];},get firstChild(){return this.children[0];},insertBefore(n,b){const i=this.children.indexOf(b);this.children.splice(i<0?this.children.length:i,0,n);},cloneNode(){return svg();}};}
+const context=vm.createContext({document:{createElementNS(ns,tagName){return {tagName,textContent:'',setAttribute(k,v){this[k]=v;}};}},inlineExportImageHrefs:async()=>{}});
+const code=ts.transpileModule(style.getText(ast)+'\n'+fn.getText(ast)+'\nglobalThis.cloneForEvidence=createExportSvgClone;',{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;vm.runInContext(code,context);
+const clone=await context.cloneForEvidence(svg()),exportStyle=clone.children.find(n=>n.tagName==='style').textContent,pageRule=css.match(/\.detail-marker-count\s*\{[^}]+\}/)[0];
+assert.match(pageRule,/fill:#fff/);assert.equal(exportStyle.includes('detail-marker-count'),false);assert.deepEqual(clone.children.find(n=>n.className==='detail-marker-count').attributes,{fontSize:'7.7'});
+console.log(JSON.stringify({head_sha:'f17236b90592b92a8f553678eaf81de3f34b340e',method:'Actual createExportSvgClone extracted unchanged via TS AST, minimal detached SVG DOM stub, no browser execution or raster claim',pageRule,export_has_marker_rule:false,count_element_has_inline_color_or_stroke:false,scope:'Confirmed serialization style omission; raster contrast/readability not independently measured',permanent_test_changes:0},null,2));
