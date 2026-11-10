@@ -1,4 +1,4 @@
-import {summarizeDetailCell} from '../src/detailSummary.ts';
+import {summarizeDetailCell,detailMarkerGroups} from '../src/detailSummary.ts';
 import {parseDetail1StateV11} from '../src/detailModel.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -45,4 +45,8 @@ test('spatial summaries retain mixed source fragments and count a multi-cell POI
  assert.deepEqual(state,before);assert.equal(summarizeDetailCell(state,{q:-99,r:-99},terrain).pois.length,0);
  for(const selectedCell of [{q:.5,r:0},{q:'0',r:0},{q:0,r:0,extra:true}])assert.throws(()=>parseDetail1StateV11({...state,selectedCell}));
  assert.deepEqual(parseDetail1StateV11(JSON.parse(JSON.stringify(state))),state);
+ const overlapping={...state,poiFootprints:[...state.poiFootprints,{...state.poiFootprints[0],poiId:'other',cells:[{q:0,r:0}]}]};
+ const groups=detailMarkerGroups(overlapping);assert.equal(groups.length,2);assert.equal(groups.find(g=>g.cell.q===0).owners.length,2);assert.equal(groups.find(g=>g.cell.q===1).owners[0].poiId,'site');
+ assert.equal(detailMarkerGroups({...overlapping,viewStep:12}).length,1);assert.deepEqual(overlapping.poiFootprints[0].cells,state.poiFootprints[0].cells);
+
 });

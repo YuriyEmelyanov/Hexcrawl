@@ -13,3 +13,13 @@ export function summarizeDetailCell(state:Detail1State,anchor:DetailCell,terrain
  }
  return {cell,sources,pois:[...byPoi.values()].sort((a,b)=>a.poiId.localeCompare(b.poiId))};
 }
+
+/** Rendering repeats references, never document objects. Coincident references
+ * share a marker and are resolved by the selected-cell POI list. */
+export function detailMarkerGroups(state:Detail1State){
+ const groups=new Map<string,{cell:DetailCell;owners:typeof state.poiFootprints[number][]}>();
+ for(const p of state.poiFootprints)for(const cell of state.viewStep===1?p.cells:p.cells.slice(0,1)){
+  const key=`${cell.q},${cell.r}`,group=groups.get(key)??{cell,owners:[]};group.owners.push(p);groups.set(key,group);
+ }
+ return [...groups.values()];
+}

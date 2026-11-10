@@ -89,6 +89,17 @@ test('actual DETAIL1 extent command records one exact undo/redo transaction and 
  const reordered=structuredClone(after);const grid=reordered.map.physicalGrid;reordered.map.physicalGrid={poiFootprints:grid.poiFootprints,poiIdentities:grid.poiIdentities,source:grid.source,grid:grid.grid,viewStep:grid.viewStep,active:grid.active,version:grid.version,schema:grid.schema};h.render().applyDocument(reordered);h.render();const count=h.render().undoHistory.length;assert.equal(h.render().editDetailFootprintExtent(poi.poiId,extent,cells),true);assert.equal(h.render().undoHistory.length,count,'field order does not turn a semantic no-op into a transaction');
  // The ordinary serialized boundary now validates the actual geography too.
  assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
+ // Reuse this live extent/history fixture for the form's detached draft contract.
+ const uiBefore=structuredClone(h.render().captureDocument()),uiStacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().startDetailExtentDraft(poi.poiId),true);const staleDraft=h.render().detailExtentDraft;
+ assert.equal(h.render().changeDetailExtentDraft({cellsText:'999,999',note:'Impossible shape'}),true);
+ assert.equal(h.render().finishDetailExtentDraft(staleDraft),false);assert.equal(h.render().finishDetailExtentDraft(),false);assert.ok(h.render().detailExtentDraft);
+ assert.deepEqual(structuredClone(h.render().captureDocument()),uiBefore);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),uiStacks);assert.equal(h.render().setDetailViewStep(12),false);
+ assert.equal(h.render().cancelDetailExtentDraft(),true);assert.deepEqual(structuredClone(h.render().captureDocument()),uiBefore);
+ assert.equal(h.render().startDetailExtentDraft(poi.poiId),true);assert.equal(h.render().changeDetailExtentDraft({cellsText:cells.map(c=>`${c.q},${c.r}`).join('\n'),note:'Updated assumed shape'}),true);assert.equal(h.render().finishDetailExtentDraft(),true);
+ const uiAfter=structuredClone(h.render().captureDocument());assert.equal(h.render().undoHistory.length,uiStacks[0].length+1);assert.equal(h.render().detailExtentDraft,null);
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),uiBefore);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),uiAfter);
+
 });
 
 // DTL-09/21/23: registry-only tests cannot prove accepted spatial state survives
