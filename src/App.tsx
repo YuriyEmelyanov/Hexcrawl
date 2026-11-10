@@ -1,5 +1,5 @@
 import {finalizeDryPoiLocations} from './finalPoiPlacement';
-import {createDetailGrid,detailCellPolygon,detailFootprintBoundary} from './detailGrid';
+import {createDetailGrid,detailCellPolygon,detailFootprintBoundary,detailPositiveAreaIntersections,type DetailStep} from './detailGrid';
 import {reconcileDetailGeography,prepareDetailFootprintExtentEdit,validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {reconcileDetailPoiIdentities} from './detailIdentity';
 import {parseDetail1StateV11,validateDetail1Document,type DetailExtent,type Detail1State} from './detailModel';
@@ -13677,6 +13677,14 @@ export function App() {
       recordTransaction(before,after);applyPreparedDocument(after);setTimeout(()=>detailAdaptationFocusRef.current?.focus(),0);return true;
     }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось применить охваты. Карта не изменена.':'Could not apply footprints. Your map is unchanged.'));return false;}
   };
+  const setDetailViewStep=(step:DetailStep,expectedRevision=renderedDocumentRevision):boolean=>{
+    if(![1,6,12,24].includes(step)||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||notesComposingRef.current||obstacleDraftRef.current)return false;
+    const before=captureDocument(),state=before.map.physicalGrid;
+    if(!state?.active)return false;
+    if(state.viewStep===step)return true;
+    const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}}});
+    recordTransaction(before,after);applyPreparedDocument(after);return true;
+  };
   /** One explicit extent operation with full live geography validation. */
   const editDetailFootprintExtent=(poiId:string,extent:DetailExtent,cells?:readonly AxialHex[],expectedRevision=renderedDocumentRevision):boolean=>{
     if(!editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesComposingRef.current||notesEditorKey!==null||obstacleDraftRef.current)return false;
@@ -16168,7 +16176,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
               const fill = hex.kind === 'candidate' ? undefined : !renderDetails ? (hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : GROUND_COLORS[effectiveBiomeId]) : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : getBiomeColor(effectiveBiomeId);
-              const gridStyle = renderBiomeColor && hex.kind !== 'candidate' ? { stroke: 'none' } : {};
+              const gridStyle = (renderBiomeColor || physicalGrid?.active&&physicalGrid.viewStep!==6) && hex.kind !== 'candidate' ? { stroke: 'none' } : {};
               const biomeTileHref = renderDetails && useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
               const tileImageSize = getHexWidth(hexRenderSize);
               const tileImageHeight = hexRenderSize * 2;
@@ -16485,9 +16493,27 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 ))}
               </g>
             ) : null}
-            {renderBiomeColor ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
+            {renderBiomeColor&&(!physicalGrid?.active||physicalGrid.viewStep===6) ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
+            {physicalGrid?.active&&(()=>{
+              const origin=physicalGrid.grid.origin,coarse=createDetailGrid(6,origin),fine=createDetailGrid(1,origin),grid=createDetailGrid(physicalGrid.viewStep,origin);
+              const px=(v:{x:number;y:number})=>({x:(v.x-origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x,y:(v.y-origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y});
+              const points=(poly:readonly {x:number;y:number}[])=>poly.map(v=>{const p=px(v);return `${p.x},${p.y}`;}).join(' ');
+              const terrain=positionedHexes.hexes.filter(h=>h.kind!=='candidate'),cells=new Map<string,AxialHex>();
+              if(physicalGrid.viewStep!==6)for(const h of terrain)for(const hit of detailPositiveAreaIntersections(grid,detailCellPolygon(coarse,parseHexKey(h.key))))cells.set(hexKey(hit.cell),hit.cell);
+              return <g data-detail-view={physicalGrid.viewStep} transform={mapRotationTransform} pointerEvents="none">
+                <defs><clipPath id="detail-terrain-clip">{terrain.map(h=><polygon key={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)}/>)}</clipPath></defs>
+                <g clipPath="url(#detail-terrain-clip)" fill="none" stroke="#575242" strokeOpacity={.65} strokeWidth={.6}>
+                  {[...cells].map(([key,c])=><polygon key={key} points={points(detailCellPolygon(grid,c))}/>)}
+                </g>
+                {physicalGrid.poiFootprints.map(p=><g key={p.poiId} data-detail-footprint={p.poiId}>
+                  {physicalGrid.viewStep===1&&p.cells.map(c=><polygon key={hexKey(c)} points={points(detailCellPolygon(fine,c))} fill="#22d3ee" fillOpacity={.12}/>)}
+                  {detailFootprintBoundary(fine,p.cells).map((e,i)=>{const a=px(e.from),b=px(e.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#087f8c" strokeWidth={1.2}/>;})}
+                </g>)}
+              </g>;
+            })()}
+
   </>), [
-    biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, colorLandHexes, debugRivers, debugVerticesByRegion, forestCells, hexTerrainByKey, isMapRotated, kingdoms, lakeCells, lakeShapes, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderBiomeColor, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, toponymSeed, useBiomeColor, useBiomeTiles, usePoiSvg, waterPoiByKey
+    physicalGrid, biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, colorLandHexes, debugRivers, debugVerticesByRegion, forestCells, hexTerrainByKey, isMapRotated, kingdoms, lakeCells, lakeShapes, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderBiomeColor, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, toponymSeed, useBiomeColor, useBiomeTiles, usePoiSvg, waterPoiByKey
   ]);
 
   useEffect(() => {
@@ -16729,6 +16755,11 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <div className="detail-adaptation__actions"><button type="button" data-detail-apply onClick={()=>applyDetailAdaptation()}>{language==='ru'?'Применить охваты':'Apply footprints'}</button><button type="button" data-detail-cancel className="secondary" onClick={()=>cancelDetailAdaptation()}>{language==='ru'?'Отмена':'Cancel'}</button></div>
                 <small>{language==='ru'?'Escape — отмена. Применение можно вернуть одной Undo.':'Escape cancels. Undo restores the previous document after applying.'}</small>
               </>:physicalGrid?.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button ref={detailAdaptationStartRef} type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
+              {physicalGrid?.active&&!detailAdaptation&&<fieldset className="detail-view-controls" disabled={mutationBlocked(false)}>
+                <legend>{language==='ru'?'Сетка карты':'Map grid'}</legend>
+                <div className="detail-adaptation__actions">{([1,6,12,24] as const).map(step=><button type="button" key={step} data-detail-step={step} aria-pressed={physicalGrid.viewStep===step} onClick={()=>setDetailViewStep(step)}>{step} {language==='ru'?'миль':'mi'}</button>)}</div>
+                <small>{language==='ru'?'Мили между сторонами. Сетка и масштаб приближения независимы; местность и места сохраняются.':'Miles across flats. Grid and zoom are independent; terrain and places are retained.'}</small>
+              </fieldset>}
               {detailAdaptationError&&<p role="alert">{detailAdaptationError}</p>}
             </section>}
             <div className="control-block world-seed-control">

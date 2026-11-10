@@ -200,7 +200,20 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  assert.equal(h.render().startDetailAdaptation(),true);const current=h.render().detailAdaptation;assert.equal(oldApply(draft),false,'old draft cannot apply a new preview');
  const restore=h.injectFunction('structuredClone',value=>{if(value?.physicalGrid)throw Error('temporary adaptation copy fault');return structuredClone(value);});assert.equal(h.render().applyDetailAdaptation(),false);restore();assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);assert.equal(h.render().detailAdaptation,current);
  assert.equal(h.render().applyDetailAdaptation(),true);const after=structuredClone(h.render().captureDocument());assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().redoHistory.length,0);assert.equal(h.render().detailAdaptation,null);assert.deepEqual(after.map.physicalGrid,structuredClone(current.state));const clean=x=>{delete x.map.physicalGrid;return x;};assert.deepEqual(clean(structuredClone(after)),clean(structuredClone(before)));assert.equal(h.render().createSaveData().version,11);assert.equal(h.render().applyDetailAdaptation(current),false);assert.equal(h.render().startDetailAdaptation(),false,'accepted layer is not adapted twice');
+
  h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+ // DTL-20/22/23: the real view controller changes only persisted viewStep.
+ const accepted=structuredClone(h.render().captureDocument()),oldView=h.render().setDetailViewStep;
+ for(const step of [1,12,24,6]){
+   assert.equal(h.render().setDetailViewStep(step),true);
+   const viewed=structuredClone(h.render().captureDocument());assert.equal(viewed.map.physicalGrid.viewStep,step);
+   const expected=structuredClone(accepted);expected.map.physicalGrid.viewStep=step;assert.deepEqual(viewed,expected);
+   h.geometry.assertHexcrawlSaveData(h.render().createSaveData());
+ }
+ assert.equal(oldView(12),false,'stale view command cannot change a newer document');
+ const count=h.render().undoHistory.length;assert.equal(h.render().setDetailViewStep(6),true);assert.equal(h.render().undoHistory.length,count,'same view is a no-op');
+ h.render().undoMap();assert.equal(h.render().captureDocument().map.physicalGrid.viewStep,24);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),accepted);
+
 });
 
 // DTL-09/22/23: activation belongs to the final accepted generation transaction,
