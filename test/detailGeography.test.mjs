@@ -182,3 +182,24 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  assert.equal(h.render().applyDetailAdaptation(),true);const after=structuredClone(h.render().captureDocument());assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().redoHistory.length,0);assert.equal(h.render().detailAdaptation,null);assert.deepEqual(after.map.physicalGrid,structuredClone(current.state));const clean=x=>{delete x.map.physicalGrid;return x;};assert.deepEqual(clean(structuredClone(after)),clean(structuredClone(before)));assert.equal(h.render().createSaveData().version,11);assert.equal(h.render().applyDetailAdaptation(current),false);assert.equal(h.render().startDetailAdaptation(),false,'accepted layer is not adapted twice');
  h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
 });
+
+// DTL-09/22/23: activation belongs to the final accepted generation transaction,
+// not intermediate Mythic steps or continuation of a legacy imported map.
+test('new maps activate DETAIL1 at final generation, preserving legacy continuation and exact undo',async()=>{
+ for(const mode of ['classic','mythic']){
+  const h=createGenerationHarness(42);h.render();const before=structuredClone(h.render().captureDocument());
+  h.render().setGenerationMode(mode);h.render();
+  if(mode==='classic')h.render().generateAt({q:0,r:0},{targetSize:12});
+  else {h.render().startKingdom({q:0,r:0});for(let i=0;i<200&&h.render().kingdomJob;i++){assert.equal(h.render().captureDocument().map.physicalGrid,undefined,'no provisional kingdom footprint');h.render().advanceKingdom();}}
+  assert.equal(h.render().generationError,null);assert.equal(h.render().kingdomJob,null);
+  const after=structuredClone(h.render().captureDocument()),grid=after.map.physicalGrid;
+  assert.ok(grid?.active,'new map has an active accepted layer');h.geometry.validateDetailMapFootprints(after.map,grid);
+  assert.equal(grid.poiFootprints.length,Object.keys(grid.poiIdentities.byLegacyRef).length);
+  assert.equal(h.render().undoHistory.length,1);assert.equal(h.render().createSaveData().version,11);
+  h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument().map),before.map);
+  h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+ }
+ const legacy=await importMap(regionFixture()),before=structuredClone(legacy.render().captureDocument());
+ legacy.render().recordGenerated(before.map,structuredClone(before.map),{q:2,r:0});
+ assert.equal(legacy.render().captureDocument().map.physicalGrid,undefined,'legacy generation does not silently adapt existing map');
+});

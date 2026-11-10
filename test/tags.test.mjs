@@ -113,10 +113,10 @@ test('Knave real generation commits content with its map, preserves world RNG an
  const plain=setup(false),knave=setup(true),options={targetSize:18,landType:'wild',coastalPreference:'mainland'};
  const map=h=>structuredClone(h.render().captureDocument().map);
  const serialized=m=>JSON.parse(JSON.stringify(m,(_key,value)=>value instanceof Map?{entries:[...value]}:value));
- const physical=m=>{const out=structuredClone(m);delete out.knave;for(const r of out.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return out;};
+ const physical=m=>{const out=structuredClone(m);delete out.knave;delete out.physicalGrid;for(const r of out.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return out;};
  const generate=(h,anchor)=>assert.equal(h.render().safelyAddRegionToMap(anchor,options).success,true);
  const empty=map(knave);generate(plain,{q:0,r:0});generate(knave,{q:0,r:0});
- const first=map(knave),facts=knave.geometry.knaveFactsForMap(first);assert.ok(facts.length>=2);assert.deepEqual(physical(first),physical(map(plain)));
+ const first=map(knave),facts=knave.geometry.knaveFactsForMap(first);assert.ok(facts.length>=2);knave.geometry.validateDetailMapFootprints(first,first.physicalGrid);plain.geometry.validateDetailMapFootprints(map(plain),map(plain).physicalGrid);assert.deepEqual(physical(first),physical(map(plain)));
  assert.deepEqual(first.generation,map(plain).generation);assert.equal(Object.keys(first.knave.content.byPoi).length,facts.length);
  // The preference controls future Classic generation; retained snapshots stay
  // literal when the user turns Knave off and are not backfilled on re-enable.
@@ -132,7 +132,7 @@ test('Knave real generation commits content with its map, preserves world RNG an
  await reload.render().handleImportJson({target:{files:[{text:JSON.stringify(knave.render().createSaveData())}],value:''}});assert.deepEqual(serialized(map(reload)),serialized(first));
  // Supported older v10 layers may have missing content. Growth must not
  // backfill/retag their old owners as a hidden conversion of accepted regions.
- const sparse=setup(false),sparseDocument=structuredClone(knave.render().captureDocument()),oldOwners=new Set(Object.keys(first.knave.content.byPoi));delete sparseDocument.map.knave.content;
+ const sparse=setup(false),sparseDocument=structuredClone(knave.render().captureDocument()),oldOwners=new Set(Object.keys(first.knave.content.byPoi));delete sparseDocument.map.knave.content;delete sparseDocument.map.physicalGrid;
  sparse.render().applyDocument(sparseDocument);sparse.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);
  const anchor=knave.render().candidateHexes[0];generate(sparse,anchor);
  const sparseMap=map(sparse);assert.ok(Object.keys(sparseMap.knave.content.byPoi).length);for(const owner of oldOwners)assert.equal(sparseMap.knave.content.byPoi[owner],undefined,'old missing payload stays missing');

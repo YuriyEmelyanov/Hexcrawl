@@ -13899,11 +13899,20 @@ export function App() {
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
     map.seas=sea.seas;map.nextSeaId=sea.nextSeaId;
-    if(acceptedSpatial)map=reconcileDetailMapIdentities({...map,physicalGrid:acceptedSpatial});
+    if(acceptedSpatial&&(!kingdomJob||backup))map=reconcileDetailMapIdentities({...map,physicalGrid:acceptedSpatial});
     checkedRiverMap(map);
     assertGeneratedIds(map);
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
     if (kingdomJob && !backup) {updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);return map;} // internal kingdom steps form one transaction at finish
+    // New maps acquire their deterministic layer only at the accepted boundary:
+    // Knave has resolved its owners, and Mythic has assigned its final quotas.
+    // Continuing an imported legacy map never implicitly adapts it.
+    const sourceMap=backup?.document?.map??backup?.map??checkpoint;
+    if(!map.physicalGrid&&actualHexKeys(sourceMap).size===0){
+      const preview=prepareDetailMapPreview(map);
+      map={...map,physicalGrid:parseDetail1StateV11({schema:'hexcrawl.detail1',version:1,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints})};
+      checkedRiverMap(map);
+    }
     const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
