@@ -29,7 +29,7 @@
   "run_id": "2026-11-10T1559-reviewer-HX-BL-051-64b8476",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "review_in_progress",
+  "status": "changes_requested",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -47,21 +47,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "reviewer",
-  "next_role": "reviewer",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-DETAIL1.md",
   "spec_version": "DTL-1.0",
-  "result_path": "agent-work/results/2026-11-10T1458-programmer-HX-BL-051-UI-EVIDENCE2.json",
+  "result_path": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
-  "active_claim": {
-    "run_id": "2026-11-10T1559-reviewer-HX-BL-051-64b8476",
-    "task_id": "HX-BL-051",
-    "role": "reviewer",
-    "claim_ref": "agent-work/claims/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
-    "status": "active",
-    "execution_running": true
-  },
-  "next_step": "Own reviewer claim: fresh-context independent verification of exact64 combined package and finite UI-EVIDENCE2/score1.2. Do not duplicate.",
+  "active_claim": null,
+  "next_step": "Программист исправляет CLASSIFY1-REVIEW-CENTRAL-DISCOVERY на новой ветке/текущейPR496ветке с новымSHA, сохраняет precedence/данные/историю/RNG и прикладывает точечные actualUI и обязательные проверки. Затем независимыйreview новогоSHA; после приёмки051 — утверждённая043/TABLES1, затем054/PF2-BATCH1.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -130,14 +123,14 @@
     "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458",
+  "evidence_path": "agent-work/evidence/review-HX-BL-051-64b8476",
   "branch_name": "agent/hx-bl-051-detail1",
   "pr": 496,
   "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
   "tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
-  "checks_status": "success_current_exact_SHA",
+  "checks_status": "current_exact_SHA_CI_success_but_functional_review_changes_requested",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42845445696",
-  "review_verdict": "current_exact_SHA_pending",
+  "review_verdict": "changes_requested",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -235,7 +228,7 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-aad4516/score-assessment1.2.json",
+  "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-64b8476/score-assessment1.2.json",
   "role_selection_reason": "Priority4: current64 exactSHA review_ready, allCI green, no active051 claim. Fresh-context agent required because parent authored previous run.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
@@ -266,17 +259,20 @@
       "method": "automations.peek"
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null
+      "checked_at": "2026-11-10 16:16:27 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
     },
     "restoration_performed": false,
-    "errors": []
+    "errors": [],
+    "limitation": "Actual point-in-time checks only, no guarantee of future state. Same persistent team; schedule/instructions unchanged."
   },
   "open_findings": [
     "CLASSIFY1-VALIDATION-RIV011",
-    "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE"
+    "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY"
   ],
-  "current_review_score_assessment_status": "pending_exact_SHA; nine whole criteria unknown",
+  "current_review_score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown_with_central_discovery_defect",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -802,87 +798,45 @@
   "review_request": {
     "schema_version": 1,
     "task_id": "HX-BL-051",
-    "stage_id": "DETAIL1-UI-EVIDENCE2-review",
-    "status": "review_ready",
-    "next_role": "reviewer",
-    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-    "tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
-    "base_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-    "combined_base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "related_task_id": "HX-BL-044",
+    "stage_id": "DETAIL1-CLASSIFY1-central-discovery-fix",
+    "next_role": "programmer",
+    "status": "ready_approved_bounded_fix",
+    "input_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
     "pr": 496,
     "branch": "agent/hx-bl-051-detail1",
     "spec_refs": [
       "agent-work/specs/HX-BL-051-DETAIL1.md",
-      "agent-work/specs/HX-BL-044-CLASSIFY1.md"
+      "agent-work/specs/HX-BL-044-CLASSIFY1-implementation.md"
     ],
-    "acceptance_ref": "agent-work/specs/HX-BL-051-DETAIL1.acceptance.json",
-    "programmer_result_ref": "agent-work/results/2026-11-10T1458-programmer-HX-BL-051-UI-EVIDENCE2.json",
-    "checks_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/checks.json",
-    "artifact_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/artifact-manifest.json",
-    "ui_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui-actual.json",
-    "evidence_matrix_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/evidence-matrix.json",
-    "test_change_summary_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/test-change-summary.json",
-    "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/programmer-score-evidence.json",
-    "next_step": "Проверяющий со свежим независимым контекстом проверяет общий DETAIL1+CLASSIFY1 на точном 64b8476ff7f19e61e24b8b939663d90c1f2b37ec/tree45a83248e266fa79774ddabcc731135216c1a656 в PR496: сопоставляет новый CI/artifact13779460247, матрицуUI-EVIDENCE2 и показанные before/after/12/24/1500/390/320/PNG; проверяет необходимость изменённого одного browserworkflow. Runtimeбайты неизменны относительноaad: использовать прежние evidence только при проверенном соответствии исходников, не повторять принятый style/74набор без нового риска. Записать новый приёмочный вердикт и score_assessment1.2 по9критериям; unknown целого grade допустим и не требует искусственного роста тестов/баллов. RIV011historicalunknown не закрывать, новую003/500map не запускать. После независимой приёмки — аналитик утверждённой043/TABLES1; отдельно owner gate публикации.",
-    "independence": "Fresh-context separate reviewer agent as user requires; independently inspect raw CI logs/images/real test path and exact SHA correspondence. Programmer assertions are not acceptance.",
-    "scope": "Full combined current exactSHA verdict using frozen-runtime source correspondence plus newly supplied bounded actual UI/export evidence. Need new reviewer score1.2 conclusion, no automatic grade transfer.",
-    "evidence_gap_id": "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE",
-    "gap_status": "programmer_evidence_submitted_not_independently_closed",
-    "criteria_ids": [
-      "S01-C04",
-      "S01-C05",
-      "S03-C01",
-      "S04-C03",
-      "S04-C04",
-      "S05-C01",
-      "S04-C05",
-      "S05-C03",
-      "S07-C01"
+    "scope": [
+      "Resolve the selected central POI's actual kind for common discovery inference while keeping addressed DETAIL1 owner context.",
+      "Preserve manual/common/legacy override and hidden-tag precedence, secondary and water POIs, explicit unknown, RNG/save/history and visible-card compactness.",
+      "Reuse appropriate existing actualApp/browser scenario for the missing central integration risk; no new suite/count goal."
     ],
-    "historical_risks": [
-      "CLASSIFY1-VALIDATION-RIV011 unknown, no new heavy validation authorized"
+    "out_of_scope": [
+      "New geography/generation algorithms or schema",
+      "New003/500mapseries",
+      "New product functions, paid services, player-map/VTT",
+      "Release/main merge without owner exact-package permission"
     ],
-    "limits": [
-      "Author images/measurements are one small5hex/twoowner fixture, not all campaign/maps/profile breadth.",
-      "PNG SVG pixel identity is internal-render correspondence; not pixel identity with viewport UI highlight.",
-      "PNG is existingGMview, candidate/ClickMe and secrets not auto-cleaned; no player-map feature claim.",
-      "Presented before/after uses same candidate legacy/adapted states and manualconditionalextent, not a previous published-main screen.",
-      "Source SHA changed only in browser test; nevertheless current exactSHA independent assessment is required."
+    "input_evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476/independent-review.json",
+    "completion": [
+      "Central capital/city on open terrain show passage without override; central lair/dungeon show exploration, matching same-kind secondary controls.",
+      "Road/manual/hidden/unknown precedence and activeDETAIL1 source/remote part context pass on exact newSHA; no fake data from vanished central POI.",
+      "Required currentSHA checks and actual UI of changed display supplied; inspect test delta and evidence, then fresh independent combined review+score1.2."
     ],
     "release_approved": false,
-    "authority_status": "Approved051 scope. Independent review next; no new task/design start approval. Separate owner exact-package release permission still absent.",
+    "new_owner_start_approval_required": false,
     "after_acceptance": {
       "task_id": "HX-BL-043",
       "stage_id": "TABLES1",
       "next_role": "business_analyst",
+      "status": "approved_queued_after_current",
+      "approval_ref": "agent-work/decisions/owner-approval-2026-11-10-HX-BL-043-TABLES1.json",
       "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-strategist.json",
-      "publication_wait_does_not_block": true
+      "start_condition": "After current051 implementation+required evidence+independent acceptance and no running051 claim. Do not wait for separate051 publication permission once current work accepted."
     },
-    "test_delta": {
-      "added": 0,
-      "removed": 0,
-      "modified": 1,
-      "suite": "existing browser workflow",
-      "runtime_source_changed": false
-    },
-    "input_matrix": [
-      {
-        "width": 1500,
-        "touch": "OWNER-TWO-CLUE",
-        "keyboard": "OWNER-ONE-CLUE"
-      },
-      {
-        "width": 390,
-        "touch": "OWNER-TWO-CLUE",
-        "keyboard": "OWNER-ONE-CLUE"
-      },
-      {
-        "width": 320,
-        "touch": "OWNER-TWO-CLUE",
-        "keyboard": "OWNER-ONE-CLUE"
-      }
-    ],
-    "physical_device_limit": "Chromium touch emulation and viewport; no physical phone/crossbrowser/WCAG certification.",
     "approved_execution_order": [
       {
         "task_id": "HX-BL-051",
@@ -897,10 +851,43 @@
         "stage_id": "PF2-BATCH1"
       }
     ],
-    "checks_status": "success_current_exact_SHA"
+    "run_id": "2026-11-10T1559-reviewer-HX-BL-051-64b8476",
+    "finding_id": "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY",
+    "finding_ref": "agent-work/evidence/review-HX-BL-051-64b8476/finding-central-discovery.json",
+    "independent_review_ref": "agent-work/evidence/review-HX-BL-051-64b8476/independent-review.json",
+    "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-64b8476/score-assessment1.2.json",
+    "reproduction": {
+      "script_ref": "agent-work/evidence/review-HX-BL-051-64b8476/central-discovery-probe.mjs",
+      "results_ref": "agent-work/evidence/review-HX-BL-051-64b8476/central-discovery-probe.json",
+      "method": "Fresh reviewer read source and executed the unchanged existing production-App harness, actual importer/controller and actual knavePanel React tree. Only the outer JSX return/artwork and React hook storage are harness instrumentation; no browser/security-gate bypass."
+    },
+    "test_necessity_ref": "agent-work/evidence/review-HX-BL-051-64b8476/test-necessity.json",
+    "actual_UI": "Show actual currentSHA central auto-discovery result desktop+narrow; preserve accepted12/24/name/export evidence only after source correspondence. Complete combined published-main→candidate walkthrough before requesting eventual release, without design approval wait.",
+    "required_checks": "AGENTS and DTL28 currentSHA check/TypeScript/build, existingbrowser and applicableRNG. Actual counts only; no new003/500mapseries or test-count quota.",
+    "historical_risks": [
+      {
+        "id": "CLASSIFY1-VALIDATION-RIV011",
+        "status": "historical_unknown_preserved",
+        "not_closed": true,
+        "new_evidence": false,
+        "note": "A green current run is not the unavailable historical failing map/context. No new heavy validation authorized. Exact package release requires explicit disposition of this historical risk."
+      }
+    ],
+    "release_presentation": {
+      "release_preview_pending": true,
+      "category": "release_presentation_gap_not_product_defect_not_third_design_gate",
+      "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "package_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+      "provided": "Same candidate fixture legacy→adapted screenshots and manualconditionalextent; useful bounded actual UI show.",
+      "missing": "Complete combined published-main→candidate user walkthrough with current classification and detail actions, desktop+narrow, knownlimits and shown_in_chat/reviewer verification. shared-before already runs candidateCLASSIFY1, so it cannot represent published-mainbefore.",
+      "next": "Prepare/update actual combined walkthrough after correction and independent currentSHAacceptance before requesting release. No design approval wait or reapproval of taskstart; do not delay approved next task after051acceptance merely for publication."
+    },
+    "independent_accepted": false,
+    "authority_status": "Existing044/051 taskstart covers bounded defect fix and required verification; no new owner start permission. Exact-package publication remains unauthorized.",
+    "next_step": "Программист исправляет CLASSIFY1-REVIEW-CENTRAL-DISCOVERY на новой ветке/текущейPR496ветке с новымSHA, сохраняет precedence/данные/историю/RNG и прикладывает точечные actualUI и обязательные проверки. Затем независимыйreview новогоSHA; после приёмки051 — утверждённая043/TABLES1, затем054/PF2-BATCH1."
   },
-  "reviewed_sha": null,
-  "current_review_score_assessment_ref": null,
+  "reviewed_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+  "current_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-051-64b8476/score-assessment1.2.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -1000,7 +987,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-10 15:52:44 UTC",
+  "updated_at": "2026-11-10 16:16:27 UTC",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1282,7 +1269,7 @@
     "skipped": 0,
     "reused_evidence_counts": "Prior386 Node,74 reviewer, browser andRNG kept separate; not rerun or added together."
   },
-  "review_url": null,
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5845240873",
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
   "last_readiness_check": {
     "run_id": "2026-11-09T0158-strategist-owner-MB-scope",
@@ -1351,7 +1338,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458",
+  "evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1507,7 +1494,7 @@
     }
   },
   "last_secondary_result_ref": "agent-work/results/2026-11-09T0539-programmer-release-PR495.json",
-  "execution_note": "Approved bounded UI evidence complete on64; current CI succeeded. Runtime unchanged; one existing workflow extended. Independent acceptance pending.",
+  "execution_note": "Finite UI/export evidence accepted with limits; central auto-discovery current64 confirmed defective. No new runtime changes, heavy series, main merge or deployment in reviewer run.",
   "completed_validation_handoffs": {
     "HX-BL-003": {
       "task_id": "HX-BL-003",
@@ -1668,7 +1655,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-UI-EVIDENCE2-review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1805,7 +1792,7 @@
     "task_id": "HX-BL-051",
     "stage_id": "DETAIL1",
     "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-    "status": "not_authorized",
+    "status": "not_authorized; confirmed_functional_defect_requires_newSHA",
     "release_approved": false
   },
   "current_risk_findings": [],
@@ -2234,7 +2221,7 @@
     "completed_at": "2026-10-29T18:36:47.812Z",
     "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json"
   },
-  "active_slice": "DETAIL1-UI-EVIDENCE2",
+  "active_slice": "DETAIL1-UI-EVIDENCE2-review",
   "last_completed_stage_task_id": "HX-BL-051",
   "ui_preview": {
     "version": "UI2-1.0",
@@ -2362,7 +2349,7 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "pending_exact_SHA; nine whole criteria unknown",
+  "current_task_score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown_with_central_discovery_defect",
   "published": false,
   "main_changed": false,
   "ui_actual": {
@@ -2821,7 +2808,7 @@
     },
     "acceptance_status": "programmer evidence submitted; independent combined review required"
   },
-  "review_result_ref": null,
+  "review_result_ref": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-051-a4e8a48/score-assessment1.2.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2843,7 +2830,7 @@
     "limitation": "Observed status at two calls only; not guarantee of subsequent service state."
   },
   "next_active_slice": "DETAIL1-independent-rereview",
-  "review_scope": "Full combined DETAIL1+CLASSIFY1 on64: source correspondence plus actual UI/export evidence; fresh independent reviewer required",
+  "review_scope": "Full combined DETAIL1+CLASSIFY1 with finite UI-EVIDENCE2 gap accepted separately and reproduced central discovery P2",
   "previous_accepted_release_pending": {
     "task_id": "HX-BL-023",
     "stage_id": "E7+E8",
@@ -2932,7 +2919,7 @@
   "test_change_summary_ref": "agent-work/evidence/strategy-HX-BL-051-UI-1404/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/programmer-score-evidence.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
-  "review_evidence_ref": null,
+  "review_evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476",
   "github_review_state": "COMMENT_bounded_fix_accepted_full_package_not_accepted",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-051-aad4516/independent-review.json",
   "owner_visual_correction": {
@@ -3000,18 +2987,18 @@
   "process_analysis_ref": "agent-work/proposals/2026-10-31-development-process-review.md",
   "process_analysis_status": "recommendations_only_not_implemented",
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
-  "next_approved_stage": "DETAIL1-UI-EVIDENCE2-review",
-  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-UI-EVIDENCE2-review.json",
+  "next_approved_stage": "DETAIL1-CLASSIFY1-central-discovery-fix",
+  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
   "authorization_status": "Existing approved051 continuation, no new start/design approval required. TABLES1 approved after current051 work completion, before or independently of waiting for its publication approval.",
-  "completed_at": "2026-11-10 14:12:16 UTC",
+  "completed_at": "2026-11-10 16:16:27 UTC",
   "score_changed": false,
-  "next_stage_id": "DETAIL1-UI-EVIDENCE2-review",
+  "next_stage_id": "DETAIL1-CLASSIFY1-central-discovery-fix",
   "score_evidence_updated": true,
   "current_stage_id": "DETAIL1",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
-  "current_stage_ui_status": "actual_final_SHA_shown_author_evidence_submitted",
+  "review_ready": false,
+  "current_stage_ui_status": "UI_EVIDENCE2_bounded_accepted; future changed_SHA_requires_correspondence",
   "completed_claim": "agent-work/claims/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
   "evidence_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "finding_ids": [
@@ -4602,8 +4589,8 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "review_ready",
-  "current_stage_review_status": "pending_current_exact_SHA",
+  "current_stage_status": "changes_requested",
+  "current_stage_review_status": "changes_requested",
   "accepted": false,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -4839,10 +4826,10 @@
   "stage_id": "DETAIL1",
   "release_approved": false,
   "ui_actual_shown": true,
-  "ui_actual_responsible": "programmer complete; independent reviewer next",
+  "ui_actual_responsible": "programmer supplied current64; independent reviewer bounded verification complete",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
-  "checks_summary": "CI386/386 Node; TypeScript/build;9browser commands and1separate RNGscript passed. Suites not summed.",
+  "checks_summary": "CI386/386Node +tsc/build;9browsercommands +1separateRNG passed. Temporary16observation actualApp probe reproduces central-discovery defect; not16newproducttests.",
   "full_E5_UI_pending": true,
   "materials_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
   "latest_HX_BL_023_E5_features_ui_20261104": {
@@ -7332,7 +7319,7 @@
   "private_tree_sha": null,
   "current_private_package": null,
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
-  "review_request_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-UI-EVIDENCE2-review.json",
+  "review_request_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
   "programmer_complete": true,
   "current_programmer_result_ref": "agent-work/results/2026-11-10T1458-programmer-HX-BL-051-UI-EVIDENCE2.json",
   "reviewed_private_sha": null,
@@ -7451,8 +7438,8 @@
     "no_cloud_browser_navigation_attempted": true
   },
   "score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown",
-  "review_report_ref": null,
-  "reviewed_public_sha": null,
+  "review_report_ref": "agent-work/evidence/review-HX-BL-051-64b8476/independent-review.json",
+  "reviewed_public_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
   "closed_findings": [
     "KNC-REV-001",
     {
@@ -8013,10 +8000,10 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-10T1458-programmer-HX-BL-051-UI-EVIDENCE2.json",
-  "current_stage_score_assessment_status": "pending_exact_SHA; nine whole criteria unknown",
+  "current_role_result": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
+  "current_stage_score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown_with_central_discovery_defect",
   "ui_actual_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui-actual.json",
-  "execution_running": true,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -8470,7 +8457,7 @@
     "Scribd_uploaded": false
   },
   "task_id": "HX-BL-051",
-  "review_completed": false,
+  "review_completed": true,
   "release_readiness": "independent_rereview_then_complete_release_walkthrough_and_exact_owner_gate",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_due_unpublished",
@@ -8523,8 +8510,8 @@
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
   "local_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-  "checks_evidence_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/checks.json",
-  "execution_status": "independent_review_running",
+  "checks_evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476/provenance-checks.json",
+  "execution_status": "independent_review_completed_changes_requested",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8661,10 +8648,11 @@
   "pr_updated": true,
   "execution_routing": {
     "task_id": "HX-BL-051",
-    "stage_id": "DETAIL1-UI-EVIDENCE2-review",
-    "role": "reviewer",
+    "related_task_id": "HX-BL-044",
+    "stage_id": "DETAIL1-CLASSIFY1-central-discovery-fix",
+    "role": "programmer",
     "status": "ready",
-    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-UI-EVIDENCE2-review.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
     "release_authorized": false
   },
   "last_team_coordination": {
@@ -8900,38 +8888,38 @@
     ]
   },
   "latest_DETAIL1_independent_review": {
-    "run_id": "2026-11-10T1301-reviewer-HX-BL-051-aad4516",
-    "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-    "tree_sha": "02b07b3140d2e36ae65b575af732add773837165",
-    "verdict": "bounded_fix_accepted_full_UI_evidence_pending",
+    "run_id": "2026-11-10T1559-reviewer-HX-BL-051-64b8476",
+    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+    "tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
+    "verdict": "changes_requested",
     "closed_finding_ids": [
-      "DETAIL1-REVIEW-EXPORT-COUNT-STYLE"
-    ],
-    "evidence_gap_ids": [
       "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE"
     ],
-    "result_ref": "agent-work/results/2026-11-10T1301-reviewer-HX-BL-051-aad4516.json",
-    "next_role": "strategist_manager",
-    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-aad4516-next.json",
-    "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-aad4516/score-assessment1.2.json",
-    "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5842281703",
+    "finding_ids": [
+      "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY"
+    ],
+    "result_ref": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
+    "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-64b8476/score-assessment1.2.json",
+    "new_permanent_test_cases": 0,
+    "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5845240873",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "checked_at": "2026-11-10 13:01:04 UTC",
-        "is_enabled": true,
+        "checked_at": "2026-11-10 15:59:50 UTC",
         "status": "checked",
+        "is_enabled": true,
         "method": "automations.peek"
       },
       "end": {
-        "checked_at": "2026-11-10 13:08:21 UTC",
+        "checked_at": "2026-11-10 16:16:27 UTC",
         "status": "checked",
         "is_enabled": true,
         "method": "automations.peek"
       },
       "restoration_performed": false,
       "errors": [],
-      "limitation": "Actual point-in-time checks only; later service changes not guaranteed. Persistent team schedule/instructions unchanged."
+      "limitation": "Actual point-in-time checks only, no guarantee of future state. Same persistent team; schedule/instructions unchanged."
     }
   },
   "release_preview_pending": true,
@@ -8953,8 +8941,8 @@
     {
       "id": "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE",
       "category": "evidence_gap",
-      "status": "programmer_evidence_submitted_pending_independent_review",
-      "blocking_acceptance": true,
+      "status": "closed_on_exact_sha",
+      "blocking_acceptance": false,
       "requirements": [
         "DTL-24",
         "DTL-26"
@@ -8968,10 +8956,12 @@
       ],
       "not_a_confirmed_product_defect": true,
       "input_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-review-fixes-rereview.json",
-      "evidence_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/evidence-matrix.json"
+      "evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476/evidence-matrix.json",
+      "review_result_ref": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
+      "limitations": "Finite actualUI accepted separately; central discovery P2 and releasepresentation remain."
     }
   ],
-  "full_package_review_ready": true,
+  "full_package_review_ready": false,
   "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
@@ -9007,7 +8997,7 @@
     "review_ready": false
   },
   "bounded_fix_accepted": true,
-  "ui_evidence_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-UI-EVIDENCE2-review.json",
+  "ui_evidence_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
   "approved_after_current": {
     "task_id": "HX-BL-043",
     "stage_id": "TABLES1",
@@ -9144,11 +9134,70 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-10T1458-programmer-HX-BL-051-UI-EVIDENCE2",
+  "last_completed_run_id": "2026-11-10T1559-reviewer-HX-BL-051-64b8476",
   "storage_verification": {
-    "data_commit_sha": "dad73925873e1b301d2c42f6fab78770d2110bda",
-    "data_readback": "passed_result_and_owned_claim",
+    "data_commit_sha": "c737f16481b60c238a41f97b6f6ccca3bd4ca480",
+    "data_readback": "passed_result_claim_and_score_assessment",
     "latest_written_last": true,
-    "foreign_claims_and_research_preserved": true
+    "foreign_claims_research_and_approved_queue_preserved": true
+  },
+  "current_functional_findings": [
+    {
+      "id": "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY",
+      "priority": "P2",
+      "category": "confirmed_product_defect",
+      "blocking_acceptance": true,
+      "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+      "file": "src/App.tsx",
+      "line": 15522,
+      "related_lines": [
+        8865,
+        14622,
+        14624,
+        15522
+      ],
+      "title": "Auto discovery omits central POI type, so central landmarks/lairs lose known discovery conditions",
+      "requirements": [
+        "HX-BL-044-CLASSIFY1-implementation.md Policy1 discovery precedence",
+        "CLASSIFY1 acceptance4/5/6/8",
+        "DTL-09/25 combined source-content compatibility"
+      ],
+      "repro": [
+        "Use existing regionFixture(); set region1 centerHex={q:2,r:0}, suppressCentralPoi=false, centralPoiKind=capital, pointsOfInterest=[], pointOfInterestKinds={}; use open_plains biome and explicit open_plains at2,0; selectedHex=2,0; no roads or discovery override.",
+        "Import through actual handleImportJson; actual knavePanel React tree has no data-discovery-classification row.",
+        "Change only centralPoiKind to lair: expected Requires exploration, actual no row. Repeat city/dungeon likewise.",
+        "Negative control: represent same kind/address as secondary POI with suppressCentralPoi=true and pointOfInterestKinds[2,0]=kind; actual panel now shows On passage or Requires exploration.",
+        "Actual startDetailAdaptation/applyDetailAdaptation and selectDetailCell(first owner cell,...,poiId) do not repair central capital/lair default."
+      ],
+      "expected": "Actual central kind must enter the same approved discovery policy as secondary kinds: capital/city on open terrain or at a real road endpoint→passage; central lair/dungeon→exploration. Manual/legacy overrides and exact semantic hidden tags keep precedence.",
+      "actual": "All four central kinds produce zero discovery rows. Actual road-endpoint central capital/lair also produce zero; active DETAIL1 owner selection preserves the failure. Secondary controls produce correct rows. Manual interaction+clue, legacy secret+clue, semantic Hidden→exploration and explicit manual unknown suppression work.",
+      "cause": "selectedPoiKind resolves getPoiKindForHex(), which reads only pointOfInterestKinds. inferredDiscovery passes selectedPoiKind??selectedWaterPoiKind and never selectedRegion.centralPoiKind when selectedHasCentralPoi. The pure policy already recognizes these kinds; App loses the kind before calling it.",
+      "scope": "All map modes using the shared panel, including imported/active DETAIL1 central POIs. Affects automatic known discovery presentation, not demonstrated saved-text/RNG loss or a player-map reveal feature.",
+      "evidence": [
+        "central-discovery-probe.mjs",
+        "central-discovery-probe.json",
+        "central-discovery-probe.log"
+      ],
+      "command": "node /tmp/hx-review-64-1600-output/central-discovery-probe.mjs",
+      "independent_method": "Fresh reviewer read source and executed the unchanged existing production-App harness, actual importer/controller and actual knavePanel React tree. Only the outer JSX return/artwork and React hook storage are harness instrumentation; no browser/security-gate bypass.",
+      "historical_reference": "PR496 discussion_r4522823641, botP2 on historical a4e8a48 (08:47). This finding is supported by new current64 reproduction and negative controls, not carried forward from a bot assertion.",
+      "fix_boundary": "Resolve actual selected central kind only for discovery policy, preserve secondary/water and manual/legacy/hidden/unknown precedence, no broad helper semantics change without review. Extend an existing real document/classification regression with central/secondary positive/negative controls instead of creating a new runner. Preserve exact state/history/RNG. Submit a new SHA and reuse unchanged UI evidence only after source correspondence.",
+      "status": "open",
+      "task_id": "HX-BL-051",
+      "related_task_id": "HX-BL-044",
+      "review_result_ref": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
+      "evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476/finding-central-discovery.json",
+      "reproduction_ref": "agent-work/evidence/review-HX-BL-051-64b8476/central-discovery-probe.json"
+    }
+  ],
+  "release_preview_responsible": "programmer; complete actual combined published-main→candidate walkthrough after correction and before release request",
+  "release_presentation": {
+    "release_preview_pending": true,
+    "category": "release_presentation_gap_not_product_defect_not_third_design_gate",
+    "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "package_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+    "provided": "Same candidate fixture legacy→adapted screenshots and manualconditionalextent; useful bounded actual UI show.",
+    "missing": "Complete combined published-main→candidate user walkthrough with current classification and detail actions, desktop+narrow, knownlimits and shown_in_chat/reviewer verification. shared-before already runs candidateCLASSIFY1, so it cannot represent published-mainbefore.",
+    "next": "Prepare/update actual combined walkthrough after correction and independent currentSHAacceptance before requesting release. No design approval wait or reapproval of taskstart; do not delay approved next task after051acceptance merely for publication."
   }
 }
