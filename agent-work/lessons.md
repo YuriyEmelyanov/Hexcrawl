@@ -599,3 +599,6 @@ Automatic activation must test continuation/regeneration, not just first generat
 
 ### 2026-11-10 — route records and physical access identity
 Road ID alone is not a physical port: regeneration can merge records or reuse the old ID elsewhere. Rebind only exact accessNodeId/type/coordinate; retain shape, reject absent segment. Changed attachments of equal length must not be discarded as a no-op. An active layer with zero owners still needs final sea identity preparation before allocating water footprints. Existing tests exposed both; after fixes15 exact focused cases pass. Broad run reveals additional failures and is not a passing acceptance result. Evidence: agent-work/results/2026-11-10T0203-programmer-HX-BL-051-activation-fixes.json.
+
+### 2026-11-10 — PR499 score event: unknown is not a zero grade
+Exact accepted/released tree42483336 and verified live assets permit applying the existing independent assessment once by task+releaseSHA+model+criterion. EN availability and legacy compatibility improve bounded usage, while whole S05-C02/S08-C04 quality/breadth remain insufficient_evidence. Record null deltas and0awarded points without converting unknown to G0 or importing1.1grades. Release claim completed; approved051 checkpoint resumes next. Evidence: agent-work/results/2026-11-10T0400-strategist-score-PR499.json.
