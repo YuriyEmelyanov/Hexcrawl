@@ -55,12 +55,14 @@ const settled=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame((
 for(const width of [1500,390,320]){
   await page.setViewportSize({width,height:width===1500?1100:950});
   for(const detail of await page.locator('[data-detail-summary] > details').all())if(await detail.getAttribute('open')===null)await detail.locator('summary').click();
+  const touchChoice=page.locator('[data-detail-poi-select]').last();await touchChoice.scrollIntoViewIfNeeded();const touchBox=await touchChoice.boundingBox();assert.ok(touchBox);
+  await page.touchscreen.tap(touchBox.x+touchBox.width/2,touchBox.y+touchBox.height/2);await page.locator('[data-knave-panel]').getByText('OWNER-TWO-CLUE',{exact:false}).waitFor();
   const choice=page.locator(`[data-detail-poi-select="${firstId}"]`);await choice.scrollIntoViewIfNeeded();await choice.focus();await page.keyboard.press('Enter');
   await page.locator('[data-knave-panel]').getByText('OWNER-ONE-CLUE',{exact:false}).waitFor();
   const text=await page.locator('[data-detail-summary]').innerText();assert.ok(text.includes(longNames.one)&&text.includes(longNames.two));
   const layout=await page.locator('[data-detail-summary]').evaluate(e=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,panelWidth:e.getBoundingClientRect().width,buttons:[...e.querySelectorAll('button')].map(b=>({text:b.textContent,width:b.getBoundingClientRect().width,height:b.getBoundingClientRect().height}))}));
   assert.ok(layout.documentWidth<=width&&layout.panelWidth<=width);assert.ok(layout.buttons.every(b=>b.height>=44));
-  await page.locator('[data-detail-summary]').screenshot({path:dir+`/long-names-${width}.png`});uiEvidence.layouts.push(layout);
+  await page.locator('[data-detail-summary]').screenshot({path:dir+`/long-names-${width}.png`});uiEvidence.layouts.push({...layout,touchOwnerChoice:'OWNER-TWO-CLUE',keyboardOwnerChoice:'OWNER-ONE-CLUE'});
 }
 await page.setViewportSize({width:1500,height:1100});
 // Capture the real SVG blob handed to the PNG pipeline, not a reconstructed
