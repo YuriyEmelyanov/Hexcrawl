@@ -596,3 +596,6 @@ Detached-подготовка не доказывает историю: отде
 
 ### 2026-11-10 — first-map activation exposes lifecycle gaps
 Automatic activation must test continuation/regeneration, not just first generation and Undo. Existing Mythic continuation cases exposed route coverage refusals after accepted quotas; strict validation retained. A passing25-case subset is not full acceptance. Keep sparse v10 fixtures unadapted when removing source content; a v11 footprint cannot remain justified after deleting that source. Evidence: agent-work/results/2026-11-10T0100-programmer-HX-BL-051-DETAIL1-activation.json.
+
+### 2026-11-10 — route records and physical access identity
+Road ID alone is not a physical port: regeneration can merge records or reuse the old ID elsewhere. Rebind only exact accessNodeId/type/coordinate; retain shape, reject absent segment. Changed attachments of equal length must not be discarded as a no-op. An active layer with zero owners still needs final sea identity preparation before allocating water footprints. Existing tests exposed both; after fixes15 exact focused cases pass. Broad run reveals additional failures and is not a passing acceptance result. Evidence: agent-work/results/2026-11-10T0203-programmer-HX-BL-051-activation-fixes.json.

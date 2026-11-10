@@ -1,0 +1,65 @@
+✔ live DETAIL1 preview projects actual capital/Seat and every assigned road without changing the document or RNG (961.852706ms)
+✔ live DETAIL1 preview retains actual sea/river identities and source requirements, refusing missing mandatory water atomically (1067.902461ms)
+✔ actual DETAIL1 extent command records one exact undo/redo transaction and refuses invalid or stale commands atomically (340.603801ms)
+✔ active DETAIL1 lifecycle preserves manual extents through E7 and allocates/removes POIs without recycling IDs (480.753468ms)
+✔ active DETAIL1 route and water mutations retain exact attachments or refuse both histories atomically (717.19338ms)
+✔ active DETAIL1 E8 relocates an assumed unattached site once and refuses translating accepted explicit extents (438.257701ms)
+✔ active DETAIL1 generated candidate places only new owners after accepted Knave content and refuses invalid candidates before history (549.248533ms)
+✔ ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt spatial references atomically (2647.269265ms)
+✔ legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact document transaction (373.587494ms)
+✔ new maps activate DETAIL1 at final generation, preserving legacy continuation and exact undo (4855.9763ms)
+✖ kingdom quotas, d12 sizes, save, classic extension and atomic undo (4149.553086ms)
+✔ classic to mythic, second kingdom and regeneration preserve earlier regions (32799.115765ms)
+✔ late exception rolls back entire kingdom (763.716517ms)
+✔ nearest free rectangle and disjoint territory (0.509085ms)
+✔ first settled region starts at the rectangle center, including its throne (4182.106239ms)
+✔ Mythic growth fills an enclosed pocket even when the target is already reached (528.315448ms)
+✔ real Mythic handler absorbs a pocket beyond the roll and undo restores it (1091.188504ms)
+✔ one Germanic model spans distinct formations while keeping each name internally consistent (35.826189ms)
+✔ many lakes stay unique in both languages and existing names survive growth and order changes (2.759147ms)
+✔ reroll preserves the model, renames accept paired values and reject duplicates (0.431248ms)
+✔ real map handlers save names, keep old names on growth, and restore them on undo (1413.602ms)
+✖ manual edits to old and regenerated regions survive the region history rollback (699.601515ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 20
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 63122.630142
+
+✖ failing tests:
+
+test at test/mythicKingdom.test.mjs:41:1
+✖ kingdom quotas, d12 sizes, save, classic extension and atomic undo (4149.553086ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mythicKingdom.test.mjs:53:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/toponyms.test.mjs:95:1
+✖ manual edits to old and regenerated regions survive the region history rollback (699.601515ms)
+  TypeError [Error]: Cannot read properties of null (reading 'region:1')
+      at evalmachine.<anonymous>:14335:34
+      at useMemo (file:///workspace/scratch/50f278832674/hexcrawl/test/helpers/generation-harness.mjs:59:20)
+      at Object.App (evalmachine.<anonymous>:14320:45)
+      at Object.render (file:///workspace/scratch/50f278832674/hexcrawl/test/helpers/generation-harness.mjs:92:32)
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/toponyms.test.mjs:104:27)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+      at Test.postRun (node:internal/test_runner/test:1542:19)
+      at Test.run (node:internal/test_runner/test:1467:12)
