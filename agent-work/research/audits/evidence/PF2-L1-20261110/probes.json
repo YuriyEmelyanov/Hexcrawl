@@ -1,0 +1,103 @@
+{
+  "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "method": "Real exported modules and actual App handlers through existing harness; final JSX not rendered",
+  "checks": [
+    {
+      "id": "PF-P01",
+      "action": "Import map with land,river,road and points",
+      "expected": "All coexist as separate collections",
+      "actual": {
+        "regions": 1,
+        "rivers": 1,
+        "roads": 1,
+        "pois": 1
+      },
+      "result": "pass"
+    },
+    {
+      "id": "PF-P02",
+      "action": "Change only detailed hex biome to hills",
+      "expected": "Road/river records byte-equivalent; local biome changed",
+      "actual": {
+        "hex": "0,0",
+        "biome": "open_hills",
+        "riverRoadPreserved": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "PF-P03",
+      "action": "Author map content and local environmental facts in existing notes",
+      "expected": "Exact accepted free text retained, no claim of typed secret/resource or link resolver",
+      "actual": {
+        "hex": "0,0",
+        "text": "Ориентир: башня\nСекрет: вход под корнем\nРесурс: солёный источник\nСледы: волчьи лапы\nГлубина топи: по пояс\nЗацепки: к башне; к мосту"
+      },
+      "result": "pass"
+    },
+    {
+      "id": "PF-P04",
+      "action": "Export/import accepted map, overlays, notes and RNG",
+      "expected": "Same map and random streams; no reroll",
+      "actual": {
+        "exactMap": true,
+        "exactGeneration": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "PF-P05",
+      "action": "Undo/redo actual import",
+      "expected": "Undo empty map; redo exact imported content",
+      "actual": {
+        "undoEmpty": true,
+        "redoExact": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "PF-P06",
+      "action": "Edit one accepted description, undo/redo",
+      "expected": "Old/new source wording restored exactly",
+      "actual": {
+        "old": "Ориентир: башня\nСекрет: вход под корнем\nРесурс: солёный источник\nСледы: волчьи лапы\nГлубина топи: по пояс\nЗацепки: к башне; к мосту",
+        "new": "Ориентир: башня\nСекрет: вход под корнем\nРесурс: солёный источник\nСледы: волчьи лапы\nГлубина топи: по пояс\nЗацепки: к башне; к мосту\nИсправление: источник пресный"
+      },
+      "result": "pass"
+    },
+    {
+      "id": "PF-P07",
+      "action": "Try using the existing Knave physical profile as PF2 12-mile opposite-vertices",
+      "expected": "Rejected; strict Knave6-mile profile is not generic PF2 scale",
+      "actual": "Rejected",
+      "result": "pass"
+    },
+    {
+      "id": "PF-P08",
+      "action": "Extend small accepted map through actual generation handler",
+      "expected": "Original region retained exactly; one added region",
+      "actual": {
+        "originalRegions": 1,
+        "newRegions": 2,
+        "originalRegionExact": true
+      },
+      "result": "pass"
+    },
+    {
+      "id": "PF-P09",
+      "action": "Inspect declared save contract for generic PF2 physical/accuracy record",
+      "expected": "No such declared record; ui.mapScale is zoom, physical length only strictKnave profile",
+      "actual": {
+        "uiZoomPresent": true,
+        "genericPF2ScaleDeclared": false,
+        "cartographicAccuracyDeclared": false
+      },
+      "result": "pass"
+    }
+  ],
+  "limitations": [
+    "Not browser/UI/PNG evidence.",
+    "Notes demonstrate manual text support, not independent typed feature cards, automatic geography, audience hiding or target links.",
+    "No PF2 table implementation inferred from generic generation."
+  ]
+}
