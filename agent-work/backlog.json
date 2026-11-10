@@ -5141,7 +5141,7 @@
     {
       "task_id": "HX-BL-043",
       "title": "Выбирать и сохранять POI по связанным таблицам",
-      "status": "approved",
+      "status": "developer_ready",
       "problem": "Подтверждённые правила наполнения мест переведены на язык генератора. Полная поддержка Knave не подтверждена; стратегу и аналитику предстоит выбрать продуктовый объём и подготовить спецификацию.",
       "benefit": "Проверяемый результат для мастера и переиспользуемая операция вместо отдельной копии функции на игру.",
       "game_editions": [
@@ -6185,7 +6185,7 @@
       "readiness": "approved_queued_after_current051_specification_next",
       "research_result_ref": "agent-work/research/runs/2026-11-06-KNAVE2-full-thematic-audit.json",
       "feedback_assessment": "Open UI/diagnostic feedback is outside this source-only run; future analyst must evaluate current feedback and show any UI proposal.",
-      "ui_preview_pending": true,
+      "ui_preview_pending": false,
       "ui_preview_responsible": "future_analyst_before_implementation",
       "duplication_review": "Existing013/023/024editor and041MBtables are dependencies/reuse candidates. This task is the missing documented generic/profile behavior, not authority to rebuild them.",
       "research_handoff_refs": [
@@ -7029,8 +7029,8 @@
       },
       "proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
       "recommended_priority": 1,
-      "next_role": "business_analyst",
-      "next_step": "Бизнес-аналитик готовит TABLES1 по утверждённым трём возможностям: проверенные строки/связи таблиц, несколько независимых подсказок места; совместимость/история/переброс и компактный desktop+narrow UI-показ, критерии приёмки и score1.2, затем передача программисту. Повторное стартовое согласование не нужно. Публикация051 отдельно и не задерживает эту работу.",
+      "next_role": "programmer",
+      "next_step": "Программист реализует TABLES1 по TBL-1.0: ручные строки, две рабочие связи и независимые подсказки с толкованием; schema2/v12, миграция/история и компактный UI. Показан макет; ответа на дизайн не ждать. Затем exactSHA проверки, actualUI и независимый reviewer; выпуск отдельно.",
       "research_components": [
         {
           "component_id": "ROOT-CORE-clearing-content-L1",
@@ -7301,7 +7301,7 @@
         "next_task_id": "HX-BL-051"
       },
       "authorized_scope": "TABLES1: exactly3 approvedmap-fillingcapabilities; stage starts aftercurrent051",
-      "latest_analyst_result_ref": "agent-work/results/2026-11-08-analyst-HX-BL-043-KNAVE2-CLASSIC1.json",
+      "latest_analyst_result_ref": "agent-work/results/2026-11-10T1859-analyst-HX-BL-043-TABLES1.json",
       "latest_programmer_result_ref": "agent-work/results/2026-11-09T0920-programmer-release-PR497.json",
       "implementation_history": [
         "agent-work/results/2026-11-08T1200-programmer-HX-BL-043-KNAVE2-CLASSIC1.json",
@@ -7391,10 +7391,10 @@
       "active_stage": {
         "stage_id": "TABLES1",
         "scope_version": 1,
-        "status": "ready_for_specification",
+        "status": "developer_ready",
         "title": "Выбирать строки связанных таблиц и сохранять несколько подсказок места",
         "approval_ref": "agent-work/decisions/owner-approval-2026-11-10-HX-BL-043-TABLES1.json",
-        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-strategist.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-programmer.json",
         "implementation_allowed": true,
         "implementation_started": false,
         "start_after": {
@@ -7403,10 +7403,29 @@
           "observed_latest_run": "2026-11-10T1301-reviewer-HX-BL-051-aad4516"
         },
         "release_approved": false,
-        "spec_status": "not_started",
-        "next_role": "business_analyst",
-        "next_step": "Бизнес-аналитик готовит TABLES1 по утверждённым трём возможностям: проверенные строки/связи таблиц, несколько независимых подсказок места; совместимость/история/переброс и компактный desktop+narrow UI-показ, критерии приёмки и score1.2, затем передача программисту. Повторное стартовое согласование не нужно. Публикация051 отдельно и не задерживает эту работу.",
-        "dependency_satisfied": true
+        "spec_status": "developer_ready",
+        "next_role": "programmer",
+        "next_step": "Программист реализует TABLES1 по TBL-1.0: ручные строки, две рабочие связи и независимые подсказки с толкованием; schema2/v12, миграция/история и компактный UI. Показан макет; ответа на дизайн не ждать. Затем exactSHA проверки, actualUI и независимый reviewer; выпуск отдельно.",
+        "dependency_satisfied": true,
+        "spec_ref": "agent-work/specs/HX-BL-043-TABLES1.md",
+        "spec_version": "TBL-1.0",
+        "acceptance_ref": "agent-work/specs/HX-BL-043-TABLES1.acceptance.json",
+        "result_ref": "agent-work/results/2026-11-10T1859-analyst-HX-BL-043-TABLES1.json",
+        "source_manifest_ref": "agent-work/specs/HX-BL-043-TABLES1.sources.json",
+        "score_forecast_ref": "agent-work/evidence/TABLES1-analysis-1859/score-forecast.json",
+        "execution_running": false,
+        "claim_ref": null,
+        "last_completed_claim_ref": "agent-work/claims/2026-11-10T1859-analyst-HX-BL-043-TABLES1.json",
+        "ui_preview": {
+          "version": "TBL-UI1",
+          "type": "proposal_not_implementation",
+          "shown_in_current_chat": true,
+          "desktop": "agent-work/previews/HX-BL-043-TABLES1/preview-desktop.png",
+          "narrow": "agent-work/previews/HX-BL-043-TABLES1/preview-narrow.png",
+          "states": "agent-work/previews/HX-BL-043-TABLES1/preview-states.png",
+          "base_interface_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+          "owner_response_required_to_continue": false
+        }
       },
       "score_update_status": "completed",
       "score_update_result_ref": "agent-work/results/2026-11-09T1003-strategist-score-PR497.json",
@@ -7508,7 +7527,7 @@
         "result_ref": "agent-work/results/2026-11-09T0539-programmer-release-PR495.json"
       },
       "next_task_id": "HX-BL-043",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-strategist.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-programmer.json",
       "research_scope_warning": {
         "ref": "agent-work/research/audits/KNAVE2-L1-disposition-2026-11-09.json",
         "note": "21 Knave L1 references are historical task-family membership, not21 completed profiles. CLASSIC1 contains bounded020/070/071 content operations;18 other source rows outside package scope. PLACE1 stays postponed; no scope/status/queue change. Full profiles need exact acceptance evidence.",
@@ -7692,7 +7711,20 @@
         "review_result_ref": "agent-work/results/2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6.json"
       },
       "ready_stage": "TABLES1-specification",
-      "ready_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-9aa4bc6-next.json"
+      "ready_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-9aa4bc6-next.json",
+      "spec_ref": "agent-work/specs/HX-BL-043-TABLES1.md",
+      "spec_version": "TBL-1.0",
+      "acceptance_ref": "agent-work/specs/HX-BL-043-TABLES1.acceptance.json",
+      "ui_preview": {
+        "version": "TBL-UI1",
+        "type": "proposal_not_implementation",
+        "shown_in_current_chat": true,
+        "desktop": "agent-work/previews/HX-BL-043-TABLES1/preview-desktop.png",
+        "narrow": "agent-work/previews/HX-BL-043-TABLES1/preview-narrow.png",
+        "states": "agent-work/previews/HX-BL-043-TABLES1/preview-states.png",
+        "base_interface_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+        "owner_response_required_to_continue": false
+      }
     },
     {
       "task_id": "HX-BL-044",
