@@ -1,0 +1,64 @@
+{
+  "base_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+  "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+  "added": 0,
+  "removed": 0,
+  "modified": 0,
+  "suite": "permanent Node/browser/RNG tests",
+  "scenario_risk": "Preserve page-equivalent POI count styles in standalone SVG used for PNG and raster cache",
+  "reuse_or_new_reason": "One reversible CSS whitelist correction; no permanent callback warranted. Existing suite retained; temporary parity diagnostic reproduces original omission and compares actual unchanged export helper output with page rule.",
+  "count_source": "git diff f172..aad: only src/App.tsx, one CSS rule. No test file diff; identical local write-tree02b07b3140d2e36ae65b575af732add773837165.",
+  "executions": [
+    {
+      "suite": "Node full suite",
+      "executed": 386,
+      "passed": 386,
+      "failed": 0,
+      "skipped": 0,
+      "runner": "node --test test/*.test.mjs via npm run check; Node v24.22.1"
+    },
+    {
+      "suite": "TypeScript and Vite build",
+      "status": "success"
+    },
+    {
+      "suite": "Ordinary automatic CI",
+      "run_id": 42811845275,
+      "jobs": [
+        {
+          "id": 129814990702,
+          "name": "check",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 129814991076,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129814991385,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "scope": "Existing workflows unchanged; no new fresh UI walkthrough claimed; separate suites not added to Node count."
+    }
+  ],
+  "temporary_diagnostics": {
+    "script": "agent-work/evidence/HX-BL-051-export-style-1156/export-parity.mjs",
+    "before": {
+      "exit_code": 1,
+      "export_rule": null,
+      "equivalent": false
+    },
+    "after": {
+      "exit_code": 0,
+      "equivalent": true
+    },
+    "permanent_cases_added": 0,
+    "scope": "TS AST-extracted real createExportSvgClone on minimal detached SVG DOM stub. No browser/raster assertion."
+  }
+}

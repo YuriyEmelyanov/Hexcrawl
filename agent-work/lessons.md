@@ -638,3 +638,7 @@ Validate active layers even for empty footprints; unadapted legacy maps have no 
 - 74 адресных Node проверки, CI и временные диагностические пробы — разные evidence; их числа не складывать и не считать ростом постоянного набора. Score1.2 девяти критериев остаётся unknown/insufficient_evidence.
 - Cloud browser URL gate запретил навигацию; обход не предпринимался. Это ограничение независимого fresh UI, а не доказательство дефекта продукта или полной блокировки команды.
 - Результат: agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json; следующий исполнитель: программист, agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json.
+
+
+### 2026-11-10 — DETAIL1 count styling must travel with the exported clone
+The page stylesheet does not accompany a detached SVG used for PNG/cache. Reproduced missing .detail-marker-count in the actual export helper; added the identical white fill/dark outline/bold rule to SVG_EXPORT_STYLES. Temporary AST/DOM-stub parity check fails before and passes after; this does not certify raster readability. One reversible style rule warrants targeted diagnostic reuse rather than a new permanent callback. Local exact-tree Node386/typecheck/build passed. Existing cloud URL gate denial was not bypassed; required actual UI12/24/long-name/PNG evidence remains explicit, not replaced by Node or ordinaryCI success. NewSHA requires independent bounded re-review and current score1.2; no numeric award or publication. Evidence: agent-work/results/2026-11-10T1156-programmer-HX-BL-051-export-style.json.

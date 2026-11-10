@@ -15358,7 +15358,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "changes_requested",
+      "status": "bounded_fix_submitted_UI_evidence_pending",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15421,7 +15421,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "bounded_approved_UI_export_completion_ready",
+      "readiness": "bounded_export_fix_independent_review_pending",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -15832,9 +15832,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
-      "next_role": "programmer",
+      "next_role": "reviewer",
       "next_role_after_approval": "business_analyst",
-      "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 в PR496: сохранить эквивалентное оформление счётчика POI в существующем SVG→PNG экспорте либо доказать его эквивалентность; на тех же малых fixtures дополнить существующий UI/export walkthrough фактическими 12/24 со смешанной местностью и уникальными POI, длинными именами на1500/390/320, клавиатурой/touch/overflow и содержимым PNG/внутреннегоSVG выбранного уровня/footprint. Измерение реакции — только существующий согласованный fixture, без нового порога/тяжёлой серии003/500карт. Результат: evidence точного SHA, ограничений и diff; затем новая независимая проверка общего DETAIL1+CLASSIFY1 и score1.2. Два старых дефекта закрыты наf172; RIV011unknown. Новое начало/дизайн-согласование не требуется, публикация отдельно не разрешена.",
+      "next_step": "Проверяющий независимо проверяет aad4516f и оформление счётчика в фактическом export helper; обновляет score_assessment1.2 и сохраняет явные границы заключения. Полная приёмка DETAIL1+CLASSIFY1 требует оставшихся доказательств UI12/24/длинных имён1500/390/320/PNG. Запрет браузерного URL gate не обходить; не выдавать Node/CI за новый визуальный показ.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -15864,50 +15864,51 @@
       "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
       "spec_version": "DTL-1.0",
       "acceptance_ref": "agent-work/specs/HX-BL-051-DETAIL1.acceptance.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-export-style-review.json",
       "active_stage": {
         "stage_id": "DETAIL1",
-        "substage": "bounded_ui_export_completion",
-        "status": "changes_requested",
-        "claim_ref": "agent-work/claims/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
+        "substage": "export_style_fix_submitted",
+        "status": "bounded_fix_submitted_UI_evidence_pending",
+        "claim_ref": "agent-work/claims/2026-11-10T1156-programmer-HX-BL-051-export-style.json",
         "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
         "branch": "agent/hx-bl-051-detail1",
-        "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
-        "tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
+        "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+        "tree_sha": "02b07b3140d2e36ae65b575af732add773837165",
         "pr": 496,
-        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-export-style-review.json",
         "evidence_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957",
-        "review_ready": false,
+        "review_ready": true,
         "release_approved": false,
-        "result_ref": "agent-work/results/2026-11-10T0957-programmer-HX-BL-051-review-fixes.json",
+        "result_ref": "agent-work/results/2026-11-10T1156-programmer-HX-BL-051-export-style.json",
         "release_authorized": false,
-        "next_role": "programmer",
-        "next_step": "Программист продолжает утверждённую HX-BL-051/DETAIL1 в PR496: сохранить эквивалентное оформление счётчика POI в существующем SVG→PNG экспорте либо доказать его эквивалентность; на тех же малых fixtures дополнить существующий UI/export walkthrough фактическими 12/24 со смешанной местностью и уникальными POI, длинными именами на1500/390/320, клавиатурой/touch/overflow и содержимым PNG/внутреннегоSVG выбранного уровня/footprint. Измерение реакции — только существующий согласованный fixture, без нового порога/тяжёлой серии003/500карт. Результат: evidence точного SHA, ограничений и diff; затем новая независимая проверка общего DETAIL1+CLASSIFY1 и score1.2. Два старых дефекта закрыты наf172; RIV011unknown. Новое начало/дизайн-согласование не требуется, публикация отдельно не разрешена.",
-        "checks_status": "CI42797910390_check386_typecheck_build_browser9_RNG_success",
+        "next_role": "reviewer",
+        "next_step": "Проверяющий независимо проверяет aad4516f и оформление счётчика в фактическом export helper; обновляет score_assessment1.2 и сохраняет явные границы заключения. Полная приёмка DETAIL1+CLASSIFY1 требует оставшихся доказательств UI12/24/длинных имён1500/390/320/PNG. Запрет браузерного URL gate не обходить; не выдавать Node/CI за новый визуальный показ.",
+        "checks_status": "local386_typecheck_build_success;CI_in_progress",
         "base_sha": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
         "local_sha": "c1cb705a5450f81628b9d6caa16667967c1c34cf",
         "ui_actual_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/ui/walkthrough.json",
         "working_branch": "agent/hx-bl-051-activation-wip",
-        "wip_head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
-        "wip_tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
+        "wip_head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+        "wip_tree_sha": "02b07b3140d2e36ae65b575af732add773837165",
         "execution_running": false,
-        "pr_head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
-        "review_verdict": "old_two_defects_closed; full_acceptance_pending_UI_export_evidence",
+        "pr_head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+        "review_verdict": "pending_exact_new_SHA_bounded_fix_review",
         "finding_ids": [
           "DETAIL1-REVIEW-EXPORT-COUNT-STYLE",
           "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE"
         ],
-        "review_completed": true,
+        "review_completed": false,
         "closed_finding_ids": [
           "DETAIL1-REVIEW-POI-CONTEXT",
           "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER"
         ],
         "review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
         "review_evidence_ref": "agent-work/evidence/review-HX-BL-051-f17236b",
-        "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-f17236b/score-assessment1.2.json"
+        "score_assessment_ref": null,
+        "full_package_review_ready": false
       },
-      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
-      "result_ref": "agent-work/results/2026-11-10T0957-programmer-HX-BL-051-review-fixes.json",
+      "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+      "result_ref": "agent-work/results/2026-11-10T1156-programmer-HX-BL-051-export-style.json",
       "latest_activation_checkpoint": {
         "branch": "agent/hx-bl-051-detail1",
         "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
@@ -15928,8 +15929,8 @@
         ],
         "independent_acceptance": false
       },
-      "review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
-      "review_ready": false,
+      "review_result_ref": null,
+      "review_ready": true,
       "findings": [
         {
           "id": "DETAIL1-REVIEW-POI-CONTEXT",
@@ -16015,7 +16016,7 @@
         {
           "id": "DETAIL1-REVIEW-EXPORT-COUNT-STYLE",
           "severity": "low; actual raster contrast impact unverified",
-          "status": "confirmed serialization style omission, not a demonstrated unreadable raster",
+          "status": "fix_submitted_pending_independent_exact_SHA_review",
           "files": [
             "src/styles.css:402",
             "src/App.tsx:561",
@@ -16039,7 +16040,9 @@
             "agent-work/evidence/review-HX-BL-051-f17236b/export-style.mjs",
             "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json"
           ],
-          "acceptance": "Preserve equivalent count styling in the existing internal SVG/PNG pipeline; verify on existing fixture. Actual raster contrast is unverified, so do not claim a readability failure."
+          "acceptance": "Preserve equivalent count styling in the existing internal SVG/PNG pipeline; verify on existing fixture. Actual raster contrast is unverified, so do not claim a readability failure.",
+          "candidate_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+          "fix_evidence_ref": "agent-work/evidence/HX-BL-051-export-style-1156/export-after.log"
         },
         {
           "id": "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE",
@@ -16062,12 +16065,15 @@
           "evidence_ref": "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json"
         }
       ],
-      "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-f17236b/score-assessment1.2.json",
-      "tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
+      "score_assessment_ref": null,
+      "tree_sha": "02b07b3140d2e36ae65b575af732add773837165",
       "pr": 496,
-      "previous_review_result_ref": null,
-      "score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown",
-      "ui_actual_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/ui/walkthrough.json"
+      "previous_review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
+      "score_assessment_status": "independent_new_SHA_reassessment_required",
+      "ui_actual_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/ui/walkthrough.json",
+      "full_package_review_ready": false,
+      "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-export-style-1156/programmer-score-evidence.json",
+      "ui_actual_pending": true
     },
     {
       "task_id": "HX-BL-052",

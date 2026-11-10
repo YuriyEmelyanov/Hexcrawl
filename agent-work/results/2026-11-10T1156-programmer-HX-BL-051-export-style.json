@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-10T1156-programmer-HX-BL-051-export-style",
+  "role": "programmer",
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-bounded-ui-export",
+  "started_at": "2026-11-10 11:56:03 UTC",
+  "status": "export_style_fix_submitted_UI_evidence_pending",
+  "role_selection_reason": "Priority3: reviewer supplied confirmed low export style omission and bounded approved051 handoff; no active programmer execution for051. Took existing approved task, no new product scope.",
+  "base_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+  "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+  "tree_sha": "02b07b3140d2e36ae65b575af732add773837165",
+  "pr": 496,
+  "branch": "agent/hx-bl-051-detail1",
+  "working_branch": "agent/hx-bl-051-export-style",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "input_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
+  "implementation": [
+    "Added exact page .detail-marker-count rule to existing SVG_EXPORT_STYLES whitelist; detached SVG used by PNG and viewport cache retains fill/stroke/stroke-width/paint-order/font-weight.",
+    "Only one source line changed; no generator/state/history/geometry or product export action changes."
+  ],
+  "finding_status": {
+    "DETAIL1-REVIEW-EXPORT-COUNT-STYLE": {
+      "status": "fix_submitted_pending_independent_exact_SHA_review",
+      "before_probe": "export rule absent; parity assertion exits1",
+      "after_probe": "actual export helper clone has page-equivalent rule; parity assertion exits0",
+      "raster_readability": "unverified"
+    },
+    "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE": {
+      "status": "pending",
+      "category": "evidence_gap",
+      "not_a_confirmed_product_defect": true
+    }
+  },
+  "source_correspondence": {
+    "local_write_tree": "02b07b3140d2e36ae65b575af732add773837165",
+    "published_PR_head_tree": "02b07b3140d2e36ae65b575af732add773837165",
+    "App_tsx_blob_sha": "6298dab8d9d17d5f6f8d7402475bc063afa0670c",
+    "base_App_tsx_blob_sha": "57f0515969781272a488da61fcbc9e771c2fcf81",
+    "diff": "src/App.tsx +1/-0, no other tracked changes"
+  },
+  "test_change_summary": {
+    "base_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+    "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "permanent Node/browser/RNG tests",
+    "scenario_risk": "Preserve page-equivalent POI count styles in standalone SVG used for PNG and raster cache",
+    "reuse_or_new_reason": "One reversible CSS whitelist correction; no permanent callback warranted. Existing suite retained; temporary parity diagnostic reproduces original omission and compares actual unchanged export helper output with page rule.",
+    "count_source": "git diff f172..aad: only src/App.tsx, one CSS rule. No test file diff; identical local write-tree02b07b3140d2e36ae65b575af732add773837165.",
+    "executions": [
+      {
+        "suite": "Node full suite",
+        "executed": 386,
+        "passed": 386,
+        "failed": 0,
+        "skipped": 0,
+        "runner": "node --test test/*.test.mjs via npm run check; Node v24.22.1"
+      },
+      {
+        "suite": "TypeScript and Vite build",
+        "status": "success"
+      },
+      {
+        "suite": "Ordinary automatic CI",
+        "run_id": 42811845275,
+        "jobs": [
+          {
+            "id": 129814990702,
+            "name": "check",
+            "status": "in_progress",
+            "conclusion": null
+          },
+          {
+            "id": 129814991076,
+            "name": "world-random",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 129814991385,
+            "name": "browser",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ],
+        "scope": "Existing workflows unchanged; no new fresh UI walkthrough claimed; separate suites not added to Node count."
+      }
+    ],
+    "temporary_diagnostics": {
+      "script": "agent-work/evidence/HX-BL-051-export-style-1156/export-parity.mjs",
+      "before": {
+        "exit_code": 1,
+        "export_rule": null,
+        "equivalent": false
+      },
+      "after": {
+        "exit_code": 0,
+        "equivalent": true
+      },
+      "permanent_cases_added": 0,
+      "scope": "TS AST-extracted real createExportSvgClone on minimal detached SVG DOM stub. No browser/raster assertion."
+    }
+  },
+  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-export-style-1156/programmer-score-evidence.json",
+  "score_model_version": "1.2",
+  "score_changed": false,
+  "confirmed_points_awarded": 0,
+  "score_delta": null,
+  "independent_review_required": true,
+  "independent_accepted": false,
+  "ui_actual_shown_for_new_sha": false,
+  "ui_actual_pending": true,
+  "ui_actual_responsible": "programmer; do not bypass explicit browser access denial",
+  "limits": [
+    "Earlier explicit cloud browser URL security gate denial persists for this task; no alternate browser/CI pathway used to obtain blocked fresh UI. Ordinary automatically triggered source CI is recorded only as CI regression evidence, not fresh independent visual walkthrough.",
+    "Serialization proof is not a raster readability result.",
+    "Required UI12/24, long-name desktop1500/390/320, keyboard/touch/overflow, PNG visual fidelity and bounded response evidence still pending.",
+    "CLASSIFY1-VALIDATION-RIV011 remains unknown; no new heavy003/500-map run."
+  ],
+  "next_role": "reviewer",
+  "next_task_id": "HX-BL-051",
+  "next_stage_id": "DETAIL1-export-style-rereview",
+  "next_step": "Проверяющий независимо проверяет aad4516f и оформление счётчика в фактическом export helper; обновляет score_assessment1.2 и сохраняет явные границы заключения. Полная приёмка DETAIL1+CLASSIFY1 требует оставшихся доказательств UI12/24/длинных имён1500/390/320/PNG. Запрет браузерного URL gate не обходить; не выдавать Node/CI за новый визуальный показ.",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-export-style-review.json",
+  "claim_ref": "agent-work/claims/2026-11-10T1156-programmer-HX-BL-051-export-style.json",
+  "authority_status": "Existing approved051 continuation; no new task/design approval required. No publication, no new SVG-download feature, no heavy003/500-map/new expense.",
+  "owner_decision_required_for_next_step": false,
+  "release_approved": false,
+  "published": false,
+  "main_changed": false,
+  "full_task_complete": false,
+  "operational_constraints": {
+    "latest_json_written_last": true,
+    "foreign_claims_results_research_preserved": true,
+    "current_score_history_unchanged": true,
+    "source_branch_advanced_with_exact_expected_SHA": true
+  },
+  "checks": {
+    "local": {
+      "command": "npm run check",
+      "exit_code": 0,
+      "status": "success",
+      "Node": "v24.22.1",
+      "tree_sha": "02b07b3140d2e36ae65b575af732add773837165",
+      "summary": {
+        "tests": 386,
+        "pass": 386,
+        "fail": 0,
+        "skipped": 0
+      },
+      "typescript": "passed",
+      "build": "passed",
+      "log_ref": "agent-work/evidence/HX-BL-051-export-style-1156/check.log"
+    },
+    "diagnostic": {
+      "before_exit": 1,
+      "after_exit": 0,
+      "export_rule_matches_page": true,
+      "method": "Actual TS-AST extracted export helper + minimal detached SVG DOM stub",
+      "raster_verified": false
+    },
+    "ci": {
+      "run_id": 42811845275,
+      "jobs": [
+        {
+          "id": 129814990702,
+          "name": "check",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 129814991076,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129814991385,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42811845275",
+      "scope": "Automatically triggered unchanged ordinary regression workflows, no independent new UI walkthrough",
+      "status": "in_progress"
+    }
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10 11:56:03 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10 12:08:52 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time actual checks; no guarantee of later status. No schedule/instruction edits."
+  },
+  "completed_at": "2026-11-10 12:08:52 UTC"
+}
