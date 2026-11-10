@@ -1,0 +1,98 @@
+✖ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (1232.160694ms)
+✖ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (535.252732ms)
+✖ E5 real river transaction resolves deep ford once and preserves no-op, failure and exact undo redo (311.005723ms)
+✖ E5 real feature and E3 crossing resolution share one accepted transaction with exact reload (285.073843ms)
+✖ E5 river draft guards writes, preserves invalid and cancelled work and commits one exact document (286.599557ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3985.597562
+
+✖ failing tests:
+
+test at test/mapTransactions.test.mjs:93:1
+✖ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (1232.160694ms)
+  Error: DETAIL1 POI identities do not match live owners
+      at assertDetailPoiOwners (evalmachine.<anonymous>:35:15)
+      at validateDetail1Document (evalmachine.<anonymous>:137:55)
+      at checkedRiverMap (evalmachine.<anonymous>:880:47)
+      at restoreSnapshot (evalmachine.<anonymous>:13123:9)
+      at Object.restoreSnapshot (evalmachine.<anonymous>:15426:99)
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:111:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at test/mapTransactions.test.mjs:352:1
+✖ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (535.252732ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /notes|заметк/. Input:
+  
+  'Error: Dangling or conflicting DETAIL1 identity move'
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:363:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Dangling or conflicting DETAIL1 identity move
+        at reconcileDetailPoiIdentities (evalmachine.<anonymous>:59:19)
+        at Object.recordGenerated (evalmachine.<anonymous>:12566:149)
+        at file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:363:32
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:363:10)
+        at Test.runInAsyncScope (node:async_hooks:227:14)
+        at Test.run (node:internal/test_runner/test:1402:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:974:18),
+    expected: /notes|заметк/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at test/mapTransactions.test.mjs:565:1
+✖ E5 real river transaction resolves deep ford once and preserves no-op, failure and exact undo redo (311.005723ms)
+  Error: DETAIL1 POI identities do not match live owners
+      at assertDetailPoiOwners (evalmachine.<anonymous>:35:15)
+      at validateDetail1Document (evalmachine.<anonymous>:137:55)
+      at checkedRiverMap (evalmachine.<anonymous>:880:47)
+      at restoreSnapshot (evalmachine.<anonymous>:13123:9)
+      at Object.restoreSnapshot (evalmachine.<anonymous>:15426:99)
+      at riverBackendFixture (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:560:13)
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:566:23)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+
+test at test/mapTransactions.test.mjs:579:1
+✖ E5 real feature and E3 crossing resolution share one accepted transaction with exact reload (285.073843ms)
+  Error: DETAIL1 POI identities do not match live owners
+      at assertDetailPoiOwners (evalmachine.<anonymous>:35:15)
+      at validateDetail1Document (evalmachine.<anonymous>:137:55)
+      at checkedRiverMap (evalmachine.<anonymous>:880:47)
+      at restoreSnapshot (evalmachine.<anonymous>:13123:9)
+      at Object.restoreSnapshot (evalmachine.<anonymous>:15426:99)
+      at riverBackendFixture (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:560:13)
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:580:23)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)
+
+test at test/mapTransactions.test.mjs:594:1
+✖ E5 river draft guards writes, preserves invalid and cancelled work and commits one exact document (286.599557ms)
+  Error: DETAIL1 POI identities do not match live owners
+      at assertDetailPoiOwners (evalmachine.<anonymous>:35:15)
+      at validateDetail1Document (evalmachine.<anonymous>:137:55)
+      at checkedRiverMap (evalmachine.<anonymous>:880:47)
+      at restoreSnapshot (evalmachine.<anonymous>:13123:9)
+      at Object.restoreSnapshot (evalmachine.<anonymous>:15426:99)
+      at riverBackendFixture (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:560:13)
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:595:30)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:974:18)

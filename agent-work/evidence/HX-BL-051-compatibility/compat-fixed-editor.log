@@ -1,0 +1,29 @@
+✖ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (6813.596211ms)
+✔ delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit (20799.860959ms)
+✔ E5 real river transaction resolves deep ford once and preserves no-op, failure and exact undo redo (367.713617ms)
+✔ E5 real feature and E3 crossing resolution share one accepted transaction with exact reload (299.674385ms)
+✔ E5 river draft guards writes, preserves invalid and cancelled work and commits one exact document (326.383664ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 29932.473713
+
+✖ failing tests:
+
+test at test/mapTransactions.test.mjs:93:1
+✖ manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo (6813.596211ms)
+  Error: DETAIL1 POI identities do not match live owners
+      at assertDetailPoiOwners (evalmachine.<anonymous>:35:15)
+      at validateDetail1Document (evalmachine.<anonymous>:137:55)
+      at checkedRiverMap (evalmachine.<anonymous>:880:47)
+      at restoreSnapshot (evalmachine.<anonymous>:13127:9)
+      at Object.restoreSnapshot (evalmachine.<anonymous>:15430:99)
+      at TestContext.<anonymous> (file:///workspace/scratch/50f278832674/hexcrawl/test/mapTransactions.test.mjs:174:13)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
