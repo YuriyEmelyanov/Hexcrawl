@@ -29,7 +29,7 @@
   "run_id": "2026-11-10T1700-programmer-HX-BL-051-central-discovery",
   "plan_revision": 1,
   "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "active_waiting_exact_SHA_checks",
+  "status": "review_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -47,21 +47,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "programmer",
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-DETAIL1.md",
   "spec_version": "DTL-1.0",
-  "result_path": "agent-work/checkpoints/2026-11-10T1700-programmer-HX-BL-051-central-discovery.json",
+  "result_path": "agent-work/results/2026-11-10T1700-programmer-HX-BL-051-central-discovery.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
-  "active_claim": {
-    "run_id": "2026-11-10T1700-programmer-HX-BL-051-central-discovery",
-    "role": "programmer",
-    "task_id": "HX-BL-051",
-    "claim_ref": "agent-work/claims/2026-11-10T1700-programmer-HX-BL-051-central-discovery.json",
-    "status": "active",
-    "execution_running": true
-  },
-  "next_step": "Owned programmer waits for exact9aa checks and actualUI artifact; do not duplicate.",
+  "active_claim": null,
+  "next_step": "Независимый проверяющий проверяет9aa4bc6, исправление CENTRAL-DISCOVERY и общийпакет, обновляет score_assessment1.2. После приёмки051 — утверждённый аналитик043/TABLES1, затем054/PF2-BATCH1; отдельное разрешение публикации.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -130,12 +123,12 @@
     "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/review-HX-BL-051-64b8476",
+  "evidence_path": "agent-work/evidence/HX-BL-051-central-discovery-1700",
   "branch_name": "agent/hx-bl-051-detail1",
   "pr": 496,
   "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
   "tree_sha": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
-  "checks_status": "current_CI_running",
+  "checks_status": "success_current_exact_SHA",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42860961335",
   "review_verdict": "new_SHA_pending",
   "role_selection_mode": "ready_work_priority",
@@ -235,7 +228,7 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-64b8476/score-assessment1.2.json",
+  "score_assessment_ref": null,
   "role_selection_reason": "Priority3: independent confirmed central-kind discovery P2 in approved combined051/044; no active051 claim.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
@@ -260,32 +253,26 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-10 15:59:50 UTC",
+      "checked_at": "2026-11-10 17:00:54 UTC",
       "status": "checked",
       "is_enabled": true,
       "method": "automations.peek"
     },
     "end": {
-      "checked_at": "2026-11-10 16:18:09 UTC",
+      "checked_at": "2026-11-10 17:18:50 UTC",
       "status": "checked",
       "is_enabled": true,
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Actual point-in-time checks only, no guarantee of future state. Same persistent team; schedule/instructions unchanged.",
-    "pre_persistence_end": {
-      "checked_at": "2026-11-10 16:16:27 UTC",
-      "status": "checked",
-      "is_enabled": true,
-      "method": "automations.peek"
-    }
+    "limitation": "Point-in-time checks only, no guarantee of later state. Persistent team continues; no schedule/instruction edits."
   },
   "open_findings": [
     "CLASSIFY1-VALIDATION-RIV011",
     "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY"
   ],
-  "current_review_score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown_with_central_discovery_defect",
+  "current_review_score_assessment_status": "pending_new_exact_SHA; wholecriteriaunknown",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -812,35 +799,40 @@
     "schema_version": 1,
     "task_id": "HX-BL-051",
     "related_task_id": "HX-BL-044",
-    "stage_id": "DETAIL1-CLASSIFY1-central-discovery-fix",
-    "next_role": "programmer",
-    "status": "ready_approved_bounded_fix",
-    "input_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+    "stage_id": "central-discovery-review",
+    "status": "review_ready",
+    "next_role": "reviewer",
+    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "tree_sha": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
+    "base_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+    "combined_base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
     "pr": 496,
     "branch": "agent/hx-bl-051-detail1",
+    "scope": "Independently verify central discovery correction and combined DETAIL1+CLASSIFY1 exactSHA; reuse prior accepted finiteUI only after source correspondence. New score_assessment1.2 mandatory; unknown wholegrades acceptable.",
+    "finding_id": "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY",
+    "fix": "Only inference input changes: selectedHasCentralPoi uses selectedRegion.centralPoiKind; secondary/water fallback and override/tag policy remain unchanged.",
     "spec_refs": [
       "agent-work/specs/HX-BL-051-DETAIL1.md",
       "agent-work/specs/HX-BL-044-CLASSIFY1-implementation.md"
     ],
-    "scope": [
-      "Resolve the selected central POI's actual kind for common discovery inference while keeping addressed DETAIL1 owner context.",
-      "Preserve manual/common/legacy override and hidden-tag precedence, secondary and water POIs, explicit unknown, RNG/save/history and visible-card compactness.",
-      "Reuse appropriate existing actualApp/browser scenario for the missing central integration risk; no new suite/count goal."
-    ],
-    "out_of_scope": [
-      "New geography/generation algorithms or schema",
-      "New003/500mapseries",
-      "New product functions, paid services, player-map/VTT",
-      "Release/main merge without owner exact-package permission"
-    ],
-    "input_evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476/independent-review.json",
+    "result_ref": "agent-work/results/2026-11-10T1700-programmer-HX-BL-051-central-discovery.json",
+    "checks_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/test-change-summary.json",
+    "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/programmer-score-evidence.json",
+    "UI_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/ui-actual.json",
+    "independence": "Fresh-context independent agent required. Author assertions/redgreen/temporary probe are inputs, not acceptance.",
     "completion": [
-      "Central capital/city on open terrain show passage without override; central lair/dungeon show exploration, matching same-kind secondary controls.",
-      "Road/manual/hidden/unknown precedence and activeDETAIL1 source/remote part context pass on exact newSHA; no fake data from vanished central POI.",
-      "Required currentSHA checks and actual UI of changed display supplied; inspect test delta and evidence, then fresh independent combined review+score1.2."
+      "Verify four central kinds and secondary controls, actualDETAIL1 selection and manual/legacy/hidden/unknown/road/water precedence.",
+      "Independently assess changed existing Node/browser test necessity and currentSHA CI/tree/artifact evidence.",
+      "Record combined verdict and score_assessment1.2 for nine affected criteria; no inferred wholegrade or duplicated award."
     ],
     "release_approved": false,
-    "new_owner_start_approval_required": false,
+    "authority_status": "Approved bounded051/044 fix; no new taskstart/design approval. Separate owner exact-package publication permission absent.",
+    "historical_risks": [
+      "RIV011historicalunknown preserved; no new003/500mapseries."
+    ],
+    "release_preview_pending": true,
+    "release_preview_note": "Targeted actual central UI1500/390 shown. Full combined published-main→candidate walkthrough remains required before eventual release request, without blocking next approved task after051acceptance.",
     "after_acceptance": {
       "task_id": "HX-BL-043",
       "stage_id": "TABLES1",
@@ -864,43 +856,10 @@
         "stage_id": "PF2-BATCH1"
       }
     ],
-    "run_id": "2026-11-10T1559-reviewer-HX-BL-051-64b8476",
-    "finding_id": "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY",
-    "finding_ref": "agent-work/evidence/review-HX-BL-051-64b8476/finding-central-discovery.json",
-    "independent_review_ref": "agent-work/evidence/review-HX-BL-051-64b8476/independent-review.json",
-    "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-64b8476/score-assessment1.2.json",
-    "reproduction": {
-      "script_ref": "agent-work/evidence/review-HX-BL-051-64b8476/central-discovery-probe.mjs",
-      "results_ref": "agent-work/evidence/review-HX-BL-051-64b8476/central-discovery-probe.json",
-      "method": "Fresh reviewer read source and executed the unchanged existing production-App harness, actual importer/controller and actual knavePanel React tree. Only the outer JSX return/artwork and React hook storage are harness instrumentation; no browser/security-gate bypass."
-    },
-    "test_necessity_ref": "agent-work/evidence/review-HX-BL-051-64b8476/test-necessity.json",
-    "actual_UI": "Show actual currentSHA central auto-discovery result desktop+narrow; preserve accepted12/24/name/export evidence only after source correspondence. Complete combined published-main→candidate walkthrough before requesting eventual release, without design approval wait.",
-    "required_checks": "AGENTS and DTL28 currentSHA check/TypeScript/build, existingbrowser and applicableRNG. Actual counts only; no new003/500mapseries or test-count quota.",
-    "historical_risks": [
-      {
-        "id": "CLASSIFY1-VALIDATION-RIV011",
-        "status": "historical_unknown_preserved",
-        "not_closed": true,
-        "new_evidence": false,
-        "note": "A green current run is not the unavailable historical failing map/context. No new heavy validation authorized. Exact package release requires explicit disposition of this historical risk."
-      }
-    ],
-    "release_presentation": {
-      "release_preview_pending": true,
-      "category": "release_presentation_gap_not_product_defect_not_third_design_gate",
-      "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-      "package_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-      "provided": "Same candidate fixture legacy→adapted screenshots and manualconditionalextent; useful bounded actual UI show.",
-      "missing": "Complete combined published-main→candidate user walkthrough with current classification and detail actions, desktop+narrow, knownlimits and shown_in_chat/reviewer verification. shared-before already runs candidateCLASSIFY1, so it cannot represent published-mainbefore.",
-      "next": "Prepare/update actual combined walkthrough after correction and independent currentSHAacceptance before requesting release. No design approval wait or reapproval of taskstart; do not delay approved next task after051acceptance merely for publication."
-    },
-    "independent_accepted": false,
-    "authority_status": "Existing044/051 taskstart covers bounded defect fix and required verification; no new owner start permission. Exact-package publication remains unauthorized.",
-    "next_step": "Программист исправляет CLASSIFY1-REVIEW-CENTRAL-DISCOVERY на новой ветке/текущейPR496ветке с новымSHA, сохраняет precedence/данные/историю/RNG и прикладывает точечные actualUI и обязательные проверки. Затем независимыйreview новогоSHA; после приёмки051 — утверждённая043/TABLES1, затем054/PF2-BATCH1."
+    "next_step": "Независимый проверяющий проверяет9aa4bc6, исправление CENTRAL-DISCOVERY и общийпакет, обновляет score_assessment1.2. После приёмки051 — утверждённый аналитик043/TABLES1, затем054/PF2-BATCH1; отдельное разрешение публикации."
   },
   "reviewed_sha": null,
-  "current_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-051-64b8476/score-assessment1.2.json",
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -1000,7 +959,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-10 16:18:09 UTC",
+  "updated_at": "2026-11-10 17:18:50 UTC",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1282,7 +1241,7 @@
     "skipped": 0,
     "reused_evidence_counts": "Prior386 Node,74 reviewer, browser andRNG kept separate; not rerun or added together."
   },
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5845240873",
+  "review_url": null,
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
   "last_readiness_check": {
     "run_id": "2026-11-09T0158-strategist-owner-MB-scope",
@@ -1351,7 +1310,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476",
+  "evidence_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1668,7 +1627,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-central-discovery-review.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1803,9 +1762,8 @@
   "future_tree_sha": null,
   "current_package_release_approval": {
     "task_id": "HX-BL-051",
-    "stage_id": "DETAIL1",
-    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-    "status": "not_authorized; confirmed_functional_defect_requires_newSHA",
+    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "status": "not_authorized; newSHA independentreview pending",
     "release_approved": false
   },
   "current_risk_findings": [],
@@ -2362,466 +2320,52 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown_with_central_discovery_defect",
+  "current_task_score_assessment_status": "new_exactSHA_independent_assessment_pending",
   "published": false,
   "main_changed": false,
   "ui_actual": {
-    "schema_version": 1,
-    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-    "tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
-    "artifact_meta": {
-      "id": 13779460247,
+    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "tree_sha": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
+    "artifact": {
+      "id": 13785896188,
       "name": "DETAIL1-UI",
-      "size_in_bytes": 3265735,
-      "url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13779460247",
-      "archive_download_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13779460247/zip",
+      "size_in_bytes": 3560618,
+      "url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13785896188",
+      "archive_download_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13785896188/zip",
       "expired": false,
-      "created_at": "2026-11-10T15:39:29Z",
-      "expires_at": "2027-02-08T15:32:46Z",
-      "updated_at": "2026-11-10T15:39:29Z",
-      "digest": "sha256:5329a2d0a8f3245d00e2c020a407ead92c12a6ab74f170c3c6a2627c60bedc5d",
+      "created_at": "2026-11-10T17:09:33Z",
+      "expires_at": "2027-02-08T17:03:34Z",
+      "updated_at": "2026-11-10T17:09:33Z",
+      "digest": "sha256:6b3da90aaf72cbf23b08e955c233ea0057e83cfee7f0f0b35c449b0824bd5a0c",
       "workflow_run": {
-        "id": 42845445696,
+        "id": 42860961335,
         "repository_id": 1233284991,
         "head_repository_id": 1233284991,
         "head_branch": "agent/hx-bl-051-detail1",
-        "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec"
+        "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40"
       }
     },
-    "download_verified": true,
-    "downloaded_sha256": "5329a2d0a8f3245d00e2c020a407ead92c12a6ab74f170c3c6a2627c60bedc5d",
-    "original_entries": [
-      "desktop-applied.png",
-      "desktop-before.png",
-      "desktop-preview.png",
-      "detail1-desktop-after.png",
-      "detail1-rotated.png",
-      "detail1-selected.png",
-      "detail1-summary-320.png",
-      "detail1-summary-390.png",
-      "long-names-1500.png",
-      "long-names-320.png",
-      "long-names-390.png",
-      "overview-12-desktop.png",
-      "overview-12-export.png",
-      "overview-12-export.svg",
-      "overview-12-screen-map.png",
-      "overview-12-summary.png",
-      "overview-24-desktop.png",
-      "overview-24-export.png",
-      "overview-24-export.svg",
-      "overview-24-screen-map.png",
-      "overview-24-summary.png",
-      "panel-1500.png",
-      "panel-320.png",
-      "panel-390.png",
-      "review-extent-error.png",
-      "review-owner-320.png",
-      "review-owner-390.png",
-      "review-owner-desktop.png",
-      "review-owner-one-context.png",
-      "review-owner-two-context.png",
-      "shared-before.png",
-      "ui-evidence2.json",
-      "walkthrough.json"
-    ],
-    "ui_evidence": {
-      "fixture": "existing regionFixture/shared owners;5 source hexes; no new generation",
-      "longNames": {
-        "one": "Северная столица старой переправы через Серебряную реку",
-        "two": "Деревнядревнихсмотрителейторговойдорогиусеверныхсосен"
-      },
-      "layouts": [
-        {
-          "width": 1500,
-          "documentWidth": 1500,
-          "panelWidth": 467,
-          "buttons": [
-            {
-              "text": "Открыть место подробно",
-              "width": 184.890625,
-              "height": 44
-            },
-            {
-              "text": "Режим правки охвата",
-              "width": 161.4375,
-              "height": 44
-            },
-            {
-              "text": "Открыть место подробно",
-              "width": 184.890625,
-              "height": 44
-            },
-            {
-              "text": "Режим правки охвата",
-              "width": 161.4375,
-              "height": 44
-            }
-          ],
-          "touchOwnerChoice": "OWNER-TWO-CLUE",
-          "keyboardOwnerChoice": "OWNER-ONE-CLUE"
-        },
-        {
-          "width": 390,
-          "documentWidth": 390,
-          "panelWidth": 358,
-          "buttons": [
-            {
-              "text": "Открыть место подробно",
-              "width": 184.890625,
-              "height": 44
-            },
-            {
-              "text": "Режим правки охвата",
-              "width": 161.4375,
-              "height": 44
-            },
-            {
-              "text": "Открыть место подробно",
-              "width": 184.890625,
-              "height": 44
-            },
-            {
-              "text": "Режим правки охвата",
-              "width": 161.4375,
-              "height": 44
-            }
-          ],
-          "touchOwnerChoice": "OWNER-TWO-CLUE",
-          "keyboardOwnerChoice": "OWNER-ONE-CLUE"
-        },
-        {
-          "width": 320,
-          "documentWidth": 320,
-          "panelWidth": 288,
-          "buttons": [
-            {
-              "text": "Открыть место подробно",
-              "width": 184.890625,
-              "height": 44
-            },
-            {
-              "text": "Режим правки охвата",
-              "width": 161.4375,
-              "height": 44
-            },
-            {
-              "text": "Открыть место подробно",
-              "width": 184.890625,
-              "height": 44
-            },
-            {
-              "text": "Режим правки охвата",
-              "width": 161.4375,
-              "height": 44
-            }
-          ],
-          "touchOwnerChoice": "OWNER-TWO-CLUE",
-          "keyboardOwnerChoice": "OWNER-ONE-CLUE"
-        }
-      ],
-      "overviews": [
-        {
-          "step": 12,
-          "cell": "1,0",
-          "rows": [
-            "1,0 · Открытые равнины · часть",
-            "2,0 · Горы · целиком",
-            "3,0 · Открытые равнины · часть"
-          ],
-          "owners": [
-            "detail-poi:1",
-            "detail-poi:2"
-          ],
-          "screen": {
-            "viewBox": "0 0 315.2332469775357 182",
-            "view": "12",
-            "footprints": [
-              "detail-poi:1",
-              "detail-poi:2"
-            ],
-            "counts": [
-              "7"
-            ]
-          },
-          "exportProof": {
-            "viewBox": "0 0 315.2332469775357 182",
-            "view": "12",
-            "footprints": [
-              "detail-poi:1",
-              "detail-poi:2"
-            ],
-            "counts": [
-              "7"
-            ],
-            "countRule": ".detail-marker-count { fill:#fff; stroke:#123; stroke-width:.7px; paint-order:stroke; font-weight:bold; }",
-            "editorOnly": 0,
-            "width": 631,
-            "height": 364,
-            "differingPixels": 0,
-            "nonBackgroundPixels": 156550
-          }
-        },
-        {
-          "step": 24,
-          "cell": "1,0",
-          "rows": [
-            "2,0 · Горы · часть",
-            "3,0 · Открытые равнины · целиком",
-            "3,1 · Открытые равнины · целиком"
-          ],
-          "owners": [
-            "detail-poi:1",
-            "detail-poi:2"
-          ],
-          "screen": {
-            "viewBox": "0 0 315.2332469775357 182",
-            "view": "24",
-            "footprints": [
-              "detail-poi:1",
-              "detail-poi:2"
-            ],
-            "counts": [
-              "7"
-            ]
-          },
-          "exportProof": {
-            "viewBox": "0 0 315.2332469775357 182",
-            "view": "24",
-            "footprints": [
-              "detail-poi:1",
-              "detail-poi:2"
-            ],
-            "counts": [
-              "7"
-            ],
-            "countRule": ".detail-marker-count { fill:#fff; stroke:#123; stroke-width:.7px; paint-order:stroke; font-weight:bold; }",
-            "editorOnly": 0,
-            "width": 631,
-            "height": 364,
-            "differingPixels": 0,
-            "nonBackgroundPixels": 156550
-          }
-        }
-      ],
-      "responseObservations": [
-        {
-          "step": 6,
-          "elapsedMs": 104.59999999997672,
-          "method": "locator click to requested view present plus two animation frames; includes automation overhead"
-        },
-        {
-          "step": 12,
-          "elapsedMs": 80.80000000004657,
-          "method": "locator click to requested view present plus two animation frames; includes automation overhead"
-        },
-        {
-          "step": 24,
-          "elapsedMs": 75.80000000004657,
-          "method": "locator click to requested view present plus two animation frames; includes automation overhead"
-        },
-        {
-          "step": 6,
-          "elapsedMs": 79.5,
-          "method": "locator click to requested view present plus two animation frames; includes automation overhead"
-        }
-      ],
-      "limits": [
-        "Instrumented existing actions only; timing includes Playwright/scroll/frame overhead, no universal threshold.",
-        "Raster equality checks actual internal export SVG against downloaded PNG; screen/PNG visual comparison remains a reviewer observation."
-      ]
-    },
-    "walkthrough": {
-      "status": "passed",
-      "temporary_programmer_diagnostic": false,
-      "permanent_test_cases_added": 0,
-      "permanent_test_cases_modified": 1,
-      "suite": "browser",
-      "scenarios": [
-        "actual file import",
-        "preview overlay outside exported artwork",
-        "Cancel",
-        "Escape",
-        "Apply status",
-        "1500/390/320 panel and44px buttons",
-        "1/6/12/24 targets and keyboard selection",
-        "repeated marker references",
-        "conditional extent Cancel/Apply",
-        "actual summary narrow screenshots",
-        "active markers stay upright on rotation",
-        "selected DETAIL1 PNG export",
-        "cross-source and shared owner selection by keyboard/touch"
-      ],
-      "metrics": [
-        {
-          "width": 390,
-          "buttons": [
-            {
-              "text": "Применить охваты",
-              "width": 145.421875,
-              "height": 44
-            },
-            {
-              "text": "Отмена",
-              "width": 77.015625,
-              "height": 44
-            }
-          ],
-          "documentWidth": 390
-        },
-        {
-          "width": 320,
-          "buttons": [
-            {
-              "text": "Применить охваты",
-              "width": 145.421875,
-              "height": 44
-            },
-            {
-              "text": "Отмена",
-              "width": 77.015625,
-              "height": 44
-            }
-          ],
-          "documentWidth": 320
-        }
-      ],
-      "errors": [],
-      "dialogs": []
-    },
-    "durable_ui_files": [
+    "digest_verified": true,
+    "downloaded_digest": "6b3da90aaf72cbf23b08e955c233ea0057e83cfee7f0f0b35c449b0824bd5a0c",
+    "images": [
       {
-        "name": "shared-before.png",
-        "sha": "ffb5a881d29af55366b65f49f29f2a9f69749715",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/shared-before.png"
+        "name": "central-discovery-1500.png",
+        "sha": "83debd702f1337fc6edd1ba7ecf4144ea1f9c55b"
       },
       {
-        "name": "overview-12-desktop.png",
-        "sha": "14994e75a96a66cbf64ac149612c7f98ab975aea",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-12-desktop.png"
-      },
-      {
-        "name": "overview-24-desktop.png",
-        "sha": "1ff9c6103b21e5a7f8739f521617021156cf9860",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-24-desktop.png"
-      },
-      {
-        "name": "overview-12-summary.png",
-        "sha": "4ba15155c98bcde816f57062649bdf6779fd52c3",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-12-summary.png"
-      },
-      {
-        "name": "overview-24-summary.png",
-        "sha": "61ef66d06c748aca54a4a026cf254527e818abfc",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-24-summary.png"
-      },
-      {
-        "name": "long-names-1500.png",
-        "sha": "bff1a6856fe8114804feb763c5dac43450cafaf5",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/long-names-1500.png"
-      },
-      {
-        "name": "long-names-390.png",
-        "sha": "45fa861537aa0d4cf55c83e5600eac9a094d5b88",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/long-names-390.png"
-      },
-      {
-        "name": "long-names-320.png",
-        "sha": "c83e91171509547933375842d012af0f9a71e377",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/long-names-320.png"
-      },
-      {
-        "name": "overview-12-export.png",
-        "sha": "5c8ed9f05de5c516c88051c0acc0ca06eae1bde9",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-12-export.png"
-      },
-      {
-        "name": "overview-24-export.png",
-        "sha": "33c243f49e5f34c0a7099211322adbc0586d005c",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-24-export.png"
-      },
-      {
-        "name": "overview-12-screen-map.png",
-        "sha": "3d9c71b53f0b2786dd23e13f68de3db020ccc110",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-12-screen-map.png"
-      },
-      {
-        "name": "overview-24-screen-map.png",
-        "sha": "7b014e458bfc3bc6bba0f794a60bdda3e243d9ae",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-24-screen-map.png"
-      },
-      {
-        "name": "review-owner-desktop.png",
-        "sha": "2253b8cc70c1633e3b93c78eb3a5df5676038a37",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/review-owner-desktop.png"
-      },
-      {
-        "name": "review-extent-error.png",
-        "sha": "9f092d4e8bbafebaed5715f66d2d2c40ad9072b6",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/review-extent-error.png"
-      },
-      {
-        "name": "review-owner-one-context.png",
-        "sha": "aa6f1595e4e7b1eaa9942550ff52102cdbfa2316",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/review-owner-one-context.png"
-      },
-      {
-        "name": "review-owner-two-context.png",
-        "sha": "9aeaec6a2a71dfa7c543a4d79530e9ad228ef823",
-        "source_head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "content_verified_in_final_artifact": true,
-        "path": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/review-owner-two-context.png"
+        "name": "central-discovery-390.png",
+        "sha": "6b32f28d7cbcd2e45b0c5a9b7abc98c2440e71ee"
       }
     ],
-    "author_visual_observations": [
-      "Inspected final64 12mile desktop mixed terrain and two compact owner rows; 390/320 long names wrap without horizontal document overflow; four action controls44px high.",
-      "Inspected actual24 PNG:7 count legible, two owner footprints present. Existing GM candidate/ClickMe retained; not a player map.",
-      "Downloaded PNG and same actual internalSVG re-rasterization agree at both12/24; this does not assert viewport highlight pixel identity."
-    ],
-    "presentation": {
-      "shown_in_current_chat": true,
-      "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-      "source": "Current programmer commentary explicitly shows final64 before/after12 and320; image tools also showed final24export and390",
-      "images": [
-        "shared-before.png",
-        "overview-12-desktop.png",
-        "long-names-320.png"
-      ],
-      "before_after_limit": "Same small authored map. After includes conditional7cell manualextent; not a published-main screenshot or measured city size."
-    },
-    "acceptance_status": "programmer evidence submitted; independent combined review required"
+    "shown_in_chat": true,
+    "source": "Current programmer commentary actual390 and image-view1500 from existingCIworkflow",
+    "observed": "Centralcapital open_plains has При прохождении;390 document no horizontaloverflow. ExistingUI, one added derived row. Not full published-main before/after.",
+    "limits": [
+      "Small existing authoredfixture, Chromiumviewport; no wholeWCAG/crossbrowser claim.",
+      "Prior64 UI/export gap accepted independently; applicability to9aa needs newreview source correspondence."
+    ]
   },
-  "review_result_ref": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
+  "review_result_ref": null,
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-051-a4e8a48/score-assessment1.2.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2930,7 +2474,7 @@
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
   "test_change_summary_ref": "agent-work/evidence/strategy-HX-BL-051-UI-1404/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/programmer-score-evidence.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/programmer-score-evidence.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
   "review_evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476",
   "github_review_state": "COMMENT_bounded_fix_accepted_full_package_not_accepted",
@@ -3000,18 +2544,18 @@
   "process_analysis_ref": "agent-work/proposals/2026-10-31-development-process-review.md",
   "process_analysis_status": "recommendations_only_not_implemented",
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
-  "next_approved_stage": "DETAIL1-CLASSIFY1-central-discovery-fix",
-  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
+  "next_approved_stage": "central-discovery-review",
+  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-central-discovery-review.json",
   "authorization_status": "Existing approved051 continuation, no new start/design approval required. TABLES1 approved after current051 work completion, before or independently of waiting for its publication approval.",
-  "completed_at": "2026-11-10 16:18:09 UTC",
+  "completed_at": "2026-11-10 17:18:50 UTC",
   "score_changed": false,
   "next_stage_id": "DETAIL1-CLASSIFY1-central-discovery-fix",
   "score_evidence_updated": true,
   "current_stage_id": "DETAIL1",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
-  "current_stage_ui_status": "UI_EVIDENCE2_bounded_accepted; future changed_SHA_requires_correspondence",
+  "review_ready": true,
+  "current_stage_ui_status": "targeted_central_UI_shown; independent_verification_pending",
   "completed_claim": "agent-work/claims/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
   "evidence_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "finding_ids": [
@@ -4602,8 +4146,8 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "changes_requested",
-  "current_stage_review_status": "changes_requested",
+  "current_stage_status": "review_ready",
+  "current_stage_review_status": "new_SHA_pending",
   "accepted": false,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -4842,7 +4386,7 @@
   "ui_actual_responsible": "programmer supplied current64; independent reviewer bounded verification complete",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
-  "checks_summary": "CI386/386Node +tsc/build;9browsercommands +1separateRNG passed. Temporary16observation actualApp probe reproduces central-discovery defect; not16newproducttests.",
+  "checks_summary": "386/386Node,tsc/build,9browsercommands and separateRNGscript pass; no aggregation.",
   "full_E5_UI_pending": true,
   "materials_commit_sha": "d66fc1882d982bf71de1977869077ec56c117d06",
   "latest_HX_BL_023_E5_features_ui_20261104": {
@@ -7329,9 +6873,9 @@
   "private_tree_sha": null,
   "current_private_package": null,
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
-  "review_request_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
+  "review_request_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-central-discovery-review.json",
   "programmer_complete": true,
-  "current_programmer_result_ref": "agent-work/results/2026-11-10T1458-programmer-HX-BL-051-UI-EVIDENCE2.json",
+  "current_programmer_result_ref": "agent-work/results/2026-11-10T1700-programmer-HX-BL-051-central-discovery.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -7354,52 +6898,12 @@
   "role": "programmer",
   "latest_result_ref": "agent-work/results/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
   "checks": {
-    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-    "tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
+    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "tree_sha": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
     "local": {
       "command": "npm run check",
-      "Node": "v24.22.1",
       "exit_code": 0,
-      "status": "success",
-      "counts": {
-        "tests": 386,
-        "pass": 386,
-        "fail": 0,
-        "skipped": 0
-      },
-      "typescript": "success",
-      "build": "success",
-      "same_local_staged_tree": false,
-      "head_sha": "c9628b75ca439dd14c88b0cf58f1376ec4318d51",
-      "tree_sha": "a90a1bda9fac382905624b01e676ad952e31e64a",
-      "scope_limit": "HistoricalC962; runtime identical, current browser file differs. Not final package checks."
-    },
-    "CI": {
-      "run_id": 42845445696,
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42845445696",
-      "status": "success",
-      "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-      "jobs": [
-        {
-          "id": 129931556685,
-          "name": "browser",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 129931557148,
-          "name": "check",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 129931557397,
-          "name": "world-random",
-          "status": "completed",
-          "conclusion": "success"
-        }
-      ],
-      "node_counts": {
+      "Node": {
         "executed": 386,
         "passed": 386,
         "failed": 0,
@@ -7407,49 +6911,97 @@
       },
       "typescript": "success",
       "build": "success",
-      "tree_bridge": {
-        "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-        "head_tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
-        "merge_sha": "990d100ef5613f06e18de8997f14220fd10176cb",
-        "merge_tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
-        "parents": [
-          "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-          "64b8476ff7f19e61e24b8b939663d90c1f2b37ec"
-        ],
-        "same_tree": true,
-        "method": "GitHub git commit tree plus local staged tree correspondence"
+      "scope_note": "App/Node files unchanged throughout local run; final browserfile was edited while localcheck ran and is proved by exactCI."
+    },
+    "CI": {
+      "run_id": 42860961335,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42860961335",
+      "jobs": [
+        {
+          "id": 129986635177,
+          "name": "check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129986635636,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 129986635813,
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "Node": {
+        "executed": 386,
+        "passed": 386,
+        "failed": 0,
+        "skipped": 0
       },
-      "raw_log_refs": {
-        "check": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/CI-check.log",
-        "browser": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/CI-browser.log",
-        "RNG": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/CI-RNG.log"
+      "browser_top_level_workflows": {
+        "executed": 9,
+        "passed": 9,
+        "failed": 0
+      },
+      "RNG_separate_script": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0
+      },
+      "typescript": "success",
+      "build": "success",
+      "merge_tree_bridge": {
+        "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+        "head_tree": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
+        "merge_sha": "b66af0eac3bfb12eeae2fc88f573820057d5c21d",
+        "merge_tree": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
+        "same_tree": true
       }
     },
+    "red_green": {
+      "red_runtime_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+      "red": {
+        "executed": 4,
+        "passed": 3,
+        "failed": 1
+      },
+      "green": {
+        "executed": 4,
+        "passed": 4,
+        "failed": 0
+      },
+      "temporary16observations": "positive passed; roadcapital visible label is Заметно с дороги rather than generic При прохождении; expectation corrected, not product code"
+    },
     "artifact": {
-      "id": 13779460247,
-      "digest": "sha256:5329a2d0a8f3245d00e2c020a407ead92c12a6ab74f170c3c6a2627c60bedc5d",
-      "downloaded_digest": "sha256:5329a2d0a8f3245d00e2c020a407ead92c12a6ab74f170c3c6a2627c60bedc5d",
-      "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-      "verified": true
+      "id": 13785896188,
+      "name": "DETAIL1-UI",
+      "size_in_bytes": 3560618,
+      "url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13785896188",
+      "archive_download_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13785896188/zip",
+      "expired": false,
+      "created_at": "2026-11-10T17:09:33Z",
+      "expires_at": "2027-02-08T17:03:34Z",
+      "updated_at": "2026-11-10T17:09:33Z",
+      "digest": "sha256:6b3da90aaf72cbf23b08e955c233ea0057e83cfee7f0f0b35c449b0824bd5a0c",
+      "workflow_run": {
+        "id": 42860961335,
+        "repository_id": 1233284991,
+        "head_repository_id": 1233284991,
+        "head_branch": "agent/hx-bl-051-detail1",
+        "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40"
+      }
     },
-    "preflight": {
-      "status": "passed",
-      "scope": "Temporary actual-handler names and mixed12/24 fixture validation; no browser/no permanent callback"
-    },
-    "source_change": {
-      "base_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-      "only_file": "test/browser/detail-adaptation.smoke.mjs",
-      "added_lines": 59,
-      "removed_lines": 0,
-      "runtime_changed": false,
-      "Pages_workflow_changed": false
-    },
-    "source_local_initial_build": "success; runtime assets identicalindex-Ctyqxhx1/index-DG_47E8I",
-    "no_cloud_browser_navigation_attempted": true
+    "downloaded_sha256": "6b3da90aaf72cbf23b08e955c233ea0057e83cfee7f0f0b35c449b0824bd5a0c",
+    "digest_verified": true,
+    "new_heavy_series": false
   },
   "score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown",
-  "review_report_ref": "agent-work/evidence/review-HX-BL-051-64b8476/independent-review.json",
-  "reviewed_public_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+  "review_report_ref": null,
+  "reviewed_public_sha": null,
   "closed_findings": [
     "KNC-REV-001",
     {
@@ -8010,10 +7562,10 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
-  "current_stage_score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown_with_central_discovery_defect",
-  "ui_actual_ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui-actual.json",
-  "execution_running": true,
+  "current_role_result": "agent-work/results/2026-11-10T1700-programmer-HX-BL-051-central-discovery.json",
+  "current_stage_score_assessment_status": "new_exactSHA_independent_assessment_pending",
+  "ui_actual_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/ui-actual.json",
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -8520,8 +8072,8 @@
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
   "local_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-  "checks_evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476/provenance-checks.json",
-  "execution_status": "independent_review_completed_changes_requested",
+  "checks_evidence_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/checks.json",
+  "execution_status": "programmer_completed_review_ready",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8658,11 +8210,9 @@
   "pr_updated": true,
   "execution_routing": {
     "task_id": "HX-BL-051",
-    "related_task_id": "HX-BL-044",
-    "stage_id": "DETAIL1-CLASSIFY1-central-discovery-fix",
-    "role": "programmer",
+    "role": "reviewer",
     "status": "ready",
-    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-64b8476-next.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-central-discovery-review.json",
     "release_authorized": false
   },
   "last_team_coordination": {
@@ -8977,7 +8527,7 @@
       "limitations": "Finite actualUI accepted separately; central discovery P2 and releasepresentation remain."
     }
   ],
-  "full_package_review_ready": false,
+  "full_package_review_ready": true,
   "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
@@ -9152,10 +8702,9 @@
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
   "last_completed_run_id": "2026-11-10T1559-reviewer-HX-BL-051-64b8476",
   "storage_verification": {
-    "data_commit_sha": "d393d5f97a70c4024fe0d2f57cb3e3a00ea75c3d",
-    "data_readback": "passed_result_claim_score_and_backlog; refreshed_end_health_result_confirmed",
-    "latest_written_last": true,
-    "foreign_claims_research_and_approved_queue_preserved": true
+    "data_commit_sha": "c3fe72cd21f232c454f891af9c737137ddf35ece",
+    "result_readback": "passed",
+    "latest_written_last": true
   },
   "current_functional_findings": [
     {
@@ -9163,7 +8712,7 @@
       "priority": "P2",
       "category": "confirmed_product_defect",
       "blocking_acceptance": true,
-      "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+      "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
       "file": "src/App.tsx",
       "line": 15522,
       "related_lines": [
@@ -9198,12 +8747,14 @@
       "independent_method": "Fresh reviewer read source and executed the unchanged existing production-App harness, actual importer/controller and actual knavePanel React tree. Only the outer JSX return/artwork and React hook storage are harness instrumentation; no browser/security-gate bypass.",
       "historical_reference": "PR496 discussion_r4522823641, botP2 on historical a4e8a48 (08:47). This finding is supported by new current64 reproduction and negative controls, not carried forward from a bot assertion.",
       "fix_boundary": "Resolve actual selected central kind only for discovery policy, preserve secondary/water and manual/legacy/hidden/unknown precedence, no broad helper semantics change without review. Extend an existing real document/classification regression with central/secondary positive/negative controls instead of creating a new runner. Preserve exact state/history/RNG. Submit a new SHA and reuse unchanged UI evidence only after source correspondence.",
-      "status": "open",
+      "status": "fix_submitted_pending_independent_review",
       "task_id": "HX-BL-051",
       "related_task_id": "HX-BL-044",
       "review_result_ref": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
       "evidence_ref": "agent-work/evidence/review-HX-BL-051-64b8476/finding-central-discovery.json",
-      "reproduction_ref": "agent-work/evidence/review-HX-BL-051-64b8476/central-discovery-probe.json"
+      "reproduction_ref": "agent-work/evidence/review-HX-BL-051-64b8476/central-discovery-probe.json",
+      "programmer_result_ref": "agent-work/results/2026-11-10T1700-programmer-HX-BL-051-central-discovery.json",
+      "author_evidence_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/checks.json"
     }
   ],
   "release_preview_responsible": "programmer; complete actual combined published-main→candidate walkthrough after correction and before release request",
@@ -9215,5 +8766,11 @@
     "provided": "Same candidate fixture legacy→adapted screenshots and manualconditionalextent; useful bounded actual UI show.",
     "missing": "Complete combined published-main→candidate user walkthrough with current classification and detail actions, desktop+narrow, knownlimits and shown_in_chat/reviewer verification. shared-before already runs candidateCLASSIFY1, so it cannot represent published-mainbefore.",
     "next": "Prepare/update actual combined walkthrough after correction and independent currentSHAacceptance before requesting release. No design approval wait or reapproval of taskstart; do not delay approved next task after051acceptance merely for publication."
+  },
+  "previous_review_record": {
+    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+    "result_ref": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
+    "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5845240873",
+    "verdict": "changes_requested"
   }
 }
