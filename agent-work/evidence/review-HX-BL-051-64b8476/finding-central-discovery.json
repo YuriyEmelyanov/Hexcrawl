@@ -1,0 +1,41 @@
+{
+  "id": "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY",
+  "priority": "P2",
+  "category": "confirmed_product_defect",
+  "blocking_acceptance": true,
+  "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+  "file": "src/App.tsx",
+  "line": 15522,
+  "related_lines": [
+    8865,
+    14622,
+    14624,
+    15522
+  ],
+  "title": "Auto discovery omits central POI type, so central landmarks/lairs lose known discovery conditions",
+  "requirements": [
+    "HX-BL-044-CLASSIFY1-implementation.md Policy1 discovery precedence",
+    "CLASSIFY1 acceptance4/5/6/8",
+    "DTL-09/25 combined source-content compatibility"
+  ],
+  "repro": [
+    "Use existing regionFixture(); set region1 centerHex={q:2,r:0}, suppressCentralPoi=false, centralPoiKind=capital, pointsOfInterest=[], pointOfInterestKinds={}; use open_plains biome and explicit open_plains at2,0; selectedHex=2,0; no roads or discovery override.",
+    "Import through actual handleImportJson; actual knavePanel React tree has no data-discovery-classification row.",
+    "Change only centralPoiKind to lair: expected Requires exploration, actual no row. Repeat city/dungeon likewise.",
+    "Negative control: represent same kind/address as secondary POI with suppressCentralPoi=true and pointOfInterestKinds[2,0]=kind; actual panel now shows On passage or Requires exploration.",
+    "Actual startDetailAdaptation/applyDetailAdaptation and selectDetailCell(first owner cell,...,poiId) do not repair central capital/lair default."
+  ],
+  "expected": "Actual central kind must enter the same approved discovery policy as secondary kinds: capital/city on open terrain or at a real road endpoint→passage; central lair/dungeon→exploration. Manual/legacy overrides and exact semantic hidden tags keep precedence.",
+  "actual": "All four central kinds produce zero discovery rows. Actual road-endpoint central capital/lair also produce zero; active DETAIL1 owner selection preserves the failure. Secondary controls produce correct rows. Manual interaction+clue, legacy secret+clue, semantic Hidden→exploration and explicit manual unknown suppression work.",
+  "cause": "selectedPoiKind resolves getPoiKindForHex(), which reads only pointOfInterestKinds. inferredDiscovery passes selectedPoiKind??selectedWaterPoiKind and never selectedRegion.centralPoiKind when selectedHasCentralPoi. The pure policy already recognizes these kinds; App loses the kind before calling it.",
+  "scope": "All map modes using the shared panel, including imported/active DETAIL1 central POIs. Affects automatic known discovery presentation, not demonstrated saved-text/RNG loss or a player-map reveal feature.",
+  "evidence": [
+    "central-discovery-probe.mjs",
+    "central-discovery-probe.json",
+    "central-discovery-probe.log"
+  ],
+  "command": "node /tmp/hx-review-64-1600-output/central-discovery-probe.mjs",
+  "independent_method": "Fresh reviewer read source and executed the unchanged existing production-App harness, actual importer/controller and actual knavePanel React tree. Only the outer JSX return/artwork and React hook storage are harness instrumentation; no browser/security-gate bypass.",
+  "historical_reference": "PR496 discussion_r4522823641, botP2 on historical a4e8a48 (08:47). This finding is supported by new current64 reproduction and negative controls, not carried forward from a bot assertion.",
+  "fix_boundary": "Resolve actual selected central kind only for discovery policy, preserve secondary/water and manual/legacy/hidden/unknown precedence, no broad helper semantics change without review. Extend an existing real document/classification regression with central/secondary positive/negative controls instead of creating a new runner. Preserve exact state/history/RNG. Submit a new SHA and reuse unchanged UI evidence only after source correspondence."
+}

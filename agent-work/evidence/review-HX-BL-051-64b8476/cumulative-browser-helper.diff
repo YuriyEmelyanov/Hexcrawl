@@ -1,0 +1,238 @@
+diff --git a/test/browser/detail-adaptation.smoke.mjs b/test/browser/detail-adaptation.smoke.mjs
+new file mode 100644
+index 000000000..2755d931f
+--- /dev/null
++++ b/test/browser/detail-adaptation.smoke.mjs
+@@ -0,0 +1,107 @@
++import {stripVTControlCharacters} from 'node:util';
++import {createRequire} from 'node:module';import {spawn} from 'node:child_process';import fs from 'node:fs/promises';import assert from 'node:assert/strict';import {regionFixture} from '../helpers/region-fixture.mjs';
++const require=createRequire(process.cwd()+'/package.json'),{chromium}=require('playwright');const dir='reports/DETAIL1';await fs.mkdir(dir,{recursive:true});const data=regionFixture();Object.assign(data.map.regions[0],{centerHex:{q:2,r:0},suppressCentralPoi:false,centralPoiKind:'capital',pointsOfInterest:[],pointOfInterestKinds:{}});data.ui.mapScale=2.4;
++const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4190','--strictPort'],{stdio:['ignore','pipe','inherit']});let browser;
++try{await new Promise((resolve,reject)=>{let output='';const timer=setTimeout(()=>reject(Error('Preview startup timeout: '+stripVTControlCharacters(output))),10000);server.stdout.on('data',d=>{output+=d;if(stripVTControlCharacters(output).includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',e=>{clearTimeout(timer);reject(e);});server.on('exit',c=>{clearTimeout(timer);reject(Error('Preview exited: '+c));});});browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});const page=await browser.newPage({viewport:{width:1500,height:1100},hasTouch:true}),errors=[],dialogs=[];page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{dialogs.push(d.message());await d.dismiss();});await page.route(/mc\.yandex/,r=>r.abort());await page.goto('http://127.0.0.1:4190');await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();await page.locator('input[type=file]').setInputFiles({name:'capital.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-detail-preview]').waitFor();
++await page.screenshot({path:dir+'/desktop-before.png',fullPage:true});await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').waitFor();assert.ok(await page.locator('[data-detail-preview-poi]').count());assert.equal(await page.locator('svg[data-biome-display] [data-detail-preview-poi]').count(),0,'preview excluded from exported map artwork');await page.screenshot({path:dir+'/desktop-preview.png',fullPage:true});await page.locator('[data-detail-adaptation]').screenshot({path:dir+'/panel-1500.png'});
++await page.locator('.export-menu summary').click();assert.equal(await page.locator('.export-menu').getAttribute('open')!==null,true);await page.locator('[data-detail-apply]').scrollIntoViewIfNeeded();assert.ok(await page.locator('[data-detail-apply]').evaluate(e=>{const b=e.getBoundingClientRect();return e.contains(document.elementFromPoint(b.x+b.width/2,b.y+b.height/2));}),'export menu does not cover Apply');await page.locator('.export-menu summary').click();
++await page.locator('[data-detail-cancel]').click();assert.equal(await page.locator('[data-detail-preview-overlay]').count(),0);await page.locator('[data-detail-preview]').click();await page.waitForFunction(()=>document.querySelector('[data-detail-adaptation]')?.contains(document.activeElement));await page.keyboard.press('Escape');await page.locator('[data-detail-apply]').waitFor({state:'detached'});
++await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.getByText('Охваты POI сохранены.',{exact:true}).waitFor();await page.screenshot({path:dir+'/desktop-applied.png',fullPage:true});
++// Extend this existing real UI workflow rather than creating another fixture/suite.
++await page.locator('[data-detail-step="1"]').click();await page.locator('[data-detail-view="1"]').waitFor();
++const marker=page.locator('[data-detail-marker-cell]').first(),markerCell=await marker.getAttribute('data-detail-marker-cell');assert.ok(markerCell);
++const owner=await marker.getAttribute('data-detail-marker-owners');assert.ok(owner);
++const target=page.locator(`[data-detail-cell="${markerCell}"]`);await target.focus();await page.keyboard.press('Enter');await page.locator('[data-detail-summary] details').nth(1).locator('summary').click();
++await page.locator('[data-detail-summary] button').filter({hasText:'Режим правки охвата'}).first().click();await page.locator('[data-detail-extent-start]').first().click();
++await page.locator('[data-detail-extent-form]').waitFor();await page.locator('[data-detail-extent-note]').fill('Браузерная проверка условного охвата');await page.locator('[data-detail-extent-cancel]').click();assert.equal(await page.locator('[data-detail-extent-form]').count(),0);
++await page.locator('[data-detail-extent-start]').first().click();await page.locator('[data-detail-extent-note]').fill('Браузерная проверка условного охвата');await page.locator('[data-detail-extent-apply]').click();await page.locator('[data-detail-extent-form]').waitFor({state:'detached'});
++await page.screenshot({path:dir+'/detail1-desktop-after.png',fullPage:true});
++// Finish edit mode before exercising spatial overview targets.
++await page.locator('[data-poi-done]').click();
++for(const step of [6,12,24,1]){await page.locator(`[data-detail-step="${step}"]`).click();await page.locator(`[data-detail-view="${step}"]`).waitFor();assert.ok(await page.locator('[data-detail-cell]').count());}
++for(const width of [390,320]){await page.setViewportSize({width,height:950});await page.locator('[data-detail-summary]').scrollIntoViewIfNeeded();await page.locator('[data-detail-summary]').screenshot({path:dir+`/detail1-summary-${width}.png`});const box=await page.locator('[data-detail-summary]').boundingBox();assert.ok(box&&box.width<=width);}
++await page.setViewportSize({width:1500,height:1100});
++await page.locator('.rotate-map-button').click();assert.ok(await page.locator('[data-detail-marker-cell] image').first().evaluate(n=>Math.abs(n.getCTM().b)<1e-8),'active footprint markers stay upright after rotation');await page.screenshot({path:dir+'/detail1-rotated.png',fullPage:true});await page.locator('.rotate-map-button').click();
++const downloadReady=page.waitForEvent('download');await page.locator('.export-menu summary').click();await page.locator('[data-poi-export]').filter({hasText:'PNG'}).click();const selectedPng=await downloadReady;await selectedPng.saveAs(dir+'/detail1-selected.png');assert.ok((await fs.stat(dir+'/detail1-selected.png')).size>1000);await page.locator('.export-menu summary').click();
++const metrics=[];for(const width of [390,320]){await page.setViewportSize({width,height:950});await page.locator('input[type=file]').setInputFiles({name:'capital.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-adaptation]').scrollIntoViewIfNeeded();await page.locator('[data-detail-adaptation]').screenshot({path:dir+`/panel-${width}.png`});const boxes=await page.locator('[data-detail-adaptation] button').evaluateAll(es=>es.map(e=>({text:e.textContent,width:e.getBoundingClientRect().width,height:e.getBoundingClientRect().height})));assert.ok(boxes.every(b=>b.height>=44));metrics.push({width,buttons:boxes,documentWidth:await page.evaluate(()=>document.documentElement.scrollWidth)});await page.locator('[data-detail-cancel]').click();}
++// REVIEW-POI-CONTEXT: reuse this workflow for identity selection across source
++// cells and touch/keyboard choice of coincident owners (not another runner).
++const shared=structuredClone(data);shared.version=11;shared.map.seas=[];shared.map.nextSeaId=1;
++shared.map.regions[1].pointsOfInterest=[{q:3,r:0}];shared.map.regions[1].pointOfInterestKinds={'3,0':'village'};
++shared.map.classification={version:1,difficultyByHex:{},discoveryByPoi:{'poi:1:2,0':{mode:'interaction',clueText:'OWNER-ONE-CLUE'},'poi:2:3,0':{mode:'interaction',clueText:'OWNER-TWO-CLUE'}}};
++// UI-EVIDENCE2 reuses these two owners and five source hexes, not another
++// generated map or runner. Paired names exercise wrapping, including one word.
++const longNames={one:'Северная столица старой переправы через Серебряную реку',two:'Деревнядревнихсмотрителейторговойдорогиусеверныхсосен'};
++shared.map.editorNames={'poi:1:2,0':{ru:longNames.one,en:'Northern capital at the old crossing of the Silver River'},'poi:2:3,0':{ru:longNames.two,en:'VillageOfTheAncientKeepersOfTheNorthernTradingRoad'}};
++await page.setViewportSize({width:1500,height:1100});await page.locator('input[type=file]').setInputFiles({name:'shared.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(shared))});
++await page.waitForFunction(name=>document.body.textContent.includes(name),longNames.one);await page.screenshot({path:dir+'/shared-before.png',fullPage:true});
++await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.locator('[data-detail-step="1"]').click();
++const firstId=await page.locator('[data-detail-marker-cell]').first().getAttribute('data-detail-marker-owners');
++await page.locator('[data-detail-marker-cell]').first().evaluate(e=>{const key=e.getAttribute('data-detail-marker-cell');document.querySelector(`[data-detail-cell="${key}"]`).dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));});
++await page.locator('[data-detail-summary] details').nth(1).locator('summary').click();await page.locator('[data-detail-extent-start]').first().click();await page.locator('[data-detail-extent-start]').first().click();
++await page.locator('[data-detail-extent-cells]').fill('12,0\n14,0');await page.locator('[data-detail-extent-note]').fill('Проверка отказа');await page.locator('[data-detail-extent-apply]').click();await page.locator('[data-detail-extent-form] [role=alert]').waitFor();await page.screenshot({path:dir+'/review-extent-error.png',fullPage:true});
++await page.locator('[data-detail-extent-cells]').fill(Array.from({length:7},(_,i)=>`${12+i},0`).join('\n'));await page.locator('[data-detail-extent-note]').fill('Общий охват для проверки выбора места');await page.locator('[data-detail-extent-apply]').click();await page.locator('[data-detail-extent-form]').waitFor({state:'detached'});await page.locator('[data-poi-done]').click();
++const sharedTarget=page.locator('[data-detail-cell="18,0"]');await sharedTarget.scrollIntoViewIfNeeded();const hit=await sharedTarget.boundingBox();assert.ok(hit);await page.touchscreen.tap(hit.x+hit.width/2,hit.y+hit.height/2);
++assert.equal(await page.locator('[data-detail-summary] [data-detail-poi-select]').count(),2);
++// Open both owner rows explicitly before selecting their content.
++for(const detail of await page.locator('[data-detail-summary] > details').all()){if(await detail.getAttribute('open')===null)await detail.locator('summary').click();}
++const firstButton=page.locator(`[data-detail-poi-select="${firstId}"]`);await firstButton.focus();await page.keyboard.press('Enter');await page.locator('[data-knave-panel]').getByText('OWNER-ONE-CLUE',{exact:false}).waitFor();assert.equal(await sharedTarget.getAttribute('aria-pressed'),'true');assert.equal(await page.locator('[data-detail-poi-select]').count(),2,'owner selection keeps the shared fine cell');await page.locator('.detail-source-context').screenshot({path:dir+'/review-owner-one-context.png'});
++await page.locator('[data-detail-summary]').scrollIntoViewIfNeeded();await page.screenshot({path:dir+'/review-owner-desktop.png',fullPage:true});
++await sharedTarget.focus();await page.keyboard.press('Enter');for(const detail of await page.locator('[data-detail-summary] > details').all()){if(await detail.getAttribute('open')===null)await detail.locator('summary').click();}
++await page.locator(`[data-detail-poi-select]:not([data-detail-poi-select="${firstId}"])`).click();await page.locator('[data-knave-panel]').getByText('OWNER-TWO-CLUE',{exact:false}).waitFor();await page.locator('.detail-source-context').screenshot({path:dir+'/review-owner-two-context.png'});
++for(const width of [390,320]){await page.setViewportSize({width,height:950});await page.locator('[data-detail-summary]').scrollIntoViewIfNeeded();await page.screenshot({path:dir+`/review-owner-${width}.png`,fullPage:true});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth));}
++const uiEvidence={fixture:'existing regionFixture/shared owners;5 source hexes; no new generation',longNames,layouts:[],overviews:[],responseObservations:[],limits:['Instrumented existing actions only; timing includes Playwright/scroll/frame overhead, no universal threshold.','Raster equality checks actual internal export SVG against downloaded PNG; screen/PNG visual comparison remains a reviewer observation.']};
++const settled=()=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
++for(const width of [1500,390,320]){
++  await page.setViewportSize({width,height:width===1500?1100:950});
++  for(const detail of await page.locator('[data-detail-summary] > details').all())if(await detail.getAttribute('open')===null)await detail.locator('summary').click();
++  const touchChoice=page.locator('[data-detail-poi-select]').last();await touchChoice.scrollIntoViewIfNeeded();const touchBox=await touchChoice.boundingBox();assert.ok(touchBox);
++  await page.touchscreen.tap(touchBox.x+touchBox.width/2,touchBox.y+touchBox.height/2);await page.locator('[data-knave-panel]').getByText('OWNER-TWO-CLUE',{exact:false}).waitFor();
++  const choice=page.locator(`[data-detail-poi-select="${firstId}"]`);await choice.scrollIntoViewIfNeeded();await choice.focus();await page.keyboard.press('Enter');
++  await page.locator('[data-knave-panel]').getByText('OWNER-ONE-CLUE',{exact:false}).waitFor();
++  const text=await page.locator('[data-detail-summary]').innerText();assert.ok(text.includes(longNames.one)&&text.includes(longNames.two));
++  const layout=await page.locator('[data-detail-summary]').evaluate(e=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,panelWidth:e.getBoundingClientRect().width,buttons:[...e.querySelectorAll('button')].map(b=>({text:b.textContent,width:b.getBoundingClientRect().width,height:b.getBoundingClientRect().height}))}));
++  assert.ok(layout.documentWidth<=width&&layout.panelWidth<=width);assert.ok(layout.buttons.every(b=>b.height>=44));
++  await page.locator('[data-detail-summary]').screenshot({path:dir+`/long-names-${width}.png`});uiEvidence.layouts.push({...layout,touchOwnerChoice:'OWNER-TWO-CLUE',keyboardOwnerChoice:'OWNER-ONE-CLUE'});
++}
++await page.setViewportSize({width:1500,height:1100});
++// Capture the real SVG blob handed to the PNG pipeline, not a reconstructed
++// whitelist. This observer does not alter the production renderer/exporter.
++await page.evaluate(()=>{const original=URL.createObjectURL;window.__detailSvgBlobs=[];URL.createObjectURL=function(blob){if(blob.type.startsWith('image/svg+xml'))window.__detailSvgBlobs.push(blob.text());return original.call(this,blob);};});
++for(const step of [6,12,24,6]){
++  const start=await page.evaluate(()=>performance.now());await page.locator(`[data-detail-step="${step}"]`).click();await page.locator(`[data-detail-view="${step}"]`).waitFor();await settled();
++  uiEvidence.responseObservations.push({step,elapsedMs:(await page.evaluate(()=>performance.now()))-start,method:'locator click to requested view present plus two animation frames; includes automation overhead'});
++  if(step!==12&&step!==24)continue;
++  let selected;
++  for(const cell of await page.locator('[data-detail-cell]').all()){
++    await cell.focus();await page.keyboard.press('Enter');await settled();
++    const rows=await page.locator('[data-detail-summary] > details').first().locator('li').allTextContents();
++    const owners=await page.locator('[data-detail-summary] [data-detail-poi-select]').evaluateAll(es=>es.map(e=>e.getAttribute('data-detail-poi-select')));
++    if(new Set(rows.map(x=>x.split('·')[1]?.trim())).size>1&&owners.length===2){selected={cell:await cell.getAttribute('data-detail-cell'),rows,owners};break;}
++  }
++  assert.ok(selected,`${step}: small fixture has a selectable mixed cell containing both owners`);assert.equal(new Set(selected.owners).size,2);
++  for(const detail of await page.locator('[data-detail-summary] > details').all())if(await detail.getAttribute('open')!==null)await detail.locator('summary').click();
++  await page.locator('[data-detail-summary] > details').first().locator('summary').click();
++  assert.equal(await page.locator('.detail-source-context').getAttribute('open'),null,'overview keeps legacy full source card collapsed');
++  await page.locator('[data-detail-summary]').screenshot({path:dir+`/overview-${step}-summary.png`});
++  await page.screenshot({path:dir+`/overview-${step}-desktop.png`,fullPage:true});
++  const svg=page.locator('svg[data-biome-display]');await svg.screenshot({path:dir+`/overview-${step}-screen-map.png`});
++  const screen=await svg.evaluate(e=>({viewBox:e.getAttribute('viewBox'),view:e.querySelector('[data-detail-view]')?.getAttribute('data-detail-view'),footprints:[...e.querySelectorAll('[data-detail-footprint]')].map(n=>n.getAttribute('data-detail-footprint')),counts:[...e.querySelectorAll('.detail-marker-count')].map(n=>n.textContent)}));
++  assert.equal(screen.footprints.length,2);assert.ok(screen.counts.length>0);
++  await page.evaluate(()=>{window.__detailSvgBlobs=[];});
++  const ready=page.waitForEvent('download');await page.locator('.export-menu summary').click();await page.locator('[data-poi-export]').filter({hasText:'PNG'}).click();const png=await ready;await png.saveAs(dir+`/overview-${step}-export.png`);await page.locator('.export-menu summary').click();
++  const texts=await page.evaluate(()=>Promise.all(window.__detailSvgBlobs));const exported=texts.findLast(t=>t.includes(`data-detail-view="${step}"`));assert.ok(exported,'actual export SVG blob captured');await fs.writeFile(dir+`/overview-${step}-export.svg`,exported);
++  const pngBase64=(await fs.readFile(dir+`/overview-${step}-export.png`)).toString('base64');
++  const exportProof=await page.evaluate(async({xml,pngBase64})=>{
++    const doc=new DOMParser().parseFromString(xml,'image/svg+xml'),root=doc.documentElement;
++    const image=async src=>{const i=new Image();await new Promise((resolve,reject)=>{i.onload=resolve;i.onerror=reject;i.src=src;});return i;};
++    const [pngImage,svgImage]=await Promise.all([image('data:image/png;base64,'+pngBase64),image('data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(xml))))]);
++    const pixels=i=>{const c=document.createElement('canvas');c.width=pngImage.width;c.height=pngImage.height;const ctx=c.getContext('2d');ctx.fillStyle='#0c1423';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(i,0,0,c.width,c.height);return ctx.getImageData(0,0,c.width,c.height).data;};
++    const a=pixels(pngImage),b=pixels(svgImage);let differingPixels=0,nonBackgroundPixels=0;for(let i=0;i<a.length;i+=4){if(a[i]!==b[i]||a[i+1]!==b[i+1]||a[i+2]!==b[i+2]||a[i+3]!==b[i+3])differingPixels++;if(a[i]!==12||a[i+1]!==20||a[i+2]!==35)nonBackgroundPixels++;}
++    return {viewBox:root.getAttribute('viewBox'),view:root.querySelector('[data-detail-view]')?.getAttribute('data-detail-view'),footprints:[...root.querySelectorAll('[data-detail-footprint]')].map(n=>n.getAttribute('data-detail-footprint')),counts:[...root.querySelectorAll('.detail-marker-count')].map(n=>n.textContent),countRule:root.querySelector('style')?.textContent.match(/\.detail-marker-count\s*\{[^}]+\}/)?.[0],editorOnly:root.querySelectorAll('[data-editor-only]').length,width:pngImage.width,height:pngImage.height,differingPixels,nonBackgroundPixels};
++  },{xml:exported,pngBase64});
++  assert.equal(exportProof.viewBox,screen.viewBox);assert.equal(exportProof.view,screen.view);assert.deepEqual(exportProof.footprints,screen.footprints);assert.deepEqual(exportProof.counts,screen.counts);assert.match(exportProof.countRule,/fill:#fff/);assert.match(exportProof.countRule,/stroke:#123/);assert.match(exportProof.countRule,/font-weight:bold/);assert.equal(exportProof.editorOnly,0);assert.equal(exportProof.differingPixels,0);assert.ok(exportProof.nonBackgroundPixels>0);
++  uiEvidence.overviews.push({step,...selected,screen,exportProof});
++}
++await fs.writeFile(dir+'/ui-evidence2.json',JSON.stringify(uiEvidence,null,2));
++assert.deepEqual(errors,[]);assert.deepEqual(dialogs,[]);const report={status:'passed',temporary_programmer_diagnostic:false,permanent_test_cases_added:0,permanent_test_cases_modified:1,suite:'browser',scenarios:['actual file import','preview overlay outside exported artwork','Cancel','Escape','Apply status','1500/390/320 panel and44px buttons','1/6/12/24 targets and keyboard selection','repeated marker references','conditional extent Cancel/Apply','actual summary narrow screenshots','active markers stay upright on rotation','selected DETAIL1 PNG export','cross-source and shared owner selection by keyboard/touch'],metrics,errors,dialogs};await fs.writeFile(dir+'/walkthrough.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report));}finally{await browser?.close();server.kill();}
+diff --git a/test/browser/generation.smoke.mjs b/test/browser/generation.smoke.mjs
+index 13245e4b8..3d465d06b 100644
+--- a/test/browser/generation.smoke.mjs
++++ b/test/browser/generation.smoke.mjs
+@@ -4,0 +5 @@ import fs from 'node:fs/promises';
++import { mkdirSync, writeFileSync } from 'node:fs';
+@@ -10,0 +12 @@ const geometry = createGenerationHarness().geometry;
++let lastGenerationAction = null;
+@@ -11,0 +14 @@ function assertRiverTermini(save) {
++ try {
+@@ -16,0 +20,20 @@ function assertRiverTermini(save) {
++ } catch (error) {
++  // Keep the original assertion fatal. Capture actual inputs, never reroll here.
++  try {
++  const directory = new URL('../../reports/generation-failure/', import.meta.url);
++  mkdirSync(directory, { recursive: true });
++  const { before, ...action } = lastGenerationAction ?? {};
++  writeFileSync(new URL('after.json', directory), JSON.stringify(save, null, 2));
++  if (before) writeFileSync(new URL('before.json', directory), JSON.stringify(before, null, 2));
++  writeFileSync(new URL('context.json', directory), JSON.stringify({
++   capturedAt: new Date().toISOString(), workflowCheckoutSha: process.env.GITHUB_SHA ?? null,
++   action, generationBefore: before?.generation ?? null, generationAfter: save.generation,
++   countersBefore: before?.counters ?? null, countersAfter: save.counters,
++   error: { name: error.name, message: error.message, stack: error.stack }
++  }, null, 2));
++  console.error('Generation invariant failure captured in reports/generation-failure/');
++  } catch (captureError) {
++   console.error('Generation failure capture could not be written:', captureError);
++  }
++  throw error;
++ }
+@@ -98,0 +122,10 @@ try {
++      lastGenerationAction = {
++        type: 'candidate-click', before,
++        candidateIndex: index, candidateCount: attempts,
++        hexKey: await candidates.nth(index).getAttribute('data-hex-key'),
++        mode: await page.getByRole('combobox', {name:'Режим',exact:true}).inputValue(),
++        seedInput: await page.getByRole('textbox', {name:'Seed мира',exact:true}).inputValue(),
++        parameters: await page.locator('.gen-params select').evaluateAll(nodes => nodes.map(n => n.value)),
++        mathRandomInitialSeed: 42,
++        mathRandomAlgorithm: 'LCG1664525+1013904223 uint32 / 4294967296'
++      };
+@@ -227,0 +261,6 @@ try {
++    // Profiling reports asynchronously after generation. Wait for the actual
++    // console events rather than assuming their delivery within100ms.
++    const profileEvents = query.includes('profile') ? Promise.all([
++      probe.waitForEvent('console', { predicate: msg => msg.text().includes('[PROFILE]') }),
++      probe.waitForEvent('console', { predicate: msg => msg.type() === 'table' })
++    ]) : null;
+@@ -230 +269 @@ try {
+-      await probe.waitForTimeout(100);
++      await profileEvents;
+diff --git a/test/browser/knave-properties-lifecycle.mjs b/test/browser/knave-properties-lifecycle.mjs
+index aa702c21f..49ea2b0dc 100644
+--- a/test/browser/knave-properties-lifecycle.mjs
++++ b/test/browser/knave-properties-lifecycle.mjs
+@@ -33 +33 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
+- assert.match(await panel.innerText(),/При прохождении/);
++ assert.equal(await panel.locator('[data-discovery-classification]').count(),0,'unresolved discovery stays out of read card');assert.equal(await info.getByText(/^Поверхность:/).count(),0,'Surface is edit-only');assert.match(await panel.innerText(),/Опасная/);
+@@ -87,2 +87,2 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
+- assert.deepEqual(accepted.map.knave.discoveryByPoi['poi:1:2,0'],{mode:'interaction',clueText:'<Следы обрываются у скалы>'});
+- assert.equal(accepted.map.knave.difficultyByHex['2,0'],'difficult');assert.deepEqual(accepted.generation,before.generation);
++ assert.deepEqual(accepted.map.classification.discoveryByPoi['poi:1:2,0'],{mode:'interaction',clueText:'<Следы обрываются у скалы>'});
++ assert.equal(accepted.map.classification.difficultyByHex['2,0'],'difficult');assert.deepEqual(accepted.generation,before.generation);
+@@ -100,0 +101,14 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
++ // CLASSIFY1 extends this existing workflow; shared policy also works without Knave.
++ const generic=structuredClone(data);delete generic.map.knave;delete generic.ui.knaveEnabled;
++ generic.map.regions[0].pointOfInterestKinds['2,0']='lair';generic.map.biomeOverrideByHexKey['2,0']='plain_mixed_forest';
++ await page.locator('input[type=file]').setInputFiles({name:'generic.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(generic))});
++ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
++ assert.match(await panel.innerText(),/Труднопроходимая/);assert.match(await panel.innerText(),/Нужно исследование/);
++ assert.equal(await info.getByText(/^Поверхность:/).count(),0);const genericBefore=await snapshot();assert.equal(genericBefore.map.classification,undefined);
++ await page.getByRole('button',{name:'Редактировать',exact:true}).click();assert.equal(await page.getByRole('combobox',{name:'Поверхность',exact:true}).count(),1);
++ await panel.getByRole('combobox',{name:'Проходимость',exact:true}).selectOption('dangerous');await panel.getByRole('combobox',{name:'Обнаружение',exact:true}).selectOption('unknown');
++ await page.getByRole('button',{name:'Готово',exact:true}).click();const genericAccepted=await snapshot();assert.equal(genericAccepted.version,11);assert.match(await panel.innerText(),/Опасная/);assert.equal(await panel.locator('[data-discovery-classification]').count(),0);assert.doesNotMatch(await panel.innerText(),/Не задан/);
++ await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual(await snapshot(),genericBefore);await page.getByRole('button',{name:'Повторить',exact:true}).click();assert.deepEqual(await snapshot(),genericAccepted);
++ for(const width of [1500,390]){await page.setViewportSize({width,height:1100});await info.scrollIntoViewIfNeeded();await info.screenshot({path:fileURLToPath(new URL(`classify-read-${width}.png`,out))});}
++ await page.getByRole('button',{name:'Редактировать',exact:true}).click();await info.screenshot({path:fileURLToPath(new URL('classify-edit-390.png',out))});await page.getByRole('button',{name:'Готово',exact:true}).click();
++ await page.locator('input[type=file]').setInputFiles({name:'generic-v11.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(genericAccepted))});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await snapshot(),genericAccepted);
+diff --git a/test/browser/myth-material-lifecycle.mjs b/test/browser/myth-material-lifecycle.mjs
+index 89635db35..2af0aa348 100644
+--- a/test/browser/myth-material-lifecycle.mjs
++++ b/test/browser/myth-material-lifecycle.mjs
+@@ -114 +114 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
+- const pointer=async target=>{const rect=await target.boundingBox();assert.ok(rect);await page.mouse.click(rect.x+rect.width/2,rect.y+rect.height/2);};
++ const pointer=async target=>{await target.scrollIntoViewIfNeeded();const rect=await target.boundingBox();assert.ok(rect);const point={x:rect.x+rect.width/2,y:rect.y+rect.height/2};assert.ok(await target.evaluate((el,p)=>el.contains(document.elementFromPoint(p.x,p.y)),point),'physical pointer must hit the intended disabled material control');await page.mouse.click(point.x,point.y);};
+diff --git a/test/browser/save-history.smoke.mjs b/test/browser/save-history.smoke.mjs
+index df24daecb..ab41beda6 100644
+--- a/test/browser/save-history.smoke.mjs
++++ b/test/browser/save-history.smoke.mjs
+@@ -175,2 +175,4 @@ try {
+- // Owner correction01.11: mode toggle must preserve existing information-row geometry.
+- const rowGeometry=()=>info.evaluate(el=>{const top=el.getBoundingClientRect().top;return [...el.children].filter(x=>x.matches('p,.direct-line')).map(x=>{const r=x.getBoundingClientRect();return {top:r.top-top,height:r.height};});});
++ // Keep existing information rows compact in both modes. CLASSIFY1 adds an
++ // explicit edit-only classification form between groups; its height is not
++ // a change to the spacing of the information rows on either side.
++ const rowGeometry=()=>info.evaluate(el=>{const top=el.getBoundingClientRect().top;let previous=null,first=true;return [...el.children].flatMap(x=>{if(x.matches('.knave-properties'))previous=null;if(!x.matches('p,.direct-line'))return [];const r=x.getBoundingClientRect(),gap=previous===null?(first?r.top-top:null):r.top-previous;previous=r.bottom;first=false;return [{gap,height:r.height}];});});
+diff --git a/test/browser/water-lifecycle.mjs b/test/browser/water-lifecycle.mjs
+index 8943f189f..988a7cff9 100644
+--- a/test/browser/water-lifecycle.mjs
++++ b/test/browser/water-lifecycle.mjs
+@@ -26 +26,2 @@ export async function runWaterLifecycle({page,load,snapshot,ensureEdit,button,se
+-  const row=page.locator('[data-water-panel] > .direct-line'),readHeight=await row.evaluate(e=>e.getBoundingClientRect().height);
++  const row=page.locator('[data-water-panel] > .direct-line');
++  assert.equal(await row.count(),0,'CLASSIFY1 Surface is absent from the read card');
+@@ -28 +29,2 @@ export async function runWaterLifecycle({page,load,snapshot,ensureEdit,button,se
+-  assert.equal(await row.evaluate(e=>e.getBoundingClientRect().height),readHeight,'E6 read/edit water row remains equally compact');
++  assert.equal(await row.count(),1,'Surface remains available in the common editor');
++  const editHeight=await row.evaluate(e=>e.getBoundingClientRect().height);
+@@ -52 +54 @@ export async function runWaterLifecycle({page,load,snapshot,ensureEdit,button,se
+-  for(const width of[1500,390,320]){await page.setViewportSize({width,height:1100});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),mode+' no horizontal overflow');metrics.push({mode,width,no_horizontal_overflow:true,read_edit_row_height:readHeight});}
++  for(const width of[1500,390,320]){await page.setViewportSize({width,height:1100});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),mode+' no horizontal overflow');metrics.push({mode,width,no_horizontal_overflow:true,edit_row_height:editHeight,surface_hidden_in_read:true});}
+diff --git a/test/helpers/generation-harness.mjs b/test/helpers/generation-harness.mjs
+index fc9c97e7a..46917ed4d 100644
+--- a/test/helpers/generation-harness.mjs
++++ b/test/helpers/generation-harness.mjs
+@@ -20 +20 @@ const instrumented = prefix + `return {
+-  poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
++  clickSourceHex:(hex,detail=0)=>mapHexClickRef.current({...hex,key:hexKey(hex),kind:"region"},{detail}), detailExtentDraft, startDetailExtentDraft, changeDetailExtentDraft, finishDetailExtentDraft, cancelDetailExtentDraft, selectDetailCell, detailSummary, setDetailViewStep, startDetailAdaptation, applyDetailAdaptation, cancelDetailAdaptation, detailAdaptation, detailAdaptationError, editDetailFootprintExtent, poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
+@@ -37 +37 @@ const instrumented = prefix + `return {
+-export const testGeometry = { knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
++export const testGeometry = { detailMapRiverGeometry, validateDetailMapFootprints, prepareDetailMapPreview, knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
+@@ -68 +68 @@ export function createGenerationHarness(seed = 1, search = '', language = 'ru')
+-    require: name => name==='./tags/TagRow'?{TagRow:()=>null}:name==='./tags/KnaveContentRow'?{KnaveContentRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualWater' || name === './knaveClassic' || name === './seaIdentity' || name === './manualRivers' || name === './manualRiverGeometry' || name === './manualRiverDependencies') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
++    require: name => name==='./tags/TagRow'?{TagRow:()=>null}:name==='./tags/KnaveContentRow'?{KnaveContentRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualWater' || name === './detailGeography' || name === './detailIdentity' || name === './detailModel' || name === './classification' || name === './knaveClassic' || name === './seaIdentity' || name === './manualRivers' || name === './manualRiverGeometry' || name === './manualRiverDependencies') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),

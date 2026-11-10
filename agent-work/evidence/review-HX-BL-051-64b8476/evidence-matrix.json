@@ -1,0 +1,55 @@
+{
+  "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+  "status": "bounded_UI_EVIDENCE2_gap_closed_on_exact_head",
+  "gap_id": "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE",
+  "artifact_id": 13779460247,
+  "artifact_sha256": "5329a2d0a8f3245d00e2c020a407ead92c12a6ab74f170c3c6a2627c60bedc5d",
+  "provenance": [
+    "github-1.json",
+    "artifact-provenance.json",
+    "artifact-content-checks.json",
+    "source-correspondence.json"
+  ],
+  "observations": [
+    {
+      "id": "UI-01",
+      "result": "pass_bounded",
+      "method": "Fresh reviewer visually inspected overview12/24 desktop and summary images; read actual test path and artifact JSON.",
+      "observed": "Each summary lists3source fragments including open plains+mountains, says2unique places and partial/full object states; full source card remains collapsed. Both IDs detail-poi:1/:2 are present once. Display keeps mixed source geography and common extents; selection highlight varies with requested view."
+    },
+    {
+      "id": "UI-02",
+      "result": "pass_bounded",
+      "method": "Visually inspected long-names1500/390/320, owner-specific context frames; read CI test and metrics.",
+      "observed": "Spaced and unbroken long names wrap and stay legible at all3widths. Two distinct owners, four owner action buttons per width all44px high; panel467/358/288px and document1500/390/320px. Native button touch tap and keyboard Enter are executed at EACH width; owner-specific clue waits check context.",
+      "limits": "First1500 touch occurs while owner2 was already selected, so its positive postcondition alone is weaker than the390/320 touch state changes; actual tap/hitbox, shared native-button handler source and subsequent keyboard1 transition support bounded desktop evidence. No physical-device/cross-browser or WCAG certification."
+    },
+    {
+      "id": "UI-03",
+      "result": "pass_bounded",
+      "method": "Visually inspected both631x364PNGs vs viewport crops; independently parsed actual exported SVG XML and matched durable bytes to archive.",
+      "observed": "Both exports retain selected12/24 data-detail-view, same viewBox,2footprints, legible white count7 with dark stroke, editor-only0. Internal SVG count rule has fill/stroke/stroke-width/paint-order/font-weight. CI re-rasterization reports0different pixels and nonblank content. Export omits viewport selection highlight, consistent editor-only state. Candidate/ClickMe remain existingGMview.",
+      "limits": "Same-browser SVG→PNG equality is internal-pipeline evidence, not an independent renderer or viewport pixel identity. Public standalone SVG download/player sanitization is not claimed."
+    },
+    {
+      "id": "UI-04",
+      "result": "observed_not_benchmarked",
+      "method": "Read named instrumented production actions in existing browser workflow and final artifact ui-evidence2.json.",
+      "observed": "6→12→24→6 recorded104.6/80.8/75.8/79.5ms on existing5-sourcehex fixture.",
+      "limits": "Four observations include Playwright/scroll/twoanimationframe overhead. No general threshold, performance percentile, campaign scaling or heavy003/500-map inference."
+    },
+    {
+      "id": "UI-05",
+      "result": "bounded_current_fixture_before_after_available",
+      "method": "Visually inspected shared-before/12after/24summary/320longname; read actual workflow Cancel/Escape/error paths and CI noerrors/nodialogs.",
+      "observed": "Actual comparison shows legacy marker state→adapted common footprint and compact summary on same candidate fixture; invalid disconnected12,0+14,0 extent visibly refuses; Cancel/Escape handlers and subsequent Apply assertions execute. Owner1/2 clue context frames distinguish accepted source content.",
+      "limits": "The fixture-before already runs candidate CLASSIFY1 and is not the published-main interface. A published-main combined walkthrough remains release presentation work."
+    }
+  ],
+  "limits": [
+    "One5-sourcehex/twoowner fixture and manual conditional7-cell extent; not a campaign or all-profile proof.",
+    "No new local/cloud browser or localhost navigation attempted; historical Browser security denial respected.",
+    "Zero reported pageerrors/dialogs does not prove absence of every runtime error.",
+    "Functional combined acceptance is separately blocked by confirmed central discovery defect."
+  ]
+}

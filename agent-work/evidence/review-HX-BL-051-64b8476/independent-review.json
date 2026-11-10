@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "reviewer": "fresh independent reviewer review_64_fresh, separate from previous UI evidence author",
+  "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+  "tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
+  "combined_base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "accepted_runtime_reference_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+  "ops_snapshot_sha": "b828835d4b6b7ad1b2cedc33e37a0c8d9b3fb385",
+  "pr": 496,
+  "verdict": "changes_requested",
+  "full_DETAIL1_CLASSIFY1_acceptance": false,
+  "reason": "Bounded UI-EVIDENCE2 evidence is independently verified/closed; fresh actual-App reproduction confirms automatic discovery misses central POI kind.",
+  "findings": [
+    {
+      "id": "CLASSIFY1-REVIEW-CENTRAL-DISCOVERY",
+      "priority": "P2",
+      "category": "confirmed_product_defect",
+      "blocking_acceptance": true,
+      "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+      "file": "src/App.tsx",
+      "line": 15522,
+      "related_lines": [
+        8865,
+        14622,
+        14624,
+        15522
+      ],
+      "title": "Auto discovery omits central POI type, so central landmarks/lairs lose known discovery conditions",
+      "requirements": [
+        "HX-BL-044-CLASSIFY1-implementation.md Policy1 discovery precedence",
+        "CLASSIFY1 acceptance4/5/6/8",
+        "DTL-09/25 combined source-content compatibility"
+      ],
+      "repro": [
+        "Use existing regionFixture(); set region1 centerHex={q:2,r:0}, suppressCentralPoi=false, centralPoiKind=capital, pointsOfInterest=[], pointOfInterestKinds={}; use open_plains biome and explicit open_plains at2,0; selectedHex=2,0; no roads or discovery override.",
+        "Import through actual handleImportJson; actual knavePanel React tree has no data-discovery-classification row.",
+        "Change only centralPoiKind to lair: expected Requires exploration, actual no row. Repeat city/dungeon likewise.",
+        "Negative control: represent same kind/address as secondary POI with suppressCentralPoi=true and pointOfInterestKinds[2,0]=kind; actual panel now shows On passage or Requires exploration.",
+        "Actual startDetailAdaptation/applyDetailAdaptation and selectDetailCell(first owner cell,...,poiId) do not repair central capital/lair default."
+      ],
+      "expected": "Actual central kind must enter the same approved discovery policy as secondary kinds: capital/city on open terrain or at a real road endpoint→passage; central lair/dungeon→exploration. Manual/legacy overrides and exact semantic hidden tags keep precedence.",
+      "actual": "All four central kinds produce zero discovery rows. Actual road-endpoint central capital/lair also produce zero; active DETAIL1 owner selection preserves the failure. Secondary controls produce correct rows. Manual interaction+clue, legacy secret+clue, semantic Hidden→exploration and explicit manual unknown suppression work.",
+      "cause": "selectedPoiKind resolves getPoiKindForHex(), which reads only pointOfInterestKinds. inferredDiscovery passes selectedPoiKind??selectedWaterPoiKind and never selectedRegion.centralPoiKind when selectedHasCentralPoi. The pure policy already recognizes these kinds; App loses the kind before calling it.",
+      "scope": "All map modes using the shared panel, including imported/active DETAIL1 central POIs. Affects automatic known discovery presentation, not demonstrated saved-text/RNG loss or a player-map reveal feature.",
+      "evidence": [
+        "central-discovery-probe.mjs",
+        "central-discovery-probe.json",
+        "central-discovery-probe.log"
+      ],
+      "command": "node /tmp/hx-review-64-1600-output/central-discovery-probe.mjs",
+      "independent_method": "Fresh reviewer read source and executed the unchanged existing production-App harness, actual importer/controller and actual knavePanel React tree. Only the outer JSX return/artwork and React hook storage are harness instrumentation; no browser/security-gate bypass.",
+      "historical_reference": "PR496 discussion_r4522823641, botP2 on historical a4e8a48 (08:47). This finding is supported by new current64 reproduction and negative controls, not carried forward from a bot assertion.",
+      "fix_boundary": "Resolve actual selected central kind only for discovery policy, preserve secondary/water and manual/legacy/hidden/unknown precedence, no broad helper semantics change without review. Extend an existing real document/classification regression with central/secondary positive/negative controls instead of creating a new runner. Preserve exact state/history/RNG. Submit a new SHA and reuse unchanged UI evidence only after source correspondence."
+    }
+  ],
+  "closed_evidence_gaps": [
+    "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE"
+  ],
+  "preserved_narrow_closures": [
+    "DETAIL1-REVIEW-POI-CONTEXT",
+    "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER",
+    "DETAIL1-REVIEW-EXPORT-COUNT-STYLE"
+  ],
+  "source_correspondence": "All runtime and relevant accepted Node test bytes unchanged aad→64; only existing browser workflow+59lines. Current CI merge tree exactly equals head tree. Relevant fixes read: selectDetailCell owner/source context, unconditional full spatial validation with zero-footprint refusal, injected count style. No automatic complete acceptance from historical evidence.",
+  "acceptance_matrix": [
+    {
+      "ids": "DTL01-08,11-23,25,27",
+      "result": "preserved_bounded_source_correspondence_and_current_CI",
+      "limits": "Existing finite geometry/controller/import/history/provenance evidence reused only after exact bytes checked; no74rerun or allcampaign claim."
+    },
+    {
+      "ids": "DTL09-10,24,26",
+      "result": "UI_EVIDENCE2_bounded_gap_closed",
+      "evidence": "evidence-matrix.json",
+      "limits": "Central source card automatic discovery remains combined CLASSIFY1 defect; uniqueowner/clue routing itself passes."
+    },
+    {
+      "ids": "DTL28",
+      "result": "required_current_exacttree_CI_success_and_independent_review_recorded",
+      "limits": "Independent review fails combined acceptance because of new reproduced defect; greenCI is not complete acceptance."
+    },
+    {
+      "ids": "CLASSIFY1 shared policy/auto discovery",
+      "result": "fail_central_kind",
+      "evidence": "central-discovery-probe.json"
+    },
+    {
+      "ids": "CLASSIFY1 manual/legacy/tag/unknown precedence",
+      "result": "bounded_pass",
+      "evidence": "central-discovery-probe.json; unchanged currentCIcases"
+    }
+  ],
+  "checks": {
+    "source_and_artifact": "source-correspondence.json, artifact-provenance.json, artifact-content-checks.json",
+    "CI_run": 42845445696,
+    "jobs": {
+      "browser": 129931556685,
+      "check": 129931557148,
+      "world_random": 129931557397
+    },
+    "CI_outcome": "All3success; raw logs independently fetched. Node386/386,failed0,skipped0;browser9commands;RNG1command separately.",
+    "reviewer_probe": "central-discovery-probe.mjs/JSON/log;16parameter observations, not product-test growth. Root independently reran same reproduction once.",
+    "visual": "Fresh reviewer personally viewed12/24desktop+summaries,1500/390/320longnames,bothPNGexports+viewportcrops,sharedbefore,error,owner1/2context,panel320.",
+    "not_run": [
+      "No new heavy003/500mapseries",
+      "No repeat74/full386reviewer suite",
+      "No new browser/localhost/security-gate bypass"
+    ]
+  },
+  "test_necessity_ref": "test-necessity.json",
+  "test_change_summary_ref": "test-change-summary.json",
+  "score_assessment_ref": "score-assessment1.2.json",
+  "historical_risks": [
+    {
+      "id": "CLASSIFY1-VALIDATION-RIV011",
+      "status": "historical_unknown_preserved",
+      "not_closed": true,
+      "new_evidence": false,
+      "note": "A green current run is not the unavailable historical failing map/context. No new heavy validation authorized. Exact package release requires explicit disposition of this historical risk."
+    }
+  ],
+  "release_presentation": {
+    "release_preview_pending": true,
+    "category": "release_presentation_gap_not_product_defect_not_third_design_gate",
+    "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "package_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
+    "provided": "Same candidate fixture legacy→adapted screenshots and manualconditionalextent; useful bounded actual UI show.",
+    "missing": "Complete combined published-main→candidate user walkthrough with current classification and detail actions, desktop+narrow, knownlimits and shown_in_chat/reviewer verification. shared-before already runs candidateCLASSIFY1, so it cannot represent published-mainbefore.",
+    "next": "Prepare/update actual combined walkthrough after correction and independent currentSHAacceptance before requesting release. No design approval wait or reapproval of taskstart; do not delay approved next task after051acceptance merely for publication."
+  },
+  "next_action": {
+    "role": "programmer",
+    "task_id": "HX-BL-051",
+    "included_task_id": "HX-BL-044",
+    "scope": "Fix current central-kind discovery only; preserve manual/legacy/hidden/unknown/water/secondary and document/history/RNG; extend existing regression, submit new exactSHA for independent combined review.",
+    "after_acceptance": {
+      "role": "strategist_manager/business_analyst",
+      "task_id": "HX-BL-043",
+      "stage_id": "TABLES1",
+      "already_approved": true,
+      "publication_wait_does_not_block": true,
+      "then": "HX-BL-054/PF2-BATCH1"
+    }
+  },
+  "authority": {
+    "source_changes": 0,
+    "GitHub_writes": 0,
+    "main_changed": false,
+    "published": false,
+    "release_approved": false,
+    "additional_spend": false,
+    "root_persists_result": true
+  },
+  "limitations": [
+    "No exhaustive map/route/editor/gameprofile proof.",
+    "Actual browser execution belongs to independently retrieved CI, not a new reviewer local browser run.",
+    "Point-in-time automation checks cannot guarantee later service state."
+  ],
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at_utc": "2026-11-10T16:02:24.569073+00:00",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration": false,
+    "errors": [],
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "end": {
+      "checked_at_utc": "2026-11-10 16:13:05 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "limitation": "Actual point-in-time checks only; no guarantee of later service state."
+  },
+  "completed_at_utc": "2026-11-10 16:13:05 UTC"
+}
