@@ -131,7 +131,7 @@ export function applyPreparation(input:PreparationInput,ctx:PreparationContext,c
 /** App must apply its existing loss/confirmation gate before retaining owners. */
 export function retainPreparation(input:PreparationState,live:ReadonlySet<string>):PreparationState {
  const sourceLive=new Set(Object.keys(input.byPoi));validatePreparation(input,sourceLive);
- const next={...structuredClone(input),byPoi:Object.fromEntries(Object.entries(input.byPoi).filter(([k])=>live.has(k)))};validatePreparation(next,live);return next;
+ const next=structuredClone(input);next.byPoi=Object.fromEntries(Object.entries(next.byPoi).filter(([k])=>live.has(k)));validatePreparation(next,live);return next;
 }
 export function remapPreparation(input:PreparationState,moves:ReadonlyMap<string,string>,live:ReadonlySet<string>):PreparationState {
  validatePreparation(input,new Set(Object.keys(input.byPoi)));const entries=Object.entries(input.byPoi).map(([k,v])=>[moves.get(k)??k,v]as const);

@@ -90,6 +90,6 @@ test('TABLES1 identity remap and confirmed retention preserve calls and monotoni
  const moved=remapPreparation(state,new Map([[owner,target]]),new Set([target,other,water]));
  assert.deepEqual(moved.byPoi[target],state.byPoi[owner]);assert.equal(moved.nextCallId,state.nextCallId);assert.deepEqual(state,before);
  moved.byPoi[target].description='Independent clone';assert.equal(state.byPoi[owner].description,'');
- const retained=retainPreparation(state,new Set([other]));assert.deepEqual(Object.keys(retained.byPoi),[other]);assert.equal(retained.nextCallId,state.nextCallId);
+ const retained=retainPreparation(state,new Set([other]));assert.deepEqual(Object.keys(retained.byPoi),[other]);assert.equal(retained.nextCallId,state.nextCallId);retained.byPoi[other].description='Detached retained owner';assert.deepEqual(state,before);
  assert.throws(()=>remapPreparation(state,new Map([[owner,other]]),ctx.live),error('owner_collision'));
 });
