@@ -15358,7 +15358,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "changes_requested",
+      "status": "review_ready",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15421,7 +15421,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "approved_corrections_ready",
+      "readiness": "corrected_package_ready_for_independent_rereview",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -15832,9 +15832,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
-      "next_role": "programmer",
+      "next_role": "reviewer",
       "next_role_after_approval": "business_analyst",
-      "next_step": "Программист исправляет утверждённую HX-BL-051/DETAIL1 на базе a4e8a48: DETAIL1-REVIEW-POI-CONTEXT — выбирать сущность по устойчивомуpoiId из любой занятой части и строки сводки, дляoverlap дать явный выбор, не подменять её случайной исходной6mileклеткой; DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER — полная проверка покрытия живых владельцев даже для пустого массиваactivev11, поддерживаемыеlegacy/unadaptedсостояния отделить явно. Расширить существующие real-controller/import cases, проверить точную атомарность/RNG/history и owner content. Исправить код/совместимыеfixtures, выполнить необходимыеcheck/browser/RNG, показать фактические состояния/известныеUIограничения, передать новыйSHA независимому проверяющему. Не ослаблять validator радиfixtures, не удалять источникPOI и не повторять тяжёлую003/500карт. Выпуск не разрешён; отдельного согласования старта исправлений не нужно.",
+      "next_step": "Проверяющий независимо перепроверяет новый точный SHA f17236b90592b92a8f553678eaf81de3f34b340e/tree 1b897fadd15b501a2d4b783be6d69d9c54cc5f46 в PR496 (полный DETAIL1+интегрированнаяCLASSIFY1). Сначала воспроизведения DETAIL1-REVIEW-POI-CONTEXT и EMPTY-ACTIVE-LAYER: уникальная удалённая часть/overlap/явный выбор владельца, неизменная fine-cellselection, source clue/context; atomic malformedactivev11 rejection, legitimate empty/no-owner и legacy безphysicalGrid, continuation/newgeneration/history/RNG. Сопоставить actual desktop/390/320/error/keyboard/touch с точнымSHA, проверить исходные9критериев score1.2; не переносить старое заключение/баллы на новыйSHA и не закрыватьRIV011 безevidence. Другие ранее заявленныеUIпробелы12/24/SVG/longnames остаются ограничениями полного приёмочного обзора. Использовать свежего отдельного агента, без новой тяжёлой003/500карт. При замечаниях — программист, после принятия — отдельный owner release gate; сейчас выпуска нет.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -15864,48 +15864,48 @@
       "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
       "spec_version": "DTL-1.0",
       "acceptance_ref": "agent-work/specs/HX-BL-051-DETAIL1.acceptance.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-review-fixes.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-review-fixes-rereview.json",
       "active_stage": {
         "stage_id": "DETAIL1",
-        "substage": "programmer_complete_ready_for_independent_combined_review",
-        "status": "changes_requested",
-        "claim_ref": "agent-work/claims/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
+        "substage": "review_fixes_submitted",
+        "status": "review_ready",
+        "claim_ref": "agent-work/claims/2026-11-10T0957-programmer-HX-BL-051-review-fixes.json",
         "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
         "branch": "agent/hx-bl-051-detail1",
-        "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
-        "tree_sha": "a37e5de40297b42c72b402785241986cc1cc32ff",
+        "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+        "tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
         "pr": 496,
-        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-review-fixes.json",
-        "evidence_ref": "agent-work/evidence/review-HX-BL-051-a4e8a48",
-        "review_ready": false,
+        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-review-fixes-rereview.json",
+        "evidence_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957",
+        "review_ready": true,
         "release_approved": false,
-        "result_ref": "agent-work/results/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
+        "result_ref": "agent-work/results/2026-11-10T0957-programmer-HX-BL-051-review-fixes.json",
         "release_authorized": false,
-        "next_role": "programmer",
-        "next_step": "Программист исправляет утверждённую HX-BL-051/DETAIL1 на базе a4e8a48: DETAIL1-REVIEW-POI-CONTEXT — выбирать сущность по устойчивомуpoiId из любой занятой части и строки сводки, дляoverlap дать явный выбор, не подменять её случайной исходной6mileклеткой; DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER — полная проверка покрытия живых владельцев даже для пустого массиваactivev11, поддерживаемыеlegacy/unadaptedсостояния отделить явно. Расширить существующие real-controller/import cases, проверить точную атомарность/RNG/history и owner content. Исправить код/совместимыеfixtures, выполнить необходимыеcheck/browser/RNG, показать фактические состояния/известныеUIограничения, передать новыйSHA независимому проверяющему. Не ослаблять validator радиfixtures, не удалять источникPOI и не повторять тяжёлую003/500карт. Выпуск не разрешён; отдельного согласования старта исправлений не нужно.",
-        "checks_status": "check386_typecheck_build_browser9_RNG_passed_CI42782321639",
+        "next_role": "reviewer",
+        "next_step": "Проверяющий независимо перепроверяет новый точный SHA f17236b90592b92a8f553678eaf81de3f34b340e/tree 1b897fadd15b501a2d4b783be6d69d9c54cc5f46 в PR496 (полный DETAIL1+интегрированнаяCLASSIFY1). Сначала воспроизведения DETAIL1-REVIEW-POI-CONTEXT и EMPTY-ACTIVE-LAYER: уникальная удалённая часть/overlap/явный выбор владельца, неизменная fine-cellselection, source clue/context; atomic malformedactivev11 rejection, legitimate empty/no-owner и legacy безphysicalGrid, continuation/newgeneration/history/RNG. Сопоставить actual desktop/390/320/error/keyboard/touch с точнымSHA, проверить исходные9критериев score1.2; не переносить старое заключение/баллы на новыйSHA и не закрыватьRIV011 безevidence. Другие ранее заявленныеUIпробелы12/24/SVG/longnames остаются ограничениями полного приёмочного обзора. Использовать свежего отдельного агента, без новой тяжёлой003/500карт. При замечаниях — программист, после принятия — отдельный owner release gate; сейчас выпуска нет.",
+        "checks_status": "CI42797910390_check386_typecheck_build_browser9_RNG_success",
         "base_sha": "e1217b1396c88700afbbfbc80d88caecf2c93aba",
-        "local_sha": "0f9efbcd1d26505489b1280f4cbeadb7de71578f",
-        "ui_actual_ref": "agent-work/evidence/HX-BL-051-marker-extent/ui/walkthrough.json",
+        "local_sha": "c1cb705a5450f81628b9d6caa16667967c1c34cf",
+        "ui_actual_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/ui/walkthrough.json",
         "working_branch": "agent/hx-bl-051-activation-wip",
-        "wip_head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
-        "wip_tree_sha": "a37e5de40297b42c72b402785241986cc1cc32ff",
+        "wip_head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+        "wip_tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
         "execution_running": false,
-        "pr_head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
-        "review_verdict": "changes_requested",
+        "pr_head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+        "review_verdict": "pending_new_sha_independent_review",
         "finding_ids": [
           "DETAIL1-REVIEW-POI-CONTEXT",
           "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER"
         ]
       },
-      "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
-      "result_ref": "agent-work/results/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
+      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+      "result_ref": "agent-work/results/2026-11-10T0957-programmer-HX-BL-051-review-fixes.json",
       "latest_activation_checkpoint": {
         "branch": "agent/hx-bl-051-detail1",
-        "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
-        "tree_sha": "a37e5de40297b42c72b402785241986cc1cc32ff",
+        "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+        "tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
         "status": "review_ready",
-        "result_ref": "agent-work/results/2026-11-10T0800-programmer-HX-BL-051-marker-extent.json",
+        "result_ref": "agent-work/results/2026-11-10T0957-programmer-HX-BL-051-review-fixes.json",
         "review_ready": true
       },
       "ui_actual": {
@@ -15920,8 +15920,8 @@
         ],
         "independent_acceptance": false
       },
-      "review_result_ref": "agent-work/results/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
-      "review_ready": false,
+      "review_result_ref": null,
+      "review_ready": true,
       "findings": [
         {
           "id": "DETAIL1-REVIEW-POI-CONTEXT",
@@ -15956,7 +15956,11 @@
             "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-diagnostic.json"
           ],
           "impact": "Valid explicit cross-source extents and overlapping POIs can show the correct POI name in the summary while its source content/editor context is absent or belongs to a different location. Saved entity/content remains intact; this is selection/context failure, not demonstrated payload loss.",
-          "suggested_boundary": "Keep entity selection keyed by poiId/legacyRef separately from the clicked geographical source cell; expose selection from every summary owner and resolve source-specific content/editor actions through that identity."
+          "suggested_boundary": "Keep entity selection keyed by poiId/legacyRef separately from the clicked geographical source cell; expose selection from every summary owner and resolve source-specific content/editor actions through that identity.",
+          "status": "fix_submitted_pending_independent_reverification",
+          "found_on_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+          "candidate_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+          "fix_evidence_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/checks.json"
         },
         {
           "id": "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER",
@@ -15988,10 +15992,19 @@
             "src/App.tsx:16480",
             "src/App.tsx:16575"
           ],
-          "compatibility_note": "Existing saveSafety and regionEditing tests intentionally accept identity-only checkpoints; this explains the hole but does not satisfy the approved active full-coverage contract. Fix should preserve legitimate legacy/unadapted states through an explicit state boundary and update those tests accordingly."
+          "compatibility_note": "Existing saveSafety and regionEditing tests intentionally accept identity-only checkpoints; this explains the hole but does not satisfy the approved active full-coverage contract. Fix should preserve legitimate legacy/unadapted states through an explicit state boundary and update those tests accordingly.",
+          "status": "fix_submitted_pending_independent_reverification",
+          "found_on_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+          "candidate_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+          "fix_evidence_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/checks.json"
         }
       ],
-      "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-a4e8a48/score-assessment1.2.json"
+      "score_assessment_ref": null,
+      "tree_sha": "1b897fadd15b501a2d4b783be6d69d9c54cc5f46",
+      "pr": 496,
+      "previous_review_result_ref": "agent-work/results/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
+      "score_assessment_status": "independent_reassessment_required_new_sha",
+      "ui_actual_ref": "agent-work/evidence/HX-BL-051-review-fixes-0957/ui/walkthrough.json"
     },
     {
       "task_id": "HX-BL-052",
