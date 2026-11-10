@@ -13888,7 +13888,7 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
-    const acceptedSpatial=map.physicalGrid?.poiFootprints.length?map.physicalGrid:undefined;
+    const acceptedSpatial=map.physicalGrid; // Empty active layers also wait for final sea identities and Knave.
     if(acceptedSpatial)map={...map,physicalGrid:{...acceptedSpatial,poiFootprints:[],poiIdentities:reconcileDetailPoiIdentities(poiNameLocators(map,true),acceptedSpatial.poiIdentities)}};
     else map=reconcileDetailMapIdentities(map);
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
