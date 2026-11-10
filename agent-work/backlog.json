@@ -18104,63 +18104,96 @@
     },
     {
       "task_id": "HX-BL-054",
-      "title": "Назначать категории содержимого гексов по выбранному распределению",
-      "status": "proposed",
+      "title": "Массово наполнять карту PF2 ориентирами, секретами и ресурсами",
+      "status": "approved",
       "problem": "Существующие source-профили PF2/SD и новый авторский Vaarn описывают разные исходы; их поддержка runtime неизвестна. Объявлять их совместимыми по одному rule_id нельзя.",
       "benefit": "Ведущий получает воспроизводимый первый этап наполнения готовой карты без изменения географии и ручных мест.",
       "game_editions": [
-        "Author blog variant2024-04-11; not identified as core1e/2e"
+        "Author blog variant2024-04-11; not identified as core1e/2e",
+        "PF2RemasterGMCore; optionalHexploration; bulk adaptation requested byowner"
       ],
       "primary_scenario": "develop",
       "layer": "L1",
       "requirement_refs": [
-        "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001-L1"
+        "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001-L1",
+        "agent-work/market/rules/PF2-Remaster.json#PF2-RM-013-L1",
+        "agent-work/market/rules/PF2-Remaster.json#PF2-RM-029-L1"
       ],
       "canonical_rule_ids": [
-        "content.feature_distribution"
+        "content.feature_distribution",
+        "content.discovery_levels",
+        "map.resource_availability",
+        "content.place_description"
       ],
       "binding_refs": [
-        "agent-work/rules/game-bindings.json#VAARN-HF2024-001-L1"
+        "agent-work/rules/game-bindings.json#VAARN-HF2024-001-L1",
+        "agent-work/rules/game-bindings.json#PF2-RM-013-L1",
+        "agent-work/rules/game-bindings.json#PF2-RM-029-L1"
       ],
       "criterion_ids": [
         "S05-C01",
         "S05-C03"
       ],
-      "scope": "Предложенный отдельный срез: проверить переиспользование общей операции, затем при утверждении реализовать только недостающее для первой категории. Подтипы, hazards resolution, terrain generation и UI-спецификация вне объёма.",
+      "scope": "Чекбокс PF2; массовое наполнение сотен гексов конкретными секретами, ориентирами и ресурсами с заданной плотностью. 12-мильный профиль переиспользуется из051.",
       "dependencies": [
-        "owner_task_start_approval",
-        "exact_profile_runtime_gap_check"
+        "HX-BL-051/DETAIL1: useaccepted12milephysicalprofile",
+        "HX-BL-043/TABLES1: reuseacceptedtablescontent/saveUI",
+        "HX-BL-044: reuseactualdiscoveryclassification; do not duplicate"
       ],
       "acceptance_checks": [
         {
-          "id": "VAARN-HF2024-001-L1-AC01",
-          "given": "Шесть ещё не наполненных гексов A–F; заданные исходы d6 [1,2,3,4,5,6].",
-          "when": "Подготовить по одной категории содержимого для каждого гекса.",
-          "expected": "A–C: ничего по этой таблице; D: inhabited; E: hazardous; F: special. Никакой конкретный подтип ещё не выбран."
+          "id": "PF2-BATCH1-AC01",
+          "given": "Чекбокс PF2 включён; выбрано100 исходных12мильных гексов. Контролируемый набор категорийных бросков содержит1–20 по5раз каждый; конкретный контент доступен в подтверждённом ограниченном корпусе.",
+          "when": "Массово наполнить весь выбранный набор одной операцией.",
+          "expected": "Получены15 ориентиров,15 секретов,15 ресурсов и55 гексов без новой особенности по этому профилю. Не нужны100 отдельных пользовательских подтверждений. Это проверка заданных бросков, не обещание точных долей для произвольного случайного пакета."
         },
         {
-          "id": "VAARN-HF2024-001-L1-AC02",
-          "given": "Лесной гекс, проходимость difficult, исход d6=5.",
-          "when": "Назначить категорию содержимого.",
-          "expected": "Категория hazardous; лес и difficult остаются прежними. Урон, тип риска и проходимость dangerous не придуманы."
+          "id": "PF2-BATCH1-AC02",
+          "given": "Выбрано300 исходных12мильных гексов; контролируемые исходы1–20 повторяются15раз.",
+          "when": "Выполнить массовое наполнение с источниковым профилем.",
+          "expected": "Все300 единиц обработаны одним пользовательским действием;45 ориентиров,45 секретов,45 ресурсов,165 стандартных исходов. Существующая география не перестраивается. Пользовательские действия не растут до одного на гекс."
         },
         {
-          "id": "VAARN-HF2024-001-L1-AC03",
-          "given": "Гекс с ручной башней и рекой; исход d6=1.",
-          "when": "Явно применить первый этап наполнения.",
-          "expected": "По этой таблице новых мест нет; существующие башня и река не удаляются. Это защита продукта, а не заданная автором политика замены."
+          "id": "PF2-BATCH1-AC03",
+          "given": "Проверочный явно заданный профиль содержит0 процентов ориентиров,0 секретов,0 ресурсов и100 стандартных исходов;100 гексов включают ручную башню, реку и заметку.",
+          "when": "Наполнить выбранный набор этим профилем.",
+          "expected": "Новых особенностей нет; ручная башня, река, заметка и исходная география сохранены. Этот пример не предписывает отдельную новую пользовательскую панель плотностей."
         },
         {
-          "id": "VAARN-HF2024-001-L1-AC04",
-          "given": "Категория special уже принята из d6=6.",
-          "when": "Сохранить и снова открыть карту.",
-          "expected": "Категория special и исход6 сохранены без нового броска; подтип остаётся не определён."
+          "id": "PF2-BATCH1-AC04",
+          "given": "Один лесной гекс получил ориентир с выбранным для проверки описанием «Приметная скала», второй лесной — секрет «Тайник под корнями», пустынный — ресурс «Оазис». Это синтетические входы ограниченного контентного корпуса.",
+          "when": "Принять массовый результат и открыть соответствующие места.",
+          "expected": "Доступны три конкретные редактируемые особенности с правильными категориями и привязками. Тайник сохраняет смысл скрытого содержимого, оазис — полезного ресурса; ярлык категории без описанного содержимого не считается готовым результатом. Отдельные игровые проверки обнаружения или экономика не запускаются."
         },
         {
-          "id": "VAARN-HF2024-001-L1-AC05",
-          "given": "Предложены исходы0,7,2.5.",
-          "when": "Применить исход как d6.",
-          "expected": "Ни один исход не принят, карта прежняя."
+          "id": "PF2-BATCH1-AC05",
+          "given": "На принятой карте заполнены100 исходных12мильных единиц; одна особенность вручную переименована и отредактирована.",
+          "when": "Переключить отображение на1мильную детализацию, затем на обзор12/24 и обратно.",
+          "expected": "Состав и идентичность принятых особенностей не изменились; число особенностей не умножилось по числу подробных/обзорных клеток. Произвольный просмотр не вызывает новых бросков и не меняет физическую единицу плотности."
+        },
+        {
+          "id": "PF2-BATCH1-AC06",
+          "given": "Принят большой пакет с конкретным содержимым и ручными правками; выбран профиль PF2.",
+          "when": "Сохранить и повторно открыть карту, сменить язык и продолжить её новыми регионами.",
+          "expected": "Чекбокс/профиль, плотность, существующие категории, описания, привязки и правки сохраняются без повторного наполнения старых единиц. Новое содержимое появляется только в явно обрабатываемом новом объёме; никакие старые объекты не теряются."
+        },
+        {
+          "id": "PF2-BATCH1-AC07",
+          "given": "До операции сохранённая картаA; после массового наполнения принята картаB с выбранным набором особенностей.",
+          "when": "Выполнить Undo и Redo, затем отдельно изменить одну особенность.",
+          "expected": "Undo точно восстанавливаетA; Redo — принятыйB без новых случайных вычислений. Адресное редактирование одной особенности не меняет остальные, географию или случайное продолжение мира."
+        },
+        {
+          "id": "PF2-BATCH1-AC08",
+          "given": "PF2 выключен; уже есть принятые результаты на ранее сохранённой карте, либо открыта старая карта без этого профиля.",
+          "when": "Открыть карту и поменять настройку профиля без явного наполнения существующего участка.",
+          "expected": "Старые карты открываются; выключение или включение чекбокса не удаляет и не перебрасывает принятые особенности. Обычный режим сохраняет своё действующее поведение. Правило явного применения к существующей карте устанавливает аналитик до разработки."
+        },
+        {
+          "id": "PF2-BATCH1-AC09",
+          "given": "H1 содержит ручную башню с именем и заметкой; H2 уже содержит принятый PF2ресурс. Для пакетного дополнения явно выбран только ещё не обработанныйH3, контролируемый исходd20=1 и конкретный ориентир «Приметная скала».",
+          "when": "Массово дополнить выбранный необработанный объём и повторно открыть карту.",
+          "expected": "В H3 сохранён один новый ориентир «Приметная скала». Ручная башняH1 с именем/заметкой и ресурсH2 сохранены без дублирования или новых бросков; при повторном открытии второй ориентирH3 не появляется. Более общую политику зачёта существующих объектов в плотность аналитик фиксирует отдельно до разработки."
         }
       ],
       "expected_evidence": "ExactSHA, fixed input/output for five cases, save/reopen result and existing objects preserved; source text not runtime evidence.",
@@ -18170,9 +18203,10 @@
         "Таблицы подтипов и связанные генераторы не извлечены; category-only не завершает полное наполнение.",
         "Nothing означает отсутствие нового содержимого по этому броску, а не пустую географию или удаление ручных объектов.",
         "Hazardous — категория содержимого, а не класс проходимости044/CLASSIFY1.",
-        "Источник не задаёт масштаб гекса, повторную обработку, замену существующих объектов или сохранение."
+        "Источник не задаёт масштаб гекса, повторную обработку, замену существующих объектов или сохранение.",
+        "OwnerapprovesbulkPF2profile, not singlehexsourceworkflow. Density semantics and12mileunit must be explicit inanalysis; priorVaarnsource remainsresearch only."
       ],
-      "implementation_authorized": false,
+      "implementation_authorized": true,
       "release_authorized": false,
       "research_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json",
       "dedup_disposition": "043 published table/POI slice does not establish per-hex feature distribution. 047 is terrain;053 fixed sets/roles, not a random category. Reuse feature_distribution, no new canonical rule or duplicate per-game implementation.",
@@ -18182,7 +18216,7 @@
         "overall": 15,
         "create": 13
       },
-      "approval_ref": null,
+      "approval_ref": "agent-work/decisions/owner-approval-2026-11-10-HX-BL-054-PF2-BATCH1.json",
       "candidate_extensions": [
         {
           "id": "VAARN-HF2024-INHABITED-v1",
@@ -18505,7 +18539,443 @@
           "new_tasks": 0,
           "score_delta": null
         }
-      ]
+      ],
+      "previous_proposed_scope_before_PF2_BATCH1": {
+        "task_id": "HX-BL-054",
+        "title": "Назначать категории содержимого гексов по выбранному распределению",
+        "status": "proposed",
+        "problem": "Существующие source-профили PF2/SD и новый авторский Vaarn описывают разные исходы; их поддержка runtime неизвестна. Объявлять их совместимыми по одному rule_id нельзя.",
+        "benefit": "Ведущий получает воспроизводимый первый этап наполнения готовой карты без изменения географии и ручных мест.",
+        "game_editions": [
+          "Author blog variant2024-04-11; not identified as core1e/2e"
+        ],
+        "primary_scenario": "develop",
+        "layer": "L1",
+        "requirement_refs": [
+          "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-001-L1"
+        ],
+        "canonical_rule_ids": [
+          "content.feature_distribution"
+        ],
+        "binding_refs": [
+          "agent-work/rules/game-bindings.json#VAARN-HF2024-001-L1"
+        ],
+        "criterion_ids": [
+          "S05-C01",
+          "S05-C03"
+        ],
+        "scope": "Предложенный отдельный срез: проверить переиспользование общей операции, затем при утверждении реализовать только недостающее для первой категории. Подтипы, hazards resolution, terrain generation и UI-спецификация вне объёма.",
+        "dependencies": [
+          "owner_task_start_approval",
+          "exact_profile_runtime_gap_check"
+        ],
+        "acceptance_checks": [
+          {
+            "id": "VAARN-HF2024-001-L1-AC01",
+            "given": "Шесть ещё не наполненных гексов A–F; заданные исходы d6 [1,2,3,4,5,6].",
+            "when": "Подготовить по одной категории содержимого для каждого гекса.",
+            "expected": "A–C: ничего по этой таблице; D: inhabited; E: hazardous; F: special. Никакой конкретный подтип ещё не выбран."
+          },
+          {
+            "id": "VAARN-HF2024-001-L1-AC02",
+            "given": "Лесной гекс, проходимость difficult, исход d6=5.",
+            "when": "Назначить категорию содержимого.",
+            "expected": "Категория hazardous; лес и difficult остаются прежними. Урон, тип риска и проходимость dangerous не придуманы."
+          },
+          {
+            "id": "VAARN-HF2024-001-L1-AC03",
+            "given": "Гекс с ручной башней и рекой; исход d6=1.",
+            "when": "Явно применить первый этап наполнения.",
+            "expected": "По этой таблице новых мест нет; существующие башня и река не удаляются. Это защита продукта, а не заданная автором политика замены."
+          },
+          {
+            "id": "VAARN-HF2024-001-L1-AC04",
+            "given": "Категория special уже принята из d6=6.",
+            "when": "Сохранить и снова открыть карту.",
+            "expected": "Категория special и исход6 сохранены без нового броска; подтип остаётся не определён."
+          },
+          {
+            "id": "VAARN-HF2024-001-L1-AC05",
+            "given": "Предложены исходы0,7,2.5.",
+            "when": "Применить исход как d6.",
+            "expected": "Ни один исход не принят, карта прежняя."
+          }
+        ],
+        "expected_evidence": "ExactSHA, fixed input/output for five cases, save/reopen result and existing objects preserved; source text not runtime evidence.",
+        "score_delta": null,
+        "source_limitations": [
+          "Авторский необязательный blog-вариант 11.04.2024; не core1e или2e и не обязательное правило всей игры.",
+          "Таблицы подтипов и связанные генераторы не извлечены; category-only не завершает полное наполнение.",
+          "Nothing означает отсутствие нового содержимого по этому броску, а не пустую географию или удаление ручных объектов.",
+          "Hazardous — категория содержимого, а не класс проходимости044/CLASSIFY1.",
+          "Источник не задаёт масштаб гекса, повторную обработку, замену существующих объектов или сохранение."
+        ],
+        "implementation_authorized": false,
+        "release_authorized": false,
+        "research_ref": "agent-work/market/rules/Vaarn-Hexfill-2024.json",
+        "dedup_disposition": "043 published table/POI slice does not establish per-hex feature distribution. 047 is terrain;053 fixed sets/roles, not a random category. Reuse feature_distribution, no new canonical rule or duplicate per-game implementation.",
+        "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+        "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+        "game_rank_context": {
+          "overall": 15,
+          "create": 13
+        },
+        "approval_ref": null,
+        "candidate_extensions": [
+          {
+            "id": "VAARN-HF2024-INHABITED-v1",
+            "status": "proposed_research_handoff",
+            "requirement_refs": [
+              "agent-work/market/rules/Vaarn-Hexfill-2024.json#VAARN-HF2024-002-L1"
+            ],
+            "canonical_rule_ids": [
+              "content.roll_table_resolution"
+            ],
+            "binding_refs": [
+              "agent-work/rules/game-bindings.json#VAARN-HF2024-002-L1"
+            ],
+            "problem": "First category alone does not give an inhabited place subtype.",
+            "benefit": "Master receives a concrete new place type while preserving manual map work.",
+            "scope": "Only inhabitedd10; no generator contents or geography; independent future scope decision.",
+            "acceptance_checks": [
+              {
+                "id": "VAARN-HF2024-002-L1-AC01",
+                "given": "Десять гексов с категорией inhabited и заданными исходами d10 от1 до10.",
+                "when": "Определить по одному подтипу.",
+                "expected": "Каждый исход даёт соответствующий подтип из упорядоченного профиля;1 — архив,7 — оазис,10 — торговый пост. География не меняется."
+              },
+              {
+                "id": "VAARN-HF2024-002-L1-AC02",
+                "given": "Категория hazardous или special либо категории ещё нет.",
+                "when": "Запустить шаг inhabited.",
+                "expected": "Эта ветка не применяется автоматически; подтип и категория не подменяются. Иные ветки остаются неразобранными."
+              },
+              {
+                "id": "VAARN-HF2024-002-L1-AC03",
+                "given": "Исход0,11 или1.5 при категории inhabited.",
+                "when": "Принять исход d10.",
+                "expected": "Недопустимый исход не меняет карту."
+              },
+              {
+                "id": "VAARN-HF2024-002-L1-AC04",
+                "given": "Вручную подготовленный гекс с рекой; принят исход7.",
+                "when": "Сохранить и снова открыть карту.",
+                "expected": "Оазис и исход7 сохранены без нового броска; река и другие ручные места не удалены."
+              },
+              {
+                "id": "VAARN-HF2024-002-L1-AC05",
+                "given": "Исход1; связанный генератор архива недоступен.",
+                "when": "Принять подтип.",
+                "expected": "Подтип архива остаётся пригоден для ручного описания; население, сокровища и прочие детали не выдуманы. Ссылка не считается сгенерированным содержимым."
+              }
+            ],
+            "expected_evidence": "Exact runtimeSHA fixed outcomes, guard, save/reopen; currentlyunknown.",
+            "dependencies": [
+              "owner_scope_decision",
+              "shared043 reuse assessment",
+              "054 firstcategory"
+            ],
+            "score_delta": null,
+            "source_limitations": [
+              "Только необязательный авторский Hexfill2024, не core1e/2e.",
+              "Только гексы inhabited; hazardous/special и их сочетания вне этого прохода.",
+              "Текст связанных генераторов не прочитан; автоматическая загрузка, параметры и лицензия интеграции unknown.",
+              "Источник не задаёт диаметр гекса, повторную генерацию и размещение нескольких мест.",
+              "Наличие святого места не создаёт обязательной связи с MB Seer; одинаковое название не доказывает общий профиль."
+            ],
+            "implementation_authorized": false,
+            "release_authorized": false,
+            "research_ref": "agent-work/research/runs/2026-11-09T2230-VAARN-inhabited-subtypes.json",
+            "current_task_scope_unchanged": true
+          },
+          {
+            "id": "PF2-FILL1-v1",
+            "status": "proposed_research_handoff",
+            "proposal_ref": "agent-work/proposals/2026-11-10-HX-BL-054-PF2-FILL1.json",
+            "research_ref": "agent-work/research/requirements/PF2-RM-013-L1-decision.json",
+            "requirement_refs": [
+              "agent-work/market/rules/PF2-Remaster.json#PF2-RM-013-L1"
+            ],
+            "canonical_rule_ids": [
+              "content.feature_distribution",
+              "content.discovery_levels",
+              "map.resource_availability"
+            ],
+            "binding_refs": [
+              "agent-work/rules/game-bindings.json#PF2-RM-013-L1"
+            ],
+            "operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-013-L1",
+              "normative_kind": "optional_procedure plus explicitly marked product preservation policy",
+              "applicability": "Только явно выбранная необязательная Hexploration PF2 Remaster; L1 подготовка готовой карты мастера.",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий выбирает ещё не обработанные гексы готовой карты, определяет для каждого особенность по профилю PF2 и принимает своё конкретное описание.",
+              "inputs_and_units": {
+                "per_hex": "Один исход d20, целое1–20; выбранная клетка готовой карты; описание ведущего для не-обычного исхода.",
+                "profile": {
+                  "1–3": "landmark",
+                  "4–6": "secret",
+                  "7–9": "resource",
+                  "10–20": "standard"
+                },
+                "example_descriptions": "Явные входы ведущего из приёмки; не новый генератор литературных таблиц.",
+                "existing_map": "Местность, вода, пути, ручные POI и заметки сохраняются."
+              },
+              "product_operation": "Назначить исход выбранному гексу; для ориентира/секрета/ресурса принять конкретное описанное место. Дать изменить описание, отменить правку и сохранить карту с принятыми результатами.",
+              "expected_output": "Пригодная карта мастера с конкретными местами и их смыслом, сохранёнными исходами и правками. Одна информационная плашка категории не завершает этот предлагаемый этап.",
+              "constraints_and_exceptions": [
+                "Таблица задаёт категорию, не точное содержимое; конкретное описание вводит ведущий.",
+                "Standard не удаляет существующие места. Запрет скрытого повтора, save/reopen и Undo/Redo — предлагаемая защита продукта, не текст книги.",
+                "Secret — смысловая пометка мастера. Автоматическое открытие, проверки Perception, VTT/карта игроков и движение партии — последующий L2, вне этапа.",
+                "Resource не разрешает автоматическую добычу, доход, цены или назначение проходимости.",
+                "Политика повторной явной обработки и соответствие исходного PF2 гекса подробным клеткам051 требуют решения аналитика; не наполнять каждую1mileклетку как отдельный PF2гекс автоматически."
+              ],
+              "acceptance_cases": [
+                {
+                  "given": "Четыре подготовленных гекса A–D, заданные d20 [1,4,7,10]; ведущий заранее выбрал описания: A — каменный обелиск, B — тайник под корнями, C — оазис; D без нового места.",
+                  "when": "Применить профиль PF2 к этим гексам и принять описания.",
+                  "expected": "A получает ориентир-обелиск, B — секрет-тайник, C — ресурс-оазис. Для D новых мест нет. Исходы и категории сохранены, рельеф и существующие объекты не меняются."
+                },
+                {
+                  "given": "Все целые исходы d20 от1 до20, каждый ровно один раз.",
+                  "when": "Определить категорию особенности.",
+                  "expected": "3 ориентира,3 секрета,3 ресурса,11 обычных гексов; границы3/4,6/7,9/10 не сдвинуты. Конкретное описание не выбирается этой таблицей."
+                },
+                {
+                  "given": "В D уже есть ручная башня и река; исход10.",
+                  "when": "Принять обычный гекс по этому профилю.",
+                  "expected": "Нового места от этого броска нет; башня, река, заметки и рельеф D сохранены."
+                },
+                {
+                  "given": "Приняты A–D из первого примера; ведущий переименовал B в «Тайник лесничего».",
+                  "when": "Сохранить, заново открыть карту и продолжить редактирование B.",
+                  "expected": "Обелиск, Тайник лесничего и оазис находятся в прежних гексах; исходы/категории/описания сохранены, нового броска нет. B остаётся помеченным как секрет, без утверждения об обнаружении партией."
+                },
+                {
+                  "given": "Ресурс C уже принят; затем ведущий меняет описание оазиса.",
+                  "when": "Отменить и повторить только эту правку.",
+                  "expected": "Отмена возвращает прежнее описание C, повтор восстанавливает новое; A,B,D и география не меняются."
+                },
+                {
+                  "given": "Исход0,21 или4.5; либо уже обработанный гекс без явного решения о повторе.",
+                  "when": "Попытаться применить результат.",
+                  "expected": "Недопустимый исход не принят; повторное открытие не добавляет дубли и не перебрасывает результат. Правило повторного явного наполнения определяет аналитик до разработки."
+                }
+              ],
+              "source_vs_product_interpretation": "Источник: распределение четырёх исходов Table3–5. Предложение продукта: применить к выбранным гексам, принять ручное описание, редактировать/сохранить без потери карты. Это исследовательская передача видимого результата, не UI/API/архитектурная спецификация.",
+              "canonical_rule_refs": [
+                "content.feature_distribution",
+                "content.discovery_levels",
+                "map.resource_availability"
+              ],
+              "unresolved_parameters": [
+                "Переиспользование043 для этой целой операции и exact-profile runtime coverage.",
+                "Соответствие sourcehex и геометрии051; повторное явное наполнение.",
+                "Точная PDFпагинация: прежняя матрица208, текущая страницаAoN header207; таблицаидентифицирована3–5."
+              ]
+            },
+            "acceptance_checks": [
+              {
+                "given": "Четыре подготовленных гекса A–D, заданные d20 [1,4,7,10]; ведущий заранее выбрал описания: A — каменный обелиск, B — тайник под корнями, C — оазис; D без нового места.",
+                "when": "Применить профиль PF2 к этим гексам и принять описания.",
+                "expected": "A получает ориентир-обелиск, B — секрет-тайник, C — ресурс-оазис. Для D новых мест нет. Исходы и категории сохранены, рельеф и существующие объекты не меняются."
+              },
+              {
+                "given": "Все целые исходы d20 от1 до20, каждый ровно один раз.",
+                "when": "Определить категорию особенности.",
+                "expected": "3 ориентира,3 секрета,3 ресурса,11 обычных гексов; границы3/4,6/7,9/10 не сдвинуты. Конкретное описание не выбирается этой таблицей."
+              },
+              {
+                "given": "В D уже есть ручная башня и река; исход10.",
+                "when": "Принять обычный гекс по этому профилю.",
+                "expected": "Нового места от этого броска нет; башня, река, заметки и рельеф D сохранены."
+              },
+              {
+                "given": "Приняты A–D из первого примера; ведущий переименовал B в «Тайник лесничего».",
+                "when": "Сохранить, заново открыть карту и продолжить редактирование B.",
+                "expected": "Обелиск, Тайник лесничего и оазис находятся в прежних гексах; исходы/категории/описания сохранены, нового броска нет. B остаётся помеченным как секрет, без утверждения об обнаружении партией."
+              },
+              {
+                "given": "Ресурс C уже принят; затем ведущий меняет описание оазиса.",
+                "when": "Отменить и повторить только эту правку.",
+                "expected": "Отмена возвращает прежнее описание C, повтор восстанавливает новое; A,B,D и география не меняются."
+              },
+              {
+                "given": "Исход0,21 или4.5; либо уже обработанный гекс без явного решения о повторе.",
+                "when": "Попытаться применить результат.",
+                "expected": "Недопустимый исход не принят; повторное открытие не добавляет дубли и не перебрасывает результат. Правило повторного явного наполнения определяет аналитик до разработки."
+              }
+            ],
+            "score_delta": null,
+            "implementation_authorized": false,
+            "release_authorized": false,
+            "current_task_scope_unchanged": true,
+            "reason": "New optional candidate scope for owner; preserves existing Vaarn scope and current queue."
+          },
+          {
+            "id": "DH-PREP1-research-v1",
+            "status": "proposed_research_handoff",
+            "problem": "Два отдельных профиля размера/habitat ещё не дают мастеру законченной подготовки региона; остальные броски и ручной материал не связаны с операцией edit/save.",
+            "benefit": "Получить для региона пригодную заготовку встречи, terrain и слух и продолжить ручную подготовку без потери принятой карты.",
+            "game_editions": [
+              "Daggerheart SRD2.0 supplemental Hex Crawl Campaigns,2026-08-25"
+            ],
+            "primary_scenario": "develop",
+            "layer": "L1",
+            "requirement_refs": [
+              "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-003-L1"
+            ],
+            "canonical_rule_ids": [
+              "map.terrain_zones",
+              "content.roll_table_resolution",
+              "content.place_description"
+            ],
+            "binding_refs": [
+              "agent-work/rules/game-bindings.json#DH-SRD2-003-L1"
+            ],
+            "criterion_ids": [
+              "S05-C01",
+              "S05-C02"
+            ],
+            "scope": "Исследовательский профиль целой подготовки региона;043 таблицы/сохранение переиспользовать при подтверждении,047 размер/habitat связать существующими refs. Стратег выбирает актуальность относительноPF2-FILL1; аналитик определяет реализацию. Не добавляет новый исполнительский этап054.",
+            "dependencies": [
+              "owner scope/prioritization before specification or development",
+              "043 reuse/profile runtime check",
+              "047 existing DH size/habitat profiles; no change to SD-TERRAIN1 queue"
+            ],
+            "acceptance_checks": [
+              {
+                "id": "DH-SRD2-003-L1-AC01",
+                "given": "Подготовлен связный регион7 гексов Forest по существующим DH-SRD2-001/002; d8=7,d6=6; d4=4; d100=42. В собственном списке100 слухов строка42: «Мост поёт ночью». Мастер считает слух ложным и пока не сообщает его игрокам.",
+                "when": "Завершить подготовку записи региона.",
+                "expected": "Одна заготовка встречи «поселение или форпост», terrain Extreme/4 полных дня на вход в гекс, слух42 с принятым текстом и решением мастера. Семь гексов относятся к этой записи региона; не создаются автоматически семь поселений. Forest, размер и форма не меняются; карта игроков не раскрывается."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC02",
+                "given": "Заданы пары d8/d6:1/2 и8/6.",
+                "when": "Определить тип заготовки встречи для двух регионов.",
+                "expected": "Суммы3 и14 дают соответственно попутчиков и добычу/сокровище. Это потенциальные встречи, ещё не состоявшиеся события; содержимое/награда не выдуманы."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC03",
+                "given": "Первая пара1/1 даёт сумму2; следующие пары1/2 и8/6 дают3 и14.",
+                "when": "Определить тип встречи по необязательному рецепту.",
+                "expected": "Получены и объединены попутчики и добыча/сокровище; мастер формулирует совместную ситуацию. Не выдаётся единичный тип «2», не складываются суммы3+14 в индекс17."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC04",
+                "given": "После начальной суммы2 одна из двух следующих пар снова дала2; дальнейших результатов нет.",
+                "when": "Продолжить подготовку.",
+                "expected": "Незавершённая ветка явно остаётся для продолжения/решения мастера; результат не объявляется готовым. Источник не задаёт максимальную глубину или правило замены повторной2, поэтому продуктовый лимит не выдаётся за правило DH."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC05",
+                "given": "Четыре региона с одинаковым habitat Forest; фиксированные d4=1,2,3,4.",
+                "when": "Подготовить их terrain.",
+                "expected": "Соответственно Optimal/1, Fair/2, Rough/3, Extreme/4 полных дня на вход в гекс. Habitat Forest сохраняется во всех четырёх; значения не переводятся автоматически в ordinary/difficult/dangerous из CLASSIFY1. Списание дней относится к L2."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC06",
+                "given": "Есть собственный список ровно100 слухов, строка1 «Есть мост», строка100 «Моста нет»; заданы d100=1 и100.",
+                "when": "Подготовить слухи двух регионов.",
+                "expected": "Выбраны соответствующие две строки; правдивость и сообщение игрокам определяет мастер. Другие сведения о регионе не переписываются ради соответствия слуху."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC07",
+                "given": "Мастер не предоставил список100 слухов; таблица Journey to Horizon в прочитанных203–205 отсутствует.",
+                "when": "Выпал d100=42.",
+                "expected": "Текст слуха не выдуман и платный/непрочитанный корпус не объявлен доступным; можно оставить результат42 незавершённым или вручную описать слух. География и прочая подготовка сохраняются."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC08",
+                "given": "Мастер выбирает ручную либо смешанную подготовку: вручную записывает «караван у моста», terrain Fair/2 и свой слух; броски не заданы.",
+                "when": "Принять эту подготовку региона.",
+                "expected": "Принятые текст и terrain доступны без обязательного случайного броска. Ручная ситуация не превращается в случайный боевой энкаунтер."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC09",
+                "given": "Подготовка случая01 принята; мастер меняет «поселение или форпост» на «покинутая сторожевая башня», слух оставляет прежним. Рядом другой регион и ручная река.",
+                "when": "Сохранить и вновь открыть карту.",
+                "expected": "Сохранились башня, Extreme/4, текст слуха и принятое решение мастера, исходы и происхождение; автоматического переброса нет. Соседний регион, река, семь гексов Forest и их форма прежние. Сохранение — продуктовая приёмка, не цитата правила."
+              },
+              {
+                "id": "DH-SRD2-003-L1-AC10",
+                "given": "Предложены пары d8/d6 0/6,9/1,1/7,1.5/1; d4=0/5; d100=0/101.",
+                "when": "Принять их как результаты указанных кубов.",
+                "expected": "Ни один недопустимый исход не считается успешным результатом. Карта прежняя; d8+d6 не подменяется равномерным выбором индекса2–14."
+              }
+            ],
+            "expected_evidence": "ExactSHA compound fixed inputs and accepted edit/save outputs; current DH runtime unknown.",
+            "score_delta": null,
+            "source_limitations": [
+              "Только один потенциальный метод подготовки; ручной и смешанный способы допустимы.",
+              "Одна заготовка типа встречи для региона не означает фиксированное число точек/поселений в каждом его гексе.",
+              "Сумма2 порождает две ветки. Политика остановки повторных2 источником не задана; не вводить молчаливую глубину как правило.",
+              "Habitat и terrain — разные признаки. Четыре travel-day категории не являются универсальной тройкой проходимости владельца.",
+              "Слух может быть ложным и не сообщённым; он не исправляет географию автоматически.",
+              "Генерация/сохранение материала L1 не активирует встречу, отдых, счётчики персонажей или раскрытие игрокам.",
+              "Изменение/сохранение и защита соседей — перевод в полезную операцию продукта, не дополнительная игровая норма.",
+              "Nested sum2 stop policy unspecified.",
+              "Journey to Horizon rumor table not read; own100-list path is independently allowed.",
+              "Geographic placement/density of encounter13 and safe places not supplied by these clauses.",
+              "Mapping habitats/terrain to product biomes and CLASSIFY1 remains unverified."
+            ],
+            "implementation_authorized": false,
+            "release_authorized": false,
+            "current_task_scope_unchanged": true,
+            "research_ref": "agent-work/research/audits/DH-preparation-corpus-2026-11-10.json",
+            "operational_requirement_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-003-L1.operational_requirement",
+            "adjacent_scale_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-004-L1",
+            "scale_disposition": "042 already folded into051; record source24 side-to-side as candidate profile only. No expansion of current approved051."
+          }
+        ],
+        "research_audit_refs": [
+          {
+            "audit_ref": "agent-work/research/audits/PF2-L1-runtime-2026-11-10.json",
+            "summary_ref": "agent-work/research/audits/PF2-L1-runtime-2026-11-10.md",
+            "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+            "requirement_refs": [
+              "agent-work/market/rules/PF2-Remaster.json#PF2-RM-013-L1",
+              "agent-work/market/rules/PF2-Remaster.json#PF2-RM-024-L1",
+              "agent-work/market/rules/PF2-Remaster.json#PF2-RM-029-L1"
+            ],
+            "finding": "Currentmanualnotes/POI not PF2featuredistribution. ExistingPF2-FILL1 remains candidate; no scope/start/status/order changes.",
+            "new_tasks": 0,
+            "score_delta": null
+          }
+        ]
+      },
+      "current_stage_id": "PF2-BATCH1",
+      "active_stage": {
+        "stage_id": "PF2-BATCH1",
+        "scope_version": 2,
+        "status": "approved_queued",
+        "approval_ref": "agent-work/decisions/owner-approval-2026-11-10-HX-BL-054-PF2-BATCH1.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-054-PF2-BATCH1-strategist.json",
+        "proposal_ref": "agent-work/proposals/2026-11-10-HX-BL-054-PF2-BATCH1-v2.json",
+        "start_after": [
+          {
+            "task_id": "HX-BL-051",
+            "stage_id": "DETAIL1"
+          },
+          {
+            "task_id": "HX-BL-043",
+            "stage_id": "TABLES1"
+          }
+        ],
+        "spec_status": "not_started",
+        "implementation_allowed": true,
+        "implementation_started": false,
+        "release_approved": false
+      },
+      "readiness": "approved_queued_after051_and043TABLES1",
+      "proposal_ref": "agent-work/proposals/2026-11-10-HX-BL-054-PF2-BATCH1-v2.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-054-PF2-BATCH1-strategist.json",
+      "next_role": "business_analyst",
+      "next_step": "Стратег ставит PF2-BATCH1 после051/DETAIL1 и043/TABLES1; затем аналитик специфицирует массовое наполнение/чекбокс/плотности/переиспользование. Не запускать последовательную генерацию географииPF2d20. Повторное согласование старта не требуется; публикация отдельно.",
+      "release_approved": false,
+      "scope_version": 2,
+      "authorized_scope": "OnlyPF2-BATCH1v2; priorVaarnscope not approved"
     }
   ],
   "last_review": {
