@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1",
+  "next_role": "programmer",
+  "status": "ready_approved_scope_fixes",
+  "base_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+  "pr": 496,
+  "branch": "agent/hx-bl-051-detail1",
+  "finding_ids": [
+    "DETAIL1-REVIEW-POI-CONTEXT",
+    "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER"
+  ],
+  "scope": "Программист исправляет утверждённую HX-BL-051/DETAIL1 на базе a4e8a48: DETAIL1-REVIEW-POI-CONTEXT — выбирать сущность по устойчивомуpoiId из любой занятой части и строки сводки, дляoverlap дать явный выбор, не подменять её случайной исходной6mileклеткой; DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER — полная проверка покрытия живых владельцев даже для пустого массиваactivev11, поддерживаемыеlegacy/unadaptedсостояния отделить явно. Расширить существующие real-controller/import cases, проверить точную атомарность/RNG/history и owner content. Исправить код/совместимыеfixtures, выполнить необходимыеcheck/browser/RNG, показать фактические состояния/известныеUIограничения, передать новыйSHA независимому проверяющему. Не ослаблять validator радиfixtures, не удалять источникPOI и не повторять тяжёлую003/500карт. Выпуск не разрешён; отдельного согласования старта исправлений не нужно.",
+  "input_evidence": [
+    "agent-work/results/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
+    "agent-work/evidence/review-HX-BL-051-a4e8a48/independent-review.json",
+    "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.mjs",
+    "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+  ],
+  "expected_result": "Both reproduced negatives fixed without changing approved boundaries/accepted source data; exact history/RNG and legacy compatibility; new tested SHA and updated actual UI evidence.",
+  "done_when": "Programmer hands off new exact SHA with required checks. Only independent re-review can accept; no release permission.",
+  "release_approved": false,
+  "authority_status": "Existing approved DETAIL1 scope; no new product task, costs, heavy series or release.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10T08:59:14.915Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10T09:08:11.832Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time checks only, no guarantee after completion."
+  }
+}

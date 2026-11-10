@@ -1,0 +1,624 @@
+{
+  "schema_version": 1,
+  "review_id": "independent-review-PR496-a4e8",
+  "reviewer": "fresh-context independent subagent",
+  "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+  "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "tree_sha": "a37e5de40297b42c72b402785241986cc1cc32ff",
+  "verdict": "changes_requested",
+  "scope": "Bounded independent review of combined DETAIL1 + CLASSIFY1; no full acceptance after reproduced blocker.",
+  "sources_read": [
+    "AGENTS.md",
+    "docs/index.md",
+    "agent-operations:agent-work/specs/HX-BL-051-DETAIL1.md",
+    "agent-operations:agent-work/handoffs/2026-11-10-HX-BL-051-marker-extent-review.json",
+    "agent-operations:agent-work/strategy/score-model.md (1.2)",
+    "agent-operations:agent-work/strategy/vision.md",
+    "docs/terrain-discovery.md",
+    "docs/detail1-implementation.md implementation context; source code and combined diff"
+  ],
+  "findings": [
+    {
+      "id": "DETAIL1-REVIEW-POI-CONTEXT",
+      "priority": "P2",
+      "blocking_acceptance": true,
+      "requirements": [
+        "DTL-09",
+        "DTL-10",
+        "DTL-21",
+        "DTL-24"
+      ],
+      "file": "src/App.tsx",
+      "lines": [
+        13699,
+        13700,
+        16888,
+        16892
+      ],
+      "title": "Selecting a remote part of an accepted POI footprint opens another source hex rather than that POI's content",
+      "repro": [
+        "Import regionFixture() as v11 with map.seas=[], map.nextSeaId=1 and classification.discoveryByPoi['poi:1:2,0']={mode:'interaction',clueText:'OWNER-ONE-CLUE'}.",
+        "Apply real startDetailAdaptation/applyDetailAdaptation.",
+        "Enable edit; editDetailFootprintExtent(detail-poi:1, manual conditional provenance, cells q=12 through18,r=0). This is a valid connected footprint crossing accepted dry geography.",
+        "Exit edit, setDetailViewStep(1), selectDetailCell({q:12,r:0}), then selectDetailCell({q:18,r:0})."
+      ],
+      "expected": "Each occupied part resolves the same POI entity and makes its accepted clue/content/actions available; multiple owners need an owner selection action. Terrain location may stay distinct from the selected entity.",
+      "actual": "Both summaries correctly contain detail-poi:1 / poi:1:2,0, but selectedHex changes from2,0 to3,0. The real knavePanel contains OWNER-ONE-CLUE at12,0 and has no POI text at18,0. Summary rows show geometry/provenance/attachments, with no owner-content selection. 'Show detail' chooses cells[0] and still routes through coordinate selection; ordering/manual shapes cannot establish owner identity.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.mjs",
+        "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl",
+        "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-diagnostic.mjs",
+        "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-diagnostic.json"
+      ],
+      "impact": "Valid explicit cross-source extents and overlapping POIs can show the correct POI name in the summary while its source content/editor context is absent or belongs to a different location. Saved entity/content remains intact; this is selection/context failure, not demonstrated payload loss.",
+      "suggested_boundary": "Keep entity selection keyed by poiId/legacyRef separately from the clicked geographical source cell; expose selection from every summary owner and resolve source-specific content/editor actions through that identity."
+    },
+    {
+      "id": "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER",
+      "priority": "P2",
+      "blocking_acceptance": true,
+      "requirements": [
+        "DTL-09",
+        "DTL-22",
+        "DTL-24"
+      ],
+      "file": "src/detailModel.ts",
+      "lines": [
+        113,
+        114
+      ],
+      "title": "Active v11 layer with live POI owners accepts deletion of all footprints",
+      "repro": [
+        "Export the valid active one-POI map from agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.mjs.",
+        "Set only map.physicalGrid.poiFootprints=[]; retain active=true and the existing poiIdentities/live POI.",
+        "Import through real handleImportJson."
+      ],
+      "expected": "An active DETAIL1 document must cover every live owner. Reject missing coverage before map/history writes; legacy documents with no physicalGrid remain separately supported. If an intermediate identity-only checkpoint is supported, distinguish it as unadapted rather than treating it as an active displayed layer.",
+      "actual": "Import reports no alert, commits one transaction and accepts active=true with one live identity and zero footprints. Summary now reports zero POIs; active map renderer suppresses legacy markers and renders only footprints, so the POI disappears from the map layer. Exact Undo restores the accepted document; no claim that source POI text is erased.",
+      "cause": "validateDetail1Document invokes the full live spatial/coverage validator only when poiFootprints.length>0. An empty array bypasses the very incomplete_footprint_coverage check that rejects a partially missing layer.",
+      "evidence": [
+        "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.mjs",
+        "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl",
+        "src/detailGeography.ts:212",
+        "src/App.tsx:16480",
+        "src/App.tsx:16575"
+      ],
+      "compatibility_note": "Existing saveSafety and regionEditing tests intentionally accept identity-only checkpoints; this explains the hole but does not satisfy the approved active full-coverage contract. Fix should preserve legitimate legacy/unadapted states through an explicit state boundary and update those tests accordingly."
+    }
+  ],
+  "observations": [],
+  "checks": {
+    "independent_node": {
+      "command": "node --test test/detail*.test.mjs test/classification.test.mjs test/mapTransactions.test.mjs test/saveSafety.test.mjs",
+      "runtime": "Node v24.22.1",
+      "executed": 89,
+      "passed": 89,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 96827.775206,
+      "log": "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log"
+    },
+    "temporary_diagnostics": {
+      "script": "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.mjs",
+      "output": "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl",
+      "status": "passed assertions reproducing actual defect",
+      "permanent_tests_added": 0,
+      "scenarios": [
+        "DTL09 correct summary ID with incorrect source card",
+        "explicit manual extent crossing source region boundary",
+        "same-cell repeat is no-op",
+        "exact Undo/Redo after selection",
+        "active empty checkpoint accepted and exact Undo",
+        "future v12 rejection preserves document and both stacks",
+        "guarded Math.random and unchanged generation state"
+      ]
+    },
+    "browser": {
+      "status": "not_independently_executed",
+      "reason": "Playwright packaged executable absent; /usr/bin/chromium launch fails socket() Operation not permitted in process_singleton_posix.cc:297. No UI service wait, download, or workaround attempted.",
+      "remaining": [
+        "actual touch targeting",
+        "long names",
+        "overlap pointer/list content flow",
+        "visible focus and errors",
+        "actual rendered12/24 compact summaries",
+        "selected SVG image export",
+        "bounded actual response timings"
+      ]
+    },
+    "ci": "Parent independently checked all three exact-SHA CI jobs success. Not independently rerun by this subagent; not promoted to own observed browser acceptance.",
+    "historical": "CLASSIFY1-VALIDATION-RIV011 remains unknown; no independent evidence closes it.",
+    "heavy_runs": "No new003/500-map series."
+  },
+  "test_quality": {
+    "inventory_source": "Parent /tmp/review-case-diff.json registration inventory and normalized AST comparison; counts read and methods reviewed, not independently rebuilt by subagent.",
+    "node_full_pr": {
+      "added": 23,
+      "removed": 0,
+      "modified": 11,
+      "base_registered": 363,
+      "head_registered": 386
+    },
+    "browser_full_pr": {
+      "new_workflows": 1,
+      "changed_existing_files": 5,
+      "files": [
+        "generation.smoke.mjs",
+        "knave-properties-lifecycle.mjs",
+        "myth-material-lifecycle.mjs",
+        "save-history.smoke.mjs",
+        "water-lifecycle.mjs"
+      ],
+      "new": "detail-adaptation.smoke.mjs"
+    },
+    "assessment": "The geometry/identity/placement/parser/controller tests cover distinct meaningful risks: precise intersections and topology, capital/Seat defaults, water/route source identity, atomic stale/invalid failures, edit/remap/delete/history/import compatibility. They do more than count successful calls and use real App harness callbacks for state operations. Existing fixtures are extended, so no finding of gratuitous duplication is justified.",
+    "limits": "Pure summaries and callback tests do not establish real pointer/keyboard/touch owner-content selection. The new browser workflow uses one capital; overview loops assert DOM target presence and screenshots later return to1mile. Its green status cannot close DTL26 gaps. Changing crafted generation fixtures to delete stale physicalGrid is reasonable when testing legacy/import contracts, but it excludes active footprint integration there; separate detailGeography tests supply narrower active coverage. Identity-only fixture additions are weaker than full footprints and explicitly explain accepted empty-state behavior. The reproduced identity-context defect is not detected by existing single-cell and summary-ID assertions. Identity-only active checkpoint tests also encode the incomplete active-layer acceptance hole; they need adjustment to preserve legacy compatibility without bypassing full active footprint coverage.",
+    "source_fixture_caveat": "riverBackendFixture changes setup across existing E5 tests; no automatic counting of helper users as newly added cases."
+  },
+  "dtl_review": {
+    "DTL01-03": "Geometry/projection and real adaptation/view controller tests independently passed; physical UI camera/export alignment not separately rendered.",
+    "DTL04-08": "Capital/Seat/one-cell/measured/manual source validation and atomic failures passed targeted tests; independent manual cross-source edit reproduced selection blocker.",
+    "DTL09-10": "Failed owner-context selection for a valid remote occupied part. Summary deduplication alone is insufficient; overlapping UI content flow remains unverified.",
+    "DTL11-18": "Existing authored real-adapter water/river/shore/crossing/route positive and negative checks independently passed. Not exhaustive routes/campaign coverage; no new physical connectors algorithm introduced by review.",
+    "DTL19-23": "Frozen source geometry/RNG/history and ordinary malformed import guards pass targeted suite and independent guarded controls. Active zero-footprint coverage bypass is a confirmed import gap; valid POI source payload is retained but map/summaries omit it.",
+    "DTL24": "Summary unique IDs/source fragments supported by tests; complete content contextualization fails finding. Rendered12/24 compactness unverified.",
+    "DTL25": "Classic/Mythic/Knave relevant authored fixture paths passed; no all-games claim.",
+    "DTL26": "Independent browser execution unavailable, important listed UI evidence remains open.",
+    "DTL27": "Finite negative fixtures pass atomicity. Exhaustive no-space explanations and recovery UX not certified.",
+    "DTL28": "Parent observes exact-SHA three-job CI green; independent89 Node plus diagnostic evidence; independent acceptance withheld."
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+    "status": "insufficient_evidence",
+    "counting": "No confirmed score increase or double counting. All prior grades/points remain unknown, never G0. Partial feature evidence is not a whole-criterion grade.",
+    "criteria": [
+      {
+        "criterion_id": "S01-C04",
+        "weight": 25,
+        "quality": "Bounded exact assigned route/water crossing fixture evidence; broader campaign route coverage not reviewed.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      },
+      {
+        "criterion_id": "S01-C05",
+        "weight": 10,
+        "quality": "Fine geography/water eligibility and frozen hydrography on fixtures; no500-map expert plausibility or approved distribution evidence.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      },
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "quality": "Atomic extent/edit/remap/history and errors supported; confirmed entity-context selection defect blocks complete accepted edit UX.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      },
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "quality": "Four view steps and source data invariance supported by harness. Player map, fog of war and visibility safety absent from this scope; actual overview/touch rendering incomplete.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "quality": "Bounded valid v11 roundtrips and future-version atomicity pass. Missing all active footprint coverage is accepted and changes the map layer; independent selected SVG/PNG rendering and full approved corpus remain unverified.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      },
+      {
+        "criterion_id": "S05-C01",
+        "weight": 25,
+        "quality": "Unique contextual summary/source fragments supported, but a valid remote POI part loses its actual content context. Full situation/reward/history/actions criterion not established.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      },
+      {
+        "criterion_id": "S04-C05",
+        "weight": 10,
+        "quality": "CLASSIFY1-related criterion retained for combined package; no whole-criterion independent evidence or comparison collected in bounded review.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      },
+      {
+        "criterion_id": "S05-C03",
+        "weight": 20,
+        "quality": "CLASSIFY1-related criterion retained for combined package; semantic discovery tests only, no whole-criterion acceptance or user evidence.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      },
+      {
+        "criterion_id": "S07-C01",
+        "weight": 20,
+        "quality": "CLASSIFY1-related criterion retained for combined package; no whole-criterion independent acceptance in this bounded review.",
+        "before_grade": null,
+        "before_points": null,
+        "before_status": "unknown",
+        "after_grade": null,
+        "after_points": null,
+        "after_status": "insufficient_evidence",
+        "delta": null,
+        "breadth": {
+          "status": "unknown",
+          "reason": "Applicable requirements/support across current top5/10/20 and module-combination scenario not established; fixture modes are not proof of game breadth."
+        },
+        "evidence": [
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-targeted.log",
+          "agent-work/evidence/review-HX-BL-051-a4e8a48/hx-review-repro.jsonl"
+        ],
+        "limitations": "No G2/G3/G4 breadth or G4 comparison inferred; no score mutation."
+      }
+    ]
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10 09:00:33 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10 09:06:35 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "point_in_time_only": true
+  },
+  "limitations": [
+    "Bounded review stopped after concrete blocking reproduction; no claim every combined PR path is fully accepted.",
+    "No source changes; only dependency symlink in detached worktree and diagnostic/report files under/tmp.",
+    "No GitHub writes, claim modifications, merge, deploy, or automation changes."
+  ],
+  "next_step": "Programmer fixes entity selection/content context within approved DETAIL1 scope; reuse this reproduction as a regression in an existing harness/UI workflow, then submit new exact SHA for independent combined review and close outstanding UI evidence without new heavy series.",
+  "ci_verified_by_parent": {
+    "run_id": 42782321639,
+    "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
+    "jobs": [
+      {
+        "id": 129715068440,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 42782321639,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run npm ci",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run npm run build",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run npx playwright install --with-deps chromium",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Run npm run test:browser",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 8
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25
+          }
+        ]
+      },
+      {
+        "id": 129715068809,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 42782321639,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run npm ci",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run npm run check",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          }
+        ]
+      },
+      {
+        "id": 129715068896,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 42782321639,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run npm ci",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run npm run build",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run npx playwright install --with-deps chromium",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Run npm run test:browser:rng",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Post Run actions/setup-node@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          }
+        ]
+      }
+    ]
+  }
+}
