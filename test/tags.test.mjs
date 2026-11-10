@@ -492,4 +492,7 @@ test('TABLES1 App migrates once to v12 and preserves exact import/history with s
  const persisted=h.render().createSaveData();await load(h,persisted);const oldOwners=structuredClone(h.render().captureDocument().map.knave.content.byPoi);
  const generated=h.render().safelyAddRegionToMap({q:-1,r:0},{targetSize:18,landType:'wild',coastalPreference:'mainland'});assert.equal(generated.success,true);
  const continued=h.render().captureDocument().map.knave.content;for(const [key,value]of Object.entries(oldOwners))assert.deepEqual(continued.byPoi[key],value);assert.ok(Object.keys(continued.byPoi).length>Object.keys(oldOwners).length);assert.equal(h.render().createSaveData().version,12);
+ const physical=h.geometry.prepareDetailMapPreview(stable(h).map).waterRequirementsByPoi[owner],primary=continued.byPoi[owner].calls.find(c=>c.legacySelection?.role==='primary');assert.ok(primary);
+ const edit=h.render().preparationContext(owner);assert.equal(h.render().mutatePreparation({kind:'replace',owner,id:primary.id,table:'dungeons',choice:{kind:'manual',row:84}},edit),true);
+ assert.deepEqual(h.geometry.prepareDetailMapPreview(stable(h).map).waterRequirementsByPoi[owner],physical,'manual table replacement never changes physical source binding');
 });

@@ -42,7 +42,7 @@ export function detailCrossingPoint(a:Segment,b:Segment):WorldPoint|null {
 function requirement(map:DetailGeographyMap,alias:string,water:boolean):DetailWaterProvenance {
  if(water)return {provenance:'water_environment',requirement:'water',predicates:[]};
  const content=map.knave?.content?.byPoi[alias];
- const site=content?('calls' in content?content.calls.find(c=>c.selection==='legacy_compatible_pool'&&c.legacySelection?.role==='primary'):content.site):undefined;
+ const site=content?('calls' in content?content.migrationMeta?.primarySource??content.calls.find(c=>c.selection==='legacy_compatible_pool'&&c.legacySelection?.role==='primary'):content.site):undefined;
  if(!site)return {provenance:'unknown',requirement:'none',predicates:[]};
  const row=policy.rows.find(r=>r.table===site.table&&r.sourceRow===site.sourceRow&&r.status==='eligible');
  if(!row)fail('unknown_source_policy');

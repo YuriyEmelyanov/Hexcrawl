@@ -4,7 +4,7 @@ import {drawTagIndex} from './engine.ts';
 import {emptyKnaveContent,fillKnaveContent,KNAVE_CATALOG_VERSION,KNAVE_SOURCE_ID,knaveResultText,validateKnaveCatalog,validateKnaveContent,knaveCompatibleRows,type KnaveCatalog,type KnaveContentState,type KnaveFacts,type KnaveTable,type KnavePoiContent,type KnaveReference} from './knave.ts';
 export type TableSnapshot={table:KnaveTable;sourceRow:number;printedResult:string;ru:string;en?:string;sourceRef:{pdfPage:number;printedPage:number;table:KnaveTable;row:number};references:KnaveReference[]};
 export type TableCall=TableSnapshot&{id:number;selection:'manual'|'d100'|'legacy_compatible_pool';rollCounter:number;rollValue?:number;parentId?:number;edgeId?:string;nextEntry?:TableSnapshot&{policy:'confirmed_next_entry'};legacySelection?:{role:'primary'|'trait';representation?:string}};
-export type PreparedPlace={catalogVersion:typeof KNAVE_CATALOG_VERSION;sourceId:typeof KNAVE_SOURCE_ID;category:KnavePoiContent['category'];calls:TableCall[];description:string;migrationMeta?:{categoryCounter:number}};
+export type PreparedPlace={catalogVersion:typeof KNAVE_CATALOG_VERSION;sourceId:typeof KNAVE_SOURCE_ID;category:KnavePoiContent['category'];calls:TableCall[];description:string;migrationMeta?:{categoryCounter:number;primarySource?:{table:Exclude<KnaveTable,'place_traits'>;sourceRow:number}}};
 export type PreparationState={schemaVersion:2;nextCallId:number;byPoi:Record<string,PreparedPlace>};
 export type PreparationInput=KnaveContentState|PreparationState|undefined;
 export type TableChoice={kind:'manual';row:number}|{kind:'roll'};
@@ -44,7 +44,8 @@ export function validatePreparation(value:unknown,live:ReadonlySet<string>):asse
  const ids=new Set<number>();
  for(const [key,p]of Object.entries(value.byPoi)){
   if(!owner(key)||!live.has(key)||!object(p)||!keys(p,['catalogVersion','sourceId','category','calls','description'],['migrationMeta'])||p.catalogVersion!==KNAVE_CATALOG_VERSION||p.sourceId!==KNAVE_SOURCE_ID||!['natural','structure','dungeon','settlement','water'].includes(p.category as string)||key.startsWith('waterPoi:')!==(p.category==='water')||typeof p.description!=='string'||p.description.length>20000||!Array.isArray(p.calls))fail('place');
-  if(hasOwn(p,'migrationMeta')&&(!object(p.migrationMeta)||!keys(p.migrationMeta,['categoryCounter'])||!integer(p.migrationMeta.categoryCounter)))fail('migration_meta');
+  if(hasOwn(p,'migrationMeta')&&(!object(p.migrationMeta)||!keys(p.migrationMeta,['categoryCounter'],['primarySource'])||!integer(p.migrationMeta.categoryCounter)))fail('migration_meta');
+  if(object(p.migrationMeta)&&hasOwn(p.migrationMeta,'primarySource')){const r=p.migrationMeta.primarySource;if(!object(r)||!keys(r,['table','sourceRow'])||!table(r.table)||r.table==='place_traits'||!integer(r.sourceRow,1,100))fail('migration_source');}
   const local=new Map<number,TableCall>();
   for(const c of p.calls){
    if(!object(c)||!keys(c,[...snapshotKeys,'id','selection','rollCounter'],['en','rollValue','parentId','edgeId','nextEntry','legacySelection']))fail('call');
@@ -80,7 +81,7 @@ export function preparationView(input:PreparationInput,catalog:KnaveCatalog,live
   const p=input.byPoi[key],counters=input.rollCounters[key],calls:TableCall[]=[];
   if(p.site){const site=p.site;calls.push({...snapshot(catalog,site.table,site.sourceRow),ru:site.ru,en:knaveResultText(site,site.table,'en'),references:structuredClone(site.references),id:next.nextCallId++,selection:'legacy_compatible_pool',rollCounter:counters.primary,legacySelection:{role:'primary',representation:site.representation}});}
   calls.push({...snapshot(catalog,'place_traits',p.trait.sourceRow),ru:p.trait.ru,en:knaveResultText(p.trait,'place_traits','en'),references:structuredClone(p.trait.references),id:next.nextCallId++,selection:'d100',rollCounter:counters.trait,rollValue:p.trait.roll,legacySelection:{role:'trait'}});
-  next.byPoi[key]={catalogVersion:p.catalogVersion,sourceId:p.sourceId,category:p.category,calls,description:'',migrationMeta:{categoryCounter:counters.category}};
+  next.byPoi[key]={catalogVersion:p.catalogVersion,sourceId:p.sourceId,category:p.category,calls,description:'',migrationMeta:{categoryCounter:counters.category,...(p.site?{primarySource:{table:p.site.table,sourceRow:p.site.sourceRow}}:{})}};
  }
  validatePreparation(next,live);return next;
 }
