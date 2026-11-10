@@ -586,3 +586,10 @@ Detached-подготовка не доказывает историю: отде
 ### 2026-11-10 — DETAIL1: импорт проверять по географии файла
 
 Структура/ссылки сериализованной карты должны пройти проверку до вызова живого пространственного адаптера. Охват сверять с географией самого входного файла, не текущим экраном; при ошибке сохранять обе истории, включая исполнимый Redo. Knave6mile/null не становится known от подписи отображения. Реальный import-case на существующих fixtures подтвердил manual/measured/Classic/Mythic/sea/Knave и атомарные отказы. Shutdown signal runner — неполное evidence, не доказанный продуктовый дефект: сохранить отрицательный лог и ограничить восстановление одним адресным повтором на том же SHA; не скрывать первый результат и не суммировать повторы с постоянными cases. Evidence: agent-work/results/2026-11-09T2305-programmer-HX-BL-051-DETAIL1-import.json.
+
+
+###2026-11-10 DETAIL1 legacy adaptation — exact-tree UI proof
+- Explicit draft activation must move real keyboard focus when its opening button unmounts; otherwise Escape can miss the app. Confirmed negative e8244e1 saved, fixed09b3c9b verified by natural-focus browser workflow (no artificial focus).
+- Vite readiness logs may contain ANSI formatting betweenLocal and colon. Strip terminal escapes before readiness matching; forced-color control proved the mismatch. Startup timeout is bounded.
+- Node controller atomicity and actual browser panel/focus are distinct useful contracts; existing fixtures reused. Node+1, browser+1 counted separately;384Node/9browser/1RNG are different suites, screenshots/retries are not coverage growth.
+- Partial legacy preview shown at exactSHA does not certify complete1/6/12/24 UI or grant release. Evidence: agent-work/results/2026-11-09T2359-programmer-HX-BL-051-DETAIL1-adaptation.json.
