@@ -230,6 +230,29 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  assert.equal(h.render().selectDetailCell({q:12,r:0}),true);assert.equal(h.render().undoHistory.length,beforeCount+1);
  h.geometry.assertHexcrawlSaveData(h.render().createSaveData());h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),beforeCell);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),chosen);
  assert.equal(h.render().setDetailViewStep(12),true);assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid.selectedCell),{q:12,r:0});
+ // REVIEW-POI-CONTEXT: an accepted cross-source extent must keep owner content,
+ // independently of the fine-cell address. Extend this real controller case.
+ const reviewData=regionFixture();reviewData.version=11;reviewData.map.seas=[];reviewData.map.nextSeaId=1;
+ reviewData.map.regions[1].pointsOfInterest.push({q:3,r:0});reviewData.map.regions[1].pointOfInterestKinds['3,0']='village';
+ reviewData.map.classification={version:1,difficultyByHex:{},discoveryByPoi:{'poi:1:2,0':{mode:'interaction',clueText:'OWNER-ONE-CLUE'},'poi:2:3,0':{mode:'interaction',clueText:'OWNER-TWO-CLUE'}}};
+ const review=await importMap(reviewData);assert.equal(review.render().startDetailAdaptation(),true);assert.equal(review.render().applyDetailAdaptation(),true);review.render().setEditMode(true);review.render();
+ const owner=review.render().captureDocument().map.physicalGrid.poiFootprints.find(p=>p.legacyRef==='poi:1:2,0');
+ assert.equal(review.render().editDetailFootprintExtent(owner.poiId,{kind:'manual',basis:'conditional',note:'Cross-source test'},Array.from({length:7},(_,i)=>({q:12+i,r:0}))),true);
+ review.render().setEditMode(false);review.render();review.render().setDetailViewStep(1);review.render();
+ assert.equal(review.render().selectDetailCell({q:12,r:0}),true);
+ assert.equal(review.render().selectDetailCell({q:18,r:0}),true);
+ assert.equal(review.render().detailSummary.pois.length,2,'both owners remain selectable');
+ assert.deepEqual(structuredClone(review.render().selectedHex),{q:2,r:0});
+ assert.ok(JSON.stringify(review.render().knavePanel).includes('OWNER-ONE-CLUE'));
+ assert.deepEqual(structuredClone(review.render().captureDocument().map.physicalGrid.selectedCell),{q:18,r:0});
+ const overlap=structuredClone(review.render().captureDocument()),second=review.render().detailSummary.pois.find(p=>p.poiId!==owner.poiId);
+ assert.equal(review.render().selectDetailCell({q:18,r:0},undefined,1,second.poiId),true);
+ assert.deepEqual(structuredClone(review.render().selectedHex),{q:3,r:0});assert.ok(JSON.stringify(review.render().knavePanel).includes('OWNER-TWO-CLUE'));
+ const ownerTwo=structuredClone(review.render().captureDocument());review.render().undoMap();assert.deepEqual(structuredClone(review.render().captureDocument()),overlap);review.render().redoMap();assert.deepEqual(structuredClone(review.render().captureDocument()),ownerTwo);
+ assert.equal(review.render().selectDetailCell({q:18,r:0},undefined,1,owner.poiId),true);assert.ok(JSON.stringify(review.render().knavePanel).includes('OWNER-ONE-CLUE'));
+ const ownerOne=structuredClone(review.render().captureDocument()),ownerStacks=structuredClone([review.render().undoHistory,review.render().redoHistory]);
+ assert.equal(review.render().selectDetailCell({q:18,r:0},undefined,1,'missing-owner'),false);assert.deepEqual(structuredClone(review.render().captureDocument()),ownerOne);assert.deepEqual(structuredClone([review.render().undoHistory,review.render().redoHistory]),ownerStacks);
+
  const loaded=await importMap(JSON.parse(JSON.stringify(h.render().createSaveData())));assert.deepEqual(structuredClone(loaded.render().captureDocument().map.physicalGrid.selectedCell),{q:12,r:0});
  assert.equal(h.render().selectDetailCell({q:12,r:0},undefined,1),true);assert.equal(h.render().captureDocument().map.physicalGrid.viewStep,1);
  h.render().clickSourceHex({q:3,r:0});assert.deepEqual(structuredClone(h.render().selectedHex),{q:3,r:0});assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid.selectedCell),{q:18,r:0});assert.deepEqual(structuredClone(h.render().captureDocument().map.generation),chosen.map.generation);

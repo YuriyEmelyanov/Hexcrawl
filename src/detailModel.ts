@@ -103,13 +103,13 @@ export function prepareLegacyDetailAdaptation(input:Readonly<{sourceVersion:numb
   return Object.freeze({schema:'hexcrawl.detail1-adaptation-preview',sourceVersion:input.sourceVersion,sourcePhysicalConvention:input.sourcePhysicalConvention,proposedDisplayAssumption:'project_across_flats_6mi',origin,requiresExplicitApply:true,activatesDetail1:false});
 }
 
-/** Live document boundary for D1. Until the live geometry adapter is connected,
- * fail closed on footprints rather than accepting unchecked spatial references.
- * No existing save is implicitly activated or assigned a physical convention. */
+/** Full active document boundary. Legacy/unadapted maps have no physicalGrid;
+ * an active layer, including an empty one, must cover every live POI owner. */
 export function validateDetail1Document(value:unknown,saveVersion:number,liveAliases?:ReadonlySet<string>,validateSpatial?:(state:Detail1State)=>void):void {
   if(value===undefined)return;
   if(saveVersion!==11)throw Error('Physical grid requires version11');
   const state=parseDetail1StateV11(value);
   if(state.poiIdentities&&liveAliases)assertDetailPoiOwners(state.poiIdentities,liveAliases);
-  if(state.poiFootprints.length){if(!validateSpatial)throw Error('DETAIL1 POI adaptation is not available in this checkpoint');validateSpatial(state);}
+  if(validateSpatial){validateSpatial(state);return;}
+  if(state.poiFootprints.length||liveAliases?.size||Object.keys(state.poiIdentities?.byLegacyRef??{}).length)throw Error('DETAIL1 spatial validation is required');
 }

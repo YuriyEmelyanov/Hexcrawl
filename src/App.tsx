@@ -13690,14 +13690,22 @@ export function App() {
     const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}}});
     recordTransaction(before,after);applyPreparedDocument(after);return true;
   };
-  const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep):boolean=>{
+  const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string):boolean=>{
     if(editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
     const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
     try{
       const next=parseDetail1StateV11({...state,selectedCell:cell,...(step?{viewStep:step}:{})});
-      if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state)))return true;
-      const source=worldToDetailCell(createDetailGrid(6,state.grid.origin),detailCellCenter(createDetailGrid(1,state.grid.origin),cell));
-      const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:actualHexKeys(before.map).has(hexKey(source))?source:before.selectedHex});
+      // The fine address selects geography; source context resolves an entity.
+      // Coincident owners stay a list until the user explicitly picks one.
+      const owners=summarizeDetailCell(next,cell,new Map()).pois;
+      const owner=poiId?owners.find(p=>p.poiId===poiId):owners.length===1?owners[0]:undefined;
+      if(poiId&&!owner)return false;
+      const geographicalSource=worldToDetailCell(createDetailGrid(6,state.grid.origin),detailCellCenter(createDetailGrid(1,state.grid.origin),cell));
+      const alias=owner?.legacyRef,parts=alias?.split(':');
+      const source=parts?parseHexKey(parts[alias!.startsWith('waterPoi:')?1:2]):owners.length>1?before.selectedHex:geographicalSource;
+      const selectedSource=source&&actualHexKeys(before.map).has(hexKey(source))?source:before.selectedHex;
+      if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state))&&JSON.stringify(selectedSource)===JSON.stringify(before.selectedHex))return true;
+      const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:selectedSource});
       recordTransaction(before,after);applyPreparedDocument(after);setIsSidePanelCollapsed(false);return true;
     }catch{return false;}
   };
@@ -13973,12 +13981,14 @@ export function App() {
       const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
       if (missing.length) throw new NotesLossConflict(missing);
     }
-    let acceptedSpatial=map.physicalGrid; // Empty active layers also wait for final sea identities and Knave.
+    let acceptedSpatial=map.physicalGrid; // Retain accepted state locally until final sea identities and Knave.
     if(acceptedSpatial&&(!kingdomJob||backup)){
       const live=poiNameLocators(map,true);
       if(Object.keys(acceptedSpatial.poiIdentities?.byLegacyRef??{}).some(alias=>!live.has(alias)))throw new DetailGenerationConflict('accepted_poi_loss');
     }
-    if(acceptedSpatial)map={...map,physicalGrid:{...acceptedSpatial,poiFootprints:[],poiIdentities:reconcileDetailPoiIdentities(poiNameLocators(map,true),acceptedSpatial.poiIdentities)}};
+    // Provisional geometry is not an active document. Never encode it as a
+    // complete active layer with its accepted footprints silently removed.
+    if(acceptedSpatial)map={...map,physicalGrid:undefined};
     else map=reconcileDetailMapIdentities(map);
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
@@ -16882,6 +16892,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <strong>{language==='ru'?'Область':'Area'} · {physicalGrid.viewStep} {detailMiles(physicalGrid.viewStep)}</strong>
                 {!detailSummary?<p>{language==='ru'?'Выберите ячейку на карте.':'Choose a cell on the map.'}</p>:<>
                   <p>{hexKey(detailSummary.cell)} · {language==='ru'?'мест':'places'}: {detailSummary.pois.length}</p>
+                  {detailSummary.pois.length>1&&<p>{language==='ru'?'Выберите место в списке, чтобы открыть его содержимое.':'Choose a place below to open its content.'}</p>}
                   <details><summary>{language==='ru'?'Местность и исходные гексы':'Terrain and source cells'} ({detailSummary.sources.length})</summary>
                     <ul>{detailSummary.sources.map(h=><li key={h.key}>{h.key} · {h.terrain==='sea'?(language==='ru'?'Море':'Sea'):h.terrain==='lake'?(language==='ru'?'Озеро':'Lake'):getBiomeLabel(h.terrain as BiomeId,language)} · {h.partial?(language==='ru'?'часть':'part'):(language==='ru'?'целиком':'whole')}</li>)}</ul>
                   </details>
@@ -16889,7 +16900,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                     <p>{language==='ru'?'Клетки охвата здесь/всего':'Footprint cells here/total'}: {p.partCells}/{p.totalCells}</p>
                     <p>{p.extent.kind==='default'?(language==='ru'?'Условный охват: размер неизвестен.':'Assumed extent: size unknown.'):p.extent.kind==='manual'?p.extent.note:p.extent.sourceId}</p>
                     <ul>{p.attachments.map((a,i)=><li key={i}>{a.kind==='water'?`${nameTargets.find(t=>t.key===a.waterId)?.[language]??a.waterId} · ${language==='ru'?{water:'в воде',shore:'у берега',river:'у реки',crossing:'переправа',rapid:'порог',waterfall:'водопад'}[a.waterKind]:a.waterKind}`:`${nameTargets.find(t=>t.key===a.routeId)?.[language]??a.routeId} · ${a.routeKind==='road'?(language==='ru'?'дорога':'road'):(language==='ru'?'тропа':'trail')}`}</li>)}</ul>
-                    <button type="button" className="secondary" onClick={()=>{const cell=physicalGrid.poiFootprints.find(f=>f.poiId===p.poiId)?.cells[0];if(cell)selectDetailCell(cell,renderedDocumentRevision,1);}}>{language==='ru'?'Показать подробно':'Show detail'}</button>
+                    <button type="button" className="secondary" data-detail-poi-select={p.poiId} onClick={()=>{const cell=physicalGrid.poiFootprints.find(f=>f.poiId===p.poiId)?.cells[0];if(cell)selectDetailCell(cell,renderedDocumentRevision,1,p.poiId);}}>{language==='ru'?'Открыть место подробно':'Open place details'}</button>
                     {physicalGrid.viewStep===1&&(detailExtentDraft?.poiId===p.poiId?<form data-detail-extent-form onSubmit={event=>{event.preventDefault();finishDetailExtentDraft();}}>
                       <p>{language==='ru'?'Условная форма: не измеренная площадь застройки. Привязки к воде и путям сохраняются.':'Assumed shape, not a measured built-up area. Water and path attachments must remain valid.'}</p>
                       <label>{language==='ru'?'Клетки охвата q,r (по одной в строке)':'Footprint cells q,r (one per line)'}<textarea autoFocus data-detail-extent-cells rows={4} value={detailExtentDraft.cellsText} onChange={event=>changeDetailExtentDraft({cellsText:event.target.value})}/></label>

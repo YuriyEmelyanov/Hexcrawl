@@ -291,9 +291,11 @@ test('DETAIL1 live document keeps physical grid and classification together thro
  const load=async d=>{await g.render().handleImportJson({target:{files:[{text:JSON.stringify(d)}],value:'x'}});g.render();};
  const snapshot=()=>{const d=JSON.parse(JSON.stringify(g.render().createSaveData()));delete d.savedAt;return d;};
  await load(regionFixture());const before=snapshot();
- const data=structuredClone(before);data.version=11;
+ // Build a complete accepted layer through the real adaptation command.
+ assert.equal(g.render().startDetailAdaptation(),true);assert.equal(g.render().applyDetailAdaptation(),true);g.render();
+ const data=snapshot();g.render().undoMap();assert.deepEqual(snapshot(),before);
  data.map.classification={version:1,difficultyByHex:{'2,0':'dangerous'},discoveryByPoi:{}};
- data.map.physicalGrid={schema:'hexcrawl.detail1',version:1,active:true,grid:{origin:{x:0,y:0},orientation:'pointy',convention:'across_flats'},source:{stepMiles:6,physicalConvention:'unknown',displayAssumption:'project_across_flats_6mi'},viewStep:12,poiFootprints:[],poiIdentities:{version:1,nextId:2,byLegacyRef:{'poi:1:2,0':'detail-poi:1'}}};
+ data.map.physicalGrid.viewStep=12;
  await load(data);assert.deepEqual(alerts,[]);assert.deepEqual(snapshot(),data);
  g.render().undoMap();assert.deepEqual(snapshot(),before);g.render().redoMap();assert.deepEqual(snapshot(),data);
  g.render().changeGenerationMode('mythic');assert.deepEqual(snapshot().map,data.map);g.render().changeGenerationMode('classic');assert.deepEqual(snapshot(),data);
@@ -302,8 +304,8 @@ test('DETAIL1 live document keeps physical grid and classification together thro
  g.render().setEditMode(true);g.render();g.render().deleteSelectedPoi();const deleted=snapshot();assert.deepEqual(deleted.map.physicalGrid.poiIdentities,{version:1,nextId:2,byLegacyRef:{}});g.render().undoMap();assert.deepEqual(snapshot(),gridOnly);g.render().redoMap();assert.deepEqual(snapshot(),deleted);
  g.render().setSelectedPoiKind('ruins');const replaced=snapshot();assert.equal(replaced.map.physicalGrid.poiIdentities.byLegacyRef['poi:1:2,0'],'detail-poi:2');assert.equal(replaced.map.physicalGrid.poiIdentities.nextId,3);g.render().undoMap();assert.deepEqual(snapshot(),deleted);g.render().redoMap();assert.deepEqual(snapshot(),replaced);await load(gridOnly);
  const doc=structuredClone(g.render().captureDocument()),history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>d.map.physicalGrid.poiIdentities.byLegacyRef={'poi:1:99,99':'detail-poi:1'},d=>d.map.physicalGrid.poiIdentities.nextId=1,d=>d.version=10,d=>d.map.physicalGrid.viewStep=2,d=>d.map.physicalGrid.grid.extra=true,d=>d.map.physicalGrid.poiFootprints=[{poiId:'unchecked:1',legacyRef:null,cells:[{q:0,r:0}],extent:{kind:'default',reason:'unknown_size',policy:'one_cell'},attachments:[]}]]){
+ for(const mutate of [d=>d.map.physicalGrid.poiFootprints=[],d=>delete d.map.physicalGrid.poiIdentities,d=>d.map.physicalGrid.poiIdentities.byLegacyRef={'poi:1:99,99':'detail-poi:1'},d=>d.map.physicalGrid.poiIdentities.nextId=1,d=>d.version=10,d=>d.map.physicalGrid.viewStep=2,d=>d.map.physicalGrid.grid.extra=true,d=>d.map.physicalGrid.poiFootprints=[{poiId:'unchecked:1',legacyRef:null,cells:[{q:0,r:0}],extent:{kind:'default',reason:'unknown_size',policy:'one_cell'},attachments:[]}]]){
   const invalid=structuredClone(gridOnly);mutate(invalid);await load(invalid);assert.deepEqual(structuredClone(g.render().captureDocument()),doc);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
  }
- assert.equal(alerts.length,6);assert.deepEqual(snapshot().generation,before.generation);
+ assert.equal(alerts.length,8);assert.deepEqual(snapshot().generation,before.generation);
 });
