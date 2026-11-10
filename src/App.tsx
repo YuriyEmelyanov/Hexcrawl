@@ -10,6 +10,7 @@ import {buildManualRiverNetwork,solveManualRiverPath, type RiverEditingGeometry}
 import {prepareRiverEdit,validateEditedRiverNetwork,rebuildRiverWaterSectors,rebuildRiverRegionSectors,validateRegionRiverHeights,resolveRiverFeatureEdits,type RiverEdit,type FeatureEdit,emptyRiverFeatures, migrateRiverEditing, validateRiverCounter, validateRiverFeatures, reserveGeneratedRiverIds, type RiverFeatures, type FeatureEligibility, type RiverEditContext, type EditableRiver} from './manualRivers';
 import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapacityError,type TagState,type TagOwner} from './tags/engine';
 import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
+import {localizedTagText} from './tags/tagPresentation';
 import {TagRow} from './tags/TagRow';
 import {KnaveContentRow} from './tags/KnaveContentRow';
 import {prepareRoadEdit, type RoadEdit} from './manualRoads';
@@ -1517,11 +1518,26 @@ async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> 
   return clone;
 }
 
+type PngExportFailure = 'read-image' | 'load-image' | 'prepare-svg' | 'canvas' | 'create-png';
+class PngExportError extends Error {
+  constructor(readonly code: PngExportFailure) { super(`PNG export: ${code}`); }
+}
+function pngExportErrorText(error: unknown, language: Language): string {
+  const messages: Record<PngExportFailure, [string, string]> = {
+    'read-image': ['Не удалось встроить изображение тайла в PNG-экспорт.', 'Could not embed a tile image in the PNG export.'],
+    'load-image': ['Не удалось загрузить изображение для PNG-экспорта.', 'Could not load an image for the PNG export.'],
+    'prepare-svg': ['Не удалось подготовить SVG для PNG-экспорта.', 'Could not prepare the SVG for the PNG export.'],
+    canvas: ['Canvas 2D недоступен в этом браузере.', 'Canvas 2D is unavailable in this browser.'],
+    'create-png': ['Не удалось создать PNG-файл.', 'Could not create the PNG file.']
+  };
+  return error instanceof PngExportError ? messages[error.code][language === 'ru' ? 0 : 1] : UI_TEXT[language].pngExportError;
+}
+
 function blobToDataUrl(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result ?? ''));
-    reader.onerror = () => reject(reader.error ?? new Error('Не удалось встроить изображение тайла в PNG-экспорт.'));
+    reader.onerror = () => reject(new PngExportError('read-image'));
     reader.readAsDataURL(blob);
   });
 }
@@ -1538,7 +1554,7 @@ async function inlineExportImageHrefs(svg: SVGSVGElement): Promise<void> {
     let pendingDataUrl = cache.get(absoluteHref);
     if (!pendingDataUrl) {
       pendingDataUrl = fetch(absoluteHref).then(async (response) => {
-        if (!response.ok) throw new Error(`Не удалось загрузить изображение для PNG-экспорта: ${href}`);
+        if (!response.ok) throw new PngExportError('load-image');
         return blobToDataUrl(await response.blob());
       });
       cache.set(absoluteHref, pendingDataUrl);
@@ -1562,7 +1578,7 @@ async function exportSvgToPng(svg: SVGSVGElement, filename: string, scale = PNG_
     image.decoding = 'async';
     await new Promise<void>((resolve, reject) => {
       image.onload = () => resolve();
-      image.onerror = () => reject(new Error('Не удалось подготовить SVG для PNG-экспорта.'));
+      image.onerror = () => reject(new PngExportError('prepare-svg'));
       image.src = objectUrl;
     });
 
@@ -1570,13 +1586,13 @@ async function exportSvgToPng(svg: SVGSVGElement, filename: string, scale = PNG_
     canvas.width = Math.max(1, Math.ceil(viewBox.width * scale));
     canvas.height = Math.max(1, Math.ceil(viewBox.height * scale));
     const context = canvas.getContext('2d');
-    if (!context) throw new Error('Canvas 2D недоступен в этом браузере.');
+    if (!context) throw new PngExportError('canvas');
     context.fillStyle = '#0c1423';
     context.fillRect(0, 0, canvas.width, canvas.height);
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
 
     const pngBlob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('Не удалось создать PNG-файл.'))), 'image/png');
+      canvas.toBlob((blob) => (blob ? resolve(blob) : reject(new PngExportError('create-png'))), 'image/png');
     });
     downloadBlob(pngBlob, filename);
   } finally {
@@ -13475,8 +13491,7 @@ export function App() {
       applyPreparedDocument(after);
       return true;
     } catch (error) {
-      setEditError(authoredNameError(error,language)??(language === 'ru' ? `Путь не изменён: ${roadErrorText(error instanceof Error ? error.message : '')}`
-        : `Path unchanged: ${error instanceof Error ? error.message : 'preparation error'}`));
+      setEditError(authoredNameError(error,language)??`${language === 'ru' ? 'Путь не изменён' : 'Path unchanged'}: ${roadErrorText(error instanceof Error ? error.message : '')}`);
       return false;
     }
   };
@@ -13808,7 +13823,7 @@ export function App() {
       const next=edit?editTag(tagsRef.current,owner,id,edit.index,language,edit.text):rollTag(tagsRef.current,owner,def,generationRef.current.masterSeed,slot);
       if(!commitManualMap({...captureMap(),tags:next},false))return false;
       const result=findTag(next,owner,id)!;
-      setTagAnnouncement(result.texts.map((text,i)=>result.overrides?.[i]?.[language]??text[language]??text.ru??Object.values(text)[0]).join(' · '));
+      setTagAnnouncement(result.texts.map((_,i)=>localizedTagText(result,def,i,language)).join(' · '));
       if(!edit){tagLocks.current.set(key,now+350);setTagAnimations(current=>({...current,[key]:{key,slot,revision:result.revision,expiresAt:now+350}}));}
       return true;
     }catch(error){setEditError(tagCommandError(error));return false;}
@@ -14886,7 +14901,7 @@ export function App() {
       trackGoal('export_png');
     } catch (error) {
       console.error('PNG export failed', error);
-      window.alert(error instanceof Error ? error.message : t.pngExportError);
+      window.alert(pngExportErrorText(error, language));
     }
   };
 
@@ -15144,6 +15159,12 @@ export function App() {
     if (expected.value === current[field] && (expected.otherValue===undefined||expected.otherValue===current[field==='ru'?'en':'ru'])) { cancelNameDraft(restoreFocus); return true; }
     if(current.editorLocator){
       const other=field==='ru'?'en':'ru',pair={ru:current.ru,en:current.en,[field]:expected.value.trim(),[other]:(expected.otherValue??current[other]).trim()};
+      // EN edits only its visible field. Retain an existing RU name; new names
+      // start with the authored spelling in both locales until RU is edited.
+      if(field==='en'){
+        if(pair.en&&!pair.ru)pair.ru=pair.en;
+        else if(!pair.en&&current.type!=='settlement')pair.ru='';
+      }
       if(pair.ru===current.ru&&pair.en===current.en){cancelNameDraft(restoreFocus);return true;}
       try{
         if([expected.value,expected.otherValue??current[other]].some(v=>/[\u0000-\u001f\u007f]/.test(v)))throw Error('invalid_poi_name');
@@ -15155,7 +15176,7 @@ export function App() {
         }else map.editorNames=renamePoiEditorName(map.editorNames,current.editorLocator,pair,editorNameLocators(map),others);
         checkedRiverMap(map);const before=captureDocument(),after={...before,map};
         recordTransaction(before,after);applyExactMap(map);cancelNameDraft(restoreFocus);setNameStatus('saved');return true;
-      }catch(error){const code=(error as {code?:string;message?:string})?.code??(error as {message?:string})?.message;const invalid=code==='invalid_poi_name'||code==='invalid_or_duplicate_poi_name'||code==='duplicate_poi_name';setNameErrors({general:invalid?(language==='ru'?'Укажите оба имени до 80 символов без повторов. Для очистки авторского имени оставьте оба поля пустыми.':'Enter both names, up to 80 characters each, without duplicates. Leave both fields blank to clear an authored name.'):(language==='ru'?'Не удалось изменить название. Карта не изменена.':'Could not change the name. Your map is unchanged.')});nameFocusRef.current?.focus();return false;}
+      }catch(error){const code=(error as {code?:string;message?:string})?.code??(error as {message?:string})?.message;const invalid=code==='invalid_poi_name'||code==='invalid_or_duplicate_poi_name'||code==='duplicate_poi_name';setNameErrors({general:invalid?(language==='ru'?'Укажите оба имени до 80 символов без повторов. Для очистки авторского имени оставьте оба поля пустыми.':'Enter a unique name of up to 80 characters. Leave the field blank to clear an authored name.'):(language==='ru'?'Не удалось изменить название. Карта не изменена.':'Could not change the name. Your map is unchanged.')});nameFocusRef.current?.focus();return false;}
     }
     const value = expected.value.trim();
     let error: string | undefined;
@@ -15223,7 +15244,7 @@ export function App() {
           else if (e.key === 'Tab') { if (!nameDraft.target.editorLocator&&!saveNameDraft(nameDraftRef.current)) e.preventDefault(); }
           else if (e.key === 'Enter' && !e.nativeEvent.isComposing && !nameComposingRef.current) { e.preventDefault(); saveNameDraft(nameDraftRef.current); } }}
         onBlur={e => { if (!(e.relatedTarget as Element|null)?.closest('[data-inline-name]')&&nameDraftRef.current === nameDraft) saveNameDraft(nameDraft,false); }} />
-      {target.editorLocator&&<label className="poi-name-other">{nameDraft.language==='ru'?'English':'Русский'}<input aria-label={nameDraft.language==='ru'?'Название (English)':'Name (Russian)'} value={nameDraft.otherValue??''} maxLength={80} onChange={e=>changeOtherNameDraft(e.target.value,nameDraft)} onCompositionStart={()=>{nameComposingRef.current=true;}} onCompositionEnd={()=>{nameComposingRef.current=false;}} onKeyDown={e=>{e.stopPropagation();if(e.key==='Escape'){e.preventDefault();cancelNameDraft();}else if(e.key==='Enter'&&!e.nativeEvent.isComposing&&!nameComposingRef.current){e.preventDefault();saveNameDraft(nameDraftRef.current);}}} onBlur={e=>{if(!(e.relatedTarget as Element|null)?.closest('[data-inline-name]')&&nameDraftRef.current===nameDraft)saveNameDraft(nameDraft,false);}} /></label>}
+      {target.editorLocator&&nameDraft.language==='ru'&&<label className="poi-name-other">English<input aria-label="Название (English)" value={nameDraft.otherValue??''} maxLength={80} onChange={e=>changeOtherNameDraft(e.target.value,nameDraft)} onCompositionStart={()=>{nameComposingRef.current=true;}} onCompositionEnd={()=>{nameComposingRef.current=false;}} onKeyDown={e=>{e.stopPropagation();if(e.key==='Escape'){e.preventDefault();cancelNameDraft();}else if(e.key==='Enter'&&!e.nativeEvent.isComposing&&!nameComposingRef.current){e.preventDefault();saveNameDraft(nameDraftRef.current);}}} onBlur={e=>{if(!(e.relatedTarget as Element|null)?.closest('[data-inline-name]')&&nameDraftRef.current===nameDraft)saveNameDraft(nameDraft,false);}} /></label>}
       {nameErrors.general && <span id="direct-name-error" role="alert" className="direct-error">{nameErrors.general}</span>}
     </span> : editMode ? <button type="button" className="direct-value" data-name-key={key}
       aria-label={`${language === 'ru' ? 'Название' : 'Name'}: ${target[language]||target.fallback?.[language]||''}`}
@@ -15275,8 +15296,8 @@ export function App() {
     const ru=language==='ru';
     if(loss.type==='knave'){const v=loss.value as {kind:string;data:{mode?:string;clueText?:string}|string};return `${ru?'Удалить':'Delete'} ${v.kind==='difficulty'?(ru?'отметку проходимости':'terrain difficulty'):v.kind==='content'?(ru?'содержимое точки':'point content'):(ru?'способ обнаружения и улику':'discovery and clue')} · ${loss.key}`;}
     if(loss.type==='lake')return `${ru?'Озеро исчезнет':'Lake will be removed'}: ${waterName(loss.key)}`;
-    if(loss.type==='name'){const v=loss.value as {ru:string;en:string;seaInto?:number[]};return `${ru?'Удалить название':'Delete name'}${loss.key.startsWith('sea:')?` · ${ru?'море':'sea'} #${loss.key.slice(4)}`:''}: ${v.ru} / ${v.en}${v.seaInto?(v.seaInto.length?` · ${ru?'слияние в':'merged into'} ${v.seaInto.map(id=>`${waterName(`sea:${id}`)} (#${id})`).join(', ')}`:` · ${ru?'морской объект исчезнет':'no sea remains'}`):''}`;}
-    if(loss.type==='tag'){const v=loss.value as TagState['instances'][number],def=mythicDefinitions[v.definitionId];const text=v.texts.map((t,i)=>Object.entries({...t,...v.overrides?.[i]}).map(([l,s])=>`${l}: ${s}`).join(' / ')).join(' · ');return `${ru?'Удалить тег':'Delete tag'} ${def?.label[language]??v.definitionId}: ${text} (${v.values.map(v=>v.join('+')).join(' / ')})`;}
+    if(loss.type==='name'){const v=loss.value as {ru:string;en:string;seaInto?:number[]};return `${ru?'Удалить название':'Delete name'}${loss.key.startsWith('sea:')?` · ${ru?'море':'sea'} #${loss.key.slice(4)}`:''}: ${v[language]}${v.seaInto?(v.seaInto.length?` · ${ru?'слияние в':'merged into'} ${v.seaInto.map(id=>`${waterName(`sea:${id}`)} (#${id})`).join(', ')}`:` · ${ru?'морской объект исчезнет':'no sea remains'}`):''}`;}
+    if(loss.type==='tag'){const v=loss.value as TagState['instances'][number],def=mythicDefinitions[v.definitionId];const text=v.texts.map((_,i)=>localizedTagText(v,def,i,language)).join(' · ');return `${ru?'Удалить тег':'Delete tag'} ${def?.label[language]??v.definitionId}: ${text} (${v.values.map(v=>v.join('+')).join(' / ')})`;}
     if(loss.type==='waterPoi')return `${ru?'Удалить водную точку':'Delete water point'}: ${getWaterPoiLabel(loss.value as WaterPoiKind,language)} · ${loss.key}`;
     if(loss.type==='poi'){const v=loss.value as {regionId:number;kind?:PoiKind};return `${ru?'Удалить точку':'Delete point'}: ${v.kind?POI_DETAILS[v.kind]?.label[language]??v.kind:(ru?'Точка интереса':'Point of interest')} · ${loss.key}`;}
     if(loss.type==='obstacle'){const v=loss.value as EditableObstacle;return `${ru?'Удалить препятствие':'Delete barrier'} ${v.id}: ${hexKey(v.hex)} ↔ ${hexKey(v.neighborHex)}`;}
@@ -15845,14 +15866,21 @@ export function App() {
     if (mutationBlocked()) return;
     setConfirmRoadRemoval({roadId,segmentKey,revision:documentRevision.current});
   };
-  const roadErrorText = (code:string) => ({
+  const roadErrorText = (code:string) => (language === 'en' ? {
+    short_path:'Choose at least two hexes.', invalid_path_end:'The start and end must be a point of interest, network node, or open exit.', non_adjacent:'Hexes must be adjacent.', unknown_or_water_hex:'The path must follow existing land.', duplicate_segment:'This segment is already occupied by a path.', obstacle:'This edge has a barrier.', repeated_hex:'A hex cannot be repeated.', network_must_end_path:'End the path at the network node.', invalid_next_road_id:'Could not assign a path ID.',
+    new_internal_dead_end:'This would create a dead end without a point of interest.', removed_open_exit:'An existing map exit cannot be closed.',
+    disconnected_destinations:'The path connects points of interest or network nodes.', settled_road_minimum:'The region must retain its minimum number of roads.',
+    missing_or_ambiguous_intersection:'The crossing is missing or ambiguous.', invalid_crossing_kind:'This river cannot have a ford.',
+    missing_or_ambiguous_road:'The path is missing or ambiguous.', missing_or_ambiguous_segment:'The segment is missing or ambiguous.',
+    stale_crossing:'The crossing data changed.', unknown_fullness:'Could not determine river fullness.'
+  } as Record<string,string> : {
     short_path:'Нужно хотя бы два гекса.', invalid_path_end:'Начало и конец должны быть точкой интереса, узлом сети или открытым выходом.', non_adjacent:'Гексы должны быть соседними.', unknown_or_water_hex:'Путь должен проходить по существующей суше.', duplicate_segment:'Участок уже занят путём.', obstacle:'На ребре есть препятствие.', repeated_hex:'Повтор гекса недопустим.', network_must_end_path:'На узле сети нужно завершить путь.', invalid_next_road_id:'Невозможно выделить ID пути.',
     new_internal_dead_end:'Получится тупик без точки интереса.', removed_open_exit:'Нельзя закрыть существующий выход с карты.',
     disconnected_destinations:'Путь связывает точки интереса или узлы сети.', settled_road_minimum:'Нельзя уменьшить число дорог ниже минимума региона.',
     missing_or_ambiguous_intersection:'Пересечение не найдено или неоднозначно.', invalid_crossing_kind:'На такой реке брод недопустим.',
     missing_or_ambiguous_road:'Путь не найден или неоднозначен.', missing_or_ambiguous_segment:'Участок не найден или неоднозначен.',
     stale_crossing:'Данные переправы изменились.', unknown_fullness:'Не удалось определить полноводность.'
-  } as Record<string,string>)[code] ?? 'Не удалось подготовить изменение пути.';
+  } as Record<string,string>)[code] ?? (language === 'ru' ? 'Не удалось подготовить изменение пути.' : 'Could not prepare the path edit.');
   const roadPanel = editMode && !poiDraft && !regionDraft && !waterDraft && !riverDraft && !roadDraft && roadChoices.length ? <div className="road-editor" aria-label={language==='ru'?'Редактирование путей':'Edit paths'}>
     {roadChoices.map(({road,segment,pair},index) => <div className="road-editor__item" key={`${road.id}:${pair}:${index}`}>
       <button type="button" className="direct-value" aria-pressed={selectedRoadPair===pair && selectedRoadTarget?.roadId===road.id && !selectedRoadTarget.crossingKey} onClick={()=>chooseRoadPair(pair,road.id)}>
@@ -16326,6 +16354,7 @@ export function App() {
                   if (!finishPathDrafts() || !finishInlineName()) return;
                   finishNotesGroup(); clearNotesDraft(); closeEditors();
                   trackGoal('lang_switch');
+                  setTagAnnouncement('');
                   setLanguage((value) => (value === 'ru' ? 'en' : 'ru'));
                 }}
                 aria-label={t.switchLanguage}

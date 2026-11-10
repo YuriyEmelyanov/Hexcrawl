@@ -1,10 +1,11 @@
 import {useEffect,useId,useRef,useState,type SyntheticEvent} from 'react';
 import {selectMythMaterial,type MythMaterialSelection} from './mythMaterial';
-import {ownerKey,type TagInstance,type TagOwner} from './engine';
+import {ownerKey,type TagDefinition,type TagInstance,type TagOwner} from './engine';
+import {localizedTagText} from './tagPresentation';
 
-type Props={owner:TagOwner;instance:TagInstance;poiType:string;language:string;disabled:boolean};
+type Props={owner:TagOwner;instance:TagInstance;definition?:TagDefinition;poiType:string;language:string;disabled:boolean};
 // Reading reference material never invokes a tag command or a map transaction.
-export function MythMaterialView({owner,instance,poiType,language,disabled}:Props){
+export function MythMaterialView({owner,instance,definition,poiType,language,disabled}:Props){
  const id=useId(),request=useRef(0);
  const view=useRef<HTMLDivElement|null>(null),focusWasInside=useRef(false);
  const [open,setOpen]=useState(false),[result,setResult]=useState<MythMaterialSelection|null>(null);
@@ -26,7 +27,7 @@ export function MythMaterialView({owner,instance,poiType,language,disabled}:Prop
    if(request.current===token)setResult(selectMythMaterial(instance,owner,poiType,module.default,language));
   }).catch(()=>{if(request.current===token)setResult({status:'error',reason:'load-failed'});});
  };
- const original=instance.texts[0]?.[language]??instance.texts[0]?.ru??Object.values(instance.texts[0]??{})[0]??'';
+ const original=localizedTagText(instance,definition,0,language,false);
  const overridden=instance.overrides?.[0]?.[language]!==undefined;
  return <div ref={view} className="myth-material" data-myth-material={ownerKey(owner)}
    onFocusCapture={()=>{focusWasInside.current=true;}}
@@ -49,7 +50,7 @@ export function MythMaterialView({owner,instance,poiType,language,disabled}:Prop
      {result.content.roles.length?result.content.roles.map(role=><details key={role.id}><summary aria-disabled={disabled} tabIndex={disabled?-1:0}>{role.title}</summary><p>{role.text}</p></details>):<p>{ru?'Ролей нет':'No roles'}</p>}
     </section>
     <p className="myth-material-source">{ru?'Источник: Mythic Bastionland, с. ':'Source: Mythic Bastionland, p. '}{result.record.sourcePage}</p>
-    {result.record.references.length>0&&<div className="myth-material-references">{result.record.references.map((ref,index)=><p key={index}>{ref.description}{ref.type==='unresolved'?(ru?' (ссылка не разрешена)':' (unresolved reference)'):''}</p>)}</div>}
+    {result.record.references.length>0&&<div className="myth-material-references">{result.record.references.map((ref,index)=><p key={index}>{ru?ref.description:ref.descriptionEn??'Additional source reference'}{ref.type==='unresolved'?(ru?' (ссылка не разрешена)':' (unresolved reference)'):''}</p>)}</div>}
    </>}
   </div>}
  </div>;

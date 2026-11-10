@@ -2,6 +2,7 @@ import {useEffect,useId,useRef,useState} from 'react';
 import {ownerKey,type TagDefinition,type TagInstance,type TagOwner} from './engine';
 import {MythMaterialView} from './MythMaterialView';
 import {TableResultRow,type TableRollAction} from './TableResultRow';
+import {localizedTagText} from './tagPresentation';
 type Props={owner:TagOwner;definition?:TagDefinition;instance?:TagInstance;language:string;editMode:boolean;disabled:boolean;rollDisabled?:boolean;materialContext?:{poiType:string;documentRevision:number;disabled:boolean};animation?:{key:string;slot?:number;revision:number;expiresAt:number};onDraftChange?:(active:boolean,token:string)=>void;onRoll:(slot?:number)=>boolean;onEdit:(index:number,text:string)=>boolean};
 export function TagRow({owner,definition:def,instance,language,editMode,disabled,rollDisabled,materialContext,animation,onDraftChange,onRoll,onEdit}:Props){
  const [editing,setEditing]=useState<number|null>(null),[draft,setDraft]=useState('');
@@ -9,7 +10,7 @@ export function TagRow({owner,definition:def,instance,language,editMode,disabled
  useEffect(()=>()=>draftObserver.current?.(false,draftToken),[]);
  const label=def?.label[language]??def?.label.ru??instance?.definitionId??'';
  const readonly=!def||(instance&&instance.definitionVersion!==def.version);
- const text=(i:number)=>instance?.overrides?.[i]?.[language]??instance?.texts[i]?.[language]??instance?.texts[i]?.ru??Object.values(instance?.texts[i]??{})[0]??'';
+ const text=(i:number)=>instance?localizedTagText(instance,def,i,language):'';
  const stopEditing=()=>{setEditing(null);onDraftChange?.(false,draftToken);};
  const commit=()=>{if(editing!==null&&onEdit(editing,draft))stopEditing();};
  const action=(slot:number):TableRollAction=>({slot,values:instance!.values[slot],sides:instance!.sides[slot],current:text(instance!.resolver==='product'?0:slot),
@@ -25,5 +26,5 @@ export function TagRow({owner,definition:def,instance,language,editMode,disabled
    components={instance.resolver==='product'?[{actions:instance.values.map((_,i)=>action(i)),result:result(0)}]:instance.values.map((_,i)=>({actions:[action(i)],result:result(i)}))}/>
 {materialContext?.poiType==='myth'&&owner.kind==='poi'&&instance.definitionId==='mb.myth'&&<MythMaterialView
   key={`${ownerKey(owner)}:${instance.definitionVersion}:${instance.revision}:${instance.entryIds.join('|')}:${language}:${materialContext.documentRevision}`}
-  owner={owner} instance={instance} poiType={materialContext.poiType} language={language} disabled={disabled||materialContext.disabled||editing!==null}/>}</>;
+  owner={owner} instance={instance} definition={def} poiType={materialContext.poiType} language={language} disabled={disabled||materialContext.disabled||editing!==null}/>}</>;
 }
