@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-043",
+  "stage_id": "TABLES1",
+  "completed_slice": "schema2_autofill_adapter",
+  "status": "programmer_checkpoint_continue",
+  "run_id": "2026-11-10T2102-programmer-HX-BL-043-TABLES1-autofill",
+  "head_sha": "04bcfd9050b0d4f0c349e3fc7256f16357ba2ff0",
+  "tree_sha": "d075e8153f9f9883f1f45f855a3bba44985de450",
+  "baseline_sha": "6d83385ccdb2daac693fa2b6064b697be2313170",
+  "branch": "agent/hx-tables1",
+  "pr": 500,
+  "pr_draft": true,
+  "spec_ref": "agent-work/specs/HX-BL-043-TABLES1.md",
+  "spec_version": "TBL-1.0",
+  "approval_ref": "agent-work/decisions/owner-approval-2026-11-10-HX-BL-043-TABLES1.json",
+  "implementation_allowed": true,
+  "release_approved": false,
+  "review_ready": false,
+  "full_task_complete": false,
+  "next_role": "programmer",
+  "next_task_id": "HX-BL-043",
+  "next_step": "Подключить подготовленные TABLES1-команды и fillPreparation к единой транзакции App: schema2/v12, настоящий import/save/UndoRedo, stale/draftToken и identity/loss; затем общий UI и actual desktop/узкий показ. Новое согласование старта не требуется. После полного этапа — независимый review новогоSHA.",
+  "next_result": "На реальном App первая правка мигрирует все owners+изменение заодно, JSONv12/Undo к старому payload/Redo точны; продолжение генерирует только новые owners с fillPreparation, старыеcalls/worldRNG сохранены; remap/loss подтверждены.",
+  "integration_notes": [
+    "fillPreparation takes full current authoritative facts, including existingowners. It delegates all validation and initial distributions/namespaces to fillKnaveContent, excluding accepted/preserved owners, then allocates stableglobal IDs in canonical order.",
+    "Caller marker updates for newly generatedowners must read primary call legacySelection.role/representation; no site/trait writable mirror. Never change existing POIkind from preparation commands.",
+    "No automatic migration on read or generation of legacy schema1: preserve existing fill path until explicit TABLES1 edit materializes schema2.",
+    "Current source module remains detached. v12 format, transaction/history/stale/loss integrations and UI not activated; current helper tests do not prove them.",
+    "Historical RIV016 failure still requires package disposition. A successful random mandatory run would not close the saved seed1702308986 counterexample."
+  ],
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-10T1957-programmer-HX-BL-043-TABLES1-domain-continue.json",
+  "evidence_ref": "agent-work/evidence/TABLES1-autofill-2102/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/TABLES1-autofill-2102/test-change-summary.json",
+  "ui_actual_implemented": false,
+  "ui_actual_responsible": "programmer",
+  "owner_design_response_required": false,
+  "upstream_PR496_unchanged": true,
+  "after_current": {
+    "task_id": "HX-BL-054",
+    "stage_id": "PF2-BATCH1"
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10 21:02:20 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10 21:15:38 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "errors": [],
+    "restoration_performed": false,
+    "limitation": "Point-in-time actual checks only; later service state not guaranteed. Schedule/prompt unchanged."
+  },
+  "completed_at": "2026-11-10 21:15:38 UTC",
+  "checks_ref": "agent-work/evidence/TABLES1-autofill-2102/checks.json"
+}
