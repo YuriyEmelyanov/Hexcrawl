@@ -1,0 +1,11 @@
+# Exact aad4516 bounded independent review
+
+Reviewed head `aad4516f3f01443c7c6c12fa7403e66f6a3a3201`, tree `02b07b3140d2e36ae65b575af732add773837165`, base `f17236b90592b92a8f553678eaf81de3f34b340e`; diff is one CSS rule in src/App.tsx. Fresh-context reviewer independently executed real production createExportSvgClone via TypeScript AST in a minimal Node DOM contract, with negative base control. All five counter style declarations match page rule; original stays unchanged, editor-only content removed. DETAIL1-REVIEW-EXPORT-COUNT-STYLE closed only on this exact SHA. No raster/readability/UI acceptance inferred.
+
+Independent74/74 Node cases passed. Ordinary CI check386/386, TypeScript/build, browser and separate RNG succeeded. CI checks out PR merge eaef67660acffe8d65fa87d93c41250453b94831; root fetched merge ref and confirmed tree02b07b3140d2e36ae65b575af732add773837165 equals reviewed head tree. CI log and bridge method in checks.json. These counts are separate/overlapping, never summed.
+
+The unchanged independent-review.json preserves the fresh agent report and original `/tmp/q-*` execution paths; artifacts here use the same basename without q-. Script uses /tmp/hx-aad-independent and executor dependencies; adjust path constants only to reproduce on exact checkout. Diagnostics are temporary reviewer artifacts, not permanent test growth. Source/tests untouched by review.
+
+Whole DETAIL1+CLASSIFY1 acceptance remains incomplete: actual12/24 mixed/compact uniquePOI, longnames1500/390/320 keyboard/touch/overflow, PNG fidelity and approved bounded response evidence. Historical Browser URL gate denial is evidence of that prior operation; current review did not attempt fresh browser UI or bypass. It is not proof of permanent complete technical blockage. No new functional defect asserted from missing evidence.
+
+Nine whole model1.2 criteria remain unknown/insufficient_evidence, not G0; no score award/current-score/history modification. HistoricRIV011unknown remains. Next strategist coordination and exact bounded UI programmer handoff stored at agent-work/handoffs/2026-11-10-HX-BL-051-aad4516-next.json and agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json. Do not repeat accepted style/74 review on unchangedSHA with no new evidence. No publication permission.

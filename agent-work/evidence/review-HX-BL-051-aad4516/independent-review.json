@@ -1,0 +1,539 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-export-style-independent-rereview",
+  "reviewer": "fresh-context independent child review_aad_fresh",
+  "created_at": "2026-11-10T13:04:52Z",
+  "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+  "tree_sha": "02b07b3140d2e36ae65b575af732add773837165",
+  "base_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+  "pr": 496,
+  "ops_snapshot_sha": "a07b6f44a4c9b5380b01860e0787901893b49f19",
+  "worktree": {
+    "path": "/tmp/hx-aad-independent",
+    "detached": true,
+    "tracked_changes": false,
+    "status_porcelain": "",
+    "source_test_changes_by_reviewer": 0
+  },
+  "disposition": {
+    "status": "bounded_style_fix_verified_full_package_UI_acceptance_incomplete",
+    "closed_findings": [
+      {
+        "id": "DETAIL1-REVIEW-EXPORT-COUNT-STYLE",
+        "status": "closed_for_exact_head",
+        "reason": "Actual production helper output includes precisely one count rule, with fill:#fff, stroke:#123, stroke-width:.7px, paint-order:stroke, font-weight:bold equivalent to page CSS. Base negative control lacks that rule."
+      }
+    ],
+    "new_product_findings": [],
+    "full_DETAIL1_CLASSIFY1_acceptance": false,
+    "release_approved": false,
+    "next_step": "Preserve style closure; root coordinates existing bounded UI/export evidence handoff and approved queue. Do not repeat source/74 review unless a new SHA or concrete regression justifies it."
+  },
+  "source_diff": {
+    "files": [
+      "src/App.tsx"
+    ],
+    "insertions": 1,
+    "deletions": 0,
+    "content": "Only .detail-marker-count declaration added to SVG_EXPORT_STYLES",
+    "diff_check": "passed"
+  },
+  "checks": {
+    "node_version": "v24.22.1",
+    "targeted": {
+      "command": "node --test test/detail*.test.mjs test/classification.test.mjs test/saveSafety.test.mjs test/regionEditing.test.mjs",
+      "executed": 74,
+      "passed": 74,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 34772.776781,
+      "exit_code": 0,
+      "log": "/tmp/q-targeted-tests.log"
+    },
+    "temporary_diagnostic": {
+      "script": "/tmp/q-export-clone-probe.mjs",
+      "log": "/tmp/q-export-clone-probe.log",
+      "result": "/tmp/q-export-clone-probe.json",
+      "independent_of_author_script": true,
+      "actual_helper_ast_extraction": true,
+      "base_negative_control": true,
+      "node_cases": 2,
+      "permanent_test_growth": false,
+      "result_summary": [
+        {
+          "sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+          "actual_helper_executed": true,
+          "style_rule_count": 0,
+          "page_rule": {
+            "fill": "#fff",
+            "stroke": "#123",
+            "stroke-width": ".7px",
+            "paint-order": "stroke",
+            "font-weight": "bold"
+          },
+          "export_rule": null,
+          "page_export_parity": false,
+          "clone_contract_pass": true,
+          "marker_preserved": true,
+          "source_unchanged": true,
+          "negative_control": true
+        },
+        {
+          "sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+          "actual_helper_executed": true,
+          "style_rule_count": 1,
+          "page_rule": {
+            "fill": "#fff",
+            "stroke": "#123",
+            "stroke-width": ".7px",
+            "paint-order": "stroke",
+            "font-weight": "bold"
+          },
+          "export_rule": {
+            "fill": "#fff",
+            "stroke": "#123",
+            "stroke-width": ".7px",
+            "paint-order": "stroke",
+            "font-weight": "bold"
+          },
+          "page_export_parity": true,
+          "clone_contract_pass": true,
+          "marker_preserved": true,
+          "source_unchanged": true,
+          "negative_control": false
+        }
+      ],
+      "limits": [
+        "No actual DOM rendering/computed cascade/font loading",
+        "No SVG image load, PNG raster or visual readability assertion",
+        "No fresh UI obtained; no browser/Playwright/CI bypass",
+        "Synthetic tiny SVG only; not response measurement"
+      ]
+    },
+    "full386_rerun": false,
+    "CI": {
+      "independently_verified_by": "parent root, not this reviewer",
+      "run_id": 42811845275,
+      "reported_status": "3jobs success; check386/386,typecheck/build",
+      "checkout_sha": "eaef67660acffe8d65fa87d93c41250453b94831",
+      "checkout_tree": "02b07b3140d2e36ae65b575af732add773837165",
+      "bridge": "Parent fetched CI merge SHA and reported its tree equals exact reviewed head. Source CI is regression evidence, not new independent UI."
+    }
+  },
+  "safeguards": {
+    "scope": "Limited existing74 suite + exact single-line diff + inspection of relevant real controller cases",
+    "owner_context": "PASS existing cross-source multi-owner extent, both selectable, owner-specific clue, explicit owner switch, invalid-owner atomic refusal, Undo/Redo",
+    "import": "PASS existing ordinary v11 fixture corpus (road/Classic/Mythic/sea/Knave): exact save round-trip, bad version/cells/poiId/legacyRef/empty cells/water or access refs/source convention refuse without document/history mutation",
+    "limits": "Finite Node controller fixtures; no actual browser interactions inferred."
+  },
+  "evidence_gap": {
+    "id": "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE",
+    "status": "pending_separate_from_closed_style_defect",
+    "items": [
+      "Actual12/24 mixed terrain and compact unique POI/multiple owner selection",
+      "Actual long names1500/390/320, keyboard/touch and overflow",
+      "Actual PNG selected-level/footprint visual fidelity, including rendered count readability",
+      "Approved bounded actual response measurements on existing small fixtures; no new threshold or heavy run"
+    ],
+    "browser_context": "Prior explicit Browser security URL gate denial was provided in current handoff. This reviewer made no browser/Playwright/alternate/CI UI attempt; this does not establish a permanent present full technical block. Node clone output is not raster/readability proof.",
+    "ui_actual_shown_for_new_sha": false
+  },
+  "historical_risks": [
+    {
+      "id": "CLASSIFY1-VALIDATION-RIV011",
+      "status": "unknown",
+      "reason": "No new evidence in this bounded style review; no heavy003/500-map rerun."
+    }
+  ],
+  "score_assessment": {
+    "model_version": "1.2",
+    "model_path": "agent-work/strategy/score-model.md",
+    "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+    "current_score_blob_sha": "0b3526f8f4665067276c159508c730790aac5448",
+    "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+    "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+    "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+    "assessment_scope": "Nine requested affected criteria, bounded regression/serialization correction; no full re-audit.",
+    "historical1_1_transferred": false,
+    "numeric_points_awarded": 0,
+    "numeric_delta": null,
+    "summary_status": "insufficient_evidence_grades_before_after_delta_unknown",
+    "double_counting": "One serialization correction is evidence for affected criteria only; no repeated award or automatic breadth/quality transition.",
+    "criteria": [
+      {
+        "criterion_id": "S01-C04",
+        "weight": 25,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "Existing exact-SHA detailGeography route/access/water-mutation refusal cases pass; one CSS-only insertion cannot change route code."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "No full route corpus, cross-game requirements, campaign or new generation run."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      },
+      {
+        "criterion_id": "S01-C05",
+        "weight": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "Existing exact-SHA geography/placement compatibility checks pass; generation and hydrography code identical to base."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "No 500-map expert study, distribution measurement or full compatibility corpus."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      },
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "74-case set includes extent edit, identity, E7/E8, delete/remap, invalid/stale refusal, exact Undo/Redo and real import safeguards."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "Node controller/fixtures only; pointer, touch and all editor interaction permutations unverified."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      },
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "Actual export clone retains count marker and injects page-equivalent style; existing detail state/view/summary regressions pass."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "Actual12/24 mixed terrain, compact shared-POI view and raster presentation unverified; no player map/fog claim."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "Independent real clone helper execution confirms five-property stylesheet parity at exact head; negative control at base reproduces missing rule; real ordinary v11 importer/round-trip/refusal cases pass."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "PNG raster/load/font/readability and selected-level export fidelity not observed. No SVG download feature or full approved round-trip corpus claim."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      },
+      {
+        "criterion_id": "S05-C01",
+        "weight": 25,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "Existing cross-source overlap controller case proves selectable owner-specific source context and clues, missing-owner refusal, exact history; summary retains unique POI."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "Actual compact panel at12/24, long names1500/390/320 and all required card fields unverified."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      },
+      {
+        "criterion_id": "S04-C05",
+        "weight": 10,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "No localization/accessibility implementation changed by one-line stylesheet diff; existing state safeguards pass."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "No fresh keyboard/touch, focus/hit-target/overflow, assistive technology or WCAG AA verification."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      },
+      {
+        "criterion_id": "S05-C03",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "Existing classification, annotation/history/import and explicit owner-context clue checks pass at exact head."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "L1 authoring regression only; discovery/search/reveal runtime and full game-dependent breadth not established."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      },
+      {
+        "criterion_id": "S07-C01",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unknown"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "insufficient_evidence"
+        },
+        "delta": null,
+        "status": "insufficient_evidence_no_award",
+        "quality": {
+          "status": "bounded_regression_evidence",
+          "evidence": "Classification regression suite and mixed-source summary data checks pass; source geography untouched."
+        },
+        "breadth": {
+          "status": "insufficient_evidence",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "scope": "No complete applicable requirement profile assessed; technical/general-product portions do not acquire an artificial20-game requirement."
+        },
+        "limitations": [
+          "No gameplay consequences/approved context corpus/master validation or full game-dependent biome differentiation assessment."
+        ],
+        "evidence": [
+          "/tmp/q-targeted-tests.log",
+          "/tmp/q-export-clone-probe.json"
+        ],
+        "reviewed_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201"
+      }
+    ]
+  },
+  "necessity": {
+    "patch": "One additive export stylesheet declaration is necessary and sufficient for the observed missing style propagation in the production clone; matches established page rule without unrelated refactor.",
+    "verification": "Small temporary actual-helper probe has direct missing-rule negative sensitivity on base. Existing74 controls are reused for unchanged owner/import risks. No duplicate persistent test justified by reversible one-line correction.",
+    "test_change_summary": {
+      "base_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+      "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "suite": "existing Node detail*/classification/saveSafety/regionEditing",
+      "scenario_or_risk": "Missing count-rule propagation; unchanged owner-context/import and exact history safeguards",
+      "reuse_or_new_reason": "Reuse existing safety cases; independent temporary diagnostic checks bounded style correction and base failure.",
+      "source": "git diff --numstat/name-only base..head shows only src/App.tsx +1; no test paths changed.",
+      "executed": 74,
+      "passed": 74,
+      "skipped": 0,
+      "temporary_reviewer_probe_cases": 2,
+      "node_browser_rng_counts_combined": false
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
+    "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "source": "Exact base/head git diff; only +1 src/App.tsx",
+    "executed_existing_node": 74,
+    "passed_existing_node": 74,
+    "temporary_diagnostic_cases_separate": 2
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10T13:01:41Z",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-10T13:04:52Z",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time checks; no guarantee after end check."
+  },
+  "no_external_writes": true,
+  "evidence_files": [
+    "/tmp/q-export-clone-probe.mjs",
+    "/tmp/q-export-clone-probe.log",
+    "/tmp/q-export-clone-probe.json",
+    "/tmp/q-targeted-tests.log",
+    "/tmp/q-write-review.py"
+  ]
+}
