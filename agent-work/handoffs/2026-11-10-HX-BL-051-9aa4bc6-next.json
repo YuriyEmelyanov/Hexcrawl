@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-043",
+  "stage_id": "TABLES1",
+  "next_role": "business_analyst",
+  "status": "approved_ready_for_specification",
+  "approval_ref": "agent-work/decisions/owner-approval-2026-11-10-HX-BL-043-TABLES1.json",
+  "scope_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-strategist.json",
+  "implementation_start_approval": "already_granted",
+  "new_start_approval_required": false,
+  "full_spec_before_programming": true,
+  "scope": {
+    "in_scope": [
+      "Ручной выбор допустимой подтверждённой строки таблицы для выбранного места наряду с существующим броском.",
+      "Получение результата подтверждённой связанной таблицы с сохранением исходной подсказки и понятного происхождения результата; поведение повторных ссылок сверяется с печ.1 Knave.",
+      "Несколько независимых обращений к таблицам одного места, включая повторный выбор той же таблицы и одинаковые результаты; явное редактируемое толкование мастера.",
+      "Адресный переброс одного обращения с сохранением остальных; сохранение, загрузка, Undo/Redo, продолжение карты и смена языка сохраняют принятые результаты.",
+      "Совместимость с существующими картами и уже принятым содержимым Knave; компактный общий интерфейс таблиц, по существующим принципам MB/Knave."
+    ],
+    "out_of_scope": [
+      "Оставшиеся специализированные операции из 28-строчного аудита, если они не нужны для этих трёх возможностей.",
+      "Движки боя, магии, найма, торговли, фракций, проведение путешествия, время и состояние партии.",
+      "Новая генерация географии, изменение правил рек/дорог, автоматическое изменение местности или неявное добавление объектов из текста подсказки.",
+      "Обязательная автоматическая литературная интерпретация подсказок, AI-генерация описаний и платные сервисы.",
+      "Публикация полного корпуса книги или универсальный импорт произвольных книг; все используемые новые исходные строки требуют проверенных локаторов и соблюдения существующих полномочий."
+    ],
+    "former_PLACE1": "Историческое отложение KNAVE2-PLACE1 остаётся действующим для остального объёма. Новое прямое решение разрешает только перечисленные три возможности TABLES1; старый этап целиком не возобновляется."
+  },
+  "source_inputs": [
+    "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-strategist.json",
+    "agent-work/strategy/score-model.md",
+    "agent-work/strategy/vision.md",
+    "existing MB/Knave shared dice/table UI and current accepted051 package"
+  ],
+  "deliverables": [
+    "Developer-ready TABLES1 specification: allowed row selection, linked table result, repeatable independent calls/clues, addressed reroll, save/import/history and compatibility.",
+    "Reuse existing common table/dice UI, verified row/table references and approved scope; preserve prior PLACE1 exclusions.",
+    "Compact desktop+narrow proposed UI shown in ownerchat, with mainstates and limits; no design approval wait.",
+    "criterion_id before/expectedgradepointsdelta or unknown per1.2, requirements/scenario/evidence traceability and handoff to programmer."
+  ],
+  "publication_wait_does_not_block": true,
+  "release_approved": false,
+  "after_TABLES1": {
+    "task_id": "HX-BL-054",
+    "stage_id": "PF2-BATCH1"
+  },
+  "pending_current_review": false,
+  "dependency": {
+    "task_id": "HX-BL-051",
+    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "status": "independently_accepted_approved_functional_scope",
+    "review_result_ref": "agent-work/results/2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6.json",
+    "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5847043248"
+  },
+  "next_step": "Бизнес-аналитик готовит TABLES1 по утверждённым трём возможностям: проверенные строки/связи таблиц, несколько независимых подсказок места; совместимость/история/переброс и компактный desktop+narrow UI-показ, критерии приёмки и score1.2, затем передача программисту. Повторное стартовое согласование не нужно. Публикация051 отдельно и не задерживает эту работу.",
+  "release_conditions_for051": {
+    "release_preview_pending": true,
+    "category": "release_presentation_gap",
+    "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "package_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "provided": "Current targeted central automatic row1500/390 and existing DETAIL1 actual fixture actions/exports.",
+    "missing": "Complete published-main to combined candidate walkthrough covering classification and detail actions, desktop and narrow, with comparable state, limits, shown-in-chat evidence and reviewer verification.",
+    "blocks_functional_acceptance": false,
+    "blocks_next_already_approved_task": false,
+    "required_before_release_request": true,
+    "new_design_gate": false
+  },
+  "authority_status": "Own TABLES1 start/scope approved10Nov. Full specification before programming, no paid expenses or extra scope; publication separately approved.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-10 18:03:52 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-10 18:17:36 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time checks only; no guarantee of later service state. Persistent team continues on approved043/054; schedule/instructions unchanged."
+  },
+  "completed_at": "2026-11-10 18:17:36 UTC"
+}
