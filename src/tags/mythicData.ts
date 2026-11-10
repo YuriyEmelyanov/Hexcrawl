@@ -807,7 +807,7 @@ export const sparkData: Record<string, {ru: string[][]; en: string[][]}> = {
     ]
   }
 };
-export const mythicCatalog: {myth: string; seer: string; landmarks: Record<string,string>; englishLandmarks: Record<string,string>; englishSeer?: string | null}[] = [
+export const mythicCatalog: {myth: string; englishMyth: string; seer: string; landmarks: Record<string,string>; englishLandmarks: Record<string,string>; englishSeer: string}[] = [
   {
     "myth": "Чума",
     "seer": "Гнилой Провидец",
@@ -827,7 +827,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Icy mist",
       "ruin": "Burned village"
     },
-    "englishSeer": "The Rotted Seer"
+    "englishSeer": "The Rotted Seer",
+    "englishMyth": "The Plague"
   },
   {
     "myth": "Стена",
@@ -848,7 +849,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Shifting pit",
       "ruin": "Defiled totem"
     },
-    "englishSeer": "The Swollen Seer"
+    "englishSeer": "The Swollen Seer",
+    "englishMyth": "The Wall"
   },
   {
     "myth": "Тень",
@@ -869,7 +871,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Illusory paths",
       "ruin": "Skull heap"
     },
-    "englishSeer": "The Entombed Seer"
+    "englishSeer": "The Entombed Seer",
+    "englishMyth": "The Shadow"
   },
   {
     "myth": "Река",
@@ -890,7 +893,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Heralds of doom",
       "ruin": "Hanging skeletons"
     },
-    "englishSeer": "The Reed Seer"
+    "englishSeer": "The Reed Seer",
+    "englishMyth": "The River"
   },
   {
     "myth": "Виверна",
@@ -911,7 +915,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Dark woods",
       "ruin": "Gory painting"
     },
-    "englishSeer": "The Loathed Seer"
+    "englishSeer": "The Loathed Seer",
+    "englishMyth": "The Wyvern"
   },
   {
     "myth": "Гоблин",
@@ -932,7 +937,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Ominous chimes",
       "ruin": "Shattered shield"
     },
-    "englishSeer": "The Lost Seer"
+    "englishSeer": "The Lost Seer",
+    "englishMyth": "The Goblin"
   },
   {
     "myth": "Лес",
@@ -953,7 +959,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Deafening birds",
       "ruin": "Horse tomb"
     },
-    "englishSeer": "The Carved Seer"
+    "englishSeer": "The Carved Seer",
+    "englishMyth": "The Forest"
   },
   {
     "myth": "Дитя",
@@ -974,7 +981,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Hallucinogenic spores",
       "ruin": "Toppled henge"
     },
-    "englishSeer": "The Enthroned Seer"
+    "englishSeer": "The Enthroned Seer",
+    "englishMyth": "The Child"
   },
   {
     "myth": "Орден",
@@ -995,7 +1003,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Confounding caverns",
       "ruin": "Fouled garden"
     },
-    "englishSeer": "The Jewelled Seer"
+    "englishSeer": "The Jewelled Seer",
+    "englishMyth": "The Order"
   },
   {
     "myth": "Мертвецы",
@@ -1016,7 +1025,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Eternal night",
       "ruin": "Crumbled bridge"
     },
-    "englishSeer": "The Jawbone Seer"
+    "englishSeer": "The Jawbone Seer",
+    "englishMyth": "The Dead"
   },
   {
     "myth": "Нижний мир",
@@ -1037,7 +1047,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Ghostly shadows",
       "ruin": "Broken fort"
     },
-    "englishSeer": "The Veiled Seer"
+    "englishSeer": "The Veiled Seer",
+    "englishMyth": "The Underworld"
   },
   {
     "myth": "Червь",
@@ -1058,7 +1069,8 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Strange constellations",
       "ruin": "Impact crater"
     },
-    "englishSeer": "The Serpent Seer"
+    "englishSeer": "The Serpent Seer",
+    "englishMyth": "The Wurm"
   },
   {
     "myth": "Стая",
@@ -1071,8 +1083,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Дымящиеся пни",
       "ruin": "Кораблекрушение"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Stone quarry",
+      "sanctum": "Glittering pond",
+      "monument": "Enormous banner",
+      "hazard": "Crumbling cliffs",
+      "curse": "Smoking stumps",
+      "ruin": "Shipwreck"
+    },
+    "englishSeer": "The Welcomed Seer",
+    "englishMyth": "The Pack"
   },
   {
     "myth": "Глаз",
@@ -1085,8 +1105,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Дразнящий мираж",
       "ruin": "Обломки статуй"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Lakeside lodge",
+      "sanctum": "Secret cove",
+      "monument": "Colossus of the Queen",
+      "hazard": "Floodplain",
+      "curse": "Taunting mirage",
+      "ruin": "Statuary rubble"
+    },
+    "englishSeer": "The Dreaming Seer",
+    "englishMyth": "The Eye"
   },
   {
     "myth": "Клинок",
@@ -1099,8 +1127,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Безжалостные ветры",
       "ruin": "Разграбленный храм"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Toll bridge",
+      "sanctum": "Tiny island",
+      "monument": "Guarded reliquary",
+      "hazard": "Bubbling swamp",
+      "curse": "Merciless winds",
+      "ruin": "Looted shrine"
+    },
+    "englishSeer": "The Hanged Seer",
+    "englishMyth": "The Blade"
   },
   {
     "myth": "Легион",
@@ -1113,8 +1149,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Стонущая земля",
       "ruin": "Город, погребенный в пепле"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Cooling well",
+      "sanctum": "Sparkling rocks",
+      "monument": "Split mountain",
+      "hazard": "Spiked roots",
+      "curse": "Moaning ground",
+      "ruin": "City buried in ash"
+    },
+    "englishSeer": "The Unnamed Seer",
+    "englishMyth": "The Legion"
   },
   {
     "myth": "Бес",
@@ -1127,8 +1171,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Преследующие огоньки",
       "ruin": "Разбитая поляна"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Hidden cave",
+      "sanctum": "Glowing hollow",
+      "monument": "Eternal tree",
+      "hazard": "Slippery stones",
+      "curse": "Haunting lights",
+      "ruin": "Shattered glade"
+    },
+    "englishSeer": "The Winged Seer",
+    "englishMyth": "The Imp"
   },
   {
     "myth": "Тролль",
@@ -1141,8 +1193,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Рои насекомых",
       "ruin": "Забытый дворец"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Abandoned tower",
+      "sanctum": "Singing trees",
+      "monument": "Titan's seat",
+      "hazard": "Narrow passage",
+      "curse": "Swarms of insects",
+      "ruin": "Forgotten palace"
+    },
+    "englishSeer": "The Cured Seer",
+    "englishMyth": "The Troll"
   },
   {
     "myth": "Демон",
@@ -1155,8 +1215,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Мертвая земля",
       "ruin": "Обломки от набега"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Hilltop house",
+      "sanctum": "Moaning rocks",
+      "monument": "Raised ship",
+      "hazard": "Draining ascent",
+      "curse": "Dead ground",
+      "ruin": "Raid wreckage"
+    },
+    "englishSeer": "The Frozen Seer",
+    "englishMyth": "The Demon"
   },
   {
     "myth": "Море",
@@ -1169,8 +1237,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Катящийся туман",
       "ruin": "Гнилые виселицы"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Salmon stream",
+      "sanctum": "Lapping waves",
+      "monument": "Clifftop tomb",
+      "hazard": "Dangerous crossing",
+      "curse": "Rolling mist",
+      "ruin": "Rotten gallows"
+    },
+    "englishSeer": "The Watched Seer",
+    "englishMyth": "The Sea"
   },
   {
     "myth": "Эльф",
@@ -1183,8 +1259,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Невидимые глаза",
       "ruin": "Безымянные могилы"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Hunting lodge",
+      "sanctum": "Enchanted pond",
+      "monument": "Carved names",
+      "hazard": "Spiked traps",
+      "curse": "Unseen eyes",
+      "ruin": "Unmarked graves"
+    },
+    "englishSeer": "The Prey Seer",
+    "englishMyth": "The Elf"
   },
   {
     "myth": "Топор",
@@ -1197,8 +1281,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Запутанная тропа",
       "ruin": "Обрушенная башня"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Logging camp",
+      "sanctum": "Vast plain",
+      "monument": "First flame",
+      "hazard": "Fallen forest",
+      "curse": "Confusing trail",
+      "ruin": "Collapsed tower"
+    },
+    "englishSeer": "The Drunken Seer",
+    "englishMyth": "The Axe"
   },
   {
     "myth": "Гном",
@@ -1211,8 +1303,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Безлюдное болото",
       "ruin": "Окровавленный алтарь"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Modest fort",
+      "sanctum": "Piercing winds",
+      "monument": "Seer's skull",
+      "hazard": "Clay slopes",
+      "curse": "Desolate moor",
+      "ruin": "Bloodied altar"
+    },
+    "englishSeer": "The Feasting Seer",
+    "englishMyth": "The Dwarf"
   },
   {
     "myth": "Башня",
@@ -1225,8 +1325,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Запах серы",
       "ruin": "Пепельная яма"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Open market",
+      "sanctum": "Smouldering geyser",
+      "monument": "Buried library",
+      "hazard": "Spiked rocks",
+      "curse": "Sulphurous smell",
+      "ruin": "Ash pit"
+    },
+    "englishSeer": "The Sunlit Seer",
+    "englishMyth": "The Tower"
   },
   {
     "myth": "Колесница",
@@ -1239,8 +1347,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Спутанные тростники",
       "ruin": "Разбитая керамика"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Quiet quarry",
+      "sanctum": "Secluded scribes",
+      "monument": "Heron statue",
+      "hazard": "Flooded glade",
+      "curse": "Dizzying reeds",
+      "ruin": "Broken pottery"
+    },
+    "englishSeer": "The Silvered Seer",
+    "englishMyth": "The Chariot"
   },
   {
     "myth": "Пустыня",
@@ -1253,8 +1369,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Жуткий гул",
       "ruin": "Кровавое поле битвы"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Music camp",
+      "sanctum": "Silent stairs",
+      "monument": "Flower-covered graves",
+      "hazard": "Bone ridges",
+      "curse": "Eerie hum",
+      "ruin": "Bloody battlefield"
+    },
+    "englishSeer": "The Broken Seer",
+    "englishMyth": "The Desert"
   },
   {
     "myth": "Гора",
@@ -1267,8 +1391,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Увядающие топи",
       "ruin": "Обрушившийся мост"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Bridge tower",
+      "sanctum": "Shimmering aurora",
+      "monument": "Candle shrine",
+      "hazard": "Lurking predators",
+      "curse": "Withering marshes",
+      "ruin": "Collapsed bridge"
+    },
+    "englishSeer": "The Unspoken Seer",
+    "englishMyth": "The Mountain"
   },
   {
     "myth": "Звезда",
@@ -1281,8 +1413,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Указатель в никуда",
       "ruin": "Засохшее дерево-алтарь"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Jousting field",
+      "sanctum": "Lookout treehouse",
+      "monument": "Mossy bridge",
+      "hazard": "Slippery climb",
+      "curse": "Signpost to nowhere",
+      "ruin": "Dead tree-shrine"
+    },
+    "englishSeer": "The Brazen Seer",
+    "englishMyth": "The Star"
   },
   {
     "myth": "Солнце",
@@ -1295,8 +1435,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Гнусная тень",
       "ruin": "Алтарь с траурным рогом"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Signal tower",
+      "sanctum": "Shaded grotto",
+      "monument": "Sun brazier",
+      "hazard": "Stinging swarms",
+      "curse": "Vile shadow",
+      "ruin": "Altar with a mourning horn"
+    },
+    "englishSeer": "The Weeping Seer",
+    "englishMyth": "The Sun"
   },
   {
     "myth": "Луна",
@@ -1309,8 +1457,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Ослепляющие споры",
       "ruin": "Останки охотника"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Great hall",
+      "sanctum": "Flower glade",
+      "monument": "Spear reliquary",
+      "hazard": "Biting thorns",
+      "curse": "Blinding spores",
+      "ruin": "Hunter's remains"
+    },
+    "englishSeer": "The Red Seer",
+    "englishMyth": "The Moon"
   },
   {
     "myth": "Лев",
@@ -1323,8 +1479,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Облака дыма",
       "ruin": "Яма для убийств"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Actors' camp",
+      "sanctum": "Silent trail",
+      "monument": "Duelling ground",
+      "hazard": "Rat territory",
+      "curse": "Clouds of smoke",
+      "ruin": "Murder pit"
+    },
+    "englishSeer": "The Screaming Seer",
+    "englishMyth": "The Lion"
   },
   {
     "myth": "Колесо",
@@ -1337,8 +1501,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Пьянящий воздух",
       "ruin": "Обрушенная стена"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Flowing fountain",
+      "sanctum": "Thorn library",
+      "monument": "Lizard statue",
+      "hazard": "Sinkholes",
+      "curse": "Intoxicating air",
+      "ruin": "Collapsed wall"
+    },
+    "englishSeer": "The Endless Seer",
+    "englishMyth": "The Wheel"
   },
   {
     "myth": "Дубина",
@@ -1351,8 +1523,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Грязевые кучи",
       "ruin": "Зловещие трофеи"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Welcoming brewery",
+      "sanctum": "Guiding stones",
+      "monument": "Ancient bridge",
+      "hazard": "Choking dust",
+      "curse": "Filth heaps",
+      "ruin": "Sinister trophies"
+    },
+    "englishSeer": "The Shackled Seer",
+    "englishMyth": "The Cudgel"
   },
   {
     "myth": "Ящер",
@@ -1365,8 +1545,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Едкое болото",
       "ruin": "Призраки резни"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Feasting hall",
+      "sanctum": "Eternal pond",
+      "monument": "Golden yew",
+      "hazard": "Field of thorns",
+      "curse": "Caustic swamp",
+      "ruin": "Ghosts of a massacre"
+    },
+    "englishSeer": "The Buried Seer",
+    "englishMyth": "The Lizard"
   },
   {
     "myth": "Огр",
@@ -1379,8 +1567,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Дразнящая мираж",
       "ruin": "Башня в лозе"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Silkworm monks",
+      "sanctum": "Canyon vista",
+      "monument": "Flower chapel",
+      "hazard": "Entangling moss",
+      "curse": "Taunting mirage",
+      "ruin": "Vine-covered tower"
+    },
+    "englishSeer": "The Spectral Seer",
+    "englishMyth": "The Ogre"
   },
   {
     "myth": "Паук",
@@ -1393,8 +1589,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Золотая дымка",
       "ruin": "Затопленная деревня"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Meadow camp",
+      "sanctum": "Multicoloured flowers",
+      "monument": "Star sculpture",
+      "hazard": "Cold air",
+      "curse": "Golden haze",
+      "ruin": "Flooded village"
+    },
+    "englishSeer": "The Worst Seer",
+    "englishMyth": "The Spider"
   },
   {
     "myth": "Ковен",
@@ -1407,8 +1611,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Зевающая пропасть",
       "ruin": "Печальные статуи"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Patchwork tent",
+      "sanctum": "Duck pond",
+      "monument": "Eternal hearth",
+      "hazard": "Searing heat",
+      "curse": "Yawning chasm",
+      "ruin": "Sorrowful statues"
+    },
+    "englishSeer": "The Drowned Seer",
+    "englishMyth": "The Coven"
   },
   {
     "myth": "Лич",
@@ -1421,8 +1633,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Внезапное исчезновение",
       "ruin": "Пропавшая башня"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Treetop village",
+      "sanctum": "Serene glade",
+      "monument": "Arena of victory",
+      "hazard": "Quickmud",
+      "curse": "Sudden nothingness",
+      "ruin": "Missing tower"
+    },
+    "englishSeer": "The Torn Seer",
+    "englishMyth": "The Lich"
   },
   {
     "myth": "Упырь",
@@ -1435,8 +1655,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Соленая грязь",
       "ruin": "Ловушки и трупы"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Fortified barracks",
+      "sanctum": "Modest academy",
+      "monument": "Model city",
+      "hazard": "Crumbling ground",
+      "curse": "Salty mud",
+      "ruin": "Traps and corpses"
+    },
+    "englishSeer": "The Tangled Seer",
+    "englishMyth": "The Wight"
   },
   {
     "myth": "Призрак",
@@ -1449,8 +1677,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Зеленый туман",
       "ruin": "Обломки баррикад"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Marsh village",
+      "sanctum": "Misty grove",
+      "monument": "Elder tree",
+      "hazard": "Icy rapids",
+      "curse": "Green mist",
+      "ruin": "Barricaded rubble"
+    },
+    "englishSeer": "The Moonlit Seer",
+    "englishMyth": "The Spectre"
   },
   {
     "myth": "Привидение",
@@ -1463,8 +1699,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Угасание света",
       "ruin": "Затонувшее аббатство"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Sapling village",
+      "sanctum": "Sacred grove",
+      "monument": "Crystal rose",
+      "hazard": "Fierce winds",
+      "curse": "Fading light",
+      "ruin": "Sunken abbey"
+    },
+    "englishSeer": "The Stone Seer",
+    "englishMyth": "The Wraith"
   },
   {
     "myth": "Зверь",
@@ -1477,8 +1721,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Бесцветный лес",
       "ruin": "Деревня с призраками"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Sage's refuge",
+      "sanctum": "Raven nesting ground",
+      "monument": "Obsidian henge",
+      "hazard": "Poisonous swamps",
+      "curse": "Colourless forest",
+      "ruin": "Haunted village"
+    },
+    "englishSeer": "The Green Seer",
+    "englishMyth": "The Beast"
   },
   {
     "myth": "Судья",
@@ -1491,8 +1743,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Растущие тени",
       "ruin": "Затерянный форт"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Minstrel's nook",
+      "sanctum": "Star-filled valley",
+      "monument": "Story stone",
+      "hazard": "Sharp rocks",
+      "curse": "Growing shadows",
+      "ruin": "Lost fort"
+    },
+    "englishSeer": "The Painted Seer",
+    "englishMyth": "The Judge"
   },
   {
     "myth": "Корона",
@@ -1505,8 +1765,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Лабиринт из ветвей",
       "ruin": "Истрепанный мост"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Weaver's loft",
+      "sanctum": "Cool meadow",
+      "monument": "Looming arch",
+      "hazard": "Crumbling ridge",
+      "curse": "Misdirecting branches",
+      "ruin": "Battered bridge"
+    },
+    "englishSeer": "The Celebrated Seer",
+    "englishMyth": "The Crown"
   },
   {
     "myth": "Кабан",
@@ -1519,8 +1787,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Удушающий каньон",
       "ruin": "Выжженная мастерская"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Alchemist's tower",
+      "sanctum": "Whispering statues",
+      "monument": "Quartz pillar",
+      "hazard": "Sulphur springs",
+      "curse": "Choking canyon",
+      "ruin": "Burned-out workshop"
+    },
+    "englishSeer": "The Giant Seer",
+    "englishMyth": "The Boar"
   },
   {
     "myth": "Орел",
@@ -1533,8 +1809,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Отравленная речка",
       "ruin": "Упавший дом на дереве"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Falconer's hut",
+      "sanctum": "Amber stream",
+      "monument": "Sky boulder",
+      "hazard": "Vulture peaks",
+      "curse": "Poisoned stream",
+      "ruin": "Fallen treehouse"
+    },
+    "englishSeer": "The Fungal Seer",
+    "englishMyth": "The Eagle"
   },
   {
     "myth": "Летучая мышь",
@@ -1547,8 +1831,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Жгучая тень",
       "ruin": "Кровавый колодец"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Thistle gatherers",
+      "sanctum": "Bright glade",
+      "monument": "Sun garden",
+      "hazard": "Thorned trench",
+      "curse": "Stinging shade",
+      "ruin": "Bloody well"
+    },
+    "englishSeer": "The Map Seer",
+    "englishMyth": "The Bat"
   },
   {
     "myth": "Жаба",
@@ -1561,8 +1853,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Колышущаяся тьма",
       "ruin": "Сломанная мачта"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Noisy fishery",
+      "sanctum": "Tranquil cove",
+      "monument": "Triple obelisk",
+      "hazard": "Quaking ground",
+      "curse": "Rippling darkness",
+      "ruin": "Broken mast"
+    },
+    "englishSeer": "The Chance Seer",
+    "englishMyth": "The Toad"
   },
   {
     "myth": "Колосс",
@@ -1575,8 +1875,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Скрижаль лжи",
       "ruin": "Увядшая библиотека"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Scribe's refuge",
+      "sanctum": "Root shelter",
+      "monument": "Carved monolith",
+      "hazard": "Needle grass",
+      "curse": "Tablet of lies",
+      "ruin": "Faded library"
+    },
+    "englishSeer": "The Abacus Seer",
+    "englishMyth": "The Colossus"
   },
   {
     "myth": "Крепость",
@@ -1589,8 +1897,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Тишина",
       "ruin": "Очищенная тропа"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Exiled potter's workshop",
+      "sanctum": "Eternal cave",
+      "monument": "Lyre tree",
+      "hazard": "Numbing ache in the air",
+      "curse": "Silence",
+      "ruin": "Scoured trail"
+    },
+    "englishSeer": "The Twilight Seer",
+    "englishMyth": "The Fortress"
   },
   {
     "myth": "Цитадель",
@@ -1603,8 +1919,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Ущелье печали",
       "ruin": "Сломанные инструменты"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Gathering of harpists",
+      "sanctum": "Lullaby stream",
+      "monument": "Marble mesa",
+      "hazard": "Draining dunes",
+      "curse": "Gorge of sorrow",
+      "ruin": "Broken tools"
+    },
+    "englishSeer": "The Bright Seer",
+    "englishMyth": "The Citadel"
   },
   {
     "myth": "Катакомба",
@@ -1617,8 +1941,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Сомнительные тени",
       "ruin": "Обрушенная мозаика"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Stonecutters' camp",
+      "sanctum": "Majestic ledge",
+      "monument": "Kestrel statue",
+      "hazard": "Hopeless climb",
+      "curse": "Untrustworthy shadows",
+      "ruin": "Collapsed mosaic"
+    },
+    "englishSeer": "The Gut Seer",
+    "englishMyth": "The Catacomb"
   },
   {
     "myth": "Гончая",
@@ -1631,8 +1963,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Диссонансный вой",
       "ruin": "Заброшенный дом"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Pipers' citadel",
+      "sanctum": "Sheltered trench",
+      "monument": "Memory opals",
+      "hazard": "Deafening cries",
+      "curse": "Discordant howl",
+      "ruin": "Abandoned house"
+    },
+    "englishSeer": "The Rose Seer",
+    "englishMyth": "The Hound"
   },
   {
     "myth": "Поляна",
@@ -1645,8 +1985,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Запутывающиеся тени",
       "ruin": "Разорванный гобелен"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Silk farm",
+      "sanctum": "Salt cave",
+      "monument": "Seer bone reliquary",
+      "hazard": "Jumping spiders",
+      "curse": "Entangling shadows",
+      "ruin": "Torn tapestry"
+    },
+    "englishSeer": "The Tapestry Seer",
+    "englishMyth": "The Glade"
   },
   {
     "myth": "Турнир",
@@ -1659,8 +2007,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Мираж пруда",
       "ruin": "Разграбленный караван"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Nomad camp",
+      "sanctum": "Tranquil waterfall",
+      "monument": "Ancient throne",
+      "hazard": "Dust storm",
+      "curse": "Pond mirage",
+      "ruin": "Plundered caravan"
+    },
+    "englishSeer": "The Needle Seer",
+    "englishMyth": "The Tournament"
   },
   {
     "myth": "Бык",
@@ -1673,8 +2029,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Изорванный свет",
       "ruin": "Кричащая пещера"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Modest hearth",
+      "sanctum": "Radiant spring",
+      "monument": "Coin pool",
+      "hazard": "Red hail",
+      "curse": "Tattered light",
+      "ruin": "Screaming cave"
+    },
+    "englishSeer": "The Floating Seer",
+    "englishMyth": "The Bull"
   },
   {
     "myth": "Гидра",
@@ -1687,8 +2051,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Ложные голоса",
       "ruin": "Обезглавленная статуя"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Canopy outpost",
+      "sanctum": "Oracle font",
+      "monument": "Golden leaf",
+      "hazard": "Incorporeal attackers",
+      "curse": "False voices",
+      "ruin": "Headless statue"
+    },
+    "englishSeer": "The Lens Seer",
+    "englishMyth": "The Hydra"
   },
   {
     "myth": "Шпиль",
@@ -1701,8 +2073,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Преследующие отражения",
       "ruin": "Зловещий алтарь"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Knight's rest",
+      "sanctum": "Fountain glade",
+      "monument": "Offering plinth",
+      "hazard": "Sticky swamp",
+      "curse": "Haunting reflections",
+      "ruin": "Sinister altar"
+    },
+    "englishSeer": "The Predator Seer",
+    "englishMyth": "The Spire"
   },
   {
     "myth": "Спрайт",
@@ -1715,8 +2095,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Здесь угасает весь свет",
       "ruin": "Почерневший форт"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Moonwatcher settlement",
+      "sanctum": "Steam spring",
+      "monument": "Silver arch",
+      "hazard": "Strangling fog",
+      "curse": "All light fades here",
+      "ruin": "Darkened fort"
+    },
+    "englishSeer": "The Hymn Seer",
+    "englishMyth": "The Sprite"
   },
   {
     "myth": "Дыра",
@@ -1729,8 +2117,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Жгущие глаз пары",
       "ruin": "Костяной мавзолей"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Secret vineyard",
+      "sanctum": "Lily field",
+      "monument": "Eternal beacon",
+      "hazard": "Fire nettles",
+      "curse": "Eye-stinging fumes",
+      "ruin": "Bone mausoleum"
+    },
+    "englishSeer": "The Roaming Seer",
+    "englishMyth": "The Hole"
   },
   {
     "myth": "Туман",
@@ -1743,8 +2139,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Ослепляющие метели",
       "ruin": "Разбитые витражи"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Secluded perfumery",
+      "sanctum": "Sapphire forest",
+      "monument": "Ice pillar",
+      "hazard": "Frostbite fog",
+      "curse": "Blinding blizzards",
+      "ruin": "Shattered stained glass"
+    },
+    "englishSeer": "The Crimson Seer",
+    "englishMyth": "The Mist"
   },
   {
     "myth": "Гаргулья",
@@ -1757,8 +2161,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Затмевающие тростники",
       "ruin": "Разрушенный хендж"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Orchard village",
+      "sanctum": "Glowing pond",
+      "monument": "Shell circle",
+      "hazard": "Chilling bushes",
+      "curse": "Obscuring reeds",
+      "ruin": "Ruined henge"
+    },
+    "englishSeer": "The Dying Seer",
+    "englishMyth": "The Gargoyle"
   },
   {
     "myth": "Подменыш",
@@ -1771,8 +2183,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Насмешливые облака",
       "ruin": "Призрачная деревня"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Bright windmill",
+      "sanctum": "Silent sands",
+      "monument": "Crowned oak",
+      "hazard": "Scorching heat",
+      "curse": "Mocking clouds",
+      "ruin": "Ghostly village"
+    },
+    "englishSeer": "The Born Seer",
+    "englishMyth": "The Changeling"
   },
   {
     "myth": "Инферно",
@@ -1785,8 +2205,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Дымка",
       "ruin": "Сожженная ферма"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Shepherds' tents",
+      "sanctum": "Fruits of clarity",
+      "monument": "Painted cliff",
+      "hazard": "Rocky rapids",
+      "curse": "Haze",
+      "ruin": "Burned farm"
+    },
+    "englishSeer": "The Blossom Seer",
+    "englishMyth": "The Inferno"
   },
   {
     "myth": "Арфа",
@@ -1799,8 +2227,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Ослепляющие огни",
       "ruin": "Остались только тени"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Trappers' hut",
+      "sanctum": "Fragrant pines",
+      "monument": "Worldview peak",
+      "hazard": "Lack of air",
+      "curse": "Blinding lights",
+      "ruin": "Only shadows remain"
+    },
+    "englishSeer": "The Skin Seer",
+    "englishMyth": "The Harp"
   },
   {
     "myth": "Древо",
@@ -1813,8 +2249,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Гриб кошмаров",
       "ruin": "Разрушенная тюрьма"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Tiny market",
+      "sanctum": "Golden grove",
+      "monument": "Constellation dome",
+      "hazard": "Draining spores",
+      "curse": "Nightmare fungus",
+      "ruin": "Ruined prison"
+    },
+    "englishSeer": "The Paired Seer",
+    "englishMyth": "The Tree"
   },
   {
     "myth": "Пруд",
@@ -1827,8 +2271,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Петляющий ручей",
       "ruin": "Пустошь резни"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Peaceful followers",
+      "sanctum": "Lush island",
+      "monument": "Roots of the world",
+      "hazard": "Biting mud",
+      "curse": "Labyrinth stream",
+      "ruin": "Massacre moor"
+    },
+    "englishSeer": "The Armoured Seer",
+    "englishMyth": "The Pool"
   },
   {
     "myth": "Слон",
@@ -1841,8 +2293,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Мшистый воздух",
       "ruin": "Заброшенная гостиница"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Master hunter's hut",
+      "sanctum": "Young forest",
+      "monument": "Sky spire",
+      "hazard": "Bloodsucking insects",
+      "curse": "Mossy air",
+      "ruin": "Abandoned inn"
+    },
+    "englishSeer": "The Dice Seer",
+    "englishMyth": "The Elephant"
   },
   {
     "myth": "Улитка",
@@ -1855,8 +2315,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Тупиковые туннели",
       "ruin": "Великий упавший дуб"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Musical hermit",
+      "sanctum": "Caves of creation",
+      "monument": "Willow guardian",
+      "hazard": "Parasitic worms",
+      "curse": "Dead-end tunnels",
+      "ruin": "Great fallen tree"
+    },
+    "englishSeer": "The Purged Seer",
+    "englishMyth": "The Snail"
   },
   {
     "myth": "Пещера",
@@ -1869,8 +2337,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Вихрь дыма",
       "ruin": "Обрушившийся обелиск"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Guardian's hearth",
+      "sanctum": "Ember cave",
+      "monument": "Diamond aurora",
+      "hazard": "Acid mist",
+      "curse": "Swirling smoke",
+      "ruin": "Collapsed obelisk"
+    },
+    "englishSeer": "The Damned Seer",
+    "englishMyth": "The Cave"
   },
   {
     "myth": "Аппарат",
@@ -1883,8 +2359,16 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Безнадежный мираж",
       "ruin": "Гробница клятвопреступника"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Dreamweaver's cocoon",
+      "sanctum": "Rainbow waterfalls",
+      "monument": "Echoing song",
+      "hazard": "Biting snakes",
+      "curse": "Hopeless mirage",
+      "ruin": "Oathbreaker's tomb"
+    },
+    "englishSeer": "The Pain Seer",
+    "englishMyth": "The Apparatus"
   },
   {
     "myth": "Скала",
@@ -1897,7 +2381,15 @@ export const mythicCatalog: {myth: string; seer: string; landmarks: Record<strin
       "curse": "Завеса мелкого дождя",
       "ruin": "Оскверненный склеп"
     },
-    "englishLandmarks": {},
-    "englishSeer": null
+    "englishLandmarks": {
+      "dwelling": "Philosopher's tower",
+      "sanctum": "Soothing thunder",
+      "monument": "Silent flame",
+      "hazard": "Magma field",
+      "curse": "Veil of drizzle",
+      "ruin": "Defiled catacomb"
+    },
+    "englishSeer": "The Rising Seer",
+    "englishMyth": "The Rock"
   }
 ];

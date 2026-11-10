@@ -23,11 +23,11 @@ export type MythMaterialRecord={
  readonly materialVersion:typeof MYTH_MATERIAL_VERSION;readonly sourceEdition:typeof MYTH_MATERIAL_EDITION;
  readonly sourcePage:number;
  readonly locales:{readonly ru:MythMaterialContent;readonly en?:MythMaterialContent};
- readonly references:readonly {readonly type:'resolved'|'unresolved';readonly description:string}[];
+ readonly references:readonly {readonly type:'resolved'|'unresolved';readonly description:string;readonly descriptionEn?:string}[];
 };
 export type MythMaterialSelection=
  | {status:'absent'}
- | {status:'unavailable';reason:'incompatible-snapshot'|'missing-material'|'incompatible-material'|'incomplete-material'}
+ | {status:'unavailable';reason:'incompatible-snapshot'|'missing-material'|'missing-translation'|'incompatible-material'|'incomplete-material'}
  | {status:'error';reason:'invalid-registry'|'duplicate-material'|'invalid-material'|'load-failed'}
  | {status:'ready';record:MythMaterialRecord;content:MythMaterialContent;language:'ru'|'en';fallback:boolean};
 
@@ -71,7 +71,8 @@ function validateRecord(record:Record<string,unknown>):'valid'|'invalid'|'incomp
   ||!Array.isArray(record.references)||record.references.length>MYTH_MATERIAL_LIMITS.blocks)return 'invalid';
  let incomplete=false;
  for(const reference of record.references){
-  if(!object(reference)||!['resolved','unresolved'].includes(reference.type as string)||!string(reference.description))return 'invalid';
+  if(!object(reference)||!['resolved','unresolved'].includes(reference.type as string)||!string(reference.description)
+   ||(reference.descriptionEn!==undefined&&!string(reference.descriptionEn)))return 'invalid';
  }
  for(const language of Object.keys(record.locales)){
   if(language!=='ru'&&language!=='en')return 'invalid';
@@ -121,6 +122,7 @@ export function selectMythMaterial(instance:TagInstance|undefined,owner:TagOwner
  if(validation==='invalid')return {status:'error',reason:'invalid-material'};
  if(validation==='incomplete')return {status:'unavailable',reason:'incomplete-material'};
  const record=candidate as unknown as MythMaterialRecord;
+ if(language==='en'&&!Object.prototype.hasOwnProperty.call(record.locales,'en'))return {status:'unavailable',reason:'missing-translation'};
  const selectedLanguage=language==='en'&&Object.prototype.hasOwnProperty.call(record.locales,'en')?'en':'ru';
  return {status:'ready',record,content:record.locales[selectedLanguage]!,language:selectedLanguage,fallback:language==='en'&&selectedLanguage==='ru'};
 }

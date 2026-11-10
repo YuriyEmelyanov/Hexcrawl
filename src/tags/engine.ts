@@ -1,7 +1,7 @@
 // Rule-independent tag commands. No geography imports or ambient randomness.
 export type TagOwner = {kind:'region'|'river'|'lake';id:number} | {kind:'poi';regionId:number;hexKey:string};
 export type Texts = Record<string,string>;
-export type TagDefinition = {id:string;version:number;label:Texts;resolver:'independent'|'product';slots:{id:string;label?:Texts;sides:number;count?:number;selection?:'single'|'sum'}[]; tables:Texts[][]};
+export type TagDefinition = {id:string;version:number;label:Texts;resolver:'independent'|'product';slots:{id:string;label?:Texts;sides:number;count?:number;selection?:'single'|'sum'}[]; tables:Texts[][];legacyTables?:Texts[][]};
 export type TagInstance = {definitionId:string;definitionVersion:number;owner:TagOwner;resolver:'independent'|'product';revision:number;sides:number[];values:number[][];entryIds:string[];texts:Texts[];overrides?:Texts[]};
 export type TagState = {schemaVersion:1;instances:TagInstance[];rollCounters:Record<string,number>};
 export const TAGS_PER_OWNER_LIMIT=64, TAG_LANGUAGE_LIMIT=8;
@@ -100,7 +100,9 @@ export function validateTags(value:unknown,owners:Set<string>,registry:Record<st
       if(i.resolver!==def.resolver||i.values.length!==def.slots.length||def.slots.some((s,j)=>s.sides!==i.sides[j]||i.values[j].length!==(s.count??1)))return bad();
       for(const slot of def.slots)if(!int(value.rollCounters[`${key}|${slot.id}`],1))return bad();
       const result=resolved(def,i.values);
-      if(JSON.stringify(i.entryIds)!==JSON.stringify(result.entryIds)||i.texts.some((t:Texts,j:number)=>Object.keys(t).length!==Object.keys(result.texts[j]).length||Object.entries(result.texts[j]).some(([l,s])=>t[l]!==s)))return bad();
+      const legacy=def.legacyTables?resolved({...def,tables:def.legacyTables},i.values):undefined;
+      const same=(a:Texts,b:Texts)=>Object.keys(a).length===Object.keys(b).length&&Object.entries(b).every(([l,s])=>a[l]===s);
+      if(JSON.stringify(i.entryIds)!==JSON.stringify(result.entryIds)||i.texts.some((t:Texts,j:number)=>!same(t,result.texts[j])&&!(legacy&&same(t,legacy.texts[j]))))return bad();
     }
   }
   for(const [k,n] of Object.entries(value.rollCounters))if(k.length>300||!int(n)||!Array.from(seen).some(s=>k.startsWith(s+'|')))return bad();

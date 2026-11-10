@@ -61,6 +61,15 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await page.setViewportSize({width:1500,height:1100});await toggle(a).click();await immutable(production,'reading production material must preserve the complete accepted document');
  assert.deepEqual({undo:await button('Отменить').isDisabled(),redo:await button('Повторить').isDisabled()},productionHistory,'reading preserves existing history availability');
 
+ await page.locator('.language-toggle').click();await collapsed(a);await ready(a);
+ const englishOmens=material(a).getByRole('region',{name:'Omens',exact:true}),englishRoles=material(a).getByRole('region',{name:'Roles',exact:true});
+ assert.deepEqual(await englishOmens.locator('details p').allTextContents(),actual.locales.en.omens.map(o=>o.text));
+ assert.deepEqual(await englishRoles.locator('details p').allTextContents(),actual.locales.en.roles.map(r=>r.text));
+ assert.doesNotMatch(await page.locator('.info-block--hex').textContent(),/[\u0400-\u04ff]/u,'English production material and legacy tag context contain no Russian text');
+ for(const details of await material(a).locator('details').all())await details.locator('summary').click();
+ for(const width of [1500,390,320])metrics.push({state:'production-english',...await capture('myth-production-english',width)});
+ assert.deepEqual(world(await snapshot()),world(production),'English display preserves accepted world, counters and snapshots');
+
  await fresh(route=>route.fulfill({contentType:'text/javascript',body:moduleBody}));
  const before=await snapshot();await closeMenu();await ready(a);
  const omens=material(a).getByRole('region',{name:'Знамения',exact:true}),roles=material(a).getByRole('region',{name:'Роли',exact:true});
@@ -121,9 +130,9 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await immutable(draftBefore,'all protected drafts preserve accepted document and redo');await closeMenu();
 
  // Locale and mode are transient reference contexts; both reset disclosure.
- await page.locator('.language-toggle').click();await collapsed(a);await ready(a);
- assert.equal(await material(a).getByText('Russian source',{exact:true}).count(),1);
- assert.ok((await material(a).textContent()).includes('ВЫМЫШЛЕННЫЙ МАТЕРИАЛ A.'));assert.equal(await material(a).getByRole('region',{name:'Omens',exact:true}).locator('details').count(),2);
+ await page.locator('.language-toggle').click();await collapsed(a);await open(a);
+ await material(a).getByText('Material for this myth is not available',{exact:true}).waitFor();
+ assert.doesNotMatch(await material(a).textContent(),/[\u0400-\u04ff]/u,'missing English material must not expose Russian fallback');
  assert.deepEqual(world(await snapshot()),world(draftBefore));await closeMenu();
  await page.locator('.language-toggle').click();await collapsed(a);
  await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('classic');
@@ -172,5 +181,5 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await immutable(delayedBefore,'delayed completion must not mutate map state');await closeMenu();await ready(a);
  assert.ok((await material(a).textContent()).includes('ВЫМЫШЛЕННЫЙ МАТЕРИАЛ A.'));
  await page.unroute(modulePattern);await fs.writeFile(new URL('myth-material-metrics.json',out),JSON.stringify(metrics,null,2));
- console.log('MC1 browser workflow passed: actual72record production module and partial-registry fallback; boundary owners; variable, escaped, grouped long material; exact JSON/history; override; local/cross-row tag and name draft pointer focus and Escape; focus restoration on selection/import; RU fallback; reroll/Undo/import/mode resets; future/no-tag/wrong-POI states; load error; delayed A→B→A; 1500/390/320 layout.');
+ console.log('MC1 browser workflow passed: production RU/EN material and English-only display; boundary owners; variable, escaped, grouped long material; exact JSON/history; override; local/cross-row tag and name draft pointer focus and Escape; focus restoration on selection/import; unavailable missing translation; reroll/Undo/import/mode resets; future/no-tag/wrong-POI states; load error; delayed A→B→A; 1500/390/320 layout.');
 }

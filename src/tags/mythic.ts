@@ -12,8 +12,9 @@ for(const [name,columns] of Object.entries(sparkData)){
  mythicDefinitions[`mb.${name}`]={id:`mb.${name}`,version:1,label:{ru:labels[name][0],en:labels[name][1]},resolver:'independent',slots:[{id:'character',label:{ru:slotLabels[name][0][0],en:slotLabels[name][0][1]},sides:12},{id:'form',label:{ru:slotLabels[name][1][0],en:slotLabels[name][1][1]},sides:12}],tables:columns.ru.map((column,j)=>column.map((ru,i)=>({ru,en:columns.en[j][i]})))};
 }
 for(const name of ['myth','dwelling','sanctum','monument','hazard','curse','ruin','seer']){
- const texts:Texts[]=mythicCatalog.map(row=>name==='myth'?{ru:row.myth}:name==='seer'?{ru:row.seer,...(row.englishSeer?{en:row.englishSeer}:{})}:{ru:row.landmarks[name],...(row.englishLandmarks[name]?{en:row.englishLandmarks[name]}:{})});
- mythicDefinitions[`mb.${name}`]={id:`mb.${name}`,version:1,label:{ru:labels[name][0],en:labels[name][1]},resolver:'product',slots:[{id:'group',label:{ru:'Группа',en:'Group'},sides:6},{id:'entry',label:{ru:'Запись',en:'Entry'},sides:12}],tables:[texts]};
+ const texts:Texts[]=mythicCatalog.map(row=>name==='myth'?{ru:row.myth,en:row.englishMyth}:name==='seer'?{ru:row.seer,en:row.englishSeer}:{ru:row.landmarks[name],en:row.englishLandmarks[name]});
+ const legacyTexts=texts.map((text,index)=>name==='myth'||index>=12?{ru:text.ru}:text);
+ mythicDefinitions[`mb.${name}`]={id:`mb.${name}`,version:1,label:{ru:labels[name][0],en:labels[name][1]},resolver:'product',slots:[{id:'group',label:{ru:'Группа',en:'Group'},sides:6},{id:'entry',label:{ru:'Запись',en:'Entry'},sides:12}],tables:[texts],legacyTables:[legacyTexts]};
 }
 export type TagMap={regions:{id:number;generationMode?:string;centerHex:{q:number;r:number};isTract?:boolean;suppressCentralPoi?:boolean;centralPoiKind?:string;pointsOfInterest:{q:number;r:number}[];pointOfInterestKinds?:Record<string,string>}[];rivers:{id:number}[];hexTerrainByKey:Map<string,{lakeId?:number}>};
 const hkey=(h:{q:number;r:number})=>`${h.q},${h.r}`;
