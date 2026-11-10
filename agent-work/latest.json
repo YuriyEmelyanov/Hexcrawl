@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-11-10",
-  "branch": "agent/hx-bl-051-detail1",
+  "branch": "agent-operations",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
   "strategy_branch": "main",
@@ -28,8 +28,8 @@
   "plan_id": "2026-11-08T1957-strategist-next-product",
   "run_id": "2026-11-10T1859-analyst-HX-BL-043-TABLES1",
   "plan_revision": 1,
-  "baseline_sha": "00190bb749a4fa5af57aac4bbffff808e8fe733f",
-  "status": "specification_in_progress",
+  "baseline_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+  "status": "developer_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -47,21 +47,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "business_analyst",
-  "next_role": "business_analyst",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-043",
-  "spec_path": "agent-work/specs/HX-BL-051-DETAIL1.md",
-  "spec_version": "DTL-1.0",
-  "result_path": "agent-work/results/2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6.json",
+  "spec_path": "agent-work/specs/HX-BL-043-TABLES1.md",
+  "spec_version": "TBL-1.0",
+  "result_path": "agent-work/results/2026-11-10T1859-analyst-HX-BL-043-TABLES1.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
-  "active_claim": {
-    "run_id": "2026-11-10T1859-analyst-HX-BL-043-TABLES1",
-    "role": "business_analyst",
-    "task_id": "HX-BL-043",
-    "claim_ref": "agent-work/claims/2026-11-10T1859-analyst-HX-BL-043-TABLES1.json",
-    "status": "active",
-    "execution_running": true
-  },
-  "next_step": "Бизнес-аналитик готовит TABLES1 по утверждённым трём возможностям: проверенные строки/связи таблиц, несколько независимых подсказок места; совместимость/история/переброс и компактный desktop+narrow UI-показ, критерии приёмки и score1.2, затем передача программисту. Повторное стартовое согласование не нужно. Публикация051 отдельно и не задерживает эту работу.",
+  "active_claim": null,
+  "next_step": "Программист реализует TABLES1 по TBL-1.0: ручные строки, две рабочие связи и независимые подсказки с толкованием; schema2/v12, миграция/история и компактный UI. Показан макет; ответа на дизайн не ждать. Затем exactSHA проверки, actualUI и независимый reviewer; выпуск отдельно.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -130,14 +123,14 @@
     "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/review-HX-BL-051-9aa4bc6",
+  "evidence_path": "agent-work/evidence/TABLES1-analysis-1859",
   "branch_name": "agent/hx-bl-051-detail1",
-  "pr": 496,
-  "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
-  "tree_sha": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
-  "checks_status": "exactSHA_CI_success_and_independent_functional_acceptance",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42860961335",
-  "review_verdict": "accepted_for_approved_functional_scope",
+  "pr": null,
+  "head_sha": null,
+  "tree_sha": null,
+  "checks_status": "specification_source_and_preview_validation_only; code_checks_not_run",
+  "checks_url": null,
+  "review_verdict": "not_due_specification_stage",
   "role_selection_mode": "ready_work_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -235,7 +228,7 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6/score-assessment1.2.json",
+  "score_assessment_ref": null,
   "role_selection_reason": "Priority5: approvedTABLES1 lacks usable spec;051 independently accepted and claim released, no release permission inferred from owner's question.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
@@ -266,16 +259,19 @@
       "method": "automations.peek"
     },
     "end": {
-      "status": "unchecked",
-      "is_enabled": null
+      "checked_at": "2026-11-10 19:13:26 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
     },
+    "restoration_performed": false,
     "errors": [],
-    "restoration_performed": false
+    "limitation": "Actual point-in-time checks only; no guarantee of later service state. Same persistent team, schedule/instructions unchanged."
   },
   "open_findings": [
     "CLASSIFY1-VALIDATION-RIV011"
   ],
-  "current_review_score_assessment_status": "insufficient_evidence_for_all_nine_whole_grades_functional_scope_accepted",
+  "current_review_score_assessment_status": "not_due_no_implementation; analystforecastunknown",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -799,8 +795,8 @@
     "completed_at": "2026-10-27T12:12:46.356Z"
   },
   "review_request": null,
-  "reviewed_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
-  "current_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6/score-assessment1.2.json",
+  "reviewed_sha": null,
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -900,7 +896,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-10 18:17:36 UTC",
+  "updated_at": "2026-11-10 19:13:26 UTC",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1182,7 +1178,7 @@
     "skipped": 0,
     "reused_evidence_counts": "Prior386 Node,74 reviewer, browser andRNG kept separate; not rerun or added together."
   },
-  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5847043248",
+  "review_url": null,
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
   "last_readiness_check": {
     "run_id": "2026-11-09T0158-strategist-owner-MB-scope",
@@ -1251,7 +1247,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6",
+  "evidence_ref": "agent-work/evidence/TABLES1-analysis-1859",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1568,7 +1564,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-9aa4bc6-next.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-programmer.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1702,9 +1698,10 @@
   "future_head_sha": null,
   "future_tree_sha": null,
   "current_package_release_approval": {
-    "task_id": "HX-BL-051",
-    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
-    "status": "not_authorized; full_walkthrough_and_RIV011_disposition_pending",
+    "task_id": "HX-BL-043",
+    "stage_id": "TABLES1",
+    "head_sha": null,
+    "status": "not_implemented; release_not_authorized",
     "release_approved": false
   },
   "current_risk_findings": [],
@@ -1904,17 +1901,7 @@
   },
   "previous_result_path": "agent-work/results/2026-11-06-developer-release-PR491.json",
   "handoff_path": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
-  "ui_actual_preview": {
-    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-    "tree_sha": "45a83248e266fa79774ddabcc731135216c1a656",
-    "ref": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui-actual.json",
-    "shown_in_current_chat": true,
-    "presented_in_final_response": false,
-    "source": "Current programmer commentary",
-    "desktop": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-12-desktop.png",
-    "narrow": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/long-names-320.png",
-    "limitations": "Same small authored map. After includes conditional7cell manualextent; not a published-main screenshot or measured city size."
-  },
+  "ui_actual_preview": null,
   "task_release_permission": false,
   "market_catalog_discovery": {
     "date": "2026-10-28",
@@ -2133,12 +2120,17 @@
     "completed_at": "2026-10-29T18:36:47.812Z",
     "result_ref": "agent-work/results/2026-10-29-analyst-HX-BL-023-direct-edit.json"
   },
-  "active_slice": "DETAIL1-UI-EVIDENCE2-review",
+  "active_slice": "TABLES1-specification",
   "last_completed_stage_task_id": "HX-BL-051",
   "ui_preview": {
-    "version": "UI2-1.0",
-    "shown": true,
-    "ref": "agent-work/evidence/HX-BL-043-ROLLUI2/visuals/manifest.json"
+    "version": "TBL-UI1",
+    "type": "proposal_not_implementation",
+    "shown_in_current_chat": true,
+    "desktop": "agent-work/previews/HX-BL-043-TABLES1/preview-desktop.png",
+    "narrow": "agent-work/previews/HX-BL-043-TABLES1/preview-narrow.png",
+    "states": "agent-work/previews/HX-BL-043-TABLES1/preview-states.png",
+    "base_interface_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "owner_response_required_to_continue": false
   },
   "ui_preview_pending": false,
   "marketing_gate_status": "not_passed_full023_remains",
@@ -2261,52 +2253,11 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "insufficient_evidence_for_all_nine_whole_grades_functional_scope_accepted",
+  "current_task_score_assessment_status": "analyst_forecast_unknown_model1.2",
   "published": false,
   "main_changed": false,
-  "ui_actual": {
-    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
-    "tree_sha": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
-    "artifact": {
-      "id": 13785896188,
-      "name": "DETAIL1-UI",
-      "size_in_bytes": 3560618,
-      "url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13785896188",
-      "archive_download_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13785896188/zip",
-      "expired": false,
-      "created_at": "2026-11-10T17:09:33Z",
-      "expires_at": "2027-02-08T17:03:34Z",
-      "updated_at": "2026-11-10T17:09:33Z",
-      "digest": "sha256:6b3da90aaf72cbf23b08e955c233ea0057e83cfee7f0f0b35c449b0824bd5a0c",
-      "workflow_run": {
-        "id": 42860961335,
-        "repository_id": 1233284991,
-        "head_repository_id": 1233284991,
-        "head_branch": "agent/hx-bl-051-detail1",
-        "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40"
-      }
-    },
-    "digest_verified": true,
-    "downloaded_digest": "6b3da90aaf72cbf23b08e955c233ea0057e83cfee7f0f0b35c449b0824bd5a0c",
-    "images": [
-      {
-        "name": "central-discovery-1500.png",
-        "sha": "83debd702f1337fc6edd1ba7ecf4144ea1f9c55b"
-      },
-      {
-        "name": "central-discovery-390.png",
-        "sha": "6b32f28d7cbcd2e45b0c5a9b7abc98c2440e71ee"
-      }
-    ],
-    "shown_in_chat": true,
-    "source": "Current programmer commentary actual390 and image-view1500 from existingCIworkflow",
-    "observed": "Centralcapital open_plains has При прохождении;390 document no horizontaloverflow. ExistingUI, one added derived row. Not full published-main before/after.",
-    "limits": [
-      "Small existing authoredfixture, Chromiumviewport; no wholeWCAG/crossbrowser claim.",
-      "Prior64 UI/export gap accepted independently; applicability to9aa needs newreview source correspondence."
-    ]
-  },
-  "review_result_ref": "agent-work/results/2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6.json",
+  "ui_actual": null,
+  "review_result_ref": null,
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-051-a4e8a48/score-assessment1.2.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2417,7 +2368,7 @@
   "test_change_summary_ref": "agent-work/evidence/strategy-HX-BL-051-UI-1404/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/programmer-score-evidence.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
-  "review_evidence_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6",
+  "review_evidence_ref": null,
   "github_review_state": "COMMENT_bounded_fix_accepted_full_package_not_accepted",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/review-HX-BL-051-aad4516/independent-review.json",
   "owner_visual_correction": {
@@ -2485,10 +2436,10 @@
   "process_analysis_ref": "agent-work/proposals/2026-10-31-development-process-review.md",
   "process_analysis_status": "recommendations_only_not_implemented",
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
-  "next_approved_stage": "TABLES1-specification",
-  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-9aa4bc6-next.json",
+  "next_approved_stage": "TABLES1-implementation",
+  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-programmer.json",
   "authorization_status": "Existing approved051 continuation, no new start/design approval required. TABLES1 approved after current051 work completion, before or independently of waiting for its publication approval.",
-  "completed_at": "2026-11-10 18:17:36 UTC",
+  "completed_at": "2026-11-10 19:13:26 UTC",
   "score_changed": false,
   "next_stage_id": "TABLES1",
   "score_evidence_updated": true,
@@ -2496,7 +2447,7 @@
   "implementation_started": true,
   "current_stage_release_approved": false,
   "review_ready": false,
-  "current_stage_ui_status": "independently_verified_bounded_UI; release_walkthrough_pending",
+  "current_stage_ui_status": "proposal_shown_no_design_approval_gate",
   "completed_claim": "agent-work/claims/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
   "evidence_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "finding_ids": [
@@ -2504,13 +2455,14 @@
   ],
   "current_release_package_ref": "agent-work/handoffs/2026-10-31-HX-BL-023-E3-release-package-d7bb38f.json",
   "current_stage_ui_preview": {
-    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-    "type": "actual_candidate",
+    "version": "TBL-UI1",
+    "type": "proposal_not_implementation",
     "shown_in_current_chat": true,
-    "ui_preview_pending": false,
-    "owner_response_required_to_start": false,
-    "desktop": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/overview-12-desktop.png",
-    "narrow": "agent-work/evidence/HX-BL-051-UI-EVIDENCE2-1458/ui/long-names-320.png"
+    "desktop": "agent-work/previews/HX-BL-043-TABLES1/preview-desktop.png",
+    "narrow": "agent-work/previews/HX-BL-043-TABLES1/preview-narrow.png",
+    "states": "agent-work/previews/HX-BL-043-TABLES1/preview-states.png",
+    "base_interface_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "owner_response_required_to_continue": false
   },
   "previous_stage_ui_actual": {
     "head_sha": "d7bb38fbcee367621e5f5ce9fbaf369fbc775e0a",
@@ -4323,8 +4275,8 @@
   },
   "stage_id": "DETAIL1",
   "release_approved": false,
-  "ui_actual_shown": true,
-  "ui_actual_responsible": "programmer supplied current64; independent reviewer bounded verification complete",
+  "ui_actual_shown": false,
+  "ui_actual_responsible": "programmer after implementation",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": "386/386Node,tsc/build,9browsercommands and separateRNGscript pass; no aggregation.",
@@ -5594,7 +5546,7 @@
   "analysis_baseline_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
   "last_published_release_approval": "owner-release-2026-11-06-PR491-de02991",
-  "ui_actual_pending": false,
+  "ui_actual_pending": true,
   "latest_PR492_release": {
     "schema_version": 1,
     "run_id": "2026-11-07-developer-release-PR492",
@@ -6108,7 +6060,7 @@
   "head_location": "public_PR496_branch",
   "branch_is_remote": true,
   "pr_branch_name": "agent/hx-bl-051-detail1",
-  "pr_public_head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+  "pr_public_head_sha": null,
   "next_role_after_decision": "business_analyst",
   "whole_team_blocked": false,
   "local_runtime_content_ready": true,
@@ -6817,7 +6769,7 @@
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
   "review_request_ref": null,
   "programmer_complete": true,
-  "current_programmer_result_ref": "agent-work/results/2026-11-10T1700-programmer-HX-BL-051-central-discovery.json",
+  "current_programmer_result_ref": null,
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -6840,110 +6792,19 @@
   "role": "programmer",
   "latest_result_ref": "agent-work/results/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
   "checks": {
-    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
-    "tree_sha": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
-    "local": {
-      "command": "npm run check",
-      "exit_code": 0,
-      "Node": {
-        "executed": 386,
-        "passed": 386,
-        "failed": 0,
-        "skipped": 0
-      },
-      "typescript": "success",
-      "build": "success",
-      "scope_note": "App/Node files unchanged throughout local run; final browserfile was edited while localcheck ran and is proved by exactCI."
-    },
-    "CI": {
-      "run_id": 42860961335,
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42860961335",
-      "jobs": [
-        {
-          "id": 129986635177,
-          "name": "check",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 129986635636,
-          "name": "world-random",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 129986635813,
-          "name": "browser",
-          "status": "completed",
-          "conclusion": "success"
-        }
-      ],
-      "Node": {
-        "executed": 386,
-        "passed": 386,
-        "failed": 0,
-        "skipped": 0
-      },
-      "browser_top_level_workflows": {
-        "executed": 9,
-        "passed": 9,
-        "failed": 0
-      },
-      "RNG_separate_script": {
-        "executed": 1,
-        "passed": 1,
-        "failed": 0
-      },
-      "typescript": "success",
-      "build": "success",
-      "merge_tree_bridge": {
-        "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
-        "head_tree": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
-        "merge_sha": "b66af0eac3bfb12eeae2fc88f573820057d5c21d",
-        "merge_tree": "5e3798a4796ee414dd8ce361c60ccad5d971f1f4",
-        "same_tree": true
-      }
-    },
-    "red_green": {
-      "red_runtime_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-      "red": {
-        "executed": 4,
-        "passed": 3,
-        "failed": 1
-      },
-      "green": {
-        "executed": 4,
-        "passed": 4,
-        "failed": 0
-      },
-      "temporary16observations": "positive passed; roadcapital visible label is Заметно с дороги rather than generic При прохождении; expectation corrected, not product code"
-    },
-    "artifact": {
-      "id": 13785896188,
-      "name": "DETAIL1-UI",
-      "size_in_bytes": 3560618,
-      "url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13785896188",
-      "archive_download_url": "https://api.github.com/repos/YuriyEmelyanov/Hexcrawl/actions/artifacts/13785896188/zip",
-      "expired": false,
-      "created_at": "2026-11-10T17:09:33Z",
-      "expires_at": "2027-02-08T17:03:34Z",
-      "updated_at": "2026-11-10T17:09:33Z",
-      "digest": "sha256:6b3da90aaf72cbf23b08e955c233ea0057e83cfee7f0f0b35c449b0824bd5a0c",
-      "workflow_run": {
-        "id": 42860961335,
-        "repository_id": 1233284991,
-        "head_repository_id": 1233284991,
-        "head_branch": "agent/hx-bl-051-detail1",
-        "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40"
-      }
-    },
-    "downloaded_sha256": "6b3da90aaf72cbf23b08e955c233ea0057e83cfee7f0f0b35c449b0824bd5a0c",
-    "digest_verified": true,
-    "new_heavy_series": false
+    "scope": "specification_only",
+    "source_baseline_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "validated": [
+      "four-table metadata and16reference edges",
+      "currentformat/UIreuse",
+      "previewSVG rendered and visually inspected",
+      "scorebaselineweights"
+    ],
+    "functional_tests_executed": 0
   },
   "score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown",
-  "review_report_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6/independent-review.json",
-  "reviewed_public_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+  "review_report_ref": null,
+  "reviewed_public_sha": null,
   "closed_findings": [
     "KNC-REV-001",
     {
@@ -7504,10 +7365,10 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6.json",
-  "current_stage_score_assessment_status": "insufficient_evidence_for_all_nine_whole_grades_functional_scope_accepted",
-  "ui_actual_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/ui-actual.json",
-  "execution_running": true,
+  "current_role_result": "agent-work/results/2026-11-10T1859-analyst-HX-BL-043-TABLES1.json",
+  "current_stage_score_assessment_status": "forecast_unknown_model1.2",
+  "ui_actual_ref": null,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -7961,10 +7822,10 @@
     "Scribd_uploaded": false
   },
   "task_id": "HX-BL-051",
-  "review_completed": true,
+  "review_completed": false,
   "release_readiness": "independent_rereview_then_complete_release_walkthrough_and_exact_owner_gate",
   "bounded_feature_accepted": false,
-  "current_package_score_update_status": "not_due_unpublished",
+  "current_package_score_update_status": "not_due_unpublished_no_implementation",
   "next_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
@@ -8015,7 +7876,7 @@
   },
   "local_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
   "checks_evidence_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6/provenance-checks.json",
-  "execution_status": "review_completed_next_approved_analyst_ready",
+  "execution_status": "specification_complete_programmer_ready",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8148,14 +8009,14 @@
     "ci_run": 42736194155,
     "checks": "all_passed"
   },
-  "pr_head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+  "pr_head_sha": null,
   "pr_updated": true,
   "execution_routing": {
     "task_id": "HX-BL-043",
     "stage_id": "TABLES1",
-    "role": "business_analyst",
+    "role": "programmer",
     "status": "ready",
-    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-9aa4bc6-next.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-programmer.json",
     "release_authorized": false
   },
   "last_team_coordination": {
@@ -8337,7 +8198,7 @@
     "full_check": "385/385 passed",
     "remaining": "Actual1/6/12/24 UI and browser verification, then independent exactSHA combined review"
   },
-  "ui_shown_for_this_SHA": true,
+  "ui_shown_for_this_SHA": false,
   "current_stage_owner_decision_required": false,
   "latest_DETAIL1_view_controls": {
     "run_id": "2026-11-10T0700-programmer-HX-BL-051-view-controls",
@@ -8445,9 +8306,9 @@
   ],
   "full_package_review_ready": false,
   "bounded_review_ready": false,
-  "ui_actual_shown_for_new_sha": true,
+  "ui_actual_shown_for_new_sha": false,
   "owner_decision_required_for_next_step": false,
-  "independent_accepted": true,
+  "independent_accepted": false,
   "latest_DETAIL1_export_style": {
     "run_id": "2026-11-10T1156-programmer-HX-BL-051-export-style",
     "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
@@ -8622,10 +8483,10 @@
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
   "last_completed_run_id": "2026-11-10T1559-reviewer-HX-BL-051-64b8476",
   "storage_verification": {
-    "data_commit_sha": "88054b28c72190fca14ae90a5fe6a69f75ff971b",
-    "result_readback": "passed",
+    "data_commit_sha": "97775c527b64b8da8e4777515fed70544759304d",
+    "spec_readback": "passed",
     "latest_written_last": true,
-    "foreign_claims_research_and_approved_queue_preserved": true
+    "foreign_claims_research_and_051_state_preserved": true
   },
   "current_functional_findings": [],
   "release_preview_responsible": "programmer; complete actual combined published-main→candidate walkthrough after correction and before release request",
@@ -8647,5 +8508,14 @@
     "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5845240873",
     "verdict": "changes_requested"
   },
-  "full_package_accepted": true
+  "full_package_accepted": false,
+  "current_stage_code_status": "not_implemented",
+  "accepted_dependency_package": {
+    "task_id": "HX-BL-051",
+    "pr": 496,
+    "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
+    "review_ref": "agent-work/results/2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6.json",
+    "release_approved": false
+  },
+  "score_forecast_ref": "agent-work/evidence/TABLES1-analysis-1859/score-forecast.json"
 }
