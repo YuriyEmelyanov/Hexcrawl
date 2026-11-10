@@ -19113,6 +19113,293 @@
       "release_approved": false,
       "scope_version": 2,
       "authorized_scope": "OnlyPF2-BATCH1v2; priorVaarnscope not approved"
+    },
+    {
+      "task_id": "HX-BL-055",
+      "title": "Создавать регион из выбранных областей, мест и связей по профилю",
+      "status": "proposed",
+      "problem": "Реестр Cairn покрывал лишь две операции преобразования готовой карты. Географические процедуры Setting Seeds и их параметры пакетной подготовки региона отсутствовали.",
+      "benefit": "Ведущий получает согласованный набор областей, опорных мест и путей по выбранному профилю, принимает и исправляет его без подмены вероятностью на каждый гекс.",
+      "game_editions": [
+        "Second Edition official online text; revision/date not declared"
+      ],
+      "primary_scenario": "create",
+      "layer": "L1",
+      "requirement_refs": [
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-006-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013-L1",
+        "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-014-L1"
+      ],
+      "canonical_rule_ids": [
+        "content.discovery_levels",
+        "content.landmarks",
+        "content.place_description",
+        "content.roll_table_resolution",
+        "content.site_density",
+        "content.site_links",
+        "map.land_water_shapes",
+        "map.reference_labels",
+        "map.river_network",
+        "map.routes_and_barriers",
+        "map.terrain_zones"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-001-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-002-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-003-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-004-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-005-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-006-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-007-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-008-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-009-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-010-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-011-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-012-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-013-L1",
+        "agent-work/rules/game-bindings.json#CAIRN2-SS-014-L1"
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C03",
+        "S01-C04",
+        "S01-C05",
+        "S04-C03",
+        "S05-C01",
+        "S05-C02",
+        "S05-C03",
+        "S06-C04",
+        "S06-C05",
+        "S07-C02"
+      ],
+      "scope": "Research handoff for 14 optional geographic operations, using the existing editor and common rules. This is a source profile with known-output cases, not an implementation architecture or approval to start.",
+      "dependencies": [
+        "Strategist chooses priority after existing approved work; analyst resolves source→digital ambiguities.",
+        "Reuse current common operations and future TABLES1 capabilities without extending its current approval.",
+        "Complete data-catalog preparation if selected; table text read, not yet imported as executable catalogs."
+      ],
+      "acceptance_checks": [
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001-L1",
+          "id": "CAIRN2-SS-001-L1-AC01",
+          "given": "Число = 3; точки A и B внутри карты, C вне карты.",
+          "when": "Заменить C и принять границы вокруг трёх точек.",
+          "expected": "Три исходные области; A и B не заменены, принятые границы сохранены."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001-L1",
+          "id": "CAIRN2-SS-001-L1-AC02",
+          "given": "Приняты три области; осталась пустота.",
+          "when": "Добавить четвёртую область в пустоту.",
+          "expected": "Четыре области; число начальных кубов не ограничивает итог."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002-L1",
+          "id": "CAIRN2-SS-002-L1-AC01",
+          "given": "Заданы броски 1, 3, 4, 5, 6.",
+          "when": "Определить категории.",
+          "expected": "Easy, Easy, Tough, Tough, Perilous соответственно."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002-L1",
+          "id": "CAIRN2-SS-002-L1-AC02",
+          "given": "Получен Perilous, конкретная география ещё не выбрана.",
+          "when": "Сохранить результат.",
+          "expected": "Сохранён Perilous; урон и класс HX-BL-044 автоматически не назначены."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003-L1",
+          "id": "CAIRN2-SS-003-L1-AC01",
+          "given": "Easy; местность = 15, ориентир = 1.",
+          "when": "Разрешить обе колонки.",
+          "expected": "Plains + Broken Sundial; использованы разные строки."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003-L1",
+          "id": "CAIRN2-SS-003-L1-AC02",
+          "given": "Perilous; местность = 15, ориентир = 20.",
+          "when": "Разрешить обе колонки.",
+          "expected": "Mountains + Weeping Bubble; индексы не выравниваются автоматически."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004-L1",
+          "id": "CAIRN2-SS-004-L1-AC01",
+          "given": "У области A выбран Broken Sundial в точке P.",
+          "when": "Разместить ориентир.",
+          "expected": "Ориентир связан с A и P; соседние области не изменены."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004-L1",
+          "id": "CAIRN2-SS-004-L1-AC02",
+          "given": "Известно описание видимости, численный радиус неизвестен.",
+          "when": "Сохранить описание.",
+          "expected": "Описание сохранено; радиус в милях или гексах не добавлен."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005-L1",
+          "id": "CAIRN2-SS-005-L1-AC01",
+          "given": "В регионе есть озеро; ведущий не добавляет реку.",
+          "when": "Сохранить воду региона.",
+          "expected": "Озеро осталось источником; новая река не навязана."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005-L1",
+          "id": "CAIRN2-SS-005-L1-AC02",
+          "given": "Высокая точка H, низкая L, море S.",
+          "when": "Принять водоток H → L → S.",
+          "expected": "Сохранены направление и выход в море; дополнительное озеро не создано."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-006-L1",
+          "id": "CAIRN2-SS-006-L1-AC01",
+          "given": "Весна = 1, лето = 2, осень = 3, зима = 4; локальная опция выключена.",
+          "when": "Разрешить сезонную таблицу.",
+          "expected": "Mild and sunny; Nice and cloudy; Cool and foggy; Frigid and stormy. Локального броска нет."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-006-L1",
+          "id": "CAIRN2-SS-006-L1-AC02",
+          "given": "Приняты те же четыре сезона; зимний бросок меняется на 1.",
+          "when": "Исправить только зиму.",
+          "expected": "Зима = Mild and clear; остальные три описания и география сохранены."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007-L1",
+          "id": "CAIRN2-SS-007-L1-AC01",
+          "given": "Heart H у воды, N = 3.",
+          "when": "Создать выбранный набор.",
+          "expected": "Четыре места: H и три дополнительных."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007-L1",
+          "id": "CAIRN2-SS-007-L1-AC02",
+          "given": "Heart H, N = 8; одна дополнительная точка вне карты.",
+          "when": "Повторить положение этой точки.",
+          "expected": "Девять мест: H и восемь дополнительных; прочие положения сохранены."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008-L1",
+          "id": "CAIRN2-SS-008-L1-AC01",
+          "given": "Шесть точек, броски 1, 2, 3, 4, 5, 6; на 1 выбран Waypoint.",
+          "when": "Назначить категории.",
+          "expected": "Waypoint, Curiosity, Curiosity, Lair, Dungeon, Dungeon."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008-L1",
+          "id": "CAIRN2-SS-008-L1-AC02",
+          "given": "Heart уже есть; для нового места получен 1.",
+          "when": "Выбрать Settlement.",
+          "expected": "Новое место — Settlement; Heart не переименован."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009-L1",
+          "id": "CAIRN2-SS-009-L1-AC01",
+          "given": "Ведущий выбрал 1, 2, 3, 4 для H, A, B, C.",
+          "when": "Назначить обозначения.",
+          "expected": "H = 1, A = 2, B = 3, C = 4; имена и положения прежние."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009-L1",
+          "id": "CAIRN2-SS-009-L1-AC02",
+          "given": "Место A остаётся в точке P; новое обозначение — 7.",
+          "when": "Сохранить обозначение.",
+          "expected": "A имеет номер 7 в P; описание прежнее. Старые ссылки требуют отдельной проверки согласованности."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010-L1",
+          "id": "CAIRN2-SS-010-L1-AC01",
+          "given": "Settlement; тип = 4, свойство = 20.",
+          "when": "Разрешить обе колонки.",
+          "expected": "City + Trading Hub."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010-L1",
+          "id": "CAIRN2-SS-010-L1-AC02",
+          "given": "Dungeon; тип = 2, свойство = 18.",
+          "when": "Разрешить обе колонки.",
+          "expected": "Cave + Sealed; комнаты и монстры автоматически не созданы."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011-L1",
+          "id": "CAIRN2-SS-011-L1-AC01",
+          "given": "A–B — условный водный путь; нужна лодка.",
+          "when": "Сохранить соединение.",
+          "expected": "Условие «лодка» сохранено; проходимость без лодки не заявлена."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011-L1",
+          "id": "CAIRN2-SS-011-L1-AC02",
+          "given": "A–C — скрытая дорога; цена поиска неизвестна.",
+          "when": "Сохранить тип.",
+          "expected": "Hidden и неизвестная цена сохранены; деньги и вахты не придуманы."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012-L1",
+          "id": "CAIRN2-SS-012-L1-AC01",
+          "given": "H–A — дорога, H–B — тропа, A–B — сокращение.",
+          "when": "Сохранить набор.",
+          "expected": "Три пары и петля H–A–B–H; соседство гексов не добавляет рёбер."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012-L1",
+          "id": "CAIRN2-SS-012-L1-AC02",
+          "given": "B — конечное место единственного пути.",
+          "when": "Принять тупик.",
+          "expected": "Автоматическая дорога из B ради соединения со всеми местами не добавлена."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013-L1",
+          "id": "CAIRN2-SS-013-L1-AC01",
+          "given": "A–B; Feature = 12, Condition = 20.",
+          "when": "Разрешить подсказки.",
+          "expected": "Mile Markers + Uneven, Soggy Ground; физический вид пути прежний."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013-L1",
+          "id": "CAIRN2-SS-013-L1-AC02",
+          "given": "Condition = 1.",
+          "when": "Сохранить подсказку.",
+          "expected": "Bandit Ambushes записано как угроза; бой и характеристики противников не созданы."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-014-L1",
+          "id": "CAIRN2-SS-014-L1-AC01",
+          "given": "Средний путь выбран тропой.",
+          "when": "Подготовить пометку.",
+          "expected": "2 + 1 = 3 вахты, или 24 часа перехода; одни календарные сутки автоматически не заявлены."
+        },
+        {
+          "requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-014-L1",
+          "id": "CAIRN2-SS-014-L1-AC02",
+          "given": "Длинный путь выбран диким маршрутом.",
+          "when": "Подготовить пометку.",
+          "expected": "3 + 2 = 5 вахт; скорость партии, дата и отдых не придуманы."
+        }
+      ],
+      "expected_evidence": "ExactSHA showing whole selected profile and named acceptance results, persistence/import/history/RNG; source text alone is not runtime evidence.",
+      "source_limitations": [
+        "Webrevision/printed pages unknown; officialEnglishsource only.",
+        "Papercoordinatealgorithm,1–4path degree interpretation and discovery costs unresolved.",
+        "Runtime supportunknown; no source-score uplift."
+      ],
+      "score_delta": null,
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "dedup_review": "Reuse hydrology HX-BL-005, manual routes HX-BL-018 and fixed POI sets HX-BL-053. HX-BL-047 concerns sequential neighbouring terrain. HX-BL-055 holds the combined optional regional recipe. Existing task meanings and active HX-BL-043 scope are unchanged.",
+      "research_handoff_ref": "agent-work/research/requirements/CAIRN2-SettingSeeds-L1.json",
+      "recommended_priority": "candidate_for_strategist_reassessment_after_current_approved_queue; no queue insertion",
+      "owner_start_decision": "not_requested_in_this_run; explicit selected-scope approval needed before new development"
     }
   ],
   "last_review": {

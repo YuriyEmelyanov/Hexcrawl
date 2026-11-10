@@ -51129,6 +51129,1132 @@
       "traceability_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-004",
       "evidence_ids": [],
       "research_ref": "agent-work/research/runs/2026-11-10T1132-DH-preparation-corpus.json"
+    },
+    {
+      "id": "CAIRN2-SS-001-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-001",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Draw Terrain; web body, lines 726–733",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Сохранить опорные точки и принятые границы областей; заменить только точки вне карты и позволить дополнить пустоты без потери принятых областей.",
+      "canonical_rule_ids": [
+        "map.terrain_zones"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.terrain_zones",
+          "parameters": {
+            "initial_count_die": "d6→1..6",
+            "off_page": "reroll displaced dice",
+            "empty_spaces": "additional terrain dice allowed"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Бумажный бросок не задаёт цифровой алгоритм координат или разбиения гексов.",
+            "Заполнение пустот может увеличить итоговое число областей."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-001-L1-AC01: Число = 3; точки A и B внутри карты, C вне карты. → Три исходные области; A и B не заменены, принятые границы сохранены.\nCAIRN2-SS-001-L1-AC02: Приняты три области; осталась пустота. → Четыре области; число начальных кубов не ограничивает итог.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-001-L1-AC01",
+          "given": "Число = 3; точки A и B внутри карты, C вне карты.",
+          "when": "Заменить C и принять границы вокруг трёх точек.",
+          "expected": "Три исходные области; A и B не заменены, принятые границы сохранены."
+        },
+        {
+          "id": "CAIRN2-SS-001-L1-AC02",
+          "given": "Приняты три области; осталась пустота.",
+          "when": "Добавить четвёртую область в пустоту.",
+          "expected": "Четыре области; число начальных кубов не ограничивает итог."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-002-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-002",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Terrain Die Drop Table; web body, lines 734–740",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Сопоставить бросок исходной категории и сохранить её до уточнения местности.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "map.terrain_zones"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "d6_map": {
+              "1-3": "Easy",
+              "4-5": "Tough",
+              "6": "Perilous"
+            },
+            "unit": "one terrain seed"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Это выбор категории области, а не вероятность на каждый гекс.",
+            "Соответствие категориям проходимости HX-BL-044 не установлено."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "map.terrain_zones",
+          "parameters": {
+            "d6_map": {
+              "1-3": "Easy",
+              "4-5": "Tough",
+              "6": "Perilous"
+            },
+            "unit": "one terrain seed"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Это выбор категории области, а не вероятность на каждый гекс.",
+            "Соответствие категориям проходимости HX-BL-044 не установлено."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S05-C01",
+        "S05-C02",
+        "S06-C04"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-002-L1-AC01: Заданы броски 1, 3, 4, 5, 6. → Easy, Easy, Tough, Tough, Perilous соответственно.\nCAIRN2-SS-002-L1-AC02: Получен Perilous, конкретная география ещё не выбрана. → Сохранён Perilous; урон и класс HX-BL-044 автоматически не назначены.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-002-L1-AC01",
+          "given": "Заданы броски 1, 3, 4, 5, 6.",
+          "when": "Определить категории.",
+          "expected": "Easy, Easy, Tough, Tough, Perilous соответственно."
+        },
+        {
+          "id": "CAIRN2-SS-002-L1-AC02",
+          "given": "Получен Perilous, конкретная география ещё не выбрана.",
+          "when": "Сохранить результат.",
+          "expected": "Сохранён Perilous; урон и класс HX-BL-044 автоматически не назначены."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-003-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-003",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Easy / Tough / Perilous; web body, lines 741–815",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Получить два результата из независимых колонок выбранной категории и сохранить их у области.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "map.terrain_zones",
+        "content.landmarks"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "columns": 2,
+            "die_each": "d20",
+            "selection": "independent; not one shared row"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Один общий бросок не заменяет два независимых.",
+            "Источник разрешает перебросить или истолковать результат; это не означает смену всей карты."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "map.terrain_zones",
+          "parameters": {
+            "columns": 2,
+            "die_each": "d20",
+            "selection": "independent; not one shared row"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Один общий бросок не заменяет два независимых.",
+            "Источник разрешает перебросить или истолковать результат; это не означает смену всей карты."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.landmarks",
+          "parameters": {
+            "columns": 2,
+            "die_each": "d20",
+            "selection": "independent; not one shared row"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Один общий бросок не заменяет два независимых.",
+            "Источник разрешает перебросить или истолковать результат; это не означает смену всей карты."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S05-C01",
+        "S05-C02",
+        "S06-C04"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-003-L1-AC01: Easy; местность = 15, ориентир = 1. → Plains + Broken Sundial; использованы разные строки.\nCAIRN2-SS-003-L1-AC02: Perilous; местность = 15, ориентир = 20. → Mountains + Weeping Bubble; индексы не выравниваются автоматически.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-003-L1-AC01",
+          "given": "Easy; местность = 15, ориентир = 1.",
+          "when": "Разрешить обе колонки.",
+          "expected": "Plains + Broken Sundial; использованы разные строки."
+        },
+        {
+          "id": "CAIRN2-SS-003-L1-AC02",
+          "given": "Perilous; местность = 15, ориентир = 20.",
+          "when": "Разрешить обе колонки.",
+          "expected": "Mountains + Weeping Bubble; индексы не выравниваются автоматически."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-004-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-004",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Landmarks / Draw Terrain; web body, lines 723–725,730–731",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Сохранить ориентир в принятой точке с привязкой к области и описанием его роли.",
+      "canonical_rule_ids": [
+        "content.landmarks"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.landmarks",
+          "parameters": {
+            "symbol_in_source": "triangle",
+            "visibility": "especially elevated/clear viewpoints; no numeric range"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Бумажный треугольник не предписывает новый интерфейс или конкретный SVG.",
+            "Численный радиус и видимость из каждой точки не заданы."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-004-L1-AC01: У области A выбран Broken Sundial в точке P. → Ориентир связан с A и P; соседние области не изменены.\nCAIRN2-SS-004-L1-AC02: Известно описание видимости, численный радиус неизвестен. → Описание сохранено; радиус в милях или гексах не добавлен.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-004-L1-AC01",
+          "given": "У области A выбран Broken Sundial в точке P.",
+          "when": "Разместить ориентир.",
+          "expected": "Ориентир связан с A и P; соседние области не изменены."
+        },
+        {
+          "id": "CAIRN2-SS-004-L1-AC02",
+          "given": "Известно описание видимости, численный радиус неизвестен.",
+          "when": "Сохранить описание.",
+          "expected": "Описание сохранено; радиус в милях или гексах не добавлен."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-005-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-005",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Rivers, Seas, and Lakes; web body, lines 816–820",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Проверить наличие источника воды и сохранить выбранное направление водотока к принятому завершению.",
+      "canonical_rule_ids": [
+        "map.land_water_shapes",
+        "map.river_network"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.land_water_shapes",
+          "parameters": {
+            "water_source": "some kind per region",
+            "river_direction": "high→low",
+            "termination": [
+              "lake possible",
+              "sea possible",
+              "off_map possible"
+            ]
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "При наличии воды новая река не обязательна.",
+            "Озеро при встрече с высокой местностью возможно, но не обязательно.",
+            "Численный гидрологический алгоритм не задан."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "map.river_network",
+          "parameters": {
+            "water_source": "some kind per region",
+            "river_direction": "high→low",
+            "termination": [
+              "lake possible",
+              "sea possible",
+              "off_map possible"
+            ]
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "При наличии воды новая река не обязательна.",
+            "Озеро при встрече с высокой местностью возможно, но не обязательно.",
+            "Численный гидрологический алгоритм не задан."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C03",
+        "S01-C04",
+        "S01-C05",
+        "S06-C04"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-005-L1-AC01: В регионе есть озеро; ведущий не добавляет реку. → Озеро осталось источником; новая река не навязана.\nCAIRN2-SS-005-L1-AC02: Высокая точка H, низкая L, море S. → Сохранены направление и выход в море; дополнительное озеро не создано.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-005-L1-AC01",
+          "given": "В регионе есть озеро; ведущий не добавляет реку.",
+          "when": "Сохранить воду региона.",
+          "expected": "Озеро осталось источником; новая река не навязана."
+        },
+        {
+          "id": "CAIRN2-SS-005-L1-AC02",
+          "given": "Высокая точка H, низкая L, море S.",
+          "when": "Принять водоток H → L → S.",
+          "expected": "Сохранены направление и выход в море; дополнительное озеро не создано."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-006-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-006",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Weather; web body, lines 821–855",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Получить и сохранить четыре сезонных описания; локальную необычную погоду хранить отдельно при выборе ведущего.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "season_rolls": "four independent d6",
+            "optional_local_weather": "d20"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Это подготовка заметок, а не ежедневный движок погоды.",
+            "Урон, расход припасов и снаряжение автоматически не рассчитываются."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "season_rolls": "four independent d6",
+            "optional_local_weather": "d20"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Это подготовка заметок, а не ежедневный движок погоды.",
+            "Урон, расход припасов и снаряжение автоматически не рассчитываются."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-006-L1-AC01: Весна = 1, лето = 2, осень = 3, зима = 4; локальная опция выключена. → Mild and sunny; Nice and cloudy; Cool and foggy; Frigid and stormy. Локального броска нет.\nCAIRN2-SS-006-L1-AC02: Приняты те же четыре сезона; зимний бросок меняется на 1. → Зима = Mild and clear; остальные три описания и география сохранены.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-006-L1-AC01",
+          "given": "Весна = 1, лето = 2, осень = 3, зима = 4; локальная опция выключена.",
+          "when": "Разрешить сезонную таблицу.",
+          "expected": "Mild and sunny; Nice and cloudy; Cool and foggy; Frigid and stormy. Локального броска нет."
+        },
+        {
+          "id": "CAIRN2-SS-006-L1-AC02",
+          "given": "Приняты те же четыре сезона; зимний бросок меняется на 1.",
+          "when": "Исправить только зиму.",
+          "expected": "Зима = Mild and clear; остальные три описания и география сохранены."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-006-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-006-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-007-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-007",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Points of Interest / Draw Points of Interest; web body, lines 856–871",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Сохранить Heart у воды и N дополнительных мест; заменить только внеобластные положения.",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.site_links"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.site_density",
+          "parameters": {
+            "Heart": "one separately placed role",
+            "additional_poi_count": "GM chooses 3–8; distribution not specified",
+            "total_inference": "4..9 before optional expansion",
+            "off_page": "reroll displaced dice"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Heart значим, но не обязательно крупнейший или важнейший город.",
+            "Это количество для региона, а не плотность на каждый гекс.",
+            "Распределение N и формула d6 + 2 источником не заданы."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.site_links",
+          "parameters": {
+            "Heart": "one separately placed role",
+            "additional_poi_count": "GM chooses 3–8; distribution not specified",
+            "total_inference": "4..9 before optional expansion",
+            "off_page": "reroll displaced dice"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Heart значим, но не обязательно крупнейший или важнейший город.",
+            "Это количество для региона, а не плотность на каждый гекс.",
+            "Распределение N и формула d6 + 2 источником не заданы."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C02"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-007-L1-AC01: Heart H у воды, N = 3. → Четыре места: H и три дополнительных.\nCAIRN2-SS-007-L1-AC02: Heart H, N = 8; одна дополнительная точка вне карты. → Девять мест: H и восемь дополнительных; прочие положения сохранены.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-007-L1-AC01",
+          "given": "Heart H у воды, N = 3.",
+          "when": "Создать выбранный набор.",
+          "expected": "Четыре места: H и три дополнительных."
+        },
+        {
+          "id": "CAIRN2-SS-007-L1-AC02",
+          "given": "Heart H, N = 8; одна дополнительная точка вне карты.",
+          "when": "Повторить положение этой точки.",
+          "expected": "Девять мест: H и восемь дополнительных; прочие положения сохранены."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-008-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-008",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "POI Die Drop Table; web body, lines 873–880",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Назначить категории выбранным точкам по броскам; ветку результата 1 оставить явным выбором.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.site_density"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "d6_map": {
+              "1": "Waypoint OR Settlement",
+              "2-3": "Curiosity",
+              "4": "Lair",
+              "5-6": "Dungeon"
+            }
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Вес граней не задаёт точную квоту итоговой карты.",
+            "Опасность Curiosity при взаимодействии не означает автоматический бой."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.site_density",
+          "parameters": {
+            "d6_map": {
+              "1": "Waypoint OR Settlement",
+              "2-3": "Curiosity",
+              "4": "Lair",
+              "5-6": "Dungeon"
+            }
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Вес граней не задаёт точную квоту итоговой карты.",
+            "Опасность Curiosity при взаимодействии не означает автоматический бой."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02",
+        "S07-C02"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-008-L1-AC01: Шесть точек, броски 1, 2, 3, 4, 5, 6; на 1 выбран Waypoint. → Waypoint, Curiosity, Curiosity, Lair, Dungeon, Dungeon.\nCAIRN2-SS-008-L1-AC02: Heart уже есть; для нового места получен 1. → Новое место — Settlement; Heart не переименован.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-008-L1-AC01",
+          "given": "Шесть точек, броски 1, 2, 3, 4, 5, 6; на 1 выбран Waypoint.",
+          "when": "Назначить категории.",
+          "expected": "Waypoint, Curiosity, Curiosity, Lair, Dungeon, Dungeon."
+        },
+        {
+          "id": "CAIRN2-SS-008-L1-AC02",
+          "given": "Heart уже есть; для нового места получен 1.",
+          "when": "Выбрать Settlement.",
+          "expected": "Новое место — Settlement; Heart не переименован."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-009-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-009",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Draw Points of Interest; web body, lines 870–871",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Связать обозначения с существующими местами, начиная порядок с Heart; имена и положения сохранить.",
+      "canonical_rule_ids": [
+        "map.reference_labels"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.reference_labels",
+          "parameters": {
+            "start_role": "Heart first",
+            "starting_integer": "not specified"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Начальное целое и порядок прочих мест не фиксированы источником.",
+            "Номер гекса не заменяет обозначение места."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S04-C03"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-009-L1-AC01: Ведущий выбрал 1, 2, 3, 4 для H, A, B, C. → H = 1, A = 2, B = 3, C = 4; имена и положения прежние.\nCAIRN2-SS-009-L1-AC02: Место A остаётся в точке P; новое обозначение — 7. → A имеет номер 7 в P; описание прежнее. Старые ссылки требуют отдельной проверки согласованности.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-009-L1-AC01",
+          "given": "Ведущий выбрал 1, 2, 3, 4 для H, A, B, C.",
+          "when": "Назначить обозначения.",
+          "expected": "H = 1, A = 2, B = 3, C = 4; имена и положения прежние."
+        },
+        {
+          "id": "CAIRN2-SS-009-L1-AC02",
+          "given": "Место A остаётся в точке P; новое обозначение — 7.",
+          "when": "Сохранить обозначение.",
+          "expected": "A имеет номер 7 в P; описание прежнее. Старые ссылки требуют отдельной проверки согласованности."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-010-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-010",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Settlements / Waypoints / Curiosities / Lairs / Dungeons; web body, lines 881–1006",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Сохранить две подсказки у места и принятое толкование; не создавать автоматически внутреннюю карту или механические эффекты.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "columns": 2,
+            "die_each": "d20",
+            "Heart": "usually Waypoint or Settlement",
+            "dungeon_interior": "separate Dungeon Seeds chapter"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Слово «обычно» не является запретом другой категории Heart.",
+            "Ссылка на Dungeon Seeds не означает, что внутренности уже прочитаны или созданы."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "columns": 2,
+            "die_each": "d20",
+            "Heart": "usually Waypoint or Settlement",
+            "dungeon_interior": "separate Dungeon Seeds chapter"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Слово «обычно» не является запретом другой категории Heart.",
+            "Ссылка на Dungeon Seeds не означает, что внутренности уже прочитаны или созданы."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-010-L1-AC01: Settlement; тип = 4, свойство = 20. → City + Trading Hub.\nCAIRN2-SS-010-L1-AC02: Dungeon; тип = 2, свойство = 18. → Cave + Sealed; комнаты и монстры автоматически не созданы.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-010-L1-AC01",
+          "given": "Settlement; тип = 4, свойство = 20.",
+          "when": "Разрешить обе колонки.",
+          "expected": "City + Trading Hub."
+        },
+        {
+          "id": "CAIRN2-SS-010-L1-AC02",
+          "given": "Dungeon; тип = 2, свойство = 18.",
+          "when": "Разрешить обе колонки.",
+          "expected": "Cave + Sealed; комнаты и монстры автоматически не созданы."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-011-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-011",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Paths / Path Types; web body, lines 1007–1014",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Хранить доступность и условие отдельно от физического вида: дорога, тропа или дикий маршрут.",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers",
+        "content.discovery_levels"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.routes_and_barriers",
+          "parameters": {
+            "access_types": [
+              "Standard",
+              "Hidden",
+              "Conditional"
+            ],
+            "physical_types": [
+              "road",
+              "trail",
+              "wilderness"
+            ],
+            "numeric_discovery_cost": null
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Скрытость пути не равна непроходимости местности.",
+            "Численная цена поиска, проверка и урон неизвестны.",
+            "Бумажная нотация линий не задаёт новый интерфейс."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.discovery_levels",
+          "parameters": {
+            "access_types": [
+              "Standard",
+              "Hidden",
+              "Conditional"
+            ],
+            "physical_types": [
+              "road",
+              "trail",
+              "wilderness"
+            ],
+            "numeric_discovery_cost": null
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Скрытость пути не равна непроходимости местности.",
+            "Численная цена поиска, проверка и урон неизвестны.",
+            "Бумажная нотация линий не задаёт новый интерфейс."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S04-C03",
+        "S05-C03",
+        "S06-C04",
+        "S06-C05"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-011-L1-AC01: A–B — условный водный путь; нужна лодка. → Условие «лодка» сохранено; проходимость без лодки не заявлена.\nCAIRN2-SS-011-L1-AC02: A–C — скрытая дорога; цена поиска неизвестна. → Hidden и неизвестная цена сохранены; деньги и вахты не придуманы.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-011-L1-AC01",
+          "given": "A–B — условный водный путь; нужна лодка.",
+          "when": "Сохранить соединение.",
+          "expected": "Условие «лодка» сохранено; проходимость без лодки не заявлена."
+        },
+        {
+          "id": "CAIRN2-SS-011-L1-AC02",
+          "given": "A–C — скрытая дорога; цена поиска неизвестна.",
+          "when": "Сохранить тип.",
+          "expected": "Hidden и неизвестная цена сохранены; деньги и вахты не придуманы."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-012-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-012",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Draw Paths; web body, lines 1015–1023",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Сохранить принятые пары, развилки и физический вид; не заменять сеть соседством гексов или полным графом.",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers",
+        "content.site_links"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.routes_and_barriers",
+          "parameters": {
+            "per_location_text": "create 1–4 paths between each location",
+            "topology": [
+              "loops",
+              "branches",
+              "deadends",
+              "shortcuts"
+            ],
+            "reference": "POI number ↔ POI number"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Трактовка 1–4 как степени вершины или числа новых путей остаётся открытой.",
+            "Конечное место может оставаться тупиком."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.site_links",
+          "parameters": {
+            "per_location_text": "create 1–4 paths between each location",
+            "topology": [
+              "loops",
+              "branches",
+              "deadends",
+              "shortcuts"
+            ],
+            "reference": "POI number ↔ POI number"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Трактовка 1–4 как степени вершины или числа новых путей остаётся открытой.",
+            "Конечное место может оставаться тупиком."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S05-C02",
+        "S06-C04"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-012-L1-AC01: H–A — дорога, H–B — тропа, A–B — сокращение. → Три пары и петля H–A–B–H; соседство гексов не добавляет рёбер.\nCAIRN2-SS-012-L1-AC02: B — конечное место единственного пути. → Автоматическая дорога из B ради соединения со всеми местами не добавлена.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-012-L1-AC01",
+          "given": "H–A — дорога, H–B — тропа, A–B — сокращение.",
+          "when": "Сохранить набор.",
+          "expected": "Три пары и петля H–A–B–H; соседство гексов не добавляет рёбер."
+        },
+        {
+          "id": "CAIRN2-SS-012-L1-AC02",
+          "given": "B — конечное место единственного пути.",
+          "when": "Принять тупик.",
+          "expected": "Автоматическая дорога из B ради соединения со всеми местами не добавлена."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-013-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-013",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Path Features; web body, lines 1028–1052",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Сохранить обе подсказки у пути как описание; не исполнять событие или урон из текста.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "profiles": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "parameters": {
+            "columns": 2,
+            "die_each": "d20"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Колонка Condition не равна типу Conditional path.",
+            "Упоминание засады не требует автоматически запускать бой."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "columns": 2,
+            "die_each": "d20"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Колонка Condition не равна типу Conditional path.",
+            "Упоминание засады не требует автоматически запускать бой."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S05-C01",
+        "S05-C02"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-013-L1-AC01: A–B; Feature = 12, Condition = 20. → Mile Markers + Uneven, Soggy Ground; физический вид пути прежний.\nCAIRN2-SS-013-L1-AC02: Condition = 1. → Bandit Ambushes записано как угроза; бой и характеристики противников не созданы.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-013-L1-AC01",
+          "given": "A–B; Feature = 12, Condition = 20.",
+          "when": "Разрешить подсказки.",
+          "expected": "Mile Markers + Uneven, Soggy Ground; физический вид пути прежний."
+        },
+        {
+          "id": "CAIRN2-SS-013-L1-AC02",
+          "given": "Condition = 1.",
+          "when": "Сохранить подсказку.",
+          "expected": "Bandit Ambushes записано как угроза; бой и характеристики противников не созданы."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
+    },
+    {
+      "id": "CAIRN2-SS-014-L1",
+      "game_id": "CAIRN2",
+      "edition": "Second Edition official online text; revision/date not declared",
+      "source_id": "CAIRN2-WG-SETTINGSEEDS-WEB",
+      "source_rule_id": "CAIRN2-SS-014",
+      "source_url": "https://cairnrpg.com/second-edition/wardens-guide/setting-seeds/",
+      "source_page": null,
+      "source_locator": "Draw Paths, duration bullets; web body, lines 1024–1027",
+      "layer": "L1",
+      "normative_kind": "optional_setting_creation_procedure",
+      "scope": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+      "source_requirement": "Рассчитать и сохранить выбранную плановую пометку в вахтах; не выводить длину из гексов и не менять кампанийное время.",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers",
+        "content.place_description"
+      ],
+      "profiles": [
+        {
+          "rule_id": "map.routes_and_barriers",
+          "parameters": {
+            "base_watches": {
+              "short": 1,
+              "medium": 2,
+              "long": 3
+            },
+            "extra_watches": {
+              "road": 0,
+              "trail": 1,
+              "wilderness": 2
+            },
+            "watch_hours": 8,
+            "typical_day": "two travel Watches plus rest"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Исполнение перехода, расходы и календарь относятся к L2.",
+            "Численные границы категорий в милях или гексах не заданы."
+          ],
+          "profile_status": "unverified"
+        },
+        {
+          "rule_id": "content.place_description",
+          "parameters": {
+            "base_watches": {
+              "short": 1,
+              "medium": 2,
+              "long": 3
+            },
+            "extra_watches": {
+              "road": 0,
+              "trail": 1,
+              "wilderness": 2
+            },
+            "watch_hours": 8,
+            "typical_day": "two travel Watches plus rest"
+          },
+          "conditions": [
+            "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation"
+          ],
+          "exceptions": [
+            "Исполнение перехода, расходы и календарь относятся к L2.",
+            "Численные границы категорий в милях или гексах не заданы."
+          ],
+          "profile_status": "unverified"
+        }
+      ],
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S01-C05",
+        "S05-C01",
+        "S05-C02",
+        "S06-C04"
+      ],
+      "coverage_status": "unverified",
+      "evidence_ids": [],
+      "own_acceptance_check": "CAIRN2-SS-014-L1-AC01: Средний путь выбран тропой. → 2 + 1 = 3 вахты, или 24 часа перехода; одни календарные сутки автоматически не заявлены.\nCAIRN2-SS-014-L1-AC02: Длинный путь выбран диким маршрутом. → 3 + 2 = 5 вахт; скорость партии, дата и отдых не придуманы.",
+      "acceptance_cases": [
+        {
+          "id": "CAIRN2-SS-014-L1-AC01",
+          "given": "Средний путь выбран тропой.",
+          "when": "Подготовить пометку.",
+          "expected": "2 + 1 = 3 вахты, или 24 часа перехода; одни календарные сутки автоматически не заявлены."
+        },
+        {
+          "id": "CAIRN2-SS-014-L1-AC02",
+          "given": "Длинный путь выбран диким маршрутом.",
+          "when": "Подготовить пометку.",
+          "expected": "3 + 2 = 5 вахт; скорость партии, дата и отдых не придуманы."
+        }
+      ],
+      "operational_requirement_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-014-L1",
+      "traceability_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-014-L1",
+      "author_project_key": "yochai-gal:cairn2:wardens-guide:setting-seeds"
     }
   ],
   "other_games_status": "DND5 DMG2014 and bounded PF2 Remaster now analysed; other games unverified. Shared IDs do not establish parameter equivalence."
