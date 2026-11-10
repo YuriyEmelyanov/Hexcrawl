@@ -168,3 +168,17 @@ test('ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt 
   target.render().redoMap();assert.deepEqual(structuredClone(target.render().captureDocument()),after,'preexisting Redo remains executable after bad imports');
  }
 });
+
+// DTL-03/23: detached projection/import cannot prove explicit activation history.
+test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact document transaction',async()=>{
+ const h=await importMap(regionFixture());assert.equal(typeof h.render().startDetailAdaptation,'function');h.guardRandom();
+ const before=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().startDetailAdaptation(),true);const draft=h.render().detailAdaptation,oldApply=h.render().applyDetailAdaptation;
+ assert.equal(draft.state.source.physicalConvention,'unknown');assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);assert.equal(h.render().createSaveData().map.physicalGrid,undefined);
+ for(const key of ['undoMap','redoMap','resetMap','deleteLastRegion']){h.render()[key]();h.render();assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);}
+ assert.equal(h.render().cancelDetailAdaptation(draft),true);assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.equal(oldApply(),false);
+ assert.equal(h.render().startDetailAdaptation(),true);const current=h.render().detailAdaptation;assert.equal(oldApply(draft),false,'old draft cannot apply a new preview');
+ const restore=h.injectFunction('structuredClone',value=>{if(value?.physicalGrid)throw Error('temporary adaptation copy fault');return structuredClone(value);});assert.equal(h.render().applyDetailAdaptation(),false);restore();assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);assert.equal(h.render().detailAdaptation,current);
+ assert.equal(h.render().applyDetailAdaptation(),true);const after=structuredClone(h.render().captureDocument());assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().redoHistory.length,0);assert.equal(h.render().detailAdaptation,null);assert.deepEqual(after.map.physicalGrid,structuredClone(current.state));const clean=x=>{delete x.map.physicalGrid;return x;};assert.deepEqual(clean(structuredClone(after)),clean(structuredClone(before)));assert.equal(h.render().createSaveData().version,11);assert.equal(h.render().applyDetailAdaptation(current),false);assert.equal(h.render().startDetailAdaptation(),false,'accepted layer is not adapted twice');
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+});

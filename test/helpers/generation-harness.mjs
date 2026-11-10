@@ -17,7 +17,7 @@ let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
   chooseKnaveProfile, changeGenerationMode, mutateKnaveContent, knaveDraft, knaveError, changeKnaveDraft, finishKnaveDraft, resetKnaveDraft, requestKnaveExit, resolveKnaveExit, knaveExitRequest, knavePanel,
-  editDetailFootprintExtent, poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
+  startDetailAdaptation, applyDetailAdaptation, cancelDetailAdaptation, detailAdaptation, detailAdaptationError, editDetailFootprintExtent, poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
   regionDraft, startRegionDraft, changeRegionDraft, finishRegionDraft, resetRegionDraft, selectRegionTarget, regionPreview, editError,
   waterDraft, startWaterDraft, changeWaterDraft, toggleWaterHex, selectWholeWaterBody, finishWaterDraft, resetWaterDraft, waterPreview,
   requestRiverCommand, confirmRiverCommand, cancelRiverCommand, riverCommandPreview, changeRiverPreview, riverPreviewPlan, chooseMapRiver, riverFeatureTarget, roadFeatureResolution, updateRoadResolution, editRiverDocument, editRiverFeatures, rapidRiverEdgeKeys, riverWaterfalls, tags, mutateTag, fillMissingTags, obstacleDraft, obstacleChoices, startObstacleChoice, editObstacleDocument,

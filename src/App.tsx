@@ -1,3 +1,4 @@
+import {createDetailGrid,detailCellPolygon,detailFootprintBoundary} from './detailGrid';
 import {reconcileDetailGeography,prepareDetailFootprintExtentEdit,validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {reconcileDetailPoiIdentities} from './detailIdentity';
 import {parseDetail1StateV11,validateDetail1Document,type DetailExtent,type Detail1State} from './detailModel';
@@ -11910,6 +11911,10 @@ export function App() {
   const [rivers, setRivers] = useState<River[]>([]);
   const [classification,setClassification]=useState<Classification|undefined>();
   const [physicalGrid,setPhysicalGrid]=useState<Detail1State|undefined>(undefined);
+  const [detailAdaptation,setDetailAdaptation]=useState<{revision:number;state:Detail1State}|null>(null);
+  const detailAdaptationRef=useRef(detailAdaptation);detailAdaptationRef.current=detailAdaptation;
+  const [detailAdaptationError,setDetailAdaptationError]=useState<string|null>(null);
+  const updateDetailAdaptation=(value:typeof detailAdaptation)=>{detailAdaptationRef.current=value;setDetailAdaptation(value);};
   const physicalGridRef=useRef(physicalGrid);physicalGridRef.current=physicalGrid;
   const updatePhysicalGrid=(value:Detail1State|undefined)=>{physicalGridRef.current=value;setPhysicalGrid(value);};
   const classificationRef=useRef(classification);classificationRef.current=classification;
@@ -13430,6 +13435,7 @@ export function App() {
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, knaveEnabled:knaveEnabledRef.current, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
+    updateDetailAdaptation(null);setDetailAdaptationError(null);
     updateKnaveDraft(null);
     updatePoiDraft(null);
     updateRegionDraft(null);
@@ -13478,8 +13484,9 @@ export function App() {
     nameDraftRef.current = null; setNameDraft(null); setNameErrors({});
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
-  const documentBusy = () => documentRevision.current !== renderedDocumentRevision
+  const documentStateBusy = () => documentRevision.current !== renderedDocumentRevision
     || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+  const documentBusy=()=>!!detailAdaptationRef.current||documentStateBusy();
   const mutationBlocked = (finishGroup = true) => {
     if (knaveDraftRef.current || poiDraftRef.current || regionDraftRef.current || waterDraftRef.current || roadFeatureResolutionRef.current || riverCommandPreviewRef.current || riverDraftRef.current || roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
     if (finishGroup) finishNotesGroup();
@@ -13620,6 +13627,27 @@ export function App() {
       setEditError(detailCommandError(error,language)??authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
       return false;
     }
+  };
+  const startDetailAdaptation=(expectedRevision=renderedDocumentRevision):boolean=>{
+    if(expectedRevision!==documentRevision.current||mutationBlocked(false)||notesComposingRef.current||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
+    try{
+      const map=captureMap();
+      if(!map.regions.length&&!map.hexTerrainByKey.size)return false;
+      if(map.physicalGrid?.poiIdentities&&map.physicalGrid.poiFootprints.length===Object.keys(map.physicalGrid.poiIdentities.byLegacyRef).length)return false;
+      const preview=prepareDetailMapPreview(map),state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:1,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints});
+      validateDetailMapFootprints(map,state);updateDetailAdaptation({revision:documentRevision.current,state});setDetailAdaptationError(null);return true;
+    }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось подготовить охваты. Карта не изменена.':'Could not prepare footprints. Your map is unchanged.'));return false;}
+  };
+  const cancelDetailAdaptation=(expected=detailAdaptation):boolean=>{
+    if(!expected||detailAdaptationRef.current!==expected)return false;
+    updateDetailAdaptation(null);setDetailAdaptationError(null);return true;
+  };
+  const applyDetailAdaptation=(expected=detailAdaptation):boolean=>{
+    if(!expected||detailAdaptationRef.current!==expected||expected.revision!==documentRevision.current||documentStateBusy()||notesComposingRef.current)return false;
+    try{
+      const before=captureDocument(),after=copyDocument({...before,map:{...before.map,physicalGrid:expected.state}});
+      recordTransaction(before,after);applyPreparedDocument(after);return true;
+    }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось применить охваты. Карта не изменена.':'Could not apply footprints. Your map is unchanged.'));return false;}
   };
   /** One explicit extent operation; ordinary import remains separately gated. */
   const editDetailFootprintExtent=(poiId:string,extent:DetailExtent,cells?:readonly AxialHex[],expectedRevision=renderedDocumentRevision):boolean=>{
@@ -14993,7 +15021,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const handleExportPng = async () => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
     if(roadDraftRef.current&&!roadFeatureResolutionRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
-    if (documentBusy() || !renderDetails) return;
+    if (documentStateBusy() || !renderDetails) return;
     finishNotesGroup();
     if (!mapSvgRef.current) return;
     try {
@@ -15014,7 +15042,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
       if (!finishInlineName()) return;
       if (revision !== documentRevision.current) { pendingNameExport.current = true; return; }
     }
-    if(documentBusy())return;
+    if(documentStateBusy())return;
     finishNotesGroup();
     const saveData = createSaveData();
     const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json;charset=utf-8' });
@@ -15827,7 +15855,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     if(!requestRiverCommand(edit,draft.options,draft))return false;
     updateRiverDraft(null);return true;
   };
-  const finishPathDrafts=()=>{if(knaveDraftRef.current)return false;if(poiDraftRef.current){setEditError(language==='ru'?'Завершите перенос кнопкой «Готово» или отмените его клавишей Esc.':'Use Done to finish the move or Esc to discard it.');return false;}if(regionDraftRef.current){setEditError(language==='ru'?'Завершите правку кнопкой «Готово» или сбросьте её клавишей Esc.':'Use Done to finish this edit or Esc to discard it.');return false;}return finishWaterDraft()&&!roadFeatureResolutionRef.current&&!riverCommandPreviewRef.current&&finishRiverDraft()&&finishRoadDraft();};
+  const finishPathDrafts=()=>{if(detailAdaptationRef.current)return false;if(knaveDraftRef.current)return false;if(poiDraftRef.current){setEditError(language==='ru'?'Завершите перенос кнопкой «Готово» или отмените его клавишей Esc.':'Use Done to finish the move or Esc to discard it.');return false;}if(regionDraftRef.current){setEditError(language==='ru'?'Завершите правку кнопкой «Готово» или сбросьте её клавишей Esc.':'Use Done to finish this edit or Esc to discard it.');return false;}return finishWaterDraft()&&!roadFeatureResolutionRef.current&&!riverCommandPreviewRef.current&&finishRiverDraft()&&finishRoadDraft();};
   const resetRiverDraft=(expected:RiverDraft|null=riverDraft)=>{
     if(riverDraftRef.current!==expected)return false;
     updateRiverPreview(null);updateRiverDraft(null);setEditError(null);
@@ -16407,6 +16435,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     <div className="app" onClickCapture={poiClickGate} onChangeCapture={poiSelectGate} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
       if(e.key!=='Tab'&&guardMaterialRead(e))return;
       if(knaveExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-knave-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button')??[])],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
+      if(detailAdaptationRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelDetailAdaptation(detailAdaptationRef.current);return;}
       if(knaveDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(knaveExitRequest)stayInKnaveEditor();else resetKnaveDraft();return;}
       if(poiExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-poi-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')??[])];const first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(poiDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(poiExitRequest)setPoiExitRequest(null);else resetPoiDraft();return;}
@@ -16618,13 +16647,24 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                   <div className="export-menu__items">
                     <button type="button" data-poi-export disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" data-poi-export onClick={handleExportJson} className="secondary">JSON</button>
-                    <small>{language==='ru'?'JSON v10: старые версии приложения не откроют этот файл.':'JSON v10: older app versions cannot open this file.'}</small>
+                    <small>{language==='ru'?`JSON v${physicalGrid||hasClassification(classification)?11:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid||hasClassification(classification)?11:10}: older app versions cannot open this file.`}</small>
                   </div>
                 </details>
               <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               {(waterDraft||regionDraft||poiDraft)&&<span className="water-export-notice">{poiDraft?(language==='ru'?'Черновик переноса не входит в JSON и PNG.':'The point-move draft is excluded from JSON and PNG.'):regionDraft?(language==='ru'?'Черновик региона не входит в JSON и PNG.':'The region draft is excluded from JSON and PNG.'):(language==='ru'?'Черновик воды не входит в JSON и PNG.':'The water draft is excluded from JSON and PNG.')}</span>}
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
+            {(regions.length>0||hexTerrainByKey.size>0)&&<section className="detail-adaptation" data-detail-adaptation aria-label={language==='ru'?'Охваты точек интереса':'Point footprints'}>
+              <strong>{language==='ru'?'Охваты точек интереса':'Point footprints'}</strong>
+              {detailAdaptation?<>
+                <p>{language==='ru'?'Предлагаемые охваты показаны бирюзовым. Карта ещё не изменена.':'Proposed footprints are shown in turquoise. Your map is unchanged.'}</p>
+                <p>{language==='ru'?'Объектов':'Objects'}: {detailAdaptation.state.poiFootprints.length} · {language==='ru'?'клеток охвата':'footprint cells'}: {new Set(detailAdaptation.state.poiFootprints.flatMap(p=>p.cells.map(c=>`${c.q},${c.r}`))).size}</p>
+                <p>{language==='ru'?'1 миля между сторонами мелкой клетки. Для старой сетки принимаем 6 миль; исходная физическая конвенция остаётся неизвестной. Размеры без измерений — условные.':'One mile across each fine cell. We assume six miles for the old grid; its source convention remains unknown. Unmeasured extents are assumptions.'}</p>
+                <div className="detail-adaptation__actions"><button type="button" data-detail-apply onClick={()=>applyDetailAdaptation()}>{language==='ru'?'Применить охваты':'Apply footprints'}</button><button type="button" data-detail-cancel className="secondary" onClick={()=>cancelDetailAdaptation()}>{language==='ru'?'Отмена':'Cancel'}</button></div>
+                <small>{language==='ru'?'Escape — отмена. Применение можно вернуть одной Undo.':'Escape cancels. Undo restores the previous document after applying.'}</small>
+              </>:physicalGrid?.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
+              {detailAdaptationError&&<p role="alert">{detailAdaptationError}</p>}
+            </section>}
             <div className="control-block world-seed-control">
               <label className="world-seed-control__row">
                 <span>{language === 'ru' ? 'Seed мира' : 'World seed'}</span>
@@ -17042,6 +17082,10 @@ retainPoiNames(checkpoint,editorNamesRef.current);
             </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
+            {detailAdaptation&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-detail-preview-overlay aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{detailAdaptation.state.poiFootprints.map(p=>{
+              const grid=createDetailGrid(1,detailAdaptation.state.grid.origin),pixel=(v:{x:number;y:number})=>({x:(v.x-grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x,y:(v.y-grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y});
+              return <g key={p.poiId} data-detail-preview-poi={p.poiId}>{p.cells.map(c=><polygon key={`${c.q},${c.r}`} points={detailCellPolygon(grid,c).map(v=>{const a=pixel(v);return `${a.x},${a.y}`;}).join(' ')} fill="#22d3ee" fillOpacity={0.2}/>)}{detailFootprintBoundary(grid,p.cells).map((e,i)=>{const a=pixel(e.from),b=pixel(e.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#06b6d4" strokeWidth={2/mapScaleRef.current}/>;})}</g>;
+            })}</g></svg>}
             {poiDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="poi-draft" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&(h.key===poiDraft.source.hexKey||h.key===`${poiDraft.q},${poiDraft.r}`)).map(h=><polygon key={h.key} data-poi-draft-cell={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke={h.key===poiDraft.source.hexKey?'#7dd3fc':'#facc15'} strokeWidth={3/mapScaleRef.current} strokeDasharray={h.key===poiDraft.source.hexKey?'5 4':undefined}/>)}</g></svg>}
             {waterDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="water-draft" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
               <g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&waterDraft.edit.hexKeys.includes(h.key)).map(h=><polygon key={h.key} data-water-draft-cell={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill={waterDraft.edit.target==='land'?'#f7dc6f':'#159dac'} fillOpacity={0.45} stroke="#a5f3fc" strokeWidth={2/mapScaleRef.current}/>)}</g>
