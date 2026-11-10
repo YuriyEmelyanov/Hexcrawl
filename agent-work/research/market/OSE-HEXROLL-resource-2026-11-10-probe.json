@@ -1,0 +1,100 @@
+{
+  "repository": "hexroll/hexroll-backpack",
+  "commit_sha": "fd49f42d432bad77c2a3bb14011511a7aaac52c9",
+  "files": [
+    {
+      "path": "README.md",
+      "blob_sha": "ff7b33488f48b96dc4430385911246b8a5f2d8fc"
+    },
+    {
+      "path": "src/index.js",
+      "blob_sha": "c488b2cd43213f501f24bca57aaf38515ae2542a"
+    },
+    {
+      "path": "src/preload.js",
+      "blob_sha": "501def368d024a37f50941158bc3082ddc2d3a52"
+    }
+  ],
+  "checks": [
+    {
+      "id": "HX-HBF-01",
+      "event": "get-map",
+      "arg": null,
+      "expected": "<svg>KNOWN MAP</svg>",
+      "actual": "<svg>KNOWN MAP</svg>",
+      "result": "pass_actual_source_handler_synthetic_db"
+    },
+    {
+      "id": "HX-HBF-02",
+      "event": "get-html",
+      "arg": "hex01",
+      "expected": "<h1>Edited Alder Ford</h1>",
+      "actual": "<h1>Edited Alder Ford</h1>",
+      "result": "pass_actual_source_handler_synthetic_db"
+    },
+    {
+      "id": "HX-HBF-03",
+      "event": "get-city",
+      "arg": "hex01",
+      "expected": "<svg>KNOWN CITY</svg>",
+      "actual": "<svg>KNOWN CITY</svg>",
+      "result": "pass_actual_source_handler_synthetic_db"
+    },
+    {
+      "id": "HX-HBF-04",
+      "event": "get-dungeon",
+      "arg": "hex01",
+      "expected": "<svg>KNOWN DUNGEON</svg>",
+      "actual": "<svg>KNOWN DUNGEON</svg>",
+      "result": "pass_actual_source_handler_synthetic_db"
+    },
+    {
+      "id": "HX-HBF-05",
+      "event": "get-hazards",
+      "arg": "hex01",
+      "expected": "{\"hazards\": []}",
+      "actual": "{\"hazards\": []}",
+      "result": "pass_actual_source_handler_synthetic_db"
+    },
+    {
+      "id": "HX-HBF-06",
+      "event": "search",
+      "arg": "Alder",
+      "expected": [
+        {
+          "value": "Edited Alder Ford",
+          "details": "River settlement",
+          "uuid": "hex01",
+          "type": "hex",
+          "icon": "house",
+          "anchor": "intro"
+        }
+      ],
+      "actual": [
+        {
+          "value": "Edited Alder Ford",
+          "details": "River settlement",
+          "uuid": "hex01",
+          "type": "hex",
+          "icon": "house",
+          "anchor": "intro"
+        }
+      ],
+      "result": "pass_actual_source_handler_synthetic_db"
+    }
+  ],
+  "source_read_handlers": [
+    "get-map",
+    "get-html",
+    "get-city",
+    "get-dungeon",
+    "get-hazards",
+    "search"
+  ],
+  "method": "Actual index.js executed in Node VM; Electron dialog/window stubbed; better-sqlite3 API backed by real node:sqlite in-memory synthetic database. No app installation, real generated HBF, GUI, server generation or edit/save roundtrip tested.",
+  "limits": [
+    "Known content retrieval/search verified, not official snapshot producer output.",
+    "No edit/reroll IPC in these inspected entry paths; file is not opened with SQLite readonly option, so archive is not technically immutable.",
+    "No audience or adoption measurement."
+  ]
+}
