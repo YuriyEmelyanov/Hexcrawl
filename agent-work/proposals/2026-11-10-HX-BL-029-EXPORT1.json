@@ -1,0 +1,155 @@
+{
+  "proposal_id": "HX-BL-029-EXPORT1-v1",
+  "version": 1,
+  "task_id": "HX-BL-029",
+  "stage_id": "EXPORT1",
+  "status": "proposed",
+  "title": "Выгружать снимок карты и заметок для Obsidian",
+  "problem": "029 до сих пор обозначает совместимость без ограниченного результата. Есть первичный сигнал использования внешних заметок и существующий WWNпример экспорта, но полныйsync и измеренный спрос не обоснованы.",
+  "benefit": "Мастер сохраняет подготовленные места вместе с изображением карты и продолжает писать во внешнем блокноте без ручного перепечатывания.",
+  "game_editions": [
+    "Cross-system L1 workflow; DH2026survey only, no new edition/rule support claim"
+  ],
+  "primary_scenario": "develop",
+  "layer": "L1",
+  "requirement_refs": [
+    "agent-work/research/market/DH-GM-survey-2026-11-10.json#observation",
+    "agent-work/research/market/WWN-builder-screen-2026-11-10.json#operational_requirement"
+  ],
+  "canonical_rule_ids": [
+    "map.reference_labels"
+  ],
+  "binding_refs": [],
+  "binding_reason": "Generic software handoff, not a newly extracted game rule; no fabricated DH canonical binding.",
+  "criterion_ids": [
+    "S08-C03"
+  ],
+  "scope": "Один новый односторонний снимок карты и принятых заметок. Без плагина, сервера, обратного импорта, автоматической синхронизации или перезаписи существующегоvault.",
+  "dependencies": [
+    "owner_scope_approval",
+    "аналитик адресно проверяет existingPNG/JSON/notes reuse и принятые координаты051",
+    "проверить пригодность результата для мастера до обещаний широкой совместимости"
+  ],
+  "acceptance_checks": [
+    {
+      "given": "Карта мастера с местами A в0/0 и B в1/0; оба названы «Башня», но заметки разные.",
+      "when": "Получить новый односторонний снимок для Obsidian и открыть его.",
+      "expected": "Есть изображение карты и две различимые записи Markdown с именем, координатами и соответствующими заметками. Одинаковое имя не сливает места."
+    },
+    {
+      "given": "У A есть многострочная заметка с русским и английским текстом и символами Markdown.",
+      "when": "Выгрузить и прочитать запись.",
+      "expected": "Смысл и строки принятого текста сохраняются; ничего не выполняется как код. Видимое описание совпадает с картой."
+    },
+    {
+      "given": "После первого снимка мастер переместил A в2/0 и переименовал его; исходный снимок содержит прежний текст.",
+      "when": "Получить отдельный новый снимок.",
+      "expected": "Новый снимок соответствует новой позиции и имени, старый не изменяется. История экспортов не подменяется обещанием синхронизации."
+    },
+    {
+      "given": "Мастер добавил свои абзацы к файлу в существующем Obsidian-хранилище.",
+      "when": "Выгрузить новый снимок HexCrawl.",
+      "expected": "Внешние файлы не читаются и не перезаписываются; мастер сам выбирает, как использовать новый снимок. Обратный импорт не заявлен."
+    },
+    {
+      "given": "Принятые заметки/имена на карте; зафиксированы география,исходы генерации и история.",
+      "when": "Повторить экспорт без редактирования.",
+      "expected": "Те же принятые карта и текст, без нового броска, изменения документа или нового шага Undo."
+    }
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/research/market/DH-GM-survey-2026-11-10.json#observation",
+    "normative_kind": "proposed_cross_system_workflow_not_game_rule",
+    "applicability": "Добровольный L1 перенос собственных мастерских материалов; опросDH не сертифицирует профиль игры.",
+    "layer": "L1",
+    "trigger_or_user_action": "Мастер выбирает выгрузку принятой карты и заметок в новый снимок для чтения в Obsidian.",
+    "inputs_and_units": {
+      "map": "Одна существующая карта; система координат и масштаб из её документа, без новой сетки.",
+      "notes": "Принятые имена/описания/заметки мастера, связанные с выбранными местами или гексами.",
+      "destination": "Обычные Markdown-материалы и изображение для самостоятельного открытия; существующее хранилище не подключается."
+    },
+    "product_operation": "Выгрузить карту с соответствующими читаемыми записями мест; дать мастеру продолжать работу с полученным снимком во внешнем редакторе.",
+    "expected_output": "Самостоятельный комплект изображения и заметок; координаты и имена позволяют найти то же место на карте.",
+    "constraints_and_exceptions": [
+      "Один конец передачи: нет сервера, плагина,двустороннего sync или импорта изменений из Obsidian.",
+      "Мастерский снимок, не автоматическая карта игроков или VTT/секреты для партии.",
+      "Текущие сохраненияJSON остаются источником восстановления HexCrawl; Markdown не объявляется его обратимым форматом.",
+      "Имена/координаты берутся из принятого документа; связь с подробными клетками051 уточняет аналитик, без молчаливой пересетки.",
+      "Это видимый исследовательский результат, не производственная схема/API/UI-спецификация."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Карта мастера с местами A в0/0 и B в1/0; оба названы «Башня», но заметки разные.",
+        "when": "Получить новый односторонний снимок для Obsidian и открыть его.",
+        "expected": "Есть изображение карты и две различимые записи Markdown с именем, координатами и соответствующими заметками. Одинаковое имя не сливает места."
+      },
+      {
+        "given": "У A есть многострочная заметка с русским и английским текстом и символами Markdown.",
+        "when": "Выгрузить и прочитать запись.",
+        "expected": "Смысл и строки принятого текста сохраняются; ничего не выполняется как код. Видимое описание совпадает с картой."
+      },
+      {
+        "given": "После первого снимка мастер переместил A в2/0 и переименовал его; исходный снимок содержит прежний текст.",
+        "when": "Получить отдельный новый снимок.",
+        "expected": "Новый снимок соответствует новой позиции и имени, старый не изменяется. История экспортов не подменяется обещанием синхронизации."
+      },
+      {
+        "given": "Мастер добавил свои абзацы к файлу в существующем Obsidian-хранилище.",
+        "when": "Выгрузить новый снимок HexCrawl.",
+        "expected": "Внешние файлы не читаются и не перезаписываются; мастер сам выбирает, как использовать новый снимок. Обратный импорт не заявлен."
+      },
+      {
+        "given": "Принятые заметки/имена на карте; зафиксированы география,исходы генерации и история.",
+        "when": "Повторить экспорт без редактирования.",
+        "expected": "Те же принятые карта и текст, без нового броска, изменения документа или нового шага Undo."
+      }
+    ],
+    "source_vs_product_interpretation": "Источник подтверждает использование внешнего блокнота в самовыбранной группе. Экспорт — наша продуктовая гипотеза, подкреплённая статическим примером WWN; неудовлетворённый спрос ещё не измерен.",
+    "canonical_rule_refs": [
+      "map.reference_labels"
+    ],
+    "unresolved_parameters": [
+      "Какие уже принятые поля и существующий PNG/JSONpipeline можно переиспользовать на выбранномSHA.",
+      "Удобство нового снимка для мастера и реальная готовность переносить материалы.",
+      "Связь исходной и подробной координаты051; размеры/форматкомплекта/ссылки определяет аналитик после утверждения."
+    ]
+  },
+  "expected_evidence": "ExactSHA реальной выгрузки и открытия полученных файлов, карта/текст/координаты совпадают; внешние заметки и карта не меняются от экспорта.",
+  "score_delta": null,
+  "source_limitations": [
+    "Self-selection via publication and subreddit; not a representative market frame.",
+    "Exact per-question n and row-level respondent IDs/cross-tabs not supplied in the read article.",
+    "Self-reported recency is not verified sessions or annual survival. No count is inferred by multiplying987 by a percentage.",
+    "Content/homebrew preference and map-tool choices do not distinguish new regionalhex creation, battle maps or prepared-setting use.",
+    "No switching/export unmet-need question identified; existing tool use does not prove willingness to switch."
+  ],
+  "before_after": {
+    "before": "Нативный JSON сохраняет документ для HexCrawl, но пригодность целого Markdownhandoff не подтверждена. WWNальтернатива уже показывает такой перенос в коде.",
+    "proposed": "Новый снимок с картой и двумя разными Башнями по координатам и заметками; повторная выгрузка не трогает вручную дополненный внешний блокнот."
+  },
+  "priority_recommendation": "Вторичное кандидатное решение после текущей051 и ранее предъявленных047/054; не менять их очередь. ОпросDHсам по себе не даёт приоритета над этими играми.",
+  "decision_needed": "Утвердить или отклонить ограниченные границы HX-BL-029-EXPORT1-v1; до решения нет новой спецификации/разработки.",
+  "owner_approval_ref": null,
+  "implementation_authorized": false,
+  "release_authorized": false,
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "effort": "unknown before reuse audit; not estimated from survey size",
+  "alternatives": [
+    {
+      "slice": "FullObsidian plugin/two-way sync",
+      "reason": "No measured need; external edits/conflicts add materially larger scope. A snapshot is a reviewable complete handoff first."
+    },
+    {
+      "slice": "RaiseDaggerheartM/p from987respondents or27.3% use",
+      "reason": "Sampling frame and construct do not support those conversions; no numeric proposal."
+    }
+  ],
+  "created_at": "2026-11-10T10:31:49.943761+00:00",
+  "existing_product_inspection": {
+    "sha": "b7fed513f70c7a0a37e3dc0beb13da0384fdb43f",
+    "source": "src/App.tsx handleExportJson13615 and exportmenu14276",
+    "finding": "Inspected menu offersPNG andJSON; handler serializesaccepted native payload. NoMarkdownoption in this inspected menu. Not runtimecoverage of completeproposedworkflow.",
+    "markdown_snapshot_runtime": "unknown; not claimedimplemented"
+  }
+}

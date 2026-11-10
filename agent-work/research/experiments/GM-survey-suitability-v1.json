@@ -1,0 +1,73 @@
+{
+  "experiment_id": "HX-RSR-EXP-GM-SURVEY-SUITABILITY-v1",
+  "version": 1,
+  "status": "qualitative_only_construct_validation",
+  "definition": "Test whether an opt-in GM survey measures activity, tooluse, market population or regionalmap/export demand.",
+  "unit": "responses; percentages of answers to each question; exact per-question n unknown",
+  "period": "SurveySep–Oct2026, retrieved2026-11-10",
+  "geography_language": "English recruitment; no geographic/language weighting established",
+  "population_or_sampling_frame": "Voluntary Dispatch readers and Daggerheart subreddit respondents, not all DH GMs.",
+  "availability_and_access": "Public primary aggregate article; no raw rows or per-question denominators supplied in read scope.",
+  "deduplication": "One study and publisher; recruitment channels not separate samples. Different question percentages not distinct people.",
+  "biases": [
+    "Self-selection via publication and subreddit; not a representative market frame.",
+    "Exact per-question n and row-level respondent IDs/cross-tabs not supplied in the read article.",
+    "Self-reported recency is not verified sessions or annual survival. No count is inferred by multiplying987 by a percentage.",
+    "Content/homebrew preference and map-tool choices do not distinguish new regionalhex creation, battle maps or prepared-setting use.",
+    "No switching/export unmet-need question identified; existing tool use does not prove willingness to switch."
+  ],
+  "target_variable": "Can evidence support M/p/T calibration or a destination-specific product hypothesis?",
+  "calibration_or_qualitative_only": "Qualitative only; no numerical weight or active method conversion.",
+  "uncertainty": "Sampling/recruitment/answer denominators/overlap; GM-role self-report, relative recency.",
+  "validation_or_falsification": [
+    {
+      "id": "GM-SURVEY-01",
+      "input": "Methods specify GM-oriented recruitment,collectiondates and response count",
+      "expected": "usable bounded sampling context",
+      "observed": "987responses,Sep–Oct2026,voluntaryDispatch/Reddit; pass bounded-context only",
+      "result": "pass_bounded"
+    },
+    {
+      "id": "GM-SURVEY-02",
+      "input": "Q8 last-month recency",
+      "expected": "use as relative self-reported recency, never annualGM total",
+      "observed": "per-question n unknown; no population sampling frame",
+      "result": "pass_qualitative_block_M"
+    },
+    {
+      "id": "GM-SURVEY-03",
+      "input": "Q19/Q22 Obsidian use",
+      "expected": "identify an existing destination, not additive audiences",
+      "observed": "questions overlap; no row-level pairing. Never add27.3 and23.5",
+      "result": "pass_destination_context_block_sum"
+    },
+    {
+      "id": "GM-SURVEY-04",
+      "input": "Homebrew preference and Maps question",
+      "expected": "do not substitute for newregionalhex p_create",
+      "observed": "does not define map scale/type or new-vs-ready geography",
+      "result": "blocked_for_p_create"
+    },
+    {
+      "id": "GM-SURVEY-05",
+      "input": "Existing Obsidian usage",
+      "expected": "require unmet export/switch evidence before demand conversion",
+      "observed": "no such question identified in read article",
+      "result": "blocked_for_T_or_conversion"
+    },
+    {
+      "id": "GM-SURVEY-06",
+      "input": "987 total multiplied by per-question percentage",
+      "expected": "no fabricated respondent counts",
+      "observed": "unanswered questions excluded, denominators not published",
+      "result": "blocked_for_count_reconstruction"
+    }
+  ],
+  "numeric_effect_proposal_ref": null,
+  "active_numeric_method_changed": false,
+  "source_observation_ref": "agent-work/research/market/DH-GM-survey-2026-11-10.json#observation",
+  "new_signal_definition": "gm_survey_experimental: self-reported activity/tool responses with explicit period and question denominator; proposed experimental collection type only.",
+  "tested_conclusion": "Useful for role/recency and destination context; fails globalM, p_create, T and converter-demand calibration.",
+  "product_consequence": "Scope029 as optional one-way snapshot hypothesis; no fullsync or claim that its market is27.3% of all GMs.",
+  "rating_proposal_created": false
+}
