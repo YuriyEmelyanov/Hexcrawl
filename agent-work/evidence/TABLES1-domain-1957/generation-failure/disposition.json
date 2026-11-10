@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-043",
+  "stage_id": "TABLES1-domain",
+  "head_sha": "6d83385ccdb2daac693fa2b6064b697be2313170",
+  "ci_run_id": 42892157769,
+  "job_id": 130095975999,
+  "status": "confirmed_defect_not_evidence_gap",
+  "rule": "RIV-016",
+  "code": "CYCLE",
+  "source": "Existing mandatory generation.smoke.mjs, no edited generation or browser test files",
+  "artifact": {
+    "id": 13798866638,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42892157769/artifacts/13798866638",
+    "zip_sha256": "bff14ac50802033f266b97b308f908c081fbd84adc3337d70a9b9e8ef3d75e60",
+    "original_inputs_preserved": true
+  },
+  "reproduction": {
+    "kind": "deterministic validation of original saved CI before/after; no generated rerun",
+    "master_seed": 1702308986,
+    "candidate": "2,-2",
+    "before_regions": 3,
+    "after_regions": 4,
+    "result": {
+      "before": {
+        "buildIssues": [],
+        "validation": {
+          "valid": true,
+          "issues": []
+        },
+        "masterSeed": 1702308986,
+        "regions": 3
+      },
+      "after": {
+        "buildIssues": [],
+        "validation": {
+          "valid": false,
+          "issues": [
+            {
+              "code": "CYCLE",
+              "rule": "RIV-016",
+              "message": "Directed river cycles are unsupported."
+            }
+          ]
+        },
+        "masterSeed": 1702308986,
+        "regions": 4
+      }
+    }
+  },
+  "cause_assessment": {
+    "TABLES1_regression": false,
+    "reason": "Only new detached module/test added; no production imports of tablePreparation.ts. Baseline9aa and currenthead Vite dist have155identical file hashes, including active JS/CSS/index. CI merge tree exactly equals current source tree.",
+    "root_cause": "unknown; not diagnosed to river algorithm change",
+    "bundle_comparison_ref": "agent-work/evidence/TABLES1-domain-1957/bundle-bridge.json",
+    "ci_tree_bridge_ref": "agent-work/evidence/TABLES1-domain-1957/ci-tree-bridge.json"
+  },
+  "package_decision": "Not ready for whole-package acceptance/publication; browser pipeline stops on first generation suite; remaining8suites not executed in this run.",
+  "next_action": {
+    "task_id": "HX-BL-043",
+    "role": "programmer",
+    "action": "Continue approved App/v12/lifecycle integration on existing draftPR500; retain this negative evidence and do not present fullchecks aspassed.",
+    "related_existing_risk_task": "HX-BL-003",
+    "risk_followup": "Carry recorded seed/before/after to existing generator risk coordination; no new measure, automatic rerun, river fix or owner waiver inferred."
+  },
+  "no_new_owner_gate_for_TABLES1_continuation": true,
+  "team_fully_blocked": false,
+  "automatic_retry_performed": false
+}
