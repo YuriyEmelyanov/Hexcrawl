@@ -77,3 +77,27 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser:rng
+
+  release-presentation-496:
+    if: github.event_name == 'pull_request' && github.event.pull_request.number == 496
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Capture exact published-main to candidate release walkthrough
+        run: node scripts/pr496-release-walkthrough.mjs
+        env:
+          RELEASE_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          RELEASE_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: PR496-release-presentation
+          path: reports/PR496-release/
+          if-no-files-found: error

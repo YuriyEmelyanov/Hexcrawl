@@ -12570,12 +12570,12 @@ export function App() {
       generationProgress.constraintFailure = completed.reason;
       return;
     }
-    if (options.mode === 'mythic') {
+    {
       const full = buildRegionRiverNetwork(completed.rivers, [], finalRegions, finalCandidateHexes, completed.terrain, true);
       if (full.issues.length || !validateRiverNetwork(full.network).valid) {
         if (tractAttempt < MAX_REGION_ATTEMPTS) {
           addFallbackTractToMap(anchorHex, forceCoastalSea, options, reason, tractAttempt + 1, hexTerrainByKey, candidateHexes);
-        } else generationProgress.constraintFailure = 'mythic_full_river_network';
+        } else generationProgress.constraintFailure = 'full_river_network';
         return;
       }
     }
@@ -13419,9 +13419,9 @@ export function App() {
         nextRoadId
       };
       const finalHexTerrainByKey = modelResult.terrain;
-      if (options.mode === 'mythic') {
+      {
         const full = buildRegionRiverNetwork(riversWithDeltas, [], finalRegions, finalCandidateHexes, finalHexTerrainByKey, true);
-        if (full.issues.length || !validateRiverNetwork(full.network).valid) { rejectAttempt('mythic_full_river_network'); continue; }
+        if (full.issues.length || !validateRiverNetwork(full.network).valid) { rejectAttempt('full_river_network'); continue; }
       }
 
       const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
