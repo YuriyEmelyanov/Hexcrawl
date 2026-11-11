@@ -11929,6 +11929,7 @@ export function App() {
   const finishMapNameRef = useRef<() => boolean>(() => true);
   const mapScaleRef = useRef(1);
   const mapStageRef = useRef<HTMLDivElement | null>(null);
+  const detailCameraSlackRef=useRef({x:0,y:0});
   const mapZoomFrameRef = useRef<number | null>(null);
   const mapNavigationIdleRef = useRef<number | null>(null);
   const pendingMapZoomRef = useRef<{ scale: number; clientX?: number; clientY?: number } | null>(null);
@@ -13723,11 +13724,15 @@ export function App() {
   const captureDetailCameraFocus=(previousScale:number)=>{
     const viewport=mapViewportRef.current,svg=mapSvgRef.current;
     const rect=viewport?.getBoundingClientRect(),bounds=svg?.getBoundingClientRect();
-    const selected=svg?.querySelector('[data-detail-cell][aria-pressed="true"]')?.getBoundingClientRect();
-    const focal=rect&&bounds?{x:selected?selected.left+selected.width/2:rect.left+viewport!.clientWidth/2,y:selected?selected.top+selected.height/2:rect.top+viewport!.clientHeight/2}:null;
+    const state=physicalGridRef.current,layer=svg?.querySelector<SVGGElement>('[data-detail-view]'),matrix=layer?.getScreenCTM();
+    let selected:{x:number;y:number}|null=null;
+    if(svg&&state?.selectedCell&&matrix){const world=detailCellCenter(createDetailGrid(1,state.grid.origin),state.selectedCell),p=svg.createSVGPoint();p.x=(world.x-state.grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x;p.y=(world.y-state.grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y;selected=p.matrixTransform(matrix);}
+    const visible=selected&&rect&&selected.x>=rect.left&&selected.x<=rect.right&&selected.y>=rect.top&&selected.y<=rect.bottom;
+    const focal=rect&&bounds?{x:visible?selected!.x:rect.left+viewport!.clientWidth/2,y:visible?selected!.y:rect.top+viewport!.clientHeight/2}:null;
     const pixel=focal&&bounds?{x:(focal.x-bounds.left)/previousScale,y:(focal.y-bounds.top)/previousScale}:null;
     return (scale:number)=>{
-    if(viewport&&svg&&focal&&pixel){const next=svg.getBoundingClientRect();viewport.scrollLeft+=next.left+pixel.x*scale-focal.x;viewport.scrollTop+=next.top+pixel.y*scale-focal.y;}
+    if(viewport&&svg&&focal&&pixel){const stage=mapStageRef.current;if(stage){const slack=detailCameraSlackRef.current={x:Math.max(detailCameraSlackRef.current.x,viewport.clientWidth),y:Math.max(detailCameraSlackRef.current.y,viewport.clientHeight)};stage.style.margin=`${slack.y}px ${slack.x}px`;}
+      const next=svg.getBoundingClientRect();viewport.scrollLeft+=next.left+pixel.x*scale-focal.x;viewport.scrollTop+=next.top+pixel.y*scale-focal.y;}
     };
   };
   const detailViewStepRef=useRef<(step:DetailStep)=>boolean>(()=>false);
@@ -15016,6 +15021,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     if (mapZoomFrameRef.current !== null) cancelAnimationFrame(mapZoomFrameRef.current);
     mapZoomFrameRef.current = null;
     pendingMapZoomRef.current = null;
+    if(!physicalGridRef.current?.active){detailCameraSlackRef.current={x:0,y:0};if(mapStageRef.current)mapStageRef.current.style.margin='0px';}
     applyMapScale(scale);
   };
 
@@ -17355,7 +17361,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
             onContextMenu={(event) => event.preventDefault()}
             onKeyDown={handleMapKeyDown}
           >
-            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
+            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px`, margin:`${detailCameraSlackRef.current.y}px ${detailCameraSlackRef.current.x}px` }}>
             <svg
               ref={mapSvgRef}
               data-biome-display={biomeDisplayMode}
