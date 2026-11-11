@@ -17,13 +17,7 @@
   "score_model_path": "agent-work/strategy/score-model.md",
   "backlog_path": "agent-work/backlog.json",
   "approvals_path": "agent-work/approvals.json",
-  "execution_blocker": {
-    "type": "owner_product_semantics_dependency",
-    "task_id": "HX-BL-051",
-    "id": "GRID-Q01",
-    "full_technical_block": false,
-    "automation_must_remain_enabled": true
-  },
+  "execution_blocker": null,
   "cleanup_status": "merged_pr470",
   "project_attachments_cleanup": {
     "status": "detached_by_owner",
@@ -32,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-11T1011-analyst-PR496-GRID-Q01",
+  "run_id": "2026-11-11T1357-analyst-PR496-fill-cell",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "owner_decision_ready_GRID_Q01",
+  "status": "specification_in_progress_DETAIL1_C_FILL",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -107,8 +101,22 @@
   "spec_version": "DTL-1.1 + standalone-applicability-2026-11-11",
   "result_path": "agent-work/results/2026-11-11T1011-analyst-PR496-GRID-Q01.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
-  "active_claim": null,
-  "next_step": "Владелец выбирает A или B в GRID-Q01. Рекомендация аналитика — A. После A программист реализует ограниченный C03/G10 в PR496; после B аналитик сначала специфицирует новую пограничную генерацию.",
+  "active_claim": {
+    "schema_version": 1,
+    "run_id": "2026-11-11T1357-analyst-PR496-fill-cell",
+    "task_id": "HX-BL-051",
+    "stage_id": "DETAIL1-C-FILL",
+    "role": "business_analyst",
+    "status": "active",
+    "execution_running": true,
+    "started_at": "2026-11-11T13:57:01.749Z",
+    "base_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+    "pr": 496,
+    "scope": "Resolve owner GRID-Q01 and specify one-action coarse-cell fill using ordinary6mile generator; actual-source feasibility and desktop/narrow proposal; no productsource mutation.",
+    "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-fill-selected-cell.json",
+    "result_ref": "agent-work/results/2026-11-11T1357-analyst-PR496-fill-cell.json"
+  },
+  "next_step": "Подготовить DTL1.2/C-FILL: обычные регионы из6мильных якорей внутри12/24 до полного покрытия; затем программист вPR496.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -7373,7 +7381,7 @@
   "current_role_result": "agent-work/results/2026-11-11T1011-analyst-PR496-GRID-Q01.json",
   "current_stage_score_assessment_status": "pending_independent_whole_package_review",
   "ui_actual_ref": "agent-work/evidence/DETAIL1-grid-focus-0804/ui-manifest.json",
-  "execution_running": false,
+  "execution_running": true,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -8305,24 +8313,7 @@
   "full_package_review_ready": false,
   "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": "desktop_only",
-  "owner_decision_required_for_next_step": {
-    "id": "GRID-Q01",
-    "task_id": "HX-BL-051",
-    "ref": "agent-work/proposals/2026-11-11-HX-BL-051-GRID-Q01.json",
-    "recommendation": "A",
-    "approval_inferred": false,
-    "decision": "Выберите A: обычный регион может выйти за выбранный гекс; либо B: результат обязан оставаться внутри него. Без ответа остаётся явный отказ генерации вне6миль.",
-    "example": {
-      "before": "На востоке выбранного12-мильного гекса видна пустая доступная часть; западная часть уже принята и не меняется.",
-      "option_A_after": "Один клик запускает обычную генерацию региона от мировой точки. Новый кандидат может пересечь границу выбранного12-мильного гекса и появится также в соседнем отображаемом гексе. Вода, дороги, размер региона и RNG работают как сейчас.",
-      "option_B_after": "Один клик создаёт результат только внутри выбранного12-мильного гекса. Для1мили результат также обязан обрезаться по одномильной границе. Нужно отдельно определить размер, обрезку рек/дорог и поведение у края.",
-      "unchanged_both": [
-        "Ранее принятая территория не изменяется.",
-        "Переключение масштаба само ничего не генерирует.",
-        "Новый результат сначала кандидат и требует существующего действия принятия."
-      ]
-    }
-  },
+  "owner_decision_required_for_next_step": null,
   "independent_accepted": false,
   "latest_DETAIL1_export_style": {
     "run_id": "2026-11-10T1156-programmer-HX-BL-051-export-style",
@@ -10041,5 +10032,16 @@
       "path": "agent-work/results/2026-11-11T1329-operations-research-health.json",
       "sha": "41b9aa07ee26a1e6b933412f39cb1716b1ef2cce"
     }
+  },
+  "previous_primary_before_fill": {
+    "run_id": "2026-11-11T1011-analyst-PR496-GRID-Q01",
+    "result_path": "agent-work/results/2026-11-11T1011-analyst-PR496-GRID-Q01.json",
+    "status": "owner_decision_ready_GRID_Q01"
+  },
+  "latest_GRID_Q01_owner_resolution": {
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-fill-selected-cell.json",
+    "choice": "A_plus_fill",
+    "approval_inferred": false,
+    "explicit_owner_decision": true
   }
 }
