@@ -16170,10 +16170,10 @@
       "full_specification_allowed": true,
       "release_approved": false,
       "recommended_priority": 1,
-      "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
+      "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
       "next_role": "programmer",
       "next_role_after_approval": "business_analyst",
-      "next_step": "Программист продолжает HX-BL-051/PR502: единая сетка и кандидаты, стандартная6/локальная1/сводная12–24 карточки, каталог размеров и обводки. Перед следующим push убрать временную old/new диагностику, сохранив регрессию. Затем фактический UI1500/390/320 и независимая проверка полного SHA; GRID-Q01 — отдельное уточнение владельца по генерации.",
+      "next_step": "Исправить подтверждённые MANUAL-SMALL-ENTRY и E8-TYPE-CATALOG внутри496; затем новые exactSHA check/browser и независимая перепроверка. Другие продуктовые задачи ждут завершения496.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16194,7 +16194,7 @@
         ],
         "response_blocks_AB": false
       },
-      "current_stage_id": "DETAIL1-GRID-CORRECTION",
+      "current_stage_id": "DETAIL1-PR496-owner-corrections",
       "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
       "implementation_allowed_after_specification": true,
       "current_approved_scope": [
@@ -16231,7 +16231,7 @@
         "next_role": "programmer",
         "next_step": "Программист продолжает HX-BL-051/PR502: единая сетка и кандидаты, стандартная6/локальная1/сводная12–24 карточки, каталог размеров и обводки. Перед следующим push убрать временную old/new диагностику, сохранив регрессию. Затем фактический UI1500/390/320 и независимая проверка полного SHA; GRID-Q01 — отдельное уточнение владельца по генерации."
       },
-      "head_sha": "3a7c7b49bdf49352ace7781014674d6183f632fd",
+      "head_sha": "7f18150b92d592ea26f78c5cad62cac77bf80f30",
       "result_ref": "agent-work/results/2026-11-11T0804-programmer-DETAIL1-focus.json",
       "latest_activation_checkpoint": {
         "branch": "agent/hx-bl-051-detail1",
@@ -16441,8 +16441,8 @@
         }
       ],
       "score_assessment_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/score-assessment1.2.json",
-      "tree_sha": "05ac9212484aeec0ed16678484ba75305eafcc9c",
-      "pr": 502,
+      "tree_sha": "f2c148221e9bec39ca7da41467e466e374953485",
+      "pr": 496,
       "previous_review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
       "score_assessment_status": "new_full_SHA_review_pending",
       "ui_actual_ref": "agent-work/evidence/DETAIL1-grid-focus-0804/ui-manifest.json",
@@ -16513,7 +16513,26 @@
         "checks_ref": "agent-work/evidence/PR496-finish-f677629/checks.json",
         "review_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json"
       },
-      "current_functional_findings": [],
+      "current_functional_findings": [
+        {
+          "id": "PR496-MANUAL-SMALL-ENTRY",
+          "status": "confirmed_fix_in_progress",
+          "type": "product_defect",
+          "evidence": "Independent7f actualedit+import acceptsentryoutsideexplicit.03mi measured_overridecircle."
+        },
+        {
+          "id": "PR496-E8-TYPE-CATALOG",
+          "status": "confirmed_fix_in_progress",
+          "type": "product_regression",
+          "evidence": "npmcheck391:389pass2fail; existingclassic/mythic E8 typeeditrefused; preserveexistingtests."
+        },
+        {
+          "id": "PR496-BROWSER-COUNT",
+          "status": "fixed_pending_newSHA",
+          "type": "obsolete_test_expectation",
+          "evidence": "7fUIpassednewgrid/localflows, then oldmust-have-cell-countassertfailed; newownerclustercontractdiffexplicit."
+        }
+      ],
       "previous_accepted_package_before_owner_correction": {
         "head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
         "tree_sha": "b0f479b31cec65bfe240da06ed60743c8327a25d",
@@ -16571,12 +16590,30 @@
       "spec_status": "bounded_AB_ready_Q01_pending",
       "latest_analyst_result_ref": "agent-work/results/2026-11-11T0559-analyst-DETAIL1-grid.json",
       "next_handoff_ref": "agent-work/handoffs/2026-11-11T0804-DETAIL1-grid-next.json",
-      "active_claim": null,
+      "active_claim": {
+        "run_id": "2026-11-11T0838-programmer-PR496-canonical",
+        "task_id": "HX-BL-051",
+        "stage_id": "DETAIL1-PR496-owner-corrections",
+        "role": "programmer",
+        "status": "active",
+        "execution_running": true,
+        "started_at": "2026-11-11T08:37:23.959Z",
+        "base_sha": "198cac87e6578d34f762fceeb32415d061c94c2c",
+        "pr": 496,
+        "branch": "agent/hx-bl-051-detail1",
+        "scope": "Finish PR496 owner corrections directly before otherproducttasks; grids/cards/sizes implemented, exact-SHA required checks and independent rerereview running. GRID-Q01 and standalonev12/13 compatibility integration explicitly unresolved.",
+        "claim_ref": "agent-work/claims/2026-11-11T0838-programmer-PR496-canonical.json",
+        "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
+        "head_sha": "7f18150b92d592ea26f78c5cad62cac77bf80f30",
+        "tree_sha": "f2c148221e9bec39ca7da41467e466e374953485",
+        "checkpoint_at": "2026-11-11T09:15:46.675Z",
+        "checkpoint_ref": "agent-work/checkpoints/2026-11-11T0838-PR496-owner-corrections.json"
+      },
       "full_package_release_ready": false,
       "owner_clarification_ref": "agent-work/proposals/2026-11-11-HX-BL-051-GRID-Q01.json",
       "catalog_ref": "agent-work/specs/HX-BL-051-POI-sizes-v1.json",
       "claim_completed_ref": "agent-work/claims/2026-11-11T0804-programmer-DETAIL1-focus.json",
-      "branch": "agent/detail1-grid-camera",
+      "branch": "agent/hx-bl-051-detail1",
       "pr_draft": true,
       "latest_programmer_result_ref": "agent-work/results/2026-11-11T0804-programmer-DETAIL1-focus.json",
       "full_task_complete": false,
@@ -16648,7 +16685,36 @@
         "after_max_error_px": 0.4004203971400567,
         "scope_limit": "Six fixed parameter profiles on one small fixture, not every map/device; rotated narrow records track an offscreen canvas point during sidebar interaction, not proof of every visible mobile flow.",
         "next_role": "programmer"
-      }
+      },
+      "closed_current_findings": [
+        {
+          "id": "PR496-WORLD-POINT",
+          "fixed_sha": "7f18150b92d592ea26f78c5cad62cac77bf80f30",
+          "independently_rechecked": true
+        },
+        {
+          "id": "PR496-ANCHOR-SHAPE",
+          "fixed_sha": "7f18150b92d592ea26f78c5cad62cac77bf80f30",
+          "independently_rechecked": true
+        },
+        {
+          "id": "PR496-LOCAL-ATTACHMENT",
+          "fixed_sha": "7f18150b92d592ea26f78c5cad62cac77bf80f30",
+          "independently_rechecked": true
+        }
+      ],
+      "known_open_requirements": [
+        {
+          "id": "GRID-Q01",
+          "type": "owner_semantics_pending",
+          "status": "not_implemented_outside6mile_baseline"
+        },
+        {
+          "id": "G09-v12-v13",
+          "type": "standalone_integration_evidence_gap",
+          "status": "safe_refusal_not_claimed_supported"
+        }
+      ]
     },
     {
       "task_id": "HX-BL-052",
