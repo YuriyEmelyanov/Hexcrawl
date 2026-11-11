@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-11T0838-programmer-PR496-canonical",
+  "task_id": "HX-BL-051",
+  "pr": 496,
+  "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+  "tree_sha": "4274d71d2d38222c0cefa6f1ebd6640a40235487",
+  "status": "bounded_AB_reviewed_remaining_GRID_Q01",
+  "current_role": "programmer",
+  "next_role": "business_analyst",
+  "next_step": "Ожидается решение владельца по существующему GRID-Q01: допустим ли выход нового региона за выбранный гекс. После решения аналитик уточняет только C03/G10; программист реализует его в PR496, затем независимая проверка нового SHA.",
+  "scope": "Только оставшаяся генерация пустой части выбранного отображаемого гекса1/12/24мили в текущем PR496. Остальные продуктовые задачи ждут завершения496.",
+  "input_evidence": [
+    "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/independent-review.json",
+    "agent-work/evidence/PR496-owner-corrections-0838/checks.json",
+    "agent-work/evidence/PR496-owner-corrections-0838/remainder-scope.json",
+    "agent-work/specs/HX-BL-051-DETAIL1.md",
+    "agent-work/proposals/2026-11-11-HX-BL-051-GRID-Q01.json"
+  ],
+  "options": [
+    {
+      "id": "A",
+      "recommended": true,
+      "behavior": "Click selects legal existing source candidate at world position; normal region may extend outside displayed cell.",
+      "impact": "Small reuse adapter; existing water/road algorithms and region size unchanged.1mile is a view/anchor, not a promise of one-mile generated area."
+    },
+    {
+      "id": "B",
+      "behavior": "New result must stay within the selected display cell.",
+      "impact": "New spatial generation/boundary behavior, especially1mile; requires further geometry and water/road specification before implementation."
+    }
+  ],
+  "dependency": {
+    "id": "GRID-Q01",
+    "status": "owner_semantic_choice_pending",
+    "approval_inferred": false,
+    "ref": "agent-work/proposals/2026-11-11-HX-BL-051-GRID-Q01.json"
+  },
+  "deliverable": "Проверяемые условия генерации по выбранной семантике: принятая часть/география/ID/RNG сохраняются, пустой доступный участок вызывает реальное действие, границы/ошибки явно заданы; затем actualUI и новый exactSHA review.",
+  "completion_criteria": [
+    "Владелец явно выбирает семантикуA/B либо задаёт иной предел; молчание не выбор.",
+    "Спецификация C03/G10 согласована с выбранной семантикой; новый объём сверх разрешённого не предполагается.",
+    "Программист доводит выбранный результат в496, сохраняет exactSHA checks и UI.",
+    "Независимый проверяющий принимает весь текущий496 на новом SHA; score_assessment1.2 до передачи на отдельное разрешение публикации."
+  ],
+  "already_complete": [
+    "GRID-C01/C02/C04/C05/C06/C07/C08 в проверенных границах",
+    "Текущая самостоятельная сохранностьG09, manual/measured geometry, history/import и CLASSIFY1 регрессии"
+  ],
+  "deferred_integration": {
+    "stage": "D",
+    "formats": [
+      12,
+      13
+    ],
+    "status": "not_in_current_standalone_package_unverified",
+    "reason": "Later explicit owner finish496-first, do not transplant502; preserve future literalTABLES1/PF2 requirement."
+  },
+  "authority_status": {
+    "task_start": "already_approved",
+    "A_or_B_choice": "pending",
+    "other_product_work": "wait_for496",
+    "publication": "not_authorized"
+  },
+  "full_task_complete": false,
+  "release_ready": false,
+  "recorded_at": "2026-11-11T10:01:35.517Z"
+}

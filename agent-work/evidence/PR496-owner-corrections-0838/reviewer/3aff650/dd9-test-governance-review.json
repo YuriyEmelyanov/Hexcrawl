@@ -1,0 +1,129 @@
+{
+  "head_sha": "dd9b5554106091325a12ad2351385b30e43806c3",
+  "tree_sha": "159774409e9a540524f9cdafb3660ce04701bf6d",
+  "base_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+  "scope": "Read-only test governance/inventory audit. No test callbacks, browser or fullsuite executed.",
+  "node": {
+    "registered_cases_before": 386,
+    "registered_cases_after": 391,
+    "added": 5,
+    "removed": 0,
+    "modified_existing_callbacks": 10,
+    "modified_same_name": 8,
+    "renamed_modified_existing": 2,
+    "raw_ast_declarations_before": 277,
+    "raw_ast_declarations_after": 282,
+    "parameter_expansion_extra_registrations": 109,
+    "basis": "AST declarations plus independent registration-only loading with node:test stub; callbacks never invoked. 386/391 are parameter-expanded registrations, not raw AST nodes. Top-level loop expansion adds109 registrations at both revisions.",
+    "inventory": "inventory.json",
+    "registration_evidence": [
+      "runtime-base.json",
+      "runtime-head.json"
+    ],
+    "new_cases": [
+      {
+        "path": "test/detailDisplay.test.mjs",
+        "name": "'a 24-mile display cell retains its full outline and unknown area at 25 percent accepted coverage'",
+        "line": 10
+      },
+      {
+        "path": "test/detailDisplay.test.mjs",
+        "name": "'one-mile display projection includes accepted and legal candidate fragments in the same full cell'",
+        "line": 23
+      },
+      {
+        "path": "test/detailDisplay.test.mjs",
+        "name": "'display projection deduplicates sources and stale candidates in stable canonical order'",
+        "line": 39
+      },
+      {
+        "path": "test/detailDisplay.test.mjs",
+        "name": "'all selected steps conserve accepted area with a fixed origin without mutation or random generation'",
+        "line": 50
+      },
+      {
+        "path": "test/detailGrid.test.mjs",
+        "name": "'local cards exclude other source-cell POIs and absent paths while retaining real interior, edge and vertex contacts'",
+        "line": 68
+      }
+    ],
+    "renames": [
+      {
+        "path": "test/detailGeography.test.mjs",
+        "oldName": "'ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt spatial references atomically'",
+        "name": "'ordinary v11 and v14 DETAIL1 imports roundtrip active extents and refuse corrupt spatial references atomically'",
+        "baseLine": 181,
+        "headLine": 188,
+        "modified": true
+      },
+      {
+        "path": "test/detailPlacement.test.mjs",
+        "oldName": "'POI extent policy keeps one identity, capital minimum two, Seat exception one and measured geometry authoritative'",
+        "name": "'POI catalogue keeps measured tiny capital and tower as markers, city as conditional coverage, and semantic roles unknown'",
+        "baseLine": 10,
+        "headLine": 12,
+        "modified": true
+      }
+    ],
+    "parameter_limit": "No single asserted total of all inner assertion vectors. New inputs/variants also extend existing registered callbacks; those are recorded separately rather than concealed by +5 or inflated as unrelated whole cases.",
+    "changed_inner_vectors": [
+      "Legacy default/manual/measured/concave_manual authored shape variants now exercise explicit preview and exact history within the existing legacy transaction case.",
+      "Existing import case adds v11 counterparts and explicit small manual entrance negative/positive boundary inputs.",
+      "Existing summary case exercises12/24 exact clipped areas and independent POI IDs; local case exercises actual interior/shared-edge/shared-vertex and absent-path queries.",
+      "View and catalogue size matrices inside tests are parameter profiles; their registration count remains1 per test callback."
+    ]
+  },
+  "browser": {
+    "runner_commands_before": 9,
+    "runner_commands_after": 9,
+    "runner_commands_added": 0,
+    "runner_commands_removed": 0,
+    "separate_rng_runner_unchanged": true,
+    "existing_workflows_modified": 1,
+    "new_logical_authored_input_scenarios": 2,
+    "new_logical_scenarios": [
+      {
+        "id": "B-PHYSICAL-V14-CONTRAST",
+        "input": "physical-overrides.json",
+        "location": "test/browser/detail-adaptation.smoke.mjs:153",
+        "purpose": "A separately authored v14 state with measured0.4mi capital vs assumed1.5mi city tests marker/outline precedence, no read-time adaptation, and exact imported map preservation."
+      },
+      {
+        "id": "B-LEGACY-V11-REESTIMATE",
+        "input": "legacy-default-size.json",
+        "location": "test/browser/detail-adaptation.smoke.mjs:156",
+        "purpose": "A separately authored v11/v1 state replaces one city extent with a legacy default, tests literal read, before/after preview, exactCancel, explicitv14Apply andUndoRedo while measured contour remains literal."
+      }
+    ],
+    "existing_scenarios_extended": [
+      "Central-open CLASSIFY1/capital setup, import/adaptation/cancel/history flow.",
+      "Shared-owner authored map plus selection/context, narrow layouts and overview exports."
+    ],
+    "not_independent_new_cases": [
+      "Another width/view iteration, screenshot, assertion, camera projection sample or repeated snapshot of unchanged scenario is not automatically a new standalone case."
+    ],
+    "inline_metadata_issue": {
+      "location": "test/browser/detail-adaptation.smoke.mjs:157",
+      "observed": "permanent_test_cases_added:0 and permanent_test_cases_modified:1",
+      "assessment": "0 is accurate only for additional runner/script workflows. It is misleading if read as logical input/scenario additions because2 new authored import snapshots with distinct semantics were added. External final report should explicitly record runner growth0, modifiedworkflow1, addedlogicalscenarios2; update generated metadata if possible without claiming no scenario growth.",
+      "severity": "governance_accounting_qualification_not_runtime_defect"
+    }
+  },
+  "necessity_review": {
+    "verdict": "Focused additions are warranted by changed geometry, strict import and regression contracts; not12automatictestsfor12acceptanceIDs.",
+    "five_node_callbacks": [
+      "Full24mi outline/unknown-area conservation.",
+      "Mixed accepted/candidate fragments in one display cell.",
+      "Stale/duplicate source projection canonicalization.",
+      "All-step area conservation/immutability/noRNG.",
+      "Local owner/path filtering with closed-cell edge/vertex rules."
+    ],
+    "existing_case_extensions": "Reuse protects ordinary6mile card, v11/v14 schema, manual/measured precedence, locality, invalid import atomicity and exactUndoRedo without replacing prior negative evidence. Tiny manual entrance vectors directly cover a reproduced defect.",
+    "caveat": "Inventory/necessity audit is not a pass result and does not establish product acceptance or broad device/game coverage."
+  },
+  "recommended_summary": "Node registered cases386→391 (+5,−0;10existing callbacks modified including2renames). Raw AST declarations277→282. Browser runner commands9→9 (0added),1existing workflow modified,2additional authored input/scenarios. New assertion and parameter vectors are disclosed within those cases, not all called0newcases.",
+  "source_mutation": false,
+  "github_mutation": false,
+  "test_callbacks_executed": 0,
+  "fullsuite_executed": false
+}

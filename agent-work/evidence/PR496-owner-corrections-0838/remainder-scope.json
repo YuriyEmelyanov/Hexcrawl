@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "pr": 496,
+  "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+  "role": "read_only_scope_reconciliation",
+  "recorded_at": "2026-11-11T09:58:29.786Z",
+  "conclusion": "Standalone rejection of v12/v13 is not a newly confirmed runtime regression against original496 f677. DTL1.1 combines standalone A/B acceptance with future integration D and its blanket G09 wording is inapplicable without a scoped note after the later explicit finish496-first owner direction. Document current2..11+14 acceptance separately and defer v12/v13 integration; do not claim full integration or silently downgrade/drop fields.",
+  "evidence": [
+    {
+      "ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+      "blob_sha": "49d50dea0dc677919cb0c27610f2cf53f9ad20d3",
+      "lines": [
+        8,
+        45,
+        59,
+        68
+      ],
+      "observation": "line8 integration qualifier and stageD integration496/500/501 coexist with blanket v2..13/G09. This is applicability contradiction, not a requirement to transplant502."
+    },
+    {
+      "ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
+      "blob_sha": "008e913cbda59c368a62d3c9cf8554946e600d08",
+      "observation": "Later explicit owner priority finish496 directly first; publication unauthorized and GRIDQ01 unresolved."
+    },
+    {
+      "ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f677629c4c1c3a84656ad88a6e118c56da3c7eb3/src/saveValidation.ts#L64",
+      "observation": "Exact original496 gate [2,3,4,5,6,7,8,9,10,11]. Read via git show in isolated reviewer checkout."
+    },
+    {
+      "ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/3aff650ca8a2c6c24989bcb97f0fefe346fabec7/src/saveValidation.ts#L64",
+      "observation": "Exact final gate [2,3,4,5,6,7,8,9,10,11,14]; v12/v13 refuse before map parse. App.tsx482 matches. No new support claimed."
+    },
+    {
+      "ref": "agent-work/proposals/2026-11-11-HX-BL-051-GRID-Q01.json",
+      "blob_sha": "26f9677d92c8ba0148115bb88f0e717c2072509f",
+      "observation": "Owner choice pending, approval_inferred=false. A normal6mile generator may crossdisplayboundary; B resultconstrainedtochosen1/12/24cell entailsnewgenerationgeometry."
+    }
+  ],
+  "classification": {
+    "G09_current_standalone": "scope_applicability_reconciliation_required_not_confirmed_new_product_defect",
+    "G09_integration": "deferred_requirement_unverified",
+    "GRID_C03_G10": "genuine_open_product_semantics_no_owner_choice_inferred"
+  },
+  "minimal_spec_applicability_note": "## Применимость G09 к текущему PR496 — уточнение после DTL-1.1\n\nПрямое последующее решение владельца owner-decision-2026-11-11-PR496-finish-first («Не перенеси 502 в 496, а сначала задачи 496 закрой, потом другим занимайся») задаёт текущий пакет: самостоятельный PR496 / agent/hx-bl-051-detail1. Это уточнение применимости, а не разрешение публикации и не отмена сохранности данных.\n\nДля текущего PR496 G09 проверяется на поддержанных здесь старых форматах JSON v2…v11 и новом JSON v14 / physicalGrid v2: буквальные имена/заметки/флаги, ссылки/идентичность/география, отсутствие RNG от смены вида, атомарный отказ недопустимого импорта и точные Undo/Redo. Новый v14 не понижается до v11 и не выдаётся за совместимый со старыми приложениями.\n\nTABLES1 v12 и PF2 v13 отсутствуют в исходном самостоятельном PR496 f677629. На текущем 3aff650 их импорт явно отклоняется до записи; это известное ограничение, не подтверждение roundtrip. Не импортировать содержимое PR500/501/502 только ради формулировки G09. Требование сохранить включённые TABLES1/PF2 и их literal payload/ledger/calls остаётся обязательным для будущего совместного пакета этапа D и потребует нового SHA, собственного полного evidence и независимой проверки. Этап D сейчас отложен приоритетом владельца «сначала496».\n\nЭто примечание отделяет применимость текущего самостоятельного G09 от отложенной интеграции; не объявляет этап D выполненным. GRID-C03/G10 остаётся отдельной реальной незавершённостью до решения GRID-Q01; весь пользовательский результат496 пока не завершён.",
+  "next_action": {
+    "task_id": "HX-BL-051",
+    "same_pr": 496,
+    "next_role": "business_analyst",
+    "bounds": "Persist this narrow applicability note in the canonical DTL1.1, linked from current result/handoff; retain full stageD requirements for later combined package. Prepare existing GRIDQ01 alternatives as current external decision; current programmer may retain explicit refusal and implement only semantics-neutral guards/fixtures, no chosenA/clipping.",
+    "completion": "Spec and queue distinguish accepted current standalone G09 from deferred v12/v13 integration; GRIDQ01 remains pending and no falsely complete496/release status.",
+    "after_owner_Q01": "Programmer implements C03/G10 in496 for chosen semantics, then exact SHA full checks and independent whole496 review before separate release gate.",
+    "other_product_tasks": "wait for496; do not route toTABLES1/PF2"
+  },
+  "no_github_or_product_mutation": true,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11T09:57:09.385Z",
+      "status": "unchecked_response_decode_error",
+      "is_enabled": null,
+      "method": "automations.peek"
+    },
+    "start_followup": {
+      "checked_at": "2026-11-11T09:57:33.769Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-11T09:58:29.786Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [
+      "Initial peek was called but response nesting was initially read incorrectly; no enabled claim is made for that timestamp. Followup and end observed true."
+    ],
+    "limitation": "Point-in-time checks only."
+  }
+}

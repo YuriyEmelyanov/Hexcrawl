@@ -1,0 +1,56 @@
+{
+  "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+  "tree_sha": "4274d71d2d38222c0cefa6f1ebd6640a40235487",
+  "comparison_sha": "dd9b5554106091325a12ad2351385b30e43806c3",
+  "scope": "Read-only governance/necessity delta audit. No test/browser execution.",
+  "changed_files": [
+    "test/browser/detail-adaptation.smoke.mjs"
+  ],
+  "unchanged_inventory": {
+    "node_registered_cases": 391,
+    "node_raw_ast_declarations": 282,
+    "node_added_since_dd9": 0,
+    "node_modified_since_dd9": 0,
+    "node_basis": "All Node test files byte-identical to dd9, whose registrations/declarations were independently counted in prior inventory. No registration rerun needed.",
+    "browser_runner_commands": 9,
+    "new_runner_commands": 0,
+    "modified_existing_workflows": 1,
+    "authored_input_scenarios_added_vs_dd9": 0,
+    "authored_input_scenarios_added_vs_original_f677": 2,
+    "prior_new_inputs": [
+      "physical-overrides.json: measured0.4mi vs assumed1.5mi contrast",
+      "legacy-default-size.json: v11 default reestimate versus measured override"
+    ],
+    "mapping": "unchanged-blobs.json"
+  },
+  "new_vectors_in_existing_scenarios": [
+    {
+      "id": "CAMERA-ROTATION90",
+      "count": 1,
+      "unit": "additional camera parameter profile",
+      "input": "Existing capital/adaptation fixture and previously captured fixed world point",
+      "description": "The existing90degree rotation action now repeats the same1→6→12→24→1 camera cycle. It retains the original local/world point, adds actualscreenCTM/error measurements, exactscale/RNG/geography checks and closed-cycle assertion. This is a meaningful added parameter profile, not a newly authored map or independently registered workflow."
+    },
+    {
+      "id": "PHYSICAL-VISIBLE-FRAMES",
+      "count": 2,
+      "unit": "retained-pan visual frames",
+      "input": "Existing physical-overrides.json logical scenario",
+      "description": "Two viewport positions show the accepted measured marker and city outline separately. Full bounding rectangles must lie in the map viewport; snapshot equality confirms pan-only visualization leaves accepted selection/camera scale/geometry unchanged. No new authored input/state is introduced. Two new output filenames replace one previous combined screenshot, net screenshot-file growth+1."
+    }
+  ],
+  "necessity": {
+    "verdict": "Both extensions have a direct acceptance purpose and reuse the existing fixture. Rotation is explicit in G03; the prior unrotated proof did not establish it. Visible-marker/outline screenshots are needed for G07 visual contrast because an offscreen object count alone is not visual evidence.",
+    "logical_count_rationale": "Count runners, independently authored inputs and parameter/visual vectors separately. Keeping new authored scenarios at2 is justified; saying0newcoverage would conceal the new90degree profile and two pan frames.",
+    "limitations": "Source audit establishes test intent, not pass status. Rotated per-step pixel assertions remain conditional on visibility, with at least one visible step and a mandatory closed-cycle bound; report actual visibleMeasurements/rows from hosted artifacts rather than claiming every step/device."
+  },
+  "inline_metadata_qualification": {
+    "observed": "permanent_test_cases_added:0; permanent_test_cases_modified:1; case_count_basis says no independently parameterized profile.",
+    "assessment": "The0newrunner reading remains valid. As logical accounting it still needs an external correction for2newauthoredinputscenarios. The new90degree run is an explicit parameter profile, so blanket no independently parameterized profile is too broad unless narrowed to no newly registered independent workflow. Record both the2inputscenarios and the additional rotation profile in final governance evidence."
+  },
+  "recommended_accounting": "Versus originalf677: Node386→391 registrations(+5/−0;10modified), AST277→282. Browser9→9runnercommands;1workflowmodified;2newauthoredlogicalinputscenarios. Versusdd9: Node/runtimeunchanged;0additionalauthoredinputs;1additional90degreecamera parameterprofile and2retained-panvisualframes inside existing inputs (2screenshotfiles replace1).",
+  "source_mutation": false,
+  "github_mutation": false,
+  "test_callbacks_executed": 0,
+  "browser_executed": false
+}

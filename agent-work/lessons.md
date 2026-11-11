@@ -764,3 +764,16 @@ DTL1.1 viewStep changes camera by oldStep/newStep in one transaction; active-gri
 ## 2026-11-11 — DETAIL1 focus at scroll bounds (0804 programmer)
 
 On exact old798caf, an actual fixed world point drifted up to157.073px when6→24→1→6 met a centred tiny map/scroll boundary. Using the selected one-mile point through real SVG CTM and view-only scroll slack reduces worst measured drift to0.401px, closed-cycle0px in6fixed width/rotation profiles on3a7c7b4. A camera-ratio/math assertion alone cannot prove browser clamping. Narrow rotated probes track an offscreen point during panel interaction, so they do not establish complete mobile usability. Evidence: agent-work/evidence/DETAIL1-grid-focus-0804/old-new.json and checks.json; full GRID/cards/extents still pending. Extended existing browser workflow with6parameter cases, modified1workflow;18step assertions are not18cases. Old/new diagnostic12loads are temporary, not permanent suite growth. Retire its PR-only job/script before next implementation push, keep shared regression. Startup matching must handle chunked ANSI-colored output; failed setup was corrected without changing product behavior. No score award or release.
+
+### 2026-11-11 — PR496: точная геометрия и границы пакета
+
+- По прямому уточнению владельца сначала доводим496, не переносим502 и не переключаемся на другие продуктовые пакеты. Ошибочная трактовка была отменена отдельным revert; текущий netdiff и evidence считаются от f677629.
+- Выбор крупной ячейки должен сохранять точную мировую точку клика. Округление через центр мелкого гекса меняет владельца у края; проверять действительный обработчик/импорт/UndoRedo на пограничной полосе.
+- Для явного ручного/измеренного размера проверять якорь и действительные входы даже приD<1; один значок не отменяет физическую проверку. При явной смене типа условная каталожная оценка обновляется атомарно при прежнихID/якоре/привязках; несовместимость отказывает без частичной истории.
+- Отделять дефект продукта от устаревшей проверки: float32bbox/обязательный счётчик у каждого места не соответствовали новой геометрии. Исправлять ожидание с обоснованием, сохраняя проверки уникальности, площади и равенства экран/экспорт.
+- Считать сопоставимые runtimecases отдельно от ASTдеклараций, runnerкоманд, новых входных сценариев и параметров. ЗдесьNode386→391(+5,10модифицировано); browser9runnerов,2новыхвхода и1профиль90°. Число удачных прогонов не рост набора.
+- Позднее явное «сначала496» уточняет применимость интеграционногоG09: standalonev2…11+14 отдельно от будущихv12/v13TABLES1/PF2. Безусловная формулировка не разрешает перенос других пакетов. GRID-Q01 остаётся реальным выбором владельца; частичное принятие не закрывает весь496.
+- Реальные PNG должны показывать проверяемый объект в видимой области; прежний пустой кадр не доказательство обводки. Фиксировать точку через actualCTM, видимость, ориентацию и пределы обобщения.
+- Проверять нормализованные имена инструментов до объявления недоступности; факт enabled и время чтения записывать отдельно от updated_at/last_run_time. Пропущенные/нерасшифрованные начальные проверки помощников сохранять какunchecked, не достраивать по позднемуenabled.
+
+Evidence: agent-work/evidence/PR496-owner-corrections-0838/checks.json; независимая проверка agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/independent-review.json.
