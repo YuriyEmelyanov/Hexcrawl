@@ -1,0 +1,162 @@
+{
+  "run_id": "2026-11-11T20-47-18-779Z-retained-data-recovery",
+  "status": "six_retained_exports_compared_browser_lifecycle_incomplete",
+  "recorded_at": "2026-11-11T20:47:18.779Z",
+  "source_run": "2026-11-11T1633-HexAtlas-retained-lifecycle",
+  "sources_ref": "agent-work/research/raw/2026-11-11T1633-HexAtlas-retained-lifecycle/",
+  "source_snapshot_sha": "7d9793ed22dab2a7ae6fbad5bfc69348b0b7973e",
+  "comparisons": [
+    {
+      "a": "baseline.json",
+      "b": "mountain.json",
+      "differences": [
+        {
+          "path": "/saveRevision",
+          "before": 29,
+          "after": 30
+        },
+        {
+          "path": "/hexes/1/terrain",
+          "before": "plains",
+          "after": "mountain"
+        },
+        {
+          "path": "/exportMetadata/exportedAt",
+          "before": "2026-11-11T16:35:39.247Z",
+          "after": "2026-11-11T16:36:27.501Z"
+        }
+      ]
+    },
+    {
+      "a": "baseline.json",
+      "b": "undo.json",
+      "differences": [
+        {
+          "path": "/saveRevision",
+          "before": 29,
+          "after": 31
+        },
+        {
+          "path": "/exportMetadata/exportedAt",
+          "before": "2026-11-11T16:35:39.247Z",
+          "after": "2026-11-11T16:36:44.468Z"
+        }
+      ]
+    },
+    {
+      "a": "mountain.json",
+      "b": "redo.json",
+      "differences": [
+        {
+          "path": "/saveRevision",
+          "before": 30,
+          "after": 32
+        },
+        {
+          "path": "/exportMetadata/exportedAt",
+          "before": "2026-11-11T16:36:27.501Z",
+          "after": "2026-11-11T16:37:03.330Z"
+        }
+      ]
+    },
+    {
+      "a": "redo.json",
+      "b": "levels.json",
+      "differences": [
+        {
+          "path": "/saveRevision",
+          "before": 32,
+          "after": 35
+        },
+        {
+          "path": "/planetView",
+          "before": null,
+          "after": {
+            "enabled": false,
+            "preset": "earth",
+            "circumferenceMiles": 24901,
+            "oceanTerrain": null,
+            "moons": 0,
+            "frame": {
+              "x": 0,
+              "y": 12.990381056766577,
+              "width": 150,
+              "height": 129.90381056766577
+            },
+            "cloudLayer": "clouds",
+            "cloudDensity": 0.55,
+            "cloudColor": "#ffffff",
+            "cloudReach": "whole",
+            "sunMode": "viewer",
+            "axialTilt": 23.4,
+            "hoursPerDay": 24,
+            "daysPerYear": 365,
+            "timeOfDay": 15,
+            "dayOfYear": 80,
+            "clockRunning": false,
+            "clockDaysPerMinute": 0.5,
+            "autoRotate": 0
+          }
+        },
+        {
+          "path": "/continentGridDensity",
+          "before": 7,
+          "after": 37
+        },
+        {
+          "path": "/detailGridDensity",
+          "before": 7,
+          "after": 37
+        },
+        {
+          "path": "/viewport/scale",
+          "before": 1,
+          "after": 0.2790816472336535
+        },
+        {
+          "path": "/exportMetadata/exportedAt",
+          "before": "2026-11-11T16:37:03.330Z",
+          "after": "2026-11-11T16:37:58.218Z"
+        }
+      ]
+    },
+    {
+      "a": "levels.json",
+      "b": "reload.json",
+      "differences": [
+        {
+          "path": "/exportMetadata/exportedAt",
+          "before": "2026-11-11T16:37:58.218Z",
+          "after": "2026-11-11T16:38:18.980Z"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "Onlytargetterrainchangesplains→mountain plusrevision/timestamp.",
+    "Undo equalsbaseline exceptsaveRevision/exporttimestamp.",
+    "Redo equalsmountain exceptsaveRevision/exporttimestamp.",
+    "Leveltraversalchangesonlyrevision/planetview/grid-density/viewport/exporttimestamp; acceptedcontentotherwiseidentical.",
+    "Reload equalslevels export excepttimestamp."
+  ],
+  "limitations": [
+    "ThisrunonlyrecomputedretainedJSONdiffs, no newUI/browser action.",
+    "Successfulimportandregenerationofemptysectionnotverified.",
+    "Do not inferfull1/6/12/24compatibilityfromsavedfixture."
+  ],
+  "automation_recovery": {
+    "before": {
+      "is_enabled": false
+    },
+    "after": {
+      "is_enabled": true,
+      "next_run_time": "2026-11-12T04:30:00+08:00"
+    },
+    "reenabled": true,
+    "cause": "unknown",
+    "authority_ref": "agent-work/decisions/owner-decision-2026-11-11-team-and-research-every-2-hours.json",
+    "schedule_and_prompt_unchanged": true
+  },
+  "current_prior_claim_and_checkpoint_preserved": true,
+  "score_rating_queue_unchanged": true
+}
