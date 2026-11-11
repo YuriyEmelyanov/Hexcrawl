@@ -10012,7 +10012,7 @@
       "limitation": "Point-in-time checks only; subsequent service changes not guaranteed. Schedule and prompt unchanged."
     }
   },
-  "updated_on": "2026-11-11T20:32:09.851Z",
+  "updated_on": "2026-11-11T20:34:46.203Z",
   "claim_ref": "agent-work/claims/2026-11-11T1956-strategist-PF2-compat-routing.json",
   "latest_programmer_result_ref": "agent-work/results/2026-11-11T1803-programmer-PR496-browser-verification.json",
   "source_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
@@ -10172,16 +10172,16 @@
     "recorded_at": "2026-11-11T20:26:42.689Z"
   },
   "latest_owner_feedback_state_write": {
-    "data_commit_sha": "a9fa9dc2bf665d520a3908081c4748809d0c264a",
+    "data_commit_sha": "b94d4b1ce2c4a2f53a26f5fe278fc2888f1cab27",
     "latest_written_last": true,
     "verified_files": [
       {
-        "path": "agent-work/decisions/owner-decision-2026-11-11-PR496-one-mile-hover-local-only-deferred.json",
-        "sha": "f9fd8fbf87cb3f03a7b887e1d07ceb33427b64bf"
+        "path": "agent-work/decisions/owner-decision-2026-11-11-PR496-one-mile-full-fill-dominant-biome-deferred.json",
+        "sha": "42e98cd659255f5395cb6c7f09c2282bd56508c6"
       },
       {
         "path": "agent-work/feedback.json",
-        "sha": "b68e3118ee4955977171677ce9af89cd41896c37"
+        "sha": "306983b2801ef8127291b114454762bd058d280f"
       }
     ],
     "primary_routing_and_foreign_claims_preserved": true
@@ -10240,5 +10240,34 @@
     "source_changed": false,
     "release_authorized": false,
     "recorded_at": "2026-11-11T20:31:53.741Z"
+  },
+  "latest_PR496_one_mile_fill_feedback": {
+    "feedback_id": "HX-FB-019",
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-one-mile-full-fill-dominant-biome-deferred.json",
+    "requirements": [
+      {
+        "id": "GRID-FULL-FILL-1MI",
+        "text": "В1-мильном виде частично заполненный одномильный гекс визуально отображается как полностью заполненный.",
+        "acceptance": [
+          "При положительной заполненной части отображаемая местность заполняет весь контур этой одномильной клетки, без незаполненного визуального фрагмента внутри неё.",
+          "Это правило отображения: исходная принятая география и фактическая площадь покрытия не изменяются, новая территория не генерируется. Полностью незаполненным клеткам биом не выдумывается."
+        ]
+      },
+      {
+        "id": "GRID-DOMINANT-BIOME-1MI",
+        "text": "Если в одном одномильном гексе встречается несколько биомов, для цельного отображения выбирать биом с наибольшей площадью внутри этой клетки. Для смесей из двух или трёх биомов применять единый стандартный алгоритм выбора.",
+        "acceptance": [
+          "Сравниваются площади биомов именно внутри выбранного одномильного гекса, а не размеры исходных регионов/шестимильных гексов.",
+          "При единственном максимуме выбран соответствующий биом; его изображение оформляет весь отображаемый одномильный гекс по GRID-FULL-FILL-1MI и HX-FB-016.",
+          "Выбор устойчив при повторном отображении, наведении, смене языка и сохранении; визуальная проекция не расходует RNG генерации и не переписывает биомы исходной карты."
+        ],
+        "detail_to_resolve_during_existing_task_analysis": "Владелец не задал конкретное правило равенства площадей. Перед реализацией определить и документировать единое детерминированное разрешение равенства, переиспользуя пригодный общий алгоритм, если он существует; не выдавать произвольный приоритет за прямую цитату владельца. Это деталь анализа в заданных границах, не новое блокирующее согласование дизайна."
+      }
+    ],
+    "status": "recorded_implementation_deferred_by_owner",
+    "implementation_authorized_now": false,
+    "source_changed": false,
+    "release_authorized": false,
+    "recorded_at": "2026-11-11T20:34:28.672Z"
   }
 }
