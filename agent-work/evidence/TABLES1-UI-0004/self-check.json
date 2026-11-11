@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+  "independent_review": false,
+  "findings": [
+    {
+      "id": "TABLES1-UI-01",
+      "source": "programmer_self_check_not_independent_review",
+      "status": "fixed_pending_independent_review",
+      "spec": "TBL-1.0 description lifecycle / T12",
+      "file": "src/tags/PreparationPanel.tsx",
+      "actual": "Description uses owner/revision-bound registered navigation controller. Existing poiClickGate/poiSelectGate defer outside actions; Finish saves once then replays action, Discard drops draft then replays, Stay returns focus. IME blocks Finish and Apply.",
+      "expected": "Dirty owner/revision-bound description must route a requested selection/language/navigation action through Finish/Discard/Stay; Finish commits once before navigation, Discard navigates with accepted state unchanged, Stay preserves text/focus. IME or invalid/stale save must not navigate.",
+      "severity": "blocks_whole_feature_review_ready",
+      "not_a_missing_evidence_only": true,
+      "fixed_by_sha": "9e1c380cafcb6ba5f36b7e201489c0d9bc233093",
+      "final_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+      "evidence": "Dedicated browser scenario on9e1 passed Finish/Discard/Stay, IME, RU/EN; final6d5 immutable run repeats it and adds actual before-preparation screenshots."
+    },
+    {
+      "id": "TABLES1-UI-CAT01",
+      "status": "fixed_pending_independent_review",
+      "detected_at_sha": "21b08e8a521e7efdbaae83e2221e1cb5413ad4e0",
+      "fixed_by_sha": "5133ba0dc405eb596aee5f7ddd97430efa8fba00",
+      "final_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+      "method": "Existing two Node rollback callbacks failed before fix and passed afterward without changing either case.",
+      "evidence_ref": "agent-work/evidence/TABLES1-UI-0004/negative-check-21b08e8.log"
+    }
+  ],
+  "regression_routing": {
+    "status": "fixed_pending_independent_review",
+    "location": ".github/workflows/check.yml: tables1-ui",
+    "actual": "Dedicated job is now part of every PR/workflow_dispatch; helper runs once in this job, not in the nine legacy runners.",
+    "cost": "One tiny fixture/browser workflow, approximately one minute CI including build/install. No additional scenario duplication."
+  },
+  "limitations": [
+    "New UI workflow uses a finite authored imported map and supported catalog rows; it is not a full game/corpus or physical-device/accessibility assessment.",
+    "Existing Node remap/loss and general E7/E8/DETAIL1 browser suites provide separate regression evidence; every TABLES1 schema2 content + owner-move/water/checkpoint/DETAIL1 UI combination still requires independent T10 review.",
+    "No independent whole-package T01–T16 verdict or score_assessment1.2 on this SHA yet; publication permission is separate."
+  ],
+  "final_CI": "all_required_checks_passed",
+  "review_ready": true
+}

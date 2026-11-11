@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-11T0004-programmer-TABLES1-UI",
+  "role": "programmer",
+  "task_id": "HX-BL-043",
+  "stage_id": "TABLES1-UI",
+  "status": "review_ready",
+  "role_selection_reason": "Approved TABLES1 continuation with ready TBL-1.0 spec and previous App/v12 UI handoff, no activeTABLES1claim or new owner release approval; continue executable programmer work under current queue priority.",
+  "base_sha": "83baec26594ab43d77f4b35f357a8bdfce86605a",
+  "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+  "tree_sha": "29627feb7f165a00326c3626a6063a46734bdb33",
+  "branch": "agent/hx-tables1",
+  "pr": 500,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/500",
+  "pr_draft": false,
+  "claim_ref": "agent-work/claims/2026-11-11T0004-programmer-TABLES1-UI.json",
+  "result_ref": "agent-work/results/2026-11-11T0004-programmer-TABLES1-UI.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-11T0004-programmer-TABLES1-UI-review.json",
+  "spec_ref": "agent-work/specs/HX-BL-043-TABLES1.md",
+  "spec_version": "TBL-1.0",
+  "evidence_ref": "agent-work/evidence/TABLES1-UI-0004/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/TABLES1-UI-0004/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/TABLES1-UI-0004/score-evidence1.2.json",
+  "implementation_allowed": true,
+  "release_approved": false,
+  "published": false,
+  "main_changed": false,
+  "programmer_complete": true,
+  "review_ready": true,
+  "full_task_complete": false,
+  "score_changed": false,
+  "summary": "TABLES1 shared UI implemented: independent manual/d100 calls, duplicates, explicit root→child links and nextEntry, description, exact one-transaction batch reroll, v12 history/import. Description Finish/Discard/Stay now reuses App navigation gates with owner/revision control; IME prevents Apply/Finish. Missing catalog no longer crashes App: accepted snapshots stay readable with actions unavailable. Final immutable UI workflow passed including RU/EN and before/after states; full check/browser/RNG pending.",
+  "implementation_details": [
+    "Schema1 legacy display and existing compact dice behavior preserved until first accepted TABLES1 edit.",
+    "Atomic multi-command batch prepares detached content, then one document/history commit; per-owner/call350ms locks and existing reduced-motion animation reused.",
+    "Dialog invalid/Cancel do not materialize schema2 or consume IDs/RNG; manual result shows #N without fake roll; unsupported references remain visibly unavailable.",
+    "Current registered owner/revision draft tickets and activeTagDraftKeys are reused; accepted revision changes invalidate stale UI; plain React text escapes the authored description.",
+    "Description editor registers owner/revision controller; App defers click/select actions through Finish/Discard/Stay and queues action after safe commit/discard.",
+    "Catalog lookup/projection is lazy inside read-only panel wrapper, cached by input and provider; unavailable/malformed catalog renders accepted snapshots read-only without consuming RNG or crashing App."
+  ],
+  "evidence_gaps": [
+    "New UI workflow uses a finite authored imported map and supported catalog rows; it is not a full game/corpus or physical-device/accessibility assessment.",
+    "Existing Node remap/loss and general E7/E8/DETAIL1 browser suites provide separate regression evidence; every TABLES1 schema2 content + owner-move/water/checkpoint/DETAIL1 UI combination still requires independent T10 review.",
+    "No independent whole-package T01–T16 verdict or score_assessment1.2 on this SHA yet; publication permission is separate."
+  ],
+  "regression_routing_follow_up": {
+    "status": "fixed_pending_independent_review",
+    "location": ".github/workflows/check.yml: tables1-ui",
+    "actual": "Dedicated job is now part of every PR/workflow_dispatch; helper runs once in this job, not in the nine legacy runners.",
+    "cost": "One tiny fixture/browser workflow, approximately one minute CI including build/install. No additional scenario duplication."
+  },
+  "next_role": "reviewer",
+  "next_task_id": "HX-BL-043",
+  "next_stage_id": "TABLES1-independent-review",
+  "next_step": "Независимый reviewer проверяет конкретный6d5c9f4 по T01–T16 и score1.2, особенно schema2 owner/loss/DETAIL1 и исправленные self-findings; затем заключение либо ограниченные исправления. Публикация отдельно.",
+  "authorization_status": "Already approved TABLES1 continuation; no new start/design approval. Independent review and exact-package publication permission remain required.",
+  "owner_decision_required_for_next_step": false,
+  "foreign_claims_preserved": [
+    {
+      "claim_ref": "agent-work/claims/2026-11-03-developer-HX-BL-041-presentation.json",
+      "task_id": "HX-BL-041",
+      "role": "developer",
+      "status": "active",
+      "changed": false
+    }
+  ],
+  "accepted_dependency_package": {
+    "task_id": "HX-BL-051",
+    "related_task_id": "HX-BL-044",
+    "pr": 496,
+    "head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+    "tree_sha": "b0f479b31cec65bfe240da06ed60743c8327a25d",
+    "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "status": "accepted_release_ready_awaiting_owner_publication_permission",
+    "review_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json",
+    "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5850011580",
+    "score_assessment_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/score-assessment1.2.json",
+    "checks_ref": "agent-work/evidence/PR496-finish-f677629/checks.json",
+    "ui_actual_ref": "agent-work/evidence/PR496-finish-f677629/ui-manifest.json",
+    "release_approved": false,
+    "ui_actual_shown": true,
+    "result_ref": "agent-work/results/2026-11-11-manual-programmer-PR496-finish.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-11-PR496-release-ready.json"
+  },
+  "ui_actual_ref": "agent-work/evidence/TABLES1-UI-0004/ui-manifest.json",
+  "ui_actual_shown": true,
+  "ui_actual_scope": "Final-SHA actual before/after preparation states, desktop/narrow, selector320,dirty-exit320 and EN390 generated by CI, archive digest and merge tree verified; images inspected and displayed in current chat.",
+  "ui_actual_pending": false,
+  "checks_ref": "agent-work/evidence/TABLES1-UI-0004/checks.json",
+  "confirmed_findings": [
+    {
+      "id": "TABLES1-UI-01",
+      "source": "programmer_self_check_not_independent_review",
+      "status": "fixed_pending_independent_review",
+      "spec": "TBL-1.0 description lifecycle / T12",
+      "file": "src/tags/PreparationPanel.tsx",
+      "actual": "Description uses owner/revision-bound registered navigation controller. Existing poiClickGate/poiSelectGate defer outside actions; Finish saves once then replays action, Discard drops draft then replays, Stay returns focus. IME blocks Finish and Apply.",
+      "expected": "Dirty owner/revision-bound description must route a requested selection/language/navigation action through Finish/Discard/Stay; Finish commits once before navigation, Discard navigates with accepted state unchanged, Stay preserves text/focus. IME or invalid/stale save must not navigate.",
+      "severity": "blocks_whole_feature_review_ready",
+      "not_a_missing_evidence_only": true,
+      "fixed_by_sha": "9e1c380cafcb6ba5f36b7e201489c0d9bc233093",
+      "final_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+      "evidence": "Dedicated browser scenario on9e1 passed Finish/Discard/Stay, IME, RU/EN; final6d5 immutable run repeats it and adds actual before-preparation screenshots."
+    },
+    {
+      "id": "TABLES1-UI-CAT01",
+      "status": "fixed_pending_independent_review",
+      "detected_at_sha": "21b08e8a521e7efdbaae83e2221e1cb5413ad4e0",
+      "fixed_by_sha": "5133ba0dc405eb596aee5f7ddd97430efa8fba00",
+      "final_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+      "method": "Existing two Node rollback callbacks failed before fix and passed afterward without changing either case.",
+      "evidence_ref": "agent-work/evidence/TABLES1-UI-0004/negative-check-21b08e8.log"
+    }
+  ],
+  "ui_actual_responsible": "programmer",
+  "runtime_limitation": {
+    "status": "local_environment_unavailable_artifact_recovery_completed",
+    "first_observed_at": "2026-11-11 00:38:37 UTC",
+    "effect": "Cannot download/extract/view final PNGs in local workspace. Source and shared state use GitHub tools; hosted CI continues normally.",
+    "not_a_full_team_block": true,
+    "next_action": "No blocking remainder: final PNGs recovered through GitHub and displayed; no source regeneration."
+  },
+  "checks_summary": {
+    "Node": "394/394, skipped0, TypeScript/build passed",
+    "browser": "9/9 scripts passed",
+    "rng": "passed",
+    "TABLES1_UI": "1/1 logical lifecycle passed",
+    "release_presentation_496": "intentionally skipped"
+  },
+  "completed_at": "2026-11-11 00:50:45 UTC",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11 00:04:11 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-11 00:50:45 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time checks only; later service state is not guaranteed. Schedule and automation instructions unchanged."
+  },
+  "storage_verification_ref": "agent-work/latest.json#latest_TABLES1_UI.storage_verification",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-11T0004-programmer-TABLES1-UI-review.json"
+}
