@@ -20,5 +20,54 @@
   ],
   "approval_inferred": false,
   "independent_work": "Programmer A/B stages in DTL1.1: select, camera, grid, local/coarse cards, size catalogue. No waiting_design_approval.",
-  "source": "Owner asks questions about substantial behavior choices. Noninteractive run records concrete alternatives without selecting a new generator contract."
+  "source": "Owner asks questions about substantial behavior choices. Noninteractive run records concrete alternatives without selecting a new generator contract.",
+  "updated_at": "2026-11-11T10:12:52.779Z",
+  "analyst_recommendation": {
+    "option_id": "A",
+    "strength": "recommended_not_approved",
+    "reason": [
+      "Смена1/6/12/24 уже определена как представление одной карты, а не изменение генерации.",
+      "Сохраняется действующий генератор6миль, его размер региона, водные/дорожные алгоритмы, RNG и уже принятая территория.",
+      "Ранее владелец отверг поштучное заполнение как основной режим и указал, что карта может создаваться сотнями гексов; это поддерживает отсутствие искусственного обрезания, но само по себе не является решением о выходе за границу."
+    ],
+    "owner_authority_required": true,
+    "approval_inferred": false
+  },
+  "user_example": {
+    "before": "На востоке выбранного12-мильного гекса видна пустая доступная часть; западная часть уже принята и не меняется.",
+    "option_A_after": "Один клик запускает обычную генерацию региона от мировой точки. Новый кандидат может пересечь границу выбранного12-мильного гекса и появится также в соседнем отображаемом гексе. Вода, дороги, размер региона и RNG работают как сейчас.",
+    "option_B_after": "Один клик создаёт результат только внутри выбранного12-мильного гекса. Для1мили результат также обязан обрезаться по одномильной границе. Нужно отдельно определить размер, обрезку рек/дорог и поведение у края.",
+    "unchanged_both": [
+      "Ранее принятая территория не изменяется.",
+      "Переключение масштаба само ничего не генерирует.",
+      "Новый результат сначала кандидат и требует существующего действия принятия."
+    ]
+  },
+  "tradeoff": {
+    "A": {
+      "benefit": "Быстро завершает C03/G10, переиспользует проверенный генератор и соответствует массовой генерации карты.",
+      "cost": "Выбранный крупный гекс не является жёстким контейнером результата; после клика может заполниться соседняя ячейка."
+    },
+    "B": {
+      "benefit": "Граница выбранного гекса становится обещанием результата.",
+      "cost": "Новая генерационная модель и пограничная геометрия; особенно искусственно для1мили. Существенное расширение требует отдельной спецификации и проверки."
+    }
+  },
+  "required_owner_decision": "Выберите A: обычный регион может выйти за выбранный гекс; либо B: результат обязан оставаться внутри него. Без ответа остаётся явный отказ генерации вне6миль.",
+  "score_forecast": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S06-C04",
+      "S02-C02"
+    ],
+    "baseline_grade": null,
+    "baseline_points": null,
+    "baseline_source": "agent-work/score/current-score.json: criteria remain unverified; no numeric baseline inferred",
+    "option_A_expected_transition": "unknown",
+    "option_B_expected_transition": "unknown",
+    "delta": null,
+    "status": "unknown_unverified",
+    "evidence_required": "После реализации выбранного варианта: exactSHA behavior, history/RNG/geography invariance, actual UI and independent score_assessment1.2."
+  },
+  "no_implementation_authority_until_decision": true
 }

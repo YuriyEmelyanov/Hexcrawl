@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-11T1011-analyst-PR496-GRID-Q01",
+  "task_id": "HX-BL-051",
+  "role": "business_analyst",
+  "recorded_at": "2026-11-11T10:12:52.779Z",
+  "question_id": "GRID-Q01",
+  "proposal_ref": "agent-work/proposals/2026-11-11-HX-BL-051-GRID-Q01.json",
+  "source_refs": [
+    "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
+    "agent-work/specs/HX-BL-051-DETAIL1.md",
+    "agent-work/evidence/PR496-owner-corrections-0838/remainder-scope.json",
+    "agent-work/results/2026-11-11T0838-programmer-PR496-canonical.json"
+  ],
+  "evidence_classification": {
+    "confirmed_defect": false,
+    "missing_evidence": false,
+    "product_choice": true,
+    "reason": "Both behaviors are technically coherent and materially different; no existing decision uniquely determines boundary behavior."
+  },
+  "recommendation": {
+    "option_id": "A",
+    "strength": "recommended_not_approved",
+    "reason": [
+      "Смена1/6/12/24 уже определена как представление одной карты, а не изменение генерации.",
+      "Сохраняется действующий генератор6миль, его размер региона, водные/дорожные алгоритмы, RNG и уже принятая территория.",
+      "Ранее владелец отверг поштучное заполнение как основной режим и указал, что карта может создаваться сотнями гексов; это поддерживает отсутствие искусственного обрезания, но само по себе не является решением о выходе за границу."
+    ],
+    "owner_authority_required": true,
+    "approval_inferred": false
+  },
+  "example": {
+    "before": "На востоке выбранного12-мильного гекса видна пустая доступная часть; западная часть уже принята и не меняется.",
+    "option_A_after": "Один клик запускает обычную генерацию региона от мировой точки. Новый кандидат может пересечь границу выбранного12-мильного гекса и появится также в соседнем отображаемом гексе. Вода, дороги, размер региона и RNG работают как сейчас.",
+    "option_B_after": "Один клик создаёт результат только внутри выбранного12-мильного гекса. Для1мили результат также обязан обрезаться по одномильной границе. Нужно отдельно определить размер, обрезку рек/дорог и поведение у края.",
+    "unchanged_both": [
+      "Ранее принятая территория не изменяется.",
+      "Переключение масштаба само ничего не генерирует.",
+      "Новый результат сначала кандидат и требует существующего действия принятия."
+    ]
+  },
+  "tradeoff": {
+    "A": {
+      "benefit": "Быстро завершает C03/G10, переиспользует проверенный генератор и соответствует массовой генерации карты.",
+      "cost": "Выбранный крупный гекс не является жёстким контейнером результата; после клика может заполниться соседняя ячейка."
+    },
+    "B": {
+      "benefit": "Граница выбранного гекса становится обещанием результата.",
+      "cost": "Новая генерационная модель и пограничная геометрия; особенно искусственно для1мили. Существенное расширение требует отдельной спецификации и проверки."
+    }
+  },
+  "decision_required": "Выберите A: обычный регион может выйти за выбранный гекс; либо B: результат обязан оставаться внутри него. Без ответа остаётся явный отказ генерации вне6миль.",
+  "scope_after_A": "Programmer changes only PR496 C03/G10: map empty-world click to a legal existing source candidate and run normal generation. Preserve accepted territory, geography, IDs, RNG, water/roads, history and current cards.",
+  "scope_after_B": "Business analyst first specifies a new bounded generator, clipping and water/road edge semantics; this is substantial expansion and current approval does not authorize guessing it.",
+  "acceptance_after_A": [
+    "In1/12/24 view a click on legal empty part invokes one existing generation action anchored at the clicked world position.",
+    "Generated candidate may cross the selected display-cell boundary and is rendered by the same selected-size grid in every affected display cell.",
+    "Previously accepted cells, places, routes, water, notes, IDs and RNG state before the action remain unchanged except the existing candidate-generation state transition.",
+    "Switching view alone never generates; illegal/occupied clicks give a clear existing-style refusal.",
+    "JSON/UndoRedo preserve the chosen view, exact click anchor and generated candidate under the supported standalone formats.",
+    "Actual desktop/narrow before-after and independent exactSHA review cover the new click path."
+  ],
+  "score_forecast": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S06-C04",
+      "S02-C02"
+    ],
+    "baseline_grade": null,
+    "baseline_points": null,
+    "baseline_source": "agent-work/score/current-score.json: criteria remain unverified; no numeric baseline inferred",
+    "option_A_expected_transition": "unknown",
+    "option_B_expected_transition": "unknown",
+    "delta": null,
+    "status": "unknown_unverified",
+    "evidence_required": "После реализации выбранного варианта: exactSHA behavior, history/RNG/geography invariance, actual UI and independent score_assessment1.2."
+  },
+  "other_product_tasks": "wait_for_PR496",
+  "publication_authorized": false,
+  "implementation_authorized": false
+}
