@@ -8,7 +8,18 @@ const settled=page=>page.evaluate(()=>new Promise(resolve=>requestAnimationFrame
 async function closeExport(page){if(await page.locator('.export-menu').getAttribute('open')!==null)await page.locator('.export-menu summary').click();}
 async function snapshot(page){await closeExport(page);await page.locator('.export-menu summary').click();const ready=page.waitForEvent('download');await page.getByRole('button',{name:'JSON',exact:true}).click();const download=await ready,value=JSON.parse(await fs.readFile(await download.path(),'utf8'));delete value.savedAt;await closeExport(page);return value;}
 async function view(page,step){await page.locator('[data-detail-step-select]').selectOption(String(step));await page.locator(`[data-detail-view="${step}"]`).waitFor();await settled(page);}
-async function chooseCell(page,key){const target=page.locator(`[data-detail-cell="${key}"]`);await target.focus();await page.keyboard.press('Enter');await settled(page);assert.equal(await target.getAttribute('aria-pressed'),'true');return target;}
+async function chooseCell(page,key,acceptedSourceKey){
+ const target=page.locator(`[data-detail-cell="${key}"]`);
+ if(acceptedSourceKey){
+  // The local-river boundary cell is half accepted, half a legal candidate.
+  // Keyboard activation intentionally generates there; select an actual point
+  // just inside its accepted half for this view-only spatial filtering check.
+  await target.scrollIntoViewIfNeeded();
+  const point=await target.evaluate((e,sourceKey)=>{const source=e.ownerSVGElement.querySelector(`polygon.hex[data-hex-key="${sourceKey}"]`);if(!source)throw Error('Missing accepted source');const box=source.getBBox(),p=e.ownerSVGElement.createSVGPoint();p.x=box.x+box.width/2;p.y=box.y+box.height/2;const local=p.matrixTransform(source.getScreenCTM()).matrixTransform(e.getScreenCTM().inverse()),vertices=[...e.points],x=vertices.reduce((n,v)=>n+v.x,0)/vertices.length,y=vertices.reduce((n,v)=>n+v.y,0)/vertices.length;p.x=x+.05*(local.x-x);p.y=y+.05*(local.y-y);const client=p.matrixTransform(e.getScreenCTM());return {x:client.x,y:client.y};},acceptedSourceKey);
+  await page.mouse.click(point.x,point.y);
+ }else{await target.focus();await page.keyboard.press('Enter');}
+ await settled(page);assert.equal(await target.getAttribute('aria-pressed'),'true');return target;
+}
 async function assertSingleGrid(page,step){
  // Chromium SVG getBBox/SVGPointList use float32; compare the actual emitted
  // polygon text as doubles so browser rounding cannot fake clipped/different cells.
@@ -31,7 +42,7 @@ await view(page,1);assert.equal(await page.locator('[data-detail-step-select] op
 // GRID-G05: both cells belong to the same source6 geography. The actual river
 // crosses15,-3; neither it nor the capital's2.5mi contour reaches14,0.
 await chooseCell(page,'14,0');assert.equal(await page.locator('[data-detail-summary] [data-detail-poi-select]').count(),0);assert.equal(await page.locator('[data-detail-river]').count(),0);await page.screenshot({path:dir+'/local-empty-source2.png',fullPage:true});
-await chooseCell(page,'15,-3');await page.locator('[data-detail-river="5"]').waitFor();await page.screenshot({path:dir+'/local-river-contact.png',fullPage:true});
+await chooseCell(page,'15,-3','2,0');await page.locator('[data-detail-river="5"]').waitFor();await page.screenshot({path:dir+'/local-river-contact.png',fullPage:true});
 const marker=page.locator('[data-detail-marker-cell]').first(),markerCell=await marker.getAttribute('data-detail-marker-cell');assert.ok(markerCell);
 const owner=await marker.getAttribute('data-detail-marker-owners');assert.ok(owner);
 const target=page.locator(`[data-detail-cell="${markerCell}"]`);await target.focus();await page.keyboard.press('Enter');await page.locator('[data-detail-summary] details').nth(1).locator('summary').click();
@@ -124,11 +135,13 @@ for(const step of [6,12,24,6]){
   uiEvidence.responseObservations.push({step,elapsedMs:(await page.evaluate(()=>performance.now()))-start,method:'locator click to requested view present plus two animation frames; includes automation overhead'});
   if(step!==12&&step!==24)continue;
   let selected;
-  for(const cell of await page.locator('[data-detail-cell]').all()){
-    await cell.focus();await page.keyboard.press('Enter');await settled(page);
+  for(const source of shared.map.regions.flatMap(region=>region.hexes)){
+    // Preserve a selected accepted world point through the coarse view. Enter
+    // on a partial coarse cell is C-FILL, covered separately below.
+    await view(page,6);await chooseCell(page,`${source.q},${source.r}`);await view(page,step);
     const rows=await page.locator('[data-detail-summary] > details').first().locator('li').allTextContents();
     const owners=await page.locator('[data-detail-summary] [data-detail-poi-select]').evaluateAll(es=>es.map(e=>e.getAttribute('data-detail-poi-select')));
-    if(new Set(rows.map(x=>x.split('·')[1]?.trim())).size>1&&owners.length===2){selected={cell:await cell.getAttribute('data-detail-cell'),rows,owners};break;}
+    if(new Set(rows.map(x=>x.split('·')[1]?.trim())).size>1&&owners.length===2){selected={cell:await page.locator('[data-detail-cell][aria-pressed="true"]').getAttribute('data-detail-cell'),rows,owners};break;}
   }
   assert.ok(selected,`${step}: small fixture has a selectable mixed cell containing both owners`);assert.equal(new Set(selected.owners).size,2);
   for(const detail of await page.locator('[data-detail-summary] > details').all())if(await detail.getAttribute('open')!==null)await detail.locator('summary').click();
