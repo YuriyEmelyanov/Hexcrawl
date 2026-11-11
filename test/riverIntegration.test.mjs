@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
 import { createGenerationHarness } from './helpers/generation-harness.mjs';
 import {solveManualRiverPath} from '../src/manualRiverGeometry.ts';
 import {prepareRiverEdit,validateEditedRiverNetwork,emptyRiverFeatures} from '../src/manualRivers.ts';
@@ -63,17 +64,41 @@ test('AUD-04 imported numeric fullness outside 1…5 is rejected without mutatin
   assert.equal(JSON.stringify(h.render().createSaveData().map), JSON.stringify(saved.map));
 });
 
-test('RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes', () => {
+test('RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes', async () => {
+  // Saved CI seed1702308986 exposed a cycle only after merging vertices of a
+  // real lake. Existing geometric-direction samples did not cover this path.
+  // Reuse this expansion contract; no new random series or test runner.
+  const saved=JSON.parse(fs.readFileSync(new URL('./fixtures/river-lake-cycle-before.json',import.meta.url)));
+  const h=createGenerationHarness(42),alerts=[];h.render();
+  h.setWindow({alert:m=>alerts.push(m),matchMedia:()=>({matches:false})});
+  h.injectFunction('readTextFile',async file=>file.text);
+  await h.render().handleImportJson({target:{files:[{text:JSON.stringify(saved)}],value:''}});
+  assert.deepEqual(alerts,[]);
+  h.render().setGenSizeCategory('locality');
+  const accepted=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);
+  h.render().generateAt({q:2,r:-2});
+  if(h.render().generationError){
+    assert.deepEqual(structuredClone(h.render().captureDocument()),accepted);
+    assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+  }else{
+    assert.equal(h.render().regions.length,4);
+    const app=h.render(),full=h.geometry.buildRegionRiverNetwork(app.rivers,[],app.regions,app.candidateHexes,app.hexTerrainByKey,true);
+    assert.deepEqual(Array.from(full.issues),[]);
+    assert.equal(validateRiverNetwork(full.network).valid,true,'full lake-collapsed network must be valid after the actual expansion');
+  }
   for (const mode of ['mainland', 'coast', 'auto']) for (const seed of [7, 42, 103]) {
     const h = createGenerationHarness(seed);
     for (let i = 0; i < 8; i++) {
       const before = h.render(), anchor = before.candidateHexes[0] ?? (i === 0 ? { q: 0, r: 0 } : null);
       if (!anchor) break;
+      const document=structuredClone(before.captureDocument()),stacks=structuredClone([before.undoHistory,before.redoHistory]);
       const result = before.safelyAddRegionToMap(anchor, { coastalPreference: i ? mode : 'mainland', targetSize: 15 });
       if (!result.success) {
         // A constrained coastal pocket may have no room for a required source
         // lake. RIV-017 forbids the former fallback that silently closed it.
-        assert.equal(result.diagnostic.kind, 'constraint-rejection');
+        assert.equal(result.diagnostic.kind, 'constraint-rejection', `${mode}/${seed}/${i}: ${result.diagnostic.message}`);
+        assert.deepEqual(structuredClone(h.render().captureDocument()),document,'refusal keeps accepted spatial owners, RNG and generation checkpoints');
+        assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
         assert.equal(JSON.stringify(h.render().regions), JSON.stringify(before.regions));
         assert.equal(JSON.stringify(h.render().rivers), JSON.stringify(before.rivers));
         assert.equal(JSON.stringify(h.render().history), JSON.stringify(before.history));

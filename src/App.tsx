@@ -1,6 +1,16 @@
+import {detailFootprintHasOutline,detailFootprintWorldAnchor,detailFootprintExtentMiles} from './detailSizes';
+import {projectDetailDisplayCells,type DetailDisplayCell} from './detailDisplay';
+import {prepareDetailFill,detailFillCoveredSources,detailFillRemaining,nextDetailFillAnchor,assertDetailFillProgress,type DetailFillPlan} from './detailFill';
+import {summarizeDetailCell,detailMarkerGroups,detailSegmentCellIntersection} from './detailSummary';
+import {finalizeDryPoiLocations} from './finalPoiPlacement';
+import {createDetailGrid,detailCellPolygon,detailFootprintBoundary,detailPositiveAreaIntersections,detailCellCenter,worldToDetailCell,type DetailStep} from './detailGrid';
+import {reconcileDetailGeography,prepareDetailFootprintExtentEdit,validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
+import {reconcileDetailPoiIdentities} from './detailIdentity';
+import {parseDetail1StateV11,validateDetail1Document,type DetailExtent,type Detail1State} from './detailModel';
 import knaveCatalogData from './tags/knaveCatalogData';
 import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,knaveResultText,type KnaveCatalog,type KnaveFacts} from './tags/knave';
-import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,type Difficulty,type Discovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
+import {hasClassification,emptyClassification,validateClassification,terrainDefault,terrainRisk,discoveryDefault,discoveryTagEffect,remapClassification,classificationLosses,retainClassification,type Classification,type Difficulty,type Discovery} from './classification';
+import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
 import {hasCentralPoi,preparePoiMove,poiLocatorKey,type PoiLocator,assertPoiEditorNames,poiNameLocators,renamePoiEditorName,PoiMoveError,type EditorNames} from './manualPois';
 import {migrateSeas,prepareSeaIdentity,withLegacySeas,type SeaRecord,type SeaChoices} from './seaIdentity';
 import {prepareWaterGeometry,connectedWaterBody,waterKindAt,WaterEditError,compareWaterHexes,type WaterEdit,type WaterKind} from './manualWater';
@@ -470,11 +480,13 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 14;
   generation?: GenerationState;
   savedAt: string;
   map: {
-    knave?: KnaveLayer;
+    physicalGrid?: Detail1State;
+  knave?: KnaveLayer;
+    classification?: Classification;
     riverFeatures?: RiverFeatures;
     tags?: TagState;
     kingdoms?: Kingdom[];
@@ -557,6 +569,7 @@ const SVG_EXPORT_STYLES = `
   .hex.click-prompt { stroke:#f7dc6f; stroke-width:2; }
   .click-prompt-label { fill:#fff7bf; stroke:#0c1423; stroke-width:3px; paint-order:stroke; font-size:12px; font-weight:800; pointer-events:none; }
   .hex-label { fill:#f4f8ff; font-size:11px; pointer-events:none; }
+  .detail-marker-count { fill:#fff; stroke:#123; stroke-width:.7px; paint-order:stroke; font-weight:bold; }
   .hex-coordinate-label { fill:#253247; font-size:7px; font-weight:700; letter-spacing:.02em; pointer-events:none; user-select:none; }
   .rivers-layer, .roads-layer, .river-debug-layer { pointer-events:none; }
   .river-polyline { fill:none; stroke:var(--water-color); stroke-linecap:round; stroke-linejoin:round; }
@@ -977,20 +990,33 @@ function isRiverCrossing(value: unknown): value is RiverCrossing {
     && (value.kind === 'bridge' || value.kind === 'ferry' || value.kind === 'ford');
 }
 
-function assertHexcrawlSaveData(value: unknown): asserts value is ValidatedHexcrawlSaveData {
+function assertHexcrawlSaveData(value: unknown,validateSpatial:(state:Detail1State)=>void=state=>validateImportedDetailFootprints(value as HexcrawlSaveData,state)): asserts value is ValidatedHexcrawlSaveData {
   validateSaveStructure(value, {
     biome: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(BIOMES, v),
     poi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(POI_DETAILS, v),
     centralPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(CENTRAL_POI_DETAILS, v),
     waterPoi: v => typeof v === 'string' && Object.prototype.hasOwnProperty.call(WATER_POI_DETAILS, v),
-    names: isToponymRegistry, toponymModel: DEFAULT_TOPONYM_MODEL,
+    names: isToponymRegistry, toponymModel: DEFAULT_TOPONYM_MODEL, detailSpatial:validateSpatial,
     kingdoms: (map, version) => validateKingdomLayers(map, getHexEdgeKeys, version >= 5)
   });
   const data=value as HexcrawlSaveData;
+  try{validateDetail1Document(data.map.physicalGrid,data.version,data.map.physicalGrid?.poiIdentities?poiNameLocators({regions:data.map.regions,waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))},true):undefined,validateSpatial);}catch{throw new SaveValidationError('map.physicalGrid','invalid or ambiguous POI identity owner');}
+  try{validateClassification(data.map.classification,knaveMapContext({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))}),data.version);}catch{throw new SaveValidationError('map.classification','invalid classification');}
   try{validateKnaveLayer(data.map.knave,knaveMapContext({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))}),data.version,data.ui.generationMode??'classic');}catch{throw new SaveValidationError('map.knave','invalid profile or annotations');}
   if(data.version>=8)try{assertEditorNames({...data.map,seas:data.version>=9?data.map.seas:[],obstacles:(data.map.obstacles??[]) as EditableObstacle[],hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),riverFeatures:data.map.riverFeatures??emptyRiverFeatures(),editorNames:data.map.editorNames===undefined?{}:data.map.editorNames});}catch{throw new SaveValidationError('map.editorNames','invalid or dangling authored object name');}
   if(data.version>=7)try{validateMapRiverFeatures(data.map.riverFeatures,data.map.rivers,data.map.regions,new Map(Object.entries(data.map.terrainByHexKey)),data.map.crossings);}catch{throw new SaveValidationError('map.riverFeatures','invalid or ineligible river feature');}
   if(data.map.tags!==undefined)try{validateTags(data.map.tags,new Set(tagOwners({regions:data.map.regions,rivers:data.map.rivers,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey))}).keys()),mythicDefinitions);}catch{throw new SaveValidationError('map.tags','invalid tag data');}
+}
+
+
+/** Validate the serialized layer against its own authoritative geography, never
+ * the currently displayed map. Called only after structural save validation. */
+function validateImportedDetailFootprints(data:HexcrawlSaveData,state:Detail1State):void {
+  if(data.map.knave&&state.source.physicalConvention!=='unknown')throw Error('DETAIL1 unproven_knave_source_convention');
+  const map={...data.map,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),
+    waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),
+    seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()};
+  validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state);
 }
 
 
@@ -1107,13 +1133,67 @@ function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog,preserved
   });
   const next={...map,regions,knave:{...map.knave,content}};checkedRiverMap(next);return next;
 }
+/** Preserve accepted extents/ports on ordinary edits; prepare all new owners
+ * against actual geometry and refuse incompatible candidates before writes. */
+function reconcileDetailMapIdentities<T extends MapSnapshot>(map:T,moves:ReadonlyMap<string,string|null>=new Map()):T{
+  const state=map.physicalGrid;if(!state?.poiIdentities)return map;
+  const next=reconcileDetailGeography(map,detailMapRiverGeometry(map,state.grid.origin),moves);
+  return next===state?map:{...map,physicalGrid:next};
+}
+/** Explain spatial refusal through every existing editor without losing its
+ * atomic transaction boundary or offering a fictional automatic repair. */
+function detailCommandError(error:unknown,language:Language):string|undefined {
+ const reason=error instanceof Error?error.message:'';if(!reason.startsWith('DETAIL1 '))return undefined;
+ const ru=language==='ru';
+ if(reason.includes('accepted_poi_loss'))return ru?'Расширение удалит принятый POI. Выберите другое место или явно измените объект. Карта не изменена.':'Expansion would remove an accepted POI. Choose another location or explicitly edit the object. Your map is unchanged.';
+ if(reason.includes('extent_relocation'))return ru?'Перенос POI с явным охватом или обязательными привязками требует отдельной адаптации охвата. Карта не изменена.':'Moving a POI with an explicit footprint or required attachments needs explicit footprint adaptation. Your map is unchanged.';
+ if(reason.includes('route'))return ru?'Изменение нарушит принятый вход пути в охват POI. Карта не изменена.':'This edit would break an accepted path access to a POI footprint. Your map is unchanged.';
+ if(reason.includes('water')||reason.includes('crossing'))return ru?'Изменение нарушит обязательную привязку охвата POI к прежнему водоёму или речному элементу. Карта не изменена.':'This edit would break the POI footprint attachment to its accepted water body or river feature. Your map is unchanged.';
+ if(reason.includes('extent')||reason.includes('footprint'))return ru?'Принятый охват POI несовместим с новым типом или географией. Карта не изменена.':'The accepted POI footprint conflicts with the new type or geography. Your map is unchanged.';
+ return ru?'Не удалось сохранить идентичность и пространственные связи POI. Карта не изменена.':'The POI identity and spatial attachments could not be retained. Your map is unchanged.';
+}
+
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   map=withLegacySeas(map);
+  validateDetail1Document(map.physicalGrid,map.physicalGrid?.version===2?14:11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined,state=>validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state));
   assertEditorNames(map);
+  validateClassification(map.classification,knaveMapContext(map));
   validateKnaveLayer(map.knave,knaveMapContext(map),10,map.regions.some(r=>r.generationMode==='mythic')?'mythic':'classic');
   validateRiverCounter(map.rivers,map.nextRiverId);
   validateMapRiverFeatures(map.riverFeatures,map.rivers,map.regions,map.hexTerrainByKey,map.crossings);
   return map;
+}
+
+/** Pure adaptation preparation on the real accepted document. UI Apply remains
+ * gated until full footprint edit/import/reference reconciliation is connected. */
+type DetailRiverMap=Pick<MapSnapshot,'regions'|'rivers'|'roads'|'crossings'|'riverFeatures'|'hexTerrainByKey'>;
+function detailMapRiverGeometry(map:DetailRiverMap,origin:{x:number;y:number}){
+  const marks=regionMarkKeys(map);
+  const world=(p:RiverVertex)=>detailSourcePixelToWorld(p,origin);
+  return map.rivers.map(river=>({id:river.id,
+    edges:river.vertexPath.slice(1).map((to,index)=>{
+      const from=river.vertexPath[index],id=edgeKey(from,to),segment={from:world(from),to:world(to)};
+      const crossings=map.crossings.filter(c=>c.riverId===river.id&&c.riverEdgeKey===id).map(c=>{
+        const road=map.roads.find(r=>r.id===c.roadId),part=road?.segments.find(s=>normalizeRoadSegmentKey(s.from,s.to)===c.roadSegmentKey);
+        const point=part?detailCrossingPoint(segment,{from:detailSourcePixelToWorld(toPixel(part.from.q,part.from.r),origin),to:detailSourcePixelToWorld(toPixel(part.to.q,part.to.r),origin)}):null;
+        if(!point||c.kind==='ford'&&Number(knownRiverEdgeFullness(river,id))>=3)throw Error('DETAIL1 incompatible_crossing_geometry');
+        return {id:`crossing:${c.key}`,kind:c.kind,point};
+      });
+      return {id,segment,rapid:marks.rapids.has(id),crossings};
+    }),
+    starts:river.vertexPath.filter(v=>river.sectors.some(s=>s.startReason==='river_start'&&s.startVertexKey===v.key)).map(world),
+    waterfalls:river.vertexPath.filter(v=>marks.waterfalls.has(v.key)).map(v=>({id:`vertex:${v.key}`,point:world(v)}))
+  }));
+}
+function prepareDetailMapPreview(map:MapSnapshot){
+  checkedRiverMap(map);
+  const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
+  return buildDetailGeographyPreview(map,detailMapRiverGeometry(map,origin),origin);
+}
+/** Validate a prepared document against its authoritative geography. */
+function validateDetailMapFootprints(map:MapSnapshot,state:Detail1State){
+  checkedRiverMap({...map,physicalGrid:undefined});
+  validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state);
 }
 
 type RiverEditOptions={crossingKinds?:Record<string,RiverCrossingKind>;featureEdits?:FeatureEdit[];confirmed?:boolean};
@@ -1191,7 +1271,7 @@ function deriveWaterfalls({rivers,regions,riverFeatures}:Pick<MapSnapshot,'river
 
     return Array.from(waterfallsByVertexKey.values());
 }
-function regionMarkKeys(map:MapSnapshot){
+function regionMarkKeys(map:DetailRiverMap){
   const all=map.regions.flatMap(r=>r.hexes),hidden=new Set([...getLakeEdgeKeys(all,map.hexTerrainByKey),...getSeaEdgeKeys(map.hexTerrainByKey)]);
   return {rapids:new Set([...deriveRapidKeys(map)].filter(key=>!hidden.has(key))),
     waterfalls:new Set(deriveWaterfalls(map,{hexes:all},getLakeVertices(all,map.hexTerrainByKey)).map(v=>v.vertexKey))};
@@ -1259,7 +1339,9 @@ function prepareRegionMapEdit(map:MapSnapshot,edit:RegionEdit):MapSnapshot{
     if(Object.prototype.hasOwnProperty.call(authored,to))throw new RegionEditError('identity_conflict',to);
     const editorNames=Object.fromEntries(Object.entries(authored).map(([key,v])=>[key===from?to:key,v]));
     candidate={...candidate,...identity,editorNames};
+    candidate.classification=remapClassification(map.classification,new Map([[from,to]]));
     if(map.knave)candidate.knave=remapKnavePois(map.knave,knaveMapContext(map),knaveMapContext(candidate),new Map([[from,to]]));
+    candidate=reconcileDetailMapIdentities(candidate,new Map([[from,to]]));
   }
   // A road keeps its origin regionId even when a cell underneath it changes
   // owner. Size changes cannot silently invent another road or waive a minimum.
@@ -1349,7 +1431,7 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
 }
 
 type WaterEditOptions=SeaChoices&{acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
-type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'obstacle'|'knave';key:string;value:unknown};
+type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'obstacle'|'knave'|'classification';key:string;value:unknown};
 /** Full E6 detached preparation. Staged preview answers never reach a setter. */
 function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOptions={}){
   const geometry=prepareWaterGeometry(map,edit);
@@ -1463,6 +1545,7 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
   candidate={...candidate,seas:sea.seas,nextSeaId:sea.nextSeaId};
   const livePoi=editorNameLocators(candidate),authored:EditorNames={};
   for(const [key,name]of Object.entries(map.editorNames??{})){if(livePoi.has(key))authored[key]=name;else {const seaId=key.startsWith('sea:')?Number(key.slice(4)):undefined;const old=seaId===undefined?undefined:map.seas.find(s=>s.id===seaId);const into=old?sea.seas.filter(s=>s.hexKeys.some(k=>old.hexKeys.includes(k))).map(s=>s.id):undefined;losses.push({id:`editorName:${key}`,type:'name',key,value:into?{...name,seaInto:into}:name});}}
+  if(map.classification){for(const key of classificationLosses(map.classification,knaveMapContext(candidate)))losses.push({id:`classification:${key}`,type:'classification',key,value:map.classification});candidate.classification=retainClassification(map.classification,knaveMapContext(candidate));}
   if(map.knave){
     const removed=knaveLosses(map.knave,knaveMapContext(candidate));
     const layer=structuredClone(map.knave);
@@ -1791,7 +1874,9 @@ const TRACT_GROWTH_WEIGHT_EXPONENT = 1.5;
 // чтобы пытаться "откатить" все побочные эффекты генерации рек и дорог
 // (которые могут менять соседние регионы), мы просто восстанавливаем снимок.
 type MapSnapshot = {
+  physicalGrid?: Detail1State;
   knave?: KnaveLayer;
+    classification?: Classification;
   seas:SeaRecord[];
   nextSeaId:number;
   riverFeatures:RiverFeatures;
@@ -1828,6 +1913,9 @@ type GenerationBackup = {
   document?: DocumentSnapshot; undo?: MapTransaction[]; redo?: MapTransaction[];
 };
 type GenerationActionContext = { action: 'add' | 'regenerate'; inputOptions: Record<string, unknown> };
+type CoarseFillJob = { plan:DetailFillPlan; backup:GenerationBackup; mode:GenerationMode;
+  inputs:{sizeCategory:'auto'|Exclude<Region['sizeCategory'],'tract'>;landType:'auto'|BiomeLandType;biome:'auto'|BiomeId;coastal:'auto'|CoastalPreference};
+  covered:ReadonlySet<string>; initialMissing:number; units:number; phase:'ready'|'waiting'; revision:number; firstAnchor?:AxialHex };
 type KingdomJob = { actionContext: GenerationActionContext; preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
 type GenerationDiagnostic = ReturnType<typeof generationLog.finish>;
 // Expected refusal: only canonical coordinates, never the note text, reach UI.
@@ -1838,6 +1926,13 @@ class NotesLossConflict extends Error {
   }
 }
 
+
+// Expected refusal when expansion would silently remove an accepted spatial owner.
+class DetailGenerationConflict extends Error {
+  constructor(readonly code: 'accepted_poi_loss') {
+    super(`DETAIL1 ${code}`);this.name = 'DetailGenerationConflict';
+  }
+}
 
 function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<string, HexTerrainData>): ToponymEntity[] {
   const entities: ToponymEntity[] = [];
@@ -2873,6 +2968,23 @@ function buildRegionRiverNetwork(
     } else network.nodes.push({ id, kind: ins.length === 2 && outs.length === 1 ? 'confluence' : 'continuation' });
   }
   return { network, issues, vertices, previousEdges, internalLakeEdges };
+}
+
+// Reuse the editor's exact physical-violation comparison for saved Classic
+// maps. An old CYCLE flag never authorizes a second/new cyclic subgraph.
+function generatedRiverNetworkIsValid(before: Pick<MapSnapshot,'rivers'|'regions'|'candidateHexes'|'hexTerrainByKey'>,
+  after: Pick<MapSnapshot,'rivers'|'regions'|'candidateHexes'|'hexTerrainByKey'>, allowUnchangedLegacy: boolean): boolean {
+  const full = buildRegionRiverNetwork(after.rivers, [], after.regions, after.candidateHexes, after.hexTerrainByKey, true);
+  if (!full.issues.length && validateRiverNetwork(full.network).valid) return true;
+  if (!allowUnchangedLegacy) return false;
+  const accepted = buildRegionRiverNetwork(before.rivers, [], before.regions, before.candidateHexes, before.hexTerrainByKey, true);
+  try {
+    validateEditedRiverNetwork(before.rivers, after.rivers, {network:()=>full}, {network:()=>accepted});
+    return true;
+  } catch (error) {
+    if (error instanceof Error && (/^RIV-\d{3}:/.test(error.message) || full.issues.includes(error.message))) return false;
+    throw error;
+  }
 }
 
 function solveRiverComponents(network: ModelNetwork): ModelSolveResult {
@@ -11812,6 +11924,8 @@ export function App() {
   const finishMapNameRef = useRef<() => boolean>(() => true);
   const mapScaleRef = useRef(1);
   const mapStageRef = useRef<HTMLDivElement | null>(null);
+  const detailFocusRef=useRef<{world:{x:number;y:number};client:{x:number;y:number}}|null>(null);
+  const detailScrollSpaceRef=useRef({x:0,y:0});
   const mapZoomFrameRef = useRef<number | null>(null);
   const mapNavigationIdleRef = useRef<number | null>(null);
   const pendingMapZoomRef = useRef<{ scale: number; clientX?: number; clientY?: number } | null>(null);
@@ -11829,7 +11943,13 @@ export function App() {
   const kingdomInFlight = useRef(false);
   const advancedJobs = useRef(new WeakSet<KingdomJob>());
   const consumedRegenerations = useRef(new WeakSet<object>());
-  const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
+  const [kingdomJob, setKingdomJobState] = useState<KingdomJob | null>(null);
+  const kingdomJobRef=useRef<KingdomJob|null>(null);
+  const setKingdomJob=(value:KingdomJob|null)=>{kingdomJobRef.current=value;setKingdomJobState(value);};
+  const [coarseFillJob,setCoarseFillJobState]=useState<CoarseFillJob|null>(null);
+  const coarseFillRef=useRef<CoarseFillJob|null>(null),consumedFillTicks=useRef(new WeakSet<CoarseFillJob>());
+  const setCoarseFillJob=(job:CoarseFillJob|null)=>{coarseFillRef.current=job;setCoarseFillJobState(job);};
+  const [coarseFillNotice,setCoarseFillNotice]=useState<'cancelled'|'failed'|'done'|null>(null);
   const [detailedRenderReady, setDetailedRenderReady] = useState(true);
   const [tags,setTags] = useState<TagState>(emptyTags);
   const [activeTagDraftCount,setActiveTagDraftCount]=useState(0);
@@ -11847,6 +11967,21 @@ export function App() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [candidateHexes, setCandidateHexes] = useState<AxialHex[]>([]);
   const [rivers, setRivers] = useState<River[]>([]);
+  const [classification,setClassification]=useState<Classification|undefined>();
+  const [physicalGrid,setPhysicalGrid]=useState<Detail1State|undefined>(undefined);
+  const [detailAdaptation,setDetailAdaptation]=useState<{revision:number;state:Detail1State;sizeChanges?:readonly {poiId:string;before:DetailExtent|null;after:DetailExtent}[]}|null>(null);
+  const detailAdaptationRef=useRef(detailAdaptation);detailAdaptationRef.current=detailAdaptation;
+  const detailAdaptationFocusRef=useRef<HTMLElement|null>(null),detailAdaptationStartRef=useRef<HTMLButtonElement|null>(null);
+  useEffect(()=>{if(detailAdaptation)detailAdaptationFocusRef.current?.focus();},[detailAdaptation]);
+  const [detailAdaptationError,setDetailAdaptationError]=useState<string|null>(null);
+  const updateDetailAdaptation=(value:typeof detailAdaptation)=>{detailAdaptationRef.current=value;setDetailAdaptation(value);};
+  const [detailExtentDraft,setDetailExtentDraft]=useState<{revision:number;poiId:string;cellsText:string;note:string}|null>(null);
+  const detailExtentDraftRef=useRef(detailExtentDraft);detailExtentDraftRef.current=detailExtentDraft;
+  const updateDetailExtentDraft=(value:typeof detailExtentDraft)=>{detailExtentDraftRef.current=value;setDetailExtentDraft(value);};
+  const physicalGridRef=useRef(physicalGrid);physicalGridRef.current=physicalGrid;
+  const updatePhysicalGrid=(value:Detail1State|undefined)=>{physicalGridRef.current=value;setPhysicalGrid(value);};
+  const classificationRef=useRef(classification);classificationRef.current=classification;
+  const updateClassification=(value:Classification|undefined)=>{classificationRef.current=value;setClassification(value);};
   const [knave,setKnave]=useState<KnaveLayer|undefined>(undefined);
   const knaveRef=useRef(knave);knaveRef.current=knave;
   const updateKnave=(value:KnaveLayer|undefined)=>{knaveRef.current=value;setKnave(value);};
@@ -11916,7 +12051,7 @@ export function App() {
   type NameTarget = { key: string; type: 'region' | 'settlement' | 'river' | 'lake' | 'kingdom' | 'poi' | 'waterPoi' | EditorObject['type']; ru: string; en: string; location: string; poiLocator?:string; editorLocator?:string; fallback?:{ru:string;en:string} };
   type NameDraft = { target: NameTarget; revision: number; language: Language; value: string; otherValue?:string; surface: string };
   const [editMode, setEditMode] = useState(false);
-  type KnaveDraft={id:number;revision:number;token:object;hexKey:string;poiKey:string|null;difficulty:Difficulty;mode:Discovery;clueText:string};
+  type KnaveDraft={id:number;revision:number;token:object;hexKey:string;poiKey:string|null;difficulty:Difficulty;mode:Discovery;clueText:string;changedDifficulty?:boolean;changedDiscovery?:boolean};
   const [knaveDraft,setKnaveDraft]=useState<KnaveDraft|null>(null);
   const knaveDraftRef=useRef<KnaveDraft|null>(null),knaveDraftSerial=useRef(0),knaveComposing=useRef(false);
   const [knaveError,setKnaveError]=useState<string|null>(null);
@@ -12421,7 +12556,7 @@ export function App() {
 
     const snapshot: MapSnapshot = {
       ...seaIdentityRef.current,
-        knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
+        physicalGrid:structuredClone(physicalGridRef.current),classification:structuredClone(classificationRef.current),knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId, riverFeatures:riverFeatureOverrides,nextRiverId,
@@ -12466,12 +12601,11 @@ export function App() {
       generationProgress.constraintFailure = completed.reason;
       return;
     }
-    if (options.mode === 'mythic') {
-      const full = buildRegionRiverNetwork(completed.rivers, [], finalRegions, finalCandidateHexes, completed.terrain, true);
-      if (full.issues.length || !validateRiverNetwork(full.network).valid) {
+    {
+      if (!generatedRiverNetworkIsValid(snapshot, {rivers:completed.rivers,regions:finalRegions,candidateHexes:finalCandidateHexes,hexTerrainByKey:completed.terrain}, options.mode !== 'mythic')) {
         if (tractAttempt < MAX_REGION_ATTEMPTS) {
           addFallbackTractToMap(anchorHex, forceCoastalSea, options, reason, tractAttempt + 1, hexTerrainByKey, candidateHexes);
-        } else generationProgress.constraintFailure = 'mythic_full_river_network';
+        } else generationProgress.constraintFailure = 'full_river_network';
         return;
       }
     }
@@ -13249,8 +13383,10 @@ export function App() {
       for (const [key, value] of modelResult.terrain) nextHexTerrainByKeyPreview.set(key, value);
       const hexTerrainByKeyForRoads = new Map(nextHexTerrainByKeyPreview);
       for (const key of finalSeaKeysToWrite) hexTerrainByKeyForRoads.set(key, { terrainOverride: 'sea' });
+      const finalRegionForPoi = finalizeDryPoiLocations(finalRegionAfterLandPockets,
+        hex=>waterKindAt(hexTerrainByKeyForRoads,hexKey(hex))==='land',!!options.fixedCenter||!!coastalRiverMouthCenterHex);
       const roadResult = generateRoadsForRegion({
-        region: finalRegionAfterLandPockets,
+        region: finalRegionForPoi,
         regions,
         roads,
         rivers: riversWithDeltas,
@@ -13266,9 +13402,9 @@ export function App() {
       }
 
       const finalRegionWithPoiKinds: Region = {
-        ...finalRegionAfterLandPockets,
+        ...finalRegionForPoi,
         pointOfInterestKinds: assignPoiKindsForRegion({
-          region: finalRegionAfterLandPockets,
+          region: finalRegionForPoi,
           roads: roadResult.roads,
           rivers: riversWithDeltas,
           hexTerrainByKey: hexTerrainByKeyForRoads
@@ -13295,7 +13431,7 @@ export function App() {
 
       const snapshot: MapSnapshot = {
       ...seaIdentityRef.current,
-        knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
+        physicalGrid:structuredClone(physicalGridRef.current),classification:structuredClone(classificationRef.current),knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
         generation: cloneGenerationState(activeGenerationBefore.current ?? generationRef.current),
         kingdoms, obstacles, nextObstacleId, riverFeatures:riverFeatureOverrides,nextRiverId,
@@ -13313,10 +13449,7 @@ export function App() {
         nextRoadId
       };
       const finalHexTerrainByKey = modelResult.terrain;
-      if (options.mode === 'mythic') {
-        const full = buildRegionRiverNetwork(riversWithDeltas, [], finalRegions, finalCandidateHexes, finalHexTerrainByKey, true);
-        if (full.issues.length || !validateRiverNetwork(full.network).valid) { rejectAttempt('mythic_full_river_network'); continue; }
-      }
+      if (!generatedRiverNetworkIsValid(snapshot, {rivers:riversWithDeltas,regions:finalRegions,candidateHexes:finalCandidateHexes,hexTerrainByKey:finalHexTerrainByKey}, options.mode !== 'mythic')) { rejectAttempt('full_river_network'); continue; }
 
       const finalRegionKeySet = new Set(finalRegionWithPoiKinds.hexes.map(hexKey));
       const newlyCheckedWaterHexKeys = new Set([...finalRegionKeySet, ...finalSeaKeysToWrite]);
@@ -13329,7 +13462,7 @@ export function App() {
       const committedMap=recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
         rivers: riversWithDeltas, roads: roadResult.roads, crossings: finalCrossings,
         hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
-        nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId, nextRiverId:allocatedRegionRivers.nextRiverId }, finalCenterHex, pendingRegen?.backup);
+        nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId, nextRiverId:allocatedRegionRivers.nextRiverId }, finalRegionWithPoiKinds.centerHex, pendingRegen?.backup);
       setHistory((current) => [...current, structuredClone(snapshot)]);
       setRegions(committedMap.regions);
       setCandidateHexes(finalCandidateHexes);
@@ -13343,7 +13476,7 @@ export function App() {
       setRoads(roadResult.roads);
       setCrossings(finalCrossings);
       setNextRoadId(roadResult.nextRoadId);
-      setSelectedHex(finalCenterHex);
+      setSelectedHex(finalRegionWithPoiKinds.centerHex);
       generationLog.finish(generationEvent(anchorHex, options, 'generated', 'region_created', 'region'));
       return;
     }
@@ -13358,11 +13491,13 @@ export function App() {
   };
 
 
-  const captureMap = (): MapSnapshot => ({ knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
+  const captureMap = (): MapSnapshot => ({ physicalGrid:physicalGridRef.current,classification:classificationRef.current,knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ map: captureMap(), generationHistory: history, selectedHex,
     generationMode, knaveEnabled:knaveEnabledRef.current, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
   const closeEditors = () => {
+    updateDetailExtentDraft(null);
+    updateDetailAdaptation(null);setDetailAdaptationError(null);
     updateKnaveDraft(null);
     updatePoiDraft(null);
     updateRegionDraft(null);
@@ -13373,6 +13508,7 @@ export function App() {
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
+    if(coarseFillRef.current)return; // Provisional units keep generation checkpoints, not editor transactions.
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
     documentRevision.current++;
     setUndoHistory(current => [...current, transaction].slice(-100));
@@ -13380,7 +13516,7 @@ export function App() {
   };
   const applyExactMap = (map: MapSnapshot) => {
     map=withLegacySeas(map);updateSeaIdentity(map);
-    updateKnave(map.knave);
+    updatePhysicalGrid(map.physicalGrid);updateClassification(map.classification);updateKnave(map.knave);
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -13411,8 +13547,9 @@ export function App() {
     nameDraftRef.current = null; setNameDraft(null); setNameErrors({});
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
-  const documentBusy = () => documentRevision.current !== renderedDocumentRevision
-    || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+  const documentStateBusy = () => documentRevision.current !== renderedDocumentRevision
+    || importInFlight.current || !!coarseFillRef.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+  const documentBusy=()=>!!detailExtentDraftRef.current||!!detailAdaptationRef.current||documentStateBusy();
   const mutationBlocked = (finishGroup = true) => {
     if (knaveDraftRef.current || poiDraftRef.current || regionDraftRef.current || waterDraftRef.current || roadFeatureResolutionRef.current || riverCommandPreviewRef.current || riverDraftRef.current || roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
     if (finishGroup) finishNotesGroup();
@@ -13491,7 +13628,7 @@ export function App() {
       applyPreparedDocument(after);
       return true;
     } catch (error) {
-      setEditError(authoredNameError(error,language)??`${language === 'ru' ? 'Путь не изменён' : 'Path unchanged'}: ${roadErrorText(error instanceof Error ? error.message : '')}`);
+      setEditError(detailCommandError(error,language)??authoredNameError(error,language)??`${language === 'ru' ? 'Путь не изменён' : 'Path unchanged'}: ${roadErrorText(error instanceof Error ? error.message : '')}`);
       return false;
     }
   };
@@ -13527,7 +13664,7 @@ export function App() {
     ? language==='ru' ? (error.capacity==='owner'?'На объекте уже 64 тега. Карта не изменена.':'В этом тексте уже 8 языков. Карта не изменена.')
       : (error.capacity==='owner'?'This object already has 64 tags. Your map is unchanged.':'This text already has 8 languages. Your map is unchanged.')
     : language==='ru'?'Не удалось изменить тег. Карта не изменена.':'Could not change tag. Your map is unchanged.';
-  const commitManualMap = (map: MapSnapshot, reconcileNames = true) => {
+  const commitManualMap = (map: MapSnapshot, reconcileNames = true,identityMoves:ReadonlyMap<string,string|null>=new Map()) => {
     try {
       // Preserve a settlement label before the type ceases to enumerate it.
       const nextEntities=new Set(getToponymEntities(map.regions,map.rivers,map.hexTerrainByKey).map(e=>e.key));
@@ -13539,6 +13676,9 @@ export function App() {
       if(map.knave){const losses=knaveLosses(map.knave,knaveMapContext(map));
         if(losses.length){if(!window.confirm(language==='ru'?`Изменение удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`This edit removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
           const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
+      const classificationLost=classificationLosses(map.classification,knaveMapContext(map));
+      if(classificationLost.length){if(!window.confirm(language==='ru'?`Изменение удалит отметки проходимости/обнаружения (${classificationLost.length}). Отмена вернёт их.`:`This edit removes terrain/discovery annotations (${classificationLost.length}). Undo can restore them.`))return false;map={...map,classification:retainClassification(map.classification,knaveMapContext(map))};}
+      map=reconcileDetailMapIdentities(map,identityMoves);
       checkedRiverMap(map);
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
         getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
@@ -13546,11 +13686,120 @@ export function App() {
       recordTransaction(before, after); applyExactMap(prepared); closeEditors();
       return true;
     } catch (error) {
-      setEditError(authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
+      setEditError(detailCommandError(error,language)??authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
       return false;
     }
   };
+  const startDetailAdaptation=(expectedRevision=renderedDocumentRevision):boolean=>{
+    if(expectedRevision!==documentRevision.current||mutationBlocked(false)||notesComposingRef.current||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
+    try{
+      const map=captureMap();
+      if(!map.regions.length&&!map.hexTerrainByKey.size)return false;
+      if(map.physicalGrid?.version===2&&!map.physicalGrid.poiFootprints.some(p=>p.extent.kind==='default')&&map.physicalGrid.poiIdentities&&map.physicalGrid.poiFootprints.length===Object.keys(map.physicalGrid.poiIdentities.byLegacyRef).length)return false;
+      const preview=prepareDetailMapPreview(map),state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:preview.schemaVersion,active:true,viewStep:map.physicalGrid?.viewStep??6,...(map.physicalGrid?.selectedCell?{selectedCell:map.physicalGrid.selectedCell,...(map.physicalGrid.selectedWorldPoint?{selectedWorldPoint:map.physicalGrid.selectedWorldPoint}:{})}:{}),grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints});
+      validateDetailMapFootprints(map,state);updateDetailAdaptation({revision:documentRevision.current,state,sizeChanges:preview.sizeChanges});setDetailAdaptationError(null);return true;
+    }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось подготовить охваты. Карта не изменена.':'Could not prepare footprints. Your map is unchanged.'));return false;}
+  };
+  const cancelDetailAdaptation=(expected=detailAdaptation):boolean=>{
+    if(!expected||detailAdaptationRef.current!==expected)return false;
+    updateDetailAdaptation(null);setDetailAdaptationError(null);setTimeout(()=>detailAdaptationStartRef.current?.focus(),0);return true;
+  };
+  const applyDetailAdaptation=(expected=detailAdaptation):boolean=>{
+    if(!expected||detailAdaptationRef.current!==expected||expected.revision!==documentRevision.current||documentStateBusy()||notesComposingRef.current)return false;
+    try{
+      const before=captureDocument(),after=copyDocument({...before,map:{...before.map,physicalGrid:expected.state}});
+      recordTransaction(before,after);applyPreparedDocument(after);setTimeout(()=>detailAdaptationFocusRef.current?.focus(),0);return true;
+    }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось применить охваты. Карта не изменена.':'Could not apply footprints. Your map is unchanged.'));return false;}
+  };
+  // The physical grid and camera are one document command. Capture a world
+  // point before rendering; restore it against the new SVG CTM after commit.
+  const rememberDetailFocus=()=>{
+    const svg=mapSvgRef.current,viewport=mapViewportRef.current,state=physicalGridRef.current;
+    const layer=svg?.querySelector<SVGGElement>('[data-detail-view]'),matrix=layer?.getScreenCTM();
+    if(!svg||!viewport||!state||!matrix)return;
+    const rect=viewport.getBoundingClientRect(),factor=Math.sqrt(3)*HEX_SIZE/6;
+    const world=state.selectedWorldPoint??(state.selectedCell?detailCellCenter(createDetailGrid(1,state.grid.origin),state.selectedCell):null);
+    const local=svg.createSVGPoint();if(world){local.x=(world.x-state.grid.origin.x)*factor+riverOffset.x;local.y=(world.y-state.grid.origin.y)*factor+riverOffset.y;}
+    const selected=world?local.matrixTransform(matrix):null;
+    const client=selected&&selected.x>=rect.left&&selected.x<=rect.right&&selected.y>=rect.top&&selected.y<=rect.bottom?{x:selected.x,y:selected.y}:{x:rect.left+viewport.clientWidth/2,y:rect.top+viewport.clientHeight/2};
+    local.x=client.x;local.y=client.y;const at=local.matrixTransform(matrix.inverse());
+    detailFocusRef.current={world:{x:(at.x-riverOffset.x)/factor+state.grid.origin.x,y:(at.y-riverOffset.y)/factor+state.grid.origin.y},client};
+  };
+  const setDetailViewStep=(step:DetailStep,expectedRevision=renderedDocumentRevision):boolean=>{
+    if(![1,6,12,24].includes(step)||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||notesComposingRef.current||obstacleDraftRef.current)return false;
+    const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
+    if(state.viewStep===step)return true;
+    const camera=before.mapScale*state.viewStep/step;if(!(camera>0)||!Number.isFinite(camera))return false;
+    rememberDetailFocus();
+    const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}},mapScale:camera});
+    recordTransaction(before,after);applyPreparedDocument(after);return true;
+  };
+  const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string,worldPoint?:{x:number;y:number},recordSelection=true):boolean=>{
+    if(editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
+    const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
+    try{
+      const selection=worldPoint??detailCellCenter(createDetailGrid(1,state.grid.origin),cell);
+      const next=parseDetail1StateV11({...state,version:2,poiFootprints:state.poiFootprints.map(p=>p.worldAnchor?p:{...p,worldAnchor:detailFootprintWorldAnchor(p,createDetailGrid(1,state.grid.origin))}),selectedCell:cell,selectedWorldPoint:selection,...(step?{viewStep:step}:{})});
+      // The fine address selects geography; source context resolves an entity.
+      // Coincident owners stay a list until the user explicitly picks one.
+      const owners=summarizeDetailCell(next,cell,new Map()).pois;
+      const owner=poiId?owners.find(p=>p.poiId===poiId):owners.length===1?owners[0]:undefined;
+      if(poiId&&!owner)return false;
+      const geographicalSource=worldToDetailCell(createDetailGrid(6,state.grid.origin),selection);
+      const alias=owner?.legacyRef,parts=alias?.split(':');
+      const source=parts?parseHexKey(parts[alias!.startsWith('waterPoi:')?1:2]):owners.length>1?before.selectedHex:geographicalSource;
+      const selectedSource=source&&actualHexKeys(before.map).has(hexKey(source))?source:before.selectedHex;
+      if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state))&&JSON.stringify(selectedSource)===JSON.stringify(before.selectedHex))return true;
+      if(state.viewStep!==next.viewStep)rememberDetailFocus();
+      const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:selectedSource,mapScale:before.mapScale*state.viewStep/next.viewStep});
+      if(recordSelection)recordTransaction(before,after);else documentRevision.current++;
+      applyPreparedDocument(after);setIsSidePanelCollapsed(false);return true;
+    }catch{return false;}
+  };
+  /** One explicit extent operation with full live geography validation. */
+  const editDetailFootprintExtent=(poiId:string,extent:DetailExtent,cells?:readonly AxialHex[],expectedRevision=renderedDocumentRevision):boolean=>{
+    if(!editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesComposingRef.current||notesEditorKey!==null||obstacleDraftRef.current)return false;
+    try{
+      const before=captureDocument(),map=before.map,state=map.physicalGrid;
+      if(!state)return false;
+      const next=prepareDetailFootprintExtentEdit(map,detailMapRiverGeometry(map,state.grid.origin),state,poiId,extent,cells);
+      if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state)))return true;
+      const prepared=copyDocument({...before,map:{...map,physicalGrid:next}});
+      recordTransaction(before,prepared);applyExactMap(prepared.map);closeEditors();return true;
+    }catch(error){
+      const reason=error instanceof Error?error.message:'';
+      setEditError(language==='ru'?(reason.includes('capital_manual')?'Для столицы без измеренного контура нужны хотя бы две соседние клетки.':reason.includes('attachment')||reason.includes('route_coverage')?'Охват должен сохранять обязательный контакт с водой и входы путей.':reason.includes('Disconnected')||reason.includes('Duplicate')?'Выберите уникальные клетки, соединённые общими рёбрами.':reason.includes('compatible_geography')?'Охват должен оставаться на принятой совместимой суше или в том же водоёме.':'Не удалось изменить охват POI. Карта не изменена.'):(reason.includes('capital_manual')?'An unmeasured capital needs at least two adjacent cells.':reason.includes('attachment')||reason.includes('route_coverage')?'The footprint must retain required water and route accesses.':reason.includes('Disconnected')||reason.includes('Duplicate')?'Choose unique cells connected by shared edges.':reason.includes('compatible_geography')?'The extent must stay on accepted compatible land or in the same water body.':'Could not change the POI footprint. Your map is unchanged.'));
+      return false;
+    }
+  };
+  const startDetailExtentDraft=(poiId:string):boolean=>{
+    if(!editMode||physicalGridRef.current?.viewStep!==1||mutationBlocked(false)||notesEditorKey!==null)return false;
+    const p=physicalGridRef.current.poiFootprints.find(p=>p.poiId===poiId);if(!p)return false;
+    updateDetailExtentDraft({revision:documentRevision.current,poiId,cellsText:p.cells.map(hexKey).join('\n'),note:p.extent.kind==='manual'?p.extent.note:''});setEditError(null);return true;
+  };
+  const changeDetailExtentDraft=(patch:{cellsText?:string;note?:string},expected=detailExtentDraftRef.current):boolean=>{
+    if(!expected||expected!==detailExtentDraftRef.current||expected.revision!==documentRevision.current)return false;
+    updateDetailExtentDraft({...expected,...patch});setEditError(null);return true;
+  };
+  const cancelDetailExtentDraft=():boolean=>{
+    const draft=detailExtentDraftRef.current;if(!draft)return false;updateDetailExtentDraft(null);setEditError(null);
+    setTimeout(()=>{if(typeof document!=='undefined')document.querySelector<HTMLButtonElement>(`[data-detail-extent-start="${draft.poiId}"]`)?.focus();},0);return true;
+  };
+  const finishDetailExtentDraft=(expected=detailExtentDraftRef.current):boolean=>{
+    if(!expected||expected!==detailExtentDraftRef.current||expected.revision!==documentRevision.current)return false;
+    try{
+      const note=expected.note.trim();if(!note||note.length>512)throw Error('extent note');
+      const cells=expected.cellsText.trim().split(/\s*\n\s*/).map(line=>{
+        if(!/^-?\d+,-?\d+$/.test(line))throw Error('extent cell');const [q,r]=line.split(',').map(Number);
+        if(`${q},${r}`!==line)throw Error('extent cell');return {q,r};
+      });
+      updateDetailExtentDraft(null);
+      if(editDetailFootprintExtent(expected.poiId,{kind:'manual',basis:'conditional',note},cells,expected.revision))return true;
+      updateDetailExtentDraft(expected);return false;
+    }catch{setEditError(language==='ru'?'Укажите клетки q,r по одной в строке и пояснение условного охвата (до512символов).':'Enter one q,r cell per line and a note for the assumed extent (up to512 characters).');return false;}
+  };
   const riverCommandError=(error:unknown)=>{
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const reason=error instanceof Error?error.message:'';
     const rules:[string,string,string][]=[['CYCLE','Русло создаёт замкнутый цикл.','The route creates a directed cycle.'],['RIV-007','Сухопутный исток должен иметь полноводность 1.','A dry source must have fullness 1.'],['RIV-005','Полноводность в месте слияния несовместима с притоками.','Fullness at the confluence conflicts with its tributaries.'],['RIV-008','Площадь озера недостаточна для этого истока.','The lake is too small for this source.'],['RIV-009','Площадь озера не выдерживает разницу входа и выхода.','The lake cannot support this inflow/outflow difference.'],['RIV-010','Площадь озера недостаточна для закрытого устья.','The lake is too small for this closed mouth.'],['RIV-006','Недопустимый исток, устье или разветвление; море не может быть истоком.','Invalid source, mouth or split; the sea cannot be a source.'],['owner','Регион владельца не прилегает к ребру.','The owner region does not adjoin the edge.'],['unknown_fixed_river_fullness','Неоднозначная полноводность старого участка.','The old reach has ambiguous fullness.']];
@@ -13612,6 +13861,7 @@ export function App() {
   const waterKindLabel=(kind:WaterKind)=>language==='ru'?({land:'Суша',lake:'Озеро',sea:'Море'}[kind]):({land:'Land',lake:'Lake',sea:'Sea'}[kind]);
   const waterName=(key:string)=>editorNames[key]?.[language]??toponyms[key]?.[language]??(language==='ru'?'Без названия':'Unnamed');
   const waterCommandError=(error:unknown)=>{
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const ru=language==='ru',end=ru?' Карта не изменена.':' Your map is unchanged.';
     if(!(error instanceof WaterEditError))return (error instanceof TagCapacityError?tagCommandError(error):ru?'Не удалось подготовить изменение воды.':'Could not prepare the water edit.')+end;
@@ -13645,6 +13895,7 @@ export function App() {
     return (message[error.code]??(ru?'Недопустимое изменение воды.':'Invalid water edit.'))+end;
   };
   const regionCommandError=(error:unknown)=>{
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const ru=language==='ru',code=error instanceof RegionEditError?error.code:error instanceof Error?error.message.split(':')[0]:'';
     const unchanged=ru?' Карта не изменена.':' Your map is unchanged.';
@@ -13717,7 +13968,7 @@ export function App() {
       const original=captureMap(),map=prepareRegionMapEdit(original,draft.edit);
       if(map===original){resetRegionDraft(draft);return true;}
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map});
-      assertHexcrawlSaveData(createSaveData(after));
+      assertHexcrawlSaveData(createSaveData(after),state=>validateDetailMapFootprints(after.map,state));
       recordTransaction(before,after);applyPreparedDocument(after);return true;
     }catch(error){setEditError(regionCommandError(error));return false;}
   };
@@ -13768,6 +14019,24 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history) => {
+    if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
+    const before = kingdomJob && !backup ? undefined : backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
+    const notes = before?.map.gmNotesByHexKey ?? gmNotesByHexKey;
+    // Reject loss of authored notes before derived spatial owners are reconciled.
+    // Provisional kingdom steps still form a single transaction at finish.
+    if (before) {
+      const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
+      if (missing.length) throw new NotesLossConflict(missing);
+    }
+    let acceptedSpatial=map.physicalGrid; // Retain accepted state locally until final sea identities and Knave.
+    if(acceptedSpatial&&(!kingdomJob||backup)){
+      const live=poiNameLocators(map,true);
+      if(Object.keys(acceptedSpatial.poiIdentities?.byLegacyRef??{}).some(alias=>!live.has(alias)))throw new DetailGenerationConflict('accepted_poi_loss');
+    }
+    // Provisional geometry is not an active document. Never encode it as a
+    // complete active layer with its accepted footprints silently removed.
+    if(acceptedSpatial)map={...map,physicalGrid:undefined};
+    else map=reconcileDetailMapIdentities(map);
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
       map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
@@ -13776,19 +14045,30 @@ export function App() {
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
     map.seas=sea.seas;map.nextSeaId=sea.nextSeaId;
+    if(acceptedSpatial){
+      // SEA02 has resolved a real component merge, including named-sea guards.
+      // Only remap that registry identity; retain the exact cell/shore contact.
+      const mergedIds=new Map<string,string>(sea.choices.flatMap(choice=>choice.type==='merge'?choice.allowed.map(id=>[`sea:${id}`,`sea:${choice.value}`] as const):[]));
+      if(mergedIds.size)acceptedSpatial={...acceptedSpatial,poiFootprints:acceptedSpatial.poiFootprints.map(p=>({...p,attachments:p.attachments.map(ref=>ref.kind==='water'&&mergedIds.has(ref.waterId)?{...ref,waterId:mergedIds.get(ref.waterId)!}:ref)}))};
+    }
+    if(acceptedSpatial&&(!kingdomJob||backup))map=reconcileDetailMapIdentities({...map,physicalGrid:acceptedSpatial});
     checkedRiverMap(map);
     assertGeneratedIds(map);
-    if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
-    if (kingdomJob && !backup) {updateSeaIdentity(map);return map;} // internal kingdom steps form one transaction at finish
-    const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
-    const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
-    const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
-    if (missing.length) throw new NotesLossConflict(missing);
+    if (!before) {updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);return map;} // internal kingdom steps form one transaction at finish
+    // New maps acquire their deterministic layer only at the accepted boundary:
+    // Knave has resolved its owners, and Mythic has assigned its final quotas.
+    // Continuing an imported legacy map never implicitly adapts it.
+    const sourceMap=backup?.document?.map??backup?.map??checkpoint;
+    if(!map.physicalGrid&&actualHexKeys(sourceMap).size===0){
+      const preview=prepareDetailMapPreview(map);
+      map={...map,physicalGrid:parseDetail1StateV11({schema:'hexcrawl.detail1',version:preview.schemaVersion,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints})};
+      checkedRiverMap(map);
+    }
     map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
     map.gmNotesByHexKey = {...notes};
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] });
-    updateSeaIdentity(map);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
+    updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateClassification(map.classification);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
   const mutateKnaveContent=(owner:string,part:'primary'|'trait'|'both')=>{
@@ -13860,7 +14140,7 @@ export function App() {
   const restoreGenerationBackup = (backup: GenerationBackup) => {
     const map = withLegacySeas(backup.map);
     updateSeaIdentity(map);
-    updateKnave(map.knave);
+    updatePhysicalGrid(map.physicalGrid);updateClassification(map.classification);updateKnave(map.knave);
     updateEditorNames(map.editorNames??{});
     setRiverFeatureOverrides(map.riverFeatures);setNextRiverId(map.nextRiverId);
     updateTags(map.tags??emptyTags());
@@ -13893,12 +14173,13 @@ export function App() {
   const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup, context?: GenerationActionContext) => {
     restoreGenerationBackup(backup);
     const seaConflict=error instanceof WaterEditError&&error.code.startsWith('sea_');
-    const authored=authoredNameError(error,language);if(authored)setEditError(authored);else if(seaConflict)setEditError(waterCommandError(error));
+    const detail=error instanceof DetailGenerationConflict?detailCommandError(error,language):undefined;
+    const authored=authoredNameError(error,language);if(detail)setEditError(detail);else if(authored)setEditError(authored);else if(seaConflict)setEditError(waterCommandError(error));
     activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
     const notesLossHexKeys = error instanceof NotesLossConflict ? [...error.hexKeys] : undefined;
     const diagnostic = generationLog.finish({
-      ...generationEvent(anchorHex, options, notesLossHexKeys||authored||seaConflict||error instanceof RiverFeatureConflict ? 'constraint-rejection' : 'programming-error',
-        notesLossHexKeys ? 'notes_loss_conflict' : seaConflict ? 'sea_identity_conflict' : authored ? 'authored_name_loss' : error instanceof RiverFeatureConflict ? 'river_feature_conflict' : String(error), 'rolled-back', context),
+      ...generationEvent(anchorHex, options, notesLossHexKeys||detail||authored||seaConflict||error instanceof RiverFeatureConflict ? 'constraint-rejection' : 'programming-error',
+        notesLossHexKeys ? 'notes_loss_conflict' : detail ? 'detail_accepted_poi_loss' : seaConflict ? 'sea_identity_conflict' : authored ? 'authored_name_loss' : error instanceof RiverFeatureConflict ? 'river_feature_conflict' : String(error), 'rolled-back', context),
       ...(notesLossHexKeys ? { notesLossHexKeys } : {}),
       message: String(error),
       stack: error && typeof error === 'object' && 'stack' in error ? String(error.stack) : undefined
@@ -14015,7 +14296,7 @@ export function App() {
     const water=new Map(waterPoiByKey);
     for(const r of members)for(const h of r.hexes)water.delete(hexKey(h));
     const finalCrossings=reconcileRiverCrossings(rebuiltRoads,rivers,finalRegions,crossings, rng);
-    recordGenerated(job.backup.map, { ...captureMap(), regions: finalRegions, roads: rebuiltRoads,
+    recordGenerated(job.backup.map, { ...captureMap(), physicalGrid:job.backup.map.physicalGrid, regions: finalRegions, roads: rebuiltRoads,
       nextRoadId: roadId, crossings: finalCrossings,
       waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
       kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...identifiedObstacles], nextObstacleId: finalNextObstacleId },
@@ -14035,7 +14316,7 @@ export function App() {
   };
 
   const advanceKingdom = () => {
-    const job=kingdomJob;if(!job || advancedJobs.current.has(job))return;
+    const job=kingdomJob;if(!job || kingdomJobRef.current!==job || advancedJobs.current.has(job))return;
     // A consumed tick remains stale even after a newer tick has executed.
     advancedJobs.current.add(job);
     try {
@@ -14075,7 +14356,10 @@ export function App() {
         throw new Error('Не удалось построить регион королевства.');
       }
       setKingdomJob({...job,preferredAnchor:undefined,first:false,steps:job.steps+1});
-    } catch(error) {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup,job.actionContext);kingdomInFlight.current=false;setKingdomJob(null);}
+    } catch(error) {
+      if(coarseFillRef.current)failCoarseFill(error);
+      else {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup,job.actionContext);kingdomInFlight.current=false;setKingdomJob(null);}
+    }
   };
   useEffect(()=>{
     if(!kingdomJob)return;
@@ -14104,6 +14388,7 @@ export function App() {
       && !knaveRef.current && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
     if(Object.keys(editorNamesRef.current).length){setEditError(language==='ru'?`Сброс удалит авторское имя «${Object.values(editorNamesRef.current)[0]?.ru}». Сначала очистите его явно.`:`Reset would remove the authored name “${Object.values(editorNamesRef.current)[0]?.en}”. Clear it explicitly first.`);return;}
     if(knaveRef.current&&(Object.keys(knaveRef.current.difficultyByHex).length||Object.keys(knaveRef.current.discoveryByPoi).length||Object.keys(knaveRef.current.content?.byPoi??{}).length)&&!window.confirm(language==='ru'?'Сброс удалит содержимое точек, проходимость и данные обнаружения Knave. Отмена вернёт их.':'Reset removes Knave point content, terrain and discovery data. Undo can restore them.'))return;
+    if(classificationRef.current&&classificationLosses(classificationRef.current,{hexes:new Set(),pois:new Set()}).length&&!window.confirm(language==='ru'?'Сброс удалит отметки проходимости и обнаружения. Продолжить?':'Reset removes terrain and discovery annotations. Continue?'))return;
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     const newGeneration = createGenerationState(newWorldSeed());
@@ -14128,8 +14413,8 @@ export function App() {
     if(mutationBlocked()||mode===generationMode)return;
     setGenerationMode(mode);
   };
-  const applyWorldSeed = () => {
-    if (mutationBlocked()) return false;
+  const applyWorldSeed = (fillJob?:CoarseFillJob) => {
+    if (fillJob?coarseFillRef.current!==fillJob:mutationBlocked()) return false;
     if (regions.length || hexTerrainByKey.size || kingdoms.length) return true;
     const seed = /^\d+$/.test(seedInput) ? Number(seedInput) : NaN;
     if (!isUint32(seed)) { setSeedError(true); return false; }
@@ -14159,6 +14444,89 @@ export function App() {
     coastalPreference: genCoastal === 'auto' ? undefined : genCoastal
   });
 
+  const failCoarseFill=(error:unknown)=>{
+    const job=coarseFillRef.current;if(!job)return;
+    setCoarseFillJob(null);setKingdomJob(null);kingdomInFlight.current=false;
+    documentRevision.current++;
+    reportGenerationFailure(error,worldToDetailCell(createDetailGrid(6,job.plan.grid.origin),job.plan.anchorPoint),{mode:job.mode},job.backup);
+    setCoarseFillNotice('failed');
+  };
+  const cancelCoarseFill=()=>{
+    const job=coarseFillRef.current;if(!job)return false;
+    setCoarseFillJob(null);setKingdomJob(null);kingdomInFlight.current=false;
+    documentRevision.current++;restoreGenerationBackup(job.backup);setGenerationError(null);setCoarseFillNotice('cancelled');return true;
+  };
+  const startCoarseFill=(plan:DetailFillPlan,pointerSource?:AxialHex)=>{
+    if(mutationBlocked()||notesEditorKey!==null||notesComposingRef.current||obstacleDraftRef.current||activeTagDraftKeys.current.size)return false;
+    const backup=captureGenerationBackup(),covered=detailFillCoveredSources(regions,hexTerrainByKey),missing=detailFillRemaining(plan,covered);
+    if(missing.complete){selectDetailCell(worldToDetailCell(createDetailGrid(1,plan.grid.origin),plan.anchorPoint),renderedDocumentRevision,undefined,undefined,plan.anchorPoint,false);return true;}
+    const legal=candidateHexes.length?candidateHexes:actualHexKeys(backup.map).size===0?[START_HEX]:[];
+    const firstAnchor=pointerSource&&missing.cells.some(h=>isSameHex(h,pointerSource))&&legal.some(h=>isSameHex(h,pointerSource))?pointerSource:nextDetailFillAnchor(plan,covered,legal);
+    // Ref acquires the lock before seed validation or any state setter. Inputs
+    // are copied, but ordinary size rolls still occur once per normal unit.
+    const job:CoarseFillJob={plan,backup,covered,initialMissing:missing.cells.length,units:0,phase:'ready',revision:documentRevision.current,mode:generationMode,
+      inputs:{sizeCategory:genSizeCategory,landType:genLandType,biome:genBiome,coastal:genCoastal},firstAnchor:firstAnchor??undefined};
+    setCoarseFillJob(job);setCoarseFillNotice(null);
+    if(!firstAnchor){failCoarseFill(Error('detail_fill_no_legal_anchor'));return false;}
+    // Existing active maps already have their seed. Preserve the common seed
+    // validation for a future empty active document without a second transaction.
+    if(!applyWorldSeed(job)){setCoarseFillJob(null);return false;}
+    const spatial=physicalGridRef.current;
+    if(spatial)updatePhysicalGrid(parseDetail1StateV11({...spatial,selectedWorldPoint:plan.anchorPoint,selectedCell:worldToDetailCell(createDetailGrid(1,plan.grid.origin),plan.anchorPoint)}));
+    documentRevision.current++;setCoarseFillJob({...job,revision:documentRevision.current});setIsSidePanelCollapsed(false);return true;
+  };
+  const advanceCoarseFill=()=>{
+    const job=coarseFillJob;
+    if(!job||coarseFillRef.current!==job||consumedFillTicks.current.has(job))return;
+    if(documentRevision.current!==renderedDocumentRevision)return;
+    if(job.revision!==documentRevision.current){failCoarseFill(Error('detail_fill_stale_document'));return;}
+    if(job.phase==='waiting'&&(kingdomJobRef.current||kingdomInFlight.current))return;
+    consumedFillTicks.current.add(job);
+    try{
+      const covered=detailFillCoveredSources(regions,hexTerrainByKey);
+      if(job.phase==='waiting'){
+        assertDetailFillProgress(job.plan,job.covered,covered);
+        const units=job.units+1;
+        if(detailFillRemaining(job.plan,covered).complete){
+          const after=copyDocument(captureDocument()),spatial=after.map.physicalGrid;
+          if(!spatial)throw Error('detail_fill_missing_grid');
+          after.map.physicalGrid=parseDetail1StateV11({...spatial,selectedWorldPoint:job.plan.anchorPoint,selectedCell:worldToDetailCell(createDetailGrid(1,job.plan.grid.origin),job.plan.anchorPoint)});
+          after.selectedHex=worldToDetailCell(createDetailGrid(6,job.plan.grid.origin),job.plan.anchorPoint);
+          // Validate/detach before releasing the provisional lock. The two
+          // editor stacks are still the exact pre-job stacks at this point.
+          const transaction={before:copyDocument(job.backup.document!),after:copyDocument(after)};
+          documentRevision.current++;
+          setUndoHistory([...(job.backup.undo??[]),transaction].slice(-100));setRedoHistory([]);
+          applyPreparedDocument(after);setCoarseFillJob(null);setCoarseFillNotice('done');return;
+        }
+        if(units>=job.initialMissing)throw Error('detail_fill_unit_limit');
+        setCoarseFillJob({...job,covered,units,phase:'ready'});return;
+      }
+      const legal=candidateHexes.length?candidateHexes:actualHexKeys(captureMap()).size===0?[START_HEX]:[];
+      const anchor=job.units===0&&job.firstAnchor&&legal.some(h=>isSameHex(h,job.firstAnchor!))?job.firstAnchor:nextDetailFillAnchor(job.plan,covered,legal);
+      if(!anchor)throw Error('detail_fill_no_legal_anchor');
+      documentRevision.current++;
+      if(job.mode==='mythic'){
+        startKingdom(anchor);
+        if(!kingdomJobRef.current)throw Error('detail_fill_kingdom_start_failed');
+      }else{
+        const inputs=job.inputs,backup=captureGenerationBackup();
+        const options:GenerationOptions={targetSize:inputs.sizeCategory==='auto'?undefined:rollRegionSizeInCategory(inputs.sizeCategory,rng),landType:inputs.landType==='auto'?undefined:inputs.landType,biomeId:inputs.biome==='auto'?undefined:inputs.biome,coastalPreference:inputs.coastal==='auto'?undefined:inputs.coastal};
+        const result=safelyAddRegionToMap(anchor,options,backup);if(!result.success)throw Error(`detail_fill_generation_failed: ${result.diagnostic.reason}`);
+      }
+      setCoarseFillJob({...job,covered,phase:'waiting',revision:documentRevision.current});
+    }catch(error){failCoarseFill(error);}
+  };
+  useEffect(()=>{
+    if(!coarseFillJob||kingdomJob)return;
+    const timer=window.setTimeout(advanceCoarseFill,0);return()=>window.clearTimeout(timer);
+  },[coarseFillJob,kingdomJob]);
+  useEffect(()=>{
+    if(!coarseFillJob)return;
+    const escape=(event:globalThis.KeyboardEvent)=>{if(event.key==='Escape'&&!event.isComposing&&coarseFillRef.current){event.preventDefault();cancelCoarseFill();}};
+    window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);
+  },[coarseFillJob]);
+
   const retainedKnaveCheckpoint=(snapshot:MapSnapshot)=>{
     const current=knaveRef.current;if(!current)return snapshot.knave;
     const layer=structuredClone(current),target=knaveMapContext(snapshot);
@@ -14170,10 +14538,10 @@ export function App() {
   // числе изменения, которые новый регион внёс в соседние регионы.
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
-    snapshot={...snapshot,knave:retainedKnaveCheckpoint(snapshot)};
+    snapshot={...snapshot,classification:retainClassification(classificationRef.current,knaveMapContext(snapshot)),knave:retainedKnaveCheckpoint(snapshot)};
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
-    updateSeaIdentity(snapshot);updateKnave(snapshot.knave);
+    updateSeaIdentity(snapshot);updatePhysicalGrid(snapshot.physicalGrid);updateClassification(snapshot.classification);updateKnave(snapshot.knave);
     const retainedPoiNames=retainPoiNames(snapshot,editorNamesRef.current);
     updateTags(reconcileTags(tagsRef.current,snapshot,captureMap(),generationRef.current.masterSeed,false));
     restoreGeneration(snapshot.generation);
@@ -14232,10 +14600,12 @@ export function App() {
     if(waterChanged)return window.confirm(language==='ru'?`Будет восстановлена вода и берег из контрольной точки. Также будут восстановлены её POI, названия, теги, заметки и счётчики. Изменённые реки: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Undo вернёт текущую карту точно. Продолжить?`:`The checkpoint water and shore will be restored together with its POI, names, tags, notes and counters. Changed rivers: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Undo restores this current map exactly. Continue?`);
     return window.confirm(language==='ru'?`Будет восстановлено исходное состояние рек. Изменённые русла: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Ручные отметки: ${featuresChanged?'будут заменены':'сохранятся'}. Отмена вернёт карту точно. Продолжить?`:`Original river state will be restored. Changed routes: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Manual markers: ${featuresChanged?'will be replaced':'retained'}. Undo restores this map exactly. Continue?`);
   };
-  const checkPoiNameCheckpoint=(checkpoint:MapSnapshot)=>{try{retainPoiNames(checkpoint,editorNamesRef.current);
+  const checkPoiNameCheckpoint=(checkpoint:MapSnapshot)=>{try{
+    const lost=classificationLosses(classificationRef.current,knaveMapContext(checkpoint));if(lost.length&&!window.confirm(language==='ru'?`Контрольная точка удалит отметки проходимости/обнаружения (${lost.length}). Продолжить?`:`The checkpoint removes terrain/discovery annotations (${lost.length}). Continue?`))return false;
+retainPoiNames(checkpoint,editorNamesRef.current);
     const losses=knaveRef.current?knaveLosses(knaveRef.current,knaveMapContext(checkpoint)):[];
     if(losses.length&&!window.confirm(language==='ru'?`Контрольная точка удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`The checkpoint removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
-    return true;}catch(error){setEditError(authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));return false;}};
+    return true;}catch(error){setEditError(detailCommandError(error,language)??authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));return false;}};
   const deleteLastRegion = () => {
     if (mutationBlocked() || history.length === 0) return;
     const checkpoint = history[history.length-1];
@@ -14250,6 +14620,7 @@ export function App() {
       toponyms: synchronizeToponyms(retainedNames,entities,checkpoint.toponymSeed ?? toponymSeed),
       roads: pruneRoadsToRegionHexes(cloneRoads(checkpoint.roads),checkpoint.regions) };
     const before = captureDocument();
+    map.classification=retainClassification(classificationRef.current,knaveMapContext(map));
     map.knave=retainedKnaveCheckpoint(map);
     const after = { ...before, map, generationHistory: history.slice(0,-1),
       selectedHex: checkpoint.regions.length ? checkpoint.regions[checkpoint.regions.length-1].centerHex : START_HEX };
@@ -14303,7 +14674,17 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingRegen]);
 
+  const detailSummary=useMemo(()=>{
+    if(!physicalGrid?.selectedCell)return null;
+    const terrain=new Map<string,string>();
+    for(const r of regions)for(const h of r.hexes)terrain.set(hexKey(h),biomeOverrideByHexKey.get(hexKey(h))??r.biomeId);
+    for(const [key,t]of hexTerrainByKey)if(t.terrainOverride)terrain.set(key,t.terrainOverride);
+    return summarizeDetailCell(physicalGrid,physicalGrid.selectedCell,terrain,{rivers:detailMapRiverGeometry(captureMap(),physicalGrid.grid.origin),roads,notes:new Map(Object.entries(gmNotesByHexKey))});
+  },[physicalGrid,regions,hexTerrainByKey,biomeOverrideByHexKey,rivers,roads,crossings,riverFeatureOverrides,gmNotesByHexKey]);
+  const detailLocal=physicalGrid?.active&&physicalGrid.viewStep===1;
+  const detailLocalSegment=(from:{x:number;y:number},to:{x:number;y:number})=>!detailLocal||!!physicalGrid?.selectedCell&&detailSegmentCellIntersection(createDetailGrid(1,physicalGrid.grid.origin),physicalGrid.selectedCell,{from:detailSourcePixelToWorld(from,physicalGrid.grid.origin),to:detailSourcePixelToWorld(to,physicalGrid.grid.origin)})!==null;
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
+  const detailSourceAreaVisible=!detailLocal||!!selectedHexKey&&!!detailSummary?.sources.some(s=>s.key===selectedHexKey);
   const canEditNotes = !!selectedHexKey && (hexTerrainByKey.has(selectedHexKey) || regions.some(r => r.hexes.some(h => hexKey(h) === selectedHexKey)));
   const notesValue = selectedHexKey ? gmNotesByHexKey[selectedHexKey] ?? '' : '';
   const notesOpen = notesEditorKey === selectedHexKey;
@@ -14313,26 +14694,26 @@ export function App() {
   const isSelectedLake = selectedTerrain?.terrainOverride === 'lake';
   const isSelectedSea = selectedTerrain?.terrainOverride === 'sea';
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
-  const selectedHexRoadIds = selectedHex
+  const selectedHexRoadIds = detailLocal ? detailSummary?.routes.filter(r=>r.kinds.includes('road')).map(r=>r.id)??[] : selectedHex
     ? Array.from(new Set(roads
       .filter((road) => road.segments.some((s) => s.kind === 'road' && (hexKey(s.from) === selectedHexKey || hexKey(s.to) === selectedHexKey)))
       .map((road) => road.id)))
     : [];
-  const selectedHexTrailIds = selectedHex
+  const selectedHexTrailIds = detailLocal ? detailSummary?.routes.filter(r=>r.kinds.includes('trail')).map(r=>r.id)??[] : selectedHex
     ? Array.from(new Set(roads
       .filter((road) => road.segments.some((s) => s.kind === 'trail' && (hexKey(s.from) === selectedHexKey || hexKey(s.to) === selectedHexKey)))
       .map((road) => road.id)))
     : [];
   const nearbyHexes = selectedHex ? getHexNeighbors(selectedHex) : [];
-  const nearbyRivers = selectedHex ? getRiversOnHexEdges(selectedHex, rivers) : [];
-  const selectedHexEdgeKeys = selectedHex ? new Set(getHexEdgeKeys(selectedHex)) : new Set<string>();
-  const selectedHexVertexKeys = selectedHex ? new Set(getHexCornerPoints(selectedHex).map((vertex) => vertex.key)) : new Set<string>();
+  const nearbyRivers = detailLocal ? rivers.filter(r=>detailSummary?.rivers.some(local=>local.id===r.id)) : selectedHex ? getRiversOnHexEdges(selectedHex, rivers) : [];
+  const selectedHexEdgeKeys = detailLocal ? new Set(detailSummary?.rivers.flatMap(r=>r.edgeIds)??[]) : selectedHex ? new Set(getHexEdgeKeys(selectedHex)) : new Set<string>();
+  const selectedHexVertexKeys = detailLocal ? new Set(rivers.flatMap(r=>r.vertexPath.filter(v=>detailLocalSegment(v,v)).map(v=>v.key))) : selectedHex ? new Set(getHexCornerPoints(selectedHex).map((vertex) => vertex.key)) : new Set<string>();
   const waterfallLabel = language === 'ru' ? 'водопад' : 'waterfall';
   const waterfallRiverVertexKeys = useMemo(
     () => new Set(riverWaterfalls.map((waterfall) => waterfall.vertexKey)),
     [riverWaterfalls]
   );
-  const selectedHexCrossings = selectedHexKey
+  const selectedHexCrossings = detailLocal ? crossings.filter(c=>detailSummary?.rivers.some(r=>r.crossingIds.includes(`crossing:${c.key}`))) : selectedHexKey
     ? crossings.filter((crossing) => {
       const road = roads.find((item) => item.id === crossing.roadId);
       return road?.segments.some((segment) =>
@@ -14340,12 +14721,12 @@ export function App() {
         && (hexKey(segment.from) === selectedHexKey || hexKey(segment.to) === selectedHexKey));
     })
     : [];
-  const nearbyLakeIds = Array.from(new Set(nearbyHexes
+  const nearbyLakeIds = detailLocal ? [...new Set((detailSummary?.sources??[]).filter(s=>s.terrain==='lake').map(s=>hexTerrainByKey.get(s.key)?.lakeId).filter((id):id is number=>typeof id==='number'))] : Array.from(new Set(nearbyHexes
     .map((hex) => hexTerrainByKey.get(hexKey(hex)))
     .filter((terrain): terrain is HexTerrainData & { lakeId: number } => terrain?.terrainOverride === 'lake' && typeof terrain.lakeId === 'number')
     .map((terrain) => terrain.lakeId)
     .filter((lakeId) => lakeId !== selectedTerrain?.lakeId)));
-  const hasNearbySea = nearbyHexes.some((hex) => hexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'sea');
+  const hasNearbySea = detailLocal ? !!detailSummary?.sources.some(s=>s.terrain==='sea') : nearbyHexes.some((hex) => hexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'sea');
 
   const selectedType: HexType | 'none' = !selectedHex
     ? 'none'
@@ -14374,7 +14755,7 @@ export function App() {
   const lastRegion = regions[regions.length - 1];
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
   const selectedKingdom = selectedRegion ? kingdoms.find(k=>k.regionIds.includes(selectedRegion.id)) : undefined;
-  const selectedObstacles = selectedHex ? obstacles.filter(o=>hexKey(o.hex)===hexKey(selectedHex)||hexKey(o.neighborHex)===hexKey(selectedHex)) : [];
+  const selectedObstacles = detailLocal ? obstacles.filter(o=>{const edge=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return edge&&detailLocalSegment(edge.from,edge.to);}) : selectedHex ? obstacles.filter(o=>hexKey(o.hex)===hexKey(selectedHex)||hexKey(o.neighborHex)===hexKey(selectedHex)) : [];
   const editableCentralKinds = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',true) : ['capital','city','town','village','lair','ruins','cursed_place','holy_place',...(knave?['natural_place','structure','dungeon']:[])];
   const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : [...EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins'),...(knave?['natural_place','structure'] as PoiKind[]:[])];
   const selectedHexBiomeOverride = selectedHexKey ? biomeOverrideByHexKey.get(selectedHexKey) : undefined;
@@ -14422,7 +14803,7 @@ export function App() {
     if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey) return;
     if(!waterPoiByKey.has(selectedHexKey)) { closeEditors(); return; }
     const layer=new Map(waterPoiByKey); layer.delete(selectedHexKey);
-    commitManualMap({...captureMap(),waterPoiByKey:layer});
+    commitManualMap({...captureMap(),waterPoiByKey:layer},true,new Map([[`waterPoi:${selectedHexKey}`,null]]));
   };
   const deleteSelectedPoi = () => {
     if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !selectedRegion || !selectedHexKey) return;
@@ -14430,7 +14811,7 @@ export function App() {
     const kinds={...selectedRegion.pointOfInterestKinds}; delete kinds[selectedHexKey];
     commitManualMap({...captureMap(),regions:regions.map(r=>r.id!==selectedRegion.id?r:{...r,
       pointsOfInterest:r.pointsOfInterest.filter(h=>hexKey(h)!==selectedHexKey),
-      pointOfInterestKinds:Object.keys(kinds).length?kinds:undefined})});
+      pointOfInterestKinds:Object.keys(kinds).length?kinds:undefined})},true,new Map([[`poi:${selectedRegion.id}:${selectedHexKey}`,null]]));
   };
   const regionBiomeReason = (region: Region, biomeId: BiomeId): string | null => {
     const biome = BIOMES[biomeId];
@@ -14529,8 +14910,9 @@ export function App() {
   const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
   const [isHeaderLinksCollapsed, setIsHeaderLinksCollapsed] = useState(false);
   const headerLinksAutoCollapseTimerRef = useRef<number | null>(null);
-  const displayMapWidth = isMapRotated ? positionedHexes.height : positionedHexes.width;
-  const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
+  const mapGridPad=physicalGrid?.active&&physicalGrid.viewStep!==6?HEX_SIZE*5:0;
+  const displayMapWidth = (isMapRotated ? positionedHexes.height : positionedHexes.width)+2*mapGridPad;
+  const displayMapHeight = (isMapRotated ? positionedHexes.width : positionedHexes.height)+2*mapGridPad;
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
   const sidePanelToggleLabel = isSidePanelCollapsed ? t.showPanel : t.hidePanel;
@@ -14622,7 +15004,7 @@ export function App() {
     return () => mobileLayout.removeEventListener('change', syncMobileLayout);
   }, []);
 
-  const clampMapScale = (scale: number) => Math.min(MAX_MAP_SCALE, Math.max(MIN_MAP_SCALE, scale));
+  const clampMapScale = (scale: number) => {const ratio=6/(physicalGridRef.current?.viewStep??6);return Math.min(MAX_MAP_SCALE*ratio,Math.max(MIN_MAP_SCALE*ratio,scale));};
 
   const beginMapNavigation = () => {
     mapViewportRef.current?.classList.add('is-navigating');
@@ -14636,7 +15018,7 @@ export function App() {
 
   // Navigation changes only the composited SVG layer, never React map state.
   const applyMapScale = (scale: number) => {
-    const nextScale = clampMapScale(scale);
+    const nextScale = scale;
     mapScaleRef.current = nextScale;
     const svg = mapSvgRef.current;
     const stage = mapStageRef.current;
@@ -14856,9 +15238,11 @@ export function App() {
   const createSaveData = (doc=captureDocument()): HexcrawlSaveData => ({
     schema: HEXCRAWL_SAVE_SCHEMA,
     generation: cloneGenerationState(doc.map.generation),
-    version: HEXCRAWL_SAVE_VERSION,
+    version: doc.map.physicalGrid?.version===2?14:doc.map.physicalGrid||hasClassification(doc.map.classification)?11:HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
+      ...(doc.map.physicalGrid?{physicalGrid:structuredClone(doc.map.physicalGrid)}:{}),
+      ...(hasClassification(doc.map.classification)?{classification:structuredClone(doc.map.classification)}:{}),
       ...(doc.map.knave===undefined?{}:{knave:structuredClone(doc.map.knave)}),
       seas:structuredClone(doc.map.seas).sort((a,b)=>a.id-b.id).map(sea=>({...sea,hexKeys:sea.hexKeys.sort(compareWaterHexes)})),
       nextSeaId:doc.map.nextSeaId,
@@ -14893,7 +15277,7 @@ export function App() {
   const handleExportPng = async () => {
     updateObstacleDraft(null); setSelectedObstacleId(null);
     if(roadDraftRef.current&&!roadFeatureResolutionRef.current) {if(finishRoadDraft())pendingRoadExport.current='png';return;}
-    if (documentBusy() || !renderDetails) return;
+    if (documentStateBusy() || !renderDetails) return;
     finishNotesGroup();
     if (!mapSvgRef.current) return;
     try {
@@ -14914,7 +15298,7 @@ export function App() {
       if (!finishInlineName()) return;
       if (revision !== documentRevision.current) { pendingNameExport.current = true; return; }
     }
-    if(documentBusy())return;
+    if(documentStateBusy())return;
     finishNotesGroup();
     const saveData = createSaveData();
     const blob = new Blob([JSON.stringify(saveData, null, 2)], { type: 'application/json;charset=utf-8' });
@@ -14962,7 +15346,7 @@ export function App() {
       const selection=imported.ui.selectedHex;
       const before=captureDocument();
       const after:DocumentSnapshot={
-        map:{knave:imported.map.knave,...riverData,...seaData,editorNames:imported.version>=8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
+        map:{physicalGrid:imported.map.physicalGrid,classification:imported.map.classification,knave:imported.map.knave,...riverData,...seaData,editorNames:imported.version>=8?structuredClone(imported.map.editorNames??{}):{},tags: imported.map.tags??emptyTags(),gmNotesByHexKey: Object.fromEntries(Object.entries(imported.map.gmNotesByHexKey ?? {}).filter(([,text]) => text !== '')), generation: imported.generation ?? createGenerationState(seed >>> 0), kingdoms:imported.map.kingdoms ?? [],...obstacleData,regions:imported.map.regions,
           candidateHexes:candidates,rivers:imported.map.rivers,roads:imported.map.roads,crossings:imported.map.crossings,
           hexTerrainByKey:terrain,waterPoiByKey:new Map(Object.entries(imported.map.waterPoiByHexKey ?? {})),
           biomeOverrideByHexKey:new Map(Object.entries(imported.map.biomeOverrideByHexKey ?? {})),toponyms:names,toponymSeed:seed,
@@ -14970,7 +15354,7 @@ export function App() {
           nextRoadId:Math.max(imported.counters.nextRoadId,Math.max(0,...imported.map.roads.map(r=>r.id))+1)},
         generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',knaveEnabled:imported.ui.knaveEnabled??!!imported.map.knave,
         selectedHex:!hexes.length&&!terrain.size?START_HEX:selection&&validSelection.has(hexKey(selection))?selection:null,
-        isMapRotated:imported.ui.isMapRotated,mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE,MAX_MAP_SCALE)
+        isMapRotated:imported.ui.isMapRotated,mapScale:imported.map.physicalGrid?.active?imported.ui.mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE,MAX_MAP_SCALE)
       };
       // Everything that can fail (including deep copies) is prepared before the first setter.
       const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
@@ -14993,6 +15377,7 @@ export function App() {
   const poiPolicy=()=>({mode:generationMode,landKinds:(region:Pick<Region,'biomeLandType'>)=>generationMode==='mythic'?mythicPoiChoices(region.biomeLandType==='settled',false):[...EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins'),...(knaveRef.current?['natural_place','structure']:[])],waterKinds:getWaterPoiKindPool,inKingdomArea:(id:number,h:AxialHex)=>{const kingdom=kingdoms.find(k=>k.id===id);return !!kingdom&&kingdomKeys(kingdom.origin).has(hexKey(h));}});
   const currentPoiDraft=(draft:PoiDraft|null):draft is PoiDraft=>!!draft&&poiDraftRef.current===draft&&draft.revision===documentRevision.current&&draft.token===poiDocumentToken.current&&!documentBusy();
   const poiCommandError=(error:unknown)=>{
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const code=(error as {code?:string})?.code,ru=language==='ru';
     const texts:Record<string,[string,string]>={central_poi:['Центральная точка связана с центром региона. Измените её тип или имя на месте.','The central point is bound to the region center. Edit its type or name in place.'],ambiguous_poi:['На этом гексе несколько объектов; перенос неоднозначен.','Several objects share this hex; the move is ambiguous.'],occupied_poi_target:['Гекс уже занят точкой интереса.','This hex already has a point of interest.'],poi_environment_mismatch:['Наземную точку нельзя переносить в воду, а водную — на сушу.','Land and water points need matching terrain.'],unknown_poi_target:['Выберите существующий гекс карты.','Choose an existing map hex.'],poi_kind_mismatch:['Тип точки несовместим с назначением.','The point type is incompatible with its destination.'],poi_kingdom_mismatch:['Перенос между королевствами здесь недоступен.','Moving between kingdoms is unavailable here.'],poi_myth_area:['Миф должен оставаться в дикой местности внутри области королевства.','A Myth must stay in a wild region inside its kingdom area.'],poi_myth_duplicate:['В целевом регионе уже есть Миф.','The destination region already has a Myth.'],water_poi_in_mythic:['Водные точки можно переносить в режиме Classic.','Move water points in Classic mode.'],poi_path_dependency:['С исходным гексом связан путь. Отмените перенос и измените путь явно.','A path touches the source hex. Discard this move and edit the path explicitly.'],poi_identity_conflict:['В назначении есть данные другой точки; перезапись запрещена.','Other point data exists at the destination;overwriting is blocked.'],coordinate:['Нужны канонические целые координаты q/r.','Enter canonical integer q/r coordinates.'],stale_poi_move:['Карта изменилась. Выберите точку заново.','The map changed. Select the point again.']};
     const details=(error as {details?:string[]})?.details??[];
@@ -15009,8 +15394,10 @@ export function App() {
   const preparePoiDraft=(draft:PoiDraft)=>{
     if(!currentPoiDraft(draft))throw new PoiMoveError('stale_poi_move');
     if(draft.q===''||draft.r===''||draft.ambiguous.length)throw new PoiMoveError('unknown_poi_target');
-    const original={...captureMap(),tags:tagsRef.current},map=preparePoiMove(original,{source:draft.source,targetKey:`${draft.q},${draft.r}`},poiPolicy());
+    const original={...captureMap(),tags:tagsRef.current};let map=preparePoiMove(original,{source:draft.source,targetKey:`${draft.q},${draft.r}`},poiPolicy());
+    if(original.classification&&map!==original){const from=poiLocatorKey(draft.source),to=draft.source.kind==='water'?`waterPoi:${draft.q},${draft.r}`:`poi:${map.regions.find(r=>r.hexes.some(h=>hexKey(h)===`${draft.q},${draft.r}`))!.id}:${draft.q},${draft.r}`;map.classification=remapClassification(original.classification,new Map([[from,to]]));}
     if(original.knave&&map!==original){const from=poiLocatorKey(draft.source),to=draft.source.kind==='water'?`waterPoi:${draft.q},${draft.r}`:`poi:${map.regions.find(r=>r.hexes.some(h=>hexKey(h)===`${draft.q},${draft.r}`))!.id}:${draft.q},${draft.r}`;map.knave=remapKnavePois(original.knave,knaveMapContext(original),knaveMapContext(map),new Map([[from,to]]));}
+    if(map!==original){const from=poiLocatorKey(draft.source),to=draft.source.kind==='water'?`waterPoi:${draft.q},${draft.r}`:`poi:${map.regions.find(r=>r.hexes.some(h=>hexKey(h)===`${draft.q},${draft.r}`))!.id}:${draft.q},${draft.r}`;map=reconcileDetailMapIdentities(map,new Map([[from,to]]));}
     return {original,map};
   };
   const finishPoiDraft=(expected=poiDraft):boolean=>{
@@ -15018,7 +15405,7 @@ export function App() {
     if(draft!==expected||!currentPoiDraft(draft)||notesComposingRef.current||dirtyNameDraft())return false;
     try{const {original,map}=preparePoiDraft(draft);if(map===original){resetPoiDraft(draft);return true;}
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map,selectedHex:{q:Number(draft.q),r:Number(draft.r)}});
-      assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);return true;
+      assertHexcrawlSaveData(createSaveData(after),state=>validateDetailMapFootprints(after.map,state));recordTransaction(before,after);applyPreparedDocument(after);return true;
     }catch(error){setEditError(poiCommandError(error));return false;}
   };
   const poiPreview=(()=>{if(!poiDraft)return null;try{return {plan:preparePoiDraft(poiDraft),error:null,code:null};}catch(error){return {plan:null,error:poiCommandError(error),code:(error as {code?:string}).code};}})();
@@ -15032,25 +15419,31 @@ export function App() {
   };
   const currentKnaveDraft=(draft:KnaveDraft|null):draft is KnaveDraft=>!!draft&&knaveDraftRef.current===draft&&draft.revision===documentRevision.current&&draft.token===poiDocumentToken.current&&draft.hexKey===notesSelectionRef.current&&!documentBusy();
   const changeKnaveDraft=(patch:Partial<Pick<KnaveDraft,'difficulty'|'mode'|'clueText'>>,expected=knaveDraft)=>{
-    if(!editMode||!knaveRef.current||!selectedHexKey)return false;
+    if(!editMode||!selectedHexKey)return false;
     if(expected?!currentKnaveDraft(expected):mutationBlocked()||notesComposingRef.current||obstacleDraftRef.current||!finishInlineName())return false;
     const context=knaveMapContext(captureMap());if(!context.hexes.has(selectedHexKey))return false;
     const key=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
     if(patch.difficulty!==undefined&&!context.dryHexes.has(selectedHexKey)||('mode'in patch||'clueText'in patch)&&!key)return false;
-    const previous=key?knaveRef.current.discoveryByPoi[key]:undefined;
-    const draft=expected??{id:++knaveDraftSerial.current,revision:documentRevision.current,token:poiDocumentToken.current,hexKey:selectedHexKey,poiKey:key,difficulty:knaveRef.current.difficultyByHex[selectedHexKey]??'unspecified',mode:previous?.mode??'passage',clueText:previous?.clueText??''};
-    finishNotesGroup();clearNotesDraft();updateKnaveDraft({...draft,...patch});return true;
+    const previous=key?classificationRef.current?.discoveryByPoi[key]??knaveRef.current?.discoveryByPoi[key]:undefined;
+    const draft=expected??{id:++knaveDraftSerial.current,revision:documentRevision.current,token:poiDocumentToken.current,hexKey:selectedHexKey,poiKey:key,difficulty:classificationRef.current?.difficultyByHex[selectedHexKey]??knaveRef.current?.difficultyByHex[selectedHexKey]??'auto',mode:previous?.mode??'auto',clueText:previous?.clueText??(key?knaveRef.current?.discoveryByPoi[key]?.clueText:'')??''};
+    finishNotesGroup();clearNotesDraft();updateKnaveDraft({...draft,...patch,changedDifficulty:draft.changedDifficulty||patch.difficulty!==undefined,changedDiscovery:draft.changedDiscovery||patch.mode!==undefined||patch.clueText!==undefined});return true;
   };
   const resetKnaveDraft=(expected=knaveDraftRef.current)=>{if(knaveDraftRef.current!==expected)return false;updateKnaveDraft(null);return true;};
   const finishKnaveDraft=(expected=knaveDraftRef.current)=>{
     if(!expected)return true;
-    if(!currentKnaveDraft(expected)||knaveComposing.current||!knaveRef.current)return false;
+    if(!currentKnaveDraft(expected)||knaveComposing.current)return false;
     try{
-      const original=knaveRef.current,context=knaveMapContext(captureMap());
-      let next=context.dryHexes.has(expected.hexKey)?setKnaveDifficulty(original,context,expected.hexKey,expected.difficulty):original;
-      if(expected.poiKey)next=setKnaveDiscovery(next,context,expected.poiKey,expected.mode,expected.clueText);
-      if(next===original){resetKnaveDraft(expected);return true;}
-      return commitManualMap({...captureMap(),knave:next},false);
+      const context=knaveMapContext(captureMap()),next=structuredClone(classificationRef.current??emptyClassification());
+      const oldDifficulty=classificationRef.current?.difficultyByHex[expected.hexKey]??knaveRef.current?.difficultyByHex[expected.hexKey]??'auto',oldDiscovery=expected.poiKey?classificationRef.current?.discoveryByPoi[expected.poiKey]??knaveRef.current?.discoveryByPoi[expected.poiKey]:undefined;
+      const difficultyChanged=expected.changedDifficulty&&expected.difficulty!==oldDifficulty,discoveryChanged=expected.changedDiscovery&&(expected.mode!==(oldDiscovery?.mode??'auto')||expected.clueText.trim()!==(oldDiscovery?.clueText??''));
+      if(difficultyChanged){if(expected.difficulty==='auto')delete next.difficultyByHex[expected.hexKey];else next.difficultyByHex[expected.hexKey]=expected.difficulty;}
+      if(expected.poiKey&&discoveryChanged){if(expected.mode==='auto'&&!expected.clueText.trim())delete next.discoveryByPoi[expected.poiKey];else next.discoveryByPoi[expected.poiKey]={mode:expected.mode,clueText:expected.clueText.trim()};}
+      validateClassification(next,context);
+      let legacy=knaveRef.current;
+      if(legacy){legacy=structuredClone(legacy);if(difficultyChanged)delete legacy.difficultyByHex[expected.hexKey];if(discoveryChanged&&expected.poiKey)delete legacy.discoveryByPoi[expected.poiKey];}
+      if(JSON.stringify(next)===JSON.stringify(classificationRef.current??emptyClassification())&&JSON.stringify(legacy)===JSON.stringify(knaveRef.current)){resetKnaveDraft(expected);return true;}
+      const annotations=Object.keys(next.difficultyByHex).length||Object.keys(next.discoveryByPoi).length?next:undefined;
+      return commitManualMap({...captureMap(),knave:legacy,classification:annotations},false);
     }catch{setKnaveError(language==='ru'?'Для секрета нужна улика: от 1 до 512 символов.':'A secret needs a clue of 1–512 characters.');return false;}
   };
   const requestKnaveExit=(action:()=>void)=>{const draft=knaveDraftRef.current;if(draft)setKnaveExitRequest({draft,action});};
@@ -15264,19 +15657,26 @@ export function App() {
     selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi,
     () => setEditingPoiHexKey(selectedHexKey)) : null}{selectedWaterPoiKind?renderName(`waterPoi:${selectedHexKey}`):null}</>;
   const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
+  const detailSelectedPoiAlias=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
+  const detailSelectedPoiVisible=!detailLocal||!!detailSelectedPoiAlias&&!!detailSummary?.pois.some(p=>p.legacyRef===detailSelectedPoiAlias);
   const knaveDiscoveryKey=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
   const selectedKnaveContent=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
-  const acceptedDiscovery=knaveDiscoveryKey?knave?.discoveryByPoi[knaveDiscoveryKey]:undefined;
-  const knaveDifficulty=knaveDraft?.difficulty??(selectedHexKey?knave?.difficultyByHex[selectedHexKey]:undefined)??'unspecified';
-  const knaveDiscovery=knaveDraft?.mode??acceptedDiscovery?.mode??'passage',knaveClue=knaveDraft?.clueText??acceptedDiscovery?.clueText??'';
+  const acceptedDiscovery=knaveDiscoveryKey?classification?.discoveryByPoi[knaveDiscoveryKey]??knave?.discoveryByPoi[knaveDiscoveryKey]:undefined;
+  const authoredDifficulty=selectedHexKey?classification?.difficultyByHex[selectedHexKey]??knave?.difficultyByHex[selectedHexKey]:undefined;
+  const onSelectedRoad=!!selectedHexKey&&roads.some(r=>r.segments.some(s=>hexKey(s.from)===selectedHexKey||hexKey(s.to)===selectedHexKey));
+  const inferredDiscovery=discoveryDefault({kind:(selectedHasCentralPoi?selectedRegion?.centralPoiKind:selectedPoiKind)??selectedWaterPoiKind,biome:selectedEffectiveBiomeId,onRoad:onSelectedRoad,water:isSelectedLake||isSelectedSea,hidden:!!knaveDiscoveryKey&&discoveryTagEffect(knaveDiscoveryKey,tags?.instances??[],selectedKnaveContent)});
+  const knaveDifficulty=knaveDraft?.difficulty??classification?.difficultyByHex[selectedHexKey??'']??knave?.difficultyByHex[selectedHexKey??'']??'auto';
+  const displayedDifficulty=knaveDraft?.difficulty&&knaveDraft.difficulty!=='auto'?knaveDraft.difficulty:authoredDifficulty??terrainDefault(selectedEffectiveBiomeId);
+  const knaveDiscovery=knaveDraft?.mode??classification?.discoveryByPoi[knaveDiscoveryKey??'']?.mode??knave?.discoveryByPoi[knaveDiscoveryKey??'']?.mode??'auto',knaveClue=knaveDraft?.clueText??acceptedDiscovery?.clueText??'';
+  const displayedDiscovery=knaveDraft?.mode&&knaveDraft.mode!=='auto'?knaveDraft.mode:acceptedDiscovery?.mode&&acceptedDiscovery.mode!=='auto'?acceptedDiscovery.mode:inferredDiscovery;
   const knaveControlsBlocked=!!poiDraft||!!regionDraft||!!waterDraft||!!riverDraft||!!roadDraft||!!obstacleDraft||!!riverCommandPreview||!!roadFeatureResolution||documentBusy()||dirtyNameDraft();
-  const difficultyLabels:Record<Difficulty,string>=language==='ru'?{unspecified:'Не задана',normal:'Обычная',difficult:'Трудная'}:{unspecified:'Unspecified',normal:'Normal',difficult:'Difficult'};
-  const discoveryLabels:Record<Discovery,string>=language==='ru'?{passage:'При прохождении',exploration:'При исследовании',interaction:'Секрет · взаимодействие'}:{passage:'On passage',exploration:'By exploration',interaction:'Secret · interaction'};
-  const knavePanel=knave&&selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
-    {selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
-    {!isSelectedLake&&!isSelectedSea&&<div className="direct-line"><label>{language==='ru'?'Проходимость: ':'Difficulty: '}{editMode?<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:difficultyLabels[knaveDifficulty]}</label></div>}
-    {knaveDiscoveryKey&&<><div className="direct-line"><label>{language==='ru'?'Обнаружение: ':'Discovery: '}{editMode?<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select>:discoveryLabels[knaveDiscovery]}</label></div>
-    {editMode?<label className="knave-clue">{language==='ru'?'Улика':'Clue'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{language==='ru'?'Улика: ':'Clue: '}{knaveClue}</p>:null}</>}
+  const difficultyLabels:Record<Difficulty,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задана',normal:'Обычная',difficult:'Труднопроходимая',dangerous:'Опасная'}:{auto:'Automatic',unknown:'Unspecified',normal:'Normal',difficult:'Difficult',dangerous:'Dangerous'};
+  const discoveryLabels:Record<Discovery,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задано',passage:'При прохождении',exploration:'Нужно исследование',interaction:'Секрет · взаимодействие'}:{auto:'Automatic',unknown:'Unspecified',passage:'On passage',exploration:'Requires exploration',interaction:'Secret · interaction'};
+  const knavePanel=selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
+    {detailSelectedPoiVisible&&selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
+    {detailSourceAreaVisible&&!isSelectedLake&&!isSelectedSea&&(editMode||displayedDifficulty==='difficult'||displayedDifficulty==='dangerous')&&<div className="direct-line" data-terrain-classification>{editMode?<label>{language==='ru'?'Проходимость: ':'Difficulty: '}<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:<>{difficultyLabels[displayedDifficulty]}{displayedDifficulty==='dangerous'&&terrainRisk(selectedEffectiveBiomeId,language)?` · ${terrainRisk(selectedEffectiveBiomeId,language)}`:''}</>}</div>}
+    {detailSelectedPoiVisible&&knaveDiscoveryKey&&<>{(editMode||displayedDiscovery!=='unknown')&&<div className="direct-line" data-discovery-classification>{editMode?<label>{language==='ru'?'Обнаружение: ':'Discovery: '}<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:displayedDiscovery==='passage'&&onSelectedRoad?(language==='ru'?'Заметно с дороги':'Visible from the road'):discoveryLabels[displayedDiscovery]}</div>}
+    {editMode?<label className="knave-clue">{language==='ru'?'Улика':'Clue'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{knaveClue}</p>:null}</>}
     {knaveError&&<p id="knave-clue-error" className="direct-error" role="alert">{knaveError}</p>}
     {knaveDraft&&<button type="button" className="direct-value knave-cancel" onClick={()=>resetKnaveDraft(knaveDraft)}>{language==='ru'?'Отмена':'Cancel'}</button>}
   </div>:null;
@@ -15294,6 +15694,7 @@ export function App() {
   </div>:null;
   const waterLossText=(loss:WaterLoss):string=>{
     const ru=language==='ru';
+    if(loss.type==='classification')return `${ru?'Удалить отметку проходимости/обнаружения':'Remove terrain/discovery annotation'} · ${loss.key}`;
     if(loss.type==='knave'){const v=loss.value as {kind:string;data:{mode?:string;clueText?:string}|string};return `${ru?'Удалить':'Delete'} ${v.kind==='difficulty'?(ru?'отметку проходимости':'terrain difficulty'):v.kind==='content'?(ru?'содержимое точки':'point content'):(ru?'способ обнаружения и улику':'discovery and clue')} · ${loss.key}`;}
     if(loss.type==='lake')return `${ru?'Озеро исчезнет':'Lake will be removed'}: ${waterName(loss.key)}`;
     if(loss.type==='name'){const v=loss.value as {ru:string;en:string;seaInto?:number[]};return `${ru?'Удалить название':'Delete name'}${loss.key.startsWith('sea:')?` · ${ru?'море':'sea'} #${loss.key.slice(4)}`:''}: ${ru?`${v.ru} / ${v.en}`:v.en}${v.seaInto?(v.seaInto.length?` · ${ru?'слияние в':'merged into'} ${v.seaInto.map(id=>`${waterName(`sea:${id}`)} (#${id})`).join(', ')}`:` · ${ru?'морской объект исчезнет':'no sea remains'}`):''}`;}
@@ -15423,14 +15824,15 @@ export function App() {
     </div>}
   </div>:null;
   const waterPanel=selectedHexKey&&!isSelectedCandidate&&(selectedRegion||isSelectedLake||isSelectedSea)?<div data-water-panel className="water-editor">
-    <div className="direct-line">{language==='ru'?'Поверхность: ':'Surface: '}{editMode?<select className="water-kind-value" aria-label={language==='ru'?'Поверхность':'Surface'} disabled={!!poiDraft || !!regionDraft || !!waterDraft}
+    {(editMode||isSelectedLake||isSelectedSea)&&<div className="direct-line">{editMode&&<label>{language==='ru'?'Поверхность: ':'Surface: '}<select className="water-kind-value" aria-label={language==='ru'?'Поверхность':'Surface'} disabled={!!poiDraft || !!regionDraft || !!waterDraft}
       value={waterKindAt(hexTerrainByKey,selectedHexKey)} onChange={e=>startWaterDraft(e.target.value as WaterKind)}>
       {(['land','lake','sea'] as const).map(kind=><option value={kind} key={kind}>{waterKindLabel(kind)}</option>)}
-    </select>:<span>{waterKindLabel(waterKindAt(hexTerrainByKey,selectedHexKey))}</span>}
+    </select></label>}
     {isSelectedSea&&selectedHexKey?<>{' '}{renderName(`sea:${seaIdentity.seas.find(sea=>sea.hexKeys.includes(selectedHexKey))?.id}`)}</>:null}
     {isSelectedLake&&selectedTerrain?.lakeId?<>{' '}{renderToponym(`lake:${selectedTerrain.lakeId}`)}{renderTags({kind:'lake',id:selectedTerrain.lakeId},'lake')}</>:null}
     {editMode&&!poiDraft&&!regionDraft&&!waterDraft&&(isSelectedLake||isSelectedSea)&&<>{' '}<button type="button" className="direct-value" data-water-shore onClick={()=>startWaterDraft(waterKindAt(hexTerrainByKey,selectedHexKey))}>{language==='ru'?'Изменить берег':'Change shore'}</button></>}
     </div>
+    }
     {waterDraft&&<div data-water-draft>
       <p><label>{language==='ru'?'Изменить на':'Change to'} <select aria-label={language==='ru'?'Вода в черновике':'Draft water'} aria-describedby={waterPreview?.error||editError?'water-edit-error':undefined} aria-invalid={!!(waterPreview?.error||editError)} value={waterDraft.edit.target} onChange={e=>changeWaterDraft(waterDraft,{edit:{target:e.target.value as WaterKind,hexKeys:waterDraft.edit.hexKeys},options:{},preview:false})}>
         {(['land','lake','sea'] as const).map(kind=><option value={kind} key={kind}>{waterKindLabel(kind)}</option>)}
@@ -15488,6 +15890,7 @@ export function App() {
   // Artwork is independent of panel selection; candidate actions always use current options.
   const mapHexClickRef = useRef<(hex: typeof positionedHexes.hexes[number],event?:MouseEvent<SVGGElement>) => void>(() => {});
   mapHexClickRef.current = (hex,event) => {
+    if(event&&event.detail>1)return; // The second click of a generation gesture is inert.
     if (regionDraftRef.current!==regionDraft || documentBusy()||knaveDraftRef.current) return;
     if((poiDraftRef.current||regionDraftRef.current||waterDraftRef.current||riverDraftRef.current)&&riverDraftGesture.current?.moved&&event)return;
     const moving=poiDraftRef.current;
@@ -15521,6 +15924,15 @@ export function App() {
       const pendingObstacle=obstacleDraftRef.current;
       finishNotesGroup(); closeEditors(); updateObstacleDraft(pendingObstacle); clearNotesDraft();
       setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
+      if(physicalGridRef.current?.active&&!editMode&&event){
+        // Keyboard/programmatic source-cell activation has no pointer position.
+        // Use the addressed source centre, never screen(0,0).
+        if(event.detail===0){const origin=physicalGridRef.current.grid.origin;selectDetailCell(worldToDetailCell(createDetailGrid(1,origin),detailCellCenter(createDetailGrid(6,origin),hex)));return;}
+        const node=event.currentTarget,svg=node.ownerSVGElement,matrix=node.getScreenCTM();
+        if(svg&&matrix){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;const at=p.matrixTransform(matrix.inverse()),origin=physicalGridRef.current.grid.origin;
+          const world={x:(at.x-riverOffset.x)*6/(Math.sqrt(3)*HEX_SIZE)+origin.x,y:(at.y-riverOffset.y)*6/(Math.sqrt(3)*HEX_SIZE)+origin.y};selectDetailCell(worldToDetailCell(createDetailGrid(1,origin),world),renderedDocumentRevision,undefined,undefined,world);return;
+        }
+      }
       setSelectedHex({ q: hex.q, r: hex.r });
     }
   };
@@ -15613,6 +16025,7 @@ export function App() {
     roadPairs:new Set(roads.flatMap(r=>r.segments.map(v=>pairKey(v.from,v.to)))),kingdoms
   });
   const obstacleMessage = (error:unknown) => {
+    const spatial=detailCommandError(error,language);if(spatial)return spatial;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const code=error instanceof Error?error.message:'';
     const messages:Record<string,[string,string]>={
@@ -15716,7 +16129,7 @@ export function App() {
     if(!requestRiverCommand(edit,draft.options,draft))return false;
     updateRiverDraft(null);return true;
   };
-  const finishPathDrafts=()=>{if(knaveDraftRef.current)return false;if(poiDraftRef.current){setEditError(language==='ru'?'Завершите перенос кнопкой «Готово» или отмените его клавишей Esc.':'Use Done to finish the move or Esc to discard it.');return false;}if(regionDraftRef.current){setEditError(language==='ru'?'Завершите правку кнопкой «Готово» или сбросьте её клавишей Esc.':'Use Done to finish this edit or Esc to discard it.');return false;}return finishWaterDraft()&&!roadFeatureResolutionRef.current&&!riverCommandPreviewRef.current&&finishRiverDraft()&&finishRoadDraft();};
+  const finishPathDrafts=()=>{if(detailAdaptationRef.current)return false;if(knaveDraftRef.current)return false;if(poiDraftRef.current){setEditError(language==='ru'?'Завершите перенос кнопкой «Готово» или отмените его клавишей Esc.':'Use Done to finish the move or Esc to discard it.');return false;}if(regionDraftRef.current){setEditError(language==='ru'?'Завершите правку кнопкой «Готово» или сбросьте её клавишей Esc.':'Use Done to finish this edit or Esc to discard it.');return false;}return finishWaterDraft()&&!roadFeatureResolutionRef.current&&!riverCommandPreviewRef.current&&finishRiverDraft()&&finishRoadDraft();};
   const resetRiverDraft=(expected:RiverDraft|null=riverDraft)=>{
     if(riverDraftRef.current!==expected)return false;
     updateRiverPreview(null);updateRiverDraft(null);setEditError(null);
@@ -15852,7 +16265,7 @@ export function App() {
     const match = roads.find(r=>r.id===roadId)?.segments.find(s => normalizeRoadSegmentKey(s.from,s.to) === pair);
     if(match) setSelectedHex({...match.from});
   };
-  const roadChoices = roads.flatMap(road => road.segments.filter(segment =>
+  const roadChoices = roads.flatMap(road => road.segments.filter(segment=>detailLocalSegment(toPixel(segment.from.q,segment.from.r),toPixel(segment.to.q,segment.to.r))).filter(segment =>
     selectedRoadPair ? normalizeRoadSegmentKey(segment.from,segment.to) === selectedRoadPair
       : selectedHex && (isSameHex(segment.from,selectedHex) || isSameHex(segment.to,selectedHex)))
     .map(segment => ({road,segment,pair:normalizeRoadSegmentKey(segment.from,segment.to)})));
@@ -15917,6 +16330,42 @@ export function App() {
     </div>}
   </div>:null;
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
+  const detailCellClickRef=useRef<(cell:AxialHex)=>void>(()=>{});
+  detailCellClickRef.current=cell=>{selectDetailCell(cell);};
+  const detailDisplayClickRef=useRef<(cell:DetailDisplayCell,world?:{x:number;y:number})=>void>(()=>{});
+  detailDisplayClickRef.current=(display,world)=>{
+    const state=physicalGridRef.current;if(!state?.active||editMode||documentBusy())return;
+    const at=world??detailCellCenter(createDetailGrid(state.viewStep,state.grid.origin),display.cell);
+    const source=worldToDetailCell(createDetailGrid(6,state.grid.origin),at),fine=worldToDetailCell(createDetailGrid(1,state.grid.origin),at);
+    const covered=detailFillCoveredSources(regions,hexTerrainByKey);
+    if(world&&covered.has(hexKey(source))){selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);return;}
+    if(state.viewStep===12||state.viewStep===24){startCoarseFill(prepareDetailFill(createDetailGrid(state.viewStep,state.grid.origin),display.cell,at),world?source:undefined);return;}
+    if(state.viewStep===1&&!world){
+      const hits=detailPositiveAreaIntersections(createDetailGrid(6,state.grid.origin),detailCellPolygon(createDetailGrid(1,state.grid.origin),display.cell));
+      const legal=candidateHexes.filter(h=>!covered.has(hexKey(h))&&hits.some(hit=>isSameHex(hit.cell,h))).sort((a,b)=>{
+        const x=detailCellCenter(createDetailGrid(6,state.grid.origin),a),y=detailCellCenter(createDetailGrid(6,state.grid.origin),b);
+        return (x.x-at.x)**2+(x.y-at.y)**2-((y.x-at.x)**2+(y.y-at.y)**2)||a.q-b.q||a.r-b.r;
+      });
+      if(legal[0]){generateAt(legal[0]);return;}
+    }
+    if(covered.has(hexKey(source))){selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);return;}
+    const candidate=positionedHexes.hexes.find(h=>h.kind==='candidate'&&h.key===hexKey(source));
+    if(candidate){mapHexClickRef.current(candidate);return;}
+    selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);
+    setDetailAdaptationError(language==='ru'?'В этой части карты нет доступного старта обычного генератора.':'There is no legal ordinary-generation start in this part of the map.');
+  };
+
+  useEffect(()=>{
+    const focus=detailFocusRef.current,svg=mapSvgRef.current,viewport=mapViewportRef.current,stage=mapStageRef.current,state=physicalGridRef.current;
+    if(!state?.active){detailScrollSpaceRef.current={x:0,y:0};if(stage)stage.style.margin='0px';detailFocusRef.current=null;return;}
+    if(!focus||!svg||!viewport||!stage)return;
+    detailScrollSpaceRef.current={x:viewport.clientWidth*2,y:viewport.clientHeight*2};stage.style.margin=`${viewport.clientHeight*2}px ${viewport.clientWidth*2}px`;
+    const layer=svg.querySelector<SVGGElement>('[data-detail-view]'),matrix=layer?.getScreenCTM();if(!matrix)return;
+    const p=svg.createSVGPoint(),factor=Math.sqrt(3)*HEX_SIZE/6;p.x=(focus.world.x-state.grid.origin.x)*factor+riverOffset.x;p.y=(focus.world.y-state.grid.origin.y)*factor+riverOffset.y;
+    const next=p.matrixTransform(matrix);viewport.scrollLeft+=next.x-focus.client.x;viewport.scrollTop+=next.y-focus.client.y;detailFocusRef.current=null;
+  },[physicalGrid?.viewStep,physicalGrid?.active,mapScaleRef.current,riverOffset]);
+  const detailExtentCaption=(extent:DetailExtent)=>extent.kind==='representative'?(extent.representativeExtentMiles===null?(language==='ru'?'Размер неизвестен; значок':'Size unknown; marker'):(language==='ru'?`Оценка: ${extent.representativeExtentMiles} мили · проектное допущение`:`Estimate: ${extent.representativeExtentMiles} miles · project assumption`)):extent.kind==='manual_size'?(language==='ru'?`Ручной размер: ${extent.diameterMiles} мили · ${extent.note}`:`Manual size: ${extent.diameterMiles} miles · ${extent.note}`):extent.kind==='default'?(language==='ru'?'Прежний условный охват; размер неизвестен':'Legacy assumed footprint; size unknown'):extent.kind==='manual'?extent.note:extent.sourceId;
+  const detailMiles=(step:number)=>language==='ru'?(step===1?'миля':step===24?'мили':'миль'):'mi';
   const mapArtwork = useMemo(() => (<>
             <defs>
               <filter id="poi-white-outline" x="-15%" y="-15%" width="130%" height="130%" colorInterpolationFilters="sRGB">
@@ -15971,7 +16420,7 @@ export function App() {
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
               const fill = hex.kind === 'candidate' ? undefined : !renderDetails ? (hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : GROUND_COLORS[effectiveBiomeId]) : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : getBiomeColor(effectiveBiomeId);
-              const gridStyle = renderBiomeColor && hex.kind !== 'candidate' ? { stroke: 'none' } : {};
+              const gridStyle = physicalGrid?.active?{stroke:'none',...(hex.kind==='candidate'?{fill:'none',visibility:'hidden' as const}:{})}:renderBiomeColor&&hex.kind!=='candidate'?{stroke:'none'}:{};
               const biomeTileHref = renderDetails && useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
               const tileImageSize = getHexWidth(hexRenderSize);
               const tileImageHeight = hexRenderSize * 2;
@@ -15994,7 +16443,7 @@ export function App() {
                   key={`${hex.kind}-${hex.key}`}
                   onClick={event => mapHexClickRef.current(hex,event)}
                 >
-                  <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill, ...(renderBiomeColor ? { stroke: 'none' } : {}) }} />
+                  <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill, ...gridStyle }} />
                   {biomeTileHref ? (
                     <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
                       <image className="biome-tile"
@@ -16157,7 +16606,7 @@ export function App() {
                 );
               })}
             </g>
-            {showHexCoordinates ? (
+            {showHexCoordinates&&!physicalGrid?.active ? (
               <g className="hex-coordinate-layer">
                 {positionedHexes.hexes.filter((hex) => hex.kind !== 'candidate').map((hex) => {
                   const labelLayout = getHexCoordinateLabelLayout(hex.x, hex.y, positionedHexes.height, isMapRotated);
@@ -16182,7 +16631,7 @@ export function App() {
               {positionedHexes.hexes.map((hex) => {
                 const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
                 const isCandidateClickPrompt = regions.length >= 1 && regions.length <= 2 && hex.kind === 'candidate' && hex.key === clickPromptCandidateKey;
-                if (!isStartClickPrompt && !isCandidateClickPrompt) return null;
+                if (physicalGrid?.active || !isStartClickPrompt && !isCandidateClickPrompt) return null;
                 const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
                 return (
                   <text
@@ -16210,7 +16659,7 @@ export function App() {
                 const biomeTileHref = renderDetails && useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
                 const biomeEmojis = biomeTileHref || useBiomeColor ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
                 const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
-                if (waterPoiKind) {
+                if (waterPoiKind && !physicalGrid?.active) {
                   const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
                   return usePoiSvg ? (
                     <image key={`water-poi-svg-${hex.key}`} className="poi-marker" filter="url(#poi-white-outline)" href={getPoiSvgHref(waterPoiKind, true)} x={position.x - 10} y={position.y - 10} width={20} height={20} pointerEvents="none" role="img" aria-label={getWaterPoiLabel(waterPoiKind, language)} />
@@ -16220,10 +16669,10 @@ export function App() {
                 }
                 if (!SHOW_BIOME_EMOJI || hex.kind !== 'region' || !hex.regionId || !region || isLakeHex) return null;
                 const hexMarkers: Array<{ emoji: string; svgHref?: string; label?: string }> = [];
-                if (meta?.isCenter && hasCentralPoi(region)) {
+                if (!physicalGrid?.active && meta?.isCenter && hasCentralPoi(region)) {
                   hexMarkers.push({ emoji: getCentralPoiEmoji(region), svgHref: getPoiSvgHref(region.centralPoiKind), label: getCentralPoiLabel(region, language) });
                 }
-                if (isPointOfInterest) {
+                if (!physicalGrid?.active && isPointOfInterest) {
                   hexMarkers.push({ emoji: getPoiEmojiForHex(region, hex), svgHref: getPoiSvgHref(getPoiKindForHex(region, hex)), label: getPoiLabelForHex(region, hex, language) });
                 }
                 hexMarkers.push(...biomeEmojis.map((emoji) => ({ emoji })));
@@ -16288,9 +16737,44 @@ export function App() {
                 ))}
               </g>
             ) : null}
-            {renderBiomeColor ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
+            {renderBiomeColor&&!physicalGrid?.active ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
+            {physicalGrid?.active&&(()=>{
+              const origin=physicalGrid.grid.origin,coarse=createDetailGrid(6,origin),fine=createDetailGrid(1,origin),grid=createDetailGrid(physicalGrid.viewStep,origin);
+              const px=(v:{x:number;y:number})=>({x:(v.x-origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x,y:(v.y-origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y});
+              const points=(poly:readonly {x:number;y:number}[])=>poly.map(v=>{const p=px(v);return `${p.x},${p.y}`;}).join(' ');
+              const terrain=positionedHexes.hexes.filter(h=>h.kind!=='candidate');
+              const cells=projectDetailDisplayCells(grid,terrain,positionedHexes.hexes.filter(h=>h.kind==='candidate'));
+              return <g data-detail-view={physicalGrid.viewStep} transform={mapRotationTransform} pointerEvents="none">
+                <g fill="none" stroke="#778397" strokeOpacity={.8} strokeWidth={.6}>
+                  {cells.map(c=><polygon key={hexKey(c.cell)} data-detail-cell={hexKey(c.cell)} data-detail-accepted-fraction={c.acceptedFraction} data-detail-candidate={c.candidates.length?true:undefined} className="detail-cell-target" points={points(c.polygon)}
+                    aria-pressed={physicalGrid.selectedCell?hexKey(worldToDetailCell(grid,physicalGrid.selectedWorldPoint??detailCellCenter(fine,physicalGrid.selectedCell)))===hexKey(c.cell):false}
+                    fill="transparent" strokeDasharray={c.acceptedFraction===0?'3 2':undefined} pointerEvents={editMode?'none':'all'} role={editMode?undefined:'button'} tabIndex={editMode?undefined:0}
+                    aria-label={`${physicalGrid.viewStep} ${language==='ru'?'миль, ячейка':'mile cell'} ${hexKey(c.cell)}`}
+                    onClick={event=>{event.stopPropagation();if(event.detail>1)return;const svg=event.currentTarget.ownerSVGElement,m=event.currentTarget.getScreenCTM();if(svg&&m){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;const hit=p.matrixTransform(m.inverse());detailDisplayClickRef.current(c,{x:(hit.x-riverOffset.x)*6/(Math.sqrt(3)*HEX_SIZE)+origin.x,y:(hit.y-riverOffset.y)*6/(Math.sqrt(3)*HEX_SIZE)+origin.y});}else detailDisplayClickRef.current(c);}}
+                    onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();detailDisplayClickRef.current(c);}}}/>)}
+                </g>
+                {showHexCoordinates&&cells.map(c=>{const at=px(detailCellCenter(grid,c.cell));return <text key={`coordinate:${hexKey(c.cell)}`} data-detail-coordinate={hexKey(c.cell)} x={at.x} y={at.y} textAnchor="middle" dominantBaseline="central" fontSize={physicalGrid.viewStep*2} fill="#cbd5e1" transform={isMapRotated?`rotate(-90 ${at.x} ${at.y})`:undefined}>{c.cell.q}/{c.cell.r}</text>;})}
+                {detailMarkerGroups(physicalGrid).map(({cell,owners})=>{
+                  const owner=owners[0],alias=owner.legacyRef??'',parts=alias.split(':'),water=alias.startsWith('waterPoi:'),source=parseHexKey(parts[water?1:2]??'0,0'),region=water?undefined:regions.find(r=>r.id===Number(parts[1]));
+                  const waterKind=waterPoiByKey.get(hexKey(source));
+                  const kind=region?(hasCentralPoi(region)&&hexKey(region.centerHex)===hexKey(source)?region.centralPoiKind:getPoiKindForHex(region,source)):waterKind;
+                  const emoji=waterKind&&water?getWaterPoiEmoji(waterKind):region?(hasCentralPoi(region)&&hexKey(region.centerHex)===hexKey(source)?getCentralPoiEmoji(region):getPoiEmojiForHex(region,source)):'•';
+                  const anchor=detailFootprintWorldAnchor(owner,fine),at=px(physicalGrid.viewStep===1?(detailFootprintHasOutline(owner,fine)?detailCellCenter(fine,cell):anchor):detailCellCenter(grid,cell)),size=physicalGrid.viewStep===1?4.2:14,count=owners.length>1?owners.length:0;
+                  return <g key={hexKey(cell)} data-detail-marker-cell={hexKey(cell)} data-detail-marker-owners={owners.map(p=>p.poiId).join(' ')} transform={isMapRotated?`rotate(-90 ${at.x} ${at.y})`:undefined}>
+                    <title>{owners.length>1?`${owners.length} ${language==='ru'?'мест в этой клетке':'places in this cell'}`:water&&waterKind?getWaterPoiLabel(waterKind,language):region?(hasCentralPoi(region)&&hexKey(region.centerHex)===hexKey(source)?getCentralPoiLabel(region,language):getPoiLabelForHex(region,source,language)):(language==='ru'?'Место':'Place')}</title>
+                    {usePoiSvg&&kind?<image className="poi-marker" href={getPoiSvgHref(kind,water)} x={at.x-size/2} y={at.y-size/2} width={size} height={size}/>:<text className="poi-marker" x={at.x} y={at.y} textAnchor="middle" dominantBaseline="central" fontSize={size}>{emoji}</text>}
+                    {count>1&&<text className="detail-marker-count" x={at.x+size*.45} y={at.y-size*.35} fontSize={size*.55}>{count}</text>}
+                  </g>;
+                })}
+                {physicalGrid.viewStep===1&&physicalGrid.poiFootprints.filter(p=>detailFootprintHasOutline(p,fine)).map(p=><g key={p.poiId} data-detail-footprint={p.poiId}>
+                  {physicalGrid.viewStep===1&&p.cells.map(c=><polygon key={hexKey(c)} points={points(detailCellPolygon(fine,c))} fill="#22d3ee" fillOpacity={.12}/>)}
+                  {detailFootprintBoundary(fine,p.cells).map((e,i)=>{const a=px(e.from),b=px(e.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#087f8c" strokeWidth={1.2}/>;})}
+                </g>)}
+              </g>;
+            })()}
+
   </>), [
-    biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, colorLandHexes, debugRivers, debugVerticesByRegion, forestCells, hexTerrainByKey, isMapRotated, kingdoms, lakeCells, lakeShapes, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderBiomeColor, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, toponymSeed, useBiomeColor, useBiomeTiles, usePoiSvg, waterPoiByKey
+    editMode, physicalGrid, biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, colorLandHexes, debugRivers, debugVerticesByRegion, forestCells, hexTerrainByKey, isMapRotated, kingdoms, lakeCells, lakeShapes, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderBiomeColor, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, toponymSeed, useBiomeColor, useBiomeTiles, usePoiSvg, waterPoiByKey
   ]);
 
   useEffect(() => {
@@ -16300,9 +16784,12 @@ export function App() {
   }, [mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
 
   return (
-    <div className="app" onClickCapture={poiClickGate} onChangeCapture={poiSelectGate} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+    <div className="app" onClickCapture={e=>{if(coarseFillRef.current){if(!(e.target as Element).closest('[data-fill-cancel]')){e.preventDefault();e.stopPropagation();}return;}poiClickGate(e);}} onChangeCapture={e=>{if(coarseFillRef.current){e.preventDefault();e.stopPropagation();return;}poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(coarseFillRef.current){if(e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelCoarseFill();}else if((e.key==='Enter'||e.key===' ')&&!(e.target as Element).closest('[data-fill-cancel]')){e.preventDefault();e.stopPropagation();}return;}
       if(e.key!=='Tab'&&guardMaterialRead(e))return;
+      if(detailExtentDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelDetailExtentDraft();return;}
       if(knaveExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-knave-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button')??[])],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
+      if(detailAdaptationRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelDetailAdaptation(detailAdaptationRef.current);return;}
       if(knaveDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(knaveExitRequest)stayInKnaveEditor();else resetKnaveDraft();return;}
       if(poiExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-poi-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button:not(:disabled)')??[])];const first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(poiDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(poiExitRequest)setPoiExitRequest(null);else resetPoiDraft();return;}
@@ -16397,17 +16884,21 @@ export function App() {
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{waterDraft?(language==='ru'?'Выберите созданные клетки для изменения воды.':'Choose created cells to change water.'):t.candidatePrompt}</div>
             ) : null}
             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ changeGenerationMode(e.target.value as GenerationMode); }}>
+              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob} onChange={e=>{ changeGenerationMode(e.target.value as GenerationMode); }}>
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
             {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={knaveEnabled} disabled={mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label><span>{language==='ru'?'6 миль / гекс':'6 miles / hex'}</span></div>}
+            {coarseFillJob ? <div className="detail-fill-progress" data-detail-fill-progress>
+              <p role="status">{language==='ru'?'Заполнение…':'Filling…'} · {coarseFillJob.mode==='mythic'?(language==='ru'?'королевств':'kingdoms'):(language==='ru'?'регионов':'regions')}: {coarseFillJob.units} · {language==='ru'?'не заполнено':'unknown'}: {Math.round(100*detailFillRemaining(coarseFillJob.plan,detailFillCoveredSources(regions,hexTerrainByKey)).areaSquareMiles/coarseFillJob.plan.targets.reduce((sum,h)=>sum+h.areaSquareMiles,0))}%</p>
+              <button type="button" className="secondary" data-fill-cancel onClick={cancelCoarseFill}>{language==='ru'?'Отмена заполнения':'Cancel fill'}</button>
+            </div> : coarseFillNotice ? <p role="status" data-detail-fill-notice>{coarseFillNotice==='done'?(language==='ru'?'Заполнено':'Filled'):coarseFillNotice==='cancelled'?(language==='ru'?'Заполнение отменено. Исходная карта восстановлена.':'Fill cancelled. The original map was restored.'):(language==='ru'?'Заполнение не завершено. Исходная карта восстановлена.':'Fill could not finish. The original map was restored.')}</p> : null}
             {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
-            {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
+            {kingdomJob && !coarseFillJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
             {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
               <label>
                 {t.size}
-                <select value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
+                <select disabled={!!coarseFillJob} value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
                   <option value="auto">{t.auto}</option>
                   <option value="locality">{SIZE_LABELS[language].locality}</option>
                   <option value="small_region">{SIZE_LABELS[language].small_region}</option>
@@ -16419,7 +16910,7 @@ export function App() {
               </label>
               <label>
                 {t.type}
-                <select value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
+                <select disabled={!!coarseFillJob} value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
                   <option value="auto">{t.auto}</option>
                   <option value="settled">{t.settled}</option>
                   <option value="wild">{t.wild}</option>
@@ -16427,7 +16918,7 @@ export function App() {
               </label>
               <label>
                 {t.biome}
-                <select value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
+                <select disabled={!!coarseFillJob} value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
                   <option value="auto">{t.auto}</option>
                   {(Object.values(BIOMES)).map((biome) => (
                     <option key={biome.id} value={biome.id}>{getBiomeLabel(biome.id, language)}</option>
@@ -16436,7 +16927,7 @@ export function App() {
               </label>
               <label>
                 {t.coast}
-                <select value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
+                <select disabled={!!coarseFillJob} value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
                   <option value="auto">{t.auto}</option>
                   <option value="coast">{t.coastOption}</option>
                   <option value="mainland">{t.mainland}</option>
@@ -16446,11 +16937,11 @@ export function App() {
             : null}
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
-                  <button disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
+                  <button disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !history.length} onClick={regenerateLastRegion} className="secondary">
                     {t.regenerateRegion}
                   </button>
-                  <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
+                  <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !history.length} onClick={deleteLastRegion} className="secondary">
                     {t.deleteLastRegion}
                   </button>
               </div>
@@ -16504,10 +16995,11 @@ export function App() {
                 <span aria-hidden="true">#</span>
                 <span>{t.hexCoordinatesMode}</span>
               </button>
+              {physicalGrid?.active&&!detailAdaptation&&<select data-detail-step-select className="hex-grid-select" aria-label={language==='ru'?'Размер гекса':'Hex size'} value={physicalGrid.viewStep} disabled={mutationBlocked(false)} onChange={event=>setDetailViewStep(Number(event.target.value) as DetailStep)}>{([1,6,12,24] as const).map(step=><option key={step} value={step}>{language==='ru'?`Гекс ${step} ${step===1?'миля':step===24?'мили':'миль'}`:`Hex ${step} ${step===1?'mile':'miles'}`}</option>)}</select>}
             </div>
             <div className="control-block controls controls--history">
-              <button type="button" className="secondary" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
-              <button type="button" className="secondary" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
+              <button type="button" className="secondary" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
+              <button type="button" className="secondary" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
             </div>
             <div className="control-block controls controls--transfer">
               <details className="export-menu">
@@ -16515,20 +17007,32 @@ export function App() {
                   <div className="export-menu__items">
                     <button type="button" data-poi-export disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" data-poi-export onClick={handleExportJson} className="secondary">JSON</button>
-                    <small>{language==='ru'?'JSON v10: старые версии приложения не откроют этот файл.':'JSON v10: older app versions cannot open this file.'}</small>
+                    <small>{language==='ru'?`JSON v${physicalGrid?.version===2?14:physicalGrid||hasClassification(classification)?11:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid?.version===2?14:physicalGrid||hasClassification(classification)?11:10}: older app versions cannot open this file.`}</small>
                   </div>
                 </details>
-              <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+              <button type="button" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               {(waterDraft||regionDraft||poiDraft)&&<span className="water-export-notice">{poiDraft?(language==='ru'?'Черновик переноса не входит в JSON и PNG.':'The point-move draft is excluded from JSON and PNG.'):regionDraft?(language==='ru'?'Черновик региона не входит в JSON и PNG.':'The region draft is excluded from JSON and PNG.'):(language==='ru'?'Черновик воды не входит в JSON и PNG.':'The water draft is excluded from JSON and PNG.')}</span>}
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
+            {(regions.length>0||hexTerrainByKey.size>0)&&<section ref={detailAdaptationFocusRef} tabIndex={-1} className="detail-adaptation" data-detail-adaptation aria-label={language==='ru'?'Охваты точек интереса':'Point footprints'}>
+              <strong>{language==='ru'?'Охваты точек интереса':'Point footprints'}</strong>
+              {detailAdaptation?<>
+                <p>{language==='ru'?'Предлагаемые охваты показаны бирюзовым. Карта ещё не изменена.':'Proposed footprints are shown in turquoise. Your map is unchanged.'}</p>
+                <p>{language==='ru'?'Объектов':'Objects'}: {detailAdaptation.state.poiFootprints.length} · {language==='ru'?'клеток охвата':'footprint cells'}: {new Set(detailAdaptation.state.poiFootprints.flatMap(p=>p.cells.map(c=>`${c.q},${c.r}`))).size}</p>
+                <p>{language==='ru'?'1 миля между сторонами мелкой клетки. Для старой сетки принимаем 6 миль; исходная физическая конвенция остаётся неизвестной. Размеры без измерений — условные.':'One mile across each fine cell. We assume six miles for the old grid; its source convention remains unknown. Unmeasured extents are assumptions.'}</p>
+                {detailAdaptation.sizeChanges&&<ul data-detail-size-changes>{detailAdaptation.sizeChanges.map(change=><li key={change.poiId}>{nameTargets.find(t=>t.poiLocator===detailAdaptation.state.poiFootprints.find(p=>p.poiId===change.poiId)?.legacyRef)?.[language]??(language==='ru'?'Место':'Place')}: {change.before?detailExtentCaption(change.before):(language==='ru'?'прежний значок':'previous marker')} → {detailExtentCaption(change.after)}</li>)}</ul>}
+                <div className="detail-adaptation__actions"><button type="button" data-detail-apply onClick={()=>applyDetailAdaptation()}>{language==='ru'?'Применить охваты':'Apply footprints'}</button><button type="button" data-detail-cancel className="secondary" onClick={()=>cancelDetailAdaptation()}>{language==='ru'?'Отмена':'Cancel'}</button></div>
+                <small>{language==='ru'?'Escape — отмена. Применение можно вернуть одной Undo.':'Escape cancels. Undo restores the previous document after applying.'}</small>
+              </>:physicalGrid?.version===2&&!physicalGrid.poiFootprints.some(p=>p.extent.kind==='default')&&physicalGrid.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button ref={detailAdaptationStartRef} type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
+              {detailAdaptationError&&<p role="alert">{detailAdaptationError}</p>}
+            </section>}
             <div className="control-block world-seed-control">
               <label className="world-seed-control__row">
                 <span>{language === 'ru' ? 'Seed мира' : 'World seed'}</span>
                 <input aria-label={language === 'ru' ? 'Seed мира' : 'World seed'} inputMode="numeric" value={seedInput}
                   aria-invalid={seedError || undefined} aria-describedby={seedError ? 'world-seed-error' : undefined}
                   readOnly={!!regions.length || !!hexTerrainByKey.size || !!kingdoms.length}
-                  disabled={mutationBlocked(false)} onChange={e=>{if(!mutationBlocked(false)){setSeedInput(e.target.value);setSeedError(false);}}} onBlur={applyWorldSeed} />
+                  disabled={mutationBlocked(false)} onChange={e=>{if(!mutationBlocked(false)){setSeedInput(e.target.value);setSeedError(false);}}} onBlur={()=>applyWorldSeed()} />
               </label>
               {seedError ? <p id="world-seed-error" className="world-seed-control__error" role="alert">{language === 'ru' ? 'Seed: целое число от 0 до 4294967295.' : 'Seed: integer from 0 to 4294967295.'}</p> : null}
               {legacyNotice ? <p className="world-seed-control__notice" role="status">{language === 'ru' ? 'Старая карта: seed задан для дальнейшего продолжения' : 'Legacy map: seed assigned for future continuation'}</p> : null}
@@ -16558,16 +17062,47 @@ export function App() {
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
+              {physicalGrid?.active&&physicalGrid.viewStep!==6&&<section className="info-block detail-summary" aria-label={language==='ru'?'Сводка ячейки':'Cell summary'} data-detail-summary>
+                <strong>{language==='ru'?'Область':'Area'} · {physicalGrid.viewStep} {detailMiles(physicalGrid.viewStep)}</strong>
+                {!detailSummary?<p>{language==='ru'?'Выберите ячейку на карте.':'Choose a cell on the map.'}</p>:<>
+                  <p>{hexKey(detailSummary.cell)} · {language==='ru'?'мест':'places'}: {detailSummary.pois.length}</p>
+                  <p data-detail-unknown>{language==='ru'?'Незаполнено':'Unknown'}: {(detailSummary.unknownAreaSquareMiles/detailSummary.cellAreaSquareMiles*100).toFixed(1)}%</p>
+                  <ul data-detail-terrains>{detailSummary.terrains.map(item=><li key={item.terrain}>{item.terrain==='sea'?(language==='ru'?'Море':'Sea'):item.terrain==='lake'?(language==='ru'?'Озеро':'Lake'):getBiomeLabel(item.terrain as BiomeId,language)} · {(item.fraction*100).toFixed(1)}%</li>)}</ul>
+                  <ul data-detail-rivers>{detailSummary.rivers.map(item=><li key={item.id} data-detail-river={item.id}>{t.river} {renderToponym(`river:${item.id}`)}{item.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}</li>)}</ul>
+                  <ul data-detail-roads>{detailSummary.routes.map(item=><li key={item.id} data-detail-road={item.id}>{item.kinds.map(kind=>kind==='road'?t.road:t.trail).join(' / ')} {renderName(`road:${item.id}`,'detail-road')}{item.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}</li>)}</ul>
+                  {physicalGrid.viewStep>6&&detailSummary.notes.map(item=><p key={item.key} data-detail-note={item.key}>{language==='ru'?'Заметка области':'Area note'} {item.key}: {item.text}</p>)}
+                  {detailSummary.pois.length>1&&<p>{language==='ru'?'Выберите место в списке, чтобы открыть его содержимое.':'Choose a place below to open its content.'}</p>}
+                  <details><summary>{language==='ru'?'Местность и исходные гексы':'Terrain and source cells'} ({detailSummary.sources.length})</summary>
+                    <ul>{detailSummary.sources.map(h=><li key={h.key}>{h.key} · {h.terrain==='sea'?(language==='ru'?'Море':'Sea'):h.terrain==='lake'?(language==='ru'?'Озеро':'Lake'):getBiomeLabel(h.terrain as BiomeId,language)} · {h.partial?(language==='ru'?'часть':'part'):(language==='ru'?'целиком':'whole')}</li>)}</ul>
+                  </details>
+                  {detailSummary.pois.map(p=><details key={p.poiId}><summary>{nameTargets.find(t=>t.poiLocator===p.legacyRef)?.[language]||`${language==='ru'?'Место':'Place'} ${p.legacyRef?.slice(p.legacyRef.lastIndexOf(':')+1)??''}`} · {p.partial?(language==='ru'?'часть объекта':'part of object'):(language==='ru'?'весь объект':'whole object')}</summary>
+                    <p>{language==='ru'?'Клетки охвата здесь/всего':'Footprint cells here/total'}: {p.partCells}/{p.totalCells}</p>
+                    <p>{detailExtentCaption(p.extent)}</p>
+                    <ul>{p.attachments.map((a,i)=><li key={i}>{a.kind==='water'?`${nameTargets.find(t=>t.key===a.waterId)?.[language]??a.waterId} · ${language==='ru'?{water:'в воде',shore:'у берега',river:'у реки',crossing:'переправа',rapid:'порог',waterfall:'водопад'}[a.waterKind]:a.waterKind}`:`${nameTargets.find(t=>t.key===a.routeId)?.[language]??a.routeId} · ${a.routeKind==='road'?(language==='ru'?'дорога':'road'):(language==='ru'?'тропа':'trail')}`}</li>)}</ul>
+                    <button type="button" className="secondary" data-detail-poi-select={p.poiId} onClick={()=>{const cell=physicalGrid.viewStep===1&&physicalGrid.selectedCell?physicalGrid.selectedCell:physicalGrid.poiFootprints.find(f=>f.poiId===p.poiId)?.cells[0];if(cell)selectDetailCell(cell,renderedDocumentRevision,1,p.poiId);}}>{language==='ru'?'Открыть место подробно':'Open place details'}</button>
+                    {physicalGrid.viewStep===1&&(detailExtentDraft?.poiId===p.poiId?<form data-detail-extent-form onSubmit={event=>{event.preventDefault();finishDetailExtentDraft();}}>
+                      <p>{language==='ru'?'Условная форма: не измеренная площадь застройки. Привязки к воде и путям сохраняются.':'Assumed shape, not a measured built-up area. Water and path attachments must remain valid.'}</p>
+                      <label>{language==='ru'?'Клетки охвата q,r (по одной в строке)':'Footprint cells q,r (one per line)'}<textarea autoFocus data-detail-extent-cells rows={4} value={detailExtentDraft.cellsText} onChange={event=>changeDetailExtentDraft({cellsText:event.target.value})}/></label>
+                      <label>{language==='ru'?'Основание условного охвата':'Reason for assumed extent'}<textarea data-detail-extent-note rows={2} maxLength={512} value={detailExtentDraft.note} onChange={event=>changeDetailExtentDraft({note:event.target.value})}/></label>
+                      <div className="detail-adaptation__actions"><button type="submit" data-detail-extent-apply>{language==='ru'?'Применить охват':'Apply extent'}</button><button type="button" className="secondary" data-detail-extent-cancel onClick={()=>cancelDetailExtentDraft()}>{language==='ru'?'Отмена':'Cancel'}</button></div>
+                      {editError&&<p role="alert">{editError}</p>}
+                    </form>:<button type="button" className="secondary" disabled={!!detailExtentDraft} data-detail-extent-start={p.poiId} onClick={()=>{if(!editMode){setEditMode(true);return;}startDetailExtentDraft(p.poiId);}}>{editMode?(language==='ru'?'Изменить охват':'Edit extent'):(language==='ru'?'Режим правки охвата':'Enable extent editing')}</button>)}
+
+                  </details>)}
+                </>}
+              </section>}
               <section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
+                <details open={!physicalGrid?.active||physicalGrid.viewStep<=6||editMode} className={`detail-source-context${!physicalGrid?.active||physicalGrid.viewStep===6?' detail-source-context--standard':''}`}><summary>{language==='ru'?'Исходный гекс и редактирование':'Source hex and editing'}</summary>
                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
                   aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
-                  disabled={isImporting || !!pendingRegen || !!kingdomJob || !!poiDraft&&!poiPreview?.plan}
-                  data-poi-done onClick={() => { if(knaveDraftRef.current){if(finishKnaveDraft())setEditMode(false);return;} if(poiDraftRef.current){if(finishPoiDraft())setEditMode(false);return;}if (!finishRegionDraft() || !finishPathDrafts() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(!editMode); }}>
+                  disabled={isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !!poiDraft&&!poiPreview?.plan}
+                  data-poi-done onClick={() => { if(detailExtentDraftRef.current){if(finishDetailExtentDraft())setEditMode(false);return;} if(knaveDraftRef.current){if(finishKnaveDraft())setEditMode(false);return;} if(poiDraftRef.current){if(finishPoiDraft())setEditMode(false);return;}if (!finishRegionDraft() || !finishPathDrafts() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(!editMode); }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                     {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
                   </svg>
                 </button></div>
+                {detailLocal&&<p data-detail-region-context><strong>{language==='ru'?'Контекст исходного региона':'Source region context'}</strong></p>}
                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
                 {selectedRegion ? <>
                   <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong> {renderToponym(`region:${selectedRegion.id}`)}</p>
@@ -16581,13 +17116,13 @@ export function App() {
                       () => setEditingRegionBiomeId(selectedRegion.id))}{renderTags({kind:'region',id:selectedRegion.id},'region')}</div>
                   {!poiDraft&&regionPanel}
                 </> : isSelectedLake ? <p><strong>💧 {t.lake}</strong> {renderToponym(`lake:${selectedTerrain?.lakeId}`)}{selectedTerrain?.lakeId?renderTags({kind:'lake',id:selectedTerrain.lakeId},'lake'):null}</p>
-                  : isSelectedSea ? <><p><strong>{SEA_EMOJI} {t.sea}</strong></p><div className="direct-line">{renderWaterPoi()}</div></>
+                  : isSelectedSea ? <><p><strong>{SEA_EMOJI} {t.sea}</strong></p><div className="direct-line">{detailSelectedPoiVisible&&renderWaterPoi()}</div></>
                   : <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>}
                 {selectedHex ? <p><strong>{t.selectedHex}:</strong> {selectedHex.q}/{selectedHex.r}</p> : null}
-                {!poiDraft&&waterPanel}{poiPanel}{knavePanel}
+                {!poiDraft&&detailSourceAreaVisible&&waterPanel}{detailSelectedPoiVisible&&poiPanel}{knavePanel}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
-                    {!isSelectedLake&&!isSelectedSea&&selectedEffectiveBiomeId ? <div className="direct-line">
+                    {detailSourceAreaVisible&&!isSelectedLake&&!isSelectedSea&&selectedEffectiveBiomeId ? <div className="direct-line">
                       {language === 'ru' ? 'Местность: ' : 'Terrain: '}
                       {isEditingSelectedHexBiome && editMode ? <select autoFocus aria-label={t.editHexBiome}
                         value={selectedHexBiomeOverride ?? ''} onChange={e => e.target.value ? setSelectedHexBiomeOverride(e.target.value as BiomeId) : resetSelectedHexBiomeOverride()}
@@ -16599,13 +17134,13 @@ export function App() {
                         : (language === 'ru' ? 'как в регионе' : 'inherit region'), () => setEditingHexBiomeKey(selectedHexKey))}
                     </div> : null}
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
-                    {selectedHasCentralPoi ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
+                    {detailSelectedPoiVisible&&selectedHasCentralPoi ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
                       value={selectedRegion.centralPoiKind ?? ''} onChange={e => setSelectedCentralPoiKind(e.target.value as CentralPoiKind)} onBlur={() => setEditingCentralPoiRegionId(null)}>
                       {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
                     </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
                       {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
-                    {isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
-                    {canEditSelectedPoi && selectedHex && !selectedHasCentralPoi ? <div className="direct-line">
+                    {detailSelectedPoiVisible&&isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
+                    {detailSelectedPoiVisible&&canEditSelectedPoi && selectedHex && !selectedHasCentralPoi ? <div className="direct-line">
                       {isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
                         onChange={e => e.target.value ? setSelectedPoiKind(e.target.value as PoiKind) : deleteSelectedPoi()} onBlur={() => setEditingPoiHexKey(null)}>
                         <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
@@ -16628,7 +17163,7 @@ export function App() {
                             selectedHexVertexKeys.has(vertex.key) && waterfallRiverVertexKeys.has(vertex.key)
                           ));
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
-                          return <div className="nearby-river-row" key={`nearby-river-${river.id}`}><p><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {editMode?<button type="button" className="direct-value river-choice" data-river-choice={river.id} aria-label={`${language==='ru'?'Выбрать реку':'Select river'} ${nameTargets.find(target=>target.key===`river:${river.id}`)?.[language]??river.id}`} aria-pressed={riverFeatureTarget?.riverId===river.id&&riverFeatureTarget.hexKey===selectedHexKey} onClick={()=>chooseRiverFeatureTarget({riverId:river.id,hexKey:selectedHexKey!})}>{t.river}</button>:t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}{renderTags({kind:'river',id:river.id},'river')}</p>{stableNameObjects.filter(o=>(o.type==='rapid'&&o.riverId===river.id&&!!o.edgeKey&&selectedHexEdgeKeys.has(o.edgeKey))||(o.type==='waterfall'&&o.riverId===river.id&&!!o.vertexKey&&selectedHexVertexKeys.has(o.vertexKey))).map(o=><div key={o.key}>{nameTypeLabels[o.type]} {renderName(o.key,'nearby-feature')}</div>)}{riverFeaturePanel(river)}</div>;
+                          return <div className="nearby-river-row" key={`nearby-river-${river.id}`}><p><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {editMode?<button type="button" className="direct-value river-choice" data-river-choice={river.id} aria-label={`${language==='ru'?'Выбрать реку':'Select river'} ${nameTargets.find(target=>target.key===`river:${river.id}`)?.[language]??river.id}`} aria-pressed={riverFeatureTarget?.riverId===river.id&&riverFeatureTarget.hexKey===selectedHexKey} onClick={()=>chooseRiverFeatureTarget({riverId:river.id,hexKey:selectedHexKey!})}>{t.river}</button>:t.river} {renderToponym(`river:${river.id}`)}{detailLocal&&detailSummary?.rivers.find(r=>r.id===river.id)?.boundaryOnly?` · ${language==='ru'?'у границы':'at boundary'}`:''}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}{renderTags({kind:'river',id:river.id},'river')}</p>{stableNameObjects.filter(o=>(o.type==='rapid'&&o.riverId===river.id&&!!o.edgeKey&&selectedHexEdgeKeys.has(o.edgeKey))||(o.type==='waterfall'&&o.riverId===river.id&&!!o.vertexKey&&selectedHexVertexKeys.has(o.vertexKey))).map(o=><div key={o.key}>{nameTypeLabels[o.type]} {renderName(o.key,'nearby-feature')}</div>)}{riverFeaturePanel(river)}</div>;
                         })}
                         {selectedObstacles.map(o=><div key={o.id} className="obstacle-row" data-obstacle-id={o.id}>
                           {editMode?<button type="button" className="direct-value" aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`} aria-pressed={selectedObstacleId===o.id} onClick={()=>chooseObstacle(o.id)}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
@@ -16649,10 +17184,10 @@ export function App() {
                 {roadDraftPanel}
                 {roadPanel}
                 {editError && !poiDraft && !waterDraft && !regionDraft && <p className="direct-error" role="alert">{editError}</p>}
-                {canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
+                {detailSourceAreaVisible&&canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
                   <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>
                   {notesOpen && editMode ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={4} value={notesValue}
-                    disabled={!!poiDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
+                    disabled={!!poiDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob}
                     onKeyDown={event => { event.stopPropagation(); if (event.key === 'Escape') { finishNotesGroup(); setNotesEditorKey(null); } }}
                     onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
                     onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
@@ -16663,6 +17198,7 @@ export function App() {
                       : <p className="gm-notes__text">{notesValue}</p>}
                   {notesError && <p role="alert">{language === 'ru' ? 'Не удалось изменить заметку' : 'The note could not be changed'}</p>}
                 </div> : null}
+                </details>
               </section>
 
               {typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('debug')==='1'&&<details
@@ -16860,12 +17396,12 @@ export function App() {
             onContextMenu={(event) => event.preventDefault()}
             onKeyDown={handleMapKeyDown}
           >
-            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
+            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px`, margin:`${detailScrollSpaceRef.current.y}px ${detailScrollSpaceRef.current.x}px` }}>
             <svg
               ref={mapSvgRef}
               data-biome-display={biomeDisplayMode}
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
-              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
               style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
@@ -16939,11 +17475,17 @@ export function App() {
             </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
-            {poiDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="poi-draft" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&(h.key===poiDraft.source.hexKey||h.key===`${poiDraft.q},${poiDraft.r}`)).map(h=><polygon key={h.key} data-poi-draft-cell={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke={h.key===poiDraft.source.hexKey?'#7dd3fc':'#facc15'} strokeWidth={3/mapScaleRef.current} strokeDasharray={h.key===poiDraft.source.hexKey?'5 4':undefined}/>)}</g></svg>}
-            {waterDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="water-draft" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
+            {detailAdaptation&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-detail-preview-overlay aria-hidden="true" viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{detailAdaptation.state.poiFootprints.map(p=>{
+              const grid=createDetailGrid(1,detailAdaptation.state.grid.origin),pixel=(v:{x:number;y:number})=>({x:(v.x-grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x,y:(v.y-grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y});
+              const anchor=pixel(detailFootprintWorldAnchor(p,grid));
+              return <g key={p.poiId} data-detail-preview-poi={p.poiId}><title>{detailExtentCaption(p.extent)}</title>{detailFootprintHasOutline(p,grid)?<>{p.cells.map(c=><polygon key={`${c.q},${c.r}`} points={detailCellPolygon(grid,c).map(v=>{const a=pixel(v);return `${a.x},${a.y}`;}).join(' ')} fill="#22d3ee" fillOpacity={0.2}/>)}{detailFootprintBoundary(grid,p.cells).map((e,i)=>{const a=pixel(e.from),b=pixel(e.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#06b6d4" strokeWidth={2/mapScaleRef.current}/>;})}</>:<circle data-detail-preview-marker cx={anchor.x} cy={anchor.y} r={4} fill="#22d3ee"/>}</g>;
+
+            })}</g></svg>}
+            {poiDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="poi-draft" aria-hidden="true" viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&(h.key===poiDraft.source.hexKey||h.key===`${poiDraft.q},${poiDraft.r}`)).map(h=><polygon key={h.key} data-poi-draft-cell={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke={h.key===poiDraft.source.hexKey?'#7dd3fc':'#facc15'} strokeWidth={3/mapScaleRef.current} strokeDasharray={h.key===poiDraft.source.hexKey?'5 4':undefined}/>)}</g></svg>}
+            {waterDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="water-draft" aria-hidden="true" viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
               <g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&waterDraft.edit.hexKeys.includes(h.key)).map(h=><polygon key={h.key} data-water-draft-cell={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill={waterDraft.edit.target==='land'?'#f7dc6f':'#159dac'} fillOpacity={0.45} stroke="#a5f3fc" strokeWidth={2/mapScaleRef.current}/>)}</g>
             </svg>}
-            {regionDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="region-draft" role="group" aria-label={language==='ru'?'Черновик региона на карте':'Region draft on map'} viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
+            {regionDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="region-draft" role="group" aria-label={language==='ru'?'Черновик региона на карте':'Region draft on map'} viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
               <g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&(regionDraft.edit.type==='region_height'
                 ?metadataMap.get(h.key)?.regionId===regionDraft.edit.regionId:h.key===regionDraft.edit.hexKey)).map(h=><polygon key={h.key} data-region-draft-cell={h.key}
                   points={hexPoints(h.x,h.y,HEX_SIZE)} fill="#f7dc6f" fillOpacity={0.25} stroke="#f7dc6f" strokeWidth={2/mapScaleRef.current} aria-hidden="true"/>)}
@@ -16953,8 +17495,8 @@ export function App() {
                   onMouseEnter={()=>{if(regionDraftRef.current===regionDraft)setRegionTargetHoverId(target.id);}} onMouseLeave={()=>{if(regionDraftRef.current===regionDraft)setRegionTargetHoverId(null);}} onFocus={()=>{if(regionDraftRef.current===regionDraft)setRegionTargetHoverId(target.id);}} onBlur={()=>{if(regionDraftRef.current===regionDraft)setRegionTargetHoverId(null);}} onClick={event=>activateRegionTarget(event,target.id)}
                   onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();selectRegionTarget(target.id);}}}/>)}</g>
             </svg>}
-            {selectedHex&&positionedHexes.hexes.some(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))&&<svg
-              ref={selectedHexOverlayRef} className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+            {(!physicalGrid?.active||editMode)&&selectedHex&&positionedHexes.hexes.some(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))&&<svg
+              ref={selectedHexOverlayRef} className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`}
               style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
               <g transform={mapRotationTransform}>{(()=>{const h=positionedHexes.hexes.find(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))!;
                 return <polygon data-selected-hex={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} style={{filter:`drop-shadow(0 0 ${1/mapScaleRef.current}px #0c1423)`}}/>;})()}</g>

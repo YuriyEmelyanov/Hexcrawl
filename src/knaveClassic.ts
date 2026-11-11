@@ -43,7 +43,7 @@ export function newKnaveLayer(): KnaveLayer {
  * generation mode. Legacy versions still cannot contain this layer. */
 export function validateKnaveLayer(value: unknown, context: KnaveContext, saveVersion: number, mode: 'classic' | 'mythic'): asserts value is KnaveLayer | undefined {
   if (value === undefined) return;
-  if (saveVersion !== 10 || !['classic','mythic'].includes(mode)) fail('knave_profile_version_or_mode');
+  if ((saveVersion !== 10 && saveVersion !== 11 && saveVersion !== 14) || !['classic','mythic'].includes(mode)) fail('knave_profile_version_or_mode');
   if (!record(value) || !exactKeys(value, own(value??{},'content')?['profile','difficultyByHex','discoveryByPoi','content']:['profile','difficultyByHex','discoveryByPoi'])) fail('knave_layer');
   const layer = value as Record<string, unknown>;
   if(own(layer,'content'))try{validateKnaveContent(layer.content,context.pois);}catch{fail('knave_content');}

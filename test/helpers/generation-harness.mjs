@@ -17,7 +17,7 @@ let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
   chooseKnaveProfile, changeGenerationMode, mutateKnaveContent, knaveDraft, knaveError, changeKnaveDraft, finishKnaveDraft, resetKnaveDraft, requestKnaveExit, resolveKnaveExit, knaveExitRequest, knavePanel,
-  poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
+  clickSourceHex:(hex,detail=0)=>mapHexClickRef.current({...hex,key:hexKey(hex),kind:"region"},{detail}), detailExtentDraft, startDetailExtentDraft, changeDetailExtentDraft, finishDetailExtentDraft, cancelDetailExtentDraft, selectDetailCell, detailSummary, setDetailViewStep,detailDisplayClickRef, startDetailAdaptation, applyDetailAdaptation, cancelDetailAdaptation, detailAdaptation, detailAdaptationError, editDetailFootprintExtent, poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
   regionDraft, startRegionDraft, changeRegionDraft, finishRegionDraft, resetRegionDraft, selectRegionTarget, regionPreview, editError,
   waterDraft, startWaterDraft, changeWaterDraft, toggleWaterHex, selectWholeWaterBody, finishWaterDraft, resetWaterDraft, waterPreview,
   requestRiverCommand, confirmRiverCommand, cancelRiverCommand, riverCommandPreview, changeRiverPreview, riverPreviewPlan, chooseMapRiver, riverFeatureTarget, roadFeatureResolution, updateRoadResolution, editRiverDocument, editRiverFeatures, rapidRiverEdgeKeys, riverWaterfalls, tags, mutateTag, fillMissingTags, obstacleDraft, obstacleChoices, startObstacleChoice, editObstacleDocument,
@@ -28,13 +28,13 @@ const instrumented = prefix + `return {
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot: snapshot => restoreSnapshot({...snapshot, generation: snapshot.generation ?? cloneGenerationState(generationRef.current)}), deleteLastRegion,
   kingdoms, obstacles, generationMode, setGenerationMode, kingdomJob, startKingdom, advanceKingdom,
-  generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration,
+  coarseFillJob, advanceCoarseFill, cancelCoarseFill, coarseFillNotice, generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration,
   handleImportJson, resetMap, undoMap, redoMap, undoHistory, redoHistory, captureDocument, selectedHex, setSelectedHex,
   setSelectedHexBiomeOverride, resetSelectedHexBiomeOverride, setSelectedPoiKind, setSelectedCentralPoiKind,
   setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting,
   selectNameTarget, nameTargetHex, nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, changeOtherNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
 };` + source.slice(lastReturn.end) + `
-export const testGeometry = { knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
+export const testGeometry = { detailMapRiverGeometry, validateDetailMapFootprints, prepareDetailMapPreview, knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
   prepareWaterMapEdit, prepareRiverMapEdit, buildManualRiverGeometryContext, riverFeatureEligibility, buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
@@ -65,7 +65,7 @@ export function createGenerationHarness(seed = 1, search = '', language = 'ru') 
   const diagnostics = { exports: {} };
   const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set, crypto: {getRandomValues(a){ a[0]=seed >>> 0; return a; }},
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
-    require: name => name==='./tags/TagRow'?{TagRow:()=>null}:name==='./tags/KnaveContentRow'?{KnaveContentRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualWater' || name === './knaveClassic' || name === './seaIdentity' || name === './manualRivers' || name === './manualRiverGeometry' || name === './manualRiverDependencies') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
+    require: name => name==='./tags/TagRow'?{TagRow:()=>null}:name==='./tags/KnaveContentRow'?{KnaveContentRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualWater' || name === './detailGeography' || name === './detailIdentity' || name === './detailModel' || name === './classification' || name === './knaveClassic' || name === './seaIdentity' || name === './manualRivers' || name === './manualRiverGeometry' || name === './manualRiverDependencies') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
     performance, URLSearchParams, structuredClone, setTimeout, clearTimeout, window: { location: { search } }
   });
   const modeCache = new Map();

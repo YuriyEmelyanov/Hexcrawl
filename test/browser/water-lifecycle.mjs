@@ -23,9 +23,11 @@ export async function runWaterLifecycle({page,load,snapshot,ensureEdit,button,se
   const data=structuredClone(fixture);data.ui.generationMode=mode;data.map.regions[0].generationMode=mode;
   await page.setViewportSize({width:1500,height:1100});await load(data);await select('0,0');
   const before=await snapshot();await closeMenu();const originalPng=await png();await closeMenu();
-  const row=page.locator('[data-water-panel] > .direct-line'),readHeight=await row.evaluate(e=>e.getBoundingClientRect().height);
+  const row=page.locator('[data-water-panel] > .direct-line');
+  assert.equal(await row.count(),0,'CLASSIFY1 Surface is absent from the read card');
   if(mode==='classic')await capture('before-read');await ensureEdit();
-  assert.equal(await row.evaluate(e=>e.getBoundingClientRect().height),readHeight,'E6 read/edit water row remains equally compact');
+  assert.equal(await row.count(),1,'Surface remains available in the common editor');
+  const editHeight=await row.evaluate(e=>e.getBoundingClientRect().height);
   if(mode==='classic')await capture('edit');
   await page.getByRole('combobox',{name:'Поверхность',exact:true}).selectOption('lake');
   assert.equal(await page.locator('[data-water-draft-cell="0,0"]').count(),1);assert.deepEqual(await snapshot(),before,'water draft exports accepted document only');
@@ -49,7 +51,7 @@ export async function runWaterLifecycle({page,load,snapshot,ensureEdit,button,se
   for(const input of await page.locator('[data-water-loss]').all())await input.check();await button('Готово').click();assert.equal(await page.locator('[data-water-draft]').count(),1);assert.deepEqual(await snapshot(),after,'Done still requires explicit Confirm after every loss answer');await page.locator('[data-water-confirm]').click();const land=await snapshot();assert.equal(land.map.terrainByHexKey['0,0'],undefined);assert.equal(land.map.terrainByHexKey['1,0'],undefined);assert.equal(land.counters.nextLakeId,after.counters.nextLakeId);assert.equal(land.map.gmNotesByHexKey['0,0'],before.map.gmNotesByHexKey['0,0']);
   await button('Отменить').click();assert.deepEqual(await snapshot(),after);await button('Повторить').click();assert.deepEqual(await snapshot(),land);
   await page.getByRole('combobox',{name:'Поверхность',exact:true}).selectOption('lake');await page.keyboard.press('Escape');assert.equal(await page.locator('[data-water-draft]').count(),0);assert.deepEqual(await snapshot(),land);
-  for(const width of[1500,390,320]){await page.setViewportSize({width,height:1100});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),mode+' no horizontal overflow');metrics.push({mode,width,no_horizontal_overflow:true,read_edit_row_height:readHeight});}
+  for(const width of[1500,390,320]){await page.setViewportSize({width,height:1100});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),mode+' no horizontal overflow');metrics.push({mode,width,no_horizontal_overflow:true,edit_row_height:editHeight,surface_hidden_in_read:true});}
  }
  // Sea inside a retained region must render as sea, not as its hidden biome.
  await page.setViewportSize({width:1500,height:1100});await load(fixture);await select('3,0');await ensureEdit();const beforeSea=await snapshot();

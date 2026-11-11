@@ -30,7 +30,7 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  const afterMode=await snapshot();assert.deepEqual(afterMode.map,beforeMode.map,'mode switch preserves accepted content and map');assert.deepEqual(afterMode.generation,beforeMode.generation);
  await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('classic');assert.deepEqual(await snapshot(),beforeMode);
  const info=page.locator('.info-block--hex'),panel=info.locator('[data-knave-panel]');
- assert.match(await panel.innerText(),/При прохождении/);
+ assert.equal(await panel.locator('[data-discovery-classification]').count(),0,'unresolved discovery stays out of read card');assert.equal(await info.getByText(/^Поверхность:/).count(),0,'Surface is edit-only');assert.match(await panel.innerText(),/Опасная/);
  assert.equal(await panel.locator('.knave-result').count(),2);assert.equal(await panel.locator('.knave-source, .knave-result summary').count(),0);
  assert.doesNotMatch(await panel.innerText(),/Источник|Source|совместимый пул|compatible pool|↻ pick|↻ выбор/);
  // UI2 reuses the MB result line, with honest filtered selection and a real
@@ -84,8 +84,8 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  await discovery.selectOption('interaction');await panel.getByRole('textbox',{name:'Улика',exact:true}).fill('<Следы обрываются у скалы>');
  await panel.getByRole('combobox',{name:'Проходимость',exact:true}).selectOption('difficult');
  await page.getByRole('button',{name:'Готово',exact:true}).click();const accepted=await snapshot();
- assert.deepEqual(accepted.map.knave.discoveryByPoi['poi:1:2,0'],{mode:'interaction',clueText:'<Следы обрываются у скалы>'});
- assert.equal(accepted.map.knave.difficultyByHex['2,0'],'difficult');assert.deepEqual(accepted.generation,before.generation);
+ assert.deepEqual(accepted.map.classification.discoveryByPoi['poi:1:2,0'],{mode:'interaction',clueText:'<Следы обрываются у скалы>'});
+ assert.equal(accepted.map.classification.difficultyByHex['2,0'],'difficult');assert.deepEqual(accepted.generation,before.generation);
  assert.match(await panel.innerText(),/<Следы обрываются у скалы>/);assert.equal(await panel.locator('script').count(),0);
  await info.screenshot({path:fileURLToPath(new URL('accepted-320.png',out))});
  await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual(await snapshot(),before);
@@ -98,6 +98,20 @@ export async function runKnavePropertiesLifecycle({page,snapshot,root}) {
  assert.deepEqual((await snapshot()).map,accepted.map);assert.equal(await panel.getByRole('combobox',{name:'Обнаружение',exact:true}).count(),0);
  await page.locator('input[type=file]').setInputFiles({name:'knave-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(accepted))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await snapshot(),accepted);
+ // CLASSIFY1 extends this existing workflow; shared policy also works without Knave.
+ const generic=structuredClone(data);delete generic.map.knave;delete generic.ui.knaveEnabled;
+ generic.map.regions[0].pointOfInterestKinds['2,0']='lair';generic.map.biomeOverrideByHexKey['2,0']='plain_mixed_forest';
+ await page.locator('input[type=file]').setInputFiles({name:'generic.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(generic))});
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ assert.match(await panel.innerText(),/Труднопроходимая/);assert.match(await panel.innerText(),/Нужно исследование/);
+ assert.equal(await info.getByText(/^Поверхность:/).count(),0);const genericBefore=await snapshot();assert.equal(genericBefore.map.classification,undefined);
+ await page.getByRole('button',{name:'Редактировать',exact:true}).click();assert.equal(await page.getByRole('combobox',{name:'Поверхность',exact:true}).count(),1);
+ await panel.getByRole('combobox',{name:'Проходимость',exact:true}).selectOption('dangerous');await panel.getByRole('combobox',{name:'Обнаружение',exact:true}).selectOption('unknown');
+ await page.getByRole('button',{name:'Готово',exact:true}).click();const genericAccepted=await snapshot();assert.equal(genericAccepted.version,11);assert.match(await panel.innerText(),/Опасная/);assert.equal(await panel.locator('[data-discovery-classification]').count(),0);assert.doesNotMatch(await panel.innerText(),/Не задан/);
+ await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual(await snapshot(),genericBefore);await page.getByRole('button',{name:'Повторить',exact:true}).click();assert.deepEqual(await snapshot(),genericAccepted);
+ for(const width of [1500,390]){await page.setViewportSize({width,height:1100});await info.scrollIntoViewIfNeeded();await info.screenshot({path:fileURLToPath(new URL(`classify-read-${width}.png`,out))});}
+ await page.getByRole('button',{name:'Редактировать',exact:true}).click();await info.screenshot({path:fileURLToPath(new URL('classify-edit-390.png',out))});await page.getByRole('button',{name:'Готово',exact:true}).click();
+ await page.locator('input[type=file]').setInputFiles({name:'generic-v11.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(genericAccepted))});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await snapshot(),genericAccepted);
  await fs.writeFile(new URL('metrics.json',out),JSON.stringify(metrics,null,2));
  console.log('KNAVE2-CLASSIC1 + ROLLUI2 browser properties: profile choice/lock, secret validation, accepted-only export, save/discard/Escape, UndoRedo, escaped clue, 1500/390/320, roundtrip passed');
 }

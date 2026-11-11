@@ -122,6 +122,7 @@ test('notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require
   const land=valid.map.regions[0].hexes[0], k=`${land.q},${land.r}`;
   for(const version of [2,3,4,5]) {
     const data=structuredClone(valid); data.version=version;
+    delete data.map.physicalGrid; // Legacy versions predate the v11 spatial layer.
     data.map.terrainByHexKey['-999,0']={terrainOverride:'sea'};
     data.map.gmNotesByHexKey={[k]:'  🗝 <script>not HTML</script>\r\n ', '-999,0':'sea'};
     assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(data));
@@ -130,6 +131,8 @@ test('notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require
   const bad=structuredClone(valid);bad.version=4;delete bad.generation;
   assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
   bad.version=7;assert.throws(()=>h.geometry.assertHexcrawlSaveData(bad));
+  const future=structuredClone(valid);future.version=12;
+  assert.throws(()=>h.geometry.assertHexcrawlSaveData(future),/version|верси/i);
 });
 
 const loadAuthoredMap=async()=>{
@@ -165,6 +168,11 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  // Extend this lifecycle case: UI drafts must not enter accepted JSON/history,
  // and stale closures must never retarget a clue to another document.
  g.render().setEditMode(true);g.render().setSelectedHex(Object.fromEntries(['q','r'].map((axis,i)=>[axis,Number(key.split(':')[2].split(',')[i])])));
+ // CLASSIFY1 reviewer regression: editing only a legacy clue must retain interaction.
+ assert.equal(g.render().changeKnaveDraft({clueText:'Only revised clue'}),true);assert.equal(g.render().finishKnaveDraft(),true);
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].mode,'interaction');
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].clueText,'Only revised clue');
+ g.render().undoMap();assert.deepEqual(structuredClone(g.render().captureDocument().map),accepted.map);
  const uiBefore=structuredClone(g.render().createSaveData().map),uiHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction',clueText:''}),true);
  const stale=g.render().knaveDraft;
@@ -174,7 +182,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.equal(g.render().changeKnaveDraft({clueText:'  <Authored UI clue>  '}),true);
  assert.equal(g.render().changeKnaveDraft({clueText:'stale'},stale),false);
  assert.equal(g.render().finishKnaveDraft(),true);
- assert.equal(g.render().createSaveData().map.knave.discoveryByPoi[key].clueText,'<Authored UI clue>');
+ assert.equal(g.render().createSaveData().map.classification.discoveryByPoi[key].clueText,'<Authored UI clue>');
  g.render().undoMap();assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);
  const noOpHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction'}),true);assert.equal(g.render().finishKnaveDraft(),true);assert.equal(g.render().undoHistory.length,noOpHistory);
@@ -271,7 +279,33 @@ test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic imp
   const saved=structuredClone(g.render().createSaveData());assert.equal(saved.version,10);assert.deepEqual(saved.map.seas,[{id:1,hexKeys:['-1,2','0,2','1,2','2,2','3,2','3,3']}]);assert.equal(saved.map.nextSeaId,2);assert.deepEqual(saved.generation,data.generation);assert.deepEqual(saved.map.terrainByHexKey,data.map.terrainByHexKey);
  }
  const valid=structuredClone(g.render().createSaveData()),before=structuredClone(g.render().captureDocument()),stacks=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=11,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
+ for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=12,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
   const bad=structuredClone(valid);mutate(bad);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
  }
+});
+
+// DTL-22/23: model-only parsing cannot catch App silently dropping the physical
+// layer or downgrading JSON when the separate classification layer is removed.
+test('DETAIL1 live document keeps physical grid and classification together through import, history and reset',async()=>{
+ const g=createGenerationHarness(42),alerts=[];g.render();g.setWindow({alert:s=>alerts.push(s),confirm:()=>true,matchMedia:()=>({matches:false})});g.injectFunction('readTextFile',async f=>f.text);
+ const load=async d=>{await g.render().handleImportJson({target:{files:[{text:JSON.stringify(d)}],value:'x'}});g.render();};
+ const snapshot=()=>{const d=JSON.parse(JSON.stringify(g.render().createSaveData()));delete d.savedAt;return d;};
+ await load(regionFixture());const before=snapshot();
+ // Build a complete accepted layer through the real adaptation command.
+ assert.equal(g.render().startDetailAdaptation(),true);assert.equal(g.render().applyDetailAdaptation(),true);g.render();
+ const data=snapshot();g.render().undoMap();assert.deepEqual(snapshot(),before);
+ data.map.classification={version:1,difficultyByHex:{'2,0':'dangerous'},discoveryByPoi:{}};
+ data.map.physicalGrid.viewStep=12;
+ await load(data);assert.deepEqual(alerts,[]);assert.deepEqual(snapshot(),data);
+ g.render().undoMap();assert.deepEqual(snapshot(),before);g.render().redoMap();assert.deepEqual(snapshot(),data);
+ g.render().changeGenerationMode('mythic');assert.deepEqual(snapshot().map,data.map);g.render().changeGenerationMode('classic');assert.deepEqual(snapshot(),data);
+ const gridOnly=structuredClone(data);delete gridOnly.map.classification;await load(gridOnly);assert.deepEqual(snapshot(),gridOnly);assert.equal(snapshot().version,14);
+ g.render().resetMap();assert.equal(snapshot().map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(snapshot(),gridOnly);
+ g.render().setEditMode(true);g.render();g.render().deleteSelectedPoi();const deleted=snapshot();assert.deepEqual(deleted.map.physicalGrid.poiIdentities,{version:1,nextId:2,byLegacyRef:{}});g.render().undoMap();assert.deepEqual(snapshot(),gridOnly);g.render().redoMap();assert.deepEqual(snapshot(),deleted);
+ g.render().setSelectedPoiKind('ruins');const replaced=snapshot();assert.equal(replaced.map.physicalGrid.poiIdentities.byLegacyRef['poi:1:2,0'],'detail-poi:2');assert.equal(replaced.map.physicalGrid.poiIdentities.nextId,3);g.render().undoMap();assert.deepEqual(snapshot(),deleted);g.render().redoMap();assert.deepEqual(snapshot(),replaced);await load(gridOnly);
+ const doc=structuredClone(g.render().captureDocument()),history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
+ for(const mutate of [d=>d.map.physicalGrid.poiFootprints=[],d=>delete d.map.physicalGrid.poiIdentities,d=>d.map.physicalGrid.poiIdentities.byLegacyRef={'poi:1:99,99':'detail-poi:1'},d=>d.map.physicalGrid.poiIdentities.nextId=1,d=>d.version=10,d=>d.map.physicalGrid.viewStep=2,d=>d.map.physicalGrid.grid.extra=true,d=>d.map.physicalGrid.poiFootprints=[{poiId:'unchecked:1',legacyRef:null,cells:[{q:0,r:0}],extent:{kind:'default',reason:'unknown_size',policy:'one_cell'},attachments:[]}]]){
+  const invalid=structuredClone(gridOnly);mutate(invalid);await load(invalid);assert.deepEqual(structuredClone(g.render().captureDocument()),doc);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
+ }
+ assert.equal(alerts.length,8);assert.deepEqual(snapshot().generation,before.generation);
 });

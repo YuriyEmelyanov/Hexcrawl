@@ -33,6 +33,10 @@
 | Топонимы | [toponym-generation.md](toponym-generation.md) |
 | Навигация/отрисовка | [map-navigation.md](map-navigation.md), [rendering-performance.md](rendering-performance.md) |
 
+## Общие свойства карты
+
+[Проходимость и обнаружение CLASSIFY1](terrain-discovery.md) — общая политика и JSONv11.
+
 ## История и референсы
 
 [Архив до очистки](archive/2026-10-22/README.md), старые Handbook и июльский аудит в reports не задают текущий бэклог. Прежние gates350/500/650 заменены утверждённым порядком зависимостей видения.
