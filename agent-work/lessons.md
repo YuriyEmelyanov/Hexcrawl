@@ -799,3 +799,8 @@ Evidence: agent-work/evidence/PR496-owner-corrections-0838/checks.json; неза
 - Единичный generic generation failure на0d19 имеет неизвестную причину; два последующих workflow его не повторили. Сохранены наблюдение и новая диагностика до прежнего fatal assertion, без утверждения об исправлении неизвестной причины. Фактические narrow кадры после desktop resize показывают панель при карте вне видимого участка; не выводить отсюда непроверенный продуктовый дефект.
 
 Evidence: `agent-work/evidence/PR496-browser-verification-1803/triage.json`, `actual-UI-manifest.json`, `actual/fill-proof.json`, `logs/browser.log`; точный SHA9ca7dc6d5839ed897ccb784ae29d4029a5e76590.
+
+
+## 2026-11-11 — ONE-MILE1: отдельный PR и локальная цель
+
+При разделении уже принятого смешанного PR старое принятие не подтверждает новые требования владельца. Донорские1mi biome/notes handlers фактически используют source6 selectedHexKey; переиспользовать следует оболочку/guards/history, а не адрес записи. Полная визуальная заливка fine-клетки не означает расширение принятой географии. Частные версии11–14 других веток нельзя принять и молча потерять CLASSIFY1/TABLES1/PF2 при чистом1-mile split: явная матрица public2–10/new15 и отказ неподдержанного обязательны. Это ограниченный статический анализ, не доказательство продуктовой приёмки; код и CI в аналитическом запуске не менялись. Источник: agent-work/evidence/ONE-MILE1-2043/dependency-partition.json; спецификацияOM-1.0: agent-work/specs/HX-BL-051-ONE-MILE1.md.
