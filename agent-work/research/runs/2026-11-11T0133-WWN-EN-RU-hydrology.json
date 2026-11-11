@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-11T0133-WWN-EN-RU-hydrology",
+  "program_id": "HX-RSR-001",
+  "status": "completed_bounded_source_collation",
+  "completed_at": "2026-11-11T01:38:14.112528+00:00",
+  "selected_task": {
+    "task_id": "HX-RSR-WWN-EN-RU-HYDRO-COLLATION",
+    "game_id": "WWN",
+    "layer": "L1",
+    "completion_condition": "All seven regional river/lake clauses collated visually in both fixed source files; parameter differences, product operations, existing gaps and unknowns separated"
+  },
+  "selection_reason": "WWN create6/overall11 in active1.4; prior audit isolated translation uncertainty influencing river topology. Complete source collation resolves whether costly core changes might be based on translation error. No repeat runtime audit.",
+  "alternatives": [
+    {
+      "task": "Knave TABLES1 review",
+      "reason": "Current foreign programmer REV-01 scope; do not interfere"
+    },
+    {
+      "task": "Repeat Dragonbane own-world screen",
+      "reason": "Selected sources completed, no new grounds; no meaningful incremental evidence"
+    }
+  ],
+  "inputs_and_versions": {
+    "baseline_sha": "b6dcca7",
+    "claim_commit": "b04c28698691ec910b2855137d26dc212c830a62",
+    "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+    "method_version": "research-method-1.0",
+    "en_source_sha256": "b48761e04e67b897021777590f7c3c007810d6b80b7007db29941c9be10806e0",
+    "ru_source_sha256": "43497af41f345eed2ccd812d191657aafb5ad80afa8e63dd6d8bf7eb883c5d2c",
+    "prior_runtime_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9"
+  },
+  "findings": [
+    {
+      "id": "WWN-COLL-01",
+      "conclusion": "1d4+2 крупных рек на регион; единица не сегмент русла.",
+      "consequence": "Сохранить прежнюю операцию и известные d4=1→3,d4=4→6; правила подсчёта ветвей книга не задаёт."
+    },
+    {
+      "id": "WWN-COLL-02",
+      "conclusion": "EN other sink шире RU «другой водоём»; горы/нагорья и исключение колдовства совпадают.",
+      "consequence": "Не ограничивать будущий semantic mapping только lake/sea IDs; иной поглощающий сток требует отдельного GM description, не автоматического принятия любого dry_land."
+    },
+    {
+      "id": "WWN-COLL-03",
+      "conclusion": "Разделение без обратного слияния есть в EN. RU опускает низкий путь при слиянии независимых горных рек.",
+      "consequence": "Не исправлять источник на merge-only и не менять глобальный RIV. Для будущего профиля добавить качественную проверку низкого пути; численный slope/порог отсутствует."
+    },
+    {
+      "id": "WWN-COLL-04",
+      "conclusion": "Извилистость на равнине и обычно более прямой спуск совпадают.",
+      "consequence": "Никакого нового числового порога sinuosity; сохранить качественную диагностику."
+    },
+    {
+      "id": "WWN-COLL-05",
+      "conclusion": "Совет о четверти максимального размера карты есть в EN printed120 и RU printed121.",
+      "consequence": "Это не ошибка перевода. Длина по руслу/хорде/extent не выбрана; не обрезать реку и не объявлять проверку pass без объявленной метрики."
+    },
+    {
+      "id": "WWN-COLL-06",
+      "conclusion": "Добавление 1–3 значимых озёр/внутренних морей опционально в обоих текстах.",
+      "consequence": "Не изобретать1d3; enabled=false→0, enabled=true+count3→3 логических объекта."
+    },
+    {
+      "id": "WWN-COLL-07",
+      "conclusion": "Оба текста задают минимум1 вход и максимум1 выход для водоёмов непосредственно предшествующего optional шага.",
+      "consequence": "0 выходов допустимо; это контекстная область применения, не глобальная валидация каждого озера и не модель расхода воды."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json",
+    "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.md",
+    "agent-work/market/rules/WWN-Deluxe-RU.json",
+    "agent-work/research/checkpoints/WWN-EN-RU-hydrology.json",
+    "agent-work/research/runs/2026-11-11T0133-WWN-EN-RU-hydrology.json",
+    "agent-work/research/state.json",
+    "agent-work/research/README.md",
+    "agent-work/claims/2026-11-11T0133-WWN-EN-RU-hydrology.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [
+    "agent-work/backlog.json#HX-BL-005"
+  ],
+  "verification": {
+    "source_pages_visually_read": 4,
+    "clauses_collated": 7,
+    "original_operational_requirements_carried": 7,
+    "new_candidate_acceptance_cases": 3,
+    "new_runtime_checks": 0,
+    "source_hashes_verified": true,
+    "full_book_claimed": false,
+    "no_new_tests_or_product_edits": true,
+    "schema_validation": "Seven operational_requirement objects and run_result validated using jsonschema"
+  },
+  "automation_health": {
+    "start": {
+      "checked_at": "2026-11-11T01:33:52.605Z",
+      "automations": [
+        {
+          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+          "is_enabled": true
+        },
+        {
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "is_enabled": true
+        }
+      ]
+    },
+    "end": {
+      "checked_at": "2026-11-11T01:38:33.074Z",
+      "automations": [
+        {
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "is_enabled": true
+        },
+        {
+          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+          "is_enabled": true
+        }
+      ]
+    }
+  },
+  "checkpoint": {
+    "run_id": "2026-11-11T0133-WWN-EN-RU-hydrology",
+    "status": "completed_bounded_source_collation",
+    "result_ref": "agent-work/research/runs/2026-11-11T0133-WWN-EN-RU-hydrology.json",
+    "evidence_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json",
+    "completed_clauses": 7,
+    "remaining_in_selected_corpus": [],
+    "unresolved_source_parameters": [
+      "Length metric not specified by either text; no additional source search can turn it into a defined metric without new evidence",
+      "Other sink mapping and lowest-path implementation are product choices",
+      "English Deluxe and all other chapters not collated"
+    ],
+    "next_candidate": {
+      "task_id": "HX-RSR-DW-L1-SOURCE-SCREEN",
+      "game_id": "DW",
+      "layer": "L1",
+      "status": "candidate_reassess_fresh_priorities",
+      "action": "Проверить действующие источники L1 Dungeon World (overall9): собственная география и операции рисования карты с пробелами; сначала existing matrix/source inventory. Сравнить существенный рыночный пробел перед новым разбором. Завершённую WWN гидрологию не повторять без нового основания."
+    }
+  },
+  "next_candidate": {
+    "task_id": "HX-RSR-DW-L1-SOURCE-SCREEN",
+    "game_id": "DW",
+    "layer": "L1",
+    "status": "candidate_reassess_fresh_priorities",
+    "action": "Проверить действующие источники L1 Dungeon World (overall9): собственная география и операции рисования карты с пробелами; сначала existing matrix/source inventory. Сравнить существенный рыночный пробел перед новым разбором. Завершённую WWN гидрологию не повторять без нового основания."
+  },
+  "owner_decisions_needed": [],
+  "authority_status": "Source evidence only. Existing proposed005 unchanged. Canonical parameters and RU evidence preserved; English semantic refinements remain candidate in collation. No rating, method, score, queue, implementation, release or purchases.",
+  "budget": {
+    "schema_version": 1,
+    "status": "owner_waived_usage_gate",
+    "project_allowance_cap_fraction": null,
+    "heavy_execution_allowed": true,
+    "usage_known": false,
+    "actual_usage": null,
+    "approval_ref": "owner-decision-2026-10-24-process-budget",
+    "additional_spend_approved": false,
+    "note": "По решению владельца 24.10.2026 предел 50% и блокировка неизвестного бюджета сняты. Разрешена работа только по утверждённым задачам. Фактический лимит сервиса записать и сообщить; платные API/кредиты/дополнительные расходы отдельно согласуются."
+  }
+}
