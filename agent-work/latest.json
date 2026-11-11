@@ -98,7 +98,7 @@
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
-  "schedule_frequency": "hourly",
+  "schedule_frequency": "every_2_hours",
   "process_path": "agent-work/process.md",
   "current_role": "business_analyst",
   "next_role": "business_analyst",
@@ -5348,7 +5348,19 @@
         "resolution": "superseded_by_owner_approved_bulk_v2",
         "owner_approval_ref": "agent-work/decisions/owner-approval-2026-11-10-HX-BL-054-PF2-BATCH1.json"
       }
-    ]
+    ],
+    "schedule": {
+      "frequency": "HOURLY",
+      "interval": 2,
+      "interval_hours": 2,
+      "minute": 30,
+      "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "is_enabled": true,
+      "rrule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+      "default_timezone": "Asia/Shanghai",
+      "verified_at": "2026-11-11T10:51:24.711Z",
+      "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-team-and-research-every-2-hours.json"
+    }
   },
   "latest_ranking_activation": {
     "run_id": "2026-11-06-strategist-rating14-activation",
@@ -9845,5 +9857,137 @@
         "errors": []
       }
     }
+  },
+  "schedule_interval_hours": 2,
+  "schedule_rrule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+  "latest_schedule_change": {
+    "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-team-and-research-every-2-hours.json",
+    "result_ref": "agent-work/results/20261111T1049-operations-two-hour-cadence.json",
+    "run_id": "20261111T1049-operations-two-hour-cadence",
+    "recorded_at": "2026-11-11T10:52:06.241Z",
+    "both_interval_hours": 2,
+    "automations": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "previous_schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "previous_is_enabled": true,
+        "is_enabled": true,
+        "start": {
+          "checked_at": "2026-11-11T10:49:36.194Z",
+          "is_enabled": true,
+          "status": "checked",
+          "method": "automations.peek",
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+        },
+        "end": {
+          "checked_at": "2026-11-11T10:51:24.581Z",
+          "status": "checked",
+          "method": "automations.peek",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+        },
+        "enabled_changed": false,
+        "prompt_unchanged": true,
+        "default_timezone_unchanged": true,
+        "next_run_time": "2026-11-11T15:00:00+03:00"
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "previous_schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "previous_is_enabled": false,
+        "is_enabled": true,
+        "start": {
+          "checked_at": "2026-11-11T10:49:38.935Z",
+          "is_enabled": false,
+          "status": "checked",
+          "method": "automations.peek",
+          "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+        },
+        "end": {
+          "checked_at": "2026-11-11T10:51:24.711Z",
+          "status": "checked",
+          "method": "automations.peek",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+        },
+        "enabled_changed": true,
+        "prompt_unchanged": true,
+        "default_timezone_unchanged": true,
+        "next_run_time": "2026-11-11T20:30:00+08:00"
+      }
+    ],
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-11T10:49:36.194Z",
+        "is_enabled": true,
+        "status": "checked",
+        "method": "automations.peek",
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      },
+      "end": {
+        "checked_at": "2026-11-11T10:51:24.581Z",
+        "status": "checked",
+        "method": "automations.peek",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "researcher": {
+        "jawbone_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "start": {
+          "checked_at": "2026-11-11T10:49:38.935Z",
+          "is_enabled": false,
+          "status": "checked",
+          "method": "automations.peek",
+          "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+        },
+        "end": {
+          "checked_at": "2026-11-11T10:51:24.711Z",
+          "status": "checked",
+          "method": "automations.peek",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+        },
+        "restoration_performed": true,
+        "cause_of_initial_disabled_state": "unknown"
+      },
+      "limitation": "Point-in-time status only; subsequent service changes not guaranteed."
+    },
+    "primary_product_routing_unchanged": true,
+    "source_code_unchanged": true
+  },
+  "schedule_change_storage_verification": {
+    "data_commit_sha": "94419be95bc96b3d05d5a99e408370b73dacfbf8",
+    "latest_written_last": true,
+    "verified_files": [
+      {
+        "path": "agent-work/decisions/owner-decision-2026-11-11-team-and-research-every-2-hours.json",
+        "sha": "bd4254e57152d1a04ba3897149231ef016b3cc61"
+      },
+      {
+        "path": "agent-work/results/20261111T1049-operations-two-hour-cadence.json",
+        "sha": "318095cd383e6b7ff007a4db83148635847dd0e2"
+      },
+      {
+        "path": "agent-work/process.md",
+        "sha": "a39978f6301d11d7d902f59e4408d90830894e94"
+      },
+      {
+        "path": "agent-work/research/contract.md",
+        "sha": "ddfe0493a2387b91ee13f71f7b9ec804960657b5"
+      },
+      {
+        "path": "agent-work/research/state.json",
+        "sha": "233b4a2e8b6b66b6157f8dd0ff067f62aeeb3ab7"
+      }
+    ],
+    "foreign_claims_and_results_preserved": true,
+    "primary_product_routing_preserved": true
   }
 }
