@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "verdict": "changes_requested",
+  "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+  "tree_sha": "29627feb7f165a00326c3626a6063a46734bdb33",
+  "independence": {
+    "reviewer": "/root/tables1_review_fresh",
+    "fresh_context": true,
+    "implementer": false,
+    "root_role": "Coordinator; root implemented previous run, so acceptance delegated to fresh reviewer"
+  },
+  "findings": [
+    {
+      "id": "TABLES1-REV-01",
+      "severity": "blocking",
+      "status": "open",
+      "task_id": "HX-BL-043",
+      "sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+      "criteria": [
+        "T10",
+        "T12"
+      ],
+      "title": "DETAIL1 cell navigation bypasses dirty description guard",
+      "locations": [
+        "src/App.tsx:15372",
+        "src/App.tsx:16645",
+        "src/App.tsx:13713",
+        "src/App.tsx:15595",
+        "src/tags/PreparationPanel.tsx:27",
+        "src/App.tsx:16253"
+      ],
+      "expected": "Dirty description must offer Finish/Discard/Stay before selection/revision changes. Stay keeps draft and owner; Finish saves once before navigation; Discard keeps accepted document.",
+      "actual": "Click gate recognizes polygon.hex, not polygon.detail-cell-target. Detail SVG click and Enter/Space invoke selectDetailCell directly. It accepts selection despite registered dirty preparation navigation and draft key, changes revision and remounts keyed editor, dropping local draft.",
+      "method": "Fresh independent agent inspected exact source and reproduced real App handler route through temporary instrumented generation harness. Browser DOM reproduction not claimed.",
+      "diagnostic_output": {
+        "selected": true,
+        "revisionBefore": 4,
+        "revisionAfter": 6,
+        "dirtyExitDialog": null,
+        "prevented": false,
+        "stopped": false,
+        "discarded": false,
+        "acceptedDescription": "accepted"
+      },
+      "limits": [
+        "SVG target.closest behavior modeled from actual source selector; no actual pointer DOM dispatch because Chromium launch socket EPERM.",
+        "Local draft loss follows React owner:revision remount contract; accepted persisted description not corrupted."
+      ]
+    }
+  ],
+  "coverage": {
+    "T01": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T02": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T03": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T04": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T05": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T06": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T07": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T08": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T09": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T10": "partial detached remap/source; F1 confirmed, actual other owner/water/checkpoint UI permutations unverified",
+    "T11": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T12": "fails_F1; full independent DOM unavailable",
+    "T13": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T14": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T15": "scoped source/tests evidence; not blanket full dynamic acceptance",
+    "T16": "scoped source/tests evidence; not blanket full dynamic acceptance"
+  },
+  "checks": {
+    "hosted_exact_head": {
+      "Node": {
+        "executed": 394,
+        "passed": 394,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser": {
+        "scripts_executed": 9,
+        "passed": 9
+      },
+      "TABLES1_UI": {
+        "logical_cases": 1,
+        "passed": 1
+      },
+      "RNG": {
+        "scripts": 1,
+        "passed": 1
+      },
+      "run_id": 42932730122
+    },
+    "fresh_independent": {
+      "Node_subset": {
+        "executed": 11,
+        "passed": 11,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "passed",
+      "browser": {
+        "executed": 0,
+        "status": "launch_error_socket_EPERM"
+      },
+      "full_npm_check": "in_progress_at_01:11:58_UTC_not_counted_as_pass"
+    },
+    "root_subset": {
+      "executed": 7,
+      "passed": 7,
+      "overlaps_fresh_subset": true,
+      "not_added_to_suite_size": true
+    }
+  },
+  "test_necessity_verdict": "Useful bounded additions; missing DETAIL1 dirty navigation coverage must extend existing lifecycle, not multiply broad suites.",
+  "limitations": [
+    "Chromium socket EPERM before first page: independent browser/RNG cases0; no full DOM, physical-device or accessibility acceptance.",
+    "Full independently launched npmcheck still running at last reviewer observation; existing exactSHA hosted394/394 independently verified, not substituted for every missing new-content path.",
+    "36px summary width is source candidate only, not second confirmed finding.",
+    "Separate attempted T10 diagnostic failed at fixture setup due missing authored catalog84 references, not product defect or passing evidence."
+  ],
+  "score_assessment_ref": "agent-work/evidence/review-TABLES1-6d5c9f4/score-assessment1.2.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11 01:05:04 UTC",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-11 01:11:58 UTC",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/500#pullrequestreview-5852129757",
+  "formal_review_state": "COMMENT; own-PR REQUEST_CHANGES rejected by GitHub422; operational changes_requested remains explicit."
+}
