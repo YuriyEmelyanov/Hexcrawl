@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "verdict": "accepted",
+  "verdict_scope": "Whole TABLES1 package at exact head/tree against f677629; bounded contract acceptance with listed independent execution limits. No publication authorization.",
+  "task_id": "HX-BL-043",
+  "stage_id": "TABLES1-REV-01",
+  "head_sha": "9cf202e4c311445ac7d4cd752cf6e5f088775a36",
+  "tree_sha": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
+  "review_base_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+  "fix_base_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+  "independence": {
+    "reviewer": "/root/tables1_9cf_independent",
+    "fresh_clone": "/tmp/tables1-independent-9cf",
+    "implementer": false,
+    "github_mutations": false,
+    "product_source_mutations": false,
+    "temporary_instrumentation": true
+  },
+  "findings": [],
+  "prior_finding": {
+    "id": "TABLES1-REV-01",
+    "status": "resolved_on_exact_sha",
+    "baseline_reproduced": {
+      "selected": true,
+      "revisionBefore": 4,
+      "revisionAfter": 6,
+      "dirtyExitDialog": null
+    },
+    "current_source": [
+      "src/App.tsx:13713 shared selectDetailCell checks registered preparation navigation before capture or transaction",
+      "src/App.tsx:13717 captures cell/step/poiId and replays detailCellClickRef.current",
+      "src/App.tsx:16256 current rendered callback explicitly supplies documentRevision.current",
+      "src/App.tsx:16650 pointer and16651 Enter/Space both call this ref"
+    ],
+    "independent_runtime": "12 callback observations (4 routes x Stay/Discard/Finish), no DOM claim; accepted document untouched before choice, Finish invokes save once and then normal selection transaction; exact two-step Undo/Redo; captured step1/poiId retained.",
+    "hosted_runtime": "Extended existing browser lifecycle dispatches actual SVG click and Enter/Space; directly fetched hosted success log on identical tree; inspected screenshot of dirty exit."
+  },
+  "checks": {
+    "independent": {
+      "Node_subset": {
+        "executed": 12,
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0,
+        "commands": [
+          "node --test test/table-preparation.test.mjs test/classification.test.mjs",
+          "node --test --test-name-pattern='TABLES1 App' test/tags.test.mjs"
+        ]
+      },
+      "node_version": "24.22.1",
+      "production_build": "passed; output asset hashes match hosted",
+      "diff_check": "passed",
+      "temporary_callback_observations": 12,
+      "temporary_T10_scenarios": [
+        "E7 schema2 owner transfer",
+        "E8 schema2 POI move",
+        "owner delete consent/refusal",
+        "E6 water loss preview/refusal/consent",
+        "checkpoint region delete consent/refusal",
+        "regenerate consent/refusal and surviving owner",
+        "two-cell DETAIL1 same-owner selection"
+      ],
+      "temporary_other_scenarios": [
+        "empty/20000UTF16/20001 description and gmnotes separation",
+        "nine actual-import negative classes retain map/RNG/UndoRedo"
+      ],
+      "browser": {
+        "cases_executed": 0,
+        "status": "launch_error_socket_EPERM",
+        "logs": [
+          "independent-9cf-ui.log",
+          "independent-9cf-ui-system.log"
+        ]
+      }
+    },
+    "hosted": {
+      "run_id": 42938857674,
+      "checkout_sha": "60b24a250521d6b8fc9e3ad452e407bbacc61f75",
+      "checkout_tree": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
+      "tree_equivalence_method": "git fetch origin refs/pull/500/merge; git rev-parse FETCH_HEAD^{tree} equals HEAD^{tree}",
+      "Node": {
+        "executed": 394,
+        "passed": 394,
+        "failed": 0,
+        "skipped": 0,
+        "node": "24.22.2"
+      },
+      "browser_scripts": {
+        "executed": 9,
+        "passed": 9
+      },
+      "TABLES1_UI": {
+        "logical_cases_executed": 1,
+        "passed": 1
+      },
+      "RNG": {
+        "scripts_executed": 1,
+        "passed": 1
+      },
+      "jobs": [
+        130255672778,
+        130255672933,
+        130255673045,
+        130255673063
+      ],
+      "verification": "Direct GitHub job metadata/log fetch; inspected runner source; no reliance solely on handoff assertions."
+    }
+  },
+  "coverage": {
+    "T01": "manual/row100/invalid validation via detached tests + hosted actual UI; source integer range1..100",
+    "T02": "two manifest edges inspected; actual structures27->dungeons84 child observed; fixed finite production manifest. Synthetic labels are illustrative approved IDs, not arbitrary import support.",
+    "T03": "child84 next85 snapshot preserves child/source; detached and hosted lifecycle",
+    "T04": "row100 unavailable; one nextEntry only; no wrap/recursion; source/tests",
+    "T05": "duplicate rows distinct IDs and more than3calls; source/tests/hosted UI",
+    "T06": "call-local namespace/counter, no forced redraw loop, siblings/text/world untouched; subset and hosted",
+    "T07": "source dependent guard plus root delete Cancel/Apply and reroll-all atomic hosted UI; no automatic extra case demand",
+    "T08": "real App migration/roundtrip/history + hosted RU/EN; independent exact history observations",
+    "T09": "real import negative matrix9classes; legacy importer corpus hosted; source strict schema2/v12",
+    "T10": "representative required real App paths passed (see checks); full permutations not claimed",
+    "T11": "existing App continuation case rerun; detached legacy algorithm equivalence; hosted classic/Mythic RNG; no new MB mechanics",
+    "T12": "independent source + four inspected screenshots + hosted actual UI at1500/390/320,44px,IME,keyboard; local DOM unavailable",
+    "T13": "source finite known-edge manifest; unsupported-reference message; no heuristic target inference",
+    "T14": "real App allowner migration single transaction/stale token refusal; no-op returns input; subset",
+    "T15": "strict source rootchild validator + detached negatives + actual importer identity/selfparent/unknown/overflow matrix",
+    "T16": "real handler empty/max/overflow and gmnotes separation; hosted escaped text and inspected screenshot"
+  },
+  "test_change_summary": {
+    "fix": {
+      "base_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+      "head_sha": "9cf202e4c311445ac7d4cd752cf6e5f088775a36",
+      "Node": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1
+      },
+      "source": "git diff6d5..head changes only existing runPreparationLifecycle in test/browser/preparation-lifecycle.mjs; assertions/routes/viewports are observations, not new logical cases"
+    },
+    "whole_TABLES1": {
+      "base_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+      "head_sha": "9cf202e4c311445ac7d4cd752cf6e5f088775a36",
+      "Node": {
+        "added": 8,
+        "removed": 0,
+        "modified": 2
+      },
+      "browser": {
+        "added": 1,
+        "removed": 0,
+        "modified": 0
+      },
+      "source": "7 new detached node:test callbacks;1 new real App callback; existing remap and classification callbacks extended;1 browser lifecycle called by dedicated script"
+    },
+    "necessity_verdict": "Useful bounded contract additions. Existing lifecycle extension closes a real missing DETAIL1 route;44px assertion protects explicit touch requirement. No duplication finding. Temporary reviewer diagnostics are not permanent suite growth."
+  },
+  "limitations": [
+    "Independent Chromium launch failed before first page: bundled executable missing, system Chromium socket EPERM; independent DOM/browser/RNG cases executed=0. Hosted browser/UI/RNG results were independently fetched and reviewed, not rerun locally.",
+    "Runtime App harness executes real callbacks with substituted hook storage and no useEffect; React rendering, DOM focus, physical touch and screen-reader behavior are not independently executed.",
+    "T10 coverage consists of representative schema2 E7/E8 move, two-cell DETAIL1 owner resolution, water conversion loss gate, owner deletion, checkpoint deletion and regeneration consent/history; it does not exhaust every map/mode/geometry permutation.",
+    "Four-table Knave L1 scope only. No fresh book/EN-original audit, no entire-game/top5/top10/top20 support claim, no semantic completeness/user-superiority evidence."
+  ],
+  "negative_evidence": {
+    "browser": "bundled missing executable then system Chromium EPERM; neither counted as product failure nor browser pass",
+    "fixture_setup": "initial water diagnostic promoted v7 fixture to10 without sea registry; import correctly rejected sea_registry. Fixed diagnostic adds migrateSeas metadata. Original failed log retained."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "method": "actual automations.peek",
+      "is_enabled": true,
+      "checked_at": null,
+      "checked_before": "2026-11-11T02:06:11Z",
+      "time_limit": "Initial peek was before this first clock observation; exact adjacent clock was not recorded."
+    },
+    "end": {
+      "method": "actual automations.peek",
+      "checked_at": "2026-11-11 02:13:34 UTC",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "score_assessment_ref": "score-assessment1.2.json",
+  "remaining_gaps_block_TABLES1": false,
+  "acceptance_note": "Representative real App requirements, source inspection and independently fetched identical-tree hosted DOM evidence suffice for bounded TABLES1 acceptance. Local browser and full product-score evidence limits are recorded; no unresolved product defect was identified."
+}
