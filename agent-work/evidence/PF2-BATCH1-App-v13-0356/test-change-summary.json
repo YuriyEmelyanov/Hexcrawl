@@ -1,0 +1,96 @@
+{
+  "base_sha": "bd86299868cf3a29f7f71cdc531ea0ae34dd3783",
+  "head_sha": "77a6ce64cd5cf6d9de1fc9ab0bd5fe621053e36c",
+  "suites": [
+    {
+      "suite": "Node node:test",
+      "added": 1,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": [
+        "New actual App v13 import/save/profile/batch/UndoRedo and atomic refusal of invalid live data.",
+        "Existing batch case extended to territory projection/protected note and orphan-geometry refusal."
+      ],
+      "reuse_or_new_reason": "Extend the existing PF2 batch test for projection. One separate real App case is needed because detached helper tests cannot prove hook/document/history/import boundary. Reuses existing regionFixture/generation harness/readTextFile adapter, no copied generator or mock history.",
+      "count_source": "git diff bd862→77a6: test/pf2-features.test.mjs adds one top-level callback and extends one existing callback; harness exposure is not a test case. Negative-input loops are observations, not separate cases.",
+      "targeted": {
+        "executed": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "suite": "browser/RNG",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "scenario_risk": "Existing App/save/UI regressions only; new PF2 DOM actions not wired",
+      "reuse_or_new_reason": "New PF2 UI coverage comes with actual UI integration, not a duplicate domain runner",
+      "count_source": "No browser/RNG script source diff."
+    }
+  ],
+  "fixture_setup_notes": [
+    "Initial App test lacked existing readTextFile harness adapter; corrected using established helper pattern.",
+    "Seed42 yields standard at0,0 and no feature: nonempty snapshot test now uses fixedseed0, whose outcome2 is a landmark. No random-search series or production bypass."
+  ],
+  "full_local": {
+    "typecheck": "passed",
+    "Node": {
+      "executed": 399,
+      "passed": 399,
+      "failed": 0,
+      "skipped": 0
+    },
+    "build": "passed",
+    "targeted": {
+      "executed": 5,
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "hosted": {
+    "run_id": 42956834556,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42956834556",
+    "bridge": {
+      "head_sha": "77a6ce64cd5cf6d9de1fc9ab0bd5fe621053e36c",
+      "merge_sha": "075a5655a8ee5a3e4ed96601a0af9528f07d70bc",
+      "tree_sha": "627c94e5f379975772e293657f09ad656c083efc",
+      "equivalent": true
+    },
+    "jobs": [
+      {
+        "name": "check",
+        "id": 130313822076,
+        "status": "in_progress",
+        "conclusion": null
+      },
+      {
+        "name": "browser",
+        "id": 130313822348,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "world-random",
+        "id": 130313822415,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "tables1-ui",
+        "id": 130313822457,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "release-presentation-496",
+        "id": 130313823508,
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "observed_at": "2026-11-11 04:13:32 UTC"
+  }
+}
