@@ -1,0 +1,57 @@
+{
+  "head_sha": "64f06fc7df28dffcd6b9b83fc297cf46451c1e69",
+  "tree_sha": "9c5998d957d865012face3b9f561c1c3ed22d816",
+  "reviewer": "independent manual-size followup /root/pr496_review_de9/manual_64f",
+  "scope": "Exact SHA source diff and focused App callbacks/pure placement; no React effects, DOM, fullsuite or E8 certification.",
+  "closure": [
+    {
+      "finding": "EXPLICIT-SMALL-MANUAL-ENTRY",
+      "prior_head": "7f18150b92d592ea26f78c5cad62cac77bf80f30",
+      "prior_severity": "P2",
+      "status": "closed_on_exact_sha_with_focused_evidence",
+      "source": [
+        "src/detailGeography.ts:228",
+        "src/detailGeography.ts:286",
+        "src/detailPlacement.ts:110"
+      ],
+      "observed": [
+        "Actual edit to manual_size diameter .03mi, measured_override, refuses retaining route entry .5mi from anchor; document and both histories remain exact.",
+        "Actual importer and strict save validator reject the same explicit small circle with a remote route entry; document and both histories remain exact.",
+        "Separately authored valid save with route entry at circle boundary x11.985 around anchor x12 accepts. The object keeps one marker address and no outline.",
+        "Growing explicit size to .04 retains the literal accepted port and exact Undo/Redo; shrinking to .02 refuses atomically.",
+        "Initial manual placement with diameters .001,.03,.4,.999,1,1.5 produces entries inside explicit circles and preserves anchor. D<1 stays one marker address even when circle crosses a fine grid edge.",
+        "Initial placement rejects nonlocal route and water contacts for explicit tiny geometry."
+      ],
+      "evidence": [
+        "probe.json",
+        "probe.mjs",
+        "focused-tests.tap"
+      ]
+    }
+  ],
+  "new_findings": [],
+  "focused_tests": {
+    "runtime": "Node24",
+    "files": [
+      "test/detailGeography.test.mjs",
+      "test/detailPlacement.test.mjs"
+    ],
+    "tests": 12,
+    "passed": 12,
+    "failed": 0
+  },
+  "test_review": {
+    "necessity": "The added assertions are necessary regression coverage of the confirmed P2: explicit physical geometry must constrain existing references before any write; valid shared-boundary entry must remain accepted.",
+    "known_expected_values": "Diameter .03mi means radius .015mi. From anchor(12,0), x11.985 lies on the closed circle; old entry x11.5 is .5mi away. D<1 still renders a marker by the separate presentation contract.",
+    "fixture_change": "The existing import fixture road is reversed from source2→3 to source1→2 so the positive authored left-boundary entry x11.985 lies on its actual segment. This changes the authored vector, retains strict live route checks and adds a concrete positive case.",
+    "counting": "Existing two focused test files contain12 test cases. Added negative/positive assertions extend those existing cases; no new permanent cases or repeated fullsuite."
+  },
+  "caveats": [
+    "The earlier representative project estimate .03mi marker observation is unknown/unverified physical-entrance semantics, not a proven measured-geometry defect. The closed P2 concerns explicit manual_size geometry only.",
+    "Measured polygon and manual cell shape branches are unchanged by this final entrance fix; earlier independent anchor/shape closure evidence belongs to parent.",
+    "GRID-Q01 and TABLES1/PF2 G09 integration remain outside this subset; no whole-package acceptance or numerical score award."
+  ],
+  "tracked_source_mutation": false,
+  "github_mutation": false,
+  "final_acceptance": false
+}

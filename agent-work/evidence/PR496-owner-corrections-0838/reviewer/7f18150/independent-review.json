@@ -1,0 +1,150 @@
+{
+  "reviewer": "independent /root/pr496_review_de9",
+  "task_id": "HX-BL-051",
+  "head_sha": "7f18150b92d592ea26f78c5cad62cac77bf80f30",
+  "tree_sha": "f2c148221e9bec39ca7da41467e466e374953485",
+  "isolation": "Exact fetched SHA; detached /tmp/pr496-7f1-review-src; tracked source unchanged; no PR502 source copy.",
+  "decision": "Four prior P2 findings closed. A new P2 explicit small manual-size entrance defect was confirmed on targeted followup; changes required. Whole package QC and release acceptance remain open.",
+  "closed_findings": [
+    {
+      "id": "DISPLAY-POINT-ROUNDTRIP",
+      "prior_head": "de9f374d737e85edc2f6a2ae52e5159a734f9f31",
+      "prior_severity": "P2",
+      "status": "closed_on_exact_sha",
+      "evidence": [
+        "actual-handler.json",
+        "actual-handler-probe.mjs"
+      ],
+      "observed": "Real pointer callbacks for step6 world(3.01,0),12 world(6.01,0),24 world(12.01,0) now select direct cell(1,0), preserve exact selectedWorldPoint through Undo/Redo and real import/export. Step6 source context is(1,0). Exact repeated callback adds no history and view cycle changes no accepted geometry/RNG."
+    },
+    {
+      "id": "MEASURED-ANCHOR-SHAPE",
+      "prior_severity": "P2",
+      "status": "closed_on_exact_sha",
+      "evidence": [
+        "probe.jsonl",
+        "extra.jsonl",
+        "safety-review.json"
+      ],
+      "observed": "Remote measured/manual edit and actual imports reject inconsistent geometry with document and both histories unchanged. Valid measured edit retains anchor and exact Undo/Redo."
+    },
+    {
+      "id": "LOCAL-ATTACHMENT-SPILL",
+      "prior_severity": "P2",
+      "status": "closed_on_exact_sha",
+      "evidence": [
+        "attachment.json",
+        "attachment-probe.mjs"
+      ],
+      "observed": "Valid city1.5mi at(12,0), assigned road source(1,0)→(2,0): selected fine(13,0) has routes=[] and city attachments=[]. The accepted road reference remains and coarse overview retains it. Focused tests also retain shared-boundary contacts."
+    },
+    {
+      "id": "EXACT-SHA-CHECK-FAIL",
+      "prior_severity": "P2",
+      "status": "closed_for_original_focused_failure",
+      "evidence": [
+        "focused-tests.tap"
+      ],
+      "observed": "Independent same64-test Node24 subset now64pass/0fail, including saveSafety DETAIL1 import/history/reset test. Required whole check/browser/CI are owned by root and are not certified by this subset."
+    }
+  ],
+  "new_findings": [
+    {
+      "id": "EXPLICIT-SMALL-MANUAL-ENTRY",
+      "severity": "P2",
+      "rules": [
+        "GRID-C08",
+        "GRID-C09",
+        "G08",
+        "G09"
+      ],
+      "location": [
+        "src/detailGeography.ts:275",
+        "src/detailGeography.ts:289",
+        "src/detailGeography.ts:318"
+      ],
+      "description": "Actual manual_size edit with diameterMiles0.03, basis measured_override retains road entry(11.5,0) for anchored object(12,0), outside the explicit radius0.015 circle. Pure save validator and actual importer also accept it. This is explicit geometry, separate from a representative marker-only estimate.",
+      "evidence": [
+        "manual-small-entry.json",
+        "manual-small-entry-probe.mjs"
+      ],
+      "expected": "Apply actual manual_size physical geometry to water contact/route entry validation at all sizes, retaining marker-only display for D<1. Reject stale entrances atomically or use an explicit approved repair transaction."
+    }
+  ],
+  "verification": {
+    "runtime": "Nodev24.22.1",
+    "focused_tests": {
+      "tests": 64,
+      "passed": 64,
+      "failed": 0,
+      "command": "node --test test/detailDisplay.test.mjs test/detailGrid.test.mjs test/detailGeography.test.mjs test/detailPlacement.test.mjs test/classification.test.mjs test/saveSafety.test.mjs"
+    },
+    "actual_callbacks": [
+      "Exact boundary pointer selection6/12/24",
+      "Selected-world-point exact UndoRedo+actual JSON import/export",
+      "Repeated exact pointer callback is history no-op",
+      "Local attachment filtering preserves authoritative and overview refs",
+      "Measured/manual rejection before writes",
+      "Valid measured anchor and exact history",
+      "CLASSIFY1+Knave+DETAIL1 v14 actual roundtrip",
+      "Unsupported12/13/15 import refusal preserves document and histories",
+      "Legacyv1 read/view literal; explicitselect adds onlycompatanchors+selection, noextent/cells/estimates/RNGchange"
+    ],
+    "browser": {
+      "cases_executed": 0,
+      "status": "not rerun; no independent DOM certification",
+      "reason": "Same environment earlier could not launch Chromium (bundle missing/system socket EPERM). Source inspection of new polygon-text/area assertion does not substitute for executing it."
+    },
+    "full_check": "not duplicated; root running at handoff"
+  },
+  "retained_gaps": [
+    {
+      "rule": "GRID-Q01",
+      "status": "open",
+      "description": "Semantic generation at1/12/24 remains undecided. Six-mile baseline creation only; unsupported empty creation explicitly refuses."
+    },
+    {
+      "rule": "G09 / GRID-C09",
+      "status": "integration_unverified",
+      "description": "Canonical496 lacks TABLES1/PF2. Safe v12/v13 refusal is not accepted payload integration."
+    },
+    {
+      "rule": "TINY-POI-ENTRY",
+      "status": "unknown_unverified_representative_marker_assumption_only",
+      "description": "The original .03mi tower probe uses representative/project_assumption_not_measured only. The specification makes D<1 representative objects marker-only and does not mandate a physical circle. Its .5mi cell-boundary entry is not a proven measured-entrance defect. Do not label this case P2 or imply a measured geometry claim.",
+      "evidence": "route.jsonl"
+    },
+    {
+      "rule": "G11 / G12",
+      "status": "whole_package_QC_open",
+      "description": "Independent screen-focus, pan/wheel, rotation, mobile and PNG execution not established here; root fullcheck/browser/CI pending at reviewhandoff."
+    }
+  ],
+  "score_assessment": "score_assessment1.2.json",
+  "baseline_blob": "0b3526f8f4665067276c159508c730790aac5448",
+  "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+  "score_outcome": "All six before/after grade/points and deltas null/unknown; no numerical award or score/history publication.",
+  "automation": {
+    "start": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "is_enabled": true,
+      "updated_at": "2026-11-11T08:26:59.744015+00:00",
+      "last_run_time": "2026-11-11T08:26:37.465364+00:00"
+    },
+    "end": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "is_enabled": true,
+      "updated_at": "2026-11-11T08:26:59.744015+00:00",
+      "last_run_time": "2026-11-11T08:26:37.465364+00:00"
+    },
+    "mutated_by_reviewer": false
+  },
+  "github_mutations": false,
+  "claim_mutations": false,
+  "tracked_source_mutations": false,
+  "publication": false,
+  "final_acceptance": false,
+  "clarification": "The later explicit manual_size/measured_override probe is a distinct confirmed P2. The earlier representative small-marker observation remains unknown/unverified only."
+}

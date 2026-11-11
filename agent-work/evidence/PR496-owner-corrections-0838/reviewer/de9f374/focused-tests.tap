@@ -1,0 +1,91 @@
+✔ CLASSIFY1 all existing biome defaults and unknown are explicit, dangerous includes terrain risk (4.288668ms)
+✔ CLASSIFY1 discovery uses exact context and semantic IDs independent of language (0.292469ms)
+✔ CLASSIFY1 overrides validate version/live ownership, preserve unknown and remap only POI (1.37713ms)
+✔ CLASSIFY1 real document import/commit/history preserves map/RNG and authored overrides across modes (3969.71583ms)
+✔ a 24-mile display cell retains its full outline and unknown area at 25 percent accepted coverage (11.790768ms)
+✔ one-mile display projection includes accepted and legal candidate fragments in the same full cell (3.013721ms)
+✔ display projection deduplicates sources and stale candidates in stable canonical order (1.413375ms)
+✔ all selected steps conserve accepted area with a fixed origin without mutation or random generation (9.130588ms)
+✔ live DETAIL1 preview projects actual capital/Seat and every assigned road without changing the document or RNG (1094.431765ms)
+✔ live DETAIL1 preview retains actual sea/river identities and source requirements, refusing missing mandatory water atomically (1546.4751ms)
+✔ actual DETAIL1 extent command records one exact undo/redo transaction and refuses invalid or stale commands atomically (547.722796ms)
+✔ active DETAIL1 lifecycle preserves manual extents through E7 and allocates/removes POIs without recycling IDs (532.087331ms)
+✔ active DETAIL1 route and water mutations retain exact attachments or refuse both histories atomically (1287.814331ms)
+✔ active DETAIL1 E8 relocates an assumed unattached site once and refuses translating accepted explicit extents (495.173904ms)
+✔ active DETAIL1 generated candidate places only new owners after accepted Knave content and refuses invalid candidates before history (676.476227ms)
+✔ ordinary v11 and v14 DETAIL1 imports roundtrip active extents and refuse corrupt spatial references atomically (3978.219223ms)
+✔ legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact document transaction (2509.803321ms)
+✔ new maps activate DETAIL1 at final generation, preserving legacy continuation and exact undo (5187.267525ms)
+✔ physical grids share origin/orientation, invert negative coordinates and resolve shared boundaries deterministically (6.881265ms)
+✔ footprint boundaries remove every shared edge and retain exact topology independent of cell order (0.767043ms)
+✔ spatial summaries retain mixed source fragments and count a multi-cell POI once without mutating accepted state (41.771637ms)
+✔ local cards exclude other source-cell POIs and absent paths while retaining real interior, edge and vertex contacts (16.901891ms)
+✔ POI catalogue keeps measured tiny capital and tower as markers, city as conditional coverage, and semantic roles unknown (38.274894ms)
+✔ required water and assigned routes select a compatible footprint while adjacent or touch-only geometry fails atomically (14.08128ms)
+✔ reject v7 missing river features (2.592018ms)
+✔ reject v7 array river features (0.335765ms)
+✔ reject v7 missing river counter (0.956989ms)
+✔ reject v7 stale river counter (0.244998ms)
+✔ reject notes null container (0.291408ms)
+✔ reject notes array container (0.222544ms)
+✔ reject notes scalar container (0.234723ms)
+✔ reject notes non-string (0.25943ms)
+✔ reject notes noncanonical key (0.37974ms)
+✔ reject notes orphan (1.435082ms)
+✔ reject notes prototype key (0.400082ms)
+✔ reject road wrong structure (0.434423ms)
+✔ reject fractional axial (0.706873ms)
+✔ reject duplicate region id (0.181243ms)
+✔ reject invalid region enum (0.328484ms)
+✔ reject noncanonical terrain key (0.287112ms)
+✔ reject wrong rotation type (22.953209ms)
+✔ reject wrong scale type (0.351228ms)
+✔ reject unsafe next road counter (0.351248ms)
+✔ reject dangling water POI (0.391618ms)
+✔ supported corpus: lake-reentry-map (7.285197ms)
+✔ supported corpus: sea-pocket-map (2.68055ms)
+✔ supported corpus: terrain-display-map (7.989191ms)
+✔ supported corpus: road-entry-zigzags (1.373926ms)
+✔ generated proposals reject overflow in every allocated ID namespace and counter (2.995033ms)
+✔ imported boundary roadCounter: production continuation stays valid or rolls back whole document (548.204021ms)
+✔ imported boundary regionId: production continuation stays valid or rolls back whole document (592.223627ms)
+✔ imported boundary lakeCounter: production continuation stays valid or rolls back whole document (356.002965ms)
+✔ imported boundary riverId: production continuation stays valid or rolls back whole document (274.503091ms)
+✔ exhausted kingdom ID refuses production start and preserves document and both stacks (889.878471ms)
+✔ notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require RNG and future versions reject (2.265616ms)
+✔ E8 v8 authored POI names use real import,exact export and UndoRedo without touching hex notes (1174.58045ms)
+✔ E8 malformed,orphan and older-version authored names refuse atomically in the real importer (397.432028ms)
+✔ E8 type change preserves paired settlement name before entity reconciliation (371.386352ms)
+✔ E8 paired name form commits and clears one atomic land POI (385.870282ms)
+✔ E8 paired name form commits and clears one atomic water POI (328.021928ms)
+✔ E8 paired name form commits and clears one atomic center POI (458.333466ms)
+✔ E8 paired name form rejects half-pairs,duplicates and captured old secondary-field writes (425.92762ms)
+✔ SEA v2-v8 metadata migration and strict v9 refusal use the real atomic importer (507.693995ms)
+✖ DETAIL1 live document keeps physical grid and classification together through import, history and reset (464.646758ms)
+ℹ tests 64
+ℹ suites 0
+ℹ pass 63
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19701.970787
+
+✖ failing tests:
+
+test at test/saveSafety.test.mjs:289:1
+✖ DETAIL1 live document keeps physical grid and classification together through import, history and reset (464.646758ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  14 !== 11
+  
+      at TestContext.<anonymous> (file:///tmp/pr496-de9-review-src/test/saveSafety.test.mjs:302:140)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 14,
+    expected: 11,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

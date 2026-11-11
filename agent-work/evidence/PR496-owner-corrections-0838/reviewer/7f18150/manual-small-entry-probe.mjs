@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {createGenerationHarness} from '/tmp/pr496-7f1-review-src/test/helpers/generation-harness.mjs';
+import {regionFixture} from '/tmp/pr496-7f1-review-src/test/helpers/region-fixture.mjs';
+import {detailCirclePolygon,detailPointInPolygon} from '/tmp/pr496-7f1-review-src/src/detailSizes.ts';
+const h=createGenerationHarness(2),alerts=[];h.render();h.setWindow({alert:s=>alerts.push(s),confirm:()=>true});h.injectFunction('readTextFile',async f=>f.text);
+const d=regionFixture();d.map.regions[0].pointOfInterestKinds['2,0']='tower';d.map.roads=[{id:1,regionId:1,segments:[{from:{q:1,r:0},to:{q:2,r:0},kind:'road'}]}];d.counters.nextRoadId=2;
+await h.render().handleImportJson({target:{files:[{text:JSON.stringify(d)}],value:''}});assert.equal(alerts.length,0);assert.equal(h.render().startDetailAdaptation(),true);assert.equal(h.render().applyDetailAdaptation(),true);
+const original=h.render().createSaveData(),poi=original.map.physicalGrid.poiFootprints[0],manual={kind:'manual_size',diameterMiles:.03,basis:'measured_override',note:'Surveyed tower maximum diameter30millimiles'};
+h.render().setEditMode(true);const result=h.render().editDetailFootprintExtent(poi.poiId,manual);assert.equal(result,true);
+const s=h.render().createSaveData(),p=s.map.physicalGrid.poiFootprints[0],entry=p.attachments.find(a=>a.kind==='route').entry;
+assert.equal(detailPointInPolygon(entry,detailCirclePolygon(p.worldAnchor,manual.diameterMiles)),false);h.geometry.assertHexcrawlSaveData(s);
+const imported=createGenerationHarness(3),importAlerts=[];imported.render();imported.setWindow({alert:s=>importAlerts.push(s)});imported.injectFunction('readTextFile',async f=>f.text);await imported.render().handleImportJson({target:{files:[{text:JSON.stringify(s)}],value:''}});assert.deepEqual(importAlerts,[]);assert.deepEqual(imported.render().createSaveData().map.physicalGrid,s.map.physicalGrid);
+console.log(JSON.stringify({head:'7f18150b92d592ea26f78c5cad62cac77bf80f30',case:'explicit-manual-size-measured-override-small-entry',extent:p.extent,anchor:p.worldAnchor,entry,distanceFromAnchor:Math.hypot(entry.x-p.worldAnchor.x,entry.y-p.worldAnchor.y),manualRadiusMiles:.015,entryInsideExplicitCircle:false,actualEditAccepted:result,validatorAccepted:true,actualImporterAccepted:true,alerts:importAlerts},null,2));

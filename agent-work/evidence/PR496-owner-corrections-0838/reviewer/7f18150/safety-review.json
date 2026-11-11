@@ -1,0 +1,95 @@
+{
+  "head_sha": "7f18150b92d592ea26f78c5cad62cac77bf80f30",
+  "tree_sha": "f2c148221e9bec39ca7da41467e466e374953485",
+  "reviewer": "independent safety followup",
+  "scope": "Measured/manual anchor safety, strict import, CLASSIFY1 compatibility and legacy v1 preservation; actual App callback harness, no useEffect or DOM.",
+  "closure": [
+    {
+      "finding": "MEASURED-ANCHOR-SHAPE",
+      "prior_severity": "P2",
+      "status": "closed_on_exact_sha_with_focused_evidence",
+      "evidence": [
+        "probe.jsonl",
+        "extra.jsonl"
+      ],
+      "observed": [
+        "Remote measured edit rejects anchor_outside_extent",
+        "Remote manual edit refuses and preserves complete document and both histories",
+        "Actual v14 importer rejects measured and manual shapes with unrelated worldAnchor, preserving complete document and both histories",
+        "Valid measured shape retains accepted anchor and supports exact Undo/Redo"
+      ]
+    }
+  ],
+  "new_findings": [],
+  "passed": [
+    "v14 CLASSIFY1+Knave+DETAIL1 actual import/export retains exact payload",
+    "Orphan CLASSIFY1, invalid discovery mode, unsafe world anchor and wrong catalogue owner reject",
+    "v12/v13/v15 refusals preserve document and both histories",
+    "View cycle consumes no RNG streams",
+    "Selected world point/cell mismatch actual import rejects atomically",
+    "Legacy v1 read keeps payload identical; changing view preserves v1, original extents/cells and missing anchor fields",
+    "Explicit selection upgrades v1 to v2 by adding compatibility anchors and selection only; extents/cells/RNG unchanged; exact Undo/Redo"
+  ],
+  "retained_caveats": [
+    {
+      "id": "TINY-POI-ENTRY",
+      "evidence": "route.jsonl",
+      "status": "still_open_contract_caveat",
+      "observed": "Tower diameter0.03mi at(12,0), saved route entry(11.5,0),0.5mi from anchor. Validator accepts; no claim of resolution."
+    },
+    "GRID-Q01 generation semantics remain unresolved; six-mile creation only.",
+    "Canonical PR496 has no TABLES1/PF2; safe v12/v13 refusal does not fulfill G09 integration."
+  ],
+  "limits": [
+    "No duplicate fullsuite or browser suite executed.",
+    "Actual callback harness substitutes hook storage and suppresses React effects/DOM.",
+    "No whole criterion quality or game breadth assessment; all six affected grades/points/deltas should remain null."
+  ],
+  "score_criteria": [
+    {
+      "criterion_id": "S01-C04",
+      "grade": null,
+      "points": null,
+      "delta": null,
+      "status": "insufficient_evidence_for_whole_criterion_grade"
+    },
+    {
+      "criterion_id": "S01-C05",
+      "grade": null,
+      "points": null,
+      "delta": null,
+      "status": "insufficient_evidence_for_whole_criterion_grade"
+    },
+    {
+      "criterion_id": "S03-C01",
+      "grade": null,
+      "points": null,
+      "delta": null,
+      "status": "insufficient_evidence_for_whole_criterion_grade"
+    },
+    {
+      "criterion_id": "S04-C03",
+      "grade": null,
+      "points": null,
+      "delta": null,
+      "status": "insufficient_evidence_for_whole_criterion_grade"
+    },
+    {
+      "criterion_id": "S04-C04",
+      "grade": null,
+      "points": null,
+      "delta": null,
+      "status": "insufficient_evidence_for_whole_criterion_grade"
+    },
+    {
+      "criterion_id": "S05-C01",
+      "grade": null,
+      "points": null,
+      "delta": null,
+      "status": "insufficient_evidence_for_whole_criterion_grade"
+    }
+  ],
+  "final_acceptance": false,
+  "github_mutation": false,
+  "tracked_source_mutation": false
+}

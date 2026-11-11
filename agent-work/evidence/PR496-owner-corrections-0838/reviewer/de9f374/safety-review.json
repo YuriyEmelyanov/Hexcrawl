@@ -1,0 +1,31 @@
+{
+  "head_sha": "de9f374d737e85edc2f6a2ae52e5159a734f9f31",
+  "tree_sha": "0511395fe8a7cff9b0eba9f6cfe52c78ef29a940",
+  "focus": "v14 safety, CLASSIFY1, physical POI sizes, manual and measured geometry",
+  "findings": [
+    {
+      "severity": "P2",
+      "id": "ANCHOR-SHAPE-MISMATCH",
+      "location": "src/detailGeography.ts:268-274,316-320;src/detailModel.ts:99-104",
+      "description": "Measured or manual geometry can exclude a saved worldAnchor. Actual v14 import accepts a measured 0.4-mile shape at world (0,0) with worldAnchor (1e9,1e9). The local one-mile card and marker use the anchor, while coarse summaries use the physical shape, so the owner appears at an unrelated location or outside the map.",
+      "reproduction": "probe.mjs cases manual-measured-remote-edit,bad-v14-measured-anchor,bad-measured-anchor-actual-import",
+      "expected": "Reject shape/anchor inconsistency atomically, or require explicit reviewed anchor repair; do not silently move anchor."
+    },
+    {
+      "severity": "P2_candidate_contract_gap",
+      "id": "TINY-POI-ENTRY",
+      "location": "src/detailPlacement.ts:110-120;src/detailGeography.ts:275-294",
+      "description": "For representative sizes below one mile, placement uses a fine-cell segment start as the route entry. A tower of diameter 0.03 miles at world (12,0) receives accepted road entry (11.5,0), half a mile away; the validator accepts it.",
+      "reproduction": "route-probe.mjs small-tower-road-entry",
+      "expected": "Saved entrance should correspond to the accepted object anchor or actual explicit geometry. Clarify whether small catalogue estimates intentionally provide no physical contract; GRID-C09 requires a valid entry in the real object geometry."
+    }
+  ],
+  "passed_probes": [
+    "Actual v14 CLASSIFY1, Knave and DETAIL1 roundtrip",
+    "Orphan CLASSIFY1, invalid mode, unsafe MAX anchor and catalogue owner mismatch rejected",
+    "View cycle 1/12/24/6 uses zero RNG draws",
+    "Actual v12/v13/v15 import refusal preserves document and both histories"
+  ],
+  "score": "score_assessment1.2.json",
+  "final_acceptance": false
+}

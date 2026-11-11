@@ -1,0 +1,144 @@
+{
+  "reviewer": "independent /root/pr496_review_de9",
+  "task_id": "HX-BL-051",
+  "head_sha": "de9f374d737e85edc2f6a2ae52e5159a734f9f31",
+  "tree_sha": "0511395fe8a7cff9b0eba9f6cfe52c78ef29a940",
+  "decision": "changes_required; no full acceptance or release claim",
+  "isolation": "Exact fetched SHA, detached /tmp/pr496-de9-review-src; tracked source unchanged. No PR502 transplant.",
+  "findings": [
+    {
+      "id": "DISPLAY-POINT-ROUNDTRIP",
+      "severity": "P2",
+      "rules": [
+        "GRID-C02",
+        "G04",
+        "G05",
+        "G06"
+      ],
+      "location": [
+        "src/App.tsx:16240",
+        "src/App.tsx:13734",
+        "src/detailSummary.ts:43"
+      ],
+      "description": "The real pointer callback rounds world click to grid1, then derives selected grid from that centre. At step6 world(3.01,0) is inside display(1,0) but actual callback selects fine(3,0), display/source(0,0). At steps12/24 world(6.01,0)/(12.01,0) likewise opens display(0,0). These are interior points, not ties.",
+      "evidence": [
+        "actual-handler.json",
+        "actual-handler-probe.mjs"
+      ],
+      "expected": "Hit-test selected grid directly; retain the chosen display owner/world point across storage and summary."
+    },
+    {
+      "id": "MEASURED-ANCHOR-SHAPE",
+      "severity": "P2",
+      "rules": [
+        "GRID-C08",
+        "GRID-C09",
+        "G07",
+        "G09"
+      ],
+      "location": [
+        "src/detailGeography.ts:268",
+        "src/detailGeography.ts:319",
+        "src/detailModel.ts:99"
+      ],
+      "description": "Measured edits and the actual v14 importer accept a measured0.4mi shape at world(0,0) with unrelated anchor(1e9,1e9). Actual import writes it with alerts=[]. Local marker/membership follows anchor, coarse summaries follow shape.",
+      "evidence": [
+        "probe.jsonl",
+        "probe.mjs"
+      ],
+      "expected": "Reject shape/anchor inconsistency atomically, or require explicit reviewed repair preserving the accepted anchor."
+    },
+    {
+      "id": "LOCAL-ATTACHMENT-SPILL",
+      "severity": "P2",
+      "rules": [
+        "GRID-C05",
+        "G05"
+      ],
+      "location": [
+        "src/detailSummary.ts:66",
+        "src/App.tsx:16966"
+      ],
+      "description": "Valid city1.5mi at(12,0), assigned road source(1,0)→(2,0): selected fine(13,0) has routes=[]; its city row carries road1 entry(11.5,0), and App prints that road in the local summary.",
+      "evidence": [
+        "attachment.json",
+        "attachment-probe.mjs"
+      ],
+      "expected": "Filter attachment names by actual contact/entry relevance in the read-only local summary; preserve authoritative attachments."
+    },
+    {
+      "id": "EXACT-SHA-CHECK-FAIL",
+      "severity": "P2",
+      "rules": [
+        "G12"
+      ],
+      "location": [
+        "test/saveSafety.test.mjs:302"
+      ],
+      "description": "Focused64-case Node24 subset exits1: DETAIL1 live-document test expects export11 after new adaptation, actual14.63pass/1fail.",
+      "evidence": [
+        "focused-tests.tap"
+      ],
+      "expected": "Update schema expectations without weakening v14 gates; complete required checks on the next exact SHA."
+    }
+  ],
+  "contract_caveats": [
+    {
+      "id": "TINY-POI-ENTRY",
+      "status": "needs_resolution; not counted as unqualified confirmed defect",
+      "description": "Tower diameter0.03mi at(12,0) retains a road entry(11.5,0), half a mile away. C09 requires a real object entry, but catalogue circles are only mandated for D>=1. Do not claim G08/C09 complete until small-object entry semantics are concrete.",
+      "evidence": "route.jsonl"
+    }
+  ],
+  "verification": {
+    "runtime": "Nodev24.22.1",
+    "build": "npm run build passed",
+    "focused_tests": {
+      "tests": 64,
+      "passed": 63,
+      "failed": 1,
+      "command": "node --test test/detailDisplay.test.mjs test/detailGrid.test.mjs test/detailGeography.test.mjs test/detailPlacement.test.mjs test/classification.test.mjs test/saveSafety.test.mjs"
+    },
+    "actual_callbacks": [
+      "Wrong selected-grid pointer owner6/12/24 reproduced",
+      "Exact view-only scale cycle and accepted map/RNG conservation",
+      "Local city attachment spill",
+      "v14 CLASSIFY1+Knave+DETAIL1 roundtrip",
+      "v12/v13/v15 refusal preserves document and both histories"
+    ],
+    "browser": {
+      "cases_executed": 0,
+      "status": "unavailable",
+      "reason": "Playwright bundled Chromium missing; system /usr/bin/chromium fatal process_singleton_posix socket() EPERM before first page"
+    }
+  },
+  "acceptance_gaps": [
+    "GRID-Q01 non-six-mile generation semantics are not implemented;6mile creation remains and other empty views explicitly refuse.",
+    "Canonical496 lacks TABLES1/PF2. Safe v12/v13 refusal does not fulfill G09 integration.",
+    "Independent DOM/screen-focus/pan/wheel/rotation/mobile/PNG checks could not execute. Exact scale algebra is not screen-focus proof.",
+    "Whole-criterion quality and relevant game breadth remain unverified; all six grades/points/deltas are unknown."
+  ],
+  "score_assessment": "score_assessment1.2.json",
+  "baseline_blob": "0b3526f8f4665067276c159508c730790aac5448",
+  "automation": {
+    "start": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "is_enabled": true,
+      "updated_at": "2026-11-11T08:26:59.744015+00:00",
+      "last_run_time": "2026-11-11T08:26:37.465364+00:00"
+    },
+    "end": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "is_enabled": true,
+      "updated_at": "2026-11-11T08:26:59.744015+00:00",
+      "last_run_time": "2026-11-11T08:26:37.465364+00:00"
+    },
+    "mutated_by_reviewer": false
+  },
+  "repository_mutations": false,
+  "github_mutations": false,
+  "claim_mutations": false,
+  "publication": false
+}
