@@ -1,0 +1,216 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-11T0558-strategist-DETAIL1-competitor-input",
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-GRID-CORRECTION",
+  "scope": "Owner-provided competitor references for existing approved correction; bounded documentation study, no full market audit, no new development/ranking/score/approval.",
+  "owner_input": "Hexer, Worldographer Pro, HexAtlas supplied in current task chat; ask what can be learned.",
+  "as_of": "2026-11-11",
+  "sources": [
+    {
+      "id": "hexer-scales",
+      "url": "https://hexermap.com/help/scale-levels",
+      "kind": "official_help",
+      "verified_facts": [
+        "24→6→1-mile levels and custom values are documented.",
+        "Detailed terrain can inherit or be generated; fine-level additions are level-local. Paths/rivers/notes propagate from the base.",
+        "Cell-centre membership handles nonexact nested grids."
+      ],
+      "limitations": [
+        "No practical editor run; documentation alone does not prove whole-object identity, physicalPOI sizes or empty-part generation."
+      ]
+    },
+    {
+      "id": "hexer-navigation",
+      "url": "https://hexermap.com/help/pan-tool",
+      "kind": "official_help",
+      "verified_facts": [
+        "A compact current-level control opens a list. Zoom can also cross level thresholds."
+      ],
+      "limitations": [
+        "Keep owner-requested dropdown placement; this input does not authorize automatic threshold switching."
+      ]
+    },
+    {
+      "id": "worldographer-controls",
+      "url": "https://worldographer.com/manual/07c-mini-map-area-view-options-layers-drawer-controls/",
+      "kind": "official_current_manual",
+      "verified_facts": [
+        "Level dropdown is in Mini-Map Area alongside navigation and pixel dimensions.",
+        "Centred view is documented for ordinary zoom; level-switch camera anchor is not specified."
+      ],
+      "limitations": [
+        "No desktop runtime test."
+      ]
+    },
+    {
+      "id": "worldographer-levels",
+      "url": "https://worldographer.com/manual/04-creating-world-kingdom-maps/",
+      "kind": "official_current_manual",
+      "verified_facts": [
+        "Four levels share one file. Parent-grid borders can appear over detail.",
+        "Coordinate-based Shapes support scalable river/coast geometry; pictorial Features can require manual detail."
+      ],
+      "limitations": [
+        "Simultaneous grids conflict with owner single-visible-grid requirement."
+      ]
+    },
+    {
+      "id": "worldographer-storage",
+      "url": "https://worldographer.com/instructions/how-map-levels-work/",
+      "kind": "official_older_instructions",
+      "verified_facts": [
+        "Terrain is stored per level; updating other levels is conditional on an option.",
+        "Shape geometry transforms between levels; Features/Labels may have level-specific positions."
+      ],
+      "limitations": [
+        "This older page describes three levels and old sidebar placement; prefer current manual for current counts/UI.",
+        "Do not infer universal automatic conflict-safe synchronisation."
+      ]
+    },
+    {
+      "id": "hexatlas-overview",
+      "url": "https://hexatlas.net/",
+      "kind": "official_product_page_and_developer_captures",
+      "verified_facts": [
+        "Continent/Country/Region are presented as one hex map.",
+        "Settlement outlines can expose road/river intersections."
+      ],
+      "limitations": [
+        "Precise miles, averagePOI size, detailed card filtering and whole-object invariants not established.",
+        "No runtime test; towns/interiors remain outside approved051 scope."
+      ]
+    },
+    {
+      "id": "hexatlas-zoom",
+      "url": "https://hexatlas.net/updates.html",
+      "kind": "official_development_notes_Nov2026",
+      "verified_facts": [
+        "Developer describes location-under-pointer transitions, immediate first frame and prewarming."
+      ],
+      "limitations": [
+        "Developer claim, not our measured benchmark; do not promise measured performance or implement background generators from it."
+      ]
+    }
+  ],
+  "lessons": [
+    {
+      "id": "REF-01",
+      "requirement_ids": [
+        "GRID-C01",
+        "GRID-C04"
+      ],
+      "sources": [
+        "hexer-navigation",
+        "worldographer-controls"
+      ],
+      "recommendation": "One compact explicit selector within existing coordinate/location controls; show physical hex size clearly. Switching updates camera per owner contract.",
+      "classification": "inference_for_existing_approved_scope"
+    },
+    {
+      "id": "REF-02",
+      "requirement_ids": [
+        "GRID-C04",
+        "GRID-C09"
+      ],
+      "sources": [
+        "hexatlas-overview",
+        "hexatlas-zoom"
+      ],
+      "recommendation": "Keep same recognisable world location and accepted objects through6→1→12→24→6; avoid a blank-looking transition. Define selected-cell/viewport anchor in amended specification and ask owner for a material ambiguous UX choice.",
+      "classification": "inference_for_existing_approved_scope"
+    },
+    {
+      "id": "REF-03",
+      "requirement_ids": [
+        "GRID-C02",
+        "GRID-C06",
+        "GRID-C07",
+        "GRID-C09"
+      ],
+      "sources": [
+        "worldographer-levels",
+        "worldographer-storage"
+      ],
+      "recommendation": "Project one authoritative world geometry/content model; vary visible grid and cell-context query. Keep exact rivers/roads/POI anchors, aggregate larger cells without losing mixed terrain or duplicating objects.",
+      "classification": "inference_for_existing_approved_scope"
+    },
+    {
+      "id": "REF-04",
+      "requirement_ids": [
+        "GRID-C08",
+        "GRID-C09"
+      ],
+      "sources": [
+        "hexatlas-overview"
+      ],
+      "recommendation": "Use actual world extent and real road/water contacts for largePOI outlines. Competitor images are not a size catalogue; each supported type still needs a reasoned size assumption/source.",
+      "classification": "inference_for_existing_approved_scope"
+    },
+    {
+      "id": "REF-05",
+      "requirement_ids": [
+        "GRID-C02",
+        "GRID-C03",
+        "GRID-C06",
+        "GRID-C07",
+        "GRID-C09"
+      ],
+      "sources": [
+        "hexer-scales",
+        "worldographer-levels"
+      ],
+      "recommendation": "Do not copy fine-only object isolation, independent generated terrain or simultaneous visible source/detail grids. Validate complete coarse cells, same-scale candidates and empty-part actual generation ourselves; these behaviours were not established in competitor docs.",
+      "classification": "owner_requirements_control_reference_adoption"
+    }
+  ],
+  "verification": {
+    "documentation_review": true,
+    "practical_editor_test": false,
+    "worldographer_download_or_install": false,
+    "purchases": false,
+    "Hexer_editor_fetch": "Public help docs retrieved; editor fetch failed/restricted in web retrieval; no workaround or runtime claim.",
+    "screenshot_performance_benchmark": false
+  },
+  "open_unverified": [
+    "Actual candidate grid sizes and empty part click generation in competitors",
+    "Physical extent catalogue for every supported POI",
+    "Exact1mile local river/POI filtering and mixed12/24cell information contract",
+    "Universal loss-free content/geography preservation through all levels"
+  ],
+  "official_hexatlas_examples": [
+    "https://hexatlas.net/assets/showcase/zoom-continent.webp?v=2026-11-showcase2",
+    "https://hexatlas.net/assets/showcase/zoom-country.webp?v=2026-11-showcase2",
+    "https://hexatlas.net/assets/showcase/zoom-region.webp?v=2026-11-showcase2"
+  ],
+  "handoff_ref": "agent-work/handoffs/2026-11-11-HX-BL-051-unified-grid-correction.json",
+  "consumer_role": "business_analyst",
+  "existing_claim_ref": "agent-work/claims/2026-11-11T0559-analyst-DETAIL1-grid.json",
+  "claim_policy": "Existing analyst actively owns canonical amendment; this supplementary input does not duplicate or rewrite that work/claim/spec/handoff.",
+  "score": {
+    "model_version": "1.2",
+    "expected_delta": "unknown",
+    "points_awarded": 0,
+    "model_or_current_score_changed": false
+  },
+  "next_step": "Existing analyst uses references as input while amending GRID-C01..09, POI catalogue and same-map shown UI; owner requirements override competitor patterns.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11T05:58:36.972Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "end": {
+      "checked_at": "2026-11-11T06:02:40.193Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "limitation": "Actual point-in-time start/end; subsequent service state not guaranteed. Schedule/prompt unchanged."
+  },
+  "completed_at": "2026-11-11T06:02:40.507Z"
+}
