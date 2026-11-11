@@ -1,0 +1,428 @@
+{
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "role": "read_only_dependency_analyst",
+  "repo": "YuriyEmelyanov/Hexcrawl",
+  "baseline_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "donor_pr": 496,
+  "donor_head_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+  "conclusion": "Нужна новая ветка от main с выборочным переносом общих зависимостей и новым локальным редактором. Ветка от полного PR496 с отключёнными пунктами 12/24 не соответствует требованию отдельного одномильного PR.",
+  "workflow": "Сейчас BA: source/PR/CI не менялись. Следующий этап — программист в обычном утверждённом pipeline без нового согласования старта. Затем независимая проверка нового точного SHA. Публикация остаётся на hold.",
+  "authority": {
+    "normal_pipeline_decision_blob": "5453561bbb87425acf5ad703fc6ee0ab730673f0",
+    "score_model": "1.2",
+    "note": "Решения владельца заменяют устаревшие model1.1 и budget50% в main AGENTS. Старое принятие 9ca не является приёмкой ONE-MILE1.",
+    "version_decision": "По текущему указанию root: standalone читает только public2..10 и new15/physicalv3; private11..14 safely rejected."
+  },
+  "read_sources": [
+    {
+      "path": "AGENTS.md",
+      "blob_sha": "f321c7f2cd8b3d1e6c2457dbcb552dad28730709",
+      "lines": "1–38",
+      "claim": "Прочитан main baseline; технические guard/check requirements сохраняются, устаревшие50%/1.1 overriden."
+    },
+    {
+      "path": "docs/index.md",
+      "blob_sha": "11bf96bdfe5674b6d6713ce2b94d3d272efd466d",
+      "lines": "1–49",
+      "claim": "Иерархия источников и профильные документы."
+    },
+    {
+      "path": "agent-work/process.md",
+      "blob_sha": "adb63a0d13c5a59935126d3b508774fc143a0d1c",
+      "lines": "1–5,65–96,159–169",
+      "claim": "Операционный источник; источник прочитан до более нового normalworkflowdecision."
+    },
+    {
+      "path": "agent-work/strategy/score-model.md",
+      "blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+      "lines": "17–23,186",
+      "claim": "Действующая1.2; no automatic score uplift."
+    },
+    {
+      "path": "agent-work/strategy/vision.md",
+      "blob_sha": "e048ce9e95cf1ebe406ce487ccbf97577473c3fe",
+      "lines": "1–27",
+      "claim": "Операционное видение прочитано; owner overrides применены."
+    },
+    {
+      "path": "agent-work/specs/HX-BL-051-DETAIL1.md",
+      "blob_sha": "b397621e608662ea17d58ac735be383f26c0ba23",
+      "lines": "3–34,85–117,137–146",
+      "claim": "Предыдущая DTL содержит12/24/C-FILL, не является готовой narrow1mi спецификацией."
+    },
+    {
+      "path": "agent-work/feedback.json",
+      "blob_sha": "7d9eda8b745234711a27a7be41398f6bfd676132",
+      "lines": "HX-FB-015..022",
+      "claim": "Прочитаны актуальные feedback rows; image/fullfill/rim/localcard/localedit нуждаются в новой реализации."
+    },
+    {
+      "path": "agent-work/decisions/owner-decision-2026-11-11-ONE-MILE1-local-card-roads-rivers-deferred.json",
+      "blob_sha": "9be07f3e9ebe822ed6186a12936c201884a5d191",
+      "lines": "1–67",
+      "claim": "Реальные дороги/реки и localcard; исторический deferred заменён normalpipeline только в части авторизации."
+    }
+  ],
+  "diff": {
+    "status": "ahead",
+    "ahead_by": 60,
+    "total_commits": 60,
+    "files": 49,
+    "method": "GitHub compare pinned refs plus local content diff of exact App blobs. App >1MB fetched by read-only git blob endpoint because contents endpoint returned empty content.",
+    "app_base_blob": "597c6958fa0e7226022f27e85acd2291bab7febc",
+    "app_donor_blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798"
+  },
+  "necessary_modules": [
+    {
+      "path": "src/detailGrid.ts",
+      "blob_sha": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+      "lines": "4–43,55–56,110–156",
+      "claim": "Сохранить общие физические координаты, positive-area clipping и стабильный fine address. В пользовательском контракте ONE-MILE1 только1/6;12/24 не показывать и не активировать."
+    },
+    {
+      "path": "src/detailIdentity.ts",
+      "blob_sha": "58a506732f93a29fda482905eaed72efc8978d05",
+      "lines": "1–46",
+      "claim": "Сохранить stable POI IDs и explicit reconcile/remap; не выдавать finecell localname за новое имя POI."
+    },
+    {
+      "path": "src/detailModel.ts",
+      "blob_sha": "daf087e82e0534d211de03e6c24b674e32a8887a",
+      "lines": "5–22,25–28,81–129,140–149",
+      "claim": "Сохранить typed footprints/attachments и strict gate; сузить viewStep до1/6. Новые localdata должны получить явное расширение схемы/внешнего формата, которых в доноре нет."
+    },
+    {
+      "path": "src/detailSizes.ts",
+      "blob_sha": "43a77edab3a091a06b4aac99ce56b73f215d0fea",
+      "lines": "1–60,67–144",
+      "claim": "Сохранить уже существующие физические оценки/anchors как shared POI projection dependency. Не добавлять новые размеры/типы и не считать оценки измерениями."
+    },
+    {
+      "path": "src/detailPlacement.ts",
+      "blob_sha": "61251979625ad53d1ba348bdb8b913e188f7981d",
+      "lines": "15–35,50–152",
+      "claim": "Сохранить существующие обязательные water/route conditions для локального POI отображения; не ослаблять для прохождения split."
+    },
+    {
+      "path": "src/detailGeography.ts",
+      "blob_sha": "f1b556fc4cbeb053749ac068035fe6066f89072b",
+      "lines": "1–32,41–79,123–238,248–301",
+      "claim": "Сохранить actual6mi-to-world bridge, complete identity/geometry validation и existing lifecycle reconciliation. Редактирование POI extent323–333 не является редактором finecell biome/name/notes."
+    },
+    {
+      "path": "src/detailSummary.ts",
+      "blob_sha": "7d1088a6b55e5187682e7ad4d4b12d1dc2413226",
+      "lines": "16–50,51–89,93–102",
+      "claim": "Переиспользовать local POI/actual segment filtering. Заменить1mi aggregated UI локальной карточкой; source notes89не localnotes. Не переносить пользовательские12/24 summaries."
+    },
+    {
+      "path": "src/detailDisplay.ts",
+      "blob_sha": "b63f50ab7e741acc9cba76d7b99548d724e963a1",
+      "lines": "30–82",
+      "claim": "Переиспользовать чистые intersections/coverage; заменить представление1mi на per-cell biome tile/full visual paint и один внешний fine rim. Проекция всех целых6mi candidates54–67 не выполняет новый rim."
+    },
+    {
+      "path": "src/manualPois.ts",
+      "blob_sha": "41a7d1b6b24bbdab42971deecb404f43efa9d40c",
+      "lines": "28–41",
+      "claim": "Нужен опциональный rejectAmbiguous в poiNameLocators для strict ID document boundary; это не новый редактор POI."
+    },
+    {
+      "path": "src/saveValidation.ts",
+      "blob_sha": "4c1e7ee6ce1a3921b36a79d415fee385dfc72dd7",
+      "lines": "58–66,123–134,187–195",
+      "claim": "Выборочно перенести physical boundary и format gates. Не копировать CLASSIFY1 layer. Новые локальные ключи не проходят существующие source6мили maps."
+    },
+    {
+      "path": "src/knaveClassic.ts",
+      "blob_sha": "00ab45a38c6695ade0926be4eb2da5b63e1d32dc",
+      "lines": "43–47",
+      "claim": "Только допуск реально поддерживаемых save versions вместе с существующим Knave payload. Не переносить TABLES1 schema2."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob_sha": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "487–489,1003–1021,1137–1200,13494–13578,13667–13799,14019–14071,15238–15267,16333–16372,16739–16780,17062–17199",
+      "claim": "Выборочно shared map/history/import/legacy-preview/camera/selection/renderer integration; перепривязать card/edit target к finecell. Не переносить App целиком."
+    }
+  ],
+  "source_transfer": {
+    "method": "Новая ветка от 1962fb9; переносить модули и проверенные узкие hunks из точного 9ca. Для App нужен ручной scope audit нового diff: общая инфраструктура и все режимы тесно переплетены.",
+    "geometry_identity_commits": [
+      "12905db9229174a2c2173cfb7774f9cfaee7c068",
+      "a37e4957f706d6ade6be6f42837c4cf8a7fd3c42",
+      "14f413f63f26e438e168158a869d21ed323959cd",
+      "ae3e309c6e9b1830c11b2b4cdac44d81e5d92718",
+      "4c3324c83edd07c06471558e41ab89f3a8d318e4",
+      "743e4f793f33eff2f9a7c030fb3da625051c124b",
+      "b4d0196570117df8c202e4af3f7a08862d54994c",
+      "28ea9c76a74743edbf03876aed363d984d617381",
+      "a30d317ac6a1578fcbfdcc8cc2157830940b1325",
+      "616e063569ba046c9fbabae6132df3b19e3ea95f",
+      "6862807d89790fa301026a7dfff153ca54224108"
+    ],
+    "mixed_commits": [
+      "15fc8a6a848b269206de42cdc745d588ac1d405b",
+      "7a5662558958b46c269e3e50a3ddb87ca9a0146c",
+      "e1217b1396c88700afbbfbc80d88caecf2c93aba",
+      "3060ec67b30870852b26f6b8b7aa1b5b7bfa1dea",
+      "de9f374d737e85edc2f6a2ae52e5159a734f9f31",
+      "7f18150b92d592ea26f78c5cad62cac77bf80f30",
+      "64f06fc7df28dffcd6b9b83fc297cf46451c1e69",
+      "dd9b5554106091325a12ad2351385b30e43806c3",
+      "7c72fd5a09db7935001f1454113c7e7801c86ce5"
+    ],
+    "mixed_commits_note": "Это карта происхождения зависимостей, а не готовая последовательность cherry-pick. D1 15fc8a6 прямо интегрирует CLASSIFY1; 7a566/e1217/3060/de9f включают 12/24.",
+    "exclude_C_FILL_commits": [
+      "2315ad47649b26ee7af41a99e164696d1d7213d5",
+      "0d19ac6a60f245cede095040ce24b682839cd17f"
+    ],
+    "exclude_CLASSIFY1_commits": [
+      "b54e74eefc34aa256c2f1acbcb8c1d1f9157edae",
+      "149add7e492df444cc64f4d977c5f2261178fbd5",
+      "16c2133e60d4b037359d8a1d77b3fa06d66df898",
+      "6038d3151e8385745c6a36c342a12c54b3cc2c62",
+      "6fd58bd14e47b1c9c7463f96965801cb9efeb15b"
+    ],
+    "conditional_generator_commits": [
+      "bc220e48341723ac6509ddb29832b02226a74ed8",
+      "205649da547d3777507f903d94d8d561af19563b",
+      "f677629c4c1c3a84656ad88a6e118c56da3c7eb3"
+    ],
+    "no_blind_bonus": "finalPoiPlacement и полная Classic river-network validation меняют поведение исходного генератора. Они должны быть отдельно указаны как необходимая зависимость либо исключены с явным безопасным отказом/известным риском. Статическое чтение не доказывает, что весь этот пакет минимально необходим для одномильного интерфейса."
+  },
+  "exclude": [
+    "src/detailFill.ts, CoarseFillJob, start/cancel/advance, обработчики пакетного заполнения, progress/cancel UI и C-FILL docs/tests. Нужный подсчёт source coverage вынести в общий read-only helper вместо импорта C-FILL ради одной функции.",
+    "Пользовательские 12/24 selector options, cards/summaries, generation actions, coarse-specific tests. Сохранить 6mi как существующий исходный режим и источник геометрии.",
+    "src/classification.ts, docs/terrain-discovery.md, test/classification.test.mjs, map.classification, его hooks/reconcile/forms; сохранить main Knave profile.",
+    "TABLES1 schema2 calls/children/description/migrationMeta и PF2 featurePreparation/profile/unit/processed-removed ledger из отдельных PR500/501.",
+    "PR496-specific release workflow и scripts/pr496-release-walkthrough.mjs. Новому PR нужны собственные exact-SHA evidence.",
+    "Новая fine hydrology, перенос/рисование POI, новые биомы/каталоги/правила игр."
+  ],
+  "concrete_reuse": [
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "17125–17135",
+      "use": "Строка «Местность», BIOMES select, inherit/reset. Переназначить значение и handler на selected1mi."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "15529–15645",
+      "use": "Имя: input, focus, Enter/Escape/blur, IME, stale revision. Новый fine target, отдельное локальное хранение."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "17187–17199",
+      "use": "Textarea заметок, focus, IME, ошибки. Ключ и текст только из localdata selected1mi."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "13560–13578",
+      "use": "Немедленная документная запись заметки и объединение Undo за500мс; заменить source key на fine key."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "13550–13557",
+      "use": "Общие busy/revision/draft guards; дополнить проверкой active1mi, fine selection и revision."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "13494–13544,13647–13661",
+      "use": "Capture/copy/applyExact и общая Undo/Redo транзакция; включить новый слой во все пути."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "15552–15582",
+      "use": "Правила имени: одна строка, до80символов, без управляющих знаков, no-op. Не переносить глобальную уникальность топонимов как новый продуктовый запрет."
+    }
+  ],
+  "critical_existing_bugs_for_reuse": [
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "14684–14690,14771–14781",
+      "finding": "detailLocal включён, но selectedHexKey/notesValue и biome handlers по-прежнему адресуют source6mi. Прямой reuse меняет целый источник и все его fine проекции."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "13743–13751",
+      "finding": "Source context выбирается по POI owner либо остаётся прежним при нескольких owners; это не стабильный адрес локальной правки."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "13737–13738",
+      "finding": "selectDetailCell запрещает editMode. Локальный редактор должен получать правильный fine target через общий guard, а не проваливаться к source hitbox."
+    },
+    {
+      "path": "src/detailModel.ts",
+      "blob": "daf087e82e0534d211de03e6c24b674e32a8887a",
+      "lines": "15–22,25–28,81–84",
+      "finding": "В модели нет localdata. Parser проверяет точные поля и отвергает неизвестные."
+    },
+    {
+      "path": "src/saveValidation.ts",
+      "blob": "4c1e7ee6ce1a3921b36a79d415fee385dfc72dd7",
+      "lines": "123–134",
+      "finding": "Существующие notes/biome maps принимают только адреса настоящих source гексов."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "1302–1311",
+      "finding": "editorNames требует существующего POI/гео owner, поэтому не подходит для fine-cell name."
+    }
+  ],
+  "local_model": {
+    "status": "Предложение для новой спецификации, в доноре не реализовано.",
+    "storage": "Отдельный sparse physicalGrid.fineCellEdits в physicalGrid v3. Фиксированные origin/orientation/1mile across_flats. Ключ — канонический safe-integer q,r. Только biomeOverride, localName, notes.",
+    "inheritance": "Отсутствующее поле наследуется. Сброс удаляет поле, пустая запись удаляется. Значение по умолчанию не материализовать во все fine клетки.",
+    "address": "Только physicalGrid.selectedCell1mi. Не писать в source biomeOverrideByHexKey, gmNotesByHexKey, toponyms или editorNames, включая варианты с префиксом.",
+    "biome_guard": "Редактирование land biome только для принятого сухопутного fine target. Для mixed land/water минимальный безопасный первый этап — read-only biome, с локальным именем и заметкой. Полностью водная/unknown клетка не получает land override.",
+    "other_views": "Правка видна в1mi; исходные 6mi данные и существующий 6mi card не переписываются. Local name не переименовывает POI/регион.",
+    "history": "Добавить в capture/copy/import/export/reset/backups/checkpoints и exact Undo/Redo. Одна правка — одна транзакция; no-op сохраняет Redo; RNG не расходуется.",
+    "lifecycle": "Генерация/E6/E7/удаление должны удерживать авторские fine данные либо атомарно отказать при orphan/conflict. Не молча терять их. Дополнительный произвольный orphan registry не нужен.",
+    "UI": "Локальная карточка максимально использует прежние layout/controls, но без «Область», source context, region transfer/region biome, E6/E7/POI move/hydrology commands в качестве замены local edit."
+  },
+  "visual_projection": {
+    "requirement": "FB019 требует полного визуального контура при положительном принятом покрытии. Raw coverage/unknown и принятая география остаются прежними.",
+    "algorithm": "Сумма положительных площадей пересечений по land biome внутри finecell; argmax, единое scale-aware epsilon, затем canonical biomeId lexicographic tie. Подходит для2/3/N смесей; без RNG.",
+    "painter": "Своя картинка биома в каждой finecell на весь контур; старый 6mi landbiome paint в1mi скрыть. Поверх полного фона сохраняется реальная lake/sea геометрия, дороги/тропы, реки и POI.",
+    "water": "Water не land biome и не входит в land argmax. Fully water получает water appearance. Берега, waterbody IDs и обязательные контакты не меняются.",
+    "unknown": "Fully unknown не получает биом. Для partial land finecell нельзя оставлять unknown mask в фоне так, что контур выглядит частично пустым: это нарушает FB019. В данных unknown остаётся.",
+    "override": "Fine override имеет приоритет над производным dominant biome только в одномильном показе; reset возвращает вычисление.",
+    "interpretation": "Water overlay поверх полного фона — деталь реализации в утверждённых границах, не существенное новое продуктовое решение и не повод для нового blocking gate."
+  },
+  "candidate_rim": {
+    "reuse_path": "src/App.tsx:6049–6064",
+    "reuse_blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+    "plan": "Переиспользовать neighbor-set-minus-occupied идею getCandidateHexesImpl на fine geometry. Один внешний edge-neighbour ряд, не проекция всех целых6mi candidates.",
+    "generation": "Fine кандидаты — представление. Реальные generation anchors остаются legal6mi candidates. Одна активация -> одна обычная единица генератора; ближайший допустимый якорь по world distance, затем q/r, без RNG/clipping/batch fill."
+  },
+  "roads_rivers": {
+    "renderer": {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "16475–16539",
+      "finding": "Реальные LakeWater/rivers-layer/roads-layer не ограничены physical view6; повторно создавать линии не нужно."
+    },
+    "filtering": {
+      "path": "src/detailSummary.ts",
+      "blob": "7d1088a6b55e5187682e7ad4d4b12d1dc2413226",
+      "lines": "16–36,72–88",
+      "finding": "Локальная релевантность по actual world segment intersection замкнутой ячейки; boundaryOnly отдельная пометка."
+    },
+    "attachment_guards": {
+      "path": "src/detailGeography.ts",
+      "blob": "f1b556fc4cbeb053749ac068035fe6066f89072b",
+      "lines": "65–79,292–300",
+      "finding": "Access port лежит на существующем сегменте, connector не создаётся. Все обязательные water/route refs сохраняются."
+    },
+    "acceptance": "Показать одну реальную карту6mi/1mi с дорогой, тропой и рекой; выбрать клетку с объектом и соседнюю без него; локальная карточка, редактирование, save/load и UndoRedo. Desktop и узкий экран на новом SHA.",
+    "roadmap": "HX-BL-006 roads improvement и HX-BL-019 rivers/lakes имеют proposed scope, не разрешают новую fine hydrology. Утверждённые существующие E4/E5 не дублировать."
+  },
+  "serialization": {
+    "supported_public": {
+      "versions": "2..10",
+      "evidence": {
+        "path": "src/saveValidation.ts",
+        "blob": "5231ebc682cd768f24898a80f1dcf5a1b82a43dd",
+        "line": 62
+      },
+      "App_union": {
+        "blob": "597c6958fa0e7226022f27e85acd2291bab7febc",
+        "lines": "471–477"
+      },
+      "App_export": {
+        "blob": "597c6958fa0e7226022f27e85acd2291bab7febc",
+        "lines": "14856–14862"
+      }
+    },
+    "new_contract": "ONE-MILE1 new outer v15 + physicalGrid version3/fineCellEdits; новый поддерживаемый reader обязан явно узнавать эту пару. Это proposal/spec, не существующий donor формат.",
+    "unsupported": "В standalone безопасно отвергать privatev11/v14 PR496 и v12 TABLES1/v13 PF2 атомарно. Не импортировать их путём удаления соседних слоёв; будущая интеграция отдельным этапом.",
+    "v10_foreign_fields": "Даже при заявленном v10 явно отвергать map.classification, featurePreparation или schema2 Knave и другие известные несовместимые слои до setters, чтобы нельзя было замаскировать private payload сменой номера.",
+    "knave_v10": {
+      "blob": "8450198ed2ba74af51ee0bcfc439a508524d2e1a",
+      "path": "src/knaveClassic.ts",
+      "lines": "4–15,43–68",
+      "shape": "profile classic.knave2/v1 с physicalHex6mile/measurementConvention:null; difficultyByHex normal/difficult; discoveryByPoi passage/exploration/interaction + clueText; optional schema1 content byPoi+rollCounters.",
+      "note": "Сохранить literal profile/annotations/content и ui.knaveEnabled; новыйv15Knavegate поддерживает10/15 без автоматической schema2 migration. Knave physical convention остаётся null, не делать known только из отображения6mi.",
+      "content_evidence": {
+        "path": "src/tags/knave.ts",
+        "blob": "b56e7fd3a5c9ea3943b7c3e35a525f17f40cd01a",
+        "lines": "25–26,47–65"
+      }
+    },
+    "legacy": "Plain public2..10 читать без автоматического physical adaptation. Включение1mi — существующая явная preview/apply ветка с точным Cancel/Undo, затем v15. Никаких claims совместимости private11..14.",
+    "source_constraint": "Detail1State15–22 и strictparser25–28/81–84 в доноре не имеют fineCellEdits. SaveValidation123–134 ждёт source адреса. Новый independent fine validator должен проверять поля, канонические safe keys, enum/text, accepted-target и водный guard."
+  },
+  "conditional_source_dependencies": [
+    {
+      "path": "src/finalPoiPlacement.ts",
+      "blob": "70003600cc7d67343056f26d0d5098a6631ba155",
+      "lines": "1–32",
+      "finding": "Меняет только новые provisional POI после финальной воды до roads. Это поведение генератора, не чистая проекция."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "13386–13412,14019–14071",
+      "finding": "Порядок finalwater -> POI -> roads/identity и activation важен для целостности accepted physical layer. Нельзя удалить guard без безопасной замены."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+      "lines": "2973–2988,12605–12609,13452",
+      "finding": "Полная river-network validation добавлена к Classic/fallback. Её минимальная необходимость именно для1mi UI не доказана этим анализом; scope и known risk указать отдельно."
+    }
+  ],
+  "proposed_verification": [
+    "Две finecell одного source6 имеют независимые biome/name/notes; сосед/source6/RNG/counters/IDs/линии прежние.",
+    "Площади/tie-break устойчивы при order/language/rotation/save; каждая finecell имеет свою картинку; full visual partial не увеличивает raw coverage; fully unknown пуст.",
+    "Mixed water сохраняет берег и POI contacts; water target не получает land override.",
+    "Один fine candidate ряд; pointer и keyboard используют один guarded ordinary6mi action, без12/24 batch.",
+    "В1mi card нет source context; local POI/road/river filtering проверен на реальной карте.",
+    "Actual JSON/Undo/Redo/reset/rollback сохраняют fine данные; stale/IME/selection change не направляет текст в другой target.",
+    "Malformed schema/keys/refs/foreign layer отказывают атомарно; source операции не теряют fine авторские данные.",
+    "После реализации выполнить required check на Node24 и browser после build, затем actual UI и независимую проверку точного нового SHA."
+  ],
+  "verification_performed": "Только bounded static exact-SHA чтение и локальное сравнение App. Код/тесты/CI не запускались, полнота всех60коммитов/49файлов не заявляется.",
+  "product_score": {
+    "model": "1.2",
+    "before": "not reassessed here",
+    "expected_after": "unknown",
+    "delta": "unknown",
+    "note": "Перенос/план сам по себе баллы не подтверждает."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11T20:43:52.751Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "error": false
+    },
+    "end": {
+      "checked_at": "2026-11-11T20:53:32.499Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "error": false
+    },
+    "restoration_performed": false,
+    "schedule_prompt_changed": false,
+    "errors": [],
+    "limitation": "Point-in-time only."
+  },
+  "recorded_at": "2026-11-11T20:53:32.499Z"
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "reviewed_file": "/tmp/one-mile-spec2043/HX-BL-051-ONE-MILE1.md",
+  "reviewed_version": "OM-1.0",
+  "review_type": "must-fix specification review only",
+  "product_verdict": null,
+  "read_only": true,
+  "github_writes": false,
+  "source_changes": false,
+  "checks_run": false,
+  "conclusion": "Оба must-fix исправлены root; финальные изменённые разделы спецификации перечитаны. Открытых must-fix спецификации нет. Product/release verdict не выдавался.",
+  "must_fix": [
+    {
+      "id": "SPEC-MF01",
+      "location": "§11 score table and corresponding score-forecast1.2.json",
+      "issue": "Нет трассировки явно проверяемых по spec S03-C04/S03-C05/S04-C02/S04-C05.",
+      "required_change": "Добавить S03-C04 вес30 (loss/consent, целостность локальных данных/зависимостей), S03-C05 вес20 (Undo/Redo и отсутствие ложной истории), S04-C02 вес15 (selection/camera/mobile), S04-C05 вес10 (RU/EN, keyboard/IME/focus, accessibility). Пометить regression/limited evidence, before_grade/before_points/expected_grade/expected_points/delta=null. Не заявлять grade и не расширять аудит на весь критерий.",
+      "basis": "Process/score1.2 требуют criterion_id и отдельное evidence для затронутых требований; эти результаты явно входят в OM06/07/11/12/14.",
+      "status": "resolvedbyroot_edit"
+    },
+    {
+      "id": "SPEC-MF02",
+      "location": "OM13 acceptance row",
+      "issue": "readonlylegacy не определён и может противоречить §8 и той же строке corpus2…10 roundtrip/continue.",
+      "required_change": "Убрать readonlylegacy либо заменить точным условием: чтение выпущенных2…10 без автоматической fine-адаптации, с сохранением обычного продолжения/редактирования; новый fine-слой создаётся явным действием. Не вводить запрет записи всей legacy-карты.",
+      "basis": "Current decisions require public2…10 support and v15 roundtrip, not a new read-only product mode.",
+      "status": "resolvedbyroot_edit"
+    }
+  ],
+  "assessed_consistent": [
+    "argmax по суммам локальных площадей, tie1e-9*fineCellArea/canonicalID без RNG",
+    "Полный land-фон при неизменном G, действительная вода поверх, mixed/water biome readonly и name/note доступны",
+    "Легальные edgeNeighbours(A) включая доступные внутренние пустоты, обычная generation unit без обещания1mi генератора",
+    "Hover H/selected S и pinned editor S+revision, без source6 handlers",
+    "Внешний v15/schema3 fineCellEdits; публичные2…10 поддерживаются; частные11…14 и известные foreign payload отклоняются атомарно",
+    "Следующий программист по стандартной очереди, без третьего approval gate; release hold"
+  ],
+  "scope_assessment": "Новых лишних продуктовых этапов не обнаружено. PNG/compatibility/guards/consent трактуются как сохранность заявленного одномильного режима, не разрешение новых генераторов/гидрологии/12/24.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11T20:56:08.328Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-11T20:57:53.416Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Actual point-in-time observations only.",
+    "previous_end": {
+      "checked_at": "2026-11-11T20:57:29.882Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    }
+  },
+  "review_status": "resolvedbyroot_edit",
+  "resolution_verification": {
+    "method": "read-only targeted rg of updated spec",
+    "verified_sections": [
+      "OM13 rewritten without readonlylegacy; public2…10 roundtrip/continue retained",
+      "Score table includes S03-C04(30), S03-C05(20), S04-C02(15), S04-C05(10), with bounded evidence and common unknown/null forecast statement"
+    ],
+    "companion_score_json": "Not inspected in this spec-only followup"
+  }
+}

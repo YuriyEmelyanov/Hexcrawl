@@ -1,0 +1,680 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "role": "read_only_requirements_risk_review",
+  "result_status": "bounded_requirements_ready_for_analyst_spec",
+  "review_limits": {
+    "github_writes": false,
+    "source_changes": false,
+    "pr_changes": false,
+    "ci_runs": false,
+    "product_checks_run": false,
+    "new_generation": false,
+    "new_book_or_market_audits": false,
+    "latest_json_modified": false,
+    "scope": "Requirements/spec design and risk review only. No implementation or review verdict for a product SHA."
+  },
+  "sources": [
+    {
+      "path": "AGENTS.md",
+      "ref": "main",
+      "blob_sha": "f321c7f2cd8b3d1e6c2457dbcb552dad28730709"
+    },
+    {
+      "path": "docs/index.md",
+      "ref": "main",
+      "blob_sha": "11bf96bdfe5674b6d6713ce2b94d3d272efd466d"
+    },
+    {
+      "path": "agent-work/process.md",
+      "ref": "agent-operations",
+      "blob_sha": "adb63a0d13c5a59935126d3b508774fc143a0d1c"
+    },
+    {
+      "path": "agent-work/strategy/score-model.md",
+      "ref": "agent-operations",
+      "blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075"
+    },
+    {
+      "path": "agent-work/strategy/vision.md",
+      "ref": "agent-operations",
+      "blob_sha": "e048ce9e95cf1ebe406ce487ccbf97577473c3fe"
+    },
+    {
+      "path": "agent-work/feedback.json",
+      "ref": "agent-operations",
+      "blob_sha": "7d9eda8b745234711a27a7be41398f6bfd676132"
+    },
+    {
+      "path": "agent-work/score/current-score.json",
+      "ref": "agent-operations",
+      "blob_sha": "0b3526f8f4665067276c159508c730790aac5448"
+    },
+    {
+      "path": "agent-work/handoffs/2026-11-11-ONE-MILE1-split-analysis.json",
+      "ref": "agent-operations",
+      "blob_sha": "2ba76a5f60a7b37f5f5a0d0116d3f126565cbbdd"
+    },
+    {
+      "path": "agent-work/latest.json",
+      "ref": "agent-operations",
+      "blob_sha": "a78d7e0b7c7d7ee5c9ef9288b983e845637b238f",
+      "usage": "read only; fields may include stale unrelated spec_path, do not overwrite"
+    },
+    {
+      "path": "agent-work/decisions/owner-decision-2026-11-11-ONE-MILE1-standard-agent-workflow.json",
+      "ref": "agent-operations",
+      "blob_sha": "5453561bbb87425acf5ad703fc6ee0ab730673f0"
+    }
+  ],
+  "authority": {
+    "current_source": "owner-decision-2026-11-11-ONE-MILE1-standard-agent-workflow",
+    "current_quote": "В целом всё. Сразу реализовывывать не надо. Работай в стандартном режиме запуска агента.",
+    "current_run": "Аналитик готовит спецификацию и план отделения; без немедленного кодирования.",
+    "next": "После пригодного spec стандартная очередь programmer → independent reviewer, в ранее утверждённых051/ONE-MILE1 границах, без третьего start/design gate.",
+    "release": "PR496 и новый отдельный пакет не публиковать без нового прямого разрешения владельца.",
+    "precedence_note": "implementation_authorized_now=false в старых feedback/handoff относится к исторической отсрочке; не превращать её в вечный запрет после более нового standard workflow decision. Старые записи сохранять.",
+    "baseline_input_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+    "prior_main_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "baseline_limit": "Input/split history only, not acceptance of ONE-MILE1 or proof of current main SHA."
+  },
+  "confirmed_requirements": [
+    {
+      "feedback_id": "HX-FB-015",
+      "title": "Удалить служебный текст об охватах и дублирующий заголовок масштаба",
+      "requirement_ids": [
+        "UI-TEXT-01",
+        "UI-TEXT-02"
+      ],
+      "source": "agent-work/feedback.json",
+      "status": "owner requirement recorded; implementation not verified"
+    },
+    {
+      "feedback_id": "HX-FB-016",
+      "title": "Изображение биома отдельно в каждой одномильной клетке",
+      "requirement_ids": [
+        "GRID-BIOME-1MI"
+      ],
+      "source": "agent-work/feedback.json",
+      "status": "owner requirement recorded; implementation not verified"
+    },
+    {
+      "feedback_id": "HX-FB-017",
+      "title": "Одномильный пояс кандидатов в один ряд вдоль построенной территории",
+      "requirement_ids": [
+        "GRID-CANDIDATE-RIM-1MI"
+      ],
+      "source": "agent-work/feedback.json",
+      "status": "owner requirement recorded; implementation not verified"
+    },
+    {
+      "feedback_id": "HX-FB-018",
+      "title": "Наведение на одномильный гекс показывает только локальную информацию",
+      "requirement_ids": [
+        "GRID-HOVER-LOCAL-1MI"
+      ],
+      "source": "agent-work/feedback.json",
+      "status": "owner requirement recorded; implementation not verified"
+    },
+    {
+      "feedback_id": "HX-FB-019",
+      "title": "Цельное отображение одномильной клетки с выбором доминирующего биома",
+      "requirement_ids": [
+        "GRID-FULL-FILL-1MI",
+        "GRID-DOMINANT-BIOME-1MI"
+      ],
+      "source": "agent-work/feedback.json",
+      "status": "owner requirement recorded; implementation not verified"
+    },
+    {
+      "feedback_id": "HX-FB-020",
+      "title": "Режим редактирования выбранного одномильного гекса",
+      "requirement_ids": [
+        "GRID-EDIT-1MI"
+      ],
+      "source": "agent-work/feedback.json",
+      "status": "owner requirement recorded; implementation not verified"
+    },
+    {
+      "feedback_id": "HX-FB-021",
+      "title": "Отдельный PR для1-мильного режима; последовательная реализация масштабов",
+      "requirement_ids": [],
+      "source": "agent-work/feedback.json",
+      "status": "owner requirement recorded; implementation not verified"
+    },
+    {
+      "feedback_id": "HX-FB-022",
+      "title": "Одномильная карточка как шестимильная; показать дороги и реки, редактировать локальный гекс",
+      "requirement_ids": [
+        "ONE-MILE1-CARD",
+        "ONE-MILE1-EDIT-TARGET",
+        "ONE-MILE1-ROUTE-WATER-SHOW"
+      ],
+      "source": "agent-work/feedback.json",
+      "status": "owner requirement recorded; implementation not verified"
+    }
+  ],
+  "conceptual_model": {
+    "accepted_geometry": "A = union of actual accepted terrain/water geometry; accepted coverage and all world data remain authoritative.",
+    "display_cells": "S = 1mi cells whose intersection with A has positive area under the existing geometry precision policy. Edge/point contact alone does not create a filled cell. S is a display membership set, not new accepted area.",
+    "full_fill": "For C in S paint the full hex with its own biome tile. The painted portion outside A is display only; it never changes accepted area, water access, generator occupancy, object placement, locks, or save semantics.",
+    "dominant_biome": "Compute a_b = area(C intersect accepted geometry of biome b), aggregate all pieces of the same biome inside C, select the maximum a_b. Compare local intersection area, never parent region size or source hex centre. An explicit persisted local biome override takes precedence only for that cell's supported local biome attribute.",
+    "proposed_tie_break": "Analyst-owned in-scope detail: reuse an existing suitable common deterministic comparator; otherwise normalize area with the documented existing geometry precision, then choose the lexicographically smallest canonical biome ID using locale-independent codepoint comparison among equal maxima. Apply one rule to 2, 3, or more biomes; no RNG, translated label, object iteration order, hover order, or screen zoom.",
+    "proposed_rim": "Analyst-owned in-scope detail: R = union(edgeNeighbours(C) for C in S) minus S. Use the active 1mi grid; no corner-only neighbours, second ring, or expansion of the coarse6mi candidate set. Filter action availability by ordinary accepted-world generator rules without adding accepted terrain. Fix the intended treatment of internal cavities explicitly in spec: recommended all unaccepted edge-neighbours of S, including playable cavities; this operational definition follows ordinary adjacency and prevents arbitrary flood-fill hiding.",
+    "semantic_warning": "S/R are display and selection projections. A full-looking boundary cell must still report and edit only actual supported local state. A thin displayed rim is not a new 1mi world generator."
+  },
+  "analyst_resolutions_in_scope": [
+    "Reuse6mi visual card/editor shell and shared command pipeline only; do not reuse donor source6mi selection/edit handlers (selectedHexKey). Local adapter routes all edit targets by1mi identity.",
+    "Minimal cell-owned editing: biome override, local name, local note. No implicit editing of parent6mi region, parent-water shape, route geometry or fine hydrology.",
+    "Persist optional local-cell overrides keyed by stable1mi grid coordinates plus grid identity/version, through the existing document/command/history pipeline; do not key only by source6mi object, because a1mi cell may intersect several source cells.",
+    "Only accepted/display-filled cells are editable for terrain attributes. Empty candidates do not acquire accepted terrain through biome/name controls.",
+    "Use existing POI entity actions when offered; shared POI keeps exact same ID and footprint, never create a local duplicate. A shared-entity rename may legitimately appear in several intersecting cards, while cell-owned edits must not change neighbours.",
+    "Roads/trails/rivers/water and POI relevance use their actual common geometry/footprint contracts. Do not derive water access or object relevance from the full painted biome.",
+    "If generation is exposed on a candidate, invoke the existing ordinary generator under its actual availability rules; do not promise precisely1mi output. If necessary use the ordinary action's existing user-visible scope/preview, without a parent-source hover card.",
+    "Cavity policy, precision/tie comparator, override reset/clear, no-op behavior and unsupported-data states belong in spec, handled by analyst without a new owner gate.",
+    "Hover/focus H supplies temporary local read-only card; pointerleave/focusleave restores selected S. Click/tap/Enter on accepted cell selects S. Open edit form is pinned to S plus document revision; hover never changes target or writes/history/RNG. While a form is open use a separate inert local preview/tooltip so the form is not replaced.",
+    "Water cells allow local name/note; local biome edit cannot convert accepted water into land or change fine water geometry. For land cells supported local biome choices preserve actual water/terrain constraints.",
+    "Legacy saves lacking finePOI activation preserve existing Preview/Apply contract as a compact useful action; new data preserve existing autoactivation behavior. Remove persistent service status, not a meaningful pending action. Shared exactIDs and footprints remain unchanged."
+  ],
+  "acceptance": [
+    {
+      "id": "ONE-MILE1-AC01",
+      "requirement": "HX-FB-021 / bounded split",
+      "check": "Separate PR diff contains1mi presentation/local editing and required shared foundations only. User-facing12/24/C-FILL and unrelated CLASSIFY1/TABLES1/PF2 changes are absent or explicitly excluded. Shared foundations are justified per file; not a renamed full496.",
+      "evidence": "Exact base/head/tree, per-file scope manifest, limited independent diff review."
+    },
+    {
+      "id": "ONE-MILE1-AC02",
+      "requirement": "GRID-BIOME-1MI / GRID-FULL-FILL-1MI",
+      "check": "On one saved fixture, every cell with positive accepted intersection has one tile fitted/clipped to its complete1mi hex. Partial boundary cells show full tiles; truly empty and edge-only-touch cells have no invented biome. A coarse6mi image under small grid lines fails.",
+      "evidence": "Same fixture six/one-mile screenshots with partial boundary cell and empty adjacent cell plus accepted-area snapshot."
+    },
+    {
+      "id": "ONE-MILE1-AC03",
+      "requirement": "GRID-DOMINANT-BIOME-1MI",
+      "check": "Saved/synthetic geometry cases cover unique maximum, repeated disjoint pieces of one biome,2-way equality and3-way equality. Local area aggregation gives expected biome; reversing source order/reopening/changing language/zoom does not change selection. Existing RNG state is byte-equivalent.",
+      "evidence": "Declared polygon inputs, local area table, chosen canonical ID and precision/tie rule. Reuse existing coverage where suitable; no random generation campaign."
+    },
+    {
+      "id": "ONE-MILE1-AC04",
+      "requirement": "Projection/data boundary",
+      "check": "Opening1mi view, hovering/selecting, changing style/language, then returning6mi changes no accepted geometry, entity IDs, actual footprints, roads/rivers/water, RNG, document content, or history entry. Full visual tiles never turn their exterior into generated/accepted land.",
+      "evidence": "Before/after canonical document and RNG/history comparison on a saved map."
+    },
+    {
+      "id": "ONE-MILE1-AC05",
+      "requirement": "GRID-CANDIDATE-RIM-1MI",
+      "check": "Displayed rim consists only of unaccepted1mi edge-neighbours of S under the fixed cavity policy. Every candidate is distance1; no distance2+ candidate from a coarse6mi shell is shown. Candidate construction alone creates no terrain and consumes no RNG.",
+      "evidence": "S/R coordinate dump and annotated screenshot of concave edge, corner and cavity. Availability restriction is distinguished from geometric rim."
+    },
+    {
+      "id": "ONE-MILE1-AC06",
+      "requirement": "Ordinary generation boundary",
+      "check": "UI/spec do not claim independent1mi generation or exactly1mi output. Candidate action, if present, uses ordinary generation and its real target/validation; display halo does not affect authoritative occupancy or generation parameters. No12/24 fill-selected behavior enters this PR.",
+      "evidence": "Action mapping and one controlled existing fixture/replay or code trace under relevant existing checks; do not generate a new statistical corpus."
+    },
+    {
+      "id": "ONE-MILE1-AC07",
+      "requirement": "GRID-HOVER-LOCAL-1MI",
+      "check": "Hover/focus H shows only H local read-only information; leave restores selected S. Two1mi cells inside one6mi source show their own objects only. No original/source-region/context/editor block or fallback aggregate appears. Hover/focus/leave changes no doc/history/RNG.",
+      "evidence": "Neighbour cells with/without actual route/POI/water, local relation table and hover captures."
+    },
+    {
+      "id": "ONE-MILE1-AC08",
+      "requirement": "ONE-MILE1-CARD",
+      "check": "Click/tap/Enter on accepted A selects local S=A. Hover may temporarily show local H read-only, then leave restores S; it does not change selection. An open edit form stays pinned to S and document revision and is never replaced/retargeted by hover. Reuse6mi visual shell, never source6mi selectedHexKey handlers. No area-summary heading or parent editing.",
+      "evidence": "Desktop+narrow sequence select A→hover/focus B→leave→edit A→hover B→Save A, with cell target/expected revision and UI captures."
+    },
+    {
+      "id": "ONE-MILE1-AC09",
+      "requirement": "UI-TEXT-01 / UI-TEXT-02",
+      "check": "Remove persistent POI-footprint service messages and redundant area heading in ONE-MILE1, including translated equivalents. Keep only the existing scale selector and useful selected-cell heading; do not replace removed text with a new persistent save message.",
+      "evidence": "RU/EN selected/empty/editor desktop+narrow captures or focused DOM/content checks."
+    },
+    {
+      "id": "ONE-MILE1-AC10",
+      "requirement": "ONE-MILE1-ROUTE-WATER-SHOW",
+      "check": "A real previously saved fixture with roads, trails and rivers shows the same existing polylines in6mi and1mi views. Relevant selected cell lists its actual intersecting objects; an adjacent non-intersecting cell does not. Lines are visible, not replaced with explanation text.",
+      "evidence": "Fixture JSON provenance/hash, same-map six/one-mile actual screenshots, exactSHA and IDs/intersection table."
+    },
+    {
+      "id": "ONE-MILE1-AC11",
+      "requirement": "GRID-EDIT-1MI / ONE-MILE1-EDIT-TARGET",
+      "check": "Edit biome override, local name and note of A; B and all parent6mi raw fields/actual accepted geometry are unchanged. Cancel/no-op creates no mutation. Clear restores derived local value. Invalid or incompatible biome/data is rejected atomically with the same shared feedback pattern. Water cells permit local name/note while biome landconversion and finewater changes remain unavailable. Root/partition observation: donor source6mi handlers cannot be reused for local target.",
+      "evidence": "Exact cell key and before/after changed-field list, neighbour/source snapshots and UI. Allowed biome set must preserve existing water/terrain constraints; editing a biome cannot silently create fine water."
+    },
+    {
+      "id": "ONE-MILE1-AC12",
+      "requirement": "Persistence/history",
+      "check": "A valid local edit persists through save→load, leaves IDs and RNG intact, and Undo/Redo restores/reapplies exactly the cell-owned change using existing history commands. Old supported saves without local overrides still load; unsupported future/local data follows documented safe handling.",
+      "evidence": "Round-trip fixtures, before/after snapshots, Undo/Redo recording, optional field/migration decision. No claim of all-schema compatibility from a single fixture."
+    },
+    {
+      "id": "ONE-MILE1-AC13",
+      "requirement": "Shared POI/footprints/water access",
+      "check": "Local relevance uses existing footprint and water-access contracts against actual world geometry. Editing an existing POI retains sameID and common footprint; multi-cell POI remains one shared entity. Full biome paint does not add water access or move/drop paths, river lines or footprints. For legacy saves without finePOI activation, existing Preview/Apply remains a compact action; new data retain established autoactivation. No permanent footprint-saved status text is reintroduced.",
+      "evidence": "Shared-entity and neighbouring-cell fixture before/after/round-trip; actual geometry assertions."
+    },
+    {
+      "id": "ONE-MILE1-AC14",
+      "requirement": "Independent acceptance",
+      "check": "Developer supplies actual UI and relevant mandatory checks at new exactSHA; independent reviewer evaluates bounded scope and all stated AC. Old acceptance of496/9ca does not accept ONE-MILE1. Release remains held until owner sees actual before/after and explicitly authorizes concrete reviewed package.",
+      "evidence": "NewPR/newSHA manifest, independent verdict, user_walkthrough with desktop/narrow and known limitations; release permission separate."
+    }
+  ],
+  "compact_ui_proposal": {
+    "status": "proposal only; this internal text does not count as a shown visual preview",
+    "desktop": "Reuse current6mi map+sidecard shell. Scale selector «Гекс1миля»; map contains complete1mi biome tiles, normal thin candidate halo and actual lines. Sidecard heading is selected local coordinate/name, then local biome, local entities, local name/note and common Edit/Save/Cancel actions. Empty states retain same hierarchy.",
+    "narrow": "Reuse current narrow6mi card/bottom panel behavior. Retain selected local heading and visible map link/selection; sections stack, edit actions remain reachable. No permanent technical text.",
+    "required_states": [
+      "filled selected cell",
+      "hovered neighbour while selection retained",
+      "candidate/empty cell",
+      "local edit with validation",
+      "same selected cell intersecting real road/trail/river"
+    ],
+    "show_requirement": "Root analyst must produce/display actual visual proposal desktop+narrow using current interface. No additional design approval gate; do not mark shown_in_chat until shown."
+  },
+  "risks": [
+    {
+      "id": "REQ-R01",
+      "level": "high",
+      "issue": "Full visual tile may be confused with accepted area, causing hidden generated territory, wrong water access or edit target.",
+      "mitigation": "Separate A/S/R; accepted geometry remains source of generation/objects/water, immutable during view-only operations."
+    },
+    {
+      "id": "REQ-R02",
+      "level": "high",
+      "issue": "Rendering coarse6mi candidates through1mi grid yields several rows; an independently computed thin rim may point to impossible6mi generation targets.",
+      "mitigation": "Compute one-mile adjacency first and distinguish rim geometry from ordinary action availability; no promise of1mi generator."
+    },
+    {
+      "id": "REQ-R03",
+      "level": "high",
+      "issue": "A1mi cell can intersect multiple source cells; parent-keyed edits overwrite too much or disappear.",
+      "mitigation": "Stable1mi identity and separate persisted local attributes through common history."
+    },
+    {
+      "id": "REQ-R04",
+      "level": "medium",
+      "issue": "Dominant-biome choice by parent size/source order/translated name or raw floating noise changes on redraw.",
+      "mitigation": "Aggregate local area, fix geometry precision and canonical deterministic tie-break."
+    },
+    {
+      "id": "REQ-R05",
+      "level": "high",
+      "issue": "Local route/POI facts can be fabricated by source6mi membership or by full biome painting.",
+      "mitigation": "Use exact actual line/footprint/water contracts; show neighbouring positive and negative cases."
+    },
+    {
+      "id": "REQ-R06",
+      "level": "medium",
+      "issue": "A claim that all neighbour cards stay unchanged is false for shared POI entity edits.",
+      "mitigation": "Scope immutability guarantee to cell-owned attributes; shared entities intentionally update by sameID wherever present."
+    },
+    {
+      "id": "REQ-R07",
+      "level": "medium",
+      "issue": "Local biome override may be incorrectly treated as creating/removing water or changing route geometry.",
+      "mitigation": "Declare supported biome set, preserve actual water/hydrology and existing validators; reject incompatible change atomically."
+    },
+    {
+      "id": "REQ-R08",
+      "level": "medium",
+      "issue": "Readiness may be overstated from old496 evidence or stale latest fields.",
+      "mitigation": "New exactSHA independent acceptance, bounded file manifest and current owner decision precedence."
+    },
+    {
+      "id": "REQ-R09",
+      "level": "high",
+      "issue": "6mi donor editor handlers use source6mi selectedHexKey and could silently edit an entire parent.",
+      "mitigation": "Reuse UI shell/commands with new1mi target adapter and pinned S+revision; verify changed-field diff at exact target. Root partition code observation requires exactSHA verification."
+    }
+  ],
+  "known_vs_questions": {
+    "known": [
+      "Owner015..022 requirements and separate1mi-first order",
+      "Current run is spec-only; standard next-role work is allowed inside approved051",
+      "Publication of496/newpackage is not authorized",
+      "Active score model1.2; current-score has all50 unverified and confirmed_points=null",
+      "Minimal local editor proposal is biome/name/note; route/hydrology edits are not implied"
+    ],
+    "analyst_details_to_finalize_without_owner_gate": [
+      "Actual shared6mi editor controls and field-to-local adapter map from bounded partition analysis",
+      "Existing geometry precision/comparator and exact stable grid identity",
+      "Cavity policy and candidate-action eligibility mapping",
+      "Persisted optional-field schema/migration and clear-override semantics",
+      "Which actual saved fixture provides roads, trails, rivers, sharedPOI and water access"
+    ],
+    "questions_requiring_owner_only_if_scope_expands": [
+      "Any proposed new fine-grained1mi generator",
+      "New fine hydrology/road drawing or full editing of parent6mi data",
+      "Additional modes12/24 in the samePR, new product scope, paid costs or publication"
+    ],
+    "not_blockers": [
+      "No numerical score forecast",
+      "No reply to the shown UI proposal",
+      "Unknown subscription usage under current waived gate"
+    ]
+  },
+  "score": {
+    "model_version": "1.2",
+    "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+    "baseline_source": {
+      "path": "agent-work/score/current-score.json",
+      "ref": "agent-operations",
+      "blob_sha": "0b3526f8f4665067276c159508c730790aac5448",
+      "summary": {
+        "confirmed_points": null,
+        "total_weight": 1000,
+        "assessed_criteria": 0,
+        "unverified_criteria": 50,
+        "unverified_weight": 1000,
+        "completion_status": "pending_model1.2_reassessment",
+        "full_score_status": "unknown_not_zero",
+        "historical_score_used": false
+      }
+    },
+    "primary_scenario": "develop",
+    "secondary_scenarios": [
+      "create",
+      "play_now"
+    ],
+    "scenario_limit": "General local map display/editing. No claim of new game rules, complete expedition loop or whole-game support. Per-game applicability/support remains unverified without existing mapped evidence; no new source audit required.",
+    "expected_transition_status": "unknown",
+    "forecast_points": null,
+    "forecast_delta": null,
+    "awarded_points": 0,
+    "limitation": "No grade/G2/G3/G4 claim follows from visual fixes. Historical193.75 belongs to1.1 and is not the baseline. No new full model audit or statistical generation run is authorized/needed for this bounded spec.",
+    "criteria": [
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "impact": "primary",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Local biome/name/note edit contract and validator; limited field set does not satisfy all target biome/POI/water/region editing."
+      },
+      {
+        "criterion_id": "S05-C01",
+        "weight": 25,
+        "impact": "primary",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Exact selected-cell card, local relevance and no false source fallback; does not prove complete ready-to-play content."
+      },
+      {
+        "criterion_id": "S04-C02",
+        "weight": 15,
+        "impact": "primary",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Shared desktop+narrow selection/hover/edit behavior; no95% task-success claim without corresponding evidence."
+      },
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "impact": "primary",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Scale/style projection preserves data and actual geometry; no claim about all player/GM visibility layers."
+      },
+      {
+        "criterion_id": "S02-C01",
+        "weight": 30,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "RNG/document invariant during view, save/load and undo/redo; no full master-seed grade."
+      },
+      {
+        "criterion_id": "S02-C02",
+        "weight": 20,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Stable local-cell key and existing entity IDs."
+      },
+      {
+        "criterion_id": "S02-C03",
+        "weight": 20,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Optional local fields/migration on declared supported corpus."
+      },
+      {
+        "criterion_id": "S03-C04",
+        "weight": 30,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Atomic local edit, shared-entity/line/footprint dependencies retained."
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Common command/history round-trip, no view-only history pollution."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "JSON save/load preserves overrides and existing world content; do not claimPNG/SVG scope unless implemented."
+      },
+      {
+        "criterion_id": "S04-C05",
+        "weight": 10,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "RU/EN copy, existing accessible editor controls desktop/narrow."
+      },
+      {
+        "criterion_id": "S01-C02",
+        "weight": 40,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Actual rivers and water access unchanged; visible lines alone do not prove hydrology thresholds."
+      },
+      {
+        "criterion_id": "S01-C04",
+        "weight": 25,
+        "impact": "regression",
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified",
+          "source": "agent-work/score/current-score.json@0b3526f8f4665067276c159508c730790aac5448"
+        },
+        "expected_after": {
+          "grade": null,
+          "points": null,
+          "status": "unknown_pending_exact_SHA_independent_evidence"
+        },
+        "delta": null,
+        "required_evidence": "Actual roads/trails unchanged and locally visible; no new routing/bridge correctness claim."
+      }
+    ],
+    "reviewer_handoff": "Independent score_assessment1.2 must name exact newSHA, quality and breadth separately, baseline unknown, proposed after/delta unknown or insufficient_evidence unless separately justified. Same evidence may support multiple invariants but does not double award points. Strategist applies confirmed transition only after release."
+  },
+  "necessary_future_evidence": {
+    "fixture": "Reuse an existing saved real map, record provenance/hash and object IDs. Include actual road+trail+river, water and POI footprint and a partial boundary cell. A fixture edited in local deterministic test geometry may cover tie equality; do not replace real actual UI with mocked lines.",
+    "exact_sha_manifest": [
+      "separatePR base/head/tree",
+      "scoped file/dependency partition",
+      "saved fixture/version/hash",
+      "before/after canonical snapshots and RNG/history",
+      "desktop+narrow proposed view and actual UI",
+      "focused check results with limits",
+      "independent review+score_assessment1.2"
+    ],
+    "check_policy": "Required AGENTS/spec checks remain: npm run check onNode24; browser after build if generation behavior changes. Run relevant existing coverage and expand only for a specific uncovered contract/risk. No test-count targets; do not add permanent tests merely to mirror implementation, and do not rerun full generation/book/market audits.",
+    "factual_claim_limits": [
+      "A proposed mockup is not actual implementation.",
+      "A stored prompt/fixture is not proof of visible actual lines.",
+      "A finite check is not absence of all defects.",
+      "No checks or new generation were run by this requirements sub-review."
+    ]
+  },
+  "source_observations_from_root": {
+    "source": "root bounded partition/UI coordination message,2026-11-11",
+    "independently_checked_here": false,
+    "observations": [
+      "Donor actual handlers target source6mi selectedHexKey; shell reuse requires replacing target adapter.",
+      "Legacy finePOI preview/Apply and new autoactivation behavior must be retained."
+    ]
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "method": "automations.peek",
+      "is_enabled": true,
+      "status": "checked",
+      "checked_at": null,
+      "time_limitation": "Actual start observation returned true; exact wall-clock timestamp was not captured. No timestamp inferred from old updated_at."
+    },
+    "first_timed_check": {
+      "method": "automations.peek",
+      "checked_at": "2026-11-11T20:46:12.693Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "method": "automations.peek",
+      "checked_at": "2026-11-11T20:48:58.614Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time actual observations, not guarantee of future status. Root run has its own start/end health."
+  }
+}
