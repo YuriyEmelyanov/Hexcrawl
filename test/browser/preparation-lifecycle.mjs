@@ -14,6 +14,7 @@ export async function runPreparationLifecycle({page,snapshot,root}){
  const owner='poi:1:2,0';data.map.regions[0].pointOfInterestKinds['2,0']='ruins';data.map.knave.content=knaveContentFixture(owner);
  await page.locator('input[type=file]').setInputFiles({name:'tables1-v10.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});
  const panel=page.locator('[data-preparation]');await panel.waitFor();const before=await snapshot();
+ for(const width of [1500,390]){await page.setViewportSize({width,height:1100});await panel.screenshot({path:fileURLToPath(new URL(`before-preparation-${width}.png`,out))});}await page.setViewportSize({width:1500,height:1100});
  const dialog=page.getByRole('dialog',{name:'Подсказка места',exact:true});
  await panel.getByRole('button',{name:'Добавить подсказку',exact:true}).click();
  await dialog.getByRole('spinbutton',{name:'Номер строки',exact:true}).fill('0');await dialog.getByRole('button',{name:'Применить',exact:true}).click();assert.match(await dialog.getByRole('alert').innerText(),/1.*100/);
