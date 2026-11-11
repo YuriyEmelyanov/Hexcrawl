@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-11T1803-programmer-PR496-CI-retry",
+  "task_id": "HX-BL-051",
+  "pr": 496,
+  "current_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+  "status": "verification_in_progress",
+  "observed_at": "2026-11-11T18:26:46.788Z",
+  "environment": {
+    "local_chromium": "AF_UNIX socket EPERM remains; no bypass attempted",
+    "hosted": "recovered: Chromium installed and actual scenarios executed on43041760187 attempt2 and43075488111"
+  },
+  "observations": [
+    {
+      "id": "PR496-GEN-OBS-1803",
+      "sha": "0d19ac6a60f245cede095040ce24b682839cd17f",
+      "run_id": 43041760187,
+      "attempt": 2,
+      "job_id": 130709581665,
+      "status": "unexpected_generation_command_failure_cause_unknown",
+      "alert": "Не удалось создать регион из-за ошибки. Прежняя карта сохранена. Можно повторить попытку.",
+      "location": "test/browser/generation.smoke.mjs:141",
+      "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43041760187/job/130709581665",
+      "root_cause": null,
+      "fix_claimed": false,
+      "subsequent_observation": "generation workflow completed on94; no command-failure artifact there. This does not explain or fix prior failure.",
+      "response": "Extend existing failure capture to record before/after inputs and structured generation console diagnostics before unchanged fatal regexp assertion."
+    },
+    {
+      "id": "PR496-VIEW-1803",
+      "sha": "94e763176a627d154caa4df3dcc6ce7312a74f07",
+      "run_id": 43075488111,
+      "job_id": 130714079805,
+      "location": "test/browser/detail-adaptation.smoke.mjs:34",
+      "failure": "chooseCell15,-3 expected aria-pressed true, actualfalse",
+      "confirmed_cause": "The selected fine cell intersects accepted source2,0 and legal candidate3,-1 equally. Keyboard activation legitimately generates according to DTL1.2; this spatial-view scenario still expected selection-only.",
+      "response": "Select actual pointer inside accepted half; coarse view-only cases select accepted source6 before changing view. Separate keyboard C-FILL/rollback/history stays strict.",
+      "fix_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+      "verification": "pending exact SHA browser"
+    },
+    {
+      "id": "PR496-PRESENTATION-1803",
+      "sha": "0d19ac6a60f245cede095040ce24b682839cd17f",
+      "job_id": 130709581481,
+      "cause": "Temporary release walkthrough entered partial cells while asserting view-only RNG invariance.",
+      "response": "Keep accepted point through coarse views and use fully accepted fine point.",
+      "verification": "Passed release-presentation on94 and9ca; actual ordinary fill proof separate."
+    },
+    {
+      "id": "IR94-UI01",
+      "type": "confirmed_minor_UI_defect",
+      "source": "fresh independent reviewer actual screenshot",
+      "problem": "Selected scale text clipped at320px.",
+      "cause": "Scale select occupied one half of two-column display grid.",
+      "response": "grid-column:1 / -1",
+      "fix_sha": "7c72fd5a09db7935001f1454113c7e7801c86ce5",
+      "verified_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+      "verification": "Actual320RU/EN allfour1/6/12/24 selectedlabels visible; independent reviewer confirmed."
+    }
+  ],
+  "release_authorized": false,
+  "source_algorithm_changed_this_run": false,
+  "next_role": "programmer",
+  "next_step": "Finish43077183353 terminal checks and actual C-FILL artifact review; fix any concrete remaining blocker before independent whole-package verdict."
+}
