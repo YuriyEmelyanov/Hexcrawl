@@ -72,6 +72,9 @@ test('PF2 App v13 roundtrip, profile history and invalid live references are ato
  assert.equal(alerts.length,mutations.length);
  assert.equal(restored.render().choosePF2Profile(false),true);assert.deepEqual(stable(restored).map.featurePreparation,snapshot.map.featurePreparation);
  restored.render().undoMap();assert.deepEqual(stable(restored),snapshot);
+ const empty=createGenerationHarness(0);empty.render();assert.equal(empty.render().choosePF2Profile(true),true);const pf2Blank=stable(empty);
+ assert.equal(empty.render().chooseKnaveProfile(true),true);const knaveBlank=stable(empty);assert.equal(knaveBlank.pf2Enabled,false);assert.equal(knaveBlank.knaveEnabled,true);
+ empty.render().undoMap();assert.deepEqual(stable(empty),pf2Blank);empty.render().redoMap();assert.deepEqual(stable(empty),knaveBlank);
 });
 
 test('PF2 whole batch and strict snapshot validation reject malformed records without input writes',()=>{

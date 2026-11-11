@@ -14439,6 +14439,7 @@ export function App() {
     if(generationMode!=='classic'||mutationBlocked())return false;
     if(enabled===knaveEnabledRef.current)return true;
     const layer=knaveRef.current??(enabled?newKnaveLayer():undefined);
+    if(!regions.length&&!hexTerrainByKey.size&&!kingdoms.length&&!pf2EnabledRef.current){documentRevision.current++;updateKnave(layer);updateKnaveEnabled(enabled);return true;}
     finishNotesGroup();
     const before=captureDocument(),after={...before,map:{...before.map,knave:layer},knaveEnabled:enabled,pf2Enabled:enabled?false:before.pf2Enabled};
     recordTransaction(before,after);applyPreparedDocument(after);return true;
