@@ -6,7 +6,8 @@ import {dominantFineBiome, projectOneMile, oneMileCandidates, chooseOneMileAncho
 
 // This is the first fine-address domain seam on main. Existing mapTransactions
 // tests exercise source-six fields and cannot detect a fine-to-source overwrite.
-// These cases protect OM02/03/04/08/10/12; they are not App/history/browser proof.
+// Domain portions of OM02/03/04/05/11/12 only: these are not acceptance of
+// App rendering, POI, save formats, history or browser behaviour.
 const c=(q,r)=>({q,r}), source=(q,r,biome='forest')=>({cell:c(q,r),landBiomeId:biome});
 const area=detailCellAreaSquareMiles(createDetailGrid(1));
 const valid=id=>['forest','hills','plain'].includes(id);
