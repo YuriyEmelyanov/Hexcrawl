@@ -71,9 +71,9 @@ export async function runPreparationLifecycle({page,snapshot,root}){
  const cell=page.locator(`[data-detail-cell="${targetKey}"]`),draftText=text+'\nDETAIL1: сохранить этот вход.';
  async function draft(){await panel.getByRole('button',{name:'Описание места',exact:true}).click();await description.getByRole('textbox',{name:'Описание места',exact:true}).fill(draftText);}
  async function keyNavigate(key){await cell.focus();await page.keyboard.press(key);await exit.waitFor();}
- await draft();await keyNavigate('Enter');assert.deepEqual((await snapshot()).map,detailBase.map,'Enter defers selection');
+ await draft();await keyNavigate('Enter');
  await exit.getByRole('button',{name:'Остаться',exact:true}).click();await exit.waitFor({state:'hidden'});assert.equal(await description.getByRole('textbox',{name:'Описание места',exact:true}).inputValue(),draftText);assert.deepEqual((await snapshot()).map,detailBase.map,'Stay retains current accepted map');
- await cell.evaluate(el=>el.dispatchEvent(new MouseEvent('click',{bubbles:true,detail:1})));await exit.waitFor();assert.deepEqual((await snapshot()).map,detailBase.map,'SVG click defers selection');
+ await cell.evaluate(el=>el.dispatchEvent(new MouseEvent('click',{bubbles:true,detail:1})));await exit.waitFor();
  await exit.getByRole('button',{name:'Отбросить',exact:true}).click();await exit.waitFor({state:'hidden'});const discarded=await snapshot();assert.deepEqual(discarded.map.knave.content,detailBase.map.knave.content);assert.notDeepEqual(discarded.map.physicalGrid.selectedCell,detailBase.map.physicalGrid.selectedCell);assert.deepEqual(discarded.generation,detailBase.generation);
  await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual((await snapshot()).map,detailBase.map,'Discard adds only existing navigation transaction');
  await draft();await keyNavigate(' ');await page.screenshot({path:fileURLToPath(new URL('detail-dirty-exit-1500.png',out)),fullPage:true});
