@@ -3,8 +3,9 @@ import {TableResultRow} from './TableResultRow';
 import {KnaveContentRow} from './KnaveContentRow';
 import {knaveResultText,type KnaveCatalog,type KnaveTable} from './knave';
 import {preparationLink,preparationView,type PreparationInput,type PreparationCommand,type TableCall,type PreparationState} from './tablePreparation';
+export type PreparationNavigation={owner:string;revision:number;dirty:boolean;finish:()=>boolean;discard:()=>void;focus:()=>void};
 type Ticket={revision:number;token:object};
-type Props={input:PreparationInput;catalog:()=>KnaveCatalog;owner:string;language:string;disabled:boolean;animation?:{slot?:number;revision:number;expiresAt:number};onLegacyRoll:(part:'primary'|'trait'|'both')=>boolean;context:()=>Ticket;commit:(commands:PreparationCommand[],ticket:Ticket)=>boolean;onDraft:(active:boolean)=>void};
+type Props={input:PreparationInput;catalog:()=>KnaveCatalog;owner:string;language:string;disabled:boolean;animation?:{slot?:number;revision:number;expiresAt:number};onLegacyRoll:(part:'primary'|'trait'|'both')=>boolean;context:()=>Ticket;commit:(commands:PreparationCommand[],ticket:Ticket)=>boolean;onDraft:(active:boolean)=>void;navigation:(value:PreparationNavigation|null)=>void};
 const names:Record<KnaveTable,{ru:string;en:string}>={locations:{ru:'Место',en:'Location'},structures:{ru:'Постройка',en:'Structure'},dungeons:{ru:'Подземелье',en:'Dungeon'},place_traits:{ru:'Особенность места',en:'Place trait'}};
 type Draft={kind:'select'|'description';ticket:Ticket;target:number|null;link:boolean;table:KnaveTable;mode:'manual'|'roll';row:string;search:string;text:string;initialText:string};
 /** Catalog lookup and projection are read-only and must fail closed, not crash App. */
@@ -20,17 +21,19 @@ export function PreparationPanel(props:Props){
  return <PreparationEditor {...props} catalog={prepared.catalog} view={prepared.view}/>;
 }
 type ReadyProps=Omit<Props,'catalog'>&{catalog:KnaveCatalog;view:PreparationState};
-function PreparationEditor({input,catalog,view,owner,language,disabled,animation,onLegacyRoll,context,commit,onDraft}:ReadyProps){
+function PreparationEditor({input,catalog,view,owner,language,disabled,animation,onLegacyRoll,context,commit,onDraft,navigation}:ReadyProps){
  const ru=language==='ru',lang=ru?'ru':'en',word=(a:string,b:string)=>ru?a:b;
  const place=view.byPoi[owner],calls=place?.calls??[],roots=calls.filter(c=>c.parentId===undefined);
  const [,setAnimationTick]=useState(0);
  const [draft,setDraft]=useState<Draft|null>(null),[error,setError]=useState('');
+ const navigationObserver=useRef(navigation);navigationObserver.current=navigation;
  const modal=useRef<HTMLDialogElement|null>(null),trigger=useRef<HTMLElement|null>(null),observer=useRef(onDraft),composing=useRef(false),applying=useRef(false);observer.current=onDraft;
- useEffect(()=>()=>observer.current(false),[]);
+ useEffect(()=>()=>{observer.current(false);navigationObserver.current(null);},[]);
+ useEffect(()=>{navigationObserver.current(draft?.kind==='description'?{owner,revision:draft.ticket.revision,dirty:draft.text!==draft.initialText,finish:()=>apply(),discard:close,focus:()=>modal.current?.querySelector<HTMLTextAreaElement>('textarea')?.focus()}:null);},[draft,disabled]);
  useEffect(()=>{const delay=(animation?.expiresAt??0)-Date.now();if(delay<=0)return;const timer=setTimeout(()=>setAnimationTick(t=>t+1),delay+1);return()=>clearTimeout(timer);},[animation?.revision,animation?.expiresAt]);
- useEffect(()=>{if(draft&&!modal.current?.open)modal.current?.showModal();},[!!draft]);
+ useEffect(()=>{if(draft&&!modal.current?.open){if(draft.kind==='description')modal.current?.show();else modal.current?.showModal();}},[!!draft]);
  const restoreFocus=()=>queueMicrotask(()=>{if(trigger.current?.isConnected)trigger.current.focus();else document.querySelector<HTMLElement>('[data-preparation] button')?.focus();});
- const close=()=>{modal.current?.close();setDraft(null);onDraft(false);setError('');restoreFocus();};
+ const close=()=>{navigationObserver.current(null);modal.current?.close();setDraft(null);onDraft(false);setError('');restoreFocus();};
  const cancel=()=>{if(draft?.kind==='description'&&draft.text!==draft.initialText&&!window.confirm(word('Отбросить изменения описания?','Discard description changes?')))return;close();};
  const open=(event:React.MouseEvent<HTMLElement>,kind:'select'|'description',call?:TableCall,link=false)=>{
   if(disabled)return;trigger.current=event.currentTarget;setError('');
@@ -45,19 +48,19 @@ function PreparationEditor({input,catalog,view,owner,language,disabled,animation
   if(!ok)setError(word('Не удалось применить действие. Карта не изменена.','Could not apply. Your map is unchanged.'));return ok;
  };
  const apply=()=>{
-  if(!draft||composing.current||applying.current)return;
+  if(!draft||composing.current||applying.current)return false;
   let command:PreparationCommand;
   if(draft.kind==='description')command={kind:'description',owner,value:draft.text};
   else{
-   const row=Number(draft.row);if(draft.mode==='manual'&&(!draft.row.trim()||!Number.isSafeInteger(row)||row<1||row>100)){setError(word('Введите целое число от 1 до 100.','Enter a whole number from 1 to 100.'));return;}
-   if(draft.target!==null&&!draft.link&&!confirmLoss([draft.target]))return;
+   const row=Number(draft.row);if(draft.mode==='manual'&&(!draft.row.trim()||!Number.isSafeInteger(row)||row<1||row>100)){setError(word('Введите целое число от 1 до 100.','Enter a whole number from 1 to 100.'));return false;}
+   if(draft.target!==null&&!draft.link&&!confirmLoss([draft.target]))return false;
    const choice=draft.mode==='roll'?{kind:'roll' as const}:{kind:'manual' as const,row};
    command=draft.link?{kind:'link',owner,id:draft.target!,choice}:draft.target!==null?{kind:'replace',owner,id:draft.target,table:draft.table,choice,confirmDependents:true}:{kind:'add',owner,table:draft.table,choice};
   }
-  if(draft.kind==='description'&&draft.text===draft.initialText){close();return;}
+  if(draft.kind==='description'&&draft.text===draft.initialText){close();return true;}
   applying.current=true;onDraft(false);
   const ok=commit([command],draft.ticket);applying.current=false;
-  if(ok)close();else{onDraft(true);setError(word('Карта изменилась или действие недоступно. Отмените черновик и откройте заново.','The map changed or action is unavailable. Cancel and reopen this draft.'));}
+  if(ok)close();else{onDraft(true);setError(word('Карта изменилась или действие недоступно. Отмените черновик и откройте заново.','The map changed or action is unavailable. Cancel and reopen this draft.'));}return ok;
  };
  const row=(call:TableCall)=>{
   const value=knaveResultText(call,call.table,language),edge=preparationLink(call),child=calls.find(c=>c.parentId===call.id);
@@ -86,8 +89,8 @@ function PreparationEditor({input,catalog,view,owner,language,disabled,animation
    {input?.schemaVersion===1&&calls.length?<button type="button" className="secondary" disabled={disabled||!!draft} onClick={e=>open(e,'select',calls[0])}>{word('Выбрать строку','Choose a row')}</button>:null}
    <button type="button" className="secondary" disabled={disabled||!!draft} onClick={e=>open(e,'description')}>{word('Описание места','Place description')}</button></div>
   {error&&!draft?<p role="alert">{error}</p>:null}
-  {draft?<dialog ref={modal} className="preparation-dialog" aria-label={draft.kind==='description'?word('Описание места','Place description'):word('Подсказка места','Place prompt')} onCancel={e=>{e.preventDefault();cancel();}}>
-   <form noValidate onSubmit={e=>{e.preventDefault();apply();}} onKeyDown={e=>{e.stopPropagation();}}>
+  {draft?<dialog ref={modal} data-preparation-dialog className="preparation-dialog" aria-label={draft.kind==='description'?word('Описание места','Place description'):word('Подсказка места','Place prompt')} onCancel={e=>{e.preventDefault();cancel();}}>
+   <form noValidate onSubmit={e=>{e.preventDefault();apply();}} onKeyDown={e=>{e.stopPropagation();if(e.key==='Escape'&&!e.nativeEvent.isComposing&&!composing.current){e.preventDefault();cancel();}if(draft.kind==='description'&&e.key==='Tab'){const nodes=[...e.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled),input,select,textarea')],first=nodes[0],last=nodes.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}}}}>
     <h3>{draft.kind==='description'?word('Описание места','Place description'):word('Подсказка места','Place prompt')}</h3>
     {draft.kind==='description'?<textarea autoFocus aria-label={word('Описание места','Place description')} maxLength={20000} rows={7} value={draft.text} onCompositionStart={()=>composing.current=true} onCompositionEnd={()=>composing.current=false} onChange={e=>setDraft({...draft,text:e.target.value})}/>:<>
      {!draft.link?<label>{word('Обращение','Call')}<select aria-label={word('Обращение','Call')} value={draft.target??'new'} onChange={e=>{const id=e.target.value==='new'?null:Number(e.target.value),c=calls.find(c=>c.id===id);setDraft({...draft,target:id,table:c?.table??draft.table,row:String(c?.sourceRow??1)});}}><option value="new">{word('Новая подсказка','New prompt')}</option>{calls.map(c=><option key={c.id} value={c.id}>{names[c.table][lang]} #{c.sourceRow} · {c.id}</option>)}</select></label>:null}

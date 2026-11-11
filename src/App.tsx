@@ -20,7 +20,7 @@ import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapaci
 import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
 import {localizedTagText} from './tags/tagPresentation';
 import {TagRow} from './tags/TagRow';
-import {PreparationPanel} from './tags/PreparationPanel';
+import {PreparationPanel,type PreparationNavigation} from './tags/PreparationPanel';
 import {prepareRoadEdit, type RoadEdit} from './manualRoads';
 import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
@@ -11943,6 +11943,9 @@ export function App() {
   const [tags,setTags] = useState<TagState>(emptyTags);
   const [activeTagDraftCount,setActiveTagDraftCount]=useState(0);
   const activeTagDraftKeys=useRef(new Set<string>());
+  const preparationNavigation=useRef<PreparationNavigation|null>(null);
+  const [preparationExitRequest,setPreparationExitRequest]=useState<{draft:PreparationNavigation;action:()=>void}|null>(null);
+  const [preparationExitError,setPreparationExitError]=useState('');
   const notifyTagDraft=(key:string,active:boolean)=>{
     const keys=activeTagDraftKeys.current,before=keys.size;
     if(active)keys.add(key);else keys.delete(key);
@@ -15352,7 +15355,24 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     if(choice==='finish'){if(!finishKnaveDraft(request.draft))return false;}else resetKnaveDraft(request.draft);
     setKnaveExitRequest(null);setTimeout(request.action,0);return true;
   };
+  const requestPreparationExit=(action:()=>void)=>{
+    const draft=preparationNavigation.current;if(!draft)return;
+    if(!draft.dirty){draft.discard();setTimeout(action,0);return;}
+    setPreparationExitError('');setPreparationExitRequest({draft,action});
+  };
+  const resolvePreparationExit=(choice:'finish'|'discard'|'stay')=>{
+    const request=preparationExitRequest;if(!request)return;
+    if(choice==='stay'){setPreparationExitRequest(null);setTimeout(request.draft.focus,0);return;}
+    if(preparationNavigation.current!==request.draft||request.draft.revision!==documentRevision.current){setPreparationExitError(language==='ru'?'Карта изменилась. Останьтесь в редакторе и отмените черновик.':'The map changed. Stay in the editor and cancel the draft.');return;}
+    if(choice==='finish'){if(!request.draft.finish()){setPreparationExitError(language==='ru'?'Не удалось завершить описание. Исправьте ошибку или закончите ввод.':'Could not finish the description. Resolve the error or finish composing.');return;}}
+    else request.draft.discard();
+    setPreparationExitRequest(null);setTimeout(request.action,0);
+  };
   const poiClickGate=(event:React.MouseEvent<HTMLDivElement>)=>{
+    if(preparationNavigation.current&&!(event.target as Element).closest('[data-preparation-dialog],[data-preparation-exit-dialog],[data-poi-export],.side-panel-toggle')){
+      const target=(event.target as Element).closest<HTMLElement>('button,a,input,select,polygon.hex');
+      if(target){event.preventDefault();event.stopPropagation();requestPreparationExit(()=>{if(target.isConnected)target.dispatchEvent(new MouseEvent('click',{bubbles:true}));});}return;
+    }
     if(knaveDraftRef.current){
       if((event.target as Element).closest('[data-knave-panel],[data-knave-exit-dialog],[data-poi-done],[data-poi-export],[data-poi-navigation],.side-panel-toggle'))return;
       const target=(event.target as Element).closest<HTMLElement>('button,a,input,select,polygon.hex');
@@ -15364,6 +15384,9 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     event.preventDefault();event.stopPropagation();requestPoiExit(()=>{if(target.isConnected)target.click();});
   };
   const poiSelectGate=(event:React.FormEvent<HTMLDivElement>)=>{
+    if(preparationNavigation.current&&!(event.target as Element).closest('[data-preparation-dialog],[data-preparation-exit-dialog]')&&event.target instanceof HTMLSelectElement){
+      const target=event.target,value=target.value;event.preventDefault();event.stopPropagation();requestPreparationExit(()=>{if(target.isConnected){target.value=value;target.dispatchEvent(new Event('change',{bubbles:true}));}});return;
+    }
     if(knaveDraftRef.current&&!(event.target as Element).closest('[data-knave-panel],[data-knave-exit-dialog]')&&event.target instanceof HTMLSelectElement){
       const target=event.target,value=target.value;event.preventDefault();event.stopPropagation();requestKnaveExit(()=>{if(target.isConnected){target.value=value;target.dispatchEvent(new Event('change',{bubbles:true}));}});return;
     }
@@ -15569,7 +15592,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задана',normal:'Обычная',difficult:'Труднопроходимая',dangerous:'Опасная'}:{auto:'Automatic',unknown:'Unspecified',normal:'Normal',difficult:'Difficult',dangerous:'Dangerous'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задано',passage:'При прохождении',exploration:'Нужно исследование',interaction:'Секрет · взаимодействие'}:{auto:'Automatic',unknown:'Unspecified',passage:'On passage',exploration:'Requires exploration',interaction:'Secret · interaction'};
   const knavePanel=selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
-    {knave&&knaveDiscoveryKey&&<div className="knave-results"><PreparationPanel key={`${knaveDiscoveryKey}:${documentRevision.current}`} input={knave.content} catalog={knaveGenerationCatalog} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>(activeTagDraftKeys.current.has(`preparation:${knaveDiscoveryKey}`)?1:0)||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onLegacyRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)} context={()=>preparationContext(knaveDiscoveryKey)} commit={commitPreparationUI} onDraft={active=>notifyTagDraft(`preparation:${knaveDiscoveryKey}`,active)}/></div>}
+    {knave&&knaveDiscoveryKey&&<div className="knave-results"><PreparationPanel key={`${knaveDiscoveryKey}:${documentRevision.current}`} input={knave.content} catalog={knaveGenerationCatalog} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>(activeTagDraftKeys.current.has(`preparation:${knaveDiscoveryKey}`)?1:0)||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onLegacyRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)} context={()=>preparationContext(knaveDiscoveryKey)} commit={commitPreparationUI} navigation={value=>{preparationNavigation.current=value;}} onDraft={active=>notifyTagDraft(`preparation:${knaveDiscoveryKey}`,active)}/></div>}
     {!isSelectedLake&&!isSelectedSea&&(editMode||displayedDifficulty==='difficult'||displayedDifficulty==='dangerous')&&<div className="direct-line" data-terrain-classification>{editMode?<label>{language==='ru'?'Проходимость: ':'Difficulty: '}<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:<>{difficultyLabels[displayedDifficulty]}{displayedDifficulty==='dangerous'&&terrainRisk(selectedEffectiveBiomeId,language)?` · ${terrainRisk(selectedEffectiveBiomeId,language)}`:''}</>}</div>}
     {knaveDiscoveryKey&&<>{(editMode||displayedDiscovery!=='unknown')&&<div className="direct-line" data-discovery-classification>{editMode?<label>{language==='ru'?'Обнаружение: ':'Discovery: '}<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:displayedDiscovery==='passage'&&onSelectedRoad?(language==='ru'?'Заметно с дороги':'Visible from the road'):discoveryLabels[displayedDiscovery]}</div>}
     {editMode?<label className="knave-clue">{language==='ru'?'Улика':'Clue'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{knaveClue}</p>:null}</>}
@@ -16657,6 +16680,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     <div className="app" onClickCapture={poiClickGate} onChangeCapture={poiSelectGate} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
       if(e.key!=='Tab'&&guardMaterialRead(e))return;
       if(detailExtentDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelDetailExtentDraft();return;}
+      if(preparationExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-preparation-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button')??[])],first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
+      if(preparationExitRequest&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();resolvePreparationExit('stay');return;}
       if(knaveExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-knave-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button')??[])],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(detailAdaptationRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelDetailAdaptation(detailAdaptationRef.current);return;}
       if(knaveDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(knaveExitRequest)stayInKnaveEditor();else resetKnaveDraft();return;}
@@ -16671,6 +16696,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
       if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRoadDraft();}
       else if(e.key==='Enter'&&!(e.target as Element).matches('select,button,input,textarea')){e.preventDefault();e.stopPropagation();finishRoadDraft();}
     }}>
+      {preparationExitRequest&&<div className="poi-exit-backdrop" data-preparation-exit-dialog><section role="alertdialog" aria-modal="true" aria-labelledby="preparation-exit-title"><h2 id="preparation-exit-title">{language==='ru'?'Есть несохранённое описание':'Unsaved place description'}</h2><p>{language==='ru'?'Завершить, отбросить или остаться здесь?':'Finish, discard, or stay here?'}</p>{preparationExitError&&<p role="alert">{preparationExitError}</p>}<button type="button" onClick={()=>resolvePreparationExit('finish')}>{language==='ru'?'Завершить':'Finish'}</button><button type="button" onClick={()=>resolvePreparationExit('discard')}>{language==='ru'?'Отбросить':'Discard'}</button><button type="button" autoFocus onClick={()=>resolvePreparationExit('stay')}>{language==='ru'?'Остаться':'Stay'}</button></section></div>}
       {knaveExitRequest&&<div className="poi-exit-backdrop" data-knave-exit-dialog><section role="alertdialog" aria-modal="true" aria-labelledby="knave-exit-title"><h2 id="knave-exit-title">{language==='ru'?'Есть несохранённые свойства':'Unsaved properties'}</h2><p>{language==='ru'?'Сохранить, отбросить или остаться здесь?':'Save, discard, or stay here?'}</p>{knaveError&&<p role="alert">{knaveError}</p>}<button type="button" onClick={()=>resolveKnaveExit('finish')}>{language==='ru'?'Сохранить':'Save'}</button><button type="button" onClick={()=>resolveKnaveExit('discard')}>{language==='ru'?'Отбросить':'Discard'}</button><button type="button" autoFocus onClick={()=>resolveKnaveExit('stay')}>{language==='ru'?'Остаться':'Stay'}</button></section></div>}
       {poiExitRequest&&<div className="poi-exit-backdrop" data-poi-exit-dialog><section role="alertdialog" aria-modal="true" aria-labelledby="poi-exit-title"><h2 id="poi-exit-title">{language==='ru'?'Есть незавершённый перенос':'Point move in progress'}</h2><p>{language==='ru'?'Завершить перенос, отбросить его или остаться здесь?':'Finish the move, discard it,or stay here?'}</p><button type="button" disabled={!poiPreview?.plan} onClick={()=>resolvePoiExit('finish')}>{language==='ru'?'Завершить перенос':'Finish move'}</button><button type="button" onClick={()=>resolvePoiExit('discard')}>{language==='ru'?'Отбросить':'Discard'}</button><button type="button" autoFocus onClick={()=>resolvePoiExit('stay')}>{language==='ru'?'Остаться':'Stay'}</button></section></div>}
       <section className="content">
