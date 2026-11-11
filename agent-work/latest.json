@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "date": "2026-11-10",
+  "date": "2026-11-11",
   "branch": "agent-operations",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
@@ -29,7 +29,7 @@
   "run_id": "2026-11-11T0004-programmer-TABLES1-UI",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "implementation_in_progress",
+  "status": "review_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-10-25",
@@ -40,11 +40,12 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
-    "data_commit_sha": "cfdb950439ea238bda26c672040b96ee1cac0478",
-    "latest_written_last": true,
-    "verification": "Exact UTF-8 readback result, independent final review and checks; final latest readback follows update.",
-    "foreign_claims_and_results_preserved": true,
-    "research_agent_preserved": true
+    "data_commit_sha": "c287519aebde08d8d0ee1b7e4ca24fc1ce60c4b9",
+    "data_readback": "passed",
+    "UTF8_files": 22,
+    "PNG_tree_entries": 8,
+    "concurrency": "Git branch CAS; foreign research/legacy041 claim and acceptedPR496 package preserved",
+    "latest_written_last": true
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -53,21 +54,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "programmer",
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-043",
   "spec_path": "agent-work/specs/HX-BL-043-TABLES1.md",
   "spec_version": "TBL-1.0",
-  "result_path": "agent-work/results/2026-11-10T2303-programmer-TABLES1-App-v12.json",
+  "result_path": "agent-work/results/2026-11-11T0004-programmer-TABLES1-UI.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
-  "active_claim": {
-    "run_id": "2026-11-11T0004-programmer-TABLES1-UI",
-    "claim_ref": "agent-work/claims/2026-11-11T0004-programmer-TABLES1-UI.json",
-    "role": "programmer",
-    "task_id": "HX-BL-043",
-    "status": "active",
-    "execution_running": true
-  },
-  "next_step": "Завершить общий UI TABLES1: отобразить все schema2 calls/children/nextEntry/description, подключить selector/roll/link/delete и черновик описания к preparationContext(owner)/mutatePreparation(cmd,draft); dirty/IME/Cancel/focus/reduced motion. Старые schema1 строки сохранять до первой правки. Показать actual UI desktop/390/320 на новомSHA, выполнить проверки и передать независимому reviewer. Новое согласование старта не требуется.",
+  "active_claim": null,
+  "next_step": "Независимый reviewer проверяет конкретный6d5c9f4 по T01–T16 и score1.2, особенно schema2 owner/loss/DETAIL1 и исправленные self-findings; затем заключение либо ограниченные исправления. Публикация отдельно.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -90,67 +84,22 @@
     }
   ],
   "release_approval": {
-    "schema_version": 1,
-    "id": "owner-release-2026-11-10-PR499-4824e6c",
-    "task_id": "HX-BL-041",
-    "stage_id": "MC1-EN",
-    "pr": 499,
-    "status": "approved_and_published",
-    "owner_quote": "499 публикуй",
-    "source": "Direct current task chat",
-    "approved_at": "2026-11-10T02:38:25.911Z",
-    "approved_head_sha": "4824e6cb1446e52d766811372370e6e1941bac5c",
-    "approved_tree_sha": "42483336ab5d1fa407d2a797f68d3fe5048cefd1",
-    "base_sha": "90afe931d9e9f8a2482febf77eaed20b401ceece",
-    "review_ref": "agent-work/results/2026-11-10-MC1-EN-PR499.json",
-    "ci_run": 42736194155,
-    "scope": "Merge/publish only exact accepted PR499; verify tree, deployment and live assets. Do not change PR496 or other claims.",
-    "release_approved": true,
-    "score_assessment_status": "independent_assessment_recorded_insufficient_evidence_for_whole_criteria",
-    "automation_health": {
-      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "start": {
-        "checked_at": "2026-11-10T02:36:40.578Z",
-        "is_enabled": true,
-        "status": "checked",
-        "method": "automations.peek"
-      },
-      "restoration_performed": false,
-      "errors": [],
-      "limitation": "Point-in-time observations only.",
-      "end": {
-        "checked_at": "2026-11-10T03:03:01.670Z",
-        "status": "checked",
-        "is_enabled": true,
-        "method": "automations.peek"
-      },
-      "pre_persistence_end": {
-        "checked_at": "2026-11-10T03:00:53.996Z",
-        "status": "checked",
-        "is_enabled": true,
-        "method": "automations.peek"
-      }
-    },
-    "executed_at": "2026-11-10T03:01:14.386452+00:00",
-    "merge_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-    "release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-    "publication_ref": "agent-work/evidence/release-PR499/publication.json",
-    "published": true,
-    "deployment_run_id": 42744399241,
-    "score_update_status": "completed",
-    "score_assessment_ref": "agent-work/evidence/release-PR499/score-assessment1.2.json",
-    "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json"
+    "task_id": "HX-BL-043",
+    "stage_id": "TABLES1",
+    "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+    "status": "not_authorized",
+    "reason": "Independent exact-package acceptance then owner publication permission required."
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/TABLES1-App-v12-2303",
+  "evidence_path": "agent-work/evidence/TABLES1-UI-0004",
   "branch_name": "agent/hx-tables1",
   "pr": 500,
-  "head_sha": "83baec26594ab43d77f4b35f357a8bdfce86605a",
-  "tree_sha": "29754f78bc3e3b84b8c1957d6b22445025f62f9c",
-  "checks_status": "local_check_pass_browser_rng_CI_pass_Node_CI_pending",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42921791185",
-  "review_verdict": "not_ready_TABLES1_UI_pending",
-  "role_selection_mode": "hourly_readiness_owner_priority",
+  "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+  "tree_sha": "29627feb7f165a00326c3626a6063a46734bdb33",
+  "checks_status": "passed: Node394/394, browser9/9, RNG and TABLES1_UI1/1; TypeScript/build passed",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42932730122",
+  "review_verdict": null,
+  "role_selection_mode": "approved_queue_readiness",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
   "process_commit_sha": "e7e046530757ae2067de13a4075fb0526ca429ee",
@@ -247,8 +196,8 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/score-assessment1.2.json",
-  "role_selection_reason": "Explicit current owner request takes priority over hourly TABLES1 continuation; own bounded claim safely held; no duplicate TABLES1 implementation.",
+  "score_assessment_ref": null,
+  "role_selection_reason": "Approved TABLES1 continuation with ready TBL-1.0 spec and previous App/v12 UI handoff, no activeTABLES1claim or new owner release approval; continue executable programmer work under current queue priority.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -268,29 +217,33 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
+  "base_sha": "83baec26594ab43d77f4b35f357a8bdfce86605a",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-10 23:03:26 UTC",
+      "checked_at": "2026-11-11 00:04:11 UTC",
       "status": "checked",
       "is_enabled": true,
       "method": "automations.peek"
     },
     "end": {
-      "checked_at": "2026-11-10 23:26:58 UTC",
+      "checked_at": "2026-11-11 00:50:45 UTC",
       "status": "checked",
       "is_enabled": true,
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Actual point-in-time status checks only; later service state not guaranteed; schedule/prompt unchanged."
+    "limitation": "Actual point-in-time checks only; later service state is not guaranteed. Schedule and automation instructions unchanged.",
+    "final_pointer_check": {
+      "checked_at": "2026-11-11 00:53:04 UTC",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    }
   },
-  "open_findings": [
-    "CLASSIFY1-VALIDATION-RIV011"
-  ],
-  "current_review_score_assessment_status": "complete_unknown_whole_grades_no_points_awarded",
+  "open_findings": [],
+  "current_review_score_assessment_status": "pending",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -813,9 +766,17 @@
     "scope": "Source/existing evidence review only; no newmeasurements/product edits/tests/release",
     "completed_at": "2026-10-27T12:12:46.356Z"
   },
-  "review_request": null,
+  "review_request": {
+    "task_id": "HX-BL-043",
+    "stage_id": "TABLES1",
+    "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+    "spec_ref": "agent-work/specs/HX-BL-043-TABLES1.md",
+    "handoff_ref": "agent-work/handoffs/2026-11-11T0004-programmer-TABLES1-UI-review.json",
+    "independence": "Fresh-context agent required if available; independent T01–T16 and score1.2",
+    "checks_ref": "agent-work/evidence/TABLES1-UI-0004/checks.json"
+  },
   "reviewed_sha": null,
-  "current_review_score_assessment_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/score-assessment1.2.json",
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -915,7 +876,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-10 23:26:58 UTC",
+  "updated_at": "2026-11-11 00:53:04 UTC",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1195,13 +1156,88 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-    "head_sha": "83baec26594ab43d77f4b35f357a8bdfce86605a",
-    "added": 1,
-    "removed": 0,
-    "modified": 2,
-    "suite": "Node node:test",
-    "ref": "agent-work/evidence/TABLES1-App-v12-2303/test-change-summary.json"
+    "schema_version": 1,
+    "base_sha": "83baec26594ab43d77f4b35f357a8bdfce86605a",
+    "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+    "count_scope": "Current UI run only; earlier TABLES1 source changes retain separate exact-base summaries and are not recounted.",
+    "suites": [
+      {
+        "suite": "Node node:test",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "scenario_risk": "Harness imports new TSX component through stub so real App data API tests still load.",
+        "reuse_or_new_reason": "No new Node behavior requires a duplicate shape/unit callback in this UI slice; existing migration/remap/discovery cases reused.",
+        "count_source": "git diff83baec2→21b08e8: no test/*.test.mjs change; generation-harness import stub is test infrastructure, not a logical case."
+      },
+      {
+        "suite": "browser TABLES1 preparation lifecycle",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario_risk": "New visible manual/duplicate/linked preparation state, description and atomic migration/history/import path cannot be established by detached domain callbacks. Includes in the same new case: deferred description navigation Finish/Discard/Stay, IME rejection and RU/EN.",
+        "reuse_or_new_reason": "Reuses regionFixture, knaveContentFixture, existing browser import/download helpers and actual App. One new helper invoked exactly once by dedicated tables1-ui job, not copied into nine legacy browser runners.",
+        "count_source": "test/browser/preparation-lifecycle.mjs export runPreparationLifecycle; scripts/tables1-ui.mjs invokes once. Assertions, loops, widths and reruns are not counted as distinct logical tests.",
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "job_id": 130235349178
+      }
+    ],
+    "existing_browser": {
+      "scripts_executed": 9,
+      "scripts_passed": 9,
+      "scripts_skipped": 0,
+      "counted_as_node": false,
+      "run_id": 42932730122
+    },
+    "rng": {
+      "scripts_executed": 1,
+      "scripts_passed": 1,
+      "counted_as_node": false,
+      "run_id": 42932730122
+    },
+    "local_browser_attempt": {
+      "status": "environment_launch_error_before_scenarios",
+      "executed": 0,
+      "reason": "Chromium fatal socket Operation not permitted / ptrace in current host. No weakening or permission escalation; actual browser execution done in GitHub CI.",
+      "not_a_product_failure": true
+    },
+    "final_CI_pending": false,
+    "intermediate_negative_result": {
+      "head_sha": "21b08e8a521e7efdbaae83e2221e1cb5413ad4e0",
+      "executed": 394,
+      "passed": 392,
+      "failed": 2,
+      "skipped": 0,
+      "status": "failed",
+      "defect": "Eager catalog lookup during App render throws when existing rollback cases inject unavailable catalog.",
+      "fixed_by_sha": "5133ba0dc405eb596aee5f7ddd97430efa8fba00",
+      "targeted_after_fix": {
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "ref": "agent-work/evidence/TABLES1-UI-0004/negative-check-21b08e8.log",
+      "CI_log_ref": "agent-work/evidence/TABLES1-UI-0004/negative-CI-check-21b08e8.log"
+    },
+    "full_node": {
+      "suite": "node:test",
+      "executed": 394,
+      "passed": 394,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 514859.389723,
+      "method": "Exact immutable hosted npm run check under setup-node24; includes TypeScript and Vite build.",
+      "log_ref": "agent-work/evidence/TABLES1-UI-0004/check.log"
+    },
+    "temporary_diagnostics": {
+      "artifact_recovery_builds": 0,
+      "artifact_recovery_tests": 0,
+      "PNG_hash_sanity_checks": "Temporary processing verification, not permanent Node/browser suite growth"
+    }
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5850011580",
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -1272,7 +1308,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/TABLES1-App-v12-2303/checks.json",
+  "evidence_ref": "agent-work/evidence/TABLES1-UI-0004/checks.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1589,7 +1625,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-10T2303-programmer-TABLES1-App-v12-UI.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-11T0004-programmer-TABLES1-UI-review.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1739,20 +1775,20 @@
   "previous_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-10T08:59:14.915Z",
+      "checked_at": "2026-11-10 23:03:26 UTC",
       "status": "checked",
       "is_enabled": true,
       "method": "automations.peek"
     },
     "end": {
-      "checked_at": "2026-11-10T09:08:11.832Z",
+      "checked_at": "2026-11-10 23:26:58 UTC",
       "status": "checked",
       "is_enabled": true,
       "method": "automations.peek"
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time checks only, no guarantee after completion."
+    "limitation": "Actual point-in-time status checks only; later service state not guaranteed; schedule/prompt unchanged."
   },
   "previous_completed_claim": "agent-work/claims/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
   "test_audit": {
@@ -1925,7 +1961,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-06-developer-release-PR491.json",
-  "handoff_path": "agent-work/handoffs/2026-11-10T2303-programmer-TABLES1-App-v12-UI.json",
+  "handoff_path": "agent-work/handoffs/2026-11-11T0004-programmer-TABLES1-UI-review.json",
   "ui_actual_preview": null,
   "task_release_permission": "awaiting_owner_publication_permission",
   "market_catalog_discovery": {
@@ -2300,11 +2336,11 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "analyst_forecast_unknown_model1.2",
+  "current_task_score_assessment_status": "awaiting_independent_review_model1.2",
   "published": false,
   "main_changed": false,
   "ui_actual": null,
-  "review_result_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json",
+  "review_result_ref": null,
   "previous_review_score_assessment_ref": "agent-work/evidence/review-HX-BL-051-a4e8a48/score-assessment1.2.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2412,8 +2448,8 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/TABLES1-App-v12-2303/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/TABLES1-App-v12-2303/score-evidence1.2.json",
+  "test_change_summary_ref": "agent-work/evidence/TABLES1-UI-0004/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/TABLES1-UI-0004/score-evidence1.2.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-10T2303-programmer-TABLES1-App-v12.json",
   "review_evidence_ref": null,
   "github_review_state": "COMMENT_bounded_fix_accepted_full_package_not_accepted",
@@ -2426,7 +2462,29 @@
     "result_ref": "agent-work/results/2026-10-30-developer-HX-BL-023-compact-highlight.json"
   },
   "resolved_findings": [
-    "UI2-FOCUS-001"
+    {
+      "id": "TABLES1-UI-01",
+      "source": "programmer_self_check_not_independent_review",
+      "status": "fixed_pending_independent_review",
+      "spec": "TBL-1.0 description lifecycle / T12",
+      "file": "src/tags/PreparationPanel.tsx",
+      "actual": "Description uses owner/revision-bound registered navigation controller. Existing poiClickGate/poiSelectGate defer outside actions; Finish saves once then replays action, Discard drops draft then replays, Stay returns focus. IME blocks Finish and Apply.",
+      "expected": "Dirty owner/revision-bound description must route a requested selection/language/navigation action through Finish/Discard/Stay; Finish commits once before navigation, Discard navigates with accepted state unchanged, Stay preserves text/focus. IME or invalid/stale save must not navigate.",
+      "severity": "blocks_whole_feature_review_ready",
+      "not_a_missing_evidence_only": true,
+      "fixed_by_sha": "9e1c380cafcb6ba5f36b7e201489c0d9bc233093",
+      "final_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+      "evidence": "Dedicated browser scenario on9e1 passed Finish/Discard/Stay, IME, RU/EN; final6d5 immutable run repeats it and adds actual before-preparation screenshots."
+    },
+    {
+      "id": "TABLES1-UI-CAT01",
+      "status": "fixed_pending_independent_review",
+      "detected_at_sha": "21b08e8a521e7efdbaae83e2221e1cb5413ad4e0",
+      "fixed_by_sha": "5133ba0dc405eb596aee5f7ddd97430efa8fba00",
+      "final_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+      "method": "Existing two Node rollback callbacks failed before fix and passed afterward without changing either case.",
+      "evidence_ref": "agent-work/evidence/TABLES1-UI-0004/negative-check-21b08e8.log"
+    }
   ],
   "previous_review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
   "previous_review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/479#pullrequestreview-5708735954",
@@ -2485,17 +2543,22 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "TABLES1-implementation",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-programmer.json",
-  "authorization_status": "Approved TABLES1 continuation; no new design/start gate. FullinteractiveUI and independentreview before separate owner publication.",
-  "completed_at": "2026-11-10 23:26:58 UTC",
+  "authorization_status": "Already approved TABLES1 continuation; no new start/design approval. Independent review and exact-package publication permission remain required.",
+  "completed_at": "2026-11-11 00:50:45 UTC",
   "score_changed": false,
-  "next_stage_id": "TABLES1-shared-UI",
+  "next_stage_id": "TABLES1-independent-review",
   "score_evidence_updated": true,
   "current_stage_id": "TABLES1",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
-  "current_stage_ui_status": "schema2_not_yet_rendered_by_legacy_row_blocking_UI_work",
-  "completed_claim": "agent-work/claims/2026-11-10T2303-programmer-TABLES1-App-v12.json",
+  "review_ready": true,
+  "current_stage_ui_status": "actual_final_SHA_UI_shown_pending_independent_acceptance",
+  "completed_claim": {
+    "run_id": "2026-11-11T0004-programmer-TABLES1-UI",
+    "claim_ref": "agent-work/claims/2026-11-11T0004-programmer-TABLES1-UI.json",
+    "status": "completed",
+    "result_ref": "agent-work/results/2026-11-11T0004-programmer-TABLES1-UI.json"
+  },
   "evidence_commit_sha": "76cd37493e7cac25bfa7759a9fc74e99ce771f6a",
   "finding_ids": [
     "DETAIL1-REVIEW-UI-EXPORT-EVIDENCE"
@@ -4086,8 +4149,8 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "implementation_in_progress",
-  "current_stage_review_status": "TABLES1_shared_UI_pending",
+  "current_stage_status": "review_ready",
+  "current_stage_review_status": "pending",
   "accepted": false,
   "full_UI_pending": false,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -4322,15 +4385,16 @@
   },
   "stage_id": "TABLES1",
   "release_approved": false,
-  "ui_actual_shown": false,
+  "ui_actual_shown": true,
   "ui_actual_responsible": "programmer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": {
-    "local": "394/394 TypeScript/buildpassed",
-    "CI_browser": "9/9success",
-    "CI_rng": "success",
-    "CI_node": "in_progress_at_checkpoint"
+    "Node": "394/394, skipped0, TypeScript/build passed",
+    "browser": "9/9 scripts passed",
+    "rng": "passed",
+    "TABLES1_UI": "1/1 logical lifecycle passed",
+    "release_presentation_496": "intentionally skipped"
   },
   "full_E5_UI_pending": true,
   "materials_commit_sha": "b507cead9d9cf315df8d2faced9d6b6a1ca9c106",
@@ -4412,7 +4476,7 @@
     "materials_commit_sha": "372be397c7ffa28ab9e040746a6d2a4e3caadc33",
     "CI_observed_at": "2026-11-04 07:22:18 UTC"
   },
-  "ui_actual_scope": "Published-main→combined candidate, classification, explicit adaptation preview,1/6/12/24, shared owners, desktop/narrow andPNG; limitations in manifest.",
+  "ui_actual_scope": "Final-SHA actual before/after preparation states, desktop/narrow, selector320,dirty-exit320 and EN390 generated by CI, archive digest and merge tree verified; images inspected and displayed in current chat.",
   "user_walkthrough_ref": "agent-work/evidence/HX-BL-023-E5-65e5d1d/user_walkthrough.json",
   "latest_concurrency_observation": {
     "run_id": "2026-11-04-strategist-E5-concurrency-observation-0834",
@@ -4929,15 +4993,15 @@
   },
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
-    "run_id": "2026-11-11-manual-programmer-PR496-finish",
-    "task_id": "HX-BL-051",
-    "stage_id": "PR496-release-preparation",
+    "run_id": "2026-11-11T0004-programmer-TABLES1-UI",
+    "task_id": "HX-BL-043",
+    "stage_id": "TABLES1-UI",
     "role": "programmer",
-    "claim_ref": "agent-work/claims/2026-11-11-manual-programmer-PR496-finish.json",
+    "claim_ref": "agent-work/claims/2026-11-11T0004-programmer-TABLES1-UI.json",
     "status": "completed",
     "execution_running": false,
-    "head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
-    "result_ref": "agent-work/results/2026-11-11-manual-programmer-PR496-finish.json"
+    "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+    "result_ref": "agent-work/results/2026-11-11T0004-programmer-TABLES1-UI.json"
   },
   "latest_concurrent_worker_observation": {
     "run_id": "2026-11-04-developer-E5-active-worker-observation-1800",
@@ -5613,7 +5677,7 @@
   "analysis_baseline_tree": "9c8585ad4c5aafdec38d242a67ffc54fe7f4402c",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
   "last_published_release_approval": "owner-release-2026-11-06-PR491-de02991",
-  "ui_actual_pending": true,
+  "ui_actual_pending": false,
   "latest_PR492_release": {
     "schema_version": 1,
     "run_id": "2026-11-07-developer-release-PR492",
@@ -6066,7 +6130,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-10T2303-programmer-TABLES1-App-v12.json",
+  "result_ref": "agent-work/results/2026-11-11T0004-programmer-TABLES1-UI.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6126,7 +6190,7 @@
   },
   "head_location": "public_PR496_branch",
   "branch_is_remote": true,
-  "pr_branch_name": "agent/hx-bl-051-detail1",
+  "pr_branch_name": "agent/hx-tables1",
   "pr_public_head_sha": null,
   "next_role_after_decision": "business_analyst",
   "whole_team_blocked": false,
@@ -6835,8 +6899,8 @@
   "current_private_package": null,
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
   "review_request_ref": null,
-  "programmer_complete": false,
-  "current_programmer_result_ref": "agent-work/results/2026-11-10T2303-programmer-TABLES1-App-v12.json",
+  "programmer_complete": true,
+  "current_programmer_result_ref": "agent-work/results/2026-11-11T0004-programmer-TABLES1-UI.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -6857,18 +6921,54 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-bounded-ui-export.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-10T2303-programmer-TABLES1-App-v12.json",
-  "checks": {
-    "scope": "specification_only",
-    "source_baseline_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
-    "validated": [
-      "four-table metadata and16reference edges",
-      "currentformat/UIreuse",
-      "previewSVG rendered and visually inspected",
-      "scorebaselineweights"
-    ],
-    "functional_tests_executed": 0
-  },
+  "latest_result_ref": "agent-work/results/2026-11-11T0004-programmer-TABLES1-UI.json",
+  "checks": [
+    {
+      "name": "browser",
+      "id": 130235348753,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42932730122/job/130235348753",
+      "started_at": "2026-11-11T00:37:15Z",
+      "completed_at": "2026-11-11T00:44:09Z"
+    },
+    {
+      "name": "check",
+      "id": 130235349027,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42932730122/job/130235349027",
+      "started_at": "2026-11-11T00:37:14Z",
+      "completed_at": "2026-11-11T00:46:06Z"
+    },
+    {
+      "name": "world-random",
+      "id": 130235349081,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42932730122/job/130235349081",
+      "started_at": "2026-11-11T00:37:15Z",
+      "completed_at": "2026-11-11T00:42:21Z"
+    },
+    {
+      "name": "tables1-ui",
+      "id": 130235349178,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42932730122/job/130235349178",
+      "started_at": "2026-11-11T00:37:15Z",
+      "completed_at": "2026-11-11T00:38:09Z"
+    },
+    {
+      "name": "release-presentation-496",
+      "id": 130235351349,
+      "status": "completed",
+      "conclusion": "skipped",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42932730122/job/130235351349",
+      "started_at": "2026-11-11T00:37:12Z",
+      "completed_at": "2026-11-11T00:37:12Z"
+    }
+  ],
   "score_assessment_status": "insufficient_evidence_nine_whole_criteria_unknown",
   "review_report_ref": null,
   "reviewed_public_sha": null,
@@ -6900,7 +7000,7 @@
     "KNC-EVID-001"
   ],
   "score_delta": null,
-  "score_delta_status": "unknown_no_points_awarded",
+  "score_delta_status": "not_assessed_independently",
   "public_book_transfer_approved": true,
   "current_external_dependency": null,
   "publication_package_requires_private_catalog": true,
@@ -7452,9 +7552,9 @@
     ]
   },
   "current_role_result": "agent-work/results/2026-11-10T1859-analyst-HX-BL-043-TABLES1.json",
-  "current_stage_score_assessment_status": "pending_implementation",
-  "ui_actual_ref": "agent-work/evidence/PR496-finish-f677629/ui-manifest.json",
-  "execution_running": true,
+  "current_stage_score_assessment_status": "awaiting_independent_review_model1.2",
+  "ui_actual_ref": "agent-work/evidence/TABLES1-UI-0004/ui-manifest.json",
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -7910,9 +8010,9 @@
   "task_id": "HX-BL-043",
   "review_completed": true,
   "release_readiness": "ready_awaiting_owner_publication_permission",
-  "bounded_feature_accepted": true,
+  "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-10T2303-programmer-TABLES1-App-v12-UI.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-11T0004-programmer-TABLES1-UI-review.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -7961,8 +8061,8 @@
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
   "local_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-  "checks_evidence_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6/provenance-checks.json",
-  "execution_status": "checkpoint_completed_ready_for_same_task_continuation",
+  "checks_evidence_ref": "agent-work/evidence/TABLES1-UI-0004/checks.json",
+  "execution_status": "programmer_completed_independent_review_ready",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8095,14 +8195,15 @@
     "ci_run": 42736194155,
     "checks": "all_passed"
   },
-  "pr_head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+  "pr_head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
   "pr_updated": true,
   "execution_routing": {
     "task_id": "HX-BL-043",
     "stage_id": "TABLES1",
-    "role": "programmer",
+    "role": "reviewer",
     "status": "ready",
-    "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-043-TABLES1-programmer.json",
+    "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+    "handoff_ref": "agent-work/handoffs/2026-11-11T0004-programmer-TABLES1-UI-review.json",
     "release_authorized": false
   },
   "last_team_coordination": {
@@ -8319,7 +8420,7 @@
       "Update existing PR496 only after coherent implementation; independent combined review+score_assessment1.2; separate owner publication gate."
     ]
   },
-  "pr_draft": true,
+  "pr_draft": false,
   "latest_DETAIL1_marker_extent": {
     "run_id": "2026-11-10T0800-programmer-HX-BL-051-marker-extent",
     "head_sha": "a4e8a484efcdf1bd8c38efb9e37a22c4e39a9dd9",
@@ -8371,15 +8472,15 @@
   },
   "reviewed_fixes_accepted": true,
   "current_evidence_gaps": [
-    "Blocking shared UI: schema2 accepted calls/children/nextEntry/description not yet rendered/editable by legacy row; no actualUIpresentation",
-    "Need realinteractive dirty/IME/Cancel/focus plus fullDETAIL1/E7/E8/water/loss UI scenarios, then independent fullfeature review/score1.2",
-    "CI Node still running at checkpoint; local final394/394 with TypeScript/build and CIbrowser/RNG passed"
+    "New UI workflow uses a finite authored imported map and supported catalog rows; it is not a full game/corpus or physical-device/accessibility assessment.",
+    "Existing Node remap/loss and general E7/E8/DETAIL1 browser suites provide separate regression evidence; every TABLES1 schema2 content + owner-move/water/checkpoint/DETAIL1 UI combination still requires independent T10 review.",
+    "No independent whole-package T01–T16 verdict or score_assessment1.2 on this SHA yet; publication permission is separate."
   ],
   "full_package_review_ready": false,
   "bounded_review_ready": false,
-  "ui_actual_shown_for_new_sha": false,
+  "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
-  "independent_accepted": true,
+  "independent_accepted": false,
   "latest_DETAIL1_export_style": {
     "run_id": "2026-11-10T1156-programmer-HX-BL-051-export-style",
     "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
@@ -8678,5 +8779,64 @@
     "result_ref": "agent-work/results/2026-11-10T2303-programmer-TABLES1-App-v12.json",
     "handoff_ref": "agent-work/handoffs/2026-11-10T2303-programmer-TABLES1-App-v12-UI.json",
     "full_stage_complete": false
+  },
+  "previous_execution_before_TABLES1_UI": {
+    "run_id": "2026-11-11-manual-programmer-PR496-finish",
+    "task_id": "HX-BL-051",
+    "stage_id": "PR496-release-preparation",
+    "role": "programmer",
+    "claim_ref": "agent-work/claims/2026-11-11-manual-programmer-PR496-finish.json",
+    "status": "completed",
+    "execution_running": false,
+    "head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+    "result_ref": "agent-work/results/2026-11-11-manual-programmer-PR496-finish.json"
+  },
+  "previous_TABLES1_UI_review_context": {
+    "reviewed_sha": null,
+    "review_result_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json",
+    "score_assessment_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/score-assessment1.2.json"
+  },
+  "review_base_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+  "latest_TABLES1_UI": {
+    "run_id": "2026-11-11T0004-programmer-TABLES1-UI",
+    "head_sha": "6d5c9f4f6ec6b3a80355157e1d5e481d4d55a868",
+    "result_ref": "agent-work/results/2026-11-11T0004-programmer-TABLES1-UI.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-11T0004-programmer-TABLES1-UI-review.json",
+    "next_role": "reviewer",
+    "review_ready": true,
+    "ui_actual_shown": true,
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-11 00:04:11 UTC",
+        "status": "checked",
+        "is_enabled": true,
+        "method": "automations.peek"
+      },
+      "end": {
+        "checked_at": "2026-11-11 00:50:45 UTC",
+        "status": "checked",
+        "is_enabled": true,
+        "method": "automations.peek"
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "limitation": "Actual point-in-time checks only; later service state is not guaranteed. Schedule and automation instructions unchanged.",
+      "final_pointer_check": {
+        "checked_at": "2026-11-11 00:53:04 UTC",
+        "status": "checked",
+        "is_enabled": true,
+        "method": "automations.peek"
+      }
+    },
+    "storage_verification": {
+      "data_commit_sha": "c287519aebde08d8d0ee1b7e4ca24fc1ce60c4b9",
+      "UTF8_files_exact": 22,
+      "PNG_files": 8,
+      "PNG_integrity": "Independent decoded-byte Git blob SHA1 matches create_blob; final directory blobSHA verified",
+      "readback": "passed",
+      "latest_written_last": true
+    },
+    "source_CI_run": 42932730122
   }
 }
