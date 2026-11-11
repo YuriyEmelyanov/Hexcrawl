@@ -1,0 +1,355 @@
+{
+  "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "method": "Fixed authored/core fixtures and existing App harness; ten checks passed. No random generation survey, implementation changes or rendered UI assertion.",
+  "checks": [
+    {
+      "id": "WWN-P01",
+      "input": {
+        "nodes": [
+          {
+            "id": "L",
+            "kind": "lake",
+            "lakeHexCount": 2
+          },
+          {
+            "id": "i0",
+            "kind": "open"
+          },
+          {
+            "id": "i1",
+            "kind": "open"
+          },
+          {
+            "id": "o0",
+            "kind": "sea"
+          },
+          {
+            "id": "o1",
+            "kind": "sea"
+          }
+        ],
+        "edges": [
+          {
+            "id": "in0",
+            "from": "i0",
+            "to": "L",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 2
+          },
+          {
+            "id": "in1",
+            "from": "i1",
+            "to": "L",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 2
+          },
+          {
+            "id": "out0",
+            "from": "L",
+            "to": "o0",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 1
+          },
+          {
+            "id": "out1",
+            "from": "L",
+            "to": "o1",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 1
+          }
+        ]
+      },
+      "actual": {
+        "core_valid": true,
+        "solve_status": "solved",
+        "input_unchanged": true
+      },
+      "expected_difference": "Two outgoing connections exceed WWN selected-body maximum1.",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P02",
+      "input": {
+        "nodes": [
+          {
+            "id": "L",
+            "kind": "lake",
+            "lakeHexCount": 1
+          },
+          {
+            "id": "o0",
+            "kind": "sea"
+          }
+        ],
+        "edges": [
+          {
+            "id": "out0",
+            "from": "L",
+            "to": "o0",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 1
+          }
+        ]
+      },
+      "actual": {
+        "core_valid": true
+      },
+      "expected_difference": "No inlet fails selected WWN minimum1.",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P03",
+      "input": {
+        "nodes": [
+          {
+            "id": "L",
+            "kind": "lake",
+            "lakeHexCount": 4
+          },
+          {
+            "id": "i0",
+            "kind": "open"
+          },
+          {
+            "id": "i1",
+            "kind": "open"
+          }
+        ],
+        "edges": [
+          {
+            "id": "in0",
+            "from": "i0",
+            "to": "L",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 2
+          },
+          {
+            "id": "in1",
+            "from": "i1",
+            "to": "L",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 2
+          }
+        ]
+      },
+      "actual": {
+        "core_valid": true
+      },
+      "interpretation": "Degree subset matches WWN; no whole-profile claim.",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P04",
+      "input": {
+        "nodes": [
+          {
+            "id": "A",
+            "kind": "open"
+          },
+          {
+            "id": "B",
+            "kind": "open"
+          },
+          {
+            "id": "J",
+            "kind": "confluence"
+          },
+          {
+            "id": "S",
+            "kind": "sea"
+          }
+        ],
+        "edges": [
+          {
+            "id": "a",
+            "from": "A",
+            "to": "J",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 2
+          },
+          {
+            "id": "b",
+            "from": "B",
+            "to": "J",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 1
+          },
+          {
+            "id": "c",
+            "from": "J",
+            "to": "S",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 3
+          }
+        ]
+      },
+      "actual": {
+        "core_valid": true
+      },
+      "interpretation": "Independent confluence is supported.",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P05",
+      "input": {
+        "nodes": [
+          {
+            "id": "A",
+            "kind": "source"
+          },
+          {
+            "id": "S",
+            "kind": "sea"
+          }
+        ],
+        "edges": [
+          {
+            "id": "a",
+            "from": "A",
+            "to": "S",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 1
+          }
+        ]
+      },
+      "actual": {
+        "core_valid": true,
+        "height": 1
+      },
+      "interpretation": "Generic height is not the source semantic terrain-class mapping.",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P06",
+      "input": {
+        "nodes": [
+          {
+            "id": "A",
+            "kind": "open"
+          },
+          {
+            "id": "F",
+            "kind": "continuation"
+          },
+          {
+            "id": "B",
+            "kind": "sea"
+          },
+          {
+            "id": "C",
+            "kind": "sea"
+          }
+        ],
+        "edges": [
+          {
+            "id": "a",
+            "from": "A",
+            "to": "F",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 2
+          },
+          {
+            "id": "b",
+            "from": "F",
+            "to": "B",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 1
+          },
+          {
+            "id": "c",
+            "from": "F",
+            "to": "C",
+            "regionId": 1,
+            "height": 1,
+            "fullness": 1
+          }
+        ]
+      },
+      "actual": {
+        "core_valid": false,
+        "has_DEGREE_issue": true,
+        "has_CYCLE_issue": false
+      },
+      "interpretation": "Ordinary fork unsupported; not the WWN rejoin diagnostic.",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P07",
+      "input_ref": "WWN-P01",
+      "operation": "JSON stringify/parse and validateRiverNetwork",
+      "actual": {
+        "valid_after_JSON": true
+      },
+      "scope": "numerical fixture only; not App save",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P08",
+      "input": {
+        "region_hexes": "q=-3..3,r=-2..2; center first, anchor second",
+        "nextLakeId": 20,
+        "initial_terrain_empty": true,
+        "edit": {
+          "target": "lake",
+          "hexKeys": [
+            "-2,0",
+            "0,0",
+            "2,0"
+          ]
+        }
+      },
+      "operation": "prepareWaterGeometry",
+      "actual": {
+        "distinct_lake_ids": 3,
+        "source_unchanged": true
+      },
+      "scope": "manual geometry component only",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P09",
+      "fixture": "test/fixtures/lake-reentry-map.json",
+      "operation": "Actual App handleImportJson→createSaveData→new harness handleImportJson→createSaveData; guardRandom on both; no world generation",
+      "actual": {
+        "alerts": 0,
+        "map_exact": true,
+        "generation_state_exact": true
+      },
+      "scope": "real App handlers, outer JSX not rendered",
+      "status": "executed_passed"
+    },
+    {
+      "id": "WWN-P10",
+      "fixture": "test/fixtures/lake-reentry-map.json",
+      "operation": "buildRegionRiverNetwork(...,complete=true); inspect kind=lake nodes and external edge counts",
+      "actual": {
+        "at_least_one_lake_node": true
+      },
+      "unarchived_detail": "Detailed node/port array was in local output but could not be retrieved after execution environment loss; no count invented.",
+      "status": "executed_passed"
+    }
+  ],
+  "execution_summary": {
+    "passed": 10,
+    "failed": 0
+  },
+  "fixture_inventory_correction": "First diagnostic mistakenly chose empty e6-water-editor and failed the nonempty-lake assertion. Replaced with existing lake-reentry-map because it actually contains16rivers and lake terrain; rerun ten checks passed. This was a probe-fixture correction, not a product failure.",
+  "artifact_limitations": {
+    "status": "became_unavailable_after_checks",
+    "error": "exec-server transport disconnected; recovery timed out after45s",
+    "effect": "Local detailed probe JSON and full focused-test stdout could not be reread. Captured success summaries and exact inputs are preserved; no browser/visual evidence claimed."
+  }
+}
