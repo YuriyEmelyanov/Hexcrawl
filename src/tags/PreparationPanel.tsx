@@ -2,14 +2,26 @@ import {useEffect,useMemo,useRef,useState} from 'react';
 import {TableResultRow} from './TableResultRow';
 import {KnaveContentRow} from './KnaveContentRow';
 import {knaveResultText,type KnaveCatalog,type KnaveTable} from './knave';
-import {preparationLink,preparationView,type PreparationInput,type PreparationCommand,type TableCall} from './tablePreparation';
+import {preparationLink,preparationView,type PreparationInput,type PreparationCommand,type TableCall,type PreparationState} from './tablePreparation';
 type Ticket={revision:number;token:object};
-type Props={input:PreparationInput;catalog:KnaveCatalog;owner:string;language:string;disabled:boolean;animation?:{slot?:number;revision:number;expiresAt:number};onLegacyRoll:(part:'primary'|'trait'|'both')=>boolean;context:()=>Ticket;commit:(commands:PreparationCommand[],ticket:Ticket)=>boolean;onDraft:(active:boolean)=>void};
+type Props={input:PreparationInput;catalog:()=>KnaveCatalog;owner:string;language:string;disabled:boolean;animation?:{slot?:number;revision:number;expiresAt:number};onLegacyRoll:(part:'primary'|'trait'|'both')=>boolean;context:()=>Ticket;commit:(commands:PreparationCommand[],ticket:Ticket)=>boolean;onDraft:(active:boolean)=>void};
 const names:Record<KnaveTable,{ru:string;en:string}>={locations:{ru:'Место',en:'Location'},structures:{ru:'Постройка',en:'Structure'},dungeons:{ru:'Подземелье',en:'Dungeon'},place_traits:{ru:'Особенность места',en:'Place trait'}};
 type Draft={kind:'select'|'description';ticket:Ticket;target:number|null;link:boolean;table:KnaveTable;mode:'manual'|'roll';row:string;search:string;text:string;initialText:string};
-export function PreparationPanel({input,catalog,owner,language,disabled,animation,onLegacyRoll,context,commit,onDraft}:Props){
+/** Catalog lookup and projection are read-only and must fail closed, not crash App. */
+export function PreparationPanel(props:Props){
+ const prepared=useMemo(()=>{try{const catalog=props.catalog();return {catalog,view:preparationView(props.input,catalog,new Set(Object.keys(props.input?.byPoi??{})))};}catch{return null;}},[props.input,props.catalog]);
+ if(!prepared){
+  const place=props.input?.byPoi[props.owner],ru=props.language==='ru';
+  return <section data-preparation data-preparation-owner={props.owner} className="preparation-panel">
+   <p role="alert">{ru?'Таблицы недоступны. Сохранённые подсказки доступны для чтения.':'Tables are unavailable. Saved prompts remain readable.'}</p>
+   {props.input?.schemaVersion===1&&props.input.byPoi[props.owner]?<KnaveContentRow content={props.input.byPoi[props.owner]} owner={props.owner} language={props.language} disabled onRoll={props.onLegacyRoll}/>:place&&'calls' in place?<>{place.calls.map(c=><p key={c.id}>{names[c.table][ru?'ru':'en']}: #{c.sourceRow} {knaveResultText(c,c.table,props.language)}{c.nextEntry?` → #${c.nextEntry.sourceRow}: ${knaveResultText(c.nextEntry,c.nextEntry.table,props.language)}`:''}</p>)}<p className="preparation-description">{place.description}</p></>:null}
+  </section>;
+ }
+ return <PreparationEditor {...props} catalog={prepared.catalog} view={prepared.view}/>;
+}
+type ReadyProps=Omit<Props,'catalog'>&{catalog:KnaveCatalog;view:PreparationState};
+function PreparationEditor({input,catalog,view,owner,language,disabled,animation,onLegacyRoll,context,commit,onDraft}:ReadyProps){
  const ru=language==='ru',lang=ru?'ru':'en',word=(a:string,b:string)=>ru?a:b;
- const view=useMemo(()=>preparationView(input,catalog,new Set(Object.keys(input?.byPoi??{}))),[input,catalog]);
  const place=view.byPoi[owner],calls=place?.calls??[],roots=calls.filter(c=>c.parentId===undefined);
  const [,setAnimationTick]=useState(0);
  const [draft,setDraft]=useState<Draft|null>(null),[error,setError]=useState('');
