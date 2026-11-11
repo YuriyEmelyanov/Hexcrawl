@@ -55,15 +55,15 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "task_id": "HX-RSR-DW-L1-SOURCE-SCREEN",
-    "game_id": "DW",
-    "layer": "L1",
+    "task_id": "HX-RSR-MOTH-L1-RESOURCE-SCREEN",
+    "game_id": "MOTH",
     "status": "candidate_reassess_fresh_priorities",
-    "action": "Проверить действующие источники L1 Dungeon World (overall9): собственная география и операции рисования карты с пробелами; сначала existing matrix/source inventory. Сравнить существенный рыночный пробел перед новым разбором. Завершённую WWN гидрологию не повторять без нового основания."
+    "layer": "L1",
+    "action": "Сначала прочитать действующие материалы Mothership: оценить один существенный пробел создания карты (корабль/станция/планета отдельно от гекс-региона) против сильного нового кандидата; не повторять закрытые Dolmenwood/WWN срезы."
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-11T0133-WWN-EN-RU-hydrology",
+  "last_completed_run": "2026-11-11T0227-DW-Warklegnaw-map-practice",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -158,7 +158,8 @@
     "agent-work/research/runs/2026-11-10T2231-DB-Trudvang-screen.json",
     "agent-work/research/runs/2026-11-10T2330-DB-own-world-practice.json",
     "agent-work/research/runs/2026-11-11T0033-WWN-hydrology-runtime.json",
-    "agent-work/research/runs/2026-11-11T0133-WWN-EN-RU-hydrology.json"
+    "agent-work/research/runs/2026-11-11T0133-WWN-EN-RU-hydrology.json",
+    "agent-work/research/runs/2026-11-11T0227-DW-Warklegnaw-map-practice.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -175,20 +176,20 @@
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
     "start": {
-      "checked_at": "2026-11-11T01:33:52.605Z",
+      "checked_at": "2026-11-11T02:28:09.408Z",
       "automations": [
         {
-          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
           "is_enabled": true
         },
         {
-          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
           "is_enabled": true
         }
       ]
     },
     "end": {
-      "checked_at": "2026-11-11T01:38:33.074Z",
+      "checked_at": "2026-11-11T02:32:40.151Z",
       "automations": [
         {
           "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
@@ -199,12 +200,13 @@
           "is_enabled": true
         }
       ]
-    }
+    },
+    "restoration_performed": false
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-11T0133-WWN-EN-RU-hydrology.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-11T0227-DW-Warklegnaw-map-practice.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/checkpoints/WWN-EN-RU-hydrology.json",
+  "checkpoint_ref": "agent-work/research/checkpoints/DW-Warklegnaw-map-practice.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-10-research-outcomes.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -841,5 +843,28 @@
     "evidence_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json",
     "clauses": 7,
     "status": "completed_bounded_source_collation"
+  },
+  "latest_DW_own_map_practice": {
+    "result_ref": "agent-work/research/runs/2026-11-11T0227-DW-Warklegnaw-map-practice.json",
+    "evidence_ref": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json",
+    "identity_correction_ref": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json#DW-IDENTITY-CORRECTION-20261111"
+  },
+  "superseded_candidate_identity_error": {
+    "id": "DW-IDENTITY-CORRECTION-20261111",
+    "before": "Previous run next_candidate called game_id DW Dungeon World and cited overall9",
+    "after": "DW resolves to Dolmenwood in active ranking; Dungeon World has no inherited DW rank or audience. Wrong next-candidate routing superseded.",
+    "scope_audited": [
+      "active ranking DW name/edition/source chain",
+      "previous immutable run/checkpoint and current state/latest next_candidate",
+      "DW Foundry result: consistently standalone Dolmenwood",
+      "X29: legacy Wormskin+homebrewKnave",
+      "WWN evidence mentioning first campaign Dungeon World: cross-system observation, not DW identity"
+    ],
+    "active_ranking_changed": false,
+    "historical_run_rewritten": false,
+    "evidence_refs": [
+      "agent-work/market/three-scenario-ranking-2026-11-06.json#DW",
+      "agent-work/research/runs/2026-11-11T0133-WWN-EN-RU-hydrology.json#next_candidate"
+    ]
   }
 }
