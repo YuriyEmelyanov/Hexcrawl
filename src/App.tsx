@@ -1,5 +1,5 @@
-import {assertFeatureMap,fillFeatureMap} from './tags/pf2Map';
-import type {FeaturePreparation} from './tags/pf2Features';
+import {assertFeatureMap,fillFeatureMap,featureLossesForMap,retainFeaturePreparation} from './tags/pf2Map';
+import type {FeaturePreparation,PreparedFeature} from './tags/pf2Features';
 import {applyPreparation,fillPreparation,type PreparationCommand,type TableCall} from './tags/tablePreparation';
 import {summarizeDetailCell,detailMarkerGroups} from './detailSummary';
 import {finalizeDryPoiLocations} from './finalPoiPlacement';
@@ -1436,7 +1436,7 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
 }
 
 type WaterEditOptions=SeaChoices&{acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
-type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'obstacle'|'knave'|'classification';key:string;value:unknown};
+type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'obstacle'|'knave'|'classification'|'pf2';key:string;value:unknown};
 /** Full E6 detached preparation. Staged preview answers never reach a setter. */
 function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOptions={}){
   const geometry=prepareWaterGeometry(map,edit);
@@ -1557,6 +1557,8 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
     for(const loss of removed){losses.push({id:`knave:${loss.kind}:${loss.key}`,type:'knave',key:loss.key,value:{kind:loss.kind,data:knaveLossValue(layer,loss)}});dropKnaveLoss(layer,loss);}
     candidate={...candidate,knave:layer};
   }
+  for(const f of featureLossesForMap(map.featurePreparation,candidate))losses.push({id:`pf2:${f.id}`,type:'pf2',key:`feature:${f.id}`,value:f});
+  candidate={...candidate,featurePreparation:retainFeaturePreparation(map.featurePreparation,candidate)};
   candidate=checkedRiverMap({...candidate,editorNames:authored,toponyms:names,tags});assertGeneratedIds(candidate);
   const unresolvedLosses=losses.filter(loss=>!options.acceptedLosses?.includes(loss.id));
   return {map:candidate,geometry,sea,losses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
@@ -13667,6 +13669,8 @@ export function App() {
     ? language==='ru' ? (error.capacity==='owner'?'На объекте уже 64 тега. Карта не изменена.':'В этом тексте уже 8 языков. Карта не изменена.')
       : (error.capacity==='owner'?'This object already has 64 tags. Your map is unchanged.':'This text already has 8 languages. Your map is unchanged.')
     : language==='ru'?'Не удалось изменить тег. Карта не изменена.':'Could not change tag. Your map is unchanged.';
+  const pf2FeatureText=(f:PreparedFeature)=>`${f.nameOverride??f.template.title[language==='ru'?'ru':'en']} — ${(f.descriptionOverride??f.template.description[language==='ru'?'ru':'en']).slice(0,100)}`;
+  const pf2LossText=(lost:PreparedFeature[])=>`${language==='ru'?'Будут удалены подготовленные места PF2':'Prepared PF2 places will be removed'} (${lost.length}): ${lost.slice(0,5).map(pf2FeatureText).join('; ')}${lost.length>5?' …':''}. ${language==='ru'?'Undo вернёт данные точно. Продолжить?':'Undo restores exact data. Continue?'}`;
   const commitManualMap = (map: MapSnapshot, reconcileNames = true,identityMoves:ReadonlyMap<string,string|null>=new Map()) => {
     try {
       // Preserve a settlement label before the type ceases to enumerate it.
@@ -13681,6 +13685,8 @@ export function App() {
           const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
       const classificationLost=classificationLosses(map.classification,knaveMapContext(map));
       if(classificationLost.length){if(!window.confirm(language==='ru'?`Изменение удалит отметки проходимости/обнаружения (${classificationLost.length}). Отмена вернёт их.`:`This edit removes terrain/discovery annotations (${classificationLost.length}). Undo can restore them.`))return false;map={...map,classification:retainClassification(map.classification,knaveMapContext(map))};}
+      const pf2Lost=featureLossesForMap(map.featurePreparation,map);
+      if(pf2Lost.length){if(!window.confirm(pf2LossText(pf2Lost)))return false;map={...map,featurePreparation:retainFeaturePreparation(map.featurePreparation,map)};}
       map=reconcileDetailMapIdentities(map,identityMoves);
       checkedRiverMap(map);
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
@@ -14055,9 +14061,10 @@ export function App() {
     }
     map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
     map.gmNotesByHexKey = {...notes};
+    if(pf2EnabledRef.current&&generationMode==='classic'&&!kingdomJob)map=fillFeatureMap(map,generationRef.current.masterSeed);
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] });
-    updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateClassification(map.classification);updateKnave(map.knave);updateFeaturePreparation(map.featurePreparation);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
+    updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateClassification(map.classification);updateKnave(map.knave);updateFeaturePreparation(map.featurePreparation);updateTags(map.tags??emptyTags());updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
   const preparationTokens=useRef(new WeakMap<object,{revision:number;owner:string}>());
@@ -14411,23 +14418,27 @@ export function App() {
   };
 
   const resetMap = () => resetMapToMode();
+  const pf2ActionsRef=useRef<{profile:(enabled:boolean)=>boolean;fill:()=>boolean}>({profile:()=>false,fill:()=>false});
   const choosePF2Profile=(enabled:boolean)=>{
+    if(preparationNavigation.current){requestPreparationExit(()=>pf2ActionsRef.current.profile(enabled));return false;}
     if(generationMode!=='classic'||mutationBlocked()||preparationNavigation.current||notesEditorKey!==null||obstacleDraftRef.current)return false;
     if(enabled===pf2EnabledRef.current)return false;
     const before=captureDocument(),after=copyDocument({...before,pf2Enabled:enabled,knaveEnabled:enabled?false:before.knaveEnabled});
     recordTransaction(before,after);applyPreparedDocument(after);return true;
   };
-  const fillPF2=(expectedRevision=documentRevision.current)=>{
+  const fillPF2=(expectedRevision=renderedDocumentRevision)=>{
+    if(expectedRevision!==documentRevision.current)return false;
+    if(preparationNavigation.current){requestPreparationExit(()=>pf2ActionsRef.current.fill());return false;}
     if(!pf2EnabledRef.current||generationMode!=='classic'||expectedRevision!==documentRevision.current||mutationBlocked()||preparationNavigation.current||notesEditorKey!==null||obstacleDraftRef.current)return false;
     try{const before=captureDocument(),map=fillFeatureMap(before.map,before.map.generation.masterSeed);if(map===before.map)return false;
       const after=copyDocument({...before,map});recordTransaction(before,after);applyPreparedDocument(after);return true;
     }catch{setEditError(language==='ru'?'Не удалось наполнить карту PF2. Карта не изменена.':'PF2 filling failed. Your map is unchanged.');return false;}
   };
+  pf2ActionsRef.current={profile:choosePF2Profile,fill:()=>fillPF2()};
   const chooseKnaveProfile=(enabled:boolean)=>{
     if(generationMode!=='classic'||mutationBlocked())return false;
     if(enabled===knaveEnabledRef.current)return true;
     const layer=knaveRef.current??(enabled?newKnaveLayer():undefined);
-    if(!regions.length&&!hexTerrainByKey.size&&!kingdoms.length){documentRevision.current++;updateKnave(layer);updateKnaveEnabled(enabled);if(enabled)updatePF2Enabled(false);return true;}
     finishNotesGroup();
     const before=captureDocument(),after={...before,map:{...before.map,knave:layer},knaveEnabled:enabled,pf2Enabled:enabled?false:before.pf2Enabled};
     recordTransaction(before,after);applyPreparedDocument(after);return true;
@@ -14478,7 +14489,7 @@ export function App() {
   // числе изменения, которые новый регион внёс в соседние регионы.
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
-    snapshot={...snapshot,featurePreparation:featurePreparationRef.current??snapshot.featurePreparation,classification:retainClassification(classificationRef.current,knaveMapContext(snapshot)),knave:retainedKnaveCheckpoint(snapshot)};
+    snapshot={...snapshot,featurePreparation:retainFeaturePreparation(featurePreparationRef.current??snapshot.featurePreparation,snapshot),classification:retainClassification(classificationRef.current,knaveMapContext(snapshot)),knave:retainedKnaveCheckpoint(snapshot)};
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
     updateSeaIdentity(snapshot);updatePhysicalGrid(snapshot.physicalGrid);updateClassification(snapshot.classification);updateKnave(snapshot.knave);updateFeaturePreparation(snapshot.featurePreparation);
@@ -14541,6 +14552,7 @@ export function App() {
     return window.confirm(language==='ru'?`Будет восстановлено исходное состояние рек. Изменённые русла: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Ручные отметки: ${featuresChanged?'будут заменены':'сохранятся'}. Отмена вернёт карту точно. Продолжить?`:`Original river state will be restored. Changed routes: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Manual markers: ${featuresChanged?'will be replaced':'retained'}. Undo restores this map exactly. Continue?`);
   };
   const checkPoiNameCheckpoint=(checkpoint:MapSnapshot)=>{try{
+    const pf2Lost=featureLossesForMap(featurePreparationRef.current,checkpoint);if(pf2Lost.length&&!window.confirm(pf2LossText(pf2Lost)))return false;
     const lost=classificationLosses(classificationRef.current,knaveMapContext(checkpoint));if(lost.length&&!window.confirm(language==='ru'?`Контрольная точка удалит отметки проходимости/обнаружения (${lost.length}). Продолжить?`:`The checkpoint removes terrain/discovery annotations (${lost.length}). Continue?`))return false;
 retainPoiNames(checkpoint,editorNamesRef.current);
     const losses=knaveRef.current?knaveLosses(knaveRef.current,knaveMapContext(checkpoint)):[];
@@ -14562,6 +14574,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     const before = captureDocument();
     map.classification=retainClassification(classificationRef.current,knaveMapContext(map));
     map.knave=retainedKnaveCheckpoint(map);
+    map.featurePreparation=retainFeaturePreparation(featurePreparationRef.current??map.featurePreparation,map);
     const after = { ...before, map, generationHistory: history.slice(0,-1),
       selectedHex: checkpoint.regions.length ? checkpoint.regions[checkpoint.regions.length-1].centerHex : START_HEX };
     recordTransaction(before,after); applyDocument(after);
@@ -15644,6 +15657,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   </div>:null;
   const waterLossText=(loss:WaterLoss):string=>{
     const ru=language==='ru';
+    if(loss.type==='pf2')return `${ru?'Удалить место PF2':'Remove PF2 place'}: ${pf2FeatureText(loss.value as PreparedFeature)}`;
     if(loss.type==='classification')return `${ru?'Удалить отметку проходимости/обнаружения':'Remove terrain/discovery annotation'} · ${loss.key}`;
     if(loss.type==='knave'){const v=loss.value as {kind:string;data:{mode?:string;clueText?:string}|string};return `${ru?'Удалить':'Delete'} ${v.kind==='difficulty'?(ru?'отметку проходимости':'terrain difficulty'):v.kind==='content'?(ru?'содержимое точки':'point content'):(ru?'способ обнаружения и улику':'discovery and clue')} · ${loss.key}`;}
     if(loss.type==='lake')return `${ru?'Озеро исчезнет':'Lake will be removed'}: ${waterName(loss.key)}`;

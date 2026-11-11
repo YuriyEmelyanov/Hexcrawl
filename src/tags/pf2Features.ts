@@ -8,7 +8,8 @@ export type FeatureContext='forest'|'mountain'|'deadwood'|'swamp'|'desert'|'plai
 type Text={ru:string;en:string};
 export type FeatureSeed={id:string;context:string;category:string;title:Text;description:Text;authorship:string;basis:string;source_context_ref:string;source_url:string;creates_geography:boolean;mechanical_stats:null};
 export type UnitRecord={q:number;r:number;outcome:number;category:FeatureCategory;context:FeatureContext;featureId:number|null;disposition:'active'|'standard'|'removed'};
-export type PreparedFeature={id:number;unitKey:string;worldAnchor:{x:number;y:number};category:Exclude<FeatureCategory,'standard'>;context:FeatureContext;template:FeatureSeed;nameOverride?:string;descriptionOverride?:string;discoveryOverride?:'obvious'|'passage'|'search'};
+export type PreparedFeature={id:number;unitKey:string;worldAnchor:{x:number;y:number};category:Exclude<FeatureCategory,'standard'>;context:FeatureContext;template:FeatureSeed;nameOverride?:string;descriptionOverride?:string;categoryOverride?:Exclude<FeatureCategory,'standard'>;discoveryOverride?:'obvious'|'passage'|'search'};
+export const effectiveFeatureCategory=(f:PreparedFeature)=>f.categoryOverride??f.category;
 export type FeaturePreparation={schemaVersion:1;profileId:'pf2-gmc-feature-v1';catalogVersion:string;physicalUnit:PhysicalUnit;coordinateBasis:'known'|'project_assumption';nextFeatureId:number;units:Record<string,UnitRecord>;features:Record<string,PreparedFeature>};
 export type FeatureCandidate=DetailCell&{context:FeatureContext;protected:boolean};
 export const pf2FeatureCatalog:readonly FeatureSeed[]=data.entries as FeatureSeed[];
@@ -58,7 +59,7 @@ export function validateFeaturePreparation(input:unknown):asserts input is Featu
   }else if(raw.featureId!==null||(raw.disposition==='standard')!==(raw.category==='standard'))throw Error('Invalid PF2 disposition');
  }
  for(const [id,raw]of Object.entries(state.features)){
-  plain(raw,'PF2 feature',['id','unitKey','worldAnchor','category','context','template'],['nameOverride','descriptionOverride','discoveryOverride']);
+  plain(raw,'PF2 feature',['id','unitKey','worldAnchor','category','context','template'],['nameOverride','descriptionOverride','categoryOverride','discoveryOverride']);
   if(!safe(raw.id)||id!==String(raw.id)||raw.id>=state.nextFeatureId||!ids.has(raw.id))throw Error('Orphan PF2 feature');
   const unit=state.units[raw.unitKey];if(!unit||unit.featureId!==raw.id||unit.context!==raw.context||unit.category!==raw.category||!categories.includes(raw.category)||raw.category as string==='standard')throw Error('Invalid PF2 feature owner');
   plain(raw.worldAnchor,'PF2 anchor',['x','y']);const p=physicalUnitCenter(state.physicalUnit,unit);if(raw.worldAnchor.x!==p.x||raw.worldAnchor.y!==p.y)throw Error('Invalid PF2 anchor');
@@ -70,6 +71,7 @@ export function validateFeaturePreparation(input:unknown):asserts input is Featu
   for(const field of ['title','description']){const tx=plain(t[field],'PF2 bilingual text',['ru','en']);text(tx.ru,field==='title'?200:20000);text(tx.en,field==='title'?200:20000);}
   if(raw.nameOverride!==undefined)text(raw.nameOverride,200);if(raw.descriptionOverride!==undefined)text(raw.descriptionOverride,20000);
   if(raw.discoveryOverride!==undefined&&!['obvious','passage','search'].includes(raw.discoveryOverride))throw Error('Invalid PF2 discovery');
+  if(raw.categoryOverride!==undefined&&!['landmark','secret','resource'].includes(raw.categoryOverride))throw Error('Invalid PF2 category override');
  }
 }
 /** Pure all-or-nothing batch. No callback, UI effect, global stream or ID write
@@ -96,10 +98,11 @@ export function fillFeaturePreparation(input:FeaturePreparation,candidates:reado
  }
  validateFeaturePreparation(next);return next;
 }
-export function editPreparedFeature(input:FeaturePreparation,id:number,patch:{name?:string;description?:string;discovery?:'obvious'|'passage'|'search'}):FeaturePreparation {
- validateFeaturePreparation(input);plain(patch,'PF2 edit',[],['name','description','discovery']);if(!safe(id)||!input.features[String(id)])throw Error('Unknown PF2 feature');
+export function editPreparedFeature(input:FeaturePreparation,id:number,patch:{name?:string;description?:string;category?:Exclude<FeatureCategory,'standard'>;discovery?:'obvious'|'passage'|'search'}):FeaturePreparation {
+ validateFeaturePreparation(input);plain(patch,'PF2 edit',[],['name','description','category','discovery']);if(!safe(id)||!input.features[String(id)])throw Error('Unknown PF2 feature');
  const next=structuredClone(input),f=next.features[String(id)];
  if(patch.name!==undefined)f.nameOverride=patch.name;if(patch.description!==undefined)f.descriptionOverride=patch.description;if(patch.discovery!==undefined)f.discoveryOverride=patch.discovery;
+ if(patch.category!==undefined)f.categoryOverride=patch.category;
  validateFeaturePreparation(next);return JSON.stringify(next)===JSON.stringify(input)?input:next;
 }
 export function removePreparedFeature(input:FeaturePreparation,id:number):FeaturePreparation {

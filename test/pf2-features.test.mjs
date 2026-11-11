@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {physicalUnitWidth,physicalUnitCenter,physicalUnitCell,physicalUnitPolygon} from '../src/physicalUnit.ts';
-import {emptyFeaturePreparation,fillFeaturePreparation,featureCategory,featureContext,validateFeaturePreparation,editPreparedFeature,removePreparedFeature,pf2FeatureCatalog} from '../src/tags/pf2Features.ts';
+import {emptyFeaturePreparation,fillFeaturePreparation,featureCategory,featureContext,validateFeaturePreparation,editPreparedFeature,removePreparedFeature,pf2FeatureCatalog,effectiveFeatureCategory} from '../src/tags/pf2Features.ts';
 import {drawTagIndex} from '../src/tags/engine.ts';
 import {createDetailGrid,detailCellPolygon} from '../src/detailGrid.ts';
-import {featureCandidatesForMap,fillFeatureMap,assertFeatureMap} from '../src/tags/pf2Map.ts';
+import {featureCandidatesForMap,fillFeatureMap,assertFeatureMap,featureLossesForMap,retainFeaturePreparation} from '../src/tags/pf2Map.ts';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 import {createGenerationState} from '../src/worldRandom.ts';
@@ -43,6 +43,9 @@ test('PF2 batch300 preserves input, protected units, deterministic IDs/order and
  const prepared=fillFeatureMap(map,42);assertFeatureMap(prepared);assert.equal(Object.keys(prepared.featurePreparation.units).length,projected.length);
  const protectedMap={...map,gmNotesByHexKey:{'0,0':'Authored note'}};assert.equal(featureCandidatesForMap(protectedMap).find(c=>c.q===0&&c.r===0).protected,true);
  const bad=clone(prepared);bad.regions=[];assert.throws(()=>assertFeatureMap(bad));
+ const mb={...map,tags:{instances:[{owner:{kind:'region',id:1}}]}};assert.ok(featureCandidatesForMap(mb).every(c=>c.protected));
+ const authored={...map,editorNames:{'region:1':{ru:'Моя область',en:'My region'}}};assert.ok(featureCandidatesForMap(authored).every(c=>c.protected));
+ const retained=retainFeaturePreparation(prepared.featurePreparation,{...prepared,regions:[]});validateFeaturePreparation(retained);assert.equal(Object.keys(retained.features).length,0);assert.equal(retained.nextFeatureId,prepared.featurePreparation.nextFeatureId);assert.ok(Object.values(retained.units).every(u=>u.disposition!=='active'));
 });
 
 // Real document import/history needs App coverage; the detached contracts above
@@ -91,5 +94,37 @@ test('PF2 literal editing and deletion preserve sibling records, monotone IDs an
  const removed=removePreparedFeature(edited,id);assert.equal(removed.features[id],undefined);assert.equal(removed.units[k].disposition,'removed');assert.equal(removed.nextFeatureId,state.nextFeatureId);
  assert.strictEqual(fillFeaturePreparation(removed,candidates,42),removed);
  const literal=clone(edited);literal.features[id].template.title.ru='Accepted literal from saved catalog';validateFeaturePreparation(literal);assert.equal(literal.features[id].template.title.ru,'Accepted literal from saved catalog');
+ const category=editPreparedFeature(edited,id,{category:state.features[id].category==='secret'?'resource':'secret'});assert.equal(effectiveFeatureCategory(category.features[id]),category.features[id].categoryOverride);assert.deepEqual(category.units,edited.units);assert.deepEqual(category.features[id].template,edited.features[id].template);assert.equal(category.features[id].discoveryOverride,'search');
+ assert.throws(()=>editPreparedFeature(state,id,{category:'standard'}));
  assert.throws(()=>editPreparedFeature(state,id,{description:'x'.repeat(20001)}));
+});
+
+// Separate integration risks: the E6 explicit-loss path and the generator's
+// accepted/checkpoint boundary. Detached ledger tests cannot cover either.
+test('PF2 actual water loss preview requires explicit consent and restores exact data with Undo/Redo',async()=>{
+ const h=createGenerationHarness(0),d=regionFixture();d.generation=createGenerationState(0);d.map.regions[0].centerHex={q:1,r:0};d.map.regions[0].anchorHex={q:2,r:0};
+ h.injectFunction('readTextFile',async f=>f.text);h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});await h.render().handleImportJson({target:{files:[{text:JSON.stringify(d)}],value:''}});
+ h.render().choosePF2Profile(true);assert.equal(h.render().fillPF2(),true);
+ const stable=()=>clone(h.render().captureDocument()),before=stable(),f=Object.values(before.map.featurePreparation.features).find(f=>f.unitKey==='0,0');assert.ok(f);
+ h.render().setEditMode(true);assert.equal(h.render().startWaterDraft('lake','0,0'),true);assert.equal(h.render().finishWaterDraft(),false);
+ let a=h.render();assert.ok(a.waterPreview.plan,a.waterPreview.error);const loss=a.waterPreview.plan.losses.find(l=>l.type==='pf2');assert.equal(loss.value.id,f.id);assert.equal(loss.value.template.title.ru,f.template.title.ru);assert.deepEqual(stable(),before);
+ a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:[]},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),false);assert.deepEqual(stable(),before);
+ a=h.render();a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:a.waterPreview.plan.losses.map(l=>l.id)},preview:true});assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true);
+ const after=stable();assert.equal(after.map.featurePreparation.features[f.id],undefined);assert.equal(after.map.featurePreparation.units[f.unitKey].disposition,'removed');assert.equal(after.map.featurePreparation.nextFeatureId,before.map.featurePreparation.nextFeatureId);
+ h.render().undoMap();assert.deepEqual(stable(),before);h.render().redoMap();assert.deepEqual(stable(),after);
+});
+
+test('PF2 actual automatic continuation and checkpoint consent preserve survivors, IDs, streams and history',()=>{
+ const h=createGenerationHarness(0),control=createGenerationHarness(0),opts={targetSize:60,landType:'wild',biomeId:'open_plains',coastalPreference:'mainland'};
+ h.render().choosePF2Profile(true);h.render().safelyAddRegionToMap({q:0,r:0},opts);control.render().safelyAddRegionToMap({q:0,r:0},opts);
+ const stable=()=>clone(h.render().captureDocument()),first=stable(),plain=clone(control.render().captureDocument());assert.ok(first.map.featurePreparation);assert.ok(Object.keys(first.map.featurePreparation.features).length);assert.deepEqual(first.map.regions,plain.map.regions);assert.deepEqual(first.map.generation,plain.map.generation);
+ const anchor=first.map.candidateHexes[0];h.render().safelyAddRegionToMap(anchor,opts);const expanded=stable();assert.equal(expanded.map.regions.length,2);
+ for(const [id,f]of Object.entries(first.map.featurePreparation.features))assert.deepEqual(expanded.map.featurePreparation.features[id],f);
+ const losses=featureLossesForMap(expanded.map.featurePreparation,first.map);assert.ok(losses.length);
+ const prompts=[];h.setWindow({confirm:m=>{prompts.push(m);return false;},matchMedia:()=>({matches:false})});h.render().deleteLastRegion();assert.deepEqual(stable(),expanded);assert.ok(prompts.some(m=>m.includes('PF2')));
+ h.render().regenerateLastRegion();assert.deepEqual(stable(),expanded);assert.equal(h.render().pendingRegen,null);
+ h.setWindow({confirm:()=>true,matchMedia:()=>({matches:false})});h.render().deleteLastRegion();const deleted=stable();assert.deepEqual(deleted.map.regions,first.map.regions);assert.equal(deleted.map.featurePreparation.nextFeatureId,expanded.map.featurePreparation.nextFeatureId);
+ for(const f of losses)assert.equal(deleted.map.featurePreparation.units[f.unitKey].disposition,'removed');
+ for(const[id,f]of Object.entries(first.map.featurePreparation.features))assert.deepEqual(deleted.map.featurePreparation.features[id],f);
+ h.render().undoMap();assert.deepEqual(stable(),expanded);h.render().redoMap();assert.deepEqual(stable(),deleted);
 });
