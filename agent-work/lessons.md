@@ -755,3 +755,7 @@ HX-FB-014 and owner-decision-2026-11-11-PR496-unified-grid-correction: old DTL1.
 
 ## 2026-11-11 — GRID correction DTL1.1
 One selected-size grid/camera/local card contract differs from changing source generation resolution. Preserve this distinction; record substantial generator-boundary alternatives GRID-Q01, hand off independent A/B instead of silently choosing a new hydrology/region algorithm. A POI role/icon is not size; catalogue51type-contexts uses labelled product assumptions, measured/manual override wins. Conditional display cells are not empirical building extent. Proposal GRID-UI2 is code-native schematic, not runtime acceptance. Ref:agent-work/results/2026-11-11T0559-analyst-DETAIL1-grid.json
+
+
+## 2026-11-11 — DETAIL1 native select/camera checkpoint
+DTL1.1 viewStep changes camera by oldStep/newStep in one transaction; active-grid import/history must not clamp it to legacy0.2..6. Retire the old independent-camera test expectation, extend existing App case for roundtrip/Undo/dirty refusal and existing browser workflow for SVGscale, not a formula-mirroring new suite. Scale proof is not pixel-focus proof: centred small maps/scroll bounds still require actual focus diagnostics and possible viewport slack. Old source outlines/summary/candidates remain visible in partial798caf screenshots: do not call the whole GRID correction accepted. PR502 base501 is unfinishedPF2, requiring explicit final publication package disposition. Evidence:agent-work/evidence/DETAIL1-grid-camera-0701/checks.json
