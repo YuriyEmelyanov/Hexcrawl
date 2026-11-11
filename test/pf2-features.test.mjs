@@ -4,6 +4,10 @@ import {physicalUnitWidth,physicalUnitCenter,physicalUnitCell,physicalUnitPolygo
 import {emptyFeaturePreparation,fillFeaturePreparation,featureCategory,featureContext,validateFeaturePreparation,editPreparedFeature,removePreparedFeature,pf2FeatureCatalog} from '../src/tags/pf2Features.ts';
 import {drawTagIndex} from '../src/tags/engine.ts';
 import {createDetailGrid,detailCellPolygon} from '../src/detailGrid.ts';
+import {featureCandidatesForMap,fillFeatureMap,assertFeatureMap} from '../src/tags/pf2Map.ts';
+import {createGenerationHarness} from './helpers/generation-harness.mjs';
+import {regionFixture} from './helpers/region-fixture.mjs';
+import {createGenerationState} from '../src/worldRandom.ts';
 
 // New PF2 contracts cannot be exercised by Knave's d100/owner fixtures:
 // physical convention, processed unit ledger and batch-wide atomic refusal.
@@ -33,6 +37,38 @@ test('PF2 batch300 preserves input, protected units, deterministic IDs/order and
  const extended=fillFeaturePreparation(state,[{q:302,r:0,context:'aquatic',protected:false}],42);
  for(const [k,u]of Object.entries(state.units))assert.deepEqual(extended.units[k],u);
  assert.equal(pf2FeatureCatalog.length,17);assert.equal(state.physicalUnit.measurement,'opposite_vertices');
+ const cells=Array.from({length:900},(_,i)=>({q:i%30,r:Math.floor(i/30)}));
+ const map={regions:[{id:1,hexes:cells,centerHex:cells[0],pointsOfInterest:[],biomeId:'open_plains'}],hexTerrainByKey:new Map(),biomeOverrideByHexKey:new Map(),waterPoiByKey:new Map(),gmNotesByHexKey:{}};
+ const projected=featureCandidatesForMap(map);assert.ok(projected.length>250);assert.ok(projected.length<400);
+ const prepared=fillFeatureMap(map,42);assertFeatureMap(prepared);assert.equal(Object.keys(prepared.featurePreparation.units).length,projected.length);
+ const protectedMap={...map,gmNotesByHexKey:{'0,0':'Authored note'}};assert.equal(featureCandidatesForMap(protectedMap).find(c=>c.q===0&&c.r===0).protected,true);
+ const bad=clone(prepared);bad.regions=[];assert.throws(()=>assertFeatureMap(bad));
+});
+
+// Real document import/history needs App coverage; the detached contracts above
+// cannot prove that capture/save/restore retain the new layer or profile flag.
+test('PF2 App v13 roundtrip, profile history and invalid live references are atomic',async()=>{
+ const h=createGenerationHarness(0),base=regionFixture();base.generation=createGenerationState(0);
+ const load=async(h,data)=>{h.injectFunction('readTextFile',async f=>f.text);await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});h.render();};
+ const stable=h=>structuredClone(h.render().captureDocument());
+ await load(h,base);const before=stable(h),legacyVersion=h.render().createSaveData().version;
+ assert.equal(h.render().choosePF2Profile(true),true);assert.equal(h.render().createSaveData().version,13);assert.equal(stable(h).pf2Enabled,true);
+ h.render().undoMap();assert.deepEqual(stable(h),before);assert.equal(h.render().createSaveData().version,legacyVersion);
+ h.render().redoMap();const enabled=stable(h);assert.equal(enabled.pf2Enabled,true);
+ const map=fillFeatureMap(enabled.map,0);assert.ok(map.featurePreparation);assert.ok(Object.keys(map.featurePreparation.features).length);
+ const depth=h.render().undoHistory.length;assert.equal(h.render().fillPF2(),true);assert.equal(h.render().undoHistory.length,depth+1);
+ const accepted=stable(h),saved=h.render().createSaveData();assert.equal(saved.version,13);assert.deepEqual(accepted.map.featurePreparation,map.featurePreparation);
+ assert.equal(h.render().fillPF2(),false);assert.deepEqual(stable(h),accepted);
+ h.render().undoMap();assert.deepEqual(stable(h),enabled);h.render().redoMap();assert.deepEqual(stable(h),accepted);
+ assert.throws(()=>h.render().applyDocument({...accepted,map:{...accepted.map,regions:[]}}));assert.deepEqual(stable(h),accepted);
+ const restored=createGenerationHarness(99);await load(restored,saved);assert.deepEqual(stable(restored).map,accepted.map);assert.equal(stable(restored).pf2Enabled,true);
+ const snapshot=stable(restored),history=structuredClone([restored.render().undoHistory,restored.render().redoHistory]),alerts=[];
+ restored.setWindow({alert:m=>alerts.push(m),matchMedia:()=>({matches:false})});
+ const mutations=[s=>s.version=12,s=>s.map.featurePreparation.future=true,s=>{const f=Object.values(s.map.featurePreparation.features)[0];f.worldAnchor.x=100000;},s=>s.map.featurePreparation.coordinateBasis='known',s=>s.ui.knaveEnabled=true];
+ for(const mutate of mutations){const bad=clone(saved);mutate(bad);await load(restored,bad);assert.deepEqual(stable(restored),snapshot);assert.deepEqual(structuredClone([restored.render().undoHistory,restored.render().redoHistory]),history);}
+ assert.equal(alerts.length,mutations.length);
+ assert.equal(restored.render().choosePF2Profile(false),true);assert.deepEqual(stable(restored).map.featurePreparation,snapshot.map.featurePreparation);
+ restored.render().undoMap();assert.deepEqual(stable(restored),snapshot);
 });
 
 test('PF2 whole batch and strict snapshot validation reject malformed records without input writes',()=>{
