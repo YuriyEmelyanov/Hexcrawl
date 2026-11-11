@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-054",
+  "stage_id": "PF2-BATCH1",
+  "base_sha": "77a6ce64cd5cf6d9de1fc9ab0bd5fe621053e36c",
+  "head_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
+  "source": "git diff77a6ce6..8ada7b9; stable node:test top-level names and comparable runner totals; test blob78243be532e53b7845ee67adea4132ffd101dfea",
+  "suites": [
+    {
+      "suite": "Node/test/pf2-features.test.mjs",
+      "added": 2,
+      "removed": 0,
+      "modified": 3,
+      "base_cases": 5,
+      "head_cases": 7,
+      "scenarios": [
+        {
+          "kind": "added",
+          "test": "PF2 actual water loss preview requires explicit consent and restores exact data with Undo/Redo",
+          "risk": "Feature orphaning/loss without explicit E6 acceptance, accidental pre-commit write or replay drift",
+          "reuse_or_new_reason": "Existing E6 cases cover authored POI/water/tags but no PF2 feature/tombstone. Separate real App integration covers per-feature loss ID, rejection and exact Undo/Redo."
+        },
+        {
+          "kind": "added",
+          "test": "PF2 actual automatic continuation and checkpoint consent preserve survivors, IDs, streams and history",
+          "risk": "Autofill rewriting old features/world RNG and checkpoint orphaning; regeneration refusing too late",
+          "reuse_or_new_reason": "Existing import/history case has no actual generation or checkpoint lifecycle. One new compound case compares PF2 on/off geography/streams, survivor data and consent/refusal/history."
+        },
+        {
+          "kind": "modified",
+          "test": "PF2 batch300 preserves input, protected units, deterministic IDs/order and idempotent standard results",
+          "risk": "Authored region tags/names filled as free units; removal losing ledger",
+          "reuse_or_new_reason": "Extend current protected-mask test, no duplicate test for same projection path."
+        },
+        {
+          "kind": "modified",
+          "test": "PF2 literal editing and deletion preserve sibling records, monotone IDs and removed-unit tombstones",
+          "risk": "Category edit overwrites original outcome/template or erases explicit discovery",
+          "reuse_or_new_reason": "Extend existing editing contract, do not create a separate mirrored category test."
+        },
+        {
+          "kind": "modified",
+          "test": "PF2 App v13 roundtrip, profile history and invalid live references are atomic",
+          "risk": "Mutual empty PF2→Knave switch loses reversible flag state",
+          "reuse_or_new_reason": "Extend existing actual App profile/history test; preserve original E8 blank Knave contract without changing that regression test."
+        }
+      ],
+      "targeted_run": {
+        "executed": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0
+      },
+      "full_run": {
+        "suite": "PF2 subset in full Node run",
+        "status": "passed",
+        "executed": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    {
+      "suite": "Browser/world-random/TABLES1 UI",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "status": "passed",
+      "note": "Existing browser scripts; no new PF2 DOM case. Do not add browser/RNG diagnostics to Node logical-case totals. Inherited script stdout contains prior stage test-change metadata; current77→8ada diff is zero browser changes."
+    }
+  ],
+  "permanent_total_change": {
+    "added": 2,
+    "removed": 0,
+    "modified": 3
+  },
+  "temporary_reviewer_diagnostics": 0,
+  "necessity": "Test count is not completeness evidence; tests target preservation and transactional failures. HX-FB-002 permanent catalog audit remains separately scoped, no deletion for count.",
+  "tree_sha": "1a0e6a72a8573c7e57cf937ca838685904ce719e",
+  "diagnostic_history": [
+    {
+      "head_sha": "722facc3bc1e492fdb903a94ab37dd2b79fa04c6",
+      "full_check": "failed_existing_E8_contract; superseded",
+      "focused": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "log": "e8-diagnosis.log"
+      },
+      "cause": "Removing legacy blank Knave no-history fast path violated test/saveSafety.test.mjs206 (history1 expected0).",
+      "resolution": "Restore legacy fast path when PF2 disabled; retain transactional mutual switch only while PF2 active. Existing E8 unchanged.",
+      "fixed_focused": {
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "log": "e8-fixed.log"
+      },
+      "full_run_observation": {
+        "executed": 401,
+        "passed": 400,
+        "failed": 1,
+        "skipped": 0,
+        "exit_code": 1,
+        "duration_ms": 661822.778556,
+        "note": "Superseded diagnostic; source changed after reproduced E8 failure while remaining long fixture checks finished. Final exact-tree evidence is the new full run, not this diagnostic."
+      }
+    }
+  ],
+  "full_run": {
+    "suite": "Node test/*.test.mjs",
+    "status": "passed",
+    "executed": 401,
+    "passed": 401,
+    "failed": 0,
+    "skipped": 0
+  }
+}

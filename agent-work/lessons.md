@@ -739,3 +739,10 @@ PF2 corner-to-corner unit uses normalized shared DETAIL1 geometry, not viewStep1
 
 ## 2026-11-11 — PF2 App-v13/history checkpoint77a6ce6
 Detached data tests do not establish App persistence. New actual-handler case reuses regionFixture/readTextFile and verifies real batch commit, profile/batch UndoRedo, v13 roundtrip and invalid-reference atomic refusal; existing batchcase extended for live projection instead of a duplicate newcase. Seed42 at0,0 yields standard, so nonempty snapshot fixture uses fixedseed0/outcome2; this is input selection, not repeated product reroll-to-green. Save13 validators must extend all related layer gates (DETAIL1/classification/Knave schema2), while old-version refusal remains. Preserve the layer in generation/checkpoint/rollback snapshots; block invalidating geometry before writes until explicit PF2 loss consent is wired. No UI/automatic generation/category claim at this stage. Evidence:agent-work/evidence/PF2-BATCH1-App-v13-0356/checks.json.
+
+
+## 2026-11-11 — PF2 lifecycle: preserve adjacent profile contracts
+
+- Evidence: PR501 candidate722facc removed the legacy empty Knave no-history branch; unchanged `test/saveSafety.test.mjs:206` reproduced history1 instead of0. Restore that branch only when PF2 is off; mutual PF2→Knave switch stays one undoable transaction. Fixed focused E8 passes; extend the existing PF2 profile/history case, not a duplicate new case.
+- Apply: before expensive full checks, run adjacent existing lifecycle contracts when touching shared profile/history entry points. A new feature specification does not silently replace another approved profile's blank-document behavior.
+- Loss planning: E6/manual geometry/checkpoint operations must compute PF2 losses from accepted snapshots, preserve survivors exactly and keep removed-unit tombstones. Never reroll a surviving object to repair context. Exact head/evidence: `8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe`, `agent-work/evidence/PF2-BATCH1-lifecycle-0504/test-change-summary.json`.
