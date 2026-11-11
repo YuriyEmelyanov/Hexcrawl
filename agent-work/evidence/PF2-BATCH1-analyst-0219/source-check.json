@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-054",
+  "stage_id": "PF2-BATCH1",
+  "checked_on": "2026-11-11",
+  "method": "Addressed existing approved source profile and three AoN primary pages; exact local accepted source9cf plus operational registries; no full new audit.",
+  "sources": [
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+      "section": "Designing the Map",
+      "locator": "GM Core206",
+      "fact": "12mile corner-to-corner; common unit must retain measurement."
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3110",
+      "section": "Table3–5 Random Terrain Feature",
+      "locator": "AoN section header207; historical matrix table208; stable table identity; no new PDF pagination claim",
+      "fact": "Four d20 ranges1–3/4–6/7–9/10–20; terrain d20 and L2 excluded."
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3115",
+      "section": "Types of Terrain",
+      "locator": "GM Core209",
+      "fact": "Contextual resources/secrets examples; recommendations, not guarantees."
+    }
+  ],
+  "source_rule_refs": [
+    "PF2-RM-002-L1",
+    "PF2-RM-013-L1",
+    "PF2-RM-029-L1"
+  ],
+  "registry_shas": {
+    "matrix": "25df511deaaad9456262581239369a6edfe3e8c9",
+    "common_rules": "f233d72846c5c9e29cdc7203ef3a8536096603ad",
+    "bindings": "cd4f8967201bdcaa73436617b2d1cad5a121a674"
+  },
+  "resolved_analysis_findings": [
+    {
+      "id": "PF2-AN-01",
+      "status": "contract_defined_in_approved_scope",
+      "finding": "DETAIL1 step12 is across_flats, not PF2 corner-to-corner profile. Reuse common normalized geometry; never alias viewStep12; legacy coordinate basis stays conditional; no source-geography redefinition."
+    },
+    {
+      "id": "PF2-AN-02",
+      "status": "contract_defined",
+      "finding": "TABLES1 records are Knave source-specific. Reuse common editing/history/UI, not forged PF2 Knave calls; new typed feature layer and strictv13."
+    }
+  ],
+  "runtime_checks_executed": 0,
+  "coverage_status": "not upgraded; exact implementation independent evidence still required."
+}
