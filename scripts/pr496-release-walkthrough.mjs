@@ -49,6 +49,18 @@ try{
     const current=await snapshot(page);assert.ok(Math.abs(current.ui.mapScale-adapted.ui.mapScale*6/step)<1e-9);assert.deepEqual(current.generation,adapted.generation);
     for(const width of [1500,390,320]){await page.setViewportSize({width,height:1100});await page.locator(step===6?'.info-block--hex':'[data-detail-summary]').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(dir,`candidate-${step}-${width}.png`),fullPage:true});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}result.views.push({step,...chosen});
     if(step===12||step===24){await closeMenu(page);await page.locator('.export-menu summary').click();const ready=page.waitForEvent('download');await page.getByRole('button',{name:'PNG',exact:true}).click();const d=await ready;const file=path.join(dir,`candidate-${step}-export.png`);await d.saveAs(file);await closeMenu(page);assert.ok((await fs.stat(file)).size>1000);result.exports.push({step,file:path.basename(file),bytes:(await fs.stat(file)).size});}
+    // Temporary visual evidence for the narrow-screen label finding: both
+    // languages, every existing scale, no new permanent browser test case.
+    for(const language of ['ru','en']){
+     if(language==='en')await page.getByRole('button',{name:'Switch to English',exact:true}).click();
+     await page.setViewportSize({width:320,height:1100});
+     const select=page.locator('[data-detail-step-select]');await select.scrollIntoViewIfNeeded();
+     const label=await select.evaluate(e=>{const s=getComputedStyle(e),c=document.createElement('canvas').getContext('2d');c.font=s.font;return {text:e.selectedOptions[0].textContent,width:e.getBoundingClientRect().width,needed:c.measureText(e.selectedOptions[0].textContent).width+parseFloat(s.paddingLeft)+parseFloat(s.paddingRight)+32};});
+     assert.ok(label.width>=label.needed,JSON.stringify({step,language,...label}));
+     await page.screenshot({path:path.join(dir,`candidate-${step}-label-${language}-320.png`),fullPage:true});
+     (result.narrow_labels??=[]).push({step,language,...label});
+    }
+    await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
    }
    const viewed=await snapshot(page);for(const k of ['regions','rivers','roads','crossings','tags','editorNames','gmNotesByHexKey','terrainByHexKey'])assert.deepEqual(viewed.map[k],adapted.map[k]);assert.deepEqual(viewed.generation,adapted.generation);
   }
