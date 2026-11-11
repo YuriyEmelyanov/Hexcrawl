@@ -13714,7 +13714,7 @@ export function App() {
     if(editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
     // Every DETAIL1 pointer/keyboard/direct caller shares this guard. Finish
     // changes revision; replay only this accepted navigation intent afterward.
-    if(preparationNavigation.current){requestPreparationExit(()=>selectDetailCell(cell,documentRevision.current,step,poiId));return false;}
+    if(preparationNavigation.current){requestPreparationExit(()=>detailCellClickRef.current(cell,step,poiId));return false;}
     const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
     try{
       const next=parseDetail1StateV11({...state,selectedCell:cell,...(step?{viewStep:step}:{})});
@@ -16252,8 +16252,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     </div>}
   </div>:null;
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
-  const detailCellClickRef=useRef<(cell:AxialHex)=>void>(()=>{});
-  detailCellClickRef.current=cell=>{selectDetailCell(cell);};
+  const detailCellClickRef=useRef<(cell:AxialHex,step?:DetailStep,poiId?:string)=>void>(()=>{});
+  detailCellClickRef.current=(cell,step,poiId)=>{selectDetailCell(cell,documentRevision.current,step,poiId);};
   const detailSummary=useMemo(()=>{
     if(!physicalGrid?.selectedCell)return null;
     const terrain=new Map<string,string>();
