@@ -2,9 +2,51 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid,detailCellPolygon,detailCellAreaSquareMiles,detailPolygonArea} from '../src/detailGrid.ts';
 import {projectDetailDisplayCells} from '../src/detailDisplay.ts';
+import {prepareDetailFill,detailFillCoveredSources,detailFillRemaining,nextDetailFillAnchor,assertDetailFillProgress} from '../src/detailFill.ts';
 
 const near=(actual,expected,tolerance=1e-9)=>assert.ok(Math.abs(actual-expected)<tolerance,`${actual} != ${expected}`);
 const key=cell=>`${cell.q},${cell.r}`;
+
+// F02/F03: coarse geometry is not a four/sixteen-cell subdivision. Reuse
+// the display suite and production intersections; water already covers area.
+test('coarse fill includes boundary source cells and counts only accepted geography',()=>{
+ for(const step of [12,24])for(const origin of [{x:0,y:0},{x:17,y:-9}])for(const cell of [{q:0,r:0},{q:3,r:-2}]){
+  const plan=prepareDetailFill(createDetailGrid(step,origin),cell);
+  assert.equal(plan.targets.length,step===12?7:19);
+  const a=plan.targets[0].cell,b=plan.targets[1].cell,c=plan.targets[2].cell,d=plan.targets[3].cell;
+  const terrain=new Map([[key(b),{terrainOverride:'sea'}],[key(c),{terrainOverride:'lake'}],[key(d),{}]]);
+  const covered=detailFillCoveredSources([{hexes:[a]}],terrain);
+  assert.equal(covered.size,3);assert.ok(!covered.has(key(d)));
+  const remaining=detailFillRemaining(plan,covered);assert.equal(remaining.cells.length,plan.targets.length-3);assert.equal(remaining.complete,false);
+  const all=new Set(plan.targets.map(hit=>key(hit.cell)));assert.deepEqual(detailFillRemaining(plan,all),{cells:[],areaSquareMiles:0,complete:true});
+  const display=projectDetailDisplayCells(plan.grid,plan.targets.map(hit=>hit.cell)).find(hit=>key(hit.cell)===key(cell));
+  near(display.acceptedAreaSquareMiles,detailCellAreaSquareMiles(plan.grid),1e-7);
+  assert.ok(Object.isFrozen(plan)&&Object.isFrozen(plan.grid)&&Object.isFrozen(plan.targets));
+ }
+ assert.throws(()=>prepareDetailFill(createDetailGrid(1),{q:0,r:0}));
+ assert.throws(()=>prepareDetailFill(createDetailGrid(12),{q:0,r:0},{x:NaN,y:0}));
+});
+
+// F04/F05: deterministic current legal frontier and strict deficit reduction
+// are separate from ordinary generator RNG/retry behavior.
+test('fill anchor choice is deterministic, legal, uncovered and requires actual progress',()=>{
+ const plan=prepareDetailFill(createDetailGrid(12),{q:0,r:0}),empty=new Set(),original=structuredClone(plan);
+ const random=Math.random;Math.random=()=>{throw Error('Fill policy must not draw RNG');};
+ try{
+  const candidates=plan.targets.map(hit=>hit.cell).reverse();
+  assert.deepEqual(nextDetailFillAnchor(plan,empty,candidates),{q:0,r:0});
+  assert.deepEqual(nextDetailFillAnchor(plan,empty,[{q:99,r:99}]),null);
+  const after=new Set(['0,0']);assertDetailFillProgress(plan,empty,after);
+  const next=nextDetailFillAnchor(plan,after,candidates);assert.notEqual(key(next),'0,0');
+  assert.deepEqual(nextDetailFillAnchor(plan,after,[...candidates].reverse()),next);
+  assert.throws(()=>assertDetailFillProgress(plan,after,after),/no_progress/);
+  const replaced=new Set([key(next)]);assert.throws(()=>assertDetailFillProgress(plan,after,replaced),/no_progress/);
+  let covered=after,ticks=1;
+  while(!detailFillRemaining(plan,covered).complete){const anchor=nextDetailFillAnchor(plan,covered,candidates);const grown=new Set([...covered,key(anchor)]);assertDetailFillProgress(plan,covered,grown);covered=grown;ticks++;}
+  assert.equal(ticks,7);assert.equal(nextDetailFillAnchor(plan,covered,candidates),null);
+  assert.deepEqual(plan,original);
+ }finally{Math.random=random;}
+});
 
 // GRID-G02/C02: the selected outline remains complete beside accepted geography.
 test('a 24-mile display cell retains its full outline and unknown area at 25 percent accepted coverage',()=>{
