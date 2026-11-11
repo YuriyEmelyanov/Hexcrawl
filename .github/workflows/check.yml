@@ -120,3 +120,34 @@ jobs:
           name: TABLES1-UI
           path: reports/HX-BL-041/TABLES1/
           if-no-files-found: ignore
+
+  # Temporary bounded comparison for this correction, retire after preserving evidence.
+  grid-focus-evidence:
+    if: github.event_name == 'pull_request' && github.event.pull_request.number == 502
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - name: Build exact prior camera bundle beside current assets
+        run: |
+          git fetch --depth=1 origin 798caf98225bb7634882770caf31c4da245b900b
+          git worktree add /tmp/grid-focus-before 798caf98225bb7634882770caf31c4da245b900b
+          ln -s "$GITHUB_WORKSPACE/node_modules" /tmp/grid-focus-before/node_modules
+          npm run build --prefix /tmp/grid-focus-before
+          cp /tmp/grid-focus-before/dist/assets/* dist/assets/
+          cp /tmp/grid-focus-before/dist/index.html dist/__focus-before.html
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/grid-focus-evidence.mjs
+        env:
+          FOCUS_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: GRID-FOCUS
+          path: reports/GRID-FOCUS/
+          if-no-files-found: error

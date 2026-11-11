@@ -64,7 +64,7 @@ export async function runPreparationLifecycle({page,snapshot,root}){
  await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();await exit.getByRole('button',{name:'Discard',exact:true}).click();await exit.waitFor({state:'hidden'});await page.getByRole('button',{name:'Switch to English',exact:true}).waitFor();assert.deepEqual((await snapshot()).map,finished.map,'Discard keeps accepted map');
  await page.getByRole('button',{name:'Отменить',exact:true}).click();assert.deepEqual((await snapshot()).map,accepted.map,'Finish is exactly one accepted transaction');await page.getByRole('button',{name:'Повторить',exact:true}).click();assert.deepEqual((await snapshot()).map,finished.map);
  // TABLES1-REV-01: the real DETAIL1 SVG event routes must defer dirty navigation.
- await page.setViewportSize({width:1500,height:1100});await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.locator('[data-detail-step="1"]').click();
+ await page.setViewportSize({width:1500,height:1100});await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.locator('[data-detail-step-select]').selectOption('1');
  const detailBase=await snapshot(),selected=detailBase.map.physicalGrid.selectedCell;
  const selectedKey=selected?selected.q+','+selected.r:null;
  const targetKey=await page.locator('[data-detail-cell]').evaluateAll((es,key)=>es.map(e=>e.getAttribute('data-detail-cell')).find(k=>k!==key),selectedKey);assert.ok(targetKey);
