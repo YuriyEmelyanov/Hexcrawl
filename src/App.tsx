@@ -1,4 +1,6 @@
-import {summarizeDetailCell,detailMarkerGroups} from './detailSummary';
+import {detailFootprintHasOutline,detailFootprintWorldAnchor,detailFootprintExtentMiles} from './detailSizes';
+import {projectDetailDisplayCells,type DetailDisplayCell} from './detailDisplay';
+import {summarizeDetailCell,detailMarkerGroups,detailSegmentCellIntersection} from './detailSummary';
 import {finalizeDryPoiLocations} from './finalPoiPlacement';
 import {createDetailGrid,detailCellPolygon,detailFootprintBoundary,detailPositiveAreaIntersections,detailCellCenter,worldToDetailCell,type DetailStep} from './detailGrid';
 import {reconcileDetailGeography,prepareDetailFootprintExtentEdit,validateDetailGeographyFootprints,buildDetailGeographyPreview,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
@@ -477,7 +479,7 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 14;
   generation?: GenerationState;
   savedAt: string;
   map: {
@@ -1152,7 +1154,7 @@ function detailCommandError(error:unknown,language:Language):string|undefined {
 
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   map=withLegacySeas(map);
-  validateDetail1Document(map.physicalGrid,11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined,state=>validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state));
+  validateDetail1Document(map.physicalGrid,map.physicalGrid?.version===2?14:11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined,state=>validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state));
   assertEditorNames(map);
   validateClassification(map.classification,knaveMapContext(map));
   validateKnaveLayer(map.knave,knaveMapContext(map),10,map.regions.some(r=>r.generationMode==='mythic')?'mythic':'classic');
@@ -11918,6 +11920,8 @@ export function App() {
   const finishMapNameRef = useRef<() => boolean>(() => true);
   const mapScaleRef = useRef(1);
   const mapStageRef = useRef<HTMLDivElement | null>(null);
+  const detailFocusRef=useRef<{world:{x:number;y:number};client:{x:number;y:number}}|null>(null);
+  const detailScrollSpaceRef=useRef({x:0,y:0});
   const mapZoomFrameRef = useRef<number | null>(null);
   const mapNavigationIdleRef = useRef<number | null>(null);
   const pendingMapZoomRef = useRef<{ scale: number; clientX?: number; clientY?: number } | null>(null);
@@ -11955,7 +11959,7 @@ export function App() {
   const [rivers, setRivers] = useState<River[]>([]);
   const [classification,setClassification]=useState<Classification|undefined>();
   const [physicalGrid,setPhysicalGrid]=useState<Detail1State|undefined>(undefined);
-  const [detailAdaptation,setDetailAdaptation]=useState<{revision:number;state:Detail1State}|null>(null);
+  const [detailAdaptation,setDetailAdaptation]=useState<{revision:number;state:Detail1State;sizeChanges?:readonly {poiId:string;before:DetailExtent|null;after:DetailExtent}[]}|null>(null);
   const detailAdaptationRef=useRef(detailAdaptation);detailAdaptationRef.current=detailAdaptation;
   const detailAdaptationFocusRef=useRef<HTMLElement|null>(null),detailAdaptationStartRef=useRef<HTMLButtonElement|null>(null);
   useEffect(()=>{if(detailAdaptation)detailAdaptationFocusRef.current?.focus();},[detailAdaptation]);
@@ -13680,9 +13684,9 @@ export function App() {
     try{
       const map=captureMap();
       if(!map.regions.length&&!map.hexTerrainByKey.size)return false;
-      if(map.physicalGrid?.poiIdentities&&map.physicalGrid.poiFootprints.length===Object.keys(map.physicalGrid.poiIdentities.byLegacyRef).length)return false;
-      const preview=prepareDetailMapPreview(map),state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:1,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints});
-      validateDetailMapFootprints(map,state);updateDetailAdaptation({revision:documentRevision.current,state});setDetailAdaptationError(null);return true;
+      if(map.physicalGrid?.version===2&&!map.physicalGrid.poiFootprints.some(p=>p.extent.kind==='default')&&map.physicalGrid.poiIdentities&&map.physicalGrid.poiFootprints.length===Object.keys(map.physicalGrid.poiIdentities.byLegacyRef).length)return false;
+      const preview=prepareDetailMapPreview(map),state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:preview.schemaVersion,active:true,viewStep:map.physicalGrid?.viewStep??6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints});
+      validateDetailMapFootprints(map,state);updateDetailAdaptation({revision:documentRevision.current,state,sizeChanges:preview.sizeChanges});setDetailAdaptationError(null);return true;
     }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось подготовить охваты. Карта не изменена.':'Could not prepare footprints. Your map is unchanged.'));return false;}
   };
   const cancelDetailAdaptation=(expected=detailAdaptation):boolean=>{
@@ -13696,12 +13700,27 @@ export function App() {
       recordTransaction(before,after);applyPreparedDocument(after);setTimeout(()=>detailAdaptationFocusRef.current?.focus(),0);return true;
     }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось применить охваты. Карта не изменена.':'Could not apply footprints. Your map is unchanged.'));return false;}
   };
+  // The physical grid and camera are one document command. Capture a world
+  // point before rendering; restore it against the new SVG CTM after commit.
+  const rememberDetailFocus=()=>{
+    const svg=mapSvgRef.current,viewport=mapViewportRef.current,state=physicalGridRef.current;
+    const layer=svg?.querySelector<SVGGElement>('[data-detail-view]'),matrix=layer?.getScreenCTM();
+    if(!svg||!viewport||!state||!matrix)return;
+    const rect=viewport.getBoundingClientRect(),factor=Math.sqrt(3)*HEX_SIZE/6;
+    const world=state.selectedCell?detailCellCenter(createDetailGrid(1,state.grid.origin),state.selectedCell):null;
+    const local=svg.createSVGPoint();if(world){local.x=(world.x-state.grid.origin.x)*factor+riverOffset.x;local.y=(world.y-state.grid.origin.y)*factor+riverOffset.y;}
+    const selected=world?local.matrixTransform(matrix):null;
+    const client=selected&&selected.x>=rect.left&&selected.x<=rect.right&&selected.y>=rect.top&&selected.y<=rect.bottom?{x:selected.x,y:selected.y}:{x:rect.left+viewport.clientWidth/2,y:rect.top+viewport.clientHeight/2};
+    local.x=client.x;local.y=client.y;const at=local.matrixTransform(matrix.inverse());
+    detailFocusRef.current={world:{x:(at.x-riverOffset.x)/factor+state.grid.origin.x,y:(at.y-riverOffset.y)/factor+state.grid.origin.y},client};
+  };
   const setDetailViewStep=(step:DetailStep,expectedRevision=renderedDocumentRevision):boolean=>{
     if(![1,6,12,24].includes(step)||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||notesComposingRef.current||obstacleDraftRef.current)return false;
-    const before=captureDocument(),state=before.map.physicalGrid;
-    if(!state?.active)return false;
+    const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
     if(state.viewStep===step)return true;
-    const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}}});
+    const camera=before.mapScale*state.viewStep/step;if(!(camera>0)||!Number.isFinite(camera))return false;
+    rememberDetailFocus();
+    const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}},mapScale:camera});
     recordTransaction(before,after);applyPreparedDocument(after);return true;
   };
   const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string):boolean=>{
@@ -13719,7 +13738,8 @@ export function App() {
       const source=parts?parseHexKey(parts[alias!.startsWith('waterPoi:')?1:2]):owners.length>1?before.selectedHex:geographicalSource;
       const selectedSource=source&&actualHexKeys(before.map).has(hexKey(source))?source:before.selectedHex;
       if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state))&&JSON.stringify(selectedSource)===JSON.stringify(before.selectedHex))return true;
-      const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:selectedSource});
+      rememberDetailFocus();
+      const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:selectedSource,mapScale:before.mapScale*state.viewStep/next.viewStep});
       recordTransaction(before,after);applyPreparedDocument(after);setIsSidePanelCollapsed(false);return true;
     }catch{return false;}
   };
@@ -14028,7 +14048,7 @@ export function App() {
     const sourceMap=backup?.document?.map??backup?.map??checkpoint;
     if(!map.physicalGrid&&actualHexKeys(sourceMap).size===0){
       const preview=prepareDetailMapPreview(map);
-      map={...map,physicalGrid:parseDetail1StateV11({schema:'hexcrawl.detail1',version:1,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints})};
+      map={...map,physicalGrid:parseDetail1StateV11({schema:'hexcrawl.detail1',version:preview.schemaVersion,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints})};
       checkedRiverMap(map);
     }
     map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
@@ -14555,7 +14575,17 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pendingRegen]);
 
+  const detailSummary=useMemo(()=>{
+    if(!physicalGrid?.selectedCell)return null;
+    const terrain=new Map<string,string>();
+    for(const r of regions)for(const h of r.hexes)terrain.set(hexKey(h),biomeOverrideByHexKey.get(hexKey(h))??r.biomeId);
+    for(const [key,t]of hexTerrainByKey)if(t.terrainOverride)terrain.set(key,t.terrainOverride);
+    return summarizeDetailCell(physicalGrid,physicalGrid.selectedCell,terrain,{rivers:detailMapRiverGeometry(captureMap(),physicalGrid.grid.origin),roads,notes:new Map(Object.entries(gmNotesByHexKey))});
+  },[physicalGrid,regions,hexTerrainByKey,biomeOverrideByHexKey,rivers,roads,crossings,riverFeatureOverrides,gmNotesByHexKey]);
+  const detailLocal=physicalGrid?.active&&physicalGrid.viewStep===1;
+  const detailLocalSegment=(from:{x:number;y:number},to:{x:number;y:number})=>!detailLocal||!!physicalGrid?.selectedCell&&detailSegmentCellIntersection(createDetailGrid(1,physicalGrid.grid.origin),physicalGrid.selectedCell,{from:detailSourcePixelToWorld(from,physicalGrid.grid.origin),to:detailSourcePixelToWorld(to,physicalGrid.grid.origin)})!==null;
   const selectedHexKey = selectedHex ? hexKey(selectedHex) : null;
+  const detailSourceAreaVisible=!detailLocal||!!selectedHexKey&&!!detailSummary?.sources.some(s=>s.key===selectedHexKey);
   const canEditNotes = !!selectedHexKey && (hexTerrainByKey.has(selectedHexKey) || regions.some(r => r.hexes.some(h => hexKey(h) === selectedHexKey)));
   const notesValue = selectedHexKey ? gmNotesByHexKey[selectedHexKey] ?? '' : '';
   const notesOpen = notesEditorKey === selectedHexKey;
@@ -14565,26 +14595,26 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const isSelectedLake = selectedTerrain?.terrainOverride === 'lake';
   const isSelectedSea = selectedTerrain?.terrainOverride === 'sea';
   const isSelectedCandidate = selectedHex ? candidateHexes.some((c) => hexKey(c) === selectedHexKey) : false;
-  const selectedHexRoadIds = selectedHex
+  const selectedHexRoadIds = detailLocal ? detailSummary?.routes.filter(r=>r.kinds.includes('road')).map(r=>r.id)??[] : selectedHex
     ? Array.from(new Set(roads
       .filter((road) => road.segments.some((s) => s.kind === 'road' && (hexKey(s.from) === selectedHexKey || hexKey(s.to) === selectedHexKey)))
       .map((road) => road.id)))
     : [];
-  const selectedHexTrailIds = selectedHex
+  const selectedHexTrailIds = detailLocal ? detailSummary?.routes.filter(r=>r.kinds.includes('trail')).map(r=>r.id)??[] : selectedHex
     ? Array.from(new Set(roads
       .filter((road) => road.segments.some((s) => s.kind === 'trail' && (hexKey(s.from) === selectedHexKey || hexKey(s.to) === selectedHexKey)))
       .map((road) => road.id)))
     : [];
   const nearbyHexes = selectedHex ? getHexNeighbors(selectedHex) : [];
-  const nearbyRivers = selectedHex ? getRiversOnHexEdges(selectedHex, rivers) : [];
-  const selectedHexEdgeKeys = selectedHex ? new Set(getHexEdgeKeys(selectedHex)) : new Set<string>();
-  const selectedHexVertexKeys = selectedHex ? new Set(getHexCornerPoints(selectedHex).map((vertex) => vertex.key)) : new Set<string>();
+  const nearbyRivers = detailLocal ? rivers.filter(r=>detailSummary?.rivers.some(local=>local.id===r.id)) : selectedHex ? getRiversOnHexEdges(selectedHex, rivers) : [];
+  const selectedHexEdgeKeys = detailLocal ? new Set(detailSummary?.rivers.flatMap(r=>r.edgeIds)??[]) : selectedHex ? new Set(getHexEdgeKeys(selectedHex)) : new Set<string>();
+  const selectedHexVertexKeys = detailLocal ? new Set(rivers.flatMap(r=>r.vertexPath.filter(v=>detailLocalSegment(v,v)).map(v=>v.key))) : selectedHex ? new Set(getHexCornerPoints(selectedHex).map((vertex) => vertex.key)) : new Set<string>();
   const waterfallLabel = language === 'ru' ? 'водопад' : 'waterfall';
   const waterfallRiverVertexKeys = useMemo(
     () => new Set(riverWaterfalls.map((waterfall) => waterfall.vertexKey)),
     [riverWaterfalls]
   );
-  const selectedHexCrossings = selectedHexKey
+  const selectedHexCrossings = detailLocal ? crossings.filter(c=>detailSummary?.rivers.some(r=>r.crossingIds.includes(`crossing:${c.key}`))) : selectedHexKey
     ? crossings.filter((crossing) => {
       const road = roads.find((item) => item.id === crossing.roadId);
       return road?.segments.some((segment) =>
@@ -14592,12 +14622,12 @@ retainPoiNames(checkpoint,editorNamesRef.current);
         && (hexKey(segment.from) === selectedHexKey || hexKey(segment.to) === selectedHexKey));
     })
     : [];
-  const nearbyLakeIds = Array.from(new Set(nearbyHexes
+  const nearbyLakeIds = detailLocal ? [...new Set((detailSummary?.sources??[]).filter(s=>s.terrain==='lake').map(s=>hexTerrainByKey.get(s.key)?.lakeId).filter((id):id is number=>typeof id==='number'))] : Array.from(new Set(nearbyHexes
     .map((hex) => hexTerrainByKey.get(hexKey(hex)))
     .filter((terrain): terrain is HexTerrainData & { lakeId: number } => terrain?.terrainOverride === 'lake' && typeof terrain.lakeId === 'number')
     .map((terrain) => terrain.lakeId)
     .filter((lakeId) => lakeId !== selectedTerrain?.lakeId)));
-  const hasNearbySea = nearbyHexes.some((hex) => hexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'sea');
+  const hasNearbySea = detailLocal ? !!detailSummary?.sources.some(s=>s.terrain==='sea') : nearbyHexes.some((hex) => hexTerrainByKey.get(hexKey(hex))?.terrainOverride === 'sea');
 
   const selectedType: HexType | 'none' = !selectedHex
     ? 'none'
@@ -14626,7 +14656,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const lastRegion = regions[regions.length - 1];
   const selectedRegion = selectedMeta ? regions.find((region) => region.id === selectedMeta.regionId) : undefined;
   const selectedKingdom = selectedRegion ? kingdoms.find(k=>k.regionIds.includes(selectedRegion.id)) : undefined;
-  const selectedObstacles = selectedHex ? obstacles.filter(o=>hexKey(o.hex)===hexKey(selectedHex)||hexKey(o.neighborHex)===hexKey(selectedHex)) : [];
+  const selectedObstacles = detailLocal ? obstacles.filter(o=>{const edge=getHexEdgesAsVertexPairs(o.hex).find(e=>e.edgeKey===o.edgeKey);return edge&&detailLocalSegment(edge.from,edge.to);}) : selectedHex ? obstacles.filter(o=>hexKey(o.hex)===hexKey(selectedHex)||hexKey(o.neighborHex)===hexKey(selectedHex)) : [];
   const editableCentralKinds = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',true) : ['capital','city','town','village','lair','ruins','cursed_place','holy_place',...(knave?['natural_place','structure','dungeon']:[])];
   const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : [...EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins'),...(knave?['natural_place','structure'] as PoiKind[]:[])];
   const selectedHexBiomeOverride = selectedHexKey ? biomeOverrideByHexKey.get(selectedHexKey) : undefined;
@@ -14781,8 +14811,9 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
   const [isHeaderLinksCollapsed, setIsHeaderLinksCollapsed] = useState(false);
   const headerLinksAutoCollapseTimerRef = useRef<number | null>(null);
-  const displayMapWidth = isMapRotated ? positionedHexes.height : positionedHexes.width;
-  const displayMapHeight = isMapRotated ? positionedHexes.width : positionedHexes.height;
+  const mapGridPad=physicalGrid?.active&&physicalGrid.viewStep!==6?HEX_SIZE*5:0;
+  const displayMapWidth = (isMapRotated ? positionedHexes.height : positionedHexes.width)+2*mapGridPad;
+  const displayMapHeight = (isMapRotated ? positionedHexes.width : positionedHexes.height)+2*mapGridPad;
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
   const sidePanelToggleLabel = isSidePanelCollapsed ? t.showPanel : t.hidePanel;
@@ -14874,7 +14905,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     return () => mobileLayout.removeEventListener('change', syncMobileLayout);
   }, []);
 
-  const clampMapScale = (scale: number) => Math.min(MAX_MAP_SCALE, Math.max(MIN_MAP_SCALE, scale));
+  const clampMapScale = (scale: number) => {const ratio=6/(physicalGridRef.current?.viewStep??6);return Math.min(MAX_MAP_SCALE*ratio,Math.max(MIN_MAP_SCALE*ratio,scale));};
 
   const beginMapNavigation = () => {
     mapViewportRef.current?.classList.add('is-navigating');
@@ -14888,7 +14919,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
 
   // Navigation changes only the composited SVG layer, never React map state.
   const applyMapScale = (scale: number) => {
-    const nextScale = clampMapScale(scale);
+    const nextScale = scale;
     mapScaleRef.current = nextScale;
     const svg = mapSvgRef.current;
     const stage = mapStageRef.current;
@@ -15108,7 +15139,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const createSaveData = (doc=captureDocument()): HexcrawlSaveData => ({
     schema: HEXCRAWL_SAVE_SCHEMA,
     generation: cloneGenerationState(doc.map.generation),
-    version: doc.map.physicalGrid||hasClassification(doc.map.classification)?11:HEXCRAWL_SAVE_VERSION,
+    version: doc.map.physicalGrid?.version===2?14:doc.map.physicalGrid||hasClassification(doc.map.classification)?11:HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
       ...(doc.map.physicalGrid?{physicalGrid:structuredClone(doc.map.physicalGrid)}:{}),
@@ -15224,7 +15255,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
           nextRoadId:Math.max(imported.counters.nextRoadId,Math.max(0,...imported.map.roads.map(r=>r.id))+1)},
         generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',knaveEnabled:imported.ui.knaveEnabled??!!imported.map.knave,
         selectedHex:!hexes.length&&!terrain.size?START_HEX:selection&&validSelection.has(hexKey(selection))?selection:null,
-        isMapRotated:imported.ui.isMapRotated,mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE,MAX_MAP_SCALE)
+        isMapRotated:imported.ui.isMapRotated,mapScale:imported.map.physicalGrid?.active?imported.ui.mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE,MAX_MAP_SCALE)
       };
       // Everything that can fail (including deep copies) is prepared before the first setter.
       const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
@@ -15527,6 +15558,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     selectedWaterPoiKind ? `${getWaterPoiEmoji(selectedWaterPoiKind)} ${getWaterPoiLabel(selectedWaterPoiKind, language)}` : t.addPoi,
     () => setEditingPoiHexKey(selectedHexKey)) : null}{selectedWaterPoiKind?renderName(`waterPoi:${selectedHexKey}`):null}</>;
   const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
+  const detailSelectedPoiAlias=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
+  const detailSelectedPoiVisible=!detailLocal||!!detailSelectedPoiAlias&&!!detailSummary?.pois.some(p=>p.legacyRef===detailSelectedPoiAlias);
   const knaveDiscoveryKey=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
   const selectedKnaveContent=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
   const acceptedDiscovery=knaveDiscoveryKey?classification?.discoveryByPoi[knaveDiscoveryKey]??knave?.discoveryByPoi[knaveDiscoveryKey]:undefined;
@@ -15541,9 +15574,9 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задана',normal:'Обычная',difficult:'Труднопроходимая',dangerous:'Опасная'}:{auto:'Automatic',unknown:'Unspecified',normal:'Normal',difficult:'Difficult',dangerous:'Dangerous'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задано',passage:'При прохождении',exploration:'Нужно исследование',interaction:'Секрет · взаимодействие'}:{auto:'Automatic',unknown:'Unspecified',passage:'On passage',exploration:'Requires exploration',interaction:'Secret · interaction'};
   const knavePanel=selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
-    {selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
-    {!isSelectedLake&&!isSelectedSea&&(editMode||displayedDifficulty==='difficult'||displayedDifficulty==='dangerous')&&<div className="direct-line" data-terrain-classification>{editMode?<label>{language==='ru'?'Проходимость: ':'Difficulty: '}<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:<>{difficultyLabels[displayedDifficulty]}{displayedDifficulty==='dangerous'&&terrainRisk(selectedEffectiveBiomeId,language)?` · ${terrainRisk(selectedEffectiveBiomeId,language)}`:''}</>}</div>}
-    {knaveDiscoveryKey&&<>{(editMode||displayedDiscovery!=='unknown')&&<div className="direct-line" data-discovery-classification>{editMode?<label>{language==='ru'?'Обнаружение: ':'Discovery: '}<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:displayedDiscovery==='passage'&&onSelectedRoad?(language==='ru'?'Заметно с дороги':'Visible from the road'):discoveryLabels[displayedDiscovery]}</div>}
+    {detailSelectedPoiVisible&&selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
+    {detailSourceAreaVisible&&!isSelectedLake&&!isSelectedSea&&(editMode||displayedDifficulty==='difficult'||displayedDifficulty==='dangerous')&&<div className="direct-line" data-terrain-classification>{editMode?<label>{language==='ru'?'Проходимость: ':'Difficulty: '}<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:<>{difficultyLabels[displayedDifficulty]}{displayedDifficulty==='dangerous'&&terrainRisk(selectedEffectiveBiomeId,language)?` · ${terrainRisk(selectedEffectiveBiomeId,language)}`:''}</>}</div>}
+    {detailSelectedPoiVisible&&knaveDiscoveryKey&&<>{(editMode||displayedDiscovery!=='unknown')&&<div className="direct-line" data-discovery-classification>{editMode?<label>{language==='ru'?'Обнаружение: ':'Discovery: '}<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:displayedDiscovery==='passage'&&onSelectedRoad?(language==='ru'?'Заметно с дороги':'Visible from the road'):discoveryLabels[displayedDiscovery]}</div>}
     {editMode?<label className="knave-clue">{language==='ru'?'Улика':'Clue'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{knaveClue}</p>:null}</>}
     {knaveError&&<p id="knave-clue-error" className="direct-error" role="alert">{knaveError}</p>}
     {knaveDraft&&<button type="button" className="direct-value knave-cancel" onClick={()=>resetKnaveDraft(knaveDraft)}>{language==='ru'?'Отмена':'Cancel'}</button>}
@@ -16133,7 +16166,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     const match = roads.find(r=>r.id===roadId)?.segments.find(s => normalizeRoadSegmentKey(s.from,s.to) === pair);
     if(match) setSelectedHex({...match.from});
   };
-  const roadChoices = roads.flatMap(road => road.segments.filter(segment =>
+  const roadChoices = roads.flatMap(road => road.segments.filter(segment=>detailLocalSegment(toPixel(segment.from.q,segment.from.r),toPixel(segment.to.q,segment.to.r))).filter(segment =>
     selectedRoadPair ? normalizeRoadSegmentKey(segment.from,segment.to) === selectedRoadPair
       : selectedHex && (isSameHex(segment.from,selectedHex) || isSameHex(segment.to,selectedHex)))
     .map(segment => ({road,segment,pair:normalizeRoadSegmentKey(segment.from,segment.to)})));
@@ -16200,13 +16233,28 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
   const detailCellClickRef=useRef<(cell:AxialHex)=>void>(()=>{});
   detailCellClickRef.current=cell=>{selectDetailCell(cell);};
-  const detailSummary=useMemo(()=>{
-    if(!physicalGrid?.selectedCell)return null;
-    const terrain=new Map<string,string>();
-    for(const r of regions)for(const h of r.hexes)terrain.set(hexKey(h),biomeOverrideByHexKey.get(hexKey(h))??r.biomeId);
-    for(const [key,t]of hexTerrainByKey)if(t.terrainOverride)terrain.set(key,t.terrainOverride);
-    return summarizeDetailCell(physicalGrid,physicalGrid.selectedCell,terrain);
-  },[physicalGrid,regions,hexTerrainByKey,biomeOverrideByHexKey]);
+  const detailDisplayClickRef=useRef<(cell:DetailDisplayCell,world?:{x:number;y:number})=>void>(()=>{});
+  detailDisplayClickRef.current=(display,world)=>{
+    const state=physicalGridRef.current;if(!state?.active||editMode)return;
+    const at=world??detailCellCenter(createDetailGrid(state.viewStep,state.grid.origin),display.cell);
+    const source=worldToDetailCell(createDetailGrid(6,state.grid.origin),at),fine=worldToDetailCell(createDetailGrid(1,state.grid.origin),at);
+    if(actualHexKeys(captureMap()).has(hexKey(source))){selectDetailCell(fine);return;}
+    const candidate=positionedHexes.hexes.find(h=>h.kind==='candidate'&&h.key===hexKey(source));
+    if(state.viewStep===6&&candidate){mapHexClickRef.current(candidate);return;}
+    selectDetailCell(fine);
+    setDetailAdaptationError(language==='ru'?'Создание региона в этой части карты пока доступно в режиме 6 миль.':'Creating a region here is currently available in the 6 mile view.');
+  };
+
+  useEffect(()=>{
+    const focus=detailFocusRef.current,svg=mapSvgRef.current,viewport=mapViewportRef.current,stage=mapStageRef.current,state=physicalGridRef.current;
+    if(!state?.active){detailScrollSpaceRef.current={x:0,y:0};if(stage)stage.style.margin='0px';detailFocusRef.current=null;return;}
+    if(!focus||!svg||!viewport||!stage)return;
+    detailScrollSpaceRef.current={x:viewport.clientWidth*2,y:viewport.clientHeight*2};stage.style.margin=`${viewport.clientHeight*2}px ${viewport.clientWidth*2}px`;
+    const layer=svg.querySelector<SVGGElement>('[data-detail-view]'),matrix=layer?.getScreenCTM();if(!matrix)return;
+    const p=svg.createSVGPoint(),factor=Math.sqrt(3)*HEX_SIZE/6;p.x=(focus.world.x-state.grid.origin.x)*factor+riverOffset.x;p.y=(focus.world.y-state.grid.origin.y)*factor+riverOffset.y;
+    const next=p.matrixTransform(matrix);viewport.scrollLeft+=next.x-focus.client.x;viewport.scrollTop+=next.y-focus.client.y;detailFocusRef.current=null;
+  },[physicalGrid?.viewStep,physicalGrid?.active,mapScaleRef.current,riverOffset]);
+  const detailExtentCaption=(extent:DetailExtent)=>extent.kind==='representative'?(extent.representativeExtentMiles===null?(language==='ru'?'Размер неизвестен; значок':'Size unknown; marker'):(language==='ru'?`Оценка: ${extent.representativeExtentMiles} мили · проектное допущение`:`Estimate: ${extent.representativeExtentMiles} miles · project assumption`)):extent.kind==='manual_size'?(language==='ru'?`Ручной размер: ${extent.diameterMiles} мили · ${extent.note}`:`Manual size: ${extent.diameterMiles} miles · ${extent.note}`):extent.kind==='default'?(language==='ru'?'Прежний условный охват; размер неизвестен':'Legacy assumed footprint; size unknown'):extent.kind==='manual'?extent.note:extent.sourceId;
   const detailMiles=(step:number)=>language==='ru'?(step===1?'миля':step===24?'мили':'миль'):'mi';
   const mapArtwork = useMemo(() => (<>
             <defs>
@@ -16262,7 +16310,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
               const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
               const fill = hex.kind === 'candidate' ? undefined : !renderDetails ? (hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : GROUND_COLORS[effectiveBiomeId]) : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : getBiomeColor(effectiveBiomeId);
-              const gridStyle = (renderBiomeColor || physicalGrid?.active&&physicalGrid.viewStep!==6) && hex.kind !== 'candidate' ? { stroke: 'none' } : {};
+              const gridStyle = physicalGrid?.active?{stroke:'none',...(hex.kind==='candidate'?{fill:'none',visibility:'hidden' as const}:{})}:renderBiomeColor&&hex.kind!=='candidate'?{stroke:'none'}:{};
               const biomeTileHref = renderDetails && useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
               const tileImageSize = getHexWidth(hexRenderSize);
               const tileImageHeight = hexRenderSize * 2;
@@ -16448,7 +16496,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 );
               })}
             </g>
-            {showHexCoordinates ? (
+            {showHexCoordinates&&!physicalGrid?.active ? (
               <g className="hex-coordinate-layer">
                 {positionedHexes.hexes.filter((hex) => hex.kind !== 'candidate').map((hex) => {
                   const labelLayout = getHexCoordinateLabelLayout(hex.x, hex.y, positionedHexes.height, isMapRotated);
@@ -16473,7 +16521,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               {positionedHexes.hexes.map((hex) => {
                 const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
                 const isCandidateClickPrompt = regions.length >= 1 && regions.length <= 2 && hex.kind === 'candidate' && hex.key === clickPromptCandidateKey;
-                if (!isStartClickPrompt && !isCandidateClickPrompt) return null;
+                if (physicalGrid?.active || !isStartClickPrompt && !isCandidateClickPrompt) return null;
                 const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
                 return (
                   <text
@@ -16579,36 +16627,36 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 ))}
               </g>
             ) : null}
-            {renderBiomeColor&&(!physicalGrid?.active||physicalGrid.viewStep===6) ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
+            {renderBiomeColor&&!physicalGrid?.active ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
             {physicalGrid?.active&&(()=>{
               const origin=physicalGrid.grid.origin,coarse=createDetailGrid(6,origin),fine=createDetailGrid(1,origin),grid=createDetailGrid(physicalGrid.viewStep,origin);
               const px=(v:{x:number;y:number})=>({x:(v.x-origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x,y:(v.y-origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y});
               const points=(poly:readonly {x:number;y:number}[])=>poly.map(v=>{const p=px(v);return `${p.x},${p.y}`;}).join(' ');
-              const terrain=positionedHexes.hexes.filter(h=>h.kind!=='candidate'),cells=new Map<string,AxialHex>();
-              for(const h of terrain){if(physicalGrid.viewStep===6)cells.set(h.key,parseHexKey(h.key));else for(const hit of detailPositiveAreaIntersections(grid,detailCellPolygon(coarse,parseHexKey(h.key))))cells.set(hexKey(hit.cell),hit.cell);}
+              const terrain=positionedHexes.hexes.filter(h=>h.kind!=='candidate');
+              const cells=projectDetailDisplayCells(grid,terrain,positionedHexes.hexes.filter(h=>h.kind==='candidate'));
               return <g data-detail-view={physicalGrid.viewStep} transform={mapRotationTransform} pointerEvents="none">
-                <defs><clipPath id="detail-terrain-clip">{terrain.map(h=><polygon key={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)}/>)}</clipPath></defs>
-                <g clipPath="url(#detail-terrain-clip)" fill="none" stroke="#575242" strokeOpacity={.65} strokeWidth={.6}>
-                  {[...cells].map(([key,c])=><polygon key={key} data-detail-cell={key} className="detail-cell-target" points={points(detailCellPolygon(grid,c))}
-                    aria-pressed={physicalGrid.selectedCell?hexKey(worldToDetailCell(grid,detailCellCenter(fine,physicalGrid.selectedCell)))===key:false}
-                    fill="transparent" pointerEvents={editMode?'none':'all'} role={editMode?undefined:'button'} tabIndex={editMode?undefined:0}
-                    aria-label={`${physicalGrid.viewStep} ${language==='ru'?'миль, ячейка':'mile cell'} ${key}`}
-                    onClick={event=>{event.stopPropagation();if(event.detail>1)return;detailCellClickRef.current(worldToDetailCell(fine,detailCellCenter(grid,c)));}}
-                    onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();detailCellClickRef.current(worldToDetailCell(fine,detailCellCenter(grid,c)));}}}/>)}
+                <g fill="none" stroke="#778397" strokeOpacity={.8} strokeWidth={.6}>
+                  {cells.map(c=><polygon key={hexKey(c.cell)} data-detail-cell={hexKey(c.cell)} data-detail-accepted-fraction={c.acceptedFraction} data-detail-candidate={c.candidates.length?true:undefined} className="detail-cell-target" points={points(c.polygon)}
+                    aria-pressed={physicalGrid.selectedCell?hexKey(worldToDetailCell(grid,detailCellCenter(fine,physicalGrid.selectedCell)))===hexKey(c.cell):false}
+                    fill="transparent" strokeDasharray={c.acceptedFraction===0?'3 2':undefined} pointerEvents={editMode?'none':'all'} role={editMode?undefined:'button'} tabIndex={editMode?undefined:0}
+                    aria-label={`${physicalGrid.viewStep} ${language==='ru'?'миль, ячейка':'mile cell'} ${hexKey(c.cell)}`}
+                    onClick={event=>{event.stopPropagation();if(event.detail>1)return;const svg=event.currentTarget.ownerSVGElement,m=event.currentTarget.getScreenCTM();if(svg&&m){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;const hit=p.matrixTransform(m.inverse());detailDisplayClickRef.current(c,{x:(hit.x-riverOffset.x)*6/(Math.sqrt(3)*HEX_SIZE)+origin.x,y:(hit.y-riverOffset.y)*6/(Math.sqrt(3)*HEX_SIZE)+origin.y});}else detailDisplayClickRef.current(c);}}
+                    onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();detailDisplayClickRef.current(c);}}}/>)}
                 </g>
+                {showHexCoordinates&&cells.map(c=>{const at=px(detailCellCenter(grid,c.cell));return <text key={`coordinate:${hexKey(c.cell)}`} data-detail-coordinate={hexKey(c.cell)} x={at.x} y={at.y} textAnchor="middle" dominantBaseline="central" fontSize={physicalGrid.viewStep*2} fill="#cbd5e1" transform={isMapRotated?`rotate(-90 ${at.x} ${at.y})`:undefined}>{c.cell.q}/{c.cell.r}</text>;})}
                 {detailMarkerGroups(physicalGrid).map(({cell,owners})=>{
                   const owner=owners[0],alias=owner.legacyRef??'',parts=alias.split(':'),water=alias.startsWith('waterPoi:'),source=parseHexKey(parts[water?1:2]??'0,0'),region=water?undefined:regions.find(r=>r.id===Number(parts[1]));
                   const waterKind=waterPoiByKey.get(hexKey(source));
                   const kind=region?(hasCentralPoi(region)&&hexKey(region.centerHex)===hexKey(source)?region.centralPoiKind:getPoiKindForHex(region,source)):waterKind;
                   const emoji=waterKind&&water?getWaterPoiEmoji(waterKind):region?(hasCentralPoi(region)&&hexKey(region.centerHex)===hexKey(source)?getCentralPoiEmoji(region):getPoiEmojiForHex(region,source)):'•';
-                  const at=px(detailCellCenter(fine,cell)),size=physicalGrid.viewStep===1?4.2:14,count=owners.length>1?owners.length:physicalGrid.viewStep===1?0:owner.cells.length;
+                  const anchor=detailFootprintWorldAnchor(owner,fine),at=px(physicalGrid.viewStep===1?(detailFootprintHasOutline(owner,fine)?detailCellCenter(fine,cell):anchor):detailCellCenter(grid,cell)),size=physicalGrid.viewStep===1?4.2:14,count=owners.length>1?owners.length:0;
                   return <g key={hexKey(cell)} data-detail-marker-cell={hexKey(cell)} data-detail-marker-owners={owners.map(p=>p.poiId).join(' ')} transform={isMapRotated?`rotate(-90 ${at.x} ${at.y})`:undefined}>
                     <title>{owners.length>1?`${owners.length} ${language==='ru'?'мест в этой клетке':'places in this cell'}`:water&&waterKind?getWaterPoiLabel(waterKind,language):region?(hasCentralPoi(region)&&hexKey(region.centerHex)===hexKey(source)?getCentralPoiLabel(region,language):getPoiLabelForHex(region,source,language)):(language==='ru'?'Место':'Place')}</title>
                     {usePoiSvg&&kind?<image className="poi-marker" href={getPoiSvgHref(kind,water)} x={at.x-size/2} y={at.y-size/2} width={size} height={size}/>:<text className="poi-marker" x={at.x} y={at.y} textAnchor="middle" dominantBaseline="central" fontSize={size}>{emoji}</text>}
                     {count>1&&<text className="detail-marker-count" x={at.x+size*.45} y={at.y-size*.35} fontSize={size*.55}>{count}</text>}
                   </g>;
                 })}
-                {physicalGrid.poiFootprints.map(p=><g key={p.poiId} data-detail-footprint={p.poiId}>
+                {physicalGrid.viewStep===1&&physicalGrid.poiFootprints.filter(p=>detailFootprintHasOutline(p,fine)).map(p=><g key={p.poiId} data-detail-footprint={p.poiId}>
                   {physicalGrid.viewStep===1&&p.cells.map(c=><polygon key={hexKey(c)} points={points(detailCellPolygon(fine,c))} fill="#22d3ee" fillOpacity={.12}/>)}
                   {detailFootprintBoundary(fine,p.cells).map((e,i)=>{const a=px(e.from),b=px(e.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#087f8c" strokeWidth={1.2}/>;})}
                 </g>)}
@@ -16832,6 +16880,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <span aria-hidden="true">#</span>
                 <span>{t.hexCoordinatesMode}</span>
               </button>
+              {physicalGrid?.active&&!detailAdaptation&&<select data-detail-step-select className="hex-grid-select" aria-label={language==='ru'?'Размер гекса':'Hex size'} value={physicalGrid.viewStep} disabled={mutationBlocked(false)} onChange={event=>setDetailViewStep(Number(event.target.value) as DetailStep)}>{([1,6,12,24] as const).map(step=><option key={step} value={step}>{language==='ru'?`Гекс ${step} ${step===1?'миля':step===24?'мили':'миль'}`:`Hex ${step} ${step===1?'mile':'miles'}`}</option>)}</select>}
             </div>
             <div className="control-block controls controls--history">
               <button type="button" className="secondary" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
@@ -16843,7 +16892,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                   <div className="export-menu__items">
                     <button type="button" data-poi-export disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" data-poi-export onClick={handleExportJson} className="secondary">JSON</button>
-                    <small>{language==='ru'?`JSON v${physicalGrid||hasClassification(classification)?11:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid||hasClassification(classification)?11:10}: older app versions cannot open this file.`}</small>
+                    <small>{language==='ru'?`JSON v${physicalGrid?.version===2?14:physicalGrid||hasClassification(classification)?11:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid?.version===2?14:physicalGrid||hasClassification(classification)?11:10}: older app versions cannot open this file.`}</small>
                   </div>
                 </details>
               <button type="button" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
@@ -16856,14 +16905,10 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <p>{language==='ru'?'Предлагаемые охваты показаны бирюзовым. Карта ещё не изменена.':'Proposed footprints are shown in turquoise. Your map is unchanged.'}</p>
                 <p>{language==='ru'?'Объектов':'Objects'}: {detailAdaptation.state.poiFootprints.length} · {language==='ru'?'клеток охвата':'footprint cells'}: {new Set(detailAdaptation.state.poiFootprints.flatMap(p=>p.cells.map(c=>`${c.q},${c.r}`))).size}</p>
                 <p>{language==='ru'?'1 миля между сторонами мелкой клетки. Для старой сетки принимаем 6 миль; исходная физическая конвенция остаётся неизвестной. Размеры без измерений — условные.':'One mile across each fine cell. We assume six miles for the old grid; its source convention remains unknown. Unmeasured extents are assumptions.'}</p>
+                {detailAdaptation.sizeChanges&&<ul data-detail-size-changes>{detailAdaptation.sizeChanges.map(change=><li key={change.poiId}>{nameTargets.find(t=>t.poiLocator===detailAdaptation.state.poiFootprints.find(p=>p.poiId===change.poiId)?.legacyRef)?.[language]??(language==='ru'?'Место':'Place')}: {change.before?detailExtentCaption(change.before):(language==='ru'?'прежний значок':'previous marker')} → {detailExtentCaption(change.after)}</li>)}</ul>}
                 <div className="detail-adaptation__actions"><button type="button" data-detail-apply onClick={()=>applyDetailAdaptation()}>{language==='ru'?'Применить охваты':'Apply footprints'}</button><button type="button" data-detail-cancel className="secondary" onClick={()=>cancelDetailAdaptation()}>{language==='ru'?'Отмена':'Cancel'}</button></div>
                 <small>{language==='ru'?'Escape — отмена. Применение можно вернуть одной Undo.':'Escape cancels. Undo restores the previous document after applying.'}</small>
-              </>:physicalGrid?.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button ref={detailAdaptationStartRef} type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
-              {physicalGrid?.active&&!detailAdaptation&&<fieldset className="detail-view-controls" disabled={mutationBlocked(false)}>
-                <legend>{language==='ru'?'Сетка карты':'Map grid'}</legend>
-                <div className="detail-adaptation__actions">{([1,6,12,24] as const).map(step=><button type="button" key={step} data-detail-step={step} aria-pressed={physicalGrid.viewStep===step} onClick={()=>setDetailViewStep(step)}>{step} {detailMiles(step)}</button>)}</div>
-                <small>{language==='ru'?'Мили между сторонами. Сетка и масштаб приближения независимы; местность и места сохраняются.':'Miles across flats. Grid and zoom are independent; terrain and places are retained.'}</small>
-              </fieldset>}
+              </>:physicalGrid?.version===2&&!physicalGrid.poiFootprints.some(p=>p.extent.kind==='default')&&physicalGrid.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button ref={detailAdaptationStartRef} type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
               {detailAdaptationError&&<p role="alert">{detailAdaptationError}</p>}
             </section>}
             <div className="control-block world-seed-control">
@@ -16902,17 +16947,22 @@ retainPoiNames(checkpoint,editorNamesRef.current);
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
-              {physicalGrid?.active&&<section className="info-block detail-summary" aria-label={language==='ru'?'Сводка ячейки':'Cell summary'} data-detail-summary>
+              {physicalGrid?.active&&physicalGrid.viewStep!==6&&<section className="info-block detail-summary" aria-label={language==='ru'?'Сводка ячейки':'Cell summary'} data-detail-summary>
                 <strong>{language==='ru'?'Область':'Area'} · {physicalGrid.viewStep} {detailMiles(physicalGrid.viewStep)}</strong>
                 {!detailSummary?<p>{language==='ru'?'Выберите ячейку на карте.':'Choose a cell on the map.'}</p>:<>
                   <p>{hexKey(detailSummary.cell)} · {language==='ru'?'мест':'places'}: {detailSummary.pois.length}</p>
+                  <p data-detail-unknown>{language==='ru'?'Незаполнено':'Unknown'}: {(detailSummary.unknownAreaSquareMiles/detailSummary.cellAreaSquareMiles*100).toFixed(1)}%</p>
+                  <ul data-detail-terrains>{detailSummary.terrains.map(item=><li key={item.terrain}>{item.terrain==='sea'?(language==='ru'?'Море':'Sea'):item.terrain==='lake'?(language==='ru'?'Озеро':'Lake'):getBiomeLabel(item.terrain as BiomeId,language)} · {(item.fraction*100).toFixed(1)}%</li>)}</ul>
+                  <ul data-detail-rivers>{detailSummary.rivers.map(item=><li key={item.id} data-detail-river={item.id}>{t.river} {renderToponym(`river:${item.id}`)}{item.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}</li>)}</ul>
+                  <ul data-detail-roads>{detailSummary.routes.map(item=><li key={item.id} data-detail-road={item.id}>{item.kinds.map(kind=>kind==='road'?t.road:t.trail).join(' / ')} {renderName(`road:${item.id}`,'detail-road')}{item.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}</li>)}</ul>
+                  {physicalGrid.viewStep>6&&detailSummary.notes.map(item=><p key={item.key} data-detail-note={item.key}>{language==='ru'?'Заметка области':'Area note'} {item.key}: {item.text}</p>)}
                   {detailSummary.pois.length>1&&<p>{language==='ru'?'Выберите место в списке, чтобы открыть его содержимое.':'Choose a place below to open its content.'}</p>}
                   <details><summary>{language==='ru'?'Местность и исходные гексы':'Terrain and source cells'} ({detailSummary.sources.length})</summary>
                     <ul>{detailSummary.sources.map(h=><li key={h.key}>{h.key} · {h.terrain==='sea'?(language==='ru'?'Море':'Sea'):h.terrain==='lake'?(language==='ru'?'Озеро':'Lake'):getBiomeLabel(h.terrain as BiomeId,language)} · {h.partial?(language==='ru'?'часть':'part'):(language==='ru'?'целиком':'whole')}</li>)}</ul>
                   </details>
                   {detailSummary.pois.map(p=><details key={p.poiId}><summary>{nameTargets.find(t=>t.poiLocator===p.legacyRef)?.[language]||`${language==='ru'?'Место':'Place'} ${p.legacyRef?.slice(p.legacyRef.lastIndexOf(':')+1)??''}`} · {p.partial?(language==='ru'?'часть объекта':'part of object'):(language==='ru'?'весь объект':'whole object')}</summary>
                     <p>{language==='ru'?'Клетки охвата здесь/всего':'Footprint cells here/total'}: {p.partCells}/{p.totalCells}</p>
-                    <p>{p.extent.kind==='default'?(language==='ru'?'Условный охват: размер неизвестен.':'Assumed extent: size unknown.'):p.extent.kind==='manual'?p.extent.note:p.extent.sourceId}</p>
+                    <p>{detailExtentCaption(p.extent)}</p>
                     <ul>{p.attachments.map((a,i)=><li key={i}>{a.kind==='water'?`${nameTargets.find(t=>t.key===a.waterId)?.[language]??a.waterId} · ${language==='ru'?{water:'в воде',shore:'у берега',river:'у реки',crossing:'переправа',rapid:'порог',waterfall:'водопад'}[a.waterKind]:a.waterKind}`:`${nameTargets.find(t=>t.key===a.routeId)?.[language]??a.routeId} · ${a.routeKind==='road'?(language==='ru'?'дорога':'road'):(language==='ru'?'тропа':'trail')}`}</li>)}</ul>
                     <button type="button" className="secondary" data-detail-poi-select={p.poiId} onClick={()=>{const cell=physicalGrid.viewStep===1&&physicalGrid.selectedCell?physicalGrid.selectedCell:physicalGrid.poiFootprints.find(f=>f.poiId===p.poiId)?.cells[0];if(cell)selectDetailCell(cell,renderedDocumentRevision,1,p.poiId);}}>{language==='ru'?'Открыть место подробно':'Open place details'}</button>
                     {physicalGrid.viewStep===1&&(detailExtentDraft?.poiId===p.poiId?<form data-detail-extent-form onSubmit={event=>{event.preventDefault();finishDetailExtentDraft();}}>
@@ -16927,7 +16977,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 </>}
               </section>}
               <section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
-                <details open={!physicalGrid?.active||physicalGrid.viewStep<=6||editMode} className="detail-source-context"><summary>{language==='ru'?'Исходный гекс и редактирование':'Source hex and editing'}</summary>
+                <details open={!physicalGrid?.active||physicalGrid.viewStep<=6||editMode} className={`detail-source-context${!physicalGrid?.active||physicalGrid.viewStep===6?' detail-source-context--standard':''}`}><summary>{language==='ru'?'Исходный гекс и редактирование':'Source hex and editing'}</summary>
                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
                   aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
@@ -16937,6 +16987,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                     {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
                   </svg>
                 </button></div>
+                {detailLocal&&<p data-detail-region-context><strong>{language==='ru'?'Контекст исходного региона':'Source region context'}</strong></p>}
                 {selectedKingdom ? <p>{language === 'ru' ? 'Королевство' : 'Kingdom'}: {renderName(`kingdom:${selectedKingdom.id}`)}</p> : null}
                 {selectedRegion ? <>
                   <p><strong>{SIZE_LABELS[language][selectedRegion.sizeCategory]}</strong> {renderToponym(`region:${selectedRegion.id}`)}</p>
@@ -16950,13 +17001,13 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                       () => setEditingRegionBiomeId(selectedRegion.id))}{renderTags({kind:'region',id:selectedRegion.id},'region')}</div>
                   {!poiDraft&&regionPanel}
                 </> : isSelectedLake ? <p><strong>💧 {t.lake}</strong> {renderToponym(`lake:${selectedTerrain?.lakeId}`)}{selectedTerrain?.lakeId?renderTags({kind:'lake',id:selectedTerrain.lakeId},'lake'):null}</p>
-                  : isSelectedSea ? <><p><strong>{SEA_EMOJI} {t.sea}</strong></p><div className="direct-line">{renderWaterPoi()}</div></>
+                  : isSelectedSea ? <><p><strong>{SEA_EMOJI} {t.sea}</strong></p><div className="direct-line">{detailSelectedPoiVisible&&renderWaterPoi()}</div></>
                   : <p><strong>{isSelectedCandidate ? t.candidateForRegion : t.noHexSelected}</strong></p>}
                 {selectedHex ? <p><strong>{t.selectedHex}:</strong> {selectedHex.q}/{selectedHex.r}</p> : null}
-                {!poiDraft&&waterPanel}{poiPanel}{knavePanel}
+                {!poiDraft&&detailSourceAreaVisible&&waterPanel}{detailSelectedPoiVisible&&poiPanel}{knavePanel}
                 {!isSelectedCandidate && selectedRegion ? (
                   <>
-                    {!isSelectedLake&&!isSelectedSea&&selectedEffectiveBiomeId ? <div className="direct-line">
+                    {detailSourceAreaVisible&&!isSelectedLake&&!isSelectedSea&&selectedEffectiveBiomeId ? <div className="direct-line">
                       {language === 'ru' ? 'Местность: ' : 'Terrain: '}
                       {isEditingSelectedHexBiome && editMode ? <select autoFocus aria-label={t.editHexBiome}
                         value={selectedHexBiomeOverride ?? ''} onChange={e => e.target.value ? setSelectedHexBiomeOverride(e.target.value as BiomeId) : resetSelectedHexBiomeOverride()}
@@ -16968,13 +17019,13 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                         : (language === 'ru' ? 'как в регионе' : 'inherit region'), () => setEditingHexBiomeKey(selectedHexKey))}
                     </div> : null}
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
-                    {selectedHasCentralPoi ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
+                    {detailSelectedPoiVisible&&selectedHasCentralPoi ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
                       value={selectedRegion.centralPoiKind ?? ''} onChange={e => setSelectedCentralPoiKind(e.target.value as CentralPoiKind)} onBlur={() => setEditingCentralPoiRegionId(null)}>
                       {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
                     </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
                       {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
-                    {isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
-                    {canEditSelectedPoi && selectedHex && !selectedHasCentralPoi ? <div className="direct-line">
+                    {detailSelectedPoiVisible&&isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
+                    {detailSelectedPoiVisible&&canEditSelectedPoi && selectedHex && !selectedHasCentralPoi ? <div className="direct-line">
                       {isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
                         onChange={e => e.target.value ? setSelectedPoiKind(e.target.value as PoiKind) : deleteSelectedPoi()} onBlur={() => setEditingPoiHexKey(null)}>
                         <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
@@ -16997,7 +17048,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                             selectedHexVertexKeys.has(vertex.key) && waterfallRiverVertexKeys.has(vertex.key)
                           ));
                           const riverFeatures = [hasWaterfall ? waterfallLabel : null, hasRapids ? t.rapids : null].filter((feature): feature is string => feature !== null);
-                          return <div className="nearby-river-row" key={`nearby-river-${river.id}`}><p><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {editMode?<button type="button" className="direct-value river-choice" data-river-choice={river.id} aria-label={`${language==='ru'?'Выбрать реку':'Select river'} ${nameTargets.find(target=>target.key===`river:${river.id}`)?.[language]??river.id}`} aria-pressed={riverFeatureTarget?.riverId===river.id&&riverFeatureTarget.hexKey===selectedHexKey} onClick={()=>chooseRiverFeatureTarget({riverId:river.id,hexKey:selectedHexKey!})}>{t.river}</button>:t.river} {renderToponym(`river:${river.id}`)}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}{renderTags({kind:'river',id:river.id},'river')}</p>{stableNameObjects.filter(o=>(o.type==='rapid'&&o.riverId===river.id&&!!o.edgeKey&&selectedHexEdgeKeys.has(o.edgeKey))||(o.type==='waterfall'&&o.riverId===river.id&&!!o.vertexKey&&selectedHexVertexKeys.has(o.vertexKey))).map(o=><div key={o.key}>{nameTypeLabels[o.type]} {renderName(o.key,'nearby-feature')}</div>)}{riverFeaturePanel(river)}</div>;
+                          return <div className="nearby-river-row" key={`nearby-river-${river.id}`}><p><span className="nearby-river-marker" aria-hidden="true">→</span>{hasRapids ? <span className="nearby-river-marker" aria-hidden="true">|||</span> : null}{hasWaterfall ? <img className="nearby-waterfall-marker" src="/waterfall-color.svg" alt="" aria-hidden="true" /> : null} {editMode?<button type="button" className="direct-value river-choice" data-river-choice={river.id} aria-label={`${language==='ru'?'Выбрать реку':'Select river'} ${nameTargets.find(target=>target.key===`river:${river.id}`)?.[language]??river.id}`} aria-pressed={riverFeatureTarget?.riverId===river.id&&riverFeatureTarget.hexKey===selectedHexKey} onClick={()=>chooseRiverFeatureTarget({riverId:river.id,hexKey:selectedHexKey!})}>{t.river}</button>:t.river} {renderToponym(`river:${river.id}`)}{detailLocal&&detailSummary?.rivers.find(r=>r.id===river.id)?.boundaryOnly?` · ${language==='ru'?'у границы':'at boundary'}`:''}{riverFeatures.length > 0 ? ` (${riverFeatures.join(', ')})` : ''}{renderTags({kind:'river',id:river.id},'river')}</p>{stableNameObjects.filter(o=>(o.type==='rapid'&&o.riverId===river.id&&!!o.edgeKey&&selectedHexEdgeKeys.has(o.edgeKey))||(o.type==='waterfall'&&o.riverId===river.id&&!!o.vertexKey&&selectedHexVertexKeys.has(o.vertexKey))).map(o=><div key={o.key}>{nameTypeLabels[o.type]} {renderName(o.key,'nearby-feature')}</div>)}{riverFeaturePanel(river)}</div>;
                         })}
                         {selectedObstacles.map(o=><div key={o.id} className="obstacle-row" data-obstacle-id={o.id}>
                           {editMode?<button type="button" className="direct-value" aria-label={`${language==='ru'?'Выбрать препятствие':'Select barrier'} ${o.id}: ${hexKey(o.hex)} → ${hexKey(o.neighborHex)}`} aria-pressed={selectedObstacleId===o.id} onClick={()=>chooseObstacle(o.id)}>━ {language==='ru'?'Препятствие':'Barrier'} · {hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)}</button>:<span>━ {language==='ru'?'Препятствие':'Barrier'} ({hexKey(o.hex)===selectedHexKey?hexKey(o.neighborHex):hexKey(o.hex)})</span>}
@@ -17018,7 +17069,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 {roadDraftPanel}
                 {roadPanel}
                 {editError && !poiDraft && !waterDraft && !regionDraft && <p className="direct-error" role="alert">{editError}</p>}
-                {canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
+                {detailSourceAreaVisible&&canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
                   <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>
                   {notesOpen && editMode ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={4} value={notesValue}
                     disabled={!!poiDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
@@ -17230,12 +17281,12 @@ retainPoiNames(checkpoint,editorNamesRef.current);
             onContextMenu={(event) => event.preventDefault()}
             onKeyDown={handleMapKeyDown}
           >
-            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
+            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px`, margin:`${detailScrollSpaceRef.current.y}px ${detailScrollSpaceRef.current.x}px` }}>
             <svg
               ref={mapSvgRef}
               data-biome-display={biomeDisplayMode}
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
-              viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+              viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
               style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
@@ -17309,15 +17360,17 @@ retainPoiNames(checkpoint,editorNamesRef.current);
             </g>}
             </svg>
             <canvas ref={mapMotionCanvasRef} className="map-motion-buffer" aria-hidden="true" />
-            {detailAdaptation&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-detail-preview-overlay aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{detailAdaptation.state.poiFootprints.map(p=>{
+            {detailAdaptation&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-detail-preview-overlay aria-hidden="true" viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{detailAdaptation.state.poiFootprints.map(p=>{
               const grid=createDetailGrid(1,detailAdaptation.state.grid.origin),pixel=(v:{x:number;y:number})=>({x:(v.x-grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x,y:(v.y-grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y});
-              return <g key={p.poiId} data-detail-preview-poi={p.poiId}>{p.cells.map(c=><polygon key={`${c.q},${c.r}`} points={detailCellPolygon(grid,c).map(v=>{const a=pixel(v);return `${a.x},${a.y}`;}).join(' ')} fill="#22d3ee" fillOpacity={0.2}/>)}{detailFootprintBoundary(grid,p.cells).map((e,i)=>{const a=pixel(e.from),b=pixel(e.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#06b6d4" strokeWidth={2/mapScaleRef.current}/>;})}</g>;
+              const anchor=pixel(detailFootprintWorldAnchor(p,grid));
+              return <g key={p.poiId} data-detail-preview-poi={p.poiId}><title>{detailExtentCaption(p.extent)}</title>{detailFootprintHasOutline(p,grid)?<>{p.cells.map(c=><polygon key={`${c.q},${c.r}`} points={detailCellPolygon(grid,c).map(v=>{const a=pixel(v);return `${a.x},${a.y}`;}).join(' ')} fill="#22d3ee" fillOpacity={0.2}/>)}{detailFootprintBoundary(grid,p.cells).map((e,i)=>{const a=pixel(e.from),b=pixel(e.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#06b6d4" strokeWidth={2/mapScaleRef.current}/>;})}</>:<circle data-detail-preview-marker cx={anchor.x} cy={anchor.y} r={4} fill="#22d3ee"/>}</g>;
+
             })}</g></svg>}
-            {poiDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="poi-draft" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&(h.key===poiDraft.source.hexKey||h.key===`${poiDraft.q},${poiDraft.r}`)).map(h=><polygon key={h.key} data-poi-draft-cell={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke={h.key===poiDraft.source.hexKey?'#7dd3fc':'#facc15'} strokeWidth={3/mapScaleRef.current} strokeDasharray={h.key===poiDraft.source.hexKey?'5 4':undefined}/>)}</g></svg>}
-            {waterDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="water-draft" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
+            {poiDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="poi-draft" aria-hidden="true" viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}><g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&(h.key===poiDraft.source.hexKey||h.key===`${poiDraft.q},${poiDraft.r}`)).map(h=><polygon key={h.key} data-poi-draft-cell={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke={h.key===poiDraft.source.hexKey?'#7dd3fc':'#facc15'} strokeWidth={3/mapScaleRef.current} strokeDasharray={h.key===poiDraft.source.hexKey?'5 4':undefined}/>)}</g></svg>}
+            {waterDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="water-draft" aria-hidden="true" viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
               <g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&waterDraft.edit.hexKeys.includes(h.key)).map(h=><polygon key={h.key} data-water-draft-cell={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill={waterDraft.edit.target==='land'?'#f7dc6f':'#159dac'} fillOpacity={0.45} stroke="#a5f3fc" strokeWidth={2/mapScaleRef.current}/>)}</g>
             </svg>}
-            {regionDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="region-draft" role="group" aria-label={language==='ru'?'Черновик региона на карте':'Region draft on map'} viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
+            {regionDraft&&<svg ref={waterDraftOverlayRef} className="selected-hex-overlay" data-editor-only="region-draft" role="group" aria-label={language==='ru'?'Черновик региона на карте':'Region draft on map'} viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`} style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
               <g transform={mapRotationTransform}>{positionedHexes.hexes.filter(h=>h.kind!=='candidate'&&(regionDraft.edit.type==='region_height'
                 ?metadataMap.get(h.key)?.regionId===regionDraft.edit.regionId:h.key===regionDraft.edit.hexKey)).map(h=><polygon key={h.key} data-region-draft-cell={h.key}
                   points={hexPoints(h.x,h.y,HEX_SIZE)} fill="#f7dc6f" fillOpacity={0.25} stroke="#f7dc6f" strokeWidth={2/mapScaleRef.current} aria-hidden="true"/>)}
@@ -17327,8 +17380,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                   onMouseEnter={()=>{if(regionDraftRef.current===regionDraft)setRegionTargetHoverId(target.id);}} onMouseLeave={()=>{if(regionDraftRef.current===regionDraft)setRegionTargetHoverId(null);}} onFocus={()=>{if(regionDraftRef.current===regionDraft)setRegionTargetHoverId(target.id);}} onBlur={()=>{if(regionDraftRef.current===regionDraft)setRegionTargetHoverId(null);}} onClick={event=>activateRegionTarget(event,target.id)}
                   onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();event.stopPropagation();selectRegionTarget(target.id);}}}/>)}</g>
             </svg>}
-            {selectedHex&&positionedHexes.hexes.some(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))&&<svg
-              ref={selectedHexOverlayRef} className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
+            {(!physicalGrid?.active||editMode)&&selectedHex&&positionedHexes.hexes.some(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))&&<svg
+              ref={selectedHexOverlayRef} className="selected-hex-overlay" data-editor-only="selection" aria-hidden="true" viewBox={`${-mapGridPad} ${-mapGridPad} ${displayMapWidth} ${displayMapHeight}`}
               style={{width:`${displayMapWidth}px`,height:`${displayMapHeight}px`,transform:`translateZ(0) scale(${mapScaleRef.current})`}}>
               <g transform={mapRotationTransform}>{(()=>{const h=positionedHexes.hexes.find(h=>h.kind!=='candidate'&&h.key===hexKey(selectedHex))!;
                 return <polygon data-selected-hex={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} style={{filter:`drop-shadow(0 0 ${1/mapScaleRef.current}px #0c1423)`}}/>;})()}</g>

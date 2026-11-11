@@ -1,3 +1,17 @@
+# DETAIL1 — current owner correction DTL-1.1
+
+The active requirements are agent-operations/agent-work/specs/HX-BL-051-DETAIL1.md and the owner's PR496 remarks. Work remains in PR496 until its corrections are independently checked. The following historical checkpoints do not override this contract.
+
+The display is one full pointy grid of1/6/12/24miles across flats, including candidate/unknown space. Real terrain boundaries remain geography, not a second source grid. Changing step couples the camera by oldStep/newStep and preserves a fixed world focus; it does not regenerate geography. Six miles retains the standard source card. One mile filters POIs by their saved anchor/physical extent and actual river/road segment intersections; coarse views preserve mixed terrain areas, unique entities and unknown area.
+
+POI-SIZE1 (51typed contexts) contains labelled project estimates, not measured historical sizes. Measured/manual geometry wins. Unknown or sub-mile sites have marker addresses, not minimum one-mile areas; meaningful extents have exposed union outlines only in the1mile view. Legacy default extents are re-estimated only in an explicit before/after preview with exact Cancel and Undo/Redo. Manual/measured legacy shapes remain intact.
+
+New anchored size provenance uses physicalGrid version2 and outer JSON version14; v11 physicalGrid version1 remains readable without automatic migration. Standalone PR496 does not include TABLES1/PF2: later unpublished v12/v13 payloads refuse safely until their separate integration is completed; no field dropping or compatibility claim is made. Plain legacy formats remain on their previous versions. This is an explicit integration limitation, not a reinterpretation of those other tasks.
+
+Generation outside a selected1/12/24cell remains GRID-Q01, awaiting the owner's choice. The established6mile candidate generator is retained; unsupported empty-cell creation refuses with a6mile-view instruction. No silent clipping or new hydrology contract is introduced. This open behavior prevents whole GRID acceptance and publication until resolved.
+
+## Historical implementation checkpoints (DTL-1.0, superseded where conflicting)
+
 # DETAIL1 implementation checkpoint D2b2
 
 Approved scope: agent-operations/agent-work/specs/HX-BL-051-DETAIL1.md (DTL-1.0).

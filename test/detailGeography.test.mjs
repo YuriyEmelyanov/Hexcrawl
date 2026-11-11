@@ -9,7 +9,7 @@ import {newKnaveLayer} from '../src/knaveClassic.ts';
 import {knaveContentFixture} from './helpers/knave-fixture.mjs';
 
 const importMap=async data=>{const h=createGenerationHarness(42),alerts=[];h.render();h.setWindow({alert:s=>alerts.push(s),confirm:()=>true});h.injectFunction('readTextFile',async f=>f.text);await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});assert.deepEqual(alerts,[]);return h;};
-const state=p=>({schema:'hexcrawl.detail1',version:1,active:true,viewStep:1,grid:p.grid,source:p.source,poiIdentities:p.poiIdentities,poiFootprints:p.poiFootprints});
+const state=p=>({schema:'hexcrawl.detail1',version:p.schemaVersion??2,active:true,viewStep:1,grid:p.grid,source:p.source,poiIdentities:p.poiIdentities,poiFootprints:p.poiFootprints});
 const validate=(h,map,p)=>h.geometry.validateDetailMapFootprints(map,state(p));
 const prepare=h=>h.geometry.prepareDetailMapPreview(h.render().captureDocument().map);
 // DTL-05/06/14/15/19/23: test the actual App adapter, not a second idealized map.
@@ -20,20 +20,21 @@ test('live DETAIL1 preview projects actual capital/Seat and every assigned road 
   const h=await importMap(data),before=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);h.guardRandom();
   const preview=prepare(h),poi=preview.poiFootprints[0];
   assert.doesNotThrow(()=>validate(h,before.map,preview));
-  for(const change of [p=>p.poiFootprints.pop(),p=>p.poiFootprints[0].cells=[{q:99,r:99}],p=>p.poiFootprints[0].attachments.pop(),p=>p.poiFootprints[0].attachments[0].entry={x:900,y:900},p=>p.poiFootprints[0].poiId='detail-poi:999']){const bad=structuredClone(preview);change(bad);assert.throws(()=>validate(h,before.map,bad));}
-  const manual=structuredClone(preview);manual.poiFootprints[0].extent={kind:'manual',basis:'conditional',note:'Явный условный охват'};manual.poiFootprints[0].cells=[...poi.cells,{q:12,r:1}];
+  for(const change of [p=>p.poiFootprints.pop(),p=>p.poiFootprints[0].cells=[{q:99,r:99}],p=>p.poiFootprints[0].attachments.pop(),p=>p.poiFootprints[0].attachments[0].entry={x:900,y:900},p=>p.poiFootprints[0].poiId='detail-poi:999',p=>p.poiFootprints[0].worldAnchor.x=Infinity,p=>delete p.poiFootprints[0].worldAnchor,p=>p.poiFootprints[0].extent.representativeExtentMiles=1,p=>p.poiFootprints[0].extent.catalogueId='unknown',p=>p.poiFootprints[0].extent.basis='measured',p=>p.schemaVersion=3]){const bad=structuredClone(preview);change(bad);assert.throws(()=>validate(h,before.map,bad));}
+  const manual=structuredClone(preview);manual.poiFootprints[0].extent={kind:'manual',basis:'conditional',note:'Явный условный охват'};manual.poiFootprints[0].cells=[...new Map([...poi.cells,{q:12,r:1}].map(c=>[`${c.q},${c.r}`,c])).values()];
   assert.doesNotThrow(()=>validate(h,before.map,manual));
   const original=state(preview),rivers=h.geometry.detailMapRiverGeometry(before.map,preview.grid.origin),copy=structuredClone(original);
   const changed=prepareDetailFootprintExtentEdit(before.map,rivers,original,poi.poiId,manual.poiFootprints[0].extent,manual.poiFootprints[0].cells);assert.deepEqual(structuredClone(original),copy);assert.equal(changed.poiFootprints[0].poiId,poi.poiId);assert.ok(Object.isFrozen(changed));
   assert.throws(()=>prepareDetailFootprintExtentEdit(before.map,rivers,original,poi.poiId,manual.poiFootprints[0].extent,[{q:999,r:999}]));assert.deepEqual(structuredClone(original),copy);
   const measured=structuredClone(preview);measured.poiFootprints[0].extent={kind:'measured_polygon',sourceId:'survey:1',unit:'mile',method:'positive_area_intersection',sourcePolygon:detailCellPolygon(createDetailGrid(1),{q:12,r:0})};measured.poiFootprints[0].cells=[{q:12,r:0}];assert.doesNotThrow(()=>validate(h,before.map,measured));
   for(const change of [p=>p.poiFootprints[0].cells.push({q:13,r:0}),p=>p.poiFootprints[0].extent.sourcePolygon=[{x:11,y:0},{x:13,y:2},{x:11,y:2},{x:13,y:0},{x:14,y:0}]]){const bad=structuredClone(measured);change(bad);assert.throws(()=>validate(h,before.map,bad));}
-  if(mode==='classic'){const tooSmall=structuredClone(manual);tooSmall.poiFootprints[0].cells=[{q:12,r:0}];tooSmall.poiFootprints[0].extent.basis='measured_override';assert.throws(()=>validate(h,before.map,tooSmall),/capital_manual_needs_two_cells/);}
+  // GRID-C08 cancels the capital minimum: explicit one-cell manual coverage is valid.
+  if(mode==='classic'){const small=structuredClone(manual);small.poiFootprints[0].cells=[{q:12,r:0}];small.poiFootprints[0].extent.basis='measured_override';assert.doesNotThrow(()=>validate(h,before.map,small));}
   const outside=structuredClone(manual);outside.poiFootprints[0].cells=[{q:900,r:0}];assert.throws(()=>validate(h,before.map,outside));
   assert.equal(preview.activatesDetail1,false);assert.equal(preview.source.physicalConvention,'unknown');assert.equal(preview.poiFootprints.length,1);
-  assert.equal(poi.cells.length,mode==='classic'?2:1);assert.equal(poi.poiId,preview.poiIdentities.byLegacyRef['poi:1:2,0']);
+  assert.equal(poi.extent.representativeExtentMiles,mode==='classic'?2.5:.15);assert.equal(mode==='classic'?poi.cells.length>2:poi.cells.length===1,true);assert.equal(poi.poiId,preview.poiIdentities.byLegacyRef['poi:1:2,0']);
   assert.deepEqual(structuredClone(poi.attachments.filter(a=>a.kind==='route').map(a=>a.routeId)),['road:1','road:2']);
-  assert.ok(poi.cells.every(c=>Math.abs(c.q-12)<=1&&Math.abs(c.r)<=1),'six-mile world coordinate, independent of screen pixels');
+  assert.ok(poi.cells.every(c=>Math.abs(c.q-12)<=2&&Math.abs(c.r)<=2),'six-mile world coordinate, independent of screen pixels');
   assert.deepEqual(structuredClone(prepare(h)),structuredClone(preview));assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
  }
 });
@@ -178,7 +179,7 @@ test('active DETAIL1 generated candidate places only new owners after accepted K
 
 // DTL-22/23: geometry/controller tests do not prove ordinary file import.
 // Reuse authored maps and the real importer; no new harness or random series.
-test('ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt spatial references atomically',async()=>{
+test('ordinary v11 and v14 DETAIL1 imports roundtrip active extents and refuse corrupt spatial references atomically',async()=>{
  const road=regionFixture();road.map.roads=[{id:1,regionId:1,segments:[{from:{q:2,r:0},to:{q:3,r:0},kind:'road'}]}];road.counters.nextRoadId=2;
  const sea=seaFixture();sea.map.waterPoiByHexKey={'1,2':'shipwreck'};
  const knave=regionFixture();knave.version=10;knave.map.seas=[];knave.map.nextSeaId=1;knave.map.knave={...newKnaveLayer(),content:knaveContentFixture('poi:1:2,0',{kind:'settlement'})};
@@ -186,6 +187,10 @@ test('ordinary v11 DETAIL1 import roundtrips active extents and refuses corrupt 
   const source=await importMap(raw),doc=structuredClone(source.render().captureDocument());doc.map.physicalGrid=state(prepare(source));source.render().applyDocument(doc);source.render().setEditMode(true);source.render();
   const poi=doc.map.physicalGrid.poiFootprints[0],extent=raw.ui.generationMode==='mythic'?{kind:'measured_polygon',sourceId:'authored-survey:import',unit:'mile',method:'positive_area_intersection',sourcePolygon:detailCellPolygon(createDetailGrid(1),poi.cells[0])}:{kind:'manual',basis:'conditional',note:'Принятый явный охват'};
   assert.equal(source.render().editDetailFootprintExtent(poi.poiId,extent,poi.cells),true);Object.assign(doc,structuredClone(source.render().captureDocument()));const data=JSON.parse(JSON.stringify(source.render().createSaveData()));
+  // Reuse each real import fixture for the pre-correction v11/v1 boundary.
+  // Explicit manual/surveyed shapes remain byte-for-byte literal on import.
+  const legacyData=structuredClone(data);legacyData.version=11;legacyData.map.physicalGrid.version=1;for(const p of legacyData.map.physicalGrid.poiFootprints)delete p.worldAnchor;
+  const legacyTarget=await importMap(legacyData);assert.deepEqual(structuredClone(legacyTarget.render().captureDocument().map.physicalGrid),legacyData.map.physicalGrid);assert.equal(legacyTarget.render().createSaveData().version,11);
   const target=await importMap(regionFixture()),before=structuredClone(target.render().captureDocument()),count=target.render().undoHistory.length,alerts=[];target.setWindow({alert:s=>alerts.push(s),confirm:()=>true});target.guardRandom();
   const load=async value=>{await target.render().handleImportJson({target:{files:[{text:JSON.stringify(value)}],value:''}});target.render();};
   await load(data);assert.deepEqual(alerts,[],'a valid nonempty layer imports');const after=structuredClone(target.render().captureDocument());assert.deepEqual(after.map.physicalGrid,structuredClone(doc.map.physicalGrid));assert.deepEqual(after.map.generation,doc.map.generation);assert.deepEqual(after.map.knave,doc.map.knave);assert.equal(target.render().undoHistory.length,count+1);
@@ -210,7 +215,7 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  assert.equal(h.render().cancelDetailAdaptation(draft),true);assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.equal(oldApply(),false);
  assert.equal(h.render().startDetailAdaptation(),true);const current=h.render().detailAdaptation;assert.equal(oldApply(draft),false,'old draft cannot apply a new preview');
  const restore=h.injectFunction('structuredClone',value=>{if(value?.physicalGrid)throw Error('temporary adaptation copy fault');return structuredClone(value);});assert.equal(h.render().applyDetailAdaptation(),false);restore();assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);assert.equal(h.render().detailAdaptation,current);
- assert.equal(h.render().applyDetailAdaptation(),true);const after=structuredClone(h.render().captureDocument());assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().redoHistory.length,0);assert.equal(h.render().detailAdaptation,null);assert.deepEqual(after.map.physicalGrid,structuredClone(current.state));const clean=x=>{delete x.map.physicalGrid;return x;};assert.deepEqual(clean(structuredClone(after)),clean(structuredClone(before)));assert.equal(h.render().createSaveData().version,11);assert.equal(h.render().applyDetailAdaptation(current),false);assert.equal(h.render().startDetailAdaptation(),false,'accepted layer is not adapted twice');
+ assert.equal(h.render().applyDetailAdaptation(),true);const after=structuredClone(h.render().captureDocument());assert.equal(h.render().undoHistory.length,stacks[0].length+1);assert.equal(h.render().redoHistory.length,0);assert.equal(h.render().detailAdaptation,null);assert.deepEqual(after.map.physicalGrid,structuredClone(current.state));const clean=x=>{delete x.map.physicalGrid;return x;};assert.deepEqual(clean(structuredClone(after)),clean(structuredClone(before)));assert.equal(h.render().createSaveData().version,14);assert.equal(h.render().applyDetailAdaptation(current),false);assert.equal(h.render().startDetailAdaptation(),false,'catalogue layer is not adapted twice');
 
  h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
  // DTL-20/22/23: the real view controller changes only persisted viewStep.
@@ -218,7 +223,7 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  for(const step of [1,12,24,6]){
    assert.equal(h.render().setDetailViewStep(step),true);
    const viewed=structuredClone(h.render().captureDocument());assert.equal(viewed.map.physicalGrid.viewStep,step);
-   const expected=structuredClone(accepted);expected.map.physicalGrid.viewStep=step;assert.deepEqual(viewed,expected);
+   const expected=structuredClone(accepted);expected.map.physicalGrid.viewStep=step;assert.ok(Math.abs(viewed.mapScale-accepted.mapScale*6/step)<1e-9,'GRID-C02 preserves world framing');expected.mapScale=viewed.mapScale;assert.deepEqual(viewed,expected);
    h.geometry.assertHexcrawlSaveData(h.render().createSaveData());
  }
  assert.equal(oldView(12),false,'stale view command cannot change a newer document');
@@ -253,6 +258,18 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  const ownerOne=structuredClone(review.render().captureDocument()),ownerStacks=structuredClone([review.render().undoHistory,review.render().redoHistory]);
  assert.equal(review.render().selectDetailCell({q:18,r:0},undefined,1,'missing-owner'),false);assert.deepEqual(structuredClone(review.render().captureDocument()),ownerOne);assert.deepEqual(structuredClone([review.render().undoHistory,review.render().redoHistory]),ownerStacks);
 
+ // GRID-C08: this existing explicit-preview/history case also covers old accepted
+ // project defaults versus explicit manual/surveyed extents. Reading is literal.
+ for(const variant of ['default','manual','measured']){
+  const legacy=await importMap(regionFixture()),legacyDoc=structuredClone(legacy.render().captureDocument()),p=prepare(legacy),old=structuredClone(state(p));old.version=1;
+  const owner=old.poiFootprints[0];delete owner.worldAnchor;owner.cells=[{q:12,r:0}];
+  owner.extent=variant==='default'?{kind:'default',reason:'unknown_size',policy:'one_cell'}:variant==='manual'?{kind:'manual',basis:'conditional',note:'Preserve authored cells'}:{kind:'measured_polygon',sourceId:'survey:0.4-mile',unit:'mile',method:'positive_area_intersection',sourcePolygon:Array.from({length:32},(_,i)=>({x:12+.2*Math.cos(i*Math.PI/16),y:.2*Math.sin(i*Math.PI/16)}))};
+  legacyDoc.map.physicalGrid=old;legacy.render().applyDocument(legacyDoc);legacy.render();legacy.guardRandom();const before=structuredClone(legacy.render().captureDocument()),history=structuredClone([legacy.render().undoHistory,legacy.render().redoHistory]);
+  assert.equal(legacy.render().startDetailAdaptation(),true);const preview=legacy.render().detailAdaptation,next=preview.state.poiFootprints[0];
+  if(variant==='default'){assert.equal(next.extent.kind,'representative');assert.equal(next.extent.representativeExtentMiles,.3);assert.equal(next.cells.length,1);}else {assert.deepEqual(structuredClone(next.extent),owner.extent);assert.deepEqual(structuredClone(next.cells),owner.cells);}
+  assert.equal(legacy.render().cancelDetailAdaptation(),true);assert.deepEqual(structuredClone(legacy.render().captureDocument()),before);assert.deepEqual(structuredClone([legacy.render().undoHistory,legacy.render().redoHistory]),history);
+  assert.equal(legacy.render().startDetailAdaptation(),true);assert.equal(legacy.render().applyDetailAdaptation(),true);const after=structuredClone(legacy.render().captureDocument());assert.equal(after.map.physicalGrid.version,2);assert.equal(after.map.physicalGrid.poiFootprints[0].poiId,owner.poiId);legacy.render().undoMap();assert.deepEqual(structuredClone(legacy.render().captureDocument()),before);legacy.render().redoMap();assert.deepEqual(structuredClone(legacy.render().captureDocument()),after);
+ }
  const loaded=await importMap(JSON.parse(JSON.stringify(h.render().createSaveData())));assert.deepEqual(structuredClone(loaded.render().captureDocument().map.physicalGrid.selectedCell),{q:12,r:0});
  assert.equal(h.render().selectDetailCell({q:12,r:0},undefined,1),true);assert.equal(h.render().captureDocument().map.physicalGrid.viewStep,1);
  h.render().clickSourceHex({q:3,r:0});assert.deepEqual(structuredClone(h.render().selectedHex),{q:3,r:0});assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid.selectedCell),{q:18,r:0});assert.deepEqual(structuredClone(h.render().captureDocument().map.generation),chosen.map.generation);
@@ -275,7 +292,7 @@ test('new maps activate DETAIL1 at final generation, preserving legacy continuat
   const after=structuredClone(h.render().captureDocument()),grid=after.map.physicalGrid;
   assert.ok(grid?.active,'new map has an active accepted layer');h.geometry.validateDetailMapFootprints(after.map,grid);
   assert.equal(grid.poiFootprints.length,Object.keys(grid.poiIdentities.byLegacyRef).length);
-  assert.equal(h.render().undoHistory.length,1);assert.equal(h.render().createSaveData().version,11);
+  assert.equal(h.render().undoHistory.length,1);assert.equal(h.render().createSaveData().version,14);
   h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument().map),before.map);
   h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
  }

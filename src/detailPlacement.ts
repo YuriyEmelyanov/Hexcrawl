@@ -4,11 +4,13 @@ import {
   detailCellPolygon,
   detailPositiveAreaIntersections,
   validateDetailFootprint,
+  worldToDetailCell,
   type DetailCell,
   type DetailGrid,
   type WorldPoint,
 } from './detailGrid.ts';
 import type {DetailAttachmentRef,DetailExtent,DetailPoiFootprint} from './detailModel.ts';
+import {detailCatalogueExtent,detailCirclePolygon,detailPointInPolygon,detailSegmentPolygonEntry,type DetailSizeNamespace} from './detailSizes.ts';
 
 export type DetailPoiRole='capital'|'mythic_seat'|'site';
 export type DetailWaterKind='shore'|'river'|'water'|'crossing'|'rapid'|'waterfall';
@@ -26,17 +28,18 @@ export type DetailMeasuredExtent=Readonly<{
 export type DetailPoiPlacementInput=Readonly<{
   poiId:string;legacyRef:string|null;role:DetailPoiRole;anchor:WorldPoint;
   sourcePolygon:readonly WorldPoint[];measuredExtent?:DetailMeasuredExtent;
+  namespace?:DetailSizeNamespace;typeId?:string;
+  manualSize?:Readonly<{diameterMiles:number;basis:'conditional'|'measured_override';note:string}>;
   waterRequirement:DetailWaterRequirement;waterAccesses:readonly DetailWaterAccess[];
   routeRequirement:DetailRouteRequirement;routeAccesses:readonly DetailRouteAccess[];
 }>;
 
 export class DetailPlacementError extends Error {
   readonly code:string;
-  constructor(code:string){super(code);this.name='DetailPlacementError';this.code=code;}
+  constructor(code:string){super(`DETAIL1 ${code}`);this.name='DetailPlacementError';this.code=code;}
 }
 const fail=(code:string):never=>{throw new DetailPlacementError(code);};
 const key=(cell:DetailCell)=>`${cell.q},${cell.r}`;
-const directions=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]] as const;
 const finite=(point:WorldPoint)=>Number.isFinite(point.x)&&Number.isFinite(point.y);
 const cross=(a:WorldPoint,b:WorldPoint,p:WorldPoint)=>(b.x-a.x)*(p.y-a.y)-(b.y-a.y)*(p.x-a.x);
 
@@ -85,24 +88,6 @@ function orderedCells(grid:DetailGrid,cells:readonly DetailCell[],anchor:WorldPo
     return Math.hypot(ac.x-anchor.x,ac.y-anchor.y)-Math.hypot(bc.x-anchor.x,bc.y-anchor.y)||a.q-b.q||a.r-b.r;
   });
 }
-function shortestPath(allowed:ReadonlySet<string>,from:DetailCell,to:DetailCell):DetailCell[]|null {
-  const target=key(to),queue:{cell:DetailCell;path:string[]}[]=[{cell:from,path:[key(from)]}],seen=new Set([key(from)]);
-  for(let index=0;index<queue.length;index++) {
-    const {cell:current,path}=queue[index];if(key(current)===target)return path.map(value=>{const [q,r]=value.split(',').map(Number);return {q,r};});
-    for(const [q,r] of directions){const next={q:current.q+q,r:current.r+r},nextKey=key(next);if(allowed.has(nextKey)&&!seen.has(nextKey)){seen.add(nextKey);queue.push({cell:next,path:[...path,nextKey]});}}
-  }
-  return null;
-}
-function connectedUnion(allowed:readonly DetailCell[],seeds:readonly DetailCell[]):DetailCell[] {
-  const allowedKeys=new Set(allowed.map(key)),result:DetailCell[]=[seeds[0]],included=new Set([key(seeds[0])]);
-  for(const seed of seeds.slice(1)) {
-    const starts=[...result].sort((a,b)=>a.q-b.q||a.r-b.r);let best:DetailCell[]|null=null;
-    for(const start of starts){const path=shortestPath(allowedKeys,start,seed);if(path&&(!best||path.length<best.length||path.length===best.length&&path.map(key).join(';')<best.map(key).join(';')))best=path;}
-    const selected:DetailCell[]=best??fail('disconnected_required_access');
-    for(const cell of selected)if(!included.has(key(cell))){included.add(key(cell));result.push(cell);}
-  }
-  return result.sort((a,b)=>a.q-b.q||a.r-b.r);
-}
 function routeCells(grid:DetailGrid,cells:readonly DetailCell[],route:DetailRouteAccess):Map<string,Readonly<{from:WorldPoint;to:WorldPoint}>> {
   const result=new Map<string,Readonly<{from:WorldPoint;to:WorldPoint}>>();
   for(const cell of cells){const span=detailSegmentSpan(grid,cell,route.segment);if(span)result.set(key(cell),span);}
@@ -115,34 +100,40 @@ export function buildDetailPoiFootprint(grid:DetailGrid,input:DetailPoiPlacement
   if(grid.step!==1) fail('placement_requires_one_mile_grid');
   const poiId=text(input.poiId,'poi_id');if(input.legacyRef!==null)text(input.legacyRef,'legacy_ref');
   if(!finite(input.anchor))fail('invalid_anchor');
-  const extentPolygon=input.measuredExtent?.sourcePolygon??input.sourcePolygon;
+  if(input.manualSize&&(!Number.isFinite(input.manualSize.diameterMiles)||input.manualSize.diameterMiles<=0||!['conditional','measured_override'].includes(input.manualSize.basis)))fail('invalid_manual_size');
+  if(input.manualSize)text(input.manualSize.note,'manual_size_note');
+  const extent:DetailExtent=input.measuredExtent
+    ?Object.freeze({kind:'measured_polygon',sourceId:text(input.measuredExtent.sourceId,'extent_source'),unit:input.measuredExtent.unit,method:'positive_area_intersection',sourcePolygon:Object.freeze(input.measuredExtent.sourcePolygon.map(point=>Object.freeze({...point})))})
+    :input.manualSize?Object.freeze({kind:'manual_size',...input.manualSize})
+    :detailCatalogueExtent(input.namespace??'land',input.typeId??(input.role==='capital'?'capital':input.role==='mythic_seat'?'throne':'structure'));
+  const diameter=extent.kind==='representative'?extent.representativeExtentMiles:extent.kind==='manual_size'?extent.diameterMiles:null;
+  const physicalPolygon=extent.kind==='measured_polygon'?extent.sourcePolygon:diameter!==null&&diameter>=1?detailCirclePolygon(input.anchor,diameter):null;
+  const extentPolygon=physicalPolygon??input.sourcePolygon;
   const projected=detailPositiveAreaIntersections(grid,extentPolygon).map(item=>item.cell);
   if(!projected.length)fail('no_projected_cells');
   const ordered=orderedCells(grid,projected,input.anchor),projectedKeys=new Set(projected.map(key));
   const waterOptions=input.waterRequirement==='none'?[]:[...input.waterAccesses]
-    .filter(access=>compatibleWater(input.waterRequirement as DetailWaterKind,access.kind)&&projectedKeys.has(key(access.cell))&&pointInConvexCell(grid,access.cell,access.contact))
+    .filter(access=>compatibleWater(input.waterRequirement as DetailWaterKind,access.kind)&&projectedKeys.has(key(access.cell))&&pointInConvexCell(grid,access.cell,access.contact)&&(!physicalPolygon||detailPointInPolygon(access.contact,physicalPolygon)))
     .sort((a,b)=>ordered.findIndex(cell=>key(cell)===key(a.cell))-ordered.findIndex(cell=>key(cell)===key(b.cell))||a.waterId.localeCompare(b.waterId)||a.segmentId.localeCompare(b.segmentId));
   if(input.waterRequirement!=='none'&&!waterOptions.length)fail('missing_compatible_water_access');
   const routeOptions=input.routeRequirement==='none'?[]:input.routeAccesses.flatMap(route=>{
-    const spans=routeCells(grid,projected,route);return [...spans].map(([cellKey,span])=>({route,cell:projected.find(cell=>key(cell)===cellKey)!,span}));
+    const spans=routeCells(grid,projected,route);return [...spans].flatMap(([cellKey,span])=>{const entry=physicalPolygon?detailSegmentPolygonEntry(span,physicalPolygon):span.from;return entry?[{route,cell:projected.find(cell=>key(cell)===cellKey)!,span,entry}]:[];});
   }).sort((a,b)=>ordered.findIndex(cell=>key(cell)===key(a.cell))-ordered.findIndex(cell=>key(cell)===key(b.cell))||a.route.routeId.localeCompare(b.route.routeId)||a.route.accessNodeId.localeCompare(b.route.accessNodeId));
   // Each assigned route is a requirement; segments of the same route are alternatives.
   const routeIds=input.routeRequirement==='none'?[]:[...new Set(input.routeAccesses.map(route=>route.routeId))].sort();
   if(input.routeRequirement==='assigned'&&(!routeIds.length||routeIds.some(id=>!routeOptions.some(option=>option.route.routeId===id))))fail('missing_route_inside_footprint');
-  let cells:DetailCell[],water:DetailWaterAccess|null=null;
-  if(input.measuredExtent) {
+  let cells:DetailCell[],water:DetailWaterAccess|null=null,worldAnchor=input.anchor;
+  if(input.measuredExtent&&!detailPointInPolygon(worldAnchor,input.measuredExtent.sourcePolygon))worldAnchor={x:input.measuredExtent.sourcePolygon.reduce((sum,p)=>sum+p.x,0)/input.measuredExtent.sourcePolygon.length,y:input.measuredExtent.sourcePolygon.reduce((sum,p)=>sum+p.y,0)/input.measuredExtent.sourcePolygon.length};
+  if(physicalPolygon) {
+    // Actual/explicit/conditional geometry is fixed at the accepted anchor.
+    // Access failures reject the proposal; no growth, shrink or relocation.
     cells=[...projected].sort((a,b)=>a.q-b.q||a.r-b.r);water=waterOptions[0]??null;
-  } else if(input.role!=='capital') {
-    // Search the joint admissible set before choosing water or a route. A nearer
-    // water port must not hide a different, fully compatible one-cell solution.
-    const candidate=ordered.find(cell=>(input.waterRequirement==='none'||waterOptions.some(access=>key(access.cell)===key(cell)))&&routeIds.every(id=>routeOptions.some(option=>option.route.routeId===id&&key(option.cell)===key(cell))));
-    if(!candidate)fail('no_single_cell_satisfies_access');cells=[candidate as DetailCell];water=waterOptions.find(access=>key(access.cell)===key(candidate as DetailCell))??null;
   } else {
-    water=waterOptions[0]??null;
-    const seeds:DetailCell[]=[];if(water)seeds.push(water.cell);
-    for(const id of routeIds)seeds.push(routeOptions.find(option=>option.route.routeId===id)!.cell);
-    seeds.push(ordered[0]);cells=connectedUnion(projected,seeds);
-    if(cells.length<2){const first=cells[0],neighbour=ordered.find(cell=>!cells.some(existing=>key(existing)===key(cell))&&directions.some(([q,r])=>key({q:first.q+q,r:first.r+r})===key(cell)));if(!neighbour)fail('capital_needs_two_connected_cells');cells=[...cells,neighbour as DetailCell].sort((a,b)=>a.q-b.q||a.r-b.r);}
+    const candidate=ordered.find(cell=>(input.waterRequirement==='none'||waterOptions.some(access=>key(access.cell)===key(cell)))&&routeIds.every(id=>routeOptions.some(option=>option.route.routeId===id&&key(option.cell)===key(cell))));
+    const accepted=candidate??fail('no_single_cell_satisfies_access');cells=[accepted];water=waterOptions.find(access=>key(access.cell)===key(accepted))??null;
+    // This is initial address placement, not re-estimation of an accepted POI.
+    // Tiny/unknown objects retain one marker address, never a one-mile shape.
+    if(key(worldToDetailCell(grid,worldAnchor))!==key(accepted))worldAnchor=detailCellCenter(grid,accepted);
   }
   validateDetailFootprint(cells);const footprintKeys=new Set(cells.map(key));
   if(water&&!footprintKeys.has(key(water.cell)))fail('water_access_outside_footprint');
@@ -151,12 +142,9 @@ export function buildDetailPoiFootprint(grid:DetailGrid,input:DetailPoiPlacement
   for(const id of routeIds){
     const selected=routeOptions.find(option=>option.route.routeId===id&&footprintKeys.has(key(option.cell)));
     if(!selected)fail('route_access_outside_footprint');
-    attachments.push(Object.freeze({kind:'route',routeKind:selected!.route.kind,routeId:text(id,'route_id'),accessNodeId:text(selected!.route.accessNodeId,'access_node_id'),entry:Object.freeze({...selected!.span.from})}));
+    attachments.push(Object.freeze({kind:'route',routeKind:selected!.route.kind,routeId:text(id,'route_id'),accessNodeId:text(selected!.route.accessNodeId,'access_node_id'),entry:Object.freeze({...selected!.entry})}));
   }
-  const extent:DetailExtent=input.measuredExtent
-    ?Object.freeze({kind:'measured_polygon',sourceId:text(input.measuredExtent.sourceId,'extent_source'),unit:input.measuredExtent.unit,method:'positive_area_intersection',sourcePolygon:Object.freeze(input.measuredExtent.sourcePolygon.map(point=>Object.freeze({...point})))})
-    :Object.freeze({kind:'default',reason:'unknown_size',policy:input.role==='capital'?'capital_min_two':'one_cell'});
-  return Object.freeze({poiId,legacyRef:input.legacyRef,cells:Object.freeze(cells.map(cell=>Object.freeze({...cell}))),extent,attachments:Object.freeze(attachments)});
+  return Object.freeze({poiId,legacyRef:input.legacyRef,worldAnchor:Object.freeze({...worldAnchor}),cells:Object.freeze(cells.map(cell=>Object.freeze({...cell}))),extent,attachments:Object.freeze(attachments)});
 }
 
 export function buildOneMilePoiFootprint(origin:WorldPoint,input:DetailPoiPlacementInput):DetailPoiFootprint {

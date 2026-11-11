@@ -10,7 +10,7 @@ const record=(x:unknown):x is Record<string,unknown>=>!!x&&typeof x==='object'&&
 const keys=(x:Record<string,unknown>,ks:string[])=>Object.keys(x).length===ks.length&&ks.every(k=>Object.prototype.hasOwnProperty.call(x,k));
 export function validateClassification(value:unknown,context:Context,version=11):asserts value is Classification|undefined{
  if(value===undefined)return;
- if(version!==11||!record(value)||!keys(value,['version','difficultyByHex','discoveryByPoi'])||value.version!==1||!record(value.difficultyByHex)||!record(value.discoveryByPoi))throw Error('Invalid classification');
+ if((version!==11&&version!==14)||!record(value)||!keys(value,['version','difficultyByHex','discoveryByPoi'])||value.version!==1||!record(value.difficultyByHex)||!record(value.discoveryByPoi))throw Error('Invalid classification');
  for(const [k,v]of Object.entries(value.difficultyByHex))if(!context.hexes.has(k)||!['unknown','normal','difficult','dangerous'].includes(String(v))||typeof v!=='string')throw Error('Invalid terrain classification');
  for(const [k,v]of Object.entries(value.discoveryByPoi))if(!context.pois.has(k)||!record(v)||!keys(v,['mode','clueText'])||typeof v.mode!=='string'||!['auto','unknown','passage','exploration','interaction'].includes(v.mode)||typeof v.clueText!=='string'||v.clueText!==v.clueText.trim()||v.clueText.length>512||v.mode==='interaction'&&!v.clueText)throw Error('Invalid discovery classification');
 }

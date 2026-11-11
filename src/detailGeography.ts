@@ -6,6 +6,7 @@ import {assertDetailPoiOwners,reconcileDetailPoiIdentities,type DetailPoiIdentit
 import {poiNameLocators,hasCentralPoi,type PoiRegion} from './manualPois.ts';
 import {parseWaterHex,waterHexKey,waterKindAt,waterNeighbors,type WaterTerrain} from './manualWater.ts';
 import {parseDetail1StateV11,type Detail1State,type DetailPoiFootprint,type DetailExtent} from './detailModel.ts';
+import {detailCatalogueExtent,detailCirclePolygon,detailFootprintWorldAnchor,detailFootprintPolygons,detailFootprintHasOutline,detailPointInPolygon,detailSegmentPolygonEntry} from './detailSizes.ts';
 import type {KnaveLayer} from './knaveClassic.ts';
 import policy from './tags/knavePolicy.json' with {type:'json'};
 
@@ -18,7 +19,7 @@ export type DetailGeographyMap=Readonly<{
 }>;
 export type DetailWaterProvenance=Readonly<{provenance:'unknown'|'water_environment'|'knave_source_row';requirement:DetailWaterRequirement;predicates:readonly string[]}>;
 export type DetailGeographyPreview=Readonly<{
- activatesDetail1:false;grid:Detail1State['grid'];source:Detail1State['source'];
+ activatesDetail1:false;schemaVersion:2;sizeChanges:readonly Readonly<{poiId:string;before:DetailExtent|null;after:DetailExtent;beforeCells:readonly DetailCell[];afterCells:readonly DetailCell[]}>[];grid:Detail1State['grid'];source:Detail1State['source'];
  poiIdentities:DetailPoiIdentities;poiFootprints:readonly DetailPoiFootprint[];waterRequirementsByPoi:Readonly<Record<string,DetailWaterProvenance>>;
 }>;
 const fail=(code:string):never=>{throw Error(`DETAIL1 ${code}`);};
@@ -123,19 +124,42 @@ function waterAccesses(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],
 /** Builds all candidates before returning. Failure leaves the caller's map,
  * history, ID counters and accepted content untouched. No partial application. */
 export function buildDetailGeographyPreview(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],origin:WorldPoint={x:0,y:0}):DetailGeographyPreview {
- if(map.physicalGrid?.poiFootprints.length)fail('existing_footprints_require_reconciliation');
+
  const live=poiNameLocators({regions:[...map.regions],waterPoiByKey:new Map(map.waterPoiByKey)},true);
  const previous=map.physicalGrid?.poiIdentities;if(previous)assertDetailPoiOwners(previous,live);
  const identities=previous??reconcileDetailPoiIdentities(live);
- const requirements:Record<string,DetailWaterProvenance>={},footprints:DetailPoiFootprint[]=[];
+ const requirements:Record<string,DetailWaterProvenance>={},footprints:DetailPoiFootprint[]=[],sizeChanges:DetailGeographyPreview['sizeChanges'][number][]=[];
+ const priorById=new Map(map.physicalGrid?.poiFootprints.map(p=>[p.poiId,p]));
+ const fine=createDetailGrid(1,origin);
  for(const alias of [...live].sort()){
-  const {footprint,need}=buildLiveFootprint(map,rivers,identities,alias,origin);
+  const previous=priorById.get(identities.byLegacyRef[alias]);
+  let footprint:DetailPoiFootprint,need:DetailWaterProvenance;
+  if(previous){
+   need=requirement(map,alias,alias.startsWith('waterPoi:'));
+   const worldAnchor=Object.freeze({...detailFootprintWorldAnchor(previous,fine)});
+   if(previous.extent.kind==='default'){
+    const descriptor=livePoiType(map,alias),extent=detailCatalogueExtent(descriptor.namespace,descriptor.typeId);
+    const cells=extent.representativeExtentMiles!==null&&extent.representativeExtentMiles>=1
+     ?detailPositiveAreaIntersections(fine,detailCirclePolygon(worldAnchor,extent.representativeExtentMiles)).map(p=>p.cell)
+     :[worldToDetailCell(fine,worldAnchor)];
+    footprint=Object.freeze({...previous,worldAnchor,extent,cells:Object.freeze(cells)});
+   }else footprint=Object.freeze({...previous,worldAnchor});
+  }else ({footprint,need}=buildLiveFootprint(map,rivers,identities,alias,origin));
+  if(!previous||previous.extent.kind==='default')sizeChanges.push(Object.freeze({poiId:footprint.poiId,before:previous?.extent??null,after:footprint.extent,beforeCells:previous?.cells??[],afterCells:footprint.cells}));
   requirements[footprint.poiId]=Object.freeze({...need,predicates:Object.freeze([...need.predicates])});footprints.push(footprint);
  }
- return Object.freeze({activatesDetail1:false,grid:Object.freeze({origin:Object.freeze({...origin}),orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:map.physicalGrid?.source.physicalConvention??'unknown',displayAssumption:'project_across_flats_6mi'}),poiIdentities:identities,poiFootprints:Object.freeze(footprints),waterRequirementsByPoi:Object.freeze(requirements)});
+ const state={schema:'hexcrawl.detail1',version:2,active:true,viewStep:map.physicalGrid?.viewStep??6,grid:{origin,orientation:'pointy',convention:'across_flats'},source:{stepMiles:6,physicalConvention:map.physicalGrid?.source.physicalConvention??'unknown',displayAssumption:'project_across_flats_6mi'},poiIdentities:identities,poiFootprints:footprints};
+ validateDetailGeographyFootprints(map,rivers,state);
+ return Object.freeze({activatesDetail1:false,schemaVersion:2,sizeChanges:Object.freeze(sizeChanges),grid:Object.freeze({origin:Object.freeze({...origin}),orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:map.physicalGrid?.source.physicalConvention??'unknown',displayAssumption:'project_across_flats_6mi'}),poiIdentities:identities,poiFootprints:Object.freeze(footprints),waterRequirementsByPoi:Object.freeze(requirements)});
 }
 
 
+function livePoiType(map:DetailGeographyMap,alias:string):{namespace:'land'|'water';typeId:string}{
+ const water=alias.startsWith('waterPoi:'),parts=alias.split(':'),source=parseWaterHex(parts[water?1:2]);
+ if(water)return {namespace:'water',typeId:map.waterPoiByKey.get(key(source))??fail('unknown_water_poi_type')};
+ const region=map.regions.find(r=>r.id===Number(parts[1])),central=region&&hasCentralPoi(region)&&key(region.centerHex)===key(source);
+ return {namespace:'land',typeId:(central?region!.centralPoiKind:region?.pointOfInterestKinds?.[key(source)])??'structure'};
+}
 function buildLiveFootprint(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],identities:DetailPoiIdentities,alias:string,origin:WorldPoint):{footprint:DetailPoiFootprint;need:DetailWaterProvenance}{
  const coarse=createDetailGrid(6,origin),fine=createDetailGrid(1,origin);
   const water=alias.startsWith('waterPoi:'),parts=alias.split(':'),source=parseWaterHex(parts[water?1:2]);
@@ -144,7 +168,7 @@ function buildLiveFootprint(map:DetailGeographyMap,rivers:readonly DetailLiveRiv
   const kind=central?region!.centralPoiKind:region?.pointOfInterestKinds?.[key(source)];
   if(!water&&waterKindAt(map.hexTerrainByKey,key(source))!=='land')fail('land_poi_in_water');
   const poiId=identities.byLegacyRef[alias],need=requirement(map,alias,water),routes=assignedRoutes(map,source,origin);
-  const footprint=buildDetailPoiFootprint(fine,{poiId,legacyRef:alias,role:kind==='capital'?'capital':kind==='throne'?'mythic_seat':'site',anchor:detailCellCenter(coarse,source),sourcePolygon:detailCellPolygon(coarse,source),waterRequirement:need.requirement,waterAccesses:waterAccesses(map,rivers,source,origin,water,need),routeRequirement:routes.length?'assigned':'none',routeAccesses:routes});
+  const footprint=buildDetailPoiFootprint(fine,{poiId,legacyRef:alias,...livePoiType(map,alias),role:kind==='capital'?'capital':kind==='throne'?'mythic_seat':'site',anchor:detailCellCenter(coarse,source),sourcePolygon:detailCellPolygon(coarse,source),waterRequirement:need.requirement,waterAccesses:waterAccesses(map,rivers,source,origin,water,need),routeRequirement:routes.length?'assigned':'none',routeAccesses:routes});
   return {footprint,need};
  }
 /** Reconcile the accepted layer against a candidate map before a document write.
@@ -166,7 +190,7 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
    if(!prior.legacyRef||coordinate(prior.legacyRef)!==coordinate(alias)){
     // E8 retains its old road protections. Unknown manual/measured geography
     // and mandatory water/ports cannot be translated by an address change.
-    if(prior.extent.kind!=='default'||prior.attachments.length)fail('extent_relocation_requires_explicit_adaptation');
+    if(!['default','representative'].includes(prior.extent.kind)||prior.attachments.length)fail('extent_relocation_requires_explicit_adaptation');
     footprints.push(buildLiveFootprint(map,rivers,identities,alias,state.grid.origin).footprint);continue;
    }
   }
@@ -179,7 +203,7 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
    if(ref.kind!=='route')return ref;
    const samePort=(r:DetailRouteAccess)=>r.accessNodeId===ref.accessNodeId&&r.kind===ref.routeKind&&prior.cells.some(cell=>{
     const span=detailSegmentSpan(createDetailGrid(1,state.grid.origin),cell,r.segment);
-    return span&&Math.hypot(span.from.x-ref.entry.x,span.from.y-ref.entry.y)<=1e-9;
+    return span&&(state.version===1?Math.hypot(span.from.x-ref.entry.x,span.from.y-ref.entry.y)<=1e-9:pointOnSegment(ref.entry,span));
    });
    if(routes.some(r=>r.routeId===ref.routeId&&samePort(r)))return ref;
    const exact=routes.find(samePort);
@@ -190,18 +214,23 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
    const options=routes.filter(r=>r.routeId===routeId);
    let entry:Extract<DetailPoiFootprint['attachments'][number],{kind:'route'}>|undefined;
    for(const route of options){
-    const span=prior.cells.map(cell=>detailSegmentSpan(createDetailGrid(1,state.grid.origin),cell,route.segment)).find(Boolean);
-    if(span){entry={kind:'route',routeId,routeKind:route.kind,accessNodeId:route.accessNodeId,entry:span.from};break;}
+    const fine=createDetailGrid(1,state.grid.origin),physical=prior.extent.kind==='measured_polygon'||detailFootprintHasOutline(prior,fine)?detailFootprintPolygons(prior,fine):[];
+    const candidates=prior.cells.flatMap(cell=>{const span=detailSegmentSpan(fine,cell,route.segment);if(!span)return [];const at=physical.length?physical.map(p=>detailSegmentPolygonEntry(span,p)).find(Boolean):span.from;return at?[at]:[];});
+    if(candidates.length){entry={kind:'route',routeId,routeKind:route.kind,accessNodeId:route.accessNodeId,entry:candidates[0]};break;}
    }
    if(!entry)fail('new_route_outside_accepted_footprint');attachments.push(entry!);
   }
   footprints.push(prior.legacyRef===alias&&attachments.length===prior.attachments.length&&attachments.every((a,i)=>a===prior.attachments[i])?prior:{...prior,legacyRef:alias,attachments});
  }
- const next=parseDetail1StateV11({...state,poiIdentities:identities,poiFootprints:footprints});
+ const needsAnchors=footprints.some(p=>p.worldAnchor);
+ const next=parseDetail1StateV11({...state,version:needsAnchors?2:state.version,poiIdentities:identities,poiFootprints:footprints.map(p=>needsAnchors&&!p.worldAnchor?{...p,worldAnchor:detailFootprintWorldAnchor(p,createDetailGrid(1,state.grid.origin))}:p)});
  validateDetailGeographyFootprints(map,rivers,next);
  return JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state))?state:next;
 }
 
+function pointOnSegment(p:WorldPoint,s:Segment):boolean {
+ const dx=s.to.x-s.from.x,dy=s.to.y-s.from.y;return Math.abs(dx*(p.y-s.from.y)-dy*(p.x-s.from.x))<=1e-9&&p.x>=Math.min(s.from.x,s.to.x)-1e-9&&p.x<=Math.max(s.from.x,s.to.x)+1e-9&&p.y>=Math.min(s.from.y,s.to.y)-1e-9&&p.y<=Math.max(s.from.y,s.to.y)+1e-9;
+}
 /** Validate saved extents and exact attachments against authoritative geometry. */
 export function validateDetailGeographyFootprints(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],value:unknown):void {
  const state=parseDetail1StateV11(value),identities=state.poiIdentities;
@@ -220,17 +249,22 @@ export function validateDetailGeographyFootprints(map:DetailGeographyMap,rivers:
   if(!water&&waterKindAt(map.hexTerrainByKey,key(source))!=='land')fail('land_poi_in_water');
   const capital=kind==='capital',extent=footprint.extent;
   if(extent.kind==='default'&&(extent.policy!==(capital?'capital_min_two':'one_cell')||capital&&footprint.cells.length<2||!capital&&footprint.cells.length!==1))fail('invalid_default_extent');
-  if(extent.kind==='manual'&&capital&&footprint.cells.length<2)fail('capital_manual_needs_two_cells');
-  let allowed:Set<string>;
+  let allowed:Set<string>,compatible:Set<string>|undefined;
   if(extent.kind==='default')allowed=new Set(detailPositiveAreaIntersections(fine,detailCellPolygon(coarse,source)).map(p=>key(p.cell)));
   else {
    // Explicit extents may cross source-cell/region boundaries, but must remain
    // on compatible accepted geography. A water POI retains its exact body.
    const coarseKeys=water?[...map.hexTerrainByKey.keys()].filter(k=>waterKindAt(map.hexTerrainByKey,k)!=='land'&&waterIdentity(map,k)===waterIdentity(map,key(source))):[...new Set(map.regions.flatMap(r=>r.hexes.map(key)))].filter(k=>waterKindAt(map.hexTerrainByKey,k)==='land');
-   const compatible=new Set(coarseKeys);
-   allowed=new Set(footprint.cells.filter(cell=>detailPositiveAreaIntersections(coarse,detailCellPolygon(fine,cell)).some(hit=>compatible.has(key(hit.cell)))).map(key));
+   const compatibleKeys=new Set(coarseKeys);compatible=compatibleKeys;
+   allowed=new Set(footprint.cells.filter(cell=>detailPositiveAreaIntersections(coarse,detailCellPolygon(fine,cell)).some(hit=>compatibleKeys.has(key(hit.cell)))).map(key));
   }
   if(footprint.cells.some(c=>!allowed.has(key(c))))fail('footprint_outside_compatible_geography');
+  if(extent.kind==='representative') {const expected=livePoiType(map,alias!);if(extent.namespace!==expected.namespace||extent.typeId!==expected.typeId)fail('size_catalogue_owner_mismatch');}
+  if(extent.kind==='representative'||extent.kind==='manual_size'){
+   const size=extent.kind==='representative'?extent.representativeExtentMiles:extent.diameterMiles;
+   const expected=size!==null&&size>=1?detailPositiveAreaIntersections(fine,detailCirclePolygon(footprint.worldAnchor!,size)).map(p=>key(p.cell)).sort():[key(worldToDetailCell(fine,footprint.worldAnchor!))];
+   const actual=footprint.cells.map(key).sort();if(expected.length!==actual.length||expected.some((k,i)=>k!==actual[i]))fail('size_extent_cell_mismatch');
+  }
   if(extent.kind==='measured_polygon'){
    assertSimpleExtentPolygon(extent.sourcePolygon);
    // sourcePolygon is expressed in fixed world miles. unit records the source
@@ -238,15 +272,21 @@ export function validateDetailGeographyFootprints(map:DetailGeographyMap,rivers:
    const expected=detailPositiveAreaIntersections(fine,extent.sourcePolygon).map(p=>key(p.cell)).sort(),actual=footprint.cells.map(key).sort();
    if(expected.length!==actual.length||expected.some((k,i)=>k!==actual[i]))fail('measured_extent_cell_mismatch');
   }
+  const physicalPolygon=extent.kind==='measured_polygon'||detailFootprintHasOutline(footprint,fine)?detailFootprintPolygons(footprint,fine):[];
+  if(extent.kind==='representative'||extent.kind==='manual_size')for(const polygon of physicalPolygon){
+   // A conditional circle may not borrow the land portion of a fine cell to
+   // hide a real area lying in incompatible water or uncreated geography.
+   if(detailPositiveAreaIntersections(coarse,polygon).some(hit=>!compatible?.has(key(hit.cell))))fail('estimated_extent_outside_compatible_geography');
+  }
   const member=new Set(footprint.cells.map(key)),need=requirement(map,alias!,water);
   const accesses=waterAccesses(map,rivers,source,origin,water,need).filter(a=>member.has(key(a.cell)));
   const waterRefs=footprint.attachments.filter(a=>a.kind==='water');
   if(waterRefs.length!==(need.requirement==='none'?0:1))fail('invalid_water_attachment_count');
-  for(const ref of waterRefs)if(!accesses.some(a=>a.waterId===ref.waterId&&a.segmentId===ref.segmentId&&a.kind===ref.waterKind&&close(a.contact,ref.contact)))fail('invalid_live_water_attachment');
+  for(const ref of waterRefs)if(physicalPolygon.length&&!physicalPolygon.some(p=>detailPointInPolygon(ref.contact,p))||!accesses.some(a=>a.waterId===ref.waterId&&a.segmentId===ref.segmentId&&a.kind===ref.waterKind&&close(a.contact,ref.contact)))fail('invalid_live_water_attachment');
   const routes=assignedRoutes(map,source,origin),ids=new Set(routes.map(r=>r.routeId)),refs=footprint.attachments.filter(a=>a.kind==='route');
   if(refs.length!==ids.size||new Set(refs.map(r=>r.routeId)).size!==ids.size)fail('incomplete_route_coverage');
   for(const ref of refs){
-   if(!ids.has(ref.routeId)||!routes.some(r=>r.routeId===ref.routeId&&r.accessNodeId===ref.accessNodeId&&r.kind===ref.routeKind&&footprint.cells.some(cell=>{const span=detailSegmentSpan(fine,cell,r.segment);return span&&close(span.from,ref.entry);})))fail('invalid_live_route_attachment');
+   if(!ids.has(ref.routeId)||!routes.some(r=>r.routeId===ref.routeId&&r.accessNodeId===ref.accessNodeId&&r.kind===ref.routeKind&&footprint.cells.some(cell=>{const span=detailSegmentSpan(fine,cell,r.segment);return span&&(state.version===1?close(span.from,ref.entry):pointOnSegment(ref.entry,span)&&(!physicalPolygon.length||physicalPolygon.some(p=>detailPointInPolygon(ref.entry,p))));})))fail('invalid_live_route_attachment');
   }
  }
 }
@@ -272,9 +312,10 @@ function assertSimpleExtentPolygon(input:readonly WorldPoint[]):void {
 export function prepareDetailFootprintExtentEdit(map:DetailGeographyMap,rivers:readonly DetailLiveRiver[],value:unknown,poiId:string,extent:DetailExtent,cells?:readonly DetailCell[]):Detail1State {
  const state=parseDetail1StateV11(value);validateDetailGeographyFootprints(map,rivers,state);
  if(!state.poiFootprints.some(p=>p.poiId===poiId))fail('stale_extent_owner');
- if(extent.kind==='default')fail('extent_edit_requires_explicit_provenance');
+ if(extent.kind==='default'||extent.kind==='representative')fail('extent_edit_requires_explicit_provenance');
  if(extent.kind==='measured_polygon')assertSimpleExtentPolygon(extent.sourcePolygon);
- const selected=extent.kind==='measured_polygon'?detailPositiveAreaIntersections(createDetailGrid(1,state.grid.origin),extent.sourcePolygon).map(p=>p.cell):cells??fail('manual_extent_requires_cells');
- const next=parseDetail1StateV11({...state,poiFootprints:state.poiFootprints.map(p=>p.poiId===poiId?{...p,extent,cells:selected}:p)});
+ const fine=createDetailGrid(1,state.grid.origin),anchor=detailFootprintWorldAnchor(state.poiFootprints.find(p=>p.poiId===poiId)!,fine);
+ const selected=extent.kind==='measured_polygon'?detailPositiveAreaIntersections(fine,extent.sourcePolygon).map(p=>p.cell):extent.kind==='manual_size'?(extent.diameterMiles>=1?detailPositiveAreaIntersections(fine,detailCirclePolygon(anchor,extent.diameterMiles)).map(p=>p.cell):[worldToDetailCell(fine,anchor)]):cells??fail('manual_extent_requires_cells');
+ const next=parseDetail1StateV11({...state,version:extent.kind==='manual_size'?2:state.version,poiFootprints:state.poiFootprints.map(p=>({...p,...(extent.kind==='manual_size'&&!p.worldAnchor?{worldAnchor:detailFootprintWorldAnchor(p,fine)}:{}),...(p.poiId===poiId?{extent,cells:selected}:{})}))});
  validateDetailGeographyFootprints(map,rivers,next);return next;
 }
