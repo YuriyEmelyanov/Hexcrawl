@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "head_sha": "def08dc99df2375020b06adc517b4738692177e7",
+  "scope": "One unfinished task/PR, no new microtask IDs",
+  "files": [
+    {
+      "filename": "src/detailGrid.ts",
+      "status": "added",
+      "sha": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+      "additions": 156,
+      "deletions": 0
+    },
+    {
+      "filename": "src/oneMile.ts",
+      "status": "added",
+      "sha": "5e9014a3afb1a1b4c75ef6f1dc123c51e277284d",
+      "additions": 179,
+      "deletions": 0
+    },
+    {
+      "filename": "test/oneMile.test.mjs",
+      "status": "added",
+      "sha": "e6214d5b7166fd219a8f004b72233b49d5e31a64",
+      "additions": 118,
+      "deletions": 0
+    }
+  ],
+  "dependency_ledger": [
+    {
+      "path": "src/detailGrid.ts",
+      "donor_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+      "blob_sha": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+      "transfer": "Exact pure geometry dependency from partition ledger; internally1/6/12/24 primitives do not expose UI modes."
+    },
+    {
+      "path": "src/oneMile.ts",
+      "transfer": "New domain-only contract; no App hooks or generator mutation."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "OM01",
+      "status": "partial_separate_draft_created_not_feature_accepted",
+      "expected": "Отдельный PR от main содержит ограниченный 1/6 diff и явный перечень зависимостей. Нет пользовательских 12/24, C-FILL, TABLES1, PF2 или новой CLASSIFY1. PR496 и main не изменены при отделении."
+    },
+    {
+      "id": "OM02",
+      "status": "domain_portion_verified_integration_pending",
+      "expected": "У каждой fine-клетки собственный asset/emoji/color. Частичная land/unknown клетка визуально полная, полностью unknown — пустая. G, площади, RNG и counters неизменны."
+    },
+    {
+      "id": "OM03",
+      "status": "domain_portion_verified_integration_pending",
+      "expected": "На авторских геометрических примерах из 2/3 биомов проверены суммирование частей одного ID, argmax площади и canonical tie-break. Порядок источников, язык, поворот и повторный render не меняют победителя."
+    },
+    {
+      "id": "OM04",
+      "status": "domain_portion_verified_integration_pending",
+      "expected": "R состоит из edge-соседей A вне A с реальным допустимым якорем. На краю, островах, водной границе и доступной внутренней пустоте нет второго ряда, ложных кандидатов или изменения G."
+    },
+    {
+      "id": "OM05",
+      "status": "domain_portion_verified_integration_pending",
+      "expected": "Click/tap/Enter/Space кандидата запускает одну обычную единицу Classic/Knave/Mythic без C-FILL. Якорь детерминирован. Busy doubleclick, ошибка, пустой frontier и stale callbacks не портят документ, обе истории и RNG."
+    },
+    {
+      "id": "OM06",
+      "status": "not_implemented_here",
+      "expected": "Видна одна сетка 1 или 6. Проверены фиксированный мировой фокус и закрытый цикл камеры 1→6→1, включая поворот. Стили, координаты, язык и PNG не меняют мир."
+    },
+    {
+      "id": "OM07",
+      "status": "not_implemented_here",
+      "expected": "Hover H отличается от selection S: локальное чтение, уход H→S, доступность touch/keyboard. Hover не создаёт Undo. Цель редактора S+revision не меняется от наведения."
+    },
+    {
+      "id": "OM08",
+      "status": "not_implemented_here",
+      "expected": "Карточка похожа на 6-мильную оболочкой и показывает только локальную клетку. Удалены area/source context/служебный статус. Объект другой части source6 не попадает в карточку."
+    },
+    {
+      "id": "OM09",
+      "status": "not_implemented_here",
+      "expected": "Реальные road/trail/river, пересечения, ребро/вершина, stable ID dedup, переходы и water POI показаны на одной карте в 6/1. Геометрия, имена и IDs сохранены. Пустота не подменена соседним объектом source6."
+    },
+    {
+      "id": "OM10",
+      "status": "not_implemented_here",
+      "expected": "Малый POI адресуется по anchor, крупный имеет обоснованный размер и общую обводку. Выбор любой части открывает того же owner. Legacy Preview/Apply/Cancel атомарны и не расходуют географический RNG."
+    },
+    {
+      "id": "OM11",
+      "status": "domain_portion_verified_integration_pending",
+      "expected": "Локальные имя текущего языка, биом и заметка: Save — один Undo, Cancel/Escape — ноль. Соседние fine/source6 и линии точны. На mixed/water биом недоступен с причиной. Reset снимает только local override."
+    },
+    {
+      "id": "OM12",
+      "status": "domain_portion_verified_integration_pending",
+      "expected": "Проверены IME, Finish/Discard/Stay, импорт/удаление/регенерация, consent при потере local data, stale owner/revision и изолированный draft. Отказ и exception точно восстанавливают принятое."
+    },
+    {
+      "id": "OM13",
+      "status": "not_implemented_here",
+      "expected": "Выпущенный корпус 2…10 и новый 15 проходят roundtrip/continue. Private 11…14, invalid/future и unsupported layers отклоняются атомарно. Local data, IDs, streams, counters и обе истории сохраняются."
+    },
+    {
+      "id": "OM14",
+      "status": "not_implemented_here",
+      "expected": "Actual UI: 1500/390/320, RU/EN, read/edit/empty/busy/error, targets 44px, без overflow. Карта видима, поля доступны прокруткой. PNG соответствует виду, воде, путям и POI без editor masks."
+    }
+  ],
+  "excluded": [
+    "C-FILL",
+    "CLASSIFY1",
+    "TABLES1",
+    "PF2",
+    "PR502 transplant",
+    "donor generator/river changes",
+    "App integration until full contract implemented"
+  ],
+  "review_ready": false
+}
