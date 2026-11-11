@@ -10014,7 +10014,7 @@
       "limitation": "Point-in-time checks only; subsequent service changes not guaranteed. Schedule and prompt unchanged."
     }
   },
-  "updated_on": "2026-11-11T20:39:42.564Z",
+  "updated_on": "2026-11-11T20:41:58.420Z",
   "claim_ref": "agent-work/claims/2026-11-11T1956-strategist-PF2-compat-routing.json",
   "latest_programmer_result_ref": "agent-work/results/2026-11-11T1803-programmer-PR496-browser-verification.json",
   "source_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
@@ -10174,35 +10174,19 @@
     "recorded_at": "2026-11-11T20:26:42.689Z"
   },
   "latest_owner_feedback_state_write": {
-    "data_commit_sha": "0cbadad5f064de38499cdb09f4c217a7f4086b90",
+    "data_commit_sha": "d95c1fd7d2bae53e3a86c1e6456460556156988a",
     "latest_written_last": true,
     "verified_files": [
       {
-        "path": "agent-work/decisions/owner-decision-2026-11-11-PR496-one-mile-separate-PR-first.json",
-        "sha": "8feeec5cfa0eff52f8b6561e92096d0dc6b0f8e0"
-      },
-      {
-        "path": "agent-work/handoffs/2026-11-11-ONE-MILE1-split-analysis.json",
-        "sha": "2ba76a5f60a7b37f5f5a0d0116d3f126565cbbdd"
-      },
-      {
-        "path": "agent-work/results/2026-11-11-ONE-MILE1-owner-routing.json",
-        "sha": "796b16fb51a5ac24c70e51e268f421bbc48be696"
+        "path": "agent-work/decisions/owner-decision-2026-11-11-ONE-MILE1-local-card-roads-rivers-deferred.json",
+        "sha": "9be07f3e9ebe822ed6186a12936c201884a5d191"
       },
       {
         "path": "agent-work/feedback.json",
-        "sha": "220d5241084119fb94bcf9aa16e2f15029d8d43f"
-      },
-      {
-        "path": "agent-work/backlog.json",
-        "sha": "9f204b634ec81072e038a1c239329414a3242829"
-      },
-      {
-        "path": "agent-work/process.md",
-        "sha": "adb63a0d13c5a59935126d3b508774fc143a0d1c"
+        "sha": "7d9eda8b745234711a27a7be41398f6bfd676132"
       }
     ],
-    "foreign_claims_and_results_preserved": true
+    "primary_routing_and_foreign_claims_preserved": true
   },
   "latest_PR496_one_mile_biome_feedback": {
     "feedback_id": "HX-FB-016",
@@ -10332,7 +10316,37 @@
       "HX-FB-018",
       "HX-FB-019",
       "HX-FB-020",
-      "HX-FB-021"
+      "HX-FB-021",
+      "HX-FB-022"
     ]
+  },
+  "latest_ONE_MILE1_card_feedback": {
+    "feedback_id": "HX-FB-022",
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-ONE-MILE1-local-card-roads-rivers-deferred.json",
+    "requirements": [
+      {
+        "id": "ONE-MILE1-CARD",
+        "text": "В одномильном режиме интерфейс максимально похож на существующий шестимильный. Карточка показывает выделенный конкретный одномильный гекс, не агрегированную область и не исходный шестимильный гекс."
+      },
+      {
+        "id": "ONE-MILE1-EDIT-TARGET",
+        "text": "Действия редактирования относятся к выделенному одномильному гексу. Не подменять их правкой всего исходного шестимильного гекса. Это уточняет HX-FB-020."
+      },
+      {
+        "id": "ONE-MILE1-ROUTE-WATER-SHOW",
+        "text": "Перед приёмкой отдельного одномильного PR предъявить владельцу реальную карту с дорогами, тропами и реками в1-мильном режиме, с локальной карточкой и понятной связью выбранного гекса с проходящими через него объектами.",
+        "acceptance": [
+          "Показать одну и ту же карту в6-мильном и1-мильном видах с реально сохранёнными дорогами/тропами и реками; линии не заменяются справочным текстом.",
+          "Показать выбор одномильной клетки с дорогой/рекой и соседней клетки без соответствующего объекта: карточка содержит только относящиеся локальные сведения.",
+          "Показать редактирование выбранного одномильного гекса, сохранение/загрузку и UndoRedo; соседние клетки и исходные линии не теряются.",
+          "Новый отдельныйPR и изменённыйSHA требуют новых actual evidence и независимой проверки; старое принятие496 не заменяет приёмку ONE-MILE1."
+        ]
+      }
+    ],
+    "status": "recorded_implementation_deferred_by_owner",
+    "implementation_authorized_now": false,
+    "source_changed": false,
+    "release_authorized": false,
+    "recorded_at": "2026-11-11T20:41:40.353Z"
   }
 }
