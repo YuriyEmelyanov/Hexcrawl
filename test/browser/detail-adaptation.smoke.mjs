@@ -13,7 +13,7 @@ await page.locator('.export-menu summary').click();assert.equal(await page.locat
 await page.locator('[data-detail-cancel]').click();assert.equal(await page.locator('[data-detail-preview-overlay]').count(),0);await page.locator('[data-detail-preview]').click();await page.waitForFunction(()=>document.querySelector('[data-detail-adaptation]')?.contains(document.activeElement));await page.keyboard.press('Escape');await page.locator('[data-detail-apply]').waitFor({state:'detached'});
 await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.getByText('Охваты POI сохранены.',{exact:true}).waitFor();await page.screenshot({path:dir+'/desktop-applied.png',fullPage:true});
 // Extend this existing real UI workflow rather than creating another fixture/suite.
-await page.locator('[data-detail-step="1"]').click();await page.locator('[data-detail-view="1"]').waitFor();
+await page.locator('[data-detail-step-select]').selectOption('1');await page.locator('[data-detail-view="1"]').waitFor();assert.ok(Math.abs(await page.locator('[data-detail-view]').evaluate(e=>Number(e.closest('svg').style.transform.match(/scale\(([^)]+)\)/)[1]))-14.4)<1e-9);
 const marker=page.locator('[data-detail-marker-cell]').first(),markerCell=await marker.getAttribute('data-detail-marker-cell');assert.ok(markerCell);
 const owner=await marker.getAttribute('data-detail-marker-owners');assert.ok(owner);
 const target=page.locator(`[data-detail-cell="${markerCell}"]`);await target.focus();await page.keyboard.press('Enter');await page.locator('[data-detail-summary] details').nth(1).locator('summary').click();
@@ -23,7 +23,7 @@ await page.locator('[data-detail-extent-start]').first().click();await page.loca
 await page.screenshot({path:dir+'/detail1-desktop-after.png',fullPage:true});
 // Finish edit mode before exercising spatial overview targets.
 await page.locator('[data-poi-done]').click();
-for(const step of [6,12,24,1]){await page.locator(`[data-detail-step="${step}"]`).click();await page.locator(`[data-detail-view="${step}"]`).waitFor();assert.ok(await page.locator('[data-detail-cell]').count());}
+for(const step of [6,12,24,1]){await page.locator('[data-detail-step-select]').selectOption(String(step));await page.locator(`[data-detail-view="${step}"]`).waitFor();assert.ok(await page.locator('[data-detail-cell]').count());assert.ok(Math.abs(await page.locator('[data-detail-view]').evaluate(e=>Number(e.closest('svg').style.transform.match(/scale\(([^)]+)\)/)[1]))-2.4*6/step)<1e-9);}
 for(const width of [390,320]){await page.setViewportSize({width,height:950});await page.locator('[data-detail-summary]').scrollIntoViewIfNeeded();await page.locator('[data-detail-summary]').screenshot({path:dir+`/detail1-summary-${width}.png`});const box=await page.locator('[data-detail-summary]').boundingBox();assert.ok(box&&box.width<=width);}
 await page.setViewportSize({width:1500,height:1100});
 await page.locator('.rotate-map-button').click();assert.ok(await page.locator('[data-detail-marker-cell] image').first().evaluate(n=>Math.abs(n.getCTM().b)<1e-8),'active footprint markers stay upright after rotation');await page.screenshot({path:dir+'/detail1-rotated.png',fullPage:true});await page.locator('.rotate-map-button').click();
@@ -40,7 +40,7 @@ const longNames={one:'Северная столица старой перепр�
 shared.map.editorNames={'poi:1:2,0':{ru:longNames.one,en:'Northern capital at the old crossing of the Silver River'},'poi:2:3,0':{ru:longNames.two,en:'VillageOfTheAncientKeepersOfTheNorthernTradingRoad'}};
 await page.setViewportSize({width:1500,height:1100});await page.locator('input[type=file]').setInputFiles({name:'shared.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(shared))});
 await page.waitForFunction(name=>document.body.textContent.includes(name),longNames.one);await page.screenshot({path:dir+'/shared-before.png',fullPage:true});
-await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.locator('[data-detail-step="1"]').click();
+await page.locator('[data-detail-preview]').click();await page.locator('[data-detail-apply]').click();await page.locator('[data-detail-step-select]').selectOption('1');
 const firstId=await page.locator('[data-detail-marker-cell]').first().getAttribute('data-detail-marker-owners');
 await page.locator('[data-detail-marker-cell]').first().evaluate(e=>{const key=e.getAttribute('data-detail-marker-cell');document.querySelector(`[data-detail-cell="${key}"]`).dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));});
 await page.locator('[data-detail-summary] details').nth(1).locator('summary').click();await page.locator('[data-detail-extent-start]').first().click();await page.locator('[data-detail-extent-start]').first().click();
@@ -74,7 +74,7 @@ await page.setViewportSize({width:1500,height:1100});
 // whitelist. This observer does not alter the production renderer/exporter.
 await page.evaluate(()=>{const original=URL.createObjectURL;window.__detailSvgBlobs=[];URL.createObjectURL=function(blob){if(blob.type.startsWith('image/svg+xml'))window.__detailSvgBlobs.push(blob.text());return original.call(this,blob);};});
 for(const step of [6,12,24,6]){
-  const start=await page.evaluate(()=>performance.now());await page.locator(`[data-detail-step="${step}"]`).click();await page.locator(`[data-detail-view="${step}"]`).waitFor();await settled();
+  const start=await page.evaluate(()=>performance.now());await page.locator('[data-detail-step-select]').selectOption(String(step));await page.locator(`[data-detail-view="${step}"]`).waitFor();await settled();
   uiEvidence.responseObservations.push({step,elapsedMs:(await page.evaluate(()=>performance.now()))-start,method:'locator click to requested view present plus two animation frames; includes automation overhead'});
   if(step!==12&&step!==24)continue;
   let selected;
