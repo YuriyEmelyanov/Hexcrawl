@@ -107,7 +107,7 @@ export function prepareLegacyDetailAdaptation(input:Readonly<{sourceVersion:numb
  * an active layer, including an empty one, must cover every live POI owner. */
 export function validateDetail1Document(value:unknown,saveVersion:number,liveAliases?:ReadonlySet<string>,validateSpatial?:(state:Detail1State)=>void):void {
   if(value===undefined)return;
-  if(saveVersion!==11)throw Error('Physical grid requires version11');
+  if(saveVersion!==11&&saveVersion!==12)throw Error('Physical grid requires version11');
   const state=parseDetail1StateV11(value);
   if(state.poiIdentities&&liveAliases)assertDetailPoiOwners(state.poiIdentities,liveAliases);
   if(validateSpatial){validateSpatial(state);return;}

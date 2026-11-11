@@ -1,3 +1,4 @@
+import {applyPreparation,fillPreparation,type PreparationCommand,type TableCall} from './tags/tablePreparation';
 import {summarizeDetailCell,detailMarkerGroups} from './detailSummary';
 import {finalizeDryPoiLocations} from './finalPoiPlacement';
 import {createDetailGrid,detailCellPolygon,detailFootprintBoundary,detailPositiveAreaIntersections,detailCellCenter,worldToDetailCell,type DetailStep} from './detailGrid';
@@ -19,7 +20,7 @@ import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapaci
 import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
 import {localizedTagText} from './tags/tagPresentation';
 import {TagRow} from './tags/TagRow';
-import {KnaveContentRow} from './tags/KnaveContentRow';
+import {PreparationPanel,type PreparationNavigation} from './tags/PreparationPanel';
 import {prepareRoadEdit, type RoadEdit} from './manualRoads';
 import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
@@ -477,7 +478,7 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11;
+  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
   generation?: GenerationState;
   savedAt: string;
   map: {
@@ -999,6 +1000,7 @@ function assertHexcrawlSaveData(value: unknown,validateSpatial:(state:Detail1Sta
   const data=value as HexcrawlSaveData;
   try{validateDetail1Document(data.map.physicalGrid,data.version,data.map.physicalGrid?.poiIdentities?poiNameLocators({regions:data.map.regions,waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))},true):undefined,validateSpatial);}catch{throw new SaveValidationError('map.physicalGrid','invalid or ambiguous POI identity owner');}
   try{validateClassification(data.map.classification,knaveMapContext({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))}),data.version);}catch{throw new SaveValidationError('map.classification','invalid classification');}
+  if(data.version===12&&data.map.knave?.content?.schemaVersion!==2)throw new SaveValidationError('map.knave.content','version12 requires materialized preparation');
   try{validateKnaveLayer(data.map.knave,knaveMapContext({regions:data.map.regions,hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{}))}),data.version,data.ui.generationMode??'classic');}catch{throw new SaveValidationError('map.knave','invalid profile or annotations');}
   if(data.version>=8)try{assertEditorNames({...data.map,seas:data.version>=9?data.map.seas:[],obstacles:(data.map.obstacles??[]) as EditableObstacle[],hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),riverFeatures:data.map.riverFeatures??emptyRiverFeatures(),editorNames:data.map.editorNames===undefined?{}:data.map.editorNames});}catch{throw new SaveValidationError('map.editorNames','invalid or dangling authored object name');}
   if(data.version>=7)try{validateMapRiverFeatures(data.map.riverFeatures,data.map.rivers,data.map.regions,new Map(Object.entries(data.map.terrainByHexKey)),data.map.crossings);}catch{throw new SaveValidationError('map.riverFeatures','invalid or ineligible river feature');}
@@ -1115,16 +1117,17 @@ function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog,preserved
   const facts=knaveFactsForMap(map),mythicRegions=new Set(map.regions.filter(r=>r.generationMode==='mythic').map(r=>r.id));
   const preserved=new Set(preservedOwners);
   for(const fact of facts)if(fact.owner.startsWith('poi:')&&mythicRegions.has(Number(fact.owner.split(':')[1])))preserved.add(fact.owner);
-  const before=map.knave.content??emptyKnaveContent(),content=fillKnaveContent(before,catalog,facts,map.generation.masterSeed,preserved);
+  const before=map.knave.content??emptyKnaveContent(),content=before.schemaVersion===2?fillPreparation(before,catalog,facts,map.generation.masterSeed,preserved):fillKnaveContent(before,catalog,facts,map.generation.masterSeed,preserved);
   if(content===before)return map;
   const regions=map.regions.map(r=>{
     let next=r;
-    for(const [key,c]of Object.entries(content.byPoi)){
+    for(const [key,value]of Object.entries(content.byPoi)){
+      const c='calls' in value?{category:value.category,site:value.calls.find((c:TableCall)=>c.legacySelection?.role==='primary')?.legacySelection}:value;
       if(Object.prototype.hasOwnProperty.call(before.byPoi,key)||!key.startsWith(`poi:${r.id}:`)||!c.site)continue;
       const coord=key.slice(`poi:${r.id}:`.length),central=!r.isTract&&!r.suppressCentralPoi&&hexKey(r.centerHex)===coord&&!!r.centralPoiKind;
       if(next===r)next={...r,pointOfInterestKinds:{...r.pointOfInterestKinds}};
       if(central)next.centralPoiKind=c.category==='natural'?'natural_place':c.category==='structure'?'structure':'dungeon';
-      else{if(!isPoiKind(c.site.representation))throw Error('knave_unknown_marker');next.pointOfInterestKinds![coord]=c.site.representation;}
+      else{if(!isPoiKind(c.site.representation??''))throw Error('knave_unknown_marker');next.pointOfInterestKinds![coord]=c.site.representation as PoiKind;}
     }
     return next;
   });
@@ -1155,7 +1158,7 @@ function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   validateDetail1Document(map.physicalGrid,11,map.physicalGrid?.poiIdentities?poiNameLocators(map,true):undefined,state=>validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state));
   assertEditorNames(map);
   validateClassification(map.classification,knaveMapContext(map));
-  validateKnaveLayer(map.knave,knaveMapContext(map),10,map.regions.some(r=>r.generationMode==='mythic')?'mythic':'classic');
+  validateKnaveLayer(map.knave,knaveMapContext(map),map.knave?.content?.schemaVersion===2?12:10,map.regions.some(r=>r.generationMode==='mythic')?'mythic':'classic');
   validateRiverCounter(map.rivers,map.nextRiverId);
   validateMapRiverFeatures(map.riverFeatures,map.rivers,map.regions,map.hexTerrainByKey,map.crossings);
   return map;
@@ -11940,6 +11943,9 @@ export function App() {
   const [tags,setTags] = useState<TagState>(emptyTags);
   const [activeTagDraftCount,setActiveTagDraftCount]=useState(0);
   const activeTagDraftKeys=useRef(new Set<string>());
+  const preparationNavigation=useRef<PreparationNavigation|null>(null);
+  const [preparationExitRequest,setPreparationExitRequest]=useState<{draft:PreparationNavigation;action:()=>void}|null>(null);
+  const [preparationExitError,setPreparationExitError]=useState('');
   const notifyTagDraft=(key:string,active:boolean)=>{
     const keys=activeTagDraftKeys.current,before=keys.size;
     if(active)keys.add(key);else keys.delete(key);
@@ -13518,7 +13524,7 @@ export function App() {
   // Share those checkpoints between transactions instead of copying the whole
   // map's generation history for every POI click.
   const copyDocument = (doc: DocumentSnapshot): DocumentSnapshot => ({
-    ...doc, map: structuredClone((validateKnaveLayer(doc.map.knave,knaveMapContext(doc.map),10,doc.generationMode),checkedRiverMap(doc.map))), selectedHex: doc.selectedHex ? {...doc.selectedHex} : null,
+    ...doc, map: structuredClone((validateKnaveLayer(doc.map.knave,knaveMapContext(doc.map),doc.map.knave?.content?.schemaVersion===2?12:10,doc.generationMode),checkedRiverMap(doc.map))), selectedHex: doc.selectedHex ? {...doc.selectedHex} : null,
     generationHistory: [...doc.generationHistory]
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
@@ -13706,6 +13712,9 @@ export function App() {
   };
   const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string):boolean=>{
     if(editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
+    // Every DETAIL1 pointer/keyboard/direct caller shares this guard. Finish
+    // changes revision; replay only this accepted navigation intent afterward.
+    if(preparationNavigation.current){requestPreparationExit(()=>detailCellClickRef.current(cell,step,poiId));return false;}
     const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
     try{
       const next=parseDetail1StateV11({...state,selectedCell:cell,...(step?{viewStep:step}:{})});
@@ -14038,13 +14047,37 @@ export function App() {
     updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateClassification(map.classification);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
+  const preparationTokens=useRef(new WeakMap<object,{revision:number;owner:string}>());
+  const preparationContext=(owner:string)=>{const token={},revision=documentRevision.current;preparationTokens.current.set(token,{revision,owner});return {revision,token};};
+  const mutatePreparations=(commands:PreparationCommand[],draft:{revision:number;token:object})=>{
+    const cmd=commands[0];if(!cmd||commands.some(c=>c.owner!==cmd.owner))return false;
+    if(draft.revision!==documentRevision.current||preparationTokens.current.get(draft.token)?.revision!==draft.revision||preparationTokens.current.get(draft.token)?.owner!==cmd.owner||mutationBlocked()||obstacleDraftRef.current||activeTagDraftKeys.current.size>0||notesEditorKey!==null)return false;
+    try{
+      const map=captureMap(),layer=map.knave;if(!layer)return false;
+      const facts=knaveFactsForMap(map),live=new Set(facts.map(f=>f.owner));
+      let content=layer.content;const context={catalog:knaveGenerationCatalog(),live,seed:generationRef.current.masterSeed,facts:Object.fromEntries(facts.map(f=>[f.owner,f])),categories:Object.fromEntries(facts.map(f=>[f.owner,f.kind==='water'?'water' as const:f.kind==='settlement'?'settlement' as const:'natural' as const]))};
+      for(const command of commands)content=applyPreparation(content,context,command);
+      if(content===layer.content)return false;
+      if(!commitManualMap({...map,knave:{...layer,content}},false))return false;
+      preparationTokens.current.delete(draft.token);return true;
+    }catch{setEditError(language==='ru'?'Не удалось изменить подсказки. Карта не изменена.':'Could not change preparation. Your map is unchanged.');return false;}
+  };
+  const mutatePreparation=(cmd:PreparationCommand,draft:{revision:number;token:object})=>mutatePreparations([cmd],draft);
+  const commitPreparationUI=(commands:PreparationCommand[],draft:{revision:number;token:object})=>{
+    const owner=commands[0]?.owner,now=Date.now(),rolls=commands.filter(c=>c.kind==='reroll');
+    if(!owner||rolls.some(c=>(tagLocks.current.get(`preparation:${owner}:${c.id}`)??0)>now))return false;
+    if(!mutatePreparations(commands,draft))return false;
+    for(const c of rolls)tagLocks.current.set(`preparation:${owner}:${c.id}`,now+350);
+    if(rolls.length)setTagAnimations(current=>({...current,[`knave:${owner}`]:{key:`knave:${owner}`,slot:rolls.length===1?rolls[0].id:undefined,revision:documentRevision.current,expiresAt:now+350}}));
+    setTagAnnouncement(language==='ru'?'Подсказки места сохранены':'Place preparation saved');return true;
+  };
   const mutateKnaveContent=(owner:string,part:'primary'|'trait'|'both')=>{
     if(mutationBlocked()||obstacleDraftRef.current||activeTagDraftKeys.current.size>0||notesEditorKey!==null)return false;
     const key=`knave:${owner}`,now=Date.now();
     if((tagLocks.current.get(key)??0)>now)return false;
     try{
       const map=captureMap(),layer=map.knave,facts=knaveFactsForMap(map).find(f=>f.owner===owner);
-      if(!layer?.content||!facts)return false;
+      if(!layer?.content||layer.content.schemaVersion!==1||!facts)return false;
       const content=rerollKnaveContent(layer.content,knaveGenerationCatalog(),facts,generationRef.current.masterSeed,part),result=content.byPoi[owner];
       const regions=part==='trait'||!result.site?map.regions:map.regions.map(region=>{
         const prefix=`poi:${region.id}:`;if(!owner.startsWith(prefix))return region;
@@ -14412,7 +14445,7 @@ export function App() {
     const current=knaveRef.current;if(!current)return snapshot.knave;
     const layer=structuredClone(current),target=knaveMapContext(snapshot);
     for(const loss of knaveLosses(layer,target)){dropKnaveLoss(layer,loss);}
-    validateKnaveLayer(layer,target,10,'classic');return layer;
+    validateKnaveLayer(layer,target,layer.content?.schemaVersion===2?12:10,'classic');return layer;
   };
   // Удаление последнего региона = восстановление снимка состояния, сделанного
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
@@ -15108,7 +15141,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const createSaveData = (doc=captureDocument()): HexcrawlSaveData => ({
     schema: HEXCRAWL_SAVE_SCHEMA,
     generation: cloneGenerationState(doc.map.generation),
-    version: doc.map.physicalGrid||hasClassification(doc.map.classification)?11:HEXCRAWL_SAVE_VERSION,
+    version: doc.map.knave?.content?.schemaVersion===2?12:doc.map.physicalGrid||hasClassification(doc.map.classification)?11:HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
       ...(doc.map.physicalGrid?{physicalGrid:structuredClone(doc.map.physicalGrid)}:{}),
@@ -15325,7 +15358,24 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     if(choice==='finish'){if(!finishKnaveDraft(request.draft))return false;}else resetKnaveDraft(request.draft);
     setKnaveExitRequest(null);setTimeout(request.action,0);return true;
   };
+  const requestPreparationExit=(action:()=>void)=>{
+    const draft=preparationNavigation.current;if(!draft)return;
+    if(!draft.dirty){draft.discard();setTimeout(action,0);return;}
+    setPreparationExitError('');setPreparationExitRequest({draft,action});
+  };
+  const resolvePreparationExit=(choice:'finish'|'discard'|'stay')=>{
+    const request=preparationExitRequest;if(!request)return;
+    if(choice==='stay'){setPreparationExitRequest(null);setTimeout(request.draft.focus,0);return;}
+    if(preparationNavigation.current!==request.draft||request.draft.revision!==documentRevision.current){setPreparationExitError(language==='ru'?'Карта изменилась. Останьтесь в редакторе и отмените черновик.':'The map changed. Stay in the editor and cancel the draft.');return;}
+    if(choice==='finish'){if(!request.draft.finish()){setPreparationExitError(language==='ru'?'Не удалось завершить описание. Исправьте ошибку или закончите ввод.':'Could not finish the description. Resolve the error or finish composing.');return;}}
+    else request.draft.discard();
+    setPreparationExitRequest(null);setTimeout(request.action,0);
+  };
   const poiClickGate=(event:React.MouseEvent<HTMLDivElement>)=>{
+    if(preparationNavigation.current&&!(event.target as Element).closest('[data-preparation-dialog],[data-preparation-exit-dialog],[data-poi-export],.side-panel-toggle')){
+      const target=(event.target as Element).closest<HTMLElement>('button,a,input,select,polygon.hex');
+      if(target){event.preventDefault();event.stopPropagation();requestPreparationExit(()=>{if(target.isConnected)target.dispatchEvent(new MouseEvent('click',{bubbles:true}));});}return;
+    }
     if(knaveDraftRef.current){
       if((event.target as Element).closest('[data-knave-panel],[data-knave-exit-dialog],[data-poi-done],[data-poi-export],[data-poi-navigation],.side-panel-toggle'))return;
       const target=(event.target as Element).closest<HTMLElement>('button,a,input,select,polygon.hex');
@@ -15337,6 +15387,9 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     event.preventDefault();event.stopPropagation();requestPoiExit(()=>{if(target.isConnected)target.click();});
   };
   const poiSelectGate=(event:React.FormEvent<HTMLDivElement>)=>{
+    if(preparationNavigation.current&&!(event.target as Element).closest('[data-preparation-dialog],[data-preparation-exit-dialog]')&&event.target instanceof HTMLSelectElement){
+      const target=event.target,value=target.value;event.preventDefault();event.stopPropagation();requestPreparationExit(()=>{if(target.isConnected){target.value=value;target.dispatchEvent(new Event('change',{bubbles:true}));}});return;
+    }
     if(knaveDraftRef.current&&!(event.target as Element).closest('[data-knave-panel],[data-knave-exit-dialog]')&&event.target instanceof HTMLSelectElement){
       const target=event.target,value=target.value;event.preventDefault();event.stopPropagation();requestKnaveExit(()=>{if(target.isConnected){target.value=value;target.dispatchEvent(new Event('change',{bubbles:true}));}});return;
     }
@@ -15528,11 +15581,12 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     () => setEditingPoiHexKey(selectedHexKey)) : null}{selectedWaterPoiKind?renderName(`waterPoi:${selectedHexKey}`):null}</>;
   const selectedPoiSource:PoiLocator|null=selectedHexKey?(selectedWaterPoiKind?{kind:'water',hexKey:selectedHexKey}:selectedRegion&&poiNameLocators({regions,waterPoiByKey}).has(`poi:${selectedRegion.id}:${selectedHexKey}`)?{kind:'land',regionId:selectedRegion.id,hexKey:selectedHexKey}:null):null;
   const knaveDiscoveryKey=selectedPoiSource?poiLocatorKey(selectedPoiSource):null;
-  const selectedKnaveContent=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
+  const selectedKnavePayload=knaveDiscoveryKey?knave?.content?.byPoi[knaveDiscoveryKey]:undefined;
+  const selectedKnaveContent=knaveDiscoveryKey&&knave?.content?.schemaVersion===1?knave.content.byPoi[knaveDiscoveryKey]:undefined;
   const acceptedDiscovery=knaveDiscoveryKey?classification?.discoveryByPoi[knaveDiscoveryKey]??knave?.discoveryByPoi[knaveDiscoveryKey]:undefined;
   const authoredDifficulty=selectedHexKey?classification?.difficultyByHex[selectedHexKey]??knave?.difficultyByHex[selectedHexKey]:undefined;
   const onSelectedRoad=!!selectedHexKey&&roads.some(r=>r.segments.some(s=>hexKey(s.from)===selectedHexKey||hexKey(s.to)===selectedHexKey));
-  const inferredDiscovery=discoveryDefault({kind:(selectedHasCentralPoi?selectedRegion?.centralPoiKind:selectedPoiKind)??selectedWaterPoiKind,biome:selectedEffectiveBiomeId,onRoad:onSelectedRoad,water:isSelectedLake||isSelectedSea,hidden:!!knaveDiscoveryKey&&discoveryTagEffect(knaveDiscoveryKey,tags?.instances??[],selectedKnaveContent)});
+  const inferredDiscovery=discoveryDefault({kind:(selectedHasCentralPoi?selectedRegion?.centralPoiKind:selectedPoiKind)??selectedWaterPoiKind,biome:selectedEffectiveBiomeId,onRoad:onSelectedRoad,water:isSelectedLake||isSelectedSea,hidden:!!knaveDiscoveryKey&&discoveryTagEffect(knaveDiscoveryKey,tags?.instances??[],selectedKnavePayload)});
   const knaveDifficulty=knaveDraft?.difficulty??classification?.difficultyByHex[selectedHexKey??'']??knave?.difficultyByHex[selectedHexKey??'']??'auto';
   const displayedDifficulty=knaveDraft?.difficulty&&knaveDraft.difficulty!=='auto'?knaveDraft.difficulty:authoredDifficulty??terrainDefault(selectedEffectiveBiomeId);
   const knaveDiscovery=knaveDraft?.mode??classification?.discoveryByPoi[knaveDiscoveryKey??'']?.mode??knave?.discoveryByPoi[knaveDiscoveryKey??'']?.mode??'auto',knaveClue=knaveDraft?.clueText??acceptedDiscovery?.clueText??'';
@@ -15541,7 +15595,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задана',normal:'Обычная',difficult:'Труднопроходимая',dangerous:'Опасная'}:{auto:'Automatic',unknown:'Unspecified',normal:'Normal',difficult:'Difficult',dangerous:'Dangerous'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задано',passage:'При прохождении',exploration:'Нужно исследование',interaction:'Секрет · взаимодействие'}:{auto:'Automatic',unknown:'Unspecified',passage:'On passage',exploration:'Requires exploration',interaction:'Secret · interaction'};
   const knavePanel=selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
-    {selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
+    {knave&&knaveDiscoveryKey&&<div className="knave-results"><PreparationPanel key={`${knaveDiscoveryKey}:${documentRevision.current}`} input={knave.content} catalog={knaveGenerationCatalog} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>(activeTagDraftKeys.current.has(`preparation:${knaveDiscoveryKey}`)?1:0)||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onLegacyRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)} context={()=>preparationContext(knaveDiscoveryKey)} commit={commitPreparationUI} navigation={value=>{preparationNavigation.current=value;}} onDraft={active=>notifyTagDraft(`preparation:${knaveDiscoveryKey}`,active)}/></div>}
     {!isSelectedLake&&!isSelectedSea&&(editMode||displayedDifficulty==='difficult'||displayedDifficulty==='dangerous')&&<div className="direct-line" data-terrain-classification>{editMode?<label>{language==='ru'?'Проходимость: ':'Difficulty: '}<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:<>{difficultyLabels[displayedDifficulty]}{displayedDifficulty==='dangerous'&&terrainRisk(selectedEffectiveBiomeId,language)?` · ${terrainRisk(selectedEffectiveBiomeId,language)}`:''}</>}</div>}
     {knaveDiscoveryKey&&<>{(editMode||displayedDiscovery!=='unknown')&&<div className="direct-line" data-discovery-classification>{editMode?<label>{language==='ru'?'Обнаружение: ':'Discovery: '}<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:displayedDiscovery==='passage'&&onSelectedRoad?(language==='ru'?'Заметно с дороги':'Visible from the road'):discoveryLabels[displayedDiscovery]}</div>}
     {editMode?<label className="knave-clue">{language==='ru'?'Улика':'Clue'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{knaveClue}</p>:null}</>}
@@ -16198,8 +16252,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     </div>}
   </div>:null;
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
-  const detailCellClickRef=useRef<(cell:AxialHex)=>void>(()=>{});
-  detailCellClickRef.current=cell=>{selectDetailCell(cell);};
+  const detailCellClickRef=useRef<(cell:AxialHex,step?:DetailStep,poiId?:string)=>void>(()=>{});
+  detailCellClickRef.current=(cell,step,poiId)=>{selectDetailCell(cell,documentRevision.current,step,poiId);};
   const detailSummary=useMemo(()=>{
     if(!physicalGrid?.selectedCell)return null;
     const terrain=new Map<string,string>();
@@ -16629,6 +16683,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     <div className="app" onClickCapture={poiClickGate} onChangeCapture={poiSelectGate} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
       if(e.key!=='Tab'&&guardMaterialRead(e))return;
       if(detailExtentDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelDetailExtentDraft();return;}
+      if(preparationExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-preparation-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button')??[])],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
+      if(preparationExitRequest&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();resolvePreparationExit('stay');return;}
       if(knaveExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-knave-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button')??[])],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(detailAdaptationRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelDetailAdaptation(detailAdaptationRef.current);return;}
       if(knaveDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();if(knaveExitRequest)stayInKnaveEditor();else resetKnaveDraft();return;}
@@ -16643,6 +16699,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
       if(e.key==='Escape'){e.preventDefault();e.stopPropagation();resetRoadDraft();}
       else if(e.key==='Enter'&&!(e.target as Element).matches('select,button,input,textarea')){e.preventDefault();e.stopPropagation();finishRoadDraft();}
     }}>
+      {preparationExitRequest&&<div className="poi-exit-backdrop" data-preparation-exit-dialog><section role="alertdialog" aria-modal="true" aria-labelledby="preparation-exit-title"><h2 id="preparation-exit-title">{language==='ru'?'Есть несохранённое описание':'Unsaved place description'}</h2><p>{language==='ru'?'Завершить, отбросить или остаться здесь?':'Finish, discard, or stay here?'}</p>{preparationExitError&&<p role="alert">{preparationExitError}</p>}<button type="button" onClick={()=>resolvePreparationExit('finish')}>{language==='ru'?'Завершить':'Finish'}</button><button type="button" onClick={()=>resolvePreparationExit('discard')}>{language==='ru'?'Отбросить':'Discard'}</button><button type="button" autoFocus onClick={()=>resolvePreparationExit('stay')}>{language==='ru'?'Остаться':'Stay'}</button></section></div>}
       {knaveExitRequest&&<div className="poi-exit-backdrop" data-knave-exit-dialog><section role="alertdialog" aria-modal="true" aria-labelledby="knave-exit-title"><h2 id="knave-exit-title">{language==='ru'?'Есть несохранённые свойства':'Unsaved properties'}</h2><p>{language==='ru'?'Сохранить, отбросить или остаться здесь?':'Save, discard, or stay here?'}</p>{knaveError&&<p role="alert">{knaveError}</p>}<button type="button" onClick={()=>resolveKnaveExit('finish')}>{language==='ru'?'Сохранить':'Save'}</button><button type="button" onClick={()=>resolveKnaveExit('discard')}>{language==='ru'?'Отбросить':'Discard'}</button><button type="button" autoFocus onClick={()=>resolveKnaveExit('stay')}>{language==='ru'?'Остаться':'Stay'}</button></section></div>}
       {poiExitRequest&&<div className="poi-exit-backdrop" data-poi-exit-dialog><section role="alertdialog" aria-modal="true" aria-labelledby="poi-exit-title"><h2 id="poi-exit-title">{language==='ru'?'Есть незавершённый перенос':'Point move in progress'}</h2><p>{language==='ru'?'Завершить перенос, отбросить его или остаться здесь?':'Finish the move, discard it,or stay here?'}</p><button type="button" disabled={!poiPreview?.plan} onClick={()=>resolvePoiExit('finish')}>{language==='ru'?'Завершить перенос':'Finish move'}</button><button type="button" onClick={()=>resolvePoiExit('discard')}>{language==='ru'?'Отбросить':'Discard'}</button><button type="button" autoFocus onClick={()=>resolvePoiExit('stay')}>{language==='ru'?'Остаться':'Stay'}</button></section></div>}
       <section className="content">
@@ -16843,7 +16900,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                   <div className="export-menu__items">
                     <button type="button" data-poi-export disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" data-poi-export onClick={handleExportJson} className="secondary">JSON</button>
-                    <small>{language==='ru'?`JSON v${physicalGrid||hasClassification(classification)?11:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid||hasClassification(classification)?11:10}: older app versions cannot open this file.`}</small>
+                    <small>{language==='ru'?`JSON v${knave?.content?.schemaVersion===2?12:physicalGrid||hasClassification(classification)?11:10}: старые версии приложения не откроют этот файл.`:`JSON v${knave?.content?.schemaVersion===2?12:physicalGrid||hasClassification(classification)?11:10}: older app versions cannot open this file.`}</small>
                   </div>
                 </details>
               <button type="button" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>

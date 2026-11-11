@@ -1,3 +1,4 @@
+import {validatePreparation,remapPreparation,type PreparationState} from './tags/tablePreparation.ts';
 import {validateKnaveContent,type KnaveContentState} from './tags/knave.ts';
 /** KNC-1.0 detached profile/annotation contracts. App v10 wiring is separate.
  * No ambient RNG, geography generation, source corpus, or UI side effects. */
@@ -12,7 +13,7 @@ export type KnaveLayer = {
   profile: KnaveProfile;
   difficultyByHex: Record<string, Exclude<Difficulty, 'unspecified'>>;
   discoveryByPoi: Record<string, PoiDiscovery>;
-  content?: KnaveContentState;
+  content?: KnaveContentState|PreparationState;
 };
 /** Live sets come from the accepted candidate document, not the old map. */
 export type KnaveContext = {hexes: ReadonlySet<string>; dryHexes: ReadonlySet<string>; pois: ReadonlySet<string>};
@@ -43,10 +44,10 @@ export function newKnaveLayer(): KnaveLayer {
  * generation mode. Legacy versions still cannot contain this layer. */
 export function validateKnaveLayer(value: unknown, context: KnaveContext, saveVersion: number, mode: 'classic' | 'mythic'): asserts value is KnaveLayer | undefined {
   if (value === undefined) return;
-  if ((saveVersion !== 10 && saveVersion !== 11) || !['classic','mythic'].includes(mode)) fail('knave_profile_version_or_mode');
+  if ((saveVersion !== 10 && saveVersion !== 11 && saveVersion !== 12) || !['classic','mythic'].includes(mode)) fail('knave_profile_version_or_mode');
   if (!record(value) || !exactKeys(value, own(value??{},'content')?['profile','difficultyByHex','discoveryByPoi','content']:['profile','difficultyByHex','discoveryByPoi'])) fail('knave_layer');
   const layer = value as Record<string, unknown>;
-  if(own(layer,'content'))try{validateKnaveContent(layer.content,context.pois);}catch{fail('knave_content');}
+  if(own(layer,'content'))try{if((layer.content as PreparationState)?.schemaVersion===2){if(saveVersion!==12)fail('knave_content_version');validatePreparation(layer.content,context.pois);}else validateKnaveContent(layer.content,context.pois);}catch{fail('knave_content');}
   const p = layer.profile;
   if (!record(p) || !exactKeys(p, ['id','version','physicalHex']) || p.id !== 'classic.knave2' || p.version !== 1) fail('knave_profile');
   const scale = (p as Record<string, unknown>).physicalHex;
@@ -66,7 +67,7 @@ export function validateKnaveLayer(value: unknown, context: KnaveContext, saveVe
 }
 
 export function setKnaveDifficulty(layer: KnaveLayer, context: KnaveContext, key: string, value: Difficulty): KnaveLayer {
-  validateKnaveLayer(layer, context, 10, 'classic');
+  validateKnaveLayer(layer, context, layer.content?.schemaVersion===2?12:10, 'classic');
   if (!hexKey(key) || !context.dryHexes.has(key) || !context.hexes.has(key)) fail('knave_dry_hex_required');
   if (!['unspecified','normal','difficult'].includes(value)) fail('knave_difficulty');
   if ((layer.difficultyByHex[key] ?? 'unspecified') === value) return layer;
@@ -76,14 +77,14 @@ export function setKnaveDifficulty(layer: KnaveLayer, context: KnaveContext, key
 }
 
 export function setKnaveDiscovery(layer: KnaveLayer, context: KnaveContext, key: string, mode: Discovery, clueText?: string): KnaveLayer {
-  validateKnaveLayer(layer, context, 10, 'classic');
+  validateKnaveLayer(layer, context, layer.content?.schemaVersion===2?12:10, 'classic');
   if (!poiKey(key) || !context.pois.has(key)) fail('knave_discovery_owner');
   const previous = layer.discoveryByPoi[key];
   // Switching away from interaction must not erase a previously authored clue.
   const nextValue = {mode, clueText: clueText === undefined ? previous?.clueText ?? '' : clueText.trim()};
   const next = structuredClone(layer);
   next.discoveryByPoi[key] = nextValue;
-  validateKnaveLayer(next, context, 10, 'classic');
+  validateKnaveLayer(next, context, layer.content?.schemaVersion===2?12:10, 'classic');
   if ((previous?.mode ?? 'passage') === nextValue.mode && (previous?.clueText ?? '') === nextValue.clueText) return layer;
   return next;
 }
@@ -91,7 +92,7 @@ export function setKnaveDiscovery(layer: KnaveLayer, context: KnaveContext, key:
 /** E7/E8 callers remap POI addresses after preparing geometry. Coordinate flags
  * do not follow POIs. Missing targets are a refusal, never a pruning command. */
 export function remapKnavePois(layer: KnaveLayer, source: KnaveContext, target: KnaveContext, moves: ReadonlyMap<string, string>): KnaveLayer {
-  validateKnaveLayer(layer, source, 10, 'classic');
+  validateKnaveLayer(layer, source, layer.content?.schemaVersion===2?12:10, 'classic');
   const destinations = new Set<string>();
   for (const [from, to] of moves) {
     if (!source.pois.has(from) || !poiKey(from) || !poiKey(to) || !target.pois.has(to) || destinations.has(to)) fail('knave_poi_move');
@@ -103,9 +104,9 @@ export function remapKnavePois(layer: KnaveLayer, source: KnaveContext, target: 
   const next = {...structuredClone(layer), discoveryByPoi: Object.fromEntries(entries.map(([key, value]) => [key, {...value}]))};
   if(next.content){
     const remap=<T,>(values:Record<string,T>):Record<string,T>=>{const pairs=Object.entries(values).map(([k,v])=>[moves.get(k)??k,v]as const);if(new Set(pairs.map(([k])=>k)).size!==pairs.length)fail('knave_poi_collision');return Object.fromEntries(pairs);};
-    next.content={schemaVersion:1,byPoi:remap(next.content.byPoi),rollCounters:remap(next.content.rollCounters)};
+    next.content=next.content.schemaVersion===2?remapPreparation(next.content,moves,target.pois):{schemaVersion:1,byPoi:remap(next.content.byPoi),rollCounters:remap(next.content.rollCounters)};
   }
-  validateKnaveLayer(next, target, 10, 'classic');
+  validateKnaveLayer(next, target, next.content?.schemaVersion===2?12:10, 'classic');
   return next;
 }
 
@@ -121,10 +122,10 @@ export function knaveLosses(layer: KnaveLayer, target: KnaveContext): KnaveLoss[
 }
 /** Only on an already detached candidate after the existing loss gate. */
 export function knaveLossValue(layer:KnaveLayer,loss:KnaveLoss):unknown {
-  return loss.kind==='difficulty'?layer.difficultyByHex[loss.key]:loss.kind==='discovery'?layer.discoveryByPoi[loss.key]:{snapshot:layer.content?.byPoi[loss.key],counters:layer.content?.rollCounters[loss.key]};
+  return loss.kind==='difficulty'?layer.difficultyByHex[loss.key]:loss.kind==='discovery'?layer.discoveryByPoi[loss.key]:{snapshot:layer.content?.byPoi[loss.key],counters:layer.content?.schemaVersion===1?layer.content.rollCounters[loss.key]:undefined};
 }
 export function dropKnaveLoss(layer:KnaveLayer,loss:KnaveLoss):void {
   if(loss.kind==='difficulty')delete layer.difficultyByHex[loss.key];
   else if(loss.kind==='discovery')delete layer.discoveryByPoi[loss.key];
-  else if(layer.content){delete layer.content.byPoi[loss.key];delete layer.content.rollCounters[loss.key];}
+  else if(layer.content){delete layer.content.byPoi[loss.key];if(layer.content.schemaVersion===1)delete layer.content.rollCounters[loss.key];}
 }

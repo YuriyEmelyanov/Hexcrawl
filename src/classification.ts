@@ -1,3 +1,4 @@
+import type {PreparedPlace} from './tags/tablePreparation.ts';
 import {ownerKey,type TagInstance} from './tags/engine.ts';
 import type {KnavePoiContent} from './tags/knave.ts';
 export type Difficulty='auto'|'unknown'|'normal'|'difficult'|'dangerous';
@@ -10,7 +11,7 @@ const record=(x:unknown):x is Record<string,unknown>=>!!x&&typeof x==='object'&&
 const keys=(x:Record<string,unknown>,ks:string[])=>Object.keys(x).length===ks.length&&ks.every(k=>Object.prototype.hasOwnProperty.call(x,k));
 export function validateClassification(value:unknown,context:Context,version=11):asserts value is Classification|undefined{
  if(value===undefined)return;
- if(version!==11||!record(value)||!keys(value,['version','difficultyByHex','discoveryByPoi'])||value.version!==1||!record(value.difficultyByHex)||!record(value.discoveryByPoi))throw Error('Invalid classification');
+ if((version!==11&&version!==12)||!record(value)||!keys(value,['version','difficultyByHex','discoveryByPoi'])||value.version!==1||!record(value.difficultyByHex)||!record(value.discoveryByPoi))throw Error('Invalid classification');
  for(const [k,v]of Object.entries(value.difficultyByHex))if(!context.hexes.has(k)||!['unknown','normal','difficult','dangerous'].includes(String(v))||typeof v!=='string')throw Error('Invalid terrain classification');
  for(const [k,v]of Object.entries(value.discoveryByPoi))if(!context.pois.has(k)||!record(v)||!keys(v,['mode','clueText'])||typeof v.mode!=='string'||!['auto','unknown','passage','exploration','interaction'].includes(v.mode)||typeof v.clueText!=='string'||v.clueText!==v.clueText.trim()||v.clueText.length>512||v.mode==='interaction'&&!v.clueText)throw Error('Invalid discovery classification');
 }
@@ -29,8 +30,8 @@ export function terrainRisk(biome:string|undefined,language:'ru'|'en'){
 }
 // Semantic IDs, never localized name substrings. Text overrides suspend the
 // original semantic inference for that tag. Only the relevant slot matters.
-export function discoveryTagEffect(owner:string,tags:readonly TagInstance[],content?:KnavePoiContent):boolean{
- if(content?.trait.sourceRow===43)return true; // KNC1 place_traits row43 Hidden
+export function discoveryTagEffect(owner:string,tags:readonly TagInstance[],content?:KnavePoiContent|PreparedPlace):boolean{
+ if(content&&('calls' in content?content.calls.some(c=>(c.nextEntry??c).table==='place_traits'&&(c.nextEntry??c).sourceRow===43):content.trait.sourceRow===43))return true; // KNC1 place_traits row43 Hidden
  return tags.some(t=>ownerKey(t.owner)===owner&&t.definitionVersion===1&&(
   t.definitionId==='mb.dwelling'&&t.entryIds[0]==='mb.dwelling:16'&&!t.overrides?.[0]||
   t.definitionId==='mb.ruin'&&t.entryIds[0]==='mb.ruin:42'&&!t.overrides?.[0]||
