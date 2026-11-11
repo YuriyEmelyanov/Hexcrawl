@@ -11918,6 +11918,7 @@ export function App() {
   const finishMapNameRef = useRef<() => boolean>(() => true);
   const mapScaleRef = useRef(1);
   const mapStageRef = useRef<HTMLDivElement | null>(null);
+  const detailCameraSlackRef=useRef({x:0,y:0});
   const mapZoomFrameRef = useRef<number | null>(null);
   const mapNavigationIdleRef = useRef<number | null>(null);
   const pendingMapZoomRef = useRef<{ scale: number; clientX?: number; clientY?: number } | null>(null);
@@ -13696,13 +13697,32 @@ export function App() {
       recordTransaction(before,after);applyPreparedDocument(after);setTimeout(()=>detailAdaptationFocusRef.current?.focus(),0);return true;
     }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось применить охваты. Карта не изменена.':'Could not apply footprints. Your map is unchanged.'));return false;}
   };
+  const captureDetailCameraFocus=(previousScale:number)=>{
+    const viewport=mapViewportRef.current,svg=mapSvgRef.current;
+    const rect=viewport?.getBoundingClientRect(),bounds=svg?.getBoundingClientRect();
+    const state=physicalGridRef.current,layer=svg?.querySelector<SVGGElement>('[data-detail-view]'),matrix=layer?.getScreenCTM();
+    let selected:{x:number;y:number}|null=null;
+    if(svg&&state?.selectedCell&&matrix){const world=detailCellCenter(createDetailGrid(1,state.grid.origin),state.selectedCell),p=svg.createSVGPoint();p.x=(world.x-state.grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x;p.y=(world.y-state.grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y;selected=p.matrixTransform(matrix);}
+    const visible=selected&&rect&&selected.x>=rect.left&&selected.x<=rect.right&&selected.y>=rect.top&&selected.y<=rect.bottom;
+    const focal=rect&&bounds?{x:visible?selected!.x:rect.left+viewport!.clientWidth/2,y:visible?selected!.y:rect.top+viewport!.clientHeight/2}:null;
+    const pixel=focal&&bounds?{x:(focal.x-bounds.left)/previousScale,y:(focal.y-bounds.top)/previousScale}:null;
+    return (scale:number)=>{
+    if(viewport&&svg&&focal&&pixel){const stage=mapStageRef.current;if(stage){const slack=detailCameraSlackRef.current={x:Math.max(detailCameraSlackRef.current.x,viewport.clientWidth),y:Math.max(detailCameraSlackRef.current.y,viewport.clientHeight)};stage.style.margin=`${slack.y}px ${slack.x}px`;}
+      const next=svg.getBoundingClientRect();viewport.scrollLeft+=next.left+pixel.x*scale-focal.x;viewport.scrollTop+=next.top+pixel.y*scale-focal.y;}
+    };
+  };
   const setDetailViewStep=(step:DetailStep,expectedRevision=renderedDocumentRevision):boolean=>{
     if(![1,6,12,24].includes(step)||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||notesComposingRef.current||obstacleDraftRef.current)return false;
     const before=captureDocument(),state=before.map.physicalGrid;
     if(!state?.active)return false;
     if(state.viewStep===step)return true;
-    const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}}});
-    recordTransaction(before,after);applyPreparedDocument(after);return true;
+    const scale=before.mapScale*state.viewStep/step;
+    if(!Number.isFinite(scale)||scale<=0)return false;
+    const restoreFocus=captureDetailCameraFocus(before.mapScale);
+    const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}},mapScale:scale});
+    recordTransaction(before,after);applyPreparedDocument(after);
+    restoreFocus(scale);
+    return true;
   };
   const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string):boolean=>{
     if(editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
@@ -13719,8 +13739,10 @@ export function App() {
       const source=parts?parseHexKey(parts[alias!.startsWith('waterPoi:')?1:2]):owners.length>1?before.selectedHex:geographicalSource;
       const selectedSource=source&&actualHexKeys(before.map).has(hexKey(source))?source:before.selectedHex;
       if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state))&&JSON.stringify(selectedSource)===JSON.stringify(before.selectedHex))return true;
-      const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:selectedSource});
-      recordTransaction(before,after);applyPreparedDocument(after);setIsSidePanelCollapsed(false);return true;
+      const scale=before.mapScale*state.viewStep/next.viewStep;if(!Number.isFinite(scale)||scale<=0)return false;
+      const restoreFocus=captureDetailCameraFocus(before.mapScale);
+      const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:selectedSource,mapScale:scale});
+      recordTransaction(before,after);applyPreparedDocument(after);restoreFocus(scale);setIsSidePanelCollapsed(false);return true;
     }catch{return false;}
   };
   /** One explicit extent operation with full live geography validation. */
@@ -14874,7 +14896,10 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     return () => mobileLayout.removeEventListener('change', syncMobileLayout);
   }, []);
 
-  const clampMapScale = (scale: number) => Math.min(MAX_MAP_SCALE, Math.max(MIN_MAP_SCALE, scale));
+  const clampMapScale = (scale: number) => {
+    const ratio=6/(physicalGridRef.current?.viewStep??6);
+    return Math.min(MAX_MAP_SCALE*ratio,Math.max(MIN_MAP_SCALE*ratio,scale));
+  };
 
   const beginMapNavigation = () => {
     mapViewportRef.current?.classList.add('is-navigating');
@@ -14888,7 +14913,9 @@ retainPoiNames(checkpoint,editorNamesRef.current);
 
   // Navigation changes only the composited SVG layer, never React map state.
   const applyMapScale = (scale: number) => {
-    const nextScale = clampMapScale(scale);
+    // Document/history and view changes retain their exact accepted camera.
+    // Only interactive wheel/pinch zoom uses the step-relative bounds above.
+    const nextScale = scale;
     mapScaleRef.current = nextScale;
     const svg = mapSvgRef.current;
     const stage = mapStageRef.current;
@@ -14917,6 +14944,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     if (mapZoomFrameRef.current !== null) cancelAnimationFrame(mapZoomFrameRef.current);
     mapZoomFrameRef.current = null;
     pendingMapZoomRef.current = null;
+    if(!physicalGridRef.current?.active){detailCameraSlackRef.current={x:0,y:0};if(mapStageRef.current)mapStageRef.current.style.margin='0px';}
     applyMapScale(scale);
   };
 
@@ -15224,7 +15252,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
           nextRoadId:Math.max(imported.counters.nextRoadId,Math.max(0,...imported.map.roads.map(r=>r.id))+1)},
         generationHistory:[],generationMode:imported.ui.generationMode ?? 'classic',knaveEnabled:imported.ui.knaveEnabled??!!imported.map.knave,
         selectedHex:!hexes.length&&!terrain.size?START_HEX:selection&&validSelection.has(hexKey(selection))?selection:null,
-        isMapRotated:imported.ui.isMapRotated,mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE,MAX_MAP_SCALE)
+        isMapRotated:imported.ui.isMapRotated,mapScale:imported.map.physicalGrid?.active?imported.ui.mapScale:clamp(imported.ui.mapScale,MIN_MAP_SCALE,MAX_MAP_SCALE)
       };
       // Everything that can fail (including deep copies) is prepared before the first setter.
       const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
@@ -16832,6 +16860,9 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <span aria-hidden="true">#</span>
                 <span>{t.hexCoordinatesMode}</span>
               </button>
+              {physicalGrid?.active&&!detailAdaptation&&<select className="hex-grid-select" data-detail-step-select aria-label={language==='ru'?'Размер гекса':'Hex size'} value={physicalGrid.viewStep} disabled={mutationBlocked(false)} onChange={event=>setDetailViewStep(Number(event.target.value) as DetailStep)}>
+                {([1,6,12,24] as const).map(step=><option key={step} value={step}>{language==='ru'?`Гекс ${step} ${step===1?'миля':'миль'}`:`Hex ${step} ${step===1?'mile':'miles'}`}</option>)}
+              </select>}
             </div>
             <div className="control-block controls controls--history">
               <button type="button" className="secondary" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
@@ -16859,11 +16890,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <div className="detail-adaptation__actions"><button type="button" data-detail-apply onClick={()=>applyDetailAdaptation()}>{language==='ru'?'Применить охваты':'Apply footprints'}</button><button type="button" data-detail-cancel className="secondary" onClick={()=>cancelDetailAdaptation()}>{language==='ru'?'Отмена':'Cancel'}</button></div>
                 <small>{language==='ru'?'Escape — отмена. Применение можно вернуть одной Undo.':'Escape cancels. Undo restores the previous document after applying.'}</small>
               </>:physicalGrid?.poiIdentities&&physicalGrid.poiFootprints.length===Object.keys(physicalGrid.poiIdentities.byLegacyRef).length?<p role="status">{language==='ru'?'Охваты POI сохранены.':'POI footprints saved.'}</p>:<button ref={detailAdaptationStartRef} type="button" data-detail-preview disabled={mutationBlocked(false)} onClick={()=>startDetailAdaptation()}>{language==='ru'?'Предпросмотр охватов':'Preview footprints'}</button>}
-              {physicalGrid?.active&&!detailAdaptation&&<fieldset className="detail-view-controls" disabled={mutationBlocked(false)}>
-                <legend>{language==='ru'?'Сетка карты':'Map grid'}</legend>
-                <div className="detail-adaptation__actions">{([1,6,12,24] as const).map(step=><button type="button" key={step} data-detail-step={step} aria-pressed={physicalGrid.viewStep===step} onClick={()=>setDetailViewStep(step)}>{step} {detailMiles(step)}</button>)}</div>
-                <small>{language==='ru'?'Мили между сторонами. Сетка и масштаб приближения независимы; местность и места сохраняются.':'Miles across flats. Grid and zoom are independent; terrain and places are retained.'}</small>
-              </fieldset>}
+
               {detailAdaptationError&&<p role="alert">{detailAdaptationError}</p>}
             </section>}
             <div className="control-block world-seed-control">
@@ -17230,7 +17257,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
             onContextMenu={(event) => event.preventDefault()}
             onKeyDown={handleMapKeyDown}
           >
-            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
+            <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px`, margin:`${detailCameraSlackRef.current.y}px ${detailCameraSlackRef.current.x}px` }}>
             <svg
               ref={mapSvgRef}
               data-biome-display={biomeDisplayMode}
