@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-11T0535-strategist-PR496-owner-correction",
+  "role": "strategist_manager",
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-GRID-CORRECTION",
+  "status": "owner_correction_recorded_actionable_analyst_handoff_ready",
+  "role_selection_reason": "Explicit current owner correction has priority; old spec contradicts desired user behavior, so bounded coordination supersedes obsolete readiness and hands concrete approved amendment to analyst. No product code work or foreign claim takeover.",
+  "pr": 496,
+  "head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+  "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-11-HX-BL-051-unified-grid-correction.json",
+  "feedback_id": "HX-FB-014",
+  "backlog_ref": "agent-work/backlog.json",
+  "requirements": [
+    {
+      "id": "GRID-C01",
+      "requirement": "Один компактный выпадающий список в существующем блоке координат/расположения: «Гекс 1 миля», «Гекс 6 миль», «Гекс 12 миль», «Гекс 24 мили». Убрать отдельную панель кнопок масштаба."
+    },
+    {
+      "id": "GRID-C02",
+      "requirement": "В каждом виде одна видимая сетка выбранного физического размера на всей карте, включая гексы-кандидаты; исходная шестимильная модель не проявляется дополнительной видимой сеткой."
+    },
+    {
+      "id": "GRID-C03",
+      "requirement": "Показывать крупный отображаемый гекс целиком, включая ещё незаполненную часть. Клик по доступной незаполненной части вызывает настоящее действие генерации как кандидат; принятая часть сохраняется."
+    },
+    {
+      "id": "GRID-C04",
+      "requirement": "При выборе1мили камера приближается, при выборе12/24отдаляется так, чтобы отображаемый гекс имел привычный экранный размер базового6мильного. Сохранить понятный мировой фокус; переключение не генерирует и не меняет географию/содержимое."
+    },
+    {
+      "id": "GRID-C05",
+      "requirement": "6миль остаётся стандартным базовым видом и стандартной информационной карточкой; новая обзорная сводка или принудительно свёрнутый исходный гекс здесь не нужны."
+    },
+    {
+      "id": "GRID-C06",
+      "requirement": "1миля показывает только содержимое выбранного локального гекса. POI другой части исходного6мильного гекса не показывать; реку без местного контакта/близости к выбранной ячейке не показывать. Аналитик определяет проверяемые геометрические правила и выносит неоднозначный продуктовый выбор владельцу."
+    },
+    {
+      "id": "GRID-C07",
+      "requirement": "12/24миль агрегируют все реально попавшие биомы/места/реки и прочие относящиеся к области данные, без потери смешанного состава и без дублей одного объекта; незаполненное пространство остаётся незаполненным."
+    },
+    {
+      "id": "GRID-C08",
+      "requirement": "Обводка охвата POI только в режиме1мили и только для объектов с обоснованной протяжённостью целая миля или больше. Для каждого поддерживаемого типа POI определить типичный физический размер в милях и основание/допущение. Малые объекты остаются значками; универсальный минимум одна клетка и произвольный минимум2длялюбойстолицы не заменяют оценку размера."
+    },
+    {
+      "id": "GRID-C09",
+      "requirement": "Сохранить существующие действительные водные/дорожные привязки, идентичность объектов, источник/допущения размеров, JSON/UndoRedo и RNG. Изменение отображаемой сетки не изменяет принятую территорию."
+    }
+  ],
+  "next_role": "business_analyst",
+  "next_task_id": "HX-BL-051",
+  "next_step": "Аналитик исправляет каноническую спецификацию051 по GRID-C01…09, готовит каталог размеров всех типовPOI и показывает одну карту6/1/12/24 с native select desktop/narrow. Значимые неоднозначные варианты поведения спрашивает у владельца. Затем программист исправляет реализацию и передаёт новыйSHA на независимую проверку; публикация отдельно.",
+  "authorization_status": {
+    "task_start": "Correction of already-approved HX-BL-051 within direct owner boundaries; specification and implementation authorized after suitable amended handoff, no new task-start gate required.",
+    "publication": "Not authorized; new exact SHA, independent review and actual comparison must precede a separate owner release decision.",
+    "questions": "When product/UX choices about better behavior arise, ask owner with concrete options/consequences rather than silently choose a substantial interpretation. This is clarification, not a new mandatory design approval gate."
+  },
+  "old_release_ready": false,
+  "publication_authorized": false,
+  "implementation_completed": false,
+  "specification_amended": false,
+  "full_daily_summary": false,
+  "score_model_version": "1.2",
+  "score_changed": false,
+  "new_product_task_created": false,
+  "foreign_claims_and_results_preserved": true,
+  "dependent_integrations": {
+    "prs": [
+      496,
+      500,
+      501
+    ],
+    "rule": "Owner-corrected051 UI is embedded in later integration packages; prior component evidence remains historical, but a package containing the rejected UI is not release-ready on the new requirements. Preserve043/054 claims and checkpoints; independently recheck changed exact packages."
+  },
+  "review_support": {
+    "source": "Fresh read-only support agent",
+    "findings": [
+      "DTL1.0 independentzoom conflicts with camera step changes",
+      "Clipped terrain-only display grid excludes candidates",
+      "All-level outlines and minimum1/2cell defaults conflict with size rules",
+      "6mile summary replaces standard card",
+      "Four-button fieldset conflicts with one native select"
+    ],
+    "automation_health": {
+      "start": {
+        "checked_at": "2026-11-11T05:36:06.170Z",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-11T05:36:14.920Z",
+        "is_enabled": true
+      },
+      "limitation": "First read-only repository request preceded support start-peek; not claimed as fully compliant independent role execution."
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+    "head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "none",
+    "scenario_risk": "Operational owner correction only; no production/test source changes.",
+    "reuse_or_new_reason": "No permanent test added by strategist; future amended acceptance tied to owner requirements.",
+    "count_source": "No code branch changed in this run.",
+    "executed": 0
+  },
+  "owner_decisions_needed": "No new task-start or publication request. Ask owner concrete unresolved product choices during corrected specification/development.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11T05:35:07.212Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "end": {
+      "checked_at": "2026-11-11T05:39:32.556Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "limitation": "Actual point-in-time checks; later service state not guaranteed. Schedule/prompt unchanged."
+  },
+  "completed_at": "2026-11-11T05:39:44.208Z"
+}

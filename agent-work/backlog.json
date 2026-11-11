@@ -15697,7 +15697,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "accepted_release_ready_awaiting_owner_publication_permission",
+      "status": "owner_correction_requires_spec_amendment",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15760,7 +15760,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "approved_bounded_UI_EVIDENCE2_execution_ready",
+      "readiness": "approved_corrective_analyst_stage_ready",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -16167,13 +16167,13 @@
         }
       ],
       "implementation_allowed": true,
-      "full_specification_allowed": false,
+      "full_specification_allowed": true,
       "release_approved": false,
       "recommended_priority": 1,
-      "owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
-      "next_role": "programmer",
+      "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
+      "next_role": "business_analyst",
       "next_role_after_approval": "business_analyst",
-      "next_step": "Продолжить утверждённый TABLES1 из checkpoint PR500: безопасно интегрировать принятое исправление PR496, подключить TABLES1-команды/fillPreparation к App schema2/v12, настоящим import/save/UndoRedo, stale/draftToken и identity/loss; показать UI и передать новыйSHA на независимую проверку. Это не разрешение публикации496/500.",
+      "next_step": "Аналитик исправляет каноническую спецификацию051 по GRID-C01…09, готовит каталог размеров всех типовPOI и показывает одну карту6/1/12/24 с native select desktop/narrow. Значимые неоднозначные варианты поведения спрашивает у владельца. Затем программист исправляет реализацию и передаёт новыйSHA на независимую проверку; публикация отдельно.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16191,7 +16191,7 @@
         "commit": "d146b44eac1aa1581ba374814718202ac891328c",
         "design_gate": false
       },
-      "current_stage_id": "DETAIL1",
+      "current_stage_id": "DETAIL1-GRID-CORRECTION",
       "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
       "implementation_allowed_after_specification": true,
       "current_approved_scope": [
@@ -16203,7 +16203,7 @@
       "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
       "spec_version": "DTL-1.0",
       "acceptance_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-11-PR496-release-ready.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-11-HX-BL-051-unified-grid-correction.json",
       "active_stage": {
         "stage_id": "DETAIL1",
         "substage": "UI-EVIDENCE2",
@@ -16468,11 +16468,11 @@
       "tree_sha": "b0f479b31cec65bfe240da06ed60743c8327a25d",
       "pr": 496,
       "previous_review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
-      "score_assessment_status": "1.2_complete_unknown_whole_grades_no_points_awarded",
+      "score_assessment_status": "previous_exact_SHA_assessment_historical_new_requirements_need_new_evidence",
       "ui_actual_ref": "agent-work/evidence/PR496-finish-f677629/ui-manifest.json",
-      "full_package_review_ready": true,
+      "full_package_review_ready": false,
       "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-051-central-discovery-1700/programmer-score-evidence.json",
-      "ui_actual_pending": false,
+      "ui_actual_pending": true,
       "ui_evidence_handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
       "research_implementation_audit": {
         "ref": "agent-work/research/audits/KNAVE2-L1-runtime-2026-11-10.json",
@@ -16485,7 +16485,7 @@
         "implementation_authorized_by_this_audit": false,
         "note": "Concrete positive components and residual translated operations; no source requirement inferred complete from task status. PLACE1 remains deferred."
       },
-      "coordination_result_ref": "agent-work/results/2026-11-10T1404-strategist-HX-BL-051-UI-evidence.json",
+      "coordination_result_ref": "agent-work/results/2026-11-11T0535-strategist-PR496-owner-correction.json",
       "latest_UI_EVIDENCE2": {
         "run_id": "2026-11-10T1458-programmer-HX-BL-051-UI-EVIDENCE2",
         "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
@@ -16498,7 +16498,7 @@
         "independent_accepted": false,
         "all_author_evidence_submitted": true
       },
-      "review_verdict": "accepted_for_approved_combined_scope_after_required_CI",
+      "review_verdict": "historical_acceptance_superseded_by_owner_requirements",
       "latest_DETAIL1_independent_review": {
         "run_id": "2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6",
         "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
@@ -16513,14 +16513,15 @@
         "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6/score-assessment1.2.json",
         "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-9aa4bc6-next.json"
       },
-      "independent_accepted": true,
-      "review_completed": true,
-      "next_task_id": "HX-BL-043",
-      "release_preview_pending": false,
+      "independent_accepted": false,
+      "review_completed": false,
+      "next_task_id": "HX-BL-051",
+      "release_preview_pending": true,
       "release_presentation": {
-        "status": "completed_and_shown",
+        "status": "rejected_by_owner_concept_correction",
         "head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
-        "ref": "agent-work/evidence/PR496-finish-f677629/ui-manifest.json"
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
+        "previous_ui_ref": "agent-work/evidence/PR496-finish-f677629/ui-manifest.json"
       },
       "release_risk_disposition": {
         "release_disposition": "controlled_original_cause_unknown",
@@ -16536,7 +16537,61 @@
         "checks_ref": "agent-work/evidence/PR496-finish-f677629/checks.json",
         "review_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json"
       },
-      "current_functional_findings": []
+      "current_functional_findings": [],
+      "previous_accepted_package_before_owner_correction": {
+        "head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+        "tree_sha": "b0f479b31cec65bfe240da06ed60743c8327a25d",
+        "status": "accepted_release_ready_awaiting_owner_publication_permission",
+        "acceptance_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json",
+        "review_result_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json",
+        "score_assessment_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/score-assessment1.2.json",
+        "result_ref": "agent-work/results/2026-11-11-manual-programmer-PR496-finish.json",
+        "reason": "Historical acceptance against old requirements; current owner correction supersedes release readiness."
+      },
+      "readiness_handoff_ref": "agent-work/handoffs/2026-11-11-HX-BL-051-unified-grid-correction.json",
+      "latest_owner_correction": {
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-11-HX-BL-051-unified-grid-correction.json",
+        "requirements": [
+          {
+            "id": "GRID-C01",
+            "requirement": "Один компактный выпадающий список в существующем блоке координат/расположения: «Гекс 1 миля», «Гекс 6 миль», «Гекс 12 миль», «Гекс 24 мили». Убрать отдельную панель кнопок масштаба."
+          },
+          {
+            "id": "GRID-C02",
+            "requirement": "В каждом виде одна видимая сетка выбранного физического размера на всей карте, включая гексы-кандидаты; исходная шестимильная модель не проявляется дополнительной видимой сеткой."
+          },
+          {
+            "id": "GRID-C03",
+            "requirement": "Показывать крупный отображаемый гекс целиком, включая ещё незаполненную часть. Клик по доступной незаполненной части вызывает настоящее действие генерации как кандидат; принятая часть сохраняется."
+          },
+          {
+            "id": "GRID-C04",
+            "requirement": "При выборе1мили камера приближается, при выборе12/24отдаляется так, чтобы отображаемый гекс имел привычный экранный размер базового6мильного. Сохранить понятный мировой фокус; переключение не генерирует и не меняет географию/содержимое."
+          },
+          {
+            "id": "GRID-C05",
+            "requirement": "6миль остаётся стандартным базовым видом и стандартной информационной карточкой; новая обзорная сводка или принудительно свёрнутый исходный гекс здесь не нужны."
+          },
+          {
+            "id": "GRID-C06",
+            "requirement": "1миля показывает только содержимое выбранного локального гекса. POI другой части исходного6мильного гекса не показывать; реку без местного контакта/близости к выбранной ячейке не показывать. Аналитик определяет проверяемые геометрические правила и выносит неоднозначный продуктовый выбор владельцу."
+          },
+          {
+            "id": "GRID-C07",
+            "requirement": "12/24миль агрегируют все реально попавшие биомы/места/реки и прочие относящиеся к области данные, без потери смешанного состава и без дублей одного объекта; незаполненное пространство остаётся незаполненным."
+          },
+          {
+            "id": "GRID-C08",
+            "requirement": "Обводка охвата POI только в режиме1мили и только для объектов с обоснованной протяжённостью целая миля или больше. Для каждого поддерживаемого типа POI определить типичный физический размер в милях и основание/допущение. Малые объекты остаются значками; универсальный минимум одна клетка и произвольный минимум2длялюбойстолицы не заменяют оценку размера."
+          },
+          {
+            "id": "GRID-C09",
+            "requirement": "Сохранить существующие действительные водные/дорожные привязки, идентичность объектов, источник/допущения размеров, JSON/UndoRedo и RNG. Изменение отображаемой сетки не изменяет принятую территорию."
+          }
+        ],
+        "result_ref": "agent-work/results/2026-11-11T0535-strategist-PR496-owner-correction.json"
+      }
     },
     {
       "task_id": "HX-BL-052",

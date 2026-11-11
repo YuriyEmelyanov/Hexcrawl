@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-GRID-CORRECTION",
+  "role": "business_analyst",
+  "status": "ready_approved_scope_requires_spec_amendment",
+  "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
+  "old_spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "input_pr": 496,
+  "input_head_sha": "f677629c4c1c3a84656ad88a6e118c56da3c7eb3",
+  "inputs": [
+    "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
+    "agent-work/evidence/PR496-finish-f677629/ui-manifest.json",
+    "agent-work/specs/HX-BL-051-DETAIL1.md",
+    "agent-work/strategy/score-model.md",
+    "agent-work/strategy/vision.md"
+  ],
+  "scope": [
+    {
+      "id": "GRID-C01",
+      "requirement": "Один компактный выпадающий список в существующем блоке координат/расположения: «Гекс 1 миля», «Гекс 6 миль», «Гекс 12 миль», «Гекс 24 мили». Убрать отдельную панель кнопок масштаба."
+    },
+    {
+      "id": "GRID-C02",
+      "requirement": "В каждом виде одна видимая сетка выбранного физического размера на всей карте, включая гексы-кандидаты; исходная шестимильная модель не проявляется дополнительной видимой сеткой."
+    },
+    {
+      "id": "GRID-C03",
+      "requirement": "Показывать крупный отображаемый гекс целиком, включая ещё незаполненную часть. Клик по доступной незаполненной части вызывает настоящее действие генерации как кандидат; принятая часть сохраняется."
+    },
+    {
+      "id": "GRID-C04",
+      "requirement": "При выборе1мили камера приближается, при выборе12/24отдаляется так, чтобы отображаемый гекс имел привычный экранный размер базового6мильного. Сохранить понятный мировой фокус; переключение не генерирует и не меняет географию/содержимое."
+    },
+    {
+      "id": "GRID-C05",
+      "requirement": "6миль остаётся стандартным базовым видом и стандартной информационной карточкой; новая обзорная сводка или принудительно свёрнутый исходный гекс здесь не нужны."
+    },
+    {
+      "id": "GRID-C06",
+      "requirement": "1миля показывает только содержимое выбранного локального гекса. POI другой части исходного6мильного гекса не показывать; реку без местного контакта/близости к выбранной ячейке не показывать. Аналитик определяет проверяемые геометрические правила и выносит неоднозначный продуктовый выбор владельцу."
+    },
+    {
+      "id": "GRID-C07",
+      "requirement": "12/24миль агрегируют все реально попавшие биомы/места/реки и прочие относящиеся к области данные, без потери смешанного состава и без дублей одного объекта; незаполненное пространство остаётся незаполненным."
+    },
+    {
+      "id": "GRID-C08",
+      "requirement": "Обводка охвата POI только в режиме1мили и только для объектов с обоснованной протяжённостью целая миля или больше. Для каждого поддерживаемого типа POI определить типичный физический размер в милях и основание/допущение. Малые объекты остаются значками; универсальный минимум одна клетка и произвольный минимум2длялюбойстолицы не заменяют оценку размера."
+    },
+    {
+      "id": "GRID-C09",
+      "requirement": "Сохранить существующие действительные водные/дорожные привязки, идентичность объектов, источник/допущения размеров, JSON/UndoRedo и RNG. Изменение отображаемой сетки не изменяет принятую территорию."
+    }
+  ],
+  "deliverables": [
+    "Amend canonical051 spec and acceptance checks, explicitly superseding independentzoom/mixedcandidate/clippedgrid/alwaysoutlined/6mile-summary/default-one-cell clauses; source six-mile geography need not be rewritten.",
+    "Full supported POI type size catalogue: representative extent in miles, basis/assumption and small-marker versus meaningful one/multi-mile outline eligibility, compatibility with measured/manual overrides; substantial ambiguous choice→owner question.",
+    "Define complete grid/candidate/partial-cell hit testing and actual generation anchor mapping, atomic refusal/history, local1mile data relevance, mixed12/24summary, camera focus/zoom behavior and standard6mile preservation.",
+    "Show proposed same-map6/1/12(+24partial) and compact dropdown in existing coordinate block on desktop and narrow screen; mark proposal. Continue approved work without a third approval gate; ui_preview_pending until actually shown.",
+    "Trace score1.2 per affected criterion with sourcebefore/expectedtransition/delta/evidence or explicitunknown; regression/test reuse plan tied to real risks.",
+    "Developer-ready bounded stages, exact current accepted inputs, preserve later TABLES1/PF2 data/profile contracts; newSHA→independentreview→actualcomparison→separatepublicationpermission."
+  ],
+  "completion_condition": "Corrected canonical spec consistent with all GRID-C01…09, POI size catalogue, shown UI proposal and executable acceptance scenarios; unresolved substantial product choices explicitly asked/recorded, no invented owner approval.",
+  "implementation_after": "Programmer implements corrected approved051 scope using preserved current checkpoints; no simultaneous duplicate programmer claim; stop only the dependent ambiguous choice while independent approved work can continue.",
+  "ui_preview_pending": true,
+  "ui_preview_responsible": "business_analyst",
+  "owner_response_required_as_third_gate": false,
+  "ask_owner_when_choosing_better_behavior": true
+}
