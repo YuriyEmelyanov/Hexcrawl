@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "model_version": "1.2",
-  "updated_on": "2026-11-11T19:58:55.587Z",
+  "updated_on": "2026-11-11T20:38:44.025Z",
   "strategy_version": "1.0",
   "note": "Перенесённые идеи, не разрешение на реализацию. implemented_unverified означает наличие функции/отметки о выполнении, а не G3/G4. criterion_id — предлагаемое отнесение, не начисленный эффект. Полные уникальные детали сохранены в снимке исходного документа.",
   "source_snapshot": {
@@ -15697,7 +15697,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "accepted_awaiting_owner_publication_permission",
+      "status": "owner_split_one_mile_first_analysis_ready",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15760,7 +15760,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "owner_publication_gate",
+      "readiness": "bounded_split_analysis_ready",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -16171,9 +16171,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
-      "next_role": "programmer",
+      "next_role": "business_analyst",
       "next_role_after_approval": "programmer",
-      "next_step": "Ожидается отдельное разрешение владельца публикации PR496 на9ca7dc6d5839ed897ccb784ae29d4029a5e76590 с сохранённым известным риском. После разрешения программист сверяет head/main/проверенный пакет, выпускает только этот пакет и подтверждает публикацию; затем score_update_pending стратегу.",
+      "next_step": "Подготовить отдельный1-мильный scope и план фактического отделенияPR по HX-FB-015..020; режимы дальше реализовывать последовательно. Код пока не менять, публикация наhold.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16194,7 +16194,7 @@
         ],
         "response_blocks_AB": false
       },
-      "current_stage_id": "DETAIL1-PR496-owner-corrections",
+      "current_stage_id": "ONE-MILE1",
       "approval_ref": "owner-approval-2026-11-11-PR496-C-FILL",
       "implementation_allowed_after_specification": true,
       "current_approved_scope": [
@@ -16384,9 +16384,9 @@
       },
       "spec_status": "ready_C_FILL_owner_semantics_resolved",
       "latest_analyst_result_ref": "agent-work/results/2026-11-11T1357-analyst-PR496-fill-cell.json",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-11T1803-PR496-browser-next.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-11-ONE-MILE1-split-analysis.json",
       "active_claim": null,
-      "full_package_release_ready": true,
+      "full_package_release_ready": false,
       "owner_clarification_ref": null,
       "catalog_ref": "agent-work/specs/HX-BL-051-POI-sizes-v1.json",
       "claim_completed_ref": "agent-work/claims/2026-11-11T1803-programmer-PR496-CI-retry.json",
@@ -16563,7 +16563,7 @@
         "next_role": "business_analyst",
         "next_step": "Владелец выбирает A или B в GRID-Q01. Рекомендация аналитика — A. После A программист реализует ограниченный C03/G10 в PR496; после B аналитик сначала специфицирует новую пограничную генерацию."
       },
-      "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-fill-selected-cell.json",
+      "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-one-mile-separate-PR-first.json",
       "GRID_Q01_resolution": {
         "status": "resolved_implemented_verified",
         "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-fill-selected-cell.json",
@@ -16622,7 +16622,17 @@
         "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43077183353",
         "actual_UI_ref": "agent-work/evidence/PR496-browser-verification-1803/actual-UI-manifest.json",
         "accepted_at": "2026-11-11T18:42:58.101Z"
-      }
+      },
+      "previous_stage_before_ONE_MILE1": {
+        "status": "accepted_awaiting_owner_publication_permission",
+        "head_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+        "current_stage_id": "DETAIL1-PR496-owner-corrections",
+        "review_result_ref": "agent-work/evidence/PR496-browser-verification-1803/independent-review.json"
+      },
+      "separate_pr": null,
+      "separate_pr_status": "pending_scope_extraction",
+      "current_package_published": false,
+      "implementation_authorized_now": false
     },
     {
       "task_id": "HX-BL-052",
@@ -19322,7 +19332,7 @@
       "proposal_ref": "agent-work/proposals/2026-11-10-HX-BL-054-PF2-BATCH1-v2.json",
       "next_handoff_ref": "agent-work/handoffs/2026-11-11T1956-PF2-compat-analyst.json",
       "next_role": "business_analyst",
-      "next_step": "Аналитик уточняет совместный формат сохранения и P06/P13 в существующей PF2-спецификации; затем программист завершает PF2-панель в501 на согласованной базе, показывает actual UI и передаёт весь новыйSHA независимой проверке.",
+      "next_step": "Продолжить по сохранённой передаче после приоритетного ONE-MILE1; текущий checkpoint не изменён.",
       "release_approved": false,
       "scope_version": 2,
       "authorized_scope": "OnlyPF2-BATCH1v2; priorVaarnscope not approved",
@@ -19469,6 +19479,11 @@
           "sha": "9cf202e4c311445ac7d4cd752cf6e5f088775a36",
           "ref": "agent-work/evidence/review-TABLES1-9cf202e/independent-review.json"
         }
+      },
+      "priority_hold": {
+        "status": "queued_after_ONE_MILE1",
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-one-mile-separate-PR-first.json",
+        "checkpoint_preserved": true
       }
     },
     {
@@ -19949,11 +19964,12 @@
   "proposal_queue": [
     {
       "task_id": "HX-BL-051",
-      "stage_id": "DETAIL1",
-      "status": "accepted_awaiting_owner_publication_permission",
+      "stage_id": "ONE-MILE1",
+      "status": "split_analysis_ready",
       "tier": "approved_execution",
       "priority": 1,
-      "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md"
+      "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+      "handoff_ref": "agent-work/handoffs/2026-11-11-ONE-MILE1-split-analysis.json"
     },
     {
       "task_id": "HX-BL-047",
