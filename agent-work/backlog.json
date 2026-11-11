@@ -15697,7 +15697,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "owner_decision_ready_GRID_Q01",
+      "status": "approved_C_FILL_spec_ready",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15760,7 +15760,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "owner_semantic_choice_GRID_Q01",
+      "readiness": "programmer_ready",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -16171,9 +16171,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
-      "next_role": "business_analyst",
-      "next_role_after_approval": "business_analyst",
-      "next_step": "Владелец выбирает A или B в GRID-Q01. Рекомендация аналитика — A. После A программист реализует ограниченный C03/G10 в PR496; после B аналитик сначала специфицирует новую пограничную генерацию.",
+      "next_role": "programmer",
+      "next_role_after_approval": "programmer",
+      "next_step": "Реализовать C-FILL DTL-1.2 непосредственно в PR496: обычный генератор, одно действие заполняет выбранный12/24-гекс до полного покрытия; затем полный новыйSHA и независимая проверка всего496.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16195,7 +16195,7 @@
         "response_blocks_AB": false
       },
       "current_stage_id": "DETAIL1-PR496-owner-corrections",
-      "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
+      "approval_ref": "owner-approval-2026-11-11-PR496-C-FILL",
       "implementation_allowed_after_specification": true,
       "current_approved_scope": [
         "Add1mile detail to6/12/24overview and compact aggregate panel.",
@@ -16204,34 +16204,25 @@
         "Prepare specification/analysis and UI then programmer work in approvedscope; independent exactSHAreview and distinct releaseapproval stillrequired."
       ],
       "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
-      "spec_version": "DTL-1.1",
+      "spec_version": "DTL-1.2",
       "acceptance_ref": "agent-work/evidence/PR496-finish-f677629/reviewer/independent-review.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-11T0838-PR496-owner-remainder.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-11T1357-PR496-C-FILL-programmer.json",
       "active_stage": {
-        "stage_id": "DETAIL1-GRID-CORRECTION",
-        "substage": "A-B-current-standalone",
-        "status": "bounded_AB_independently_verified_GRID_C03_G10_pending",
+        "stage_id": "DETAIL1-C-FILL",
+        "status": "spec_ready",
+        "role": "programmer",
         "execution_running": false,
         "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
-        "tree_sha": "4274d71d2d38222c0cefa6f1ebd6640a40235487",
         "branch": "agent/hx-bl-051-detail1",
         "pr": 496,
-        "pr_draft": false,
         "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
-        "spec_version": "DTL-1.1 + standalone-applicability-2026-11-11",
-        "result_ref": "agent-work/results/2026-11-11T0838-programmer-PR496-canonical.json",
-        "checks_ref": "agent-work/evidence/PR496-owner-corrections-0838/checks.json",
-        "handoff_ref": "agent-work/handoffs/2026-11-11T0838-PR496-owner-remainder.json",
+        "spec_version": "DTL-1.2",
+        "handoff_ref": "agent-work/handoffs/2026-11-11T1357-PR496-C-FILL-programmer.json",
         "claim_ref": null,
-        "claim_completed_ref": "agent-work/claims/2026-11-11T0838-programmer-PR496-canonical.json",
+        "next_role": "programmer",
+        "next_step": "Реализовать C-FILL DTL-1.2 непосредственно в PR496: обычный генератор, одно действие заполняет выбранный12/24-гекс до полного покрытия; затем полный новыйSHA и независимая проверка всего496.",
         "review_ready": false,
-        "review_completed": true,
-        "independent_accepted": true,
-        "full_task_complete": false,
-        "release_authorized": false,
-        "next_role": "business_analyst",
-        "next_step": "Ожидается решение владельца по существующему GRID-Q01: допустим ли выход нового региона за выбранный гекс. После решения аналитик уточняет только C03/G10; программист реализует его в PR496, затем независимая проверка нового SHA.",
-        "remaining_requirement": "GRID-C03/G10/GRID-Q01"
+        "release_authorized": false
       },
       "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
       "result_ref": "agent-work/results/2026-11-11T0838-programmer-PR496-canonical.json",
@@ -16476,7 +16467,7 @@
         "independent_accepted": false,
         "all_author_evidence_submitted": true
       },
-      "review_verdict": "bounded_current_standalone_scope_accepted_GRID_C03_G10_incomplete",
+      "review_verdict": "prior_ABaccepted_newC_FILL_implementation_and_review_pending",
       "latest_DETAIL1_independent_review": {
         "run_id": "2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6",
         "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
@@ -16491,8 +16482,8 @@
         "score_assessment_ref": "agent-work/evidence/review-HX-BL-051-9aa4bc6/score-assessment1.2.json",
         "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-9aa4bc6-next.json"
       },
-      "independent_accepted": true,
-      "review_completed": true,
+      "independent_accepted": false,
+      "review_completed": false,
       "next_task_id": "HX-BL-051",
       "release_preview_pending": false,
       "release_presentation": {
@@ -16527,7 +16518,7 @@
         "result_ref": "agent-work/results/2026-11-11-manual-programmer-PR496-finish.json",
         "reason": "Historical acceptance against old requirements; current owner correction supersedes release readiness."
       },
-      "readiness_handoff_ref": "agent-work/handoffs/2026-11-11T0838-PR496-owner-remainder.json",
+      "readiness_handoff_ref": "agent-work/handoffs/2026-11-11T1357-PR496-C-FILL-programmer.json",
       "latest_owner_correction": {
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
         "handoff_ref": "agent-work/handoffs/2026-11-11-HX-BL-051-unified-grid-correction.json",
@@ -16571,14 +16562,14 @@
         ],
         "result_ref": "agent-work/results/2026-11-11T0535-strategist-PR496-owner-correction.json"
       },
-      "spec_status": "DTL1.1_standalone_applicability_reconciled_Q01_pending",
-      "latest_analyst_result_ref": "agent-work/results/2026-11-11T0559-analyst-DETAIL1-grid.json",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-11T0838-PR496-owner-remainder.json",
+      "spec_status": "ready_C_FILL_owner_semantics_resolved",
+      "latest_analyst_result_ref": "agent-work/results/2026-11-11T1357-analyst-PR496-fill-cell.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-11T1357-PR496-C-FILL-programmer.json",
       "active_claim": null,
       "full_package_release_ready": false,
-      "owner_clarification_ref": "agent-work/proposals/2026-11-11-HX-BL-051-GRID-Q01.json",
+      "owner_clarification_ref": null,
       "catalog_ref": "agent-work/specs/HX-BL-051-POI-sizes-v1.json",
-      "claim_completed_ref": "agent-work/claims/2026-11-11T0838-programmer-PR496-canonical.json",
+      "claim_completed_ref": "agent-work/claims/2026-11-11T1357-analyst-PR496-fill-cell.json",
       "branch": "agent/hx-bl-051-detail1",
       "pr_draft": false,
       "latest_programmer_result_ref": "agent-work/results/2026-11-11T0838-programmer-PR496-canonical.json",
@@ -16695,14 +16686,14 @@
       ],
       "known_open_requirements": [
         {
-          "id": "GRID-Q01",
+          "id": "DETAIL1-C-FILL",
           "requirements": [
             "GRID-C03",
             "G10"
           ],
-          "type": "owner_product_semantics_pending",
-          "status": "non6_generation_not_implemented_explicit_refusal",
-          "ref": "agent-work/proposals/2026-11-11-HX-BL-051-GRID-Q01.json"
+          "status": "approved_implementation_pending",
+          "spec_version": "DTL-1.2",
+          "handoff_ref": "agent-work/handoffs/2026-11-11T1357-PR496-C-FILL-programmer.json"
         }
       ],
       "previous_active_stage_before_owner_finish_first": {
@@ -16751,7 +16742,7 @@
         "remaining": "GRID-C03/G10",
         "other_product_work": "wait_for496"
       },
-      "decision_aid_ref": "agent-work/evidence/GRID-Q01-analyst-1011/decision-aid.json",
+      "decision_aid_ref": "agent-work/evidence/DETAIL1-C-FILL-1357/score-forecast1.2.json",
       "latest_analyst_GRID_Q01": {
         "run_id": "2026-11-11T1011-analyst-PR496-GRID-Q01",
         "result_ref": "agent-work/results/2026-11-11T1011-analyst-PR496-GRID-Q01.json",
@@ -16762,6 +16753,12 @@
         "implementation_authorized": false,
         "next_role": "business_analyst",
         "next_step": "Владелец выбирает A или B в GRID-Q01. Рекомендация аналитика — A. После A программист реализует ограниченный C03/G10 в PR496; после B аналитик сначала специфицирует новую пограничную генерацию."
+      },
+      "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-fill-selected-cell.json",
+      "GRID_Q01_resolution": {
+        "status": "resolved",
+        "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-fill-selected-cell.json",
+        "behavior": "ordinary_generator_plus_complete_largecell"
       }
     },
     {

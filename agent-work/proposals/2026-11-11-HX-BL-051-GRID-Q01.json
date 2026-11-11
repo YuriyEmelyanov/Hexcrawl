@@ -2,7 +2,7 @@
   "schema_version": 1,
   "id": "GRID-Q01",
   "task_id": "HX-BL-051",
-  "status": "owner_clarification_pending",
+  "status": "resolved_by_explicit_owner",
   "scope": "Only spatial extent of new generation after clicking available empty part of selected1/12/24mile display cell",
   "problem": "Existing source generator uses6mile units; selected display grid alone cannot constrain its produced region.",
   "options": [
@@ -53,7 +53,7 @@
       "cost": "Новая генерационная модель и пограничная геометрия; особенно искусственно для1мили. Существенное расширение требует отдельной спецификации и проверки."
     }
   },
-  "required_owner_decision": "Выберите A: обычный регион может выйти за выбранный гекс; либо B: результат обязан оставаться внутри него. Без ответа остаётся явный отказ генерации вне6миль.",
+  "required_owner_decision": null,
   "score_forecast": {
     "model_version": "1.2",
     "criterion_ids": [
@@ -69,5 +69,19 @@
     "status": "unknown_unverified",
     "evidence_required": "После реализации выбранного варианта: exactSHA behavior, history/RNG/geography invariance, actual UI and independent score_assessment1.2."
   },
-  "no_implementation_authority_until_decision": true
+  "no_implementation_authority_until_decision": false,
+  "resolved_at": "2026-11-11T14:09:28.938Z",
+  "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-fill-selected-cell.json",
+  "chosen_behavior": "A_keep_normal_generator_plus_repeat_until_large_selected_cell_full",
+  "repeat_fill_steps": [
+    12,
+    24
+  ],
+  "explicit_owner_choice": true,
+  "superseding_spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "spec_version": "DTL-1.2",
+  "handoff_ref": "agent-work/handoffs/2026-11-11T1357-PR496-C-FILL-programmer.json",
+  "next_role": "programmer",
+  "next_step": "Реализовать C-FILL DTL-1.2 непосредственно в PR496: обычный генератор, одно действие заполняет выбранный12/24-гекс до полного покрытия; затем полный новыйSHA и независимая проверка всего496.",
+  "previous_preview_acceptance_claim": "Withdrawn: current classic generator immediately commits, no resultApply gate; seeC-FILL."
 }

@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "role": "read_only_source_feasibility",
+  "agent": "pr496_fill_feasibility",
+  "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+  "recorded_at": "2026-11-11T14:01:45.301Z",
+  "source_blobs": {
+    "App": "91a444aea29bbce59b2d39009ad935a4720023e9",
+    "detailDisplay": "b63f50ab7e741acc9cba76d7b99548d724e963a1",
+    "detailGrid": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+    "region_generation_doc": "324dd902e79b2e01c8befd5a066ee8304ad5cf41",
+    "generationDiagnostics": "0ef3b325a0ecfd7652309b6881cecbe621413d81"
+  },
+  "observed_current_flow": [
+    {
+      "source": "src/App.tsx:16237-16246",
+      "fact": "Selected display click resolves exact world point to source6mile cell. Existing filled source selects only; only6mile candidate invokes generation. Other views refuse."
+    },
+    {
+      "source": "src/App.tsx:15816-15822;14413-14429",
+      "fact": "Candidate click immediately invokes generateAt. Classic/Knave builds current options then safelyAddRegionToMap; Mythic invokes startKingdom. There is no candidate-result Apply acceptance stage."
+    },
+    {
+      "source": "src/App.tsx:14179-14226",
+      "fact": "safelyAddRegionToMap returns explicit success or diagnostic and restores independent backup on failure. Existing bounded30region attempts, tract fallback, and bounded sea-recovery remain."
+    },
+    {
+      "source": "src/App.tsx:12630-12648;13452-13470;14008-14059",
+      "fact": "One normal region records its own editor transaction plus generation checkpoint and updates React state. Synchronous loop would reuse stale closure and corrupt coverage/history/IDs."
+    },
+    {
+      "source": "src/App.tsx:14229-14353",
+      "fact": "KingdomJob schedules one consumed tick per React turn with own backup/step guard. It is a useful scheduling pattern, but finishKingdom applies whole-kingdom POI quotas, rebuilt roads, obstacles and names, so classic coarsefill must not call its finalizer."
+    },
+    {
+      "source": "src/App.tsx:12030;13636-13650;14438-14470;14526-14557",
+      "fact": "User editorUndo/Redo and generationHistory are different timelines. Preserve ordinary-region generation checkpoints for DeleteLastRegion/regenerate compatibility while grouping wholefill as one editorUndo action. Mythic already records wholekingdom as one generationcheckpoint."
+    }
+  ],
+  "coverage_definition": {
+    "target": "Freeze selected coarse12/24cell and origin at action start. Targetsource set=detailPositiveAreaIntersections(createDetailGrid(6,origin),detailCellPolygon(createDetailGrid(step,origin),selectedCell)).map(hit.cell).",
+    "not_fixed_4_or_16": "Source and display borders are not nested. Include every positive-area source intersection. Mere edge/vertex contacts are excluded by the existing geometry routine.",
+    "inside_rule": "For current aligned step12/24 at sharedorigin, all targetsource centres are inside OR ON the coarse closed boundary. Boundary-centre seeds satisfy ownerinside; strictinterior would incorrectly omit them.",
+    "generated": "A sourcecell counts covered when represented by current rendered accepted geography: region hexes or explicit sea/lake cells. Match positionedHexes12200-12203 and terrain projection16636-16637. Candidate/metadata-only placeholders do not count. Existing water is generated territory and cannot become land merely to meet completion.",
+    "completion": "Complete iff no targetsource key is missing. This implies the large polygon is fully covered without rounded percent or arbitrary epsilon. The displayed unknown fraction should agree with this coverage result."
+  },
+  "independent_geometry_arithmetic": {
+    "method": "Independent double-precision convex-hex clipping arithmetic using same documented grid equations and enumerated q/r -8..8; not execution of production module or a permanenttest.",
+    "equations": "centre=(6(q+r/2),6*sqrt(3)/2*r); polygon corners from detailGrid; clip by selected large polygon; positivearea>1e-8 only for diagnostic enumeration.",
+    "origin": {
+      "x": 0,
+      "y": 0
+    },
+    "selectedCell": {
+      "q": 0,
+      "r": 0
+    },
+    "results": [
+      {
+        "step": 12,
+        "count": 7,
+        "outside": [],
+        "insideCount": 7,
+        "area": 124.70765814495918,
+        "sumArea": 124.70765814495923
+      },
+      {
+        "step": 24,
+        "count": 19,
+        "outside": [],
+        "insideCount": 19,
+        "area": 498.83063257983673,
+        "sumArea": 498.8306325798368
+      }
+    ],
+    "reproduction_with_production_module": "For step12,24 call detailPositiveAreaIntersections(createDetailGrid(6),detailCellPolygon(createDetailGrid(step),{q:0,r:0})); expect7/19 and all source centres within closed largepolygon. Parent/developer should execute actualmodule as acceptance evidence; helper only ran independent arithmetic."
+  },
+  "recommended_orchestration": {
+    "unit_by_mode": {
+      "classic": "one existing normalregion with existing settings andfallback/retry",
+      "knave": "same classicregion plus existingKnave content preparation, not new generator",
+      "mythic": "one existing fullkingdom action, including existing connector, quotas, roads and finish; large displaycell is not reinterpreted as a kingdom"
+    },
+    "start": "One activation of available empty part selects coarsecell, freezes revision/view/origin/options and exact click anchor, captures originalDocument,map,RNG,generationHistory,bothUndoRedo stacks and counters, then obtains exclusive job guard before generation.",
+    "first_seed": "Use clicked source6cell when it is a legal empty candidate within target. If cell-level keyboard activation has no empty pointer address, choose deterministic legal missing target seed; do not rely on occupied coarsecentre. First blankmap obeys existing START0/0 rule.",
+    "next_seed": "After a completed normalunit, recompute current missingtarget set and legal generationfrontier from updated state. Choose eligible missing target source by distance to firstclicked source then q,r canonical order, without RNG draws. Shared-boundary sourcecentres eligible. Never create new arbitrary outside/occupied/non-frontier seed.",
+    "schedule": "Separate coarseFill job or pure explicit-state adapter; advance only after prior React update/current snapshot is available. Never call stateful addRegionToMap repeatedly in one synchronous closure. Existing KingdomJob tick mechanism may inspire structure, not semantics.",
+    "commit": "Treat interim steps as provisional with no user editor transactions; all final model/river/ID/POI guards still run. Final commit makes exactly one editorUndoRedo transaction for wholefill. Preserve generationHistory checkpoints at existing mode unit granularity: each normal classicregion; each completeMythickingdom.",
+    "no_extra_gate": "Click starts automatic filling; no new Apply dialog or manual region-by-region acceptance. Existing generatedcandidate words mean future growthcells, not previewresult.",
+    "freeze_and_guard": "Inputs fixed atstart; busy guard prevents generation/import/manualedit/viewchange/reset/UndoRedo and overlappingjobs. Pan/read access may remain. A consumed/stale callback afternewjob/UndoRedo must be inert without RNG.",
+    "budget": "Each completed unit must strictly decrease number of missingtargetsourcecells. At most initialmissing<=7/19 productiveunits in current grids; existing internal30attempt/tract/sea limits retained. No silent unbounded retry/reseed loops.",
+    "failure": "Any normalunit failure, no legal missingseed, no-progress, IDoverflow, acceptedPOI/notes conflict, stalejob or exception: explicit failure and wholefill rollback to original independent backup, including RNG, maps, selection/view, counters, both histories. Do not label partial map full. Do not try ad-hoc mapclipping or forcedland to succeed."
+  },
+  "preservation_limits": [
+    "Earlier accepted region geometry, authored overrides,names,notes,IDs andPOI are protected. Ordinary networkcontinuation is still allowed to add/update adjoining road/river dependencies under the existing generator contract; blanket byte-identical every old network object would forbid normal generation.",
+    "Normalregions/kingdoms may extend outside target; outsidegeneratedterritory remains committed at success and participates in UndoRedo. No clipping.",
+    "Source-sensitive acceptance must include a case requiring >=2regions, boundarymissing source, watercoveredarea, failure after a successful provisional unit, and same input/RNG replay.",
+    "Compatible existing test/harness should be extended before creating new runners; this helper added no permanenttests or productsource."
+  ],
+  "no_github_mutation": true,
+  "no_product_source_mutation": true,
+  "no_suite_run": true,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11T13:57:47.516Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-11T14:01:45.301Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time checks only."
+  }
+}
