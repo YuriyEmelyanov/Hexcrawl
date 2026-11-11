@@ -68,6 +68,11 @@ try {
   const errors = [];
   const diagnostic = [];
   const verboseLogs = [];
+  const generationRecords = [], pendingGenerationRecords = [];
+  page.on('console', msg => {
+    if (!msg.text().startsWith('[generation]')) return;
+    pendingGenerationRecords.push(Promise.all(msg.args().map(arg => arg.jsonValue())).then(args => generationRecords.push(args)).catch(() => {}));
+  });
   page.on('console', msg => { if (msg.type() === 'log') verboseLogs.push(msg.text()); });
   page.on('console', msg => { if (msg.type() === 'error') diagnostic.push(msg.text()); });
   page.on('pageerror', error => errors.push(error.message));
@@ -138,7 +143,20 @@ try {
         return after;
       }
       assert.ok(before, 'the initial region must be generated');
-      assert.match(await page.getByRole('alert').innerText(), /Не удалось разместить корректные истоки и устья рек/);
+      const alertText = await page.getByRole('alert').innerText();
+      if (!/Не удалось разместить корректные истоки и устья рек/.test(alertText)) {
+        // Preserve unexpected command failures too, before the fatal assertion.
+        // The river-invariant capture below cannot run after a rejected command.
+        await Promise.all(pendingGenerationRecords);
+        const directory = new URL('../../reports/generation-failure/', import.meta.url);
+        await fs.mkdir(directory, { recursive: true });
+        await fs.writeFile(new URL('before.json', directory), JSON.stringify(before, null, 2));
+        await fs.writeFile(new URL('after.json', directory), JSON.stringify(after, null, 2));
+        const context = { action: lastGenerationAction, alertText, generationRecords, errors, diagnostic, verboseLogs: verboseLogs.slice(-20) };
+        await fs.writeFile(new URL('context.json', directory), JSON.stringify(context, null, 2));
+        console.error('Unexpected generation command failure', JSON.stringify(context));
+      }
+      assert.match(alertText, /Не удалось разместить корректные истоки и устья рек/);
       assert.deepEqual(stable(after), stable(before), 'constraint rejection must preserve the map and counters');
     }
     assert.fail(`No region could be added at any of ${attempts} candidate hexes`);
