@@ -101,3 +101,23 @@ jobs:
           name: PR496-release-presentation
           path: reports/PR496-release/
           if-no-files-found: error
+
+  tables1-ui:
+    if: github.event_name == 'pull_request' && github.event.pull_request.number == 500
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/tables1-ui.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: TABLES1-UI
+          path: reports/HX-BL-041/TABLES1/
+          if-no-files-found: ignore

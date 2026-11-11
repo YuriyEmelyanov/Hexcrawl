@@ -20,7 +20,7 @@ import {emptyTags,findTag,ownerKey,tagKey,rollTag,editTag,validateTags,TagCapaci
 import {mythicDefinitions,tagOwners,tagPolicy,reconcileTags,fillMythicTags} from './tags/mythic';
 import {localizedTagText} from './tags/tagPresentation';
 import {TagRow} from './tags/TagRow';
-import {KnaveContentRow} from './tags/KnaveContentRow';
+import {PreparationPanel} from './tags/PreparationPanel';
 import {prepareRoadEdit, type RoadEdit} from './manualRoads';
 import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
@@ -14043,16 +14043,27 @@ export function App() {
 
   const preparationTokens=useRef(new WeakMap<object,{revision:number;owner:string}>());
   const preparationContext=(owner:string)=>{const token={},revision=documentRevision.current;preparationTokens.current.set(token,{revision,owner});return {revision,token};};
-  const mutatePreparation=(cmd:PreparationCommand,draft:{revision:number;token:object})=>{
+  const mutatePreparations=(commands:PreparationCommand[],draft:{revision:number;token:object})=>{
+    const cmd=commands[0];if(!cmd||commands.some(c=>c.owner!==cmd.owner))return false;
     if(draft.revision!==documentRevision.current||preparationTokens.current.get(draft.token)?.revision!==draft.revision||preparationTokens.current.get(draft.token)?.owner!==cmd.owner||mutationBlocked()||obstacleDraftRef.current||activeTagDraftKeys.current.size>0||notesEditorKey!==null)return false;
     try{
       const map=captureMap(),layer=map.knave;if(!layer)return false;
       const facts=knaveFactsForMap(map),live=new Set(facts.map(f=>f.owner));
-      const content=applyPreparation(layer.content,{catalog:knaveGenerationCatalog(),live,seed:generationRef.current.masterSeed,facts:Object.fromEntries(facts.map(f=>[f.owner,f])),categories:Object.fromEntries(facts.map(f=>[f.owner,f.kind==='water'?'water':f.kind==='settlement'?'settlement':'natural']))},cmd);
+      let content=layer.content;const context={catalog:knaveGenerationCatalog(),live,seed:generationRef.current.masterSeed,facts:Object.fromEntries(facts.map(f=>[f.owner,f])),categories:Object.fromEntries(facts.map(f=>[f.owner,f.kind==='water'?'water' as const:f.kind==='settlement'?'settlement' as const:'natural' as const]))};
+      for(const command of commands)content=applyPreparation(content,context,command);
       if(content===layer.content)return false;
       if(!commitManualMap({...map,knave:{...layer,content}},false))return false;
       preparationTokens.current.delete(draft.token);return true;
     }catch{setEditError(language==='ru'?'Не удалось изменить подсказки. Карта не изменена.':'Could not change preparation. Your map is unchanged.');return false;}
+  };
+  const mutatePreparation=(cmd:PreparationCommand,draft:{revision:number;token:object})=>mutatePreparations([cmd],draft);
+  const commitPreparationUI=(commands:PreparationCommand[],draft:{revision:number;token:object})=>{
+    const owner=commands[0]?.owner,now=Date.now(),rolls=commands.filter(c=>c.kind==='reroll');
+    if(!owner||rolls.some(c=>(tagLocks.current.get(`preparation:${owner}:${c.id}`)??0)>now))return false;
+    if(!mutatePreparations(commands,draft))return false;
+    for(const c of rolls)tagLocks.current.set(`preparation:${owner}:${c.id}`,now+350);
+    if(rolls.length)setTagAnimations(current=>({...current,[`knave:${owner}`]:{key:`knave:${owner}`,slot:rolls.length===1?rolls[0].id:undefined,revision:documentRevision.current,expiresAt:now+350}}));
+    setTagAnnouncement(language==='ru'?'Подсказки места сохранены':'Place preparation saved');return true;
   };
   const mutateKnaveContent=(owner:string,part:'primary'|'trait'|'both')=>{
     if(mutationBlocked()||obstacleDraftRef.current||activeTagDraftKeys.current.size>0||notesEditorKey!==null)return false;
@@ -15558,7 +15569,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   const difficultyLabels:Record<Difficulty,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задана',normal:'Обычная',difficult:'Труднопроходимая',dangerous:'Опасная'}:{auto:'Automatic',unknown:'Unspecified',normal:'Normal',difficult:'Difficult',dangerous:'Dangerous'};
   const discoveryLabels:Record<Discovery,string>=language==='ru'?{auto:'Автоматически',unknown:'Не задано',passage:'При прохождении',exploration:'Нужно исследование',interaction:'Секрет · взаимодействие'}:{auto:'Automatic',unknown:'Unspecified',passage:'On passage',exploration:'Requires exploration',interaction:'Secret · interaction'};
   const knavePanel=selectedHexKey&&knaveMapContext(captureMap()).hexes.has(selectedHexKey)?<div data-knave-panel className="knave-properties" onFocusCapture={e=>{if(e.target instanceof HTMLElement)knaveFocusReturn.current=e.target;}}>
-    {selectedKnaveContent&&knaveDiscoveryKey&&<div className="knave-results"><KnaveContentRow content={selectedKnaveContent} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>0||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)}/></div>}
+    {knave&&knaveDiscoveryKey&&<div className="knave-results"><PreparationPanel key={`${knaveDiscoveryKey}:${documentRevision.current}`} input={knave.content} catalog={knaveGenerationCatalog()} owner={knaveDiscoveryKey} language={language} disabled={knaveControlsBlocked||!!knaveDraft||activeTagDraftCount>(activeTagDraftKeys.current.has(`preparation:${knaveDiscoveryKey}`)?1:0)||notesEditorKey!==null} animation={tagAnimations[`knave:${knaveDiscoveryKey}`]} onLegacyRoll={part=>mutateKnaveContent(knaveDiscoveryKey,part)} context={()=>preparationContext(knaveDiscoveryKey)} commit={commitPreparationUI} onDraft={active=>notifyTagDraft(`preparation:${knaveDiscoveryKey}`,active)}/></div>}
     {!isSelectedLake&&!isSelectedSea&&(editMode||displayedDifficulty==='difficult'||displayedDifficulty==='dangerous')&&<div className="direct-line" data-terrain-classification>{editMode?<label>{language==='ru'?'Проходимость: ':'Difficulty: '}<select aria-label={language==='ru'?'Проходимость':'Difficulty'} value={knaveDifficulty} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({difficulty:e.target.value as Difficulty},knaveDraft)}>{Object.entries(difficultyLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:<>{difficultyLabels[displayedDifficulty]}{displayedDifficulty==='dangerous'&&terrainRisk(selectedEffectiveBiomeId,language)?` · ${terrainRisk(selectedEffectiveBiomeId,language)}`:''}</>}</div>}
     {knaveDiscoveryKey&&<>{(editMode||displayedDiscovery!=='unknown')&&<div className="direct-line" data-discovery-classification>{editMode?<label>{language==='ru'?'Обнаружение: ':'Discovery: '}<select aria-label={language==='ru'?'Обнаружение':'Discovery'} value={knaveDiscovery} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({mode:e.target.value as Discovery},knaveDraft)}>{Object.entries(discoveryLabels).map(([v,label])=><option key={v} value={v}>{label}</option>)}</select></label>:displayedDiscovery==='passage'&&onSelectedRoad?(language==='ru'?'Заметно с дороги':'Visible from the road'):discoveryLabels[displayedDiscovery]}</div>}
     {editMode?<label className="knave-clue">{language==='ru'?'Улика':'Clue'}<textarea aria-label={language==='ru'?'Улика':'Clue'} aria-invalid={!!knaveError} aria-describedby={knaveError?'knave-clue-error':undefined} maxLength={512} rows={2} value={knaveClue} disabled={knaveControlsBlocked} onChange={e=>changeKnaveDraft({clueText:e.target.value},knaveDraft)} onCompositionStart={()=>{knaveComposing.current=true;}} onCompositionEnd={()=>{knaveComposing.current=false;}} /></label>:knaveClue?<p className="knave-clue-text">{knaveClue}</p>:null}</>}
