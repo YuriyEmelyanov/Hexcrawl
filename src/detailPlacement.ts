@@ -107,9 +107,9 @@ export function buildDetailPoiFootprint(grid:DetailGrid,input:DetailPoiPlacement
     :input.manualSize?Object.freeze({kind:'manual_size',...input.manualSize})
     :detailCatalogueExtent(input.namespace??'land',input.typeId??(input.role==='capital'?'capital':input.role==='mythic_seat'?'throne':'structure'));
   const diameter=extent.kind==='representative'?extent.representativeExtentMiles:extent.kind==='manual_size'?extent.diameterMiles:null;
-  const physicalPolygon=extent.kind==='measured_polygon'?extent.sourcePolygon:diameter!==null&&diameter>=1?detailCirclePolygon(input.anchor,diameter):null;
+  const physicalPolygon=extent.kind==='measured_polygon'?extent.sourcePolygon:diameter!==null&&(extent.kind==='manual_size'||diameter>=1)?detailCirclePolygon(input.anchor,diameter):null;
   const extentPolygon=physicalPolygon??input.sourcePolygon;
-  const projected=detailPositiveAreaIntersections(grid,extentPolygon).map(item=>item.cell);
+  const projected=extent.kind==='manual_size'&&extent.diameterMiles<1?[worldToDetailCell(grid,input.anchor)]:detailPositiveAreaIntersections(grid,extentPolygon).map(item=>item.cell);
   if(!projected.length)fail('no_projected_cells');
   const ordered=orderedCells(grid,projected,input.anchor),projectedKeys=new Set(projected.map(key));
   const waterOptions=input.waterRequirement==='none'?[]:[...input.waterAccesses]

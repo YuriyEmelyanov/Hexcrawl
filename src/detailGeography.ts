@@ -183,7 +183,7 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
  const byId=new Map(state.poiFootprints.map(p=>[p.poiId,p]));
  const footprints:DetailPoiFootprint[]=[];
  for(const [alias,id]of Object.entries(identities.byLegacyRef)){
-  const prior=byId.get(id);
+  let prior=byId.get(id);
   if(!prior){footprints.push(buildLiveFootprint(map,rivers,identities,alias,state.grid.origin).footprint);continue;}
   if(prior.legacyRef!==alias){
    const coordinate=(ref:string)=>ref.slice(ref.lastIndexOf(':')+1);
@@ -192,6 +192,17 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
     // and mandatory water/ports cannot be translated by an address change.
     if(!['default','representative'].includes(prior.extent.kind)||prior.attachments.length)fail('extent_relocation_requires_explicit_adaptation');
     footprints.push(buildLiveFootprint(map,rivers,identities,alias,state.grid.origin).footprint);continue;
+   }
+  }
+  if(prior.extent.kind==='representative'){
+   const descriptor=livePoiType(map,alias);
+   if(prior.extent.namespace!==descriptor.namespace||prior.extent.typeId!==descriptor.typeId){
+    // This candidate document contains an explicit kind edit. Re-estimate only
+    // its project assumption, retaining the accepted identity, anchor and refs.
+    // Manual/surveyed geometry never enters this path; read/view never calls it.
+    const fine=createDetailGrid(1,state.grid.origin),worldAnchor=detailFootprintWorldAnchor(prior,fine),extent=detailCatalogueExtent(descriptor.namespace,descriptor.typeId);
+    const cells=extent.representativeExtentMiles!==null&&extent.representativeExtentMiles>=1?detailPositiveAreaIntersections(fine,detailCirclePolygon(worldAnchor,extent.representativeExtentMiles)).map(hit=>hit.cell):[worldToDetailCell(fine,worldAnchor)];
+    prior={...prior,worldAnchor,extent,cells};
    }
   }
   // Expansion may assign an additional real path to an accepted site. Add
@@ -214,7 +225,7 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
    const options=routes.filter(r=>r.routeId===routeId);
    let entry:Extract<DetailPoiFootprint['attachments'][number],{kind:'route'}>|undefined;
    for(const route of options){
-    const fine=createDetailGrid(1,state.grid.origin),physical=prior.extent.kind==='measured_polygon'||detailFootprintHasOutline(prior,fine)?detailFootprintPolygons(prior,fine):[];
+    const fine=createDetailGrid(1,state.grid.origin),physical=prior.extent.kind==='measured_polygon'||prior.extent.kind==='manual_size'||detailFootprintHasOutline(prior,fine)?detailFootprintPolygons(prior,fine):[];
     const candidates=prior.cells.flatMap(cell=>{const span=detailSegmentSpan(fine,cell,route.segment);if(!span)return [];const at=physical.length?physical.map(p=>detailSegmentPolygonEntry(span,p)).find(Boolean):span.from;return at?[at]:[];});
     if(candidates.length){entry={kind:'route',routeId,routeKind:route.kind,accessNodeId:route.accessNodeId,entry:candidates[0]};break;}
    }
@@ -272,7 +283,7 @@ export function validateDetailGeographyFootprints(map:DetailGeographyMap,rivers:
    const expected=detailPositiveAreaIntersections(fine,extent.sourcePolygon).map(p=>key(p.cell)).sort(),actual=footprint.cells.map(key).sort();
    if(expected.length!==actual.length||expected.some((k,i)=>k!==actual[i]))fail('measured_extent_cell_mismatch');
   }
-  const physicalPolygon=extent.kind==='measured_polygon'||detailFootprintHasOutline(footprint,fine)?detailFootprintPolygons(footprint,fine):[];
+  const physicalPolygon=extent.kind==='measured_polygon'||extent.kind==='manual_size'||detailFootprintHasOutline(footprint,fine)?detailFootprintPolygons(footprint,fine):[];
   if(extent.kind==='representative'||extent.kind==='manual_size')for(const polygon of physicalPolygon){
    // A conditional circle may not borrow the land portion of a fine cell to
    // hide a real area lying in incompatible water or uncreated geography.

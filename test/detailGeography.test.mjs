@@ -186,13 +186,23 @@ test('active DETAIL1 generated candidate places only new owners after accepted K
 // DTL-22/23: geometry/controller tests do not prove ordinary file import.
 // Reuse authored maps and the real importer; no new harness or random series.
 test('ordinary v11 and v14 DETAIL1 imports roundtrip active extents and refuse corrupt spatial references atomically',async()=>{
- const road=regionFixture();road.map.roads=[{id:1,regionId:1,segments:[{from:{q:2,r:0},to:{q:3,r:0},kind:'road'}]}];road.counters.nextRoadId=2;
+ const road=regionFixture();road.map.roads=[{id:1,regionId:1,segments:[{from:{q:1,r:0},to:{q:2,r:0},kind:'road'}]}];road.counters.nextRoadId=2;
  const sea=seaFixture();sea.map.waterPoiByHexKey={'1,2':'shipwreck'};
  const knave=regionFixture();knave.version=10;knave.map.seas=[];knave.map.nextSeaId=1;knave.map.knave={...newKnaveLayer(),content:knaveContentFixture('poi:1:2,0',{kind:'settlement'})};
  for(const raw of [road,regionFixture('mythic'),sea,knave]){
   const source=await importMap(raw),doc=structuredClone(source.render().captureDocument());doc.map.physicalGrid=state(prepare(source));source.render().applyDocument(doc);source.render().setEditMode(true);source.render();
   const poi=doc.map.physicalGrid.poiFootprints[0],extent=raw.ui.generationMode==='mythic'?{kind:'measured_polygon',sourceId:'authored-survey:import',unit:'mile',method:'positive_area_intersection',sourcePolygon:detailCellPolygon(createDetailGrid(1),poi.cells[0])}:{kind:'manual',basis:'conditional',note:'Принятый явный охват'};
   assert.equal(source.render().editDetailFootprintExtent(poi.poiId,extent,poi.cells),true);Object.assign(doc,structuredClone(source.render().captureDocument()));const data=JSON.parse(JSON.stringify(source.render().createSaveData()));
+  const smallManual={kind:'manual_size',diameterMiles:.03,basis:'measured_override',note:'Explicit measured small site'};
+  const oldRoute=data.map.physicalGrid.poiFootprints[0].attachments.find(a=>a.kind==='route');
+  if(oldRoute){
+   const accepted=structuredClone(source.render().captureDocument()),histories=structuredClone([source.render().undoHistory,source.render().redoHistory]);assert.ok(Math.abs(oldRoute.entry.x-poi.worldAnchor.x)>.015);
+   assert.equal(source.render().editDetailFootprintExtent(poi.poiId,smallManual),false,'explicit tiny circle cannot retain a remote route entry');assert.deepEqual(structuredClone(source.render().captureDocument()),accepted);assert.deepEqual(structuredClone([source.render().undoHistory,source.render().redoHistory]),histories);
+   // A separately authored import with a real entry on the circle boundary is
+   // valid. Growing its explicit size keeps that same accepted port literal.
+   const boundaryData=structuredClone(data),boundaryPoi=boundaryData.map.physicalGrid.poiFootprints[0];boundaryPoi.extent=smallManual;boundaryPoi.attachments.find(a=>a.kind==='route').entry={x:poi.worldAnchor.x-.015,y:poi.worldAnchor.y};
+   const boundary=await importMap(boundaryData),entry=structuredClone(boundary.render().captureDocument().map.physicalGrid.poiFootprints[0].attachments);boundary.render().setEditMode(true);boundary.render();assert.equal(boundary.render().editDetailFootprintExtent(poi.poiId,{...smallManual,diameterMiles:.04}),true);assert.deepEqual(structuredClone(boundary.render().captureDocument().map.physicalGrid.poiFootprints[0].attachments),entry);
+  }
   // Reuse each real import fixture for the pre-correction v11/v1 boundary.
   // Explicit manual/surveyed shapes remain byte-for-byte literal on import.
   const legacyData=structuredClone(data);legacyData.version=11;legacyData.map.physicalGrid.version=1;for(const p of legacyData.map.physicalGrid.poiFootprints)delete p.worldAnchor;
@@ -204,6 +214,7 @@ test('ordinary v11 and v14 DETAIL1 imports roundtrip active extents and refuse c
   target.render().undoMap();assert.deepEqual(structuredClone(target.render().captureDocument()),before);target.render().redoMap();assert.deepEqual(structuredClone(target.render().captureDocument()),after);target.render().undoMap();
   const accepted=structuredClone(target.render().captureDocument()),stacks=structuredClone([target.render().undoHistory,target.render().redoHistory]);
   const corruptions=[d=>d.version=12,d=>d.map.physicalGrid.poiFootprints[0].cells=[{q:999,r:999}],d=>d.map.physicalGrid.poiFootprints[0].poiId='detail-poi:999',d=>d.map.physicalGrid.poiFootprints[0].legacyRef='poi:999:0,0',d=>d.map.physicalGrid.poiFootprints[0].cells=[],d=>d.map.physicalGrid.poiFootprints[0].worldAnchor={x:1e9,y:1e9},d=>{d.map.physicalGrid.selectedCell={q:12,r:0};d.map.physicalGrid.selectedWorldPoint={x:0,y:0};}];
+  if(oldRoute)corruptions.push(d=>d.map.physicalGrid.poiFootprints[0].extent=smallManual);
   if(data.map.knave)corruptions.push(d=>d.map.physicalGrid.source.physicalConvention='known_across_flats');
   if(data.map.physicalGrid.poiFootprints[0].attachments.length)corruptions.push(d=>{const a=d.map.physicalGrid.poiFootprints[0].attachments[0];if(a.kind==='water')a.waterId='sea:999';else a.accessNodeId='missing-port';});
   for(const mutate of corruptions){const bad=structuredClone(data);mutate(bad);const old=alerts.length;await load(bad);assert.equal(alerts.length,old+1);assert.deepEqual(structuredClone(target.render().captureDocument()),accepted);assert.deepEqual(structuredClone([target.render().undoHistory,target.render().redoHistory]),stacks);}

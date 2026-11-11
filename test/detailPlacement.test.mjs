@@ -45,6 +45,13 @@ test('required water and assigned routes select a compatible footprint while adj
   {...input,routeAccesses:[{...through,segment:{from:{x:.5,y:-.2},to:{x:.5,y:.2}}}]},
  ]) assert.throws(()=>buildDetailPoiFootprint(grid,invalid),DetailPlacementError);
  assert.deepEqual(input,before,'failed candidates do not mutate source geography or references');
+ // REVIEW-P2: an explicit tiny manual size still has physical access geometry,
+ // although it renders one marker even when its circle crosses a grid edge.
+ const tinySize={diameterMiles:.03,basis:'measured_override',note:'Explicit tiny tower'};
+ assert.throws(()=>buildDetailPoiFootprint(grid,{...input,manualSize:tinySize}),/missing_compatible_water_access/);
+ assert.throws(()=>buildDetailPoiFootprint(grid,{...base,role:'site',manualSize:tinySize,routeRequirement:'assigned',routeAccesses:[{...through,segment:{from:{x:.2,y:0},to:{x:.3,y:0}}}]}),/missing_route_inside_footprint/);
+ const tiny=buildDetailPoiFootprint(grid,{...input,anchor:{x:.5,y:0},manualSize:tinySize,waterAccesses:[{...water,contact:{x:.5,y:0}}]});
+ assert.deepEqual(tiny.cells,[{q:0,r:0}]);assert.equal(detailFootprintHasOutline(tiny,grid),false);assert.deepEqual(tiny.attachments[0].contact,{x:.5,y:0});assert.ok(Math.hypot(tiny.attachments[1].entry.x-.5,tiny.attachments[1].entry.y)<=.015+1e-9);
  // Joint search must try another real water port rather than reject a valid
  // small site after greedily fixing the nearest water contact.
  const farCell={q:2,r:0},far=detailCellCenter(grid,farCell),farWater={...water,cell:farCell,contact:far};

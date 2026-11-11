@@ -37,7 +37,7 @@ Files with common annotations export as JSONv11; annotation-free files retain
 v10. v2..10 imports never acquire stored overrides by opening; auto labels are
 derived without RNG or rewriting saved objects. Earlier readers are not expected
 to open v11. Unknown fields/version/owners/malformed values fail before commit.
-The Knave layer itself remains unchanged and accepts the containing v11 envelope.
+The Knave layer itself remains unchanged and accepts the containing v11 envelope. When the same document has anchored physicalGridv2, its outer format isv14; common overrides and Knave payloads retain the same strict contracts. Ordinary annotation-only documents still usev11.
 
 E7/E8 remap POI annotations, not coordinate difficulty. Water edits show annotation
 loss in the existing confirmation flow. Generic manual deletion uses a loss gate;
