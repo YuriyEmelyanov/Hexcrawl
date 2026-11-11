@@ -1,0 +1,55 @@
+{
+  "id": "owner-decision-2026-11-11-ONE-MILE1-local-card-roads-rivers-deferred",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "source": "Current owner chat",
+  "recorded_at": "2026-11-11T20:41:40.353Z",
+  "quote": "Фиксируй. Мне надо будет посмотреть дороги и реки в режиме одномильного гекса. Ты их реализовал? Интерфейс должен быть максимально похож на 6 мильный гекс. Мы показываем информацию не об области, а о выделенном 1 мильном гексе в этом режиме. И редактируем одномильный гекс.",
+  "status": "recorded_implementation_deferred_by_owner",
+  "implementation_authorized_now": false,
+  "release_authorized": false,
+  "requirements": [
+    {
+      "id": "ONE-MILE1-CARD",
+      "text": "В одномильном режиме интерфейс максимально похож на существующий шестимильный. Карточка показывает выделенный конкретный одномильный гекс, не агрегированную область и не исходный шестимильный гекс."
+    },
+    {
+      "id": "ONE-MILE1-EDIT-TARGET",
+      "text": "Действия редактирования относятся к выделенному одномильному гексу. Не подменять их правкой всего исходного шестимильного гекса. Это уточняет HX-FB-020."
+    },
+    {
+      "id": "ONE-MILE1-ROUTE-WATER-SHOW",
+      "text": "Перед приёмкой отдельного одномильного PR предъявить владельцу реальную карту с дорогами, тропами и реками в1-мильном режиме, с локальной карточкой и понятной связью выбранного гекса с проходящими через него объектами.",
+      "acceptance": [
+        "Показать одну и ту же карту в6-мильном и1-мильном видах с реально сохранёнными дорогами/тропами и реками; линии не заменяются справочным текстом.",
+        "Показать выбор одномильной клетки с дорогой/рекой и соседней клетки без соответствующего объекта: карточка содержит только относящиеся локальные сведения.",
+        "Показать редактирование выбранного одномильного гекса, сохранение/загрузку и UndoRedo; соседние клетки и исходные линии не теряются.",
+        "Новый отдельныйPR и изменённыйSHA требуют новых actual evidence и независимой проверки; старое принятие496 не заменяет приёмку ONE-MILE1."
+      ]
+    }
+  ],
+  "existing_implementation_observation": {
+    "sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+    "App_blob_sha": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798",
+    "geography_blob_sha": "f1b556fc4cbeb053749ac068035fe6066f89072b",
+    "method": "Bounded exact-SHA static read and existing hosted browser walkthrough, no new runtime execution",
+    "already_present": [
+      "Shared real road/river renderer remains present in map artwork at all physical views.",
+      "App14677–14716 projects local roads/trails/rivers/crossings through summarizeDetailCell; App17071–17072 lists local rivers and routes.",
+      "detailGeography assignedRoutes preserves real source road segments and local access ports; source river geometry remains authoritative."
+    ],
+    "verified_browser_evidence": "agent-work/evidence/PR496-browser-verification-1803/actual/walkthrough.json confirms same-source local POI and actual river filtering",
+    "limitations": [
+      "No fresh demonstration of a road+river map performed in this recording.",
+      "Existing1-mile UI uses area summary plus source context; does not meet new requested6-mile-like local card.",
+      "Full local1-mile cell editor requested inHX-FB-020 is not implemented by this recording.",
+      "Old accepted496 implementation is not declared completion of newONE-MILE1 scope."
+    ]
+  },
+  "related_feedback": [
+    "HX-FB-018",
+    "HX-FB-020",
+    "HX-FB-021"
+  ],
+  "scope_note": "Только фиксация/ответ о текущей реализации. Прежний запрет правок и публикации сохраняется; отдельный одномильныйPR ещё не создан."
+}
