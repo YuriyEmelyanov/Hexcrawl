@@ -28,7 +28,7 @@ const instrumented = prefix + `return {
   regions, rivers, roads, candidateHexes, hexTerrainByKey, history, toponyms, toponymSeed, setToponyms,
   addFallbackTractToMap, safelyAddRegionToMap, createSaveData, restoreSnapshot: snapshot => restoreSnapshot({...snapshot, generation: snapshot.generation ?? cloneGenerationState(generationRef.current)}), deleteLastRegion,
   kingdoms, obstacles, generationMode, setGenerationMode, kingdomJob, startKingdom, advanceKingdom,
-  generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration,
+  coarseFillJob, advanceCoarseFill, cancelCoarseFill, coarseFillNotice, generationError, pendingRegen, regenerateLastRegion, finishPendingRegeneration,
   handleImportJson, resetMap, undoMap, redoMap, undoHistory, redoHistory, captureDocument, selectedHex, setSelectedHex,
   setSelectedHexBiomeOverride, resetSelectedHexBiomeOverride, setSelectedPoiKind, setSelectedCentralPoiKind,
   setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting,

@@ -1,18 +1,96 @@
 import {prepareDetailFootprintExtentEdit} from '../src/detailGeography.ts';
 import {parseDetail1StateV11} from '../src/detailModel.ts';
-import {detailCellPolygon,createDetailGrid} from '../src/detailGrid.ts';
+import {detailCellPolygon,detailCellCenter,worldToDetailCell,createDetailGrid} from '../src/detailGrid.ts';
+import {prepareDetailFill,detailFillCoveredSources,detailFillRemaining} from '../src/detailFill.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
 import {seaFixture} from './helpers/sea-fixture.mjs';
 import {newKnaveLayer} from '../src/knaveClassic.ts';
-import {knaveContentFixture} from './helpers/knave-fixture.mjs';
+import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 
 const importMap=async data=>{const h=createGenerationHarness(42),alerts=[];h.render();h.setWindow({alert:s=>alerts.push(s),confirm:()=>true});h.injectFunction('readTextFile',async f=>f.text);await h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});assert.deepEqual(alerts,[]);return h;};
 const state=p=>({schema:'hexcrawl.detail1',version:p.schemaVersion??2,active:true,viewStep:1,grid:p.grid,source:p.source,poiIdentities:p.poiIdentities,poiFootprints:p.poiFootprints});
 const validate=(h,map,p)=>h.geometry.validateDetailMapFootprints(map,state(p));
 const prepare=h=>h.geometry.prepareDetailMapPreview(h.render().captureDocument().map);
+// F01/F07: the pure coverage checks do not exercise stateful generation or
+// either history. Reuse this real-App suite for the distinct user action.
+test('coarse activation completes ordinary regions with one editor transaction',async()=>{
+ for(const [knave,keyboard] of [[false,false],[true,false],[false,true]]){
+ const h=createGenerationHarness(42);h.render();if(knave){h.render().chooseKnaveProfile(true);h.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);}h.render().setGenSizeCategory('locality');h.render().generateAt({q:0,r:0});
+ assert.equal(h.render().generationError,null);assert.equal(h.render().setDetailViewStep(24),true);
+ const before=structuredClone(h.render().captureDocument()),undo=h.render().undoHistory.length;
+ const origin=before.map.physicalGrid.grid.origin,source=h.render().candidateHexes[0],at=detailCellCenter(createDetailGrid(6,origin),source);
+ const cell=worldToDetailCell(createDetailGrid(24,origin),at),plan=prepareDetailFill(createDetailGrid(24,origin),cell,at);
+ h.render().detailDisplayClickRef.current({cell},keyboard?undefined:at);
+ for(let i=0;i<100&&h.render().coarseFillJob;i++)h.render().advanceCoarseFill();
+ assert.equal(h.render().coarseFillJob??null,null);assert.equal(h.render().generationError,null);
+ const after=structuredClone(h.render().captureDocument());
+ assert.ok(after.map.regions.length-before.map.regions.length>=2,'one activation must complete multiple ordinary units');
+ assert.equal(detailFillRemaining(plan,detailFillCoveredSources(after.map.regions,after.map.hexTerrainByKey)).complete,true);
+ assert.equal(h.render().undoHistory.length,undo+1);
+ assert.equal(after.generationHistory.length-before.generationHistory.length,after.map.regions.length-before.map.regions.length);
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);
+ h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+ const stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);
+ h.render().detailDisplayClickRef.current({cell},after.map.physicalGrid.selectedWorldPoint);assert.equal(h.render().coarseFillJob,null);
+ assert.deepEqual(structuredClone(h.render().captureDocument()),after);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+ h.render().deleteLastRegion();assert.equal(h.render().regions.length,after.map.regions.length-1,'domain checkpoint removes only the last ordinary region');
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+ h.geometry.assertHexcrawlSaveData(h.render().createSaveData());
+ const saved=JSON.parse(JSON.stringify(h.render().createSaveData())),restored=await importMap(saved),read=JSON.parse(JSON.stringify(restored.render().createSaveData()));
+ for(const part of ['map','generation','counters'])assert.deepEqual(read[part],saved[part]);assert.equal(restored.render().coarseFillJob,null);
+ }
+ // F09: the one-mile adapter launches exactly one ordinary unit.
+ const fine=createGenerationHarness(42);fine.render();fine.render().setGenSizeCategory('locality');fine.render().generateAt({q:0,r:0});fine.render().setDetailViewStep(1);
+ const origin=fine.render().captureDocument().map.physicalGrid.grid.origin,at=detailCellCenter(createDetailGrid(6,origin),fine.render().candidateHexes[0]),cell=worldToDetailCell(createDetailGrid(1,origin),at),count=fine.render().regions.length;
+ fine.render().detailDisplayClickRef.current({cell});assert.equal(fine.render().regions.length,count+1);assert.equal(fine.render().coarseFillJob,null);
+});
+// F05/F06 are a separate risk from success: reject a later unit after earlier
+// provisional commits, restore redo, and keep captured callbacks inert forever.
+test('coarse fill cancellation and later failure restore the exact document and both histories',()=>{
+ for(const ending of ['cancel','throw','no_progress']){
+  const h=createGenerationHarness(42);h.render();h.render().setGenSizeCategory('locality');h.render().generateAt({q:0,r:0});h.render().setDetailViewStep(24);h.render();
+  h.render().setSelectedHex(h.render().regions[0].centerHex);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+  const before=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);assert.ok(stacks[1].length);
+  const origin=before.map.physicalGrid.grid.origin,at=detailCellCenter(createDetailGrid(6,origin),h.render().candidateHexes[0]),cell=worldToDetailCell(createDetailGrid(24,origin),at);
+  h.render().detailDisplayClickRef.current({cell},at);const stale=h.render().advanceCoarseFill;
+  // Busy actions do not draw RNG, switch grids or add another operation.
+  const job=h.render().coarseFillJob,rng=structuredClone(h.render().generationRef.current);h.render().detailDisplayClickRef.current({cell},at);h.render().generateAt(h.render().candidateHexes[0]);
+  assert.equal(h.render().coarseFillJob,job);assert.equal(h.render().setDetailViewStep(12),false);assert.deepEqual(structuredClone(h.render().generationRef.current),rng);
+  h.render().advanceCoarseFill();h.render().advanceCoarseFill();assert.ok(h.render().regions.length>before.map.regions.length);assert.ok(h.render().coarseFillJob);
+  assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks,'provisional editor stacks are untouched');
+  if(ending==='cancel')assert.equal(h.render().cancelCoarseFill(),true);
+  else {
+   const prefix=structuredClone(h.render().captureDocument());
+   const restore=ending==='throw'?h.injectFunction('chooseRegionCenter',()=>{throw Error('late fill failure');}):()=>{};
+   h.render().advanceCoarseFill();
+   if(ending==='no_progress'&&h.render().coarseFillJob){h.render().restoreSnapshot(prefix.map);h.render().advanceCoarseFill();}
+   restore();
+   assert.equal(h.render().coarseFillNotice,'failed');
+  }
+  assert.equal(h.render().coarseFillJob,null);assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+  stale();assert.deepEqual(structuredClone(h.render().captureDocument()),before);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);
+ }
+});
+// F08: reuse the existing whole-kingdom path, not a coarse-cell substitute.
+test('coarse Mythic fill waits for the normal kingdom boundary and cancels stale internal ticks',()=>{
+ const h=createGenerationHarness(16);h.render();h.render().safelyAddRegionToMap({q:0,r:0},{targetSize:12,coastalPreference:'mainland'});h.render().setDetailViewStep(12);h.render().changeGenerationMode('mythic');
+ const before=structuredClone(h.render().captureDocument()),origin=before.map.physicalGrid.grid.origin;
+ const at=detailCellCenter(createDetailGrid(6,origin),h.render().candidateHexes[0]),cell=worldToDetailCell(createDetailGrid(12,origin),at);
+ h.render().detailDisplayClickRef.current({cell},at);h.render().advanceCoarseFill();assert.ok(h.render().kingdomJob);assert.equal(h.render().coarseFillJob.units,0);
+ for(let i=0;i<3&&h.render().kingdomJob;i++)h.render().advanceKingdom();
+ const stale=h.render().advanceKingdom;h.render().cancelCoarseFill();stale();assert.deepEqual(structuredClone(h.render().captureDocument()),before);
+ h.render().detailDisplayClickRef.current({cell},at);
+ for(let i=0;i<650&&h.render().coarseFillJob;i++){if(h.render().kingdomJob)h.render().advanceKingdom();else h.render().advanceCoarseFill();}
+ assert.equal(h.render().coarseFillJob,null);assert.equal(h.render().generationError,null);assert.ok(h.render().kingdoms.length>before.map.kingdoms.length);
+ const after=structuredClone(h.render().captureDocument()),plan=prepareDetailFill(createDetailGrid(12,origin),cell,at);
+ assert.equal(detailFillRemaining(plan,detailFillCoveredSources(after.map.regions,after.map.hexTerrainByKey)).complete,true);
+ assert.equal(after.generationHistory.length-before.generationHistory.length,after.map.kingdoms.length-before.map.kingdoms.length);
+ h.geometry.assertHexcrawlSaveData(h.render().createSaveData());
+ h.render().undoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(structuredClone(h.render().captureDocument()),after);
+});
 // DTL-05/06/14/15/19/23: test the actual App adapter, not a second idealized map.
 test('live DETAIL1 preview projects actual capital/Seat and every assigned road without changing the document or RNG',async()=>{
  for(const mode of ['classic','mythic']){

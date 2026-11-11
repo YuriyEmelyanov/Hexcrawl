@@ -1,5 +1,6 @@
 import {detailFootprintHasOutline,detailFootprintWorldAnchor,detailFootprintExtentMiles} from './detailSizes';
 import {projectDetailDisplayCells,type DetailDisplayCell} from './detailDisplay';
+import {prepareDetailFill,detailFillCoveredSources,detailFillRemaining,nextDetailFillAnchor,assertDetailFillProgress,type DetailFillPlan} from './detailFill';
 import {summarizeDetailCell,detailMarkerGroups,detailSegmentCellIntersection} from './detailSummary';
 import {finalizeDryPoiLocations} from './finalPoiPlacement';
 import {createDetailGrid,detailCellPolygon,detailFootprintBoundary,detailPositiveAreaIntersections,detailCellCenter,worldToDetailCell,type DetailStep} from './detailGrid';
@@ -1912,6 +1913,9 @@ type GenerationBackup = {
   document?: DocumentSnapshot; undo?: MapTransaction[]; redo?: MapTransaction[];
 };
 type GenerationActionContext = { action: 'add' | 'regenerate'; inputOptions: Record<string, unknown> };
+type CoarseFillJob = { plan:DetailFillPlan; backup:GenerationBackup; mode:GenerationMode;
+  inputs:{sizeCategory:'auto'|Exclude<Region['sizeCategory'],'tract'>;landType:'auto'|BiomeLandType;biome:'auto'|BiomeId;coastal:'auto'|CoastalPreference};
+  covered:ReadonlySet<string>; initialMissing:number; units:number; phase:'ready'|'waiting'; revision:number; firstAnchor?:AxialHex };
 type KingdomJob = { actionContext: GenerationActionContext; preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
 type GenerationDiagnostic = ReturnType<typeof generationLog.finish>;
 // Expected refusal: only canonical coordinates, never the note text, reach UI.
@@ -11939,7 +11943,13 @@ export function App() {
   const kingdomInFlight = useRef(false);
   const advancedJobs = useRef(new WeakSet<KingdomJob>());
   const consumedRegenerations = useRef(new WeakSet<object>());
-  const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
+  const [kingdomJob, setKingdomJobState] = useState<KingdomJob | null>(null);
+  const kingdomJobRef=useRef<KingdomJob|null>(null);
+  const setKingdomJob=(value:KingdomJob|null)=>{kingdomJobRef.current=value;setKingdomJobState(value);};
+  const [coarseFillJob,setCoarseFillJobState]=useState<CoarseFillJob|null>(null);
+  const coarseFillRef=useRef<CoarseFillJob|null>(null),consumedFillTicks=useRef(new WeakSet<CoarseFillJob>());
+  const setCoarseFillJob=(job:CoarseFillJob|null)=>{coarseFillRef.current=job;setCoarseFillJobState(job);};
+  const [coarseFillNotice,setCoarseFillNotice]=useState<'cancelled'|'failed'|'done'|null>(null);
   const [detailedRenderReady, setDetailedRenderReady] = useState(true);
   const [tags,setTags] = useState<TagState>(emptyTags);
   const [activeTagDraftCount,setActiveTagDraftCount]=useState(0);
@@ -13498,6 +13508,7 @@ export function App() {
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
+    if(coarseFillRef.current)return; // Provisional units keep generation checkpoints, not editor transactions.
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
     documentRevision.current++;
     setUndoHistory(current => [...current, transaction].slice(-100));
@@ -13537,7 +13548,7 @@ export function App() {
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
   const documentStateBusy = () => documentRevision.current !== renderedDocumentRevision
-    || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+    || importInFlight.current || !!coarseFillRef.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
   const documentBusy=()=>!!detailExtentDraftRef.current||!!detailAdaptationRef.current||documentStateBusy();
   const mutationBlocked = (finishGroup = true) => {
     if (knaveDraftRef.current || poiDraftRef.current || regionDraftRef.current || waterDraftRef.current || roadFeatureResolutionRef.current || riverCommandPreviewRef.current || riverDraftRef.current || roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
@@ -13723,7 +13734,7 @@ export function App() {
     const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}},mapScale:camera});
     recordTransaction(before,after);applyPreparedDocument(after);return true;
   };
-  const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string,worldPoint?:{x:number;y:number}):boolean=>{
+  const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string,worldPoint?:{x:number;y:number},recordSelection=true):boolean=>{
     if(editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
     const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
     try{
@@ -13741,7 +13752,8 @@ export function App() {
       if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state))&&JSON.stringify(selectedSource)===JSON.stringify(before.selectedHex))return true;
       if(state.viewStep!==next.viewStep)rememberDetailFocus();
       const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:selectedSource,mapScale:before.mapScale*state.viewStep/next.viewStep});
-      recordTransaction(before,after);applyPreparedDocument(after);setIsSidePanelCollapsed(false);return true;
+      if(recordSelection)recordTransaction(before,after);else documentRevision.current++;
+      applyPreparedDocument(after);setIsSidePanelCollapsed(false);return true;
     }catch{return false;}
   };
   /** One explicit extent operation with full live geography validation. */
@@ -14304,7 +14316,7 @@ export function App() {
   };
 
   const advanceKingdom = () => {
-    const job=kingdomJob;if(!job || advancedJobs.current.has(job))return;
+    const job=kingdomJob;if(!job || kingdomJobRef.current!==job || advancedJobs.current.has(job))return;
     // A consumed tick remains stale even after a newer tick has executed.
     advancedJobs.current.add(job);
     try {
@@ -14344,7 +14356,10 @@ export function App() {
         throw new Error('Не удалось построить регион королевства.');
       }
       setKingdomJob({...job,preferredAnchor:undefined,first:false,steps:job.steps+1});
-    } catch(error) {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup,job.actionContext);kingdomInFlight.current=false;setKingdomJob(null);}
+    } catch(error) {
+      if(coarseFillRef.current)failCoarseFill(error);
+      else {reportGenerationFailure(error,job.anchor,{mode:'mythic'},job.failureBackup ?? job.backup,job.actionContext);kingdomInFlight.current=false;setKingdomJob(null);}
+    }
   };
   useEffect(()=>{
     if(!kingdomJob)return;
@@ -14398,8 +14413,8 @@ export function App() {
     if(mutationBlocked()||mode===generationMode)return;
     setGenerationMode(mode);
   };
-  const applyWorldSeed = () => {
-    if (mutationBlocked()) return false;
+  const applyWorldSeed = (fillJob?:CoarseFillJob) => {
+    if (fillJob?coarseFillRef.current!==fillJob:mutationBlocked()) return false;
     if (regions.length || hexTerrainByKey.size || kingdoms.length) return true;
     const seed = /^\d+$/.test(seedInput) ? Number(seedInput) : NaN;
     if (!isUint32(seed)) { setSeedError(true); return false; }
@@ -14428,6 +14443,89 @@ export function App() {
     biomeId: genBiome === 'auto' ? undefined : genBiome,
     coastalPreference: genCoastal === 'auto' ? undefined : genCoastal
   });
+
+  const failCoarseFill=(error:unknown)=>{
+    const job=coarseFillRef.current;if(!job)return;
+    setCoarseFillJob(null);setKingdomJob(null);kingdomInFlight.current=false;
+    documentRevision.current++;
+    reportGenerationFailure(error,worldToDetailCell(createDetailGrid(6,job.plan.grid.origin),job.plan.anchorPoint),{mode:job.mode},job.backup);
+    setCoarseFillNotice('failed');
+  };
+  const cancelCoarseFill=()=>{
+    const job=coarseFillRef.current;if(!job)return false;
+    setCoarseFillJob(null);setKingdomJob(null);kingdomInFlight.current=false;
+    documentRevision.current++;restoreGenerationBackup(job.backup);setGenerationError(null);setCoarseFillNotice('cancelled');return true;
+  };
+  const startCoarseFill=(plan:DetailFillPlan,pointerSource?:AxialHex)=>{
+    if(mutationBlocked()||notesEditorKey!==null||notesComposingRef.current||obstacleDraftRef.current||activeTagDraftKeys.current.size)return false;
+    const backup=captureGenerationBackup(),covered=detailFillCoveredSources(regions,hexTerrainByKey),missing=detailFillRemaining(plan,covered);
+    if(missing.complete){selectDetailCell(worldToDetailCell(createDetailGrid(1,plan.grid.origin),plan.anchorPoint),renderedDocumentRevision,undefined,undefined,plan.anchorPoint,false);return true;}
+    const legal=candidateHexes.length?candidateHexes:actualHexKeys(backup.map).size===0?[START_HEX]:[];
+    const firstAnchor=pointerSource&&missing.cells.some(h=>isSameHex(h,pointerSource))&&legal.some(h=>isSameHex(h,pointerSource))?pointerSource:nextDetailFillAnchor(plan,covered,legal);
+    // Ref acquires the lock before seed validation or any state setter. Inputs
+    // are copied, but ordinary size rolls still occur once per normal unit.
+    const job:CoarseFillJob={plan,backup,covered,initialMissing:missing.cells.length,units:0,phase:'ready',revision:documentRevision.current,mode:generationMode,
+      inputs:{sizeCategory:genSizeCategory,landType:genLandType,biome:genBiome,coastal:genCoastal},firstAnchor:firstAnchor??undefined};
+    setCoarseFillJob(job);setCoarseFillNotice(null);
+    if(!firstAnchor){failCoarseFill(Error('detail_fill_no_legal_anchor'));return false;}
+    // Existing active maps already have their seed. Preserve the common seed
+    // validation for a future empty active document without a second transaction.
+    if(!applyWorldSeed(job)){setCoarseFillJob(null);return false;}
+    const spatial=physicalGridRef.current;
+    if(spatial)updatePhysicalGrid(parseDetail1StateV11({...spatial,selectedWorldPoint:plan.anchorPoint,selectedCell:worldToDetailCell(createDetailGrid(1,plan.grid.origin),plan.anchorPoint)}));
+    documentRevision.current++;setCoarseFillJob({...job,revision:documentRevision.current});setIsSidePanelCollapsed(false);return true;
+  };
+  const advanceCoarseFill=()=>{
+    const job=coarseFillJob;
+    if(!job||coarseFillRef.current!==job||consumedFillTicks.current.has(job))return;
+    if(documentRevision.current!==renderedDocumentRevision)return;
+    if(job.revision!==documentRevision.current){failCoarseFill(Error('detail_fill_stale_document'));return;}
+    if(job.phase==='waiting'&&(kingdomJobRef.current||kingdomInFlight.current))return;
+    consumedFillTicks.current.add(job);
+    try{
+      const covered=detailFillCoveredSources(regions,hexTerrainByKey);
+      if(job.phase==='waiting'){
+        assertDetailFillProgress(job.plan,job.covered,covered);
+        const units=job.units+1;
+        if(detailFillRemaining(job.plan,covered).complete){
+          const after=copyDocument(captureDocument()),spatial=after.map.physicalGrid;
+          if(!spatial)throw Error('detail_fill_missing_grid');
+          after.map.physicalGrid=parseDetail1StateV11({...spatial,selectedWorldPoint:job.plan.anchorPoint,selectedCell:worldToDetailCell(createDetailGrid(1,job.plan.grid.origin),job.plan.anchorPoint)});
+          after.selectedHex=worldToDetailCell(createDetailGrid(6,job.plan.grid.origin),job.plan.anchorPoint);
+          // Validate/detach before releasing the provisional lock. The two
+          // editor stacks are still the exact pre-job stacks at this point.
+          const transaction={before:copyDocument(job.backup.document!),after:copyDocument(after)};
+          documentRevision.current++;
+          setUndoHistory([...(job.backup.undo??[]),transaction].slice(-100));setRedoHistory([]);
+          applyPreparedDocument(after);setCoarseFillJob(null);setCoarseFillNotice('done');return;
+        }
+        if(units>=job.initialMissing)throw Error('detail_fill_unit_limit');
+        setCoarseFillJob({...job,covered,units,phase:'ready'});return;
+      }
+      const legal=candidateHexes.length?candidateHexes:actualHexKeys(captureMap()).size===0?[START_HEX]:[];
+      const anchor=job.units===0&&job.firstAnchor&&legal.some(h=>isSameHex(h,job.firstAnchor!))?job.firstAnchor:nextDetailFillAnchor(job.plan,covered,legal);
+      if(!anchor)throw Error('detail_fill_no_legal_anchor');
+      documentRevision.current++;
+      if(job.mode==='mythic'){
+        startKingdom(anchor);
+        if(!kingdomJobRef.current)throw Error('detail_fill_kingdom_start_failed');
+      }else{
+        const inputs=job.inputs,backup=captureGenerationBackup();
+        const options:GenerationOptions={targetSize:inputs.sizeCategory==='auto'?undefined:rollRegionSizeInCategory(inputs.sizeCategory,rng),landType:inputs.landType==='auto'?undefined:inputs.landType,biomeId:inputs.biome==='auto'?undefined:inputs.biome,coastalPreference:inputs.coastal==='auto'?undefined:inputs.coastal};
+        const result=safelyAddRegionToMap(anchor,options,backup);if(!result.success)throw Error(`detail_fill_generation_failed: ${result.diagnostic.reason}`);
+      }
+      setCoarseFillJob({...job,covered,phase:'waiting',revision:documentRevision.current});
+    }catch(error){failCoarseFill(error);}
+  };
+  useEffect(()=>{
+    if(!coarseFillJob||kingdomJob)return;
+    const timer=window.setTimeout(advanceCoarseFill,0);return()=>window.clearTimeout(timer);
+  },[coarseFillJob,kingdomJob]);
+  useEffect(()=>{
+    if(!coarseFillJob)return;
+    const escape=(event:globalThis.KeyboardEvent)=>{if(event.key==='Escape'&&!event.isComposing&&coarseFillRef.current){event.preventDefault();cancelCoarseFill();}};
+    window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);
+  },[coarseFillJob]);
 
   const retainedKnaveCheckpoint=(snapshot:MapSnapshot)=>{
     const current=knaveRef.current;if(!current)return snapshot.knave;
@@ -16236,14 +16334,25 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   detailCellClickRef.current=cell=>{selectDetailCell(cell);};
   const detailDisplayClickRef=useRef<(cell:DetailDisplayCell,world?:{x:number;y:number})=>void>(()=>{});
   detailDisplayClickRef.current=(display,world)=>{
-    const state=physicalGridRef.current;if(!state?.active||editMode)return;
+    const state=physicalGridRef.current;if(!state?.active||editMode||documentBusy())return;
     const at=world??detailCellCenter(createDetailGrid(state.viewStep,state.grid.origin),display.cell);
     const source=worldToDetailCell(createDetailGrid(6,state.grid.origin),at),fine=worldToDetailCell(createDetailGrid(1,state.grid.origin),at);
-    if(actualHexKeys(captureMap()).has(hexKey(source))){selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);return;}
+    const covered=detailFillCoveredSources(regions,hexTerrainByKey);
+    if(world&&covered.has(hexKey(source))){selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);return;}
+    if(state.viewStep===12||state.viewStep===24){startCoarseFill(prepareDetailFill(createDetailGrid(state.viewStep,state.grid.origin),display.cell,at),world?source:undefined);return;}
+    if(state.viewStep===1&&!world){
+      const hits=detailPositiveAreaIntersections(createDetailGrid(6,state.grid.origin),detailCellPolygon(createDetailGrid(1,state.grid.origin),display.cell));
+      const legal=candidateHexes.filter(h=>!covered.has(hexKey(h))&&hits.some(hit=>isSameHex(hit.cell,h))).sort((a,b)=>{
+        const x=detailCellCenter(createDetailGrid(6,state.grid.origin),a),y=detailCellCenter(createDetailGrid(6,state.grid.origin),b);
+        return (x.x-at.x)**2+(x.y-at.y)**2-((y.x-at.x)**2+(y.y-at.y)**2)||a.q-b.q||a.r-b.r;
+      });
+      if(legal[0]){generateAt(legal[0]);return;}
+    }
+    if(covered.has(hexKey(source))){selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);return;}
     const candidate=positionedHexes.hexes.find(h=>h.kind==='candidate'&&h.key===hexKey(source));
-    if(state.viewStep===6&&candidate){mapHexClickRef.current(candidate);return;}
+    if(candidate){mapHexClickRef.current(candidate);return;}
     selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);
-    setDetailAdaptationError(language==='ru'?'Создание региона в этой части карты пока доступно в режиме 6 миль.':'Creating a region here is currently available in the 6 mile view.');
+    setDetailAdaptationError(language==='ru'?'В этой части карты нет доступного старта обычного генератора.':'There is no legal ordinary-generation start in this part of the map.');
   };
 
   useEffect(()=>{
@@ -16675,7 +16784,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
   }, [mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
 
   return (
-    <div className="app" onClickCapture={poiClickGate} onChangeCapture={poiSelectGate} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+    <div className="app" onClickCapture={e=>{if(coarseFillRef.current){if(!(e.target as Element).closest('[data-fill-cancel]')){e.preventDefault();e.stopPropagation();}return;}poiClickGate(e);}} onChangeCapture={e=>{if(coarseFillRef.current){e.preventDefault();e.stopPropagation();return;}poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(coarseFillRef.current){if(e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelCoarseFill();}else if((e.key==='Enter'||e.key===' ')&&!(e.target as Element).closest('[data-fill-cancel]')){e.preventDefault();e.stopPropagation();}return;}
       if(e.key!=='Tab'&&guardMaterialRead(e))return;
       if(detailExtentDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelDetailExtentDraft();return;}
       if(knaveExitRequest&&e.key==='Tab'){const buttons=[...(e.currentTarget.querySelector('[data-knave-exit-dialog]')?.querySelectorAll<HTMLButtonElement>('button')??[])],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
@@ -16774,17 +16884,21 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               <div className="info-block info-block--prompt map-toolbar__prompt" role="status">{waterDraft?(language==='ru'?'Выберите созданные клетки для изменения воды.':'Choose created cells to change water.'):t.candidatePrompt}</div>
             ) : null}
             <div className="control-block mode-selector"><label>{language === 'ru' ? 'Режим' : 'Mode'}
-              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onChange={e=>{ changeGenerationMode(e.target.value as GenerationMode); }}>
+              <select aria-label={language === 'ru' ? 'Режим' : 'Mode'} value={generationMode} disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob} onChange={e=>{ changeGenerationMode(e.target.value as GenerationMode); }}>
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
             {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={knaveEnabled} disabled={mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label><span>{language==='ru'?'6 миль / гекс':'6 miles / hex'}</span></div>}
+            {coarseFillJob ? <div className="detail-fill-progress" data-detail-fill-progress>
+              <p role="status">{language==='ru'?'Заполнение…':'Filling…'} · {coarseFillJob.mode==='mythic'?(language==='ru'?'королевств':'kingdoms'):(language==='ru'?'регионов':'regions')}: {coarseFillJob.units} · {language==='ru'?'не заполнено':'unknown'}: {Math.round(100*detailFillRemaining(coarseFillJob.plan,detailFillCoveredSources(regions,hexTerrainByKey)).areaSquareMiles/coarseFillJob.plan.targets.reduce((sum,h)=>sum+h.areaSquareMiles,0))}%</p>
+              <button type="button" className="secondary" data-fill-cancel onClick={cancelCoarseFill}>{language==='ru'?'Отмена заполнения':'Cancel fill'}</button>
+            </div> : coarseFillNotice ? <p role="status" data-detail-fill-notice>{coarseFillNotice==='done'?(language==='ru'?'Заполнено':'Filled'):coarseFillNotice==='cancelled'?(language==='ru'?'Заполнение отменено. Исходная карта восстановлена.':'Fill cancelled. The original map was restored.'):(language==='ru'?'Заполнение не завершено. Исходная карта восстановлена.':'Fill could not finish. The original map was restored.')}</p> : null}
             {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
-            {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
+            {kingdomJob && !coarseFillJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
             {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
               <label>
                 {t.size}
-                <select value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
+                <select disabled={!!coarseFillJob} value={genSizeCategory} onChange={(e) => setGenSizeCategory(e.target.value as typeof genSizeCategory)}>
                   <option value="auto">{t.auto}</option>
                   <option value="locality">{SIZE_LABELS[language].locality}</option>
                   <option value="small_region">{SIZE_LABELS[language].small_region}</option>
@@ -16796,7 +16910,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               </label>
               <label>
                 {t.type}
-                <select value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
+                <select disabled={!!coarseFillJob} value={genLandType} onChange={(e) => setGenLandType(e.target.value as typeof genLandType)}>
                   <option value="auto">{t.auto}</option>
                   <option value="settled">{t.settled}</option>
                   <option value="wild">{t.wild}</option>
@@ -16804,7 +16918,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               </label>
               <label>
                 {t.biome}
-                <select value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
+                <select disabled={!!coarseFillJob} value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
                   <option value="auto">{t.auto}</option>
                   {(Object.values(BIOMES)).map((biome) => (
                     <option key={biome.id} value={biome.id}>{getBiomeLabel(biome.id, language)}</option>
@@ -16813,7 +16927,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               </label>
               <label>
                 {t.coast}
-                <select value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
+                <select disabled={!!coarseFillJob} value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
                   <option value="auto">{t.auto}</option>
                   <option value="coast">{t.coastOption}</option>
                   <option value="mainland">{t.mainland}</option>
@@ -16823,11 +16937,11 @@ retainPoiNames(checkpoint,editorNamesRef.current);
             : null}
             {regions.length > 0 ? (
               <div className="control-block controls controls--region-management">
-                  <button disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={resetMap} className="secondary">{t.reset}</button>
-                  <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={regenerateLastRegion} className="secondary">
+                  <button disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob} onClick={resetMap} className="secondary">{t.reset}</button>
+                  <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !history.length} onClick={regenerateLastRegion} className="secondary">
                     {t.regenerateRegion}
                   </button>
-                  <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !history.length} onClick={deleteLastRegion} className="secondary">
+                  <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !history.length} onClick={deleteLastRegion} className="secondary">
                     {t.deleteLastRegion}
                   </button>
               </div>
@@ -16884,8 +16998,8 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               {physicalGrid?.active&&!detailAdaptation&&<select data-detail-step-select className="hex-grid-select" aria-label={language==='ru'?'Размер гекса':'Hex size'} value={physicalGrid.viewStep} disabled={mutationBlocked(false)} onChange={event=>setDetailViewStep(Number(event.target.value) as DetailStep)}>{([1,6,12,24] as const).map(step=><option key={step} value={step}>{language==='ru'?`Гекс ${step} ${step===1?'миля':step===24?'мили':'миль'}`:`Hex ${step} ${step===1?'mile':'miles'}`}</option>)}</select>}
             </div>
             <div className="control-block controls controls--history">
-              <button type="button" className="secondary" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
-              <button type="button" className="secondary" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
+              <button type="button" className="secondary" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
+              <button type="button" className="secondary" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
             </div>
             <div className="control-block controls controls--transfer">
               <details className="export-menu">
@@ -16896,7 +17010,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                     <small>{language==='ru'?`JSON v${physicalGrid?.version===2?14:physicalGrid||hasClassification(classification)?11:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid?.version===2?14:physicalGrid||hasClassification(classification)?11:10}: older app versions cannot open this file.`}</small>
                   </div>
                 </details>
-              <button type="button" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
+              <button type="button" disabled={!!detailExtentDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
               {(waterDraft||regionDraft||poiDraft)&&<span className="water-export-notice">{poiDraft?(language==='ru'?'Черновик переноса не входит в JSON и PNG.':'The point-move draft is excluded from JSON and PNG.'):regionDraft?(language==='ru'?'Черновик региона не входит в JSON и PNG.':'The region draft is excluded from JSON and PNG.'):(language==='ru'?'Черновик воды не входит в JSON и PNG.':'The water draft is excluded from JSON and PNG.')}</span>}
               <input ref={jsonImportInputRef} className="visually-hidden" type="file" accept="application/json,.json" onChange={(event) => void handleImportJson(event)} />
             </div>
@@ -16918,7 +17032,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <input aria-label={language === 'ru' ? 'Seed мира' : 'World seed'} inputMode="numeric" value={seedInput}
                   aria-invalid={seedError || undefined} aria-describedby={seedError ? 'world-seed-error' : undefined}
                   readOnly={!!regions.length || !!hexTerrainByKey.size || !!kingdoms.length}
-                  disabled={mutationBlocked(false)} onChange={e=>{if(!mutationBlocked(false)){setSeedInput(e.target.value);setSeedError(false);}}} onBlur={applyWorldSeed} />
+                  disabled={mutationBlocked(false)} onChange={e=>{if(!mutationBlocked(false)){setSeedInput(e.target.value);setSeedError(false);}}} onBlur={()=>applyWorldSeed()} />
               </label>
               {seedError ? <p id="world-seed-error" className="world-seed-control__error" role="alert">{language === 'ru' ? 'Seed: целое число от 0 до 4294967295.' : 'Seed: integer from 0 to 4294967295.'}</p> : null}
               {legacyNotice ? <p className="world-seed-control__notice" role="status">{language === 'ru' ? 'Старая карта: seed задан для дальнейшего продолжения' : 'Legacy map: seed assigned for future continuation'}</p> : null}
@@ -16982,7 +17096,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
                   aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
-                  disabled={isImporting || !!pendingRegen || !!kingdomJob || !!poiDraft&&!poiPreview?.plan}
+                  disabled={isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob || !!poiDraft&&!poiPreview?.plan}
                   data-poi-done onClick={() => { if(detailExtentDraftRef.current){if(finishDetailExtentDraft())setEditMode(false);return;} if(knaveDraftRef.current){if(finishKnaveDraft())setEditMode(false);return;} if(poiDraftRef.current){if(finishPoiDraft())setEditMode(false);return;}if (!finishRegionDraft() || !finishPathDrafts() || !finishInlineName()) return; finishNotesGroup(); clearNotesDraft(); closeEditors(); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null); setEditMode(!editMode); }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
                     {editMode ? <path d="m5 12 4 4L19 6" /> : <><path d="m16 3 5 5-12 12-6 1 1-6Z" /><path d="m14 5 5 5" /></>}
@@ -17073,7 +17187,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
                 {detailSourceAreaVisible&&canEditNotes && selectedHexKey && (notesValue || editMode) ? <div className="gm-notes">
                   <strong id="gm-notes-label">{language === 'ru' ? 'Заметки мастера' : 'GM notes'}</strong>
                   {notesOpen && editMode ? <textarea ref={notesTextRef} id="gm-notes-text" aria-labelledby="gm-notes-label" rows={4} value={notesValue}
-                    disabled={!!poiDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob}
+                    disabled={!!poiDraft || !!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !!coarseFillJob}
                     onKeyDown={event => { event.stopPropagation(); if (event.key === 'Escape') { finishNotesGroup(); setNotesEditorKey(null); } }}
                     onCompositionStart={() => { notesComposingRef.current = true; if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }}
                     onCompositionEnd={event => { notesComposingRef.current = false; changeNotesText(selectedHexKey, event.currentTarget.value); notesTimerRef.current = setTimeout(finishNotesGroup, 500); }}
