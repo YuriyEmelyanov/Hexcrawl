@@ -13739,7 +13739,7 @@ export function App() {
       const source=parts?parseHexKey(parts[alias!.startsWith('waterPoi:')?1:2]):owners.length>1?before.selectedHex:geographicalSource;
       const selectedSource=source&&actualHexKeys(before.map).has(hexKey(source))?source:before.selectedHex;
       if(JSON.stringify(next)===JSON.stringify(parseDetail1StateV11(state))&&JSON.stringify(selectedSource)===JSON.stringify(before.selectedHex))return true;
-      rememberDetailFocus();
+      if(state.viewStep!==next.viewStep)rememberDetailFocus();
       const after=copyDocument({...before,map:{...before.map,physicalGrid:next},selectedHex:selectedSource,mapScale:before.mapScale*state.viewStep/next.viewStep});
       recordTransaction(before,after);applyPreparedDocument(after);setIsSidePanelCollapsed(false);return true;
     }catch{return false;}
