@@ -13712,6 +13712,9 @@ export function App() {
   };
   const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string):boolean=>{
     if(editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
+    // Every DETAIL1 pointer/keyboard/direct caller shares this guard. Finish
+    // changes revision; replay only this accepted navigation intent afterward.
+    if(preparationNavigation.current){requestPreparationExit(()=>selectDetailCell(cell,documentRevision.current,step,poiId));return false;}
     const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
     try{
       const next=parseDetail1StateV11({...state,selectedCell:cell,...(step?{viewStep:step}:{})});
