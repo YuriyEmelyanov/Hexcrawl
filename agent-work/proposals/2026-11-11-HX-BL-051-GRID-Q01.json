@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "id": "GRID-Q01",
+  "task_id": "HX-BL-051",
+  "status": "owner_clarification_pending",
+  "scope": "Only spatial extent of new generation after clicking available empty part of selected1/12/24mile display cell",
+  "problem": "Existing source generator uses6mile units; selected display grid alone cannot constrain its produced region.",
+  "options": [
+    {
+      "id": "A",
+      "recommended": true,
+      "behavior": "Click selects legal existing source candidate at world position; normal region may extend outside displayed cell.",
+      "impact": "Small reuse adapter; existing water/road algorithms and region size unchanged.1mile is a view/anchor, not a promise of one-mile generated area."
+    },
+    {
+      "id": "B",
+      "behavior": "New result must stay within the selected display cell.",
+      "impact": "New spatial generation/boundary behavior, especially1mile; requires further geometry and water/road specification before implementation."
+    }
+  ],
+  "approval_inferred": false,
+  "independent_work": "Programmer A/B stages in DTL1.1: select, camera, grid, local/coarse cards, size catalogue. No waiting_design_approval.",
+  "source": "Owner asks questions about substantial behavior choices. Noninteractive run records concrete alternatives without selecting a new generator contract."
+}
