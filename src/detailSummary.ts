@@ -40,7 +40,7 @@ export function detailSegmentCellIntersection(grid:DetailGrid,cell:DetailCell,se
  * cell is derived from its world point, never from a source-six owner. */
 export function summarizeDetailCell(state:Detail1State,anchor:DetailCell,terrain:ReadonlyMap<string,string>,geography:DetailSummaryGeography={}){
  const fine=createDetailGrid(1,state.grid.origin),grid=createDetailGrid(state.viewStep,state.grid.origin),source=createDetailGrid(6,state.grid.origin);
- const cell=worldToDetailCell(grid,detailCellCenter(fine,anchor)),polygon=detailCellPolygon(grid,cell),cellAreaSquareMiles=detailCellAreaSquareMiles(grid);
+ const cell=worldToDetailCell(grid,state.selectedWorldPoint??detailCellCenter(fine,anchor)),polygon=detailCellPolygon(grid,cell),cellAreaSquareMiles=detailCellAreaSquareMiles(grid);
  const intersections=detailPositiveAreaIntersections(source,polygon);
  const sources=intersections.filter(hit=>terrain.has(key(hit.cell))).map(hit=>({key:key(hit.cell),terrain:terrain.get(key(hit.cell))!,areaSquareMiles:hit.areaSquareMiles,partial:hit.areaSquareMiles<detailCellAreaSquareMiles(source)*(1-1e-10)}));
  const terrainAreas=new Map<string,number>();
@@ -63,7 +63,14 @@ export function summarizeDetailCell(state:Detail1State,anchor:DetailCell,terrain
    partial=area<total*(1-1e-10);
    partCells=p.cells.filter(c=>detailPositiveAreaIntersections(grid,detailCellPolygon(fine,c)).some(h=>key(h.cell)===key(cell))).length;
   }
-  byPoi.set(p.poiId,{poiId:p.poiId,legacyRef:p.legacyRef,partCells,totalCells:p.cells.length,partial,extent:p.extent,attachments:p.attachments});
+  // A large entity may meet water or a route in another part of its extent.
+  // Keep the accepted references intact, but expose only local contact points
+  // in a one-mile card; a point on the shared cell boundary remains relevant.
+  const attachments=state.viewStep===1?p.attachments.filter(attachment=>{
+   const point=attachment.kind==='water'?attachment.contact:attachment.entry;
+   return detailSegmentCellIntersection(grid,cell,{from:point,to:point})!==null;
+  }):p.attachments;
+  byPoi.set(p.poiId,{poiId:p.poiId,legacyRef:p.legacyRef,partCells,totalCells:p.cells.length,partial,extent:p.extent,attachments});
  }
  const riverOwners=new Map<number,{id:number;edgeIds:string[];crossingIds:string[];waterfallIds:string[];boundaryOnly:boolean}>();
  for(const river of geography.rivers??[]){

@@ -111,12 +111,16 @@ function diameter(polygons:readonly (readonly WorldPoint[])[]):number|null {
  let result=0;for(let i=0;i<points.length;i++)for(let j=0;j<i;j++)result=Math.max(result,Math.hypot(points[i].x-points[j].x,points[i].y-points[j].y));
  return result;
 }
-/** Legacy shapes have no saved anchor. Their deterministic display centroid is
- * only a compatibility fallback; reading them never stores/re-estimates it. */
+/** Legacy shapes have no saved anchor. Use their centroid when it lies in the
+ * shape, otherwise a literal cell centre/survey vertex. This compatibility
+ * fallback is not measurement; reading never stores it or re-estimates size. */
 export function detailFootprintWorldAnchor(footprint:DetailPoiFootprint,grid:DetailGrid):WorldPoint {
  if(footprint.worldAnchor)return footprint.worldAnchor;
  const polygon=footprint.extent.kind==='measured_polygon'?footprint.extent.sourcePolygon:footprint.cells.map(cell=>detailCellCenter(grid,cell));
- return {x:polygon.reduce((sum,p)=>sum+p.x,0)/polygon.length,y:polygon.reduce((sum,p)=>sum+p.y,0)/polygon.length};
+ const centroid={x:polygon.reduce((sum,p)=>sum+p.x,0)/polygon.length,y:polygon.reduce((sum,p)=>sum+p.y,0)/polygon.length};
+ if(footprint.extent.kind==='measured_polygon')return detailPointInPolygon(centroid,polygon)?centroid:polygon[0];
+ if(footprint.extent.kind==='manual'&&!footprint.cells.some(cell=>detailPointInPolygon(centroid,detailCellPolygon(grid,cell))))return detailCellCenter(grid,footprint.cells[0]);
+ return centroid;
 }
 export function detailFootprintExtentMiles(footprint:DetailPoiFootprint,grid:DetailGrid):number|null {
  const extent=footprint.extent;

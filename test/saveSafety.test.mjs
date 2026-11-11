@@ -299,7 +299,7 @@ test('DETAIL1 live document keeps physical grid and classification together thro
  await load(data);assert.deepEqual(alerts,[]);assert.deepEqual(snapshot(),data);
  g.render().undoMap();assert.deepEqual(snapshot(),before);g.render().redoMap();assert.deepEqual(snapshot(),data);
  g.render().changeGenerationMode('mythic');assert.deepEqual(snapshot().map,data.map);g.render().changeGenerationMode('classic');assert.deepEqual(snapshot(),data);
- const gridOnly=structuredClone(data);delete gridOnly.map.classification;await load(gridOnly);assert.deepEqual(snapshot(),gridOnly);assert.equal(snapshot().version,11);
+ const gridOnly=structuredClone(data);delete gridOnly.map.classification;await load(gridOnly);assert.deepEqual(snapshot(),gridOnly);assert.equal(snapshot().version,14);
  g.render().resetMap();assert.equal(snapshot().map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(snapshot(),gridOnly);
  g.render().setEditMode(true);g.render();g.render().deleteSelectedPoi();const deleted=snapshot();assert.deepEqual(deleted.map.physicalGrid.poiIdentities,{version:1,nextId:2,byLegacyRef:{}});g.render().undoMap();assert.deepEqual(snapshot(),gridOnly);g.render().redoMap();assert.deepEqual(snapshot(),deleted);
  g.render().setSelectedPoiKind('ruins');const replaced=snapshot();assert.equal(replaced.map.physicalGrid.poiIdentities.byLegacyRef['poi:1:2,0'],'detail-poi:2');assert.equal(replaced.map.physicalGrid.poiIdentities.nextId,3);g.render().undoMap();assert.deepEqual(snapshot(),deleted);g.render().redoMap();assert.deepEqual(snapshot(),replaced);await load(gridOnly);

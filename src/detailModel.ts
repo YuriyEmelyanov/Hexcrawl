@@ -1,6 +1,6 @@
 import {parseDetailPoiIdentities,assertDetailPoiOwners,type DetailPoiIdentities} from './detailIdentity.ts';
-import {createDetailGrid,detailPolygonArea,detailCellCenter,worldToDetailCell,validateDetailFootprint,type DetailCell,type DetailStep,type WorldPoint} from './detailGrid.ts';
-import {detailCatalogueExtent,type DetailSizeNamespace} from './detailSizes.ts';
+import {createDetailGrid,detailPolygonArea,detailCellCenter,detailCellPolygon,worldToDetailCell,validateDetailFootprint,type DetailCell,type DetailStep,type WorldPoint} from './detailGrid.ts';
+import {detailCatalogueExtent,detailPointInPolygon,type DetailSizeNamespace} from './detailSizes.ts';
 
 export type DetailAttachmentRef=
   |Readonly<{kind:'water';waterKind:'shore'|'river'|'water'|'crossing'|'rapid'|'waterfall';waterId:string;segmentId:string;contact:WorldPoint}>
@@ -18,6 +18,7 @@ export type Detail1State=Readonly<{
   source:Readonly<{stepMiles:6;physicalConvention:'known_across_flats'|'unknown';displayAssumption:'project_across_flats_6mi'}>;
   poiIdentities?:DetailPoiIdentities;
   selectedCell?:DetailCell; // Stable one-mile address, independent of the current overview step.
+  selectedWorldPoint?:WorldPoint; // Exact selection focus; a fine-cell address cannot reconstruct it.
   viewStep:DetailStep;poiFootprints:readonly DetailPoiFootprint[];
 }>;
 type Plain=Record<string,unknown>;
@@ -77,7 +78,7 @@ function attachment(value:unknown):DetailAttachmentRef {
  * retained function name keeps existing import callers compatible; the outer
  * save gate requires v14 for size geometry. Spatial refs are checked separately. */
 export function parseDetail1StateV11(value:unknown):Detail1State {
-  const extra=['poiIdentities','selectedCell'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
+  const extra=['poiIdentities','selectedCell','selectedWorldPoint'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
   const root=object(value,'DETAIL1 state',['schema','version','active','grid','source','viewStep','poiFootprints',...extra]);
   const poiIdentities=extra.includes('poiIdentities')?parseDetailPoiIdentities(root.poiIdentities):undefined;
   if(root.schema!=='hexcrawl.detail1'||![1,2].includes(root.version as number)||root.active!==true||![1,6,12,24].includes(root.viewStep as number)||!Array.isArray(root.poiFootprints)) throw Error('Invalid DETAIL1 state');
@@ -90,6 +91,13 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
     selectedCell={q:c.q as number,r:c.r as number};detailCellCenter(createDetailGrid(1,origin),selectedCell);
     selectedCell=Object.freeze(selectedCell);
   }
+  let selectedWorldPoint:WorldPoint|undefined;
+  if(extra.includes('selectedWorldPoint')){
+    if(root.version!==2||!selectedCell)throw Error('Selected world point requires DETAIL1 version2 and a selected cell');
+    selectedWorldPoint=worldPoint(root.selectedWorldPoint,'selected world point');
+    const cell=worldToDetailCell(createDetailGrid(1,origin),selectedWorldPoint);
+    if(cell.q!==selectedCell.q||cell.r!==selectedCell.r)throw Error('Selected world point does not match selected cell');
+  }
   const rawSource=object(root.source,'DETAIL1 source',['stepMiles','physicalConvention','displayAssumption']);
   if(rawSource.stepMiles!==6||!['known_across_flats','unknown'].includes(rawSource.physicalConvention as string)||rawSource.displayAssumption!=='project_across_flats_6mi') throw Error('Invalid DETAIL1 source');
   const ids=new Set<string>();
@@ -99,18 +107,21 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
     const worldAnchor=hasAnchor?worldPoint(p.worldAnchor,'POI world anchor'):undefined;
     if(worldAnchor)worldToDetailCell(createDetailGrid(1,origin),worldAnchor);
     const parsedExtent=extent(p.extent);
+    const parsedCells=cells(p.cells);
     if(root.version===1&&(worldAnchor||parsedExtent.kind==='representative'||parsedExtent.kind==='manual_size'))throw Error('New size geometry requires DETAIL1 version2');
     if(root.version===2&&!worldAnchor)throw Error('DETAIL1 version2 requires world anchor');
+    if(root.version===2&&parsedExtent.kind==='measured_polygon'&&!detailPointInPolygon(worldAnchor!,parsedExtent.sourcePolygon))throw Error('DETAIL1 anchor_outside_extent');
+    if(root.version===2&&parsedExtent.kind==='manual'&&!parsedCells.some(cell=>detailPointInPolygon(worldAnchor!,detailCellPolygon(createDetailGrid(1,origin),cell))))throw Error('DETAIL1 anchor_outside_extent');
     const poiId=text(p.poiId,'POI id');if(ids.has(poiId)) throw Error('Duplicate POI identity');ids.add(poiId);
     if(p.legacyRef!==null) text(p.legacyRef,'legacy POI reference');
     if(!Array.isArray(p.attachments)) throw Error('Invalid attachments');
     const attachments=Object.freeze(p.attachments.map(attachment));
     const attachmentKeys=attachments.map(a=>a.kind==='water'?`water:${a.waterId}:${a.segmentId}`:`route:${a.routeId}:${a.accessNodeId}`);
     if(new Set(attachmentKeys).size!==attachmentKeys.length) throw Error('Duplicate attachment reference');
-    return Object.freeze({...(worldAnchor?{worldAnchor}:{}),poiId,legacyRef:p.legacyRef as string|null,cells:cells(p.cells),extent:parsedExtent,attachments});
+    return Object.freeze({...(worldAnchor?{worldAnchor}:{}),poiId,legacyRef:p.legacyRef as string|null,cells:parsedCells,extent:parsedExtent,attachments});
   }));
   if(poiIdentities)for(const p of poiFootprints)if(p.legacyRef===null||poiIdentities.byLegacyRef[p.legacyRef]!==p.poiId)throw Error('Footprint identity does not match POI binding');
-  return Object.freeze({...(selectedCell?{selectedCell}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:root.version as 1|2,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
+  return Object.freeze({...(selectedCell?{selectedCell}:{}),...(selectedWorldPoint?{selectedWorldPoint}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:root.version as 1|2,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
 }
 
 export type LegacyDetailAdaptationPreview=Readonly<{

@@ -316,6 +316,7 @@ export function prepareDetailFootprintExtentEdit(map:DetailGeographyMap,rivers:r
  if(extent.kind==='measured_polygon')assertSimpleExtentPolygon(extent.sourcePolygon);
  const fine=createDetailGrid(1,state.grid.origin),anchor=detailFootprintWorldAnchor(state.poiFootprints.find(p=>p.poiId===poiId)!,fine);
  const selected=extent.kind==='measured_polygon'?detailPositiveAreaIntersections(fine,extent.sourcePolygon).map(p=>p.cell):extent.kind==='manual_size'?(extent.diameterMiles>=1?detailPositiveAreaIntersections(fine,detailCirclePolygon(anchor,extent.diameterMiles)).map(p=>p.cell):[worldToDetailCell(fine,anchor)]):cells??fail('manual_extent_requires_cells');
+ if(extent.kind==='measured_polygon'&&!detailPointInPolygon(anchor,extent.sourcePolygon)||extent.kind==='manual'&&!selected.some(cell=>detailPointInPolygon(anchor,detailCellPolygon(fine,cell))))fail('anchor_outside_extent');
  const next=parseDetail1StateV11({...state,version:extent.kind==='manual_size'?2:state.version,poiFootprints:state.poiFootprints.map(p=>({...p,...(extent.kind==='manual_size'&&!p.worldAnchor?{worldAnchor:detailFootprintWorldAnchor(p,fine)}:{}),...(p.poiId===poiId?{extent,cells:selected}:{})}))});
  validateDetailGeographyFootprints(map,rivers,next);return next;
 }

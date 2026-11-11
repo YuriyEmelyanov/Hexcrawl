@@ -6,6 +6,8 @@ The display is one full pointy grid of1/6/12/24miles across flats, including can
 
 POI-SIZE1 (51typed contexts) contains labelled project estimates, not measured historical sizes. Measured/manual geometry wins. Unknown or sub-mile sites have marker addresses, not minimum one-mile areas; meaningful extents have exposed union outlines only in the1mile view. Legacy default extents are re-estimated only in an explicit before/after preview with exact Cancel and Undo/Redo. Manual/measured legacy shapes remain intact.
 
+The exact selected world point is persisted separately from its one-mile address, so coarse boundary clicks select the cell actually clicked. Adding view metadata to a v1 selection fills only compatibility anchors; extent/cells/refs remain unchanged and estimates still require explicit preview.
+
 New anchored size provenance uses physicalGrid version2 and outer JSON version14; v11 physicalGrid version1 remains readable without automatic migration. Standalone PR496 does not include TABLES1/PF2: later unpublished v12/v13 payloads refuse safely until their separate integration is completed; no field dropping or compatibility claim is made. Plain legacy formats remain on their previous versions. This is an explicit integration limitation, not a reinterpretation of those other tasks.
 
 Generation outside a selected1/12/24cell remains GRID-Q01, awaiting the owner's choice. The established6mile candidate generator is retained; unsupported empty-cell creation refuses with a6mile-view instruction. No silent clipping or new hydrology contract is introduced. This open behavior prevents whole GRID acceptance and publication until resolved.

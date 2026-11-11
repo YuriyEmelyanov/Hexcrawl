@@ -13685,7 +13685,7 @@ export function App() {
       const map=captureMap();
       if(!map.regions.length&&!map.hexTerrainByKey.size)return false;
       if(map.physicalGrid?.version===2&&!map.physicalGrid.poiFootprints.some(p=>p.extent.kind==='default')&&map.physicalGrid.poiIdentities&&map.physicalGrid.poiFootprints.length===Object.keys(map.physicalGrid.poiIdentities.byLegacyRef).length)return false;
-      const preview=prepareDetailMapPreview(map),state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:preview.schemaVersion,active:true,viewStep:map.physicalGrid?.viewStep??6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints});
+      const preview=prepareDetailMapPreview(map),state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:preview.schemaVersion,active:true,viewStep:map.physicalGrid?.viewStep??6,...(map.physicalGrid?.selectedCell?{selectedCell:map.physicalGrid.selectedCell,...(map.physicalGrid.selectedWorldPoint?{selectedWorldPoint:map.physicalGrid.selectedWorldPoint}:{})}:{}),grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints});
       validateDetailMapFootprints(map,state);updateDetailAdaptation({revision:documentRevision.current,state,sizeChanges:preview.sizeChanges});setDetailAdaptationError(null);return true;
     }catch(error){setDetailAdaptationError(detailCommandError(error,language)??(language==='ru'?'Не удалось подготовить охваты. Карта не изменена.':'Could not prepare footprints. Your map is unchanged.'));return false;}
   };
@@ -13707,7 +13707,7 @@ export function App() {
     const layer=svg?.querySelector<SVGGElement>('[data-detail-view]'),matrix=layer?.getScreenCTM();
     if(!svg||!viewport||!state||!matrix)return;
     const rect=viewport.getBoundingClientRect(),factor=Math.sqrt(3)*HEX_SIZE/6;
-    const world=state.selectedCell?detailCellCenter(createDetailGrid(1,state.grid.origin),state.selectedCell):null;
+    const world=state.selectedWorldPoint??(state.selectedCell?detailCellCenter(createDetailGrid(1,state.grid.origin),state.selectedCell):null);
     const local=svg.createSVGPoint();if(world){local.x=(world.x-state.grid.origin.x)*factor+riverOffset.x;local.y=(world.y-state.grid.origin.y)*factor+riverOffset.y;}
     const selected=world?local.matrixTransform(matrix):null;
     const client=selected&&selected.x>=rect.left&&selected.x<=rect.right&&selected.y>=rect.top&&selected.y<=rect.bottom?{x:selected.x,y:selected.y}:{x:rect.left+viewport.clientWidth/2,y:rect.top+viewport.clientHeight/2};
@@ -13723,17 +13723,18 @@ export function App() {
     const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,viewStep:step}},mapScale:camera});
     recordTransaction(before,after);applyPreparedDocument(after);return true;
   };
-  const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string):boolean=>{
+  const selectDetailCell=(cell:AxialHex,expectedRevision=renderedDocumentRevision,step?:DetailStep,poiId?:string,worldPoint?:{x:number;y:number}):boolean=>{
     if(editMode||expectedRevision!==documentRevision.current||mutationBlocked(false)||notesEditorKey!==null||notesGroupRef.current||obstacleDraftRef.current)return false;
     const before=captureDocument(),state=before.map.physicalGrid;if(!state?.active)return false;
     try{
-      const next=parseDetail1StateV11({...state,selectedCell:cell,...(step?{viewStep:step}:{})});
+      const selection=worldPoint??detailCellCenter(createDetailGrid(1,state.grid.origin),cell);
+      const next=parseDetail1StateV11({...state,version:2,poiFootprints:state.poiFootprints.map(p=>p.worldAnchor?p:{...p,worldAnchor:detailFootprintWorldAnchor(p,createDetailGrid(1,state.grid.origin))}),selectedCell:cell,selectedWorldPoint:selection,...(step?{viewStep:step}:{})});
       // The fine address selects geography; source context resolves an entity.
       // Coincident owners stay a list until the user explicitly picks one.
       const owners=summarizeDetailCell(next,cell,new Map()).pois;
       const owner=poiId?owners.find(p=>p.poiId===poiId):owners.length===1?owners[0]:undefined;
       if(poiId&&!owner)return false;
-      const geographicalSource=worldToDetailCell(createDetailGrid(6,state.grid.origin),detailCellCenter(createDetailGrid(1,state.grid.origin),cell));
+      const geographicalSource=worldToDetailCell(createDetailGrid(6,state.grid.origin),selection);
       const alias=owner?.legacyRef,parts=alias?.split(':');
       const source=parts?parseHexKey(parts[alias!.startsWith('waterPoi:')?1:2]):owners.length>1?before.selectedHex:geographicalSource;
       const selectedSource=source&&actualHexKeys(before.map).has(hexKey(source))?source:before.selectedHex;
@@ -15831,7 +15832,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
         if(event.detail===0){const origin=physicalGridRef.current.grid.origin;selectDetailCell(worldToDetailCell(createDetailGrid(1,origin),detailCellCenter(createDetailGrid(6,origin),hex)));return;}
         const node=event.currentTarget,svg=node.ownerSVGElement,matrix=node.getScreenCTM();
         if(svg&&matrix){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;const at=p.matrixTransform(matrix.inverse()),origin=physicalGridRef.current.grid.origin;
-          selectDetailCell(worldToDetailCell(createDetailGrid(1,origin),{x:(at.x-riverOffset.x)*6/(Math.sqrt(3)*HEX_SIZE)+origin.x,y:(at.y-riverOffset.y)*6/(Math.sqrt(3)*HEX_SIZE)+origin.y}));return;
+          const world={x:(at.x-riverOffset.x)*6/(Math.sqrt(3)*HEX_SIZE)+origin.x,y:(at.y-riverOffset.y)*6/(Math.sqrt(3)*HEX_SIZE)+origin.y};selectDetailCell(worldToDetailCell(createDetailGrid(1,origin),world),renderedDocumentRevision,undefined,undefined,world);return;
         }
       }
       setSelectedHex({ q: hex.q, r: hex.r });
@@ -16238,10 +16239,10 @@ retainPoiNames(checkpoint,editorNamesRef.current);
     const state=physicalGridRef.current;if(!state?.active||editMode)return;
     const at=world??detailCellCenter(createDetailGrid(state.viewStep,state.grid.origin),display.cell);
     const source=worldToDetailCell(createDetailGrid(6,state.grid.origin),at),fine=worldToDetailCell(createDetailGrid(1,state.grid.origin),at);
-    if(actualHexKeys(captureMap()).has(hexKey(source))){selectDetailCell(fine);return;}
+    if(actualHexKeys(captureMap()).has(hexKey(source))){selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);return;}
     const candidate=positionedHexes.hexes.find(h=>h.kind==='candidate'&&h.key===hexKey(source));
     if(state.viewStep===6&&candidate){mapHexClickRef.current(candidate);return;}
-    selectDetailCell(fine);
+    selectDetailCell(fine,renderedDocumentRevision,undefined,undefined,at);
     setDetailAdaptationError(language==='ru'?'Создание региона в этой части карты пока доступно в режиме 6 миль.':'Creating a region here is currently available in the 6 mile view.');
   };
 
@@ -16637,7 +16638,7 @@ retainPoiNames(checkpoint,editorNamesRef.current);
               return <g data-detail-view={physicalGrid.viewStep} transform={mapRotationTransform} pointerEvents="none">
                 <g fill="none" stroke="#778397" strokeOpacity={.8} strokeWidth={.6}>
                   {cells.map(c=><polygon key={hexKey(c.cell)} data-detail-cell={hexKey(c.cell)} data-detail-accepted-fraction={c.acceptedFraction} data-detail-candidate={c.candidates.length?true:undefined} className="detail-cell-target" points={points(c.polygon)}
-                    aria-pressed={physicalGrid.selectedCell?hexKey(worldToDetailCell(grid,detailCellCenter(fine,physicalGrid.selectedCell)))===hexKey(c.cell):false}
+                    aria-pressed={physicalGrid.selectedCell?hexKey(worldToDetailCell(grid,physicalGrid.selectedWorldPoint??detailCellCenter(fine,physicalGrid.selectedCell)))===hexKey(c.cell):false}
                     fill="transparent" strokeDasharray={c.acceptedFraction===0?'3 2':undefined} pointerEvents={editMode?'none':'all'} role={editMode?undefined:'button'} tabIndex={editMode?undefined:0}
                     aria-label={`${physicalGrid.viewStep} ${language==='ru'?'миль, ячейка':'mile cell'} ${hexKey(c.cell)}`}
                     onClick={event=>{event.stopPropagation();if(event.detail>1)return;const svg=event.currentTarget.ownerSVGElement,m=event.currentTarget.getScreenCTM();if(svg&&m){const p=svg.createSVGPoint();p.x=event.clientX;p.y=event.clientY;const hit=p.matrixTransform(m.inverse());detailDisplayClickRef.current(c,{x:(hit.x-riverOffset.x)*6/(Math.sqrt(3)*HEX_SIZE)+origin.x,y:(hit.y-riverOffset.y)*6/(Math.sqrt(3)*HEX_SIZE)+origin.y});}else detailDisplayClickRef.current(c);}}

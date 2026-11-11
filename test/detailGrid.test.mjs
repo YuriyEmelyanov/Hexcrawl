@@ -74,6 +74,12 @@ test('local cards exclude other source-cell POIs and absent paths while retainin
   poi('tower',{x:.5,y:0},[{q:0,r:0},{q:1,r:0}],measured),
   poi('mill',{x:2,y:0},[{q:2,r:0}],{kind:'default',reason:'unknown_size',policy:'one_cell'}),
   poi('city',{x:1,y:0},[{q:0,r:0},{q:1,r:0},{q:2,r:0}],{kind:'manual_size',diameterMiles:1.5,basis:'conditional',note:'Assumed city extent'})]};
+ const city=state.poiFootprints.find(p=>p.poiId==='city');
+ city.attachments=[
+  {kind:'water',waterKind:'river',waterId:'river:local',segmentId:'local-edge',contact:{x:.4,y:0}},
+  {kind:'route',routeKind:'road',routeId:'road:boundary',accessNodeId:'boundary-port',entry:{x:.5,y:0}},
+  {kind:'water',waterKind:'river',waterId:'river:elsewhere',segmentId:'elsewhere-edge',contact:{x:1.2,y:0}},
+  {kind:'route',routeKind:'trail',routeId:'road:elsewhere',accessNodeId:'elsewhere-port',entry:{x:1.3,y:0}}];
  const river=(id,from,to)=>({id,edges:[{id:`edge:${id}`,segment:{from,to},rapid:false,crossings:[]}],starts:[],waterfalls:[]});
  const rivers=[river(1,{x:-1,y:0},{x:1,y:0}),river(2,polygon[0],polygon[1]),river(3,polygon[0],{x:1,y:-1/Math.sqrt(3)}),river(4,{x:2,y:0},{x:3,y:0})];
  const roads=[{id:1,segments:[{from:{q:0,r:0},to:{q:1,r:0},kind:'road'},{from:{q:0,r:0},to:{q:1,r:0},kind:'trail'}]},{id:2,segments:[{from:{q:1,r:0},to:{q:2,r:0},kind:'road'}]}];
@@ -81,6 +87,10 @@ test('local cards exclude other source-cell POIs and absent paths while retainin
  const before=structuredClone({state,rivers,roads});
  const local=summarizeDetailCell(state,{q:0,r:0},terrain,geography);
  assert.deepEqual(local.pois.map(p=>p.poiId),['city','tower']);assert.equal(local.pois.find(p=>p.poiId==='tower').partial,false,'small measured object belongs to the single cube-nearest anchor owner');
+ const localCity=local.pois.find(p=>p.poiId==='city');
+ assert.deepEqual(localCity.attachments,[city.attachments[0],city.attachments[1]],'a city part lists only water contacts and route entries in its closed local cell');
+ assert.strictEqual(localCity.attachments[0],city.attachments[0],'read-only filtering preserves accepted attachment references');
+ assert.deepEqual(summarizeDetailCell({...state,viewStep:12},{q:0,r:0},terrain).pois.find(p=>p.poiId==='city').attachments,city.attachments,'overview retains the full entity attachment context');
  assert.deepEqual(local.rivers.map(r=>[r.id,r.boundaryOnly]),[[1,false],[2,true],[3,true]]);
  assert.deepEqual(local.routes.map(r=>[r.id,r.kinds]),[[1,['road','trail']]],'one route identity, with only kinds actually present');
  assert.deepEqual(local.notes.map(n=>n.text),['Local source-area note']);
@@ -89,4 +99,11 @@ test('local cards exclude other source-cell POIs and absent paths while retainin
  assert.throws(()=>detailSegmentCellIntersection(fine,{q:0,r:0},{from:{x:NaN,y:0},to:{x:0,y:0}}));
  assert.deepEqual({state,rivers,roads},before,'summary reads cannot move accepted geometry or attachments');
  assert.equal(detailMarkerGroups(state).filter(g=>g.owners.some(p=>p.poiId==='tower')).length,1);
+ // G02: retaining the exact world click prevents a fine-cell centre from
+ // rounding a point just inside a coarse cell back across its shared edge.
+ for(const viewStep of [6,12,24]){
+  const selectedWorldPoint={x:viewStep/2+.01,y:0},selectedCell=worldToDetailCell(fine,selectedWorldPoint);
+  assert.deepEqual(worldToDetailCell(createDetailGrid(viewStep),detailCellCenter(fine,selectedCell)),{q:0,r:0},'the centre-only fallback reproduces the boundary ambiguity');
+  assert.deepEqual(summarizeDetailCell({...state,viewStep,selectedCell,selectedWorldPoint},selectedCell,terrain).cell,{q:1,r:0},`the exact world click selects the intended ${viewStep}-mile cell`);
+ }
 });

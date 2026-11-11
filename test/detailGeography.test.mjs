@@ -1,4 +1,5 @@
 import {prepareDetailFootprintExtentEdit} from '../src/detailGeography.ts';
+import {parseDetail1StateV11} from '../src/detailModel.ts';
 import {detailCellPolygon,createDetailGrid} from '../src/detailGrid.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -24,6 +25,7 @@ test('live DETAIL1 preview projects actual capital/Seat and every assigned road 
   const manual=structuredClone(preview);manual.poiFootprints[0].extent={kind:'manual',basis:'conditional',note:'Явный условный охват'};manual.poiFootprints[0].cells=[...new Map([...poi.cells,{q:12,r:1}].map(c=>[`${c.q},${c.r}`,c])).values()];
   assert.doesNotThrow(()=>validate(h,before.map,manual));
   const original=state(preview),rivers=h.geometry.detailMapRiverGeometry(before.map,preview.grid.origin),copy=structuredClone(original);
+  const selected=parseDetail1StateV11({...original,selectedCell:{q:12,r:0},selectedWorldPoint:{x:12.49,y:0}});assert.deepEqual(selected.selectedWorldPoint,{x:12.49,y:0});assert.deepEqual(parseDetail1StateV11(JSON.parse(JSON.stringify(selected))).selectedWorldPoint,{x:12.49,y:0});
   const changed=prepareDetailFootprintExtentEdit(before.map,rivers,original,poi.poiId,manual.poiFootprints[0].extent,manual.poiFootprints[0].cells);assert.deepEqual(structuredClone(original),copy);assert.equal(changed.poiFootprints[0].poiId,poi.poiId);assert.ok(Object.isFrozen(changed));
   assert.throws(()=>prepareDetailFootprintExtentEdit(before.map,rivers,original,poi.poiId,manual.poiFootprints[0].extent,[{q:999,r:999}]));assert.deepEqual(structuredClone(original),copy);
   const measured=structuredClone(preview);measured.poiFootprints[0].extent={kind:'measured_polygon',sourceId:'survey:1',unit:'mile',method:'positive_area_intersection',sourcePolygon:detailCellPolygon(createDetailGrid(1),{q:12,r:0})};measured.poiFootprints[0].cells=[{q:12,r:0}];assert.doesNotThrow(()=>validate(h,before.map,measured));
@@ -83,6 +85,10 @@ test('actual DETAIL1 extent command records one exact undo/redo transaction and 
  const withoutGrid=d=>{const c=structuredClone(d);delete c.map.physicalGrid;return c;};assert.deepEqual(withoutGrid(after),withoutGrid(before));
  assert.equal(h.render().editDetailFootprintExtent(poi.poiId,extent,cells),true);assert.equal(h.render().undoHistory.length,stacks[0].length+1,'no-op does not add history');
  const saved=structuredClone(h.render().captureDocument()),history=structuredClone([h.render().undoHistory,h.render().redoHistory]);
+ // REVIEW-P2: an extent edit preserves the accepted anchor. A small survey or
+ // manual contour elsewhere must refuse before document/history writes.
+ for(const [remoteExtent,remoteCells]of [[{kind:'measured_polygon',sourceId:'survey:remote',unit:'mile',method:'positive_area_intersection',sourcePolygon:Array.from({length:32},(_,i)=>({x:.2*Math.cos(i*Math.PI/16),y:.2*Math.sin(i*Math.PI/16)}))},undefined],[extent,[{q:0,r:0}]]])assert.equal(h.render().editDetailFootprintExtent(poi.poiId,remoteExtent,remoteCells),false);
+ assert.deepEqual(structuredClone(h.render().captureDocument()),saved);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),history);
  assert.equal(oldCommand(poi.poiId,extent,[cell]),false,'consumed command cannot mutate a newer document');
  assert.equal(h.render().editDetailFootprintExtent(poi.poiId,extent,[{q:999,r:999}]),false);
  assert.deepEqual(structuredClone(h.render().captureDocument()),saved);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),history);
@@ -197,7 +203,7 @@ test('ordinary v11 and v14 DETAIL1 imports roundtrip active extents and refuse c
   const exported=JSON.parse(JSON.stringify(target.render().createSaveData()));delete exported.savedAt;delete data.savedAt;assert.deepEqual(exported,data,'exact save roundtrip');
   target.render().undoMap();assert.deepEqual(structuredClone(target.render().captureDocument()),before);target.render().redoMap();assert.deepEqual(structuredClone(target.render().captureDocument()),after);target.render().undoMap();
   const accepted=structuredClone(target.render().captureDocument()),stacks=structuredClone([target.render().undoHistory,target.render().redoHistory]);
-  const corruptions=[d=>d.version=12,d=>d.map.physicalGrid.poiFootprints[0].cells=[{q:999,r:999}],d=>d.map.physicalGrid.poiFootprints[0].poiId='detail-poi:999',d=>d.map.physicalGrid.poiFootprints[0].legacyRef='poi:999:0,0',d=>d.map.physicalGrid.poiFootprints[0].cells=[]];
+  const corruptions=[d=>d.version=12,d=>d.map.physicalGrid.poiFootprints[0].cells=[{q:999,r:999}],d=>d.map.physicalGrid.poiFootprints[0].poiId='detail-poi:999',d=>d.map.physicalGrid.poiFootprints[0].legacyRef='poi:999:0,0',d=>d.map.physicalGrid.poiFootprints[0].cells=[],d=>d.map.physicalGrid.poiFootprints[0].worldAnchor={x:1e9,y:1e9},d=>{d.map.physicalGrid.selectedCell={q:12,r:0};d.map.physicalGrid.selectedWorldPoint={x:0,y:0};}];
   if(data.map.knave)corruptions.push(d=>d.map.physicalGrid.source.physicalConvention='known_across_flats');
   if(data.map.physicalGrid.poiFootprints[0].attachments.length)corruptions.push(d=>{const a=d.map.physicalGrid.poiFootprints[0].attachments[0];if(a.kind==='water')a.waterId='sea:999';else a.accessNodeId='missing-port';});
   for(const mutate of corruptions){const bad=structuredClone(data);mutate(bad);const old=alerts.length;await load(bad);assert.equal(alerts.length,old+1);assert.deepEqual(structuredClone(target.render().captureDocument()),accepted);assert.deepEqual(structuredClone([target.render().undoHistory,target.render().redoHistory]),stacks);}
@@ -260,10 +266,10 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
 
  // GRID-C08: this existing explicit-preview/history case also covers old accepted
  // project defaults versus explicit manual/surveyed extents. Reading is literal.
- for(const variant of ['default','manual','measured']){
+ for(const variant of ['default','manual','measured','concave_manual']){
   const legacy=await importMap(regionFixture()),legacyDoc=structuredClone(legacy.render().captureDocument()),p=prepare(legacy),old=structuredClone(state(p));old.version=1;
-  const owner=old.poiFootprints[0];delete owner.worldAnchor;owner.cells=[{q:12,r:0}];
-  owner.extent=variant==='default'?{kind:'default',reason:'unknown_size',policy:'one_cell'}:variant==='manual'?{kind:'manual',basis:'conditional',note:'Preserve authored cells'}:{kind:'measured_polygon',sourceId:'survey:0.4-mile',unit:'mile',method:'positive_area_intersection',sourcePolygon:Array.from({length:32},(_,i)=>({x:12+.2*Math.cos(i*Math.PI/16),y:.2*Math.sin(i*Math.PI/16)}))};
+  const owner=old.poiFootprints[0];delete owner.worldAnchor;owner.cells=variant==='concave_manual'?[{q:13,r:0},{q:12,r:1},{q:11,r:1},{q:11,r:0},{q:12,r:-1},{q:13,r:-1}]:[{q:12,r:0}];
+  owner.extent=variant==='default'?{kind:'default',reason:'unknown_size',policy:'one_cell'}:variant.endsWith('manual')?{kind:'manual',basis:'conditional',note:'Preserve authored cells'}:{kind:'measured_polygon',sourceId:'survey:0.4-mile',unit:'mile',method:'positive_area_intersection',sourcePolygon:Array.from({length:32},(_,i)=>({x:12+.2*Math.cos(i*Math.PI/16),y:.2*Math.sin(i*Math.PI/16)}))};
   legacyDoc.map.physicalGrid=old;legacy.render().applyDocument(legacyDoc);legacy.render();legacy.guardRandom();const before=structuredClone(legacy.render().captureDocument()),history=structuredClone([legacy.render().undoHistory,legacy.render().redoHistory]);
   assert.equal(legacy.render().startDetailAdaptation(),true);const preview=legacy.render().detailAdaptation,next=preview.state.poiFootprints[0];
   if(variant==='default'){assert.equal(next.extent.kind,'representative');assert.equal(next.extent.representativeExtentMiles,.3);assert.equal(next.cells.length,1);}else {assert.deepEqual(structuredClone(next.extent),owner.extent);assert.deepEqual(structuredClone(next.cells),owner.cells);}
@@ -274,6 +280,16 @@ test('legacy DETAIL1 preview cancels unchanged and Apply is one guarded exact do
  assert.equal(h.render().selectDetailCell({q:12,r:0},undefined,1),true);assert.equal(h.render().captureDocument().map.physicalGrid.viewStep,1);
  h.render().clickSourceHex({q:3,r:0});assert.deepEqual(structuredClone(h.render().selectedHex),{q:3,r:0});assert.deepEqual(structuredClone(h.render().captureDocument().map.physicalGrid.selectedCell),{q:18,r:0});assert.deepEqual(structuredClone(h.render().captureDocument().map.generation),chosen.map.generation);
  const beforeRepeat=structuredClone(h.render().captureDocument()),repeatStacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);h.render().clickSourceHex({q:2,r:0},2);assert.deepEqual(structuredClone(h.render().captureDocument()),beforeRepeat);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),repeatStacks);
+
+ // REVIEW-P1: an exact accepted-world pointer near a display boundary must
+ // survive the fine address and an actual v14 import without recentering.
+ const boundary=await importMap(regionFixture());assert.equal(boundary.render().startDetailAdaptation(),true);assert.equal(boundary.render().applyDetailAdaptation(),true);boundary.guardRandom();
+ const boundaryStreams=structuredClone(boundary.render().captureDocument().map.generation);
+ for(const step of [6,12,24]){
+  assert.equal(boundary.render().setDetailViewStep(step),true);const world={x:step/2+.01,y:0};boundary.render().detailDisplayClickRef.current({cell:{q:1,r:0}},world);boundary.render();
+  assert.deepEqual(structuredClone(boundary.render().detailSummary.cell),{q:1,r:0});assert.deepEqual(structuredClone(boundary.render().captureDocument().map.physicalGrid.selectedWorldPoint),world);assert.deepEqual(structuredClone(boundary.render().captureDocument().map.generation),boundaryStreams);
+  const exported=JSON.parse(JSON.stringify(boundary.render().createSaveData()));assert.equal(exported.version,14);const restored=await importMap(exported);assert.deepEqual(structuredClone(restored.render().captureDocument().map.physicalGrid.selectedWorldPoint),world);assert.deepEqual(structuredClone(restored.render().detailSummary.cell),{q:1,r:0});
+ }
 
 
 
