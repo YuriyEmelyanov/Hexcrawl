@@ -1,0 +1,213 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-11T1417-programmer-PR496-C-FILL",
+  "task_id": "HX-BL-051",
+  "stage_id": "DETAIL1-C-FILL",
+  "role": "programmer",
+  "role_selection_reason": "Explicit owner priority finish PR496 first; approved DTL1.2 implementation ready after analyst1357; own claim acquired and no foreign claim superseded.",
+  "started_at": "2026-11-11T14:17:38.113Z",
+  "completed_at": "2026-11-11T15:04:28.477Z",
+  "status": "implemented_verification_blocked_browser",
+  "full_task_complete": false,
+  "implementation_completed": true,
+  "execution_running": false,
+  "pr": 496,
+  "branch": "agent/hx-bl-051-detail1",
+  "base_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+  "checkpoint_sha": "2315ad47649b26ee7af41a99e164696d1d7213d5",
+  "head_sha": "0d19ac6a60f245cede095040ce24b682839cd17f",
+  "tree_sha": "b657da6915ea6ab42a33c759815d6174a9958781",
+  "spec_ref": "agent-work/specs/HX-BL-051-DETAIL1.md",
+  "spec_version": "DTL-1.2",
+  "claim_ref": "agent-work/claims/2026-11-11T1417-programmer-PR496-C-FILL.json",
+  "checks_ref": "agent-work/evidence/DETAIL1-C-FILL-1417/checks.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-11T1417-PR496-C-FILL-next.json",
+  "source_readback_ref": "agent-work/evidence/DETAIL1-C-FILL-1417/source-readback.json",
+  "test_change_summary": {
+    "base_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+    "head_sha": "0d19ac6a60f245cede095040ce24b682839cd17f",
+    "source": "Exact base/head diff; literal registered node:test callbacks in existing suites; harness/import/assertion lines are not cases.",
+    "suite": "Node test/*.test.mjs",
+    "added": 5,
+    "removed": 0,
+    "modified": 0,
+    "base_cases": 391,
+    "head_cases": 396,
+    "files": [
+      {
+        "path": "test/detailDisplay.test.mjs",
+        "added": 2,
+        "removed": 0,
+        "modified": 0,
+        "requirements": [
+          "F02",
+          "F03",
+          "F04",
+          "F05"
+        ],
+        "scenario_risk": "7/19 target geometry/water vs placeholder; legal deterministic anchor and strict progress bound",
+        "reuse_or_new_reason": "Existing four display tests cover projection, not generation target/frontier/progress; reused production geometry and same runner."
+      },
+      {
+        "path": "test/detailGeography.test.mjs",
+        "added": 3,
+        "removed": 0,
+        "modified": 0,
+        "requirements": [
+          "F01",
+          "F05",
+          "F06",
+          "F07",
+          "F08",
+          "F09",
+          "F10"
+        ],
+        "scenario_risk": "Real App fill success and two histories/roundtrip; late failure/cancel/no-progress/stale rollback; whole Mythic boundary",
+        "reuse_or_new_reason": "Pure policy does not verify React state or generation checkpoints. Existing real-App suite reused for three distinct lifecycle risks."
+      }
+    ],
+    "parameter_profiles": {
+      "geometric_inputs_inside_one_case": 8,
+      "success_profiles_inside_one_case": [
+        "Classic pointer",
+        "Knave pointer",
+        "Classic keyboard"
+      ],
+      "rollback_profiles_inside_one_case": [
+        "cancel",
+        "late exception",
+        "no progress"
+      ],
+      "mythic_profiles_inside_one_case": 1,
+      "note": "Profiles inside one registered callback are listed separately; no independent case registrations are implied."
+    },
+    "targeted_runs": [
+      {
+        "suite": "Node detailDisplay",
+        "executed": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "Node detailGeography C-FILL subset",
+        "executed": 3,
+        "passed": 3,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "other_suites": [
+      {
+        "suite": "Browser DETAIL1 sequential workflow",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario_risk": "Real keyboard coarse fill, busy/44px 1500/390/320, Escape exact rollback, one UndoRedo, actual before/after saves/screenshots",
+        "reuse_or_new_reason": "Extended existing import/edit/history/export flow; no new runner; screenshot-only clock hold is not performance evidence.",
+        "executed": 0,
+        "passed": 0,
+        "skipped": 0,
+        "status": "blocked_before_browser_launch"
+      },
+      {
+        "suite": "Browser RNG",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "executed": 0,
+        "passed": 0,
+        "skipped": 0,
+        "status": "blocked_before_browser_launch"
+      }
+    ],
+    "temporary_reviewer_diagnostics": {
+      "permanent_cases_added": 0,
+      "reference": "agent-work/evidence/DETAIL1-C-FILL-1417/independent-review.json",
+      "scope": "Missing frontier/stale old job and sea-pocket negative/no-progress; do not add to Node counts."
+    },
+    "full_run": {
+      "command": "npm run check",
+      "node": "v24.22.1",
+      "executed": 396,
+      "passed": 396,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 857088.161618,
+      "tsc": "passed",
+      "build": "passed",
+      "exit_code": 0
+    }
+  },
+  "outcome": "Actual App now fills selected12/24 cell via repeated normal regions/whole Mythic kingdoms with fresh state, exact full rollback/cancel/stale guards and one editor UndoRedo, retaining ordinary generationHistory. Pure policy uses accepted geography and deterministic current legal frontier; one-mile normal action and six-mile baseline retained.",
+  "validation": {
+    "npm_check": "passed_396_of_396_Node_build_tsc",
+    "hosted_check": "success",
+    "browser_rng_actual_UI": "blocked_before_scenarios",
+    "independent_verdict": "No confirmed must-fix in examined contracts; whole496 acceptance incomplete",
+    "scope_limit": "No PR502/500/501 transplant or release; no score increase."
+  },
+  "blockers": [
+    {
+      "kind": "missing_evidence_environment",
+      "id": "BROWSER-RUNTIME",
+      "confirmed_product_defect": false,
+      "reason": "Local Chromium socket EPERM; exactSHA hosted browser/world-random/presentation failed apt DNS before scenarios; cloudUI connection refused",
+      "next_role": "programmer",
+      "next_step": "На том же SHA завершить обязательные browser/RNG и actual до/после 1500/390/320 RU/EN в рабочей браузерной среде; предъявить фактический интерфейс владельцу без ожидания дизайн-согласования. Затем независимая проверка всего PR496 и актуальный score_assessment1.2. При подтверждённом дефекте исправить в496 и перепроверить новыйSHA."
+    }
+  ],
+  "next_task_id": "HX-BL-051",
+  "next_role": "programmer",
+  "next_step": "На том же SHA завершить обязательные browser/RNG и actual до/после 1500/390/320 RU/EN в рабочей браузерной среде; предъявить фактический интерфейс владельцу без ожидания дизайн-согласования. Затем независимая проверка всего PR496 и актуальный score_assessment1.2. При подтверждённом дефекте исправить в496 и перепроверить новыйSHA.",
+  "authority_status": "Approved same task and scope. No new start/design approval required. Publication not authorized.",
+  "owner_decision_required": false,
+  "review_ready": false,
+  "independent_accepted": false,
+  "release_authorized": false,
+  "score_update_status": "not_applicable_unpublished",
+  "score_model_version": "1.2",
+  "score_assessment_ref": "agent-work/evidence/DETAIL1-C-FILL-1417/score-assessment1.2.json",
+  "confirmed_points": null,
+  "unverified_weight": 1000,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-11T14:17:38.113Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-11T15:04:28.477Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true,
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "subagent_checks": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "observed_at": "2026-11-11T14:48:31.165Z",
+        "actual_is_enabled": true,
+        "status": "checked",
+        "automation_updated_at": "2026-11-11T12:01:52.782028+00:00",
+        "error": null
+      },
+      "end": {
+        "observed_at": "2026-11-11T14:52:19.520Z",
+        "actual_is_enabled": true,
+        "status": "checked",
+        "automation_updated_at": "2026-11-11T12:01:52.782028+00:00",
+        "error": null
+      },
+      "restoration_performed": false,
+      "schedule_changed": false,
+      "errors": [],
+      "scope": "Point-in-time observations only; no cause of any prior disablement inferred."
+    },
+    "limitation": "Point-in-time actual peek observations only; no guarantee against later service disablement. Schedule/prompt unchanged in this run; existing two-hour cadence retained."
+  }
+}

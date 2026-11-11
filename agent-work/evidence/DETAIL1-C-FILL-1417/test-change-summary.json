@@ -1,0 +1,116 @@
+{
+  "base_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+  "head_sha": "0d19ac6a60f245cede095040ce24b682839cd17f",
+  "source": "Exact base/head diff; literal registered node:test callbacks in existing suites; harness/import/assertion lines are not cases.",
+  "suite": "Node test/*.test.mjs",
+  "added": 5,
+  "removed": 0,
+  "modified": 0,
+  "base_cases": 391,
+  "head_cases": 396,
+  "files": [
+    {
+      "path": "test/detailDisplay.test.mjs",
+      "added": 2,
+      "removed": 0,
+      "modified": 0,
+      "requirements": [
+        "F02",
+        "F03",
+        "F04",
+        "F05"
+      ],
+      "scenario_risk": "7/19 target geometry/water vs placeholder; legal deterministic anchor and strict progress bound",
+      "reuse_or_new_reason": "Existing four display tests cover projection, not generation target/frontier/progress; reused production geometry and same runner."
+    },
+    {
+      "path": "test/detailGeography.test.mjs",
+      "added": 3,
+      "removed": 0,
+      "modified": 0,
+      "requirements": [
+        "F01",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10"
+      ],
+      "scenario_risk": "Real App fill success and two histories/roundtrip; late failure/cancel/no-progress/stale rollback; whole Mythic boundary",
+      "reuse_or_new_reason": "Pure policy does not verify React state or generation checkpoints. Existing real-App suite reused for three distinct lifecycle risks."
+    }
+  ],
+  "parameter_profiles": {
+    "geometric_inputs_inside_one_case": 8,
+    "success_profiles_inside_one_case": [
+      "Classic pointer",
+      "Knave pointer",
+      "Classic keyboard"
+    ],
+    "rollback_profiles_inside_one_case": [
+      "cancel",
+      "late exception",
+      "no progress"
+    ],
+    "mythic_profiles_inside_one_case": 1,
+    "note": "Profiles inside one registered callback are listed separately; no independent case registrations are implied."
+  },
+  "targeted_runs": [
+    {
+      "suite": "Node detailDisplay",
+      "executed": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "suite": "Node detailGeography C-FILL subset",
+      "executed": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "other_suites": [
+    {
+      "suite": "Browser DETAIL1 sequential workflow",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "Real keyboard coarse fill, busy/44px 1500/390/320, Escape exact rollback, one UndoRedo, actual before/after saves/screenshots",
+      "reuse_or_new_reason": "Extended existing import/edit/history/export flow; no new runner; screenshot-only clock hold is not performance evidence.",
+      "executed": 0,
+      "passed": 0,
+      "skipped": 0,
+      "status": "blocked_before_browser_launch"
+    },
+    {
+      "suite": "Browser RNG",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "executed": 0,
+      "passed": 0,
+      "skipped": 0,
+      "status": "blocked_before_browser_launch"
+    }
+  ],
+  "temporary_reviewer_diagnostics": {
+    "permanent_cases_added": 0,
+    "reference": "agent-work/evidence/DETAIL1-C-FILL-1417/independent-review.json",
+    "scope": "Missing frontier/stale old job and sea-pocket negative/no-progress; do not add to Node counts."
+  },
+  "full_run": {
+    "command": "npm run check",
+    "node": "v24.22.1",
+    "executed": 396,
+    "passed": 396,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 857088.161618,
+    "tsc": "passed",
+    "build": "passed",
+    "exit_code": 0
+  }
+}
