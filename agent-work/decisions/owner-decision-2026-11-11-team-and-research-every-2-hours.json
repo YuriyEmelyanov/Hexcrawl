@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "id": "owner-decision-2026-11-11-team-and-research-every-2-hours",
+  "recorded_at": "2026-11-11T10:50:58.512Z",
+  "source": "Direct owner instruction in existing HexCrawl team chat",
+  "quote": "Сделай запуск агентов раз в два часа и разработки и исследования.",
+  "scope": "Change both existing HexCrawl automation schedules from hourly interval1 to interval2; enable their recurring launches. Preserve prompts, roles, task approvals, publication gates, claims and product priority.",
+  "status": "applied_verified_by_peek",
+  "automations": [
+    {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "previous_schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "previous_is_enabled": true,
+      "is_enabled": true,
+      "start": {
+        "checked_at": "2026-11-11T10:49:36.194Z",
+        "is_enabled": true,
+        "status": "checked",
+        "method": "automations.peek",
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      },
+      "end": {
+        "checked_at": "2026-11-11T10:51:24.581Z",
+        "status": "checked",
+        "method": "automations.peek",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      },
+      "enabled_changed": false,
+      "prompt_unchanged": true,
+      "default_timezone_unchanged": true,
+      "next_run_time": "2026-11-11T15:00:00+03:00"
+    },
+    {
+      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "title": "Исследователь HexCrawl",
+      "previous_schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+      "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+      "previous_is_enabled": false,
+      "is_enabled": true,
+      "start": {
+        "checked_at": "2026-11-11T10:49:38.935Z",
+        "is_enabled": false,
+        "status": "checked",
+        "method": "automations.peek",
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      },
+      "end": {
+        "checked_at": "2026-11-11T10:51:24.711Z",
+        "status": "checked",
+        "method": "automations.peek",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      },
+      "enabled_changed": true,
+      "prompt_unchanged": true,
+      "default_timezone_unchanged": true,
+      "next_run_time": "2026-11-11T20:30:00+08:00"
+    }
+  ],
+  "phase": {
+    "timezone": "Europe/Moscow",
+    "team": "Odd hours at :00",
+    "research": "Odd hours at :30",
+    "next_team": "2026-11-11T15:00:00+03:00",
+    "next_research": "2026-11-11T15:30:00+03:00",
+    "note": "Existing DTSTART anchors and minute offsets preserved; researcher UTC DTSTART/default timezone were not changed."
+  },
+  "disabled_researcher_observation": {
+    "is_enabled": false,
+    "cause": "unknown",
+    "action": "Enabled the same existing task under current explicit instruction; no new automation created."
+  },
+  "supersedes": "Prior hourly cadence references only. All other authority/process instructions continue.",
+  "release_authorized": false,
+  "new_product_authority": false
+}
