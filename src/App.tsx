@@ -40,7 +40,7 @@ import {prepareObstacleEdit,migrateLegacyObstacles,normalizeObstacleCounter,type
 import { kingdomBoundary } from './modes/kingdomBoundaries';
 import { createGenerationLogger, MAX_REGION_ATTEMPTS, type GenerationEvent } from './generationDiagnostics';
 import { solveRiverNetwork, validateRiverNetwork, minimumLakeHexes, isFullness, type RiverNetwork as ModelNetwork, type RiverEdge as ModelEdge, type SolveResult as ModelSolveResult } from './riverModel/core';
-import { type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactNode, type ChangeEvent, type CSSProperties, type KeyboardEvent, type MouseEvent, type WheelEvent, useEffect, useMemo, useRef, useState } from 'react';
 import {
   getOutgoingConnectorFullnessFromEndpoint,
   type RiverFullness
@@ -11888,6 +11888,11 @@ export function App() {
   const [kingdomJob, setKingdomJob] = useState<KingdomJob | null>(null);
   const [detailedRenderReady, setDetailedRenderReady] = useState(true);
   const [physicalGrid,setPhysicalGrid]=useState<Detail1State|undefined>();
+  // Presentation only: keep the last accepted scene while the generator builds
+  // provisional paths. Never put this snapshot in the saved document/history.
+  const fineBusyViewRef=useRef<{artwork:ReactNode;panel:ReactNode;width:number;height:number}|null>(null);
+  const busyFineView=kingdomJob?fineBusyViewRef.current:null;
+  useEffect(()=>{if(!kingdomJob)fineBusyViewRef.current=null;},[kingdomJob]);
   const physicalGridRef=useRef(physicalGrid);physicalGridRef.current=physicalGrid;
   const updatePhysicalGrid=(state:Detail1State|undefined)=>{physicalGridRef.current=state;setPhysicalGrid(state);};
   const oneMilePreviewRef=useRef<{revision:number;state:Detail1State}|null>(null);
@@ -14087,6 +14092,11 @@ export function App() {
     if (importInFlight.current || kingdomInFlight.current || kingdomJob) return;
     kingdomInFlight.current = true;
     const backup = captureGenerationBackup();
+    fineBusyViewRef.current=backup.map.physicalGrid?.viewStep===1&&fineArtwork?{
+      artwork:<OneMileArtwork {...fineArtwork.props} busy={true} onHover={()=>{}} onPick={()=>{}}/>,
+      panel:<OneMilePanel {...finePanel.props} busy={true} canEdit={false}/>,
+      width:displayMapWidth,height:displayMapHeight
+    }:null;
     // An ordinary Mythic kingdom is accepted as a whole. Never bind new POI
     // footprints to its temporary paths; restore/reconcile only at final commit.
     // User action context outlives pendingRegen and every React render/tick.
@@ -14687,8 +14697,8 @@ export function App() {
   const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
   const [isHeaderLinksCollapsed, setIsHeaderLinksCollapsed] = useState(false);
   const headerLinksAutoCollapseTimerRef = useRef<number | null>(null);
-  const displayMapWidth = (isMapRotated ? positionedHexes.height : positionedHexes.width)+(physicalGrid?.viewStep===1?16:0);
-  const displayMapHeight = (isMapRotated ? positionedHexes.width : positionedHexes.height)+(physicalGrid?.viewStep===1?16:0);
+  const displayMapWidth = busyFineView?.width ?? (isMapRotated ? positionedHexes.height : positionedHexes.width)+(physicalGrid?.viewStep===1?16:0);
+  const displayMapHeight = busyFineView?.height ?? (isMapRotated ? positionedHexes.width : positionedHexes.height)+(physicalGrid?.viewStep===1?16:0);
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
   const sidePanelToggleLabel = isSidePanelCollapsed ? t.showPanel : t.hidePanel;
@@ -16076,7 +16086,7 @@ export function App() {
       <button type="button" onClick={()=>setConfirmRoadRemoval(null)}>{language==='ru'?'Отмена':'Cancel'}</button>
     </div>}
   </div>:null;
-  const fineActive=physicalGrid?.viewStep===1;
+  const fineActive=!!busyFineView||physicalGrid?.viewStep===1;
   const fineCells=useMemo(()=>physicalGrid?projectOneMile(oneMileSources(captureMap()),physicalGrid.grid.origin):[],[physicalGrid?.grid.origin,regions,hexTerrainByKey,biomeOverrideByHexKey]);
   // Lake shores/islands are the accepted native water artwork over ground,
   // not a second fine water model. Render its underlying biome per fine cell
@@ -16769,7 +16779,7 @@ export function App() {
                   <text x="32" y="25" className="rotate-map-button__sign">{isMapRotated ? '↺' : '↻'}</text>
                 </svg>
               </button>
-              <label className="fine-step">{language==='ru'?'Размер гекса':'Hex size'}<select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={physicalGrid?.viewStep??6} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
+              <label className="fine-step">{language==='ru'?'Размер гекса':'Hex size'}<select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={physicalGrid?.viewStep??(busyFineView?1:6)} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
               <button
                 type="button"
                 className={`hex-coordinate-toggle${showHexCoordinates ? ' is-active' : ''}`}
@@ -16836,7 +16846,7 @@ export function App() {
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
               {finePreview&&<section className="info-block" data-fine-preview><p>{language==='ru'?'Подробная сетка: предпросмотр готов.':'Detailed grid preview is ready.'}</p><button onClick={()=>{const p=finePreview;if(applyOneMilePreview(p))setFineRequestedStep(1);}}>{language==='ru'?'Применить':'Apply'}</button><button className="secondary" onClick={()=>{cancelOneMilePreview();setFinePreview(null);setFineRequestedStep(null);}}>{language==='ru'?'Отмена':'Cancel'}</button></section>}
-              {fineActive?finePanel:<section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
+              {fineActive?(busyFineView?.panel??finePanel):<section ref={infoFocusRef} tabIndex={-1} className={`info-block info-block--hex${editMode ? ' is-editing' : ''}`} aria-label={t.selectedHexInfo}>
                 <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-pressed={editMode}
                   aria-label={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
                   title={editMode ? (language === 'ru' ? 'Готово' : 'Done') : (language === 'ru' ? 'Редактировать' : 'Edit')}
@@ -17147,7 +17157,7 @@ export function App() {
               preserveAspectRatio="xMinYMin meet"
               style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
-            {fineActive?<g transform="translate(8 8)">{fineArtwork}</g>:mapArtwork}
+            {fineActive?<g data-fine-busy-snapshot={busyFineView?true:undefined} transform="translate(8 8)">{busyFineView?.artwork??fineArtwork}</g>:mapArtwork}
             {fineActive&&physicalGrid?.selectedCell&&<g data-editor-only="fine-selection" transform={`translate(8 8) ${mapRotationTransform??''}`} pointerEvents="none"><polygon data-fine-selected={hexKey(physicalGrid.selectedCell)} points={detailCellPolygon(createDetailGrid(1,physicalGrid.grid.origin),physicalGrid.selectedCell).map(p=>`${(p.x-physicalGrid.grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x},${(p.y-physicalGrid.grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y}`).join(' ')} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} vectorEffect="non-scaling-stroke"/></g>}
             {editMode&&riverFeatureTarget&&!riverDraft&&<g data-editor-only="river-selected" transform={mapRotationTransform} pointerEvents="none">
               <defs><marker id="river-selected-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7dd3fc" /></marker></defs>

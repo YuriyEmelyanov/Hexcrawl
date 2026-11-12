@@ -79,3 +79,11 @@ PR496. C-FILL, CLASSIFY1, TABLES1, PF2 и изменения алгоритмо�
 несовместимая операция отказывается, а не переселяет принятый POI автоматически.
 
 В одномильном виде существующий контур озера (берег/острова) рисуется поверх собственных fine-фонов во всех трёх стилях и PNG. Подложка под озером использует прежний land-биом источника, но не меняет принятую воду/площади/редактор. Карточка различает локальные lake/sea по действительным источникам.
+
+OM-REV-001: during an ordinary Mythic build the renderer retains a readonly
+React scene of the accepted fine artwork/card and its SVG dimensions. The
+working document still defers fine reconciliation until the whole unit is ready.
+The scene is presentation-only, never serialized or added to either history;
+busy cell actions and the editor are disabled. Completion/refusal switches back
+to the actual accepted/restored document. This preserves the existing view and
+framing without binding new POI to provisional paths.

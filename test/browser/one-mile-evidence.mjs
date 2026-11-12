@@ -97,13 +97,23 @@ export async function checkFineModeCandidates({page,snap,shot,button,manifest}){
  for(const mode of ['knave','mythic']){
   if(mode==='knave')await page.getByRole('checkbox',{name:'Knave 2e',exact:true}).check();
   else await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('mythic');
+  if(mode==='mythic')await page.setViewportSize({width:1500,height:1000});
   const before=await snap(),candidate=page.locator('[data-fine-candidate]').first(),target=await candidate.getAttribute('data-fine-candidate');
+  await candidate.scrollIntoViewIfNeeded();
+  const frame=()=>page.evaluate(()=>{const svg=document.querySelector('svg[data-render-phase]'),v=document.querySelector('.map-viewport'),r=v.getBoundingClientRect(),cells=[...svg.querySelectorAll('[data-fine-key]')],visible=cells.filter(n=>{const b=n.getBoundingClientRect();return b.right>r.left&&b.left<r.right&&b.bottom>r.top&&b.top<r.bottom;}),first=visible[0],b=first?.getBoundingClientRect();return {viewBox:svg.getAttribute('viewBox'),transform:svg.style.transform,cells:cells.length,visible:visible.length,key:first?.getAttribute('data-fine-key'),x:b?.x,y:b?.y};});
+  const beforeFrame=mode==='mythic'?await frame():null;
+  if(mode==='mythic'){assert.ok(beforeFrame.visible>0);await shot('desktop-before-kingdom.jpg');}
   await candidate.press('Enter');
   let busy=null;
   if(mode==='mythic'){
    await page.waitForFunction(()=>document.querySelector('[data-fine-step]').disabled);
    busy=await page.evaluate(()=>({step:document.querySelector('[data-fine-step]').value,fine:!!document.querySelector('[data-fine-world]'),progress:document.querySelector('.kingdom-progress')?.textContent,disabled:document.querySelector('[data-fine-step]').disabled}));
-   await shot('narrow-320-busy-kingdom.jpg');
+   assert.equal(busy.step,'1','busy keeps accepted1-mile view');assert.equal(busy.fine,true,'busy retains accepted fine artwork');
+   const during=await frame();assert.equal(during.viewBox,beforeFrame.viewBox);assert.equal(during.transform,beforeFrame.transform);assert.equal(during.cells,beforeFrame.cells);assert.ok(during.visible>0,'accepted map stays visible');assert.equal(during.key,beforeFrame.key);assert.ok(Math.hypot(during.x-beforeFrame.x,during.y-beforeFrame.y)<=1.1,'busy does not move accepted frame');
+   assert.equal(await page.locator('[data-fine-key][aria-disabled=true]').count(),beforeFrame.cells);assert.ok(await page.locator('[data-fine-panel] .direct-mode').isDisabled());
+   const frozen=await page.locator('[data-fine-world]').innerHTML();
+   for(const width of [1500,390,320]){await page.setViewportSize({width,height:1000});await page.locator('.map-viewport').scrollIntoViewIfNeeded();const at=await frame();assert.ok(at.visible>0,`busy map visible at${width}`);assert.equal(at.viewBox,beforeFrame.viewBox);assert.equal(await page.locator('[data-fine-world]').innerHTML(),frozen,'provisional generation does not change accepted artwork');await page.locator('[data-fine-key]').first().dispatchEvent('keydown',{key:'Enter',bubbles:true});await shot(width===1500?'desktop-busy-kingdom.jpg':`narrow-${width}-busy-kingdom.jpg`);}
+   busy={...busy,framePreserved:true,visibleWidths:[1500,390,320],acceptedArtworkUnchanged:true};
   }
   await page.waitForFunction(()=>!document.querySelector('[data-fine-step]').disabled&&document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready',undefined,{timeout:120000});
   const after=await snap(),accepted=after.map.regions.length>before.map.regions.length;
@@ -111,6 +121,7 @@ export async function checkFineModeCandidates({page,snap,shot,button,manifest}){
    if(mode==='knave'){assert.equal(after.map.regions.length,before.map.regions.length+1);assert.ok(Object.keys(after.map.knave?.content?.byPoi??{}).length>0);}
    else assert.equal(after.map.kingdoms.length,before.map.kingdoms.length+1,'one ordinary complete kingdom');
    assert.equal(after.map.physicalGrid.viewStep,1);assert.equal(key(after.map.physicalGrid.selectedCell),target);
+   if(mode==='mythic')for(const width of [1500,390,320]){await page.setViewportSize({width,height:1000});await page.locator('.map-viewport').scrollIntoViewIfNeeded();await page.locator('[data-fine-selected]').scrollIntoViewIfNeeded();assert.ok((await frame()).visible>0);await shot(width===1500?'desktop-after-kingdom.jpg':`narrow-${width}-after-kingdom.jpg`);}
    await button('Отменить').click();assert.deepEqual(await snap(),before,'one native Undo restores fine map and entire mode unit');
    await button('Повторить').click();assert.deepEqual(await snap(),after);await button('Отменить').click();
   }else assert.deepEqual(after,before,'mode refusal preserves accepted map and RNG');
