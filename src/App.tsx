@@ -16749,7 +16749,7 @@ export function App() {
                   <div className="export-menu__items">
                     <button type="button" data-poi-export disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" data-poi-export onClick={handleExportJson} className="secondary">JSON</button>
-                    <small>{language==='ru'?'JSON v10: старые версии приложения не откроют этот файл.':'JSON v10: older app versions cannot open this file.'}</small>
+                    <small>{language==='ru'?`JSON v${physicalGrid?15:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid?15:10}: older app versions cannot open this file.`}</small>
                   </div>
                 </details>
               <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
