@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-12T1200-programmer-OM-REV-001",
+  "run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "programmer_fix_complete_review_ready",
+  "status": "accepted_release_preview_pending",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -41,7 +41,7 @@
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
     "status": "latest_written_last_after_result_handoff_readback",
-    "materials_commit_sha": "33a7561b2616d39e4fe4ab7cf9a910e3dc3c6169",
+    "materials_commit_sha": "5789567496f8894db48772d49baa1184eb6c2c21",
     "conflict_policy": "Non-force CAS; own claim only; foreign state preserved"
   },
   "budget_status": "owner_waived_usage_gate",
@@ -50,15 +50,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "every_2_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1.md",
   "spec_version": "OM-1.0",
-  "result_path": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
+  "result_path": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "Проверяющий со свежим отдельным агентом независимо проверяет весь PR503 на SHA d41911b8d7c2248f115b182923350dc8d08c0a48 по OM01–14, особенно OM-REV-001: readonly принятый fine-вид/карточка/фокус во время Mythic, cleanup при принятии/ошибке, blocked input, реальные UndoRedo/сохранения и необходимость расширенного browser case. Проверяет actual1500/390/320 и учитывает, что для съёмки был удержан реальный промежуточный tick. Обновляет score_assessment1.2 всех13criterion_id на новом SHA; старое заключение2ad не переносится автоматически. Затем заключение либо конкретные замечания программисту. Публикация требует отдельного разрешения владельца.",
+  "next_step": "Программист по утверждённой HX-BL-051 готовит и предъявляет фактический release walkthrough: опубликованный main1962fb9a835a9c310e55c1a09415fe180f22cca9 → принятый PR503d41911b8d7c2248f115b182923350dc8d08c0a48 на одной карте, desktop и узкий экран, выбор1мили/локальное чтение/правка/отмена и известные ограничения. Код и SHA не менять; если SHA меняется — новая независимая проверка. После готового показа — отдельное разрешение владельца на этот конкретный пакет. До него main не сливать и не публиковать.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -106,14 +106,14 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200",
+  "evidence_path": "agent-work/evidence/review-ONE-MILE1-d419-1400",
   "branch_name": "agent/hx-bl-051-one-mile1",
   "pr": 503,
   "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
   "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
-  "checks_status": "all3_required_jobs_success_independent_review_pending",
+  "checks_status": "official_CI_and_independent_review_accepted",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43215219149",
-  "review_verdict": "pending_new_exact_SHA",
+  "review_verdict": "accepted",
   "role_selection_mode": "approved_queue_readiness_explicit_owner_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -213,8 +213,8 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": null,
-  "role_selection_reason": "Ready reviewer finding OM-REV-001 on approved ONE-MILE1, root/task claim free; priority3. One programmer task, own claim persisted before editing.",
+  "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/score-assessment1.2.json",
+  "role_selection_reason": "Exact d419 PR503 review_ready with required CI; no active051claim. Independent fresh agent used per owner requirement.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -237,38 +237,24 @@
   "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-12T11:58:57Z",
+      "checked_at": "2026-11-12T13:57:29Z",
       "status": "checked",
       "method": "automations.peek",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-12T12:23:13Z",
+      "checked_at": "2026-11-12T14:08:06Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Point-in-time actual observations only; later service disable cannot be excluded. Schedule/instructions unchanged."
+    "limitation": "Actual point-in-time observations, no future guarantee; schedule/instructions unchanged."
   },
-  "open_findings": [
-    {
-      "id": "OM-REV-001",
-      "status": "addressed_pending_independent_review",
-      "reviewed_base_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-      "fix_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-      "reviewer_closure": false,
-      "evidence": [
-        "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/checks.json",
-        "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/actual/manifest.json"
-      ],
-      "scope": "Accepted readonly scene/card and frame retained during provisional whole Mythic; canonical final binding and histories unchanged."
-    }
-  ],
-  "current_review_score_assessment_status": "pending_independent_new_SHA",
+  "open_findings": [],
+  "current_review_score_assessment_status": "completed_insufficient_evidence_whole_grades",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -581,22 +567,20 @@
     "placements_scope": "Legacy preparation-slice DW2/FL9 retained; new campaign placements in campaign_vtt_revision.placements_among_calculated"
   },
   "previous_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
-  "addressed_findings_pending_review": [
+  "addressed_findings_pending_review": [],
+  "verified_fixed_findings": [
     {
       "id": "OM-REV-001",
-      "status": "addressed_pending_independent_review",
-      "reviewed_base_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-      "fix_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-      "reviewer_closure": false,
+      "status": "closed_verified",
+      "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+      "verifier": "independent_fresh_agent_plus_root_CI_artifact_crosscheck",
+      "review_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/independent-review.json",
       "evidence": [
-        "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/checks.json",
-        "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/actual/manifest.json"
-      ],
-      "scope": "Accepted readonly scene/card and frame retained during provisional whole Mythic; canonical final binding and histories unchanged."
+        "agent-work/evidence/review-ONE-MILE1-d419-1400/busy-probe.json",
+        "agent-work/evidence/review-ONE-MILE1-d419-1400/sensitivity.json",
+        "agent-work/evidence/review-ONE-MILE1-d419-1400/root-crosscheck.json"
+      ]
     }
-  ],
-  "verified_fixed_findings": [
-    "TABLES1-REV-01"
   ],
   "recovery_health": {
     "previous_start": {
@@ -702,7 +686,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42592886004",
   "next_task_execution_allowed": true,
   "last_release_pr": 497,
-  "last_material_result_path": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
+  "last_material_result_path": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "bounded_AB_ready_Q01_pending",
   "previous_task_release_approval": {
@@ -768,8 +752,8 @@
     "completed_at": "2026-10-27T12:12:46.356Z"
   },
   "review_request": null,
-  "reviewed_sha": null,
-  "current_review_score_assessment_ref": null,
+  "reviewed_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+  "current_review_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/score-assessment1.2.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -869,7 +853,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-12T12:23:13Z",
+  "updated_at": "2026-11-12T14:08:06Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -958,20 +942,23 @@
   "independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-12T10:00:52Z",
+      "status": "checked",
       "method": "automations.peek",
       "is_enabled": true,
-      "status": "checked"
+      "checked_at": null,
+      "checked_at_upper_bound": "2026-11-12T13:59:25Z",
+      "time_limitation": "Startcall preceded exactworktreecreation at13:59:25Z; tool did not expose requesttimestamp. Do not invent exactsecond."
     },
     "end": {
-      "checked_at": "2026-11-12T10:05:10Z",
+      "status": "checked",
       "method": "automations.peek",
       "is_enabled": true,
-      "status": "checked"
+      "checked_at": "2026-11-12T14:04:44Z"
     },
     "restoration_performed": false,
     "errors": [],
-    "scope": "Point-in-time observations; no schedule/prompt/update performed."
+    "schedule_changed": false,
+    "limitation": "Pointintime observations only; no future service guarantee"
   },
   "previous_reviewed_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
   "test_governance": {
@@ -1004,104 +991,68 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+    "schema_version": 1,
+    "base_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-    "source": "Exact3-file base→head diff, manifest case IDs and runner output",
-    "suites": [
-      {
-        "suite": "Node",
-        "added": 0,
+    "scope": "Reviewer changes",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "source": "Independent source worktree clean; temporary probes kept outside permanent suite.",
+    "reviewed_package": {
+      "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+      "node": {
+        "added": 19,
         "removed": 0,
         "modified": 0,
-        "head_logical_cases_expected": 382,
-        "scenario_risk": "No permanent Node changes; existing real-App geometry/save suite reused for identities/UndoRedo/rollback.",
-        "reuse_or_new_reason": "OM-REV-001 is DOM/view lifecycle; Node harness intentionally removes artwork and cannot establish map visibility."
+        "split": {
+          "oneMile_pure": 10,
+          "existing_saveSafety_suite_newcases": 9
+        }
       },
-      {
-        "suite": "Fine browser logical cases",
+      "browser": {
+        "added_fine_logical_cases": 5,
+        "removed": 0,
+        "modified_old_cases": 1,
+        "modified": "Existing Myth material disabledpointer case now scrolls target and proves hit beforeclick"
+      },
+      "incremental_2ad_to_d419": {
         "added": 0,
         "removed": 0,
-        "modified": 1,
-        "base_cases": 5,
-        "head_cases_expected": 5,
-        "scenario_risk": "UI-ordinary-candidate-unit: accepted fine map visible and frame stable during Mythic, disabled actions, unchanged readonly scene1500/390/320, fine1 after accept and exact unit UndoRedo. Real intermediate generation tick is held after3 callbacks for responsive captures, then native job released; no fake result.",
-        "reuse_or_new_reason": "Extend existing Mythic profile; no extra case/session/world series. Widths/screenshots remain profiles, not logical tests."
+        "modified_browser_cases": 1,
+        "case": "Existing ordinary candidate modeprofile scenario extended for busyframe/readonlyscene/nativeUndoRedo"
       },
-      {
-        "suite": "World-random",
-        "added": 0,
-        "removed": 0,
-        "modified": 0
-      }
-    ],
-    "runs": {
-      "focused_node": {
+      "necessity_verdict": "keep",
+      "reason": "Pure10 establish newfine domain boundaries separate from source6 transactiontests;9realApp additions cover atomic lifecycle/validation/history and distinctregeneration/Mythic faults puretests cannot detect. Browser5 coverDOM artwork/camera/edit/resize/export and actualinput/generator integration. Extendedoldpointercase repairs invalidviewportcoordinates and adds hit proof; no unrelatedfeaturecoverage removed. Reusedsinglefixture/lifecycle and boundednative generation. No redundant permanenttest identified.",
+      "count_source": "Independent base-to-head test declarations/diff + exactmanifestcaseIDs; browsermodeprofiles kept separate, not silently added to Nodecounts",
+      "temporary_reviewer_diagnostics": "Separate from permanentcounts"
+    },
+    "executed": {
+      "independent_node": {
+        "actual_command": "node --test test/oneMile.test.mjs test/detail*.test.mjs test/saveSafety.test.mjs",
+        "resolved_cases": "10oneMile +48saveSafety (no matching detail*.test.mjs files)",
+        "node": "24.22.1",
         "executed": 58,
         "passed": 58,
         "failed": 0,
         "skipped": 0,
-        "cancelled": 0,
-        "duration_ms": 34577.989782,
-        "source_head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-        "method": "Actual local files hash-identical to final3 Git blobs; Node24 real-App/geometry existing cases."
+        "duration_ms": 45274.734454,
+        "log": "/tmp/review-d419-focused.log"
       },
-      "typescript": "passed",
-      "full_node": {
+      "official_node": {
         "executed": 382,
         "passed": 382,
         "failed": 0,
-        "skipped": 0,
-        "cancelled": 0,
-        "duration_ms": 748997.146935
+        "skipped": 0
       },
-      "browser": {
-        "scripts": {
-          "executed": 9,
-          "passed": 9,
-          "failed": 0,
-          "skipped": 0
-        },
-        "fine_cases": {
-          "executed": 5,
-          "passed": 5,
-          "failed": 0,
-          "skipped": 0
-        },
-        "profiles_separate": {
-          "camera": 6,
-          "PNG": 4,
-          "narrow_touch": 2,
-          "ordinary_modes": 3
-        }
+      "official_browser": {
+        "scripts": 9,
+        "fine_logical_cases": 5,
+        "status": "pass"
       },
-      "world_random": {
-        "script": {
-          "executed": 1,
-          "passed": 1,
-          "failed": 0,
-          "skipped": 0
-        },
-        "unchanged": true
-      }
-    },
-    "negative_evidence": {
-      "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-      "source": "Retained exact2ad CI artifact and independent review real-App probe, inspected before fix.",
-      "refs": [
-        "agent-work/evidence/review-ONE-MILE1-2ad-1000/independent-review.json",
-        "agent-work/evidence/ONE-MILE1-completion-0800/actual/narrow-320-busy-kingdom.jpg"
-      ],
-      "observed": {
-        "step": "6",
-        "fine": false,
-        "blank_viewport": true
-      },
-      "new_expected": {
-        "step": "1",
-        "fine": true,
-        "accepted_map_visible": true
-      },
-      "limitation": "This run reuses the already reproduced exact2ad negative evidence; it does not claim a new baseline browser execution."
+      "world_random": "separate unchanged script pass",
+      "temporary_diagnostics": "geometry/frontier/boundaryPOI and sentinel-hook fault/sensitivity probes; not added to permanent Node/browser counts"
     }
   },
   "review_url": null,
@@ -1150,7 +1101,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200",
+  "evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1467,7 +1418,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-12T1200-ONE-MILE1-review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1605,23 +1556,10 @@
     "stage_id": "ONE-MILE1",
     "pr": 503,
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-    "status": "not_requested_pending_independent_review",
+    "status": "accepted_release_preview_pending_then_owner_permission",
     "release_approved": false
   },
-  "current_risk_findings": [
-    {
-      "id": "OM-REV-001",
-      "status": "addressed_pending_independent_review",
-      "reviewed_base_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-      "fix_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-      "reviewer_closure": false,
-      "evidence": [
-        "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/checks.json",
-        "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/actual/manifest.json"
-      ],
-      "scope": "Accepted readonly scene/card and frame retained during provisional whole Mythic; canonical final binding and histories unchanged."
-    }
-  ],
+  "current_risk_findings": [],
   "model_activation_status": "active_routes_verified",
   "last_process_update": {
     "decision_ref": "owner-decision-2026-10-31-release-user-walkthrough",
@@ -1817,7 +1755,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-12T0204-programmer-ONE-MILE1.json",
-  "handoff_path": "agent-work/handoffs/2026-11-12T1200-ONE-MILE1-review.json",
+  "handoff_path": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
   "ui_actual_preview": {
     "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
     "manifest_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/ui-manifest.json",
@@ -1912,7 +1850,17 @@
     23
   ],
   "schedule_decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
-  "accepted_release_pending": null,
+  "accepted_release_pending": {
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "pr": 503,
+    "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+    "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
+    "review_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/independent-review.json",
+    "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/score-assessment1.2.json",
+    "release_preview_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
+    "release_authorized": false
+  },
   "next_product_proposal": {
     "task_id": "HX-BL-042",
     "stage_id": "SCALE1",
@@ -2196,26 +2144,25 @@
     "owner_approved": null,
     "scope": "26 actual JPEG+4PNG; busy desktop1500/390/320 and final acceptance, same-world1/6/RU/EN/read/edit/error/importbusy plus cleanPNG. Representative busy1500/390/320 and accepted320 visually inspected/presented; original31blob hashes match."
   },
-  "review_result_ref": null,
+  "review_result_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/independent-review.json",
   "previous_review_score_assessment_ref": null,
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
+      "checked_at": "2026-11-12T10:00:52Z",
+      "method": "automations.peek",
       "is_enabled": true,
-      "checked_at_utc": null,
-      "checked_before_utc": "2026-10-29T03:08:46Z",
-      "timestamp_limitation": "Exact start call clock was not separately captured; upper bound is first persisted source snapshot. Raw actual peek retained.",
-      "evidence": "automation-start-raw.json"
+      "status": "checked"
     },
     "end": {
-      "checked_at_utc": "2026-10-29 03:19:39 UTC",
+      "checked_at": "2026-11-12T10:05:10Z",
+      "method": "automations.peek",
       "is_enabled": true,
-      "evidence": "automation-end-raw.json"
+      "status": "checked"
     },
     "restoration_performed": false,
-    "schedule_changed": false,
     "errors": [],
-    "limitation": "Observed status at two calls only; not guarantee of subsequent service state."
+    "scope": "Point-in-time observations; no schedule/prompt/update performed."
   },
   "next_active_slice": "DETAIL1-independent-rereview",
   "review_scope": "Current standalone PR496 A/B, allconfirmedfindingsclosed; C03/G10 pendingproductchoice, stageD deferred.",
@@ -2304,10 +2251,10 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/test-change-summary.json",
+  "test_change_summary_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/programmer-score-evidence1.2.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
-  "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000",
+  "completed_claim_result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
+  "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
   "github_review_state": "COMMENT; operational acceptance by fresh independent non-implementer. Same GitHub identity owns PR; formal self-approval unavailable.",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
   "owner_visual_correction": {
@@ -2400,60 +2347,51 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "PF2-BATCH1-lifecycle-autofill-UI",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-11T0356-PF2-BATCH1-lifecycle-UI.json",
-  "authorization_status": "approved existing ONE-MILE1 scope, no new task/design gate; publication not authorized",
-  "completed_at": "2026-11-12T12:23:13Z",
+  "authorization_status": "approved existing task release UI-presentation only; code accepted; publication not authorized",
+  "completed_at": "2026-11-12T14:08:06Z",
   "score_changed": false,
   "next_stage_id": "ONE-MILE1",
   "score_evidence_updated": true,
   "current_stage_id": "ONE-MILE1",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
-  "current_stage_ui_status": "actual_exact_SHA_shown_independent_review_pending",
+  "review_ready": false,
+  "current_stage_ui_status": "candidate_actual_UI_verified_published_baseline_walkthrough_pending",
   "completed_claim": {
     "schema_version": 1,
-    "run_id": "2026-11-12T1200-programmer-OM-REV-001",
+    "run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "role": "programmer",
-    "status": "completed_programmer_handoff",
+    "role": "reviewer",
+    "status": "completed_accepted",
     "execution_running": false,
-    "started_at": "2026-11-12T11:58:57Z",
-    "base_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-    "pr": 503,
-    "scope": "OM-REV-001 only: accepted readonly fine artwork/frame during whole Mythic build, extend existing browser mode case.",
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-    "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
-    "checkpoint_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/checkpoint.json",
-    "ci_run_id": 43215219149,
-    "completed_at": "2026-11-12T12:23:13Z",
-    "result_ref": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T1200-ONE-MILE1-review.json",
-    "review_ready": true,
+    "started_at": "2026-11-12T13:57:29Z",
+    "scope": "Independent full PR503 exact d41911b review OM01–14, OM-REV-001 disposition and score_assessment1.2; no source/main/release changes.",
+    "completed_at": "2026-11-12T14:08:06Z",
+    "result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
       "start": {
-        "checked_at": "2026-11-12T11:58:57Z",
+        "checked_at": "2026-11-12T13:57:29Z",
         "status": "checked",
         "method": "automations.peek",
         "is_enabled": true
       },
       "end": {
-        "checked_at": "2026-11-12T12:23:13Z",
+        "checked_at": "2026-11-12T14:08:06Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
       "restoration_performed": false,
       "errors": [],
-      "limitation": "Point-in-time actual observations only; later service disable cannot be excluded. Schedule/instructions unchanged."
+      "limitation": "Actual point-in-time observations, no future guarantee; schedule/instructions unchanged."
     }
   },
-  "evidence_commit_sha": "33a7561b2616d39e4fe4ab7cf9a910e3dc3c6169",
-  "finding_ids": [
-    "OM-REV-001"
-  ],
+  "evidence_commit_sha": "5789567496f8894db48772d49baa1184eb6c2c21",
+  "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-11-11-PR496-release-ready.json",
   "current_stage_ui_preview": {
     "version": "FILL-UI1",
@@ -4059,9 +3997,9 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "fix_implemented_independent_review_pending",
-  "current_stage_review_status": "pending_new_exact_SHA",
-  "accepted": false,
+  "current_stage_status": "independently_accepted_release_preview_pending",
+  "current_stage_review_status": "accepted",
+  "accepted": true,
   "full_UI_pending": true,
   "latest_HX_BL_023_E5_persistence_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-persistence",
@@ -4300,11 +4238,12 @@
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": {
-    "node": "382/382",
-    "browser": "9scripts;5fine cases",
-    "world_random": "separate pass",
-    "focused": "58/58",
-    "source_tree_equal": true
+    "official_node": "382/382",
+    "independent_node": "58/58",
+    "independent_typescript": "pass",
+    "independent_build": "pass",
+    "temporary_probes": "pass,separate from permanent counts",
+    "local_browser": "unavailable; exactCI/originals independently inspected"
   },
   "full_E5_UI_pending": true,
   "materials_commit_sha": "b507cead9d9cf315df8d2faced9d6b6a1ca9c106",
@@ -4903,23 +4842,21 @@
   },
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
-    "run_id": "2026-11-12T1200-programmer-OM-REV-001",
+    "run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "role": "programmer",
-    "status": "completed_programmer_handoff",
+    "role": "reviewer",
+    "status": "completed_accepted_release_preview_pending",
     "execution_running": false,
+    "result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
     "claim_ref": null,
-    "completed_claim_ref": "agent-work/claims/2026-11-12T1200-programmer-OM-REV-001.json",
+    "completed_claim_ref": "agent-work/claims/2026-11-12T1400-reviewer-ONE-MILE1.json",
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
-    "result_ref": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T1200-ONE-MILE1-review.json",
-    "next_role": "reviewer",
-    "next_step": "Проверяющий со свежим отдельным агентом независимо проверяет весь PR503 на SHA d41911b8d7c2248f115b182923350dc8d08c0a48 по OM01–14, особенно OM-REV-001: readonly принятый fine-вид/карточка/фокус во время Mythic, cleanup при принятии/ошибке, blocked input, реальные UndoRedo/сохранения и необходимость расширенного browser case. Проверяет actual1500/390/320 и учитывает, что для съёмки был удержан реальный промежуточный tick. Обновляет score_assessment1.2 всех13criterion_id на новом SHA; старое заключение2ad не переносится автоматически. Затем заключение либо конкретные замечания программисту. Публикация требует отдельного разрешения владельца.",
-    "review_ready": true,
-    "full_task_complete": false,
-    "independent_accepted": false,
+    "independent_accepted": true,
+    "next_role": "programmer",
+    "next_step": "Программист по утверждённой HX-BL-051 готовит и предъявляет фактический release walkthrough: опубликованный main1962fb9a835a9c310e55c1a09415fe180f22cca9 → принятый PR503d41911b8d7c2248f115b182923350dc8d08c0a48 на одной карте, desktop и узкий экран, выбор1мили/локальное чтение/правка/отмена и известные ограничения. Код и SHA не менять; если SHA меняется — новая независимая проверка. После готового показа — отдельное разрешение владельца на этот конкретный пакет. До него main не сливать и не публиковать.",
     "release_authorized": false
   },
   "latest_concurrent_worker_observation": {
@@ -6289,7 +6226,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
+  "result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6982,7 +6919,7 @@
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MC1-EN.json"
   },
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
-  "next_task_handoff_ref": "agent-work/handoffs/2026-11-12T1200-ONE-MILE1-review.json",
+  "next_task_handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
     "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
     "status": "published_verified_score_completed",
@@ -7053,62 +6990,256 @@
     "actual_UI_shown_in_chat": true
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
-  "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
+  "role": "reviewer",
+  "latest_result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "checks": {
     "run_id": 43215219149,
-    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43215219149",
     "source_head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "checkout_sha": "81910edbd77c4525b4e725c391d1babeca78c3ef",
     "checkout_tree": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
     "tree_matches_source": true,
-    "all_required_success": true,
     "jobs": [
       {
-        "id": 131172751077,
         "name": "check",
+        "id": 131172751077,
         "status": "completed",
         "conclusion": "success"
       },
       {
-        "id": 131172751494,
         "name": "browser",
+        "id": 131172751494,
         "status": "completed",
         "conclusion": "success"
       },
       {
-        "id": 131172751655,
         "name": "world-random",
+        "id": 131172751655,
         "status": "completed",
         "conclusion": "success"
       }
+    ],
+    "node": {
+      "executed": 382,
+      "passed": 382,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fine_cases": [
+      {
+        "id": "UI-grid-local-read",
+        "status": "pass",
+        "fineCells": 3471,
+        "candidates": 494
+      },
+      {
+        "id": "UI-pinned-editor-exit-and-undo",
+        "status": "pass"
+      },
+      {
+        "id": "UI-responsive-390-320-RU-EN",
+        "status": "pass"
+      },
+      {
+        "id": "UI-fine-export-local-features",
+        "status": "pass"
+      },
+      {
+        "id": "UI-ordinary-candidate-unit",
+        "status": "pass",
+        "outcome": "accepted_and_undo_exact"
+      }
+    ],
+    "modes": [
+      {
+        "mode": "knave",
+        "target": "-65,44",
+        "accepted": true,
+        "beforeRegions": 4,
+        "afterRegions": 5,
+        "beforeKingdoms": 0,
+        "afterKingdoms": 0,
+        "undoRedoExact": true,
+        "refusalExact": null,
+        "busy": null
+      },
+      {
+        "mode": "mythic",
+        "target": "-65,44",
+        "accepted": true,
+        "beforeRegions": 4,
+        "afterRegions": 29,
+        "beforeKingdoms": 0,
+        "afterKingdoms": 1,
+        "undoRedoExact": true,
+        "refusalExact": null,
+        "busy": {
+          "step": "1",
+          "fine": true,
+          "progress": "Создание королевства… 11/144",
+          "disabled": true,
+          "framePreserved": true,
+          "visibleWidths": [
+            1500,
+            390,
+            320
+          ],
+          "acceptedArtworkUnchanged": true,
+          "method": "real intermediate tick held only for responsive captures, then released"
+        }
+      }
+    ],
+    "camera": [
+      {
+        "width": 1500,
+        "rotated": false,
+        "closed_cycle_error": 1,
+        "single_transition_error": 0.3676422440734261
+      },
+      {
+        "width": 1500,
+        "rotated": true,
+        "closed_cycle_error": 1,
+        "single_transition_error": 0.3676437627420212
+      },
+      {
+        "width": 390,
+        "rotated": false,
+        "closed_cycle_error": 0,
+        "single_transition_error": 1.1680007538668777
+      },
+      {
+        "width": 390,
+        "rotated": true,
+        "closed_cycle_error": 0,
+        "single_transition_error": 1.1679879286835642
+      },
+      {
+        "width": 320,
+        "rotated": false,
+        "closed_cycle_error": 0,
+        "single_transition_error": 1.1680007538668777
+      },
+      {
+        "width": 320,
+        "rotated": true,
+        "closed_cycle_error": 0,
+        "single_transition_error": 1.1679879286835642
+      }
+    ],
+    "touch": [
+      {
+        "width": 390,
+        "key": "2,0",
+        "keyboard": "Space on1,0",
+        "touch": "native CDP touchStart/end",
+        "status": "passed"
+      },
+      {
+        "width": 320,
+        "key": "2,0",
+        "keyboard": "Space on1,0",
+        "touch": "native CDP touchStart/end",
+        "status": "passed"
+      }
+    ],
+    "png": [
+      {
+        "name": "fine-tiles.png",
+        "bytes": 652204,
+        "width": 1487,
+        "height": 1320,
+        "facts": {
+          "geometryEqual": true,
+          "parserErrors": 0,
+          "fine": 3471,
+          "native": 0,
+          "editor": 0,
+          "roads": 31,
+          "rivers": 53,
+          "pois": 22,
+          "lakes": 1,
+          "width": 743.4613647460938,
+          "height": 660,
+          "images": true
+        }
+      },
+      {
+        "name": "fine-hover.png",
+        "bytes": 652204,
+        "width": 1487,
+        "height": 1320,
+        "facts": {
+          "geometryEqual": true,
+          "parserErrors": 0,
+          "fine": 3471,
+          "native": 0,
+          "editor": 0,
+          "roads": 31,
+          "rivers": 53,
+          "pois": 22,
+          "lakes": 1,
+          "width": 743.4613647460938,
+          "height": 660,
+          "images": true
+        }
+      },
+      {
+        "name": "fine-emoji.png",
+        "bytes": 311468,
+        "width": 1487,
+        "height": 1320,
+        "facts": {
+          "geometryEqual": true,
+          "parserErrors": 0,
+          "fine": 3471,
+          "native": 0,
+          "editor": 0,
+          "roads": 31,
+          "rivers": 53,
+          "pois": 22,
+          "lakes": 1,
+          "width": 743.4613647460938,
+          "height": 660,
+          "images": true
+        }
+      },
+      {
+        "name": "fine-color-rotated.png",
+        "bytes": 267356,
+        "width": 1320,
+        "height": 1487,
+        "facts": {
+          "geometryEqual": true,
+          "parserErrors": 0,
+          "fine": 3471,
+          "native": 0,
+          "editor": 0,
+          "roads": 31,
+          "rivers": 53,
+          "pois": 22,
+          "lakes": 1,
+          "width": 660,
+          "height": 743.4613647460938,
+          "images": true
+        }
+      }
     ]
   },
-  "score_assessment_status": "pending_independent_new_SHA_model1.2",
-  "review_report_ref": null,
-  "reviewed_public_sha": null,
+  "score_assessment_status": "completed_insufficient_evidence_whole_grades",
+  "review_report_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/independent-review.json",
+  "reviewed_public_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
   "closed_findings": [
-    "KNC-REV-001",
     {
-      "id": "DETAIL1-REVIEW-POI-CONTEXT",
-      "status": "closed_on_exact_sha",
-      "evidence": "Independent unique remote footprint reproducer now shows OWNER-ONE-CLUE at both fine-cell ends with selectedHex2,0; overlap explicit owner one/two show respective source clues, preserve fine18,0, and have exact history.",
-      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
-      "evidence_ref": "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json"
-    },
-    {
-      "id": "DETAIL1-REVIEW-EMPTY-ACTIVE-LAYER",
-      "status": "closed_on_exact_sha",
-      "evidence": "Actual importer rejects live-owner active state with footprints[] before changing document or both stacks. Valid no-owner empty layer still accepted. Unconditional validateSpatial at src/detailModel.ts112 and complete live footprint count src/detailGeography.ts213 now enforce boundary.",
-      "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
-      "evidence_ref": "agent-work/evidence/review-HX-BL-051-f17236b/independent-review.json"
-    },
-    {
-      "id": "DETAIL1-REVIEW-EXPORT-COUNT-STYLE",
-      "status": "closed_on_exact_sha",
-      "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-      "evidence_ref": "agent-work/evidence/review-HX-BL-051-aad4516/export-clone-probe.json",
-      "method": "Fresh agent actual production helper with base negative control; all five CSS declarations equivalent"
+      "id": "OM-REV-001",
+      "status": "closed_verified",
+      "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+      "verifier": "independent_fresh_agent_plus_root_CI_artifact_crosscheck",
+      "review_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/independent-review.json",
+      "evidence": [
+        "agent-work/evidence/review-ONE-MILE1-d419-1400/busy-probe.json",
+        "agent-work/evidence/review-ONE-MILE1-d419-1400/sensitivity.json",
+        "agent-work/evidence/review-ONE-MILE1-d419-1400/root-crosscheck.json"
+      ]
     }
   ],
   "nonblocking_findings": [
@@ -7664,8 +7795,8 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
-  "current_stage_score_assessment_status": "pending_independent_new_SHA_model1.2",
+  "current_role_result": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
+  "current_stage_score_assessment_status": "completed_insufficient_evidence_whole_grades",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/actual/manifest.json",
   "execution_running": false,
   "latest_PR495_release": {
@@ -8121,11 +8252,11 @@
     "Scribd_uploaded": false
   },
   "task_id": "HX-BL-051",
-  "review_completed": false,
-  "release_readiness": "not_ready_independent_review_and_owner_release_permission_required",
-  "bounded_feature_accepted": false,
+  "review_completed": true,
+  "release_readiness": "code_accepted_actual_release_walkthrough_and_owner_permission_pending",
+  "bounded_feature_accepted": true,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-12T1200-ONE-MILE1-review.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -8174,8 +8305,8 @@
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
   "local_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-  "checks_evidence_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/checks.json",
-  "execution_status": "completed_programmer_handoff",
+  "checks_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/root-crosscheck.json",
+  "execution_status": "review_completed_accepted",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8311,23 +8442,21 @@
   "pr_head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
   "pr_updated": true,
   "execution_routing": {
-    "run_id": "2026-11-12T1200-programmer-OM-REV-001",
+    "run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "role": "programmer",
-    "status": "completed_programmer_handoff",
+    "role": "reviewer",
+    "status": "completed_accepted_release_preview_pending",
     "execution_running": false,
+    "result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
     "claim_ref": null,
-    "completed_claim_ref": "agent-work/claims/2026-11-12T1200-programmer-OM-REV-001.json",
+    "completed_claim_ref": "agent-work/claims/2026-11-12T1400-reviewer-ONE-MILE1.json",
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
-    "result_ref": "agent-work/results/2026-11-12T1200-programmer-OM-REV-001.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T1200-ONE-MILE1-review.json",
-    "next_role": "reviewer",
-    "next_step": "Проверяющий со свежим отдельным агентом независимо проверяет весь PR503 на SHA d41911b8d7c2248f115b182923350dc8d08c0a48 по OM01–14, особенно OM-REV-001: readonly принятый fine-вид/карточка/фокус во время Mythic, cleanup при принятии/ошибке, blocked input, реальные UndoRedo/сохранения и необходимость расширенного browser case. Проверяет actual1500/390/320 и учитывает, что для съёмки был удержан реальный промежуточный tick. Обновляет score_assessment1.2 всех13criterion_id на новом SHA; старое заключение2ad не переносится автоматически. Затем заключение либо конкретные замечания программисту. Публикация требует отдельного разрешения владельца.",
-    "review_ready": true,
-    "full_task_complete": false,
-    "independent_accepted": false,
+    "independent_accepted": true,
+    "next_role": "programmer",
+    "next_step": "Программист по утверждённой HX-BL-051 готовит и предъявляет фактический release walkthrough: опубликованный main1962fb9a835a9c310e55c1a09415fe180f22cca9 → принятый PR503d41911b8d7c2248f115b182923350dc8d08c0a48 на одной карте, desktop и узкий экран, выбор1мили/локальное чтение/правка/отмена и известные ограничения. Код и SHA не менять; если SHA меняется — новая независимая проверка. После готового показа — отдельное разрешение владельца на этот конкретный пакет. До него main не сливать и не публиковать.",
     "release_authorized": false
   },
   "last_team_coordination": {
@@ -8595,14 +8724,12 @@
     "review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json"
   },
   "reviewed_fixes_accepted": true,
-  "current_evidence_gaps": [
-    "Independent whole new-SHA OM01–14 verdict and score_assessment1.2 pending; programmer evidence does not independently close OM-REV-001."
-  ],
-  "full_package_review_ready": true,
+  "current_evidence_gaps": [],
+  "full_package_review_ready": false,
   "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
-  "independent_accepted": false,
+  "independent_accepted": true,
   "latest_DETAIL1_export_style": {
     "run_id": "2026-11-10T1156-programmer-HX-BL-051-export-style",
     "head_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
@@ -8768,44 +8895,35 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-12T1200-programmer-OM-REV-001",
+  "last_completed_run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
   "storage_verification": {
     "data_commit_sha": "76cd37493e7cac25bfa7759a9fc74e99ce771f6a",
     "files_verified": 12,
     "method": "Exact UTF8 readback all12files; latest written separately last"
   },
-  "current_functional_findings": [
-    {
-      "id": "OM-REV-001",
-      "status": "addressed_pending_independent_review",
-      "reviewed_base_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-      "fix_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-      "reviewer_closure": false,
-      "evidence": [
-        "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/checks.json",
-        "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/actual/manifest.json"
-      ],
-      "scope": "Accepted readonly scene/card and frame retained during provisional whole Mythic; canonical final binding and histories unchanged."
-    }
-  ],
-  "release_preview_responsible": "business_analyst_then_programmer",
+  "current_functional_findings": [],
+  "release_preview_responsible": "programmer",
   "release_presentation": {
-    "status": "owner_rejected_requires_new_same_map_preview",
-    "previous_ui_ref": "agent-work/evidence/PR496-finish-f677629/ui-manifest.json",
-    "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
-    "new_preview_responsible": "business_analyst",
-    "new_actual_responsible": "programmer",
-    "third_design_gate": false
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "status": "release_preview_pending",
+    "responsible_role": "programmer",
+    "package_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+    "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "actual_after_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/e147f6dff7c7092c28c74dfbc527969a8f36bf21/agent-work/evidence/ONE-MILE1-OM-REV-001-1200/actual/README.md",
+    "reason": "Existing6-mile screenshot is from candidate d419, not actual published-main baseline; source acceptance complete, release presentation needs comparable baseline.",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
+    "owner_approval_inferred": false,
+    "new_design_gate": false
   },
   "previous_review_record": {
-    "run_id": "2026-11-12T1000-reviewer-ONE-MILE1",
-    "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-    "review_result_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/independent-review.json",
-    "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
-    "verdict": "changes_requested"
+    "run_id": "2026-11-12T1200-programmer-OM-REV-001",
+    "review_result_ref": null,
+    "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+    "review_verdict": "pending_new_exact_SHA"
   },
-  "full_package_accepted": false,
-  "current_stage_code_status": "fix_implemented",
+  "full_package_accepted": true,
+  "current_stage_code_status": "accepted",
   "accepted_dependency_package": {
     "task_id": "HX-BL-051",
     "pr": 496,
@@ -9330,7 +9448,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/checks.json",
+  "checks_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/root-crosscheck.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -9838,7 +9956,7 @@
     }
   },
   "source_branch": "agent/hx-bl-051-detail1",
-  "claim_completed_ref": "agent-work/claims/2026-11-12T1200-programmer-OM-REV-001.json",
+  "claim_completed_ref": "agent-work/claims/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "actual_full_UI_pending": false,
   "latest_DETAIL1_grid_focus": {
     "run_id": "2026-11-11T0804-programmer-DETAIL1-focus",
@@ -10448,7 +10566,7 @@
     "product_routing_unchanged": true
   },
   "latest_PR496_CI_retry_claim_ref": "agent-work/claims/2026-11-11T1803-programmer-PR496-CI-retry.json",
-  "next_actor": "reviewer",
+  "next_actor": "programmer",
   "publication_authorized": false,
   "previous_root_release_approval_before_PR496": {
     "task_id": "HX-BL-054",
@@ -10765,7 +10883,7 @@
     "release_authorized": false
   },
   "implementation_complete": true,
-  "review_readiness": "new_exact_SHA_ready_independent_verdict_pending",
+  "review_readiness": "completed_accepted",
   "previous_primary_before_ONE_MILE1_implementation": {
     "run_id": "2026-11-11T2200-programmer-ONE-MILE1",
     "status": "ONE_MILE1_implementation_in_progress",
@@ -10846,7 +10964,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-12T1200-programmer-OM-REV-001.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "actual_UI": {
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
@@ -10904,19 +11022,21 @@
     }
   },
   "latest_ONE_MILE1_independent_review": {
-    "run_id": "2026-11-12T1000-reviewer-ONE-MILE1",
-    "role": "reviewer",
+    "run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "status": "completed_changes_requested",
+    "role": "reviewer",
+    "status": "completed_accepted_release_preview_pending",
     "execution_running": false,
-    "result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
+    "result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
     "claim_ref": null,
-    "completed_claim_ref": "agent-work/claims/2026-11-12T1000-reviewer-ONE-MILE1.json",
-    "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+    "completed_claim_ref": "agent-work/claims/2026-11-12T1400-reviewer-ONE-MILE1.json",
+    "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+    "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
+    "independent_accepted": true,
     "next_role": "programmer",
-    "next_step": "Программист исправляет OM-REV-001 в PR503; затем передаёт новый SHA на независимую проверку. Публикация остаётся не разрешена.",
+    "next_step": "Программист по утверждённой HX-BL-051 готовит и предъявляет фактический release walkthrough: опубликованный main1962fb9a835a9c310e55c1a09415fe180f22cca9 → принятый PR503d41911b8d7c2248f115b182923350dc8d08c0a48 на одной карте, desktop и узкий экран, выбор1мили/локальное чтение/правка/отмена и известные ограничения. Код и SHA не менять; если SHA меняется — новая независимая проверка. После готового показа — отдельное разрешение владельца на этот конкретный пакет. До него main не сливать и не публиковать.",
     "release_authorized": false
   },
   "latest_ONE_MILE1_OM_REV_001_fix": {
@@ -10938,5 +11058,20 @@
     "full_task_complete": false,
     "independent_accepted": false,
     "release_authorized": false
+  },
+  "findings": [],
+  "owner_release_permission_required": true,
+  "release_preview": {
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "status": "release_preview_pending",
+    "responsible_role": "programmer",
+    "package_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+    "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "actual_after_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/e147f6dff7c7092c28c74dfbc527969a8f36bf21/agent-work/evidence/ONE-MILE1-OM-REV-001-1200/actual/README.md",
+    "reason": "Existing6-mile screenshot is from candidate d419, not actual published-main baseline; source acceptance complete, release presentation needs comparable baseline.",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
+    "owner_approval_inferred": false,
+    "new_design_gate": false
   }
 }
