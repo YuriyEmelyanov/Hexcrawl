@@ -37,7 +37,7 @@ try{
  assert.ok(await page.locator('image[data-fine-biome]').count()>100,'per-cell biome assets');
 
  const pick=async key=>{const target=page.locator(`[data-fine-key="${key}"]`);await target.click();await page.waitForFunction(key=>document.querySelector('[data-fine-selected]')?.getAttribute('data-fine-selected')===key,key);};
- await pick('0,0');const panel=page.locator('[data-fine-panel]');assert.match(await panel.innerText(),/0\/0/);assert.doesNotMatch(await panel.innerText(),/Source|Area|Область|Исходный/);
+ await pick('0,0');assert.ok(await page.locator('[data-fine-selected]').evaluate(el=>parseFloat(el.getAttribute('stroke-width'))*Math.hypot(el.getScreenCTM().a,el.getScreenCTM().b)<=2.1),'selection stroke stays near native2px');const panel=page.locator('[data-fine-panel]');assert.match(await panel.innerText(),/0\/0/);assert.doesNotMatch(await panel.innerText(),/Source|Area|Область|Исходный/);
  await page.locator('[data-fine-key="1,0"]').hover();assert.match(await panel.innerText(),/1\/0/);await panel.hover();assert.match(await panel.innerText(),/0\/0/);
  await shot('desktop-1.jpg');
  const style=page.locator('button.biome-display-toggle');await style.click();assert.equal(await style.getAttribute('data-mode'),'emoji');assert.equal(await page.locator('image[data-fine-biome]').count(),0);assert.ok(await page.locator('[data-fine-cells] .biome-marker').count()>100);await style.click();assert.equal(await style.getAttribute('data-mode'),'color');await style.click();assert.equal(await style.getAttribute('data-mode'),'tiles');

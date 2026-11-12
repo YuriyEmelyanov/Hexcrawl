@@ -14767,6 +14767,7 @@ export function App() {
       svg.style.transform = `translateZ(0) scale(${nextScale})`;
       svg.style.setProperty("--road-hit-width", `${44 / nextScale}px`);
       svg.style.setProperty("--crossing-hit-radius", `${22 / nextScale}px`);
+      svg.querySelector('[data-fine-selected]')?.setAttribute('stroke-width',String(2/nextScale));
     }
     const overlay = selectedHexOverlayRef.current;
     if (overlay) {
@@ -17105,7 +17106,7 @@ export function App() {
               style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             {fineActive?<g transform="translate(8 8)">{fineArtwork}</g>:mapArtwork}
-            {fineActive&&physicalGrid?.selectedCell&&<g data-editor-only="fine-selection" transform={`translate(8 8) ${mapRotationTransform??''}`} pointerEvents="none"><polygon data-fine-selected={hexKey(physicalGrid.selectedCell)} points={detailCellPolygon(createDetailGrid(1,physicalGrid.grid.origin),physicalGrid.selectedCell).map(p=>`${(p.x-physicalGrid.grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x},${(p.y-physicalGrid.grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y}`).join(' ')} fill="none" stroke="#7dd3fc" strokeWidth={2} vectorEffect="non-scaling-stroke"/></g>}
+            {fineActive&&physicalGrid?.selectedCell&&<g data-editor-only="fine-selection" transform={`translate(8 8) ${mapRotationTransform??''}`} pointerEvents="none"><polygon data-fine-selected={hexKey(physicalGrid.selectedCell)} points={detailCellPolygon(createDetailGrid(1,physicalGrid.grid.origin),physicalGrid.selectedCell).map(p=>`${(p.x-physicalGrid.grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x},${(p.y-physicalGrid.grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y}`).join(' ')} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} vectorEffect="non-scaling-stroke"/></g>}
             {editMode&&riverFeatureTarget&&!riverDraft&&<g data-editor-only="river-selected" transform={mapRotationTransform} pointerEvents="none">
               <defs><marker id="river-selected-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7dd3fc" /></marker></defs>
               {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=><line key={i} x1={r.vertexPath[i].x+riverOffset.x} y1={r.vertexPath[i].y+riverOffset.y} x2={v.x+riverOffset.x} y2={v.y+riverOffset.y} stroke="#7dd3fc" strokeWidth={5} markerEnd="url(#river-selected-arrow)" />))}
