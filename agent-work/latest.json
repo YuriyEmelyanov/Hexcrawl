@@ -29,7 +29,7 @@
   "run_id": "2026-11-12T0000-programmer-ONE-MILE1",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "ONE_MILE1_PR503_programmer_in_progress",
+  "status": "ONE_MILE1_PR503_App_backend_checkpoint_frontend_pending",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,11 +40,16 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
-    "result_commit_sha": "12239ba8dfeb4f37759eb0e0df22e1b78e88c64d",
-    "verified_data_files": 13,
-    "source_files_verified": 3,
+    "result_commit_sha": "c3f54bfe2a01b080af06a5773c499209440da06f",
+    "verified_data_files": 20,
+    "verified_source_files": 13,
     "latest_written_last": true,
-    "concurrency": "CAS update; final latest copied from fresh parent and only owned primary routing/result fields updated. Foreign research/claims retained."
+    "concurrency": "Fresh latest primary owned claim verified; CAS parent; foreign research/claims preserved",
+    "recovered_error": {
+      "error": "First update_ref rejected with twirp not_found missing",
+      "recovered": true,
+      "evidence": "GET ref remained expected parent; GET commit showed intended tree and parent; same CAS retried without force."
+    }
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -57,24 +62,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1.md",
   "spec_version": "OM-1.0",
-  "result_path": "agent-work/results/2026-11-11T2200-programmer-ONE-MILE1.json",
+  "result_path": "agent-work/results/2026-11-12T0000-programmer-ONE-MILE1.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
-  "active_claim": {
-    "schema_version": 1,
-    "run_id": "2026-11-12T0000-programmer-ONE-MILE1",
-    "role": "programmer",
-    "task_id": "HX-BL-051",
-    "stage_id": "ONE-MILE1",
-    "status": "active",
-    "execution_running": true,
-    "started_at": "2026-11-11T23:59:26.908Z",
-    "base_sha": "def08dc99df2375020b06adc517b4738692177e7",
-    "pr": 503,
-    "branch": "agent/hx-bl-051-one-mile1",
-    "scope": "Continue same approved ONE-MILE1: physical state and real App integration. No release.",
-    "claim_ref": "agent-work/claims/2026-11-12T0000-programmer-ONE-MILE1.json"
-  },
-  "next_step": "Продолжить ONE-MILE1 в существующем draft PR503 на def08dc: подключить ядро к App/physicalGrid3 и JSONv15, затем локальную карточку/редактор, POI/дороги/реки, камеру и PNG; проверить полный OM01–14, показать actual UI и передать новый SHA независимому проверяющему. Новое согласование старта не нужно; публикация запрещена.",
+  "active_claim": null,
+  "next_step": "Программист продолжает тот же draft PR503 на2d929ab: теперь приоритет — видимый переключатель1/6, собственные fine-тайлы, H/S локальная карточка и форма с полным Save/Cancel. Подключить ordinary generator/camera/PNG и местные дороги/реки/POI, закончить consent для checkpoint/регенерации, показать actual UI1500/390/320 RU/EN и передать полный новыйSHA независимому проверяющему. Не повторять уже готовое ядро и не ждать нового согласования старта.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -122,14 +113,14 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/ONE-MILE1-2200",
+  "evidence_path": "agent-work/evidence/ONE-MILE1-0000",
   "branch_name": "agent/hx-bl-051-one-mile1",
   "pr": 503,
-  "head_sha": "def08dc99df2375020b06adc517b4738692177e7",
-  "tree_sha": "9528c39c0a59700dc2bf295c6f1da29abede0c0d",
-  "checks_status": "local_incremental_check_passed_CI_pending_core_only",
-  "checks_url": null,
-  "review_verdict": "not_reviewed_unfinished_draft",
+  "head_sha": "2d929abb15a5efade40e83ae4c20880966bb99bc",
+  "tree_sha": "49f9c945181d9fdf9bb778ae64cb1c5b73d42b40",
+  "checks_status": "local379_pass_CI_check_browser_world_random_success_backend_only",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43125804352",
+  "review_verdict": "not_reviewed_unfinished_feature",
   "role_selection_mode": "approved_queue_readiness_explicit_owner_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -254,23 +245,23 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-11T22:00:42.779Z",
+      "checked_at": "2026-11-11T23:59:26.908Z",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-12T00:28:59.489Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
-    "end": {
-      "checked_at": "2026-11-11T22:13:59.406Z",
-      "is_enabled": true,
-      "status": "checked",
-      "method": "automations.peek"
-    },
     "restoration_performed": false,
     "errors": [],
-    "limitation": "Actual point-in-time start/end observations only; no guarantee of future service status. Ongoing team task remains enabled."
+    "limitation": "Actual point-in-time observations only; no future-state guarantee. Permanent team task is not complete."
   },
   "open_findings": [],
-  "current_review_score_assessment_status": "recorded_unknown_no_numeric_transition",
+  "current_review_score_assessment_status": "not_requested_feature_unfinished",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -858,7 +849,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-11T22:16:31.726Z",
+  "updated_at": "2026-11-12T00:32:10.579Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -997,24 +988,12 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
-    "head_sha": "798caf98225bb7634882770caf31c4da245b900b",
-    "Node": {
-      "added": 0,
-      "removed": 0,
-      "modified": 1
-    },
-    "browser": {
-      "added": 0,
-      "removed": 0,
-      "modified": 1
-    },
-    "TABLES1_browser": {
-      "added": 0,
-      "removed": 0,
-      "modified": 1
-    },
-    "ref": "agent-work/evidence/DETAIL1-grid-camera-0701/test-change-summary.json"
+    "base_sha": "def08dc99df2375020b06adc517b4738692177e7",
+    "head_sha": "2d929abb15a5efade40e83ae4c20880966bb99bc",
+    "added": 6,
+    "removed": 0,
+    "modified": 0,
+    "ref": "agent-work/evidence/ONE-MILE1-0000/test-change-summary.json"
   },
   "review_url": null,
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -1062,7 +1041,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/ONE-MILE1-2200",
+  "evidence_ref": "agent-work/evidence/ONE-MILE1-0000",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1379,7 +1358,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-11T2200-ONE-MILE1-programmer-continuation.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-12T0000-ONE-MILE1-frontend-continuation.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1715,7 +1694,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-06-developer-release-PR491.json",
-  "handoff_path": "agent-work/handoffs/2026-11-11T2200-ONE-MILE1-programmer-continuation.json",
+  "handoff_path": "agent-work/handoffs/2026-11-12T0000-ONE-MILE1-frontend-continuation.json",
   "ui_actual_preview": {
     "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
     "manifest_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/ui-manifest.json",
@@ -2191,8 +2170,8 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-2200/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-2200/programmer-score-evidence1.2.json",
+  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-0000/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-0000/programmer-score-evidence1.2.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-11T0838-programmer-PR496-canonical.json",
   "review_evidence_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650",
   "github_review_state": "COMMENT; operational acceptance by fresh independent non-implementer. Same GitHub identity owns PR; formal self-approval unavailable.",
@@ -2288,7 +2267,7 @@
   "next_approved_stage": "PF2-BATCH1-lifecycle-autofill-UI",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-11T0356-PF2-BATCH1-lifecycle-UI.json",
   "authorization_status": "Direct owner correction051 approved; analyst amends conflicting spec then programmer fixes; new exactSHA review and separate release permission remain. Other approved checkpoints preserved.",
-  "completed_at": "2026-11-11T22:13:59.406Z",
+  "completed_at": "2026-11-12T00:28:59.489Z",
   "score_changed": false,
   "next_stage_id": "DETAIL1-GRID-CORRECTION",
   "score_evidence_updated": true,
@@ -2296,11 +2275,11 @@
   "implementation_started": true,
   "current_stage_release_approved": false,
   "review_ready": false,
-  "current_stage_ui_status": "App_not_integrated_actual_UI_pending",
+  "current_stage_ui_status": "visible_fine_UI_not_wired_actual_pending",
   "completed_claim": {
-    "claim_ref": "agent-work/claims/2026-11-11T2200-programmer-ONE-MILE1.json",
-    "run_id": "2026-11-11T2200-programmer-ONE-MILE1",
-    "status": "completed_run_checkpoint_task_still_in_progress"
+    "claim_ref": "agent-work/claims/2026-11-12T0000-programmer-ONE-MILE1.json",
+    "run_id": "2026-11-12T0000-programmer-ONE-MILE1",
+    "status": "completed_run_checkpoint_task_in_progress"
   },
   "evidence_commit_sha": "39f770bf66fac530da5a2b8574e3ef6555742ac0",
   "finding_ids": [],
@@ -5455,7 +5434,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "existing_approved_scope_continue_same_PR_without_new_start_gate; owner publication hold",
+  "authority_status": "existing_approved_scope_continue_same_PR; owner publication hold",
   "analysis_baseline_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
   "analysis_baseline_tree": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -5913,7 +5892,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-11T2200-programmer-ONE-MILE1.json",
+  "result_ref": "agent-work/results/2026-11-12T0000-programmer-ONE-MILE1.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6654,7 +6633,7 @@
   "private_head_sha": null,
   "private_tree_sha": null,
   "current_private_package": null,
-  "next_programmer_step_ref": "agent-work/handoffs/2026-11-11T2200-ONE-MILE1-programmer-continuation.json",
+  "next_programmer_step_ref": "agent-work/handoffs/2026-11-12T0000-ONE-MILE1-frontend-continuation.json",
   "review_request_ref": null,
   "programmer_complete": false,
   "current_programmer_result_ref": "agent-work/results/2026-11-11T0804-programmer-DETAIL1-focus.json",
@@ -6678,7 +6657,7 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-11T0104-reviewer-TABLES1-6d5c9f4-fix.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-11T2200-programmer-ONE-MILE1.json",
+  "latest_result_ref": "agent-work/results/2026-11-12T0000-programmer-ONE-MILE1.json",
   "checks": {
     "run_id": 42998005924,
     "all_success": true,
@@ -6715,7 +6694,7 @@
     "KNC-EVID-001"
   ],
   "score_delta": null,
-  "score_delta_status": "not_assessed_independently_on_new_sha",
+  "score_delta_status": "unknown_unverified",
   "public_book_transfer_approved": true,
   "current_external_dependency": null,
   "publication_package_requires_private_catalog": true,
@@ -7267,7 +7246,7 @@
   "current_role_result": "agent-work/results/2026-11-11T1357-analyst-PR496-fill-cell.json",
   "current_stage_score_assessment_status": "pending_independent_whole_package_review",
   "ui_actual_ref": null,
-  "execution_running": true,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -7725,7 +7704,7 @@
   "release_readiness": "not_ready_owner_correction_requires_spec_and_implementation",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-11T2200-ONE-MILE1-programmer-continuation.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-12T0000-ONE-MILE1-frontend-continuation.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -7908,7 +7887,7 @@
     "ci_run": 42736194155,
     "checks": "all_passed"
   },
-  "pr_head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
+  "pr_head_sha": "2d929abb15a5efade40e83ae4c20880966bb99bc",
   "pr_updated": true,
   "execution_routing": {
     "task_id": "HX-BL-043",
@@ -8389,7 +8368,7 @@
     "verdict": "changes_requested"
   },
   "full_package_accepted": false,
-  "current_stage_code_status": "domain_core_only_App_integration_pending",
+  "current_stage_code_status": "physical3_v15_document_wired_visible_UI_pending",
   "accepted_dependency_package": {
     "task_id": "HX-BL-051",
     "pr": 496,
@@ -8914,7 +8893,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/ONE-MILE1-2200/checks.json",
+  "checks_ref": "agent-work/evidence/ONE-MILE1-0000/checks.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -9986,7 +9965,7 @@
   },
   "updated_on": "2026-11-11T21:03:55.614Z",
   "claim_ref": "agent-work/claims/2026-11-11T2043-analyst-ONE-MILE1.json",
-  "latest_programmer_result_ref": "agent-work/results/2026-11-11T2200-programmer-ONE-MILE1.json",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-12T0000-programmer-ONE-MILE1.json",
   "source_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
   "source_pr": 496,
   "owner_decision_required": false,
@@ -10331,7 +10310,7 @@
   "acceptance_ref": "agent-work/specs/HX-BL-051-ONE-MILE1.acceptance.json",
   "authority_ref": "agent-work/decisions/owner-decision-2026-11-11-ONE-MILE1-standard-agent-workflow.json",
   "target_pr": 503,
-  "separate_pr_status": "draft_implementation_in_progress",
+  "separate_pr_status": "draft_App_backend_wired_frontend_in_progress",
   "latest_ONE_MILE1_specification": {
     "run_id": "2026-11-11T2043-analyst-ONE-MILE1",
     "status": "ready_for_programmer",
@@ -10358,6 +10337,22 @@
     "result_path": null
   },
   "latest_ONE_MILE1_implementation": {
+    "run_id": "2026-11-12T0000-programmer-ONE-MILE1",
+    "status": "App_backend_checkpoint_frontend_pending",
+    "pr": 503,
+    "head_sha": "2d929abb15a5efade40e83ae4c20880966bb99bc",
+    "draft": true,
+    "result_ref": "agent-work/results/2026-11-12T0000-programmer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T0000-ONE-MILE1-frontend-continuation.json",
+    "checks_ref": "agent-work/evidence/ONE-MILE1-0000/checks.json",
+    "scene_ref": "agent-work/evidence/ONE-MILE1-0000/scene-map-v15.json",
+    "complete_feature": false,
+    "review_ready": false,
+    "next_role": "programmer",
+    "next_step": "Программист продолжает тот же draft PR503 на2d929ab: теперь приоритет — видимый переключатель1/6, собственные fine-тайлы, H/S локальная карточка и форма с полным Save/Cancel. Подключить ordinary generator/camera/PNG и местные дороги/реки/POI, закончить consent для checkpoint/регенерации, показать actual UI1500/390/320 RU/EN и передать полный новыйSHA независимому проверяющему. Не повторять уже готовое ядро и не ждать нового согласования старта.",
+    "release_authorized": false
+  },
+  "previous_ONE_MILE1_implementation": {
     "run_id": "2026-11-11T2200-programmer-ONE-MILE1",
     "status": "partial_core_checkpoint",
     "pr": 503,
@@ -10375,5 +10370,6 @@
     "next_role": "programmer",
     "next_step": "Продолжить ONE-MILE1 в существующем draft PR503 на def08dc: подключить ядро к App/physicalGrid3 и JSONv15, затем локальную карточку/редактор, POI/дороги/реки, камеру и PNG; проверить полный OM01–14, показать actual UI и передать новый SHA независимому проверяющему. Новое согласование старта не нужно; публикация запрещена.",
     "release_authorized": false
-  }
+  },
+  "implementation_base_sha": "def08dc99df2375020b06adc517b4738692177e7"
 }
