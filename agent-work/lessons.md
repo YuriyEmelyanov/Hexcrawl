@@ -804,3 +804,8 @@ Evidence: `agent-work/evidence/PR496-browser-verification-1803/triage.json`, `ac
 ## 2026-11-11 — ONE-MILE1: отдельный PR и локальная цель
 
 При разделении уже принятого смешанного PR старое принятие не подтверждает новые требования владельца. Донорские1mi biome/notes handlers фактически используют source6 selectedHexKey; переиспользовать следует оболочку/guards/history, а не адрес записи. Полная визуальная заливка fine-клетки не означает расширение принятой географии. Частные версии11–14 других веток нельзя принять и молча потерять CLASSIFY1/TABLES1/PF2 при чистом1-mile split: явная матрица public2–10/new15 и отказ неподдержанного обязательны. Это ограниченный статический анализ, не доказательство продуктовой приёмки; код и CI в аналитическом запуске не менялись. Источник: agent-work/evidence/ONE-MILE1-2043/dependency-partition.json; спецификацияOM-1.0: agent-work/specs/HX-BL-051-ONE-MILE1.md.
+
+
+## 2026-11-12 — ONE-MILE1: реальные пути checkpoint
+
+Защиты только restoreSnapshot недостаточно: deleteLastRegion строит after.map непосредственно из generation checkpoint. Поздние fineCellEdits тогда теряются в обход этой защиты. Общая подготовка retained fine records и явное согласие на утрату подключены к обоим путям до setters/history; reset проверен отдельно. Шесть новых кейсов в прежнем saveSafety проверяют реальные обработчики, а не новый параллельный harness. Старый checkpoint без необходимого слоя безопасно отказывается сохранять выжившие записи; полный UI разрешения ещё не готов. Evidence точного 2d929abb15a5efade40e83ae4c20880966bb99bc: agent-work/evidence/ONE-MILE1-0000/focused.log, scope-ledger.json. Сохранение7дорог/6рек/воднойPOI в адаптации подтверждено как данные, не как показ одномильного UI.
