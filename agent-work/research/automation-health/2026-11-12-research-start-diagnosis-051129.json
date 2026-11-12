@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "event_id": "2026-11-12-research-start-diagnosis-051129",
+  "kind": "automation_startup_diagnosis",
+  "status": "schedule_reenabled_root_cause_unresolved",
+  "created_at": "2026-11-12T05:11:56.268Z",
+  "repository": "YuriyEmelyanov/Hexcrawl",
+  "branch": "agent-operations",
+  "facts": [
+    {
+      "type": "automation_snapshot",
+      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "is_enabled": false,
+      "updated_at": "2026-11-12T04:33:53.637410+00:00",
+      "run_details": {
+        "last_run": {
+          "id": "ebb8eb70-4cb8-8321-9274-94b3c86b5ee1",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-12T04:30:00Z",
+          "started_at": "2026-11-12T04:32:14.139307Z",
+          "completed_at": "2026-11-12T04:32:25.032503Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6aefc487-33b8-83ec-bb11-a372bbd54c4d"
+          }
+        },
+        "latest_result": null,
+        "delivery_status": "unknown"
+      }
+    },
+    {
+      "type": "automation_snapshot",
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true,
+      "last_run": {
+        "id": "fabb0acc-385c-8333-ba3b-b5aa8110c861",
+        "recorded_status": "completed",
+        "scheduled_for": "2026-11-12T04:00:00Z",
+        "started_at": "2026-11-12T03:59:15.425744Z",
+        "completed_at": "2026-11-12T04:19:23.795253Z",
+        "chat_ref": {
+          "type": "chatgpt",
+          "id": "6af43f1e-9ef4-83ec-867b-e2a9af0d61bf"
+        }
+      },
+      "latest_result_run_id": "fabb0acc-385c-8333-ba3b-b5aa8110c861"
+    },
+    {
+      "type": "plugin_permission_read",
+      "app_id": "github",
+      "global_permission": "Allow low-risk actions",
+      "app_permission": "Allow all actions",
+      "settings_changed": false
+    },
+    {
+      "type": "repository_snapshot",
+      "head": "1343109a8382516af43112318c9652e80f1d639f",
+      "research_state_active_task": "2026-11-11T1633-HexAtlas-retained-lifecycle",
+      "last_completed_research_run": "2026-11-11T0733-HexAtlas-lifecycle",
+      "latest_scheduled_run_left_research_artifact": false
+    },
+    {
+      "type": "historical_chat_error",
+      "text": "That approval request is no longer active. Please retry the action if you still want ChatGPT to continue with it.",
+      "source": "Earlier conversation record retrieved via Personal Context; not a tool trace of the 04:30 scheduled run"
+    },
+    {
+      "type": "history_access_limit",
+      "description": "Automation API exposes final recorded run only, no failing tool or pending approval identity; browser chat history required sign-in and was not read."
+    }
+  ],
+  "findings": [
+    "Last recorded researcher run ended after 10.893196 seconds; completed label and null latest_result do not establish successful research.",
+    "Present GitHub permission setting does not require routine read/write confirmation; missing owner consent is not established as cause.",
+    "Expired approval errors occurred in earlier attempts; exact triggering action and whether today's failure shares that cause remain unknown.",
+    "Repeated enable/prompt-consent changes did not produce a verified new research result; no claim of durable repair."
+  ],
+  "unknowns": [
+    "Exact failed tool/action and approval id",
+    "Who/what disabled automation",
+    "Whether a platform session or scheduled-run authorization defect caused the latest stop"
+  ],
+  "action": {
+    "automation_update": {
+      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "is_enabled": true
+    },
+    "schedule_unchanged": true,
+    "prompt_unchanged": true,
+    "platform_permissions_changed": false,
+    "new_automation_created": false,
+    "immediate_run_requested": false,
+    "main_team_untouched": true
+  },
+  "automation_health_end": {
+    "research": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true
+      }
+    ],
+    "team": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true
+      }
+    ],
+    "checked_at": "2026-11-12T05:11:07.669Z"
+  },
+  "research_state_and_checkpoint_unchanged": true,
+  "active_rating_changed": false,
+  "score_changed": false,
+  "not_a_research_result": true,
+  "next_step": "Inspect a fresh failed run's actual tool/approval detail in Scheduled or task chat; avoid treating another enabled snapshot as successful research. Continue retained HexAtlas checkpoint only after a real execution succeeds."
+}
