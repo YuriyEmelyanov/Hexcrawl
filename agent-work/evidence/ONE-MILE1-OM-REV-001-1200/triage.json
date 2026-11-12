@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "first_fix_sha": "0ed8659edb5869382723499e620aeb0700a37c17",
+  "final_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+  "initial_defect": {
+    "id": "OM-REV-001",
+    "baseline": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+    "evidence": "agent-work/evidence/review-ONE-MILE1-2ad-1000/independent-review.json"
+  },
+  "first_CI": {
+    "run_id": 43214447813,
+    "browser": "failed",
+    "failure": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ '0 0 1373.927833134 1122'\n- '0 0 743.4613391789284 660'\n       ^\n",
+    "classification": "test_timing_race_after_native_job_completed",
+    "observations": "Initial busy frame/cells/selector assertions passed and desktop/390 busy images captured; final native world1373.9278x1122 replaced baseline743.4613x660 before320 capture. Manifest diagnostics show accepted final fine1, not missing snapshot during job.",
+    "production_changed_after_first_fix": false,
+    "correction": "Hold real intermediate0ms timer after3 ticks during screenshots, then release original native continuation. Keep all visibility/frame/readonly/UndoRedo assertions."
+  },
+  "limitations": "This timing fixture only validates held intermediate progress plus real completion; it is not a performance or wall-clock smoothness measurement."
+}
