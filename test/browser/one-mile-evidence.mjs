@@ -103,6 +103,9 @@ export async function checkFineModeCandidates({page,snap,shot,button,manifest}){
   const frame=()=>page.evaluate(()=>{const svg=document.querySelector('svg[data-render-phase]'),v=document.querySelector('.map-viewport'),r=v.getBoundingClientRect(),cells=[...svg.querySelectorAll('[data-fine-key]')],visible=cells.filter(n=>{const b=n.getBoundingClientRect();return b.right>r.left&&b.left<r.right&&b.bottom>r.top&&b.top<r.bottom;}),first=visible[0],b=first?.getBoundingClientRect();return {viewBox:svg.getAttribute('viewBox'),transform:svg.style.transform,cells:cells.length,visible:visible.length,key:first?.getAttribute('data-fine-key'),x:b?.x,y:b?.y};});
   const beforeFrame=mode==='mythic'?await frame():null;
   if(mode==='mythic'){assert.ok(beforeFrame.visible>0);await shot('desktop-before-kingdom.jpg');}
+  // Hold a real intermediate job tick while capturing widths; do not race
+  // screenshots against native completion or replace the generator/result.
+  if(mode==='mythic')await page.evaluate(()=>{const set=window.setTimeout,clear=window.clearTimeout,pending=new Map();let ticks=0;window.setTimeout=function(fn,delay,...args){if(delay===0&&document.querySelector('.kingdom-progress')?.textContent.includes('Создание королевства')&&++ticks>3){const id=set(()=>{},600000);pending.set(id,()=>fn(...args));return id;}return set(fn,delay,...args);};window.clearTimeout=function(id){pending.delete(id);clear(id);};window.__releaseKingdomTick=()=>{window.setTimeout=set;window.clearTimeout=clear;for(const [id,fn]of pending){clear(id);set(fn,0);}pending.clear();delete window.__releaseKingdomTick;};});
   await candidate.press('Enter');
   let busy=null;
   if(mode==='mythic'){
@@ -113,7 +116,8 @@ export async function checkFineModeCandidates({page,snap,shot,button,manifest}){
    assert.equal(await page.locator('[data-fine-key][aria-disabled=true]').count(),beforeFrame.cells);assert.ok(await page.locator('[data-fine-panel] .direct-mode').isDisabled());
    const frozen=await page.locator('[data-fine-world]').innerHTML();
    for(const width of [1500,390,320]){await page.setViewportSize({width,height:1000});await page.locator('.map-viewport').scrollIntoViewIfNeeded();const at=await frame();assert.ok(at.visible>0,`busy map visible at${width}`);assert.equal(at.viewBox,beforeFrame.viewBox);assert.equal(await page.locator('[data-fine-world]').innerHTML(),frozen,'provisional generation does not change accepted artwork');await page.locator('[data-fine-key]').first().dispatchEvent('keydown',{key:'Enter',bubbles:true});await shot(width===1500?'desktop-busy-kingdom.jpg':`narrow-${width}-busy-kingdom.jpg`);}
-   busy={...busy,framePreserved:true,visibleWidths:[1500,390,320],acceptedArtworkUnchanged:true};
+   busy={...busy,framePreserved:true,visibleWidths:[1500,390,320],acceptedArtworkUnchanged:true,method:'real intermediate tick held only for responsive captures, then released'};
+   await page.evaluate(()=>window.__releaseKingdomTick());
   }
   await page.waitForFunction(()=>!document.querySelector('[data-fine-step]').disabled&&document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready',undefined,{timeout:120000});
   const after=await snap(),accepted=after.map.regions.length>before.map.regions.length;
