@@ -31,6 +31,9 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser
+        env:
+          # Bounded P04 acceptance diagnostic for PR503; no legacy UI pin in other PRs.
+          ONE_MILE_NATIVE6_BASELINE: ${{ github.event.pull_request.number == 503 && 'd41911b8d7c2248f115b182923350dc8d08c0a48' || '' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

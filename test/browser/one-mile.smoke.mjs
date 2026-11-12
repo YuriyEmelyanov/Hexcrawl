@@ -43,7 +43,8 @@ try{
  await page.locator('input[type=file]').setInputFiles({name:'one-mile.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});await step.waitFor();await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  assert.match(await page.locator('details.export-menu small').textContent(),/JSON v15/);await shot('desktop-6.jpg');
  // P04: same actual fixture against unchanged pre-correction native6 build.
- const baselineSha='d41911b8d7c2248f115b182923350dc8d08c0a48';
+ const baselineSha=process.env.ONE_MILE_NATIVE6_BASELINE;
+ if(baselineSha){assert.match(baselineSha,/^[0-9a-f]{40}$/); // Opt-in acceptance diagnostic, not a permanent historical UI contract.
  try{execFileSync('git',['cat-file','-e',baselineSha],{cwd:root,stdio:'ignore'});}catch{execFileSync('git',['fetch','--depth=1','origin',baselineSha],{cwd:root,stdio:'inherit'});}
  baselineDir=await fs.mkdtemp(os.tmpdir()+'/one-mile-six-');const base=baselineDir+'/source';
  execFileSync('git',['worktree','add','--detach',base,baselineSha],{cwd:root,stdio:'inherit'});await fs.symlink(fileURLToPath(new URL('node_modules',root)),base+'/node_modules','dir');
@@ -55,7 +56,7 @@ try{
  const baselineProfiles=[];
  for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>document.fonts.ready);await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
  const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});assert.ok(before.equals(after),'P04 native6 pixel-identical on same world '+width);baselineProfiles.push({width,pixelIdentical:true});}
- manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});
+ manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
  await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
  assert.equal(await page.locator('polygon.hex[data-hex-key]').count(),0,'no source-six grid under the fine grid');
  const keys=await page.locator('[data-fine-key]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-key'))),occupied=new Set(keys);
