@@ -14718,7 +14718,7 @@ export function App() {
       .filter(hex => forestFamily(hex.biome));
   }, [renderBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const lakeGeometryCache = useRef(createLakeGeometryCache());
-  const lakeShapes = useMemo(()=>renderBiomeColor ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[renderBiomeColor,lakeCells,toponymSeed,riverSegments]);
+  const lakeShapes = useMemo(()=>renderBiomeColor||physicalGrid?.viewStep===1 ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[renderBiomeColor,physicalGrid?.viewStep,lakeCells,toponymSeed,riverSegments]);
   const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
   const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
 
@@ -16078,6 +16078,10 @@ export function App() {
   </div>:null;
   const fineActive=physicalGrid?.viewStep===1;
   const fineCells=useMemo(()=>physicalGrid?projectOneMile(oneMileSources(captureMap()),physicalGrid.grid.origin):[],[physicalGrid?.grid.origin,regions,hexTerrainByKey,biomeOverrideByHexKey]);
+  // Lake shores/islands are the accepted native water artwork over ground,
+  // not a second fine water model. Render its underlying biome per fine cell
+  // so a water-coloured hex cannot paint over an island/shore cutout.
+  const fineLakeGround=useMemo(()=>physicalGrid?new Map(projectOneMile(regions.flatMap(region=>region.hexes.filter(cell=>hexTerrainByKey.get(hexKey(cell))?.terrainOverride==='lake').map(cell=>({cell,landBiomeId:biomeOverrideByHexKey.get(hexKey(cell))??region.biomeId}))),physicalGrid.grid.origin).map(row=>[hexKey(row.cell),row.landBiomeId])):new Map<string,string|undefined>(),[physicalGrid?.grid.origin,regions,hexTerrainByKey,biomeOverrideByHexKey]);
   const fineCandidates=useMemo(()=>physicalGrid?oneMileCandidates(fineCells,candidateHexes,physicalGrid.grid.origin):[],[fineCells,candidateHexes,physicalGrid?.grid.origin]);
   const fineReadCell=fineDraft?.target??fineHover??physicalGrid?.selectedCell??null;
   const fineRow=fineReadCell?fineCells.find(row=>isSameHex(row.cell,fineReadCell)):undefined;
@@ -16175,11 +16179,12 @@ export function App() {
     const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
   const fineArtwork=useMemo(()=>physicalGrid?<OneMileArtwork state={physicalGrid} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
-    visual={(id,cell)=>{const biome=(id??FALLBACK_BIOME_ID) as BiomeId;return {color:id?GROUND_COLORS[biome]:GROUND_WATER_COLOR,image:id?(useBiomeTiles?getBiomeTileHref(biome):useBiomeColor?terrainAsset(biome,cell.q,cell.r,toponymSeed):undefined):undefined,emoji:id&&!useBiomeColor&&!useBiomeTiles?BIOMES[biome]?.primaryEmoji:undefined};}}
+    visual={(id,cell)=>{const ground=id??fineLakeGround.get(hexKey(cell)),biome=(ground??FALLBACK_BIOME_ID) as BiomeId;return {color:ground?GROUND_COLORS[biome]:GROUND_WATER_COLOR,image:ground?(useBiomeTiles?getBiomeTileHref(biome):useBiomeColor?terrainAsset(biome,cell.q,cell.r,toponymSeed):undefined):undefined,emoji:ground&&!useBiomeColor&&!useBiomeTiles?BIOMES[biome]?.primaryEmoji:undefined};}}
     poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments} water={<>{positionedHexes.hexes.filter(h=>h.kind==='sea').map(h=><polygon key={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill={GROUND_WATER_COLOR}/>)}<LakeWater shapes={lakeShapes} cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments}/></>}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [physicalGrid,fineCells,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,useBiomeTiles,useBiomeColor,usePoiSvg,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,lakeShapes,lakeCells,positionedHexes,toponymSeed]);
-  const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?t.sea:undefined} note={fineValues?.note}
+    [physicalGrid,fineCells,fineLakeGround,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,useBiomeTiles,useBiomeColor,usePoiSvg,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,lakeShapes,lakeCells,positionedHexes,toponymSeed]);
+  const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
+  const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}
     rivers={(fineSummary?.rivers??[]).map(r=>`${editorNames[`river:${r.id}`]?.[language]??toponyms[`river:${r.id}`]?.[language]??`${t.river} ${r.id}`}${r.crossingIds.length?` · ${r.crossingIds.map(id=>crossings.find(c=>`crossing:${c.key}`===id)?.kind).filter(Boolean).map(k=>t[k as 'bridge'|'ferry'|'ford']).join(', ')}`:''}`)}
     pois={(fineSummary?.pois??[]).map(p=>finePoi(physicalGrid!.poiFootprints.find(fp=>fp.poiId===p.poiId)!).label)} draft={fineDraft} canEdit={!!physicalGrid?.selectedCell} water={!!fineRow?.waterArea} busy={isImporting||!!pendingRegen||!!kingdomJob} error={editError}
