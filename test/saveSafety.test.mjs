@@ -346,3 +346,18 @@ test('ONE-MILE1 older generation checkpoints cannot silently discard later local
  g.render().deleteLastRegion();assert.deepEqual(fineStable(g),before,'real delete refuses without consent');
  g.setWindow({confirm:()=>true,matchMedia:()=>({matches:false})});g.render().deleteLastRegion();assert.equal(fineSave(g).map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
 });
+
+test('ONE-MILE1 view/hover/pinned form and stale callbacks preserve local address and camera scale',()=>{
+ const {g}=fineSetup();fineActivate(g);const initial=fineSave(g),undo=g.render().undoHistory.length,scale=initial.ui.mapScale;
+ assert.equal(g.render().switchFineStep(1),true);assert.equal(fineSave(g).ui.mapScale,scale*6);
+ assert.equal(g.render().pickFine({q:0,r:0},false,g.render().getDocumentRevision()),true);
+ g.render().setFineHover({q:1,r:0});assert.deepEqual(structuredClone(g.render().fineReadCell),{q:1,r:0});assert.deepEqual(fineSave(g).map.physicalGrid.selectedCell,{q:0,r:0});assert.equal(g.render().undoHistory.length,undo);
+ g.render().setFineHover(null);g.render().startFineDraft();const old=g.render().fineDraft;
+ assert.equal(g.render().changeFineDraft({name:'Fine name'},old),true);const current=g.render().fineDraft;
+ assert.equal(g.render().changeFineDraft({note:'stale'},old),false);assert.equal(g.render().saveFineDraft(old),false);
+ assert.equal(g.render().saveFineDraft(current),true);assert.equal(fineSave(g).map.physicalGrid.fineCellEdits['0,0'].name[current.language],'Fine name');assert.equal(g.render().undoHistory.length,undo+1);
+ assert.deepEqual(fineSave(g).generation,initial.generation);assert.deepEqual(fineSave(g).map.biomeOverrideByHexKey,initial.map.biomeOverrideByHexKey);
+ g.render().startFineDraft();const late=g.render().fineDraft;g.render().cancelFineDraft(late);g.render().pickFine({q:1,r:0},false,g.render().getDocumentRevision());g.render().startFineDraft();
+ assert.equal(g.render().saveFineDraft(late),false);assert.equal(g.render().cancelFineDraft(late),false);assert.ok(g.render().fineDraft);g.render().cancelFineDraft(g.render().fineDraft);
+ assert.equal(g.render().switchFineStep(6),true);assert.equal(fineSave(g).ui.mapScale,scale);assert.equal(g.render().undoHistory.length,undo+1);
+});
