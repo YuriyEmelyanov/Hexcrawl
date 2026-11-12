@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-12T1600-programmer-ONE-MILE1-preview",
+  "run_id": "2026-11-12T1800-reviewer-ONE-MILE1-walkthrough",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "accepted_release_walkthrough_review_ready",
+  "status": "accepted_awaiting_owner_publication_permission",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,9 +40,8 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
-    "status": "latest_written_last_after_result_handoff_originals_readback",
-    "materials_commit_sha": "00f552083a083efbb86c2e2e5b7308389ba8a724",
-    "originals_commit_sha": "840edf6878477efeb17d7a0a802a7c8e373b4e68",
+    "status": "latest_written_last_after_result_handoff_review_readback",
+    "materials_commit_sha": "7a7a1a1ad42271aefc292c51f296525136e64370",
     "conflict_policy": "Non-force CAS; own claim only; foreign state preserved"
   },
   "budget_status": "owner_waived_usage_gate",
@@ -51,15 +50,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "every_2_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1.md",
   "spec_version": "OM-1.0",
-  "result_path": "agent-work/results/2026-11-12T1600-programmer-ONE-MILE1-preview.json",
+  "result_path": "agent-work/results/2026-11-12T1800-reviewer-ONE-MILE1-walkthrough.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "Проверяющий независимо сверяет release walkthrough HX-BL-051/ONE-MILE1 с неизменным принятым PR503 d41911b8d7c2248f115b182923350dc8d08c0a48: точные before-main1962/afterd419, одинаковый unmodified world,30PNG/14JSON/manifest, локальные река/сосед,1500/390 read/edit/Save/Undo/Redo/Cancel/reload и ограничения. Код уже принят; новая полная серия не требуется без конкретной причины. После сверки — конкретный проверенный пакет владельцу на отдельное разрешение публикации. До него main/деплой не менять.",
+  "next_step": "Ожидается отдельное разрешение владельца на публикацию только принятого ONE-MILE1 PR503, head d41911b8d7c2248f115b182923350dc8d08c0a48, tree ec3fbcab8bb976cdd189f82f1b21bf264f23e7db. Код и фактический показ независимо приняты. После разрешения программист сверяет неизменность SHA/базы и разрешения, публикует ровно этот пакет, подтверждает выпуск и передаёт score_update_pending. Изменение пакета требует новой проверки. PR496/другие пакеты не включать. До разрешения main/деплой не менять.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -95,6 +94,21 @@
       "actual_UI_ref": "agent-work/evidence/PR496-browser-verification-1803/actual-UI-manifest.json",
       "handoff_ref": "agent-work/handoffs/2026-11-11T1803-PR496-browser-next.json",
       "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
+    },
+    {
+      "task_id": "HX-BL-051",
+      "stage_id": "ONE-MILE1",
+      "pr": 503,
+      "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+      "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
+      "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "status": "awaiting_owner_publication_permission",
+      "release_authorized": false,
+      "review_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/independent-review.json",
+      "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/score-assessment1.2.json",
+      "walkthrough_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/840edf6878477efeb17d7a0a802a7c8e373b4e68/agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
+      "owner_approval_inferred": false,
+      "decision": "Отдельное разрешение публикации только принятого ONE-MILE1 PR503d419; код и показ приняты; публикация пока не разрешена."
     }
   ],
   "release_approval": {
@@ -107,7 +121,7 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/ONE-MILE1-release-walkthrough-1600",
+  "evidence_path": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800",
   "branch_name": "agent/hx-bl-051-one-mile1",
   "pr": 503,
   "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
@@ -240,23 +254,23 @@
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-12T16:01:58.945Z",
+      "checked_at": "2026-11-12T18:00:43.911Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-12T16:15:04.804Z",
+      "checked_at": "2026-11-12T18:07:53.222Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "restoration": {
       "performed": false,
-      "reason": "Both actual observations enabled; no update needed."
+      "reason": "Both actual start/end observations enabled"
     },
     "errors": [],
-    "scope": "Point-in-time observations only; no guarantee against later disable. Schedule/prompt unchanged."
+    "scope": "Point-in-time checks only; schedule/prompt unchanged; no guarantee against later service disable."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_insufficient_evidence_whole_grades",
@@ -1561,8 +1575,14 @@
     "stage_id": "ONE-MILE1",
     "pr": 503,
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-    "status": "accepted_release_preview_pending_then_owner_permission",
-    "release_approved": false
+    "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
+    "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "status": "awaiting_owner_publication_permission",
+    "release_authorized": false,
+    "review_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/independent-review.json",
+    "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/score-assessment1.2.json",
+    "walkthrough_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/840edf6878477efeb17d7a0a802a7c8e373b4e68/agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
+    "owner_approval_inferred": false
   },
   "current_risk_findings": [],
   "model_activation_status": "active_routes_verified",
@@ -10946,7 +10966,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-12T1600-programmer-ONE-MILE1-preview.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-12T1800-reviewer-ONE-MILE1-walkthrough.json",
   "actual_UI": {
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
@@ -11046,17 +11066,18 @@
   "release_preview": {
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "status": "actual_presented_reviewer_verification_pending",
-    "responsible_role": "reviewer",
+    "status": "independently_verified_awaiting_owner_release_permission",
+    "responsible_role": "owner",
     "package_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
     "actual_after_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/e147f6dff7c7092c28c74dfbc527969a8f36bf21/agent-work/evidence/ONE-MILE1-OM-REV-001-1200/actual/README.md",
     "reason": "Existing6-mile screenshot is from candidate d419, not actual published-main baseline; source acceptance complete, release presentation needs comparable baseline.",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T1600-ONE-MILE1-walkthrough-review.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1800-ONE-MILE1-release-permission.json",
     "owner_approval_inferred": false,
     "new_design_gate": false,
     "gallery_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/840edf6878477efeb17d7a0a802a7c8e373b4e68/agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
-    "shown_in_chat": true
+    "shown_in_chat": true,
+    "review_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/independent-review.json"
   },
   "previous_primary_before_ONE_MILE1_release_walkthrough": {
     "run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
@@ -11070,7 +11091,7 @@
     "package_tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
     "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
     "pr": 503,
-    "status": "actual_presented_reviewer_verification_pending",
+    "status": "independently_verified_awaiting_owner_release_permission",
     "gallery_ref": "agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
     "gallery_commit_sha": "840edf6878477efeb17d7a0a802a7c8e373b4e68",
     "gallery_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/840edf6878477efeb17d7a0a802a7c8e373b4e68/agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
@@ -11151,16 +11172,23 @@
     "owner_viewed": null,
     "owner_approved": null,
     "reviewer_verification": {
-      "status": "pending",
-      "next_role": "reviewer",
-      "scope": "Applicability of new actual walkthrough to already accepted unchanged package; no automatic full rerun."
+      "status": "accepted",
+      "reviewed_at": "2026-11-12T18:07:18.457Z",
+      "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+      "run_id": "2026-11-12T1800-reviewer-ONE-MILE1-walkthrough",
+      "independent_agent": "/root/walkthrough_review_1800",
+      "evidence_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/independent-review.json",
+      "root_crosscheck_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/root-crosscheck.json",
+      "scope": "Walkthrough applicability; prior full exactSHA acceptance preserved; no fresh DOM run claimed."
     },
     "known_limitations": [
       "Поддерживаются виды1/6;12/24 и C-FILL не входят в пакет.",
       "Водная и смешанная клетка: биом не редактируется, имя/заметка доступны.",
       "Fine JSON v15 не читается прежним опубликованным main; сохранение исходной карты отдельно до перехода.",
       "Во время построения Mythic карта readonly, экспорт/импорт блокируются; промежуточная подсказка v10 известна проверяющему.",
-      "Толстая белая рамка клавиатурного фокуса кандидата остаётся; реальное мобильное устройство не проверено этим прогоном."
+      "Толстая белая рамка клавиатурного фокуса кандидата остаётся; реальное мобильное устройство не проверено этим прогоном.",
+      "Повторное открытие — экспорт/импорт JSON, не browser reload.",
+      "У нового Cancel есть снимки/DOMassertion, отдельного post-Cancel JSON нет; точная атомарность также в прежнем accepted evidence того жеSHA."
     ],
     "publication_authorized": false
   },
@@ -11176,5 +11204,17 @@
     "next_role": "reviewer",
     "next_step": "Проверяющий независимо сверяет release walkthrough HX-BL-051/ONE-MILE1 с неизменным принятым PR503 d41911b8d7c2248f115b182923350dc8d08c0a48: точные before-main1962/afterd419, одинаковый unmodified world,30PNG/14JSON/manifest, локальные река/сосед,1500/390 read/edit/Save/Undo/Redo/Cancel/reload и ограничения. Код уже принят; новая полная серия не требуется без конкретной причины. После сверки — конкретный проверенный пакет владельцу на отдельное разрешение публикации. До него main/деплой не менять.",
     "release_authorized": false
+  },
+  "latest_ONE_MILE1_release_walkthrough_review": {
+    "run_id": "2026-11-12T1800-reviewer-ONE-MILE1-walkthrough",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "verdict": "accepted",
+    "status": "completed_awaiting_owner_publication_permission",
+    "execution_running": false,
+    "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+    "review_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/independent-review.json",
+    "result_ref": "agent-work/results/2026-11-12T1800-reviewer-ONE-MILE1-walkthrough.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1800-ONE-MILE1-release-permission.json"
   }
 }
