@@ -876,3 +876,8 @@ Run `2026-11-12T1600-programmer-ONE-MILE1-preview`: при локальном Ch
 ## 12ноября2026 — ограниченный этап исправлений без выдуманной калибровки
 
 2026-11-12T2302-analyst-ONE-MILE1-C02-C05: C02visual/C05 можно специфицировать на существующихkind/labels без изменения русел, ширины и размеров. Это не закрывает весьownerfeedback023: готовность полного пакета снята, C01/03/04/06/07/08 сохранены отдельно с конкретными пробелами. МакетP1 предъявленdesktop/narrow, условные размерысимволов не физические величины. При реализации нельзя убрать ferry gap оставив подним полную дорогу, или считатьJSONtype доказательством различимого рисунка. agent-work/specs/HX-BL-051-ONE-MILE1-C02-C05.md.
+
+
+### 2026-11-13 — ONE-MILE1 C02/C05, useful actual evidence
+- A correctly empty ferry gap can leave a zero-height SVG road group: capture its real padded page clip rather than require a nonzero element screenshot box. Native6 comparison must stabilize CSS transitions; a moving panel toggle is a capture difference, not river/map regression. Exact failed attempts and final passing evidence: `agent-work/evidence/ONE-MILE1-C02-C05-0057/source-provenance.json`, `agent-work/evidence/ONE-MILE1-C02-C05-0057/checks.json`.
+- Historical UI comparison is an opt-in acceptance diagnostic scoped to PR503, not a permanent old-interface contract or repeated build cost for every future PR. Extend existing fixed-world/browser lifecycle and count its logical cases separately from Node/RNG; success on one fixed world does not close geometry/width/extent requirements.
