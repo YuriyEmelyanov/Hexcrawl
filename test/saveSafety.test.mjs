@@ -317,6 +317,14 @@ test('ONE-MILE1 public10 Knave payload survives15 import/export literally',async
  const {g,alerts}=fineSetup();await fineLoad(g,regionFixture());const legacy=fineSave(g);legacy.map.knave=newKnaveLayer();legacy.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});legacy.ui.knaveEnabled=true;
  await fineLoad(g,legacy);assert.deepEqual(alerts,[]);assert.equal(fineSave(g).map.physicalGrid,undefined);
  fineActivate(g);const data=fineSave(g);assert.deepEqual(data.map.knave,legacy.map.knave);await fineLoad(g,data);assert.deepEqual(fineSave(g).map.knave,legacy.map.knave);
+ // OM05/13: literal legacy content must also survive a real fine-candidate
+ // Knave continuation. Import alone misses validation of newly created owners.
+ assert.equal(g.render().switchFineStep(1),true);const before=fineSave(g),candidate=g.render().fineCandidates[0];assert.ok(candidate);
+ assert.equal(g.render().pickFine(candidate.cell,true,g.render().getDocumentRevision()),true);const after=fineSave(g);
+ assert.equal(g.render().generationError,null);assert.equal(after.map.regions.length,before.map.regions.length+1);
+ assert.deepEqual(after.map.knave.content.byPoi['poi:1:2,0'],before.map.knave.content.byPoi['poi:1:2,0']);
+ for(const [alias,id]of Object.entries(before.map.physicalGrid.poiIdentities.byLegacyRef))assert.equal(after.map.physicalGrid.poiIdentities.byLegacyRef[alias],id);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),after);
 });
 
 test('ONE-MILE1 rejects private versions, foreign layers and invalid fine data atomically with redo',async()=>{

@@ -1114,7 +1114,10 @@ function prepareKnaveGeneratedMap(map:MapSnapshot,catalog:KnaveCatalog,preserved
     }
     return next;
   });
-  const next={...map,regions,knave:{...map.knave,content}};checkedRiverMap(next);return next;
+  // recordGenerated reconciles the final marker owners/physical layer before
+  // its mandatory checkedRiverMap. This provisional content preparation must
+  // not validate an old fine identity set against newly generated POI.
+  return {...map,regions,knave:{...map.knave,content}};
 }
 type DetailRiverMap=Pick<MapSnapshot,'regions'|'rivers'|'roads'|'crossings'|'riverFeatures'|'hexTerrainByKey'>;
 function detailMapRiverGeometry(map:DetailRiverMap,origin:{x:number;y:number}){

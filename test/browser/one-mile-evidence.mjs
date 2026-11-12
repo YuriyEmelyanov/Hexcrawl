@@ -90,3 +90,30 @@ export async function checkFineObjectsAndPng({page,step,snap,shot,button,manifes
  const style=page.locator('button.biome-display-toggle');await style.click();await png('fine-emoji.png');await style.click();await page.locator('.rotate-map-button').click();await png('fine-color-rotated.png');await page.locator('.rotate-map-button').click();await style.click();
  assert.deepEqual(world(await snap()),before,'PNG/style/rotation do not mutate accepted world');manifest.local_samples=samples;manifest.png=pngs;manifest.cases.push({id:'UI-fine-export-local-features',status:'pass'});
 }
+
+export async function checkFineModeCandidates({page,snap,shot,button,manifest}){
+ const profiles=[];
+ for(const mode of ['knave','mythic']){
+  if(mode==='knave')await page.getByRole('checkbox',{name:'Knave 2e',exact:true}).check();
+  else await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('mythic');
+  const before=await snap(),candidate=page.locator('[data-fine-candidate]').first(),target=await candidate.getAttribute('data-fine-candidate');
+  await candidate.press('Enter');
+  let busy=null;
+  if(mode==='mythic'){
+   await page.waitForFunction(()=>document.querySelector('[data-fine-step]').disabled);
+   busy=await page.evaluate(()=>({step:document.querySelector('[data-fine-step]').value,fine:!!document.querySelector('[data-fine-world]'),progress:document.querySelector('.kingdom-progress')?.textContent,disabled:document.querySelector('[data-fine-step]').disabled}));
+   await shot('narrow-320-busy-kingdom.jpg');
+  }
+  await page.waitForFunction(()=>!document.querySelector('[data-fine-step]').disabled&&document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready',undefined,{timeout:120000});
+  const after=await snap(),accepted=after.map.regions.length>before.map.regions.length;
+  if(accepted){
+   if(mode==='knave'){assert.equal(after.map.regions.length,before.map.regions.length+1);assert.ok(Object.keys(after.map.knave?.content?.byPoi??{}).length>0);}
+   else assert.equal(after.map.kingdoms.length,before.map.kingdoms.length+1,'one ordinary complete kingdom');
+   assert.equal(after.map.physicalGrid.viewStep,1);assert.equal(key(after.map.physicalGrid.selectedCell),target);
+   await button('Отменить').click();assert.deepEqual(await snap(),before,'one native Undo restores fine map and entire mode unit');
+   await button('Повторить').click();assert.deepEqual(await snap(),after);await button('Отменить').click();
+  }else assert.deepEqual(after,before,'mode refusal preserves accepted map and RNG');
+  profiles.push({mode,target,accepted,beforeRegions:before.map.regions.length,afterRegions:after.map.regions.length,beforeKingdoms:before.map.kingdoms.length,afterKingdoms:after.map.kingdoms.length,undoRedoExact:accepted?true:null,refusalExact:accepted?null:true,busy});
+ }
+ manifest.ordinary_mode_profiles=profiles;
+}
