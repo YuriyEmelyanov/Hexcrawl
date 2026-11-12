@@ -1,0 +1,627 @@
+{
+  "schema_version": 1,
+  "reviewer": "fresh separate agent /root/review_one_mile_2ad",
+  "role": "independent_reviewer",
+  "created_at": "2026-11-12T10:05:10Z",
+  "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+  "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
+  "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "operational_snapshot": "5975463cba39f3dbccf8071296ba640888fd3edb",
+  "verdict": "changes_requested",
+  "release_authorized": false,
+  "source_changes_made": false,
+  "ops_changes_made": false,
+  "main_changes_made": false,
+  "workspace": "/workspace/scratch/d2682ada47cd/review-2ad",
+  "isolation": "Detached exactSHA worktree; original dirtyhx-one-mile8 untouched. Installed node_modules reused by symlink; build outputs ignored, source clean.",
+  "sources_read": [
+    "AGENTS.md",
+    "docs/index.md",
+    "agent-work/specs/HX-BL-051-ONE-MILE1.md",
+    "agent-work/specs/HX-BL-051-ONE-MILE1.acceptance.json",
+    "agent-work/strategy/score-model.md",
+    "agent-work/strategy/vision.md",
+    "agent-work/process.md",
+    "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json"
+  ],
+  "checks": {
+    "focused": {
+      "command": "node --test test/oneMile.test.mjs test/saveSafety.test.mjs",
+      "node": "24.22.1",
+      "executed": 58,
+      "passed": 58,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 33697.962496,
+      "log": "/workspace/scratch/d2682ada47cd/review-focused.log"
+    },
+    "compile": {
+      "command": "npx tsc --noEmit && npm run build",
+      "exit_code": 0,
+      "typescript": "passed",
+      "vite": "5.4.21",
+      "modules": 95,
+      "build_seconds": 9.11,
+      "warnings": [
+        "Large JS chunk; no compile/build error"
+      ]
+    },
+    "browser": {
+      "command": "chromium.launch({headless:true,args:['--no-sandbox']})",
+      "status": "unavailable",
+      "error": "Executable does not exist /home/agent/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+      "independent_browser_pass": false
+    },
+    "probe": {
+      "method": "Temporary real App harness; create one fallback tract, preview/apply fine, switch1, select Mythic, pick first candidate; no advanceKingdom",
+      "target": {
+        "q": -11,
+        "r": -4
+      },
+      "before": {
+        "physical": true,
+        "view": 1,
+        "scale": 6,
+        "regions": 1
+      },
+      "during": {
+        "physical": false,
+        "view": null,
+        "scale": 6,
+        "regions": 1,
+        "job": true
+      },
+      "status": "reproduced"
+    },
+    "aborted_discovery": {
+      "commands": [
+        "node --test --test-name-pattern='^$' test/*.test.mjs (base)",
+        "node --test --test-name-pattern='^$' test/*.test.mjs (head)"
+      ],
+      "status": "cancelled_exit130",
+      "reason": "Intended registration-only discovery began executing ordinary cases in this environment; stopped rather than repeat full suites. No aggregate count/pass inferred.",
+      "logs": [
+        "/workspace/scratch/d2682ada47cd/review-base-discovery.log",
+        "/workspace/scratch/d2682ada47cd/review-head-discovery.log"
+      ]
+    }
+  },
+  "findings": [
+    {
+      "id": "OM-REV-001",
+      "severity": "P2",
+      "status": "confirmed",
+      "criteria": [
+        "OM14",
+        "OM06"
+      ],
+      "file": "src/App.tsx",
+      "line": 14095,
+      "related_lines": [
+        16079,
+        16794,
+        17150
+      ],
+      "title": "Mythic fine-candidate generation blanks the accepted map during busy",
+      "reproduction": "At320px on accepted fine1 map, choose Mythic Bastionland and activate a legal fine candidate. While kingdom progress runs, viewport is blank, selector disabled6; after completion fine1returns.",
+      "actual": "startKingdom removes physicalGrid to defer final POI binding; fineActive immediately becomes false and native artwork/selector render while previous fine zoom/framing survives. Original screenshot independently viewed at /tmp/8-ui6/narrow-320-busy-kingdom.jpg (progress33/144). Temporary harness separately confirms physical true/view1/scale6→physical false/viewnull/scale6 while same1 accepted region remains.",
+      "expected": "OM14 explicitly requires map visibility in busy; accepted readonly geography should remain visible with coherent view/focus while provisional kingdom builds.",
+      "requested_change": "Keep accepted readonly display and coherent camera/view state independently of provisional generator reconciliation; do not prematurely bind newPOI. Extend existing mode-candidate UI case to assert map visible/framing during progress at320/390, final fine1 and exact UndoRedo/refusal unchanged. No new10k/500map series/newduplicate case needed.",
+      "not_claimed": "No accepted-data loss inferred. JSON/PNG handlers guard documentBusy even though menu appears enabled. OM06 alone does not explicitly forbid a temporary coarse progress view; failure is blank map under OM14."
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "OM01",
+      "status": "partial_evidence",
+      "evidence": "Compared exact base-to-head:24 files,+2224/-43; UI1/6 only; separate pure detail geometry/identity/size modules. No river/road algorithm files changed. Full dependency ledger and remote ancestry/PR496 immutability left to root provenance check."
+    },
+    {
+      "id": "OM02",
+      "status": "partial_evidence",
+      "evidence": "Independent oneMile tests prove partial/full display polygon and unchanged input/accepted area; source artwork per-cell. No independent DOM run for tiles/emoji/color."
+    },
+    {
+      "id": "OM03",
+      "status": "partial_evidence",
+      "evidence": "Independent tests pass same-ID aggregation,3-ID canonical tie,true-maximum tolerance and source permutation at shifted origin; language/rotation absent from pure algorithm. Authored full2/3-biome geometry/DOM permutations not independently exercised."
+    },
+    {
+      "id": "OM04",
+      "status": "partial_evidence",
+      "evidence": "Independent edge-neighbour/rim/legal anchors and enclosed-hole tests pass. Island and water-frontier App/browser matrix not independently completed."
+    },
+    {
+      "id": "OM05",
+      "status": "partial_evidence",
+      "evidence": "58-case run includes real public10Knave continuation, whole Mythic/UndoRedo and guards; deterministic anchor pure cases pass. All pointer/touch/Space/doubleclick UI paths rely on CI artifacts, not local browser."
+    },
+    {
+      "id": "OM06",
+      "status": "partial_evidence_with_linked_defect",
+      "evidence": "Source view ratio and focused scale cycle pass in harness. No independent actual camera roundtrip measurements. Mythic switches displayed fine→native6 without adjusting fine-scale/frame (OM-REV-001); explicit uninterrupted visibility defect recorded under OM14."
+    },
+    {
+      "id": "OM07",
+      "status": "partial_evidence",
+      "evidence": "Real-App harness passes H/S separation, hover no Undo,pinned draft and stale callback cases. Touch/focus interactions not locally reproduced in DOM."
+    },
+    {
+      "id": "OM08",
+      "status": "partial_evidence",
+      "evidence": "Panel source emits local biome/name/note +summary routes/rivers/POI and omits source context; summary uses actual geometry/stable owner. Full same-world visual comparison delegated to root artifact inspection."
+    },
+    {
+      "id": "OM09",
+      "status": "partial_evidence",
+      "evidence": "Source detailSegmentCellIntersection closed-cell math and ID maps reviewed; no source6-owner fallback in fine summary. Edge/vertex/dedup analytic and visual corpus not independently rerun here."
+    },
+    {
+      "id": "OM10",
+      "status": "partial_evidence",
+      "evidence": "Preview/cancel/apply exact history tested; summary anchor-small/positive-area-large and stableID source reviewed. Conditional/measured/multi-part full matrix and water/route attachments not fully rerun."
+    },
+    {
+      "id": "OM11",
+      "status": "partial_evidence",
+      "evidence": "Independent real-App local language/neighbour/RNG/Undo test plus pure water/mixed/default/reset validation pass. Editor actual UI remains CI/artifact evidence."
+    },
+    {
+      "id": "OM12",
+      "status": "partial_evidence",
+      "evidence": "Independent58 includes stale callbacks, reset/delete consent, retained checkpoint, regeneration final-loss refusal/exception, Mythic and exact UndoRedo. IME and Finish/Discard/Stay DOM event replay not locally run."
+    },
+    {
+      "id": "OM13",
+      "status": "partial_evidence",
+      "evidence": "Independent focused cases include public15 roundtrip, literal public10Knave continuation and invalid/private11..14/foreign layers atomic refusal. Full official2..10 continue corpus not independently repeated; original suite coverage/CI reviewed by root."
+    },
+    {
+      "id": "OM14",
+      "status": "fail",
+      "evidence": "Independently inspected original actual320 busy artifact:map viewport blank with33/144 progress and selector6. Source/harness independently reproduce fine layer removal while scale6 remains. Actual browser unavailable; no full responsive/a11y/PNG pass claimed."
+    }
+  ],
+  "test_governance": {
+    "full_pr": {
+      "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+      "node": {
+        "added": 19,
+        "removed": 0,
+        "modified_existing": 0,
+        "detail": "10 new pure oneMile cases +9 appended real-App saveSafety cases. Other Node cases/source bodies unchanged. Do not count .test( regex or helpers as cases.",
+        "base_cases_expected": 363,
+        "head_cases_ci": 382,
+        "independently_executed": 58,
+        "base_count_method": "382CI head minus19 registered additions; full baseline execution not claimed"
+      },
+      "browser": {
+        "new_script": 1,
+        "new_fine_logical_cases": 5,
+        "existing_lifecycle_scenario_modified": 1,
+        "helper_files": 1,
+        "note": "5manifestIDs cover grid/read,editor, responsive,localPNG,ordinaryunit; widths/modes/camera/PNGprofiles not extra cases. Existing myth material disabled-pointer helper strengthened to assert intended visible hit."
+      },
+      "necessity": "New pure fine geometry/address seam has no main predecessor;10 cases cover new boundary logic, while9 saveSafety additions reuse existing real-App harness for new version/transaction paths. Browser new fine renderer needs same-world PNG/local selection evidence; native6 scripts cannot cover it. Helpers/runners not added to logical test totals. Existing myth pointer change improves intended hit fidelity. No permanent review tests added.",
+      "gap": "BusyMythic profile records step6/finefalse but does not assert visible map; this is a missing assertion in existing case, not reason for new duplicate permanent case."
+    },
+    "incremental_only": "Programmer92f→2ad Node0added/0removed/1modified +browser1added/0removed/4modified is not fullPR delta."
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "status": "insufficient_evidence",
+    "confirmed_points": null,
+    "delta": null,
+    "awarded": false,
+    "criteria": [
+      {
+        "criterion_id": "S01-C02",
+        "weight": 40,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Local river geometry bridge and closed-cell summary source inspected; no10k hydrology/whole RIV/visual naturalness proof."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S01-C04",
+        "weight": 25,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Local road/trail segment intersections source inspected; whole network/no gaps/all water crossings not audited."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S02-C01",
+        "weight": 30,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "58-case run checks local-view/edit RNG invariance,Knave continuation and exact histories; all modes/sequences/streams not exhaustively established."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S02-C02",
+        "weight": 20,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "POI identity mappings retained in independent continuation/checkpoint tests; all entity categories/edit paths not audited."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S02-C03",
+        "weight": 20,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Focused official10/15 and private/foreign negative import cases pass; complete official historical corpus/continuation not independently rerun."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Local name/note/land override preserves neighbours/source6; fine water/ownership outside scope and whole hex editor criterion not established."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S03-C04",
+        "weight": 30,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Fine loss consent/refusal/regeneration exception exact rollback passes; all product dependency categories not audited."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S03-C05",
+        "weight": 20,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Fine edit/regeneration/Mythic exact UndoRedo pass;100operations/named versions/full command set not established."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S04-C02",
+        "weight": 15,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Harness selection/hover/scale cycle pass; confirmed blank busy viewport defect; no user95% study or local DOMcamera test."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d",
+          "OM-REV-001"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Per-cell artwork/single-grid source review; confirmed busy view regression; player visibility/fog/whole criterion absent."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d",
+          "OM-REV-001"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Focused15 roundtrip passes; livePNG tests reviewed as source, no independentlocalPNG; whole SVG/roles/corpus coverage not established."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d",
+          "OM-REV-001"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S04-C05",
+        "weight": 10,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Bilingual form/current-language validation reviewed; actual local browser unavailable, no full WCAGAA audit; error strings not claimed fully localized."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d",
+          "OM-REV-001"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      },
+      {
+        "criterion_id": "S05-C01",
+        "weight": 25,
+        "model_version": "1.2",
+        "before_grade": "unknown",
+        "before_points": null,
+        "after_grade": "unverified",
+        "after_points": null,
+        "delta": null,
+        "source_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+        "method": "Independent exact-source review +58 focused runtime Node +source-image review as specified",
+        "quality": {
+          "status": "bounded_evidence_insufficient_for_whole_grade",
+          "finding": "Local summary/panel excludes source fallback and supports author data; full game-context content/actions/quality not established."
+        },
+        "breadth": {
+          "status": "requirements_and_support_unverified",
+          "current_scope": "L1 existing Classic/Knave/Mythic map behavior; no edition/rules profile completeness inferred from mode names",
+          "top5": "unverified",
+          "top10": "unverified",
+          "top20": "unverified",
+          "note": "Technical/general criteria do not acquire artificial20-game requirement; whole criterion quality still unverified."
+        },
+        "evidence": [
+          "review-focused.log",
+          "exact tree e126282258e805cee851a8274fd645810a2e2f2d"
+        ],
+        "limitations": "No score award; no double counting across criteria; a new SHA requires updated assessment."
+      }
+    ]
+  },
+  "independence_limits": [
+    "Independent reviewer is separate fresh agent as requested; parent root separately verifies remoteCI/provenance and25-artifact inventory.",
+    "Local browser unavailable; viewed actual original320busy screenshot and independently reproduced controller state through real-App harness; browser pass not claimed.",
+    "Focused58cases and source review do not equal whole OM01–14 acceptance/full382local rerun or whole criterion grades.",
+    "No new paid service,10k/500map series,source modifications,publication,merge orduplicateclaim."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-12T10:00:52Z",
+      "method": "automations.peek",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-12T10:05:10Z",
+      "method": "automations.peek",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "scope": "Point-in-time observations; no schedule/prompt/update performed."
+  },
+  "next_step": "Programmer fixes OM-REV-001 within approvedONE-MILE1 scope, extends existing visibility assertion, reruns required checks and shows actual before/after; independent review of new wholeSHA before any separate release decision."
+}

@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "role": "reviewer",
+  "method": "Independent root cross-check of GitHub API provenance, raw CI log, artifact digest and exact source blob plus visual inspection; no new browser interaction or permanent test changes.",
+  "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+  "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
+  "ci": {
+    "run_id": 43185043580,
+    "jobs": [
+      {
+        "id": 131070135682,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131070135992,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131070136018,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "node": {
+      "executed": 382,
+      "passed": 382,
+      "failed": 0,
+      "skipped": 0
+    },
+    "merge_tree_equals_source": true
+  },
+  "artifacts": {
+    "artifact_id": 13929295035,
+    "zip_sha256": "13daa3c4ad3f881d2035b6fb6c09dfefe562b32744c9ab9f6a143dfa3fc372cd",
+    "original_blob_matches": 25,
+    "all_match": true
+  },
+  "visual_inspected": [
+    "agent-work/evidence/ONE-MILE1-completion-0800/actual/narrow-320-busy-kingdom.jpg",
+    "agent-work/evidence/ONE-MILE1-completion-0800/actual/desktop-local-water-poi.jpg",
+    "agent-work/evidence/ONE-MILE1-completion-0800/actual/narrow-390-edit.jpg"
+  ],
+  "source": {
+    "app_blob": "10a63ed606a2261ef58f72529335f202814de611",
+    "inspection": "Local App blob hash matches exact2ad Git object before reading; startKingdom line14095 clears physicalGrid; step selector fallback6 line16772."
+  },
+  "findings": [
+    {
+      "id": "OM-REV-001",
+      "severity": "P2",
+      "status": "confirmed_current_defect",
+      "criterion_id": [
+        "S04-C02",
+        "S04-C03"
+      ],
+      "acceptance_ids": [
+        "OM14"
+      ],
+      "file": "src/App.tsx",
+      "line": 14095,
+      "repro": "Accepted nonempty map in1-mile view, switch generator to Mythic, activate ordinary fine frontier candidate. During whole-kingdom construction, snapshot320 captures blank map viewport, step selector changes to6; after completion fine1 returns.",
+      "actual": "Accepted map disappears while generation is in progress.",
+      "expected": "OM14: map remains visible in relevant busy state; retain read-only accepted map or equivalent correctly framed view throughout the job.",
+      "evidence": [
+        "agent-work/evidence/ONE-MILE1-completion-0800/actual/narrow-320-busy-kingdom.jpg",
+        "agent-work/evidence/ONE-MILE1-completion-0800/actual/manifest.json",
+        "src/App.tsx:14095",
+        "test/browser/one-mile-evidence.mjs:104"
+      ],
+      "test_gap": "Existing mode profile records step/fine/progress/disabled but does not assert map visibility; green suite does not cover OM14 busy visibility.",
+      "scope": "UI/view lifecycle; no evidence of data loss, duplicate generation or RNG corruption from this observation.",
+      "suggested_fix_boundary": "Keep current accepted display state independent from provisional generation reconciliation, or preserve framing when displaying a busy snapshot; do not prematurely bind provisional POIs."
+    }
+  ],
+  "limitations": [
+    "No fresh local browser proof obtained by root; actualCI artifacts were reverified, not substituted for independent re-execution.",
+    "Finite fixed scenes do not establish whole-criterion quality or top5/10/20 breadth."
+  ]
+}

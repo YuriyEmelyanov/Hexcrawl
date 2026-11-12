@@ -15697,7 +15697,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "programmer_complete_review_ready",
+      "status": "review_changes_requested",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -16171,9 +16171,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
-      "next_role": "reviewer",
+      "next_role": "programmer",
       "next_role_after_approval": "programmer",
-      "next_step": "Проверяющий независимо проверяет весь PR503 на точном SHA 2ad03ad256e824a1ee07cef8e0d90a75077ef75e по OM-1.0/OM01–14: повторяет необходимые проверки, осматривает actual UI/PNG, оценивает Knave-продолжение, озёрную геометрию, ручные охваты и временный6-мильный progress во время Mythic. Использует свежего отдельного агента, фиксирует test-governance и score_assessment1.2 по13 criterion_id. Старое принятие496 не переносится. Затем заключение или конкретные замечания программисту; публикация только по отдельному решению владельца.",
+      "next_step": "Программист исправляет OM-REV-001 в PR503; затем передаёт новый SHA на независимую проверку. Публикация остаётся не разрешена.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16204,10 +16204,10 @@
       "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1.md",
       "spec_version": "OM-1.0",
       "acceptance_ref": "agent-work/specs/HX-BL-051-ONE-MILE1.acceptance.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
       "active_stage": "ONE-MILE1",
       "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-      "result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
+      "result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
       "latest_activation_checkpoint": {
         "branch": "agent/hx-bl-051-detail1",
         "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
@@ -16229,16 +16229,39 @@
         "independent_review_pending": true,
         "presentation_recorded_at": "2026-11-12T08:58:41Z"
       },
-      "review_result_ref": "agent-work/evidence/PR496-browser-verification-1803/independent-review.json",
-      "review_ready": true,
-      "findings": [],
-      "score_assessment_ref": null,
+      "review_result_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/independent-review.json",
+      "review_ready": false,
+      "findings": [
+        {
+          "id": "OM-REV-001",
+          "severity": "P2",
+          "status": "confirmed",
+          "criteria": [
+            "OM14",
+            "OM06"
+          ],
+          "file": "src/App.tsx",
+          "line": 14095,
+          "related_lines": [
+            16079,
+            16794,
+            17150
+          ],
+          "title": "Mythic fine-candidate generation blanks the accepted map during busy",
+          "reproduction": "At320px on accepted fine1 map, choose Mythic Bastionland and activate a legal fine candidate. While kingdom progress runs, viewport is blank, selector disabled6; after completion fine1returns.",
+          "actual": "startKingdom removes physicalGrid to defer final POI binding; fineActive immediately becomes false and native artwork/selector render while previous fine zoom/framing survives. Original screenshot independently viewed at /tmp/8-ui6/narrow-320-busy-kingdom.jpg (progress33/144). Temporary harness separately confirms physical true/view1/scale6→physical false/viewnull/scale6 while same1 accepted region remains.",
+          "expected": "OM14 explicitly requires map visibility in busy; accepted readonly geography should remain visible with coherent view/focus while provisional kingdom builds.",
+          "requested_change": "Keep accepted readonly display and coherent camera/view state independently of provisional generator reconciliation; do not prematurely bind newPOI. Extend existing mode-candidate UI case to assert map visible/framing during progress at320/390, final fine1 and exact UndoRedo/refusal unchanged. No new10k/500map series/newduplicate case needed.",
+          "not_claimed": "No accepted-data loss inferred. JSON/PNG handlers guard documentBusy even though menu appears enabled. OM06 alone does not explicitly forbid a temporary coarse progress view; failure is blank map under OM14."
+        }
+      ],
+      "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
       "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
       "pr": 503,
       "previous_review_result_ref": "agent-work/results/2026-11-10T1103-reviewer-HX-BL-051-f17236b.json",
-      "score_assessment_status": "pending_independent_reviewer_model1.2",
+      "score_assessment_status": "insufficient_evidence_model1.2",
       "ui_actual_ref": "agent-work/evidence/ONE-MILE1-completion-0800/actual/manifest.json",
-      "full_package_review_ready": true,
+      "full_package_review_ready": false,
       "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-completion-0800/programmer-score-evidence1.2.json",
       "ui_actual_pending": false,
       "ui_evidence_handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
@@ -16266,7 +16289,7 @@
         "independent_accepted": false,
         "all_author_evidence_submitted": true
       },
-      "review_verdict": "pending_exact_whole_SHA_independent_review",
+      "review_verdict": "changes_requested",
       "latest_DETAIL1_independent_review": {
         "run_id": "2026-11-10T1803-reviewer-HX-BL-051-9aa4bc6",
         "head_sha": "9aa4bc627a051d3a7d4570303be10b227d6bed40",
@@ -16282,7 +16305,7 @@
         "handoff_ref": "agent-work/handoffs/2026-11-10-HX-BL-051-9aa4bc6-next.json"
       },
       "independent_accepted": false,
-      "review_completed": false,
+      "review_completed": true,
       "next_task_id": "HX-BL-051",
       "release_preview_pending": false,
       "release_presentation": {
@@ -16370,12 +16393,12 @@
       },
       "spec_status": "ready_for_development",
       "latest_analyst_result_ref": "agent-work/results/2026-11-11T2043-analyst-ONE-MILE1.json",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
       "active_claim": null,
       "full_package_release_ready": false,
       "owner_clarification_ref": null,
       "catalog_ref": "agent-work/specs/HX-BL-051-POI-sizes-v1.json",
-      "claim_completed_ref": "agent-work/claims/2026-11-12T0800-programmer-ONE-MILE1.json",
+      "claim_completed_ref": "agent-work/claims/2026-11-12T1000-reviewer-ONE-MILE1.json",
       "branch": "agent/hx-bl-051-one-mile1",
       "pr_draft": true,
       "latest_programmer_result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
@@ -16591,7 +16614,7 @@
         "review_ready": false,
         "release_authorized": false
       },
-      "implementation_completed": true,
+      "implementation_completed": false,
       "score_update_status": "not_applicable_unpublished",
       "latest_DETAIL1_C_FILL_implementation": {
         "run_id": "2026-11-11T1417-programmer-PR496-C-FILL",
@@ -16640,7 +16663,7 @@
       "authority_ref": "agent-work/decisions/owner-decision-2026-11-11-ONE-MILE1-standard-agent-workflow.json",
       "score_forecast_ref": "agent-work/evidence/ONE-MILE1-2043/score-forecast1.2.json",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/503",
-      "implementation_complete": true,
+      "implementation_complete": false,
       "ONE_MILE1_checkpoint_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
       "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-completion-0800/test-change-summary.json",
       "actual_UI": {
@@ -16676,6 +16699,31 @@
           "behavior": "While ordinary Mythic kingdom builds, fine layer is deferred, UI temporarily shows disabled6-mile progress and captured320 viewport is blank; after whole-unit acceptance fine1 returns with exact Undo/Redo.",
           "next_role": "reviewer",
           "required_result": "Independently determine acceptance or concrete programmer correction against OM06/14. No claim of uninterrupted map visibility in busy."
+        }
+      ],
+      "reviewed_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+      "review_findings": [
+        {
+          "id": "OM-REV-001",
+          "severity": "P2",
+          "status": "confirmed",
+          "criteria": [
+            "OM14",
+            "OM06"
+          ],
+          "file": "src/App.tsx",
+          "line": 14095,
+          "related_lines": [
+            16079,
+            16794,
+            17150
+          ],
+          "title": "Mythic fine-candidate generation blanks the accepted map during busy",
+          "reproduction": "At320px on accepted fine1 map, choose Mythic Bastionland and activate a legal fine candidate. While kingdom progress runs, viewport is blank, selector disabled6; after completion fine1returns.",
+          "actual": "startKingdom removes physicalGrid to defer final POI binding; fineActive immediately becomes false and native artwork/selector render while previous fine zoom/framing survives. Original screenshot independently viewed at /tmp/8-ui6/narrow-320-busy-kingdom.jpg (progress33/144). Temporary harness separately confirms physical true/view1/scale6→physical false/viewnull/scale6 while same1 accepted region remains.",
+          "expected": "OM14 explicitly requires map visibility in busy; accepted readonly geography should remain visible with coherent view/focus while provisional kingdom builds.",
+          "requested_change": "Keep accepted readonly display and coherent camera/view state independently of provisional generator reconciliation; do not prematurely bind newPOI. Extend existing mode-candidate UI case to assert map visible/framing during progress at320/390, final fine1 and exact UndoRedo/refusal unchanged. No new10k/500map series/newduplicate case needed.",
+          "not_claimed": "No accepted-data loss inferred. JSON/PNG handlers guard documentBusy even though menu appears enabled. OM06 alone does not explicitly forbid a temporary coarse progress view; failure is blank map under OM14."
         }
       ]
     },
