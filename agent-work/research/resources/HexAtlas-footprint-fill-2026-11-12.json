@@ -1,0 +1,339 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-12T0833-HexAtlas-footprint-fill",
+  "status": "completed_bounded_POI_art_and_fill_semantics_comparison",
+  "observations": [
+    {
+      "id": "HX-ATLAS-FF-20261112-1",
+      "game_ids": [],
+      "source": {
+        "url_or_ref": "https://hexatlas.net/app.html",
+        "locator": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/large6.json",
+        "published_at": null
+      },
+      "observed_fact": "Only size differs within landmark; same7terrain records and anchor; no occupied-cell set introduced",
+      "interpretation": "art_scale_confirmed_physical_footprint_not_established",
+      "signal_type": "competitor_workflow",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-11-12",
+      "geography_language": "English UI; system-neutral; no geographic audience inference",
+      "author_project_key": "HexAtlas:TheNerdyGentleman:world-editor",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Competitor Size6 is not6miles or6occupied cells.",
+        "Fill was tested in Country mode only, not every generation/settlement control.",
+        "No vendor defect or global feature absence inferred.",
+        "Setup replaced landmark_1 bylandmark_2; size comparison uses matched landmark_2 snapshots, notbaseline→large as isolated size edit.",
+        "No road/river or cross-browser import tested.",
+        "One synthetic map and selected flows, not users or measured marketshare.",
+        "Pixel target on empty neighboring territory is recorded; no fabricated selected cell locator for a no-op.",
+        "Five raw snapshots are repeated observations of one project.",
+        "No global uniqueness assertion."
+      ],
+      "observed_at": "2026-11-12 08:37:44 UTC"
+    },
+    {
+      "id": "HX-ATLAS-FF-20261112-2",
+      "game_ids": [],
+      "source": {
+        "url_or_ref": "https://hexatlas.net/app.html",
+        "locator": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-empty.json",
+        "published_at": null
+      },
+      "observed_fact": "Only exportMetadata changed; no added geography,settings,POI or revision change",
+      "interpretation": "no_append_in_tested_empty_click",
+      "signal_type": "competitor_workflow",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-11-12",
+      "geography_language": "English UI; system-neutral; no geographic audience inference",
+      "author_project_key": "HexAtlas:TheNerdyGentleman:world-editor",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Competitor Size6 is not6miles or6occupied cells.",
+        "Fill was tested in Country mode only, not every generation/settlement control.",
+        "No vendor defect or global feature absence inferred.",
+        "Setup replaced landmark_1 bylandmark_2; size comparison uses matched landmark_2 snapshots, notbaseline→large as isolated size edit.",
+        "No road/river or cross-browser import tested.",
+        "One synthetic map and selected flows, not users or measured marketshare.",
+        "Pixel target on empty neighboring territory is recorded; no fabricated selected cell locator for a no-op.",
+        "Five raw snapshots are repeated observations of one project.",
+        "No global uniqueness assertion."
+      ],
+      "observed_at": "2026-11-12 08:37:44 UTC"
+    },
+    {
+      "id": "HX-ATLAS-FF-20261112-3",
+      "game_ids": [],
+      "source": {
+        "url_or_ref": "https://hexatlas.net/app.html",
+        "locator": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-forest.json",
+        "published_at": null
+      },
+      "observed_fact": "Exactly6forest→desert; same7coordinate set; water record and completePOI equal",
+      "interpretation": "bounded_repaint_confirmed_not_append_generation",
+      "signal_type": "competitor_workflow",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-11-12",
+      "geography_language": "English UI; system-neutral; no geographic audience inference",
+      "author_project_key": "HexAtlas:TheNerdyGentleman:world-editor",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Competitor Size6 is not6miles or6occupied cells.",
+        "Fill was tested in Country mode only, not every generation/settlement control.",
+        "No vendor defect or global feature absence inferred.",
+        "Setup replaced landmark_1 bylandmark_2; size comparison uses matched landmark_2 snapshots, notbaseline→large as isolated size edit.",
+        "No road/river or cross-browser import tested.",
+        "One synthetic map and selected flows, not users or measured marketshare.",
+        "Pixel target on empty neighboring territory is recorded; no fabricated selected cell locator for a no-op.",
+        "Five raw snapshots are repeated observations of one project.",
+        "No global uniqueness assertion."
+      ],
+      "observed_at": "2026-11-12 08:37:44 UTC"
+    }
+  ],
+  "operational_requirement": {
+    "id": "HX-ATLAS-FOOTPRINT-FILL-OR-v1",
+    "source_rule_ref": "agent-work/backlog.json#HX-BL-051.current_approved_scope",
+    "normative_kind": "Owner product requirement compared with competitor controls; not game rule",
+    "applicability": "Existing HX-BL-051; research-only annotation, no spec/backlog modification",
+    "layer": "L1",
+    "trigger_or_user_action": "Set site dimensions or fill empty parts of an already mapped territory",
+    "inputs_and_units": {
+      "competitor_country_hex_miles": 6,
+      "fixture_occupied_hexes": 7,
+      "forest_cells": 6,
+      "water_cell": {
+        "q": 1,
+        "r": -1
+      },
+      "POI_anchor": {
+        "q": -1,
+        "r": 0
+      },
+      "art_size_before": 1,
+      "art_size_after": 6,
+      "art_size_units": "unitless UI value, not miles",
+      "owner_physical_footprint_example": {
+        "small_site_diameter_miles": 0.2,
+        "large_site_diameter_miles": 2,
+        "assumption": "explicit synthetic fixture inputs, not inferred real settlement dimensions"
+      }
+    },
+    "product_operation": "Keep physical occupied area distinct from artwork scale. When adding geography only eligible empty territory changes; retain pre-existing cell content and object anchors.",
+    "expected_output": "A0.2mi site andA2mi site can have different1mi-cell coverage regardless of icon zoom. An empty-area extension appends known newcells while old7cells remain byte-equivalent by content.",
+    "constraints_and_exceptions": [
+      "Competitor Size6 is not6miles or6occupied cells.",
+      "Fill was tested in Country mode only, not every generation/settlement control.",
+      "No vendor defect or global feature absence inferred.",
+      "Setup replaced landmark_1 bylandmark_2; size comparison uses matched landmark_2 snapshots, notbaseline→large as isolated size edit.",
+      "No road/river or cross-browser import tested."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Matched landmark_2 at(-1,0),size1; seven country hexes,6forest andwater(1,-1)",
+        "when": "Set Size6 (unitless art slider), compare large6.json to size-undo.json",
+        "expected": "Art-size alternative: only landmark.size changes; same anchor/terrain. A physical footprint would require separately evidenced dimensions and occupied cells.",
+        "actual": "Only size differs within landmark; same7terrain records and anchor; no occupied-cell set introduced",
+        "verdict": "art_scale_confirmed_physical_footprint_not_established",
+        "evidence_ref": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/large6.json"
+      },
+      {
+        "given": "Same seven occupied cells and empty neighboring location clicked at viewport(751,578),outside occupied7cell group",
+        "when": "Choose Desert and Fill;click empty location",
+        "expected": "For non-destructive generation: old7cells unchanged and new eligible cells appended; for no-op: no map-data change",
+        "actual": "Only exportMetadata changed; no added geography,settings,POI or revision change",
+        "verdict": "no_append_in_tested_empty_click",
+        "evidence_ref": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-empty.json"
+      },
+      {
+        "given": "Six connected forest cells pluswater(1,-1),landmark_2(-1,0)",
+        "when": "Fill Desert on existing forest center",
+        "expected": "Flood repaint: all6forest→desert,water andPOI unchanged; append-only generation would retain existingforest",
+        "actual": "Exactly6forest→desert; same7coordinate set; water record and completePOI equal",
+        "verdict": "bounded_repaint_confirmed_not_append_generation",
+        "evidence_ref": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-forest.json"
+      }
+    ],
+    "source_vs_product_interpretation": "Owner target invariants remain separate from actual competitor semantics. Findings do not prove current HexCrawl implementation or uniqueness.",
+    "canonical_rule_refs": [
+      "agent-work/rules/common-rules.json#map.physical_hex_scale",
+      "agent-work/rules/common-rules.json#map.nested_scales",
+      "agent-work/rules/common-rules.json#map.extend_preserving_content"
+    ],
+    "criterion_ids": [
+      "S06-C04",
+      "S02-C02"
+    ],
+    "unresolved_parameters": [
+      "Equivalent physical multi-cell POI operation elsewhere in competitor",
+      "Equivalent append-only generation elsewhere in competitor",
+      "Successful import via working upload route"
+    ],
+    "implementation_evidence": {
+      "status": "unknown_not_reaudited",
+      "sha": null
+    },
+    "backlog_ref": "agent-work/backlog.json#HX-BL-051",
+    "new_tasks": 0
+  },
+  "checks": {
+    "status": "passed",
+    "pairs": [
+      {
+        "before": "baseline.json",
+        "after": "large6.json",
+        "changed_keys": [
+          "exportMetadata",
+          "landmarks",
+          "nextLandmarkId",
+          "saveRevision"
+        ],
+        "added_keys": [],
+        "removed_keys": []
+      },
+      {
+        "before": "size-undo.json",
+        "after": "large6.json",
+        "changed_keys": [
+          "exportMetadata",
+          "landmarks",
+          "saveRevision"
+        ],
+        "added_keys": [],
+        "removed_keys": []
+      },
+      {
+        "before": "size-undo.json",
+        "after": "fill-empty.json",
+        "changed_keys": [
+          "exportMetadata"
+        ],
+        "added_keys": [],
+        "removed_keys": []
+      },
+      {
+        "before": "fill-empty.json",
+        "after": "fill-forest.json",
+        "changed_keys": [
+          "exportMetadata",
+          "hexes",
+          "saveRevision"
+        ],
+        "added_keys": [],
+        "removed_keys": []
+      }
+    ],
+    "size_delta": "landmark_2 size1→6 only within POI; same single axial anchor(-1,0); geography unchanged",
+    "fill_empty": "No hex added/changed",
+    "fill_existing": "6forest→desert,water(1,-1)and POI retained; no appended cells",
+    "limitations": "baseline landmark_1 replaced by landmark_2 during setup; size comparison uses matched landmark_2 in size-undo and large6. No physical dimensions or occupied-cell footprint inferred from size."
+  },
+  "manifest": [
+    {
+      "name": "dom.json",
+      "bytes": 24316,
+      "sha256": "33560117789fe15a20ba3bdb21dcf10c028311c6905e50f0d730fcb585c85d91"
+    },
+    {
+      "name": "fill-result.jpg",
+      "bytes": 77191,
+      "sha256": "117eb46ee262533d8a77c836b134e66c68eb94def03a1347ac4f9df8616d9faa"
+    },
+    {
+      "name": "baseline.json",
+      "bytes": 5015,
+      "sha256": "4e1bcedbc613e555f4fa3010a396f292aea842b01c4ea43c94dfa013800e9d87"
+    },
+    {
+      "name": "fill-empty.json",
+      "bytes": 5016,
+      "sha256": "c703db36d5a43a1ed8c48eb4ed019f5c5643f9b3ab06f2d433cdf740972fc9ec"
+    },
+    {
+      "name": "size-undo.json",
+      "bytes": 5016,
+      "sha256": "56960019e1c5c400154dbc2fff0e2f53af2b8a626532d321d9caaf24136436a9"
+    },
+    {
+      "name": "fill-forest.json",
+      "bytes": 5016,
+      "sha256": "4cde1f47894ff23955564fa6fb64fa2cfc7b9d665b8efaef99ecc71737b14843"
+    },
+    {
+      "name": "large-art.jpg",
+      "bytes": 84306,
+      "sha256": "f9be98e5e9413826ea675dd51233437abeb4402cd2d57cf474627b459cf31809"
+    },
+    {
+      "name": "large6.json",
+      "bytes": 5016,
+      "sha256": "7e08d9a70fd15450823109dc68f168c279fca9a42734cda902b094bb5d9cabef"
+    }
+  ],
+  "raw_refs": [
+    "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/dom.json",
+    "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/baseline.json",
+    "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-empty.json",
+    "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/size-undo.json",
+    "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-forest.json",
+    "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/large6.json",
+    "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/large-art.svg",
+    "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-result.svg"
+  ],
+  "decision": "Tested Size control scales art at one anchor; tested Fill repaints existing connected terrain and does not append on the selected empty click. Neither operation establishes owner-requested geographical site footprint or non-destructive region completion. Keep these separate product acceptance outcomes; no unsupported absence/uniqueness claim.",
+  "prior_reused_refs": [
+    "agent-work/research/resources/scale-competition-2026-11-11.json",
+    "agent-work/research/resources/HexAtlas-local-cards-2026-11-12.json"
+  ],
+  "numeric_disposition": {
+    "active_rating_changed": false,
+    "active_inputs_changed": false,
+    "active_method_changed": false,
+    "score_changed": false,
+    "new_weight": null,
+    "audience": null,
+    "proposal_refs": []
+  },
+  "product_disposition": {
+    "new_rules": 0,
+    "new_bindings": 0,
+    "new_tasks": 0,
+    "backlog_changed": false,
+    "foreign_claims_preserved": true,
+    "implementation": "not_reaudited"
+  },
+  "unknowns": [
+    "Equivalent physical multi-cell POI operation elsewhere in competitor",
+    "Equivalent append-only generation elsewhere in competitor",
+    "Successful import via working upload route"
+  ],
+  "owner_decisions_needed": [],
+  "next_candidate": {
+    "task_id": "HX-RSR-WOG-L1-RESOURCE",
+    "layer": "L1",
+    "action": "Сравнить законченный тематический корпус текущего официального руководства Worldographer: связь уровней, физический размер объектов и сохранение прежнего содержимого при создании/обновлении территории. Использовать уже собранные ссылки; старое трёхуровневое руководство не смешивать с текущим четырёхуровневым. Не повторять HexAtlas Fill/size или Hexer с известным WebGL blocker без нового основания.",
+    "sources": [
+      "https://worldographer.com/manual/04-creating-world-kingdom-maps/",
+      "agent-work/research/resources/scale-competition-2026-11-11.json"
+    ],
+    "completion_condition": "Один проверенный ресурс с полным выбранным тематическим корпусом, конкретными операциями/ожидаемыми выходами, source/runtime distinction и последствиями для сравнения альтернатив; без установки/покупок."
+  }
+}
