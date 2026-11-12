@@ -1,0 +1,330 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-12T0634-HexAtlas-local-cards",
+  "status": "completed_bounded_local_card_and_mixed_group_comparison",
+  "as_of": "2026-11-12",
+  "previous_result_ref": "agent-work/research/runs/2026-11-11T1633-HexAtlas-retained-lifecycle.json",
+  "observations": [
+    {
+      "id": "HX-ATLAS-CARD-20261112-1",
+      "game_ids": [],
+      "source": {
+        "url_or_ref": "https://hexatlas.net/app.html",
+        "locator": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/dom-evidence.json#country_mountain",
+        "published_at": null
+      },
+      "observed_fact": "Hex(1,-1)·Mountain; ordinary hex form",
+      "interpretation": "observed_country_card",
+      "signal_type": "competitor_workflow",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-11-12",
+      "geography_language": "English UI; system-neutral; no geography extrapolation",
+      "author_project_key": "HexAtlas:TheNerdyGentleman:world-editor",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Competitor Region scale not asserted equal1mile.",
+        "No claim of feature absence across all configurations or future versions.",
+        "No notes/name persistence test passed; attempted text edits absent in raw.",
+        "No roads or rivers included in this run.",
+        "Finalraw has no fine override after country repaint/settings; fine-stage claim supported by screenshot, not laterraw.",
+        "Single tool,own test map; not audience evidence.",
+        "Fresh empty browser session; original content recreated, then expanded to7cells to test complete mixed group. Not imported old map.",
+        "No global uniqueness or market-wide finding."
+      ],
+      "observed_at": "2026-11-12 06:42:50 UTC"
+    },
+    {
+      "id": "HX-ATLAS-CARD-20261112-2",
+      "game_ids": [],
+      "source": {
+        "url_or_ref": "https://hexatlas.net/app.html",
+        "locator": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/region-card.svg",
+        "published_at": null
+      },
+      "observed_fact": "Hex(1,-1)·Mountain; parent outline and parent form remain. Desert visible in child.",
+      "interpretation": "not_equivalent_to_owner_local_card_in_tested_flow",
+      "signal_type": "competitor_workflow",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-11-12",
+      "geography_language": "English UI; system-neutral; no geography extrapolation",
+      "author_project_key": "HexAtlas:TheNerdyGentleman:world-editor",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Competitor Region scale not asserted equal1mile.",
+        "No claim of feature absence across all configurations or future versions.",
+        "No notes/name persistence test passed; attempted text edits absent in raw.",
+        "No roads or rivers included in this run.",
+        "Finalraw has no fine override after country repaint/settings; fine-stage claim supported by screenshot, not laterraw.",
+        "Single tool,own test map; not audience evidence.",
+        "Fresh empty browser session; original content recreated, then expanded to7cells to test complete mixed group. Not imported old map.",
+        "No global uniqueness or market-wide finding."
+      ],
+      "observed_at": "2026-11-12 06:42:50 UTC"
+    },
+    {
+      "id": "HX-ATLAS-CARD-20261112-3",
+      "game_ids": [],
+      "source": {
+        "url_or_ref": "https://hexatlas.net/app.html",
+        "locator": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/continent-card.svg",
+        "published_at": null
+      },
+      "observed_fact": "Hex(0,0)·Forest; ordinary form, no mixed composition orPOI summary in observed card",
+      "interpretation": "aggregate_not_demonstrated_in_tested_flow",
+      "signal_type": "competitor_workflow",
+      "quantity": null,
+      "unit": null,
+      "period": "2026-11-12",
+      "geography_language": "English UI; system-neutral; no geography extrapolation",
+      "author_project_key": "HexAtlas:TheNerdyGentleman:world-editor",
+      "duplicate_of": null,
+      "access_level": "full_text",
+      "scenario_relevance": [
+        "create",
+        "develop"
+      ],
+      "limitations": [
+        "Competitor Region scale not asserted equal1mile.",
+        "No claim of feature absence across all configurations or future versions.",
+        "No notes/name persistence test passed; attempted text edits absent in raw.",
+        "No roads or rivers included in this run.",
+        "Finalraw has no fine override after country repaint/settings; fine-stage claim supported by screenshot, not laterraw.",
+        "Single tool,own test map; not audience evidence.",
+        "Fresh empty browser session; original content recreated, then expanded to7cells to test complete mixed group. Not imported old map.",
+        "No global uniqueness or market-wide finding."
+      ],
+      "observed_at": "2026-11-12 06:42:50 UTC"
+    }
+  ],
+  "operational_requirement": {
+    "id": "HX-ATLAS-LOCAL-CARD-OR-v1",
+    "source_rule_ref": "agent-work/feedback.json#HX-FB-021",
+    "normative_kind": "Owner product requirement and competitor comparison fixture; not game rule",
+    "applicability": "ExistingHX-BL-051 only; currentONE-MILE1priority and foreignclaim preserved",
+    "layer": "L1",
+    "trigger_or_user_action": "Select a local cell or larger mixed cell while viewing the same map",
+    "inputs_and_units": {
+      "country_miles": 6,
+      "coarse_test_cells": {
+        "forest": 5,
+        "mountain": 1,
+        "water_coast": 1
+      },
+      "POI": {
+        "name": "P1 River Camp",
+        "q": -1,
+        "r": 0
+      },
+      "fine_probe": "Default Regiondensity7 during fine screenshot; later changed37 for final exported fixture",
+      "coarse_density": 7,
+      "road_count": 0
+    },
+    "product_operation": "Show facts belonging to selected physical cell; distinguish local cell from parent; summarize categories and contained objects when selected territory spans multiple cells.",
+    "expected_output": "Fine Desert child→Desert local card; mixed7cellterritory→forest,mountain,water plusP1once; parent or center card is a different behavior.",
+    "constraints_and_exceptions": [
+      "Competitor Region scale not asserted equal1mile.",
+      "No claim of feature absence across all configurations or future versions.",
+      "No notes/name persistence test passed; attempted text edits absent in raw.",
+      "No roads or rivers included in this run.",
+      "Finalraw has no fine override after country repaint/settings; fine-stage claim supported by screenshot, not laterraw."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Country forest(-1,0),mountain(1,-1),water(0,1),P1 atforest",
+        "when": "Select mountain atCountry",
+        "expected": "Selected country(1,-1),Mountain; no forest/water/POI neighbor summary",
+        "actual": "Hex(1,-1)·Mountain; ordinary hex form",
+        "verdict": "observed_country_card",
+        "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/dom-evidence.json#country_mountain"
+      },
+      {
+        "given": "Region child ofmountain(1,-1),paintedDesert in fine editing mode; screenshot shows yellow finecell within Mountain parent",
+        "when": "Select painted child",
+        "expected": "For owner-style local card: selected finecell Desert; local contents only",
+        "actual": "Hex(1,-1)·Mountain; parent outline and parent form remain. Desert visible in child.",
+        "verdict": "not_equivalent_to_owner_local_card_in_tested_flow",
+        "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/region-card.svg"
+      },
+      {
+        "given": "7 countrycells axialradius1 around(0,0):5forest,1mountain,1coast;P1(-1,0);continentdensity7",
+        "when": "Continent mode,Select central group",
+        "expected": "For owner-style aggregate: all3terrain categories and exactly1P1 in mixed-territory summary",
+        "actual": "Hex(0,0)·Forest; ordinary form, no mixed composition orPOI summary in observed card",
+        "verdict": "aggregate_not_demonstrated_in_tested_flow",
+        "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/continent-card.svg"
+      }
+    ],
+    "source_vs_product_interpretation": "Expected outputs express owner request. Actual outcomes describe competitor, not defects relative to competitor promises or current HexCrawl support. Research handoff is not amended spec.",
+    "canonical_rule_refs": [
+      "agent-work/rules/common-rules.json#map.nested_scales",
+      "agent-work/rules/common-rules.json#map.display_detail",
+      "agent-work/rules/common-rules.json#content.place_description"
+    ],
+    "criterion_ids": [
+      "S06-C04",
+      "S02-C02"
+    ],
+    "unresolved_parameters": [
+      "Exact1mile competitor equivalence",
+      "Other competitor selection workflows",
+      "PhysicalPOIextent,partial-cellgeneration,import"
+    ],
+    "existing_task_ref": "agent-work/backlog.json#HX-BL-051",
+    "implementation_evidence": {
+      "status": "unknown_not_reaudited",
+      "sha": null
+    },
+    "new_backlog_tasks": 0
+  },
+  "acceptance_results": [
+    {
+      "given": "Country forest(-1,0),mountain(1,-1),water(0,1),P1 atforest",
+      "when": "Select mountain atCountry",
+      "expected": "Selected country(1,-1),Mountain; no forest/water/POI neighbor summary",
+      "actual": "Hex(1,-1)·Mountain; ordinary hex form",
+      "verdict": "observed_country_card",
+      "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/dom-evidence.json#country_mountain"
+    },
+    {
+      "given": "Region child ofmountain(1,-1),paintedDesert in fine editing mode; screenshot shows yellow finecell within Mountain parent",
+      "when": "Select painted child",
+      "expected": "For owner-style local card: selected finecell Desert; local contents only",
+      "actual": "Hex(1,-1)·Mountain; parent outline and parent form remain. Desert visible in child.",
+      "verdict": "not_equivalent_to_owner_local_card_in_tested_flow",
+      "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/region-card.svg"
+    },
+    {
+      "given": "7 countrycells axialradius1 around(0,0):5forest,1mountain,1coast;P1(-1,0);continentdensity7",
+      "when": "Continent mode,Select central group",
+      "expected": "For owner-style aggregate: all3terrain categories and exactly1P1 in mixed-territory summary",
+      "actual": "Hex(0,0)·Forest; ordinary form, no mixed composition orPOI summary in observed card",
+      "verdict": "aggregate_not_demonstrated_in_tested_flow",
+      "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/continent-card.svg"
+    }
+  ],
+  "verification": {
+    "status": "passed",
+    "terrain_counts": {
+      "forest": 5,
+      "mountain": 1,
+      "coast": 1
+    },
+    "country_cells": 7,
+    "country_miles": 6,
+    "continent_density": 7,
+    "region_density": 37,
+    "paths": 0,
+    "notes": "Fixture name/description/POI-note fill attempts were not persisted; not used as evidence. Final detailHexes/subHexes empty after country repaint/settings; earlier visible fine desert is supported by screenshot only.",
+    "files": [
+      {
+        "name": "dom-evidence.json",
+        "sha256": "482199533309f98ca71eb178f395c60fd5259b723b2b057773ccd67c14e4d602",
+        "bytes": 23473
+      },
+      {
+        "name": "region-card.jpg",
+        "sha256": "6489ab3cd27543c7d74f538d5b6dfbc5290c61384b4e0c4aede2755e380e624e",
+        "bytes": 79750
+      },
+      {
+        "name": "continent-card.jpg",
+        "sha256": "53b094be5d16b8ac3a52434e00016181d5a7a178767c1d8b343a258c8b3ca881",
+        "bytes": 67792
+      },
+      {
+        "name": "map.json",
+        "sha256": "4420b91d0b733b0a6a6175dd5bdb7e48212c1205b6f5b485a5aa5cf8f32a3af1",
+        "bytes": 5620
+      }
+    ]
+  },
+  "raw_refs": [
+    "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/map.json",
+    "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/dom-evidence.json",
+    "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/region-card.svg",
+    "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/continent-card.svg"
+  ],
+  "decision": "Several scales and editable fine terrain do not establish local/aggregate card equivalence. Tested Region selection returns parentMountain; tested mixed Continent selection returns centerForest form. Preserve local-card and aggregate product criteria as distinct review targets, without changing queue or claiming global uniqueness.",
+  "numeric_disposition": {
+    "active_ranking_changed": false,
+    "active_inputs_changed": false,
+    "active_numeric_method_changed": false,
+    "score_changed": false,
+    "proposal_refs": [],
+    "new_weights": null,
+    "audience_estimate": null
+  },
+  "product_disposition": {
+    "existing_task": "HX-BL-051",
+    "new_tasks": 0,
+    "new_rules": 0,
+    "new_bindings": 0,
+    "foreign_spec_or_backlog_changed": false,
+    "HexCrawl_support": "not_reaudited"
+  },
+  "source_corpus": {
+    "product": "https://hexatlas.net/app.html",
+    "export_schema": "1.4",
+    "official_help": "https://hexatlas.net/help.html#saving",
+    "help_use": "Browser-local saves and JSON backup explained; does not establish local card semantics.",
+    "scope": "Actual Select, Terrain, Region and Continent UI; own7cell export and screenshots; no rulebooks"
+  },
+  "limitations": [
+    "Competitor Region scale not asserted equal1mile.",
+    "No claim of feature absence across all configurations or future versions.",
+    "No notes/name persistence test passed; attempted text edits absent in raw.",
+    "No roads or rivers included in this run.",
+    "Finalraw has no fine override after country repaint/settings; fine-stage claim supported by screenshot, not laterraw.",
+    "Single tool,own test map; not audience evidence.",
+    "Fresh empty browser session; original content recreated, then expanded to7cells to test complete mixed group. Not imported old map.",
+    "No global uniqueness or market-wide finding."
+  ],
+  "error_diagnostic": {
+    "status": "completed_with_recovered_UI_locator_errors",
+    "run_id": "2026-11-12T0634-HexAtlas-local-cards",
+    "stage": "analysis_and_persistence",
+    "last_successful_step": "Own fixture andDOM evidence exported; screenshots saved;7cell composition independently checked",
+    "failed_operation": {
+      "tool": "mcp__cua_repl.js",
+      "action": "Click ephemeral Got it/Close/Continent or Country level locator after earlier animation state",
+      "safe_locator": "https://hexatlas.net/app.html"
+    },
+    "observed_error": "Error: Playwright selector deadline exceeded",
+    "error_details": [
+      "waiting on click for selector internal:role=button[name=\"Got it\"s]",
+      "waiting on click for selector internal:role=button[name=\"Close\"s]",
+      "waiting on click for selector internal:role=button[name=\"Continent · Hex Map\"s]",
+      "waiting on click for selector internal:role=button[name=\"Country · Hex Map\"s]"
+    ],
+    "stop_reason": "No blocking stop: refreshed UI snapshots, completed bounded comparison. Previous run import blocker remains separate.",
+    "cause_status": "unknown",
+    "cause_limitation": "Transient unmatched controls observed; DOM later showed tooltip gone or level changed. No GitHub permission/approval failure observed.",
+    "retained_results": [
+      "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/map.json",
+      "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/dom-evidence.json",
+      "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/region-card.svg",
+      "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/continent-card.svg"
+    ],
+    "continuation": "No retry of completed card cases; proceed to remaining full benchmark stages under fresh priorities.",
+    "needs_owner_action": false
+  },
+  "next_candidate": {
+    "task_id": "HX-RSR-SCALE-REMAINING-LIFECYCLE",
+    "layer": "L1",
+    "action": "Continue same benchmark with physicalPOIextent and preservation when filling partially occupied territory, using explicit expected old/new geography. Import remains blocked separately; do not repeat hung chooser without tool fix or different documented working route.",
+    "completion_condition": "Bounded retained workflow comparison proving actual old/new footprint/content, or external-blocker checkpoint."
+  },
+  "owner_decisions_needed": []
+}
