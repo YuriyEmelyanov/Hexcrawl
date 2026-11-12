@@ -1,0 +1,96 @@
+✖ ONE-MILE1 regeneration retains edits supported by final candidate rather than temporary empty checkpoint (501.274628ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2993.591213
+
+✖ failing tests:
+
+test at test/saveSafety.test.mjs:372:1
+✖ ONE-MILE1 regeneration retains edits supported by final candidate rather than temporary empty checkpoint (501.274628ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + {
+  +   action: 'regenerate',
+  +   algorithmVersion: 'regions-2026-10-24-rng.1',
+  +   anchorHex: {
+  +     q: 0,
+  +     r: 0
+  +   },
+  +   attempt: 0,
+  +   inputOptions: {
+  +     biome: 'auto',
+  +     coastal: 'mainland',
+  +     landType: 'auto',
+  +     mode: 'classic',
+  +     sizeCategory: 'auto'
+  +   },
+  +   kind: 'programming-error',
+  +   maxAttempts: 30,
+  +   message: 'Error: Fine edits require explicit loss consent',
+  +   options: {
+  +     biomeId: 'auto',
+  +     coastalPreference: 'mainland',
+  +     landType: 'auto',
+  +     mode: 'classic',
+  +     targetSize: 'auto'
+  +   },
+  +   random: {
+  +     after: {
+  +       generatorVersion: 'regions-2026-10-24-rng.1',
+  +       masterSeed: 42,
+  +       rngVersion: 'mulberry32-v1',
+  +       streams: {
+  +         geography: 1767624658,
+  +         poi: 1958658864
+  +       }
+  +     },
+  +     before: {
+  +       generatorVersion: 'regions-2026-10-24-rng.1',
+  +       masterSeed: 42,
+  +       rngVersion: 'mulberry32-v1',
+  +       streams: {
+  +         geography: 1767624658,
+  +         poi: 1958658864
+  +       }
+  +     }
+  +   },
+  +   reason: 'Error: Fine edits require explicit loss consent',
+  +   reclaimedSeaKeys: [],
+  +   rejectionCounts: {},
+  +   result: 'rolled-back',
+  +   seaRecoveryAttempt: 0,
+  +   stack: 'Error: Fine edits require explicit loss consent\n' +
+  +     '    at prepareFineCellLoss (file:///tmp/one-mile5/src/oneMile.ts:176:44)\n' +
+  +     '    at retainFineCheckpoint (evalmachine.<anonymous>:13060:60)\n' +
+  +     '    at restoreSnapshot (evalmachine.<anonymous>:13082:20)\n' +
+  +     '    at Object.regenerateLastRegion (evalmachine.<anonymous>:13227:13)\n' +
+  +     '    at TestContext.<anonymous> (file:///tmp/one-mile5/test/saveSafety.test.mjs:374:128)\n' +
+  +     '    at Test.runInAsyncScope (node:async_hooks:227:14)\n' +
+  +     '    at Test.run (node:internal/test_runner/test:1402:25)\n' +
+  +     '    at Test.start (node:internal/test_runner/test:1262:17)\n' +
+  +     '    at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)',
+  +   stage: 'prepare_regeneration',
+  +   targetSize: null,
+  +   tractAttempt: 0,
+  +   warningCounts: {}
+  + }
+  - null
+  
+      at TestContext.<anonymous> (file:///tmp/one-mile5/test/saveSafety.test.mjs:375:9)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: { kind: 'programming-error', reason: 'Error: Fine edits require explicit loss consent', result: 'rolled-back', action: 'regenerate', anchorHex: { q: 0, r: 0 }, options: { mode: 'classic', targetSize: 'auto', landType: 'auto', biomeId: 'auto', coastalPreference: 'mainland' }, attempt: 0, tractAttempt: 0, stage: 'prepare_regeneration', seaRecoveryAttempt: 0, reclaimedSeaKeys: [], random: { before: [Object], after: [Object] }, inputOptions: { sizeCategory: 'auto', landType: 'auto', biome: 'auto', coastal: 'mainland', mode: 'classic' }, targetSize: null, rejectionCounts: {}, message: 'Error: Fine edits require explicit loss consent', stack: 'Error: Fine edits require explicit loss consent\n    at prepareFineCellLoss (file:///tmp/one-mile5/src/oneMile.ts:176:44)\n    at retainFineCheckpoint (evalmachine.<anonymous>:13060:60)\n    at restoreSnapshot (evalmachine.<anonymous>:13082:20)\n    at Object.regenerateLastRegion (evalmachine.<anonymous>:13227:13)\n    at TestContext.<anonymous> (file:///tmp/one-mile5/test/saveSafety.test.mjs:374:128)\n    at Test.runInAsyncScope (node:async_hooks:227:14)\n    at Test.run (node:internal/test_runner/test:1402:25)\n    at Test.start (node:internal/test_runner/test:1262:17)\n    at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)', algorithmVersion: 'regions-2026-10-24-rng.1', maxAttempts: 30, warningCounts: {} },
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
