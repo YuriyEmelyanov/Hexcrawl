@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "product_defects": [
+    {
+      "id": "OM-KNAVE-PREMATURE-FINE-VALIDATION",
+      "before_product_sha": "92fbcad47ada6db74f08db271acc0489fc8cb06a",
+      "before_App_blob": "fd702460e626fb8981dc0387c11cd5f07c112425",
+      "reproduction": "Extended existing public10Knave Node case and one imported fixed-world fine candidate.",
+      "result": "Old prepareKnaveGeneratedMap checked stale fine owner set; rollback exact but ordinary continuation blocked.",
+      "fix_sha": "76f5ef035f5e538012df7329f2216ba5465b59f1"
+    },
+    {
+      "id": "OM-FINE-LAKE-SHORE-AND-LABEL",
+      "before_head": "9ef3983712bfb4d7e6a9933f7844ba64d4be2a5f",
+      "artifact_id": 13927705505,
+      "result": "water-before-manifest records no lake shore paths in fine tiles; actual water-POI card says Sea despite source terrainOverride lake. PNG/style checks originally omitted lake-layer assertion.",
+      "fix_sha": "e0133dde0936319048c85c6fc9138d87e4ef1d8d",
+      "method": "Retain existing native lake geometry over per-fine ground for all styles and identify local lake/sea accurately. No water/geography/RNG mutation."
+    }
+  ],
+  "test_fixture_errors": [
+    {
+      "sha": "4b0ed3a1d36db496eab5224041b8a472fa660601",
+      "CI": 43181147460,
+      "error": "Named rivers erroneously put in editorNames; strict importer correctly refused. Not a product defect."
+    },
+    {
+      "sha": "c5d9fb52deb20f548ce16c351eef90ddc3fda750",
+      "CI": 43181512495,
+      "error": "Original representative1-mile ruin occupies one cell; test erroneously assumed it had another part. Added explicit conditional3mile manual extent through existing validated preparation; catalogue unchanged. Not product evidence of arbitrary size."
+    }
+  ],
+  "fixture_notes": "One fixed existing world; explicit named roads/rivers and conditional3mi extent for OM10. Harness initial seed42; imported legacy world generation master seed423493684, retained literally in fixture.json. No statistical or performance series.",
+  "browser_environment": "Local Chromium missing Playwright download; bundled Chromium socketEPERM. Required DOM/PNG suites run on exact GitHub checkout instead."
+}
