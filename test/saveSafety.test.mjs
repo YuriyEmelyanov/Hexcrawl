@@ -1,3 +1,4 @@
+import {projectOneMile} from '../src/oneMile.ts';
 import {newKnaveLayer} from '../src/knaveClassic.ts';
 import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 import {seaFixture} from './helpers/sea-fixture.mjs';
@@ -365,4 +366,21 @@ test('ONE-MILE1 view/hover/pinned form and stale callbacks preserve local addres
  g.render().startFineDraft();const late=g.render().fineDraft;g.render().cancelFineDraft(late);g.render().pickFine({q:1,r:0},false,g.render().getDocumentRevision());g.render().startFineDraft();
  assert.equal(g.render().saveFineDraft(late),false);assert.equal(g.render().cancelFineDraft(late),false);assert.ok(g.render().fineDraft);g.render().cancelFineDraft(g.render().fineDraft);
  assert.equal(g.render().switchFineStep(6),true);assert.equal(fineSave(g).ui.mapScale,scale);assert.equal(g.render().undoHistory.length,undo+1);
+});
+
+
+test('ONE-MILE1 regeneration retains edits supported by final candidate rather than temporary empty checkpoint',()=>{
+ const {g}=fineSetup(),prompts=[];fineActivate(g);const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{name:{ru:'Моё место'},note:'retain after regeneration'}}};g.render().applyDocument(doc);
+ g.setWindow({confirm:m=>{prompts.push(m);return false},matchMedia:()=>({matches:false})});const before=fineSave(g);g.render().regenerateLastRegion();g.render().finishPendingRegeneration();const after=fineSave(g);
+ assert.equal(g.render().generationError,null);assert.deepEqual(after.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);assert.equal(prompts.filter(m=>/one-mile|одномильных/.test(m)).length,0);assert.notDeepEqual(after.generation,before.generation);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),after);
+
+ const {g:loss}=fineSetup();fineActivate(loss);const ld=loss.render().captureDocument();const cells=projectOneMile(ld.map.regions.flatMap(r=>r.hexes.map(cell=>({cell,landBiomeId:r.biomeId}))),ld.map.physicalGrid.grid.origin);
+ ld.map.physicalGrid={...ld.map.physicalGrid,fineCellEdits:Object.fromEntries(cells.map(row=>[`${row.cell.q},${row.cell.r}`,{note:'authored local note'}]))};loss.render().applyDocument(ld);loss.render().setGenSizeCategory('tract');loss.render();
+ const stable=fineStable(loss),messages=[];loss.setWindow({confirm:m=>{messages.push(m);return false},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();assert.equal(messages.length,1);assert.deepEqual(fineStable(loss),stable,'declining final candidate restores document/RNG/both histories');assert.equal(loss.render().generationError,null);
+ loss.setWindow({confirm:()=>{throw Error('confirm failure')},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();assert.deepEqual(fineStable(loss),stable,'confirmation exception restores exact accepted state');
+ loss.setWindow({confirm:m=>{messages.push(m);return true},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();const accepted=fineSave(loss),beforeEdits=stable.data.map.physicalGrid.fineCellEdits,afterEdits=accepted.map.physicalGrid.fineCellEdits,removed=Object.keys(beforeEdits).filter(k=>!Object.hasOwn(afterEdits,k));
+ assert.ok(removed.length>0);assert.ok(removed.length<Object.keys(beforeEdits).length);for(const key of removed)assert.ok(messages.at(-1).includes(key));for(const [key,value] of Object.entries(afterEdits))assert.deepEqual(value,beforeEdits[key]);assert.equal(loss.render().generationError,null);
+ loss.render().undoMap();assert.deepEqual(fineSave(loss),stable.data);loss.render().redoMap();assert.deepEqual(fineSave(loss),accepted);
+
 });

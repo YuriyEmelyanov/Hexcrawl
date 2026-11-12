@@ -1874,6 +1874,7 @@ type DocumentSnapshot = {
 };
 type MapTransaction = { before: DocumentSnapshot; after: DocumentSnapshot };
 type GenerationBackup = {
+  fineRegeneration?:Detail1State;
   map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null;
   document?: DocumentSnapshot; undo?: MapTransaction[]; redo?: MapTransaction[];
 };
@@ -1881,6 +1882,7 @@ type GenerationActionContext = { action: 'add' | 'regenerate'; inputOptions: Rec
 type KingdomJob = { actionContext: GenerationActionContext; preferredAnchor?: AxialHex; recoveries?: number; failureBackup?: GenerationBackup; backup: GenerationBackup; origin: AxialHex; anchor: AxialHex; id: number; startCount: number; steps: number; phase: 'connect' | 'build'; first: boolean; };
 type GenerationDiagnostic = ReturnType<typeof generationLog.finish>;
 // Expected refusal: only canonical coordinates, never the note text, reach UI.
+class FineRegenerationCancelled extends Error {}
 class NotesLossConflict extends Error {
   constructor(readonly hexKeys: string[]) {
     super(`Generation removes hexes with notes (${hexKeys.length}): ${hexKeys.join('; ')}. Move or clear the notes first.`);
@@ -13875,12 +13877,24 @@ export function App() {
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
     map.seas=sea.seas;map.nextSeaId=sea.nextSeaId;
+    if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
+    const originalFine=backup?.fineRegeneration;
+    let fineLost:string[]=[];
+    if(originalFine){
+      const accepted=projectOneMile(oneMileSources(map),originalFine.grid.origin),supported=new Set(accepted.map(row=>hexKey(row.cell)));
+      const lost=Object.keys(originalFine.fineCellEdits??{}).filter(key=>!supported.has(key));
+      fineLost=lost;
+      const layer={...(map.physicalGrid??originalFine),fineCellEdits:prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true).edits};
+      if(layer.selectedCell&&!supported.has(hexKey(layer.selectedCell))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
+      const candidate={...map,physicalGrid:layer},live=poiNameLocators(candidate,true);
+      const removed=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!live.has(alias)).map(alias=>[alias,null]));
+      map={...candidate,physicalGrid:reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removed)};
+    }
     if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
     const fineTarget=fineGenerationTargetRef.current;
     if(map.physicalGrid&&fineTarget&&projectOneMile(oneMileSources(map),map.physicalGrid.grid.origin).some(row=>isSameHex(row.cell,fineTarget.cell)))map={...map,physicalGrid:{...map.physicalGrid,selectedCell:fineTarget.cell,selectedWorldPoint:fineTarget.point}};
     checkedRiverMap(map);
     assertGeneratedIds(map);
-    if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
     if (kingdomJob && !backup) {updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);return map;} // internal kingdom steps form one transaction at finish
     const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
@@ -13888,6 +13902,7 @@ export function App() {
     if (missing.length) throw new NotesLossConflict(missing);
     map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
     map.gmNotesByHexKey = {...notes};
+    if(fineLost.length&&!window.confirm(language==='ru'?`Регенерация удалит локальные правки одномильных гексов (${fineLost.length}): ${fineLost.join('; ')}. Продолжить?`:`Regeneration removes local one-mile edits (${fineLost.length}): ${fineLost.join('; ')}. Continue?`))throw new FineRegenerationCancelled();
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] });
     fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
@@ -13962,6 +13977,7 @@ export function App() {
   const restoreGenerationBackup = (backup: GenerationBackup) => {
     fineGenerationTargetRef.current=null;
     const map = withLegacySeas(backup.map);
+    updatePhysicalGrid(map.physicalGrid);
     updateSeaIdentity(map);
     updateKnave(map.knave);
     updateEditorNames(map.editorNames??{});
@@ -13995,6 +14011,7 @@ export function App() {
 
   const reportGenerationFailure = (error: unknown, anchorHex: AxialHex, options: GenerationOptions, backup: GenerationBackup, context?: GenerationActionContext) => {
     restoreGenerationBackup(backup);
+    if(error instanceof FineRegenerationCancelled){setGenerationError(null);return {success:false as const,diagnostic:generationLog.finish({...generationEvent(anchorHex,options,'constraint-rejection','fine_edit_loss_cancelled','rolled-back',context)})};}
     const seaConflict=error instanceof WaterEditError&&error.code.startsWith('sea_');
     const authored=authoredNameError(error,language);if(authored)setEditError(authored);else if(seaConflict)setEditError(waterCommandError(error));
     activeGenerationBefore.current = cloneGenerationState(backup.map.generation);
@@ -14274,10 +14291,10 @@ export function App() {
   // числе изменения, которые новый регион внёс в соседние регионы.
   const retainFineCheckpoint=(snapshot:MapSnapshot,allowLoss=false):MapSnapshot=>{
     const current=physicalGridRef.current,edits=current?.fineCellEdits??{};
-    if(!current||!Object.keys(edits).length)return snapshot;
+    if(!current)return snapshot;
     const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
     const retained=prepareFineCellLoss(edits,accepted,allowLoss).edits;
-    if(!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
+    if(!Object.keys(retained).length&&!accepted.length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
     // A generation checkpoint can predate explicit fine adaptation. Carry its
     // surviving local addresses into that candidate map, retaining accepted
     // identities/footprints; reconcile live owners before any setters/history.
@@ -14290,9 +14307,9 @@ export function App() {
     const reconciled=reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removals);
     const next={...candidate,physicalGrid:reconciled};checkedRiverMap(next);return next;
   };
-  const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false) => {
+  const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false, allowFineLoss=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
-    snapshot=retainFineCheckpoint(snapshot);
+    snapshot=retainFineCheckpoint(snapshot,allowFineLoss);
     snapshot={...snapshot,knave:retainedKnaveCheckpoint(snapshot)};
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
@@ -14406,7 +14423,8 @@ export function App() {
       options = lastKingdom
         ? { mode: 'mythic', previousToponyms: toponyms }
         : { ...buildGenerationOptions(), mode: 'classic', previousToponyms: toponyms };
-      restoreSnapshot({...snapshot, generation: cloneGenerationState(generationRef.current)},checkpointWaterChanged(snapshot));
+      backup.fineRegeneration=backup.map.physicalGrid?structuredClone(backup.map.physicalGrid):undefined;
+      restoreSnapshot({...snapshot, generation: cloneGenerationState(generationRef.current)},checkpointWaterChanged(snapshot),true);
       setHistory(history.slice(0, -1));
       // Wait for React to apply the snapshot before the generation callback reads it.
       setPendingRegen({ backup, anchorHex: lastAnchor, options, actionContext: { action: 'regenerate', inputOptions: captureGenerationInputs() } });
