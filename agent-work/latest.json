@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-12-manual-analyst-ONE-MILE1-owner-corrections",
+  "run_id": "2026-11-12T2302-analyst-ONE-MILE1-C02-C05",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "owner_corrections_specification_required",
+  "status": "owner_corrections_bounded_implementation_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,9 +40,9 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
-    "status": "latest_written_last_after_owner_decision_result_handoff_readback",
-    "materials_commit_sha": "d400d788830b3cdb913b586a187bfd05fbef5a4c",
-    "conflict_policy": "Non-forceCAS; ownclaimonly; foreignclaims/researchpreserved"
+    "status": "latest_written_last_after_spec_result_handoff_readback",
+    "materials_commit_sha": "e84621ae94a9e0aa48c3a9f37bc1353edb9d7e3e",
+    "conflict_policy": "CAS nonforce; foreignclaims/researchpause preserved"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -51,14 +51,14 @@
   "schedule_frequency": "every_2_hours",
   "process_path": "agent-work/process.md",
   "current_role": "business_analyst",
-  "next_role": "business_analyst",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-051",
-  "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1.md",
-  "spec_version": "OM-1.0",
-  "result_path": "agent-work/results/2026-11-12-manual-analyst-ONE-MILE1-owner-corrections.json",
+  "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-C02-C05.md",
+  "spec_version": "OM-C-PRESENT1",
+  "result_path": "agent-work/results/2026-11-12T2302-analyst-ONE-MILE1-C02-C05.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "Следующий штатный этап HX-BL-051/ONE-MILE1 — бизнес-аналитик по HX-FB-023/OM-C01…08: согласует контракт рёбер1/6 с сохранением географии/переправ/POI, физическую ширину рек и пересмотр спорной оценкиtown0.8mi, готовит ограниченную пригодную программисту спецификацию и наглядное предложение. Сейчас зафиксированы требования, не готовое решение/разрешение немедленно переписать код. Затем программист → независимая проверка нового SHA → фактический показ → отдельное разрешение публикации. Расписание раз в2часа сохранено; никакихmain/deploy сейчас.",
+  "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -122,7 +122,7 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/ONE-MILE1-owner-corrections-2026-11-12",
+  "evidence_path": "agent-work/previews/ONE-MILE1-C02-C05-P1",
   "branch_name": "agent/hx-bl-051-one-mile1",
   "pr": 503,
   "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
@@ -253,26 +253,23 @@
   "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-12T19:51:12.968Z",
+      "checked_at": "2026-11-12T20:02:53.524Z",
       "method": "automations.peek",
-      "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "status": "checked"
     },
     "end": {
-      "checked_at": "2026-11-12T19:58:37.838Z",
+      "checked_at": "2026-11-12T20:06:23.697Z",
       "method": "automations.peek",
-      "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "status": "checked"
     },
     "restoration": {
-      "performed": false,
-      "reason": "Actual start/end enabled"
+      "performed": false
     },
-    "schedule_unchanged": true,
     "errors": [],
-    "scope": "Point-in-time only; does not guarantee future service state."
+    "scope": "Point-in-time; schedule unchanged, no later guarantee."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_insufficient_evidence_whole_grades",
@@ -709,7 +706,7 @@
   "last_release_pr": 497,
   "last_material_result_path": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
-  "spec_status": "OM-1.0_under_owner_correction_addendum_not_developer_ready",
+  "spec_status": "C02_C05_developer_ready_other_clauses_unresolved",
   "previous_task_release_approval": {
     "task_id": "HX-BL-043",
     "stage_id": "TABLES1",
@@ -2035,9 +2032,10 @@
     "response_blocks_AB": false
   },
   "ui_preview_pending": {
-    "status": "pending_next_standard_analyst_specification",
+    "bounded_C02_C05": false,
+    "remaining_geometry": true,
     "responsible_role": "business_analyst",
-    "not_new_approval_gate": true
+    "no_design_approval_gate": true
   },
   "marketing_gate_status": "not_passed_full023_remains",
   "current_task_release_approval": {
@@ -8278,7 +8276,7 @@
   },
   "task_id": "HX-BL-051",
   "review_completed": true,
-  "release_readiness": "not_release_ready_owner_corrections",
+  "release_readiness": "not_release_ready_remaining_owner_corrections",
   "bounded_feature_accepted": true,
   "current_package_score_update_status": "not_applicable_unpublished",
   "next_handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
@@ -10989,7 +10987,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-12-manual-analyst-ONE-MILE1-owner-corrections.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-12T2302-analyst-ONE-MILE1-C02-C05.json",
   "actual_UI": {
     "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
     "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
@@ -11299,5 +11297,24 @@
     ],
     "source_changed": false,
     "next_role": "business_analyst"
+  },
+  "previous_primary_before_C02_C05_spec": {
+    "run_id": "2026-11-12-manual-analyst-ONE-MILE1-owner-corrections",
+    "status": "owner_corrections_specification_required",
+    "result_path": "agent-work/results/2026-11-12-manual-analyst-ONE-MILE1-owner-corrections.json"
+  },
+  "latest_ONE_MILE1_C02_C05_specification": {
+    "run_id": "2026-11-12T2302-analyst-ONE-MILE1-C02-C05",
+    "status": "ready_for_programmer_bounded_phase",
+    "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-C02-C05.md",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T2302-ONE-MILE1-C02-C05-programmer.json",
+    "result_ref": "agent-work/results/2026-11-12T2302-analyst-ONE-MILE1-C02-C05.json",
+    "ui_preview": {
+      "version": "P1",
+      "ref": "agent-work/previews/ONE-MILE1-C02-C05-P1",
+      "shown_in_chat": true,
+      "kind": "schematic_not_implementation"
+    },
+    "whole_feedback_closed": false
   }
 }
