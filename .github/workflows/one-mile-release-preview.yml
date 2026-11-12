@@ -1,0 +1,39 @@
+name: ONE-MILE1 release walkthrough
+on:
+  push:
+    branches: [agent/one-mile1-release-preview-20261112]
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          ref: 1962fb9a835a9c310e55c1a09415fe180f22cca9
+          path: before
+      - uses: actions/checkout@v4
+        with:
+          ref: d41911b8d7c2248f115b182923350dc8d08c0a48
+          path: after
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+        working-directory: after
+      - run: ln -s ../after/node_modules before/node_modules
+      - run: npm run build
+        working-directory: before
+      - run: npm run build
+        working-directory: after
+      - run: npx playwright install --with-deps chromium
+        working-directory: after
+      - run: node walkthrough.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ONE-MILE1-release-walkthrough
+          path: release-walkthrough/
+          if-no-files-found: error
