@@ -16528,7 +16528,7 @@ export function App() {
     const viewport = mapViewportRef.current, svg = mapSvgRef.current, canvas = mapMotionCanvasRef.current;
     if (fineActive || !viewport || !svg || !canvas || !renderBiomeColor || !renderDetails || positionedHexes.hexes.length < 600) return;
     return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: createExportSvgClone, onNavigate: beginMapNavigation });
-  }, [mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
+  }, [fineActive, mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
 
   return (
     <div className="app" onClickCapture={e=>{if(fineGate(e))poiClickGate(e);}} onChangeCapture={e=>{if(fineGate(e))poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
