@@ -1875,6 +1875,7 @@ type DocumentSnapshot = {
 type MapTransaction = { before: DocumentSnapshot; after: DocumentSnapshot };
 type GenerationBackup = {
   fineRegeneration?:Detail1State;
+  fineRetainedPoiOwners?:string[];
   map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null;
   document?: DocumentSnapshot; undo?: MapTransaction[]; redo?: MapTransaction[];
 };
@@ -13884,10 +13885,12 @@ export function App() {
       const accepted=projectOneMile(oneMileSources(map),originalFine.grid.origin),supported=new Set(accepted.map(row=>hexKey(row.cell)));
       const lost=Object.keys(originalFine.fineCellEdits??{}).filter(key=>!supported.has(key));
       fineLost=lost;
-      const layer={...(map.physicalGrid??originalFine),fineCellEdits:prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true).edits};
+      const retainedOwners=new Set(backup?.fineRetainedPoiOwners??[]);
+      if(originalFine.poiFootprints.some(fp=>fp.legacyRef&&!retainedOwners.has(fp.legacyRef)&&['manual_size','measured_polygon'].includes(fp.extent.kind)))throw Error('Regeneration would replace authored POI geometry; explicit adaptation required');
+      const layer={...originalFine,fineCellEdits:prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true).edits};
       if(layer.selectedCell&&!supported.has(hexKey(layer.selectedCell))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
       const candidate={...map,physicalGrid:layer},live=poiNameLocators(candidate,true);
-      const removed=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!live.has(alias)).map(alias=>[alias,null]));
+      const removed=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!retainedOwners.has(alias)||!live.has(alias)).map(alias=>[alias,null]));
       map={...candidate,physicalGrid:reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removed)};
     }
     if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
@@ -14081,9 +14084,12 @@ export function App() {
     if (importInFlight.current || kingdomInFlight.current || kingdomJob) return;
     kingdomInFlight.current = true;
     const backup = captureGenerationBackup();
+    // An ordinary Mythic kingdom is accepted as a whole. Never bind new POI
+    // footprints to its temporary paths; restore/reconcile only at final commit.
     // User action context outlives pendingRegen and every React render/tick.
     const actionContext = context ?? { action: failureBackup ? 'regenerate' : 'add', inputOptions: captureGenerationInputs() };
     try {
+    if(backup.map.physicalGrid){backup.fineRegeneration=structuredClone(backup.map.physicalGrid);backup.fineRetainedPoiOwners=[...poiNameLocators(backup.map,true)];updatePhysicalGrid(undefined);}
       const id = Math.max(0,...kingdoms.map(k=>k.id))+1;
       if (!Number.isSafeInteger(id)) throw new SaveValidationError('map.kingdoms','ID overflow');
       const occupied = new Set([...allRegionHexes.map(hexKey), ...hexTerrainByKey.keys()]);
@@ -14291,10 +14297,10 @@ export function App() {
   // числе изменения, которые новый регион внёс в соседние регионы.
   const retainFineCheckpoint=(snapshot:MapSnapshot,allowLoss=false):MapSnapshot=>{
     const current=physicalGridRef.current,edits=current?.fineCellEdits??{};
-    if(!current)return snapshot;
+    if(!current||!Object.keys(edits).length)return snapshot;
     const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
     const retained=prepareFineCellLoss(edits,accepted,allowLoss).edits;
-    if(!Object.keys(retained).length&&!accepted.length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
+    if(!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
     // A generation checkpoint can predate explicit fine adaptation. Carry its
     // surviving local addresses into that candidate map, retaining accepted
     // identities/footprints; reconcile live owners before any setters/history.
@@ -14307,9 +14313,9 @@ export function App() {
     const reconciled=reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removals);
     const next={...candidate,physicalGrid:reconciled};checkedRiverMap(next);return next;
   };
-  const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false, allowFineLoss=false) => {
+  const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false, deferFineRegeneration=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
-    snapshot=retainFineCheckpoint(snapshot,allowFineLoss);
+    snapshot=deferFineRegeneration?{...snapshot,physicalGrid:undefined}:retainFineCheckpoint(snapshot);
     snapshot={...snapshot,knave:retainedKnaveCheckpoint(snapshot)};
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
@@ -14424,6 +14430,7 @@ export function App() {
         ? { mode: 'mythic', previousToponyms: toponyms }
         : { ...buildGenerationOptions(), mode: 'classic', previousToponyms: toponyms };
       backup.fineRegeneration=backup.map.physicalGrid?structuredClone(backup.map.physicalGrid):undefined;
+      backup.fineRetainedPoiOwners=[...poiNameLocators(snapshot,true)];
       restoreSnapshot({...snapshot, generation: cloneGenerationState(generationRef.current)},checkpointWaterChanged(snapshot),true);
       setHistory(history.slice(0, -1));
       // Wait for React to apply the snapshot before the generation callback reads it.

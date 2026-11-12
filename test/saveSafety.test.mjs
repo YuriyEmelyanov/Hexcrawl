@@ -384,3 +384,14 @@ test('ONE-MILE1 regeneration retains edits supported by final candidate rather t
  loss.render().undoMap();assert.deepEqual(fineSave(loss),stable.data);loss.render().redoMap();assert.deepEqual(fineSave(loss),accepted);
 
 });
+
+test('ONE-MILE1 Mythic accepts fine geography only after a complete kingdom and preserves retained owners',()=>{
+ const g=createGenerationHarness(42);g.render();const prompts=[];g.setWindow({confirm:m=>{prompts.push(m);return false},matchMedia:()=>({matches:false})});g.render().setGenerationMode('mythic');
+ const finish=()=>{let n=0;while(g.render().kingdomJob&&n++<120)g.render().advanceKingdom();assert.equal(g.render().kingdomJob,null,'bounded ordinary job finishes');};
+ g.render().startKingdom({q:0,r:0});finish();fineActivate(g);const d=g.render().captureDocument(),c=d.map.regions[0].hexes[0],cell={q:c.q*6,r:c.r*6},key=`${cell.q},${cell.r}`;
+ d.map.physicalGrid={...d.map.physicalGrid,selectedCell:cell,fineCellEdits:{[key]:{note:'Mythic authored note'}}};g.render().applyDocument(d);const before=fineSave(g);
+ g.render().regenerateLastRegion();g.render().finishPendingRegeneration();finish();const after=fineSave(g);assert.equal(g.render().generationError,null);assert.deepEqual(after.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);assert.ok(after.map.physicalGrid.poiIdentities.nextId>before.map.physicalGrid.poiIdentities.nextId,'replaced owners receive fresh monotonic identities');assert.equal(prompts.length,0);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),after);
+ g.render().startKingdom(g.render().candidateHexes[0]);finish();const expanded=fineSave(g);assert.equal(g.render().generationError,null);assert.equal(expanded.map.kingdoms.length,after.map.kingdoms.length+1);assert.deepEqual(expanded.map.physicalGrid.fineCellEdits,after.map.physicalGrid.fineCellEdits);for(const [alias,id]of Object.entries(after.map.physicalGrid.poiIdentities.byLegacyRef))assert.equal(expanded.map.physicalGrid.poiIdentities.byLegacyRef[alias],id);
+ g.render().undoMap();assert.deepEqual(fineSave(g),after);g.render().redoMap();assert.deepEqual(fineSave(g),expanded);
+});
