@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "id": "owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections",
+  "recorded_at": "2026-11-12T19:56:00.242Z",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "feedback_id": "HX-FB-023",
+  "role": "business_analyst",
+  "owner_instruction": "Зафиксируй требования и сохраняй стандартный режим (сейчас раз в два часа) работы агента. Сразу всё до талого не переделывать.",
+  "owner_followup_question": "Городок? Разве городок это отдельный объект где-то внутри одномильного гекса, а не объект, размером в несколько миль?",
+  "requirements": [
+    {
+      "id": "OM-C01",
+      "title": "Реки по рёбрам на каждой сетке",
+      "requirement": "На6- и1-мильной карте русло проходит по рёбрам соответствующих гексов. Просто наложить мелкую сетку на пересекающие её клетки старые линии недостаточно.",
+      "acceptance": "Сопоставимые6/1 примеры: каждый отрезок оси русла принадлежит ребру активной сетки; связность/направление/полноводность и все связанные POI/переходы сохранены по явно согласованному отображению.",
+      "criterion_ids": [
+        "S01-C02",
+        "S02-C02",
+        "S04-C03"
+      ],
+      "status": "owner_requirement_recorded_geometry_contract_needs_reconciliation"
+    },
+    {
+      "id": "OM-C02",
+      "title": "Пересечения дорог с реками",
+      "requirement": "Мост, переправа и брод сохраняют свой тип, положение и привязки при6↔1; на карте различимы действующие изображения каждого типа, не одинаковый кружок и не только текст карточки.",
+      "acceptance": "На одном мире показаны bridge/ferry/ford в6/1 иPNG, дорога подходит к правильным берегам/точкам; JSON/UndoRedo сохраняютID/type/attachments; ограничения полноводностиROAD-10 соблюдены.",
+      "criterion_ids": [
+        "S01-C02",
+        "S01-C04",
+        "S02-C02",
+        "S04-C03"
+      ],
+      "status": "confirmed_rendering_gap_distinct_types_collapsed_to_circle"
+    },
+    {
+      "id": "OM-C03",
+      "title": "POI у реки остаётся у реки",
+      "requirement": "Если правила размещения/исходное построение требуют реки, фактический якорь/охватPOI связан с нужным речным берегом/участком и на1миле; тот же исходный6-гекс сам по себе не доказывает близость.",
+      "acceptance": "Проследить source requirement и stable water ref; явный пример POI до/после6↔1, берег/вход в физический контур, расстояние и единицы. Непроверенные старые привязкиunknown, неnoneбезусловно. Пользовательскую оценку2.5мили подтвердить измерением отдельно.",
+      "criterion_ids": [
+        "S01-C02",
+        "S02-C02",
+        "S05-C01"
+      ],
+      "status": "shown_town_no_water_attachment_requirement_provenance_unverified"
+    },
+    {
+      "id": "OM-C04",
+      "title": "Размер POI определяет значок и охват",
+      "requirement": "Сохранить прежний контракт: малый объект — marker, крупный — охват одной/нескольких1-мильных клеток с общей внешней границей и однимentityID; не одинаковые безразмерные значки для всех. Реальный/ручной размер приоритетнее каталога.",
+      "acceptance": "На реальных/явно условных размерах показаны marker/onecell/multicell, тип/имя/выбор любой части одногоID, сохранение/PNG/UndoRedo. Не выдавать условный круг за измеренную застройку.",
+      "criterion_ids": [
+        "S02-C02",
+        "S04-C03",
+        "S05-C01"
+      ],
+      "status": "existing_requirement_found_per_object_correctness_not_proven"
+    },
+    {
+      "id": "OM-C05",
+      "title": "Тип перед именем POI",
+      "requirement": "Именованный POI остаётся понятным: тип перед названием, например«Городок Айхенхайм», на текущем языке; наличие имени не скрывает тип.",
+      "acceptance": "Именованный и безымянныйPOI в RU/EN, card/map accessible label при наличии, послеsave/load; корректный фактический type, без угадывания деревни поиконке.",
+      "criterion_ids": [
+        "S04-C05",
+        "S05-C01"
+      ],
+      "status": "confirmed_named_POI_type_omitted_in_fine_label"
+    },
+    {
+      "id": "OM-C06",
+      "title": "Корректное впадение в озеро",
+      "requirement": "Река связно и правдоподобно входит в действительный берег озера в6/1; видимый странный устьевой соединитель на показанном мире требует отдельной проверки.",
+      "acceptance": "Сопоставимые устье/берег/воднаяполоса в6/1/PNG, без разрыва, ложного сухопутного отрезка/несогласованной ширины/конца в произвольном центре. Точные дефекты геометрии отличить от эстетического замечания.",
+      "criterion_ids": [
+        "S01-C02",
+        "S04-C03"
+      ],
+      "status": "owner_visual_finding_source_connector_identified_not_full_geometry_diagnosis"
+    },
+    {
+      "id": "OM-C07",
+      "title": "Физически согласованная ширина рек",
+      "requirement": "По текущему поручению F1 на1-мильной карте должна занимать большую часть гекса: гекс в6разменьше. Смена представления не должна искусственно сужать ту же реку. Восстановить прежнее решение о размере, различать воду/коридор и pixelstroke.",
+      "acceptance": "Указаны источник шкалыF1–5, единицы физическойширины/коридора, явная функцияпроекции6/1 и наглядныйF1…F5; в1миле отношение тойже физическойширины кширинегекса в6разбольше, чемв6. Точные новые мили/метры не выдумывать.",
+      "criterion_ids": [
+        "S01-C02",
+        "S04-C03"
+      ],
+      "status": "owner_qualitative_target_recorded_current_physical_calibration_unresolved"
+    },
+    {
+      "id": "OM-C08",
+      "title": "Оспоренная оценка размера городка",
+      "requirement": "Последующий вопрос владельца:«Городок? Разве городок это отдельный объект где-то внутри одномильного гекса, а не объект, размером в несколько миль?» Каталожные0.8mi дляtown — условная проектная оценка, не измеренный факт. Пересмотреть её основание и соответствие пользовательскому смыслу; town нельзя автоматически считать маленьким маркером только изэтойконстанты.",
+      "acceptance": "Аналитик явно показывает какие размеры/границы считаются застройкой/объектом и их источник; для заданного многомильного городка actual охват соответствует нескольким клеткам. Не превращать вопрос владельца в одобрение выдуманной новой численной таблицы.",
+      "criterion_ids": [
+        "S02-C02",
+        "S04-C03",
+        "S05-C01"
+      ],
+      "status": "catalogue_assumption_challenged_requires_analyst_reassessment"
+    }
+  ],
+  "scope_now": "Only capture requirements, bounded lookup and standardqueue handoff. No product implementation, immediate bulk rework, CI/deploy or release.",
+  "normal_next_role": "business_analyst",
+  "publication_status": "not_release_ready_owner_corrections",
+  "prior_review_handling": "Keep prior reports historical. Prior acceptance did not validate these owner invariants and is not current release readiness; reopen applicable scope.",
+  "schedule": "Existing task remains enabled every2hours; schedule/prompt unchanged.",
+  "score_model_version": "1.2",
+  "score_effect": "unknown; no points awarded",
+  "rule_conflicts": [
+    "OM-C01 conflicts with prior OM-1.0 exactsource-worldlines/no finehydrologygraph approach. Analyst must reconcile activegrid edges, sameworldgeography and attachments before coder; no silent second riverworld.",
+    "CurrentF1–5 width physicalmeaning/calibration not recovered; MayF1–10historicalrule cannot be carried mechanically.",
+    "town0.8 catalog is projectassumption challenged byowner; no measured Айхенхайм extent."
+  ],
+  "decisions_needed_now": [],
+  "authority": "Explicit current owner correction within approved051; not permission for immediate rewrite/new product task, paid expenses or publication."
+}

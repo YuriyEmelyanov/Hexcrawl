@@ -15728,7 +15728,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "owner_corrections_requirements_recording",
+      "status": "owner_corrections_specification_required",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15791,7 +15791,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "not_release_ready_owner_corrections",
+      "readiness": "business_analyst_reconcile_requirements",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -16202,9 +16202,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
-      "next_role": "programmer",
+      "next_role": "business_analyst",
       "next_role_after_approval": "programmer",
-      "next_step": "Ожидается отдельное разрешение владельца на публикацию только принятого ONE-MILE1 PR503, head d41911b8d7c2248f115b182923350dc8d08c0a48, tree ec3fbcab8bb976cdd189f82f1b21bf264f23e7db. Код и фактический показ независимо приняты. После разрешения программист сверяет неизменность SHA/базы и разрешения, публикует ровно этот пакет, подтверждает выпуск и передаёт score_update_pending. Изменение пакета требует новой проверки. PR496/другие пакеты не включать. До разрешения main/деплой не менять.",
+      "next_step": "Следующий штатный этап HX-BL-051/ONE-MILE1 — бизнес-аналитик по HX-FB-023/OM-C01…08: согласует контракт рёбер1/6 с сохранением географии/переправ/POI, физическую ширину рек и пересмотр спорной оценкиtown0.8mi, готовит ограниченную пригодную программисту спецификацию и наглядное предложение. Сейчас зафиксированы требования, не готовое решение/разрешение немедленно переписать код. Затем программист → независимая проверка нового SHA → фактический показ → отдельное разрешение публикации. Расписание раз в2часа сохранено; никакихmain/deploy сейчас.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16356,57 +16356,15 @@
       },
       "readiness_handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
       "latest_owner_correction": {
-        "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json",
-        "handoff_ref": "agent-work/handoffs/2026-11-11-HX-BL-051-unified-grid-correction.json",
-        "requirements": [
-          {
-            "id": "GRID-C01",
-            "requirement": "Один компактный выпадающий список в существующем блоке координат/расположения: «Гекс 1 миля», «Гекс 6 миль», «Гекс 12 миль», «Гекс 24 мили». Убрать отдельную панель кнопок масштаба."
-          },
-          {
-            "id": "GRID-C02",
-            "requirement": "В каждом виде одна видимая сетка выбранного физического размера на всей карте, включая гексы-кандидаты; исходная шестимильная модель не проявляется дополнительной видимой сеткой."
-          },
-          {
-            "id": "GRID-C03",
-            "requirement": "Показывать крупный отображаемый гекс целиком, включая ещё незаполненную часть. Клик по доступной незаполненной части вызывает настоящее действие генерации как кандидат; принятая часть сохраняется."
-          },
-          {
-            "id": "GRID-C04",
-            "requirement": "При выборе1мили камера приближается, при выборе12/24отдаляется так, чтобы отображаемый гекс имел привычный экранный размер базового6мильного. Сохранить понятный мировой фокус; переключение не генерирует и не меняет географию/содержимое."
-          },
-          {
-            "id": "GRID-C05",
-            "requirement": "6миль остаётся стандартным базовым видом и стандартной информационной карточкой; новая обзорная сводка или принудительно свёрнутый исходный гекс здесь не нужны."
-          },
-          {
-            "id": "GRID-C06",
-            "requirement": "1миля показывает только содержимое выбранного локального гекса. POI другой части исходного6мильного гекса не показывать; реку без местного контакта/близости к выбранной ячейке не показывать. Аналитик определяет проверяемые геометрические правила и выносит неоднозначный продуктовый выбор владельцу."
-          },
-          {
-            "id": "GRID-C07",
-            "requirement": "12/24миль агрегируют все реально попавшие биомы/места/реки и прочие относящиеся к области данные, без потери смешанного состава и без дублей одного объекта; незаполненное пространство остаётся незаполненным."
-          },
-          {
-            "id": "GRID-C08",
-            "requirement": "Обводка охвата POI только в режиме1мили и только для объектов с обоснованной протяжённостью целая миля или больше. Для каждого поддерживаемого типа POI определить типичный физический размер в милях и основание/допущение. Малые объекты остаются значками; универсальный минимум одна клетка и произвольный минимум2длялюбойстолицы не заменяют оценку размера."
-          },
-          {
-            "id": "GRID-C09",
-            "requirement": "Сохранить существующие действительные водные/дорожные привязки, идентичность объектов, источник/допущения размеров, JSON/UndoRedo и RNG. Изменение отображаемой сетки не изменяет принятую территорию."
-          }
-        ],
-        "result_ref": "agent-work/results/2026-11-11T0535-strategist-PR496-owner-correction.json"
+        "run_id": "2026-11-12-manual-analyst-ONE-MILE1-owner-corrections",
+        "result_ref": "agent-work/results/2026-11-12-manual-analyst-ONE-MILE1-owner-corrections.json",
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-12-ONE-MILE1-owner-corrections-analyst.json"
       },
       "spec_status": "ready_for_development",
       "latest_analyst_result_ref": "agent-work/results/2026-11-11T2043-analyst-ONE-MILE1.json",
       "next_handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
-      "active_claim": {
-        "run_id": "2026-11-12-manual-analyst-ONE-MILE1-owner-corrections",
-        "role": "business_analyst",
-        "claim_ref": "agent-work/claims/2026-11-12-manual-analyst-ONE-MILE1-owner-corrections.json",
-        "status": "active"
-      },
+      "active_claim": null,
       "full_package_release_ready": false,
       "owner_clarification_ref": null,
       "catalog_ref": "agent-work/specs/HX-BL-051-POI-sizes-v1.json",
@@ -16825,12 +16783,15 @@
         "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
         "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
         "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-        "status": "awaiting_owner_publication_permission",
+        "status": "not_release_ready_owner_corrections",
         "release_authorized": false,
         "review_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/independent-review.json",
         "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/score-assessment1.2.json",
         "walkthrough_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/840edf6878477efeb17d7a0a802a7c8e373b4e68/agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
-        "owner_approval_inferred": false
+        "owner_approval_inferred": false,
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
+        "requirements_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-owner-corrections-2026-11-12.md",
+        "reason": "Current owner river/crossing/POI/size findings reopen release readiness; old accepted reports preserved historically."
       },
       "latest_release_walkthrough_review": {
         "run_id": "2026-11-12T1800-reviewer-ONE-MILE1-walkthrough",
@@ -16854,7 +16815,35 @@
             "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-005-L1"
           ]
         }
-      ]
+      ],
+      "owner_correction_ref": "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
+      "requirements_addendum_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-owner-corrections-2026-11-12.md",
+      "feedback_ids": [
+        "HX-FB-023"
+      ],
+      "ui_preview_pending": {
+        "responsible_role": "business_analyst",
+        "status": "required_in_next_standard_specification",
+        "not_new_approval_gate": true
+      },
+      "previous_release_readiness_before_owner_corrections": {
+        "run_id": "2026-11-12T1800-reviewer-ONE-MILE1-walkthrough",
+        "status": "accepted_awaiting_owner_publication_permission",
+        "current_package_release_approval": {
+          "task_id": "HX-BL-051",
+          "stage_id": "ONE-MILE1",
+          "pr": 503,
+          "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+          "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
+          "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "status": "awaiting_owner_publication_permission",
+          "release_authorized": false,
+          "review_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/independent-review.json",
+          "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/score-assessment1.2.json",
+          "walkthrough_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/840edf6878477efeb17d7a0a802a7c8e373b4e68/agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
+          "owner_approval_inferred": false
+        }
+      }
     },
     {
       "task_id": "HX-BL-052",

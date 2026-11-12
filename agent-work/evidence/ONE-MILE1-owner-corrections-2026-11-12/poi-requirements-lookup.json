@@ -1,0 +1,135 @@
+{
+  "task": "bounded POI requirement lookup for owner correction 2026-11-12",
+  "source_head": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+  "changes_made": false,
+  "requirements": [
+    {
+      "topic": "size and marker/hex/multihex",
+      "spec": "agent-work/specs/HX-BL-051-ONE-MILE1.md",
+      "lines": [
+        65,
+        114
+      ],
+      "id": "OM10",
+      "text": "Small uses worldAnchor; >=1mi uses actual or explicitly conditional physical contour, common outline for multi-cell one entity; catalogue/manual/measured provenance and real water/route attachments persist.",
+      "status": "Requirement retained, not lost in spec."
+    },
+    {
+      "topic": "size priority/display",
+      "spec": "agent-work/specs/HX-BL-051-DETAIL1.md",
+      "lines": [
+        85,
+        86,
+        88,
+        91,
+        105,
+        106
+      ],
+      "ids": [
+        "G07",
+        "G08"
+      ],
+      "text": "Measured > explicit manual > catalogue > unknown; D<1mi/unknown marker; D>=1mi conditional circle at accepted worldAnchor -> grid1 positive-area intersection/common outer outline; no outlines6/12/24. Retain waterbody/shore/river/crossing refs and real road entry; F>=3 ford prohibited.",
+      "status": "Approved operational contract exists."
+    },
+    {
+      "topic": "project size catalogue",
+      "spec": "agent-work/specs/HX-BL-051-POI-sizes-v1.json",
+      "version": "POI-SIZE1",
+      "measurement": "maximum_horizontal_extent_miles",
+      "examples": {
+        "village": 0.3,
+        "town": 0.8,
+        "city": 1.5,
+        "capital": 2.5,
+        "tower": 0.03,
+        "ruins": 1
+      },
+      "limitation": "Representative project assumptions, not measured or official game norms. Override provenance wins."
+    }
+  ],
+  "pictured_poi": {
+    "name": "Айхенхайм",
+    "type_id": "town",
+    "russian_type": "Городок",
+    "source_fixture": "test/fixtures/road-entry-zigzags.json",
+    "source_lines": [
+      87,
+      108
+    ],
+    "legacyRef": "poi:1:0,0",
+    "accepted_evidence": "agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/after-fine-initial.json",
+    "poi_id": "detail-poi:2",
+    "worldAnchor": {
+      "x": 0,
+      "y": 0
+    },
+    "cells": [
+      {
+        "q": 0,
+        "r": 0
+      }
+    ],
+    "extent": {
+      "kind": "representative",
+      "catalogueId": "POI-SIZE1",
+      "typeId": "town",
+      "representativeExtentMiles": 0.8,
+      "basis": "project_assumption_not_measured"
+    },
+    "attachments": [
+      "road:1",
+      "road:2",
+      "road:3 trail"
+    ],
+    "water_attachment_present": false,
+    "distance_to_river_miles": "Not independently measured in this bounded lookup; owner's approx2.5mi recorded as observation, not exact calculated fact."
+  },
+  "implementation_observations": [
+    {
+      "topic": "unnamed type prefix",
+      "file": "src/App.tsx",
+      "lines": [
+        16102,
+        16109,
+        16200
+      ],
+      "fact": "finePoi.label prefers localized named POI name alone; type used only fallback. OneMilePanel.tsx renders label string without type. This explains bare Айхенхайм rather than Городок Айхенхайм.",
+      "status": "Confirmed source behavior."
+    },
+    {
+      "topic": "small vs footprint rendering",
+      "file": "src/OneMileArtwork.tsx",
+      "lines": [
+        35,
+        38
+      ],
+      "fact": "extent>=1 -> outline(fp.cells) plus markers percell; small/null -> one marker at detailFootprintWorldAnchor. Size mechanism exists; not evidence everytype/location correct."
+    },
+    {
+      "topic": "river adjacency inference gap",
+      "file": "src/detailGeography.ts",
+      "lines": [
+        43,
+        51
+      ],
+      "fact": "requirement() returns unknown/none for landPOI without Knave source site; Knave row predicates can require river/shore/crossing. Pictured old town lacks water attachment. Existing coarse 'next to river' is not thereby proven as retained physical adjacency.",
+      "status": "Confirmed missing saved attachment on example; BA must reconcile inherited source6 placement requirement without treating unknown as satisfied."
+    },
+    {
+      "topic": "crossings type visibility",
+      "file": "src/OneMileArtwork.tsx",
+      "lines": [
+        32
+      ],
+      "fact": "All crossing kinds render same filled circle, with kind only in <title>. Saved crossingkind survives in JSON/card, but map does not visually distinguish bridge/ferry/ford as symbols.",
+      "status": "Confirmed source behavior; no claim crossing records lost."
+    }
+  ],
+  "owner_capture_guidance": [
+    "Persist river-adjacent POI must remain physically at required river/shore in1mile, not just in same old6hex.",
+    "Persist POI type before ownname; pictured town is not village.",
+    "Retain size-sensitive shape contract; do not automatically expand everyPOI or equate stored cells count with real size.",
+    "On next standard BA run reconcile prior contracts/provenance and new owner observations before programmer implementation; do not immediately rebuild whole package."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "task": "bounded river requirements retrieval; no implementation/tests/GitHub writes",
+  "source_head": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+  "findings": [
+    {
+      "topic": "Current fullness definition",
+      "source": "docs/river-model.md:17,28-31",
+      "rule_id": "RIV-001",
+      "fact": "F is discrete1..5, not physical water volume. No current meter-width table found in searched active and archived Markdown."
+    },
+    {
+      "topic": "Existing stroke formula",
+      "source": "src/App.tsx:1678-1679,1694-1695,8219-8235",
+      "fact": "Native width=hexWidth*(0.04+F*0.035), where hexWidth=sqrt(3)*HEX_SIZE. F1..5 ratios7.5%,11%,14.5%,18%,21.5%. This is actual rendering code, not evidence of owner-approved physical widths. Do not relabel inferred0.45mi F1 on6mi profile as approved physical river width."
+    },
+    {
+      "topic": "Fine stroke scale",
+      "source": "src/OneMileArtwork.tsx:29",
+      "fact": "Fine renderer passes original x/y but strokeWidth=r.width/6. This supports investigating lost physical width scaling; no browser pass or physical-width certification performed."
+    },
+    {
+      "topic": "Crossing requirement and appearance",
+      "source": "docs/road-model.md:20 ROAD-10;129-130; src/App.tsx:16359-16412; src/OneMileArtwork.tsx:32",
+      "fact": "ROAD-10 requires matching crossing type at road/river intersection; manualbridge/ferry F1..5, fordF1..2. Native renderer differentiates ferry/ford/bridge. Fine renderer draws identical circles for everykind, with kind only in SVGtitle. Record distinct visual appearance as unmet owner expectation, not missing persisted data based only on image."
+    },
+    {
+      "topic": "Owner river-edge requirement vs prior spec",
+      "source": "agent-work/specs/HX-BL-051-ONE-MILE1.md:19,37,63,113; src/detailGeography.ts:1-2,28-41",
+      "fact": "Prior spec preserves real source-world water/road geometry, forbids new fine river graph, derives cardmembership from segment intersections; OM09 demands same geometry/IDs6/1. Latest owner instruction explicitlyrequires rivers along edges of BOTH displayed grids. This is a requirements conflict/gap for analyst to reconcile, not solved by merely saying original lines preserved; do not silently reroute data and break crossings/POI."
+    },
+    {
+      "topic": "Lake mouth",
+      "source": "docs/natural-lakes.md:3,5,7; src/rendering/lakeGeometry.ts:158-168; src/App.tsx:8228",
+      "fact": "Color style has natural shoreline and inlet/outlet mouths; Tiles/Emoji wholelake cells by earlier doc. Mouthconnector constructed from exposed riverendpoint towardnearestlakecell center, widths half=.55*segmentwidth,endHalf=max(.7*segmentwidth,.18*radius); lakeinternal edges hidden. These are current renderer mechanics, not evidence that shown inlet appearance is acceptable. Latest owner complaint should become explicit contiguous readable inlet/shore criterion on6/1 including image."
+    }
+  ],
+  "historical_context_received_from_parent": {
+    "source": "Parent Personal Context retrieval, not independently re-fetched by this helper",
+    "May21_2026": "F1..10 width2..40% hex; F10about1/5 into each adjacenthex; superseded10class scale",
+    "June8_2026": "F1..5; F1alreadyobstacle F5large",
+    "July21_2026": "bridge/ford/ferry appearances, translucentfordoverwater, ferryshoregap"
+  },
+  "recording_constraints": [
+    "Latest owner F1takesmajorpartof1milehex is qualitative authoritative constraint; do not invent a new precise number.",
+    "Separate historical10gradewidth, current5gradehydrology, rendererstroke and futurephysical calibration.",
+    "Edgepath, widths, crossings, shoreline and POI attachments must be reconciled jointly by normal analyst stage; no immediate all-at-once rewrite."
+  ]
+}

@@ -866,3 +866,8 @@ Run `2026-11-12T1600-programmer-ONE-MILE1-preview`: при локальном Ch
 ## 2026-11-12 — независимая сверка release walkthrough
 
 2026-11-12T1800-reviewer-ONE-MILE1-walkthrough: fresh-context reviewer проверил45оригиналов/30PNG, sourcecheckouts/ZIP/remote blobSHA и JSON1500/390. Cancel имеет PNG/DOMassertion и прежний accepted test, отдельного нового JSONнет; export/import не browser reload. Архивный capture.yml — draft без concurrency; точный исполненный workflow сохранён отдельно, checkout/build/capture совпадают. Не повторять весь принятый набор при неизменном SHA без конкретной причины. Wholegrades13criteria остаютсяunverified. Код/показ приняты; выпуск только после ownerpermission exactPR503d419. Evidence: agent-work/evidence/review-ONE-MILE1-walkthrough-1800/independent-review.json.
+
+
+## 12 ноября2026 — сохранённые IDs не доказывают географический смысл
+
+2026-11-12-manual-analyst-ONE-MILE1-owner-corrections: owner на actuald419 выявилслабостьприёмки: одинаковыесохранённыелинии/IDsиJSONroundtrip не доказывают рёбраактивнойсетки, различимыйbridge/ferry/ford, реальнуюводнуюпривязкуPOIилиправильныйразмергородка. Условный3miPOIпроверяетмеханизмохвата, анеобоснованностьcatalogue0.8town. ИменованныйPOIскрываеттип, finecrossing сводитразныетипыккружку. ИсторическаяF1–10шкалаширинынесовпадаетснынешнейF1–5; визуальнуюформулунельзяобъявлятьфизическимрешениемвладельца. Прежниепринятиясохранены, readinessreopened;8требований/HX-FB-023переданыстандартномуаналитику, безнемедленнойразработки. agent-work/specs/HX-BL-051-ONE-MILE1-owner-corrections-2026-11-12.md.
