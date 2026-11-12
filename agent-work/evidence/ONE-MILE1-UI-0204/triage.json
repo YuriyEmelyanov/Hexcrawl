@@ -26,15 +26,66 @@
       "job_id": 130938522235,
       "kind": "test_harness_failure",
       "evidence": "Export caption check used innerText inside closed details, returned empty. Source label already v15, test corrected to textContent. No product behavior accepted from attempt."
-    }
-  ],
-  "ci_service_errors": [
+    },
     {
-      "action": "fetch logs job130937606747",
-      "error": "Internal error",
-      "recovered": "same read retry succeeded",
-      "product_defect": false
+      "head_sha": "3f785f6caf7d427f685dd2cbf70bbd0381d00b61",
+      "run_id": 43144495150,
+      "job_id": 130939106732,
+      "kind": "fine_view_activation_failure",
+      "evidence": "After selecting1, data-fine-world not visible within20s; only desktop6 captured. Cause not known, explicit diagnostics added. Source6 screenshot shows native select styling mismatch; fixed dark native styling.",
+      "classification": "Fine view browser activation not accepted; runtime diagnostics required. Full suite not reached."
+    },
+    {
+      "head_sha": "f9c12f4b9e0fb33f6d664d3b8388ac6a1d836edb",
+      "run_id": 43144909049,
+      "job_id": 130940450183,
+      "kind": "confirmed_product_defect",
+      "evidence": "Browser pageerror Empty detail footprint when switching1; React root unmounted. Boundary helper was invoked with [] for a small icon, after removing universal small-POI outline.",
+      "fix": "Skip boundary construction for empty outline; retained existing actual switch-to1 assertion as regression coverage.",
+      "fix_sha": "aea5281d9f32e844174b009f27fcbfdb823759cf",
+      "status": "fixed_pending_exact_head_browser_validation"
+    },
+    {
+      "head_sha": "aea5281d9f32e844174b009f27fcbfdb823759cf",
+      "run_id": 43145138270,
+      "job_id": 130941179180,
+      "kind": "test_expectation_hover_vs_selection",
+      "evidence": "Grid/local read first case passed3471 accepted cells/494 candidates, no pageerrors. Later assertion read temporary H under pointer after mode change instead of pinned S. Test now asserts S0,0 then moves pointer to panel before expecting saved note.",
+      "classification": "S/draft persistence rechecked on new head; must not suppress real H behavior."
+    },
+    {
+      "head_sha": "2c768a34a86c16149d20f7584e7abe6e8b18307a",
+      "run_id": 43145449476,
+      "job_id": 130942164105,
+      "kind": "confirmed_candidate_selection_defect",
+      "evidence": "3/4 new UI cases passed including local Save/fault/Undo and320/390 RU/EN; candidate dblclick accepted exactlyone ordinary region but selected key moved from target-65,44 to-74,44 after geometry offset changed.",
+      "fix_sha": "cc75a3484fa0276af41ad68a8562e9ac795a0400",
+      "fix": "Ignore click.detail>1 on accepted/candidate fine cells, protecting first action's local selection when layout expands. Existing actual doubleclick/target/Undo case remains strict.",
+      "status": "fixed_pending_browser_validation"
     }
   ],
-  "lessons_application": "Existing ANSI-readiness lesson was already recorded. Applied strip to new runner after repeated setup failure; no duplicate research/audit. Failed browser checks are not acceptance evidence."
+  "resolved_source_defects": [
+    "Small-POI empty-outline crash guarded; actual switch/grid/local read passed onaea and later heads.",
+    "Second doubleclick selection after ordinary geometry expansion guarded; accepted-and-exact-Undo browser case passed oncc75."
+  ],
+  "prior_positive": {
+    "head_sha": "cc75a3484fa0276af41ad68a8562e9ac795a0400",
+    "fine_browser": {
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "fixture": "road-entry-zigzags.json",
+      "ordinary_outcome": "accepted_and_undo_exact"
+    },
+    "whole_ci": "cancelled by necessary next display stroke correction; not claimed full check pass"
+  },
+  "unresolved": [
+    {
+      "evidence": "Existing tag other-row textbox timeout onad8658",
+      "status": "cause not established; final exact head full suite pending"
+    }
+  ],
+  "latest_head_sha": "32b54f032a1b7d959c232a009e9dd77ae80cfe1a",
+  "latest_ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43146039704",
+  "limits": "No independent review or full OM acceptance. UI setup failures are not product defects; negative evidence retained."
 }
