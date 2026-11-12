@@ -5204,7 +5204,7 @@
   },
   "research_agent": {
     "task_id": "HX-RSR-001",
-    "status": "completed_bounded_primary_L1_corpus",
+    "status": "paused_by_owner",
     "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
     "contract_ref": "agent-work/research/contract.md",
     "overview_ref": "agent-work/research/README.md",
@@ -5323,7 +5323,12 @@
       },
       "restored": false,
       "schedule_changed": false,
-      "limitation": "Point-in-timeenabled/runstatus do not prove researchcompletion."
+      "limitation": "Point-in-timeenabled/runstatus do not prove researchcompletion.",
+      "owner_pause": {
+        "checked_at": "2026-11-12T19:53:15.465Z",
+        "is_enabled": false,
+        "decision_ref": "agent-work/decisions/owner-pause-2026-11-12-HX-RSR-001-token-budget.json"
+      }
     },
     "latest_research_storage_verification": {
       "data_commit_sha": "22ce1a5438ec6c7b016320c2cc75a9c56547a462",
@@ -5449,7 +5454,7 @@
         "score_changed": false
       }
     ],
-    "authority_status": "Research documentation corpus only; no product,backlog,registry,ranking,foreignclaim ormainchanges.",
+    "authority_status": "explicit_owner_pause_do_not_auto_restore",
     "finalized_at": "2026-11-12 18:36:56 UTC",
     "program_id": "HX-RSR-001",
     "run_id": "2026-11-12T1828-PF1-regional-preparation",
@@ -5591,6 +5596,13 @@
       "bindings": 7,
       "acceptance_cases": 22,
       "runtime": "unverified"
+    },
+    "owner_pause": {
+      "decision_ref": "agent-work/decisions/owner-pause-2026-11-12-HX-RSR-001-token-budget.json",
+      "reason": "token_budget",
+      "paused_at": "2026-11-12T19:53:15.465Z",
+      "resume": "after explicit owner instruction; about one day intended",
+      "automatic_recovery_allowed": false
     }
   },
   "latest_ranking_activation": {
