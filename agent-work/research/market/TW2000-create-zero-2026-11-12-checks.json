@@ -1,0 +1,888 @@
+{
+  "schema_version": 1,
+  "id": "HX-RSR-TW2000-CREATE-ZERO-CHECKS-v1",
+  "run_id": "2026-11-12T1236-TW2000-create-zero",
+  "status": "completed_diagnostic_only_no_candidate",
+  "baseline": {
+    "path": "agent-work/market/three-scenario-ranking-2026-11-06.json",
+    "blob_sha": "ea0d62e91e7e97f938268e14e4fdd484668748d8",
+    "model": "three-scenario-ranks-1.4-create-evidence"
+  },
+  "method": "Use stored D values and exact binary-number equality to reproduce existing ranks; average occupied ranks; standalone per-axis compositions73/70/70; overall common70. At analytic equality boundary inject the competitor's stored D exactly, then derive p=D/(M*T), avoiding multiplication rounding at ties. All other D unchanged. These are algebraic sensitivity probes, not fitted p, confidence intervals, a new market metric, or an activation proposal.",
+  "validation": [
+    {
+      "name": "low",
+      "errors": [],
+      "axis_rank_values": 213,
+      "overall_rows": 70
+    },
+    {
+      "name": "reference",
+      "errors": [],
+      "axis_rank_values": 213,
+      "overall_rows": 70
+    },
+    {
+      "name": "high",
+      "errors": [],
+      "axis_rank_values": 213,
+      "overall_rows": 70
+    }
+  ],
+  "formula_checks": {
+    "D_values": 639,
+    "D_errors": 0,
+    "U_errors": 0
+  },
+  "thresholds": [
+    {
+      "name": "low",
+      "M": 8476.65,
+      "T": 0.25,
+      "D_per_unit_p": 2119.1625,
+      "p_for_D_strictly_greater_1000": 0.47188452985554435,
+      "creation_thresholds": {
+        "5": {
+          "D": 273.6825,
+          "tie_game": "MB",
+          "p_equal": 0.12914653784219002,
+          "strictly_above_needed": true
+        },
+        "10": {
+          "D": 151.27875,
+          "tie_game": "AWN",
+          "p_equal": 0.07138610182088444,
+          "strictly_above_needed": true
+        },
+        "20": {
+          "D": 77.6475,
+          "tie_game": "ACKS2",
+          "p_equal": 0.036640654031958375,
+          "strictly_above_needed": true
+        }
+      },
+      "TW2000_current": {
+        "standalone_create_rank": 70,
+        "overall_place": 24.5,
+        "ranks": [
+          67,
+          6,
+          5
+        ]
+      }
+    },
+    {
+      "name": "reference",
+      "M": 24219,
+      "T": 0.5,
+      "D_per_unit_p": 12109.5,
+      "p_for_D_strictly_greater_1000": 0.08257979272472026,
+      "creation_thresholds": {
+        "5": {
+          "D": 3127.8,
+          "tie_game": "MB",
+          "p_equal": 0.25829307568438004,
+          "strictly_above_needed": true
+        },
+        "10": {
+          "D": 1528.5,
+          "tie_game": "PIRATE",
+          "p_equal": 0.12622321317973492,
+          "strictly_above_needed": true
+        },
+        "20": {
+          "D": 837.75,
+          "tie_game": "OSRIC",
+          "p_equal": 0.0691812213551344,
+          "strictly_above_needed": true
+        }
+      },
+      "TW2000_current": {
+        "standalone_create_rank": 70,
+        "overall_place": 24.5,
+        "ranks": [
+          67,
+          5,
+          5
+        ]
+      }
+    },
+    {
+      "name": "high",
+      "M": 58125.6,
+      "T": 0.75,
+      "D_per_unit_p": 43594.2,
+      "p_for_D_strictly_greater_1000": 0.022938831312422296,
+      "creation_thresholds": {
+        "5": {
+          "D": 23766.48,
+          "tie_game": "KNAVE2",
+          "p_equal": 0.5451752756100583,
+          "strictly_above_needed": true
+        },
+        "10": {
+          "D": 14029.2,
+          "tie_game": "ROOT",
+          "p_equal": 0.3218134522482349,
+          "strictly_above_needed": true
+        },
+        "20": {
+          "D": 8518.117901568416,
+          "tie_game": "ALIEN",
+          "p_equal": 0.19539566964340246,
+          "strictly_above_needed": true
+        }
+      },
+      "TW2000_current": {
+        "standalone_create_rank": 70,
+        "overall_place": 31,
+        "ranks": [
+          67,
+          11,
+          16
+        ]
+      }
+    }
+  ],
+  "cases": [
+    {
+      "scenario": "low",
+      "case_id": "zero",
+      "D": 0,
+      "p_derived": 0,
+      "standalone_create_rank": 70,
+      "overall_ranks": [
+        67,
+        6,
+        5
+      ],
+      "overall_place": 24.5,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [],
+          "left": []
+        }
+      }
+    },
+    {
+      "scenario": "low",
+      "case_id": "positive_limit_illustration",
+      "D": 1e-8,
+      "p_derived": 4.718845298555444e-12,
+      "standalone_create_rank": 67,
+      "overall_ranks": [
+        64,
+        6,
+        5
+      ],
+      "overall_place": 23.5,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [],
+          "left": []
+        }
+      }
+    },
+    {
+      "scenario": "low",
+      "case_id": "create_top5_exact_D_tie",
+      "D": 273.6825,
+      "p_derived": 0.12914653784219002,
+      "standalone_create_rank": 5.5,
+      "overall_ranks": [
+        5.5,
+        6,
+        5
+      ],
+      "overall_place": 4,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSE",
+            "ROOT"
+          ]
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "CAIRN2"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSRIC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "low",
+      "case_id": "create_top10_exact_D_tie",
+      "D": 151.27875,
+      "p_derived": 0.07138610182088444,
+      "standalone_create_rank": 10.5,
+      "overall_ranks": [
+        9.5,
+        6,
+        5
+      ],
+      "overall_place": 4,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSE",
+            "ROOT"
+          ]
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "CAIRN2"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSRIC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "low",
+      "case_id": "create_top20_exact_D_tie",
+      "D": 77.6475,
+      "p_derived": 0.036640654031958375,
+      "standalone_create_rank": 20.5,
+      "overall_ranks": [
+        19.5,
+        6,
+        5
+      ],
+      "overall_place": 8,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "CAIRN2"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSRIC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "low",
+      "case_id": "eligibility_equal_1000",
+      "D": 1000,
+      "p_derived": 0.47188452985554435,
+      "standalone_create_rank": 1,
+      "overall_ranks": [
+        1,
+        6,
+        5
+      ],
+      "overall_place": 3,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSE",
+            "ROOT"
+          ]
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "CAIRN2"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSRIC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "low",
+      "case_id": "eligibility_strictly_above_1000",
+      "D": 1000.001,
+      "p_derived": 0.4718850017400742,
+      "standalone_create_rank": 1,
+      "overall_ranks": [
+        1,
+        6,
+        5
+      ],
+      "overall_place": 3,
+      "D_gt_1000": true,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSE",
+            "ROOT"
+          ]
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "CAIRN2"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "OSRIC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "reference",
+      "case_id": "zero",
+      "D": 0,
+      "p_derived": 0,
+      "standalone_create_rank": 70,
+      "overall_ranks": [
+        67,
+        5,
+        5
+      ],
+      "overall_place": 24.5,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [],
+          "left": []
+        }
+      }
+    },
+    {
+      "scenario": "reference",
+      "case_id": "positive_limit_illustration",
+      "D": 1e-8,
+      "p_derived": 8.257979272472026e-13,
+      "standalone_create_rank": 67,
+      "overall_ranks": [
+        64,
+        5,
+        5
+      ],
+      "overall_place": 23,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [],
+          "left": []
+        }
+      }
+    },
+    {
+      "scenario": "reference",
+      "case_id": "create_top5_exact_D_tie",
+      "D": 3127.8,
+      "p_derived": 0.25829307568438004,
+      "standalone_create_rank": 5.5,
+      "overall_ranks": [
+        5.5,
+        5,
+        5
+      ],
+      "overall_place": 3,
+      "D_gt_1000": true,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "ROOT"
+          ]
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "MOTH"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "SWC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "reference",
+      "case_id": "create_top10_exact_D_tie",
+      "D": 1528.5,
+      "p_derived": 0.12622321317973492,
+      "standalone_create_rank": 10.5,
+      "overall_ranks": [
+        10.5,
+        5,
+        5
+      ],
+      "overall_place": 5,
+      "D_gt_1000": true,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "ROOT"
+          ]
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "MOTH"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "SWC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "reference",
+      "case_id": "create_top20_exact_D_tie",
+      "D": 837.75,
+      "p_derived": 0.0691812213551344,
+      "standalone_create_rank": 20.5,
+      "overall_ranks": [
+        19.5,
+        5,
+        5
+      ],
+      "overall_place": 6,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "MOTH"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "SWC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "reference",
+      "case_id": "eligibility_equal_1000",
+      "D": 1000,
+      "p_derived": 0.08257979272472026,
+      "standalone_create_rank": 17,
+      "overall_ranks": [
+        16,
+        5,
+        5
+      ],
+      "overall_place": 5,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "ROOT"
+          ]
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "MOTH"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "SWC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "reference",
+      "case_id": "eligibility_strictly_above_1000",
+      "D": 1000.001,
+      "p_derived": 0.08257987530451298,
+      "standalone_create_rank": 17,
+      "overall_ranks": [
+        16,
+        5,
+        5
+      ],
+      "overall_place": 5,
+      "D_gt_1000": true,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "ROOT"
+          ]
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "MOTH"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "SWC"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "high",
+      "case_id": "zero",
+      "D": 0,
+      "p_derived": 0,
+      "standalone_create_rank": 70,
+      "overall_ranks": [
+        67,
+        11,
+        16
+      ],
+      "overall_place": 31,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [],
+          "left": []
+        }
+      }
+    },
+    {
+      "scenario": "high",
+      "case_id": "positive_limit_illustration",
+      "D": 1e-8,
+      "p_derived": 2.2938831312422296e-13,
+      "standalone_create_rank": 67,
+      "overall_ranks": [
+        64,
+        11,
+        16
+      ],
+      "overall_place": 31,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [],
+          "left": []
+        }
+      }
+    },
+    {
+      "scenario": "high",
+      "case_id": "create_top5_exact_D_tie",
+      "D": 23766.48,
+      "p_derived": 0.5451752756100583,
+      "standalone_create_rank": 5.5,
+      "overall_ranks": [
+        5.5,
+        11,
+        16
+      ],
+      "overall_place": 7,
+      "D_gt_1000": true,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "KNAVE2"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "ALIEN",
+            "COC7"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "high",
+      "case_id": "create_top10_exact_D_tie",
+      "D": 14029.2,
+      "p_derived": 0.3218134522482349,
+      "standalone_create_rank": 10.5,
+      "overall_ranks": [
+        10.5,
+        11,
+        16
+      ],
+      "overall_place": 8,
+      "D_gt_1000": true,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "TDE5",
+            "KNAVE2"
+          ]
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "ALIEN",
+            "COC7"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "high",
+      "case_id": "create_top20_exact_D_tie",
+      "D": 8518.117901568416,
+      "p_derived": 0.19539566964340246,
+      "standalone_create_rank": 20.5,
+      "overall_ranks": [
+        20.5,
+        11,
+        16
+      ],
+      "overall_place": 11,
+      "D_gt_1000": true,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [
+            "TW2000"
+          ],
+          "left": [
+            "COC7"
+          ]
+        }
+      }
+    },
+    {
+      "scenario": "high",
+      "case_id": "eligibility_equal_1000",
+      "D": 1000,
+      "p_derived": 0.022938831312422296,
+      "standalone_create_rank": 59,
+      "overall_ranks": [
+        57,
+        11,
+        16
+      ],
+      "overall_place": 30,
+      "D_gt_1000": false,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [],
+          "left": []
+        }
+      }
+    },
+    {
+      "scenario": "high",
+      "case_id": "eligibility_strictly_above_1000",
+      "D": 1000.001,
+      "p_derived": 0.02293885425125361,
+      "standalone_create_rank": 59,
+      "overall_ranks": [
+        57,
+        11,
+        16
+      ],
+      "overall_place": 30,
+      "D_gt_1000": true,
+      "hypothetical_rank_set_changes": {
+        "5": {
+          "entered": [],
+          "left": []
+        },
+        "10": {
+          "entered": [],
+          "left": []
+        },
+        "20": {
+          "entered": [],
+          "left": []
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "TopN rank sets are not score-admission cohorts; D_s>1000 AND documented suitable scenario are separate. Existing cohort membership/support unchanged.",
+    "No fitted p or population denominator; positive infinitesimal test establishes only zero-tie rank discontinuity.",
+    "Exact binary tie behavior reproduces active model; changing tolerance would be a separate numerical-method proposal."
+  ],
+  "verification_source_code": {
+    "language": "JavaScript",
+    "rankMap": "function rankMap(a){return Object.fromEntries(a.map(x=>[x.id,1+a.filter(y=>y.v>x.v).length+(a.filter(y=>y.v===x.v).length-1)/2]));}",
+    "baselineCalculator": "function calc(name,p){const rows=r.rows.flatMap(x=>{let s=x.scenarios?.find(z=>z.name===name);if(!s)return[];let d=[...s.D];if(x.id===\"TW2000\"&&p!==undefined)d[0]=s.M*p*s.T;return[{id:x.id,D:d}];});const axes=[0,1,2].map(i=>rankMap(rows.filter(x=>Number.isFinite(x.D[i])).map(x=>({id:x.id,v:x.D[i]}))));const complete=rows.filter(x=>x.D.length===3&&x.D.every(Number.isFinite));const oa=[0,1,2].map(i=>rankMap(complete.map(x=>({id:x.id,v:x.D[i]}))));const means=complete.map(x=>({id:x.id,v:-(oa[0][x.id]+oa[1][x.id]+oa[2][x.id])/3}));const op=rankMap(means);return{rows,axes,oa,op,means,cohorts:Object.fromEntries([5,10,20].map(n=>[n,complete.filter(x=>op[x.id]<=n).sort((x,y)=>op[x.id]-op[y.id]||x.id.localeCompare(y.id)).map(x=>x.id)]))};}",
+    "directDCalculator": "function directD(name,D){const rows=r.rows.flatMap(x=>{const s=x.scenarios?.find(z=>z.name===name);if(!s)return[];const d=[...s.D];if(x.id===\"TW2000\")d[0]=D;return[{id:x.id,D:d}];});const axes=[0,1,2].map(i=>rankMap(rows.filter(x=>Number.isFinite(x.D[i])).map(x=>({id:x.id,v:x.D[i]}))));const complete=rows.filter(x=>x.D.length===3&&x.D.every(Number.isFinite));const oa=[0,1,2].map(i=>rankMap(complete.map(x=>({id:x.id,v:x.D[i]}))));const op=rankMap(complete.map(x=>({id:x.id,v:-(oa[0][x.id]+oa[1][x.id]+oa[2][x.id])/3})));return{axes,oa,op,sets:Object.fromEntries([5,10,20].map(n=>[n,complete.filter(x=>op[x.id]<=n).sort((a,b)=>op[a.id]-op[b.id]||a.id.localeCompare(b.id)).map(x=>x.id)]))};}"
+  },
+  "reproduction_inputs": "Load baseline JSON as variable r; evaluate supplied rankMap/baselineCalculator/directDCalculator in the same scope. For each low/reference/high compare all finite stored ranks and overall_place. Inject case D only for TW2000."
+}
