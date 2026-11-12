@@ -26,9 +26,12 @@ export function fineEvidenceSamples(h){
   const sample=summaries.find(predicate);assert.ok(sample,`accepted fixture contains ${kind}`);const value=selected.get(key(sample.cell))??{...sample,kinds:[]};value.kinds.push(kind);selected.set(key(sample.cell),value);
  }
  const withObject=[...selected.values()][0],source=worldToDetailCell(coarse,detailCellCenter(grid,withObject.cell));
+ const large=[...selected.values()].find(s=>s.kinds.includes('large-poi')),largeOwner=large.pois.find(p=>detailFootprintExtentMiles(state.poiFootprints.find(f=>f.poiId===p.poiId),grid)>=1);
+ const owner=state.poiFootprints.find(p=>p.poiId===largeOwner.poiId),other=owner.cells.find(c=>key(c)!==key(large.cell)&&accepted.has(key(c)));
+ assert.ok(other,'large POI has another accepted fine part');selected.set(key(other),{cell:other,...summarizeDetailCell({...state,viewStep:1,selectedWorldPoint:undefined},other,new Map(),{roads:map.roads,rivers}),kinds:['large-poi-other-part']});
  const blank=summaries.find(s=>!s.routes.length&&!s.rivers.length&&!s.pois.length&&key(worldToDetailCell(coarse,detailCellCenter(grid,s.cell)))===key(source));
  assert.ok(blank,'same source-six cell has a genuinely empty local neighbour');selected.set(key(blank.cell),{...blank,kinds:['empty-local']});
- return {samples:[...selected.values()],source,roads:map.roads,rivers,footprints:state.poiFootprints};
+ return {samples:[...selected.values()],source,roads:map.roads,rivers,footprints:state.poiFootprints,large_owner:largeOwner.poiId};
 }
 
 export async function checkFineCamera({page,step,snap,manifest}){
@@ -65,7 +68,9 @@ export async function checkFineObjectsAndPng({page,step,snap,shot,button,manifes
   for(const river of oracle.rivers)assert.equal(text.includes(`OM river ${river.id}`),sample.rivers.some(r=>r.id===river.id),`local river ${river.id} in ${id}`);
   const poiLabels=[];for(const poi of sample.pois){const marker=page.locator(`[data-fine-pois] [data-poi-id="${poi.poiId}"] [role=img]`).first();if(await marker.count())poiLabels.push(await marker.getAttribute('aria-label'));}
   for(const label of poiLabels)assert.ok(text.includes(label),`local POI label ${label}`);
-  const dom=await page.locator('[data-fine-world]').evaluate(el=>({roads:[...el.querySelectorAll('.roads-layer line')].map(n=>[n.getAttribute('x1'),n.getAttribute('y1'),n.getAttribute('x2'),n.getAttribute('y2')]),rivers:[...el.querySelectorAll('.rivers-layer line')].map(n=>[n.getAttribute('x1'),n.getAttribute('y1'),n.getAttribute('x2'),n.getAttribute('y2')]),crossings:el.querySelectorAll('[data-fine-crossing]').length,water:el.querySelectorAll('.lake-water,.lake-water-shape').length}));
+  const dom=await page.locator('[data-fine-world]').evaluate(el=>({roads:[...el.querySelectorAll('.roads-layer line')].map(n=>[n.getAttribute('x1'),n.getAttribute('y1'),n.getAttribute('x2'),n.getAttribute('y2')]),rivers:[...el.querySelectorAll('.rivers-layer line')].map(n=>[n.getAttribute('x1'),n.getAttribute('y1'),n.getAttribute('x2'),n.getAttribute('y2')]),crossings:el.querySelectorAll('[data-fine-crossing]').length,water:{seas:[...el.children[1].querySelectorAll(':scope > polygon')].map(n=>n.getAttribute('points')),lakes:[...el.querySelectorAll('.lake-water-layer path')].map(n=>n.getAttribute('d'))}}));
+  if(sample.kinds.some(k=>k.startsWith('large-poi')))assert.ok(sample.pois.some(p=>p.poiId===oracle.large_owner),'both fine parts address the same accepted owner');
+  const ps=await panel.locator(':scope > p').allTextContents();const labels=ps.filter(s=>!/^[-\d]+\/[-\d]+$/.test(s)).slice(1+sample.routes.length+sample.rivers.length);assert.deepEqual(labels,poiLabels,'no unrelated or duplicate POI labels leak from source-six');
   samples.push({cell:id,kinds:sample.kinds,text,route_ids:sample.routes.map(r=>r.id),river_ids:sample.rivers.map(r=>r.id),poi_ids:sample.pois.map(r=>r.poiId),rendered:dom});
   if(sample.kinds.includes('river')||sample.kinds.includes('water-poi')||sample.kinds.includes('empty-local'))await shot(`desktop-local-${sample.kinds[0]}.jpg`);
  }

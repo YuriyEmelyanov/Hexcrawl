@@ -14,7 +14,9 @@ const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.re
 delete fixture.map.physicalGrid.selectedCell;delete fixture.map.physicalGrid.selectedWorldPoint;
 const oracle=fineEvidenceSamples(h);
 for(const road of fixture.map.roads)fixture.map.editorNames[`road:${road.id}`]={ru:`OM дорога ${road.id}`,en:`OM route ${road.id}`};
-for(const river of fixture.map.rivers)fixture.map.editorNames[`river:${river.id}`]={ru:`OM река ${river.id}`,en:`OM river ${river.id}`};
+for(const river of fixture.map.rivers){const name=fixture.map.toponyms.names[`river:${river.id}`];assert.ok(name);name.ru=`OM река ${river.id}`;name.en=`OM river ${river.id}`;}
+// Validate fixture edits before launching a browser; rivers are toponyms, not editorNames.
+await h.render().handleImportJson({target:{files:[{text:JSON.stringify(fixture)}],value:'x'}});assert.equal(h.render().createSaveData().version,15);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4195','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
 let browser,page;const errors=[],alerts=[];
 const manifest={source_head_sha:null,checkout_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),checkout_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),fixture:'road-entry-zigzags.json',screenshots:[],cases:[]};
