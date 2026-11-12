@@ -62,11 +62,28 @@
       "fix_sha": "cc75a3484fa0276af41ad68a8562e9ac795a0400",
       "fix": "Ignore click.detail>1 on accepted/candidate fine cells, protecting first action's local selection when layout expands. Existing actual doubleclick/target/Undo case remains strict.",
       "status": "fixed_pending_browser_validation"
+    },
+    {
+      "head_sha": "32b54f032a1b7d959c232a009e9dd77ae80cfe1a",
+      "run_id": 43146039704,
+      "job_id": 130944065980,
+      "kind": "existing_tag_pointer_failure_repeated",
+      "evidence": "All4 fine UI cases passed; existing other-row mb.land textbox timeout repeated after raw-coordinate disabled-control pointer. Fixed viewport target setup and added actual hit assertion; all original draft immutability/redo guards remain strict.",
+      "fix_sha": "01d14a2cfd7f3269f85db644cea3188965ace4e8",
+      "classification": "Cause under validation using before/after target rectangles; not called an unrelated flake."
     }
   ],
   "resolved_source_defects": [
-    "Small-POI empty-outline crash guarded; actual switch/grid/local read passed onaea and later heads.",
-    "Second doubleclick selection after ordinary geometry expansion guarded; accepted-and-exact-Undo browser case passed oncc75."
+    {
+      "kind": "small_POI_empty_boundary_crash",
+      "verified_head_sha": "e75383dbaa1832c75e3b1686ee4edd55080ff3b6",
+      "verification": "Actual switch fine grid/local read passes with no pageerrors."
+    },
+    {
+      "kind": "candidate_second_click_retarget",
+      "verified_head_sha": "e75383dbaa1832c75e3b1686ee4edd55080ff3b6",
+      "verification": "Actual doubleclick accepts1 unit, keeps requested fineS, exact Undo."
+    }
   ],
   "prior_positive": {
     "head_sha": "cc75a3484fa0276af41ad68a8562e9ac795a0400",
@@ -85,7 +102,35 @@
       "status": "cause not established; final exact head full suite pending"
     }
   ],
-  "latest_head_sha": "32b54f032a1b7d959c232a009e9dd77ae80cfe1a",
-  "latest_ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43146039704",
-  "limits": "No independent review or full OM acceptance. UI setup failures are not product defects; negative evidence retained."
+  "latest_head_sha": "e75383dbaa1832c75e3b1686ee4edd55080ff3b6",
+  "latest_ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43147977776",
+  "limits": "No independent review or full OM acceptance. UI setup failures are not product defects; negative evidence retained.",
+  "final_outcome": "All final exact-head jobs success; bounded fine UI4/4. Full task not complete.",
+  "existing_tag_result": {
+    "status": "test_target_geometry_confirmed_and_corrected",
+    "head_sha": "e75383dbaa1832c75e3b1686ee4edd55080ff3b6",
+    "raw_target_y": [
+      562.65625,
+      1241.984375,
+      1102.984375
+    ],
+    "scrolled_target_y": [
+      562.65625,
+      540.984375,
+      540.984375
+    ],
+    "viewport_height": 1100,
+    "hit_intended_control": [
+      true,
+      true,
+      true
+    ],
+    "strict_draft_focus_document_redo_assertions": "passed",
+    "product_tag_guard_changed": false
+  },
+  "static_risk_fix": {
+    "scope": "Native color navigation raster cache effect now depends on fineActive, so switching view runs existing cleanup.",
+    "verification": "TypeScript/full CI passed; actual large fine/native raster transition remains a bounded remaining proof, not claimed independently covered."
+  },
+  "lessons": "Read existing ANSI startup lesson; reused real-world UI contract. No duplicate audit/research or heavy new series."
 }

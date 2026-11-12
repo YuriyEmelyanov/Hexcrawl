@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "base_sha": "2d929abb15a5efade40e83ae4c20880966bb99bc",
+  "head_sha": "e75383dbaa1832c75e3b1686ee4edd55080ff3b6",
+  "source": "Diff of exact run base to head; logical test() cases for Node and named manifest contract cases for browser; support harness edits are not new cases.",
+  "suites": [
+    {
+      "suite": "Node --test test/*.test.mjs",
+      "added": 1,
+      "removed": 0,
+      "modified": 0,
+      "executed": 380,
+      "passed": 380,
+      "failed": 0,
+      "scope": "Exact final head GitHub CI job130950335071, Node24.",
+      "scenario_risk": "OM06/07/11/12: H/S address, pinned draft, stale callbacks, view scale and transaction isolation.",
+      "reuse_or_new_reason": "Extends existing saveSafety real-App harness; six existing save cases cover payload, not view/draft callback contract.",
+      "skipped": 0
+    },
+    {
+      "suite": "Playwright ONE-MILE1 browser",
+      "added": 4,
+      "removed": 0,
+      "modified": 0,
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "scenario_risk": "OM02/04/05/07/08/11/14: actual fine artwork/candidate grid/local H/S, dirty exit+IME+fault/Undo, narrow RU/EN, ordinary candidate unit.",
+      "reuse_or_new_reason": "New suite reuses fixed existing road-entry-zigzags fixture and App harness; prior browser suites have no fine renderer/card/form. No duplicate generator sample series.",
+      "case_ids": [
+        "UI-grid-local-read",
+        "UI-pinned-editor-exit-and-undo",
+        "UI-responsive-390-320-RU-EN",
+        "UI-ordinary-candidate-unit"
+      ],
+      "failed": 0,
+      "source_head_sha": "e75383dbaa1832c75e3b1686ee4edd55080ff3b6"
+    },
+    {
+      "suite": "Playwright MythMaterial retainDraft parameter cases",
+      "added": 0,
+      "removed": 0,
+      "modified": 3,
+      "parameter_cases": [
+        "tag draft",
+        "parent name draft",
+        "other row tag draft"
+      ],
+      "scenario_risk": "A raw pointer coordinate for a disabled reference button can miss the button after sidebar layout/scroll changes, blurring and committing the input instead of testing the intended disabled-control guard.",
+      "reuse_or_new_reason": "Reuse the existing pointer probe: scroll intended disabled control into view before coordinates, assert elementFromPoint hits that control, preserve all strict focus/value/document/redo assertions. No product guard weakened.",
+      "source": "One shared pointer helper used by the three existing retainDraft parameter cases. Diagnostic before/after rectangles distinguish a test-target issue from an actual guard defect.",
+      "executed": 3,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "confirmed_geometry": "Pointer target top1241.98/1102.98 exceeded1100px viewport; scrolling moved to540.98 and elementFromPoint hit intended disabled control; original strict focus/redo/document assertions pass."
+    }
+  ],
+  "temporary_diagnostics": [
+    "Injected structuredClone preparation failure scoped inside browser test, not production code."
+  ],
+  "note": "Node, browser and world-random counts remain separate. CI checkout merge tree must match submitted source tree."
+}
