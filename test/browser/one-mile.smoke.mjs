@@ -4,6 +4,7 @@ import {chromium} from 'playwright';
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
+import os from 'node:os';
 import {createGenerationHarness} from '../helpers/generation-harness.mjs';
 import {prepareFineEvidenceFixture,fineEvidenceSamples,checkFineCamera,checkFineObjectsAndPng,checkFineModeCandidates} from './one-mile-evidence.mjs';
 const root=new URL('../../',import.meta.url),out=new URL('../../reports/ONE-MILE1-UI/',import.meta.url);
@@ -20,7 +21,7 @@ for(const river of fixture.map.rivers){const name=fixture.map.toponyms.names[`ri
 // Validate fixture edits before launching a browser; rivers are toponyms, not editorNames.
 await h.render().handleImportJson({target:{files:[{text:JSON.stringify(fixture)}],value:'x'}});assert.equal(h.render().createSaveData().version,15);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4195','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
-let browser,page;const errors=[],alerts=[];
+let browser,page,baselineServer,baselineDir;const errors=[],alerts=[];
 const manifest={source_head_sha:null,checkout_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),checkout_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),fixture:'road-entry-zigzags.json',screenshots:[],cases:[]};
 if(process.env.GITHUB_EVENT_PATH){const event=JSON.parse(await fs.readFile(process.env.GITHUB_EVENT_PATH));manifest.source_head_sha=event.pull_request?.head.sha??process.env.GITHUB_SHA;}
 
@@ -40,7 +41,22 @@ try{
  const lang=async next=>{if(locale===next)return;const show=button(locale==='en'?'Show language and social buttons':'Показать кнопки языка и соцсетей');if(await show.count())await show.click();await button(locale==='en'?'Переключить на русский':'Switch to English').click();locale=next;};
  const step=page.locator('[data-fine-step]');
  await page.locator('input[type=file]').setInputFiles({name:'one-mile.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});await step.waitFor();await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
- assert.match(await page.locator('details.export-menu small').textContent(),/JSON v15/);await shot('desktop-6.jpg');await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
+ assert.match(await page.locator('details.export-menu small').textContent(),/JSON v15/);await shot('desktop-6.jpg');
+ // P04: same actual fixture against unchanged pre-correction native6 build.
+ const baselineSha='d41911b8d7c2248f115b182923350dc8d08c0a48';
+ try{execFileSync('git',['cat-file','-e',baselineSha],{cwd:root,stdio:'ignore'});}catch{execFileSync('git',['fetch','--depth=1','origin',baselineSha],{cwd:root,stdio:'inherit'});}
+ baselineDir=await fs.mkdtemp(os.tmpdir()+'/one-mile-six-');const base=baselineDir+'/source';
+ execFileSync('git',['worktree','add','--detach',base,baselineSha],{cwd:root,stdio:'inherit'});await fs.symlink(fileURLToPath(new URL('node_modules',root)),base+'/node_modules','dir');
+ execFileSync(process.execPath,[base+'/node_modules/vite/bin/vite.js','build'],{cwd:base,stdio:'inherit'});
+ baselineServer=spawn(process.execPath,[base+'/node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4196','--strictPort'],{cwd:base,stdio:['ignore','pipe','inherit']});
+ await new Promise((resolve,reject)=>{let text='';const timer=setTimeout(()=>reject(Error(text)),15000);baselineServer.stdout.on('data',b=>{text+=b;if(text.includes('Local:')){clearTimeout(timer);resolve();}});baselineServer.on('error',reject);});
+ const baselinePage=await browser.newPage({viewport:{width:1500,height:1000}});await baselinePage.route(/mc\.yandex/,r=>r.abort());await baselinePage.goto('http://127.0.0.1:4196/');await baselinePage.locator('input[type=file]').setInputFiles({name:'same-fine.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
+ await baselinePage.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready'&&!document.querySelector('.controls--transfer > button').disabled);
+ const baselineProfiles=[];
+ for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>document.fonts.ready);await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
+ const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true});assert.ok(before.equals(after),'P04 native6 pixel-identical on same world '+width);baselineProfiles.push({width,pixelIdentical:true});}
+ manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});
+ await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
  assert.equal(await page.locator('polygon.hex[data-hex-key]').count(),0,'no source-six grid under the fine grid');
  const keys=await page.locator('[data-fine-key]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-key'))),occupied=new Set(keys);
  assert.ok(keys.length>100);const candidates=await page.locator('[data-fine-candidate]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-candidate')));assert.ok(candidates.length);
@@ -94,6 +110,6 @@ try{
 }catch(error){manifest.status='failed';manifest.error=String(error);manifest.pageErrors=errors;manifest.alerts=alerts;
  if(page){manifest.diagnostics=await page.evaluate(()=>({step:document.querySelector('[data-fine-step]')?.value,fineWorld:document.querySelectorAll('[data-fine-world]').length,finePanel:document.querySelectorAll('[data-fine-panel]').length,clicks:window.__fineClicks,body:document.body.innerText.slice(0,4000)}));await page.screenshot({path:new URL('failure.jpg',out).pathname,type:'jpeg',quality:75,fullPage:true});}
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));throw error;}
-finally{await browser?.close();server.kill('SIGTERM');
+finally{await browser?.close();baselineServer?.kill();if(baselineDir){try{execFileSync('git',['worktree','remove','--force',baselineDir+'/source'],{cwd:root,stdio:'ignore'});}catch{}await fs.rm(baselineDir,{recursive:true,force:true});}server.kill('SIGTERM');
  console.log('ONE_MILE_UI_RESULT '+JSON.stringify(manifest));
 }
