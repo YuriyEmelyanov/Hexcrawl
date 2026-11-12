@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "event_id": "2026-11-12-research-stop-reason-051643",
+  "kind": "researcher_instruction_update",
+  "created_at": "2026-11-12T05:17:20.300Z",
+  "source_user_request": "Если в инструкцию записать. Чтобы выводилась причина остановки, поможет?",
+  "result": "Added bounded stop-reason reporting to beginning of saved automation prompt and early contract section.",
+  "scope": "HX-RSR-001 operational instructions only",
+  "policy_text": "Диагностика запуска и остановки HX-RSR-001 — 12.11.2026.\nПосле минимальной проверки свежего SHA, claims и разрешённого scope, до большого чтения/браузерной проверки, сохрани компактный started marker с run_id, временем, исходным SHA и первым этапом в собственном пути agent-work/research/automation-health/<run_id>-started.json через scoped claim/CAS. Существующая начальная запись claim может служить marker, если содержит эти поля. Не перехватывай чужой claim ради диагностики. Если запись недоступна или CAS конфликтует, допускается одно перечитывание/повтор; сообщи в чате, что marker не сохранён, и продолжай достижимую разрешённую работу. Marker не новый блокирующий gate.\nПри полученной ошибке или остановке без выполненного условия завершения включи в итог/checkpoint: status; run_id; stage; last_successful_step; failed_operation (инструмент, действие и безопасный локатор); observed_error (дословный текст с удалёнными секретами); error_code/request_id/trace_id только если возвращены; stop_reason; cause_status=confirmed|unknown; сохранённые результаты; точное продолжение; needs_owner_action и какое именно действие требуется. Отделяй наблюдаемую ошибку от предполагаемой первопричины. Если доступен только текст «approval request is no longer active», так и запиши; не приписывай его GitHub или отсутствию согласия без evidence. При автоматическом отклонении укажи действие и возвращённую причину.\nПокажи владельцу кратко: «Остановился на …; получено …; сохранено …; дальше …». Если GitHub недоступен, выведи эти сведения в текущий чат и явно обозначь несохранённое; не повторяй просьбу о уже выданном смысловом разрешении. Обязательные технические подтверждения платформы соблюдать; обход запрещён.\nОбычно достаточно одного started marker и одного результата/checkpoint на запуск; ошибки объединяй в итог, не журналируй каждый вызов. Перед существенным риском зависания кратко назови операцию в commentary и сохрани незаменимый результат/продолжение, если он иначе потеряется. Не превращай диагностику в самостоятельную бесконечную работу и не прекращай другую достижимую часть исследования из-за одной ошибки.\nНе отключай расписание из-за ошибки/завершения; сохраняй прежние правила восстановления и start/end checks. Не объявляй включённое расписание или recorded_status=completed доказательством выполненного исследования.\nПри жёстком обрыве платформы выполнение этого пункта может не состояться. Следующий запуск сравнивает marker, итог и записанный run_details; отсутствие итога означает «причина обрыва unknown», а не доказанное зависание конкретного инструмента или разрешение перехватить claim.",
+  "contract_ref": "agent-work/research/contract.md",
+  "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+  "automation_prompt_updated": true,
+  "schedule_unchanged": true,
+  "start_health": [
+    {
+      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "is_enabled": true
+    },
+    {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "is_enabled": true
+    }
+  ],
+  "validation": {
+    "prompt_update_response_exact_match": true,
+    "readback_pending": true,
+    "runtime_failure_reporting_tested": false
+  },
+  "limitations": [
+    "Cannot emit a reason if platform terminates execution before instructions or error handling run.",
+    "Error text alone does not establish root cause; unknown must stay explicit.",
+    "Marker failure is not a new research gate; foreign claims remain protected."
+  ],
+  "unchanged": [
+    "Active ranking/method/numbers",
+    "Research goal and existing checkpoint/state",
+    "Main-team queue and instructions",
+    "GitHub permission settings",
+    "Automation schedule"
+  ],
+  "next_step": "On next real researcher execution, write/reuse a scoped started marker and include any returned blocking error in result/chat. Durable run recovery is not claimed by this instruction edit."
+}
