@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-12T0800-programmer-ONE-MILE1",
+  "run_id": "2026-11-12T1000-reviewer-ONE-MILE1",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "programmer_complete_review_ready_with_declared_observation",
+  "status": "review_changes_requested",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,10 +40,9 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
-    "status": "latest_written_last_after_material_result_readback",
-    "materials_commit_sha": "f30dba1b13ec6c9ba222200742096c0ff04bd107",
-    "automation_end_checked_at": "2026-11-12T08:58:41Z",
-    "conflict_policy": "CAS non-force; own claim only; foreign routing fields preserved"
+    "status": "latest_written_last_after_result_readback",
+    "materials_commit_sha": "7313dd8c46a73486eff54eefedd743bd7dafc4b2",
+    "conflict_policy": "Non-force CAS; preserve foreign claims/results/research"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -51,15 +50,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "every_2_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1.md",
   "spec_version": "OM-1.0",
-  "result_path": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
+  "result_path": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "Проверяющий независимо проверяет весь PR503 на точном SHA 2ad03ad256e824a1ee07cef8e0d90a75077ef75e по OM-1.0/OM01–14: повторяет необходимые проверки, осматривает actual UI/PNG, оценивает Knave-продолжение, озёрную геометрию, ручные охваты и временный6-мильный progress во время Mythic. Использует свежего отдельного агента, фиксирует test-governance и score_assessment1.2 по13 criterion_id. Старое принятие496 не переносится. Затем заключение или конкретные замечания программисту; публикация только по отдельному решению владельца.",
+  "next_step": "Программист исправляет OM-REV-001 в PR503; затем передаёт новый SHA на независимую проверку. Публикация остаётся не разрешена.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -107,14 +106,14 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/ONE-MILE1-completion-0800",
+  "evidence_path": "agent-work/evidence/review-ONE-MILE1-2ad-1000",
   "branch_name": "agent/hx-bl-051-one-mile1",
   "pr": 503,
   "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
   "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
-  "checks_status": "all3_required_jobs_success",
+  "checks_status": "CI_pass_independent_review_changes_requested",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43185043580",
-  "review_verdict": "pending_exact_whole_SHA_independent_review",
+  "review_verdict": "changes_requested",
   "role_selection_mode": "approved_queue_readiness_explicit_owner_priority",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -214,8 +213,8 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": null,
-  "role_selection_reason": "Own0800 claim safely continued approved ONE-MILE1/PR503 from prior0603 checkpoint. Remaining OM06/09/10/14 implementation/evidence precedes independent review; no duplicate/foreign claim resumed.",
+  "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
+  "role_selection_reason": "Exact PR5032ad review_ready, all required CI and no active051 claim; independent fresh agent required by owner and used.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -238,28 +237,47 @@
   "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-12T08:00:23Z",
+      "checked_at": "2026-11-12T09:59:35Z",
       "status": "checked",
       "method": "automations.peek",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-12T08:58:41Z",
-      "status": "checked",
+      "checked_at": "2026-11-12T10:06:55Z",
       "method": "automations.peek",
+      "status": "checked",
       "is_enabled": true
     },
-    "restoration": {
-      "performed": false,
-      "reason": "Both actual observations enabled; no update required."
-    },
+    "restoration_performed": false,
     "errors": [],
-    "scope": "Point-in-time observations only; no guarantee against a later service disable. Schedule unchanged."
+    "limitation": "Point-in-time actual observations; no guarantee of future service state; schedule/instructions unchanged."
   },
-  "open_findings": [],
-  "current_review_score_assessment_status": "pending_independent_reviewer",
+  "open_findings": [
+    {
+      "id": "OM-REV-001",
+      "severity": "P2",
+      "status": "confirmed",
+      "criteria": [
+        "OM14",
+        "OM06"
+      ],
+      "file": "src/App.tsx",
+      "line": 14095,
+      "related_lines": [
+        16079,
+        16794,
+        17150
+      ],
+      "title": "Mythic fine-candidate generation blanks the accepted map during busy",
+      "reproduction": "At320px on accepted fine1 map, choose Mythic Bastionland and activate a legal fine candidate. While kingdom progress runs, viewport is blank, selector disabled6; after completion fine1returns.",
+      "actual": "startKingdom removes physicalGrid to defer final POI binding; fineActive immediately becomes false and native artwork/selector render while previous fine zoom/framing survives. Original screenshot independently viewed at /tmp/8-ui6/narrow-320-busy-kingdom.jpg (progress33/144). Temporary harness separately confirms physical true/view1/scale6→physical false/viewnull/scale6 while same1 accepted region remains.",
+      "expected": "OM14 explicitly requires map visibility in busy; accepted readonly geography should remain visible with coherent view/focus while provisional kingdom builds.",
+      "requested_change": "Keep accepted readonly display and coherent camera/view state independently of provisional generator reconciliation; do not prematurely bind newPOI. Extend existing mode-candidate UI case to assert map visible/framing during progress at320/390, final fine1 and exact UndoRedo/refusal unchanged. No new10k/500map series/newduplicate case needed.",
+      "not_claimed": "No accepted-data loss inferred. JSON/PNG handlers guard documentBusy even though menu appears enabled. OM06 alone does not explicitly forbid a temporary coarse progress view; failure is blank map under OM14."
+    }
+  ],
+  "current_review_score_assessment_status": "insufficient_evidence",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -680,7 +698,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42592886004",
   "next_task_execution_allowed": true,
   "last_release_pr": 497,
-  "last_material_result_path": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
+  "last_material_result_path": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "bounded_AB_ready_Q01_pending",
   "previous_task_release_approval": {
@@ -746,8 +764,8 @@
     "completed_at": "2026-10-27T12:12:46.356Z"
   },
   "review_request": null,
-  "reviewed_sha": null,
-  "current_review_score_assessment_ref": null,
+  "reviewed_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+  "current_review_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -847,7 +865,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-12T08:58:41Z",
+  "updated_at": "2026-11-12T10:06:55Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -934,26 +952,22 @@
     }
   ],
   "independent_reviewer_automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "checked_at": "2026-11-12T10:00:52Z",
+      "method": "automations.peek",
       "is_enabled": true,
-      "updated_at": "2026-11-11T08:26:59.744015+00:00",
-      "last_run_time": "2026-11-11T08:26:37.465364+00:00",
-      "checked_at": null,
-      "time_status": "not_recorded",
-      "method": "automations.peek"
+      "status": "checked"
     },
     "end": {
-      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "checked_at": "2026-11-12T10:05:10Z",
+      "method": "automations.peek",
       "is_enabled": true,
-      "updated_at": "2026-11-11T08:26:59.744015+00:00",
-      "last_run_time": "2026-11-11T08:26:37.465364+00:00",
-      "checked_at": null,
-      "time_status": "not_recorded",
-      "method": "automations.peek"
+      "status": "checked"
     },
-    "mutated_by_reviewer": false,
-    "timestamp_note": "Actual peek receipt times were not retained. updated_at and last_run_time are automation state timestamps, not check receipt times. No receipt time is inferred."
+    "restoration_performed": false,
+    "errors": [],
+    "scope": "Point-in-time observations; no schedule/prompt/update performed."
   },
   "previous_reviewed_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
   "test_governance": {
@@ -987,140 +1001,132 @@
   },
   "test_change_summary": {
     "schema_version": 1,
-    "base_sha": "92fbcad47ada6db74f08db271acc0489fc8cb06a",
+    "base_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
     "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-    "source": "Exact base/head test/saveSafety.test.mjs test() cases and five manifest case IDs in test/browser/one-mile.smoke.mjs + one-mile-evidence.mjs. Helper files/functions, six camera profiles, three modes, four PNGs and temporary probes are not extra test cases.",
-    "suites": [
-      {
-        "suite": "Node test/*.test.mjs",
-        "base_cases": 382,
-        "head_cases_expected": 382,
-        "added": 0,
+    "scope": "Current reviewer source changes",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "source": "Reviewer exact worktree unchanged; no permanent tests edited.",
+    "reviewed_package": {
+      "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+      "node": {
+        "added": 19,
         "removed": 0,
-        "modified": 1,
-        "scenario_risk": "OM05/13: existing public10Knave→15 case now continues through one real fine-candidate unit, preserves old content/IDs and exact Undo/Redo.",
-        "reuse_or_new_reason": "Extended the existing Knave roundtrip case; a second similar import case would duplicate coverage. Its old import-only path missed premature validation of newly generated owners.",
-        "sensitivity": "Extended case fails against base App fd702460e626fb8981dc0387c11cd5f07c112425; after moving the complete validation behind fine reconciliation it passes.",
-        "head_cases": 382
-      },
-      {
-        "suite": "Fine browser manifest cases within existing test:browser script sequence",
-        "base_cases": 4,
-        "head_cases_expected": 5,
-        "added": 1,
-        "removed": 0,
-        "modified": 4,
-        "changes": [
-          {
-            "id": "UI-grid-local-read",
-            "change": "expanded",
-            "scenario_risk": "OM06/07: initial empty read state, closed camera1→6→1 on1500/390/320, rotated/unrotated, exact scale/world invariance.",
-            "reuse_or_new_reason": "Existing same-world grid/style case owns these view changes."
-          },
-          {
-            "id": "UI-pinned-editor-exit-and-undo",
-            "change": "expanded",
-            "scenario_risk": "OM12: Save/Discard/Stay/Escape plus actual error capture; existing IME, fault and Undo assertions retained.",
-            "reuse_or_new_reason": "Same pinned draft lifecycle; no separate duplicate editor test."
-          },
-          {
-            "id": "UI-responsive-390-320-RU-EN",
-            "change": "expanded",
-            "scenario_risk": "OM14: English/Russian actual edit/read, error and locked import,44px controls, keyboardSpace and real emulated touch, no overflow.",
-            "reuse_or_new_reason": "Extends the two existing narrow profiles on the same page/world."
-          },
-          {
-            "id": "UI-ordinary-candidate-unit",
-            "change": "expanded",
-            "scenario_risk": "OM05/12: native Classic, Knave and whole Mythic unit, busy state, stable target, exact one-unit Undo/Redo.",
-            "reuse_or_new_reason": "Reuses existing ordinary-candidate scenario and only adds two declared mode profiles; no generation series."
-          },
-          {
-            "id": "UI-fine-export-local-features",
-            "change": "added",
-            "scenario_risk": "OM09/10/14: local road/trail/river/crossing/waterPOI, both parts of one explicitly conditional3mi POI and empty same-source neighbour; genuine clean PNG in tiles/emoji/color preserves exact live lines and lake contours, excludes editor nodes, byte-identical on hover.",
-            "reuse_or_new_reason": "Native six-mile PNG/navigation scripts do not cover the separate fine renderer or local card pipeline. One new case shares the existing page/world and export hook. It caught missing fine lake shape/incorrect Sea label; no new browser session/world sampling."
-          }
-        ],
-        "head_cases": 5
-      },
-      {
-        "suite": "World-random browser",
-        "added": 0,
-        "removed": 0,
-        "modified": 0,
-        "unit": "one unchanged script, profiles remain separate from Node"
-      }
-    ],
-    "temporary_diagnostics": [
-      {
-        "ref": "agent-work/evidence/ONE-MILE1-completion-0800/spatial-probe.json",
-        "scope": "four hand-authored analytic geometry profiles (edge/vertex/interior/outside, stable-ID dedup and local attachment/POI ownership), not permanent cases or independent reviewer work"
-      },
-      {
-        "ref": "agent-work/evidence/ONE-MILE1-completion-0800/knave-before.json",
-        "scope": "bounded imported fixed-world Knave action; harness initial42 is not imported generation master423493684; not permanent count"
-      }
-    ],
-    "runs": {
-      "focused_node": {
-        "executed": 9,
-        "passed": 9,
-        "failed": 0,
-        "skipped": 0,
-        "duration_ms": 30800.412209
-      },
-      "typescript": "passed",
-      "full_node": {
-        "executed": 382,
-        "passed": 382,
-        "failed": 0,
-        "skipped": 0,
-        "cancelled": 0,
-        "duration_ms": 592373.931293,
-        "source": "agent-work/evidence/ONE-MILE1-completion-0800/ci-check.log"
+        "modified_existing": 0,
+        "detail": "10 new pure oneMile cases +9 appended real-App saveSafety cases. Other Node cases/source bodies unchanged. Do not count .test( regex or helpers as cases.",
+        "base_cases_expected": 363,
+        "head_cases_ci": 382,
+        "independently_executed": 58,
+        "base_count_method": "382CI head minus19 registered additions; full baseline execution not claimed"
       },
       "browser": {
-        "script_sequence": {
-          "executed": 9,
-          "passed": 9,
+        "new_script": 1,
+        "new_fine_logical_cases": 5,
+        "existing_lifecycle_scenario_modified": 1,
+        "helper_files": 1,
+        "note": "5manifestIDs cover grid/read,editor, responsive,localPNG,ordinaryunit; widths/modes/camera/PNGprofiles not extra cases. Existing myth material disabled-pointer helper strengthened to assert intended visible hit."
+      },
+      "necessity": "New pure fine geometry/address seam has no main predecessor;10 cases cover new boundary logic, while9 saveSafety additions reuse existing real-App harness for new version/transaction paths. Browser new fine renderer needs same-world PNG/local selection evidence; native6 scripts cannot cover it. Helpers/runners not added to logical test totals. Existing myth pointer change improves intended hit fidelity. No permanent review tests added.",
+      "gap": "BusyMythic profile records step6/finefalse but does not assert visible map; this is a missing assertion in existing case, not reason for new duplicate permanent case."
+    },
+    "runs": {
+      "independent": {
+        "focused": {
+          "command": "node --test test/oneMile.test.mjs test/saveSafety.test.mjs",
+          "node": "24.22.1",
+          "executed": 58,
+          "passed": 58,
           "failed": 0,
           "skipped": 0,
-          "source": "successful chained npm run test:browser command"
+          "cancelled": 0,
+          "duration_ms": 33697.962496,
+          "log": "/workspace/scratch/d2682ada47cd/review-focused.log"
         },
-        "fine_logical_cases": {
-          "executed": 5,
-          "passed": 5,
-          "failed": 0,
-          "skipped": 0,
-          "ids": [
-            "UI-grid-local-read",
-            "UI-pinned-editor-exit-and-undo",
-            "UI-responsive-390-320-RU-EN",
-            "UI-fine-export-local-features",
-            "UI-ordinary-candidate-unit"
+        "compile": {
+          "command": "npx tsc --noEmit && npm run build",
+          "exit_code": 0,
+          "typescript": "passed",
+          "vite": "5.4.21",
+          "modules": 95,
+          "build_seconds": 9.11,
+          "warnings": [
+            "Large JS chunk; no compile/build error"
           ]
         },
-        "profiles_separate": {
-          "camera": 6,
-          "png": 4,
-          "narrow_touch": 2,
-          "ordinary_modes": 3
+        "browser": {
+          "command": "chromium.launch({headless:true,args:['--no-sandbox']})",
+          "status": "unavailable",
+          "error": "Executable does not exist /home/agent/.cache/ms-playwright/chromium_headless_shell-1234/chrome-headless-shell-linux64/chrome-headless-shell",
+          "independent_browser_pass": false
         },
-        "source": "agent-work/evidence/ONE-MILE1-completion-0800/ci-browser.log"
+        "probe": {
+          "method": "Temporary real App harness; create one fallback tract, preview/apply fine, switch1, select Mythic, pick first candidate; no advanceKingdom",
+          "target": {
+            "q": -11,
+            "r": -4
+          },
+          "before": {
+            "physical": true,
+            "view": 1,
+            "scale": 6,
+            "regions": 1
+          },
+          "during": {
+            "physical": false,
+            "view": null,
+            "scale": 6,
+            "regions": 1,
+            "job": true
+          },
+          "status": "reproduced"
+        },
+        "aborted_discovery": {
+          "commands": [
+            "node --test --test-name-pattern='^$' test/*.test.mjs (base)",
+            "node --test --test-name-pattern='^$' test/*.test.mjs (head)"
+          ],
+          "status": "cancelled_exit130",
+          "reason": "Intended registration-only discovery began executing ordinary cases in this environment; stopped rather than repeat full suites. No aggregate count/pass inferred.",
+          "logs": [
+            "/workspace/scratch/d2682ada47cd/review-base-discovery.log",
+            "/workspace/scratch/d2682ada47cd/review-head-discovery.log"
+          ]
+        }
       },
-      "world_random": {
-        "script": {
-          "executed": 1,
-          "passed": 1,
+      "official_ci": {
+        "run_id": 43185043580,
+        "jobs": [
+          {
+            "id": 131070135682,
+            "name": "check",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 131070135992,
+            "name": "world-random",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 131070136018,
+            "name": "browser",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ],
+        "node": {
+          "executed": 382,
+          "passed": 382,
           "failed": 0,
           "skipped": 0
         },
-        "source": "agent-work/evidence/ONE-MILE1-completion-0800/ci-world-random.log",
-        "note": "Unchanged script; its seed/mode and AC profiles are not added to Node or fine logical-case count."
+        "merge_tree_equals_source": true
       }
     },
-    "limitations": "Finite input profiles only. Case count measures change transparency, not product progress or completeness; quality/width assessed independently before release."
+    "temporary_reviewer_diagnostics": "one real-App busy-state probe; separate from58 Node; aborted discovery not counted"
   },
   "review_url": null,
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -1168,7 +1174,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/ONE-MILE1-completion-0800",
+  "evidence_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1485,7 +1491,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1623,27 +1629,31 @@
     "stage_id": "ONE-MILE1",
     "pr": 503,
     "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-    "status": "not_requested_pending_independent_review",
+    "status": "not_ready_changes_requested",
     "release_approved": false
   },
   "current_risk_findings": [
     {
-      "id": "ONE-MILE1-MYTHIC-BUSY-VIEW-0800",
-      "status": "observed_current_behavior_independent_spec_disposition_required",
-      "confirmed_behavior": true,
-      "confirmed_product_defect": null,
-      "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+      "id": "OM-REV-001",
+      "severity": "P2",
+      "status": "confirmed",
       "criteria": [
-        "OM06",
-        "OM14"
+        "OM14",
+        "OM06"
       ],
-      "evidence": [
-        "agent-work/evidence/ONE-MILE1-completion-0800/actual/narrow-320-busy-kingdom.jpg",
-        "agent-work/evidence/ONE-MILE1-completion-0800/actual/manifest.json"
+      "file": "src/App.tsx",
+      "line": 14095,
+      "related_lines": [
+        16079,
+        16794,
+        17150
       ],
-      "behavior": "While ordinary Mythic kingdom builds, fine layer is deferred, UI temporarily shows disabled6-mile progress and captured320 viewport is blank; after whole-unit acceptance fine1 returns with exact Undo/Redo.",
-      "next_role": "reviewer",
-      "required_result": "Independently determine acceptance or concrete programmer correction against OM06/14. No claim of uninterrupted map visibility in busy."
+      "title": "Mythic fine-candidate generation blanks the accepted map during busy",
+      "reproduction": "At320px on accepted fine1 map, choose Mythic Bastionland and activate a legal fine candidate. While kingdom progress runs, viewport is blank, selector disabled6; after completion fine1returns.",
+      "actual": "startKingdom removes physicalGrid to defer final POI binding; fineActive immediately becomes false and native artwork/selector render while previous fine zoom/framing survives. Original screenshot independently viewed at /tmp/8-ui6/narrow-320-busy-kingdom.jpg (progress33/144). Temporary harness separately confirms physical true/view1/scale6→physical false/viewnull/scale6 while same1 accepted region remains.",
+      "expected": "OM14 explicitly requires map visibility in busy; accepted readonly geography should remain visible with coherent view/focus while provisional kingdom builds.",
+      "requested_change": "Keep accepted readonly display and coherent camera/view state independently of provisional generator reconciliation; do not prematurely bind newPOI. Extend existing mode-candidate UI case to assert map visible/framing during progress at320/390, final fine1 and exact UndoRedo/refusal unchanged. No new10k/500map series/newduplicate case needed.",
+      "not_claimed": "No accepted-data loss inferred. JSON/PNG handlers guard documentBusy even though menu appears enabled. OM06 alone does not explicitly forbid a temporary coarse progress view; failure is blank map under OM14."
     }
   ],
   "model_activation_status": "active_routes_verified",
@@ -1841,7 +1851,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-12T0204-programmer-ONE-MILE1.json",
-  "handoff_path": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+  "handoff_path": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "ui_actual_preview": {
     "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
     "manifest_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/ui-manifest.json",
@@ -2221,7 +2231,7 @@
     "independent_review_pending": true,
     "presentation_recorded_at": "2026-11-12T08:58:41Z"
   },
-  "review_result_ref": "agent-work/evidence/ONE-MILE1-2043/spec-review.json",
+  "review_result_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/independent-review.json",
   "previous_review_score_assessment_ref": null,
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2329,10 +2339,10 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-completion-0800/test-change-summary.json",
+  "test_change_summary_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-completion-0800/programmer-score-evidence1.2.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
-  "review_evidence_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650",
+  "completed_claim_result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
+  "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000",
   "github_review_state": "COMMENT; operational acceptance by fresh independent non-implementer. Same GitHub identity owns PR; formal self-approval unavailable.",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
   "owner_visual_correction": {
@@ -2425,61 +2435,54 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "PF2-BATCH1-lifecycle-autofill-UI",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-11T0356-PF2-BATCH1-lifecycle-UI.json",
-  "authorization_status": "approved_existing_scope_independent_review_next; no publication permission",
-  "completed_at": "2026-11-12T08:58:41Z",
+  "authorization_status": "existing approved task; no new start/design approval; release not authorized",
+  "completed_at": "2026-11-12T10:06:55Z",
   "score_changed": false,
   "next_stage_id": "ONE-MILE1",
   "score_evidence_updated": true,
   "current_stage_id": "ONE-MILE1",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
+  "review_ready": false,
   "current_stage_ui_status": "actual_exact_SHA_shown_independent_review_pending",
   "completed_claim": {
     "schema_version": 1,
-    "run_id": "2026-11-12T0800-programmer-ONE-MILE1",
+    "run_id": "2026-11-12T1000-reviewer-ONE-MILE1",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "role": "programmer",
-    "status": "completed_programmer_handoff",
+    "role": "reviewer",
+    "status": "completed_changes_requested",
     "execution_running": false,
-    "started_at": "2026-11-12T08:00:23Z",
-    "base_sha": "92fbcad47ada6db74f08db271acc0489fc8cb06a",
-    "pr": 503,
-    "scope": "Remaining camera/PNG/local object and UI-state acceptance, bounded evidence on final separate package.",
+    "started_at": "2026-11-12T09:59:35Z",
     "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-    "checkpoint_ref": "agent-work/checkpoints/2026-11-12T0800-programmer-ONE-MILE1.json",
-    "verification_status": "CI_pending",
-    "completed_at": "2026-11-12T08:58:41Z",
-    "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
-    "result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
-    "review_ready": true,
+    "pr": 503,
+    "scope": "Independent whole-SHA review OM01–14, bounded verification and score_assessment1.2; no source/main/release changes.",
+    "completed_at": "2026-11-12T10:06:55Z",
+    "result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
       "start": {
-        "checked_at": "2026-11-12T08:00:23Z",
+        "checked_at": "2026-11-12T09:59:35Z",
         "status": "checked",
         "method": "automations.peek",
         "is_enabled": true
       },
       "end": {
-        "checked_at": "2026-11-12T08:58:41Z",
-        "status": "checked",
+        "checked_at": "2026-11-12T10:06:55Z",
         "method": "automations.peek",
+        "status": "checked",
         "is_enabled": true
       },
-      "restoration": {
-        "performed": false,
-        "reason": "Both actual observations enabled; no update required."
-      },
+      "restoration_performed": false,
       "errors": [],
-      "scope": "Point-in-time observations only; no guarantee against a later service disable. Schedule unchanged."
+      "limitation": "Point-in-time actual observations; no guarantee of future service state; schedule/instructions unchanged."
     }
   },
-  "evidence_commit_sha": "f30dba1b13ec6c9ba222200742096c0ff04bd107",
-  "finding_ids": [],
+  "evidence_commit_sha": "7313dd8c46a73486eff54eefedd743bd7dafc4b2",
+  "finding_ids": [
+    "OM-REV-001"
+  ],
   "current_release_package_ref": "agent-work/handoffs/2026-11-11-PR496-release-ready.json",
   "current_stage_ui_preview": {
     "version": "FILL-UI1",
@@ -4085,8 +4088,8 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "programmer_complete_independent_review_pending",
-  "current_stage_review_status": "ready_for_independent_exact_SHA_review",
+  "current_stage_status": "review_changes_requested",
+  "current_stage_review_status": "changes_requested",
   "accepted": false,
   "full_UI_pending": true,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -4326,16 +4329,12 @@
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": {
-    "all3_required_jobs": "success",
-    "node": {
-      "executed": 382,
-      "passed": 382,
-      "failed": 0,
-      "skipped": 0
-    },
-    "browser_scripts": 9,
-    "fine_logical_cases": 5,
-    "world_random_script": "passed_separately"
+    "official_CI": "3_required_jobs_success",
+    "official_node": "382/382",
+    "independent_node": "58/58",
+    "independent_typescript": "passed",
+    "independent_build": "passed",
+    "independent_browser": "unavailable; original verified artifacts inspected"
   },
   "full_E5_UI_pending": true,
   "materials_commit_sha": "b507cead9d9cf315df8d2faced9d6b6a1ca9c106",
@@ -4934,47 +4933,20 @@
   },
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
-    "run_id": "2026-11-12T0800-programmer-ONE-MILE1",
+    "run_id": "2026-11-12T1000-reviewer-ONE-MILE1",
+    "role": "reviewer",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "role": "programmer",
-    "status": "programmer_complete_review_ready_with_declared_observation",
+    "status": "completed_changes_requested",
     "execution_running": false,
+    "result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
     "claim_ref": null,
-    "completed_claim_ref": "agent-work/claims/2026-11-12T0800-programmer-ONE-MILE1.json",
-    "result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+    "completed_claim_ref": "agent-work/claims/2026-11-12T1000-reviewer-ONE-MILE1.json",
     "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-    "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
-    "next_role": "reviewer",
-    "next_step": "Проверяющий независимо проверяет весь PR503 на точном SHA 2ad03ad256e824a1ee07cef8e0d90a75077ef75e по OM-1.0/OM01–14: повторяет необходимые проверки, осматривает actual UI/PNG, оценивает Knave-продолжение, озёрную геометрию, ручные охваты и временный6-мильный progress во время Mythic. Использует свежего отдельного агента, фиксирует test-governance и score_assessment1.2 по13 criterion_id. Старое принятие496 не переносится. Затем заключение или конкретные замечания программисту; публикация только по отдельному решению владельца.",
-    "review_ready": true,
-    "independent_accepted": false,
-    "full_task_complete": false,
-    "release_authorized": false,
-    "observation_ref": "agent-work/evidence/ONE-MILE1-completion-0800/checks.json#observations",
-    "automation_health": {
-      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
-      "start": {
-        "checked_at": "2026-11-12T08:00:23Z",
-        "status": "checked",
-        "method": "automations.peek",
-        "is_enabled": true
-      },
-      "end": {
-        "checked_at": "2026-11-12T08:58:41Z",
-        "status": "checked",
-        "method": "automations.peek",
-        "is_enabled": true
-      },
-      "restoration": {
-        "performed": false,
-        "reason": "Both actual observations enabled; no update required."
-      },
-      "errors": [],
-      "scope": "Point-in-time observations only; no guarantee against a later service disable. Schedule unchanged."
-    }
+    "next_role": "programmer",
+    "next_step": "Программист исправляет OM-REV-001 в PR503; затем передаёт новый SHA на независимую проверку. Публикация остаётся не разрешена.",
+    "release_authorized": false
   },
   "latest_concurrent_worker_observation": {
     "run_id": "2026-11-04-developer-E5-active-worker-observation-1800",
@@ -6221,7 +6193,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
+  "result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -6914,7 +6886,7 @@
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MC1-EN.json"
   },
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
-  "next_task_handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+  "next_task_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
     "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
     "status": "published_verified_score_completed",
@@ -6963,8 +6935,8 @@
   "private_tree_sha": null,
   "current_private_package": null,
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-12T0603-ONE-MILE1-completion.json",
-  "review_request_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
-  "programmer_complete": true,
+  "review_request_ref": null,
+  "programmer_complete": false,
   "current_programmer_result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
@@ -6984,16 +6956,11 @@
     ],
     "actual_UI_shown_in_chat": true
   },
-  "fix_handoff_ref": "agent-work/handoffs/2026-11-11T0104-reviewer-TABLES1-6d5c9f4-fix.json",
-  "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
+  "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
+  "role": "reviewer",
+  "latest_result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
   "checks": {
     "run_id": 43185043580,
-    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43185043580",
-    "checkout_sha": "55f1cc3a4cef5d055128d8a720e3959642b35f09",
-    "checkout_tree": "e126282258e805cee851a8274fd645810a2e2f2d",
-    "source_tree_equal": true,
-    "all_required_success": true,
     "jobs": [
       {
         "id": 131070135682,
@@ -7014,15 +6981,17 @@
         "conclusion": "success"
       }
     ],
-    "optional_HX_FB_001": {
-      "run_id": 43185043591,
-      "status": "skipped",
-      "counts_as_pass": false
-    }
+    "node": {
+      "executed": 382,
+      "passed": 382,
+      "failed": 0,
+      "skipped": 0
+    },
+    "merge_tree_equals_source": true
   },
-  "score_assessment_status": "pending_independent_reviewer_model1.2",
-  "review_report_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/independent-review.json",
-  "reviewed_public_sha": null,
+  "score_assessment_status": "insufficient_evidence",
+  "review_report_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/independent-review.json",
+  "reviewed_public_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
   "closed_findings": [
     "KNC-REV-001",
     {
@@ -7600,8 +7569,8 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
-  "current_stage_score_assessment_status": "pending_independent_reviewer_model1.2",
+  "current_role_result": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
+  "current_stage_score_assessment_status": "insufficient_evidence_model1.2",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-completion-0800/actual/manifest.json",
   "execution_running": false,
   "latest_PR495_release": {
@@ -8057,11 +8026,11 @@
     "Scribd_uploaded": false
   },
   "task_id": "HX-BL-051",
-  "review_completed": false,
-  "release_readiness": "not_ready_independent_review_and_owner_release_permission_required",
+  "review_completed": true,
+  "release_readiness": "not_ready_confirmed_defect_and_owner_permission_missing",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -8110,8 +8079,8 @@
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
   "local_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-  "checks_evidence_ref": "agent-work/evidence/ONE-MILE1-completion-0800/checks.json",
-  "execution_status": "completed_programmer_handoff",
+  "checks_evidence_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/root-crosscheck.json",
+  "execution_status": "review_completed_changes_requested",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8247,47 +8216,20 @@
   "pr_head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
   "pr_updated": true,
   "execution_routing": {
-    "run_id": "2026-11-12T0800-programmer-ONE-MILE1",
+    "run_id": "2026-11-12T1000-reviewer-ONE-MILE1",
+    "role": "reviewer",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "role": "programmer",
-    "status": "programmer_complete_review_ready_with_declared_observation",
+    "status": "completed_changes_requested",
     "execution_running": false,
+    "result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
     "claim_ref": null,
-    "completed_claim_ref": "agent-work/claims/2026-11-12T0800-programmer-ONE-MILE1.json",
-    "result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+    "completed_claim_ref": "agent-work/claims/2026-11-12T1000-reviewer-ONE-MILE1.json",
     "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
-    "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
-    "next_role": "reviewer",
-    "next_step": "Проверяющий независимо проверяет весь PR503 на точном SHA 2ad03ad256e824a1ee07cef8e0d90a75077ef75e по OM-1.0/OM01–14: повторяет необходимые проверки, осматривает actual UI/PNG, оценивает Knave-продолжение, озёрную геометрию, ручные охваты и временный6-мильный progress во время Mythic. Использует свежего отдельного агента, фиксирует test-governance и score_assessment1.2 по13 criterion_id. Старое принятие496 не переносится. Затем заключение или конкретные замечания программисту; публикация только по отдельному решению владельца.",
-    "review_ready": true,
-    "independent_accepted": false,
-    "full_task_complete": false,
-    "release_authorized": false,
-    "observation_ref": "agent-work/evidence/ONE-MILE1-completion-0800/checks.json#observations",
-    "automation_health": {
-      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
-      "start": {
-        "checked_at": "2026-11-12T08:00:23Z",
-        "status": "checked",
-        "method": "automations.peek",
-        "is_enabled": true
-      },
-      "end": {
-        "checked_at": "2026-11-12T08:58:41Z",
-        "status": "checked",
-        "method": "automations.peek",
-        "is_enabled": true
-      },
-      "restoration": {
-        "performed": false,
-        "reason": "Both actual observations enabled; no update required."
-      },
-      "errors": [],
-      "scope": "Point-in-time observations only; no guarantee against a later service disable. Schedule unchanged."
-    }
+    "next_role": "programmer",
+    "next_step": "Программист исправляет OM-REV-001 в PR503; затем передаёт новый SHA на независимую проверку. Публикация остаётся не разрешена.",
+    "release_authorized": false
   },
   "last_team_coordination": {
     "run_id": "2026-11-10T0300-strategist-release-routing",
@@ -8555,9 +8497,73 @@
   },
   "reviewed_fixes_accepted": true,
   "current_evidence_gaps": [
-    "Independent exact whole-SHA acceptance and score_assessment1.2 pending; busy-view behavior requires explicit disposition."
+    {
+      "id": "OM01",
+      "status": "partial_evidence",
+      "evidence": "Compared exact base-to-head:24 files,+2224/-43; UI1/6 only; separate pure detail geometry/identity/size modules. No river/road algorithm files changed. Full dependency ledger and remote ancestry/PR496 immutability left to root provenance check."
+    },
+    {
+      "id": "OM02",
+      "status": "partial_evidence",
+      "evidence": "Independent oneMile tests prove partial/full display polygon and unchanged input/accepted area; source artwork per-cell. No independent DOM run for tiles/emoji/color."
+    },
+    {
+      "id": "OM03",
+      "status": "partial_evidence",
+      "evidence": "Independent tests pass same-ID aggregation,3-ID canonical tie,true-maximum tolerance and source permutation at shifted origin; language/rotation absent from pure algorithm. Authored full2/3-biome geometry/DOM permutations not independently exercised."
+    },
+    {
+      "id": "OM04",
+      "status": "partial_evidence",
+      "evidence": "Independent edge-neighbour/rim/legal anchors and enclosed-hole tests pass. Island and water-frontier App/browser matrix not independently completed."
+    },
+    {
+      "id": "OM05",
+      "status": "partial_evidence",
+      "evidence": "58-case run includes real public10Knave continuation, whole Mythic/UndoRedo and guards; deterministic anchor pure cases pass. All pointer/touch/Space/doubleclick UI paths rely on CI artifacts, not local browser."
+    },
+    {
+      "id": "OM06",
+      "status": "partial_evidence_with_linked_defect",
+      "evidence": "Source view ratio and focused scale cycle pass in harness. No independent actual camera roundtrip measurements. Mythic switches displayed fine→native6 without adjusting fine-scale/frame (OM-REV-001); explicit uninterrupted visibility defect recorded under OM14."
+    },
+    {
+      "id": "OM07",
+      "status": "partial_evidence",
+      "evidence": "Real-App harness passes H/S separation, hover no Undo,pinned draft and stale callback cases. Touch/focus interactions not locally reproduced in DOM."
+    },
+    {
+      "id": "OM08",
+      "status": "partial_evidence",
+      "evidence": "Panel source emits local biome/name/note +summary routes/rivers/POI and omits source context; summary uses actual geometry/stable owner. Full same-world visual comparison delegated to root artifact inspection."
+    },
+    {
+      "id": "OM09",
+      "status": "partial_evidence",
+      "evidence": "Source detailSegmentCellIntersection closed-cell math and ID maps reviewed; no source6-owner fallback in fine summary. Edge/vertex/dedup analytic and visual corpus not independently rerun here."
+    },
+    {
+      "id": "OM10",
+      "status": "partial_evidence",
+      "evidence": "Preview/cancel/apply exact history tested; summary anchor-small/positive-area-large and stableID source reviewed. Conditional/measured/multi-part full matrix and water/route attachments not fully rerun."
+    },
+    {
+      "id": "OM11",
+      "status": "partial_evidence",
+      "evidence": "Independent real-App local language/neighbour/RNG/Undo test plus pure water/mixed/default/reset validation pass. Editor actual UI remains CI/artifact evidence."
+    },
+    {
+      "id": "OM12",
+      "status": "partial_evidence",
+      "evidence": "Independent58 includes stale callbacks, reset/delete consent, retained checkpoint, regeneration final-loss refusal/exception, Mythic and exact UndoRedo. IME and Finish/Discard/Stay DOM event replay not locally run."
+    },
+    {
+      "id": "OM13",
+      "status": "partial_evidence",
+      "evidence": "Independent focused cases include public15 roundtrip, literal public10Knave continuation and invalid/private11..14/foreign layers atomic refusal. Full official2..10 continue corpus not independently repeated; original suite coverage/CI reviewed by root."
+    }
   ],
-  "full_package_review_ready": true,
+  "full_package_review_ready": false,
   "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
@@ -8727,7 +8733,7 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-12T0800-programmer-ONE-MILE1",
+  "last_completed_run_id": "2026-11-12T1000-reviewer-ONE-MILE1",
   "storage_verification": {
     "data_commit_sha": "76cd37493e7cac25bfa7759a9fc74e99ce771f6a",
     "files_verified": 12,
@@ -8735,22 +8741,26 @@
   },
   "current_functional_findings": [
     {
-      "id": "ONE-MILE1-MYTHIC-BUSY-VIEW-0800",
-      "status": "observed_current_behavior_independent_spec_disposition_required",
-      "confirmed_behavior": true,
-      "confirmed_product_defect": null,
-      "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+      "id": "OM-REV-001",
+      "severity": "P2",
+      "status": "confirmed",
       "criteria": [
-        "OM06",
-        "OM14"
+        "OM14",
+        "OM06"
       ],
-      "evidence": [
-        "agent-work/evidence/ONE-MILE1-completion-0800/actual/narrow-320-busy-kingdom.jpg",
-        "agent-work/evidence/ONE-MILE1-completion-0800/actual/manifest.json"
+      "file": "src/App.tsx",
+      "line": 14095,
+      "related_lines": [
+        16079,
+        16794,
+        17150
       ],
-      "behavior": "While ordinary Mythic kingdom builds, fine layer is deferred, UI temporarily shows disabled6-mile progress and captured320 viewport is blank; after whole-unit acceptance fine1 returns with exact Undo/Redo.",
-      "next_role": "reviewer",
-      "required_result": "Independently determine acceptance or concrete programmer correction against OM06/14. No claim of uninterrupted map visibility in busy."
+      "title": "Mythic fine-candidate generation blanks the accepted map during busy",
+      "reproduction": "At320px on accepted fine1 map, choose Mythic Bastionland and activate a legal fine candidate. While kingdom progress runs, viewport is blank, selector disabled6; after completion fine1returns.",
+      "actual": "startKingdom removes physicalGrid to defer final POI binding; fineActive immediately becomes false and native artwork/selector render while previous fine zoom/framing survives. Original screenshot independently viewed at /tmp/8-ui6/narrow-320-busy-kingdom.jpg (progress33/144). Temporary harness separately confirms physical true/view1/scale6→physical false/viewnull/scale6 while same1 accepted region remains.",
+      "expected": "OM14 explicitly requires map visibility in busy; accepted readonly geography should remain visible with coherent view/focus while provisional kingdom builds.",
+      "requested_change": "Keep accepted readonly display and coherent camera/view state independently of provisional generator reconciliation; do not prematurely bind newPOI. Extend existing mode-candidate UI case to assert map visible/framing during progress at320/390, final fine1 and exact UndoRedo/refusal unchanged. No new10k/500map series/newduplicate case needed.",
+      "not_claimed": "No accepted-data loss inferred. JSON/PNG handlers guard documentBusy even though menu appears enabled. OM06 alone does not explicitly forbid a temporary coarse progress view; failure is blank map under OM14."
     }
   ],
   "release_preview_responsible": "business_analyst_then_programmer",
@@ -8763,13 +8773,12 @@
     "third_design_gate": false
   },
   "previous_review_record": {
-    "head_sha": "64b8476ff7f19e61e24b8b939663d90c1f2b37ec",
-    "result_ref": "agent-work/results/2026-11-10T1559-reviewer-HX-BL-051-64b8476.json",
-    "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/496#pullrequestreview-5845240873",
-    "verdict": "changes_requested"
+    "run_id": "2026-11-12T0800-programmer-ONE-MILE1",
+    "review_result_ref": "agent-work/evidence/ONE-MILE1-2043/spec-review.json",
+    "reviewed_sha": null
   },
   "full_package_accepted": false,
-  "current_stage_code_status": "programmer_complete",
+  "current_stage_code_status": "fix_required",
   "accepted_dependency_package": {
     "task_id": "HX-BL-051",
     "pr": 496,
@@ -9294,7 +9303,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/ONE-MILE1-completion-0800/checks.json",
+  "checks_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/root-crosscheck.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -9547,7 +9556,7 @@
     "ask_when_product_choice_arises": true,
     "new_blanket_design_approval_gate": false
   },
-  "implementation_completed": true,
+  "implementation_completed": false,
   "integration_release_constraint": {
     "prs": [
       496,
@@ -9802,7 +9811,7 @@
     }
   },
   "source_branch": "agent/hx-bl-051-detail1",
-  "claim_completed_ref": "agent-work/claims/2026-11-12T0800-programmer-ONE-MILE1.json",
+  "claim_completed_ref": "agent-work/claims/2026-11-12T1000-reviewer-ONE-MILE1.json",
   "actual_full_UI_pending": false,
   "latest_DETAIL1_grid_focus": {
     "run_id": "2026-11-11T0804-programmer-DETAIL1-focus",
@@ -10412,7 +10421,7 @@
     "product_routing_unchanged": true
   },
   "latest_PR496_CI_retry_claim_ref": "agent-work/claims/2026-11-11T1803-programmer-PR496-CI-retry.json",
-  "next_actor": "reviewer",
+  "next_actor": "programmer",
   "publication_authorized": false,
   "previous_root_release_approval_before_PR496": {
     "task_id": "HX-BL-054",
@@ -10728,8 +10737,8 @@
     "implementation_allowed_in_next_standard_programmer_run": true,
     "release_authorized": false
   },
-  "implementation_complete": true,
-  "review_readiness": "ready_with_declared_busy_view_observation",
+  "implementation_complete": false,
+  "review_readiness": "not_ready_confirmed_OM14_defect",
   "previous_primary_before_ONE_MILE1_implementation": {
     "run_id": "2026-11-11T2200-programmer-ONE-MILE1",
     "status": "ONE_MILE1_implementation_in_progress",
@@ -10781,16 +10790,47 @@
     }
   },
   "previous_ONE_MILE1_implementation": {
-    "run_id": "2026-11-12T0603-programmer-ONE-MILE1",
-    "status": "regeneration_final_candidate_verified_bounded_full_task_pending",
-    "head_sha": "92fbcad47ada6db74f08db271acc0489fc8cb06a",
-    "tree_sha": "cb2494fc5ddd06bf66b85d9187616ec81d53dcbc",
-    "result_ref": "agent-work/results/2026-11-12T0603-programmer-ONE-MILE1.json",
-    "checks_ref": "agent-work/evidence/ONE-MILE1-regeneration-0603/checks.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T0603-ONE-MILE1-completion.json",
-    "next_role": "programmer",
-    "review_ready": false,
-    "full_task_complete": false
+    "run_id": "2026-11-12T0800-programmer-ONE-MILE1",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "role": "programmer",
+    "status": "programmer_complete_review_ready_with_declared_observation",
+    "execution_running": false,
+    "claim_ref": null,
+    "completed_claim_ref": "agent-work/claims/2026-11-12T0800-programmer-ONE-MILE1.json",
+    "result_ref": "agent-work/results/2026-11-12T0800-programmer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T0800-ONE-MILE1-review.json",
+    "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+    "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
+    "next_role": "reviewer",
+    "next_step": "Проверяющий независимо проверяет весь PR503 на точном SHA 2ad03ad256e824a1ee07cef8e0d90a75077ef75e по OM-1.0/OM01–14: повторяет необходимые проверки, осматривает actual UI/PNG, оценивает Knave-продолжение, озёрную геометрию, ручные охваты и временный6-мильный progress во время Mythic. Использует свежего отдельного агента, фиксирует test-governance и score_assessment1.2 по13 criterion_id. Старое принятие496 не переносится. Затем заключение или конкретные замечания программисту; публикация только по отдельному решению владельца.",
+    "review_ready": true,
+    "independent_accepted": false,
+    "full_task_complete": false,
+    "release_authorized": false,
+    "observation_ref": "agent-work/evidence/ONE-MILE1-completion-0800/checks.json#observations",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "start": {
+        "checked_at": "2026-11-12T08:00:23Z",
+        "status": "checked",
+        "method": "automations.peek",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-12T08:58:41Z",
+        "status": "checked",
+        "method": "automations.peek",
+        "is_enabled": true
+      },
+      "restoration": {
+        "performed": false,
+        "reason": "Both actual observations enabled; no update required."
+      },
+      "errors": [],
+      "scope": "Point-in-time observations only; no guarantee against a later service disable. Schedule unchanged."
+    }
   },
   "implementation_base_sha": "92fbcad47ada6db74f08db271acc0489fc8cb06a",
   "owner_decision_required_to_continue": false,
@@ -10802,7 +10842,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-12T0800-programmer-ONE-MILE1.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-12T1000-reviewer-ONE-MILE1.json",
   "actual_UI": {
     "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
     "tree_sha": "e126282258e805cee851a8274fd645810a2e2f2d",
@@ -10859,5 +10899,21 @@
       "errors": [],
       "scope": "Point-in-time observations only; no guarantee against a later service disable. Schedule unchanged."
     }
+  },
+  "latest_ONE_MILE1_independent_review": {
+    "run_id": "2026-11-12T1000-reviewer-ONE-MILE1",
+    "role": "reviewer",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "status": "completed_changes_requested",
+    "execution_running": false,
+    "result_ref": "agent-work/results/2026-11-12T1000-reviewer-ONE-MILE1.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
+    "claim_ref": null,
+    "completed_claim_ref": "agent-work/claims/2026-11-12T1000-reviewer-ONE-MILE1.json",
+    "head_sha": "2ad03ad256e824a1ee07cef8e0d90a75077ef75e",
+    "next_role": "programmer",
+    "next_step": "Программист исправляет OM-REV-001 в PR503; затем передаёт новый SHA на независимую проверку. Публикация остаётся не разрешена.",
+    "release_authorized": false
   }
 }
