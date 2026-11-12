@@ -1,0 +1,348 @@
+{
+  "schema_version": 1,
+  "audit_id": "HX-RSR-TERRAIN-PROPERTIES-20261112-v1",
+  "run_id": "2026-11-12T1632-terrain-properties-audit",
+  "status": "completed_selected_layer_audit",
+  "as_of": "2026-11-12 16:41:09 UTC",
+  "scope": {
+    "selected": "Difficulty/hazard classification and preservation; five existing L1 source translations plus one L3 exclusion",
+    "not_whole_game_or_044_audit": true,
+    "no_new_book_read": true,
+    "no_browser_visual_evidence": true,
+    "completion_condition_met": true
+  },
+  "ranking_version": "three-scenario-ranks-1.4-create-evidence",
+  "cohort_version": "2026-11-06-ranking1.4-create-evidence",
+  "product_snapshots": {
+    "published_main": {
+      "sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "classification": "absent; legacy Knave normal/difficult only",
+      "already_audited": "agent-work/research/audits/KNAVE2-L1-runtime-2026-11-10.json"
+    },
+    "accepted_CLASSIFY1": {
+      "pr": 498,
+      "sha": "9dab995f3d7740baf1a18f0aa28af2ffadb485bb",
+      "published": false
+    },
+    "integration_package": {
+      "pr": 496,
+      "sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+      "classification_blob": "12e650e82dfb34241553fece99a5f1fdac30d701",
+      "published": false
+    },
+    "one_mile_package": {
+      "pr": 503,
+      "sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+      "classification": "absent in selected source tree/App; separated package, not inferred regression"
+    }
+  },
+  "source_manifest": [
+    {
+      "id": "DND5-2014",
+      "url_or_ref": "agent-work/market/rules/DND5-2014.json",
+      "blob_sha": "420b1cd04d09dff4531e1793b06aa30b70e709fa",
+      "access_level": "full_text",
+      "read_corpus": "Existing source inventory and relevant L1 translations only; original book not newly read",
+      "author_project_key": "wizards/dnd5/dmg2014"
+    },
+    {
+      "id": "PF2-Remaster",
+      "url_or_ref": "agent-work/market/rules/PF2-Remaster.json",
+      "blob_sha": "25df511deaaad9456262581239369a6edfe3e8c9",
+      "access_level": "full_text",
+      "read_corpus": "Existing source inventory and relevant L1 translations only; original book not newly read",
+      "author_project_key": "paizo/pathfinder2/remaster"
+    },
+    {
+      "id": "Knave-2e",
+      "url_or_ref": "agent-work/market/rules/Knave-2e.json",
+      "blob_sha": "f06fce5b61b7bf4267188669df788701fb79fc14",
+      "access_level": "full_text",
+      "read_corpus": "Existing source inventory and relevant L1 translations only; original book not newly read",
+      "author_project_key": "ben-milton/knave2/core2024"
+    }
+  ],
+  "binding_refs": [
+    {
+      "id": "DND5-2014-020-L1",
+      "edition": "DMG2014",
+      "source_page": 110,
+      "canonical_rule_ids": [
+        "content.static_hazard"
+      ],
+      "profile_status": "Existing unverified statuses preserved; audit does not activate them"
+    },
+    {
+      "id": "PF2-RM-029-L1",
+      "edition": "Remaster:GM_Core+Player_Core",
+      "source_page": 209,
+      "canonical_rule_ids": [
+        "map.terrain_zones",
+        "map.resource_availability",
+        "content.discovery_levels"
+      ],
+      "profile_status": "Existing unverified statuses preserved; audit does not activate them"
+    },
+    {
+      "id": "PF2-RM-062-L1",
+      "edition": "Remaster:GM_Core+Player_Core",
+      "source_page": 97,
+      "canonical_rule_ids": [
+        "content.static_hazard",
+        "map.terrain_zones"
+      ],
+      "profile_status": "Existing unverified statuses preserved; audit does not activate them"
+    },
+    {
+      "id": "KNAVE2-006-L1",
+      "edition": "Knave2e-RU-Torbin1.0-2024",
+      "source_page": 8,
+      "canonical_rule_ids": [
+        "map.terrain_zones"
+      ],
+      "profile_status": "Existing unverified statuses preserved; audit does not activate them"
+    },
+    {
+      "id": "KNAVE2-024-L1",
+      "edition": "Knave2e-RU-Torbin1.0-2024",
+      "source_page": 21,
+      "canonical_rule_ids": [
+        "content.static_hazard"
+      ],
+      "profile_status": "Existing unverified statuses preserved; audit does not activate them"
+    }
+  ],
+  "code_manifest": [
+    {
+      "path": "src/classification.ts",
+      "blob_sha": "12e650e82dfb34241553fece99a5f1fdac30d701"
+    },
+    {
+      "path": "src/App.tsx",
+      "blob_sha": "3d3c9c4da4ad0a1383a6c0b0701bc512c6986798"
+    },
+    {
+      "path": "src/saveValidation.ts",
+      "blob_sha": "4c1e7ee6ce1a3921b36a79d415fee385dfc72dd7"
+    },
+    {
+      "path": "src/knaveClassic.ts",
+      "blob_sha": "00ab45a38c6695ade0926be4eb2da5b63e1d32dc"
+    },
+    {
+      "path": "test/classification.test.mjs",
+      "blob_sha": "f6e1043356e4e301a9392204ae81202ddf01466e"
+    },
+    {
+      "path": "test/helpers/generation-harness.mjs",
+      "blob_sha": "e791db115a51698d1fe8a1837aa875c558750538"
+    },
+    {
+      "path": "test/fixtures/e6-water-editor.json",
+      "blob_sha": "f70ae14b3663122d09e29ad7ce95b886de1c010c"
+    }
+  ],
+  "selected_operations": [
+    {
+      "id": "TP-OP-TERRAIN",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-006",
+        "normative_kind": "procedure",
+        "applicability": "Knave 2e, региональная карта и гекскроул; игровые эффекты через адаптер интеграции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий меняет труднопроходимость выбранного гекса или участка",
+        "inputs_and_units": {
+          "hex_ids": "selected IDs",
+          "difficult": "boolean",
+          "terrain_type": "existing terrain"
+        },
+        "product_operation": "Записать либо снять локальный флаг труднопроходимости. Сохранить прежний тип рельефа, POI и геометрию.",
+        "expected_output": "Труднопроходимость видна ведущему и сохраняется в документе.",
+        "constraints_and_exceptions": [
+          "Не все леса автоматически труднопроходимы; книга не задаёт исчерпывающую классификацию биомов."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "H — лес, содержит POI A, difficult=false",
+            "when": "Включить труднопроходимость H, сохранить и загрузить",
+            "expected": "H остаётся лесом с POI A, difficult=true.",
+            "id": "KNAVE2-006-L1-AC01"
+          },
+          {
+            "given": "То же состояние с difficult=true",
+            "when": "Снять флаг, затем отменить действие",
+            "expected": "После снятия difficult=false, после undo=true; POI и рельеф прежние.",
+            "id": "KNAVE2-006-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия взяты из указанного правила; автоматическая операция/структурированные данные — предлагаемое продуктовое решение, а не требование автора к ПО.",
+        "canonical_rule_refs": [
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": []
+      },
+      "verdict": "implemented_selected_L1_operation_in_PR496",
+      "evidence_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+      "evidence": [
+        "App15420–15446 real editor commits",
+        "App15665–15677 derived/read labels",
+        "42-probe callbacks and existing CLASSIFY1 suite"
+      ],
+      "limitations": [
+        "Original difficult=false maps to explicit normal; auto may derive difficult, and unknown suppresses a default. These three states are not interchangeable.",
+        "No multiplier/travel engine implied; formal score and binding status unchanged."
+      ]
+    },
+    {
+      "id": "TP-OP-HAZARD",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-024; agent-work/market/rules/DND5-2014.json#DND5-2014-020; agent-work/market/rules/PF2-Remaster.json#PF2-RM-062",
+        "normative_kind": "analyst_comparison_of_existing_L1_translations",
+        "applicability": "Only storage/authoring of static hazard descriptors; rules and editions remain separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер размещает конкретную опасность в известном месте.",
+        "inputs_and_units": {
+          "site": "выбранный гекс H",
+          "kind": "например freezing",
+          "profile": "Knave p21; не универсальное правило PF2/DND",
+          "mechanics": "внешнее разрешение, в этом действии не запускается"
+        },
+        "product_operation": "Сохранить описание опасности и ссылку на конкретный игровой профиль без изменения биома и без применения урона.",
+        "expected_output": "У H доступны тип и источник опасности; существующая местность прежняя. Простая категория dangerous сама по себе не считается этим результатом.",
+        "constraints_and_exceptions": [
+          "Три игровые редакции не объединяются по совпадению слова «опасность».",
+          "Пожар PF2 не переносит 70ft/round или10mi в Knave/DND.",
+          "Нет требования реализовать L2/L3 движок в текущем L1 этапе."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "H — лес; мастер выбирает freezing по Knave p21.",
+            "when": "Создать запись конкретной опасности, сохранить и открыть.",
+            "expected": "Сохранены H, freezing и ссылка p21; лес и POI прежние, ОЗ не менялись."
+          },
+          {
+            "given": "H помечен только dangerous.",
+            "when": "Оценить поддержку конкретного игрового профиля.",
+            "expected": "Подтверждена общая отметка, но тип freezing, источник p21 и другие параметры не объявлены реализованными."
+          }
+        ],
+        "source_vs_product_interpretation": "Типы/источники берутся из существующих разборов; структурированная запись — исследовательский перевод. Новая спецификация не создаётся.",
+        "canonical_rule_refs": [
+          "content.static_hazard",
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "DND original profile parameters remain unverified.",
+          "Exact structured hazard authoring not present in inspected classification schema; free notes are manual alternative."
+        ]
+      },
+      "verdict": "partial_manual_description_general_classification_only",
+      "evidence_sha": "9ca7dc6d5839ed897ccb784ae29d4029a5e76590",
+      "evidence": [
+        "classification.ts exact schema holds enum, not hazard_type/profile descriptors",
+        "TP typed_hazard_not_part_of_classification_schema probe; classification rejects extra hazardByHex"
+      ],
+      "limitations": [
+        "Rejection of an invented field establishes schema boundary, not a product bug.",
+        "GM notes can describe hazards manually; classification dangerous is not source-profile support."
+      ]
+    }
+  ],
+  "game_dispositions": [
+    {
+      "requirement": "KNAVE2-006-L1",
+      "locator": "KnaveRU Torbin1.0 printed8 / PDF8",
+      "verdict": "selected_L1_storage_operation_verified",
+      "effect": "Preserve earlier full assessment for selected operation; new integrationSHA evidence added only in this derived audit."
+    },
+    {
+      "requirement": "KNAVE2-024-L1",
+      "locator": "KnaveRU printed21 / PDF14",
+      "verdict": "partial_manual_description",
+      "gap": "No typed freezing+profile record in classification layer; specific hazard still a manual description. L2/L3 resolution excluded.",
+      "existing_task": "HX-BL-044; remainder not newly authorized"
+    },
+    {
+      "requirement": "DND5-2014-020-L1",
+      "locator": "DMG2014 printed110, existing extraction",
+      "verdict": "partial_manual_description",
+      "gap": "Generic falling/mired risk does not establish quicksand, thin ice, cold water or individual profiles.",
+      "existing_task": "HX-BL-044; canonical content.static_hazard; no duplicate task"
+    },
+    {
+      "requirement": "PF2-RM-029-L1",
+      "locator": "GMCoreRemaster209 Types of Terrain",
+      "verdict": "terrain_component_only",
+      "gap": "Product biome defaults are owner policy, not PF2 resource/secret guarantees. Entire composite row not fulfilled.",
+      "existing_task": "HX-BL-044; resources outside approved CLASSIFY1"
+    },
+    {
+      "requirement": "PF2-RM-062-L1",
+      "locator": "GMCoreRemaster97 wildfire; AoN2842",
+      "verdict": "partial_manual_description",
+      "gap": "Dangerous label is not a stored firefront/spot-fire source profile. Moving fire and consequences are separate L2/L3.",
+      "existing_task": "HX-BL-044; no new scope approval inferred"
+    },
+    {
+      "requirement": "PF2-RM-046-L1",
+      "locator": "PlayerCoreRemaster423",
+      "verdict": "not_applicable_in_existing_matrix",
+      "reason": "Tactical difficult/greater-difficult movement belongs to L3; no universal two-flag L1 redesign inferred."
+    }
+  ],
+  "findings": [
+    {
+      "id": "TP-F01",
+      "text": "CLASSIFY1 is implemented and integrated in unpublished PR496, not current main or separated PR503. Publication and task acceptance are different facts; no lost-code regression inferred."
+    },
+    {
+      "id": "TP-F02",
+      "text": "PR496 preserves manual difficulty/hazard category through real commit/import/undo/redo and v14 adaptation. 24 biome IDs checked by existing test; unknown and normal hidden from read view, explicit unknown overrides automatic value."
+    },
+    {
+      "id": "TP-F03",
+      "text": "Dangerous is a category of approved product policy, not an independent hazard bool. The previous TOR2 dual-axis research fixture is not an approved redesign requirement."
+    },
+    {
+      "id": "TP-F04",
+      "text": "Generic classification and biome risk strings are not complete source-specific static-hazard authoring. Knave freezing, DND wilderness hazards and PF2 wildfire retain partial/manual status; no score increase."
+    }
+  ],
+  "verification": {
+    "existing_suite": {
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "output": "✔ CLASSIFY1 all existing biome defaults and unknown are explicit, dangerous includes terrain risk (10.24514ms)\n✔ CLASSIFY1 discovery uses exact context and semantic IDs independent of language (0.762533ms)\n✔ CLASSIFY1 overrides validate version/live ownership, preserve unknown and remap only POI (3.662509ms)\n✔ CLASSIFY1 real document import/commit/history preserves map/RNG and authored overrides across modes (6609.589867ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 10376.364816\n"
+    },
+    "probes": {
+      "count": 42,
+      "passed": 42,
+      "ref": "agent-work/research/audits/terrain-properties-2026-11-12-probes.json",
+      "real_callbacks": true,
+      "react_hooks_mocked": true,
+      "DOM": false
+    },
+    "dependency_environment": {
+      "node": "24.22.1",
+      "typescript": "5.7.2",
+      "react": "18.3.1",
+      "source_code_changed": false,
+      "installation": "Scratch-only test dependencies, npmignore-scripts; no project package/lock edits or paid spend"
+    },
+    "geometry_RNG_POI_notes_preserved": true,
+    "whole_application_build_or_browser_check": false
+  },
+  "product_disposition": {
+    "new_rules": 0,
+    "new_bindings": 0,
+    "new_tasks": 0,
+    "backlog_changed": false,
+    "existing_backlog_ref": "agent-work/backlog.json#HX-BL-044",
+    "scope_or_queue_changed": false,
+    "implementation_started": false,
+    "source_registry_copies_created": false,
+    "formal_coverage_score_rating_changed": false
+  },
+  "owner_decisions_needed": []
+}
