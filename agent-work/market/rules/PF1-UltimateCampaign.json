@@ -1,0 +1,783 @@
+{
+  "schema_version": 1,
+  "game_id": "PF1",
+  "date": "2026-11-12",
+  "status": "bounded_primary_L1_corpus_not_full_game",
+  "scope": {
+    "book": "UltimateCampaign",
+    "selected_sections": [
+      "Random Map Generation complete incl bothd20tables",
+      "Movement scale dependency",
+      "HexTerrainTypes generalcontext; Standard detail guidance"
+    ],
+    "full_book_read": false,
+    "source_page_total": null,
+    "excluded": [
+      "All per-terrain mechanical variations not digitized",
+      "Travel/exploration time tables, XP, loss, encounter engine",
+      "KingdomsAndWar/UltimateWilderness and PF2Remaster"
+    ],
+    "completion_condition_met": true
+  },
+  "source": [
+    {
+      "id": "PF1-UC-PRD-EXPLORATION",
+      "title": "Pathfinder RPG Ultimate Campaign — Exploration",
+      "edition": "Pathfinder1e; optional Ultimate Campaign subsystem, not PF2 or all PF1core",
+      "publisher": "Paizo",
+      "language": "en",
+      "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+      "access_level": "full_text",
+      "author_project_key": "paizo/pathfinder1/ultimate-campaign-2013",
+      "printed_page": null,
+      "locator": "HTML Random Map Generation lines345–366; dependencies Movement201–203, Hex Terrain Types251–256",
+      "read_scope": "Complete Random Map Generation section and both tables; scale/primary-terrain/standard-detail context. Per-terrain effect profiles and L2/L3 mechanics are not digitized."
+    }
+  ],
+  "evaluation_policy": {
+    "runtime": "unknown; no exactSHA product audit in this run",
+    "score_changed": false,
+    "active_rating_changed": false
+  },
+  "rules": [
+    {
+      "id": "PF1-UC-001",
+      "title": "Физический масштаб",
+      "corpus": "PF1-UC-RandomMapGeneration",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Movement,HTML201",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Гекс12миль между противоположными вершинами.",
+        "normative_kind": "optional_subsystem_procedure_or_guidance"
+      },
+      "parameters": {
+        "length": 12,
+        "unit": "mile",
+        "measurementConvention": "opposite_vertices"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.physical_hex_scale"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "source_specific; shared semantics do not inherit implementation"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-001-L1",
+          "layer": "L1",
+          "requirement": "Сохранить длину и конвенцию без подмены размером экранной сетки.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S06-C04",
+            "S04-C04",
+            "S01-C02",
+            "S01-C04",
+            "S01-C05"
+          ],
+          "canonical_rule_ids": [
+            "map.physical_hex_scale"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-001-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-001",
+            "normative_kind": "optional_subsystem; clause applicability limited to selected source procedure",
+            "applicability": "PF1 Ultimate Campaign regional map preparation; ordinary Classic is not silently replaced",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер выбирает физический профиль этой подсистемы.",
+            "inputs_and_units": {
+              "length_miles": 12,
+              "measurement": "opposite_vertices"
+            },
+            "product_operation": "Сохранить длину и конвенцию без подмены размером экранной сетки.",
+            "expected_output": "Профиль12mile/corner сохранён; геометрическое отличие от12mile/side известно.",
+            "constraints_and_exceptions": [
+              "Это профиль подсистемы, не требование ко всякой карте PF1.",
+              "Не менять утверждённую геометрию051 ради новой привязки."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-001-L1-AC01",
+                "given": "Правильный гекс12mi между вершинами.",
+                "when": "Вычислить эквивалентную ширину и площадь.",
+                "expected": "Ширина6√3≈10.3923048454mi; площадь54√3≈93.530743609mi²."
+              },
+              {
+                "id": "PF1-UC-001-L1-AC02",
+                "given": "Карта12mi между сторонами.",
+                "when": "Проверить совпадение профилей.",
+                "expected": "Не эквивалентна: между вершинами8√3≈13.8564064606mi."
+              },
+              {
+                "id": "PF1-UC-001-L1-AC03",
+                "given": "Мастер сохранил12mi/corner и POI A.",
+                "when": "Повторно открыть карту.",
+                "expected": "Длина, конвенция и положениеA сохранены."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник задаёт игровую процедуру/совет. Сохранение, границы входов и защита существующей карты — исследовательская продуктовая интерпретация, не авторское требование к ПО или готовая спецификация.",
+            "canonical_rule_refs": [
+              "map.physical_hex_scale"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact PF1 profile implementation not audited in this source run; no absence or support inferred.",
+          "gap_task_ids": [
+            "HX-BL-051"
+          ],
+          "development_readiness": "research_handoff_only; scope extensions require owner start approval"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-002",
+      "title": "Начальный гекс и выбранное продолжение",
+      "corpus": "PF1-UC-RandomMapGeneration",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Random Map Generation,HTML348",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Начальную клетку/тип выбирают; дальнейшее направление задают игроки.",
+        "normative_kind": "optional_subsystem_procedure_or_guidance"
+      },
+      "parameters": {
+        "start": "manual",
+        "direction": "player_choice",
+        "generation_target": "next_hex"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.extend_preserving_content",
+          "map.generate_on_discovery"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "source_specific; shared semantics do not inherit implementation"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-002-L1",
+          "layer": "L1",
+          "requirement": "Принять выбранный начальный тип; подготовить содержимое выбранного нового гекса, сохраняя ранее созданное.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S03-C01",
+            "S03-C03"
+          ],
+          "canonical_rule_ids": [
+            "map.extend_preserving_content",
+            "map.generate_on_discovery"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-002-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-002",
+            "normative_kind": "optional_subsystem; clause applicability limited to selected source procedure",
+            "applicability": "PF1 Ultimate Campaign regional map preparation; ordinary Classic is not silently replaced",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер задаёт старт либо группа выбирает следующую пустую клетку.",
+            "inputs_and_units": {
+              "start": "selected hex",
+              "initial_type": "GM choice",
+              "next": "player-selected direction"
+            },
+            "product_operation": "Принять выбранный начальный тип; подготовить содержимое выбранного нового гекса, сохраняя ранее созданное.",
+            "expected_output": "Выбор старта не требует скрытого случайного выбора, продолжение идёт в указанную клетку.",
+            "constraints_and_exceptions": [
+              "Источник не задаёт алгоритм заполнения всей карты сразу.",
+              "Сохранение существующих клеток — продуктовый инвариант; поведение повторного открытия не описано источником."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-002-L1-AC01",
+                "given": "Пустая карта, мастер выбралH=hill.",
+                "when": "Создать начало.",
+                "expected": "H имеетhill без обязательного случайного типа."
+              },
+              {
+                "id": "PF1-UC-002-L1-AC02",
+                "given": "H существует; группа выбрала пустую соседнююQ.",
+                "when": "Подготовить новый гекс.",
+                "expected": "ИзменёнQ, H и его содержимое сохранены."
+              },
+              {
+                "id": "PF1-UC-002-L1-AC03",
+                "given": "Q уже создан и вручную исправлен.",
+                "when": "Повторно открытьQ без команды изменения.",
+                "expected": "Q не переброшен; возможное обновление требует отдельного явного действия."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник задаёт игровую процедуру/совет. Сохранение, границы входов и защита существующей карты — исследовательская продуктовая интерпретация, не авторское требование к ПО или готовая спецификация.",
+            "canonical_rule_refs": [
+              "map.extend_preserving_content",
+              "map.generate_on_discovery"
+            ],
+            "unresolved_parameters": [
+              "При нескольких соседях источник не задаёт выбор контекста previous; явный вход нужен до применения повтора."
+            ]
+          },
+          "gap": "Exact PF1 profile implementation not audited in this source run; no absence or support inferred.",
+          "gap_task_ids": [
+            "HX-BL-047"
+          ],
+          "development_readiness": "research_handoff_only; scope extensions require owner start approval"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-003",
+      "title": "Таблица типа местности",
+      "corpus": "PF1-UC-RandomMapGeneration",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Random Map Generation,Terrain Type,HTML349–358",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Первыйd20 выбирает тип или повтор предыдущего типа.",
+        "normative_kind": "optional_subsystem_procedure_or_guidance"
+      },
+      "parameters": {
+        "die": 20,
+        "ranges": [
+          [
+            1,
+            3,
+            "forest"
+          ],
+          [
+            4,
+            6,
+            "hill"
+          ],
+          [
+            7,
+            8,
+            "marsh"
+          ],
+          [
+            9,
+            10,
+            "mountain"
+          ],
+          [
+            11,
+            13,
+            "plain"
+          ],
+          [
+            14,
+            14,
+            "settlement"
+          ],
+          [
+            15,
+            16,
+            "water"
+          ],
+          [
+            17,
+            20,
+            "previous"
+          ]
+        ]
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.terrain_distribution",
+          "content.roll_table_resolution"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "source_specific; shared semantics do not inherit implementation"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-003-L1",
+          "layer": "L1",
+          "requirement": "Разрешить первый бросок по указанным диапазонам; повтор использовать из явного предыдущего типа.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S01-C05",
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_distribution",
+            "content.roll_table_resolution"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-003-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-003",
+            "normative_kind": "optional_subsystem; clause applicability limited to selected source procedure",
+            "applicability": "PF1 Ultimate Campaign regional map preparation; ordinary Classic is not silently replaced",
+            "layer": "L1",
+            "trigger_or_user_action": "Для нового гекса задан первый бросокd20.",
+            "inputs_and_units": {
+              "roll": "integer1..20",
+              "previous_type": "explicit prior source category or unknown"
+            },
+            "product_operation": "Разрешить первый бросок по указанным диапазонам; повтор использовать из явного предыдущего типа.",
+            "expected_output": "Сохранены бросок, профиль и итоговый тип; повтор не заменён новым броском.",
+            "constraints_and_exceptions": [
+              "Не подставлять таблицуPF2: диапазоны и словарь отличаются.",
+              "Соседнее большинство не назначается правилом previous."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-003-L1-AC01",
+                "given": "Бросок14.",
+                "when": "Определить тип.",
+                "expected": "settlement."
+              },
+              {
+                "id": "PF1-UC-003-L1-AC02",
+                "given": "Броски17 и20, previous_type=marsh.",
+                "when": "Разрешить каждый.",
+                "expected": "Оба даютmarsh, без дополнительного броска."
+              },
+              {
+                "id": "PF1-UC-003-L1-AC03",
+                "given": "Бросок17, previous_type неизвестен.",
+                "when": "Разрешить повтор.",
+                "expected": "Статусneeds_previous; равнина не придумана."
+              },
+              {
+                "id": "PF1-UC-003-L1-AC04",
+                "given": "Входы0,21,1.5.",
+                "when": "Принять бросок.",
+                "expected": "Отклонены без изменения карты."
+              },
+              {
+                "id": "PF1-UC-003-L1-AC05",
+                "given": "Любой целый1..20.",
+                "when": "Разрешить таблицу.",
+                "expected": "Каждое значение попадает ровно в один диапазон; все границы сверены."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник задаёт игровую процедуру/совет. Сохранение, границы входов и защита существующей карты — исследовательская продуктовая интерпретация, не авторское требование к ПО или готовая спецификация.",
+            "canonical_rule_refs": [
+              "map.terrain_distribution",
+              "content.roll_table_resolution"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact PF1 profile implementation not audited in this source run; no absence or support inferred.",
+          "gap_task_ids": [
+            "HX-BL-047"
+          ],
+          "development_readiness": "research_handoff_only; scope extensions require owner start approval"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-004",
+      "title": "Независимый элемент",
+      "corpus": "PF1-UC-RandomMapGeneration",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Random Map Generation,Terrain Element,HTML359–366",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Второйd20 задаёт отдельный элемент, не тип местности.",
+        "normative_kind": "optional_subsystem_procedure_or_guidance"
+      },
+      "parameters": {
+        "die": 20,
+        "ranges": [
+          [
+            1,
+            3,
+            "difficult"
+          ],
+          [
+            4,
+            6,
+            "feature"
+          ],
+          [
+            7,
+            10,
+            "hunting_ground"
+          ],
+          [
+            11,
+            12,
+            "resource"
+          ],
+          [
+            13,
+            14,
+            "secret"
+          ],
+          [
+            15,
+            20,
+            "standard"
+          ]
+        ],
+        "separate_roll": true
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "content.feature_distribution",
+          "content.roll_table_resolution"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "source_specific; shared semantics do not inherit implementation"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-004-L1",
+          "layer": "L1",
+          "requirement": "Определить категорию элемента вторым броском и сохранить пару результатов без замены местности.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C03",
+            "S05-C02"
+          ],
+          "canonical_rule_ids": [
+            "content.feature_distribution",
+            "content.roll_table_resolution"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-004-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-004",
+            "normative_kind": "optional_subsystem; clause applicability limited to selected source procedure",
+            "applicability": "PF1 Ultimate Campaign regional map preparation; ordinary Classic is not silently replaced",
+            "layer": "L1",
+            "trigger_or_user_action": "Для того же нового гекса задан второй бросокd20.",
+            "inputs_and_units": {
+              "terrain_roll": "integer1..20",
+              "element_roll": "separate integer1..20"
+            },
+            "product_operation": "Определить категорию элемента вторым броском и сохранить пару результатов без замены местности.",
+            "expected_output": "Один гекс имеет отдельно тип и элемент; происхождение обоих результатов известно.",
+            "constraints_and_exceptions": [
+              "Элементне равен ежедневной случайной встрече или профильному эффекту.",
+              "Конкретизация категорий по восьми типам местности остаётся отдельным корпусом."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-004-L1-AC01",
+                "given": "Броски1 и13.",
+                "when": "Разрешить пару.",
+                "expected": "forest+secret."
+              },
+              {
+                "id": "PF1-UC-004-L1-AC02",
+                "given": "Броски14 и20.",
+                "when": "Разрешить пару.",
+                "expected": "settlement+standard; элемент не превращает settlement вplain."
+              },
+              {
+                "id": "PF1-UC-004-L1-AC03",
+                "given": "Броски17 и4; previous_type=water.",
+                "when": "Разрешить пару.",
+                "expected": "water+feature."
+              },
+              {
+                "id": "PF1-UC-004-L1-AC04",
+                "given": "Первый бросок сохранён, второй0.",
+                "when": "Применить второй.",
+                "expected": "Пара не фиксируется как корректная, география не меняется."
+              },
+              {
+                "id": "PF1-UC-004-L1-AC05",
+                "given": "Все20×20 пары при явномprevious_type.",
+                "when": "Проверить каталог.",
+                "expected": "400 пар разрешаются без дыр/пересечений; каждый бросок имеет отдельное происхождение."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник задаёт игровую процедуру/совет. Сохранение, границы входов и защита существующей карты — исследовательская продуктовая интерпретация, не авторское требование к ПО или готовая спецификация.",
+            "canonical_rule_refs": [
+              "content.feature_distribution",
+              "content.roll_table_resolution"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact PF1 profile implementation not audited in this source run; no absence or support inferred.",
+          "gap_task_ids": [
+            "HX-BL-043"
+          ],
+          "development_readiness": "research_handoff_only; scope extensions require owner start approval"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-005",
+      "title": "Преобладающий тип не исключает детали",
+      "corpus": "PF1-UC-RandomMapGeneration",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hex Terrain Types,HTML251–255",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Тип гекса преобладающий, а не единственный.",
+        "normative_kind": "optional_subsystem_procedure_or_guidance"
+      },
+      "parameters": {
+        "primary_terrain": "predominant_not_exclusive"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.terrain_zones"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "source_specific; shared semantics do not inherit implementation"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-005-L1",
+          "layer": "L1",
+          "requirement": "Сохранить основной тип и локальные детали без сведения всей территории к однородной заливке.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-005-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-005",
+            "normative_kind": "optional_subsystem; clause applicability limited to selected source procedure",
+            "applicability": "PF1 Ultimate Campaign regional map preparation; ordinary Classic is not silently replaced",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер описывает неоднородную территорию.",
+            "inputs_and_units": {
+              "primary": "forest",
+              "additional": "river; localclearing"
+            },
+            "product_operation": "Сохранить основной тип и локальные детали без сведения всей территории к однородной заливке.",
+            "expected_output": "Основнойforest не удаляет реку и локальную поляну.",
+            "constraints_and_exceptions": [
+              "Не выводить из travel-категории запрет локальной географии.",
+              "Новый алгоритм доминирующего биома в051 не утверждается этим исследованием."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-005-L1-AC01",
+                "given": "Гексforest с рекой и поляной.",
+                "when": "Сохранить/открыть.",
+                "expected": "forest, река и поляна остаются."
+              },
+              {
+                "id": "PF1-UC-005-L1-AC02",
+                "given": "Основной типterrain известен, доли не измерены.",
+                "when": "Показать источник профиля.",
+                "expected": "Точные площади/порог преобладания не выдуманы."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник задаёт игровую процедуру/совет. Сохранение, границы входов и защита существующей карты — исследовательская продуктовая интерпретация, не авторское требование к ПО или готовая спецификация.",
+            "canonical_rule_refs": [
+              "map.terrain_zones"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact PF1 profile implementation not audited in this source run; no absence or support inferred.",
+          "gap_task_ids": [
+            "HX-BL-051"
+          ],
+          "development_readiness": "research_handoff_only; scope extensions require owner start approval"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-006",
+      "title": "Явная климатическая интерпретация",
+      "corpus": "PF1-UC-RandomMapGeneration",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Random Map Generation,HTML346–347",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Умеренный шаблон можно адаптировать к окружению.",
+        "normative_kind": "optional_subsystem_procedure_or_guidance"
+      },
+      "parameters": {
+        "default_climate": "temperate",
+        "adaptation": "GM judgement"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.terrain_zones"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "source_specific; shared semantics do not inherit implementation"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-006-L1",
+          "layer": "L1",
+          "requirement": "Сохранить явную авторскую интерпретацию категории отдельно от исходного результата таблицы.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-006-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-006",
+            "normative_kind": "optional_subsystem; clause applicability limited to selected source procedure",
+            "applicability": "PF1 Ultimate Campaign regional map preparation; ordinary Classic is not silently replaced",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер задаёт смысл категорий для выбранного климата.",
+            "inputs_and_units": {
+              "source_type": "plain",
+              "interpretation": "icefield chosen by GM"
+            },
+            "product_operation": "Сохранить явную авторскую интерпретацию категории отдельно от исходного результата таблицы.",
+            "expected_output": "plain может отображаться как выбранное мастером ледяное поле без изменения исходного броска.",
+            "constraints_and_exceptions": [
+              "Не навязывать климатический симулятор или новую таблицу.",
+              "Источник не задаёт универсальную матрицу пересчёта биомов."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-006-L1-AC01",
+                "given": "Источник далplain; мастер выбрал ледяное поле.",
+                "when": "Сохранить интерпретацию.",
+                "expected": "Исходныйplain и авторское ледяное поле различимы."
+              },
+              {
+                "id": "PF1-UC-006-L1-AC02",
+                "given": "Климатическая интерпретация не выбрана.",
+                "when": "Разрешитьplain.",
+                "expected": "Обычный исходный тип, не автоматический арктический профиль."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник задаёт игровую процедуру/совет. Сохранение, границы входов и защита существующей карты — исследовательская продуктовая интерпретация, не авторское требование к ПО или готовая спецификация.",
+            "canonical_rule_refs": [
+              "map.terrain_zones"
+            ],
+            "unresolved_parameters": [
+              "Связь исходных категорий с действующими24BiomeId требует решения аналитика; автоматическая эквивалентность не установлена."
+            ]
+          },
+          "gap": "Exact PF1 profile implementation not audited in this source run; no absence or support inferred.",
+          "gap_task_ids": [
+            "HX-BL-047"
+          ],
+          "development_readiness": "research_handoff_only; scope extensions require owner start approval"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-007",
+      "title": "Standard не означает пустой гекс",
+      "corpus": "PF1-UC-RandomMapGeneration",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hex Terrain Types,HTML256;Keep Things Interesting226–228",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Обычному гексу тоже рекомендована запоминающаяся деталь.",
+        "normative_kind": "optional_subsystem_procedure_or_guidance"
+      },
+      "parameters": {
+        "standard": "no special element, not mandated blank content"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "content.place_description"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "source_specific; shared semantics do not inherit implementation"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-007-L1",
+          "layer": "L1",
+          "requirement": "Сохранить выбранную описательную деталь без превращения её в обязательный POI или механическую опасность.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_rule_ids": [
+            "content.place_description"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-007-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-007",
+            "normative_kind": "optional_subsystem; clause applicability limited to selected source procedure",
+            "applicability": "PF1 Ultimate Campaign regional map preparation; ordinary Classic is not silently replaced",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер получилstandard и дополняет описание.",
+            "inputs_and_units": {
+              "element": "standard",
+              "detail": "Авторский текст, например «сломанная стела»"
+            },
+            "product_operation": "Сохранить выбранную описательную деталь без превращения её в обязательный POI или механическую опасность.",
+            "expected_output": "Категорияstandard сохраняется вместе с авторским описанием.",
+            "constraints_and_exceptions": [
+              "Совет не задаёт обязательную квотуPOI или сюжетныйдвижок."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-007-L1-AC01",
+                "given": "Гекс имеетstandard; мастер добавил'сломанная стела'.",
+                "when": "Сохранить/открыть.",
+                "expected": "standard и текст сохранены; новый опасный эффект не создан."
+              },
+              {
+                "id": "PF1-UC-007-L1-AC02",
+                "given": "Угексаstandard безавторскоготекста.",
+                "when": "Оценить полноту генератора.",
+                "expected": "Это не доказательство автоматической интересной детали; продукт не выдумывает её из одной категории."
+              }
+            ],
+            "source_vs_product_interpretation": "Источник задаёт игровую процедуру/совет. Сохранение, границы входов и защита существующей карты — исследовательская продуктовая интерпретация, не авторское требование к ПО или готовая спецификация.",
+            "canonical_rule_refs": [
+              "content.place_description"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact PF1 profile implementation not audited in this source run; no absence or support inferred.",
+          "gap_task_ids": [
+            "HX-BL-043"
+          ],
+          "development_readiness": "research_handoff_only; scope extensions require owner start approval"
+        }
+      ]
+    }
+  ],
+  "completeness": {
+    "source_groups": 7,
+    "L1_requirements": 7,
+    "acceptance_cases": 22,
+    "full_RandomMapGeneration_tables": true,
+    "full_ExplorationChapter": false
+  },
+  "score_impact": {
+    "delta": null,
+    "implementation_support": "unverified"
+  },
+  "status_dictionary": {
+    "unverified": "Source translated; product exact-SHA support not established"
+  },
+  "evidence": []
+}
