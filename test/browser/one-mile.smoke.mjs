@@ -35,6 +35,7 @@ try{
  assert.ok(keys.length>100);const candidates=await page.locator('[data-fine-candidate]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-candidate')));assert.ok(candidates.length);
  for(const key of candidates){const [q,r]=key.split(',').map(Number);assert.ok(!occupied.has(key));assert.ok([[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].some(([dq,dr])=>occupied.has(`${q+dq},${r+dr}`)),'one edge row only');}
  assert.ok(await page.locator('image[data-fine-biome]').count()>100,'per-cell biome assets');
+
  const pick=async key=>{const target=page.locator(`[data-fine-key="${key}"]`);await target.click();await page.waitForFunction(key=>document.querySelector('[data-fine-selected]')?.getAttribute('data-fine-selected')===key,key);};
  await pick('0,0');const panel=page.locator('[data-fine-panel]');assert.match(await panel.innerText(),/0\/0/);assert.doesNotMatch(await panel.innerText(),/Source|Area|Область|Исходный/);
  await page.locator('[data-fine-key="1,0"]').hover();assert.match(await panel.innerText(),/1\/0/);await panel.hover();assert.match(await panel.innerText(),/0\/0/);
@@ -64,7 +65,9 @@ try{
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated
  // imagery; every JPEG is a screenshot of this exact CI checkout.
- for(const p of previews)console.log('ONE_MILE_ACTUAL_PREVIEW '+JSON.stringify({...p,source_head_sha:manifest.source_head_sha,checkout_tree:manifest.checkout_tree}));
- console.log('ONE_MILE_UI_RESULT '+JSON.stringify(manifest));
+
 }catch(error){manifest.status='failed';manifest.error=String(error);await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));throw error;}
-finally{await browser?.close();server.kill('SIGTERM');}
+finally{await browser?.close();server.kill('SIGTERM');
+ for(const p of previews)console.log('ONE_MILE_ACTUAL_PREVIEW '+JSON.stringify({...p,source_head_sha:manifest.source_head_sha,checkout_tree:manifest.checkout_tree,validation_status:manifest.status}));
+ console.log('ONE_MILE_UI_RESULT '+JSON.stringify(manifest));
+}
