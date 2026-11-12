@@ -16,6 +16,7 @@ const artwork = app.body.statements.flatMap(node => ts.isVariableStatement(node)
 let prefix = source.slice(0, lastReturn.getStart(ast));
 if (artwork?.initializer) prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
+  physicalGrid, previewOneMile, applyOneMilePreview, cancelOneMilePreview, editOneMileCell, getDocumentRevision:()=>documentRevision.current,
   chooseKnaveProfile, changeGenerationMode, mutateKnaveContent, knaveDraft, knaveError, changeKnaveDraft, finishKnaveDraft, resetKnaveDraft, requestKnaveExit, resolveKnaveExit, knaveExitRequest, knavePanel,
   poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
   regionDraft, startRegionDraft, changeRegionDraft, finishRegionDraft, resetRegionDraft, selectRegionTarget, regionPreview, editError,

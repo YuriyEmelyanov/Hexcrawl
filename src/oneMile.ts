@@ -112,7 +112,7 @@ export function chooseOneMileAnchor(candidate: FineCandidate, point: WorldPoint 
 }
 
 function record(value: unknown,label: string): Record<string,unknown> {
-  if (!value || typeof value!=='object' || Array.isArray(value) || ![Object.prototype,null].includes(Object.getPrototypeOf(value))) throw Error(`Invalid ${label}`);
+  if (!value || typeof value!=='object' || Array.isArray(value) || !(Object.getPrototypeOf(value)===null || Object.getPrototypeOf(Object.getPrototypeOf(value))===null)) throw Error(`Invalid ${label}`);
   return value as Record<string,unknown>;
 }
 /** Strict fine-address map. The enclosing physical layer supplies immutable

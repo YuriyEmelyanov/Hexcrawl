@@ -275,3 +275,74 @@ test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic imp
   const bad=structuredClone(valid);mutate(bad);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
  }
 });
+
+// ONE-MILE1 extends the existing real import/history suite rather than creating
+// a second harness. Core geometry cases already live in oneMile.test.mjs; these
+// scenarios cover the new document boundary, not rendering or generator quality.
+const fineSetup=()=>{
+ const g=createGenerationHarness(42);g.render();const alerts=[];g.setWindow({alert:m=>alerts.push(m),confirm:()=>false,matchMedia:()=>({matches:false})});
+ g.injectFunction('readTextFile',async file=>file.text);g.render().addFallbackTractToMap({q:0,r:0});g.render();return {g,alerts};
+};
+const fineSave=g=>{const data=JSON.parse(JSON.stringify(g.render().createSaveData()));delete data.savedAt;return data;};
+const fineLoad=(g,data)=>g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});
+const fineStable=g=>({data:fineSave(g),undo:JSON.stringify(g.render().undoHistory),redo:JSON.stringify(g.render().redoHistory)});
+const fineActivate=g=>{const p=g.render().previewOneMile();assert.ok(p);assert.equal(g.render().applyOneMilePreview(p),true);return p;};
+
+test('ONE-MILE1 preview/cancel/apply and public15 roundtrip use real import and exact undo',async()=>{
+ const {g}=fineSetup(), before=fineSave(g), count=g.render().undoHistory.length;
+ const cancelled=g.render().previewOneMile();g.render().cancelOneMilePreview();assert.equal(g.render().applyOneMilePreview(cancelled),false);
+ assert.deepEqual(fineSave(g),before);assert.equal(g.render().undoHistory.length,count);
+ fineActivate(g);const active=fineSave(g);assert.equal(active.version,15);assert.equal(active.map.physicalGrid.version,3);assert.deepEqual(active.map.physicalGrid.fineCellEdits,{});
+ assert.deepEqual(active.generation,before.generation);assert.equal(g.render().undoHistory.length,count+1);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),active);
+ await fineLoad(g,active);assert.deepEqual(fineSave(g),active);
+ g.render().undoMap();assert.deepEqual(fineSave(g),active);
+ const p=cancelled;assert.equal(g.render().applyOneMilePreview(p),false,'stale preview cannot write a second adaptation');
+});
+
+test('ONE-MILE1 local transaction preserves the other language, neighbouring source and RNG',()=>{
+ const {g}=fineSetup();fineActivate(g);
+ const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{name:{ru:'Лес',en:'Forest'}},'1,0':{note:'neighbour'}}};g.render().applyDocument(doc);
+ const before=fineSave(g), count=g.render().undoHistory.length, revision=g.render().getDocumentRevision();
+ assert.equal(g.render().editOneMileCell({q:0,r:0},{name:'Опушка',note:'local'},revision,'ru'),true);
+ const after=fineSave(g);assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].name.en,'Forest');assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].name.ru,'Опушка');
+ assert.deepEqual(after.map.physicalGrid.fineCellEdits['1,0'],before.map.physicalGrid.fineCellEdits['1,0']);
+ const expected=structuredClone(before);expected.map.physicalGrid=after.map.physicalGrid;assert.deepEqual(after,expected,'no source-six or RNG mutation');assert.equal(g.render().undoHistory.length,count+1);
+ assert.equal(g.render().editOneMileCell({q:0,r:0},{note:'stale'},revision,'ru'),false);assert.deepEqual(fineSave(g),after);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),after);
+});
+
+test('ONE-MILE1 public10 Knave payload survives15 import/export literally',async()=>{
+ const {g,alerts}=fineSetup();await fineLoad(g,regionFixture());const legacy=fineSave(g);legacy.map.knave=newKnaveLayer();legacy.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});legacy.ui.knaveEnabled=true;
+ await fineLoad(g,legacy);assert.deepEqual(alerts,[]);assert.equal(fineSave(g).map.physicalGrid,undefined);
+ fineActivate(g);const data=fineSave(g);assert.deepEqual(data.map.knave,legacy.map.knave);await fineLoad(g,data);assert.deepEqual(fineSave(g).map.knave,legacy.map.knave);
+});
+
+test('ONE-MILE1 rejects private versions, foreign layers and invalid fine data atomically with redo',async()=>{
+ const {g,alerts}=fineSetup();fineActivate(g);const active=fineSave(g);g.render().undoMap();const before=fineStable(g);
+ const wrong=[];
+ for(const version of [11,12,13,14])wrong.push({...structuredClone(active),version});
+ for(const field of ['classification','featurePreparation']){const data=structuredClone(active);data.map[field]={};wrong.push(data);const old=structuredClone(before.data);old.map[field]={};wrong.push(old);}
+ for(const mutate of [d=>delete d.map.physicalGrid,d=>d.map.physicalGrid.version=2,d=>d.map.physicalGrid.viewStep=24,d=>d.map.physicalGrid.grid.unit='mile',
+  d=>d.map.physicalGrid.fineCellEdits={'9999999,0':{note:'orphan'}},d=>d.map.physicalGrid.fineCellEdits={'-0,0':{note:'alias'}},
+  d=>d.map.physicalGrid.fineCellEdits={'0,0':{landBiomeId:'not-a-biome'}},d=>d.map.physicalGrid.fineCellEdits={'0,0':{name:{ru:'x'.repeat(201)}}},
+  d=>delete d.map.physicalGrid.poiIdentities]){const data=structuredClone(active);mutate(data);wrong.push(data);}
+ for(const data of wrong){await fineLoad(g,data);assert.deepEqual(fineStable(g),before,'rejected import retains document, selection, prefs, RNG and both timelines');}
+ assert.equal(alerts.length,wrong.length);
+});
+
+test('ONE-MILE1 reset refuses authored loss without consent and undo restores a consented reset',()=>{
+ const {g}=fineSetup();fineActivate(g);const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{note:'author'}}};g.render().applyDocument(doc);
+ const before=fineStable(g);g.render().resetMap();assert.deepEqual(fineStable(g),before);
+ g.setWindow({confirm:()=>true,matchMedia:()=>({matches:false})});g.render().resetMap();assert.equal(fineSave(g).map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
+});
+
+test('ONE-MILE1 older generation checkpoints cannot silently discard later local edits',()=>{
+ const {g}=fineSetup();const checkpoint=structuredClone(g.render().captureDocument().generationHistory[0]);fineActivate(g);
+ const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{note:'later authored'}}};g.render().applyDocument(doc);
+ const before=fineStable(g);
+ assert.throws(()=>g.render().restoreSnapshot(checkpoint),/local edits|loss consent/);assert.deepEqual(fineStable(g),before);
+ const revision=g.render().getDocumentRevision();assert.equal(g.render().editOneMileCell({q:0,r:0},{note:'injected',expectedRevision:revision+1},revision-1,'ru'),false);assert.deepEqual(fineStable(g),before);
+ g.render().deleteLastRegion();assert.deepEqual(fineStable(g),before,'real delete refuses without consent');
+ g.setWindow({confirm:()=>true,matchMedia:()=>({matches:false})});g.render().deleteLastRegion();assert.equal(fineSave(g).map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
+});
