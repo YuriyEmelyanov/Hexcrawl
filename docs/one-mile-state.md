@@ -87,3 +87,7 @@ The scene is presentation-only, never serialized or added to either history;
 busy cell actions and the editor are disabled. Completion/refusal switches back
 to the actual accepted/restored document. This preserves the existing view and
 framing without binding new POI to provisional paths.
+
+
+## C02/C05 presentation correction (OM-C-PRESENT1)
+Fine POI labels retain localized type before explicit name; unnamed fallback is shown once. Fine crossing artwork preserves existing bridge/ford/ferry identity with paired rails/translucent water-crossing/gap, respectively. Road splitting affects render primitives only and uses current visible stroke envelope; no geometry, width calibration, POI size, anchors, schema or RNG change. Multiple crossings are ordered/deduped by stable key. Degenerate/unmatched crossings do not invent remote bank geometry; native6renderer unchanged. Remaining owner clauses C01/03/04/06/07/08 and physical C02placement remain open. Browser evidence uses one explicitly legalF2ford variant of existingroad-entry world toshowall3types; not a new geographical series.

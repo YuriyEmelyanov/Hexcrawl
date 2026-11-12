@@ -116,3 +116,30 @@ test('destructive support loss requires consent and leaves an exact undo snapsho
   assert.deepEqual(prepareFineCellLoss(edits,[],true),{edits:{},losses:['0,0']});
   assert.equal(JSON.stringify(edits),before);
 });
+
+// P01–03: distinct rendering contracts absent from existing geometry/edit cases.
+import {finePoiLabel, fineRoadPresentation} from '../src/oneMilePresentation.ts';
+test('fine POI label retains localized type and explicit name without fallback duplication',()=>{
+ assert.equal(finePoiLabel('Городок','Айхенхайм'),'Городок Айхенхайм');
+ assert.equal(finePoiLabel('Town','Eichenheim'),'Town Eichenheim');
+ assert.equal(finePoiLabel('Town',''),'Town');assert.equal(finePoiLabel('Point of interest','Unknown'),'Point of interest Unknown');
+ assert.equal(finePoiLabel('Town','Town Hall'),'Town Town Hall','never strip words from authored names');
+});
+const road={key:'d',roadId:1,segmentKey:'s',x1:0,y1:0,x2:10,y2:0,kind:'road'};
+const river={key:'river-segment-2-1',x1:5,y1:-5,x2:5,y2:5,width:6};
+const cross=kind=>({key:'c',roadId:1,roadSegmentKey:'s',riverId:2,x:5,y:0,kind});
+test('fine crossing paint distinguishes bridge, translucent ford and a real ferry road gap',()=>{
+ const bridge=fineRoadPresentation(road,[cross('bridge')],[river]);assert.equal(bridge.rails.length,2);assert.equal(bridge.pieces.length,1);
+ const ford=fineRoadPresentation(road,[cross('ford')],[river]);assert.equal(ford.pieces.filter(p=>p.opacity===.42).length,1);
+ const ferry=fineRoadPresentation(road,[cross('ferry')],[river]);assert.equal(ferry.rails.length,0);assert.equal(ferry.pieces.length,2);
+ assert.ok(ferry.pieces[0].x2<5&&ferry.pieces[1].x1>5);assert.equal(JSON.stringify(road),JSON.stringify({...road}));
+});
+test('fine crossing splits all ordered unique crossings and clamps endpoint or degenerate input',()=>{
+ const a={...cross('ferry'),key:'a',x:2},b={...cross('ford'),key:'b',x:8};
+ const rivers=[{...river,x1:2,x2:2},{...river,key:'river-segment-2-2',x1:8,x2:8}];
+ const plan=fineRoadPresentation(road,[b,a,a],rivers);assert.equal(plan.crossings.length,2);assert.ok(plan.pieces.some(p=>p.opacity===.42));
+ for(const p of plan.pieces)assert.ok(p.x1>=0&&p.x2<=10&&p.x1<p.x2);
+ assert.deepEqual(plan,fineRoadPresentation(road,[a,b],rivers));
+ assert.deepEqual(fineRoadPresentation({...road,x2:0},[a],rivers).pieces,[]);
+ const edge=fineRoadPresentation(road,[{...a,x:0}],[{...river,x1:0,x2:0}]);assert.ok(edge.pieces.every(p=>Number.isFinite(p.x1)&&p.x1>=0));
+});

@@ -1,13 +1,14 @@
+import {fineRoadPresentation,type FineRoad,type FineCrossing} from './oneMilePresentation';
 import type {ReactNode,MouseEvent,KeyboardEvent} from 'react';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,detailFootprintBoundary,type DetailCell,type WorldPoint} from './detailGrid';
 import {detailFootprintExtentMiles,detailFootprintWorldAnchor} from './detailSizes';
 import type {Detail1State,DetailPoiFootprint} from './detailModel';
 import type {OneMileCell,FineCandidate} from './oneMile';
 type Visual={color:string;image?:string;emoji?:string};
-type Props={rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly {key:string;x:number;y:number;kind:string}[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
+type Props={rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
  visual:(id:string|undefined,cell:DetailCell)=>Visual;poi:(p:DetailPoiFootprint)=>{label:string;image?:string;emoji:string};water:ReactNode;
  rivers:readonly {key:string;x1:number;y1:number;x2:number;y2:number;width:number}[];
- roads:readonly {key:string;kind:string;x1:number;y1:number;x2:number;y2:number}[];
+ roads:readonly FineRoad[];
  onHover:(cell:DetailCell|null)=>void;onPick:(cell:DetailCell,candidate:boolean,revision:number,event?:MouseEvent<SVGGElement>)=>void;busy:boolean};
 /** All geometry uses the original world frame. Full visual cells never become
  * generator coverage. Native source-six artwork is not rendered underneath. */
@@ -27,9 +28,13 @@ export function OneMileArtwork(p:Props){
   })}</g>
   <g pointerEvents="none">{p.water}</g>
   <g className="rivers-layer" pointerEvents="none">{p.rivers.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className="river-polyline" strokeWidth={r.width/6}/>)}</g>
-  <g className="roads-layer" pointerEvents="none">{p.roads.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} stroke="#3b3028" strokeWidth={.4} strokeDasharray={r.kind==='trail'?'1 .6':undefined}/>)}</g>
+  <g className="roads-layer" pointerEvents="none">{p.roads.map(r=>{const plan=fineRoadPresentation(r,p.crossings,p.rivers);return <g key={r.key} data-fine-road={r.key}>
+   {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>)}
+   {plan.rails.map(rail=><polyline key={rail.key} points={rail.points} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
+   {plan.crossings.map(c=><g key={c.key} data-fine-crossing={c.key} data-crossing-kind={c.kind}><title>{c.kind}</title></g>)}
+  </g>;})}</g>
   <g pointerEvents="none">{p.rapids.map(m=><line key={m.key} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} className="river-rapid-mark" style={{strokeWidth:.2}}/>)}{p.waterfalls.map(w=><image transform={p.rotated?`rotate(-90 ${w.x} ${w.y})`:undefined} key={w.key} href="/waterfall-color.svg" x={w.x-1.3} y={w.y-1.3} width={2.6} height={2.6}/>)}</g>
-  <g className="river-crossings" pointerEvents="none">{p.crossings.map(c=><g key={c.key} data-fine-crossing={c.key}><circle cx={c.x} cy={c.y} r={.6} fill="#f8e5b3" stroke="#44372e" strokeWidth={.12}/><title>{c.kind}</title></g>)}</g>
+
   <g data-fine-grid pointerEvents="none">{p.cells.map(row=><polygon key={`${row.cell.q},${row.cell.r}`} points={polygon(row.cell)} fill="none" stroke="#334155" strokeWidth={.8/6} vectorEffect="non-scaling-stroke"/>)}</g>
   {p.coordinates&&<g className="hex-coordinate-layer" pointerEvents="none">{p.cells.map(row=>{const c=center(row.cell);return <text transform={p.rotated?`rotate(-90 ${c.x} ${c.y})`:undefined} key={`${row.cell.q},${row.cell.r}`} x={c.x} y={c.y+3.4} fontSize={1.5} textAnchor="middle" fill="#152238">{row.cell.q}/{row.cell.r}</text>;})}</g>}
   <g data-fine-pois pointerEvents="none">{p.state.poiFootprints.map(fp=>{const v=p.poi(fp),extent=detailFootprintExtentMiles(fp,grid),cells=extent!==null&&extent>=1?fp.cells:null,outline=cells??[];

@@ -1,3 +1,4 @@
+import {finePoiLabel} from './oneMilePresentation';
 import {OneMileArtwork} from './OneMileArtwork';
 import {OneMilePanel,type FineDraft} from './OneMilePanel';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIntersections,worldToDetailCell,type DetailCell} from './detailGrid';
@@ -16104,7 +16105,8 @@ export function App() {
     const region=regions.find(r=>r.id===Number(parts[1])),waterKind=waterPoiByKey.get(key),central=region&&hasCentralPoi(region)&&isSameHex(region.centerHex,hex);
     const kind=water?waterKind:central?region.centralPoiKind:region?.pointOfInterestKinds?.[key];
     const named=nameTargets.find(t=>t.poiLocator===alias||t.key===alias);
-    const label=named?.[language]||named?.fallback?.[language]||(waterKind?getWaterPoiLabel(waterKind,language):region?central?getCentralPoiLabel(region,language):getPoiLabelForHex(region,hex,language):t.poi);
+    const typeLabel=waterKind?getWaterPoiLabel(waterKind,language):region?central?getCentralPoiLabel(region,language):getPoiLabelForHex(region,hex,language):t.poi;
+    const label=finePoiLabel(typeLabel,named?.[language]);
     return {label,image:usePoiSvg?getPoiSvgHref(kind,water):undefined,emoji:waterKind?getWaterPoiEmoji(waterKind):region?central?getCentralPoiEmoji(region):getPoiEmojiForHex(region,hex):'📍'};
   };
   const focusFine=()=>{const key=physicalGridRef.current?.selectedCell;setTimeout(()=>{if(key)mapSvgRef.current?.querySelector<SVGGElement>(`[data-fine-key="${hexKey(key)}"]`)?.focus();},0);};

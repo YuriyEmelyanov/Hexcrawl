@@ -11,6 +11,8 @@ await fs.mkdir(out,{recursive:true});
 const h=createGenerationHarness(42);h.render();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
 await h.render().handleImportJson({target:{files:[{text:await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url),'utf8')}],value:'x'}});
 const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.render().applyOneMilePreview(prepared),true);prepareFineEvidenceFixture(h);const fixture=structuredClone(h.render().createSaveData());
+// P02: explicit legal F2 ford variant of the same existing world, no geometry edit.
+fixture.map.crossings.find(c=>c.riverId===3).kind='ford';
 delete fixture.map.physicalGrid.selectedCell;delete fixture.map.physicalGrid.selectedWorldPoint;
 const oracle=fineEvidenceSamples(h);
 for(const road of fixture.map.roads)fixture.map.editorNames[`road:${road.id}`]={ru:`OM дорога ${road.id}`,en:`OM route ${road.id}`};
@@ -49,6 +51,9 @@ try{
  const pick=async key=>{const target=page.locator(`[data-fine-key="${key}"]`);await target.click();await page.waitForFunction(key=>document.querySelector('[data-fine-selected]')?.getAttribute('data-fine-selected')===key,key);};
  await pick('0,0');assert.ok(await page.locator('[data-fine-selected]').evaluate(el=>parseFloat(el.getAttribute('stroke-width'))*Math.hypot(el.getScreenCTM().a,el.getScreenCTM().b)<=2.1),'selection stroke stays near native2px');const panel=page.locator('[data-fine-panel]');assert.match(await panel.innerText(),/0\/0/);assert.doesNotMatch(await panel.innerText(),/Source|Area|Область|Исходный/);
  await page.locator('[data-fine-key="1,0"]').hover();assert.match(await panel.innerText(),/1\/0/);await panel.hover();assert.match(await panel.innerText(),/0\/0/);
+ assert.match(await panel.innerText(),/Town Eichenheim/,'P01 named POI retains actual type');
+ for(const kind of ['bridge','ferry','ford']){const target=page.locator(`[data-crossing-kind="${kind}"]`).first();assert.ok(await target.count(),kind+' actual renderer branch');await target.locator('..').screenshot({path:new URL(`crossing-${kind}.png`,out).pathname});}
+ assert.ok(await page.locator('[data-fine-road] line[opacity="0.42"]').count(),'P02 real ford transparency');
  await shot('desktop-1.jpg');
  const style=page.locator('button.biome-display-toggle');await style.click();assert.equal(await style.getAttribute('data-mode'),'emoji');assert.equal(await page.locator('image[data-fine-biome]').count(),0);assert.ok(await page.locator('[data-fine-cells] .biome-marker').count()>100);await style.click();assert.equal(await style.getAttribute('data-mode'),'color');await style.click();assert.equal(await style.getAttribute('data-mode'),'tiles');
  await page.getByRole('button',{name:/^Rotate map/}).click();assert.match(await page.locator('[data-fine-world]').getAttribute('transform'),/rotate/);assert.match(await page.locator('image[data-fine-biome]').first().getAttribute('transform'),/rotate\(-90/);await page.getByRole('button',{name:'Restore original map rotation'}).click();
