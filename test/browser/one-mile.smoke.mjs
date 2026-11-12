@@ -54,7 +54,7 @@ try{
  await baselinePage.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready'&&!document.querySelector('.controls--transfer > button').disabled);
  const baselineProfiles=[];
  for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>document.fonts.ready);await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
- const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true});assert.ok(before.equals(after),'P04 native6 pixel-identical on same world '+width);baselineProfiles.push({width,pixelIdentical:true});}
+ const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});assert.ok(before.equals(after),'P04 native6 pixel-identical on same world '+width);baselineProfiles.push({width,pixelIdentical:true});}
  manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});
  await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
  assert.equal(await page.locator('polygon.hex[data-hex-key]').count(),0,'no source-six grid under the fine grid');
