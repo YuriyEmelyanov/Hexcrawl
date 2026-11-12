@@ -2,6 +2,9 @@ name: ONE-MILE1 release walkthrough
 on:
   push:
     branches: [agent/one-mile1-release-preview-20261112]
+concurrency:
+  group: ONE-MILE1-release-walkthrough
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
