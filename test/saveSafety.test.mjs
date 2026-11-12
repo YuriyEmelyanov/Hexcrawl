@@ -338,13 +338,18 @@ test('ONE-MILE1 reset refuses authored loss without consent and undo restores a 
 });
 
 test('ONE-MILE1 older generation checkpoints cannot silently discard later local edits',()=>{
+ const {g:retained}=fineSetup();retained.render().addFallbackTractToMap(retained.render().candidateHexes[0]);retained.render();fineActivate(retained);
+ const prior=retained.render().captureDocument();prior.map.physicalGrid={...prior.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{name:{ru:'Позднее имя',en:'Late name'},note:'survives old checkpoint'}}};retained.render().applyDocument(prior);
+ const exact=fineSave(retained);retained.render().deleteLastRegion();const restored=fineSave(retained);
+ assert.equal(restored.map.regions.length,exact.map.regions.length-1,'real deletion restores old no-layer checkpoint');assert.deepEqual(restored.map.physicalGrid.fineCellEdits,exact.map.physicalGrid.fineCellEdits,'surviving fine data retained');assert.deepEqual(restored.map.physicalGrid.grid,exact.map.physicalGrid.grid);assert.equal(restored.map.physicalGrid.poiIdentities.nextId,exact.map.physicalGrid.poiIdentities.nextId);for(const [alias,id] of Object.entries(restored.map.physicalGrid.poiIdentities.byLegacyRef))assert.equal(id,exact.map.physicalGrid.poiIdentities.byLegacyRef[alias]);
+ retained.render().undoMap();assert.deepEqual(fineSave(retained),exact);retained.render().redoMap();assert.deepEqual(fineSave(retained),restored);
  const {g}=fineSetup();const checkpoint=structuredClone(g.render().captureDocument().generationHistory[0]);fineActivate(g);
  const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{note:'later authored'}}};g.render().applyDocument(doc);
  const before=fineStable(g);
  assert.throws(()=>g.render().restoreSnapshot(checkpoint),/local edits|loss consent/);assert.deepEqual(fineStable(g),before);
  const revision=g.render().getDocumentRevision();assert.equal(g.render().editOneMileCell({q:0,r:0},{note:'injected',expectedRevision:revision+1},revision-1,'ru'),false);assert.deepEqual(fineStable(g),before);
  g.render().deleteLastRegion();assert.deepEqual(fineStable(g),before,'real delete refuses without consent');
- g.setWindow({confirm:()=>true,matchMedia:()=>({matches:false})});g.render().deleteLastRegion();assert.equal(fineSave(g).map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
+ const losses=[];g.setWindow({confirm:message=>{losses.push(message);return true},matchMedia:()=>({matches:false})});g.render().deleteLastRegion();assert.match(losses[0],/0,0/);assert.equal(fineSave(g).map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
 });
 
 test('ONE-MILE1 view/hover/pinned form and stale callbacks preserve local address and camera scale',()=>{

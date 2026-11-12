@@ -14278,8 +14278,17 @@ export function App() {
     const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
     const retained=prepareFineCellLoss(edits,accepted,allowLoss).edits;
     if(!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
-    if(!snapshot.physicalGrid)throw Error(language==='ru'?'Этот снимок не сохраняет локальные правки. Сначала сохраните их в карте.':'This checkpoint cannot retain local edits. Keep them in the map before continuing.');
-    const next={...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:retained}};checkedRiverMap(next);return next;
+    // A generation checkpoint can predate explicit fine adaptation. Carry its
+    // surviving local addresses into that candidate map, retaining accepted
+    // identities/footprints; reconcile live owners before any setters/history.
+    const layer={...(snapshot.physicalGrid??current),fineCellEdits:retained};
+    const acceptedKeys=new Set(accepted.map(row=>hexKey(row.cell)));
+    if(layer.selectedCell&&!acceptedKeys.has(hexKey(layer.selectedCell))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
+    const candidate={...snapshot,physicalGrid:layer};
+    const live=poiNameLocators(candidate,true);
+    const removals=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!live.has(alias)).map(alias=>[alias,null]));
+    const reconciled=reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removals);
+    const next={...candidate,physicalGrid:reconciled};checkedRiverMap(next);return next;
   };
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
@@ -14357,7 +14366,7 @@ export function App() {
       const state=physicalGridRef.current;
       const support=state?new Set(projectOneMile(oneMileSources(checkpoint),state.grid.origin).map(row=>hexKey(row.cell))):new Set<string>();
       const losses=Object.keys(state?.fineCellEdits??{}).filter(key=>!support.has(key));
-      if(losses.length&&!window.confirm(language==='ru'?`Удалить локальные правки одномильных гексов (${losses.length})? Отмена вернёт их.`:`Remove local one-mile edits (${losses.length})? Undo restores them.`))return;
+      if(losses.length&&!window.confirm(language==='ru'?`Удалить локальные правки одномильных гексов (${losses.length}): ${losses.join('; ')}? Отмена вернёт их.`:`Remove local one-mile edits (${losses.length}): ${losses.join('; ')}? Undo restores them.`))return;
       checkpoint=retainFineCheckpoint(checkpoint,losses.length>0);
     }catch(error){setEditError(error instanceof Error?error.message:'Local edits cannot be retained');return;}
     if(!checkPoiNameCheckpoint(checkpoint)||!confirmRiverCheckpointLoss(checkpoint))return;
