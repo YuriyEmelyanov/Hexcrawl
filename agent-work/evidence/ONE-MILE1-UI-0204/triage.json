@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-12T0204-programmer-ONE-MILE1",
+  "failures": [
+    {
+      "head_sha": "ad86581464eef8d8e8d5fa420e70981ffc22a207",
+      "run_id": 43143139723,
+      "job_id": 130934782621,
+      "kind": "browser_failure_existing_suite",
+      "stage": "tags / myth-material-lifecycle other row tag draft",
+      "evidence": "Timeout waiting for [data-tag=mb.land][data-tag-owner=region:5] textbox after disabled material pointer, test/browser/myth-material-lifecycle.mjs:117/129. New one-mile suite not reached.",
+      "classification": "Observed missing textbox; cause/regression vs timing unresolved. No claim of confirmed unrelated/flaky defect.",
+      "next": "Exact new head reruns all suites with new fine UI suite first; keep negative evidence."
+    },
+    {
+      "head_sha": "9928c0a42a76b0c688f68426ebd2483f416906b4",
+      "run_id": 43144024067,
+      "job_id": 130937606747,
+      "kind": "test_harness_failure",
+      "evidence": "Vite ready URL present but ANSI sequences separate Local from colon, naive readiness match timed out before browser launch.",
+      "classification": "Confirmed test infrastructure mistake; corrected by stripping ANSI readiness output. Product behavior untested in this attempt."
+    },
+    {
+      "head_sha": "cc44882953458da590b5156516dc42842e3e1b02",
+      "run_id": 43144311488,
+      "job_id": 130938522235,
+      "kind": "test_harness_failure",
+      "evidence": "Export caption check used innerText inside closed details, returned empty. Source label already v15, test corrected to textContent. No product behavior accepted from attempt."
+    }
+  ],
+  "ci_service_errors": [
+    {
+      "action": "fetch logs job130937606747",
+      "error": "Internal error",
+      "recovered": "same read retry succeeded",
+      "product_defect": false
+    }
+  ],
+  "lessons_application": "Existing ANSI-readiness lesson was already recorded. Applied strip to new runner after repeated setup failure; no duplicate research/audit. Failed browser checks are not acceptance evidence."
+}
