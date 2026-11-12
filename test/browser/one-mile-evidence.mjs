@@ -5,11 +5,20 @@ import fs from 'node:fs/promises';
 import {createDetailGrid,detailCellCenter,worldToDetailCell} from '../../src/detailGrid.ts';
 import {summarizeDetailCell} from '../../src/detailSummary.ts';
 import {detailFootprintWorldAnchor,detailFootprintExtentMiles} from '../../src/detailSizes.ts';
+import {prepareDetailFootprintExtentEdit} from '../../src/detailGeography.ts';
 
 const key=c=>`${c.q},${c.r}`;
 const neighbours=c=>[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>({q:c.q+q,r:c.r+r}));
 const world=d=>{const copy=structuredClone(d);delete copy.ui;if(copy.map.physicalGrid){delete copy.map.physicalGrid.selectedCell;delete copy.map.physicalGrid.selectedWorldPoint;delete copy.map.physicalGrid.viewStep;}return copy;};
 const frames=page=>page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+
+export function prepareFineEvidenceFixture(h){
+ const doc=h.render().captureDocument(),state=doc.map.physicalGrid,grid=createDetailGrid(1,state.grid.origin),owner=state.poiFootprints.find(p=>p.legacyRef?.startsWith('poi:')&&detailFootprintExtentMiles(p,grid)>=1);
+ assert.ok(owner);
+ // Explicit conditional test data, not a measured real ruin or a changed catalogue.
+ doc.map.physicalGrid=prepareDetailFootprintExtentEdit(doc.map,h.geometry.detailMapRiverGeometry(doc.map,state.grid.origin),state,owner.poiId,{kind:'manual_size',diameterMiles:3,basis:'conditional',note:'OM10 browser fixture: explicitly conditional three-mile extent'});
+ h.render().applyDocument(doc);
+}
 
 export function fineEvidenceSamples(h){
  const map=h.render().captureDocument().map,state=map.physicalGrid,grid=createDetailGrid(1,state.grid.origin),coarse=createDetailGrid(6,state.grid.origin);
@@ -22,11 +31,11 @@ export function fineEvidenceSamples(h){
  for(const p of state.poiFootprints)add(detailFootprintWorldAnchor(p,grid));
  const summaries=[...pending.values()].map(cell=>({cell,...summarizeDetailCell({...state,viewStep:1,selectedWorldPoint:undefined},cell,new Map(),{roads:map.roads,rivers})}));
  const selected=new Map();
- for(const [kind,predicate]of [['road',s=>s.routes.some(r=>r.kinds.includes('road'))],['trail',s=>s.routes.some(r=>r.kinds.includes('trail'))],['river',s=>s.rivers.length],['crossing',s=>s.rivers.some(r=>r.crossingIds.length)],['water-poi',s=>s.pois.some(p=>p.legacyRef?.startsWith('waterPoi:'))],['large-poi',s=>s.pois.some(p=>detailFootprintExtentMiles(state.poiFootprints.find(f=>f.poiId===p.poiId),grid)>=1)]]){
+ for(const [kind,predicate]of [['road',s=>s.routes.some(r=>r.kinds.includes('road'))],['trail',s=>s.routes.some(r=>r.kinds.includes('trail'))],['river',s=>s.rivers.length],['crossing',s=>s.rivers.some(r=>r.crossingIds.length)],['water-poi',s=>s.pois.some(p=>p.legacyRef?.startsWith('waterPoi:'))],['large-poi',s=>s.pois.some(p=>state.poiFootprints.find(f=>f.poiId===p.poiId).cells.length>1)]]){
   const sample=summaries.find(predicate);assert.ok(sample,`accepted fixture contains ${kind}`);const value=selected.get(key(sample.cell))??{...sample,kinds:[]};value.kinds.push(kind);selected.set(key(sample.cell),value);
  }
  const withObject=[...selected.values()][0],source=worldToDetailCell(coarse,detailCellCenter(grid,withObject.cell));
- const large=[...selected.values()].find(s=>s.kinds.includes('large-poi')),largeOwner=large.pois.find(p=>detailFootprintExtentMiles(state.poiFootprints.find(f=>f.poiId===p.poiId),grid)>=1);
+ const large=[...selected.values()].find(s=>s.kinds.includes('large-poi')),largeOwner=large.pois.find(p=>state.poiFootprints.find(f=>f.poiId===p.poiId).cells.length>1);
  const owner=state.poiFootprints.find(p=>p.poiId===largeOwner.poiId),other=owner.cells.find(c=>key(c)!==key(large.cell)&&accepted.has(key(c)));
  assert.ok(other,'large POI has another accepted fine part');selected.set(key(other),{cell:other,...summarizeDetailCell({...state,viewStep:1,selectedWorldPoint:undefined},other,new Map(),{roads:map.roads,rivers}),kinds:['large-poi-other-part']});
  const blank=summaries.find(s=>!s.routes.length&&!s.rivers.length&&!s.pois.length&&key(worldToDetailCell(coarse,detailCellCenter(grid,s.cell)))===key(source));
