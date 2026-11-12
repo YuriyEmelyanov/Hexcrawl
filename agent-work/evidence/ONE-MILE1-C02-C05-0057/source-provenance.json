@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "base_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+  "head_sha": "60059737ec94b54db88c2f49c8d16e99da7d85a8",
+  "tree_sha": "705c41da8d45f9c4a4afafc37426d32d402465af",
+  "pr": 503,
+  "branch": "agent/hx-bl-051-one-mile1",
+  "local_source_blobs_match_remote": true,
+  "source_files": [
+    {
+      "path": ".github/workflows/check.yml",
+      "sha": "fe1030c53c4ce8fd1db91be692362ee36f205723"
+    },
+    {
+      "path": "src/App.tsx",
+      "sha": "3854f3b47c9098e1ce027c566bec6bca636cd69d"
+    },
+    {
+      "path": "src/OneMileArtwork.tsx",
+      "sha": "b408883da0ff2892983198e7bd06fbf64f5ac0bc"
+    },
+    {
+      "path": "src/oneMilePresentation.ts",
+      "sha": "4020c325e3c436212d7f3ca75cf32f4223d4e8bf"
+    },
+    {
+      "path": "test/oneMile.test.mjs",
+      "sha": "efd206d06de99c1230328645be99e9513d864001"
+    },
+    {
+      "path": "test/browser/one-mile.smoke.mjs",
+      "sha": "b959c91162e05b6e9313181a9f0985fe021cc57d"
+    },
+    {
+      "path": "docs/one-mile-state.md",
+      "sha": "efab1b3750bc9c94c542512a597ec20d24977c97"
+    }
+  ],
+  "product_scope": "Presentation only. Native6 implementation, source geometry, schema, generation/RNG, POI extent catalogue unchanged.",
+  "checks_scope": "PR503-only opt-in historical native6 baseline; existing browser lifecycle extended, not extra world series.",
+  "diagnostic_history": [
+    {
+      "head": "94e0dfd0a801b6e87379709b5f87dfade51d657a",
+      "ci": 43316201329,
+      "browser": "failed_zero_height_SVG_capture",
+      "resolution": "Capture padded page clip around actual road bounds; product code unaffected."
+    },
+    {
+      "head": "d4ac9f0f3703b72ee01b79fafe397c78039244b5",
+      "ci": 43316588369,
+      "browser": "five_ONE_MILE_cases_passed",
+      "applicability": "Historical intermediate SHA; not final handoff evidence.",
+      "artifact_id": 13988067960,
+      "artifact_sha256": "e5f6923cac37497ab2c6e76915333dd6a783e338d651c80b6606a747981d1f2d"
+    },
+    {
+      "head": "885d7c28f594514b264f0e8ed79e2991e29774e4",
+      "ci": 43317246577,
+      "browser": "baseline_readiness_detector_failed_on_colored_Vite_output",
+      "resolution": "Readiness detector fixed; no product failure."
+    },
+    {
+      "head": "7230bf56ad67827ae53631c96c09926242f1e6fe",
+      "ci": 43317972622,
+      "browser": "desktop_native6_identical_narrow_compare_failed",
+      "artifact_id": 13990120152,
+      "artifact_sha256": "39352a4d860ca261d81a7d1a18bee5eb95a6791e2eb30201e1832fb235487c1f",
+      "triage": "Actual image diff (0,95)-(190,639) only side-panel toggle during .28s top transition. Map/other pixels identical. Stabilize both screenshots with animations:disabled."
+    },
+    {
+      "head": "11522d50ac486dac6857f59ff08e9587e7a5822b",
+      "ci": 43318332733,
+      "change": "Only comparison capture stability before final opt-in gating.",
+      "applicability": "Superseded; no final-head acceptance inferred."
+    }
+  ],
+  "local_environment": {
+    "node": "24.22.1",
+    "playwright": "1.62.1",
+    "browser_unavailable": "Default Playwright executable absent; explicit /usr/bin/chromium launch failed socket() EPERM. Final browser proof uses GitHub CI, no local successful DOM run claimed."
+  },
+  "local_checks": {
+    "npm_run_check": {
+      "exit_code": 0,
+      "node": {
+        "executed": 385,
+        "passed": 385,
+        "failed": 0,
+        "skipped": 0,
+        "duration_ms": 797513.936161
+      },
+      "typescript": "pass",
+      "vite_build": "pass",
+      "limitations": "Capture script and workflow finalized after this local run; product blobs unchanged; final CI is authoritative."
+    },
+    "focused": {
+      "passed": 13,
+      "failed": 0
+    },
+    "negative_before": "New module missing before implementation, not falsely claimed behavioral regression reproduction."
+  },
+  "acceptance_status": "verification_in_progress_not_independently_accepted",
+  "release_authorized": false
+}
