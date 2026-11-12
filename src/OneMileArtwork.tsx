@@ -34,7 +34,7 @@ export function OneMileArtwork(p:Props){
   {p.coordinates&&<g className="hex-coordinate-layer" pointerEvents="none">{p.cells.map(row=>{const c=center(row.cell);return <text transform={p.rotated?`rotate(-90 ${c.x} ${c.y})`:undefined} key={`${row.cell.q},${row.cell.r}`} x={c.x} y={c.y+3.4} fontSize={1.5} textAnchor="middle" fill="#152238">{row.cell.q}/{row.cell.r}</text>;})}</g>}
   <g data-fine-pois pointerEvents="none">{p.state.poiFootprints.map(fp=>{const v=p.poi(fp),extent=detailFootprintExtentMiles(fp,grid),cells=extent!==null&&extent>=1?fp.cells:null,outline=cells??[];
    return <g key={fp.poiId} data-poi-id={fp.poiId}>
-    {detailFootprintBoundary(grid,outline).map((edge,i)=>{const a=point(edge.from),b=point(edge.to);return <line data-fine-outline={fp.poiId} key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#f7dc6f" strokeWidth={1.3} vectorEffect="non-scaling-stroke"/>;})}
+    {(outline.length?detailFootprintBoundary(grid,outline):[]).map((edge,i)=>{const a=point(edge.from),b=point(edge.to);return <line data-fine-outline={fp.poiId} key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#f7dc6f" strokeWidth={1.3} vectorEffect="non-scaling-stroke"/>;})}
     {(cells?cells.map(center):[point(detailFootprintWorldAnchor(fp,grid))]).map((c,i)=>v.image?<image transform={p.rotated?`rotate(-90 ${c.x} ${c.y})`:undefined} key={i} className="poi-marker" href={v.image} x={c.x-1.5} y={c.y-1.5} width={3} height={3} role="img" aria-label={v.label}/>:<text transform={p.rotated?`rotate(-90 ${c.x} ${c.y})`:undefined} key={i} className="poi-marker" x={c.x} y={c.y} fontSize={3} textAnchor="middle" dominantBaseline="central">{v.emoji}</text>)}
    </g>;
   })}</g>
