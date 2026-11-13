@@ -1,0 +1,138 @@
+{
+  "revision": "dense-v2",
+  "tool": "image_gen.imagegen",
+  "created_on": "2026-11-14",
+  "purpose": "Fill the approved full regular hex with real relief forms; keep previous v1 assets as siblings and leave renderer unchanged.",
+  "export": {
+    "tile_size": [
+      210,
+      210
+    ],
+    "format": "RGB PNG",
+    "fit": "uniform scale of the intact transparent foreground to regular hex, no hex clipping of terrain",
+    "backgrounds": "exact existing grass.png for hills, stone.png for mountains",
+    "perimeter": "Generated natural foothill ends; no polygon mask applied to foreground; no straight hexagonal terrain slab."
+  },
+  "assets": [
+    {
+      "id": "open-hills-pointy",
+      "file": "open-hills-pointy-dense-v2.png",
+      "background": "grass.png",
+      "orientation": "pointy",
+      "dimensions": [
+        210,
+        210
+      ],
+      "bytes": 85935,
+      "foreground_bounds": {
+        "left": 16,
+        "top": 15,
+        "right": 193,
+        "bottom": 194
+      },
+      "foreground_pixel_fraction_of_hex": 0.7784584309835388,
+      "solid_foreground_fraction_of_hex": 0.7465143344569474,
+      "outside_foreground_pixels": 0,
+      "minimum_clearance_px": 2.432667397366046,
+      "sha256": "f0295862252be28abaa32caca86962422ef13b5e1b16172f8e7a7046aef36ac1",
+      "source_images": [
+        "background-assets/public/terrain/schematic/backgrounds/v1/open-hills-pointy.png",
+        "tile-window-work/design/schematic-tile-visible-area/v1/grass-visible-pointy.png",
+        "Owner-supplied Civilization V strategic-view screenshot (not committed)"
+      ],
+      "initial_composition_prompt": "Use case: precise-object-edit. Asset type: high-readability painted terrain relief sprite for a 210x210 hex map. Input 1 is the OLD TILE TO REDESIGN, keep its soft brushwork, warm cream sunlit ridges, muted olive shadows, clear terrain identity and upper-left lighting. Input 2 is a GEOMETRY GUIDE ONLY: its regular hex is the exact maximum footprint, never draw its white outline, green panel, or background. Input 3 is STYLE REFERENCE ONLY, the phone screenshot of Civilization V strategic view. Primary change: eliminate the wide empty ring around the terrain. Redesign the silhouette and arrange the relief to occupy almost the whole hex, with actual terrain forms reaching near all six sides; NOT merely a small central icon scaled up, NOT just a shadow halo. Large terrain feature designed to blanket 78-86 percent of the hex area while staying wholly inside it. Terrain slopes must end naturally and stay intact with just a very narrow 2-4 pixel breathing rim at final 210px scale. No cropping by a hex polygon; no flat polygon slab or visible tile base. Preserve the soft painterly cartographic style, no dark outlines, no vector symbols, no stickers. OUTPUT: a single square image of the complete foreground relief on GENUINELY TRANSPARENT background. All regions outside the terrain are transparent. Do not paint any grass/stone base, labels, grid, frame, text or watermarks.\nLOW ROUNDED OPEN HILLS, not sharp mountains. POINTY-TOP regular hex, vertices at normalized coordinates (0.5,0),(.933,.25),(.933,.75),(.5,1),(.067,.75),(.067,.25). Arrange several broad overlapping rounded hill ridges in depth, one low rear hill toward the top vertex, wide middle rows stretching toward both vertical sides, and rounded foreground slopes tapering into the lower vertex. Relative height of the composition must be MUCH larger than the old low horizontal cluster. There should be recognizable rounded hill masses from almost top to bottom of the hex, not much empty space above or below. Keep rounded summits, a few pale highlights and restrained shadows.",
+      "perimeter_refinement_prompt": "Use case: precise-object-edit. Edit input 1, the dense painted terrain sprite. Input 2 is the old smaller tile for brushwork/color comparison only. Keep the NEW LARGE SCALE and interior arrangement in input 1; FIX ONLY THE PERIMETER. The current outer silhouette looks cut with six straight sides like a hexagonal terrain slab. This is wrong. Replace ALL straight geometric boundary segments with naturally ending terrain: individual rounded foothill toes, short tapering ridges, irregularly scalloped slopes, and small transparent coves between them. Let actual complete landforms determine the outline, never a polygon cut. Each slope must visibly taper down and end inside the allowed hex footprint. IMPORTANT: retain roughly 75-85% coverage of the hex; do NOT return to a small central icon with a broad empty ring. The outermost natural terrain tips should still reach near the six sides, with varied small local insets, but terrain is not allowed to cross those imaginary sides. There must be no straight outline, hex border, geometric platform, cross section, frame, baseplate, or rim. Real relief stays recognizably large right up toward the outer edge; do not fake coverage with a shadow/colored blob. Preserve warm cream-lit ridges, muted olive-grey shadows, upper-left light, soft painted cartographic strategic-map style. GENUINELY TRANSPARENT background, no painted tile background or ground polygon, no lines, labels, or text. One full square sprite, keep all summits intact.\nThese are LOW ROUNDED OPEN HILLS. Keep multiple rows of broad low rounded summits with gently ending convex footslopes, no sharp mountain peaks.\nPointy-top footprint, long vertically with a top and bottom point, widest through the middle: naturally taper the composition toward those points; no geometric cuts or long straight vertical side edges.",
+      "generated_source_filename": "exec-e9ca7a6a-70a8-4123-9a95-17795fb29485.png"
+    },
+    {
+      "id": "open-hills-flat",
+      "file": "open-hills-flat-dense-v2.png",
+      "background": "grass.png",
+      "orientation": "flat",
+      "dimensions": [
+        210,
+        210
+      ],
+      "bytes": 86094,
+      "foreground_bounds": {
+        "left": 13,
+        "top": 25,
+        "right": 195,
+        "bottom": 184
+      },
+      "foreground_pixel_fraction_of_hex": 0.731921293639335,
+      "solid_foreground_fraction_of_hex": 0.6979872370012509,
+      "outside_foreground_pixels": 0,
+      "minimum_clearance_px": 0.6637748154253558,
+      "sha256": "74bc0e49b495c0dc78ad7c1713692031c31127c02966d28f5f62419fa4ccc790",
+      "source_images": [
+        "background-assets/public/terrain/schematic/backgrounds/v1/open-hills-flat.png",
+        "tile-window-work/design/schematic-tile-visible-area/v1/grass-visible-flat.png",
+        "Owner-supplied Civilization V strategic-view screenshot (not committed)"
+      ],
+      "initial_composition_prompt": "Use case: precise-object-edit. Asset type: high-readability painted terrain relief sprite for a 210x210 hex map. Input 1 is the OLD TILE TO REDESIGN, keep its soft brushwork, warm cream sunlit ridges, muted olive shadows, clear terrain identity and upper-left lighting. Input 2 is a GEOMETRY GUIDE ONLY: its regular hex is the exact maximum footprint, never draw its white outline, green panel, or background. Input 3 is STYLE REFERENCE ONLY, the phone screenshot of Civilization V strategic view. Primary change: eliminate the wide empty ring around the terrain. Redesign the silhouette and arrange the relief to occupy almost the whole hex, with actual terrain forms reaching near all six sides; NOT merely a small central icon scaled up, NOT just a shadow halo. Large terrain feature designed to blanket 78-86 percent of the hex area while staying wholly inside it. Terrain slopes must end naturally and stay intact with just a very narrow 2-4 pixel breathing rim at final 210px scale. No cropping by a hex polygon; no flat polygon slab or visible tile base. Preserve the soft painterly cartographic style, no dark outlines, no vector symbols, no stickers. OUTPUT: a single square image of the complete foreground relief on GENUINELY TRANSPARENT background. All regions outside the terrain are transparent. Do not paint any grass/stone base, labels, grid, frame, text or watermarks.\nLOW ROUNDED OPEN HILLS, not sharp mountains. FLAT-TOP regular hex, vertices at normalized coordinates (1,.5),(.75,.933),(.25,.933),(0,.5),(.25,.067),(.75,.067). Fill the broad hex with multiple overlapping rounded hill ridges from the upper horizontal side to the lower horizontal side; secondary hills/slopes reach the far left and right points. Relative height of the composition must be MUCH larger than the old thin horizontal hill cluster. Broad foreground slopes and rear rounded summits should leave almost no empty top/bottom field, and no broad oval margin. Keep rounded summits, a few pale highlights and restrained shadows.",
+      "perimeter_refinement_prompt": "Use case: precise-object-edit. Edit input 1, the dense painted terrain sprite. Input 2 is the old smaller tile for brushwork/color comparison only. Keep the NEW LARGE SCALE and interior arrangement in input 1; FIX ONLY THE PERIMETER. The current outer silhouette looks cut with six straight sides like a hexagonal terrain slab. This is wrong. Replace ALL straight geometric boundary segments with naturally ending terrain: individual rounded foothill toes, short tapering ridges, irregularly scalloped slopes, and small transparent coves between them. Let actual complete landforms determine the outline, never a polygon cut. Each slope must visibly taper down and end inside the allowed hex footprint. IMPORTANT: retain roughly 75-85% coverage of the hex; do NOT return to a small central icon with a broad empty ring. The outermost natural terrain tips should still reach near the six sides, with varied small local insets, but terrain is not allowed to cross those imaginary sides. There must be no straight outline, hex border, geometric platform, cross section, frame, baseplate, or rim. Real relief stays recognizably large right up toward the outer edge; do not fake coverage with a shadow/colored blob. Preserve warm cream-lit ridges, muted olive-grey shadows, upper-left light, soft painted cartographic strategic-map style. GENUINELY TRANSPARENT background, no painted tile background or ground polygon, no lines, labels, or text. One full square sprite, keep all summits intact.\nThese are LOW ROUNDED OPEN HILLS. Keep multiple rows of broad low rounded summits with gently ending convex footslopes, no sharp mountain peaks.\nFlat-top footprint, broad horizontally with left/right tips, widest through the middle: reach toward those tips with natural ridge ends, but remove every long straight top, bottom, or slanted perimeter segment.",
+      "generated_source_filename": "exec-da20548c-6dbc-4c93-8a26-30e85b11f7b5.png"
+    },
+    {
+      "id": "mountains-pointy",
+      "file": "mountains-pointy-dense-v2.png",
+      "background": "stone.png",
+      "orientation": "pointy",
+      "dimensions": [
+        210,
+        210
+      ],
+      "bytes": 75664,
+      "foreground_bounds": {
+        "left": 16,
+        "top": 12,
+        "right": 193,
+        "bottom": 197
+      },
+      "foreground_pixel_fraction_of_hex": 0.7549978486164683,
+      "solid_foreground_fraction_of_hex": 0.7231235752516836,
+      "outside_foreground_pixels": 0,
+      "minimum_clearance_px": 2.432667397366046,
+      "sha256": "d6aeca6c87b249343613c83e4863bcf0c71b305fe3f7d34765e2859726c8448b",
+      "source_images": [
+        "background-assets/public/terrain/schematic/backgrounds/v1/mountains-pointy.png",
+        "tile-window-work/design/schematic-tile-visible-area/v1/grass-visible-pointy.png",
+        "Owner-supplied Civilization V strategic-view screenshot (not committed)"
+      ],
+      "initial_composition_prompt": "Use case: precise-object-edit. Asset type: high-readability painted terrain relief sprite for a 210x210 hex map. Input 1 is the OLD TILE TO REDESIGN, keep its soft brushwork, warm cream sunlit ridges, muted olive shadows, clear terrain identity and upper-left lighting. Input 2 is a GEOMETRY GUIDE ONLY: its regular hex is the exact maximum footprint, never draw its white outline, green panel, or background. Input 3 is STYLE REFERENCE ONLY, the phone screenshot of Civilization V strategic view. Primary change: eliminate the wide empty ring around the terrain. Redesign the silhouette and arrange the relief to occupy almost the whole hex, with actual terrain forms reaching near all six sides; NOT merely a small central icon scaled up, NOT just a shadow halo. Large terrain feature designed to blanket 78-86 percent of the hex area while staying wholly inside it. Terrain slopes must end naturally and stay intact with just a very narrow 2-4 pixel breathing rim at final 210px scale. No cropping by a hex polygon; no flat polygon slab or visible tile base. Preserve the soft painterly cartographic style, no dark outlines, no vector symbols, no stickers. OUTPUT: a single square image of the complete foreground relief on GENUINELY TRANSPARENT background. All regions outside the terrain are transparent. Do not paint any grass/stone base, labels, grid, frame, text or watermarks.\nA LARGE BARE MOUNTAIN MASSIF, one dominant high sharp summit and several connected subsidiary ridges, with fluted rugged slopes and natural broad rocky foothills. POINTY-TOP regular hex, vertices at normalized coordinates (0.5,0),(.933,.25),(.933,.75),(.5,1),(.067,.75),(.067,.25). Main summit nearly reaches the top point; extended side ridges and foothills approach both upper slanted and both vertical sides, and foreground ridges taper toward the bottom point. Much broader mass of real mountain slopes than the old solitary cone, filling the hex footprint without an empty ring. Cream pale stone highlights, grey olive shaded slopes, no deep snow blanket.",
+      "perimeter_refinement_prompt": "Use case: precise-object-edit. Edit input 1, the dense painted terrain sprite. Input 2 is the old smaller tile for brushwork/color comparison only. Keep the NEW LARGE SCALE and interior arrangement in input 1; FIX ONLY THE PERIMETER. The current outer silhouette looks cut with six straight sides like a hexagonal terrain slab. This is wrong. Replace ALL straight geometric boundary segments with naturally ending terrain: individual rounded foothill toes, short tapering ridges, irregularly scalloped slopes, and small transparent coves between them. Let actual complete landforms determine the outline, never a polygon cut. Each slope must visibly taper down and end inside the allowed hex footprint. IMPORTANT: retain roughly 75-85% coverage of the hex; do NOT return to a small central icon with a broad empty ring. The outermost natural terrain tips should still reach near the six sides, with varied small local insets, but terrain is not allowed to cross those imaginary sides. There must be no straight outline, hex border, geometric platform, cross section, frame, baseplate, or rim. Real relief stays recognizably large right up toward the outer edge; do not fake coverage with a shadow/colored blob. Preserve warm cream-lit ridges, muted olive-grey shadows, upper-left light, soft painted cartographic strategic-map style. GENUINELY TRANSPARENT background, no painted tile background or ground polygon, no lines, labels, or text. One full square sprite, keep all summits intact.\nThese are BARE MOUNTAINS. Keep the high dominant pointed main summit, connected secondary peaks, and broad rugged foothills. Fix flat chopped sidewalls and bottom by replacing them with natural complete tapering ridge ends.\nPointy-top footprint, long vertically with a top and bottom point, widest through the middle: naturally taper the composition toward those points; no geometric cuts or long straight vertical side edges.",
+      "generated_source_filename": "exec-cc5984c0-b9ec-4547-b291-8e191b6967c8.png"
+    },
+    {
+      "id": "mountains-flat",
+      "file": "mountains-flat-dense-v2.png",
+      "background": "stone.png",
+      "orientation": "flat",
+      "dimensions": [
+        210,
+        210
+      ],
+      "bytes": 76718,
+      "foreground_bounds": {
+        "left": 8,
+        "top": 18,
+        "right": 200,
+        "bottom": 190
+      },
+      "foreground_pixel_fraction_of_hex": 0.7521350989823913,
+      "solid_foreground_fraction_of_hex": 0.7165601980418483,
+      "outside_foreground_pixels": 0,
+      "minimum_clearance_px": 1.4676223927187237,
+      "sha256": "b1794b4bb8b6d95199dec4df7dc31ce3e76130ffe50bea2065bc312377db11a5",
+      "source_images": [
+        "background-assets/public/terrain/schematic/backgrounds/v1/mountains-flat.png",
+        "tile-window-work/design/schematic-tile-visible-area/v1/grass-visible-flat.png",
+        "Owner-supplied Civilization V strategic-view screenshot (not committed)"
+      ],
+      "initial_composition_prompt": "Use case: precise-object-edit. Asset type: high-readability painted terrain relief sprite for a 210x210 hex map. Input 1 is the OLD TILE TO REDESIGN, keep its soft brushwork, warm cream sunlit ridges, muted olive shadows, clear terrain identity and upper-left lighting. Input 2 is a GEOMETRY GUIDE ONLY: its regular hex is the exact maximum footprint, never draw its white outline, green panel, or background. Input 3 is STYLE REFERENCE ONLY, the phone screenshot of Civilization V strategic view. Primary change: eliminate the wide empty ring around the terrain. Redesign the silhouette and arrange the relief to occupy almost the whole hex, with actual terrain forms reaching near all six sides; NOT merely a small central icon scaled up, NOT just a shadow halo. Large terrain feature designed to blanket 78-86 percent of the hex area while staying wholly inside it. Terrain slopes must end naturally and stay intact with just a very narrow 2-4 pixel breathing rim at final 210px scale. No cropping by a hex polygon; no flat polygon slab or visible tile base. Preserve the soft painterly cartographic style, no dark outlines, no vector symbols, no stickers. OUTPUT: a single square image of the complete foreground relief on GENUINELY TRANSPARENT background. All regions outside the terrain are transparent. Do not paint any grass/stone base, labels, grid, frame, text or watermarks.\nA LARGE BARE MOUNTAIN MASSIF, one dominant high sharp summit and connected secondary peaks/ridges, with fluted rugged slopes and broad rocky foothills. FLAT-TOP regular hex, vertices at normalized coordinates (1,.5),(.75,.933),(.25,.933),(0,.5),(.25,.067),(.75,.067). Main summit nearly reaches the upper horizontal side, flanking ridge ends reach near the left and right side points at midheight, and foreground mountain slopes reach near the lower horizontal side. Avoid the old small isolated cone with a wide empty ring. Spread real mountain forms through nearly all of this broad hex footprint, never cropping peaks, all slopes end naturally just inside the guide. Cream pale stone highlights, grey olive shaded slopes, no deep snow blanket.",
+      "perimeter_refinement_prompt": "Use case: precise-object-edit. Edit input 1, the dense painted terrain sprite. Input 2 is the old smaller tile for brushwork/color comparison only. Keep the NEW LARGE SCALE and interior arrangement in input 1; FIX ONLY THE PERIMETER. The current outer silhouette looks cut with six straight sides like a hexagonal terrain slab. This is wrong. Replace ALL straight geometric boundary segments with naturally ending terrain: individual rounded foothill toes, short tapering ridges, irregularly scalloped slopes, and small transparent coves between them. Let actual complete landforms determine the outline, never a polygon cut. Each slope must visibly taper down and end inside the allowed hex footprint. IMPORTANT: retain roughly 75-85% coverage of the hex; do NOT return to a small central icon with a broad empty ring. The outermost natural terrain tips should still reach near the six sides, with varied small local insets, but terrain is not allowed to cross those imaginary sides. There must be no straight outline, hex border, geometric platform, cross section, frame, baseplate, or rim. Real relief stays recognizably large right up toward the outer edge; do not fake coverage with a shadow/colored blob. Preserve warm cream-lit ridges, muted olive-grey shadows, upper-left light, soft painted cartographic strategic-map style. GENUINELY TRANSPARENT background, no painted tile background or ground polygon, no lines, labels, or text. One full square sprite, keep all summits intact.\nThese are BARE MOUNTAINS. Keep the high dominant pointed main summit, connected secondary peaks, and broad rugged foothills. Fix flat chopped sidewalls and bottom by replacing them with natural complete tapering ridge ends.\nFlat-top footprint, broad horizontally with left/right tips, widest through the middle: reach toward those tips with natural ridge ends, but remove every long straight top, bottom, or slanted perimeter segment.",
+      "generated_source_filename": "exec-7fbf4258-8b5f-4d11-bade-0887da66f38c.png"
+    }
+  ]
+}
