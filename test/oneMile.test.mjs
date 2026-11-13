@@ -118,7 +118,7 @@ test('destructive support loss requires consent and leaves an exact undo snapsho
 });
 
 // P01–03: distinct rendering contracts absent from existing geometry/edit cases.
-import {finePoiLabel, fineRoadPresentation} from '../src/oneMilePresentation.ts';
+import {finePoiLabel, fineRoadPresentation, fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
 test('fine POI label retains localized type and explicit name without fallback duplication',()=>{
  assert.equal(finePoiLabel('Городок','Айхенхайм'),'Городок Айхенхайм');
  assert.equal(finePoiLabel('Town','Eichenheim'),'Town Eichenheim');
@@ -129,10 +129,15 @@ const road={key:'d',roadId:1,segmentKey:'s',x1:0,y1:0,x2:10,y2:0,kind:'road'};
 const river={key:'river-segment-2-1',x1:5,y1:-5,x2:5,y2:5,width:6};
 const cross=kind=>({key:'c',roadId:1,roadSegmentKey:'s',riverId:2,x:5,y:0,kind});
 test('fine crossing paint distinguishes bridge, translucent ford and a real ferry road gap',()=>{
+ const inputs=JSON.stringify({road,river});
+ const hex6=Math.sqrt(3)*28,hex1=hex6/6;for(let F=1;F<=5;F++){const source=hex6*(.04+F*.035),visible=fineRiverStrokeWidth(source);assert.equal(visible,source);assert.ok(Math.abs(visible/hex1/(source/hex6)-6)<1e-12);}
  const bridge=fineRoadPresentation(road,[cross('bridge')],[river]);assert.equal(bridge.rails.length,2);assert.equal(bridge.pieces.length,1);
  const ford=fineRoadPresentation(road,[cross('ford')],[river]);assert.equal(ford.pieces.filter(p=>p.opacity===.42).length,1);
  const ferry=fineRoadPresentation(road,[cross('ferry')],[river]);assert.equal(ferry.rails.length,0);assert.equal(ferry.pieces.length,2);
- assert.ok(ferry.pieces[0].x2<5&&ferry.pieces[1].x1>5);assert.equal(JSON.stringify(road),JSON.stringify({...road}));
+ assert.equal(ferry.pieces[0].x2,2,'visible width6 ends at bank2');assert.equal(ferry.pieces[1].x1,8,'visible width6 starts at bank8');
+ const wet=ford.pieces.find(p=>p.opacity===.42);assert.equal(wet.x1,2);assert.equal(wet.x2,8);
+ for(const rail of bridge.rails){const [a,b]=rail.points.split(' ').map(p=>p.split(',').map(Number));assert.ok(a[0]<2&&b[0]>8,'rails span visible banks');}
+ assert.equal(JSON.stringify({road,river}),inputs,'input geometry stays unchanged');
 });
 test('fine crossing splits all ordered unique crossings and clamps endpoint or degenerate input',()=>{
  const a={...cross('ferry'),key:'a',x:2},b={...cross('ford'),key:'b',x:8};
@@ -141,5 +146,5 @@ test('fine crossing splits all ordered unique crossings and clamps endpoint or d
  for(const p of plan.pieces)assert.ok(p.x1>=0&&p.x2<=10&&p.x1<p.x2);
  assert.deepEqual(plan,fineRoadPresentation(road,[a,b],rivers));
  assert.deepEqual(fineRoadPresentation({...road,x2:0},[a],rivers).pieces,[]);
- const edge=fineRoadPresentation(road,[{...a,x:0}],[{...river,x1:0,x2:0}]);assert.ok(edge.pieces.every(p=>Number.isFinite(p.x1)&&p.x1>=0));
+ const edge=fineRoadPresentation(road,[{...a,x:0}],[{...river,x1:0,x2:0}]);assert.equal(edge.pieces.length,1);assert.equal(edge.pieces[0].x1,3);assert.equal(edge.pieces[0].x2,10);assert.ok(edge.pieces.every(p=>Number.isFinite(p.x1)&&p.x1>=0));
 });

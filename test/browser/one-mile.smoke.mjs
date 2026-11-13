@@ -42,6 +42,9 @@ try{
  const step=page.locator('[data-fine-step]');
  await page.locator('input[type=file]').setInputFiles({name:'one-mile.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});await step.waitFor();await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  assert.match(await page.locator('details.export-menu small').textContent(),/JSON v15/);await shot('desktop-6.jpg');
+ const riverPaint=nodes=>nodes.map(n=>['x1','y1','x2','y2','stroke-width'].map(k=>n.getAttribute(k)));
+ const sourceRiverPaint=await page.locator('.rivers-layer .river-polyline').evaluateAll(riverPaint);
+ const sourceHexWidth=await page.locator('polygon.hex[data-hex-key]').first().evaluate(n=>Math.max(...[...n.points].map(p=>p.x))-Math.min(...[...n.points].map(p=>p.x)));
  // P04: same actual fixture against unchanged pre-correction native6 build.
  const baselineSha=process.env.ONE_MILE_NATIVE6_BASELINE;
  if(baselineSha){assert.match(baselineSha,/^[0-9a-f]{40}$/); // Opt-in acceptance diagnostic, not a permanent historical UI contract.
@@ -58,6 +61,9 @@ try{
  const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});assert.ok(before.equals(after),'P04 native6 pixel-identical on same world '+width);baselineProfiles.push({width,pixelIdentical:true});}
  manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
  await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
+ const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(riverPaint);assert.deepEqual(fineRiverPaint,sourceRiverPaint,'WR01 same river widths and geometry across6/1');
+ const fineHexWidth=await page.locator('[data-fine-key] polygon').first().evaluate(n=>Math.max(...[...n.points].map(p=>p.x))-Math.min(...[...n.points].map(p=>p.x)));assert.ok(Math.abs(sourceHexWidth/fineHexWidth-6)<1e-9);
+ manifest.width_projection={sourceHexWidth,fineHexWidth,waterWidthPreserved:true,waterHexFractionRatio:sourceHexWidth/fineHexWidth,riverSegments:sourceRiverPaint.length};
  assert.equal(await page.locator('polygon.hex[data-hex-key]').count(),0,'no source-six grid under the fine grid');
  const keys=await page.locator('[data-fine-key]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-key'))),occupied=new Set(keys);
  assert.ok(keys.length>100);const candidates=await page.locator('[data-fine-candidate]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-candidate')));assert.ok(candidates.length);

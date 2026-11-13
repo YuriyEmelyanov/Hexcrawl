@@ -1,5 +1,8 @@
 /** Presentation only: never writes or repairs accepted geographic data. */
 export const finePoiLabel=(type:string,name?:string)=>name?`${type} ${name}`:type;
+/** Source-six and fine artwork share SVG/world coordinates. Changing the grid
+ * changes the water/hex ratio, never the existing visible water width. */
+export const fineRiverStrokeWidth=(sourceWidth:number)=>Number.isFinite(sourceWidth)&&sourceWidth>0?sourceWidth:0;
 type Line={key:string;x1:number;y1:number;x2:number;y2:number};
 export type FineRoad=Line&{roadId:number;segmentKey:string;kind:string};
 export type FineCrossing={key:string;roadId:number;roadSegmentKey:string;riverId:number;x:number;y:number;kind:string};
@@ -23,9 +26,9 @@ export function fineRoadPresentation(road:FineRoad,crossings:readonly FineCrossi
    const along=((c.x-r.x1)*rx+(c.y-r.y1)*ry)/(rl*rl),distance=Math.abs((c.x-r.x1)*ry-(c.y-r.y1)*rx)/rl;
    if(along< -1e-7||along>1+1e-7||distance>1e-6)continue;
    const sine=Math.abs(ux*ry-uy*rx)/rl;
-   // Use current visible water (fine stroke is width/6). Nearly parallel
+   // Use the same visible water width as the fine renderer. Nearly parallel
    // cases consume the clipped segment rather than inventing distant banks.
-   half=Math.max(half,(r.width/12)/Math.max(sine,1e-6));
+   half=Math.max(half,(fineRiverStrokeWidth(r.width)/2)/Math.max(sine,1e-6));
   }
   if(!half||!['bridge','ford','ferry'].includes(c.kind))continue;
   matched.push(c);const a=Math.max(0,t-half),b=Math.min(length,t+half);

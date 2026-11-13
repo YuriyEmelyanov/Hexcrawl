@@ -91,3 +91,7 @@ framing without binding new POI to provisional paths.
 
 ## C02/C05 presentation correction (OM-C-PRESENT1)
 Fine POI labels retain localized type before explicit name; unnamed fallback is shown once. Fine crossing artwork preserves existing bridge/ford/ferry identity with paired rails/translucent water-crossing/gap, respectively. Road splitting affects render primitives only and uses current visible stroke envelope; no geometry, width calibration, POI size, anchors, schema or RNG change. Multiple crossings are ordered/deduped by stable key. Degenerate/unmatched crossings do not invent remote bank geometry; native6renderer unchanged. Remaining owner clauses C01/03/04/06/07/08 and physical C02placement remain open. Browser evidence uses one explicitly legalF2ford variant of existingroad-entry world toshowall3types; not a new geographical series.
+
+
+## WR1 relative river width (GEO1-WR1)
+Source-six and fine scenes share world/SVG coordinates. Fine water retains source stroke width; changing6→1 multiplies water/hex fraction by6, without a physical F1–5 calibration or document migration. Crossing gaps, ford opacity intervals and bridge rail extents use the same visible-width function. Native6, paths, anchors, IDs, POI extents, schema and RNG are unchanged. GEO-D01, edge routing, lake mouths, required shoreline POI and disputed town sizes remain open. Future free/endcap geometry needs a finite joined-envelope contract before this helper is generalized.

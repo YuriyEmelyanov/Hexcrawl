@@ -1,4 +1,4 @@
-import {fineRoadPresentation,type FineRoad,type FineCrossing} from './oneMilePresentation';
+import {fineRoadPresentation,fineRiverStrokeWidth,type FineRoad,type FineCrossing} from './oneMilePresentation';
 import type {ReactNode,MouseEvent,KeyboardEvent} from 'react';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,detailFootprintBoundary,type DetailCell,type WorldPoint} from './detailGrid';
 import {detailFootprintExtentMiles,detailFootprintWorldAnchor} from './detailSizes';
@@ -27,7 +27,7 @@ export function OneMileArtwork(p:Props){
    </g>;
   })}</g>
   <g pointerEvents="none">{p.water}</g>
-  <g className="rivers-layer" pointerEvents="none">{p.rivers.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className="river-polyline" strokeWidth={r.width/6}/>)}</g>
+  <g className="rivers-layer" pointerEvents="none">{p.rivers.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className="river-polyline" strokeWidth={fineRiverStrokeWidth(r.width)}/>)}</g>
   <g className="roads-layer" pointerEvents="none">{p.roads.map(r=>{const plan=fineRoadPresentation(r,p.crossings,p.rivers);return <g key={r.key} data-fine-road={r.key}>
    {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>)}
    {plan.rails.map(rail=><polyline key={rail.key} points={rail.points} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
