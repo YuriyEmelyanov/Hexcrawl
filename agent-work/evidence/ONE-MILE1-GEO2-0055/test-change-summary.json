@@ -1,0 +1,71 @@
+{
+  "base_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "head_sha": "1c6cb9091cbd2b5310224cff09e535899824d873",
+  "suites": [
+    {
+      "suite": "Node node:test / geometryRefinementGrid",
+      "added": 4,
+      "removed": 0,
+      "modified": 0,
+      "scenario_risk": "G201 canonical shared edges; G202 stable seeded choice; six-direction perimeter/fallback; blocked finite routing",
+      "reuse_or_new_reason": "Existing detailGrid/oneMile cover polygons/projection and straight crossing paint, not new constrained edge graph/side selection. Existing other hashfunctions use different UTF16/domain recipes; specified GEO2UTF8 contract has independent BigInt golden.",
+      "source_of_count": "Exact3-file base..head diff,4named node:test cases in newfile, not parameter iterations or lines"
+    },
+    {
+      "suite": "Browser",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "scenario_risk": "No App activation",
+      "reuse_or_new_reason": "Deferred until coherent GEO2App package; no permanent browsertest added"
+    },
+    {
+      "suite": "RNG",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "scenario_risk": "No world-generator activation",
+      "reuse_or_new_reason": "Existing RNG suite remains; not rerun for this unmounted checkpoint"
+    }
+  ],
+  "execution": {
+    "focused": {
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "initial_development": {
+      "executed": 4,
+      "passed": 3,
+      "failed": 1,
+      "reason": "Floating arithmetic order differed from existing grid output; conversion changed to same multiply order and focusedrerun4/4 passed"
+    },
+    "full_node": {
+      "status": "passed",
+      "tests": 389,
+      "pass": 389,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 901114.775494,
+      "command": "npm run check",
+      "typescript": "passed",
+      "build": "passed",
+      "node_version": "v24.22.1",
+      "log_ref": "agent-work/evidence/ONE-MILE1-GEO2-0055/npm-check.log"
+    },
+    "temporary_graph_witness": {
+      "separate_from_Node": true,
+      "permanent_case_growth": 0,
+      "fixture": "road-entry-zigzags.json",
+      "fine_cells": 3471,
+      "status": "pass"
+    },
+    "browser": {
+      "status": "not_run_unmounted_checkpoint"
+    },
+    "rng": {
+      "status": "not_run_unmounted_checkpoint"
+    }
+  }
+}

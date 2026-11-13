@@ -1,0 +1,98 @@
+{
+  "base_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "head_sha": "1c6cb9091cbd2b5310224cff09e535899824d873",
+  "head_tree_sha": "1e6297f47dbcab13ef53ed1105e6b5ef51a5a23f",
+  "source_files": [
+    {
+      "path": "docs/geo2-work-in-progress.md",
+      "status": "added"
+    },
+    {
+      "path": "src/geometryRefinementGrid.ts",
+      "status": "added"
+    },
+    {
+      "path": "test/geometryRefinementGrid.test.mjs",
+      "status": "added"
+    }
+  ],
+  "remote_exact_readback_verified": true,
+  "worktree_head": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "worktree_state": "Baseline tracked files unchanged;3new untracked source/test/doc files byteequal remoteWIPhead; dependency link excluded",
+  "activation": false,
+  "scope": "Only integer edge graph, stable UTF8FNV left/right choice, vertex-port perimeter alternatives and min-edge helper. No source-distance/junction allocator, fullGeometryPlan, POI/road/mouth/crossing/save/UI implementation.",
+  "finite_work_bounds": {
+    "cells": 4096,
+    "vertices": 24576,
+    "edges": 24576,
+    "shortest_path": "BFS visits each reachable vertex once; each adjacency twice, sorting numeric stable ties. Full planner constraints not implemented."
+  },
+  "product_branch": "agent/hx-bl-051-geo2",
+  "existing_pr": 503,
+  "existing_pr_head": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "new_pr_created": false,
+  "reason": "Do not duplicate PR503 or present unmounted primitive as coherent review_ready package.",
+  "commands": {
+    "node": "v24.22.1",
+    "focused": "node --test test/geometryRefinementGrid.test.mjs",
+    "typescript": "npx tsc --noEmit",
+    "full": "npm run check"
+  },
+  "results": {
+    "focused": {
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0
+    },
+    "initial_development": {
+      "executed": 4,
+      "passed": 3,
+      "failed": 1,
+      "reason": "Floating arithmetic order differed from existing grid output; conversion changed to same multiply order and focusedrerun4/4 passed"
+    },
+    "full_node": {
+      "status": "passed",
+      "tests": 389,
+      "pass": 389,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 901114.775494,
+      "command": "npm run check",
+      "typescript": "passed",
+      "build": "passed",
+      "node_version": "v24.22.1",
+      "log_ref": "agent-work/evidence/ONE-MILE1-GEO2-0055/npm-check.log"
+    },
+    "temporary_graph_witness": {
+      "separate_from_Node": true,
+      "permanent_case_growth": 0,
+      "fixture": "road-entry-zigzags.json",
+      "fine_cells": 3471,
+      "status": "pass"
+    },
+    "browser": {
+      "status": "not_run_unmounted_checkpoint"
+    },
+    "rng": {
+      "status": "not_run_unmounted_checkpoint"
+    }
+  },
+  "graph_witness": {
+    "source_head": "1c6cb9091cbd2b5310224cff09e535899824d873",
+    "fixture": "test/fixtures/road-entry-zigzags.json",
+    "fixture_sha256": "cb2333bc60a64dcdffe44f49bbba680b6f496afc6f7a0d46cb38d56a26f52d01",
+    "source_cells": 93,
+    "fine_cells": 3471,
+    "integer_vertices": 7434,
+    "unique_edges": 10904,
+    "max_degree": 3,
+    "input_unchanged": true,
+    "status": "pass",
+    "temporary_diagnostic": true,
+    "permanent_case_growth": 0,
+    "limits": "Graph construction on one retained fixture, not routing53segments, POI/road/crossing/mouth adaptation, browser or GeometryPlan acceptance"
+  },
+  "raw_log_ref": "agent-work/evidence/ONE-MILE1-GEO2-0055/npm-check.log",
+  "console_rejections": "Some retained fixture continuations intentionally reject. worldContinuation.test.mjs asserts deterministic outcome and exactrollback; aggregate389pass/0fail. Not classified as a new product failure."
+}
