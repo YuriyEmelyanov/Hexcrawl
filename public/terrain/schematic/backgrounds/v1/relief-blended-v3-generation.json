@@ -1,0 +1,82 @@
+{
+  "revision": "blended-v3",
+  "created_on": "2026-11-14",
+  "tool": "image_gen.imagegen",
+  "purpose": "Paint the relief and its approved background as one opaque coherent image, removing pale keyline and cutout edge while preserving the large relief composition.",
+  "method": {
+    "generation": "Four separate edits with opaque output; each dense-v2 tile and its approved grass/stone base supplied as references.",
+    "export": "Square painted image uniformly resized to 210x210, sRGB RGB PNG; no extracted sprite, foreground mask or postprocessed feathering.",
+    "background_note": "Six base background files are unchanged. The base inside each new relief tile is repainted by the image edit to blend naturally, rather than guaranteed pixel-identical to the separate background file.",
+    "validation": "PNG dimensions/channels/opacity checked; all four reliefs and both repeated-tile map orientations visually reviewed for natural transition, readable ridges, complete peaks and hex-safe layout."
+  },
+  "assets": [
+    {
+      "id": "open-hills-pointy",
+      "file": "open-hills-pointy-blended-v3.png",
+      "orientation": "pointy",
+      "background": "grass.png",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 92826,
+      "corner_mean_absolute_rgb_difference_from_base": 5.23,
+      "source_file": "exec-023013bc-d853-4bb5-b845-55c27b9d956d.png",
+      "sha256": "69365ddb0f0e42165433871884fa2726f83024728cf075960af35bbf99e738ad",
+      "prompt": "Use case: precise-object-edit / compositing. You are editing a FINAL OPAQUE SQUARE terrain tile, NOT producing a cutout or transparent sprite. Image 1 is the exact tile to improve; image 2 is the approved base background to match. Preserve the arrangement, large scale, footprint, vertical orientation, main summits, internal ridge detail and soft Civilization-V-strategic-view painted map style from image 1. CHANGE ONLY the integration of relief into its background. The current image has a thin pale continuous keyline and hard sticker-like perimeter separating the terrain from the underlying ground. Eliminate this artifact completely. Paint the tile as one continuous landscape: the lower slope colors gradually converge to the underlying ground color, foothill shading tapers away, and the background's same mottled pigment/texture continues through the footslopes. Use a varied natural 8-15px transition band at final 210px scale, with short interleaving low slope runs and patches of ground. No traceable continuous pale line, no dark outline, no opaque cutout boundary, no rim, no drop shadow, no glowing halo, no uniform airbrushed fog ring. Keep crisp mountain/hill ridge highlights INSIDE the relief; only the bases and outer foothill transitions soften. This should look like an artist painted land relief directly into the original background, a SINGLE coherent image. Do not shrink the existing terrain mass or add a wide vacant ring; it should still fill most of the visible hex. Keep outside areas and all four corners matching image 2. Keep the source's regular-hex-safe placement; do not let peaks or meaningful relief extend into the square corners or cross the imaginary hex boundary. No visible hex border or geometrical baseplate. OUTPUT a full 1:1 SQUARE opaque RGB-like painted tile, background fills the entire square, absolutely NO transparency, no checkerboard, no text, grid, UI, border, watermarks. Do not globally blur the tile.\nLOW ROUNDED OPEN HILLS: gently grass-covered broad slopes, pale cream highlights only on summits/ridges. Let grass color and texture climb into the lower hills so there is no outline around the hill group.\nPOINTY-TOP safe footprint in the square: top vertex (.5,0), upper-right(.933,.25),lower-right(.933,.75),bottom(.5,1),lower-left(.067,.75),upper-left(.067,.25). Keep all meaningful relief inside; no line drawn around it."
+    },
+    {
+      "id": "open-hills-flat",
+      "file": "open-hills-flat-blended-v3.png",
+      "orientation": "flat",
+      "background": "grass.png",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 97244,
+      "corner_mean_absolute_rgb_difference_from_base": 6.65,
+      "source_file": "exec-1f98451f-fe70-4dbe-a483-00b933fb39c5.png",
+      "sha256": "050b4c69abc3d822a8028ea9fbe4d2e357ca6b6172c7ffac5df11497b3b58bff",
+      "prompt": "Use case: precise-object-edit / compositing. You are editing a FINAL OPAQUE SQUARE terrain tile, NOT producing a cutout or transparent sprite. Image 1 is the exact tile to improve; image 2 is the approved base background to match. Preserve the arrangement, large scale, footprint, vertical orientation, main summits, internal ridge detail and soft Civilization-V-strategic-view painted map style from image 1. CHANGE ONLY the integration of relief into its background. The current image has a thin pale continuous keyline and hard sticker-like perimeter separating the terrain from the underlying ground. Eliminate this artifact completely. Paint the tile as one continuous landscape: the lower slope colors gradually converge to the underlying ground color, foothill shading tapers away, and the background's same mottled pigment/texture continues through the footslopes. Use a varied natural 8-15px transition band at final 210px scale, with short interleaving low slope runs and patches of ground. No traceable continuous pale line, no dark outline, no opaque cutout boundary, no rim, no drop shadow, no glowing halo, no uniform airbrushed fog ring. Keep crisp mountain/hill ridge highlights INSIDE the relief; only the bases and outer foothill transitions soften. This should look like an artist painted land relief directly into the original background, a SINGLE coherent image. Do not shrink the existing terrain mass or add a wide vacant ring; it should still fill most of the visible hex. Keep outside areas and all four corners matching image 2. Keep the source's regular-hex-safe placement; do not let peaks or meaningful relief extend into the square corners or cross the imaginary hex boundary. No visible hex border or geometrical baseplate. OUTPUT a full 1:1 SQUARE opaque RGB-like painted tile, background fills the entire square, absolutely NO transparency, no checkerboard, no text, grid, UI, border, watermarks. Do not globally blur the tile.\nLOW ROUNDED OPEN HILLS: gently grass-covered broad slopes, pale cream highlights only on summits/ridges. Let grass color and texture climb into the lower hills so there is no outline around the hill group.\nFLAT-TOP safe footprint in the square: right vertex(1,.5),lower-right(.75,.933),lower-left(.25,.933),left(0,.5),upper-left(.25,.067),upper-right(.75,.067). Keep all meaningful relief inside; no line drawn around it."
+    },
+    {
+      "id": "mountains-pointy",
+      "file": "mountains-pointy-blended-v3.png",
+      "orientation": "pointy",
+      "background": "stone.png",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 87022,
+      "corner_mean_absolute_rgb_difference_from_base": 2.36,
+      "source_file": "exec-a3e47c12-cc78-4a69-863d-5959e2a8230a.png",
+      "sha256": "78e81fd2944be14e6adac5355d59e27e6360b535e3363694213c76781ebe3436",
+      "prompt": "Use case: precise-object-edit / compositing. You are editing a FINAL OPAQUE SQUARE terrain tile, NOT producing a cutout or transparent sprite. Image 1 is the exact tile to improve; image 2 is the approved base background to match. Preserve the arrangement, large scale, footprint, vertical orientation, main summits, internal ridge detail and soft Civilization-V-strategic-view painted map style from image 1. CHANGE ONLY the integration of relief into its background. The current image has a thin pale continuous keyline and hard sticker-like perimeter separating the terrain from the underlying ground. Eliminate this artifact completely. Paint the tile as one continuous landscape: the lower slope colors gradually converge to the underlying ground color, foothill shading tapers away, and the background's same mottled pigment/texture continues through the footslopes. Use a varied natural 8-15px transition band at final 210px scale, with short interleaving low slope runs and patches of ground. No traceable continuous pale line, no dark outline, no opaque cutout boundary, no rim, no drop shadow, no glowing halo, no uniform airbrushed fog ring. Keep crisp mountain/hill ridge highlights INSIDE the relief; only the bases and outer foothill transitions soften. This should look like an artist painted land relief directly into the original background, a SINGLE coherent image. Do not shrink the existing terrain mass or add a wide vacant ring; it should still fill most of the visible hex. Keep outside areas and all four corners matching image 2. Keep the source's regular-hex-safe placement; do not let peaks or meaningful relief extend into the square corners or cross the imaginary hex boundary. No visible hex border or geometrical baseplate. OUTPUT a full 1:1 SQUARE opaque RGB-like painted tile, background fills the entire square, absolutely NO transparency, no checkerboard, no text, grid, UI, border, watermarks. Do not globally blur the tile.\nBARE ROCKY MOUNTAINS: maintain pointed dominant main peak and smaller connected rugged ridges. At their feet shift olive shadows/pale rock gradually into the approved warm grey-beige stone background. Broken rocky foothills gradually flatten out into that same stone texture, not grass.\nPOINTY-TOP safe footprint in the square: top vertex (.5,0), upper-right(.933,.25),lower-right(.933,.75),bottom(.5,1),lower-left(.067,.75),upper-left(.067,.25). Keep all meaningful relief inside; no line drawn around it."
+    },
+    {
+      "id": "mountains-flat",
+      "file": "mountains-flat-blended-v3.png",
+      "orientation": "flat",
+      "background": "stone.png",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 86073,
+      "corner_mean_absolute_rgb_difference_from_base": 4.61,
+      "source_file": "exec-b5843b6f-9c1f-47bc-ac99-54c604ddd3cd.png",
+      "sha256": "5a60feac018a94f1e0c84d87b9a3d66a23d27e20ea7ad5a25bf57691a797deb8",
+      "prompt": "Use case: precise-object-edit / compositing. You are editing a FINAL OPAQUE SQUARE terrain tile, NOT producing a cutout or transparent sprite. Image 1 is the exact tile to improve; image 2 is the approved base background to match. Preserve the arrangement, large scale, footprint, vertical orientation, main summits, internal ridge detail and soft Civilization-V-strategic-view painted map style from image 1. CHANGE ONLY the integration of relief into its background. The current image has a thin pale continuous keyline and hard sticker-like perimeter separating the terrain from the underlying ground. Eliminate this artifact completely. Paint the tile as one continuous landscape: the lower slope colors gradually converge to the underlying ground color, foothill shading tapers away, and the background's same mottled pigment/texture continues through the footslopes. Use a varied natural 8-15px transition band at final 210px scale, with short interleaving low slope runs and patches of ground. No traceable continuous pale line, no dark outline, no opaque cutout boundary, no rim, no drop shadow, no glowing halo, no uniform airbrushed fog ring. Keep crisp mountain/hill ridge highlights INSIDE the relief; only the bases and outer foothill transitions soften. This should look like an artist painted land relief directly into the original background, a SINGLE coherent image. Do not shrink the existing terrain mass or add a wide vacant ring; it should still fill most of the visible hex. Keep outside areas and all four corners matching image 2. Keep the source's regular-hex-safe placement; do not let peaks or meaningful relief extend into the square corners or cross the imaginary hex boundary. No visible hex border or geometrical baseplate. OUTPUT a full 1:1 SQUARE opaque RGB-like painted tile, background fills the entire square, absolutely NO transparency, no checkerboard, no text, grid, UI, border, watermarks. Do not globally blur the tile.\nBARE ROCKY MOUNTAINS: maintain pointed dominant main peak and smaller connected rugged ridges. At their feet shift olive shadows/pale rock gradually into the approved warm grey-beige stone background. Broken rocky foothills gradually flatten out into that same stone texture, not grass.\nFLAT-TOP safe footprint in the square: right vertex(1,.5),lower-right(.75,.933),lower-left(.25,.933),left(0,.5),upper-left(.25,.067),upper-right(.75,.067). Keep all meaningful relief inside; no line drawn around it."
+    }
+  ]
+}
