@@ -1,0 +1,97 @@
+# ONE-MILE1: состояние и совместимость
+
+Рабочая реализация отдельного PR503, спецификация OM-1.0 в ветке
+`agent-operations/agent-work/specs/HX-BL-051-ONE-MILE1.md`.
+Документ формата и транзакций. Переключатель1/6, fine-отрисовка и локальная
+карточка/форма подключены в рабочем PR. Это незавершённый пакет до полной
+проверки сценариев, actual UI и независимой приёмки; выпуск не разрешён.
+
+## Форматы
+
+| Внешняя версия JSON | Поведение этого пакета |
+|---|---|
+| 2–10 | Обычный импорт с прежними миграциями; сам импорт не создаёт fine-слой |
+| 15 | Требуется `map.physicalGrid` версии 3; все ссылки проверяются до setters |
+| 11–14, будущие | Атомарный отказ; это частные форматы других пакетов |
+
+`classification`, `featurePreparation` и неподдержанный Knave schema2/calls
+не принимаются под видом старой версии. Они не могут исчезнуть при следующем
+экспорте. Публичный Knave schema1, включая `content.byPoi`/`rollCounters`,
+поддерживается в 10 и 15 буквально, без перестроения содержимого.
+
+Без активного physical-слоя обычный writer сохраняет версию 10. Наличие
+проверенного слоя переключает writer на 15. Внутренние подготовительные
+структуры версий 1/2 геометрических helpers не разрешают импорт 11/14.
+
+## Physical schema3
+
+Слой содержит `schema: hexcrawl.detail1`, `version: 3`, `active: true`,
+фиксированный `grid.origin` в мировых милях, `orientation: pointy`,
+`convention: across_flats`, описание шестимильного источника, `viewStep: 1|6`,
+`poiIdentities`, `poiFootprints` и `fineCellEdits`. Необязательные
+`selectedCell`/`selectedWorldPoint` должны согласовываться и иметь принятую
+географическую поддержку. Рисунок полной fine-клетки не расширяет эту поддержку.
+
+Каждый ключ `fineCellEdits` — канонические безопасные целые axial `q,r`
+относительно единственного фиксированного grid этого документа. Значение:
+
+```json
+{"name":{"ru":"Опушка","en":"Forest edge"},"landBiomeId":"open_hills","note":"Следы на тропе"}
+```
+
+Все поля необязательны и означают только локальные overrides. Имя ограничено
+200 символами на язык, заметка — 20000. Неизвестные поля, отсутствующая
+географическая поддержка, неверный биом и land-override на смешанной/водной
+клетке отклоняются. Отсутствующая заметка не подставляет заметку исходного региона.
+Адреса source6 и fine не взаимозаменяемы. Origin нельзя менять при переносе
+авторских записей в другой документ без отдельной операции сопоставления.
+
+## Транзакции и ограничения checkpoint
+
+Подготовка адаптации создаёт только preview с захваченной ревизией. Apply
+принимает текущий preview один раз, проверяет весь кандидат и создаёт одну
+editor-транзакцию; Cancel не меняет карту, истории или RNG. Локальная команда
+проверяет выбранный fine-адрес, ревизию и язык, готовит все поля до записи и
+использует обычные capture/copy/apply/UndoRedo App. Generation history не
+получает фиктивную единицу генерации.
+
+Сброс и удаление последней единицы требуют согласия на потерю локальных
+данных, Undo восстанавливает полный слой. Более старый generation checkpoint
+не может молча затереть более поздние локальные записи. Если старый checkpoint не имеет fine-слоя, выжившие локальные записи
+переносятся в проверяемый кандидат с фиксированной сеткой и принятыми POI ID.
+Удалённые владельцы исключаются явно, новые/оставшиеся привязки проверяются
+до setters; неоднозначная геометрия по-прежнему безопасно отказывается.
+Согласие на потерю показывает конкретные fine-ключи. Регенерация хранит исходные fine-правки в rollback backup: промежуточный
+checkpoint может временно не иметь их поддержки, но потери вычисляются
+только по готовому кандидату. После его проверок пользователь подтверждает
+конкретные исчезающие клетки; отказ/ошибка возвращают исходный physicalGrid,
+RNG и обе истории. Успех и потеря с согласием — одна обычная транзакция.
+Обычное Mythic-королевство также подготавливает fine-геометрию только после
+завершения всей единицы, а не на промежуточных дорожных сетях. Владельцы
+вне заменяемой области сохраняют ID/привязки; новые владельцы получают
+свежие монотонные ID и геометрию по окончательным путям. Перезапись
+ручной/измеренной геометрии POI безопасно отказывается до отдельной явной
+адаптации. Содержимое новых Knave POI подготавливается до согласования fine-идентичностей; обязательная полная проверка карты выполняется после обоих этапов, до истории/setters. Полная mode/UI/attachment матрица OM12 ещё требует независимой проверки.
+
+Перенесены только геометрия, идентичности и POI-привязки из точного донора
+PR496. C-FILL, CLASSIFY1, TABLES1, PF2 и изменения алгоритмов рек/дорог сюда
+не входят. Новый POI проверяется по существующим водным и дорожным связям;
+несовместимая операция отказывается, а не переселяет принятый POI автоматически.
+
+В одномильном виде существующий контур озера (берег/острова) рисуется поверх собственных fine-фонов во всех трёх стилях и PNG. Подложка под озером использует прежний land-биом источника, но не меняет принятую воду/площади/редактор. Карточка различает локальные lake/sea по действительным источникам.
+
+OM-REV-001: during an ordinary Mythic build the renderer retains a readonly
+React scene of the accepted fine artwork/card and its SVG dimensions. The
+working document still defers fine reconciliation until the whole unit is ready.
+The scene is presentation-only, never serialized or added to either history;
+busy cell actions and the editor are disabled. Completion/refusal switches back
+to the actual accepted/restored document. This preserves the existing view and
+framing without binding new POI to provisional paths.
+
+
+## C02/C05 presentation correction (OM-C-PRESENT1)
+Fine POI labels retain localized type before explicit name; unnamed fallback is shown once. Fine crossing artwork preserves existing bridge/ford/ferry identity with paired rails/translucent water-crossing/gap, respectively. Road splitting affects render primitives only and uses current visible stroke envelope; no geometry, width calibration, POI size, anchors, schema or RNG change. Multiple crossings are ordered/deduped by stable key. Degenerate/unmatched crossings do not invent remote bank geometry; native6renderer unchanged. Remaining owner clauses C01/03/04/06/07/08 and physical C02placement remain open. Browser evidence uses one explicitly legalF2ford variant of existingroad-entry world toshowall3types; not a new geographical series.
+
+
+## WR1 relative river width (GEO1-WR1)
+Source-six and fine scenes share world/SVG coordinates. Fine water retains source stroke width; changing6→1 multiplies water/hex fraction by6, without a physical F1–5 calibration or document migration. Crossing gaps, ford opacity intervals and bridge rail extents use the same visible-width function. Native6, paths, anchors, IDs, POI extents, schema and RNG are unchanged. GEO-D01, edge routing, lake mouths, required shoreline POI and disputed town sizes remain open. Future free/endcap geometry needs a finite joined-envelope contract before this helper is generalized.

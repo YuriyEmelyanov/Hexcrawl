@@ -1,3 +1,4 @@
+import {projectOneMile} from '../src/oneMile.ts';
 import {newKnaveLayer} from '../src/knaveClassic.ts';
 import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 import {seaFixture} from './helpers/sea-fixture.mjs';
@@ -274,4 +275,131 @@ test('SEA v2-v8 metadata migration and strict v9 refusal use the real atomic imp
  for(const mutate of [d=>delete d.map.seas,d=>delete d.map.nextSeaId,d=>d.map.seas[0].hexKeys.pop(),d=>d.map.seas.push({...d.map.seas[0]}),d=>d.map.nextSeaId=1,d=>d.map.editorNames={'sea:999':{en:'X',ru:'Х'}},d=>d.version=11,d=>{d.version=8;d.map.editorNames={'sea:1':{en:'X',ru:'Х'}};}]){
   const bad=structuredClone(valid);mutate(bad);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(bad)}],value:''}});assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),before);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),stacks);
  }
+});
+
+// ONE-MILE1 extends the existing real import/history suite rather than creating
+// a second harness. Core geometry cases already live in oneMile.test.mjs; these
+// scenarios cover the new document boundary, not rendering or generator quality.
+const fineSetup=()=>{
+ const g=createGenerationHarness(42);g.render();const alerts=[];g.setWindow({alert:m=>alerts.push(m),confirm:()=>false,matchMedia:()=>({matches:false})});
+ g.injectFunction('readTextFile',async file=>file.text);g.render().addFallbackTractToMap({q:0,r:0});g.render();return {g,alerts};
+};
+const fineSave=g=>{const data=JSON.parse(JSON.stringify(g.render().createSaveData()));delete data.savedAt;return data;};
+const fineLoad=(g,data)=>g.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'x'}});
+const fineStable=g=>({data:fineSave(g),undo:JSON.stringify(g.render().undoHistory),redo:JSON.stringify(g.render().redoHistory)});
+const fineActivate=g=>{const p=g.render().previewOneMile();assert.ok(p);assert.equal(g.render().applyOneMilePreview(p),true);return p;};
+
+test('ONE-MILE1 preview/cancel/apply and public15 roundtrip use real import and exact undo',async()=>{
+ const {g}=fineSetup(), before=fineSave(g), count=g.render().undoHistory.length;
+ const cancelled=g.render().previewOneMile();g.render().cancelOneMilePreview();assert.equal(g.render().applyOneMilePreview(cancelled),false);
+ assert.deepEqual(fineSave(g),before);assert.equal(g.render().undoHistory.length,count);
+ fineActivate(g);const active=fineSave(g);assert.equal(active.version,15);assert.equal(active.map.physicalGrid.version,3);assert.deepEqual(active.map.physicalGrid.fineCellEdits,{});
+ assert.deepEqual(active.generation,before.generation);assert.equal(g.render().undoHistory.length,count+1);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),active);
+ await fineLoad(g,active);assert.deepEqual(fineSave(g),active);
+ g.render().undoMap();assert.deepEqual(fineSave(g),active);
+ const p=cancelled;assert.equal(g.render().applyOneMilePreview(p),false,'stale preview cannot write a second adaptation');
+});
+
+test('ONE-MILE1 local transaction preserves the other language, neighbouring source and RNG',()=>{
+ const {g}=fineSetup();fineActivate(g);
+ const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{name:{ru:'Лес',en:'Forest'}},'1,0':{note:'neighbour'}}};g.render().applyDocument(doc);
+ const before=fineSave(g), count=g.render().undoHistory.length, revision=g.render().getDocumentRevision();
+ assert.equal(g.render().editOneMileCell({q:0,r:0},{name:'Опушка',note:'local'},revision,'ru'),true);
+ const after=fineSave(g);assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].name.en,'Forest');assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].name.ru,'Опушка');
+ assert.deepEqual(after.map.physicalGrid.fineCellEdits['1,0'],before.map.physicalGrid.fineCellEdits['1,0']);
+ const expected=structuredClone(before);expected.map.physicalGrid=after.map.physicalGrid;assert.deepEqual(after,expected,'no source-six or RNG mutation');assert.equal(g.render().undoHistory.length,count+1);
+ assert.equal(g.render().editOneMileCell({q:0,r:0},{note:'stale'},revision,'ru'),false);assert.deepEqual(fineSave(g),after);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),after);
+});
+
+test('ONE-MILE1 public10 Knave payload survives15 import/export literally',async()=>{
+ const {g,alerts}=fineSetup();await fineLoad(g,regionFixture());const legacy=fineSave(g);legacy.map.knave=newKnaveLayer();legacy.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});legacy.ui.knaveEnabled=true;
+ await fineLoad(g,legacy);assert.deepEqual(alerts,[]);assert.equal(fineSave(g).map.physicalGrid,undefined);
+ fineActivate(g);const data=fineSave(g);assert.deepEqual(data.map.knave,legacy.map.knave);await fineLoad(g,data);assert.deepEqual(fineSave(g).map.knave,legacy.map.knave);
+ // OM05/13: literal legacy content must also survive a real fine-candidate
+ // Knave continuation. Import alone misses validation of newly created owners.
+ assert.equal(g.render().switchFineStep(1),true);const before=fineSave(g),candidate=g.render().fineCandidates[0];assert.ok(candidate);
+ assert.equal(g.render().pickFine(candidate.cell,true,g.render().getDocumentRevision()),true);const after=fineSave(g);
+ assert.equal(g.render().generationError,null);assert.equal(after.map.regions.length,before.map.regions.length+1);
+ assert.deepEqual(after.map.knave.content.byPoi['poi:1:2,0'],before.map.knave.content.byPoi['poi:1:2,0']);
+ for(const [alias,id]of Object.entries(before.map.physicalGrid.poiIdentities.byLegacyRef))assert.equal(after.map.physicalGrid.poiIdentities.byLegacyRef[alias],id);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),after);
+});
+
+test('ONE-MILE1 rejects private versions, foreign layers and invalid fine data atomically with redo',async()=>{
+ const {g,alerts}=fineSetup();fineActivate(g);const active=fineSave(g);g.render().undoMap();const before=fineStable(g);
+ const wrong=[];
+ for(const version of [11,12,13,14])wrong.push({...structuredClone(active),version});
+ for(const field of ['classification','featurePreparation']){const data=structuredClone(active);data.map[field]={};wrong.push(data);const old=structuredClone(before.data);old.map[field]={};wrong.push(old);}
+ for(const mutate of [d=>delete d.map.physicalGrid,d=>d.map.physicalGrid.version=2,d=>d.map.physicalGrid.viewStep=24,d=>d.map.physicalGrid.grid.unit='mile',
+  d=>d.map.physicalGrid.fineCellEdits={'9999999,0':{note:'orphan'}},d=>d.map.physicalGrid.fineCellEdits={'-0,0':{note:'alias'}},
+  d=>d.map.physicalGrid.fineCellEdits={'0,0':{landBiomeId:'not-a-biome'}},d=>d.map.physicalGrid.fineCellEdits={'0,0':{name:{ru:'x'.repeat(201)}}},
+  d=>delete d.map.physicalGrid.poiIdentities]){const data=structuredClone(active);mutate(data);wrong.push(data);}
+ for(const data of wrong){await fineLoad(g,data);assert.deepEqual(fineStable(g),before,'rejected import retains document, selection, prefs, RNG and both timelines');}
+ assert.equal(alerts.length,wrong.length);
+});
+
+test('ONE-MILE1 reset refuses authored loss without consent and undo restores a consented reset',()=>{
+ const {g}=fineSetup();fineActivate(g);const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{note:'author'}}};g.render().applyDocument(doc);
+ const before=fineStable(g);g.render().resetMap();assert.deepEqual(fineStable(g),before);
+ g.setWindow({confirm:()=>true,matchMedia:()=>({matches:false})});g.render().resetMap();assert.equal(fineSave(g).map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
+});
+
+test('ONE-MILE1 older generation checkpoints cannot silently discard later local edits',()=>{
+ const {g:retained}=fineSetup();retained.render().addFallbackTractToMap(retained.render().candidateHexes[0]);retained.render();fineActivate(retained);
+ const prior=retained.render().captureDocument();prior.map.physicalGrid={...prior.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{name:{ru:'Позднее имя',en:'Late name'},note:'survives old checkpoint'}}};retained.render().applyDocument(prior);
+ const exact=fineSave(retained);retained.render().deleteLastRegion();const restored=fineSave(retained);
+ assert.equal(restored.map.regions.length,exact.map.regions.length-1,'real deletion restores old no-layer checkpoint');assert.deepEqual(restored.map.physicalGrid.fineCellEdits,exact.map.physicalGrid.fineCellEdits,'surviving fine data retained');assert.deepEqual(restored.map.physicalGrid.grid,exact.map.physicalGrid.grid);assert.equal(restored.map.physicalGrid.poiIdentities.nextId,exact.map.physicalGrid.poiIdentities.nextId);for(const [alias,id] of Object.entries(restored.map.physicalGrid.poiIdentities.byLegacyRef))assert.equal(id,exact.map.physicalGrid.poiIdentities.byLegacyRef[alias]);
+ retained.render().undoMap();assert.deepEqual(fineSave(retained),exact);retained.render().redoMap();assert.deepEqual(fineSave(retained),restored);
+ const {g}=fineSetup();const checkpoint=structuredClone(g.render().captureDocument().generationHistory[0]);fineActivate(g);
+ const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{note:'later authored'}}};g.render().applyDocument(doc);
+ const before=fineStable(g);
+ assert.throws(()=>g.render().restoreSnapshot(checkpoint),/local edits|loss consent/);assert.deepEqual(fineStable(g),before);
+ const revision=g.render().getDocumentRevision();assert.equal(g.render().editOneMileCell({q:0,r:0},{note:'injected',expectedRevision:revision+1},revision-1,'ru'),false);assert.deepEqual(fineStable(g),before);
+ g.render().deleteLastRegion();assert.deepEqual(fineStable(g),before,'real delete refuses without consent');
+ const losses=[];g.setWindow({confirm:message=>{losses.push(message);return true},matchMedia:()=>({matches:false})});g.render().deleteLastRegion();assert.match(losses[0],/0,0/);assert.equal(fineSave(g).map.physicalGrid,undefined);g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
+});
+
+test('ONE-MILE1 view/hover/pinned form and stale callbacks preserve local address and camera scale',()=>{
+ const {g}=fineSetup();fineActivate(g);const initial=fineSave(g),undo=g.render().undoHistory.length,scale=initial.ui.mapScale;
+ assert.equal(g.render().switchFineStep(1),true);assert.equal(fineSave(g).ui.mapScale,scale*6);
+ assert.equal(g.render().pickFine({q:0,r:0},false,g.render().getDocumentRevision()),true);
+ g.render().setFineHover({q:1,r:0});assert.deepEqual(structuredClone(g.render().fineReadCell),{q:1,r:0});assert.deepEqual(fineSave(g).map.physicalGrid.selectedCell,{q:0,r:0});assert.equal(g.render().undoHistory.length,undo);
+ g.render().setFineHover(null);g.render().startFineDraft();const old=g.render().fineDraft;
+ assert.equal(g.render().changeFineDraft({name:'Fine name'},old),true);const current=g.render().fineDraft;
+ assert.equal(g.render().changeFineDraft({note:'stale'},old),false);assert.equal(g.render().saveFineDraft(old),false);
+ assert.equal(g.render().saveFineDraft(current),true);assert.equal(fineSave(g).map.physicalGrid.fineCellEdits['0,0'].name[current.language],'Fine name');assert.equal(g.render().undoHistory.length,undo+1);
+ assert.deepEqual(fineSave(g).generation,initial.generation);assert.deepEqual(fineSave(g).map.biomeOverrideByHexKey,initial.map.biomeOverrideByHexKey);
+ g.render().startFineDraft();const late=g.render().fineDraft;g.render().cancelFineDraft(late);g.render().pickFine({q:1,r:0},false,g.render().getDocumentRevision());g.render().startFineDraft();
+ assert.equal(g.render().saveFineDraft(late),false);assert.equal(g.render().cancelFineDraft(late),false);assert.ok(g.render().fineDraft);g.render().cancelFineDraft(g.render().fineDraft);
+ assert.equal(g.render().switchFineStep(6),true);assert.equal(fineSave(g).ui.mapScale,scale);assert.equal(g.render().undoHistory.length,undo+1);
+});
+
+
+test('ONE-MILE1 regeneration retains edits supported by final candidate rather than temporary empty checkpoint',()=>{
+ const {g}=fineSetup(),prompts=[];fineActivate(g);const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{name:{ru:'Моё место'},note:'retain after regeneration'}}};g.render().applyDocument(doc);
+ g.setWindow({confirm:m=>{prompts.push(m);return false},matchMedia:()=>({matches:false})});const before=fineSave(g);g.render().regenerateLastRegion();g.render().finishPendingRegeneration();const after=fineSave(g);
+ assert.equal(g.render().generationError,null);assert.deepEqual(after.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);assert.equal(prompts.filter(m=>/one-mile|одномильных/.test(m)).length,0);assert.notDeepEqual(after.generation,before.generation);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),after);
+
+ const {g:loss}=fineSetup();fineActivate(loss);const ld=loss.render().captureDocument();const cells=projectOneMile(ld.map.regions.flatMap(r=>r.hexes.map(cell=>({cell,landBiomeId:r.biomeId}))),ld.map.physicalGrid.grid.origin);
+ ld.map.physicalGrid={...ld.map.physicalGrid,fineCellEdits:Object.fromEntries(cells.map(row=>[`${row.cell.q},${row.cell.r}`,{note:'authored local note'}]))};loss.render().applyDocument(ld);loss.render().setGenSizeCategory('tract');loss.render();
+ const stable=fineStable(loss),messages=[];loss.setWindow({confirm:m=>{messages.push(m);return false},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();assert.equal(messages.length,1);assert.deepEqual(fineStable(loss),stable,'declining final candidate restores document/RNG/both histories');assert.equal(loss.render().generationError,null);
+ loss.setWindow({confirm:()=>{throw Error('confirm failure')},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();assert.deepEqual(fineStable(loss),stable,'confirmation exception restores exact accepted state');
+ loss.setWindow({confirm:m=>{messages.push(m);return true},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();const accepted=fineSave(loss),beforeEdits=stable.data.map.physicalGrid.fineCellEdits,afterEdits=accepted.map.physicalGrid.fineCellEdits,removed=Object.keys(beforeEdits).filter(k=>!Object.hasOwn(afterEdits,k));
+ assert.ok(removed.length>0);assert.ok(removed.length<Object.keys(beforeEdits).length);for(const key of removed)assert.ok(messages.at(-1).includes(key));for(const [key,value] of Object.entries(afterEdits))assert.deepEqual(value,beforeEdits[key]);assert.equal(loss.render().generationError,null);
+ loss.render().undoMap();assert.deepEqual(fineSave(loss),stable.data);loss.render().redoMap();assert.deepEqual(fineSave(loss),accepted);
+
+});
+
+test('ONE-MILE1 Mythic accepts fine geography only after a complete kingdom and preserves retained owners',()=>{
+ const g=createGenerationHarness(42);g.render();const prompts=[];g.setWindow({confirm:m=>{prompts.push(m);return false},matchMedia:()=>({matches:false})});g.render().setGenerationMode('mythic');
+ const finish=()=>{let n=0;while(g.render().kingdomJob&&n++<120)g.render().advanceKingdom();assert.equal(g.render().kingdomJob,null,'bounded ordinary job finishes');};
+ g.render().startKingdom({q:0,r:0});finish();fineActivate(g);const d=g.render().captureDocument(),c=d.map.regions[0].hexes[0],cell={q:c.q*6,r:c.r*6},key=`${cell.q},${cell.r}`;
+ d.map.physicalGrid={...d.map.physicalGrid,selectedCell:cell,fineCellEdits:{[key]:{note:'Mythic authored note'}}};g.render().applyDocument(d);const before=fineSave(g);
+ g.render().regenerateLastRegion();g.render().finishPendingRegeneration();finish();const after=fineSave(g);assert.equal(g.render().generationError,null);assert.deepEqual(after.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);assert.ok(after.map.physicalGrid.poiIdentities.nextId>before.map.physicalGrid.poiIdentities.nextId,'replaced owners receive fresh monotonic identities');assert.equal(prompts.length,0);
+ g.render().undoMap();assert.deepEqual(fineSave(g),before);g.render().redoMap();assert.deepEqual(fineSave(g),after);
+ g.render().startKingdom(g.render().candidateHexes[0]);finish();const expanded=fineSave(g);assert.equal(g.render().generationError,null);assert.equal(expanded.map.kingdoms.length,after.map.kingdoms.length+1);assert.deepEqual(expanded.map.physicalGrid.fineCellEdits,after.map.physicalGrid.fineCellEdits);for(const [alias,id]of Object.entries(after.map.physicalGrid.poiIdentities.byLegacyRef))assert.equal(expanded.map.physicalGrid.poiIdentities.byLegacyRef[alias],id);
+ g.render().undoMap();assert.deepEqual(fineSave(g),after);g.render().redoMap();assert.deepEqual(fineSave(g),expanded);
 });

@@ -111,7 +111,14 @@ export async function runMythMaterialLifecycle({page,snapshot,saved,root}){
  await button('Повторить').click();assert.deepEqual(await snapshot(),renamed);await closeMenu();await collapsed(a);
  await button('Отменить').click();const draftBefore=await snapshot();await closeMenu();await ready(a);
  assert.equal(await button('Повторить').isEnabled(),true);
- const pointer=async target=>{const rect=await target.boundingBox();assert.ok(rect);await page.mouse.click(rect.x+rect.width/2,rect.y+rect.height/2);};
+ const pointer=async target=>{
+  // This is a real pointer probe of a disabled control. Bring that control
+  // into the scrolling panel before taking coordinates, without moving focus.
+  const before=await target.boundingBox();await target.scrollIntoViewIfNeeded();const rect=await target.boundingBox();assert.ok(rect);
+  const hit=await target.evaluate(el=>{const b=el.getBoundingClientRect(),node=document.elementFromPoint(b.x+b.width/2,b.y+b.height/2);return node===el||el.contains(node);});
+  console.log('MC1_DISABLED_POINTER '+JSON.stringify({before,after:rect,hit}));assert.equal(hit,true,'disabled material pointer hits the intended visible control');
+  await page.mouse.click(rect.x+rect.width/2,rect.y+rect.height/2);
+ };
  const retainDraft=async(input,value,label)=>{
   await input.fill(value);assert.equal(await toggle(a).isDisabled(),true);await pointer(toggle(a));
   assert.equal(await input.evaluate(el=>document.activeElement===el),true,`${label}: material pointer must retain focus`);assert.equal(await input.inputValue(),value);
