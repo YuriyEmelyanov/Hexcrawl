@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-13T2229-PF1-L1-audit",
+  "status": "completed_all15_L1_dispositions",
+  "result_ref": "agent-work/research/runs/2026-11-13T2229-PF1-L1-audit.json",
+  "evidence_ref": "agent-work/research/audits/PF1-L1-2026-11-14.json",
+  "remaining_for_selected_goal": [],
+  "next_candidate": {
+    "task_id": "HX-RSR-PF1-POPULATION-RESOURCE-REFRESH",
+    "kind": "bounded_primary_resource_suitability",
+    "action": "Проверить, появился ли у первичного ресурса Foundry новый датированный срез с сопоставимыми определениями PF1/PF2, пригодный для нынешнего слабого population proxy. Использовать сохранённый provenance; без новой даты/определения не повторять закрытую прокси-проверку и выбрать независимый источник раскрытых продаж.",
+    "completion_condition": "Один полный ресурс: определение единицы/редакций/периода/дедупликации, пригодность или отказ с воспроизводимым основанием; никаких новых M/p без proposal.",
+    "not_fixed_queue": true
+  },
+  "diagnostics": {
+    "status": "completed_with_recovered_local_probe_errors",
+    "run_id": "2026-11-13T2229-PF1-L1-audit",
+    "stage": "all15_L1_dispositions_saved_verified",
+    "last_successful_step": "46 real callback cases passed;7audit/backlog files exact-readback verified",
+    "failed_operation": {
+      "tool": "functions.exec / apply_patch / exec_command",
+      "action": "Prepare scratch source and execute temporary probe",
+      "safe_locator": "pf1-audit/; local scratch only"
+    },
+    "observed_error": "apply_patch verification failed: invalid patch: multiple operations target /workspace/scratch/ed09c3534a70/pf1-audit/package.json; AssertionError [ERR_ASSERTION]: Expected values to be strictly equal: actual 'plain_mixed_forest', expected 'grass_plain'; Error: Cannot find module '/workspace/scratch/ed09c3534a70/pf1-components.mjs'",
+    "returned_error_codes": [
+      "ERR_ASSERTION",
+      "MODULE_NOT_FOUND"
+    ],
+    "cause_status": "confirmed",
+    "cause_detail": "Scratch patch used delete/add on one path; probe used a nonexistent biome alias and then wrong working directory. Corrected scratch preparation, used actual open_plains enum and correct cwd; rerun passed. No product bug or connector/permission failure inferred.",
+    "stop_reason": null,
+    "saved_results": [
+      "agent-work/research/audits/PF1-L1-2026-11-14.json",
+      "agent-work/research/audits/PF1-L1-2026-11-14.md",
+      "agent-work/research/audits/PF1-L1-2026-11-14-probes.json",
+      "agent-work/research/audits/PF1-L1-2026-11-14-manifest.json",
+      "agent-work/research/audits/PF1-L1-2026-11-14-notes-probe.mjs",
+      "agent-work/research/audits/PF1-L1-2026-11-14-biome-probe.mjs",
+      "agent-work/backlog.json"
+    ],
+    "exact_continuation": "L1 audit complete. Reassess next primary population-resource task; do not repeat40source cells or this exact published audit absent new code/evidence.",
+    "needs_owner_action": false,
+    "owner_action": null
+  }
+}
