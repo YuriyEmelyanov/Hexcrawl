@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "id": "owner-decision-2026-11-14-team-research-resume-hourly",
+  "recorded_at": "2026-11-13T21:19:18.627Z",
+  "local_date": "2026-11-14",
+  "source": "Current owner chat",
+  "quote": "Возобнови работу обоих агентов. Интервал запуска час",
+  "status": "applied_and_verified",
+  "meaning": "Enable both existing HexCrawl team and research automations, recurrence everyhour. Preserve existing00/30minute staggering; usertimezone Europe/Moscow.",
+  "supersedes": [
+    "agent-work/decisions/owner-pause-2026-11-12-HX-RSR-001-token-budget.json",
+    "agent-work/decisions/owner-decision-2026-11-11-team-and-research-every-2-hours.json"
+  ],
+  "automations": [
+    {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "checked_at": "2026-11-13T21:19:17.672Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "default_timezone": "Europe/Moscow",
+      "next_run_time": "2026-11-14T01:00:00+03:00",
+      "prompt_unchanged": true,
+      "environments_unchanged": true
+    },
+    {
+      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "title": "Исследователь HexCrawl",
+      "checked_at": "2026-11-13T21:19:18.627Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+      "default_timezone": "Europe/Moscow",
+      "next_run_time": "2026-11-14T00:30:00+03:00",
+      "prompt_unchanged": true,
+      "environments_unchanged": true
+    }
+  ],
+  "result_ref": "agent-work/results/2026-11-14-manual-agents-resume-hourly.json",
+  "not_authorized_by_this_decision": [
+    "New product task/start or publication permissions",
+    "Additional paid spending",
+    "Rating/model/score changes"
+  ],
+  "primary_product_queue_preserved": true,
+  "existing_research_checkpoint_preserved": true
+}
