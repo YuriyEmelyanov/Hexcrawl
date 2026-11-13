@@ -1,0 +1,40 @@
+{
+  "base_sha": "1c6cb9091cbd2b5310224cff09e535899824d873",
+  "head_sha": "cd4249d6e70099c3581eb1c5882824a6a8443b96",
+  "tree_sha": "4358b603f8913a81a1f811043ac1aa04cede20e5",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "changed_files": [
+    {
+      "path": "docs/geo2-work-in-progress.md",
+      "status": "modified"
+    },
+    {
+      "path": "src/geometryRefinementRivers.ts",
+      "status": "added"
+    },
+    {
+      "path": "test/geometryRefinementRivers.test.mjs",
+      "status": "added"
+    }
+  ],
+  "source_test_remote_readback_exact": true,
+  "local_source": "HEAD1c6cb9 plus two new untracked TS/test files and modified WIPdoc; byteequal remotecd4249d. Dependencylink excluded; baseline tracked application sources unchanged.",
+  "activation": false,
+  "pr503_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "scope": "Pure unmounted river-only candidate, not GeometryPlan or public16 support.",
+  "limits": [
+    "Allocated shared vertex ports and reserved approaches; terminal splitting/boundary ports not implemented",
+    "Source input ordering is interpreted as supplied upstream/downstream; actual sector direction normalization still required",
+    "Shortest length/deviation/seed-side ordering applies inside fixed allocated approaches; joint port/path optimum not proven",
+    "Deterministic sequential reservations do not backtrack earlier paths; route_conflict is allocation failure, not proof of geometric impossibility",
+    "No POI/road/crossing/mouth/save/UI activation"
+  ],
+  "work_bounds": {
+    "max_input_cells": 200000,
+    "max_segments": 4096,
+    "max_cell_segment_pairs": 2000000,
+    "max_corridor_cells_per_segment": 4096,
+    "approach_permutations_per_node_max": 6,
+    "route_method": "Finite BFS levels +cost DP; no generated-world statistical series"
+  }
+}
