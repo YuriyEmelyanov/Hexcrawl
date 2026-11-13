@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-13T0701-programmer-ONE-MILE1-WR1",
+  "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "completed_WR1_review_ready",
+  "status": "completed_WR1_bounded_accepted_next_C06_analysis",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -50,15 +50,15 @@
   "schedule_start_at": "2026-10-24T01:00:00+03:00",
   "schedule_frequency": "every_2_hours",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
-  "next_role": "reviewer",
+  "current_role": "reviewer",
+  "next_role": "business_analyst",
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-C02-C05.md",
   "spec_version": "GEO1-WR1",
-  "result_path": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
+  "result_path": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "Проверяющий со свежим отдельным агентом независимо проверяет PR503 SHA 3344159406c3619bc3903e7185f7b0a5c4d13de5 tree1b782342aad359487fe35c9050cff7a78c4fb7b5 по GEO1-WR1 WR01–05 и совместным регрессиям C02/C05/OM01–14. Сверяет shared visible width, F1–5 ratio6, действительные gap/ford/rails при новой полосе, PNG opacity/dash/rail/label parity,53 DOM segments, native6 pixelidentity1500/390, JSON/IDs/RNG/author edits и реальный1500/390/320 UI. Проверяет необходимость и чувствительность2 изменённых Node и2 browser cases (без роста набора), отдельно ограничение текущих перпендикулярных внутренних crossings. Записывает независимый score_assessment1.2 по5criterion_ids. При замечаниях — точные исправления программисту; при принятии — только boundedWR1, не fullHX-FB-023. GEO-D01/калибровка/устья/береговыеPOI/размергородка остаются открытыми. До полного пакета и отдельного решения владельца не merge/deploy.",
+  "next_step": "Бизнес-аналитик в штатном запуске готовит ограниченный контракт OM-C06 для HX-BL-051: на существующем fixture сопоставляет действительный берег озера, ось/водную полосу и устьевой соединитель в6/1/PNG; отличает подтверждённый дефект от визуального замечания. Результат — пригодная программисту спецификация C06 с проверяемыми AC, инвариантами IDs/истории/RNG/native6, score1.2 и показом предложения desktop/узкий экран. Без новой серии генераций, исследования книг, изменения сетки/русел/якорей/калибровки. Возможную зависимость от GEO-D01 выделить явно; его варианты не утверждены. Текущий WR1 не закрывает весь HX-FB-023; merge/deploy запрещены.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -229,8 +229,8 @@
   "score_update_task_id": "HX-BL-041",
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "score_assessment_ref": null,
-  "role_selection_reason": "Approved WR1 ready specification, no active claim and no reviewer findings pending; programmer next, GEO-D01 does not block relative-width fix.",
+  "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
+  "role_selection_reason": "Exact SHA3344159 review_ready, prior programmer completed, no active task claim; independent review priority4.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -253,14 +253,15 @@
   "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-13T04:02:19.546Z",
+      "checked_at": "2026-11-13T06:01:25.058Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-13T04:19:56.962Z",
+      "checked_at": "2026-11-13T06:14:32.727Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
@@ -269,8 +270,19 @@
       "performed": false,
       "reason": "Both actual observations enabled; no update required"
     },
-    "errors": [],
-    "scope": "Point-in-time checks only, not a guarantee against later service disable; same task/prompt/schedule unchanged."
+    "errors": [
+      {
+        "checked_at": "2026-11-13T06:01:06.514Z",
+        "status": "unchecked",
+        "is_enabled": null,
+        "method": "tool_discovery",
+        "error": "automations.peek namespace removed/unavailable in current tool registry",
+        "resolution": "Tool availability restored; actual start peek confirmed enabled",
+        "resolved_at": "2026-11-13T06:01:25.058Z"
+      }
+    ],
+    "independent_reviewer_health_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/automation-health.json",
+    "scope": "Point-in-time checks only; no guarantee against later service disable. Same task, prompt and schedule unchanged."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_insufficient_evidence_whole_grades",
@@ -771,7 +783,7 @@
     "completed_at": "2026-10-27T12:12:46.356Z"
   },
   "review_request": null,
-  "reviewed_sha": null,
+  "reviewed_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "current_review_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/score-assessment1.2.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
@@ -872,7 +884,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-13T04:21:33.184Z",
+  "updated_at": "2026-11-13T06:15:14.992Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1437,7 +1449,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-13T0701-ONE-MILE1-WR1-review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-13T0900-ONE-MILE1-C06-analyst.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1577,21 +1589,21 @@
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "tree_sha": "1b782342aad359487fe35c9050cff7a78c4fb7b5",
     "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-    "status": "not_release_ready_WR1_independent_review_and_remaining_owner_corrections",
+    "status": "not_release_ready_remaining_owner_corrections_WR1_bounded_accepted",
     "release_authorized": false,
-    "review_ref": null,
-    "score_assessment_ref": null,
+    "review_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
+    "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
     "walkthrough_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/840edf6878477efeb17d7a0a802a7c8e373b4e68/agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
     "owner_approval_inferred": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
     "requirements_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-owner-corrections-2026-11-12.md",
-    "reason": "New WR1 source/tree requires independent review. Remaining owner geometry/calibration/POI/extent requirements open; GEO-D01 not authorized.",
-    "previous_review_ref": "agent-work/evidence/review-ONE-MILE1-C02-C05-0304/independent-review.json",
-    "previous_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-walkthrough-1800/score-assessment1.2.json",
-    "score_assessment_status": "pending_independent_review_new_SHA",
-    "actual_gallery_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
-    "bounded_review_ref": "agent-work/evidence/review-ONE-MILE1-C02-C05-0304/independent-review.json",
-    "bounded_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-C02-C05-0304/score-assessment1.2.json"
+    "reason": "WR1 independent bounded acceptance completed. Remaining river routing, shorePOI, lake mouths, physical calibration/town extent and GEO-D01 not closed; no publication permission inferred.",
+    "prior_review_applicability": "d419 historical only",
+    "review_scope": "WR1_only_not_full_package",
+    "bounded_review_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
+    "bounded_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
+    "full_package_accepted": false,
+    "score_assessment_status": "bounded_completed_whole_criteria_insufficient_evidence"
   },
   "current_risk_findings": [],
   "model_activation_status": "active_routes_verified",
@@ -2182,7 +2194,7 @@
     "owner_approved": null,
     "scope": "26 actual JPEG+4PNG; busy desktop1500/390/320 and final acceptance, same-world1/6/RU/EN/read/edit/error/importbusy plus cleanPNG. Representative busy1500/390/320 and accepted320 visually inspected/presented; original31blob hashes match."
   },
-  "review_result_ref": null,
+  "review_result_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
   "previous_review_score_assessment_ref": null,
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2289,7 +2301,7 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/test-change-summary.json",
+  "test_change_summary_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/programmer-score-evidence1.2.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
@@ -2393,7 +2405,7 @@
   "current_stage_id": "ONE-MILE1",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
+  "review_ready": false,
   "current_stage_ui_status": "candidate_actual_UI_verified_published_baseline_walkthrough_pending",
   "completed_claim": {
     "schema_version": 1,
@@ -5800,7 +5812,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "approved_task_and_review_no_release",
+  "authority_status": "approved_task_C06_analysis_no_GEO_D01_implementation_or_release",
   "analysis_baseline_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
   "analysis_baseline_tree": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -6258,7 +6270,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
+  "result_ref": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7002,7 +7014,7 @@
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-12T0603-ONE-MILE1-completion.json",
   "review_request_ref": "agent-work/handoffs/2026-11-13T0701-ONE-MILE1-WR1-review.json",
   "programmer_complete": true,
-  "current_programmer_result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
+  "current_programmer_result_ref": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -7022,8 +7034,8 @@
     "actual_UI_shown_in_chat": true
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
-  "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
+  "role": "reviewer",
+  "latest_result_ref": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
   "checks": {
     "run_id": 43363246575,
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
@@ -7053,8 +7065,8 @@
     "checkout_tree_matches_source": true,
     "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43363246575"
   },
-  "score_assessment_status": "pending_independent_review_new_SHA",
-  "review_report_ref": null,
+  "score_assessment_status": "bounded_completed_whole_criteria_insufficient_evidence",
+  "review_report_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
   "reviewed_public_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
   "closed_findings": [
     {
@@ -7074,7 +7086,7 @@
     "KNC-EVID-001"
   ],
   "score_delta": null,
-  "score_delta_status": "unknown_no_award_unpublished",
+  "score_delta_status": "unknown_whole_criteria_no_award_unpublished",
   "public_book_transfer_approved": true,
   "current_external_dependency": null,
   "publication_package_requires_private_catalog": true,
@@ -7623,8 +7635,8 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
-  "current_stage_score_assessment_status": "pending_independent_review_new_SHA",
+  "current_role_result": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
+  "current_stage_score_assessment_status": "bounded_completed_whole_criteria_insufficient_evidence",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
   "execution_running": false,
   "latest_PR495_release": {
@@ -8080,11 +8092,11 @@
     "Scribd_uploaded": false
   },
   "task_id": "HX-BL-051",
-  "review_completed": false,
+  "review_completed": true,
   "release_readiness": "not_release_ready_remaining_owner_corrections",
   "bounded_feature_accepted": true,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-13T0701-ONE-MILE1-WR1-review.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-13T0900-ONE-MILE1-C06-analyst.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -8133,8 +8145,8 @@
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
   "local_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
-  "checks_evidence_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/checks.json",
-  "execution_status": "review_completed_accepted",
+  "checks_evidence_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/root-checks.json",
+  "execution_status": "completed",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8467,7 +8479,7 @@
     "remaining": "Actual1/6/12/24 UI and browser verification, then independent exactSHA combined review"
   },
   "ui_shown_for_this_SHA": true,
-  "current_stage_owner_decision_required": "publication_only",
+  "current_stage_owner_decision_required": "GEO-D01 spatial/migration and later exact-package publication; next C06contract analysis may proceed",
   "latest_DETAIL1_view_controls": {
     "run_id": "2026-11-10T0700-programmer-HX-BL-051-view-controls",
     "head_sha": "7a5662558958b46c269e3e50a3ddb87ca9a0146c",
@@ -8554,7 +8566,7 @@
   "reviewed_fixes_accepted": true,
   "current_evidence_gaps": [],
   "full_package_review_ready": false,
-  "bounded_review_ready": true,
+  "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
   "independent_accepted": false,
@@ -8588,7 +8600,7 @@
     "independent_review_ref": "agent-work/results/2026-11-10T1301-reviewer-HX-BL-051-aad4516.json",
     "review_ready": false
   },
-  "bounded_fix_accepted": false,
+  "bounded_fix_accepted": true,
   "ui_evidence_handoff_ref": "agent-work/handoffs/2026-11-12T1200-ONE-MILE1-review.json",
   "approved_after_current": {
     "task_id": "HX-BL-054",
@@ -8723,11 +8735,14 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
+  "last_completed_run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
   "storage_verification": {
-    "data_commit_sha": "76cd37493e7cac25bfa7759a9fc74e99ce771f6a",
-    "files_verified": 12,
-    "method": "Exact UTF8 readback all12files; latest written separately last"
+    "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
+    "data_commit_sha": "bc6d829140d716885bab962c73a1561dda1a3b24",
+    "evidence_commit_sha": "2831ef646ccd6081214a848c1f3b61a239f4851a",
+    "status": "data_committed_latest_final_write_pending_readback",
+    "latest_written_last": true,
+    "method": "Nonforce branch CAS, distinct evidence/data/latest commits; postwrite exact readback performed externally."
   },
   "current_functional_findings": [],
   "release_preview_responsible": "programmer",
@@ -9276,7 +9291,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/checks.json",
+  "checks_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/root-checks.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -9784,7 +9799,7 @@
     }
   },
   "source_branch": "agent/hx-bl-051-one-mile1",
-  "claim_completed_ref": "agent-work/claims/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
+  "claim_completed_ref": "agent-work/claims/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
   "actual_full_UI_pending": false,
   "latest_DETAIL1_grid_focus": {
     "run_id": "2026-11-11T0804-programmer-DETAIL1-focus",
@@ -10348,7 +10363,7 @@
   },
   "updated_on": "2026-11-13",
   "claim_ref": null,
-  "latest_programmer_result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
   "source_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "source_pr": 496,
   "owner_decision_required": true,
@@ -10394,7 +10409,7 @@
     "product_routing_unchanged": true
   },
   "latest_PR496_CI_retry_claim_ref": "agent-work/claims/2026-11-11T1803-programmer-PR496-CI-retry.json",
-  "next_actor": "reviewer",
+  "next_actor": "business_analyst",
   "publication_authorized": false,
   "previous_root_release_approval_before_PR496": {
     "task_id": "HX-BL-054",
@@ -10711,7 +10726,7 @@
     "release_authorized": false
   },
   "implementation_complete": false,
-  "review_readiness": "bounded_WR1_ready_full_owner_feedback_open",
+  "review_readiness": "WR1_bounded_review_complete_C06_specification_next",
   "previous_primary_before_ONE_MILE1_implementation": {
     "run_id": "2026-11-11T2200-programmer-ONE-MILE1",
     "status": "ONE_MILE1_implementation_in_progress",
@@ -10792,7 +10807,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -11229,8 +11244,8 @@
     "result_ref": "agent-work/results/2026-11-13T0304-reviewer-ONE-MILE1-C02-C05.json",
     "next_role": "business_analyst"
   },
-  "implementation_scope": "WR1 only; no geometry/calibration/grid/migration",
-  "owner_decision_scope": "GEO-D01 only; independent WR1 review not blocked",
+  "implementation_scope": "WR1 bounded completed; next C06contract analysis only, no GEO-D01 implementation",
+  "owner_decision_scope": "GEO-D01 spatial/migration only; not a design gate or C06analysis blocker",
   "geometry_resolution_proposal_ref": "agent-work/decisions/proposed-ONE-MILE1-GEO-D01.json",
   "geometry_resolution_proposal_id": "OM-GEO-D01",
   "geometry_resolution_proposal_status": "proposed",
@@ -11313,6 +11328,71 @@
       },
       "errors": [],
       "scope": "Point-in-time checks only, not a guarantee against later service disable; same task/prompt/schedule unchanged."
+    }
+  },
+  "previous_primary_before_WR1_review": {
+    "run_id": "2026-11-13T0701-programmer-ONE-MILE1-WR1",
+    "status": "completed_WR1_review_ready",
+    "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
+    "next_role": "reviewer"
+  },
+  "last_result_ref": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
+  "latest_ONE_MILE1_WR1_review": {
+    "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "substage": "WR1",
+    "role": "reviewer",
+    "status": "completed_WR1_bounded_accepted_next_C06_analysis",
+    "execution_running": false,
+    "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "tree_sha": "1b782342aad359487fe35c9050cff7a78c4fb7b5",
+    "result_ref": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
+    "review_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
+    "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-13T0900-ONE-MILE1-C06-analyst.json",
+    "claim_ref": null,
+    "completed_claim_ref": "agent-work/claims/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
+    "verdict": "accepted_bounded_WR1",
+    "bounded_fix_accepted": true,
+    "full_package_accepted": false,
+    "full_feedback_resolved": false,
+    "release_authorized": false,
+    "next_role": "business_analyst",
+    "next_step": "Бизнес-аналитик в штатном запуске готовит ограниченный контракт OM-C06 для HX-BL-051: на существующем fixture сопоставляет действительный берег озера, ось/водную полосу и устьевой соединитель в6/1/PNG; отличает подтверждённый дефект от визуального замечания. Результат — пригодная программисту спецификация C06 с проверяемыми AC, инвариантами IDs/истории/RNG/native6, score1.2 и показом предложения desktop/узкий экран. Без новой серии генераций, исследования книг, изменения сетки/русел/якорей/калибровки. Возможную зависимость от GEO-D01 выделить явно; его варианты не утверждены. Текущий WR1 не закрывает весь HX-FB-023; merge/deploy запрещены.",
+    "authority_status": "approved_task_C06_analysis_no_GEO_D01_implementation_or_release",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "start": {
+        "checked_at": "2026-11-13T06:01:25.058Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-13T06:14:32.727Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration": {
+        "performed": false,
+        "reason": "Both actual observations enabled; no update required"
+      },
+      "errors": [
+        {
+          "checked_at": "2026-11-13T06:01:06.514Z",
+          "status": "unchecked",
+          "is_enabled": null,
+          "method": "tool_discovery",
+          "error": "automations.peek namespace removed/unavailable in current tool registry",
+          "resolution": "Tool availability restored; actual start peek confirmed enabled",
+          "resolved_at": "2026-11-13T06:01:25.058Z"
+        }
+      ],
+      "independent_reviewer_health_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/automation-health.json",
+      "scope": "Point-in-time checks only; no guarantee against later service disable. Same task, prompt and schedule unchanged."
     }
   }
 }
