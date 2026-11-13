@@ -1211,7 +1211,7 @@
     {
       "id": "HX-FB-023",
       "type": "owner_river_crossing_POI_scale_corrections",
-      "status": "owner_geometry_direction_resolved_specification_required",
+      "status": "GEO2_specification_ready_implementation_pending",
       "reported_on": "2026-11-12",
       "reported_by": "owner",
       "related_task_id": "HX-BL-051",
@@ -1332,8 +1332,8 @@
       ],
       "production_fixed": false,
       "release_ready": false,
-      "next_role": "business_analyst",
-      "next_step": "Бизнес-аналитик в штатном запуске специфицирует уточнённый GEO-D01: устойчивый случайный обход реки по левым/правым рёбрам существующих1мильных гексов; перенос требующих реку POI внутри своего6мильного гекса; согласование связанных дорог/переходов; маскирование дороги внутри фактического охватаPOI≥1гекса. На существующем fixture показывает6/1/PNG desktop/узкий экран, формализует связность, коллизии, берег озераOM-C06 и совместимость/историю/RNG. Сетка не сдвигается; вариантA не утверждён. Результат — ограниченная пригодная программисту спецификация и наглядное предложение; затем обычная разработка и независимая проверка. Новый A/B-ответ владельца не нужен; выпуска/новыхразмеров/физическойкалибровки/платныхрасходов нет.",
+      "next_role": "programmer",
+      "next_step": "Программист реализует GEO2v1 от PR5033344159: устойчивые случайные обходы по рёбрам существующей1мильной сетки, согласованные river-requiredPOI/дороги/переходы, маска дорог в крупныхPOI, реальные устья и явное preview/apply/cancel с public16/physical4. По G201–G210 — обязательные Node24/browser/RNG проверки, фактический показ desktop/узкий экран, evidence нового точногоSHA и независимыйreview. Не активировать неполный river-only этап; не менять калибровку/каталогtown/сетки/новые12/24. Выпуск отдельно владельцем.",
       "bounded_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-C02-C05.md",
       "full_feedback_resolved": false,
       "bounded_implementation": {
@@ -1370,7 +1370,9 @@
         "handoff_ref": "agent-work/handoffs/2026-11-13T0900-ONE-MILE1-C06-analyst.json"
       },
       "geometry_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-13-ONE-MILE1-GEO-D01-edge-detours.json",
-      "geometry_direction_status": "resolved_existing_grid_edge_detours"
+      "geometry_direction_status": "resolved_existing_grid_edge_detours",
+      "geometry_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+      "geometry_handoff_ref": "agent-work/handoffs/2026-11-13T1104-ONE-MILE1-GEO2-programmer.json"
     }
   ]
 }

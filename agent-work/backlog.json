@@ -15728,7 +15728,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "GEO_D01_direction_resolved_geometry_specification_ready",
+      "status": "GEO2_specification_ready_for_programmer",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15791,7 +15791,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "geometry_specification_required_owner_direction_ready",
+      "readiness": "GEO2_programmer_ready",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -16202,9 +16202,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
-      "next_role": "business_analyst",
+      "next_role": "programmer",
       "next_role_after_approval": "programmer",
-      "next_step": "Бизнес-аналитик в штатном запуске специфицирует уточнённый GEO-D01: устойчивый случайный обход реки по левым/правым рёбрам существующих1мильных гексов; перенос требующих реку POI внутри своего6мильного гекса; согласование связанных дорог/переходов; маскирование дороги внутри фактического охватаPOI≥1гекса. На существующем fixture показывает6/1/PNG desktop/узкий экран, формализует связность, коллизии, берег озераOM-C06 и совместимость/историю/RNG. Сетка не сдвигается; вариантA не утверждён. Результат — ограниченная пригодная программисту спецификация и наглядное предложение; затем обычная разработка и независимая проверка. Новый A/B-ответ владельца не нужен; выпуска/новыхразмеров/физическойкалибровки/платныхрасходов нет.",
+      "next_step": "Программист реализует GEO2v1 от PR5033344159: устойчивые случайные обходы по рёбрам существующей1мильной сетки, согласованные river-requiredPOI/дороги/переходы, маска дорог в крупныхPOI, реальные устья и явное preview/apply/cancel с public16/physical4. По G201–G210 — обязательные Node24/browser/RNG проверки, фактический показ desktop/узкий экран, evidence нового точногоSHA и независимыйreview. Не активировать неполный river-only этап; не менять калибровку/каталогtown/сетки/новые12/24. Выпуск отдельно владельцем.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16215,19 +16215,19 @@
       ],
       "last_research_result_ref": "agent-work/research/runs/2026-11-09T0230-PF2-terrain-overlays.json",
       "ui_preview": {
-        "version": "W1",
-        "kind": "schematic_proposal_not_implementation",
-        "head_reference": "60059737ec94b54db88c2f49c8d16e99da7d85a8",
+        "version": "G2-P1",
+        "kind": "code_native_schematic_proposal_not_implementation",
+        "ref": "agent-work/previews/ONE-MILE1-GEO2-G2-P1",
         "shown_in_chat": true,
-        "presented_at": "2026-11-13T02:08:58.542Z",
-        "files": [
-          "desktop.png",
-          "narrow.png"
+        "presented_at": "2026-11-13T08:13:29.167Z",
+        "profiles": [
+          "desktop1180",
+          "narrow390"
         ],
+        "based_on": "Current3344159 dark sidebar/hex-size controls and actualdetailGrid corner convention; conditional local example",
         "owner_viewed": null,
         "owner_approved": null,
-        "blocks_implementation": false,
-        "ref": "agent-work/evidence/ONE-MILE1-GEO-0500"
+        "blocks_implementation": false
       },
       "current_stage_id": "ONE-MILE1",
       "approval_ref": "owner-approval-2026-11-11-PR496-C-FILL",
@@ -16238,13 +16238,13 @@
         "Preserve requiredwaterattachment; otherPOIs centraleligible cells; associated roads/trails must contact/pass site ratherthanmerelynear.",
         "Prepare specification/analysis and UI then programmer work in approvedscope; independent exactSHAreview and distinct releaseapproval stillrequired."
       ],
-      "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO1.md",
-      "spec_version": "GEO1-WR1",
+      "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+      "spec_version": "GEO2-v1",
       "acceptance_ref": "agent-work/specs/HX-BL-051-ONE-MILE1.acceptance.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-13-owner-GEO-D01-geometry-analyst.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-13T1104-ONE-MILE1-GEO2-programmer.json",
       "active_stage": "ONE-MILE1",
       "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
-      "result_ref": "agent-work/results/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
+      "result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
       "latest_activation_checkpoint": {
         "branch": "agent/hx-bl-051-detail1",
         "head_sha": "f17236b90592b92a8f553678eaf81de3f34b340e",
@@ -16369,18 +16369,14 @@
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
         "handoff_ref": "agent-work/handoffs/2026-11-12-ONE-MILE1-owner-corrections-analyst.json"
       },
-      "spec_status": "WR1_bounded_accepted_new_geometry_spec_required",
-      "latest_analyst_result_ref": "agent-work/results/2026-11-13T0500-analyst-ONE-MILE1-geometry.json",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-13-owner-GEO-D01-geometry-analyst.json",
-      "active_claim": {
-        "run_id": "2026-11-13T1104-analyst-ONE-MILE1-GEO2",
-        "role": "business_analyst",
-        "claim_ref": "agent-work/claims/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json"
-      },
+      "spec_status": "ready_for_programmer",
+      "latest_analyst_result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-13T1104-ONE-MILE1-GEO2-programmer.json",
+      "active_claim": null,
       "full_package_release_ready": false,
       "owner_clarification_ref": null,
       "catalog_ref": "agent-work/specs/HX-BL-051-POI-sizes-v1.json",
-      "claim_completed_ref": "agent-work/claims/2026-11-13T0900-reviewer-ONE-MILE1-WR1.json",
+      "claim_completed_ref": "agent-work/claims/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
       "branch": "agent/hx-bl-051-one-mile1",
       "pr_draft": true,
       "latest_programmer_result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
@@ -16614,7 +16610,7 @@
       "separate_pr": 503,
       "separate_pr_status": "draft_exact_SHA_independent_review_ready",
       "current_package_published": false,
-      "implementation_allowed_in_next_standard_programmer_run": false,
+      "implementation_allowed_in_next_standard_programmer_run": true,
       "authority_ref": "agent-work/decisions/owner-decision-2026-11-11-ONE-MILE1-standard-agent-workflow.json",
       "score_forecast_ref": "agent-work/evidence/ONE-MILE1-GEO-0500/score-forecast1.2.json",
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/503",
@@ -16839,7 +16835,7 @@
       "feedback_ids": [
         "HX-FB-023"
       ],
-      "ui_preview_pending": true,
+      "ui_preview_pending": false,
       "previous_release_readiness_before_owner_corrections": {
         "run_id": "2026-11-12T1800-reviewer-ONE-MILE1-walkthrough",
         "status": "accepted_awaiting_owner_publication_permission",
@@ -16903,7 +16899,7 @@
         "handoff_ref": "agent-work/handoffs/2026-11-13T0304-ONE-MILE1-geometry-contract-analyst.json"
       },
       "previous_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1.md",
-      "implementation_scope": "WR1 only: relative river stroke and dependent crossing envelope, no geography/calibration/migration.",
+      "implementation_scope": "GEO2v1 per spec; existing grid preserved; coherent linkedgeometry+explicittransactions",
       "geometry_resolution_proposal": {
         "proposal_id": "OM-GEO-D01",
         "task_id": "HX-BL-051",
@@ -17021,7 +17017,14 @@
         "result_ref": "agent-work/results/2026-11-13-manual-owner-GEO-D01.json",
         "handoff_ref": "agent-work/handoffs/2026-11-13-owner-GEO-D01-geometry-analyst.json"
       },
-      "ui_preview_responsible": "business_analyst"
+      "ui_preview_responsible": "business_analyst",
+      "latest_GEO2_specification": {
+        "run_id": "2026-11-13T1104-analyst-ONE-MILE1-GEO2",
+        "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+        "result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-13T1104-ONE-MILE1-GEO2-programmer.json",
+        "preview_ref": "agent-work/previews/ONE-MILE1-GEO2-G2-P1"
+      }
     },
     {
       "task_id": "HX-BL-052",
