@@ -5227,19 +5227,17 @@
     "state_ref": "agent-work/research/state.json",
     "method_ref": "agent-work/research/method.json",
     "proposals_ref": "agent-work/research/proposals.json",
-    "last_completed_run": "2026-11-13T2129-PF1-terrain-elements",
-    "result_ref": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json",
-    "previous_result_ref": "agent-work/research/runs/2026-11-12T1828-PF1-regional-preparation.json",
-    "checkpoint_ref": "agent-work/research/checkpoints/PF1-terrain-elements.json",
-    "evidence_ref": "agent-work/research/requirements/PF1-terrain-elements.json",
+    "last_completed_run": "2026-11-13T2229-PF1-L1-audit",
+    "result_ref": "agent-work/research/runs/2026-11-13T2229-PF1-L1-audit.json",
+    "previous_result_ref": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json",
+    "checkpoint_ref": "agent-work/research/checkpoints/PF1-L1-audit.json",
+    "evidence_ref": "agent-work/research/audits/PF1-L1-2026-11-14.json",
     "next_candidate": {
-      "task_id": "HX-RSR-PF1-FULL-L1-IMPLEMENTATION",
-      "game_id": "PF1",
-      "layer": "L1",
-      "status": "candidate_reassess_fresh_decisions",
-      "action": "Сверить все15операций L1 из PF1-матрицы с фактической реализацией на точном published/integrationSHA. Использовать уже собранные правила и сохранённый аудит общих свойств, проверить только новые/непокрытые действия; перед выбором сравнить с новым существенным рыночным сигналом.",
-      "completion_condition": "15строк имеют проверенный фактический результат или конкретный воспроизводимый пробел, reused-evidence applicability на SHA и existingtask-disposition; не выдумывать поддержку профиля/score.",
-      "reason": "Новый законченный корпус позволяет перейти от источника к полному слою реализации без нового дробления литературы."
+      "task_id": "HX-RSR-PF1-POPULATION-RESOURCE-REFRESH",
+      "kind": "bounded_primary_resource_suitability",
+      "action": "Проверить, появился ли у первичного ресурса Foundry новый датированный срез с сопоставимыми определениями PF1/PF2, пригодный для нынешнего слабого population proxy. Использовать сохранённый provenance; без новой даты/определения не повторять закрытую прокси-проверку и выбрать независимый источник раскрытых продаж.",
+      "completion_condition": "Один полный ресурс: определение единицы/редакций/периода/дедупликации, пригодность или отказ с воспроизводимым основанием; никаких новых M/p без proposal.",
+      "not_fixed_queue": true
     },
     "active_ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-06.json",
     "active_ranking_changed": false,
@@ -5254,189 +5252,142 @@
     ],
     "automation_health": {
       "start": [
-        {
-          "status": "fulfilled",
-          "value": [
-            {
-              "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-              "is_enabled": true,
-              "run": {
-                "id": "eb76fe98-a860-8325-b31c-6af6b7778a77",
-                "recorded_status": "in_progress",
-                "scheduled_for": "2026-11-13T21:30:00Z",
-                "started_at": "2026-11-13T21:29:19.341953Z",
-                "completed_at": null,
-                "chat_ref": null
-              }
-            }
-          ]
-        },
-        {
-          "status": "fulfilled",
-          "value": [
-            {
-              "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-              "is_enabled": true,
-              "run": {
-                "id": "0ca8f401-4ca8-8325-8c9a-f3378139cda5",
-                "recorded_status": "no_update",
-                "scheduled_for": "2026-11-13T20:00:00Z",
-                "started_at": "2026-11-13T19:58:07.446875Z",
-                "completed_at": "2026-11-13T19:58:08.139923Z",
-                "chat_ref": null
-              }
-            }
-          ]
-        }
-      ],
-      "end": [
-        {
-          "status": "fulfilled",
-          "value": [
-            {
-              "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-              "is_enabled": true,
-              "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-              "checked_at": "2026-11-13T21:44:38Z",
-              "run": {
-                "id": "eb76fe98-a860-8325-b31c-6af6b7778a77",
-                "recorded_status": "in_progress",
-                "scheduled_for": "2026-11-13T21:30:00Z",
-                "started_at": "2026-11-13T21:35:55.274026Z",
-                "completed_at": null,
-                "chat_ref": null
-              }
-            }
-          ]
-        },
-        {
-          "status": "fulfilled",
-          "value": [
-            {
-              "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-              "is_enabled": true,
-              "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-              "checked_at": "2026-11-13T21:44:38Z",
-              "run": {
-                "id": "0ca8f401-4ca8-8325-8c9a-f3378139cda5",
-                "recorded_status": "no_update",
-                "scheduled_for": "2026-11-13T20:00:00Z",
-                "started_at": "2026-11-13T19:58:07.446875Z",
-                "completed_at": "2026-11-13T19:58:08.139923Z",
-                "chat_ref": null
-              }
-            }
-          ]
-        }
-      ],
-      "final_persistence_end": [
         [
           {
             "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
             "is_enabled": true,
-            "checked_at": "2026-11-13T21:47:07.903Z",
-            "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-            "recorded_run_status": "in_progress"
+            "checked_at": "2026-11-13T22:28:58.187Z",
+            "run": {
+              "id": "246519c2-a97c-8325-9d57-5445b28377b6",
+              "recorded_status": "in_progress",
+              "scheduled_for": "2026-11-13T22:30:00Z",
+              "started_at": "2026-11-13T22:28:27.654091Z",
+              "completed_at": null,
+              "chat_ref": null
+            }
           }
         ],
         [
           {
             "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
             "is_enabled": true,
-            "checked_at": "2026-11-13T21:47:06.831Z",
-            "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-            "recorded_run_status": "no_update"
+            "checked_at": "2026-11-13T22:28:58.322Z",
+            "run": {
+              "id": "669be467-95ec-8327-9cd5-cd820771471f",
+              "recorded_status": "completed",
+              "scheduled_for": "2026-11-13T22:00:00Z",
+              "started_at": "2026-11-13T21:55:23.849426Z",
+              "completed_at": "2026-11-13T22:18:07.081504Z",
+              "chat_ref": {
+                "type": "chatgpt",
+                "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+              }
+            }
           }
         ]
       ],
-      "restoration_performed": false,
-      "point_in_time_only": true
+      "end": [
+        [
+          {
+            "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+            "is_enabled": true,
+            "checked_at": "2026-11-13T22:35:04.287Z"
+          }
+        ],
+        [
+          {
+            "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+            "is_enabled": true,
+            "checked_at": "2026-11-13T22:35:04.364Z"
+          }
+        ]
+      ],
+      "final_persistence_end": [
+        [
+          {
+            "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+            "is_enabled": true,
+            "checked_at": "2026-11-13T22:36:30.707Z"
+          }
+        ],
+        [
+          {
+            "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+            "is_enabled": true,
+            "checked_at": "2026-11-13T22:36:30.551Z"
+          }
+        ]
+      ],
+      "point_in_time_only": true,
+      "restoration_performed": false
     },
     "latest_research_storage_verification": {
-      "data_commit_sha": "d5cc328568016a82e79bc43fb995cedb9e95b3cc",
+      "data_commit_sha": "5069454318d7d39cb4174280d866d8e055feade2",
       "verified_files": [
         {
-          "path": "agent-work/market/rules/PF1-UltimateCampaign.json",
-          "blob_sha": "76395ffc8144fdb038fd0062d05c564374ca6b08",
+          "path": "agent-work/research/audits/PF1-L1-2026-11-14.json",
+          "sha": "7de1ac4477ed8606b3190a522802165d408880b4",
           "exact": true
         },
         {
-          "path": "agent-work/research/requirements/PF1-terrain-elements.json",
-          "blob_sha": "ab6b066b86c9ef384ecb1ca66098022c5b075a85",
+          "path": "agent-work/research/audits/PF1-L1-2026-11-14.md",
+          "sha": "b6ee22aa353d1635585b9c4110027f7d745a85fb",
           "exact": true
         },
         {
-          "path": "agent-work/research/requirements/PF1-terrain-elements.md",
-          "blob_sha": "8e4042591509b3ea74514aaa751d45dd2d99f49c",
+          "path": "agent-work/research/audits/PF1-L1-2026-11-14-probes.json",
+          "sha": "d0294d2902ab73c73c0dee68371d743438ce8465",
           "exact": true
         },
         {
-          "path": "agent-work/rules/common-rules.json",
-          "blob_sha": "a396eaa1084f97c20b2f73c3ead68f86df15016e",
+          "path": "agent-work/research/audits/PF1-L1-2026-11-14-manifest.json",
+          "sha": "11bf2d474568d86e1d5f244b7b6b7c902584893e",
           "exact": true
         },
         {
-          "path": "agent-work/rules/game-bindings.json",
-          "blob_sha": "ff5af8b9dc320e474b3d3b9317dc63c834afbd64",
+          "path": "agent-work/research/audits/PF1-L1-2026-11-14-notes-probe.mjs",
+          "sha": "95dc01e7fa9ca531147686e870e0bfe937efc0b9",
+          "exact": true
+        },
+        {
+          "path": "agent-work/research/audits/PF1-L1-2026-11-14-biome-probe.mjs",
+          "sha": "539349417269ef43a8a357f0ee8a36fd865ec0e7",
           "exact": true
         },
         {
           "path": "agent-work/backlog.json",
-          "blob_sha": "91673dc7866c77433ac43af26fe7147a55502a0a",
+          "sha": "471b4155a85fb4339fd31c78f73ff89cd879a036",
           "exact": true
         },
         {
-          "path": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json",
-          "blob_sha": "d464a8af3aaed2225608e893f4b05b0c9233dd36",
+          "path": "agent-work/research/runs/2026-11-13T2229-PF1-L1-audit.json",
+          "sha": "d507572e51f0e00404699ac6b943fc06d25b126a",
           "exact": true
         },
         {
-          "path": "agent-work/research/checkpoints/PF1-terrain-elements.json",
-          "blob_sha": "00471d32bdde9637fd6cfc692e220f677e4b8c70",
+          "path": "agent-work/research/checkpoints/PF1-L1-audit.json",
+          "sha": "f600d6260f8f3a3a7f1d684300f7766483175b79",
           "exact": true
         },
         {
           "path": "agent-work/research/README.md",
-          "blob_sha": "732d356cf9d2cd1b13e1709d8881b1807cccbdff",
+          "sha": "b994e020d45a32a87dbf491ad0e8b92a60a4ce35",
           "exact": true
         },
         {
           "path": "agent-work/research/state.json",
-          "blob_sha": "c362b8592b30e61cd349e61687de99762ee934c2",
+          "sha": "5655e11b63125700488243ee3204714e5071f569",
           "exact": true
         },
         {
-          "path": "agent-work/claims/2026-11-13T2129-PF1-terrain-elements.json",
-          "blob_sha": "898919966279a68f4d2c0de4be0516091e3823da",
+          "path": "agent-work/claims/2026-11-13T2229-PF1-L1-audit.json",
+          "sha": "dfe078db292318f08e843731b4ec6eb821460e62",
           "exact": true
         }
       ],
-      "protected_inputs": [
-        {
-          "path": "agent-work/market/three-scenario-ranking-2026-11-06.json",
-          "sha": "ea0d62e91e7e97f938268e14e4fdd484668748d8",
-          "unchanged": true
-        },
-        {
-          "path": "agent-work/research/method.json",
-          "sha": "8d363a9b28797a48abeee05359233161d294687c",
-          "unchanged": true
-        },
-        {
-          "path": "agent-work/research/proposals.json",
-          "sha": "af09728951ab4a24d5750e56c3545683de76822e",
-          "unchanged": true
-        },
-        {
-          "path": "agent-work/score/cohorts-2026-11-06.json",
-          "sha": "7bdcc478177f521dbae993854459b03803159249",
-          "unchanged": true
-        }
-      ],
-      "canonical_semantics_and_nonqueue_fields_preserved": true,
       "nonresearch_latest_fields_preserved": true,
-      "latest_written_last": true,
-      "verification_scope": "Exact UTF8 readback of11data/state/run/claim files before pointer update; no runtime support inferred."
+      "backlog_nonnotes_unchanged": true,
+      "latest_written_last": true
     },
     "independent_results": [
       {
@@ -5483,15 +5434,15 @@
       }
     ],
     "authority_status": "explicit_owner_resume",
-    "finalized_at": "2026-11-13T21:47:31.059Z",
+    "finalized_at": "2026-11-13T22:36:47.350Z",
     "program_id": "HX-RSR-001",
-    "run_id": "2026-11-13T2129-PF1-terrain-elements",
-    "last_result_ref": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json",
-    "updated_at": "2026-11-13T21:47:31.059Z",
+    "run_id": "2026-11-13T2229-PF1-L1-audit",
+    "last_result_ref": "agent-work/research/runs/2026-11-13T2229-PF1-L1-audit.json",
+    "updated_at": "2026-11-13T22:36:47.350Z",
     "active_rating_changed": false,
-    "last_run_id": "2026-11-13T2129-PF1-terrain-elements",
-    "result_commit_sha": "d5cc328568016a82e79bc43fb995cedb9e95b3cc",
-    "last_run": "2026-11-13T2129-PF1-terrain-elements",
+    "last_run_id": "2026-11-13T2229-PF1-L1-audit",
+    "result_commit_sha": "5069454318d7d39cb4174280d866d8e055feade2",
+    "last_run": "2026-11-13T2229-PF1-L1-audit",
     "new_owner_decisions_needed": [],
     "pending_product_proposal_refs": [
       "agent-work/proposals/2026-11-10-HX-BL-054-PF2-FILL1.json",
@@ -5573,10 +5524,10 @@
       "latest_written_last": true
     },
     "latest_startup_diagnosis": {
-      "run_id": "2026-11-13T2129-PF1-terrain-elements",
-      "started_marker_ref": "agent-work/claims/2026-11-13T2129-PF1-terrain-elements.json",
-      "result_ref": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json",
-      "status": "completed_with_recovered_local_evaluation_errors",
+      "run_id": "2026-11-13T2229-PF1-L1-audit",
+      "started_marker_ref": "agent-work/claims/2026-11-13T2229-PF1-L1-audit.json",
+      "result_ref": "agent-work/research/runs/2026-11-13T2229-PF1-L1-audit.json",
+      "status": "completed_with_recovered_local_probe_errors",
       "stop_reason": null,
       "needs_owner_action": false
     },
@@ -5597,7 +5548,7 @@
       "runtime_failure_reporting_tested": false,
       "latest_written_last": true
     },
-    "checks_ref": "agent-work/research/requirements/PF1-terrain-elements.json#checks",
+    "checks_ref": "agent-work/research/audits/PF1-L1-2026-11-14-probes.json",
     "latest_card_comparison": {
       "ref": "agent-work/research/resources/HexAtlas-local-cards-2026-11-12.json",
       "status": "completed_bounded_local_card_and_mixed_group_comparison"
@@ -5758,6 +5709,14 @@
       "acceptance_examples": 89,
       "runtime": "unknown",
       "status": "completed"
+    },
+    "latest_PF1_L1_audit": {
+      "ref": "agent-work/research/audits/PF1-L1-2026-11-14.json",
+      "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+      "rows": 15,
+      "callback_cases": 46,
+      "DOM": false,
+      "formal_coverage_changed": false
     }
   },
   "latest_ranking_activation": {
