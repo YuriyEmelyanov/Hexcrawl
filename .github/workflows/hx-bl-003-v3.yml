@@ -1,0 +1,107 @@
+# No run on PR updates: create the fixed execution branch at the accepted exact SHA only after offline review.
+name: HX-BL-003 approved V3 validation
+on: create
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: hx-bl-003-approved-v3-single-package
+  cancel-in-progress: false
+jobs:
+  validation:
+    if: github.event.ref_type == 'branch' && github.event.ref == 'agent/hx-bl-003-v3-approved'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Start global budget including setup
+        run: echo "HX_V3_JOB_STARTED_MS=$(date +%s%3N)" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Verify existing offline approval, CI and single workflow attempt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module - <<'JS'
+          import assert from 'node:assert/strict';
+          assert.equal(process.env.GITHUB_RUN_ATTEMPT,'1');
+          const api=async path=>{const r=await fetch('https://api.github.com/repos/'+process.env.GITHUB_REPOSITORY+path,{headers:{Authorization:'Bearer '+process.env.GH_TOKEN,Accept:'application/vnd.github+json'}});assert(r.ok,'API '+path+' '+r.status);return r.json();};
+          const f=await api('/contents/agent-work/backlog.json?ref=agent-operations');
+          const t=JSON.parse(Buffer.from(f.content,'base64').toString()).tasks.find(t=>t.task_id==='HX-BL-003');
+          assert.equal(t.followup_approval_ref,'owner-approval-2026-10-27-HX-BL-003-V3');
+          assert.equal(t.v3_handoff.offline_review.status,'accepted');
+          assert.equal(t.v3_handoff.offline_review.head_sha,process.env.GITHUB_SHA);
+          const runs=(await api('/actions/runs?head_sha='+process.env.GITHUB_SHA+'&per_page=100')).workflow_runs;
+          assert(runs.some(r=>r.name==='Check'&&r.conclusion==='success'),'normal exact-head CI required');
+          const current=runs.find(r=>String(r.id)===process.env.GITHUB_RUN_ID);assert(current,'current run must be visible');
+          const v3=(await api('/actions/workflows/'+current.workflow_id+'/runs?branch=agent%2Fhx-bl-003-v3-approved&event=create&per_page=100')).workflow_runs;
+          assert.equal(v3.length,1,'only this V3 execution branch creation run allowed');
+          JS
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: HX-BL-003-baseline-outputs
+          run-id: 40200788539
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: reports/HX-BL-003/baseline-outputs
+      - name: Verify original artifacts and extract existing corpus
+        run: |
+          mkdir -p reports/HX-BL-003/v3
+          python - <<'PY'
+          import hashlib,json,pathlib,zipfile
+          p=pathlib.Path('reports/HX-BL-003/corpus/fixed-corpus.zip')
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=='55dddd3df58d45ad33578678ec239e61d966c6972dbaa7e8cd2fd8c510ff5913'
+          with zipfile.ZipFile(p) as z:
+              assert all(not n.startswith('/') and '..' not in pathlib.PurePosixPath(n).parts for n in z.namelist())
+              z.extractall(p.parent)
+          p=pathlib.Path('reports/HX-BL-003/baseline-outputs')
+          m=json.loads((p/'manifest.json').read_text())
+          for f in m['files']:
+              data=(p/f['path']).read_bytes()
+              assert hashlib.sha256(data).hexdigest()==f['sha256'] and len(data)==f['bytes']
+          PY
+      - name: Build exact production and separate observation-only history worktrees
+        run: |
+          git diff --exit-code 739e3de36587533bf3d2f3196072270f4695fa8a HEAD -- src public package.json package-lock.json
+          git worktree add --detach /tmp/hx003-pair-baseline 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+          git worktree add --detach /tmp/hx003-pair-candidate 739e3de36587533bf3d2f3196072270f4695fa8a
+          git worktree add --detach /tmp/hx003-v3-history-baseline 103d31b9f6f5c76b1f6b45d9d6664fe3f75dd63b
+          git worktree add --detach /tmp/hx003-v3-history-candidate 739e3de36587533bf3d2f3196072270f4695fa8a
+          for variant in baseline candidate; do
+            target="/tmp/hx003-pair-$variant"
+            ln -s "$GITHUB_WORKSPACE/node_modules" "$target/node_modules"
+            (cd "$target" && npx vite build --sourcemap)
+            mkdir -p "reports/HX-BL-003/v3/sourcemaps/$variant"
+            cp "$target"/dist/assets/*.map "reports/HX-BL-003/v3/sourcemaps/$variant/"
+            git -C "$target" diff --exit-code
+            target="/tmp/hx003-v3-history-$variant"
+            ln -s "$GITHUB_WORKSPACE/node_modules" "$target/node_modules"
+            node scripts/hx-bl-003-v3-observe-history.mjs "$target" "reports/HX-BL-003/v3/history-$variant-observation.json"
+            git -C "$target" diff > "reports/HX-BL-003/v3/history-$variant.patch"
+            (cd "$target" && npx vite build)
+          done
+      - name: Freeze environment and manifest before any actions
+        run: node scripts/hx-bl-003-v3-freeze.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HX-BL-003-V3-preflight-freeze
+          path: |
+            reports/HX-BL-003/v3/environment.json
+            reports/HX-BL-003/v3/harness-manifest.json
+            reports/HX-BL-003/v3/protocol.json
+            reports/HX-BL-003/v3/history-*.patch
+            reports/HX-BL-003/v3/history-*-observation.json
+          if-no-files-found: error
+      - name: Single approved package; no retry, PNG or generation benchmark
+        run: node scripts/hx-bl-003-v3.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-BL-003-V3-validation
+          path: reports/HX-BL-003/v3/
+          if-no-files-found: error
