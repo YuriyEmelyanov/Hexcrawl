@@ -1211,7 +1211,7 @@
     {
       "id": "HX-FB-023",
       "type": "owner_river_crossing_POI_scale_corrections",
-      "status": "C05_and_C02_visual_independently_accepted_geography_open",
+      "status": "WR1_width_projection_ready_geometry_decision_proposed",
       "reported_on": "2026-11-12",
       "reported_by": "owner",
       "related_task_id": "HX-BL-051",
@@ -1324,8 +1324,8 @@
       ],
       "production_fixed": false,
       "release_ready": false,
-      "next_role": "business_analyst",
-      "next_step": "Бизнес-аналитик продолжает утверждённую HX-BL-051: ограниченный контракт оставшихся OM-C01/03/04/06/07/08 и географической OM-C02. На одном существующем fixture сопоставляет рёбра 6/1 мили, crossings/береговые POI/устья и физическую ширину; предлагает совместимую геометрию без скрытого сдвига authored объектов. Использует уже сохранённые lookup/history, не повторяет исследование и не запускает новую статистическую серию. Отдельно сохраняет unknown основания размеров городка и ширины; не закрепляет0.8mi либо новые числа без evidence. Результат — пригодный программисту ограниченный следующий этап с инвариантами, проверяемыми AC, score1.2 и наглядным предложением. Если нужен существенный продуктовый выбор — выделить конкретное решение владельцу. Код/merge/deploy не входят.",
+      "next_role": "programmer",
+      "next_step": "Программист реализует только WR1 GEO1-WR1 от PR5036005973: сохраняет исходную видимую ширину реки при6↔1 и согласует с ней gap/ford/rails, без русел/якорей/сетки/каталога/схемы/RNG. По WR01–05 — необходимые проверки, фактический показ и независимая проверка новогоSHA. GEO-D01 — отдельное содержательное решение владельца о пространственном соответствии/миграции, не блокирует WR1; полный HX-FB-023 не закрывать.",
       "bounded_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-C02-C05.md",
       "full_feedback_resolved": false,
       "bounded_implementation": {
@@ -1342,7 +1342,10 @@
         "review_ref": "agent-work/evidence/review-ONE-MILE1-C02-C05-0304/independent-review.json",
         "result_ref": "agent-work/results/2026-11-13T0304-reviewer-ONE-MILE1-C02-C05.json",
         "handoff_ref": "agent-work/handoffs/2026-11-13T0304-ONE-MILE1-geometry-contract-analyst.json"
-      }
+      },
+      "geometry_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO-0500/analysis.json",
+      "width_projection_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO1.md",
+      "geometry_proposal_ref": "agent-work/decisions/proposed-ONE-MILE1-GEO-D01.json"
     }
   ]
 }
