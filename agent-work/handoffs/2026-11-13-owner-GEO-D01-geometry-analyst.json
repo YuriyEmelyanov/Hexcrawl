@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO-D01-owner-direction",
+  "from_role": "business_analyst",
+  "to_role": "business_analyst",
+  "status": "ready_for_specification_owner_direction_resolved",
+  "decision_ref": "agent-work/decisions/owner-decision-2026-11-13-ONE-MILE1-GEO-D01-edge-detours.json",
+  "source_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "input_evidence": [
+    "agent-work/specs/HX-BL-051-ONE-MILE1-GEO1.md",
+    "agent-work/specs/HX-BL-051-ONE-MILE1-owner-corrections-2026-11-12.md",
+    "agent-work/evidence/ONE-MILE1-GEO-0500/analysis.json",
+    "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json"
+  ],
+  "scope": [
+    {
+      "id": "GEO-D01-R1",
+      "requirement": "If river crosses a hex center, detour along that hex's edges left or right, choosing side randomly."
+    },
+    {
+      "id": "GEO-D01-R2",
+      "requirement": "Move POI toward its required river within the same6mile parent hex when its placement rules require river adjacency; do not move unrelated POI merely because a river exists."
+    },
+    {
+      "id": "GEO-D01-R3",
+      "requirement": "Adapt roads attached to a moved POI so that they still reach that POI."
+    },
+    {
+      "id": "GEO-D01-R4",
+      "requirement": "Do not display the road inside the occupied footprint of a POI that occupies a whole hex or more."
+    }
+  ],
+  "technical_requirements": [
+    {
+      "item": "Retain existing grid phase/addresses",
+      "kind": "working_interpretation_of_edge_detour_direction",
+      "note": "No owner approval for proposedA grid rephase or address migration. Adapt geography rather than shifting grid."
+    },
+    {
+      "item": "Stable random choice",
+      "kind": "implementation_requirement_to_preserve_existing_reproducibility_contract",
+      "note": "Same accepted map does not reroll detour on6↔1, pan/zoom/style/export/reopen; define deterministic keyed choice or persisted result without consuming globalworld RNG on view."
+    },
+    {
+      "item": "Dependency order and consistency",
+      "kind": "specification_work_required",
+      "note": "Edge river route → required river-side POI within same6mile parent → attached roads/crossings → visual road mask. Preserve stable entity IDs, crossing kinds and coherent attachments/connectivity; reconcile6/1 representations explicitly."
+    },
+    {
+      "item": "Road concealment",
+      "kind": "rendering_interpretation_of_do_not_display",
+      "note": "Mask line only inside actual footprint, not delete road entity/connectivity. Whole-cell threshold is understood in context of1mile detail, not any-pixel icon; formalize measured/manual extent and boundary/entrance semantics."
+    },
+    {
+      "item": "Existing maps and authored data",
+      "kind": "specification_work_required",
+      "note": "Define explicit application/compatibility/UndoRedo/JSON and conflict/loss behavior. Owner permits necessary within-parent geometry adaptation; no silent lost manual content or unrelated-object migration."
+    }
+  ],
+  "completion_criterion": "Developer-ready bounded stage with goal/boundaries, deterministic detour/joins/POI/roads/footprint masking, errors and conflicts, existing authored-map application semantics, stableIDs/RNG/history/JSON, actual shore join and acceptance checks; score1.2 criterion forecasts/evidence and shown desktop+narrow proposal. Split into implementable dependent stages rather than immediate bulk rewrite.",
+  "ui_preview_pending": true,
+  "ui_preview_responsible": "business_analyst",
+  "design_response_required": false,
+  "new_start_approval_required": false,
+  "immediate_implementation_authorized": false,
+  "release_authorized": false,
+  "next_step": "Бизнес-аналитик в штатном запуске специфицирует уточнённый GEO-D01: устойчивый случайный обход реки по левым/правым рёбрам существующих1мильных гексов; перенос требующих реку POI внутри своего6мильного гекса; согласование связанных дорог/переходов; маскирование дороги внутри фактического охватаPOI≥1гекса. На существующем fixture показывает6/1/PNG desktop/узкий экран, формализует связность, коллизии, берег озераOM-C06 и совместимость/историю/RNG. Сетка не сдвигается; вариантA не утверждён. Результат — ограниченная пригодная программисту спецификация и наглядное предложение; затем обычная разработка и независимая проверка. Новый A/B-ответ владельца не нужен; выпуска/новыхразмеров/физическойкалибровки/платныхрасходов нет.",
+  "previous_C06_handoff": "agent-work/handoffs/2026-11-13T0900-ONE-MILE1-C06-analyst.json",
+  "routing_change": "Old C06-only next-step restriction is superseded for scopeplanning by this new owner direction. C06 remains required and should be coherently included or explicitly sequenced; WR1 acceptance remains unchanged."
+}

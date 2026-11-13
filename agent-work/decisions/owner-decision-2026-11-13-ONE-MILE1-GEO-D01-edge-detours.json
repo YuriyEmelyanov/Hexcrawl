@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "id": "owner-decision-2026-11-13-ONE-MILE1-GEO-D01-edge-detours",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "proposal_id": "OM-GEO-D01",
+  "source": "Current owner chat",
+  "recorded_at": "2026-11-13T06:25:53.701Z",
+  "status": "owner_resolved_direction_specification_required",
+  "quote": "Не понял, но. Если река проходит по центру гекса предлагаю случайно обходить гекс по ребрам слева или справа.\nТочки интереса внутри 6 мильного гекса смещать к реке, если они должны быть у реки. Дороги тоже смещать к точке интереса, если она сместилась, внутри точки интереса дорогу не показывать, если точка интереса занимает целый гекс или больше. Я ответил?",
+  "resolution": "Owner supplied concrete direction compatible with B: route river around existing hex edges with random left/right choice and adapt dependent POI/roads; previous recommendationA is not approved. No further A/B decision is required.",
+  "owner_requirements": [
+    {
+      "id": "GEO-D01-R1",
+      "requirement": "If river crosses a hex center, detour along that hex's edges left or right, choosing side randomly."
+    },
+    {
+      "id": "GEO-D01-R2",
+      "requirement": "Move POI toward its required river within the same6mile parent hex when its placement rules require river adjacency; do not move unrelated POI merely because a river exists."
+    },
+    {
+      "id": "GEO-D01-R3",
+      "requirement": "Adapt roads attached to a moved POI so that they still reach that POI."
+    },
+    {
+      "id": "GEO-D01-R4",
+      "requirement": "Do not display the road inside the occupied footprint of a POI that occupies a whole hex or more."
+    }
+  ],
+  "analyst_operationalization": [
+    {
+      "item": "Retain existing grid phase/addresses",
+      "kind": "working_interpretation_of_edge_detour_direction",
+      "note": "No owner approval for proposedA grid rephase or address migration. Adapt geography rather than shifting grid."
+    },
+    {
+      "item": "Stable random choice",
+      "kind": "implementation_requirement_to_preserve_existing_reproducibility_contract",
+      "note": "Same accepted map does not reroll detour on6↔1, pan/zoom/style/export/reopen; define deterministic keyed choice or persisted result without consuming globalworld RNG on view."
+    },
+    {
+      "item": "Dependency order and consistency",
+      "kind": "specification_work_required",
+      "note": "Edge river route → required river-side POI within same6mile parent → attached roads/crossings → visual road mask. Preserve stable entity IDs, crossing kinds and coherent attachments/connectivity; reconcile6/1 representations explicitly."
+    },
+    {
+      "item": "Road concealment",
+      "kind": "rendering_interpretation_of_do_not_display",
+      "note": "Mask line only inside actual footprint, not delete road entity/connectivity. Whole-cell threshold is understood in context of1mile detail, not any-pixel icon; formalize measured/manual extent and boundary/entrance semantics."
+    },
+    {
+      "item": "Existing maps and authored data",
+      "kind": "specification_work_required",
+      "note": "Define explicit application/compatibility/UndoRedo/JSON and conflict/loss behavior. Owner permits necessary within-parent geometry adaptation; no silent lost manual content or unrelated-object migration."
+    }
+  ],
+  "supersedes": [
+    "GEO-D01 awaiting owner A/B choice",
+    "RecommendationA as team next action",
+    "Absolute unchanged geographic coordinates as blanket constraint for newly authorized dependent geometry adaptation"
+  ],
+  "preserves": [
+    "Existing task/start authorization and standard analyst→programmer→independentreview queue",
+    "Exact source identity/topology/required attachments and history invariants subject to explicit geometry contract",
+    "Full remaining OM-C06/07/08 evidence needs and independent review of futureSHA",
+    "No physicalF1–5 calibration or newtown size table approved",
+    "No permission for release/main merge,paid spend,newstatistical series or researchagent resume"
+  ],
+  "authority": {
+    "scope_approved": true,
+    "scope": "Concrete owner clarification inside existingHX-BL-051 corrections; analyst specifies this direction, programmer works only after usable bounded spec in normalqueue.",
+    "immediate_product_implementation": false,
+    "release_authorized": false
+  },
+  "score": {
+    "model_version": "1.2",
+    "expected_delta": null,
+    "status": "unknown_unimplemented_no_award"
+  },
+  "next_role": "business_analyst",
+  "handoff_ref": "agent-work/handoffs/2026-11-13-owner-GEO-D01-geometry-analyst.json"
+}

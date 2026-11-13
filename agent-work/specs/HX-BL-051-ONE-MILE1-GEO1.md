@@ -1,3 +1,5 @@
+> **Актуальное уточнение владельца13.11.2026:** GEO-D01 больше не ждёт выбора A/B. Принят обход по рёбрам существующих гексов со случайным устойчивым выбором стороны и согласованным переносом зависимых POI/дорог; дорога внутри охватаPOI≥целого гекса скрывается. РекомендацияA/перепривязка сетки не утверждена. Ниже разделы GEO-D01 с ожиданием решения — история, заменены [решением владельца](../decisions/owner-decision-2026-11-13-ONE-MILE1-GEO-D01-edge-detours.json). Это требует следующей ограниченной спецификации; не разрешение немедленного кодирования или выпуска. WR1 остаётся отдельно принятым этапом на3344159.
+
 # HX-BL-051 / ONE-MILE1 — GEO1 / WR1
 Version GEO1-WR1, 13.11.2026. Business analyst, approved owner corrections HX-FB-023. Source PR50360059737ec94b54db88c2f49c8d16e99da7d85a8/tree705c41da8d45f9c4a4afafc37426d32d402465af. Published main1962fb9a835a9c310e55c1a09415fe180f22cca9 unchanged. C02 visual/C05 bounded acceptance retained; full package remains not release ready.
 
