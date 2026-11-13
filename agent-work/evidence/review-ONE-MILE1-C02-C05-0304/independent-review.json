@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "reviewer": "fresh_independent_subagent_c02_c05_review_0304",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "C02-C05",
+  "spec_version": "OM-C-PRESENT1",
+  "head_sha": "60059737ec94b54db88c2f49c8d16e99da7d85a8",
+  "tree_sha": "705c41da8d45f9c4a4afafc37426d32d402465af",
+  "base_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
+  "verdict": "accepted_bounded_presentation_phase",
+  "blocking_findings": [],
+  "release_authorized": false,
+  "full_feedback_resolved": false,
+  "independence": {
+    "fresh_context": true,
+    "prior_author_context": false,
+    "separate_detached_worktree": "/workspace/scratch/93351762c143/review-c02-c05-exact",
+    "exact_head_fetched_from_origin": true,
+    "exact_tree_verified": true,
+    "product_files_changed_by_reviewer": false,
+    "dirty_author_checkout_used": false,
+    "remote_spec_blob": "afe155e607e5f994b5d0cb74e6b33ad7dada0b76",
+    "remote_handoff_blob": "4f8155f56e30daeb48ca77bc96ebb171989c2c94",
+    "score_model_blob": "51c2ca9701a6669aced78a82a4bdf00accbbf075"
+  },
+  "acceptance": [
+    {
+      "id": "P01",
+      "status": "pass_bounded",
+      "evidence": "probe.mjs/results.json: actual App.finePoi resolver for all22 original POI RU/EN; named central, named/unnamed secondary and water; valid duplicate long editor names; no authored name yields one localized type; missing land kind with valid default extent yields generic POI; invalid/missing locator safe; unknown type plus authored name retained; actual TSX SSR full accessible label and HTML escaping. Original localization/cell focus tests retained.",
+      "limits": "DOM long-label wrapping uses existing CI responsive evidence, no independent new browser session. Unknown enum strings are invalid parser inputs and were not treated as accepted data."
+    },
+    {
+      "id": "P02",
+      "status": "pass_bounded",
+      "evidence": "Full renderer/helper diff; kind-sensitive helper tests; independent inspection of exact-source ferry/bridge/ford original crops and rotated color PNG; native actual7 crossing plans retain bridge/ferry; legal F2 ford fixture is explicit test variation.",
+      "limits": "Existing original river3 was bridge; all-three PNG fixture is a legal explicit ford variation, not new generated geographic evidence."
+    },
+    {
+      "id": "P03",
+      "status": "pass_bounded",
+      "evidence": "Independent actual helper plans and exact document-before/after equality; multiple unordered+duplicate crossings, endpoint clipping, acute parallel clipping, off-model missing match produce deterministic finite forward fragments. Production code has no document/RNG writes.",
+      "limits": "Synthetic river-endcap scenario overcuts relative to finite round cap; not reproduced by accepted current model. App.tsx10548-10559 puts crossings at road midpoint; App.tsx8986-9020 binds river shared hex edge, hence current crossings occur at perpendicular interior edge intersections. General free-coordinate finite-envelope correctness is not certified."
+    },
+    {
+      "id": "P04",
+      "status": "pass_bounded",
+      "evidence": "Only fine resolver and artwork changed in product source. Root independently decoded original before/after native6 PNGs with zero differing pixels1500/390 and verified38 original hashes; prior programmer statements were not sole source.",
+      "limits": "One fixed world,1500/390; no width, shore, mouth or physical alignment acceptance."
+    },
+    {
+      "id": "P05",
+      "status": "pass_bounded",
+      "evidence": "Actual images inspected for3 crossings and rotated-color PNG; original manifest normal/read/edit/error/busy1500/390/320 RU/EN; root independently verified artifact hashes. App resolver includes no new UI mechanism or mutation path.",
+      "limits": "No fresh desktop browser runtime was run by this reviewer. CI remains responsive/browser execution evidence; no real Android/WCAG audit claim."
+    },
+    {
+      "id": "P06",
+      "status": "pass_bounded",
+      "evidence": "Independent focused node13/13 and exactSHA Vite production build passed onNode24.22.1; complete7-file diff reviewed. Root verified actual CI43318832482 jobs/logs head600/tree705, Node385/385,9 browser scripts and separate RNG.",
+      "limits": "Full385/browser/RNG not redundantly rerun. Existing CI and source-tree matching carry those checks."
+    }
+  ],
+  "test_change_review": {
+    "counts": {
+      "node": {
+        "added": 3,
+        "removed": 0,
+        "modified": 0,
+        "result": 13
+      },
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "logical_cases": 5
+      }
+    },
+    "usefulness": "Three distinct unit contracts add real branch-sensitive checks for label naming, bridge rails, ford opacity, ferry removal, multi/dedupe/clamping. Browser reuses one accepted world/lifecycle; historical native6 comparison is opt-in only forPR503 and does not pin future UI.",
+    "sensitivity": "Collapsing kind handling loses required rail count/opacity/gap piece assertions, so new unit tests detect common branch collapse. Browser DOM data-crossing-kind/count alone is weaker, but ford opacity plus captured real artwork and unit geometry corroborate it.",
+    "nonblocking_gaps": [
+      "Road immutability assertion JSON.stringify(road)===JSON.stringify({...road}) is tautological after the call and does not prove before/after invariance; independent probe snapshots the actual document before/after instead.",
+      "Endpoint original assertion can pass vacuously if pieces=[]; independent probe records actual clipped nonempty endpoint output.",
+      "POI concatenate unit case does not exercise actual resolver; independent App harness probe closes bounded integration gap.",
+      "PNG existing geometry comparison excludes rail point strings, opacity/dash attrs and accessible labels; visual originals plus source inspection corroborate current output, but future branch-specific PNG assertions would be more sensitive.",
+      "No new permanent tests requested solely to increase counts."
+    ]
+  },
+  "limitations": [
+    "Scope is type/name plus crossing presentation. C01/C03/C04/C06/C07/C08 and geographicC02 remain open.",
+    "No game-cohort-wide proof, wholecriterion score award, hidden/player views, general SVG-export feature, physical widths or town-size correctness inferred.",
+    "Generalized finite-round-cap/acute geometry remains a documented helper limitation outside current accepted crossing representation."
+  ],
+  "diagnostics": {
+    "script": "probe.mjs",
+    "harness": "test/helpers/generation-harness.mjs",
+    "results": "results.json",
+    "escaped_renderer_svg": "escaped-poi.svg",
+    "observations": 17,
+    "status": "passed",
+    "fixture_note": "Diagnostic-only name/extent variants apply through checked production applyDocument. Earlier invalid diagnostic attempts rejected correctly and were corrected; no product failure inferred."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "method": "automations.peek",
+      "is_enabled": true,
+      "status": "checked",
+      "checked_at": null,
+      "timestamp_limit": "Start actual state was observed at first review tool invocation; UTC timestamp was not recorded."
+    },
+    "end": {
+      "checked_at": "2026-11-13 00:11:55 UTC",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "actual enabled at start/end"
+    },
+    "errors": [],
+    "schedule_changed": false,
+    "prompt_changed": false
+  },
+  "score_assessment": {
+    "model_version": "1.2",
+    "head_sha": "60059737ec94b54db88c2f49c8d16e99da7d85a8",
+    "status": "insufficient_evidence_for_whole_criterion_grades",
+    "released_product_points_changed": false,
+    "criteria": [
+      {
+        "criterion_id": "S01-C04",
+        "weight": 25,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "grade_status": "unknown",
+        "quality": "bounded_presentation_evidence",
+        "breadth": "unverified",
+        "method": "independent exactSHA diff, targeted actual-resolver/helper/SSR probes, original image inspection, root CI/artifact corroboration",
+        "evidence": "P02/P03 actual7plans plus3kind helper/visual evidence; source route/crossing IDs unchanged",
+        "limitations": "Road network completeness, general crossings, boundary integration and cohort breadth not fully audited."
+      },
+      {
+        "criterion_id": "S02-C02",
+        "weight": 20,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "grade_status": "unknown",
+        "quality": "bounded_presentation_evidence",
+        "breadth": "unverified",
+        "method": "independent exactSHA diff, targeted actual-resolver/helper/SSR probes, original image inspection, root CI/artifact corroboration",
+        "evidence": "P01 duplicate named locators retain per-POI type; resolver keys locators not names; source immutable",
+        "limitations": "All entity rename/edit/import/export ID lifecycles across approved corpus not fully audited."
+      },
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "grade_status": "unknown",
+        "quality": "bounded_presentation_evidence",
+        "breadth": "unverified",
+        "method": "independent exactSHA diff, targeted actual-resolver/helper/SSR probes, original image inspection, root CI/artifact corroboration",
+        "evidence": "P02/P04 three symbols preserved across unchanged source model; inspected rotated color PNG; root original native6 identity",
+        "limitations": "Master/player visibility, fog and role semantics outside scope; general layers target not established."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "grade_status": "unknown",
+        "quality": "bounded_presentation_evidence",
+        "breadth": "unverified",
+        "method": "independent exactSHA diff, targeted actual-resolver/helper/SSR probes, original image inspection, root CI/artifact corroboration",
+        "evidence": "P02/P03 PNG captures retain real crossing visual distinctions; existing JSON/toggle/export invariant CI and exact immutable source",
+        "limitations": "Full approved round-trip corpus and SVG/role-specific exports not established."
+      },
+      {
+        "criterion_id": "S04-C05",
+        "weight": 10,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "grade_status": "unknown",
+        "quality": "bounded_presentation_evidence",
+        "breadth": "unverified",
+        "method": "independent exactSHA diff, targeted actual-resolver/helper/SSR probes, original image inspection, root CI/artifact corroboration",
+        "evidence": "P01/P05 actual RU/EN labels for22POI; escaped full accessible image label SSR; CI responsive evidence",
+        "limitations": "WCAG AA and all main scenario audit not performed; independent browser wrap/keyboard not rerun."
+      },
+      {
+        "criterion_id": "S05-C01",
+        "weight": 25,
+        "before_grade": null,
+        "before_points": null,
+        "after_grade": null,
+        "after_points": null,
+        "delta": null,
+        "grade_status": "unknown",
+        "quality": "bounded_presentation_evidence",
+        "breadth": "unverified",
+        "method": "independent exactSHA diff, targeted actual-resolver/helper/SSR probes, original image inspection, root CI/artifact corroboration",
+        "evidence": "P01/P05 contextual fine card now reports POI actual type/name; existing local-summary UI retained",
+        "limitations": "Full gameplay card fields/content/context and relevant top5/10/20 requirements not proved."
+      }
+    ]
+  },
+  "evidence_base": "agent-work/evidence/review-ONE-MILE1-C02-C05-0304",
+  "review_agent": "/root/c02_c05_review_0304"
+}
