@@ -1,17 +1,24 @@
 {
-  "source": "main@1962fb9a835a9c310e55c1a09415fe180f22cca9 src/App.tsx: getHexWidth, hexPoints, biome-tile <image>, mapRotationTransform",
+  "status": "normative_authoring_template_not_renderer_implementation",
   "tile_width": 210,
   "tile_height": 210,
-  "image_viewport_in_source_coordinates": {
-    "xmin": 14.067332602633954,
-    "ymin": 0,
-    "xmax": 195.93266739736606,
-    "ymax": 210
-  },
-  "preserveAspectRatio": "xMidYMid slice",
-  "map_rotation_degrees": 90,
-  "image_compensation_degrees": -90,
+  "center": [
+    105,
+    105
+  ],
+  "circumradius": 105,
   "rivers_or_padding": false,
+  "additional_image_rectangle_clipping": false,
+  "artwork_must_fit_polygon": true,
+  "bound_includes": [
+    "trees",
+    "crowns",
+    "branches",
+    "relief",
+    "shadows",
+    "decorative_marks"
+  ],
+  "background_fills_whole_square": true,
   "orientations": {
     "pointy": {
       "visible_polygon": [
@@ -32,7 +39,7 @@
           210.0
         ],
         [
-          14.067332602633954,
+          14.06733260263394,
           157.5
         ],
         [
@@ -68,7 +75,7 @@
         ]
       ],
       "visible_bounds": [
-        14.067332602633954,
+        14.06733260263394,
         0.0,
         195.93266739736606,
         210.0
@@ -77,8 +84,8 @@
     "flat": {
       "visible_polygon": [
         [
-          195.93266739736606,
-          129.36533479473212
+          210.0,
+          105.0
         ],
         [
           157.5,
@@ -89,12 +96,8 @@
           195.93266739736606
         ],
         [
-          14.067332602633954,
-          129.36533479473212
-        ],
-        [
-          14.067332602633954,
-          80.63466520526785
+          0.0,
+          105.00000000000001
         ],
         [
           52.49999999999995,
@@ -103,13 +106,9 @@
         [
           157.5,
           14.067332602633954
-        ],
-        [
-          195.93266739736606,
-          80.6346652052679
         ]
       ],
-      "visible_square_fraction": 0.6339745962155613,
+      "visible_square_fraction": 0.649519052838329,
       "hex_polygon": [
         [
           210.0,
@@ -137,12 +136,13 @@
         ]
       ],
       "visible_bounds": [
+        0.0,
         14.067332602633954,
-        14.067332602633954,
-        195.93266739736606,
+        210.0,
         195.93266739736606
       ]
     }
   },
-  "note": "The image viewport remains portrait after map + image counter-rotation cancel. In flat orientation its narrow width additionally clips the two lateral hex tips. This represents current code, not desired future layout."
+  "renderer_requirement": "Show the full regular hex in both orientations. Do not clip the flat hex tips with the portrait image viewport. Future renderer integration must preserve upright art and the whole specified polygon.",
+  "source_owner_instruction_ru": "Сделай без дополнительного обрезания кончиков. Зафиксируй что картинка не должна будет выходить за эту область."
 }
