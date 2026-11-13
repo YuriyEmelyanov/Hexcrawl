@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "game_id": "PF1",
-  "date": "2026-11-12",
-  "status": "bounded_primary_L1_corpus_not_full_game",
+  "date": "2026-11-13",
+  "status": "bounded_RandomMapGeneration_and_TerrainElements_source_extraction_runtime_unverified",
   "scope": {
     "book": "UltimateCampaign",
     "selected_sections": [
@@ -31,7 +31,15 @@
       "author_project_key": "paizo/pathfinder1/ultimate-campaign-2013",
       "printed_page": null,
       "locator": "HTML Random Map Generation lines345–366; dependencies Movement201–203, Hex Terrain Types251–256",
-      "read_scope": "Complete Random Map Generation section and both tables; scale/primary-terrain/standard-detail context. Per-terrain effect profiles and L2/L3 mechanics are not digitized."
+      "read_scope": "Complete Random Map Generation section and both tables; scale/primary-terrain/standard-detail context. Per-terrain effect profiles and L2/L3 mechanics are not digitized.",
+      "additional_read_scopes": [
+        {
+          "run_id": "2026-11-13T2129-PF1-terrain-elements",
+          "checked_at": "2026-11-13T21:39:13Z",
+          "locator": "Hex Terrain Types HTML251–344; travel tables204–219 context",
+          "read_scope": "Eight full terrain entries read;40nonstandard cells represented by a selected illustrative option, not exhaustive literary catalogue or full book. Explicit numerical effects retained as L2/L3 boundary profiles; linked external hazards not read."
+        }
+      ]
     }
   ],
   "evaluation_policy": {
@@ -763,14 +771,3053 @@
           "development_readiness": "research_handoff_only; scope extensions require owner start approval"
         }
       ]
+    },
+    {
+      "id": "PF1-UC-008",
+      "title": "Добавить конкретное препятствие, сохранив основной тип",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hex Terrain Types > all eight difficult entries; see terrain_variants locators",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Добавить конкретное препятствие, сохранив основной тип",
+        "normative_kind": "optional_subsystem_examples_and_guidance"
+      },
+      "parameters": {
+        "category": "difficult",
+        "terrain_variants": [
+          {
+            "id": "PF1-TE-desert-difficult",
+            "terrain": "desert",
+            "category": "difficult",
+            "locator": "Hex Terrain Types > desert > difficult; HTML 261",
+            "example": "овраги",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-forest-difficult",
+            "terrain": "forest",
+            "category": "difficult",
+            "locator": "Hex Terrain Types > forest > difficult; HTML 272",
+            "example": "гнилые деревья",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-hill-difficult",
+            "terrain": "hill",
+            "category": "difficult",
+            "locator": "Hex Terrain Types > hill > difficult; HTML 282",
+            "example": "скальные уступы",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-marsh-difficult",
+            "terrain": "marsh",
+            "category": "difficult",
+            "locator": "Hex Terrain Types > marsh > difficult; HTML 293",
+            "example": "зыбучий грунт",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-mountain-difficult",
+            "terrain": "mountain",
+            "category": "difficult",
+            "locator": "Hex Terrain Types > mountain > difficult; HTML 304",
+            "example": "трудное лазание",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-plain-difficult",
+            "terrain": "plain",
+            "category": "difficult",
+            "locator": "Hex Terrain Types > plain > difficult; HTML 316",
+            "example": "провалы",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-settlement-difficult",
+            "terrain": "settlement",
+            "category": "difficult",
+            "locator": "Hex Terrain Types > settlement > difficult; HTML 326",
+            "example": "аварийные здания",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-water-difficult",
+            "terrain": "water",
+            "category": "difficult",
+            "locator": "Hex Terrain Types > water > difficult; HTML 338",
+            "example": "пороги",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          }
+        ],
+        "selection": "GM choice; source provides examples, no probability among examples"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.terrain_zones",
+          "content.static_hazard",
+          "content.place_description"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-008-L1",
+          "layer": "L1",
+          "requirement": "Выбрать подходящее препятствие и записать его местоположение и описание рядом с преобладающим типом местности.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02",
+            "S07-C01",
+            "S05-C02",
+            "S05-C01"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones",
+            "content.static_hazard",
+            "content.place_description"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-008-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-008",
+            "normative_kind": "optional_subsystem_examples_and_guidance",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер уточняет difficult-элемент выбранного гекса.",
+            "inputs_and_units": {
+              "category": "difficult",
+              "terrain_variants": [
+                {
+                  "id": "PF1-TE-desert-difficult",
+                  "terrain": "desert",
+                  "category": "difficult",
+                  "locator": "Hex Terrain Types > desert > difficult; HTML 261",
+                  "example": "овраги",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-forest-difficult",
+                  "terrain": "forest",
+                  "category": "difficult",
+                  "locator": "Hex Terrain Types > forest > difficult; HTML 272",
+                  "example": "гнилые деревья",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-hill-difficult",
+                  "terrain": "hill",
+                  "category": "difficult",
+                  "locator": "Hex Terrain Types > hill > difficult; HTML 282",
+                  "example": "скальные уступы",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-marsh-difficult",
+                  "terrain": "marsh",
+                  "category": "difficult",
+                  "locator": "Hex Terrain Types > marsh > difficult; HTML 293",
+                  "example": "зыбучий грунт",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-mountain-difficult",
+                  "terrain": "mountain",
+                  "category": "difficult",
+                  "locator": "Hex Terrain Types > mountain > difficult; HTML 304",
+                  "example": "трудное лазание",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-plain-difficult",
+                  "terrain": "plain",
+                  "category": "difficult",
+                  "locator": "Hex Terrain Types > plain > difficult; HTML 316",
+                  "example": "провалы",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-settlement-difficult",
+                  "terrain": "settlement",
+                  "category": "difficult",
+                  "locator": "Hex Terrain Types > settlement > difficult; HTML 326",
+                  "example": "аварийные здания",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-water-difficult",
+                  "terrain": "water",
+                  "category": "difficult",
+                  "locator": "Hex Terrain Types > water > difficult; HTML 338",
+                  "example": "пороги",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                }
+              ],
+              "selection": "GM choice; source provides examples, no probability among examples"
+            },
+            "product_operation": "Выбрать подходящее препятствие и записать его местоположение и описание рядом с преобладающим типом местности.",
+            "expected_output": "На карте остаётся исходная местность, рядом доступно выбранное препятствие; численные эффекты вынесены отдельно.",
+            "constraints_and_exceptions": [
+              "Difficult в PF1 не равен универсальному штрафу скорости: пустыня, лес, вода, поселение имеют разные эффекты.",
+              "Примеры событий вроде песчаной бури не делают постоянную неподвижную опасность обязательной в каждом гексе."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-008-L1-AC01",
+                "given": "desert; difficult; мастер выбрал «овраги».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип desert сохранён; показано «овраги»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-008-L1-AC02",
+                "given": "forest; difficult; мастер выбрал «гнилые деревья».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип forest сохранён; показано «гнилые деревья»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-008-L1-AC03",
+                "given": "hill; difficult; мастер выбрал «скальные уступы».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип hill сохранён; показано «скальные уступы»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-008-L1-AC04",
+                "given": "marsh; difficult; мастер выбрал «зыбучий грунт».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип marsh сохранён; показано «зыбучий грунт»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-008-L1-AC05",
+                "given": "mountain; difficult; мастер выбрал «трудное лазание».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип mountain сохранён; показано «трудное лазание»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-008-L1-AC06",
+                "given": "plain; difficult; мастер выбрал «провалы».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип plain сохранён; показано «провалы»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-008-L1-AC07",
+                "given": "settlement; difficult; мастер выбрал «аварийные здания».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип settlement сохранён; показано «аварийные здания»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-008-L1-AC08",
+                "given": "water; difficult; мастер выбрал «пороги».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип water сохранён; показано «пороги»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-008-L1-AC09",
+                "given": "Исходное описание мастера уже изменено.",
+                "when": "Сохранить/повторно открыть выбранное описание.",
+                "expected": "Отредактированный текст и исходный тип сохранены; новый случайный пример их не заменил."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "map.terrain_zones",
+              "content.static_hazard",
+              "content.place_description"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-043",
+            "HX-BL-044"
+          ],
+          "development_readiness": "research_handoff_only_not_approved_extension"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-009",
+      "title": "Добавить особенность и при необходимости ориентир",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hex Terrain Types > all eight feature entries; see terrain_variants locators",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Добавить особенность и при необходимости ориентир",
+        "normative_kind": "optional_subsystem_examples_and_guidance"
+      },
+      "parameters": {
+        "category": "feature",
+        "terrain_variants": [
+          {
+            "id": "PF1-TE-desert-feature",
+            "terrain": "desert",
+            "category": "feature",
+            "locator": "Hex Terrain Types > desert > feature; HTML 263",
+            "example": "меса",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Not every feature is a far-visible landmark"
+          },
+          {
+            "id": "PF1-TE-forest-feature",
+            "terrain": "forest",
+            "category": "feature",
+            "locator": "Hex Terrain Types > forest > feature; HTML 273",
+            "example": "старовозрастная роща",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Not every feature is a far-visible landmark"
+          },
+          {
+            "id": "PF1-TE-hill-feature",
+            "terrain": "hill",
+            "category": "feature",
+            "locator": "Hex Terrain Types > hill > feature; HTML 283",
+            "example": "курган",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Not every feature is a far-visible landmark"
+          },
+          {
+            "id": "PF1-TE-marsh-feature",
+            "terrain": "marsh",
+            "category": "feature",
+            "locator": "Hex Terrain Types > marsh > feature; HTML 294",
+            "example": "затонувшие руины",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Not every feature is a far-visible landmark"
+          },
+          {
+            "id": "PF1-TE-mountain-feature",
+            "terrain": "mountain",
+            "category": "feature",
+            "locator": "Hex Terrain Types > mountain > feature; HTML 306",
+            "example": "фигурная вершина",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Not every feature is a far-visible landmark"
+          },
+          {
+            "id": "PF1-TE-plain-feature",
+            "terrain": "plain",
+            "category": "feature",
+            "locator": "Hex Terrain Types > plain > feature; HTML 318",
+            "example": "старые окопы",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Not every feature is a far-visible landmark"
+          },
+          {
+            "id": "PF1-TE-settlement-feature",
+            "terrain": "settlement",
+            "category": "feature",
+            "locator": "Hex Terrain Types > settlement > feature; HTML 328",
+            "example": "историческое поселение",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Not every feature is a far-visible landmark"
+          },
+          {
+            "id": "PF1-TE-water-feature",
+            "terrain": "water",
+            "category": "feature",
+            "locator": "Hex Terrain Types > water > feature; HTML 339",
+            "example": "мост",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Not every feature is a far-visible landmark"
+          }
+        ],
+        "selection": "GM choice; source provides examples, no probability among examples"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "content.place_description",
+          "content.landmarks"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-009-L1",
+          "layer": "L1",
+          "requirement": "Поместить выбранную особенность в указанный гекс; отдельно отметить ориентир только при подходящем описании.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02",
+            "S01-C05"
+          ],
+          "canonical_rule_ids": [
+            "content.place_description",
+            "content.landmarks"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-009-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-009",
+            "normative_kind": "optional_subsystem_examples_and_guidance",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер уточняет feature-элемент.",
+            "inputs_and_units": {
+              "category": "feature",
+              "terrain_variants": [
+                {
+                  "id": "PF1-TE-desert-feature",
+                  "terrain": "desert",
+                  "category": "feature",
+                  "locator": "Hex Terrain Types > desert > feature; HTML 263",
+                  "example": "меса",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Not every feature is a far-visible landmark"
+                },
+                {
+                  "id": "PF1-TE-forest-feature",
+                  "terrain": "forest",
+                  "category": "feature",
+                  "locator": "Hex Terrain Types > forest > feature; HTML 273",
+                  "example": "старовозрастная роща",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Not every feature is a far-visible landmark"
+                },
+                {
+                  "id": "PF1-TE-hill-feature",
+                  "terrain": "hill",
+                  "category": "feature",
+                  "locator": "Hex Terrain Types > hill > feature; HTML 283",
+                  "example": "курган",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Not every feature is a far-visible landmark"
+                },
+                {
+                  "id": "PF1-TE-marsh-feature",
+                  "terrain": "marsh",
+                  "category": "feature",
+                  "locator": "Hex Terrain Types > marsh > feature; HTML 294",
+                  "example": "затонувшие руины",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Not every feature is a far-visible landmark"
+                },
+                {
+                  "id": "PF1-TE-mountain-feature",
+                  "terrain": "mountain",
+                  "category": "feature",
+                  "locator": "Hex Terrain Types > mountain > feature; HTML 306",
+                  "example": "фигурная вершина",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Not every feature is a far-visible landmark"
+                },
+                {
+                  "id": "PF1-TE-plain-feature",
+                  "terrain": "plain",
+                  "category": "feature",
+                  "locator": "Hex Terrain Types > plain > feature; HTML 318",
+                  "example": "старые окопы",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Not every feature is a far-visible landmark"
+                },
+                {
+                  "id": "PF1-TE-settlement-feature",
+                  "terrain": "settlement",
+                  "category": "feature",
+                  "locator": "Hex Terrain Types > settlement > feature; HTML 328",
+                  "example": "историческое поселение",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Not every feature is a far-visible landmark"
+                },
+                {
+                  "id": "PF1-TE-water-feature",
+                  "terrain": "water",
+                  "category": "feature",
+                  "locator": "Hex Terrain Types > water > feature; HTML 339",
+                  "example": "мост",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Not every feature is a far-visible landmark"
+                }
+              ],
+              "selection": "GM choice; source provides examples, no probability among examples"
+            },
+            "product_operation": "Поместить выбранную особенность в указанный гекс; отдельно отметить ориентир только при подходящем описании.",
+            "expected_output": "Гекс имеет конкретную особенность; ориентир не назначается автоматически всем feature.",
+            "constraints_and_exceptions": [
+              "Старовозрастная роща не обязана быть видна из соседнего гекса.",
+              "Дальность видимости и обнаружение требуют самостоятельных правил; рельеф/лес не перезаписываются."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-009-L1-AC01",
+                "given": "desert; feature; мастер выбрал «меса».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип desert сохранён; показано «меса»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-009-L1-AC02",
+                "given": "forest; feature; мастер выбрал «старовозрастная роща».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип forest сохранён; показано «старовозрастная роща»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-009-L1-AC03",
+                "given": "hill; feature; мастер выбрал «курган».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип hill сохранён; показано «курган»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-009-L1-AC04",
+                "given": "marsh; feature; мастер выбрал «затонувшие руины».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип marsh сохранён; показано «затонувшие руины»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-009-L1-AC05",
+                "given": "mountain; feature; мастер выбрал «фигурная вершина».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип mountain сохранён; показано «фигурная вершина»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-009-L1-AC06",
+                "given": "plain; feature; мастер выбрал «старые окопы».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип plain сохранён; показано «старые окопы»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-009-L1-AC07",
+                "given": "settlement; feature; мастер выбрал «историческое поселение».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип settlement сохранён; показано «историческое поселение»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-009-L1-AC08",
+                "given": "water; feature; мастер выбрал «мост».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип water сохранён; показано «мост»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-009-L1-AC09",
+                "given": "Исходное описание мастера уже изменено.",
+                "when": "Сохранить/повторно открыть выбранное описание.",
+                "expected": "Отредактированный текст и исходный тип сохранены; новый случайный пример их не заменил."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "content.place_description",
+              "content.landmarks"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-043"
+          ],
+          "development_readiness": "research_handoff_only_not_approved_extension"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-010",
+      "title": "Обозначить охотничью территорию и её обитателей",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hex Terrain Types > all eight hunting_ground entries; see terrain_variants locators",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Обозначить охотничью территорию и её обитателей",
+        "normative_kind": "optional_subsystem_examples_and_guidance"
+      },
+      "parameters": {
+        "category": "hunting_ground",
+        "terrain_variants": [
+          {
+            "id": "PF1-TE-desert-hunting_ground",
+            "terrain": "desert",
+            "category": "hunting_ground",
+            "locator": "Hex Terrain Types > desert > hunting_ground; HTML 264",
+            "example": "кочевые налётчики",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+          },
+          {
+            "id": "PF1-TE-forest-hunting_ground",
+            "terrain": "forest",
+            "category": "hunting_ground",
+            "locator": "Hex Terrain Types > forest > hunting_ground; HTML 274",
+            "example": "древесные хищники",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+          },
+          {
+            "id": "PF1-TE-hill-hunting_ground",
+            "terrain": "hill",
+            "category": "hunting_ground",
+            "locator": "Hex Terrain Types > hill > hunting_ground; HTML 285",
+            "example": "засадные долины",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+          },
+          {
+            "id": "PF1-TE-marsh-hunting_ground",
+            "terrain": "marsh",
+            "category": "hunting_ground",
+            "locator": "Hex Terrain Types > marsh > hunting_ground; HTML 296",
+            "example": "подводные хищники",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+          },
+          {
+            "id": "PF1-TE-mountain-hunting_ground",
+            "terrain": "mountain",
+            "category": "hunting_ground",
+            "locator": "Hex Terrain Types > mountain > hunting_ground; HTML 307",
+            "example": "горные разбойники",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+          },
+          {
+            "id": "PF1-TE-plain-hunting_ground",
+            "terrain": "plain",
+            "category": "hunting_ground",
+            "locator": "Hex Terrain Types > plain > hunting_ground; HTML 319",
+            "example": "засадные хищники",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+          },
+          {
+            "id": "PF1-TE-settlement-hunting_ground",
+            "terrain": "settlement",
+            "category": "hunting_ground",
+            "locator": "Hex Terrain Types > settlement > hunting_ground; HTML 330",
+            "example": "беззаконие",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+          },
+          {
+            "id": "PF1-TE-water-hunting_ground",
+            "terrain": "water",
+            "category": "hunting_ground",
+            "locator": "Hex Terrain Types > water > hunting_ground; HTML 341",
+            "example": "водные хищники",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+          }
+        ],
+        "selection": "GM choice; source provides examples, no probability among examples"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "content.place_description"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-010-L1",
+          "layer": "L1",
+          "requirement": "Записать характер территории и выбранную группу обитателей как сведения мастера.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_rule_ids": [
+            "content.place_description"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-010-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-010",
+            "normative_kind": "optional_subsystem_examples_and_guidance",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L1",
+            "trigger_or_user_action": "Для гекса выбрана hunting_ground.",
+            "inputs_and_units": {
+              "category": "hunting_ground",
+              "terrain_variants": [
+                {
+                  "id": "PF1-TE-desert-hunting_ground",
+                  "terrain": "desert",
+                  "category": "hunting_ground",
+                  "locator": "Hex Terrain Types > desert > hunting_ground; HTML 264",
+                  "example": "кочевые налётчики",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+                },
+                {
+                  "id": "PF1-TE-forest-hunting_ground",
+                  "terrain": "forest",
+                  "category": "hunting_ground",
+                  "locator": "Hex Terrain Types > forest > hunting_ground; HTML 274",
+                  "example": "древесные хищники",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+                },
+                {
+                  "id": "PF1-TE-hill-hunting_ground",
+                  "terrain": "hill",
+                  "category": "hunting_ground",
+                  "locator": "Hex Terrain Types > hill > hunting_ground; HTML 285",
+                  "example": "засадные долины",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+                },
+                {
+                  "id": "PF1-TE-marsh-hunting_ground",
+                  "terrain": "marsh",
+                  "category": "hunting_ground",
+                  "locator": "Hex Terrain Types > marsh > hunting_ground; HTML 296",
+                  "example": "подводные хищники",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+                },
+                {
+                  "id": "PF1-TE-mountain-hunting_ground",
+                  "terrain": "mountain",
+                  "category": "hunting_ground",
+                  "locator": "Hex Terrain Types > mountain > hunting_ground; HTML 307",
+                  "example": "горные разбойники",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+                },
+                {
+                  "id": "PF1-TE-plain-hunting_ground",
+                  "terrain": "plain",
+                  "category": "hunting_ground",
+                  "locator": "Hex Terrain Types > plain > hunting_ground; HTML 319",
+                  "example": "засадные хищники",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+                },
+                {
+                  "id": "PF1-TE-settlement-hunting_ground",
+                  "terrain": "settlement",
+                  "category": "hunting_ground",
+                  "locator": "Hex Terrain Types > settlement > hunting_ground; HTML 330",
+                  "example": "беззаконие",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+                },
+                {
+                  "id": "PF1-TE-water-hunting_ground",
+                  "terrain": "water",
+                  "category": "hunting_ground",
+                  "locator": "Hex Terrain Types > water > hunting_ground; HTML 341",
+                  "example": "водные хищники",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Territory description; not mandatory fixed lair or triggered encounter"
+                }
+              ],
+              "selection": "GM choice; source provides examples, no probability among examples"
+            },
+            "product_operation": "Записать характер территории и выбранную группу обитателей как сведения мастера.",
+            "expected_output": "Подготовлено описание территории без автоматически созданного логова, боя или встреченной группы.",
+            "constraints_and_exceptions": [
+              "Одно описание вида угрозы не задаёт численность/статблок/местоположение логова.",
+              "Шансы встреч относятся к L3; запись не запускает встречу."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-010-L1-AC01",
+                "given": "desert; hunting_ground; мастер выбрал «кочевые налётчики».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип desert сохранён; показано «кочевые налётчики»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-010-L1-AC02",
+                "given": "forest; hunting_ground; мастер выбрал «древесные хищники».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип forest сохранён; показано «древесные хищники»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-010-L1-AC03",
+                "given": "hill; hunting_ground; мастер выбрал «засадные долины».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип hill сохранён; показано «засадные долины»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-010-L1-AC04",
+                "given": "marsh; hunting_ground; мастер выбрал «подводные хищники».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип marsh сохранён; показано «подводные хищники»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-010-L1-AC05",
+                "given": "mountain; hunting_ground; мастер выбрал «горные разбойники».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип mountain сохранён; показано «горные разбойники»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-010-L1-AC06",
+                "given": "plain; hunting_ground; мастер выбрал «засадные хищники».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип plain сохранён; показано «засадные хищники»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-010-L1-AC07",
+                "given": "settlement; hunting_ground; мастер выбрал «беззаконие».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип settlement сохранён; показано «беззаконие»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-010-L1-AC08",
+                "given": "water; hunting_ground; мастер выбрал «водные хищники».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип water сохранён; показано «водные хищники»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-010-L1-AC09",
+                "given": "Исходное описание мастера уже изменено.",
+                "when": "Сохранить/повторно открыть выбранное описание.",
+                "expected": "Отредактированный текст и исходный тип сохранены; новый случайный пример их не заменил."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "content.place_description"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-043"
+          ],
+          "development_readiness": "research_handoff_only_not_approved_extension"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-011",
+      "title": "Записать конкретный доступный ресурс",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hex Terrain Types > all eight resource entries; see terrain_variants locators",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Записать конкретный доступный ресурс",
+        "normative_kind": "optional_subsystem_examples_and_guidance"
+      },
+      "parameters": {
+        "category": "resource",
+        "terrain_variants": [
+          {
+            "id": "PF1-TE-desert-resource",
+            "terrain": "desert",
+            "category": "resource",
+            "locator": "Hex Terrain Types > desert > resource; HTML 265",
+            "example": "питьевая вода",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-forest-resource",
+            "terrain": "forest",
+            "category": "resource",
+            "locator": "Hex Terrain Types > forest > resource; HTML 276",
+            "example": "лекарственные травы",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-hill-resource",
+            "terrain": "hill",
+            "category": "resource",
+            "locator": "Hex Terrain Types > hill > resource; HTML 286",
+            "example": "каменоломня",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-marsh-resource",
+            "terrain": "marsh",
+            "category": "resource",
+            "locator": "Hex Terrain Types > marsh > resource; HTML 298",
+            "example": "лекарственные растения",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-mountain-resource",
+            "terrain": "mountain",
+            "category": "resource",
+            "locator": "Hex Terrain Types > mountain > resource; HTML 309",
+            "example": "руда",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-plain-resource",
+            "terrain": "plain",
+            "category": "resource",
+            "locator": "Hex Terrain Types > plain > resource; HTML 321",
+            "example": "лён",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-settlement-resource",
+            "terrain": "settlement",
+            "category": "resource",
+            "locator": "Hex Terrain Types > settlement > resource; HTML 331",
+            "example": "торговый пост",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-water-resource",
+            "terrain": "water",
+            "category": "resource",
+            "locator": "Hex Terrain Types > water > resource; HTML 342",
+            "example": "пресная вода",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          }
+        ],
+        "selection": "GM choice; source provides examples, no probability among examples"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "content.place_description",
+          "map.resource_availability",
+          "map.settlement_resources"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-011-L1",
+          "layer": "L1",
+          "requirement": "Выбрать и разместить источник ресурса; для воды/пищи записать их доступность, для торговли — характер снабжения, для руды — описание месторождения.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02",
+            "S07-C01",
+            "S01-C05"
+          ],
+          "canonical_rule_ids": [
+            "content.place_description",
+            "map.resource_availability",
+            "map.settlement_resources"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-011-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-011",
+            "normative_kind": "optional_subsystem_examples_and_guidance",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер уточняет resource-элемент.",
+            "inputs_and_units": {
+              "category": "resource",
+              "terrain_variants": [
+                {
+                  "id": "PF1-TE-desert-resource",
+                  "terrain": "desert",
+                  "category": "resource",
+                  "locator": "Hex Terrain Types > desert > resource; HTML 265",
+                  "example": "питьевая вода",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-forest-resource",
+                  "terrain": "forest",
+                  "category": "resource",
+                  "locator": "Hex Terrain Types > forest > resource; HTML 276",
+                  "example": "лекарственные травы",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-hill-resource",
+                  "terrain": "hill",
+                  "category": "resource",
+                  "locator": "Hex Terrain Types > hill > resource; HTML 286",
+                  "example": "каменоломня",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-marsh-resource",
+                  "terrain": "marsh",
+                  "category": "resource",
+                  "locator": "Hex Terrain Types > marsh > resource; HTML 298",
+                  "example": "лекарственные растения",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-mountain-resource",
+                  "terrain": "mountain",
+                  "category": "resource",
+                  "locator": "Hex Terrain Types > mountain > resource; HTML 309",
+                  "example": "руда",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-plain-resource",
+                  "terrain": "plain",
+                  "category": "resource",
+                  "locator": "Hex Terrain Types > plain > resource; HTML 321",
+                  "example": "лён",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-settlement-resource",
+                  "terrain": "settlement",
+                  "category": "resource",
+                  "locator": "Hex Terrain Types > settlement > resource; HTML 331",
+                  "example": "торговый пост",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-water-resource",
+                  "terrain": "water",
+                  "category": "resource",
+                  "locator": "Hex Terrain Types > water > resource; HTML 342",
+                  "example": "пресная вода",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                }
+              ],
+              "selection": "GM choice; source provides examples, no probability among examples"
+            },
+            "product_operation": "Выбрать и разместить источник ресурса; для воды/пищи записать их доступность, для торговли — характер снабжения, для руды — описание месторождения.",
+            "expected_output": "В гексе понятен выбранный ресурс; единицы добычи и гарантированная прибыль не придуманы.",
+            "constraints_and_exceptions": [
+              "Водный гекс не обязательно пресный: источник разрешает отметить пресную воду именно как ресурс.",
+              "Руда/камень не означают доступность еды; map.resource_availability применим только к пище/воде.",
+              "Торговый пост не обязан иметь все товары и цены; источник не задаёт ассортимент."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-011-L1-AC01",
+                "given": "desert; resource; мастер выбрал «питьевая вода».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип desert сохранён; показано «питьевая вода»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-011-L1-AC02",
+                "given": "forest; resource; мастер выбрал «лекарственные травы».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип forest сохранён; показано «лекарственные травы»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-011-L1-AC03",
+                "given": "hill; resource; мастер выбрал «каменоломня».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип hill сохранён; показано «каменоломня»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-011-L1-AC04",
+                "given": "marsh; resource; мастер выбрал «лекарственные растения».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип marsh сохранён; показано «лекарственные растения»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-011-L1-AC05",
+                "given": "mountain; resource; мастер выбрал «руда».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип mountain сохранён; показано «руда»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-011-L1-AC06",
+                "given": "plain; resource; мастер выбрал «лён».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип plain сохранён; показано «лён»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-011-L1-AC07",
+                "given": "settlement; resource; мастер выбрал «торговый пост».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип settlement сохранён; показано «торговый пост»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-011-L1-AC08",
+                "given": "water; resource; мастер выбрал «пресная вода».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип water сохранён; показано «пресная вода»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-011-L1-AC09",
+                "given": "Исходное описание мастера уже изменено.",
+                "when": "Сохранить/повторно открыть выбранное описание.",
+                "expected": "Отредактированный текст и исходный тип сохранены; новый случайный пример их не заменил."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "content.place_description",
+              "map.resource_availability",
+              "map.settlement_resources"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-043",
+            "HX-BL-044"
+          ],
+          "development_readiness": "research_handoff_only_not_approved_extension"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-012",
+      "title": "Подготовить содержание secret без единого алгоритма скрытия",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hex Terrain Types > all eight secret entries; see terrain_variants locators",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Подготовить содержание secret без единого алгоритма скрытия",
+        "normative_kind": "optional_subsystem_examples_and_guidance"
+      },
+      "parameters": {
+        "category": "secret",
+        "terrain_variants": [
+          {
+            "id": "PF1-TE-desert-secret",
+            "terrain": "desert",
+            "category": "secret",
+            "locator": "Hex Terrain Types > desert > secret; HTML 267",
+            "additional_locator": "HTML268",
+            "example": "укрытие в руинах",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-forest-secret",
+            "terrain": "forest",
+            "category": "secret",
+            "locator": "Hex Terrain Types > forest > secret; HTML 277",
+            "example": "густой туман",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "Time-consuming exploration; not proof of a hidden POI"
+          },
+          {
+            "id": "PF1-TE-hill-secret",
+            "terrain": "hill",
+            "category": "secret",
+            "locator": "Hex Terrain Types > hill > secret; HTML 288",
+            "example": "скрытая пещера",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-marsh-secret",
+            "terrain": "marsh",
+            "category": "secret",
+            "locator": "Hex Terrain Types > marsh > secret; HTML 299",
+            "example": "брошенное снаряжение",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-mountain-secret",
+            "terrain": "mountain",
+            "category": "secret",
+            "locator": "Hex Terrain Types > mountain > secret; HTML 311",
+            "example": "скрытая тропа",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-plain-secret",
+            "terrain": "plain",
+            "category": "secret",
+            "locator": "Hex Terrain Types > plain > secret; HTML 322",
+            "example": "тайник с меткой",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-settlement-secret",
+            "terrain": "settlement",
+            "category": "secret",
+            "locator": "Hex Terrain Types > settlement > secret; HTML 333",
+            "example": "скрытое поселение",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          },
+          {
+            "id": "PF1-TE-water-secret",
+            "terrain": "water",
+            "category": "secret",
+            "locator": "Hex Terrain Types > water > secret; HTML 344",
+            "example": "волшебный источник",
+            "normative_kind": "illustrative_choice_not_weighted_random_table",
+            "interpretation_note": "GM may choose this example or another fitting detail"
+          }
+        ],
+        "selection": "GM choice; source provides examples, no probability among examples"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "content.place_description",
+          "content.discovery_levels",
+          "map.routes_and_barriers"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-012-L1",
+          "layer": "L1",
+          "requirement": "Записать выбранное содержание; скрытый вход/маркер/путь отметить только когда это свойство подтверждено конкретным вариантом.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S05-C01",
+            "S05-C02",
+            "S05-C03",
+            "S06-C05",
+            "S04-C03",
+            "S01-C04",
+            "S01-C05",
+            "S06-C04",
+            "S01-C02"
+          ],
+          "canonical_rule_ids": [
+            "content.place_description",
+            "content.discovery_levels",
+            "map.routes_and_barriers"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-012-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-012",
+            "normative_kind": "optional_subsystem_examples_and_guidance",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер конкретизирует secret-элемент.",
+            "inputs_and_units": {
+              "category": "secret",
+              "terrain_variants": [
+                {
+                  "id": "PF1-TE-desert-secret",
+                  "terrain": "desert",
+                  "category": "secret",
+                  "locator": "Hex Terrain Types > desert > secret; HTML 267",
+                  "additional_locator": "HTML268",
+                  "example": "укрытие в руинах",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-forest-secret",
+                  "terrain": "forest",
+                  "category": "secret",
+                  "locator": "Hex Terrain Types > forest > secret; HTML 277",
+                  "example": "густой туман",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "Time-consuming exploration; not proof of a hidden POI"
+                },
+                {
+                  "id": "PF1-TE-hill-secret",
+                  "terrain": "hill",
+                  "category": "secret",
+                  "locator": "Hex Terrain Types > hill > secret; HTML 288",
+                  "example": "скрытая пещера",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-marsh-secret",
+                  "terrain": "marsh",
+                  "category": "secret",
+                  "locator": "Hex Terrain Types > marsh > secret; HTML 299",
+                  "example": "брошенное снаряжение",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-mountain-secret",
+                  "terrain": "mountain",
+                  "category": "secret",
+                  "locator": "Hex Terrain Types > mountain > secret; HTML 311",
+                  "example": "скрытая тропа",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-plain-secret",
+                  "terrain": "plain",
+                  "category": "secret",
+                  "locator": "Hex Terrain Types > plain > secret; HTML 322",
+                  "example": "тайник с меткой",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-settlement-secret",
+                  "terrain": "settlement",
+                  "category": "secret",
+                  "locator": "Hex Terrain Types > settlement > secret; HTML 333",
+                  "example": "скрытое поселение",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                },
+                {
+                  "id": "PF1-TE-water-secret",
+                  "terrain": "water",
+                  "category": "secret",
+                  "locator": "Hex Terrain Types > water > secret; HTML 344",
+                  "example": "волшебный источник",
+                  "normative_kind": "illustrative_choice_not_weighted_random_table",
+                  "interpretation_note": "GM may choose this example or another fitting detail"
+                }
+              ],
+              "selection": "GM choice; source provides examples, no probability among examples"
+            },
+            "product_operation": "Записать выбранное содержание; скрытый вход/маркер/путь отметить только когда это свойство подтверждено конкретным вариантом.",
+            "expected_output": "У каждого варианта сохранён свой смысл: туман/пещера/проход/тайник/источник/поселение.",
+            "constraints_and_exceptions": [
+              "Лесной secret задаёт время исследования, а не обязательную скрытую POI.",
+              "Горная secret-тропа и скрытый вход поселения имеют отдельную обнаруживаемость.",
+              "Руины могут быть уже разграблены: treasure не гарантирован; магический источник не задаёт эффект заклинания."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-012-L1-AC01",
+                "given": "desert; secret; мастер выбрал «укрытие в руинах».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип desert сохранён; показано «укрытие в руинах»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-012-L1-AC02",
+                "given": "forest; secret; мастер выбрал «густой туман».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип forest сохранён; показано «густой туман»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-012-L1-AC03",
+                "given": "hill; secret; мастер выбрал «скрытая пещера».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип hill сохранён; показано «скрытая пещера»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-012-L1-AC04",
+                "given": "marsh; secret; мастер выбрал «брошенное снаряжение».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип marsh сохранён; показано «брошенное снаряжение»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-012-L1-AC05",
+                "given": "mountain; secret; мастер выбрал «скрытая тропа».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип mountain сохранён; показано «скрытая тропа»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-012-L1-AC06",
+                "given": "plain; secret; мастер выбрал «тайник с меткой».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип plain сохранён; показано «тайник с меткой»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-012-L1-AC07",
+                "given": "settlement; secret; мастер выбрал «скрытое поселение».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип settlement сохранён; показано «скрытое поселение»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-012-L1-AC08",
+                "given": "water; secret; мастер выбрал «волшебный источник».",
+                "when": "Добавить элемент и открыть запись гекса.",
+                "expected": "Тип water сохранён; показано «волшебный источник»; численные эффекты не применены."
+              },
+              {
+                "id": "PF1-UC-012-L1-AC09",
+                "given": "Исходное описание мастера уже изменено.",
+                "when": "Сохранить/повторно открыть выбранное описание.",
+                "expected": "Отредактированный текст и исходный тип сохранены; новый случайный пример их не заменил."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "content.place_description",
+              "content.discovery_levels",
+              "map.routes_and_barriers"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-043",
+            "HX-BL-044"
+          ],
+          "development_readiness": "research_handoff_only_not_approved_extension"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-013",
+      "title": "Сохранить сезонную интерпретацию холодной пустыни",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Desert normal context,HTML259–260",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Сохранить сезонную интерпретацию холодной пустыни",
+        "normative_kind": "optional_subsystem_examples_and_guidance"
+      },
+      "parameters": {
+        "cold_desert": {
+          "permafrost": "plain",
+          "thaw": "marsh"
+        },
+        "units": "source terrain categories, season chosen by GM"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.terrain_zones"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-013-L1",
+          "layer": "L1",
+          "requirement": "Сохранить описание холодной пустыни и выбранную сезонную трактовку для будущего путешествия.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-013-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-013",
+            "normative_kind": "optional_subsystem_examples_and_guidance",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер выбирает сезон холодной пустыни.",
+            "inputs_and_units": {
+              "cold_desert": {
+                "permafrost": "plain",
+                "thaw": "marsh"
+              },
+              "units": "source terrain categories, season chosen by GM"
+            },
+            "product_operation": "Сохранить описание холодной пустыни и выбранную сезонную трактовку для будущего путешествия.",
+            "expected_output": "Для мерзлоты указано plain, для оттепели marsh; названия/авторское описание местности сохранены.",
+            "constraints_and_exceptions": [
+              "Основной раздел пустыни описывает тёплые/умеренные пустыни.",
+              "Источник не задаёт даты сезонов или климатическую генерацию."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-013-L1-AC01",
+                "given": "Холодная пустыня, мерзлота.",
+                "when": "Задать сезонную трактовку.",
+                "expected": "Для применения Exploration отмечено plain."
+              },
+              {
+                "id": "PF1-UC-013-L1-AC02",
+                "given": "Та же местность, выбран тёплый сезон/оттепель.",
+                "when": "Изменить трактовку мастером.",
+                "expected": "Для применения Exploration отмечено marsh; нет автоматического мирового календаря."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "map.terrain_zones"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-047"
+          ],
+          "development_readiness": "research_handoff_only_not_approved_extension"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-014",
+      "title": "Сохранить поселение вместе с подстилающей местностью",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Settlement normal/secret,HTML325,333",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Сохранить поселение вместе с подстилающей местностью",
+        "normative_kind": "optional_subsystem_examples_and_guidance"
+      },
+      "parameters": {
+        "settlement_examples": [
+          "village",
+          "military_camp"
+        ],
+        "underlying_terrain": "GM supplied"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.terrain_zones",
+          "content.place_description"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-014-L1",
+          "layer": "L1",
+          "requirement": "Записать поселение и отдельный тип местности, на котором оно расположено.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02",
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones",
+            "content.place_description"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-014-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-014",
+            "normative_kind": "optional_subsystem_examples_and_guidance",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер размещает settlement-гекс.",
+            "inputs_and_units": {
+              "settlement_examples": [
+                "village",
+                "military_camp"
+              ],
+              "underlying_terrain": "GM supplied"
+            },
+            "product_operation": "Записать поселение и отдельный тип местности, на котором оно расположено.",
+            "expected_output": "Поселение не стирает сведения о лесной/болотной/иной основе.",
+            "constraints_and_exceptions": [
+              "Settlement — категория карты, не доказательство конкретного диаметра застройки.",
+              "Размеры town из продукта источником не подтверждены."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-014-L1-AC01",
+                "given": "Поселение в лесу.",
+                "when": "Сохранить карточку.",
+                "expected": "Есть поселение и лесная основа."
+              },
+              {
+                "id": "PF1-UC-014-L1-AC02",
+                "given": "Скрытое поселение выглядит как соседний лес; вход скрыт.",
+                "when": "Сохранить описание и доступ.",
+                "expected": "Лесный облик и скрытый вход не заменены открытым видимым городом."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "map.terrain_zones",
+              "content.place_description"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-043",
+            "HX-BL-047"
+          ],
+          "development_readiness": "research_handoff_only_not_approved_extension"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-015",
+      "title": "Сохранить берег и пригодный проход водного гекса",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Water normal/feature,HTML336,339",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Сохранить берег и пригодный проход водного гекса",
+        "normative_kind": "optional_subsystem_examples_and_guidance"
+      },
+      "parameters": {
+        "water_kinds": [
+          "river",
+          "lake",
+          "ocean"
+        ],
+        "shore_terrain": "adjacent type",
+        "bridge": "selected feature only"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "map.terrain_zones",
+          "map.routes_and_barriers"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-015-L1",
+          "layer": "L1",
+          "requirement": "Отметить преобладающую воду, тип прилегающего берега и выбранный проход, если он есть.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S01-C05",
+            "S01-C04",
+            "S06-C04",
+            "S01-C02"
+          ],
+          "canonical_rule_ids": [
+            "map.terrain_zones",
+            "map.routes_and_barriers"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-015-L1",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-015",
+            "normative_kind": "optional_subsystem_examples_and_guidance",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер описывает водный гекс и берег/мост.",
+            "inputs_and_units": {
+              "water_kinds": [
+                "river",
+                "lake",
+                "ocean"
+              ],
+              "shore_terrain": "adjacent type",
+              "bridge": "selected feature only"
+            },
+            "product_operation": "Отметить преобладающую воду, тип прилегающего берега и выбранный проход, если он есть.",
+            "expected_output": "Вода не стирает тип берега; мост записан как отдельное свойство прохода.",
+            "constraints_and_exceptions": [
+              "Описанная проходимость не задаёт ширину воды или координаты моста.",
+              "Источник PF1 не определяет продуктовую привязку рек к рёбрам; действует отдельно решение GEO2."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-015-L1-AC01",
+                "given": "Озеро примыкает к лесу.",
+                "when": "Задать берег.",
+                "expected": "Вода остаётся основной; берег лесной."
+              },
+              {
+                "id": "PF1-UC-015-L1-AC02",
+                "given": "water+feature, мастер выбирает мост.",
+                "when": "Сохранить проход.",
+                "expected": "Указан мост; source не требует моста в каждом водном гексе."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "map.terrain_zones",
+              "map.routes_and_barriers"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-043"
+          ],
+          "development_readiness": "research_handoff_only_not_approved_extension"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-016",
+      "title": "Передать точный навык и вид модификатора",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Terrain-specific checks; parameters.modifiers locators",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Передать точный навык и вид модификатора",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "modifiers": [
+          {
+            "context": "desert/difficult",
+            "check": "Survival:avoid_lost_or_recover",
+            "kind": "check_bonus",
+            "value": 1,
+            "locator": "HTML261"
+          },
+          {
+            "context": "desert/difficult",
+            "check": "Survival:get_along",
+            "kind": "DC_delta",
+            "value": 5,
+            "locator": "HTML261"
+          },
+          {
+            "context": "forest/difficult",
+            "check": "Survival:avoid_lost",
+            "kind": "DC_delta",
+            "value": 5,
+            "locator": "HTML272"
+          },
+          {
+            "context": "forest/resource",
+            "check": "Survival:get_along",
+            "kind": "check_bonus",
+            "value": 5,
+            "locator": "HTML276"
+          },
+          {
+            "context": "hill/feature",
+            "check": "Survival:avoid_lost_or_recover",
+            "kind": "check_bonus",
+            "value": 1,
+            "locator": "HTML283"
+          },
+          {
+            "context": "marsh/any",
+            "check": "Survival:avoid_lost",
+            "kind": "DC_delta",
+            "value": 1,
+            "locator": "HTML291"
+          },
+          {
+            "context": "marsh/difficult",
+            "check": "Survival:get_along",
+            "kind": "DC_delta",
+            "value": 5,
+            "locator": "HTML293"
+          },
+          {
+            "context": "mountain/difficult",
+            "check": "Climb",
+            "kind": "DC_delta",
+            "value": 2,
+            "locator": "HTML304"
+          },
+          {
+            "context": "water/difficult",
+            "check": "Swim",
+            "kind": "DC_delta",
+            "value": 5,
+            "locator": "HTML338"
+          }
+        ],
+        "units": "bonus to check vs increase to DC, distinct quantities"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "mechanics.check_resolution"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-016-L3",
+          "layer": "L3",
+          "requirement": "Выдать профиль модификатора для выбранной проверки; при расчёте менять именно DC или итог проверки по указанному виду.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "canonical_rule_ids": [
+            "mechanics.check_resolution"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-016-L3",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-016",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L3",
+            "trigger_or_user_action": "Возникает соответствующая проверка в указанной местности/элементе.",
+            "inputs_and_units": {
+              "modifiers": [
+                {
+                  "context": "desert/difficult",
+                  "check": "Survival:avoid_lost_or_recover",
+                  "kind": "check_bonus",
+                  "value": 1,
+                  "locator": "HTML261"
+                },
+                {
+                  "context": "desert/difficult",
+                  "check": "Survival:get_along",
+                  "kind": "DC_delta",
+                  "value": 5,
+                  "locator": "HTML261"
+                },
+                {
+                  "context": "forest/difficult",
+                  "check": "Survival:avoid_lost",
+                  "kind": "DC_delta",
+                  "value": 5,
+                  "locator": "HTML272"
+                },
+                {
+                  "context": "forest/resource",
+                  "check": "Survival:get_along",
+                  "kind": "check_bonus",
+                  "value": 5,
+                  "locator": "HTML276"
+                },
+                {
+                  "context": "hill/feature",
+                  "check": "Survival:avoid_lost_or_recover",
+                  "kind": "check_bonus",
+                  "value": 1,
+                  "locator": "HTML283"
+                },
+                {
+                  "context": "marsh/any",
+                  "check": "Survival:avoid_lost",
+                  "kind": "DC_delta",
+                  "value": 1,
+                  "locator": "HTML291"
+                },
+                {
+                  "context": "marsh/difficult",
+                  "check": "Survival:get_along",
+                  "kind": "DC_delta",
+                  "value": 5,
+                  "locator": "HTML293"
+                },
+                {
+                  "context": "mountain/difficult",
+                  "check": "Climb",
+                  "kind": "DC_delta",
+                  "value": 2,
+                  "locator": "HTML304"
+                },
+                {
+                  "context": "water/difficult",
+                  "check": "Swim",
+                  "kind": "DC_delta",
+                  "value": 5,
+                  "locator": "HTML338"
+                }
+              ],
+              "units": "bonus to check vs increase to DC, distinct quantities"
+            },
+            "product_operation": "Выдать профиль модификатора для выбранной проверки; при расчёте менять именно DC или итог проверки по указанному виду.",
+            "expected_output": "Бонус к проверке не превращён в повышение DC; чужие проверки не затронуты.",
+            "constraints_and_exceptions": [
+              "Это будущая L3-интеграция; классификация dangerous/difficult сама не реализует PF1.",
+              "Правила сочетания иных эффектов не исследованы."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-016-L3-AC01",
+                "given": "desert/difficult, Survival:avoid_lost_or_recover; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=10, итог=11."
+              },
+              {
+                "id": "PF1-UC-016-L3-AC02",
+                "given": "desert/difficult, Survival:get_along; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=15, итог=10."
+              },
+              {
+                "id": "PF1-UC-016-L3-AC03",
+                "given": "forest/difficult, Survival:avoid_lost; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=15, итог=10."
+              },
+              {
+                "id": "PF1-UC-016-L3-AC04",
+                "given": "forest/resource, Survival:get_along; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=10, итог=15."
+              },
+              {
+                "id": "PF1-UC-016-L3-AC05",
+                "given": "hill/feature, Survival:avoid_lost_or_recover; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=10, итог=11."
+              },
+              {
+                "id": "PF1-UC-016-L3-AC06",
+                "given": "marsh/any, Survival:avoid_lost; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=11, итог=10."
+              },
+              {
+                "id": "PF1-UC-016-L3-AC07",
+                "given": "marsh/difficult, Survival:get_along; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=15, итог=10."
+              },
+              {
+                "id": "PF1-UC-016-L3-AC08",
+                "given": "mountain/difficult, Climb; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=12, итог=10."
+              },
+              {
+                "id": "PF1-UC-016-L3-AC09",
+                "given": "water/difficult, Swim; исходный DC10 и исходный итог проверки10.",
+                "when": "Применить только указанный модификатор.",
+                "expected": "DC=15, итог=10."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "mechanics.check_resolution"
+            ],
+            "unresolved_parameters": [
+              "Stacking with other systems/conditions"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-017",
+      "title": "Считать трудный гекс по следующей меньшей категории скорости",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Difficult hill/marsh/mountain/plain; HTML282,293,304,316; table204–219",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Считать трудный гекс по следующей меньшей категории скорости",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "terrains": [
+          "hill",
+          "marsh",
+          "mountain",
+          "plain"
+        ],
+        "context": "difficult",
+        "speed_rows_feet": [
+          15,
+          20,
+          30,
+          40,
+          50
+        ],
+        "change": "one category slower",
+        "locators": [
+          "HTML282",
+          "HTML293",
+          "HTML304",
+          "HTML316"
+        ],
+        "units": "party base speed ft, travel hours, exploration days"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "travel.time_from_speed"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-017-L2",
+          "layer": "L2",
+          "requirement": "Для табличного времени использовать ближайшую меньшую строку скорости; исходную скорость персонажа не переписывать.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-017-L2",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-017",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L2",
+            "trigger_or_user_action": "Партия пересекает или исследует difficult-гекс одного из четырёх типов.",
+            "inputs_and_units": {
+              "terrains": [
+                "hill",
+                "marsh",
+                "mountain",
+                "plain"
+              ],
+              "context": "difficult",
+              "speed_rows_feet": [
+                15,
+                20,
+                30,
+                40,
+                50
+              ],
+              "change": "one category slower",
+              "locators": [
+                "HTML282",
+                "HTML293",
+                "HTML304",
+                "HTML316"
+              ],
+              "units": "party base speed ft, travel hours, exploration days"
+            },
+            "product_operation": "Для табличного времени использовать ближайшую меньшую строку скорости; исходную скорость персонажа не переписывать.",
+            "expected_output": "При 30ft используется строка20ft; трудность леса/воды не подставляется под это правило.",
+            "constraints_and_exceptions": [
+              "Ряд ниже15ft в прочитанной таблице отсутствует.",
+              "Не применять одинаковый коэффициент 1.5 ко всем типам."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-017-L2-AC01",
+                "given": "30ft, difficult hill.",
+                "when": "Рассчитать travel/explore по таблицам203–219.",
+                "expected": "12 часов / 2 дня."
+              },
+              {
+                "id": "PF1-UC-017-L2-AC02",
+                "given": "30ft, difficult marsh.",
+                "when": "Рассчитать travel/explore.",
+                "expected": "12 часов / 3 дня."
+              },
+              {
+                "id": "PF1-UC-017-L2-AC03",
+                "given": "30ft, difficult mountain.",
+                "when": "Рассчитать travel/explore.",
+                "expected": "12 часов / 4 дня."
+              },
+              {
+                "id": "PF1-UC-017-L2-AC04",
+                "given": "30ft, difficult plain.",
+                "when": "Рассчитать travel/explore.",
+                "expected": "8 часов / 2 дня."
+              },
+              {
+                "id": "PF1-UC-017-L2-AC05",
+                "given": "15ft, difficult hill.",
+                "when": "Попытаться взять меньшую строку.",
+                "expected": "Нужен источник для нижней границы; нулевой/несуществующий ряд не придуман."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "travel.time_from_speed"
+            ],
+            "unresolved_parameters": [
+              "Speed below15ft and non-tabulated speeds"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-018",
+      "title": "Сохранить условный модификатор шанса встреч без мнимой частоты",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hunting Ground,HTML264,274,285,296,307,319,330,341",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Сохранить условный модификатор шанса встреч без мнимой частоты",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "modifiers": [
+          {
+            "context": "desert/hunting_ground",
+            "raw_increase_percent": 10,
+            "locator": "HTML264"
+          },
+          {
+            "context": "forest/hunting_ground",
+            "raw_increase_percent": 10,
+            "locator": "HTML274"
+          },
+          {
+            "context": "hill/hunting_ground",
+            "raw_increase_percent": 25,
+            "locator": "HTML285"
+          },
+          {
+            "context": "marsh/hunting_ground",
+            "raw_increase_percent": 25,
+            "locator": "HTML296"
+          },
+          {
+            "context": "mountain/hunting_ground",
+            "raw_increase_percent": 10,
+            "locator": "HTML307"
+          },
+          {
+            "context": "plain/hunting_ground",
+            "raw_increase_percent": 25,
+            "locator": "HTML319"
+          },
+          {
+            "context": "settlement/hunting_ground",
+            "raw_increase_percent": 25,
+            "locator": "HTML330"
+          },
+          {
+            "context": "water/hunting_ground:mostly_not_in_water",
+            "raw_increase_percent": 10,
+            "locator": "HTML341"
+          },
+          {
+            "context": "water/hunting_ground:mostly_in_water",
+            "raw_increase_percent": 25,
+            "locator": "HTML341"
+          }
+        ],
+        "unit": "source says increase by10%/25%; probability composition not resolved"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "mechanics.encounters"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-018-L3",
+          "layer": "L3",
+          "requirement": "Передать указанное увеличение вместе с условием; не считать обитателей уже встреченными и не подменять частоту количеством существ.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S05-C05",
+            "S06-C04"
+          ],
+          "canonical_rule_ids": [
+            "mechanics.encounters"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-018-L3",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-018",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L3",
+            "trigger_or_user_action": "Подготовить профиль встреч для выбранного hunting_ground и контекста нахождения в воде.",
+            "inputs_and_units": {
+              "modifiers": [
+                {
+                  "context": "desert/hunting_ground",
+                  "raw_increase_percent": 10,
+                  "locator": "HTML264"
+                },
+                {
+                  "context": "forest/hunting_ground",
+                  "raw_increase_percent": 10,
+                  "locator": "HTML274"
+                },
+                {
+                  "context": "hill/hunting_ground",
+                  "raw_increase_percent": 25,
+                  "locator": "HTML285"
+                },
+                {
+                  "context": "marsh/hunting_ground",
+                  "raw_increase_percent": 25,
+                  "locator": "HTML296"
+                },
+                {
+                  "context": "mountain/hunting_ground",
+                  "raw_increase_percent": 10,
+                  "locator": "HTML307"
+                },
+                {
+                  "context": "plain/hunting_ground",
+                  "raw_increase_percent": 25,
+                  "locator": "HTML319"
+                },
+                {
+                  "context": "settlement/hunting_ground",
+                  "raw_increase_percent": 25,
+                  "locator": "HTML330"
+                },
+                {
+                  "context": "water/hunting_ground:mostly_not_in_water",
+                  "raw_increase_percent": 10,
+                  "locator": "HTML341"
+                },
+                {
+                  "context": "water/hunting_ground:mostly_in_water",
+                  "raw_increase_percent": 25,
+                  "locator": "HTML341"
+                }
+              ],
+              "unit": "source says increase by10%/25%; probability composition not resolved"
+            },
+            "product_operation": "Передать указанное увеличение вместе с условием; не считать обитателей уже встреченными и не подменять частоту количеством существ.",
+            "expected_output": "У водного варианта выбрана одна условная величина10% либо25%; нет автоматического суммирования.",
+            "constraints_and_exceptions": [
+              "Трактовку процентных пунктов/относительного процента нужно подтвердить; это не основание менять источник.",
+              "Таблица базовых встреч прочитана как контекст, не полный новый движок."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-018-L3-AC01",
+                "given": "water/hunting_ground, большую часть времени в воде.",
+                "when": "Подготовить модификатор.",
+                "expected": "+25% по источнику; не +35%."
+              },
+              {
+                "id": "PF1-UC-018-L3-AC02",
+                "given": "water/hunting_ground, преимущественно на берегу.",
+                "when": "Подготовить модификатор.",
+                "expected": "+10% по источнику."
+              },
+              {
+                "id": "PF1-UC-018-L3-AC03",
+                "given": "hill/hunting_ground.",
+                "when": "Подготовить модификатор.",
+                "expected": "+25%, не лесные10%."
+              },
+              {
+                "id": "PF1-UC-018-L3-AC04",
+                "given": "Шанс базовой встречи50%, надбавка10%, способ сочетания не выбран.",
+                "when": "Запросить итоговую вероятность.",
+                "expected": "Итог unknown; 55% или60% не объявлены правилом."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "mechanics.encounters"
+            ],
+            "unresolved_parameters": [
+              "Exact probability composition and stacking with shelter"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-019",
+      "title": "Увеличить именно время исследования лесного secret",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Forest Secret,HTML277",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Увеличить именно время исследования лесного secret",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "context": "forest/secret",
+        "exploration_multiplier": 1.5,
+        "locator": "HTML277",
+        "units": "days, exploration only"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "travel.elapsed_time"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-019-L2",
+          "layer": "L2",
+          "requirement": "Умножить обычное время исследования на1.5; не распространять на обычное пересечение.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "canonical_rule_ids": [
+            "travel.elapsed_time"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-019-L2",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-019",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L2",
+            "trigger_or_user_action": "Партия полностью исследует лесной secret-гекс.",
+            "inputs_and_units": {
+              "context": "forest/secret",
+              "exploration_multiplier": 1.5,
+              "locator": "HTML277",
+              "units": "days, exploration only"
+            },
+            "product_operation": "Умножить обычное время исследования на1.5; не распространять на обычное пересечение.",
+            "expected_output": "Время исследования увеличено, автоматический скрытый объект не создан.",
+            "constraints_and_exceptions": [
+              "Дополнительная скрытая локация из названия категории не следует."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-019-L2-AC01",
+                "given": "Обычное исследование2дня.",
+                "when": "Применить secret forest.",
+                "expected": "3дня."
+              },
+              {
+                "id": "PF1-UC-019-L2-AC02",
+                "given": "Обычный переход8часов.",
+                "when": "Применить только forest-secret эффект.",
+                "expected": "8часов; +50% относится к исследованию."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "travel.elapsed_time"
+            ],
+            "unresolved_parameters": []
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-020",
+      "title": "Показать диапазон сокращения времени поселковой дороги",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Settlement normal roads,HTML325",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Показать диапазон сокращения времени поселковой дороги",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "reduction_percent": [
+          25,
+          50
+        ],
+        "locator": "HTML325",
+        "terrain_dependent": true,
+        "units": "travel time, not exploration time"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "travel.time_from_speed"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-020-L2",
+          "layer": "L2",
+          "requirement": "Показать допустимый диапазон времени после сокращения; конкретную долю выбрать только с обоснованным профилем местности.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S06-C04",
+            "S06-C03"
+          ],
+          "canonical_rule_ids": [
+            "travel.time_from_speed"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-020-L2",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-020",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L2",
+            "trigger_or_user_action": "Партия идёт по часто используемой тропе/дороге settlement-гекса.",
+            "inputs_and_units": {
+              "reduction_percent": [
+                25,
+                50
+              ],
+              "locator": "HTML325",
+              "terrain_dependent": true,
+              "units": "travel time, not exploration time"
+            },
+            "product_operation": "Показать допустимый диапазон времени после сокращения; конкретную долю выбрать только с обоснованным профилем местности.",
+            "expected_output": "Для исходных8часов диапазон4–6часов; не произвольное точное время.",
+            "constraints_and_exceptions": [
+              "Источник не даёт таблицу точной доли по всем местностям."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-020-L2-AC01",
+                "given": "Обычный переход8часов; доля неизвестна.",
+                "when": "Оценить допустимое сокращение.",
+                "expected": "4–6часов, точное значение unknown."
+              },
+              {
+                "id": "PF1-UC-020-L2-AC02",
+                "given": "Исследование2дня.",
+                "when": "Применить только эту road clause.",
+                "expected": "Сокращение исследования не заявлено."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "travel.time_from_speed"
+            ],
+            "unresolved_parameters": [
+              "Terrain→reduction mapping"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-021",
+      "title": "Разрешить поиск пещеры или горной тропы своим навыком/DC",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Hill Secret,HTML288; Mountain Secret,HTML311",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Разрешить поиск пещеры или горной тропы своим навыком/DC",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "hill_secret": {
+          "checks": [
+            "Perception",
+            "Survival"
+          ],
+          "DC": 10,
+          "locator": "HTML288"
+        },
+        "mountain_secret": {
+          "checks": [
+            "Perception"
+          ],
+          "DC": 20,
+          "locator": "HTML311"
+        }
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "mechanics.hidden_discovery"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-021-L3",
+          "layer": "L3",
+          "requirement": "Сопоставить итог подходящего навыка с DC и выдать обнаружено/не обнаружено; выбранная горная тропа передаёт L2-исключение к travel time.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "canonical_rule_ids": [
+            "mechanics.hidden_discovery"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-021-L3",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-021",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L3",
+            "trigger_or_user_action": "Партия ищет заданный тип скрытого прохода/пещеры.",
+            "inputs_and_units": {
+              "hill_secret": {
+                "checks": [
+                  "Perception",
+                  "Survival"
+                ],
+                "DC": 10,
+                "locator": "HTML288"
+              },
+              "mountain_secret": {
+                "checks": [
+                  "Perception"
+                ],
+                "DC": 20,
+                "locator": "HTML311"
+              }
+            },
+            "product_operation": "Сопоставить итог подходящего навыка с DC и выдать обнаружено/не обнаружено; выбранная горная тропа передаёт L2-исключение к travel time.",
+            "expected_output": "Пещера и горная тропа имеют разные проверки; обнаружение ещё не телепортирует партию.",
+            "constraints_and_exceptions": [
+              "Полный механизм бросков/перебросов не исследован.",
+              "Travel-time исключение не отменяет все опасности/Climb/полное время исследования."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-021-L3-AC01",
+                "given": "hill-secret, итогSurvival10.",
+                "when": "Найти пещеру.",
+                "expected": "Обнаружена."
+              },
+              {
+                "id": "PF1-UC-021-L3-AC02",
+                "given": "hill-secret, итогPerception9.",
+                "when": "Найти пещеру.",
+                "expected": "Не обнаружена."
+              },
+              {
+                "id": "PF1-UC-021-L3-AC03",
+                "given": "mountain-secret, итогPerception20.",
+                "when": "Найти проход.",
+                "expected": "Обнаружен; для пути можно игнорировать default mountain travel-time increase."
+              },
+              {
+                "id": "PF1-UC-021-L3-AC04",
+                "given": "mountain-secret, итогSurvival20.",
+                "when": "Применить только указанную source-проверку.",
+                "expected": "Этот навык не подтверждён для данной тропы."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "mechanics.hidden_discovery"
+            ],
+            "unresolved_parameters": [
+              "Choice of replacement base travel row after ignoring mountain penalty"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-022",
+      "title": "Определить стоимость найденного снаряжения по уровню каждого героя",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Marsh Secret,HTML299; Plain Secret,HTML322",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Определить стоимость найденного снаряжения по уровню каждого героя",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "marsh_secret": {
+          "skill": "Survival",
+          "DC": 25,
+          "unit_gp_per_character_level": 10,
+          "locator": "HTML299"
+        },
+        "plain_secret": {
+          "skill": "Perception",
+          "DC": 25,
+          "unit_gp_per_character_level": 10,
+          "locator": "HTML322"
+        }
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "mechanics.check_resolution",
+          "content.place_description"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-022-L3",
+          "layer": "L3",
+          "requirement": "После успешной проверки указать бюджет снаряжения/сокровищ10gp×уровень для каждого героя; не создавать точный список предметов из отсутствующей таблицы.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04",
+            "S05-C01",
+            "S05-C02"
+          ],
+          "canonical_rule_ids": [
+            "mechanics.check_resolution",
+            "content.place_description"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-022-L3",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-022",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L3",
+            "trigger_or_user_action": "Герои пытаются найти содержимое соответствующего secret.",
+            "inputs_and_units": {
+              "marsh_secret": {
+                "skill": "Survival",
+                "DC": 25,
+                "unit_gp_per_character_level": 10,
+                "locator": "HTML299"
+              },
+              "plain_secret": {
+                "skill": "Perception",
+                "DC": 25,
+                "unit_gp_per_character_level": 10,
+                "locator": "HTML322"
+              }
+            },
+            "product_operation": "После успешной проверки указать бюджет снаряжения/сокровищ10gp×уровень для каждого героя; не создавать точный список предметов из отсутствующей таблицы.",
+            "expected_output": "Стоимость посчитана индивидуально; навыки болотного и равнинного вариантов различны.",
+            "constraints_and_exceptions": [
+              "Список вещей и правила распределения/повторного получения не заданы.",
+              "Это не ежедневный доход ресурса."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-022-L3-AC01",
+                "given": "marsh-secret, успешныйSurvival25, герои уровней2и5.",
+                "when": "Рассчитать бюджеты.",
+                "expected": "20gp и50gp снаряжения, не70gp каждому."
+              },
+              {
+                "id": "PF1-UC-022-L3-AC02",
+                "given": "plain-secret, успешныйPerception25, герой4уровня.",
+                "when": "Рассчитать бюджет.",
+                "expected": "40gp сокровищ/немагического снаряжения."
+              },
+              {
+                "id": "PF1-UC-022-L3-AC03",
+                "given": "marsh-secret, итогSurvival24.",
+                "when": "Попытаться получить добычу.",
+                "expected": "Успех не подтверждён; гарантированная добыча не начислена."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "mechanics.check_resolution",
+              "content.place_description"
+            ],
+            "unresolved_parameters": [
+              "Detailed item selection and repeat-collection state"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-043"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-023",
+      "title": "Отделить защиту укрытия от риска встреч",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Desert Secret,HTML268; Hill Secret,HTML288",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Отделить защиту укрытия от риска встреч",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "desert_ruins": {
+          "storm_effect": "none_while_sheltered",
+          "raw_encounter_increase_percent": 25,
+          "locator": "HTML268"
+        },
+        "hill_cavern": {
+          "storm_effect": "none_while_sheltered",
+          "raw_encounter_increase_percent": 10,
+          "locator": "HTML288"
+        }
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "mechanics.environment_conditions",
+          "mechanics.encounters"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-023-L3",
+          "layer": "L3",
+          "requirement": "Указать защиту от штормов и подобных опасностей только в укрытии, сохранив отдельную условную надбавку встреч.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04",
+            "S05-C05"
+          ],
+          "canonical_rule_ids": [
+            "mechanics.environment_conditions",
+            "mechanics.encounters"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-023-L3",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-023",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L3",
+            "trigger_or_user_action": "Партия укрылась в выбранных руинах/пещере.",
+            "inputs_and_units": {
+              "desert_ruins": {
+                "storm_effect": "none_while_sheltered",
+                "raw_encounter_increase_percent": 25,
+                "locator": "HTML268"
+              },
+              "hill_cavern": {
+                "storm_effect": "none_while_sheltered",
+                "raw_encounter_increase_percent": 10,
+                "locator": "HTML288"
+              }
+            },
+            "product_operation": "Указать защиту от штормов и подобных опасностей только в укрытии, сохранив отдельную условную надбавку встреч.",
+            "expected_output": "Защита не превращена в полную безопасность или отсутствие монстров.",
+            "constraints_and_exceptions": [
+              "Вероятностная композиция отложена, как вPF1-UC-018.",
+              "Не всякий secret автоматически укрытие."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-023-L3-AC01",
+                "given": "Партия в desert-secret руинах во время шторма.",
+                "when": "Применить эффект укрытия.",
+                "expected": "Эффект шторма отсутствует; отдельно помечено +25% встреч."
+              },
+              {
+                "id": "PF1-UC-023-L3-AC02",
+                "given": "Партия в hill-secret пещере.",
+                "when": "Применить эффект укрытия.",
+                "expected": "Защита от шторма; отдельно +10% встреч."
+              },
+              {
+                "id": "PF1-UC-023-L3-AC03",
+                "given": "Партия вышла из укрытия.",
+                "when": "Проверить эту льготу.",
+                "expected": "Дальнейшая защита этой clause не предоставляется."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "mechanics.environment_conditions",
+              "mechanics.encounters"
+            ],
+            "unresolved_parameters": [
+              "Meaning/stacking of chance increase; full storm profiles"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-024",
+      "title": "Передать частоту лесной опасности и отдельные зависимости",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Desert Difficult,HTML262; Forest Difficult,HTML272; Settlement Difficult,HTML326",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Передать частоту лесной опасности и отдельные зависимости",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "forest_difficult": {
+          "falling_tree_chance_per_travel_hour": 0.05,
+          "locator": "HTML272"
+        },
+        "desert_flood": {
+          "analogy": "avalanche; buried creatures use breath/drowning instead of rock suffocation",
+          "locator": "HTML262"
+        },
+        "settlement_collapse": {
+          "analogy": "cave_in_or_collapse",
+          "locator": "HTML326"
+        }
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "mechanics.hazard_resolution"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-024-L3",
+          "layer": "L3",
+          "requirement": "Для леса сообщить5% за каждый час путешествия; для паводка/обрушения передать точное название зависимости и исключение без изобретения повреждений.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S08-C04",
+            "S06-C04"
+          ],
+          "canonical_rule_ids": [
+            "mechanics.hazard_resolution"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-024-L3",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-024",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L3",
+            "trigger_or_user_action": "Возникает час путешествия в difficult-лесу либо мастер выбирает связанное опасное событие.",
+            "inputs_and_units": {
+              "forest_difficult": {
+                "falling_tree_chance_per_travel_hour": 0.05,
+                "locator": "HTML272"
+              },
+              "desert_flood": {
+                "analogy": "avalanche; buried creatures use breath/drowning instead of rock suffocation",
+                "locator": "HTML262"
+              },
+              "settlement_collapse": {
+                "analogy": "cave_in_or_collapse",
+                "locator": "HTML326"
+              }
+            },
+            "product_operation": "Для леса сообщить5% за каждый час путешествия; для паводка/обрушения передать точное название зависимости и исключение без изобретения повреждений.",
+            "expected_output": "Частота и зависимость доступны интеграции; полная механика опасности остаётся за подключённым источником.",
+            "constraints_and_exceptions": [
+              "Полные cross-reference правила в этом запуске не прочитаны.",
+              "Не делать неизменный L1объект из каждого события, не умножать5% в гарантированную частоту."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-024-L3-AC01",
+                "given": "1час путешествия по difficult-лесу.",
+                "when": "Выдать профиль события.",
+                "expected": "5% falling-tree hazard за этот час; урон unknown."
+              },
+              {
+                "id": "PF1-UC-024-L3-AC02",
+                "given": "Выбран пустынный паводок.",
+                "when": "Передать профиль зависимости.",
+                "expected": "Avalanche с заменой погребения камнем на задержку дыхания/утопление."
+              },
+              {
+                "id": "PF1-UC-024-L3-AC03",
+                "given": "Выбрано обрушение аварийного здания.",
+                "when": "Передать профиль зависимости.",
+                "expected": "Cave-in/collapse; не лесное падающее дерево и не выдуманный урон."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "mechanics.hazard_resolution"
+            ],
+            "unresolved_parameters": [
+              "Full falling-tree/avalanche/drowning/collapse profiles; random threshold convention"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
+    },
+    {
+      "id": "PF1-UC-025",
+      "title": "Выбрать допустимость водного маршрута по средствам партии",
+      "corpus": "PF1-UC-TerrainElements",
+      "rule": {
+        "source_id": "PF1-UC-PRD-EXPLORATION",
+        "printed_page": null,
+        "section": "Water normal context,HTML336",
+        "url": "https://legacy.aonprd.com/ultimateCampaign/campaignSystems/exploration.html",
+        "paraphrase": "Выбрать допустимость водного маршрута по средствам партии",
+        "normative_kind": "optional_subsystem_mechanical_effect"
+      },
+      "parameters": {
+        "water_kind": [
+          "lake",
+          "ocean"
+        ],
+        "capability": [
+          "boat",
+          "swim_speed"
+        ],
+        "locator": "HTML336",
+        "units": "route eligibility; no numeric speed supplied"
+      },
+      "comparison": {
+        "canonical_rule_ids": [
+          "travel.route_passability"
+        ],
+        "new_canonical_rules": 0,
+        "profile_equivalence": "PF1 source-specific; no runtime inheritance from PF2 or same rule_id"
+      },
+      "requirements": [
+        {
+          "id": "PF1-UC-025-L2",
+          "layer": "L2",
+          "requirement": "При отсутствии лодки и swim speed предложить обход как рекомендуемый вариант; при наличии средства отметить, что это ограничение само не запрещает пересечение.",
+          "status": "unverified",
+          "implemented": null,
+          "evidence_id": null,
+          "criterion_ids": [
+            "S06-C04"
+          ],
+          "canonical_rule_ids": [
+            "travel.route_passability"
+          ],
+          "canonical_binding_ref": "agent-work/rules/game-bindings.json#PF1-UC-025-L2",
+          "operational_requirement": {
+            "source_rule_ref": "agent-work/market/rules/PF1-UltimateCampaign.json#PF1-UC-025",
+            "normative_kind": "optional_subsystem_mechanical_effect",
+            "applicability": "Pathfinder 1e Ultimate Campaign Exploration only; selected terrain/element context",
+            "layer": "L2",
+            "trigger_or_user_action": "Планируется прямое пересечение озера/моря.",
+            "inputs_and_units": {
+              "water_kind": [
+                "lake",
+                "ocean"
+              ],
+              "capability": [
+                "boat",
+                "swim_speed"
+              ],
+              "locator": "HTML336",
+              "units": "route eligibility; no numeric speed supplied"
+            },
+            "product_operation": "При отсутствии лодки и swim speed предложить обход как рекомендуемый вариант; при наличии средства отметить, что это ограничение само не запрещает пересечение.",
+            "expected_output": "Рекомендация не является абсолютным запретом всех рек или универсальным временем пути.",
+            "constraints_and_exceptions": [
+              "Формулировка best to treat — рекомендация, а не запрет альтернатив мастера.",
+              "Берег в L1 описывается отдельно."
+            ],
+            "acceptance_cases": [
+              {
+                "id": "PF1-UC-025-L2-AC01",
+                "given": "Озеро, нет лодки иswim speed.",
+                "when": "Выбрать маршрут по этой рекомендации.",
+                "expected": "Рекомендуется обход."
+              },
+              {
+                "id": "PF1-UC-025-L2-AC02",
+                "given": "Озеро, есть лодка.",
+                "when": "Применить ту же рекомендацию.",
+                "expected": "Нет автоматического требования обхода; конкретное время остаётся отдельным расчётом."
+              },
+              {
+                "id": "PF1-UC-025-L2-AC03",
+                "given": "Река, нет лодки.",
+                "when": "Применить только это lake/ocean условие.",
+                "expected": "Все речные переходы не объявлены невозможными."
+              }
+            ],
+            "source_vs_product_interpretation": "Source defines tabletop examples/effects. Choosing, displaying, preserving edited content and these software acceptance examples are researcher translation for strategist/analyst, not an approved specification or implementation.",
+            "canonical_rule_refs": [
+              "travel.route_passability"
+            ],
+            "unresolved_parameters": [
+              "Boat/swim speeds and route-specific constraints"
+            ]
+          },
+          "gap": "Exact selected profile not tested on current product SHA; source extraction is not runtime evidence.",
+          "gap_task_ids": [
+            "HX-BL-044"
+          ],
+          "development_readiness": "future_layer_research_only_no_product_start"
+        }
+      ]
     }
   ],
   "completeness": {
-    "source_groups": 7,
-    "L1_requirements": 7,
-    "acceptance_cases": 22,
+    "source_groups": 25,
+    "L1_requirements": 15,
+    "acceptance_cases": 111,
     "full_RandomMapGeneration_tables": true,
-    "full_ExplorationChapter": false
+    "full_ExplorationChapter": false,
+    "L2_requirements": 4,
+    "L3_requirements": 6,
+    "terrain_entries_reviewed": 8,
+    "nonstandard_element_cells_reviewed": 40,
+    "all_eight_terrain_entries_L1_semantic_translation": true,
+    "all_literary_examples_catalogued": false,
+    "external_hazard_crossrefs_complete": false,
+    "terrain_elements_handoff_ref": "agent-work/research/requirements/PF1-terrain-elements.json"
   },
   "score_impact": {
     "delta": null,
@@ -779,5 +3826,6 @@
   "status_dictionary": {
     "unverified": "Source translated; product exact-SHA support not established"
   },
-  "evidence": []
+  "evidence": [],
+  "additional_scope": "Eight full terrain entries read;40nonstandard cells represented by a selected illustrative option, not exhaustive literary catalogue or full book."
 }
