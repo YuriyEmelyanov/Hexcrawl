@@ -60,43 +60,17 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "task_id": "HX-RSR-PF1-TERRAIN-ELEMENTS-L1",
+    "task_id": "HX-RSR-PF1-FULL-L1-IMPLEMENTATION",
     "game_id": "PF1",
     "layer": "L1",
-    "action": "Разобрать законченный L1-срез примеров terrain elements по восьми типам PF1UltimateCampaign; отдельно вынести эффекты путешествия/проверок вL2/L3, не объявлять их генератором.",
-    "completion_condition": "Все выбранные категории имеют источник, конкретную операцию/известный выход, canonicalprofile и единый task-disposition; никаких профилей PF2 по аналогии.",
-    "reason": "Завершает отдельную конкретизацию категорий из уже закрытой процедуры; приоритет пересмотреть по свежим решениям и claims."
+    "status": "candidate_reassess_fresh_decisions",
+    "action": "Сверить все15операций L1 из PF1-матрицы с фактической реализацией на точном published/integrationSHA. Использовать уже собранные правила и сохранённый аудит общих свойств, проверить только новые/непокрытые действия; перед выбором сравнить с новым существенным рыночным сигналом.",
+    "completion_condition": "15строк имеют проверенный фактический результат или конкретный воспроизводимый пробел, reused-evidence applicability на SHA и existingtask-disposition; не выдумывать поддержку профиля/score.",
+    "reason": "Новый законченный корпус позволяет перейти от источника к полному слою реализации без нового дробления литературы."
   },
-  "active_task": {
-    "run_id": "2026-11-12T1236-TW2000-create-zero",
-    "completion_condition": "Complete source-to-input disposition with exact active baseline, primarysource distinctions, sensitivity boundary and concrete product implications; no fabricated p."
-  },
-  "claim": {
-    "schema_version": 1,
-    "run_id": "2026-11-13T2129-PF1-terrain-elements",
-    "program_id": "HX-RSR-001",
-    "role": "research_agent",
-    "status": "active",
-    "started_at": "2026-11-13T21:32:17Z",
-    "baseline_sha": "a3d3c56048bed65065236b50c145cb6ed662ac11",
-    "first_stage": "read_current_contract_and_select_bounded_L1_corpus",
-    "scope": [
-      "agent-work/research/requirements/PF1-terrain-elements*",
-      "agent-work/research/checkpoints/PF1-terrain-elements.json",
-      "agent-work/market/rules/PF1-UltimateCampaign.json",
-      "agent-work/rules/common-rules.json (PF1 binding refs only)",
-      "agent-work/rules/game-bindings.json (PF1 source bindings only)",
-      "agent-work/backlog.json (research_source_notes only)",
-      "agent-work/research/README.md",
-      "agent-work/research/state.json (own lease/status)",
-      "agent-work/latest.json#research_agent"
-    ],
-    "lease_expires_at": "2026-11-13T22:29:00Z",
-    "preserve_foreign_claims": true,
-    "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
-    "claim_ref": "agent-work/claims/2026-11-13T2129-PF1-terrain-elements.json"
-  },
-  "last_completed_run": "2026-11-12T1828-PF1-regional-preparation",
+  "active_task": null,
+  "claim": null,
+  "last_completed_run": "2026-11-13T2129-PF1-terrain-elements",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -205,7 +179,8 @@
     "agent-work/research/runs/2026-11-12T1236-TW2000-create-zero.json",
     "agent-work/research/runs/2026-11-12T1428-TOR2-map-boundary.json",
     "agent-work/research/runs/2026-11-12T1632-terrain-properties-audit.json",
-    "agent-work/research/runs/2026-11-12T1828-PF1-regional-preparation.json"
+    "agent-work/research/runs/2026-11-12T1828-PF1-regional-preparation.json",
+    "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -221,49 +196,89 @@
   "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
-    "jawbone_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-    "start": {
-      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-      "title": "Исследователь HexCrawl",
-      "checked_at": "2026-11-13T21:17:06.242Z",
-      "is_enabled": false,
-      "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-      "timezone": "Asia/Shanghai",
-      "next_run_time": "2026-11-14T06:30:00+08:00"
-    },
-    "end": {
-      "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-      "title": "Исследователь HexCrawl",
-      "checked_at": "2026-11-13T21:19:18.627Z",
-      "method": "automations.peek",
-      "status": "checked",
-      "is_enabled": true,
-      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-      "default_timezone": "Europe/Moscow",
-      "next_run_time": "2026-11-14T00:30:00+03:00",
-      "prompt_unchanged": true,
-      "environments_unchanged": true
-    },
-    "restoration": {
-      "performed": true,
-      "authority": "Current owner explicitly resumes both agents, superseding research tokenpause"
-    },
-    "errors": [],
-    "historical_owner_pause": {
-      "decision_ref": "agent-work/decisions/owner-pause-2026-11-12-HX-RSR-001-token-budget.json",
-      "is_enabled_at_pause": false,
-      "paused_at": "2026-11-12T19:53:15.465Z",
-      "status": "superseded_by_owner_resume",
-      "active": false,
-      "resumed_at": "2026-11-13T21:19:18.627Z",
-      "superseded_by": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json"
-    },
-    "scope": "Actual point-in-time peeks, not a guarantee against later service disable. Both existing tasks updated, prompts and environments unchanged."
+    "start": [
+      {
+        "status": "fulfilled",
+        "value": [
+          {
+            "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+            "is_enabled": true,
+            "run": {
+              "id": "eb76fe98-a860-8325-b31c-6af6b7778a77",
+              "recorded_status": "in_progress",
+              "scheduled_for": "2026-11-13T21:30:00Z",
+              "started_at": "2026-11-13T21:29:19.341953Z",
+              "completed_at": null,
+              "chat_ref": null
+            }
+          }
+        ]
+      },
+      {
+        "status": "fulfilled",
+        "value": [
+          {
+            "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+            "is_enabled": true,
+            "run": {
+              "id": "0ca8f401-4ca8-8325-8c9a-f3378139cda5",
+              "recorded_status": "no_update",
+              "scheduled_for": "2026-11-13T20:00:00Z",
+              "started_at": "2026-11-13T19:58:07.446875Z",
+              "completed_at": "2026-11-13T19:58:08.139923Z",
+              "chat_ref": null
+            }
+          }
+        ]
+      }
+    ],
+    "end": [
+      {
+        "status": "fulfilled",
+        "value": [
+          {
+            "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+            "is_enabled": true,
+            "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+            "checked_at": "2026-11-13T21:44:38Z",
+            "run": {
+              "id": "eb76fe98-a860-8325-b31c-6af6b7778a77",
+              "recorded_status": "in_progress",
+              "scheduled_for": "2026-11-13T21:30:00Z",
+              "started_at": "2026-11-13T21:35:55.274026Z",
+              "completed_at": null,
+              "chat_ref": null
+            }
+          }
+        ]
+      },
+      {
+        "status": "fulfilled",
+        "value": [
+          {
+            "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+            "is_enabled": true,
+            "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+            "checked_at": "2026-11-13T21:44:38Z",
+            "run": {
+              "id": "0ca8f401-4ca8-8325-8c9a-f3378139cda5",
+              "recorded_status": "no_update",
+              "scheduled_for": "2026-11-13T20:00:00Z",
+              "started_at": "2026-11-13T19:58:07.446875Z",
+              "completed_at": "2026-11-13T19:58:08.139923Z",
+              "chat_ref": null
+            }
+          }
+        ]
+      }
+    ],
+    "restoration_performed": false,
+    "point_in_time_only": true
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-12T1828-PF1-regional-preparation.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/checkpoints/PF1-regional-preparation.json",
+  "checkpoint_ref": "agent-work/research/checkpoints/PF1-terrain-elements.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -1109,7 +1124,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-13T21:19:18.627Z",
+  "updated_at": "2026-11-13T21:46:45Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1150,11 +1165,59 @@
     "superseded_by": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json"
   },
   "authority_status": "explicit_owner_resume",
-  "execution_status": "in_progress",
+  "execution_status": "completed_bounded_run_program_active",
   "owner_resume": {
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
     "resumed_at": "2026-11-13T21:19:18.627Z",
     "prior_pause_ref": "agent-work/decisions/owner-pause-2026-11-12-HX-RSR-001-token-budget.json",
     "automation_verified_at": "2026-11-13T21:19:18.627Z"
+  },
+  "previous_claim": {
+    "schema_version": 1,
+    "run_id": "2026-11-13T2129-PF1-terrain-elements",
+    "program_id": "HX-RSR-001",
+    "role": "research_agent",
+    "status": "completed",
+    "started_at": "2026-11-13T21:32:17Z",
+    "baseline_sha": "a3d3c56048bed65065236b50c145cb6ed662ac11",
+    "first_stage": "read_current_contract_and_select_bounded_L1_corpus",
+    "scope": [
+      "agent-work/research/requirements/PF1-terrain-elements*",
+      "agent-work/research/checkpoints/PF1-terrain-elements.json",
+      "agent-work/market/rules/PF1-UltimateCampaign.json",
+      "agent-work/rules/common-rules.json (PF1 binding refs only)",
+      "agent-work/rules/game-bindings.json (PF1 source bindings only)",
+      "agent-work/backlog.json (research_source_notes only)",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json (own lease/status)",
+      "agent-work/latest.json#research_agent"
+    ],
+    "lease_expires_at": "2026-11-13T22:29:00Z",
+    "preserve_foreign_claims": true,
+    "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
+    "claim_ref": "agent-work/claims/2026-11-13T2129-PF1-terrain-elements.json",
+    "completed_at": "2026-11-13T21:46:45Z",
+    "result_ref": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json"
+  },
+  "latest_PF1_terrain_elements": {
+    "ref": "agent-work/research/requirements/PF1-terrain-elements.json",
+    "result_ref": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json",
+    "status": "completed",
+    "terrain_types": 8,
+    "nonstandard_cells": 40,
+    "new_source_groups": 18,
+    "new_L1_requirements": 8,
+    "L2_L3_boundary_profiles": 10,
+    "cases": 89,
+    "runtime": "unknown",
+    "active_inputs_changed": false
+  },
+  "latest_startup_diagnosis": {
+    "run_id": "2026-11-13T2129-PF1-terrain-elements",
+    "started_marker_ref": "agent-work/claims/2026-11-13T2129-PF1-terrain-elements.json",
+    "result_ref": "agent-work/research/runs/2026-11-13T2129-PF1-terrain-elements.json",
+    "status": "completed_with_recovered_local_evaluation_errors",
+    "stop_reason": null,
+    "needs_owner_action": false
   }
 }
