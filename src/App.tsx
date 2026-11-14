@@ -1021,7 +1021,7 @@ function riverFeatureEligibility(rivers:River[],regions:Region[],terrain:Map<str
 /** Detached E5 physical/numeric context. Crossings/delta/feature dependency
  * preparation is deliberately supplied by the final edit transaction, not a no-op
  * callback masquerading as complete acceptance. */
-function buildManualRiverGeometryContext(map:MapSnapshot):Pick<RiverEditContext,'vertex'|'edgeOwners'|'blocked'|'event'|'reason'|'network'|'solvePath'>&{geometry:RiverEditingGeometry}{
+function buildManualRiverGeometryContext(map:Pick<MapSnapshot,'regions'|'rivers'|'hexTerrainByKey'>&Partial<Pick<MapSnapshot,'obstacles'>>):Pick<RiverEditContext,'vertex'|'edgeOwners'|'blocked'|'event'|'reason'|'network'|'solvePath'>&{geometry:RiverEditingGeometry}{
   const all=map.regions.flatMap(r=>r.hexes),graph=buildRiverGraphForRegion(all,all,getCandidateHexes(all,getSeaHexKeys(map.hexTerrainByKey)));
   const edgeOwners=new Map<string,number[]>();
   for(const region of map.regions)for(const hex of region.hexes)for(const key of getHexEdgeKeys(hex)){
@@ -1163,6 +1163,26 @@ function geometryLakeInputs(map:Pick<MapSnapshot,'regions'|'hexTerrainByKey'|'to
   return {lakeId:lake.lakeId,cells:[...lake.hexes],colorPath:shapes[0].path,colorScale:detailSourcePixelToWorld({x:1,y:0}).x,origin};
  });
 }
+/** BR-009 arms are deliberately absent from the numerical RIV network.
+ * Add their already validated physical sea terminals only to GEO2's geometry
+ * adapter; never solve or charge them as ordinary numeric confluences. */
+function geometryRiverHydrology(map:MapSnapshot){
+ const hydrology=buildRegionRiverNetwork(map.rivers,map.rivers,map.regions,map.candidateHexes,map.hexTerrainByKey,true);
+ const arms=map.rivers.filter(r=>r.deltaParentRiverId!==undefined);
+ if(!arms.length)return hydrology;
+ const geometry=buildManualRiverGeometryContext(map).geometry;
+ validateEditedRiverDeltas([],map.rivers,geometry);
+ const nodes=new Map(hydrology.network.nodes.map(n=>[n.id,n])),edges=[...hydrology.network.edges];
+ for(const arm of arms){
+  const [from,to]=arm.vertexPath,key=edgeKey(from,to),fullness=knownRiverEdgeFullness(arm,key),owner=arm.sectors.find(s=>s.edgeKeys.includes(key))?.assignedRegionId??arm.regionId;
+  const region=map.regions.find(r=>r.id===owner);
+  if(!region||!fullness||!geometry.seaVertices.has(to.key)||!nodes.has(from.key)||edges.some(e=>e.id===key))throw Error('GEO2 invalid_delta_terminal');
+  const prior=nodes.get(to.key);if(prior&&prior.kind!=='sea')throw Error('GEO2 conflicting_delta_terminal');
+  nodes.set(to.key,{id:to.key,kind:'sea'});
+  edges.push({id:key,from:from.key,to:to.key,regionId:owner,height:region.heightLevel,fullness:fullness as RiverFullness});
+ }
+ return {...hydrology,network:{nodes:[...nodes.values()],edges}};
+}
 function geometryPlanInput(map:MapSnapshot){
  const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
  const cells=projectOneMile(oneMileSources(map),origin).map(row=>row.cell);
@@ -1172,7 +1192,7 @@ function geometryPlanInput(map:MapSnapshot){
  return {map,origin,liveRivers:detailMapRiverGeometry(map,origin),marks,
   landCells:map.regions.flatMap(r=>r.hexes).filter(c=>!['lake','sea'].includes(map.hexTerrainByKey.get(hexKey(c))?.terrainOverride??'')),
   riverInput:{rivers:map.rivers,marks,origin,cells,seed:map.generation.masterSeed},
-  riverContext:{hydrology:buildRegionRiverNetwork(map.rivers,map.rivers,map.regions,map.candidateHexes,map.hexTerrainByKey,true),candidates:map.candidateHexes},widths,lakeInputs};
+  riverContext:{hydrology:geometryRiverHydrology(map),candidates:map.candidateHexes},widths,lakeInputs};
 }
 function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map()):MapSnapshot{
  const layer=before.physicalGrid;
@@ -1195,6 +1215,7 @@ function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
  const authored=state.geometryRefinement?.sourceState??state;
  validateDetailGeographyFootprints({...map,physicalGrid:authored},detailMapRiverGeometry(map,state.grid.origin),authored);
  if(state.geometryRefinement){
+  if(map.rivers.some(r=>r.deltaParentRiverId!==undefined))validateEditedRiverDeltas([],map.rivers,buildManualRiverGeometryContext(map).geometry);
   if(!validateGeometryRefinementSource(refinementSourceInput(map,state,state.geometryRefinement.riverPlan),state.geometryRefinement))throw Error('GEO2 stale_source_fingerprint');
   const lakes=prepareRefinementLakeModes(geometryLakeInputs(map,state.grid.origin));
   if(lakes.status!=='prepared'||lakes.lakes.length!==state.geometryRefinement.riverPlan.lakes.length||lakes.lakes.some(l=>{const old=state.geometryRefinement!.riverPlan.lakes.find(old=>old.lakeId===l.lakeId);return !old||(['tiles','emoji','color'] as const).some(mode=>l.modes[mode].signature!==old.modes[mode].signature);}))throw Error('GEO2 stale_lake_contours');

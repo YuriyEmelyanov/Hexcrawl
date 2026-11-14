@@ -48,6 +48,9 @@ const compiled = ts.transpileModule(instrumented, { compilerOptions: {
   module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020, jsx: ts.JsxEmit.ReactJSX
 }}).outputText;
 const localRequire = createRequire(sourceUrl);
+// Reuse compilation, not module exports or mutable world state. Every harness
+// still executes a fresh module graph in its own VM and keeps its own RNG.
+const compiledModes = new Map();
 
 export function createGenerationHarness(seed = 1, search = '', language = 'ru') {
   const state = [];
@@ -76,7 +79,11 @@ export function createGenerationHarness(seed = 1, search = '', language = 'ru') 
     if(url.pathname.endsWith(".json"))return {default:JSON.parse(fs.readFileSync(url,"utf8"))};
     if (modeCache.has(url.href)) return modeCache.get(url.href).exports;
     const loaded = { exports: {} }; modeCache.set(url.href, loaded);
-    const code = ts.transpileModule(fs.readFileSync(url, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
+    let code = compiledModes.get(url.href);
+    if (code === undefined) {
+      code = ts.transpileModule(fs.readFileSync(url, 'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText;
+      compiledModes.set(url.href, code);
+    }
     const execute = vm.runInContext(`(function(exports,module,require){${code}\n})`,context);
     execute(loaded.exports,loaded,name=>loadMode(new URL(name.endsWith('.ts')||name.endsWith('.json')?name:`${name}.ts`,url)));
     return loaded.exports;

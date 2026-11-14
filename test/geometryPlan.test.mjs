@@ -7,6 +7,8 @@ import {parseDetail1StateV11} from '../src/detailModel.ts';
 import {projectOneMile} from '../src/oneMile.ts';
 import {detailSourcePixelToWorld} from '../src/detailGeography.ts';
 import {buildNaturalLakes} from '../src/rendering/lakeGeometry.ts';
+import {migrateSeas} from '../src/seaIdentity.ts';
+import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
 
 // Test governance: two logical cases for the new accepted boundary. Existing
 // river/mouth/road suites own routing algorithms; saveSafety owns old formats
@@ -28,6 +30,23 @@ async function accepted(){
 }
 const copy=value=>JSON.parse(JSON.stringify(value));
 const reverseKeys=value=>Array.isArray(value)?value.map(reverseKeys):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).reverse().map(([k,v])=>[k,reverseKeys(v)])):value;
+let deltaFixture;
+function acceptedDelta(){
+ if(deltaFixture)return deltaFixture;
+ // One finite real coarse-grid junction, with its three supporting land hexes.
+ // The two downstream neighbors touch sea; the upstream neighbor stays open.
+ // This reuses App's source/hydrology adapter, including separate BR-009 rules.
+ const h=createGenerationHarness(43);h.render();h.guardRandom();h.setWindow({alert:()=>{},matchMedia:()=>({matches:false})});h.render().addFallbackTractToMap({q:0,r:0});const base=h.render().captureDocument().map,g=h.geometry;
+ const all=[];for(let q=-2;q<=2;q++)for(let r=-2;r<=2;r++)if(Math.abs(q+r)<=2)all.push({q,r});
+ const corners=new Map(all.map(c=>[`${c.q},${c.r}`,g.getHexCornerPoints(c)])),j=g.getHexCornerPoints({q:0,r:0})[0],land=all.filter(c=>corners.get(`${c.q},${c.r}`).some(v=>v.key===j.key)),landKeys=new Set(land.map(c=>`${c.q},${c.r}`)),neighbors=new Map();
+ for(const cell of land){const vs=corners.get(`${cell.q},${cell.r}`);for(let i=0;i<vs.length;i++)if(vs[i].key===j.key)for(const v of [vs[(i+1)%6],vs[(i+5)%6]])neighbors.set(v.key,v);}
+ assert.equal(land.length,3);assert.equal(neighbors.size,3);const [a,c,b]=[...neighbors.values()].sort((a,b)=>a.x-b.x||a.y-b.y),seaCells=[c,b].map(v=>all.find(cell=>!landKeys.has(`${cell.q},${cell.r}`)&&corners.get(`${cell.q},${cell.r}`).some(p=>p.key===v.key)));
+ assert.ok(seaCells.every(Boolean));const terrain=new Map(seaCells.map(c=>[`${c.q},${c.r}`,{terrainOverride:'sea'}])),seas=migrateSeas(terrain),path=[a,j,c],region={...base.regions[0],hexes:land,centerHex:{q:0,r:0},anchorHex:{q:0,r:0},finalSize:3,targetSize:3,heightLevel:1,isCoastal:true,pointsOfInterest:[],pointOfInterestKinds:{},suppressCentralPoi:true};
+ const main={id:1,regionId:region.id,vertexPath:path,sectors:g.createInitialRiverSectors(1,path,4,{startReason:'region_boundary',endReason:'river_end'},region.id)},armPath=[j,b],arm={id:2,regionId:region.id,deltaParentRiverId:1,vertexPath:armPath,sectors:[{id:'delta-2-0',riverId:2,sectorIndex:0,vertexPath:armPath,edgeKeys:[armPath.map(v=>v.key).sort().join('|')],startVertexKey:j.key,endVertexKey:b.key,startReason:'split',endReason:'river_end',fullness:2}]};
+ const map={...base,regions:[region],rivers:[main,arm],roads:[],crossings:[],physicalGrid:undefined,hexTerrainByKey:terrain,waterPoiByKey:new Map(),biomeOverrideByHexKey:new Map(),...seas,candidateHexes:g.getCandidateHexes(land,new Set(terrain.keys())),nextRiverId:3,nextRoadId:1},input=g.geometryPlanInput(map),normalized=normalizeRefinementRiverSource(input.riverInput);
+ assert.equal(normalized.status,'prepared',JSON.stringify(normalized));assert.equal(normalized.sectors.find(s=>s.riverId===2).sectorIndex,0);
+ const result=prepareGeometryPlan(input);assert.equal(result.status,'prepared',JSON.stringify(result));deltaFixture={input,result,j:j.key};return deltaFixture;
+}
 
 test('GEO2 complete immutable physical4 plan preserves authored source and exact accepted choices',async()=>{
  const {input,result}=await accepted(),g=result.geometryRefinement;
@@ -44,6 +63,7 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  assert.equal(validateGeometryRefinementSource(wrong,g),false);
  const cancelled=prepareGeometryPlan({...input,cancelled:()=>true});assert.equal(cancelled.status,'error');assert.equal(cancelled.candidateState,undefined);
  const bounded=prepareGeometryPlan({...input,prepareWorkBudget:1});assert.equal(bounded.status,'error');assert.equal(bounded.candidateState,undefined);
+ const delta=acceptedDelta(),dg=delta.result.geometryRefinement;assert.equal(dg.riverPlan.paths.length,3);assert.equal(dg.riverPlan.paths.filter(p=>p.fromNode===delta.j).length,2);assert.equal(dg.riverPlan.paths.filter(p=>p.toNode===delta.j).length,1);assert.deepEqual(parseGeometryRefinement(copy(dg),parseDetail1StateV11),dg);assert.equal(validateGeometryRefinementSource(delta.input,dg),true);
 });
 
 test('GEO2 persisted records reject broken source, topology, contacts and outer authored correspondence atomically',async()=>{
@@ -83,5 +103,12 @@ test('GEO2 persisted records reject broken source, topology, contacts and outer 
   ['accepted footprint attachment',x=>x.poiFootprints[0].attachments.push({kind:'water',waterKind:'river',waterId:'river:999',segmentId:'foreign',contact:{x:0,y:0}})],
  ];
  for(const [label,mutate]of badOuter){const raw=copy(result.candidateState);mutate(raw);assert.throws(()=>parseDetail1StateV11(raw),undefined,label);}
- assert.equal(badRefinements.length,23);assert.equal(badOuter.length,6); // 29 malformed rows within one logical case.
+ const delta=acceptedDelta().result.geometryRefinement,badDelta=[
+  ['untyped split',x=>x.riverPlan.source.boundaries.find(b=>b.reason==='split').reason='river_start'],
+  ['four-edge split',x=>{const s=x.riverPlan.source.segments.find(s=>s.riverId===2);x.riverPlan.source.segments.push({...copy(s),riverId:3,edgeKey:[s.from.key,'extra'].sort().join('|'),to:{key:'extra',point:{x:10,y:10}}});}],
+  ['directed split cycle',x=>{const ss=x.riverPlan.source.segments.filter(s=>s.riverId===1),first=ss.find(s=>!ss.some(p=>p.to.key===s.from.key)),last=ss.find(s=>!ss.some(p=>p.from.key===s.to.key));x.riverPlan.source.segments.push({riverId:3,edgeKey:[last.to.key,first.from.key].sort().join('|'),from:copy(last.to),to:copy(first.from),fullness:1});}],
+ ];
+ for(const [label,mutate]of badDelta){const raw=copy(delta);mutate(raw);assert.throws(()=>parseGeometryRefinement(raw,parseDetail1StateV11),undefined,label);}
+ assert.equal(badDelta.length,3);
+ assert.equal(badRefinements.length,23);assert.equal(badOuter.length,6); // Together with3 delta rows:32 malformed rows in one logical case.
 });

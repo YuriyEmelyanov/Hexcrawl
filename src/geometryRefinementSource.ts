@@ -49,7 +49,7 @@ export function normalizeRefinementRiverSource(input:SourceInput):NormalizedRefi
   }
   const covered=new Set<string>(),sectorIds=new Set<string>(),indices=new Set<number>();
   for(const s of [...river.sectors].sort((a,b)=>a.sectorIndex-b.sectorIndex||lexical(a.id,b.id))){
-   if(!validKey(s.id)||sectorIds.has(s.id)||!positive(s.sectorIndex)||indices.has(s.sectorIndex)||String(s.riverId)!==String(river.id)||!Number.isInteger(s.fullness)||s.fullness<1||s.fullness>5||s.vertexPath.length<2||s.edgeKeys.length!==s.vertexPath.length-1||s.assignedRegionId!==undefined&&!positive(s.assignedRegionId)||!starts.has(s.startReason)||!ends.has(s.endReason)||s.startVertexKey!==s.vertexPath[0].key||s.endVertexKey!==s.vertexPath[s.vertexPath.length-1].key)return error('invalid_source',[ref,s.id]);
+   if(!validKey(s.id)||sectorIds.has(s.id)||!Number.isSafeInteger(s.sectorIndex)||s.sectorIndex<0||indices.has(s.sectorIndex)||String(s.riverId)!==String(river.id)||!Number.isInteger(s.fullness)||s.fullness<1||s.fullness>5||s.vertexPath.length<2||s.edgeKeys.length!==s.vertexPath.length-1||s.assignedRegionId!==undefined&&!positive(s.assignedRegionId)||!starts.has(s.startReason)||!ends.has(s.endReason)||s.startVertexKey!==s.vertexPath[0].key||s.endVertexKey!==s.vertexPath[s.vertexPath.length-1].key)return error('invalid_source',[ref,s.id]);
    sectorIds.add(s.id);indices.add(s.sectorIndex);
    const listed=new Set(s.edgeKeys);if(listed.size!==s.edgeKeys.length)return error('invalid_source',[ref,s.id]);
    input.consumeWork?.(s.edgeKeys.length+s.vertexPath.length);const ordered:string[]=[];
