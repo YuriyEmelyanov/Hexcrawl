@@ -284,3 +284,23 @@ Missing accepted footprints, owners or known river refs fail atomically;
 feature-specific requests are listed in pendingFeatures, never silently treated
 as eligible generic banks. This is unmounted input preparation, not GeometryPlan
 or runtime activation. Unchanged-bank POI and shared prepare budget still pending.
+
+GEO2 composed-preview rationale before checks: reuse the existing retained-world
+exit/mouth case for atomic legacy footprint bootstrap plus POI/road composition;
+no additional fixture lifecycle. Extend existing prepared-bank road case for an
+already-correct bank anchor: zero displacement must not drop its approach refs.
+Check accepted source unchanged, complete candidate membership, stale river plan,
+cancellation and atomic downstream errors. No new permanent test case is needed.
+
+GEO2 COMPOSED-PREVIEW checkpoint: prepared river/mouth/lake data now composes
+with source validation, legacy-only footprint bootstrap, owner/policy requests,
+POI placement and all roads into one immutable, unapplied preview. Existing
+physicalGrid is reused literally. Unknown footprints remain; feature-specific
+pending requests refuse the whole composition. Stale river signature, phase
+cancellation and any downstream road failure return no partial candidate.
+Validated stationary bank POI is retained as a road endpoint constraint rather
+than dropped because displacement is zero. River sourceSignature is only a
+river consistency check, not the complete sourceFingerprint. candidateState is
+bootstrap/identity input, not an exportable completed physical4 state. Explicit
+readyForApplication=false and completeGeometryPlan=false: whole-phase budgets,
+feature placement, complete fingerprint/public16/history/UI/PNG still pending.
