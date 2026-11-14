@@ -1,76 +1,133 @@
 {
-  "status": "prepared_assets_not_connected",
-  "date": "2026-11-14",
-  "method": "built-in image generation from owner-provided screenshot style reference; uniform fit and composition on exact existing substrates",
-  "style_reference": "Owner-provided Civilization V Strategic View screenshot; source screenshot is not included in this repository",
+  "revision": "detail-v5",
+  "status": "owner_accepted_prepared_assets_not_connected",
+  "accepted_on": "2026-11-14",
+  "source_commit": "9586f8e9aa436a06b2d0be0ae92ab3dd5ee4f615",
+  "source_generation_metadata": "relief-detail-v5-generation.json",
+  "tool": "image_gen.imagegen",
+  "request": "Remove excessive hill green saturation and reduce fine detail further, preserving the existing major landforms, readable contrast and seamless background transitions.",
+  "method": "Four separate opaque image edits of calm-v4; hill edits additionally reference accepted blended-v3 and grass.png for color. Only square resize/sRGB/RGB PNG export after generation.",
   "export": {
     "width": 210,
     "height": 210,
     "color": "RGB/sRGB",
-    "foreground_alpha_noise_floor": 8,
-    "fit": "Uniform scaling of entire relief silhouette into approved pointy/flat regular hex; no geometric clipping of artwork",
-    "background": "Exact grass.png for open hills and stone.png for mountains"
+    "opaque": true,
+    "composition": "Finished painted background and relief in one image; no separate foreground alpha layer.",
+    "hex_geometry": "Full regular hexagons in pointy-top and flat-top orientations; significant forms and complete peaks reviewed visually inside the approved footprint."
   },
   "assets": [
     {
+      "id": "open-hills-pointy",
       "file": "open-hills-pointy.png",
-      "background": "grass.png",
       "orientation": "pointy",
-      "prompt": "Use case: stylized-concept. Create original GAME TERRAIN SPRITE artwork matching the actual supplied Civilization V STRATEGIC VIEW screenshot (image 1). Follow its specific relief rendering: small softly painted oblique cartographic terrain, modeled by broad cream sunlit faces and quiet olive/grey shaded slopes. No drawn outline around forms. Fine simplified ridges, soft-edged feet; recognizable at very small map scale. It is a schematic game-map sprite with painted volume, not a vector icon, a cartoon sticker, or an elaborate landscape painting.\nImage 1 is STYLE REFERENCE only: inspect its rounded hill clusters and single tall mountain; ignore the phone interface, black hex borders, rivers, resource badges and selection outlines. Do not reproduce any UI. Image 2 is the exact substrate material/color reference that will be composited underneath later, not a background to add now.\nOutput ONE isolated relief sprite on actual TRANSPARENT background. All nontransparent artwork including the compact local contact shadow is the relief only. No opaque square, no hex-shaped ground or border, no platform, no bloom, mist, haze or glow, no long cast shadow. Do not draw a full scene. The foot of each slope should be complete and natural, not cut off by straight polygon edges. Leave transparent space outside the terrain and between distinct outer footlines. Keep all art upright. All visible terrain must fit the specified regular-hex composition, with no clipping or chopped tips. The final 210x210 tile will contain a full square substrate with only this sprite placed on it.\nPrimary visual rule: NO BLACK OR DARK STROKE OUTLINES, NO INK CONTOURS, NO THICK EDGES, NO FLAT VECTOR FACETS. Form must come from the same softly graded painted light/shade as the source screenshot. Matte soft low-detail terrain, subdued natural colors. No trees, forests, grass tufts, rocks as separate props, buildings, roads, rivers, symbols, letters, numbers or decorative marks. Keep image clean enough for a 50-pixel map hex.\nSpecific asset: OPEN HILLS: one coherent group of 4-6 low rounded earthen knolls, with small light beige/ivory rounded tops and warm olive grassy slopes, the same low hill-plateau silhouettes visible repeatedly in the screenshot. Compact low relief, no jagged or pointed peaks. Sunlit left slopes, softly shaded right slopes. Overall TALLER / pointy-top-hex arrangement: an upper-center knoll with staggered broad knolls underneath, tapering toward the lower center. Spread the complete knoll cluster generously over the hex interior, leaving the actual original grass texture visible around it. Do not make giant stacked green cushions. Do not make a solid polygon-shaped block.",
-      "sha256": "3536a44a26f37683cc3fd681ea851209ff9fd06823959567d2d443108b36973c",
-      "foreground_bounds": {
-        "l": 16,
-        "t": 43,
-        "r": 193,
-        "b": 165
-      },
-      "outside_foreground_pixels": 0,
-      "background_changes_outside_hex": 0
+      "background": "grass.png",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 83555,
+      "corner_mean_absolute_rgb_difference_from_base": 13.98,
+      "source_file": "exec-a7242448-830b-4a4c-ba03-065ee0f361e2.png",
+      "sha256": "0c2c64a85fcb7287b48e5b135255436e2ea42ff2f7e42ebb39efc0590a4dd997",
+      "prompt": "Use case: precise-object-edit, faithful detail cleanup with SHAPE LOCK. Image 1 is the current finished 210px terrain tile TO EDIT. Preserve the same main hill/mountain shapes, number and location of major summits, principal ridge paths, overall outline, occupied area, upright orientation, lighting direction, and natural ground integration. Do NOT redesign the composition, combine peaks, remove main hills, add new hills, change proportions or turn rocky forms into simple cones. Primary edit: reduce the remaining SMALL-SCALE DETAIL much further than image1, by approximately 60 percent. Remove thin branching crease lines, small secondary flutes, little jagged highlight marks, repetitive fine surface strokes, and small tonal chips INSIDE the existing original forms. Replace that detail with broader CONTINUOUS PAINTED SURFACES following the SAME original structure. Keep the major ridges and sharp large light-shadow boundaries CLEAN, CLEAR, STRONGLY READABLE and dimensional. Preserve strong enough dark shadows and coherent lit faces to read at50-80px/hex; no all-over blur, haze, low-contrast wash, pastel treatment or desaturation of the whole relief. Simplify the drawing, not its main shape. Keep attractive painterly cartographic volume, never flat vector, polygonal low-poly, icon or plastic CGI. The peripheral low footslopes alone blend gently into the base; no pale/dark outline, cutout edge, rim or uniform fog halo. One complete square OPAQUE painted tile, full background fills all four corners, no alpha, no hex outline, text, UI, borders or watermark. Keep significant terrain fully inside the source's same orientation-specific regular hex, no chopped peaks.\nCOLOR CORRECTION IS EQUALLY REQUIRED. Image2 is the OWNER-ACCEPTED COLOR REFERENCE for this same hill composition; image3 is its plain grass base. Image1 is too vivid lime/yellow-green. Return the full hill tile's ground, hill midtones and shadow pigments to the NATURAL SUBDUED OLIVE/KHAKI GREEN PALETTE OF IMAGE2, accurately matching it, while keeping well-defined lit/dark sides. Especially restore the blue component and reduce the excessive yellow-green saturation. Reference background outside the invisible hex averages approximately R153,G176,B85, HSV hue75deg saturation52percent. The too-green current source instead averages R149,G180,B67,saturation63percent. Aim for the former, not the latter. This is NOT a request for pastel washed-out shapes: retain image2's original luminance contrast and warm cream ridge lights. Do not intensify green or make the ground fluorescent/chartreuse. Retain every main original rounded hill mound and location; remove only its small scalloped ripples and fine highlights.\nKeep this POINTY-TOP composition exactly upright, same vertical footprint.",
+      "versioned_source_file": "open-hills-pointy-detail-v5.png"
     },
     {
+      "id": "open-hills-flat",
       "file": "open-hills-flat.png",
+      "orientation": "flat",
       "background": "grass.png",
-      "orientation": "flat",
-      "prompt": "Use case: stylized-concept. Create original GAME TERRAIN SPRITE artwork matching the actual supplied Civilization V STRATEGIC VIEW screenshot (image 1). Follow its specific relief rendering: small softly painted oblique cartographic terrain, modeled by broad cream sunlit faces and quiet olive/grey shaded slopes. No drawn outline around forms. Fine simplified ridges, soft-edged feet; recognizable at very small map scale. It is a schematic game-map sprite with painted volume, not a vector icon, a cartoon sticker, or an elaborate landscape painting.\nImage 1 is STYLE REFERENCE only: inspect its rounded hill clusters and single tall mountain; ignore the phone interface, black hex borders, rivers, resource badges and selection outlines. Do not reproduce any UI. Image 2 is the exact substrate material/color reference that will be composited underneath later, not a background to add now.\nOutput ONE isolated relief sprite on actual TRANSPARENT background. All nontransparent artwork including the compact local contact shadow is the relief only. No opaque square, no hex-shaped ground or border, no platform, no bloom, mist, haze or glow, no long cast shadow. Do not draw a full scene. The foot of each slope should be complete and natural, not cut off by straight polygon edges. Leave transparent space outside the terrain and between distinct outer footlines. Keep all art upright. All visible terrain must fit the specified regular-hex composition, with no clipping or chopped tips. The final 210x210 tile will contain a full square substrate with only this sprite placed on it.\nPrimary visual rule: NO BLACK OR DARK STROKE OUTLINES, NO INK CONTOURS, NO THICK EDGES, NO FLAT VECTOR FACETS. Form must come from the same softly graded painted light/shade as the source screenshot. Matte soft low-detail terrain, subdued natural colors. No trees, forests, grass tufts, rocks as separate props, buildings, roads, rivers, symbols, letters, numbers or decorative marks. Keep image clean enough for a 50-pixel map hex.\nSpecific asset: OPEN HILLS: one coherent group of 4-6 low rounded earthen knolls, with small light beige/ivory rounded tops and warm olive grassy slopes, the same low hill-plateau silhouettes visible repeatedly in the screenshot. Compact low relief, no jagged or pointed peaks. Sunlit left slopes, softly shaded right slopes. Overall WIDER / flat-top-hex arrangement: broad staggered low knolls extending across the middle, with shorter outer shoulders and complete softly blended feet. Spread the complete knoll cluster generously over the hex interior, leaving the actual original grass texture visible around it. Do not make giant stacked green cushions. Do not make a solid polygon-shaped block.",
-      "sha256": "579fa8c2fb1208f81bd568dcd60ce35c52c3aa44fb34548e2a9c2445a9c5bc80",
-      "foreground_bounds": {
-        "l": 10,
-        "t": 54,
-        "r": 198,
-        "b": 154
-      },
-      "outside_foreground_pixels": 0,
-      "background_changes_outside_hex": 0
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 88852,
+      "corner_mean_absolute_rgb_difference_from_base": 11.65,
+      "source_file": "exec-3bbefc32-42ed-4c9d-88d5-1716e14a182d.png",
+      "sha256": "ab0760889c1952c228daf77e580fd6fc6f88c84085ee486b942a28b9e469302a",
+      "prompt": "Use case: precise-object-edit, faithful detail cleanup with SHAPE LOCK. Image 1 is the current finished 210px terrain tile TO EDIT. Preserve the same main hill/mountain shapes, number and location of major summits, principal ridge paths, overall outline, occupied area, upright orientation, lighting direction, and natural ground integration. Do NOT redesign the composition, combine peaks, remove main hills, add new hills, change proportions or turn rocky forms into simple cones. Primary edit: reduce the remaining SMALL-SCALE DETAIL much further than image1, by approximately 60 percent. Remove thin branching crease lines, small secondary flutes, little jagged highlight marks, repetitive fine surface strokes, and small tonal chips INSIDE the existing original forms. Replace that detail with broader CONTINUOUS PAINTED SURFACES following the SAME original structure. Keep the major ridges and sharp large light-shadow boundaries CLEAN, CLEAR, STRONGLY READABLE and dimensional. Preserve strong enough dark shadows and coherent lit faces to read at50-80px/hex; no all-over blur, haze, low-contrast wash, pastel treatment or desaturation of the whole relief. Simplify the drawing, not its main shape. Keep attractive painterly cartographic volume, never flat vector, polygonal low-poly, icon or plastic CGI. The peripheral low footslopes alone blend gently into the base; no pale/dark outline, cutout edge, rim or uniform fog halo. One complete square OPAQUE painted tile, full background fills all four corners, no alpha, no hex outline, text, UI, borders or watermark. Keep significant terrain fully inside the source's same orientation-specific regular hex, no chopped peaks.\nCOLOR CORRECTION IS EQUALLY REQUIRED. Image2 is the OWNER-ACCEPTED COLOR REFERENCE for this same hill composition; image3 is its plain grass base. Image1 is too vivid lime/yellow-green. Return the full hill tile's ground, hill midtones and shadow pigments to the NATURAL SUBDUED OLIVE/KHAKI GREEN PALETTE OF IMAGE2, accurately matching it, while keeping well-defined lit/dark sides. Especially restore the blue component and reduce the excessive yellow-green saturation. Reference background outside the invisible hex averages approximately R153,G176,B85, HSV hue75deg saturation52percent. The too-green current source instead averages R149,G180,B67,saturation63percent. Aim for the former, not the latter. This is NOT a request for pastel washed-out shapes: retain image2's original luminance contrast and warm cream ridge lights. Do not intensify green or make the ground fluorescent/chartreuse. Retain every main original rounded hill mound and location; remove only its small scalloped ripples and fine highlights.\nKeep this FLAT-TOP composition exactly upright, same broad footprint.",
+      "versioned_source_file": "open-hills-flat-detail-v5.png"
     },
     {
+      "id": "mountains-pointy",
       "file": "mountains-pointy.png",
-      "background": "stone.png",
       "orientation": "pointy",
-      "prompt": "Use case: stylized-concept. Create original GAME TERRAIN SPRITE artwork matching the actual supplied Civilization V STRATEGIC VIEW screenshot (image 1). Follow its specific relief rendering: small softly painted oblique cartographic terrain, modeled by broad cream sunlit faces and quiet olive/grey shaded slopes. No drawn outline around forms. Fine simplified ridges, soft-edged feet; recognizable at very small map scale. It is a schematic game-map sprite with painted volume, not a vector icon, a cartoon sticker, or an elaborate landscape painting.\nImage 1 is STYLE REFERENCE only: inspect its rounded hill clusters and single tall mountain; ignore the phone interface, black hex borders, rivers, resource badges and selection outlines. Do not reproduce any UI. Image 2 is the exact substrate material/color reference that will be composited underneath later, not a background to add now.\nOutput ONE isolated relief sprite on actual TRANSPARENT background. All nontransparent artwork including the compact local contact shadow is the relief only. No opaque square, no hex-shaped ground or border, no platform, no bloom, mist, haze or glow, no long cast shadow. Do not draw a full scene. The foot of each slope should be complete and natural, not cut off by straight polygon edges. Leave transparent space outside the terrain and between distinct outer footlines. Keep all art upright. All visible terrain must fit the specified regular-hex composition, with no clipping or chopped tips. The final 210x210 tile will contain a full square substrate with only this sprite placed on it.\nPrimary visual rule: NO BLACK OR DARK STROKE OUTLINES, NO INK CONTOURS, NO THICK EDGES, NO FLAT VECTOR FACETS. Form must come from the same softly graded painted light/shade as the source screenshot. Matte soft low-detail terrain, subdued natural colors. No trees, forests, grass tufts, rocks as separate props, buildings, roads, rivers, symbols, letters, numbers or decorative marks. Keep image clean enough for a 50-pixel map hex.\nSpecific asset: BARE MOUNTAIN: ONE dominant tall sharp central summit with 2 subordinate rocky shoulders, like the single large mountain occupying one hex near the center of the screenshot. Cream/ivory illuminated upper-left ridges and warm grey stone shaded right slopes and radial gullies. A restrained pale summit highlight, not a glacier or snowfield. Simple readable natural mountain, modeled in soft painted gradients and a few broad ridges. All feet and lower slopes complete and softly tapered. TALL / pointy-top-hex composition, apex toward the upper vertex and broad shoulders around the middle, base gently narrowing below. Large presence spanning most of the usable hex height and width. Do not draw a chain of five separate mountain icons or a steep triangular vector symbol.",
-      "sha256": "16281eeeb64ab389286cb0b39df42c326d2ce3f5a1f1a895976c9a8dd17d2efa",
-      "foreground_bounds": {
-        "l": 16,
-        "t": 24,
-        "r": 193,
-        "b": 184
-      },
-      "outside_foreground_pixels": 0,
-      "background_changes_outside_hex": 0
+      "background": "stone.png",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 72766,
+      "corner_mean_absolute_rgb_difference_from_base": 7.96,
+      "source_file": "exec-e01ab4a2-1d93-44a6-a877-99435bad9c4e.png",
+      "sha256": "2f1b6d470918ab240fb5585b34438acbfabfd0637eca10577b7432367bc00596",
+      "prompt": "Use case: precise-object-edit, faithful detail cleanup with SHAPE LOCK. Image 1 is the current finished 210px terrain tile TO EDIT. Preserve the same main hill/mountain shapes, number and location of major summits, principal ridge paths, overall outline, occupied area, upright orientation, lighting direction, and natural ground integration. Do NOT redesign the composition, combine peaks, remove main hills, add new hills, change proportions or turn rocky forms into simple cones. Primary edit: reduce the remaining SMALL-SCALE DETAIL much further than image1, by approximately 60 percent. Remove thin branching crease lines, small secondary flutes, little jagged highlight marks, repetitive fine surface strokes, and small tonal chips INSIDE the existing original forms. Replace that detail with broader CONTINUOUS PAINTED SURFACES following the SAME original structure. Keep the major ridges and sharp large light-shadow boundaries CLEAN, CLEAR, STRONGLY READABLE and dimensional. Preserve strong enough dark shadows and coherent lit faces to read at50-80px/hex; no all-over blur, haze, low-contrast wash, pastel treatment or desaturation of the whole relief. Simplify the drawing, not its main shape. Keep attractive painterly cartographic volume, never flat vector, polygonal low-poly, icon or plastic CGI. The peripheral low footslopes alone blend gently into the base; no pale/dark outline, cutout edge, rim or uniform fog halo. One complete square OPAQUE painted tile, full background fills all four corners, no alpha, no hex outline, text, UI, borders or watermark. Keep significant terrain fully inside the source's same orientation-specific regular hex, no chopped peaks.\nBARE ROCKY MOUNTAINS: keep image1's existing warm grey/stone palette, clearly pointed dominant summit, major secondary summits and principal angular ridges. Remove the fine repetitive rock fluting, tiny secondary facets and thin split highlight lines; preserve the original main angular rock forms, clear silhouette and strong coherent major shaded/lit faces. No palette change is needed here.\nKeep this POINTY-TOP composition exactly upright, same vertical footprint.",
+      "versioned_source_file": "mountains-pointy-detail-v5.png"
     },
     {
+      "id": "mountains-flat",
       "file": "mountains-flat.png",
-      "background": "stone.png",
       "orientation": "flat",
-      "prompt": "Use case: stylized-concept. Create original GAME TERRAIN SPRITE artwork matching the actual supplied Civilization V STRATEGIC VIEW screenshot (image 1). Follow its specific relief rendering: small softly painted oblique cartographic terrain, modeled by broad cream sunlit faces and quiet olive/grey shaded slopes. No drawn outline around forms. Fine simplified ridges, soft-edged feet; recognizable at very small map scale. It is a schematic game-map sprite with painted volume, not a vector icon, a cartoon sticker, or an elaborate landscape painting.\nImage 1 is STYLE REFERENCE only: inspect its rounded hill clusters and single tall mountain; ignore the phone interface, black hex borders, rivers, resource badges and selection outlines. Do not reproduce any UI. Image 2 is the exact substrate material/color reference that will be composited underneath later, not a background to add now.\nOutput ONE isolated relief sprite on actual TRANSPARENT background. All nontransparent artwork including the compact local contact shadow is the relief only. No opaque square, no hex-shaped ground or border, no platform, no bloom, mist, haze or glow, no long cast shadow. Do not draw a full scene. The foot of each slope should be complete and natural, not cut off by straight polygon edges. Leave transparent space outside the terrain and between distinct outer footlines. Keep all art upright. All visible terrain must fit the specified regular-hex composition, with no clipping or chopped tips. The final 210x210 tile will contain a full square substrate with only this sprite placed on it.\nPrimary visual rule: NO BLACK OR DARK STROKE OUTLINES, NO INK CONTOURS, NO THICK EDGES, NO FLAT VECTOR FACETS. Form must come from the same softly graded painted light/shade as the source screenshot. Matte soft low-detail terrain, subdued natural colors. No trees, forests, grass tufts, rocks as separate props, buildings, roads, rivers, symbols, letters, numbers or decorative marks. Keep image clean enough for a 50-pixel map hex.\nSpecific asset: BARE MOUNTAIN: ONE dominant tall sharp central summit with 2 subordinate rocky shoulders, like the single large mountain occupying one hex near the center of the screenshot. Cream/ivory illuminated upper-left ridges and warm grey stone shaded right slopes and radial gullies. A restrained pale summit highlight, not a glacier or snowfield. Simple readable natural mountain, modeled in soft painted gradients and a few broad ridges. All feet and lower slopes complete and softly tapered. WIDE / flat-top-hex composition: central upright summit with broader, lower foothill shoulders extending left and right, complete base; slightly lower apex so the whole mountain fits the wide hex. Large presence spanning most of the usable hex height and width. Do not draw a chain of five separate mountain icons or a steep triangular vector symbol.",
-      "sha256": "5884f64b1745c9a6805736b5c286b458723afff44252441f99acc50b745597a6",
-      "foreground_bounds": {
-        "l": 21,
-        "t": 37,
-        "r": 187,
-        "b": 171
-      },
-      "outside_foreground_pixels": 0,
-      "background_changes_outside_hex": 0
+      "background": "stone.png",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 73374,
+      "corner_mean_absolute_rgb_difference_from_base": 10.92,
+      "source_file": "exec-52a1cd44-a047-4f8a-9963-909762d8df16.png",
+      "sha256": "c93aab2e4b4c0884cdfeadaaf71b6c1abb800c984626679bc3b8a3f55644375d",
+      "prompt": "Use case: precise-object-edit, faithful detail cleanup with SHAPE LOCK. Image 1 is the current finished 210px terrain tile TO EDIT. Preserve the same main hill/mountain shapes, number and location of major summits, principal ridge paths, overall outline, occupied area, upright orientation, lighting direction, and natural ground integration. Do NOT redesign the composition, combine peaks, remove main hills, add new hills, change proportions or turn rocky forms into simple cones. Primary edit: reduce the remaining SMALL-SCALE DETAIL much further than image1, by approximately 60 percent. Remove thin branching crease lines, small secondary flutes, little jagged highlight marks, repetitive fine surface strokes, and small tonal chips INSIDE the existing original forms. Replace that detail with broader CONTINUOUS PAINTED SURFACES following the SAME original structure. Keep the major ridges and sharp large light-shadow boundaries CLEAN, CLEAR, STRONGLY READABLE and dimensional. Preserve strong enough dark shadows and coherent lit faces to read at50-80px/hex; no all-over blur, haze, low-contrast wash, pastel treatment or desaturation of the whole relief. Simplify the drawing, not its main shape. Keep attractive painterly cartographic volume, never flat vector, polygonal low-poly, icon or plastic CGI. The peripheral low footslopes alone blend gently into the base; no pale/dark outline, cutout edge, rim or uniform fog halo. One complete square OPAQUE painted tile, full background fills all four corners, no alpha, no hex outline, text, UI, borders or watermark. Keep significant terrain fully inside the source's same orientation-specific regular hex, no chopped peaks.\nBARE ROCKY MOUNTAINS: keep image1's existing warm grey/stone palette, clearly pointed dominant summit, major secondary summits and principal angular ridges. Remove the fine repetitive rock fluting, tiny secondary facets and thin split highlight lines; preserve the original main angular rock forms, clear silhouette and strong coherent major shaded/lit faces. No palette change is needed here.\nKeep this FLAT-TOP composition exactly upright, same broad footprint.",
+      "versioned_source_file": "mountains-flat-detail-v5.png"
     }
-  ]
+  ],
+  "source_generation_visual_review": {
+    "result": "Ready for visual review; significant detail reduction, preserved main landforms and readable ridge contrast, no cut peaks or cutout perimeter.",
+    "hill_palette_note": "Excess bright green reduced, but not an exact v3 palette match: pointy is darker/more olive, flat slightly more saturated than v3.",
+    "hill_background_HSV_outside_hex": {
+      "pointy": {
+        "v3": [
+          75,
+          51,
+          70
+        ],
+        "v4": [
+          76,
+          62,
+          71
+        ],
+        "v5": [
+          72,
+          54,
+          64
+        ]
+      },
+      "flat": {
+        "v3": [
+          75,
+          53,
+          69
+        ],
+        "v4": [
+          77,
+          63,
+          70
+        ],
+        "v5": [
+          74,
+          57,
+          67
+        ]
+      }
+    },
+    "measurement_units": "HSV: degrees, saturation percent, value percent; rounded mean background measurements."
+  }
 }
