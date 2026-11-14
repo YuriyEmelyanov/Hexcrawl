@@ -1,0 +1,226 @@
+{
+  "experiment_id": "HX-RSR-EXP-SURVEY-SUITABILITY-v1",
+  "version": 1,
+  "status": "qualitative_only_historical_pilot_completed",
+  "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-research-surveys.json",
+  "related_experiment_ref": "agent-work/research/experiments/GM-survey-suitability-v1.json",
+  "definition": "Validate collection of surveys asking what RPGs respondents actually played; separate sampled player choices from market GM/map-use parameters.",
+  "unit": "Valid respondents to one item and selected system marks; percentages use item denominator, not automatically totalN.",
+  "period": "Historical2020pilot; four-week recall, not2026activity.",
+  "geography_language": "English recruitment across four channels; report says33countries; not geographic weighting or market representation.",
+  "population_or_sampling_frame": "Opt-in DungeonWorld/PbtA communities, video-gameRPGfan panel andTwitter; no random-sampling frame established.",
+  "availability_and_access": "Primary public HTML and parsedPDF fully accessible in web; localPDFdownload403, no local visual verification claimed; recruitment indexed text accessible, directopenDisabledError.",
+  "deduplication": "One study/wave across all publication formats; author removes shorter duplicate questionnaires; multi-select systems overlap.",
+  "biases": [
+    "Community-specific recruitment",
+    "Voluntary response and length/nonresponse bias",
+    "Role not split for selected item",
+    "Edition-unspecified system labels",
+    "Different item/subgroup denominators",
+    "Historical wave and unresolved recruitment arithmetic"
+  ],
+  "target_variable": "Within-item self-reported recentplay; assess transportability separately before targeting M/p/T or digital adoption.",
+  "calibration_or_qualitative_only": "qualitative_only; no numericweights, no active rating conversion.",
+  "uncertainty": "Fieldwork close date, raw per-option counts, role-specific counts and per-wave recruitment discrepancy remain unknown.",
+  "sources": [
+    {
+      "id": "SURV-TROY-HTML",
+      "url": "https://troypress.com/survey-of-dungeon-world-players/",
+      "locator": "Intro/recruitment lines83–91; subgroupsummary lines97–109",
+      "published_at": "2020-07-05",
+      "access_level": "full_text"
+    },
+    {
+      "id": "SURV-TROY-PDF",
+      "url": "https://troypress.com/wp-content/uploads/2020/07/Dungeon-World-Survey-Report.pdf",
+      "locator": "p1methods; pp9–10experience; p12recentplay; pp11/13contrastquestions",
+      "version": "1.02",
+      "published_at": "2020-07-22",
+      "access_level": "full_text",
+      "read_scope": "Selected full methods and question/results block; not a full92page content analysis.",
+      "visual_local_inspection": false
+    },
+    {
+      "id": "SURV-TROY-INVITE",
+      "url": "https://www.reddit.com/r/DungeonWorld/comments/hddpsa",
+      "locator": "Dated invitation and author's replies on optional items/incomplete responses, retrieved indexed primary text.",
+      "published_at": "2020-06-21",
+      "access_level": "search_snippet"
+    }
+  ],
+  "study": {
+    "study_key": "troypress:dw-ttrpg-survey:2020",
+    "organizer": "Troy Press",
+    "total_respondents_reported": 445,
+    "fieldwork_start_public_invitation": "2020-06-21",
+    "fieldwork_end": null,
+    "initial_results_publication": "2020-07-05",
+    "report_version_date": "2020-07-22",
+    "weighting": "none",
+    "duplicate_handling": "Report says14individualsansweredtwice; shorterrecorddeleted.",
+    "recruitment_counts_reported": [
+      285,
+      91,
+      68,
+      3
+    ],
+    "recruitment_sum": 447,
+    "recruitment_total_discrepancy": 2,
+    "reconciliation": "Unresolved; preserve publishedN445 and channelcounts, do not silently fix either."
+  },
+  "selected_item": {
+    "id": "SURV-TROY-2020-RECENT",
+    "question_verbatim": "Which, if any, of the following games have you played in the past four weeks?",
+    "question_locator": "PDFp12, webparsedlines193–217",
+    "construct": "self_reported_recent_system_play",
+    "recall_window": "four weeks before each respondent answered",
+    "role": "not separated by this item",
+    "item_n": 327,
+    "item_respondent_share_published_pct": 73,
+    "multiple_select": true,
+    "exact_option_counts_available": false,
+    "results": [
+      {
+        "source_game_label": "Dungeon World",
+        "game_id": null,
+        "published_rounded_pct": 40,
+        "denominator_n": 327,
+        "reason_no_auto_game_id": "HexCrawlDWmeansDolmenwood; preserve sourceDungeonWorld identity."
+      },
+      {
+        "source_game_label": "Dungeons & Dragons",
+        "game_id": null,
+        "published_rounded_pct": 37,
+        "denominator_n": 327,
+        "reason_no_auto_game_id": "Item does not specifyD&Dedition; cannot assignDND5."
+      }
+    ]
+  },
+  "contrast_item": {
+    "id": "SURV-TROY-2020-EVER",
+    "question_paraphrase": "Any-edition lifetime experience, combining playing and GMing.",
+    "locator": "PDFpp9–10",
+    "item_n": 445,
+    "multiple_select": true,
+    "selected_published_rounded_pct": {
+      "Dungeons & Dragons": 80,
+      "Dungeon World": 70
+    },
+    "not_comparable_as_retention": true
+  },
+  "validation_or_falsification": [
+    {
+      "id": "SURVEY-01",
+      "given": "TotalN445, recentitemn327",
+      "expected": "Use327forrecentpercentages; no445substitution",
+      "result": "pass"
+    },
+    {
+      "id": "SURVEY-02",
+      "given": "Multiple-select item",
+      "expected": "Do not sum selected systems into uniquepeople or normalise shares to100%",
+      "result": "pass"
+    },
+    {
+      "id": "SURVEY-03",
+      "given": "Rounded40%/37% and n327",
+      "expected": "Retain publishedpercentages; exact selectedcounts remainnull",
+      "result": "pass"
+    },
+    {
+      "id": "SURVEY-04",
+      "given": "Lifetime n445/70%, recentn327/40%",
+      "expected": "No40/70retentionratio or prevalence trend",
+      "result": "pass"
+    },
+    {
+      "id": "SURVEY-05",
+      "given": "Historical2020recruitment",
+      "expected": "Do not describe as2026activeplay or representativeglobalmarket",
+      "result": "pass"
+    },
+    {
+      "id": "SURVEY-06",
+      "given": "NoGMrole or regional-map question in selecteditem",
+      "expected": "M_active_GM,p_hexcrawl,p_map_creation remainnotmeasured",
+      "result": "pass"
+    },
+    {
+      "id": "SURVEY-07",
+      "given": "Source labelsDungeonWorld/D&Dall-editions",
+      "expected": "NoDW(Dolmenwood)orDND5mapping",
+      "result": "pass"
+    },
+    {
+      "id": "SURVEY-08",
+      "given": "Reportedchannels285+91+68+3 and total445",
+      "expected": "Flag447vs445 without inventingreconciliation",
+      "result": "pass_flag_unresolved"
+    },
+    {
+      "id": "SURVEY-09",
+      "given": "HTMLsubgroupsummaryDWplayers57%; PDFselectedtotalitem40%",
+      "expected": "Keep subgroup and totalitem contexts separate",
+      "result": "pass"
+    },
+    {
+      "id": "SURVEY-10",
+      "given": "Question ranking/preference and questionwant-to-try",
+      "expected": "Do not treat either as actualplayed-systemcounts",
+      "result": "pass"
+    }
+  ],
+  "tested_conclusion": "Usable historicalwithin-sample play indicator and method QAcase. Fails globalM/GMrole/map-use/adoptioncalibration. Add polls as regularsource, prioritise fresh suitablewaves, preserve this pilot as calibration example.",
+  "unmeasured_targets": {
+    "M_active_GM": null,
+    "p_hexcrawl": null,
+    "p_map_creation": null,
+    "digital_conversion": null
+  },
+  "numeric_effect_proposal_ref": null,
+  "active_numeric_method_changed": false,
+  "active_rating_changed": false,
+  "new_product_tasks": 0,
+  "errors": [
+    {
+      "stage": "prepare_prompt_addendum",
+      "failed_operation": {
+        "tool": "functions.exec",
+        "action": "Build owner survey instruction paragraph",
+        "locator": "HX-RSR-001 prompt addendum in local JS"
+      },
+      "observed_error": "ReferenceError: decisionPath is not defined",
+      "cause_status": "confirmed",
+      "confirmed_cause": "JS variable was not loaded in the fresh isolate.",
+      "recovered_by": "Loaded saved decision/experiment paths in the next call and rebuilt paragraph.",
+      "stop_reason": null,
+      "needs_owner_action": false
+    },
+    {
+      "stage": "local_pdf_visual_read",
+      "failed_operation": {
+        "tool": "exec_command/urllib",
+        "action": "Download primary report for local read-only rendering",
+        "locator": "https://troypress.com/wp-content/uploads/2020/07/Dungeon-World-Survey-Report.pdf"
+      },
+      "observed_error": "urllib.error.HTTPError: HTTP Error 403: Forbidden",
+      "cause_status": "unknown",
+      "recovered_by": "Primary PDF is accessible through web open; relevant text, page locators and per-question footer read there. Local visual rendering not claimed.",
+      "stop_reason": null,
+      "needs_owner_action": false
+    },
+    {
+      "stage": "survey_fieldwork_start_check",
+      "failed_operation": {
+        "tool": "search_service_web_run.open",
+        "action": "Read primary recruitment post",
+        "locator": "https://www.reddit.com/r/DungeonWorld/comments/hddpsa"
+      },
+      "observed_error": "Failed to fetch https://www.reddit.com/r/DungeonWorld/comments/hddpsa: DisabledError",
+      "cause_status": "unknown",
+      "recovered_by": "Retain source access distinction; no precise fieldwork interval inferred.",
+      "stop_reason": null,
+      "needs_owner_action": false
+    }
+  ]
+}
