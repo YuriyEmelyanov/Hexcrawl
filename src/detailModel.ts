@@ -2,6 +2,7 @@ import {parseFineCellEdits,type FineCellEdits} from './oneMile.ts';
 import {parseDetailPoiIdentities,assertDetailPoiOwners,type DetailPoiIdentities} from './detailIdentity.ts';
 import {createDetailGrid,detailPolygonArea,detailCellCenter,detailCellPolygon,worldToDetailCell,validateDetailFootprint,type DetailCell,type DetailStep,type WorldPoint} from './detailGrid.ts';
 import {detailCatalogueExtent,detailPointInPolygon,type DetailSizeNamespace} from './detailSizes.ts';
+import {parseGeometryRefinement,type GeometryRefinement} from './geometryPlan.ts';
 
 export type DetailAttachmentRef=
   |Readonly<{kind:'water';waterKind:'shore'|'river'|'water'|'crossing'|'rapid'|'waterfall';waterId:string;segmentId:string;contact:WorldPoint}>
@@ -14,8 +15,9 @@ export type DetailExtent=
   |Readonly<{kind:'manual_size';diameterMiles:number;basis:'conditional'|'measured_override';note:string}>;
 export type DetailPoiFootprint=Readonly<{poiId:string;legacyRef:string|null;worldAnchor?:WorldPoint;cells:readonly DetailCell[];extent:DetailExtent;attachments:readonly DetailAttachmentRef[]}>;
 export type Detail1State=Readonly<{
-  schema:'hexcrawl.detail1';version:1|2|3;active:true;
+  schema:'hexcrawl.detail1';version:1|2|3|4;active:true;
   fineCellEdits?:FineCellEdits;
+  geometryRefinement?:GeometryRefinement;
   grid:Readonly<{origin:WorldPoint;orientation:'pointy';convention:'across_flats'}>;
   source:Readonly<{stepMiles:6;physicalConvention:'known_across_flats'|'unknown';displayAssumption:'project_across_flats_6mi'}>;
   poiIdentities?:DetailPoiIdentities;
@@ -76,16 +78,19 @@ function attachment(value:unknown):DetailAttachmentRef {
   if(kind==='route') {const a=object(value,'route attachment',['kind','routeKind','routeId','accessNodeId','entry']);if(!['road','trail'].includes(a.routeKind as string))throw Error('Invalid route attachment kind');return Object.freeze({kind,routeKind:a.routeKind as 'road'|'trail',routeId:text(a.routeId,'route id'),accessNodeId:text(a.accessNodeId,'access node id'),entry:worldPoint(a.entry,'route entry')});}
   throw Error('Unknown attachment kind');
 }
-/** Pure internal parser for preparation geometry1/2 and local physical state3.
+/** Pure internal parser for preparation geometry1/2 and physical state3/4.
  * The retained function name is historical: public documents accept only
- * outer15/physical3. Spatial refs and biome IDs require the candidate map. */
+ * outer15/physical3 or outer16/physical4. Spatial refs and biome IDs require
+ * the candidate map. Persisted refinement is validated without rerouting. */
 export function parseDetail1StateV11(value:unknown):Detail1State {
-  const extra=['poiIdentities','selectedCell','selectedWorldPoint','fineCellEdits'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
+  const extra=['poiIdentities','selectedCell','selectedWorldPoint','fineCellEdits','geometryRefinement'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
   const root=object(value,'DETAIL1 state',['schema','version','active','grid','source','viewStep','poiFootprints',...extra]);
   const poiIdentities=extra.includes('poiIdentities')?parseDetailPoiIdentities(root.poiIdentities):undefined;
-  if(root.schema!=='hexcrawl.detail1'||![1,2,3].includes(root.version as number)||root.active!==true||![1,6,12,24].includes(root.viewStep as number)||!Array.isArray(root.poiFootprints)) throw Error('Invalid DETAIL1 state');
-  if(root.version===3&&(!extra.includes('fineCellEdits')||![1,6].includes(root.viewStep as number)))throw Error('Invalid ONE-MILE1 state');
-  if(root.version!==3&&extra.includes('fineCellEdits'))throw Error('Fine edits require physical version3');
+  if(root.schema!=='hexcrawl.detail1'||![1,2,3,4].includes(root.version as number)||root.active!==true||![1,6,12,24].includes(root.viewStep as number)||!Array.isArray(root.poiFootprints)) throw Error('Invalid DETAIL1 state');
+  const isPhysical=root.version===3||root.version===4;
+  if(isPhysical&&(!extra.includes('fineCellEdits')||![1,6].includes(root.viewStep as number)))throw Error('Invalid ONE-MILE1 state');
+  if(!isPhysical&&extra.includes('fineCellEdits'))throw Error('Fine edits require physical version3 or4');
+  if((root.version===4)!==extra.includes('geometryRefinement'))throw Error('Geometry refinement requires physical version4');
   const rawGrid=object(root.grid,'DETAIL1 grid',['origin','orientation','convention']);
   if(rawGrid.orientation!=='pointy'||rawGrid.convention!=='across_flats') throw Error('Invalid DETAIL1 grid');
   const origin=worldPoint(rawGrid.origin,'DETAIL1 origin');createDetailGrid(root.viewStep as DetailStep,origin);
@@ -97,7 +102,7 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
   }
   let selectedWorldPoint:WorldPoint|undefined;
   if(extra.includes('selectedWorldPoint')){
-    if((root.version!==2&&root.version!==3)||!selectedCell)throw Error('Selected world point requires DETAIL1 version2 and a selected cell');
+    if(root.version===1||!selectedCell)throw Error('Selected world point requires DETAIL1 version2 and a selected cell');
     selectedWorldPoint=worldPoint(root.selectedWorldPoint,'selected world point');
     const cell=worldToDetailCell(createDetailGrid(1,origin),selectedWorldPoint);
     if(cell.q!==selectedCell.q||cell.r!==selectedCell.r)throw Error('Selected world point does not match selected cell');
@@ -113,9 +118,9 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
     const parsedExtent=extent(p.extent);
     const parsedCells=cells(p.cells);
     if(root.version===1&&(worldAnchor||parsedExtent.kind==='representative'||parsedExtent.kind==='manual_size'))throw Error('New size geometry requires DETAIL1 version2');
-    if((root.version===2||root.version===3)&&!worldAnchor)throw Error('DETAIL1 version2 requires world anchor');
-    if((root.version===2||root.version===3)&&parsedExtent.kind==='measured_polygon'&&!detailPointInPolygon(worldAnchor!,parsedExtent.sourcePolygon))throw Error('DETAIL1 anchor_outside_extent');
-    if((root.version===2||root.version===3)&&parsedExtent.kind==='manual'&&!parsedCells.some(cell=>detailPointInPolygon(worldAnchor!,detailCellPolygon(createDetailGrid(1,origin),cell))))throw Error('DETAIL1 anchor_outside_extent');
+    if(root.version!==1&&!worldAnchor)throw Error('DETAIL1 version2 requires world anchor');
+    if(root.version!==1&&parsedExtent.kind==='measured_polygon'&&!detailPointInPolygon(worldAnchor!,parsedExtent.sourcePolygon))throw Error('DETAIL1 anchor_outside_extent');
+    if(root.version!==1&&parsedExtent.kind==='manual'&&!parsedCells.some(cell=>detailPointInPolygon(worldAnchor!,detailCellPolygon(createDetailGrid(1,origin),cell))))throw Error('DETAIL1 anchor_outside_extent');
     const poiId=text(p.poiId,'POI id');if(ids.has(poiId)) throw Error('Duplicate POI identity');ids.add(poiId);
     if(p.legacyRef!==null) text(p.legacyRef,'legacy POI reference');
     if(!Array.isArray(p.attachments)) throw Error('Invalid attachments');
@@ -128,12 +133,36 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
   // Value/axial syntax here; accepted support, water and actual biome IDs are
   // validated against the candidate map by the mandatory document boundary.
   let fineCellEdits:FineCellEdits|undefined;
-  if(root.version===3){
+  if(isPhysical){
     if(!root.fineCellEdits||typeof root.fineCellEdits!=='object'||Array.isArray(root.fineCellEdits))throw Error('Invalid fine edits');
     const support=Object.keys(root.fineCellEdits).map(key=>{const [q,r]=key.split(',').map(Number);return {cell:{q,r},polygon:[],acceptedArea:1,waterArea:0,landBiomeId:'structural'};});
     fineCellEdits=parseFineCellEdits(root.fineCellEdits,support,id=>!!id&&id.length<=200);
   }
-  return Object.freeze({...(fineCellEdits?{fineCellEdits}:{}),...(selectedCell?{selectedCell}:{}),...(selectedWorldPoint?{selectedWorldPoint}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:root.version as 1|2|3,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
+  const geometryRefinement=root.version===4?parseGeometryRefinement(root.geometryRefinement,source=>{
+    // Check before recursion: a persisted authored snapshot is always physical3.
+    // A nested physical4 cannot disguise another accepted refinement as source.
+    if(!source||typeof source!=='object'||(source as Plain).version!==3)throw Error('Geometry source requires physical version3');
+    return parseDetail1StateV11(source);
+  }):undefined;
+  const state:Detail1State=Object.freeze({...(geometryRefinement?{geometryRefinement}:{}),...(fineCellEdits?{fineCellEdits}:{}),...(selectedCell?{selectedCell}:{}),...(selectedWorldPoint?{selectedWorldPoint}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:root.version as 1|2|3|4,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
+  if(geometryRefinement){
+    const authored=geometryRefinement.sourceState;
+    if(!sameValue(state.grid,authored.grid)||!sameValue(state.source,authored.source)||!sameValue(state.poiIdentities,authored.poiIdentities))throw Error('Geometry source does not match physical grid');
+    const refined=new Map(geometryRefinement.pois.pois.map(p=>[p.poiId,p.footprint]));
+    const expected=new Map(authored.poiFootprints.map(p=>[p.poiId,refined.get(p.poiId)??p]));
+    if(poiFootprints.length!==expected.size||poiFootprints.some(p=>!sameValue(p,expected.get(p.poiId))))throw Error('Geometry footprints do not match persisted refinement');
+  }
+  return state;
+}
+
+// Object key order is not geometry. Preserve persisted arrays and compare the
+// typed values without serializing or normalizing the accepted choices.
+function sameValue(a:unknown,b:unknown):boolean {
+  if(a===b)return true;
+  if(Array.isArray(a)||Array.isArray(b))return Array.isArray(a)&&Array.isArray(b)&&a.length===b.length&&a.every((v,i)=>sameValue(v,b[i]));
+  if(!a||!b||typeof a!=='object'||typeof b!=='object')return false;
+  const left=a as Plain,right=b as Plain,keys=Object.keys(left);
+  return keys.length===Object.keys(right).length&&keys.every(k=>Object.prototype.hasOwnProperty.call(right,k)&&sameValue(left[k],right[k]));
 }
 
 export type LegacyDetailAdaptationPreview=Readonly<{
@@ -151,11 +180,11 @@ export function prepareLegacyDetailAdaptation(input:Readonly<{sourceVersion:numb
 /** Full active document boundary. Legacy/unadapted maps have no physicalGrid;
  * an active layer, including an empty one, must cover every live POI owner. */
 export function validateDetail1Document(value:unknown,saveVersion:number,liveAliases?:ReadonlySet<string>,validateSpatial?:(state:Detail1State)=>void):void {
-  if(value===undefined)return;
-  if(saveVersion!==15)throw Error('Physical grid requires a supported save version');
+  if(value===undefined){if(saveVersion===15||saveVersion===16)throw Error('Active physical grid is required');return;}
+  if(saveVersion!==15&&saveVersion!==16)throw Error('Physical grid requires a supported save version');
   const state=parseDetail1StateV11(value);
-  if(state.version!==3)throw Error('ONE-MILE1 requires physical version3');
+  if(state.version!==(saveVersion===16?4:3))throw Error(`Public version${saveVersion} requires physical version${saveVersion===16?4:3}`);
   if(state.poiIdentities&&liveAliases)assertDetailPoiOwners(state.poiIdentities,liveAliases);
   if(validateSpatial){validateSpatial(state);return;}
-  if(Object.keys(state.fineCellEdits??{}).length||state.selectedCell||state.poiFootprints.length||liveAliases?.size||Object.keys(state.poiIdentities?.byLegacyRef??{}).length)throw Error('DETAIL1 spatial validation is required');
+  if(state.geometryRefinement||Object.keys(state.fineCellEdits??{}).length||state.selectedCell||state.poiFootprints.length||liveAliases?.size||Object.keys(state.poiIdentities?.byLegacyRef??{}).length)throw Error('DETAIL1 spatial validation is required');
 }

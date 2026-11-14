@@ -17,6 +17,7 @@ let prefix = source.slice(0, lastReturn.getStart(ast));
 for(const artwork of artworks.sort((a,b)=>b.initializer.getStart(ast)-a.initializer.getStart(ast)))if(artwork.initializer)prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
   fineDraft, startFineDraft, changeFineDraft, saveFineDraft, cancelFineDraft, fineHover, setFineHover, switchFineStep, pickFine, fineCells, fineCandidates, fineReadCell, fineSummary, finePreview, resolveFineExit,
+  previewGeometryRefinement, applyGeometryRefinementPreview, cancelGeometryRefinementPreview,
   physicalGrid, previewOneMile, applyOneMilePreview, cancelOneMilePreview, editOneMileCell, getDocumentRevision:()=>documentRevision.current,
   chooseKnaveProfile, changeGenerationMode, mutateKnaveContent, knaveDraft, knaveError, changeKnaveDraft, finishKnaveDraft, resetKnaveDraft, requestKnaveExit, resolveKnaveExit, knaveExitRequest, knavePanel,
   poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
@@ -36,7 +37,7 @@ const instrumented = prefix + `return {
   setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting,
   selectNameTarget, nameTargetHex, nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, changeOtherNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
 };` + source.slice(lastReturn.end) + `
-export const testGeometry = { toPixel, getLakesForRegions, getRiverWidth, getHexWidth, oneMileSources, regionMarkKeys, detailMapRiverGeometry, knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
+export const testGeometry = { geometryPlanInput, toPixel, getLakesForRegions, getRiverWidth, getHexWidth, oneMileSources, regionMarkKeys, detailMapRiverGeometry, knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
   prepareWaterMapEdit, prepareRiverMapEdit, buildManualRiverGeometryContext, riverFeatureEligibility, buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,
@@ -65,10 +66,10 @@ export function createGenerationHarness(seed = 1, search = '', language = 'ru') 
   seededMath.random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
   const module = { exports: {} };
   const diagnostics = { exports: {} };
-  const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set, crypto: {getRandomValues(a){ a[0]=seed >>> 0; return a; }},
+  const context = vm.createContext({ module, exports: module.exports, Math: seededMath, Map, Set, JSON, crypto: {getRandomValues(a){ a[0]=seed >>> 0; return a; }},
     console: Object.fromEntries(['log', 'warn', 'error'].map(level => [level, (...args) => logs.push({ level, args })])),
     require: name => name==='./OneMileArtwork'?{OneMileArtwork:()=>null}:name==='./OneMilePanel'?{OneMilePanel:()=>null}:name==='./tags/TagRow'?{TagRow:()=>null}:name==='./tags/KnaveContentRow'?{KnaveContentRow:()=>null}: (name.startsWith('./modes/') || name.startsWith('./rendering/') || name.startsWith('./tags/') || name === './worldRandom' || name === './saveValidation' || name === './manualWater' || name === './knaveClassic' || name === './seaIdentity' || name === './manualRivers' || name === './manualRiverGeometry' || name === './manualRiverDependencies') ? loadMode(new URL(`../../src/${name}.ts`, import.meta.url)) : name === './generationDiagnostics' ? diagnostics.exports : name === 'react' ? hooks : localRequire(name.startsWith('./') ? `${name}.ts` : name),
-    performance, URLSearchParams, structuredClone, setTimeout, clearTimeout, window: { location: { search } }
+    performance, TextEncoder, TextDecoder, URLSearchParams, structuredClone, setTimeout, clearTimeout, window: { location: { search } }
   });
   const modeCache = new Map();
   function loadMode(url) {

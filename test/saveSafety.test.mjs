@@ -1,5 +1,5 @@
 import {projectOneMile} from '../src/oneMile.ts';
-import {newKnaveLayer} from '../src/knaveClassic.ts';
+import {newKnaveLayer,validateKnaveLayer} from '../src/knaveClassic.ts';
 import {knaveContentFixture,knaveCatalogFixture} from './helpers/knave-fixture.mjs';
 import {seaFixture} from './helpers/sea-fixture.mjs';
 import {regionFixture} from './helpers/region-fixture.mjs';
@@ -317,6 +317,13 @@ test('ONE-MILE1 public10 Knave payload survives15 import/export literally',async
  const {g,alerts}=fineSetup();await fineLoad(g,regionFixture());const legacy=fineSave(g);legacy.map.knave=newKnaveLayer();legacy.map.knave.content=knaveContentFixture('poi:1:2,0',{kind:'settlement'});legacy.ui.knaveEnabled=true;
  await fineLoad(g,legacy);assert.deepEqual(alerts,[]);assert.equal(fineSave(g).map.physicalGrid,undefined);
  fineActivate(g);const data=fineSave(g);assert.deepEqual(data.map.knave,legacy.map.knave);await fineLoad(g,data);assert.deepEqual(fineSave(g).map.knave,legacy.map.knave);
+ // The retained profile is also legal in public16. This checks the isolated
+ // version gate without inventing an incomplete geometry-refinement payload;
+ // the complete public16 importer lifecycle is exercised by GEO2's witness.
+ const knaveBefore=JSON.stringify(data.map.knave),knaveContext={hexes:new Set(data.map.regions.flatMap(r=>r.hexes.map(c=>`${c.q},${c.r}`))),dryHexes:new Set(),pois:new Set(['poi:1:2,0'])};
+ for(const version of [10,15,16])for(const mode of ['classic','mythic'])assert.doesNotThrow(()=>validateKnaveLayer(data.map.knave,knaveContext,version,mode));
+ for(const version of [11,12,13,14,17])assert.throws(()=>validateKnaveLayer(data.map.knave,knaveContext,version,'classic'));
+ assert.equal(JSON.stringify(data.map.knave),knaveBefore);
  // OM05/13: literal legacy content must also survive a real fine-candidate
  // Knave continuation. Import alone misses validation of newly created owners.
  assert.equal(g.render().switchFineStep(1),true);const before=fineSave(g),candidate=g.render().fineCandidates[0];assert.ok(candidate);
@@ -330,12 +337,20 @@ test('ONE-MILE1 public10 Knave payload survives15 import/export literally',async
 test('ONE-MILE1 rejects private versions, foreign layers and invalid fine data atomically with redo',async()=>{
  const {g,alerts}=fineSetup();fineActivate(g);const active=fineSave(g);g.render().undoMap();const before=fineStable(g);
  const wrong=[];
- for(const version of [11,12,13,14])wrong.push({...structuredClone(active),version});
+ // Extend the existing import/refusal risk group for GEO2; no extra logical
+ // test is needed for public/physical version mismatches and forged layers.
+ for(const version of [11,12,13,14,16,17])wrong.push({...structuredClone(active),version});
  for(const field of ['classification','featurePreparation']){const data=structuredClone(active);data.map[field]={};wrong.push(data);const old=structuredClone(before.data);old.map[field]={};wrong.push(old);}
  for(const mutate of [d=>delete d.map.physicalGrid,d=>d.map.physicalGrid.version=2,d=>d.map.physicalGrid.viewStep=24,d=>d.map.physicalGrid.grid.unit='mile',
   d=>d.map.physicalGrid.fineCellEdits={'9999999,0':{note:'orphan'}},d=>d.map.physicalGrid.fineCellEdits={'-0,0':{note:'alias'}},
   d=>d.map.physicalGrid.fineCellEdits={'0,0':{landBiomeId:'not-a-biome'}},d=>d.map.physicalGrid.fineCellEdits={'0,0':{name:{ru:'x'.repeat(201)}}},
-  d=>delete d.map.physicalGrid.poiIdentities]){const data=structuredClone(active);mutate(data);wrong.push(data);}
+  d=>delete d.map.physicalGrid.poiIdentities,
+  d=>d.map.physicalGrid.geometryRefinement={},
+  d=>{d.version=16;delete d.map.physicalGrid;},
+  d=>{d.version=16;d.map.physicalGrid.version=4;},
+  d=>{d.version=16;d.map.physicalGrid.version=4;d.map.physicalGrid.geometryRefinement={version:1,algorithmVersion:'geo2-v1'};},
+  d=>{d.version=16;d.map.physicalGrid.version=4;d.map.physicalGrid.geometryRefinement={};delete d.map.physicalGrid.fineCellEdits;},
+  d=>{d.version=16;d.map.physicalGrid.version=4;d.map.physicalGrid.geometryRefinement={};d.map.physicalGrid.viewStep=12;}]){const data=structuredClone(active);mutate(data);wrong.push(data);}
  for(const data of wrong){await fineLoad(g,data);assert.deepEqual(fineStable(g),before,'rejected import retains document, selection, prefs, RNG and both timelines');}
  assert.equal(alerts.length,wrong.length);
 });

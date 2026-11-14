@@ -740,3 +740,148 @@ test('SEA real continuation and checkpoint restore retain identity and require e
  let warning='';h.setWindow({confirm:m=>{warning=m;return false;}});h.render().deleteLastRegion();assert.match(warning,/вода|water/);assert.deepEqual(stable(h.render()),after);
  h.setWindow({confirm:()=>true});h.render().deleteLastRegion();const restored=stable(h.render());assert.deepEqual(restored.map.seas,before.map.seas);assert.equal(restored.map.nextSeaId,before.map.nextSeaId);assert.deepEqual(restored.map.editorNames,before.map.editorNames);assertUndoRedo(h,after,restored);
 });
+
+// G208-AUTO uses the App's accepted preparation, source edit, save, import and
+// history handlers. Pure geometry preparers do not exercise these writes.
+function geometryRiverBackendFixture(){
+ const f=riverBackendFixture(false),{h,g}=f,map=h.render().captureDocument().map;
+ // A second independent accepted region makes an unrelated persisted path a
+ // literal witness rather than merely checking that IDs survived a reroute.
+ const c={q:4,r:0},d={q:5,r:0},template=map.regions[0];
+ const region={...template,id:2,hexes:[c,d],centerHex:c,anchorHex:c};
+ const other=new Set(g.getHexCornerPoints(d).map(v=>v.key));
+ const path=g.getHexCornerPoints(c).filter(v=>other.has(v.key));
+ assert.equal(path.length,2);
+ const river={id:2,regionId:2,vertexPath:path,sectors:g.createInitialRiverSectors(2,path,2,{},2)};
+ h.render().restoreSnapshot({...map,regions:[...map.regions,region],rivers:[...map.rivers,river],nextRiverId:3,
+   candidateHexes:g.getCandidateHexes([...template.hexes,c,d],new Set())});
+ h.guardRandom();
+ return f;
+}
+function geometryChoicePaths(save,riverId){
+ return save.map.physicalGrid.geometryRefinement.riverPlan.paths.filter(p=>p.riverId===riverId);
+}
+function geometryPoiRiverBackendFixture(){
+ const f=geometryRiverBackendFixture(),{h,a,b,edge}=f,map=h.render().captureDocument().map;
+ const owner='poi:1:0,0',content=knaveContentFixture(owner,{river:true});
+ content.byPoi[owner]={...content.byPoi[owner],category:'structure',site:{selection:'compatible_pool',table:'structures',sourceRow:96,
+   ru:'Authored fixture structures 96',references:[],representation:'mill'}};
+ const west={q:-1,r:0};
+ const regions=map.regions.map(r=>r.id===1?{...r,hexes:[west,...r.hexes],finalSize:3,targetSize:3,pointsOfInterest:[a],pointOfInterestKinds:{'0,0':'mill'}}:r);
+ const c={q:4,r:0},d={q:5,r:0},otherRiver=map.rivers.find(r=>r.id===2),otherEdge=otherRiver.vertexPath.map(v=>v.key).sort().join('|');
+ const roads=[{id:1,regionId:1,segments:[{from:a,to:b,kind:'road'}]},
+   {id:2,regionId:2,segments:[{from:c,to:d,kind:'trail'}]}];
+ const crossings=[{key:'1:0,0|1,0:1',roadId:1,roadSegmentKey:'0,0|1,0',riverId:1,riverEdgeKey:edge,kind:'bridge'},
+   {key:'2:4,0|5,0:2',roadId:2,roadSegmentKey:'4,0|5,0',riverId:2,riverEdgeKey:otherEdge,kind:'bridge'}];
+ h.render().restoreSnapshot({...map,regions,roads,crossings,nextRoadId:3,candidateHexes:h.geometry.getCandidateHexes(regions.flatMap(r=>r.hexes),new Set()),
+   editorNames:{[owner]:{en:'Authored Mill',ru:'Авторская мельница'}},gmNotesByHexKey:{'0,0':'Keep the mill and both approaches.'},
+   knave:{profile:{id:'classic.knave2',version:1,physicalHex:{length:6,unit:'mile',measurementConvention:null}},
+     difficultyByHex:{},discoveryByPoi:{},content}});
+ const adaptation=h.render().previewOneMile();assert.ok(adaptation,h.render().editError??'source footprint adaptation');
+ const authored=structuredClone(adaptation.state);
+ // Existing fine placement supplies a known source-bank side. Its marker,
+ // source water contact and actual road entry all remain in the same fine cell.
+ authored.poiFootprints=authored.poiFootprints.map(p=>({...p,worldAnchor:{x:p.worldAnchor.x-.1,y:p.worldAnchor.y}}));
+ h.render().restoreSnapshot({...h.render().captureDocument().map,physicalGrid:authored});
+ return {...f,owner};
+}
+async function acceptGeometryRefinement(h){
+ const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
+ const preview=await h.render().previewGeometryRefinement();
+ assert.ok(preview,h.render().editError??'a real source map must prepare a complete geometry preview');
+ assert.deepEqual(stable(h.render()),before,'preview exports accepted state only');
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history,'preview has no history write');
+ assert.equal(h.render().applyGeometryRefinementPreview(preview),true,h.render().editError??'apply prepared geometry');
+ const after=stable(h.render());assert.equal(after.version,16);assert.equal(after.map.physicalGrid.version,4);
+ assert.equal(h.render().undoHistory.length,history[0].length+1,'explicit apply is one existing transaction');
+ assertUndoRedo(h,before,after);
+ return after;
+}
+test('G208-AUTO real refinement preview cancel, stale revision and failed prepare preserve accepted state and redo',async()=>{
+ const {h,a}=geometryRiverBackendFixture();h.render().setSelectedHex(a);
+ h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+ const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.ok(history[1].length,'start with an available redo branch');
+ assert.equal(await h.render().previewGeometryRefinement({prepareWorkBudget:1}),null);
+ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
+ const cancelled=await h.render().previewGeometryRefinement();assert.ok(cancelled,h.render().editError??'valid preview');
+ h.render().cancelGeometryRefinementPreview();
+ assert.equal(h.render().applyGeometryRefinementPreview(cancelled),false,'a cancelled preview is never an accepted map');
+ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
+ const stale=await h.render().previewGeometryRefinement();assert.ok(stale);
+ // An explicit document replacement changes revision while retaining the same
+ // source geometry. The captured callback must still refuse the old preview.
+ h.render().applyDocument(h.render().captureDocument());
+ const replacement=stable(h.render()),replacementHistory=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().applyGeometryRefinementPreview(stale),false);
+ assert.deepEqual(stable(h.render()),replacement);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),replacementHistory);
+});
+test('G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo',async()=>{
+ const {h,edge,a,owner}=geometryPoiRiverBackendFixture(),dialogs=[];
+ h.setWindow({confirm:message=>{dialogs.push(message);return false;},alert:message=>{throw Error(message);}});
+ const accepted=await acceptGeometryRefinement(h);
+ assert.ok(geometryChoicePaths(accepted,2).length,'fixture contains a genuinely unrelated accepted river path');
+ h.render().setSelectedHex(a);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+ const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.ok(history[1].length);
+ const oldEdit=h.render().editRiverDocument;
+ assert.equal(oldEdit({type:'fullness',riverId:1,edgeKey:edge,fullness:3}),true,h.render().editError??'valid ordinary source edit');
+ const after=stable(h.render());
+ assert.equal(after.version,16);assert.equal(after.map.physicalGrid.version,4);
+ assert.ok(after.map.rivers.find(r=>r.id===1).sectors.every(s=>s.fullness===3));
+ assert.notEqual(after.map.physicalGrid.geometryRefinement.sourceFingerprint,before.map.physicalGrid.geometryRefinement.sourceFingerprint);
+ assert.deepEqual(geometryChoicePaths(after,2),geometryChoicePaths(before,2),'unaffected chosen route remains literal');
+ const poiId=before.map.physicalGrid.poiIdentities.byLegacyRef[owner];
+ const oldPoi=before.map.physicalGrid.poiFootprints.find(p=>p.poiId===poiId),newPoi=after.map.physicalGrid.poiFootprints.find(p=>p.poiId===poiId);
+ assert.equal(after.map.physicalGrid.poiIdentities.byLegacyRef[owner],poiId,'automatic movement preserves accepted identity');
+ assert.notDeepEqual(newPoi.worldAnchor,oldPoi.worldAnchor,'unlocked river-required POI moves with the new bank');
+ assert.deepEqual(newPoi.extent,oldPoi.extent,'automatic movement preserves accepted extent');
+ const oldRoads=before.map.physicalGrid.geometryRefinement.roads,newRoads=after.map.physicalGrid.geometryRefinement.roads;
+ assert.notDeepEqual(newRoads.roads.filter(r=>r.roadId===1),oldRoads.roads.filter(r=>r.roadId===1),'linked road approaches follow the moved entry');
+ assert.deepEqual(newRoads.roads.filter(r=>r.roadId===2),oldRoads.roads.filter(r=>r.roadId===2),'unrelated stored road path remains literal');
+ assert.deepEqual(newRoads.crossings.filter(c=>c.roadId===2),oldRoads.crossings.filter(c=>c.roadId===2),'unrelated crossing choices remain literal');
+ assert.deepEqual(after.generation,before.generation,'source adaptation does not consume world RNG');
+ assert.deepEqual(after.map.editorNames,before.map.editorNames);assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);
+ assert.equal(h.render().undoHistory.length,history[0].length+1);assert.equal(h.render().redoHistory.length,0);
+ assert.deepEqual(dialogs,[],'ordinary automatic movement does not add a confirmation');
+ assert.equal(oldEdit({type:'fullness',riverId:1,edgeKey:edge,fullness:4}),false,'old revision callback cannot apply another edit');
+ assert.deepEqual(stable(h.render()),after);
+ assertUndoRedo(h,before,after);
+ h.injectFunction('readTextFile',async file=>file.text);
+ await load(h,after);assert.deepEqual(stable(h.render()),after,'public16 reopens its exact stored choices without rerouting');
+});
+test('G208-AUTO actual closure failure and invalid16 import preserve source, refinement and the available redo branch',async()=>{
+ const {h,edge,a}=geometryRiverBackendFixture();await acceptGeometryRefinement(h);
+ h.render().setSelectedHex(a);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+ const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(history[1].length);
+ const restore=h.injectFunction('prepareSourceTransition',()=>{throw Error('GEO2 locked_geometry: detail-poi:locked');});
+ try{assert.equal(h.render().editRiverDocument({type:'fullness',riverId:1,edgeKey:edge,fullness:3}),false);}finally{restore();}
+ assert.deepEqual(stable(h.render()),before,'failed closure leaves accepted source and refinement together');
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history,'failed closure preserves redo');
+ const alerts=[];h.setWindow({alert:message=>alerts.push(message)});h.injectFunction('readTextFile',async file=>file.text);
+ const invalid=structuredClone(before);invalid.map.rivers[0].sectors=invalid.map.rivers[0].sectors.map(s=>({...s,fullness:3}));
+ await load(h,invalid);assert.equal(alerts.length,1,'invalid16 is refused by the actual import handler');
+ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
+ assert.equal(h.render().isImporting,false);
+ let finish;h.injectFunction('readTextFile',()=>new Promise(resolve=>{finish=resolve;}));
+ const importing=load(h,before);assert.equal(h.render().isImporting,true);
+ assert.equal(await h.render().previewGeometryRefinement(),null,'busy import cannot start another refinement');
+ assert.equal(h.render().editRiverDocument({type:'fullness',riverId:1,edgeKey:edge,fullness:3}),false);
+ h.render().resetMap();
+ assert.deepEqual(stable(h.render()),before,'export during import still uses the accepted physical4');
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history,'blocked operations do not touch history');
+ finish(JSON.stringify(before));await importing;assert.equal(h.render().isImporting,false);
+ assert.deepEqual(stable(h.render()),before,'valid16 import restores stored choices exactly after the busy interval');
+});
+test('G208-AUTO actual missing required river dependency rejects the source edit without changing map or redo',async()=>{
+ const {h,a}=geometryPoiRiverBackendFixture();await acceptGeometryRefinement(h);
+ h.render().setSelectedHex(a);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+ const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(history[1].length);
+ // The user authorizes the ordinary river deletion. Its dependent source-row
+ // requirement still forbids accepting a mill with a missing river reference.
+ assert.equal(h.render().editRiverDocument({type:'remove',riverId:1,includeArms:false},{confirmed:true}),false);
+ assert.deepEqual(stable(h.render()),before,'an invalid complete closure keeps source, authored state and chosen geometry');
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history,'a rejected source edit preserves the old redo branch');
+ assert.equal(h.render().riverCommandPreview,null,'the refusal does not introduce a geometry movement confirmation');
+ assert.ok(h.render().editError,'the original handler explains the refused edit');
+});

@@ -56,7 +56,7 @@ export function prepareRefinementRoads(input:Input){
    const sourceRoadSegmentKey=roadPair(from,to),partKey=pair(road.id,sourceRoadSegmentKey);if(partKeys.has(partKey))return fail([partKey,'duplicate_source_part']);partKeys.add(partKey);
    const sourceFrom=detailCellCenter(coarse,from),sourceTo=detailCellCenter(coarse,to),a=node(from),b=node(to),linkedPoiIds:string[]=[],ports:string[]=[],waypoints:WorldPoint[]=[a];
    const entry=(cell:DetailCell,opposite:WorldPoint)=>{const p=moved.get(key(cell));if(!p)return null;linkedPoiIds.push(p.poiId);const matches=p.routeEntries.filter(e=>e.routeId===`road:${road.id}`&&e.accessNodeId.startsWith(`port:${sourceRoadSegmentKey}:`));if(matches.length>1)throw Error('ambiguous_route_entry');
-    const polygons=detailFootprintPolygons(p.footprint,fine),inside=(point:WorldPoint)=>!polygons.length||polygons.some(poly=>detailPointInPolygon(point,poly));
+    const polygons=p.footprint.extent.kind==='manual_size'||p.footprint.extent.kind==='measured_polygon'||detailFootprintHasOutline(p.footprint,fine)?detailFootprintPolygons(p.footprint,fine):[],inside=(point:WorldPoint)=>!polygons.length||polygons.some(poly=>detailPointInPolygon(point,poly));
     if(matches[0]){const e=matches[0];if(!onSegment(sourceFrom,sourceTo,e.oldEntry)||!finite(e.newEntry)||!inside(e.newEntry))throw Error('stale_or_outside_route_entry');const k=JSON.stringify([p.poiId,e.routeId,e.accessNodeId]);usedPorts.add(k);ports.push(k);return e.newEntry;}
     if(!polygons.length)return p.newAnchor;const query={from:opposite,to:p.newAnchor},choices=polygons.map(poly=>detailSegmentPolygonEntry(query,poly)).filter((p):p is WorldPoint=>p!==null).sort((a,b)=>fraction(query.from,query.to,a)-fraction(query.from,query.to,b));if(!choices[0])throw Error('no_footprint_entry');return choices[0];};
    let first:WorldPoint|null=null,last:WorldPoint|null=null;
@@ -143,7 +143,7 @@ export function prepareRefinementRoads(input:Input){
      const first=dry(states[0],p.fromEntry??p.points[0],[]);if(!first)throw Error('no_route_in_candidate_catalog');states=[first];
      for(const catalog of catalogs){const next:Label[]=[];for(const corridor of catalog){let best:Label|null=null;for(const label of states){charge();const approach=dry(label,corridor.bankEntry,[label.path[label.path.length-1],corridor.bankEntry]);if(!approach)continue;const candidate=extend(approach,corridor.bankPath);if(!best||compare(candidate,best)<0)best=candidate;}if(best)next.push(best);}if(!next.length)throw Error('no_route_in_candidate_catalog');states=next;}
      const completed:Label[]=[];for(const label of states){const last=dry(label,p.toEntry??p.points[p.points.length-1],[label.path[label.path.length-1]]);if(!last)continue;const anchor=dry(last,p.points[p.points.length-1],[]);if(anchor)completed.push(anchor);}if(!completed.length)throw Error('no_route_in_candidate_catalog');completed.sort(compare);p.points=completed[0].path;
-    }catch(error){return fail([ref,error instanceof Error?error.message:'crossing_candidate_error']);}
+    }catch(error){return fail([ref,error instanceof Error?error.message:'crossing_candidate_error',...direct.refs.slice(1)]);}
    }
 
   }

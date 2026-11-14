@@ -3,6 +3,8 @@ import {OneMileArtwork} from './OneMileArtwork';
 import {OneMilePanel,type FineDraft} from './OneMilePanel';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIntersections,worldToDetailCell,type DetailCell} from './detailGrid';
 import {summarizeDetailCell} from './detailSummary';
+import {prepareRefinementLakeModes} from './geometryRefinementMouths';
+import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
 import {parseDetail1StateV11,validateDetail1Document,type Detail1State} from './detailModel';
 import {buildDetailGeographyPreview,reconcileDetailGeography,validateDetailGeographyFootprints,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {projectOneMile,oneMileCandidates,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
@@ -478,7 +480,7 @@ type Biome = {
 
 type HexcrawlSaveData = {
   schema: 'hexcrawl-map';
-  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 15;
+  version: 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 15 | 16;
   generation?: GenerationState;
   savedAt: string;
   map: {
@@ -1146,20 +1148,67 @@ function oneMileSources(map:Pick<MapSnapshot,'regions'|'hexTerrainByKey'|'biomeO
  for(const [key,t]of map.hexTerrainByKey)if(t.terrainOverride==='sea'||t.terrainOverride==='lake')sources.set(key,{cell:parseWaterHex(key),water:t.terrainOverride});
  return [...sources.values()];
 }
-type OneMileDocumentMap=Pick<MapSnapshot,'regions'|'rivers'|'roads'|'crossings'|'riverFeatures'|'hexTerrainByKey'|'biomeOverrideByHexKey'|'waterPoiByKey'|'knave'|'physicalGrid'|'seas'>;
+type OneMileDocumentMap=Pick<MapSnapshot,'regions'|'rivers'|'roads'|'crossings'|'riverFeatures'|'hexTerrainByKey'|'biomeOverrideByHexKey'|'waterPoiByKey'|'knave'|'physicalGrid'|'seas'|'toponymSeed'>;
+/** Source-only input adapter. Loading uses the stored plan and never allocates paths. */
+function refinementSourceInput(map:OneMileDocumentMap,state:Detail1State,riverPlan:NonNullable<Detail1State['geometryRefinement']>['riverPlan']){
+ const origin=state.grid.origin;
+ return {map,origin,riverPlan,liveRivers:detailMapRiverGeometry(map,origin),marks:regionMarkKeys(map),
+  landCells:map.regions.flatMap(r=>r.hexes).filter(c=>!['lake','sea'].includes(map.hexTerrainByKey.get(hexKey(c))?.terrainOverride??''))};
+}
+/** All accepted writers prepare a detached candidate before touching history. */
+function geometryLakeInputs(map:Pick<MapSnapshot,'regions'|'hexTerrainByKey'|'toponymSeed'>,origin:{x:number;y:number}){
+ return getLakesForRegions(map.regions,map.hexTerrainByKey).map(lake=>{
+  const shapes=buildNaturalLakes(lake.hexes.map(c=>({...c,...toPixel(c.q,c.r),lakeId:lake.lakeId})),28,map.toponymSeed,[]);
+  if(shapes.length!==1)throw Error('GEO2 ambiguous_lake_contour');
+  return {lakeId:lake.lakeId,cells:[...lake.hexes],colorPath:shapes[0].path,colorScale:detailSourcePixelToWorld({x:1,y:0}).x,origin};
+ });
+}
+function geometryPlanInput(map:MapSnapshot){
+ const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
+ const cells=projectOneMile(oneMileSources(map),origin).map(row=>row.cell);
+ const marks=regionMarkKeys(map);
+ const widths=new Map(([1,2,3,4,5] as const).map(f=>[f,detailSourcePixelToWorld({x:getRiverWidth(getHexWidth(28),f),y:0}).x]));
+ const lakeInputs=geometryLakeInputs(map,origin);
+ return {map,origin,liveRivers:detailMapRiverGeometry(map,origin),marks,
+  landCells:map.regions.flatMap(r=>r.hexes).filter(c=>!['lake','sea'].includes(map.hexTerrainByKey.get(hexKey(c))?.terrainOverride??'')),
+  riverInput:{rivers:map.rivers,marks,origin,cells,seed:map.generation.masterSeed},
+  riverContext:{hydrology:buildRegionRiverNetwork(map.rivers,map.rivers,map.regions,map.candidateHexes,map.hexTerrainByKey,true),candidates:map.candidateHexes},widths,lakeInputs};
+}
+function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map()):MapSnapshot{
+ const layer=before.physicalGrid;
+ if(!layer?.geometryRefinement)return candidate;
+ const accepted=candidate.physicalGrid??layer;
+ if(accepted.geometryRefinement&&validateGeometryRefinementSource(refinementSourceInput(candidate,accepted,accepted.geometryRefinement.riverPlan),accepted.geometryRefinement))return candidate;
+ const source=layer.geometryRefinement.sourceState;
+ const sourceMap={...candidate,physicalGrid:source};
+ const live=poiNameLocators(sourceMap,true);
+ const removals=new Map(moves);
+ for(const alias of Object.keys(source.poiIdentities?.byLegacyRef??{}))if(!live.has(alias)&&!removals.has(alias))removals.set(alias,null);
+ const authored=reconcileDetailGeography(sourceMap,detailMapRiverGeometry(sourceMap,source.grid.origin),removals)!;
+ const map={...candidate,physicalGrid:{...accepted,geometryRefinement:layer.geometryRefinement}};
+ const result=prepareGeometryPlan({...geometryPlanInput(map),authoredState:authored});
+ if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
+ return {...candidate,physicalGrid:result.candidateState};
+}
 function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
  if(map.knave&&state.source.physicalConvention!=='unknown')throw Error('DETAIL1 unproven_knave_source_convention');
- validateDetailGeographyFootprints(map,detailMapRiverGeometry(map,state.grid.origin),state);
+ const authored=state.geometryRefinement?.sourceState??state;
+ validateDetailGeographyFootprints({...map,physicalGrid:authored},detailMapRiverGeometry(map,state.grid.origin),authored);
+ if(state.geometryRefinement){
+  if(!validateGeometryRefinementSource(refinementSourceInput(map,state,state.geometryRefinement.riverPlan),state.geometryRefinement))throw Error('GEO2 stale_source_fingerprint');
+  const lakes=prepareRefinementLakeModes(geometryLakeInputs(map,state.grid.origin));
+  if(lakes.status!=='prepared'||lakes.lakes.length!==state.geometryRefinement.riverPlan.lakes.length||lakes.lakes.some(l=>{const old=state.geometryRefinement!.riverPlan.lakes.find(old=>old.lakeId===l.lakeId);return !old||(['tiles','emoji','color'] as const).some(mode=>l.modes[mode].signature!==old.modes[mode].signature);}))throw Error('GEO2 stale_lake_contours');
+ }
  const cells=projectOneMile(oneMileSources(map),state.grid.origin);
  parseFineCellEdits(state.fineCellEdits??{},cells,id=>Object.prototype.hasOwnProperty.call(BIOMES,id));
  if(state.selectedCell&&!cells.some(row=>row.cell.q===state.selectedCell!.q&&row.cell.r===state.selectedCell!.r))throw Error('DETAIL1 stale_fine_selection');
 }
 function validateImportedOneMile(data:HexcrawlSaveData):void{
- validateDetail1Document(data.map.physicalGrid,data.version,undefined,state=>validateOneMileMap({...data.map,
+ validateDetail1Document(data.map.physicalGrid,data.version,undefined,state=>validateOneMileMap({...data.map,toponymSeed:data.map.toponyms?.seed??legacyToponymSeed(data.map.regions),
   hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),biomeOverrideByHexKey:new Map(Object.entries(data.map.biomeOverrideByHexKey??{})),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()},state));
 }
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
-  validateDetail1Document(map.physicalGrid,map.physicalGrid?15:10,undefined,state=>validateOneMileMap(map,state));
+  validateDetail1Document(map.physicalGrid,map.physicalGrid?.version===4?16:map.physicalGrid?15:10,undefined,state=>validateOneMileMap(map,state));
   map=withLegacySeas(map);
   assertEditorNames(map);
   validateKnaveLayer(map.knave,knaveMapContext(map),10,map.regions.some(r=>r.generationMode==='mythic')?'mythic':'classic');
@@ -1367,6 +1416,7 @@ function prepareRegionMapEdit(map:MapSnapshot,edit:RegionEdit):MapSnapshot{
   if(rapid)throw new RegionEditError('river_marker',`river:${rapid.riverId}`,rapid.edgeKey);
   const waterfall=map.riverFeatures.waterfalls.find(e=>e.state==='on'&&!eligibility.waterfall(e.vertexKey));
   if(waterfall)throw new RegionEditError('river_marker',waterfall.vertexKey);
+  candidate=prepareSourceTransition(map,candidate);
   checkedRiverMap(candidate);
   validateTags(candidate.tags??emptyTags(),new Set(tagOwners(candidate).keys()),mythicDefinitions);
   return candidate;
@@ -1397,7 +1447,7 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
   const removedRiverIds=map.rivers.filter(r=>!result.rivers.some(n=>n.id===r.id)).map(r=>r.id);
   const losses={crossings:map.crossings.filter(c=>!crossings.some(n=>n.key===c.key)).length,rapids:map.riverFeatures.rapids.length-result.riverFeatures.rapids.length,waterfalls:map.riverFeatures.waterfalls.length-result.riverFeatures.waterfalls.length,removedRiverIds};
   const changed=result.rivers!==map.rivers||crossings!==map.crossings||riverFeatures!==map.riverFeatures||result.nextRiverId!==map.nextRiverId;
-  return {map:changed?checkedRiverMap({...map,...result,crossings,riverFeatures}):map,losses,unresolvedCrossings,unresolvedFeatures,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
+  return {map:changed?checkedRiverMap(prepareSourceTransition(map,{...map,...result,crossings,riverFeatures})):map,losses,unresolvedCrossings,unresolvedFeatures,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
 }
 
 type WaterEditOptions=SeaChoices&{acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
@@ -1521,7 +1571,7 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
     for(const loss of removed){losses.push({id:`knave:${loss.kind}:${loss.key}`,type:'knave',key:loss.key,value:{kind:loss.kind,data:knaveLossValue(layer,loss)}});dropKnaveLoss(layer,loss);}
     candidate={...candidate,knave:layer};
   }
-  candidate=checkedRiverMap({...candidate,editorNames:authored,toponyms:names,tags});assertGeneratedIds(candidate);
+  candidate=checkedRiverMap(prepareSourceTransition(map,{...candidate,editorNames:authored,toponyms:names,tags}));assertGeneratedIds(candidate);
   const unresolvedLosses=losses.filter(loss=>!options.acceptedLosses?.includes(loss.id));
   return {map:candidate,geometry,sea,losses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
 }
@@ -11896,6 +11946,7 @@ export function App() {
   useEffect(()=>{if(!kingdomJob)fineBusyViewRef.current=null;},[kingdomJob]);
   const physicalGridRef=useRef(physicalGrid);physicalGridRef.current=physicalGrid;
   const updatePhysicalGrid=(state:Detail1State|undefined)=>{physicalGridRef.current=state;setPhysicalGrid(state);};
+  const geometryRefinementPreviewRef=useRef<{revision:number;state:Detail1State;plan:unknown}|null>(null);
   const oneMilePreviewRef=useRef<{revision:number;state:Detail1State}|null>(null);
   const [fineHover,setFineHover]=useState<DetailCell|null>(null);
   const [fineDraft,setFineDraft]=useState<FineDraft|null>(null);
@@ -13452,6 +13503,7 @@ export function App() {
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
     documentRevision.current++;
+    geometryRefinementPreviewRef.current=null;
     setUndoHistory(current => [...current, transaction].slice(-100));
     setRedoHistory([]);
   };
@@ -13545,6 +13597,25 @@ export function App() {
     }catch(error){setEditError(error instanceof Error?error.message:'Invalid one-mile adaptation');return false;}
   };
   const cancelOneMilePreview = () => {oneMilePreviewRef.current=null;};
+  const previewGeometryRefinement = (options:{prepareWorkBudget?:number;cancelled?:()=>boolean}={}) => {
+    if(mutationBlocked()||physicalGridRef.current?.geometryRefinement)return null;
+    try{
+      const map=captureMap();checkedRiverMap(map);
+      const plan=prepareGeometryPlan({...geometryPlanInput(map),...options});
+      if(plan.status==='error')throw Error(`GEO2 ${plan.stage}: ${plan.refs.join('; ')}`);
+      if(plan.status==='unchanged')return null;
+      const state=plan.candidateState;validateOneMileMap(map,state);
+      const preview={revision:documentRevision.current,state,plan};geometryRefinementPreviewRef.current=preview;return preview;
+    }catch(error){setEditError(error instanceof Error?error.message:String(error));return null;}
+  };
+  const applyGeometryRefinementPreview = (expected:NonNullable<typeof geometryRefinementPreviewRef.current>) => {
+    if(expected!==geometryRefinementPreviewRef.current||expected.revision!==documentRevision.current||mutationBlocked()||physicalGridRef.current?.geometryRefinement)return false;
+    try{
+      const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:{...captureMap(),physicalGrid:expected.state}});
+      assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);geometryRefinementPreviewRef.current=null;return true;
+    }catch(error){setEditError(error instanceof Error?error.message:String(error));return false;}
+  };
+  const cancelGeometryRefinementPreview = () => {geometryRefinementPreviewRef.current=null;};
   const editOneMileCell = (target:AxialHex,values:{name?:string;note?:string;landBiomeId?:string},revision:number,locale:Language) => {
     const state=physicalGridRef.current;
     if(!state||!state.selectedCell||state.selectedCell.q!==target.q||state.selectedCell.r!==target.r||mutationBlocked())return false;
@@ -13596,7 +13667,7 @@ export function App() {
         if(confirmedNames.some(key=>!allowed.has(key)))return false;
         editorNames=Object.fromEntries(Object.entries(editorNames).filter(([key])=>!confirmedNames.includes(key)));
       }
-      const after = copyDocument({...captureDocument(), map: {...captureMap(), ...result,riverFeatures,editorNames}});
+      const after = copyDocument({...captureDocument(), map: prepareSourceTransition(captureMap(),{...captureMap(), ...result,riverFeatures,editorNames})});
       // Both copies are complete before any state write. Never reconcile crossings here.
       setUndoHistory(current => [...current, {before, after}].slice(-100)); setRedoHistory([]);
       applyPreparedDocument(after);
@@ -13650,6 +13721,7 @@ export function App() {
       if(map.knave){const losses=knaveLosses(map.knave,knaveMapContext(map));
         if(losses.length){if(!window.confirm(language==='ru'?`Изменение удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`This edit removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
           const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
+      map=prepareSourceTransition(captureMap(),map);
       checkedRiverMap(map);
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
         getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
@@ -13890,7 +13962,7 @@ export function App() {
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
     const originalFine=backup?.fineRegeneration;
     let fineLost:string[]=[];
-    if(originalFine){
+    if(originalFine&&!originalFine.geometryRefinement){
       const accepted=projectOneMile(oneMileSources(map),originalFine.grid.origin),supported=new Set(accepted.map(row=>hexKey(row.cell)));
       const lost=Object.keys(originalFine.fineCellEdits??{}).filter(key=>!supported.has(key));
       fineLost=lost;
@@ -13902,7 +13974,14 @@ export function App() {
       const removed=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!retainedOwners.has(alias)||!live.has(alias)).map(alias=>[alias,null]));
       map={...candidate,physicalGrid:reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removed)};
     }
-    if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
+    if(originalFine?.geometryRefinement){
+      const accepted=projectOneMile(oneMileSources(map),originalFine.grid.origin);
+      const edits=prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true).edits;
+      fineLost=Object.keys(originalFine.fineCellEdits??{}).filter(key=>!(key in edits));
+      map=prepareSourceTransition(backup!.map,{...map,physicalGrid:{...originalFine,fineCellEdits:edits}});
+    }else if(map.physicalGrid?.geometryRefinement){
+      map=prepareSourceTransition(checkpoint.physicalGrid?.geometryRefinement?checkpoint:captureMap(),map);
+    }else if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
     const fineTarget=fineGenerationTargetRef.current;
     if(map.physicalGrid&&fineTarget&&projectOneMile(oneMileSources(map),map.physicalGrid.grid.origin).some(row=>isSameHex(row.cell,fineTarget.cell)))map={...map,physicalGrid:{...map.physicalGrid,selectedCell:fineTarget.cell,selectedWorldPoint:fineTarget.point}};
     checkedRiverMap(map);
@@ -14262,7 +14341,7 @@ export function App() {
     const layer=knaveRef.current??(enabled?newKnaveLayer():undefined);
     if(!regions.length&&!hexTerrainByKey.size&&!kingdoms.length){documentRevision.current++;updateKnave(layer);updateKnaveEnabled(enabled);return true;}
     finishNotesGroup();
-    const before=captureDocument(),after={...before,map:{...before.map,knave:layer},knaveEnabled:enabled};
+    const before=captureDocument(),after={...before,map:prepareSourceTransition(before.map,{...before.map,knave:layer}),knaveEnabled:enabled};
     recordTransaction(before,after);applyPreparedDocument(after);return true;
   };
   const changeGenerationMode=(mode:GenerationMode)=>{
@@ -14311,7 +14390,15 @@ export function App() {
   // числе изменения, которые новый регион внёс в соседние регионы.
   const retainFineCheckpoint=(snapshot:MapSnapshot,allowLoss=false):MapSnapshot=>{
     const current=physicalGridRef.current,edits=current?.fineCellEdits??{};
-    if(!current||!Object.keys(edits).length)return snapshot;
+    if(!current)return snapshot;
+    if(current.geometryRefinement){
+      const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
+      const fineCellEdits=prepareFineCellLoss(edits,accepted,allowLoss).edits;
+      const layer={...current,fineCellEdits};
+      if(layer.selectedCell&&!accepted.some(row=>isSameHex(row.cell,layer.selectedCell!))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
+      return prepareSourceTransition(captureMap(),{...snapshot,physicalGrid:layer});
+    }
+    if(!Object.keys(edits).length)return snapshot;
     const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
     const retained=prepareFineCellLoss(edits,accepted,allowLoss).edits;
     if(!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
@@ -15026,7 +15113,7 @@ export function App() {
   const createSaveData = (doc=captureDocument()): HexcrawlSaveData => ({
     schema: HEXCRAWL_SAVE_SCHEMA,
     generation: cloneGenerationState(doc.map.generation),
-    version: doc.map.physicalGrid?15:HEXCRAWL_SAVE_VERSION,
+    version: doc.map.physicalGrid?.version===4?16:doc.map.physicalGrid?15:HEXCRAWL_SAVE_VERSION,
     savedAt: new Date().toISOString(),
     map: {
       ...(doc.map.physicalGrid?{physicalGrid:structuredClone(doc.map.physicalGrid)}:{}),
@@ -15188,7 +15275,7 @@ export function App() {
     const draft=poiDraftRef.current;if(!draft)return !expected;
     if(draft!==expected||!currentPoiDraft(draft)||notesComposingRef.current||dirtyNameDraft())return false;
     try{const {original,map}=preparePoiDraft(draft);if(map===original){resetPoiDraft(draft);return true;}
-      const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map,selectedHex:{q:Number(draft.q),r:Number(draft.r)}});
+      const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:prepareSourceTransition(original,map,new Map([[poiLocatorKey(draft.source),draft.source.kind==='water'?`waterPoi:${draft.q},${draft.r}`:`poi:${map.regions.find(r=>r.hexes.some(c=>hexKey(c)===`${draft.q},${draft.r}`))!.id}:${draft.q},${draft.r}`]])),selectedHex:{q:Number(draft.q),r:Number(draft.r)}});
       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);return true;
     }catch(error){setEditError(poiCommandError(error));return false;}
   };
@@ -15807,7 +15894,7 @@ export function App() {
         if(!window.confirm(language==='ru'?`Удалить препятствие с именем «${name.ru}»? Отмена восстановит и объект, и имя.`:`Delete the barrier named “${name.en}”? Undo restores both the object and its name.`))return false;
         editorNames=Object.fromEntries(Object.entries(editorNames).filter(([key])=>key!==`obstacle:${edit.id}`));
       }
-      const after=copyDocument({...before,map:{...before.map,...prepared,editorNames}});
+      const after=copyDocument({...before,map:prepareSourceTransition(before.map,{...before.map,...prepared,editorNames})});
       recordTransaction(before,after);applyExactMap(after.map);closeEditors();
       setIsSidePanelCollapsed(false);
       const focusId=edit.type==='remove'?'nearby':edit.type==='move'?edit.id:prepared.nextObstacleId-1;
