@@ -1,0 +1,86 @@
+{
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-MOUTHS",
+  "head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
+  "base_sha": "33b362caeb536a265f30323fdf0e942b481306b1",
+  "source": {
+    "fixture": "test/fixtures/road-entry-zigzags.json",
+    "sha256": "cb2333bc60a64dcdffe44f49bbba680b6f496afc6f7a0d46cb38d56a26f52d01",
+    "seed": 423493684,
+    "main_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "pr503_head_unchanged": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "app_hydrology": "buildRegionRiverNetwork(...,complete=true)",
+    "marks": "Existing regionMarkKeys with actual eligibility (3 rapids / 0 waterfalls), no forced marks",
+    "generated_geography": "Existing oneMileSources/projectOneMile, 3471 fine cells; no expansion or rephase",
+    "widths": "Actual App.getRiverWidth(getHexWidth(28),F), detailSourcePixelToWorld; legacy visible values .45/.66/.87/1.08/1.29, no physical calibration claim"
+  },
+  "lake_bodies": {
+    "groups": "Actual App.getLakesForRegions; original lake IDs/cells",
+    "tiles_emoji": "Exact union of original six-mile lake hex polygons with shared edges removed",
+    "color": "buildNaturalLakes with original toponymSeed and pixel geometry, exact M/L/Q/Z basin path converted by detailSourcePixelToWorld",
+    "old_color_mouth_connectors": "Excluded from body; not proof of new shore contact",
+    "islands": "Even-odd holes; first hole bank cannot replace external shore"
+  },
+  "routing": {
+    "method": "Common submerged fine-edge port, existing finite source-segment-plus-one-neighbor-ring endpoint reroute; no new source joins",
+    "allocation": "Sequential endpoint allocator, not complete simultaneous/global optimum",
+    "bounded_work": "Existing4096-cell graph, source corridor only, shore loops<=4096/total curves<=24576, path<=24576 points; no new product-scale benchmark",
+    "mode_preparation": "All3 bodies/contacts validate before prepared result; missing body/no common submerged edge/first hole contact/no contact reject with refs and no paths",
+    "nonterminal_lake_incidence": "Explicit mouth_conflict, unsupported in this checkpoint"
+  },
+  "paint": {
+    "finite_round_capsules": true,
+    "query_space_lake_mask": true,
+    "internal_lake_edges_excluded_by_hydrology_ref": true,
+    "actual_fixture_has_internal_lake_edges": false,
+    "live_renderer_or_png_mask": false
+  },
+  "proofs": [
+    "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/witness.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/checks.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/witness.mjs"
+  ],
+  "limits": [
+    "Fixture has one outlet only; inlet branch not actual-fixture certified",
+    "Rotation, actual6/1 UI, screenshot/PNG, public16/history, POI/road/crossing integration pending",
+    "No GeometryPlan acceptance or score change"
+  ],
+  "code_readbacks": [
+    {
+      "path": "docs/geo2-work-in-progress.md",
+      "sha": "0ebae88ea29b24cb2829534c42956321f377c29f",
+      "byte_exact": true
+    },
+    {
+      "path": "src/geometryRefinementTerminalRoutes.ts",
+      "sha": "0c54375885fecd27bd73af65e377b46dd4786f8e",
+      "byte_exact": true
+    },
+    {
+      "path": "src/geometryRefinementShore.ts",
+      "sha": "03884c53d552f12cb918cd1de9226500c2d9ad2b",
+      "byte_exact": true
+    },
+    {
+      "path": "src/geometryRefinementMouths.ts",
+      "sha": "2b80a1ce4d0f9fd2605d87f10f53cf907d5d947e",
+      "byte_exact": true
+    },
+    {
+      "path": "test/geometryRefinementExits.test.mjs",
+      "sha": "84f0a2db7f963fc9b32eb2029a9595e8c7971334",
+      "byte_exact": true
+    },
+    {
+      "path": "test/geometryRefinementShore.test.mjs",
+      "sha": "d4ec5785c9ddf2464c1a3c58379758fb277a1fa0",
+      "byte_exact": true
+    },
+    {
+      "path": "test/helpers/generation-harness.mjs",
+      "sha": "f480ff43b24af05085988230223186560950ba18",
+      "byte_exact": true
+    }
+  ]
+}

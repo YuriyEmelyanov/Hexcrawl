@@ -1,0 +1,13 @@
+GEO2-MOUTHS at 91b5cbca31b92b3dbe4afc2813ba7e808e096430
+
+This checkpoint is unmounted. It is not a complete GeometryPlan, actual UI preview, G207 acceptance, review_ready or release permission.
+
+Reproduce with Node24: checkout 91b5cbca31b92b3dbe4afc2813ba7e808e096430; npm run check; node witness.mjs /absolute/path/to/checkout. The diagnostic is temporary evidence, not another permanent test suite. Its1296 finite cross-sections (432 per mode) are not test-case growth and overlap geometry verified by the existing Node lifecycle.
+
+The retained world has53 source segments/55 nodes/4 open exits/3 actual rapids, no actual waterfalls, and one lake outlet. The new submerged port changes430fine intervals to432; every53source ID/F/direction remains, with no new joins. Three contact records refer to the same outlet/lake and different actual mode contours. Tiles/Emoji union is polygonal; Color is the real quadratic seeded basin path without legacy cubic mouth paint. The common underwater endpoint and land-side edge chain are shared across modes.
+
+An initial endpoint failure is retained in initial-mouth-failure.log. A bank-following step reached a shore exactly, but the next step's cut fraction was1.54e-15 rather than literal0. The bounded first-contact helper now keeps a t=0 endpoint contact within numerical tolerance. Synthetic shoreline evidence covers this and rejects a first island-hole hit/no outer contact. It does not prove all rotations or actual incoming river branches.
+
+The finite paint query subtracts selected-mode lake-body intervals and excludes hydrology-marked internal lake edges. The actual fixture has no internal lake-edge suppression example. Nothing has been mounted in App/LakeWater/PNG. Existing old renderer mouth connectors still require replacement when integrating the complete layer; no current published UI defect is claimed fixed by this backend alone.
+
+Next is the already approved bank-POI stage. Reuse requirement provenance in src/detailGeography.ts and identity/extent/route attachment contracts in src/detailModel.ts, src/detailPlacement.ts and src/detailSizes.ts. Existing detailGeography waterAccesses uses coarse/source centerline candidates and is not a valid new exposed-bank calculation. Preserve unknown catalogue requirements rather than treating an existing water attachment as authority. Inside capsule clearance is not bank distance. Retain same6mile parent, known side, stable IDs, manual/conditional extent and all route entries; measured/locked geometry/no legal fit returns a referenced conflict. Then complete road/crossing/mask/public16/history/dependency/UI integration and independent full-SHA review. No new research/benchmark/catalogue calibration/release is authorized by this checkpoint.

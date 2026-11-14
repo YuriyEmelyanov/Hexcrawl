@@ -1,0 +1,155 @@
+{
+  "fixture": "test/fixtures/road-entry-zigzags.json",
+  "fixture_sha256": "cb2333bc60a64dcdffe44f49bbba680b6f496afc6f7a0d46cb38d56a26f52d01",
+  "fine_cells": 3471,
+  "source_segments": 53,
+  "source_nodes": 55,
+  "paths": 53,
+  "fine_intervals": 432,
+  "capsules": 432,
+  "paint_capsules": 432,
+  "internal_lake_edge_keys": [],
+  "open_exits": 4,
+  "actual_rapids": 3,
+  "actual_waterfalls": 0,
+  "widths": {
+    "1": 0.45000000000000007,
+    "2": 0.6600000000000001,
+    "3": 0.8700000000000001,
+    "4": 1.08,
+    "5": 1.29
+  },
+  "lake_shapes": [
+    {
+      "lakeId": 1,
+      "modes": {
+        "tiles": {
+          "loops": 1,
+          "depths": [
+            0
+          ],
+          "shore_signature_sha256": "6a616cb8d91aa69ef0c5d33c0aa7d46e753a35be52e8ec9100a771183d822fdc"
+        },
+        "emoji": {
+          "loops": 1,
+          "depths": [
+            0
+          ],
+          "shore_signature_sha256": "6a616cb8d91aa69ef0c5d33c0aa7d46e753a35be52e8ec9100a771183d822fdc"
+        },
+        "color": {
+          "loops": 1,
+          "depths": [
+            0
+          ],
+          "shore_signature_sha256": "f6005f8414d43c883ce6e5a6e8cfd4d7f7b28d7739f029d5a6c9a0be75742eba"
+        }
+      }
+    }
+  ],
+  "mouths": [
+    {
+      "riverId": 2,
+      "sourceEdgeKey": "-24.249,98|0,112",
+      "sourceNodeKey": "-24.249,98",
+      "lakeId": 1,
+      "direction": "outlet",
+      "mode": "tiles",
+      "point": {
+        "x": -3,
+        "y": 11.547005383792518
+      },
+      "stepIndex": 3,
+      "stepFraction": 0,
+      "loopIndex": 0,
+      "curveIndex": 0,
+      "shoreFraction": 0.8333333333333337
+    },
+    {
+      "riverId": 2,
+      "sourceEdgeKey": "-24.249,98|0,112",
+      "sourceNodeKey": "-24.249,98",
+      "lakeId": 1,
+      "direction": "outlet",
+      "mode": "emoji",
+      "point": {
+        "x": -3,
+        "y": 11.547005383792518
+      },
+      "stepIndex": 3,
+      "stepFraction": 0,
+      "loopIndex": 0,
+      "curveIndex": 0,
+      "shoreFraction": 0.8333333333333337
+    },
+    {
+      "riverId": 2,
+      "sourceEdgeKey": "-24.249,98|0,112",
+      "sourceNodeKey": "-24.249,98",
+      "lakeId": 1,
+      "direction": "outlet",
+      "mode": "color",
+      "point": {
+        "x": -3.4464680561442282,
+        "y": 10.711886662203453
+      },
+      "stepIndex": 1,
+      "stepFraction": 0.10706388771154376,
+      "loopIndex": 0,
+      "curveIndex": 44,
+      "shoreFraction": 0.1810203207290549
+    }
+  ],
+  "masks": [
+    {
+      "mode": "tiles",
+      "queries": 432,
+      "visibleIntervals": 745,
+      "interval_midpoints_outside_all_lakes": true
+    },
+    {
+      "mode": "emoji",
+      "queries": 432,
+      "visibleIntervals": 745,
+      "interval_midpoints_outside_all_lakes": true
+    },
+    {
+      "mode": "color",
+      "queries": 432,
+      "visibleIntervals": 747,
+      "interval_midpoints_outside_all_lakes": true
+    }
+  ],
+  "atomic_failures": {
+    "missing_lake": {
+      "status": "error",
+      "code": "mouth_conflict",
+      "refs": [
+        "-24.249,98|0,112",
+        "lake:1",
+        "missing_lake_ref"
+      ],
+      "completeGeometryPlan": false
+    },
+    "nonoverlapping_color_body": {
+      "status": "error",
+      "code": "mouth_conflict",
+      "refs": [
+        "lake:1",
+        "-24.249,98",
+        "no_common_body_port"
+      ],
+      "completeGeometryPlan": false
+    }
+  },
+  "accepted_source_save_unchanged": true,
+  "global_rng_guard": true,
+  "completeGeometryPlan": false,
+  "activation": false,
+  "limits": [
+    "Original fixture has one outlet, no actual inlet",
+    "No runtime/rendering/PNG/rotation acceptance",
+    "Sequential source-plus-one-ring endpoint routing; nonterminal lake incidences reject",
+    "Query-space mask only; POI/road/crossing/public16/history/UI pending"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T0806-programmer-ONE-MILE1-GEO2",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-MOUTHS",
+  "role": "programmer",
+  "status": "checkpoint_saved_GEO2_mouths_in_progress",
+  "execution_running": false,
+  "working_branch": "agent/hx-bl-051-geo2",
+  "wip_head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
+  "wip_tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+  "head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
+  "tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+  "pr": 503,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "pr_updated": false,
+  "result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T0806-ONE-MILE1-GEO2-continue.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "next_role": "programmer",
+  "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с 91b5cbca31b92b3dbe4afc2813ba7e808e096430: GEO2-POI — подготовить атомарное размещение только POI с подтверждённым river requirement и стабильным river/segment ref. Использовать existing detailGeography requirement provenance/physicalGrid identities+extents и finite water/shore backend. Выбрать минимальное смещение к exposed bank в том же6mile parent, сохранив известную сторону, ID, размер, связный footprint и все route entries. Unknown town requirement остаётся unknown/без автоматического переноса; measured polygon/locked anchor не переводить, no legal fit — poi_conflict без partial state. Не считать inside clearance из water helper расстоянием до exposed bank и не использовать river centerline как берег. После этого roads/crossings/masks, public16/history/dependency closure, UI/map/PNG во всех3режимах и свежая независимая проверка общегоSHA; текущий mouths backend unmounted, PR503/main не обновлять до целостного пакета.",
+  "review_ready": false,
+  "full_package_release_ready": false,
+  "release_authorized": false,
+  "created_at": "2026-11-14T05:32:05.129Z",
+  "authority_status": "Continue already approved GEO2 scope; publication of exact reviewed package separately requires owner approval",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "from_role": "programmer",
+  "to_role": "programmer",
+  "next_substage": "GEO2-POI",
+  "input_evidence": [
+    "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/checks.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/witness.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/source-provenance.json"
+  ],
+  "scope": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с 91b5cbca31b92b3dbe4afc2813ba7e808e096430: GEO2-POI — подготовить атомарное размещение только POI с подтверждённым river requirement и стабильным river/segment ref. Использовать existing detailGeography requirement provenance/physicalGrid identities+extents и finite water/shore backend. Выбрать минимальное смещение к exposed bank в том же6mile parent, сохранив известную сторону, ID, размер, связный footprint и все route entries. Unknown town requirement остаётся unknown/без автоматического переноса; measured polygon/locked anchor не переводить, no legal fit — poi_conflict без partial state. Не считать inside clearance из water helper расстоянием до exposed bank и не использовать river centerline как берег. После этого roads/crossings/masks, public16/history/dependency closure, UI/map/PNG во всех3режимах и свежая независимая проверка общегоSHA; текущий mouths backend unmounted, PR503/main не обновлять до целостного пакета.",
+  "source_entry_points": [
+    "src/detailGeography.ts: requirement() provenance (unknown remains unknown), source aliases/identities",
+    "src/detailModel.ts: extents/attachments/identity contracts",
+    "src/detailPlacement.ts: footprint/route requirements; current water access centerline is not a new bank",
+    "src/detailSizes.ts: physical extent and footprint geometry",
+    "src/geometryRefinementWater.ts + geometryRefinementMouths.ts + geometryRefinementShore.ts: finite masked water queries"
+  ],
+  "completion_criteria": [
+    "Only explicit known river requirements with resolvable source river refs are eligible; unproven town/attachment remains unknown",
+    "Same6parent minimum-displacement legal exposed-bank anchor/actual footprint contact, known bank side and stable IDs preserved",
+    "Manual/conditional size/connected cells/route entries retained; measured/locked/no-fit/foreign refs produce explicit atomic conflict",
+    "No accepted map/IDs/RNG or public format change until coherent full plan; exactSHA evidence and meaningful existing-case reuse/test rationale"
+  ],
+  "remaining_full_package_work": [
+    "Unmounted backend, no complete GeometryPlan/actual UI/PNG/public16/history acceptance",
+    "Actual fixture has one outlet and no internal lake-edge suppression example; inlet/rotation runtime matrix remains unverified",
+    "Sequential finite endpoint allocation, no proof of simultaneous/global completeness; nonterminal lake incidence rejects explicitly",
+    "POI exposed-bank placement/roads/crossings/masks/dependency closure/save/history/UI and combined independent review remain",
+    "Existing visual width retained, no physical calibration/new town catalogue approval"
+  ],
+  "ui_preview_status": "G2-P1 proposal already shown; actual implementation preview still pending, no blocking third design gate",
+  "score_model": "1.2",
+  "score_status": "unknown/unverified, unchanged; programmer evidence only",
+  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/checks.json"
+}
