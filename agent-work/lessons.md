@@ -897,3 +897,7 @@ GEO2: последовательный маршрут закрывал подх�
 
 ### 14 ноября2026 — направление source и отметки проверять до маршрутизации
 GEO2 source bridge сверяет primary vertexPath и sectors: одна directed edge coverage, F и refs без fallback/reverse. На53 retained сегментах сохраняются11секторов/22boundary refs; перестановка входных массивов не меняет результат. Rapid переносится по normalized arc length с downstream tangent; waterfall сохраняет общий vertex и все106направленных incidences в отдельной forced-mark диагностике. Её53/55отметок не являются числом реальных eligible/visible marks. Сохранённый region_boundary tag также не доказывает continuable fine boundary exit: геометрические terminal/boundary constraints — следующий этап. Evidence: agent-work/evidence/ONE-MILE1-GEO2-source-0304/checks.json, mark-diagnostic.json; exactSHA f92bb54c3405aa4aadfafb69ee6d58ca10227bfb.
+
+
+### 14 ноября2026 — edge-local terminal refs не являются дробными адресами
+GEO2-PORTS: terminal внутри ребра хранится как sourceEdgeKey+fraction; split graph сохраняет positive interval partitions и связность. Не помещать дробные координаты в integer GridVertex. На retained fixture55узлов/8terminal ports; это ещё не интеграция с53речными маршрутами. Топологический boundary клетки не доказывает open frontier: использовать actual candidates/lake/sea resolver и water overrides, а не sector region_boundary. Evidence: agent-work/evidence/ONE-MILE1-GEO2-ports-0403/witness.json, integration-notes.md; SHA 61f69e3fd8d3f04c4db71447156e3dcadb872ca2.

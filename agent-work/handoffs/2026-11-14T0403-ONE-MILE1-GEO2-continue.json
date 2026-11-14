@@ -1,0 +1,34 @@
+{
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-PORTS",
+  "source_sha": "61f69e3fd8d3f04c4db71447156e3dcadb872ca2",
+  "source_tree": "5ff333790026eeddaa6291c62554a1312264d104",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "next_role": "programmer",
+  "authority_status": "approved_GEO2_implementation_no_release",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "input_evidence": [
+    "agent-work/evidence/ONE-MILE1-GEO2-ports-0403/witness.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-ports-0403/integration-notes.md",
+    "agent-work/evidence/ONE-MILE1-GEO2-ports-0403/checks.json"
+  ],
+  "next_step": "Программист продолжает HX-BL-051/GEO2 с 61f69e3fd8d3f04c4db71447156e3dcadb872ca2: подключить подготовленный split graph/port refs к river allocator и mark arc traversal, не помещая дробные точки в integer GridVertex. Получать реальные source open exits из действующих candidate/lake/sea условий buildRegionRiverNetwork; сопоставлять только с допустимыми fine boundary edges по принятому oneMileSources (включая water overrides), а не по region_boundary тэгам. На том же53-segment fixture проверить общий маршрут с новыми terminal ports, F/direction/IDs/incidence/marks и атомарные конфликты. Затем продолжить POI/roads/crossings/envelopes/mouths, public16/history/UI и независимую проверку целого новогоSHA. Не активировать river-only/ports-only подготовку; публикация не разрешена.",
+  "scope": [
+    "Adapt river allocator and arc/mark traversal to edge-local port refs and split graph; never put fractional points in integer GridVertex.",
+    "Use existing source candidates/lake/sea resolver and accepted water overrides to supply real open-exit refs/allowed fine boundary edges.",
+    "Keep source IDs/F/flow/shared nodes/marks and no-new-confluence constraints; return atomic refs on conflict."
+  ],
+  "completion": [
+    "Retained53-segment input routed with8 interior-edge terminal ports; exact source identity/direction/F/incidences retained.",
+    "Bounded explicit open-exit example remains continuable; lake/sea/internal sector boundary not invented as frontier.",
+    "Same input under permutation returns same candidate; no accepted map/RNG write; old authored unaffected regions remain literal."
+  ],
+  "remaining_after": [
+    "Dependent POI/roads/crossings/finite water envelopes/lake mouths",
+    "Public16/physical4/sourceFingerprint/history",
+    "Actual UI/map/PNG/browser/RNG and independent exactSHA combined review"
+  ],
+  "review_ready": false,
+  "release_authorized": false
+}
