@@ -1,0 +1,53 @@
+{
+  "base_sha": "fd3ee6109d787a6c37173b2dee8c36b8e5bacf90",
+  "head_sha": "33b362caeb536a265f30323fdf0e942b481306b1",
+  "added": 2,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Node --test named logical cases",
+  "cases": [
+    {
+      "name": "GEO2 finite round water respects corners, caps, parallel crossings and tangent contact",
+      "change": "added",
+      "scenario_risk": "Finite capsule vs infinite-line strip; curved end/corner/tangent and inside-start flags"
+    },
+    {
+      "name": "GEO2 water unions variable widths without internal banks and preserves dry gaps and source refs",
+      "change": "added",
+      "scenario_risk": "Union overlapping source widths, disjoint dry gaps, source refs and atomic invalid widths"
+    },
+    {
+      "name": "GEO2 actual source hydrology separates open exits from lake/source and enforces fine boundary refs",
+      "change": "modified",
+      "scenario_risk": "Real renderer widths converted once to world coordinates;53 routes/430 capsules/4exits and atomic missing width"
+    }
+  ],
+  "reuse_or_new_reason": "Existing presentation suite only covers straight crossings. Two analytic cases cover absent finite-envelope risks; reuse actual retained-world lifecycle for integration instead of adding another fixture case.",
+  "count_source": "git diff exact base/head and named top-level test bodies; helper exports are not logical tests;430 interval queries/1386 bank checks are assertions within one case/temporary diagnostic, not permanent case growth.",
+  "focused": {
+    "executed": 14,
+    "passed": 14,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "executed": 0,
+    "status": "notrun_unmounted"
+  },
+  "rng_browser": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "executed": 0,
+    "status": "notrun_unmounted"
+  },
+  "temporary_diagnostic": {
+    "executed": 1,
+    "passed": 1,
+    "permanent_case_growth": 0,
+    "separate_from_Node_runner": true
+  }
+}
