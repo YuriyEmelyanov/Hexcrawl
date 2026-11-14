@@ -1,0 +1,754 @@
+{
+  "schema_version": 1,
+  "evidence_id": "HX-RSR-RATINASUIT-2025-AUDIT-v1",
+  "version": 1,
+  "run_id": "2026-11-14T0633-recent-survey",
+  "status": "completed_bounded_primary_aggregate_corpus_with_qualified_use",
+  "as_of": "2026-11-14T06:39:56.613Z",
+  "selected_task": {
+    "id": "HX-RSR-RATINASUIT-2025-PLAYED-AUDIT",
+    "outcome": "Complete provenance, denominator and edition audit of 2025 played-system results, contrasting bought/read; identify implications for L1 research prioritisation without changing active model.",
+    "completion_condition": "Read complete published played/bought system table plus methods/recruitment; reconcile counts and reported percentages; preserve raw labels, item denominators and wave dedup; match relevant high-ranked games and close applicability decision with machine-checkable QA.",
+    "alternatives": [
+      {
+        "id": "SlyFlourish-2025-5e-poll",
+        "reason": "Narrower 5e-specific question; useful later but does not discover omitted multi-system candidates."
+      },
+      {
+        "id": "SD-Trendalor-L1",
+        "reason": "Strong retained L1 artifact gap; deferred one run to complete fresh owner survey direction using a new primary actual-play wave; not a fixed survey queue."
+      }
+    ]
+  },
+  "method_application": {
+    "experiment_ref": "agent-work/research/experiments/Survey-suitability-v1.json",
+    "experiment_version": 1,
+    "qualitative_method": "research-method-1.1",
+    "source_type": "rpg_play_surveys",
+    "purpose": "Apply retained question/denominator/coding suitability checks to a fresh2025-wave primary aggregate corpus. No new weighted metric.",
+    "active_numeric_method_changed": false,
+    "numeric_effect_proposal_ref": null
+  },
+  "sources": [
+    {
+      "id": "SURV-RAT-2025-RESULT",
+      "url": "https://www.reddit.com/r/rpg/comments/1q2sso6/the_ttrpg_community_in_2025_results/",
+      "published_at": "2026-01-03",
+      "access_level": "full_text",
+      "locator": "Main result post: sessionN, played and bought/read blocks; organizer recruitment reply near lines252–258",
+      "date_evidence": "Indexed primary text returns Saturday January03 2026; do not use relative10mo labels as exact dates.",
+      "author": "ratInASuit"
+    },
+    {
+      "id": "SURV-RAT-2025-SHEET",
+      "url": "https://docs.google.com/spreadsheets/d/14pG9pi-Lkzt4_xnCvoZNJ1MdgXL_VRcSLHRCUA4t2NA/edit",
+      "published_at": null,
+      "access_level": "full_text",
+      "locator": "Sheet1 gid0; A1:C494 and E1:G497",
+      "read_scope": {
+        "played": "A4:C600",
+        "bought_or_read": "E4:G600",
+        "headers": "A1:H12",
+        "confirmed_blank_boundary": [
+          "A495:C505",
+          "E498:G508"
+        ],
+        "note": "Complete nonempty aggregate blocks, not 20477-row grid or other questionnaire blocks."
+      },
+      "retained_snapshot_ref": "agent-work/research/market/recent-survey-2026-11-14-source.json"
+    },
+    {
+      "id": "SURV-RAT-2025-OSR-RESULT",
+      "url": "https://www.reddit.com/r/osr/comments/1q2ssl8/the_ttrpg_community_in_2025_results/",
+      "published_at": null,
+      "access_level": "full_text",
+      "locator": "Same author/title/counts and identical sheet; author's open-text/multiple-answer reply lines229–237",
+      "duplicate_of": "SURV-RAT-2025-RESULT"
+    },
+    {
+      "id": "SURV-RAT-2025-DESIGN-RESULT",
+      "url": "https://www.reddit.com/r/RPGdesign/comments/1q2ssmy/the_ttrpg_community_in_2025_results/",
+      "published_at": null,
+      "access_level": "full_text",
+      "locator": "Same author/title/counts/sheet",
+      "duplicate_of": "SURV-RAT-2025-RESULT"
+    },
+    {
+      "id": "SURV-RAT-2025-INVITE-RPG",
+      "url": "https://www.reddit.com/r/rpg/comments/1pnortg/the_ttrpg_community_in_2025_poll/",
+      "published_at": "2025-12-16",
+      "access_level": "full_text",
+      "locator": "Author announcement and planned December28 close; indexed exact date; unofficial-user-survey disclaimer"
+    },
+    {
+      "id": "SURV-RAT-2025-INVITE-DESIGN",
+      "url": "https://www.reddit.com/r/RPGdesign/comments/1pe37dd/the_ttrpg_community_in_2025_poll/",
+      "published_at": "2025-12-04",
+      "access_level": "full_text",
+      "locator": "Author announcement/planned close and replies on free text/manual cleaning; indexed exact date; linked shortformYadeEDuqnVwC59Xm7"
+    },
+    {
+      "id": "SURV-RAT-2025-INVITE-OSR",
+      "url": "https://www.reddit.com/r/osr/comments/1pe37bn/the_ttrpg_community_in_2025_poll/",
+      "published_at": "2025-12-04",
+      "access_level": "full_text",
+      "locator": "Author invitation/planned close; indexed exact date"
+    },
+    {
+      "id": "SURV-RAT-2025-INVITE-SOLO",
+      "url": "https://www.reddit.com/r/Solo_Roleplaying/comments/1pe37co/the_ttrpg_community_in_2025_poll/",
+      "published_at": "2025-12-04",
+      "access_level": "search_snippet",
+      "locator": "Indexed primary invitation only; direct DisabledError; not counted as separate wave"
+    },
+    {
+      "id": "SURV-RAT-2025-FORM",
+      "url": "https://forms.gle/GRUGuas4V7tD8d6H9",
+      "resolved_url": "https://docs.google.com/forms/d/e/1FAIpQLScPwi1ttgLub-49nmn_Jdy5uxfIu6prgbmpEMssDxtqQUrljw/viewform?usp=send_form",
+      "access_level": "unavailable",
+      "locator": "Organizer-linked questionnaire; web tool returned inaccessible redirect. Alternative invitation shortlinkYadeEDuqnVwC59Xm7 observed but form equivalence/changes not verified."
+    }
+  ],
+  "study": {
+    "organizer": "ratInASuit",
+    "study_key": "ratInASuit:ttrpg-community",
+    "wave_key": "ratInASuit:ttrpg-community:2025",
+    "behavior_period": "2025 year to each respondent's answer date; year-end recall, not full-year observation through Dec31 and not2026currentactivity.",
+    "earliest_verified_invitation": "2025-12-04",
+    "later_rpg_invitation": "2025-12-16",
+    "planned_close": "2025-12-28",
+    "actual_start": null,
+    "actual_close": null,
+    "publication": "2026-01-03",
+    "total_N_reported": null,
+    "max_published_item_n": 292,
+    "total_N_note": "292 is the maximum observed item denominator; organizer's result text does not separately state a completed-survey total or unique-person audit. Do not silently promote max-itemn to totalN.",
+    "language": "English questions/invitations",
+    "geography": "not reported; no US/UK/worldwide representative sampling claim",
+    "recruitment": {
+      "verified_channels": [
+        "r/RPGdesign",
+        "r/osr",
+        "r/rpg"
+      ],
+      "snippet_only_channels": [
+        "r/Solo_Roleplaying"
+      ],
+      "other_channels": "unknown; syndicatedTumblr result surfaced, not independent sample or proof of precise fieldwork",
+      "frame": "Voluntary users reached through author/community invitations; no probability frame.",
+      "author_rationale": "Author says invitations aimed at spaces not dedicated to one system; OSR/design/solo interest and English-online access can still select respondents.",
+      "inclusion_and_exclusion_rules": null,
+      "response_rate": null,
+      "weights": "not reported",
+      "respondent_duplicate_handling": "not reported",
+      "raw_questionnaires": "not available in linked aggregate results",
+      "role_split": "played-item does not distinguish player, GM or both; no system-by-role table",
+      "questionnaire_version_changes": "Recruitment thread contains an author note about adding a both option to a different location/format item; no dated form version/raw responses to establish wave invariance. No trend calculated."
+    }
+  },
+  "items": [
+    {
+      "id": "SURV-RAT-2025-PLAYED",
+      "question_verbatim": "Which TTRPGs have you played this year?",
+      "locator": "Sheet1 A1 and A4:C494; primaryresult heading",
+      "wording_access": "organizer result heading and sheet header; liveform unread",
+      "construct": "self_reported_play_during_2025",
+      "item_n": 289,
+      "respondent_role": "unknown/not separated",
+      "answer_format": "open text, multiple systems allowed; author explicitly confirms on osr result",
+      "multiple_select": true,
+      "raw_rows": 491,
+      "sum_published_row_mentions": 1438,
+      "post_claim_unique_systems": 490,
+      "actual_unique_people": null,
+      "valid_independent_system_categories": null,
+      "raw_ref": "agent-work/research/market/recent-survey-2026-11-14-source.json#played",
+      "diagnostic_percentages": [
+        {
+          "row": 4,
+          "pct": 23,
+          "mentions": 113
+        },
+        {
+          "row": 5,
+          "pct": 9,
+          "mentions": 46
+        },
+        {
+          "row": 6,
+          "pct": 7,
+          "mentions": 36
+        },
+        {
+          "row": 7,
+          "pct": 6,
+          "mentions": 34
+        },
+        {
+          "row": 8,
+          "pct": 6,
+          "mentions": 33
+        },
+        {
+          "row": 10,
+          "pct": 5,
+          "mentions": 25
+        },
+        {
+          "row": 11,
+          "pct": 4,
+          "mentions": 24
+        },
+        {
+          "row": 12,
+          "pct": 4,
+          "mentions": 21
+        },
+        {
+          "row": 13,
+          "pct": 4,
+          "mentions": 21
+        },
+        {
+          "row": 14,
+          "pct": 4,
+          "mentions": 21
+        }
+      ],
+      "percentages_admissible": false
+    },
+    {
+      "id": "SURV-RAT-2025-BOUGHT-READ",
+      "question_verbatim": "Which TTRPGs have you bought or read this year?",
+      "locator": "Sheet1 E1 and E4:G497; primaryresult heading",
+      "wording_access": "organizer result heading and sheet header",
+      "construct": "purchase_OR_reading_in_2025_not_play",
+      "item_n": 277,
+      "respondent_role": "unknown/not separated",
+      "answer_format": "multiple systems in published aggregate; exact liveform settings unread",
+      "multiple_select": true,
+      "raw_rows": 494,
+      "sum_published_row_mentions": 1140,
+      "post_claim_unique_systems": 493,
+      "actual_unique_people": null,
+      "valid_independent_system_categories": null,
+      "raw_ref": "agent-work/research/market/recent-survey-2026-11-14-source.json#bought_or_read",
+      "diagnostic_percentages": [
+        {
+          "row": 4,
+          "pct": 7,
+          "mentions": 36
+        },
+        {
+          "row": 5,
+          "pct": 5,
+          "mentions": 29
+        },
+        {
+          "row": 6,
+          "pct": 5,
+          "mentions": 27
+        },
+        {
+          "row": 7,
+          "pct": 5,
+          "mentions": 25
+        },
+        {
+          "row": 8,
+          "pct": 5,
+          "mentions": 25
+        },
+        {
+          "row": 9,
+          "pct": 4,
+          "mentions": 23
+        },
+        {
+          "row": 10,
+          "pct": 4,
+          "mentions": 22
+        },
+        {
+          "row": 11,
+          "pct": 4,
+          "mentions": 21
+        },
+        {
+          "row": 12,
+          "pct": 3,
+          "mentions": 16
+        },
+        {
+          "row": 13,
+          "pct": 3,
+          "mentions": 15
+        }
+      ],
+      "percentages_admissible": false
+    }
+  ],
+  "published_data_quality": [
+    {
+      "id": "RAT-QA-DENOM",
+      "fact": "Published played5e113/23%, PF2e46/9%, Shadowdark34/6%; played itemn289.",
+      "analysis": "All10 published played percentages equal floor(100*count/490); all10 bought/read equal floor(100*count/493). These490/493 are the post's stated category counts, not item respondents or total mention sums.",
+      "cause_status": "unknown",
+      "not_claimed": "Author formula not directly inspected; arithmetic match is an inference, not confirmed implementation.",
+      "decision": "Do not ingest published percentages as respondent prevalence or market share. Preserve counts as coded mentions. 113/289=39.10% only conditional arithmetic if each row truly deduplicates respondents, not a corrected measured estimate."
+    },
+    {
+      "id": "RAT-QA-ROWS",
+      "fact": "Live aggregate has491played rows/1438mentions and494bought-read rows/1140mentions vs narrative490/493categories.",
+      "decision": "Retain both snapshots; do not silently correct the author's category totals or infer exact revision cause."
+    },
+    {
+      "id": "RAT-QA-CAIRN",
+      "fact": "PlayedA23 says Cairn unspecified15 and2e4, while B23 total15; bought-readE10 unspecified14+2e8 totals22.",
+      "decision": "If component labels are disjoint, played sum19 conflicts with15. Overlap/coding semantics/raw respondents unknown; mark unresolved, do not auto-sum, subtract or map15toCAIRN2."
+    },
+    {
+      "id": "RAT-QA-ALIASES",
+      "fact": "Repeated source URLs occur for Magnus aliases, BlueRose1e/2e (played); UVG/BlackCity, Magnus andYeld aliases (bought/read). Additional possible name aliases include Icrpg/IndexCardRpg and TheQuietYear/AQuietYear.",
+      "duplicate_link_groups": [
+        [
+          {
+            "url": "https://www.montecookgames.com/store/product/the-magnus-archives-roleplaying-game",
+            "rows": [
+              {
+                "row": 94,
+                "label": "Magnus Archives",
+                "count": "3",
+                "link": "https://www.montecookgames.com/store/product/the-magnus-archives-roleplaying-game/"
+              },
+              {
+                "row": 173,
+                "label": "The Magnus Archives Roleplaying Game",
+                "count": "2",
+                "link": "https://www.montecookgames.com/store/product/the-magnus-archives-roleplaying-game/"
+              }
+            ]
+          },
+          {
+            "url": "https://www.drivethrurpg.com/en/product/203007/blue-rose-the-age-rpg-of-romantic-fantasy",
+            "rows": [
+              {
+                "row": 208,
+                "label": "Blue Rose 1E",
+                "count": "1",
+                "link": "https://www.drivethrurpg.com/en/product/203007/blue-rose-the-age-rpg-of-romantic-fantasy?affiliate_id=2000173"
+              },
+              {
+                "row": 209,
+                "label": "Blue Rose 2E",
+                "count": "1",
+                "link": "https://www.drivethrurpg.com/en/product/203007/blue-rose-the-age-rpg-of-romantic-fantasy?affiliate_id=2000173"
+              }
+            ]
+          }
+        ],
+        [
+          {
+            "url": "https://www.drivethrurpg.com/en/product/447868/uvg-2e-ultraviolet-grasslands-and-the-black-city",
+            "rows": [
+              {
+                "row": 94,
+                "label": "Ultra Violet Grasslands",
+                "count": "3",
+                "link": "https://www.drivethrurpg.com/en/product/447868/uvg-2e-ultraviolet-grasslands-and-the-black-city?affiliate_id=2000173"
+              },
+              {
+                "row": 200,
+                "label": "Black City 2E",
+                "count": "1",
+                "link": "https://www.drivethrurpg.com/en/product/447868/uvg-2e-ultraviolet-grasslands-and-the-black-city?affiliate_id=2000173"
+              }
+            ]
+          },
+          {
+            "url": "https://www.montecookgames.com/store/product/the-magnus-archives-roleplaying-game",
+            "rows": [
+              {
+                "row": 343,
+                "label": "Magnus Archives",
+                "count": "1",
+                "link": "https://www.montecookgames.com/store/product/the-magnus-archives-roleplaying-game/"
+              },
+              {
+                "row": 457,
+                "label": "The Magnus Archives",
+                "count": "1",
+                "link": "https://www.montecookgames.com/store/product/the-magnus-archives-roleplaying-game/"
+              }
+            ]
+          },
+          {
+            "url": "https://www.drivethrurpg.com/en/product/484760/the-magical-land-of-yeld-2nd-edition",
+            "rows": [
+              {
+                "row": 456,
+                "label": "The Magical Land Of Yeld 2Nd Edition",
+                "count": "1",
+                "link": "https://www.drivethrurpg.com/en/product/484760/the-magical-land-of-yeld-2nd-edition?affiliate_id=2000173"
+              },
+              {
+                "row": 497,
+                "label": "Yeld 2E",
+                "count": "1",
+                "link": "https://www.drivethrurpg.com/en/product/484760/the-magical-land-of-yeld-2nd-edition?affiliate_id=2000173"
+              }
+            ]
+          }
+        ]
+      ],
+      "decision": "Source URL match is a QA lead, not proof same edition or duplicate people. Preserve all raw rows, flag aliases; no aggregateunique-system total or mergedrespondentcounts."
+    },
+    {
+      "id": "RAT-QA-EDITORIAL-OMISSION",
+      "fact": "LiveplayedD&DUnspecified31 appearsA9; published top10 skips it while listing lower counts.",
+      "decision": "Use complete table for qualitative comparison, do not treat editorialtop10 as complete ordered result."
+    }
+  ],
+  "high_rank_comparison": [
+    {
+      "game_id": "DND5",
+      "source_label": "D&D 5E",
+      "active_overall_place": 1,
+      "played": {
+        "sheet_row": 4,
+        "source_game_label": "D&D 5E (2014 - 14 2024- 17  Unspecified - 82)",
+        "mentions": 113,
+        "source_link": "https://dndstore.wizards.com/uk/en"
+      },
+      "bought_or_read": {
+        "sheet_row": 12,
+        "source_game_label": "D&D 5E (2014 - 6 2024- 10)",
+        "mentions": 16,
+        "source_link": "https://dndstore.wizards.com/uk/en"
+      },
+      "edition_note": "5e family only; 2014/2024/unspecified mixed; not a 2014-only sample.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "PF2",
+      "source_label": "Pathfinder 2E",
+      "active_overall_place": 2,
+      "played": {
+        "sheet_row": 5,
+        "source_game_label": "Pathfinder 2E",
+        "mentions": 46,
+        "source_link": "https://www.drivethrurpg.com/en/product/443387/pathfinder-second-edition-core-rulebook-roll20-vtt?affiliate_id=2000173"
+      },
+      "bought_or_read": {
+        "sheet_row": 11,
+        "source_game_label": "Pathfinder 2E",
+        "mentions": 21,
+        "source_link": "https://www.drivethrurpg.com/en/product/443387/pathfinder-second-edition-core-rulebook-roll20-vtt?affiliate_id=2000173"
+      },
+      "edition_note": "PF2 family; Remaster/pre-Remaster not separated; linked store product cannot resolve respondents' edition.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "KNAVE2",
+      "source_label": "Knave 2E",
+      "active_overall_place": 3,
+      "played": {
+        "sheet_row": 50,
+        "source_game_label": "Knave 2E",
+        "mentions": 5,
+        "source_link": "https://www.drivethrurpg.com/en/product/484910/knave-second-edition-2e?affiliate_id=2000173"
+      },
+      "bought_or_read": {
+        "sheet_row": 46,
+        "source_game_label": "Knave 2E",
+        "mentions": 5,
+        "source_link": "https://www.drivethrurpg.com/en/product/484910/knave-second-edition-2e?affiliate_id=2000173"
+      },
+      "edition_note": "Explicit second edition.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "SD",
+      "source_label": "Shadowdark",
+      "active_overall_place": 4,
+      "played": {
+        "sheet_row": 7,
+        "source_game_label": "Shadowdark",
+        "mentions": 34,
+        "source_link": "https://www.thearcanelibrary.com/pages/shadowdark?srsltid=AfmBOooUP-MuXAH5WeZHT_4PU0OQNIlGprAe6el2bkmyKmqrD_Vemwqp"
+      },
+      "bought_or_read": {
+        "sheet_row": 8,
+        "source_game_label": "Shadowdark",
+        "mentions": 25,
+        "source_link": "https://www.thearcanelibrary.com/pages/shadowdark?srsltid=AfmBOooUP-MuXAH5WeZHT_4PU0OQNIlGprAe6el2bkmyKmqrD_Vemwqp"
+      },
+      "edition_note": "System label, edition/core-versus-supplement not asked.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "ROOT",
+      "source_label": "Root",
+      "active_overall_place": 5,
+      "played": {
+        "sheet_row": 159,
+        "source_game_label": "Root",
+        "mentions": 2,
+        "source_link": "https://www.drivethrurpg.com/en/product/373406/root-the-roleplaying-game?affiliate_id=2000173"
+      },
+      "bought_or_read": null,
+      "edition_note": "System label; role and source corpus not separated.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "CAIRN2",
+      "source_label": "Cairn",
+      "active_overall_place": 6,
+      "played": {
+        "sheet_row": 23,
+        "source_game_label": "Cairn (Unspecified- 15, 2E - 4)",
+        "mentions": 15,
+        "source_link": "https://cairnrpg.com/second-edition/"
+      },
+      "bought_or_read": {
+        "sheet_row": 10,
+        "source_game_label": "Cairn (Unspecified- 14, 2E - 8)",
+        "mentions": 22,
+        "source_link": "https://cairnrpg.com/second-edition/"
+      },
+      "edition_note": "Ambiguous mixed Cairn label; do not assign aggregate15 to Cairn2. Embedded unspecified15+2e4 not reconciled with total15.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "OSE",
+      "source_label": "Old School Essentials",
+      "active_overall_place": 7,
+      "played": {
+        "sheet_row": 17,
+        "source_game_label": "Old School Essentials",
+        "mentions": 19,
+        "source_link": "https://www.drivethrurpg.com/en/product/272802/old-school-essentials-basic-rules?affiliate_id=2000173"
+      },
+      "bought_or_read": {
+        "sheet_row": 15,
+        "source_game_label": "Old School Essentials",
+        "mentions": 14,
+        "source_link": "https://www.drivethrurpg.com/en/product/272802/old-school-essentials-basic-rules?affiliate_id=2000173"
+      },
+      "edition_note": "OSE label; Basic/Advanced variants not separated.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "MB",
+      "source_label": "Mythic Bastionland",
+      "active_overall_place": 8,
+      "played": {
+        "sheet_row": 14,
+        "source_game_label": "Mythic Bastionland",
+        "mentions": 21,
+        "source_link": "https://www.drivethrurpg.com/en/product/514996/mythic-bastionland?affiliate_id=2000173"
+      },
+      "bought_or_read": {
+        "sheet_row": 4,
+        "source_game_label": "Mythic Bastionland",
+        "mentions": 36,
+        "source_link": "https://www.drivethrurpg.com/en/product/514996/mythic-bastionland?affiliate_id=2000173"
+      },
+      "edition_note": "System label; role not separated.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "DW",
+      "source_label": "Dolmenwood",
+      "active_overall_place": 9,
+      "played": {
+        "sheet_row": 21,
+        "source_game_label": "Dolmenwood",
+        "mentions": 16,
+        "source_link": "https://www.drivethrurpg.com/en/product/208099/welcome-to-dolmenwood?affiliate_id=2000173"
+      },
+      "bought_or_read": {
+        "sheet_row": 9,
+        "source_game_label": "Dolmenwood",
+        "mentions": 23,
+        "source_link": "https://www.drivethrurpg.com/en/product/208099/welcome-to-dolmenwood?affiliate_id=2000173"
+      },
+      "edition_note": "Dolmenwood only; Dungeon World row64 is a distinct game.",
+      "active_input_update": false
+    },
+    {
+      "game_id": "MOTH",
+      "source_label": "Mothership",
+      "active_overall_place": 10,
+      "played": {
+        "sheet_row": 8,
+        "source_game_label": "Mothership",
+        "mentions": 33,
+        "source_link": "https://www.tuesdayknightgames.com/pages/mothership-rpg?srsltid=AfmBOoqrV01uKZcTKBnUpDPHUFXXRmtKOqaosuFG8FOfR6xMdfBf07rJ"
+      },
+      "bought_or_read": {
+        "sheet_row": 7,
+        "source_game_label": "Mothership",
+        "mentions": 25,
+        "source_link": "https://www.tuesdayknightgames.com/pages/mothership-rpg?srsltid=AfmBOoqrV01uKZcTKBnUpDPHUFXXRmtKOqaosuFG8FOfR6xMdfBf07rJ"
+      },
+      "edition_note": "System label; edition not explicit.",
+      "active_input_update": false
+    }
+  ],
+  "candidate_discovery": [
+    {
+      "source_game_label": "Land Of Eem",
+      "played": {
+        "sheet_row": 51,
+        "source_game_label": "Land Of Eem",
+        "mentions": 5,
+        "source_link": "https://landofeem.com/"
+      },
+      "bought_or_read": {
+        "sheet_row": 60,
+        "source_game_label": "Land Of Eem",
+        "mentions": 4,
+        "source_link": "https://landofeem.com/"
+      },
+      "active_ranking_game_id": null,
+      "existing_observation_id": null,
+      "disposition": "Exploratory source lead only:5played codedmentions,4bought/read; no role/map-use or representative strength. Does not establish a high place or justify adding to active pool.",
+      "followup_trigger": "Separate primary rules/map-practice evidence and independent broader audience anchor would make a bounded candidate screen useful."
+    }
+  ],
+  "findings": [
+    "Fresh primary2025-wave aggregate fully retained and audited; empirical counts are coded system mentions from open text, not worldwide active GMs or sessions.",
+    "Public percentages are unsuitable for ranking: an arithmetic denominator mismatch is established against reported itemn; likely category-count divisor is only an inference.",
+    "Shadowdark34, MythicBastionland21, Dolmenwood16 and Knave2e5 are played-row mentions in one opt-in sample. They support targeted source follow-up, not recalibration of active M/p.",
+    "MythicBastionland36bought/read vs21played and Dolmenwood23vs16 belong to different items/denominators; no conversion funnel, retention or subtraction of 'unplayedbuyers'.",
+    "Cairn mixed-edition row cannot supplyCAIRN2counts; PF2cannotidentifyRemaster and5econtains2014/2024/unspecified. DungeonWorld4 is not Dolmenwood16.",
+    "All result crossposts are one wave; recruitment and current liveaggregate snapshots not separate samples. No compatible repeated wave established, so no trend.",
+    "No survey question in selectedcorpus measures regional map creation, uniqueGMs, hexcrawl or digital generator adoption. Active model and product queue receive no numbers or newtasks."
+  ],
+  "unknowns": [
+    "Actual fieldwork opening/closing timestamps beyond dated invitations and plannedclose",
+    "Separate totalN and respondent-duplicate controls",
+    "Per-respondent raw records/alias overlaps/editioncoding rules",
+    "Role-specific system use, geography and weighting",
+    "Cause of live/narrative rowcount discrepancy and Cairn inconsistency",
+    "Verified original form validation/requiredness and shortlink equivalence"
+  ],
+  "operational_requirement": null,
+  "operational_requirement_reason": "This is a market-source audit, not a newly extracted game rule/product operation. No artificial product task; common-rules/game-bindings/backlog untouched.",
+  "decision": {
+    "usability": "qualitative_discovery_and_popularity_triangulation_only",
+    "percentages_to_active": false,
+    "GM_population_to_active": false,
+    "map_creation_input_to_active": false,
+    "active_rating_changed": false,
+    "active_pool_changed": false,
+    "active_cohorts_changed": false,
+    "product_backlog_changed": false,
+    "owner_proposal_required_now": false,
+    "reason": "Source fails transportability and unambiguous respondent/edition coding for model targets; no credible numeric adjustment proposed.",
+    "development_consequence": "Do not mistake broad system mentions for measured regional-map demand. Retain direct L1 artifact/guide verification for high-ranked Shadowdark as next attainable task, rather than reorder product work from this survey."
+  },
+  "next_candidate": {
+    "id": "HX-RSR-SD-TRENDALOR-ARTIFACT-GUIDE",
+    "game_id": "SD",
+    "layer": "L1",
+    "active_reference_rank": 4,
+    "target_url": "https://revivifygames.com/blogs/news/the-overachiever-s-guide-to-lazy-hexcrawl-building",
+    "action": "Start from retainedTrendalorobservation, inspect previously uninspected regional map and linked public playerguide as one bounded project; determine authored-vs-borrowed geography and concrete map-preparation use.",
+    "completion_condition": "Complete accessible map/guide corpus with author/project dedup and source applicability; no repeat of already closed article summary or SD rule audit.",
+    "why_now": "Knave available corpus has an admissibility result; next high-ranked game with a recorded explicit artifact/guide gap and a primary blog source.",
+    "existing_observation_ref": "agent-work/research/observations.json#HX-OBS-SD-TRENDALOR-20250801",
+    "priority_reassessment_required": true
+  },
+  "errors": [
+    {
+      "status": "recovered_or_source_excluded",
+      "run_id": "2026-11-14T0633-recent-survey",
+      "last_successful_step": "Fresh SHA and own claim/started marker persisted; primary aggregate read available",
+      "saved_results": [
+        "agent-work/research/market/recent-survey-2026-11-14-source.json",
+        "agent-work/research/market/recent-survey-2026-11-14.json"
+      ],
+      "exact_continuation": "No immediate retry of excluded form/alternate representation; complete selected aggregate audit and preserve access limits. Reopen form only with new accessible primary data.",
+      "stage": "survey_sheet_metadata",
+      "failed_operation": {
+        "tool": "google_drive.get_spreadsheet_metadata",
+        "action": "Read public result-sheet metadata",
+        "locator": "spreadsheet 14pG9pi-Lkzt4_xnCvoZNJ1MdgXL_VRcSLHRCUA4t2NA"
+      },
+      "observed_error": "InvalidActionArgumentsError: Invalid action arguments",
+      "error_code": "INVALID_ARGUMENT",
+      "cause_status": "confirmed",
+      "confirmed_cause": "Returned argument_binding failure; url argument unsupported.",
+      "stop_reason": null,
+      "needs_owner_action": false,
+      "recovered_by": "Retried once with spreadsheet_id; metadata and bounded ranges read successfully."
+    },
+    {
+      "status": "recovered_or_source_excluded",
+      "run_id": "2026-11-14T0633-recent-survey",
+      "last_successful_step": "Fresh SHA and own claim/started marker persisted; primary aggregate read available",
+      "saved_results": [
+        "agent-work/research/market/recent-survey-2026-11-14-source.json",
+        "agent-work/research/market/recent-survey-2026-11-14.json"
+      ],
+      "exact_continuation": "No immediate retry of excluded form/alternate representation; complete selected aggregate audit and preserve access limits. Reopen form only with new accessible primary data.",
+      "stage": "publication_date_check",
+      "failed_operation": {
+        "tool": "search_service_web_run.open",
+        "action": "Read alternate Reddit representation for publication date",
+        "locator": "https://old.reddit.com/r/rpg/comments/1q2sso6/the_ttrpg_community_in_2025_results/"
+      },
+      "observed_error": "URL https://old.reddit.com/r/rpg/comments/1q2sso6/the_ttrpg_community_in_2025_results/ is not accessible via this tool.",
+      "cause_status": "unknown",
+      "recovered_by": "Dated canonical Reddit indexed text returned 2026-01-03; canonical primary result text remains accessible.",
+      "stop_reason": null,
+      "needs_owner_action": false
+    },
+    {
+      "status": "recovered_or_source_excluded",
+      "run_id": "2026-11-14T0633-recent-survey",
+      "last_successful_step": "Fresh SHA and own claim/started marker persisted; primary aggregate read available",
+      "saved_results": [
+        "agent-work/research/market/recent-survey-2026-11-14-source.json",
+        "agent-work/research/market/recent-survey-2026-11-14.json"
+      ],
+      "exact_continuation": "No immediate retry of excluded form/alternate representation; complete selected aggregate audit and preserve access limits. Reopen form only with new accessible primary data.",
+      "stage": "primary_questionnaire_read",
+      "failed_operation": {
+        "tool": "search_service_web_run.click",
+        "action": "Read organizer-linked primary questionnaire",
+        "locator": "https://forms.gle/GRUGuas4V7tD8d6H9"
+      },
+      "observed_error": "Failed to fetch https://forms.gle/GRUGuas4V7tD8d6H9: (500) Redirected to https://docs.google.com/forms/d/e/1FAIpQLScPwi1ttgLub-49nmn_Jdy5uxfIu6prgbmpEMssDxtqQUrljw/viewform?usp=send_form which is not accessible via this tool. (non-retryable error)",
+      "cause_status": "unknown",
+      "recovered_by": "Exact selected question wording is available in organizer-authored result headings and sheet headers; form validation/required fields/raw questionnaires not claimed.",
+      "stop_reason": null,
+      "needs_owner_action": false
+    },
+    {
+      "status": "recovered_or_source_excluded",
+      "run_id": "2026-11-14T0633-recent-survey",
+      "last_successful_step": "Fresh SHA and own claim/started marker persisted; primary aggregate read available",
+      "saved_results": [
+        "agent-work/research/market/recent-survey-2026-11-14-source.json",
+        "agent-work/research/market/recent-survey-2026-11-14.json"
+      ],
+      "exact_continuation": "No immediate retry of excluded form/alternate representation; complete selected aggregate audit and preserve access limits. Reopen form only with new accessible primary data.",
+      "stage": "recruitment_channel_check",
+      "failed_operation": {
+        "tool": "search_service_web_run.open",
+        "action": "Read additional primary recruitment post",
+        "locator": "https://www.reddit.com/r/Solo_Roleplaying/comments/1pe37co/the_ttrpg_community_in_2025_poll/"
+      },
+      "observed_error": "Failed to fetch https://www.reddit.com/r/Solo_Roleplaying/comments/1pe37co/the_ttrpg_community_in_2025_poll/: DisabledError",
+      "cause_status": "unknown",
+      "recovered_by": "Indexed primary invitation date/text retained as search_snippet only; r/rpg, r/osr and RPGdesign invitations directly read.",
+      "stop_reason": null,
+      "needs_owner_action": false
+    }
+  ],
+  "checks_ref": "agent-work/research/market/recent-survey-2026-11-14-checks.json",
+  "source_snapshot_ref": "agent-work/research/market/recent-survey-2026-11-14-source.json"
+}
