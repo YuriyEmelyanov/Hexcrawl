@@ -79,14 +79,17 @@ export function normalizeRefinementRiverSource(input:SourceInput):NormalizedRefi
 /** Directed arc position; at a bend use the sum of adjacent unit tangents.
  * Endpoint tangents still point downstream, including at a path's final node. */
 function arc(path:RefinementRiverPath,origin:WorldPoint,fraction:number){
- const points=path.vertices.map(v=>refinementWorldPoint(v,origin)),lengths=points.slice(1).map((p,i)=>Math.hypot(p.x-points[i].x,p.y-points[i].y));
+ return refinementPolylineArc(path.vertices.map(v=>refinementWorldPoint(v,origin)),fraction);
+}
+export function refinementPolylineArc(points:readonly WorldPoint[],fraction:number){
+ const lengths=points.slice(1).map((p,i)=>Math.hypot(p.x-points[i].x,p.y-points[i].y));
  const total=lengths.reduce((a,b)=>a+b,0),target=total*fraction,tolerance=1e-10*Math.max(1,total);
  const unit=(i:number)=>({x:(points[i+1].x-points[i].x)/lengths[i],y:(points[i+1].y-points[i].y)/lengths[i]});
  let at=0;
  for(let i=0;i<lengths.length;i++){
   const end=at+lengths[i];
   if(target<=end+tolerance||i===lengths.length-1){
-   const t=Math.max(0,Math.min(1,(target-at)/lengths[i])),point=Object.freeze({x:points[i].x+t*(points[i+1].x-points[i].x),y:points[i].y+t*(points[i+1].y-points[i].y)});
+   const t=Math.max(0,Math.min(1,(target-at)/lengths[i])),point=Object.freeze(fraction===0?{...points[0]}:fraction===1?{...points[points.length-1]}:Math.abs(target-end)<=tolerance?{...points[i+1]}:{x:points[i].x+t*(points[i+1].x-points[i].x),y:points[i].y+t*(points[i+1].y-points[i].y)});
    let tangent=unit(i);
    const neighbor=Math.abs(target-end)<=tolerance&&i+1<lengths.length?i+1:Math.abs(target-at)<=tolerance&&i>0?i-1:null;
    if(neighbor!==null){const b=unit(neighbor);tangent={x:tangent.x+b.x,y:tangent.y+b.y};}

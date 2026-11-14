@@ -62,3 +62,12 @@ hex geometry and small fixed examples; no generated-world series. This checkpoin
 prepares a split graph and port references, not the existing river allocator's
 integration or a complete GeometryPlan. The caller must supply actual open-exit
 refs/allowed boundary edges; internal sector tags cannot create exits.
+
+GEO2 terminal-route integration rationale before test changes: extend the existing
+retained-world logical case to exercise terminal subedge routes, source topology,
+mark arcs and permutation together. Extend existing source-conflict and mark-direction cases rather than add a new
+case for an already covered source path. Existing standalone port
+checks do not detect a source mark still pointing to the old integer endpoint.
+This bounded integration uses already allocated endpoint edges; it preserves the
+interior route skeleton. It is not a simultaneous nearest-port rerouter or the
+actual candidate/lake/sea open-exit adapter. No river-only activation.

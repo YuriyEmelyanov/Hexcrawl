@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {prepareRefinementTerminalRoutes} from '../src/geometryRefinementTerminalRoutes.ts';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {prepareRefinementRivers} from '../src/geometryRefinementRivers.ts';
@@ -54,6 +55,16 @@ test('GEO2 retained zigzag world preserves all53 source segment IDs without new 
  const reordered=world.map.rivers.toReversed().map(r=>({...r,sectors:r.sectors.toReversed().map(s=>({...s,edgeKeys:s.edgeKeys.toReversed()}))}));
  assert.deepEqual(prepareRefinementRiverNetwork({seed:423493684,origin,cells:[...available].reverse(),rivers:reordered,marks}),prepared);
  assert.deepEqual(new Set(r.paths.map(p=>JSON.stringify([p.riverId,p.sourceEdgeKey]))),new Set(segments.map(p=>JSON.stringify([p.riverId,p.edgeKey]))));
+ const linked=prepareRefinementTerminalRoutes({seed:423493684,origin,cells:available,rivers:world.map.rivers,marks:{rapids:new Set(source.segments.map(s=>s.edgeKey)),waterfalls:new Set(source.segments.flatMap(s=>[s.from.key,s.to.key]))}});
+ assert.equal(linked.status,'prepared',JSON.stringify(linked));assert.equal(linked.paths.length,53);assert.equal(linked.ports.filter(p=>p.location.kind==='edge').length,6);
+ const occupied=new Map(),used=new Set();
+ for(const p of linked.paths){const old=r.paths.find(q=>q.riverId===p.riverId&&q.sourceEdgeKey===p.sourceEdgeKey);assert.equal(p.fullness,old.fullness);assert.equal(p.fromNode,old.fromNode);assert.equal(p.toNode,old.toNode);
+  for(let i=0;i<p.nodeKeys.length;i++){const k=p.nodeKeys[i],n=i===0?p.fromNode:i===p.nodeKeys.length-1?p.toNode:null;if(occupied.has(k))assert.ok(n&&occupied.get(k)===n,'no new join');else occupied.set(k,n);}
+  for(const step of p.steps){assert.ok(step.startFraction!==step.endFraction);const k=step.sourceEdgeKey+':'+[step.startFraction,step.endFraction].sort((a,b)=>a-b).join(',');assert.ok(!used.has(k));used.add(k);}
+ }
+ assert.equal(linked.rapids.length,53);assert.equal(linked.waterfalls.length,55);
+ for(const fall of linked.waterfalls)for(const link of fall.incidences){const p=linked.paths.find(p=>p.riverId===link.riverId&&p.sourceEdgeKey===link.sourceEdgeKey);assert.deepEqual(link.point,fall.point);assert.deepEqual(link.point,link.flow==='entering'?p.points.at(-1):p.points[0]);assert.ok(Math.abs(Math.hypot(link.tangent.x,link.tangent.y)-1)<1e-10);}
+ assert.deepEqual(prepareRefinementTerminalRoutes({seed:423493684,origin,cells:available.toReversed(),rivers:reordered,marks:{rapids:new Set(source.segments.map(s=>s.edgeKey).reverse()),waterfalls:new Set(source.segments.flatMap(s=>[s.from.key,s.to.key]).reverse())}}),linked);
  assert.equal(JSON.stringify(world),before);
 });
 
@@ -68,7 +79,7 @@ test('GEO2 source bridge rejects sector direction, coverage and mark-reference c
  assert.equal(source.status,'prepared');assert.equal(source.segments[0].from.key,'z-up');assert.equal(source.segments[0].to.key,'a-down');assert.equal(source.segments[0].fullness,2);
  const changed=structuredClone(data);changed.rivers[0].name='ignored';assert.deepEqual(normalizeRefinementRiverSource(changed),source);
  for(const change of [r=>{r.sectors[0].vertexPath.reverse();r.sectors[0].startVertexKey='a-down';r.sectors[0].endVertexKey='z-up';},r=>r.sectors.push({...r.sectors[0],id:'duplicate',sectorIndex:2}),r=>r.sectors[0].edgeKeys[0]='missing',r=>r.sectors[0].vertexPath[0]={...r.sectors[0].vertexPath[0],x:9}]){
-  const invalid=structuredClone(data);change(invalid.rivers[0]);const result=normalizeRefinementRiverSource(invalid);assert.equal(result.status,'error');assert.equal(result.segments,undefined);assert.ok(result.refs.length);
+  const invalid=structuredClone(data);change(invalid.rivers[0]);const result=normalizeRefinementRiverSource(invalid);assert.equal(result.status,'error');assert.equal(result.segments,undefined);assert.ok(result.refs.length);const linked=prepareRefinementTerminalRoutes({...invalid,seed:42,cells:[{q:0,r:0}]});assert.equal(linked.status,'error');assert.equal(linked.paths,undefined);
  }
  for(const marks of [{rapids:new Set(['foreign']),waterfalls:new Set()},{rapids:new Set(),waterfalls:new Set(['foreign'])}])assert.equal(normalizeRefinementRiverSource({...data,marks}).code,'feature_conflict');
  const hidden=normalizeRefinementRiverSource({...data,marks:{rapids:new Set(),waterfalls:new Set()}});assert.equal(hidden.rapids.length,0);assert.equal(hidden.waterfalls.length,0);assert.notEqual(hidden.sourceSignature,source.sourceSignature);
@@ -85,6 +96,7 @@ test('GEO2 marks use directed arc position on bent refined paths and preserve se
  const boundary=r.boundaries.find(b=>b.end==='end');assert.equal(boundary.sectorId,'one');assert.equal(boundary.reason,'region_boundary');assert.equal(boundary.assignedRegionId,4);assert.equal(boundary.sourceNodeKey,'a-down');assert.deepEqual(boundary.point,fall.point);
  assert.equal(r.completeGeometryPlan,false);assert.ok(Object.isFrozen(rapid.point));assert.ok(Object.isFrozen(fall.incidences));
  assert.deepEqual(prepareRefinementRiverNetwork(input),r);
+ const linked=prepareRefinementTerminalRoutes(input);assert.equal(linked.status,'prepared');const points2=linked.paths[0].points;assert.deepEqual(linked.waterfalls[0].point,points2.at(-1));assert.ok(linked.rapids[0].tangent.y>0);assert.equal(linked.allocation,'existing_endpoint_edges_only');
  // The same undirected geometry with explicit reversed source flow reverses tangents.
  const reverse=structuredClone(data);const river=reverse.rivers[0],s=river.sectors[0];river.vertexPath.reverse();s.vertexPath=[...river.vertexPath];s.startVertexKey='a-down';s.endVertexKey='z-up';reverse.marks.waterfalls=new Set(['z-up']);
  const reversed=prepareRefinementRiverNetwork({...reverse,seed:42,cells:input.cells});assert.equal(reversed.status,'prepared');assert.equal(reversed.rivers.paths[0].fromNode,'a-down');assert.equal(reversed.rivers.paths[0].toNode,'z-up');assert.equal(reversed.waterfalls[0].incidences[0].flow,'entering');assert.ok(reversed.rapids[0].tangent.y<0);assert.ok(rapid.tangent.y>0);
