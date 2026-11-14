@@ -35,6 +35,7 @@ test('GEO2 road search minimizes physical length before exact old-route deviatio
  const top=p(2,1),bottom=p(2,-1),legs={...input,vertices:[top,bottom],legal:(x,y)=>x.x!==y.x&&!(Math.min(x.x,y.x)===0&&Math.max(x.x,y.x)===4)};
  const tie=searchRefinementRoad({...legs,original:[a,b]});assert.equal(tie.status,'prepared');assert.deepEqual(tie.points,[a,bottom,b]);near(tie.lengthMiles,Math.sqrt(20));
  const closer=searchRefinementRoad({...legs,original:[a,top,b]});assert.equal(closer.status,'prepared');assert.deepEqual(closer.points,[a,top,b]);near(closer.deviationSquareMiles,0);
+ assert.throws(()=>refinementRoadObjective([p(0,0),p(1e200,0)],[p(0,1),p(1e200,1)]),/invalid_road_objective/);assert.equal(searchRefinementRoad({from:p(0,0),to:p(1e200,0),original:[p(0,1),p(1e200,1)],vertices:[],legal:()=>true}).code,'invalid_search');
  const illegalShort=searchRefinementRoad({...input,vertices:[top],legal:legs.legal});assert.deepEqual(illegalShort.points,[a,top,b]);assert.ok(illegalShort.lengthMiles>4);
 });
 test('GEO2 dry road detours stay on generated land; exhausted/cancelled search is atomic and not no-path',async()=>{

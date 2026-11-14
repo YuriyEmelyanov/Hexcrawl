@@ -38,6 +38,7 @@ export function refinementRoadObjective(points:Poly,original:Poly){
  const path=clean(points),old=clean(original);if([...path,...old].some((p,i,a)=>i>0&&!Number.isFinite(dist(p,a[i-1])))||path.length<2||old.length<2||path.length>512||old.length>64)throw Error('invalid_road_objective');
  let lengthMiles=0,area=0,work=0;const tick=()=>{if(++work>2000000)throw Error('road_objective_capacity');};
  for(let i=1;i<path.length;i++){lengthMiles+=dist(path[i-1],path[i]);area+=edgeIntegral(path[i-1],path[i],old,tick);}
+ if(!Number.isFinite(lengthMiles)||!Number.isFinite(area))throw Error('invalid_road_objective');
  return Object.freeze({lengthMiles,deviationSquareMiles:area/lengthMiles});
 }
 export function searchRefinementRoad(input:Readonly<{from:Point;to:Point;original:Poly;vertices:Poly;legal:(a:Point,b:Point,charge:()=>void)=>boolean;maxWork?:number;cancelled?:()=>boolean}>){
@@ -58,7 +59,7 @@ export function searchRefinementRoad(input:Readonly<{from:Point;to:Point;origina
    settled.add(current);
    for(let i=0;i<points.length;i++){tick();if(settled.has(i))continue;const k=[Math.min(i,current),Math.max(i,current)].join(':');let edge=edges.get(k);
     if(edge===undefined){const a=points[current],b=points[i],length=dist(a,b);if(!Number.isFinite(length))return error('invalid_search');edge=length>1e-12&&input.legal(a,b,tick)?{length,area:edgeIntegral(a,b,old,tick)}:null;edges.set(k,edge);}
-    if(!edge)continue;const candidate={length:label.length+edge.length,area:label.area+edge.area,path:[...label.path,i]},previous=labels.get(i);if(!previous||compare(candidate,previous)<0)labels.set(i,candidate);
+    if(!edge)continue;if(!Number.isFinite(edge.area)||!Number.isFinite(label.length+edge.length)||!Number.isFinite(label.area+edge.area))return error('invalid_search');const candidate={length:label.length+edge.length,area:label.area+edge.area,path:[...label.path,i]},previous=labels.get(i);if(!previous||compare(candidate,previous)<0)labels.set(i,candidate);
    }
   }}catch(e){if(e instanceof Error&&['search_cancelled','search_incomplete_budget'].includes(e.message))return error(e.message);throw e;}
 }
