@@ -31,7 +31,14 @@ export function projectGeometryRefinementSource(input:GeometrySourceValidationIn
   // mandatory boundary-validation step, including crossings without shared IDs.
   const seams=[...outside.regions.flatMap(r=>r.hexes.filter(c=>oldCells.has(key(c))).map(c=>`region:${r.id}:${key(c)}`)),...outside.rivers.flatMap(r=>r.vertexPath.filter(v=>nodeKeys.has(v.key)).map(v=>`river:${r.id}:${v.key}`)),...outside.roads.flatMap(r=>r.segments.filter(s=>oldCells.has(key(s.from))||oldCells.has(key(s.to))).map(()=>`road:${r.id}`)),...outside.crossings.filter(c=>riverIds.has(c.riverId)||roadIds.has(c.roadId)).map(c=>`crossing:${c.key}`),...outside.water.filter(([,v])=>v.terrainOverride==='lake'&&v.lakeId!==undefined&&lakeIds.has(v.lakeId)).map(([k])=>`lake:${k}`)];
   if(seams.length)return fail('boundary_dependency',seams);
-  const physical=input.map.physicalGrid,rawAuthored=physical?(physical.version===4?physical.geometryRefinement?.sourceState:physical):accepted.sourceState;
+  const physical=input.map.physicalGrid;
+  let rawAuthored=physical?(physical.version===4?physical.geometryRefinement?.sourceState:physical):accepted.sourceState;
+  if(physical?.version===4&&rawAuthored){
+   // Geometry inputs stay authored; local edits/view/focus belong to the live
+   // outer state and may have changed since the refinement was accepted.
+   const {selectedCell:ignoredCell,selectedWorldPoint:ignoredPoint,...source}=rawAuthored;
+   rawAuthored={...source,viewStep:physical.viewStep,fineCellEdits:physical.fineCellEdits,...(physical.selectedCell?{selectedCell:physical.selectedCell}:{}),...(physical.selectedWorldPoint?{selectedWorldPoint:physical.selectedWorldPoint}:{})};
+  }
   if(!rawAuthored||rawAuthored.version!==3)return fail('invalid_authored_source',['physicalGrid']);
   if(rawAuthored.poiFootprints.length>20000||Object.keys(rawAuthored.poiIdentities?.byLegacyRef??{}).length>20000)return fail('scope_capacity',['authored POI owners']);
   // The global snapshot may legitimately contain new owners. Project their
