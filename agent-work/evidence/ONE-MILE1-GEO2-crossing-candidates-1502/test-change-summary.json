@@ -1,0 +1,49 @@
+{
+  "base_sha": "2b44dbd56868f7c16a963c17b1978c434fb12c7b",
+  "head_sha": "851da167aafe0e0e550a1d42d04247ce4174073c",
+  "added": 1,
+  "removed": 0,
+  "modified": 2,
+  "suite": "Node test/geometryRefinementRoads.test.mjs",
+  "logical_cases": {
+    "added": [
+      "GEO2 jointly selects ordered crossing candidates when source and direct roads are lake-blocked"
+    ],
+    "removed": [],
+    "modified": [
+      "GEO2 moved POI retains both source approaches and unrelated roads; whole-cell masks preserve data, internal joins and holes",
+      "GEO2 moved POI composes both approaches with ordered typed bank corridors and legal dry detours"
+    ]
+  },
+  "scenario_risk": "G205/G206: lake-blocked old/direct roads still find a legal ordered typed-crossing alternative, both POI approaches; preserve source key/kind/F/order, actual bank contacts, lake exclusion and atomic budget/cancel/permutation behavior.",
+  "reuse_or_new_reason": "One new distinct recovery case because earlier crossing-only and fixed-bank/dry-POI cases did not exercise invalid source seed. Existing typed composition assertions updated to contract geometry. First existing case has only an unused import addition, no coverage change; explicitly counted as modified block, not new check.",
+  "count_source": "Named node:test block diff on exact git base/head; not file/line/assertion counts",
+  "count_notes": "First modified case only has an unused import added, with no changed assertions/coverage. Second modified case replaces obsolete frozen-bank/vertex-count assertions with identity, exposed contacts and actual lake exclusion.",
+  "temporary_diagnostics": {
+    "retained_fixture": 1,
+    "synthetic_joint_recovery": 1,
+    "replay_same_synthetic_script": true,
+    "permanent_case_growth": false,
+    "separate_from_Node_total": true
+  },
+  "browser_changes": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "rng_browser_changes": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "executed": 408,
+  "passed": 408,
+  "failed": 0,
+  "skipped": 0,
+  "focused": {
+    "executed": 6,
+    "passed": 6,
+    "failed": 0,
+    "included_in_full_total": true
+  }
+}
