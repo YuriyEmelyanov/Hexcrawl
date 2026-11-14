@@ -53,3 +53,12 @@ separate from the original53-segment world, whose diagnostic uses empty mark
 sets explicitly. Actual resolver/UI wiring and geometric terminal/boundary
 constraints are still pending; stored boundary provenance is not proof of a
 continuable fine-map exit.
+
+GEO2-PORTS test rationale, before implementation: existing graph and source cases
+only allocate integer vertices. Two distinct Node cases are needed for terminal
+projection/interior-edge splitting with preserved graph connectivity, and explicit
+boundary/allowed-edge constraints with atomic collision failures. Reuse current
+hex geometry and small fixed examples; no generated-world series. This checkpoint
+prepares a split graph and port references, not the existing river allocator's
+integration or a complete GeometryPlan. The caller must supply actual open-exit
+refs/allowed boundary edges; internal sector tags cannot create exits.
