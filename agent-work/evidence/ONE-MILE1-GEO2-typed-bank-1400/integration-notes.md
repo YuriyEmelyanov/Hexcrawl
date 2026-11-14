@@ -1,0 +1,19 @@
+GEO2-v2 fixed typed banks checkpoint 2b44dbd56868f7c16a963c17b1978c434fb12c7b, tree a5cb959c89d265dc6fc60d3d2cf7c8deece9c9c4
+
+Base5dda0a3; branch agent/hx-bl-051-geo2; no App/public16/accepted map changes, no main merge or PR503 update. Existing PR503 remains3344159406c3619bc3903e7185f7b0a5c4d13de5.
+
+A legal direct leg is tested first and certified as direct_euclidean, before building the large visibility graph; all consumed work remains in the shared budget. Only explicit known bank endpoints with actual finite-water clearance0 can touch water. Positive wet intervals still reject the dry edge; arbitrary inside-water endpoints do not become crossings. Numeric vertex values normalize signed zero, not only their string keys.
+
+For a moved-POI road with typed crossings, validate a source-axis seed, retain each ordered Crossing.key/kind/point/bankPath, find legal dry legs through designated POI entries and between those bank paths, then revalidate the whole assembled path. Both approaches and unrelated roads remain. Intersection validation has an aggregate2million work bound and cancellation checks. Seed/ref/crossing/fullness/order/lake conflict returns no partial roads. Fixed bank seeds are an intermediate restriction, not global joint crossing placement/shortest continuous geometry.
+
+Five focused Node cases pass after development corrections. The new synthetic composition case has two ordered crossings (ferry,bridge), two approaches, a lake detour, permutation and atomic budget/cancel/invalid-ref probes. Existing objective/dry cases cover a clear100cell land route and endpoint-only bank contact. Initially a negative test incorrectly expected no path across a finite river; a dry longer detour is legal and is now asserted. A nullable clearance TypeScript guard and explicit endpoint authorization were corrected before the final full check. No extra final full suite is repeated without source changes.
+
+Retained source witness reuses the existing map, keeps53river segment refs,31road parts and7crossings (4bridge/3ferry) plus a separately explicitF2ford variant. It supplies no actual POI move/footprint; these counts do not prove a real POI relocation or live rendering. Check/witness/script files are reproducible at exactSHA on Node24. Browser/RNG UI suites remain mandatory before full integration review.
+
+- Unmounted preparation only; GeometryPlan/actual feature+owner adapters/public16/history/source-edit auto-shifts/UI/PNG remain unimplemented or unverified.
+- Typed crossing composition preserves independently validated source-axis bank corridors. A missing valid seed returns an explicit limitation; global crossing-position relocation and joint continuous optimality are not solved.
+- Nonstraight paths are shortest only in the supplied finite visibility graph, capped512 nodes. Sampling curved-boundary candidates does not prove continuous completeness. Legal direct paths bypass this capacity and attain the Euclidean lower bound.
+- Actual retained fixture has no supplied eligible POI movements/footprints; moved-POI/obstacle and large-land positive examples are synthetic.
+- Full new-SHA independent package review and separate owner release permission remain required; no activation/main/PR503 update or score award.
+
+Next: Программист продолжает HX-BL-051/ONE-MILE1-GEO2-PLAN с 2b44dbd56868f7c16a963c17b1978c434fb12c7b: перейти от фиксированных source-axis bank seeds к совместной допустимой расстановке переправ там, где seed отсутствует/неоптимален; завершить полноту candidate-сети и единый бюджет prepare. Подключить actual owner/requirement/rapid/waterfall/crossing/start refs, объединить реку/POI/дороги/устья в GeometryPlan, затем public16/physical4/sourceFingerprint, автоматическую Q01 source-closure с одной Undo/Redo, общие stroke/dash/rails/PNG маски и фактический UI. После G201–G210/обязательных проверок — независимый review точного полного SHA; публикация отдельно.
