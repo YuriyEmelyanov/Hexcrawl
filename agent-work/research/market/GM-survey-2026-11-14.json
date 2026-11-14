@@ -1,0 +1,318 @@
+{
+  "schema_version": 1,
+  "experiment_id": "HX-RSR-EXP-SURVEY-WAVE-COMPARABILITY-v1",
+  "version": 1,
+  "run_id": "2026-11-14T1029-GM-survey",
+  "status": "completed_qualitative_cross_wave_admissibility",
+  "definition": "Validate whether two published survey waves have comparable constructs, coding and denominators before treating them as a time series. No new audience indicator or numerical weight.",
+  "selected_task": {
+    "id": "HX-RSR-DH-SURVEY-WAVE-COMPARABILITY-v1",
+    "outcome": "Complete 2025-to-2026 measurement-comparability audit for Daggerheart survey system/map/tool questions, adding only new cross-wave findings to existing single-wave suitability work.",
+    "completion_condition": "Read both primary wave methods and Q4/map/worldbuilding/VTT blocks, inspect both published map charts, compare wording/options/denominator/recruitment/role/time, validate arithmetic and identify exactly which trend interpretations are unsupported; preserve findings without new numeric weights.",
+    "alternatives": [
+      {
+        "id": "DH-2026-single-wave",
+        "reason": "Retained experiment GM-survey-suitability-v1 already closes 2026 role/n/recency/export applicability."
+      },
+      {
+        "id": "EEM-or-Rat2025-repeat",
+        "reason": "Both bounded outcomes closed; no new source or reason to rescan."
+      }
+    ]
+  },
+  "prior_evidence_reused": [
+    "agent-work/research/experiments/GM-survey-suitability-v1.json",
+    "agent-work/research/market/DH-GM-survey-2026-11-10.json"
+  ],
+  "new_vs_prior": "New side-by-side2025/2026 question/category/visual-chart reconciliation and conditional union bound. Existing2026 activity/tool-use interpretation not recounted as new respondents.",
+  "sources": [
+    {
+      "id": "DH-SURV25",
+      "url": "https://www.daggerheartdispatch.com/daggerheart-gm-tools-survey-2025/",
+      "access_level": "full_text",
+      "published_at": null,
+      "locator": "Full methods; Q4,6,11,13; original map chart",
+      "author_project_key": "the-dispatch:daggerheart-gm-survey:2025"
+    },
+    {
+      "id": "DH-SURV26",
+      "url": "https://www.daggerheartdispatch.com/daggerheart-2026-survey/",
+      "access_level": "full_text",
+      "published_at": "2026-10-17",
+      "publication_date_evidence": "Publisher homepage/archive listing",
+      "locator": "Full methods; Q4,8,19,23,25; original map chart",
+      "author_project_key": "the-dispatch:daggerheart-gm-survey:2026"
+    },
+    {
+      "id": "DH-SURV26-INVITE",
+      "url": "https://www.reddit.com/r/daggerheart/comments/1wp3cq3/the_2026_gm_survey/",
+      "access_level": "search_snippet",
+      "published_at": "2026-09-24",
+      "locator": "Indexed invitation; direct open DisabledError. No exact fieldwork start inferred."
+    }
+  ],
+  "waves": {
+    "y2025": {
+      "wave_key": "the-dispatch:daggerheart-gm-survey:2025",
+      "fieldwork_months": [
+        "2025-09"
+      ],
+      "exact_start": null,
+      "exact_end": null,
+      "N": null,
+      "N_reported_lower_bound_exclusive": 200,
+      "item_n": null,
+      "geography": "US,CAN/UK/AUS,Europe,other regions as report; no weighting",
+      "language": "English report; participant language distribution unknown",
+      "recruitment": "Community publication; detailed channel counts not given in selected methods",
+      "sample_overlap_with_2026": null
+    },
+    "y2026": {
+      "wave_key": "the-dispatch:daggerheart-gm-survey:2026",
+      "fieldwork_months": [
+        "2026-09",
+        "2026-10"
+      ],
+      "exact_start": null,
+      "exact_end": null,
+      "N": 987,
+      "item_n": null,
+      "geography": "Not supplied in methods; no geographic weighting",
+      "language": "English recruitment/report, participant language distribution unknown",
+      "recruitment": "Voluntary Dispatch + Daggerheart subreddit; equal answer weights; unanswered excluded per item",
+      "duplicate_respondent_policy": "Not supplied in read methods; channels not independent audiences",
+      "sample_overlap_with_2025": null
+    }
+  },
+  "comparison_rows": [
+    {
+      "id": "systems",
+      "locators": {
+        "y2025": "Q4 lines56-64",
+        "y2026": "Q4 lines57-66"
+      },
+      "question_verbatim": "Which Games Do You Mostly Play?",
+      "wording_status": "Published report heading; full original questionnaire not retrieved",
+      "role": "GM-recruited sample, question asks play rather than which games respondent GMs",
+      "recall_period": null,
+      "selection": "Nonexclusive reported percentages; multi-select inferred from totals, exact form control unverified",
+      "y2025": {
+        "Daggerheart": 96.1,
+        "D&D/Pathfinder": 69.7,
+        "Indie": 23.7,
+        "OSR": 15.8,
+        "Other": 18.2
+      },
+      "y2026": {
+        "Daggerheart": 95.7,
+        "D&D": 56.9,
+        "Pathfinder": 9.2,
+        "OSR": 7.3,
+        "PbtA / related games": 12.1,
+        "Other": 22.3
+      },
+      "decision": "Separate-only snapshots; combined category split, Indie/PbtA not equivalent. No edition-specific or GM-per-system assignment.",
+      "conditional_union": {
+        "assumption": "2026 percentages share same Q4 respondent denominator and represent marks by respondents",
+        "min_pct": 56.9,
+        "max_pct": 66.1,
+        "formula": "max(A,B) <= P(A union B) <= min(100,A+B)",
+        "not_a_trend": true,
+        "unknown_intersection_pct": [
+          0,
+          9.2
+        ]
+      }
+    },
+    {
+      "id": "maps",
+      "locators": {
+        "y2025": "Q11 lines148-158 + linked chart",
+        "y2026": "Q23 lines299-310 + linked chart"
+      },
+      "question_verbatim": "Maps",
+      "wording_status": "Report category, not a complete original question",
+      "role": "GM-oriented respondents; map maker versus purchaser not separately measured",
+      "recall_period": null,
+      "selection": "Pie partitions near100%; exact form control/coding denominator unverified",
+      "y2025": {
+        "Inkarnate": 22.7,
+        "Czepuku": 20.6,
+        "DungeonScrawl": 7.2,
+        "None": 3.1,
+        "Other": 46.4
+      },
+      "y2026": {
+        "Czepeku": 25.5,
+        "Inkarnate": 13.9,
+        "Dungeon Draft": 9.5,
+        "Dungeon Scrawl": 2.5,
+        "Other": 48.5
+      },
+      "aliases": [
+        {
+          "from": "Czepuku",
+          "to": "Czepeku",
+          "basis": "2025 links same publisher and article prose; corrected spelling 2026",
+          "silent_overwrite": false
+        },
+        {
+          "from": "DungeonScrawl",
+          "to": "Dungeon Scrawl",
+          "basis": "Same referenced tool; retain raw labels"
+        }
+      ],
+      "decision": "Published category set changed: None removed, Dungeon Draft newly separate (already cited among tools in2025). This proves reporting-schema drift, not that questionnaire checkbox options changed. Cannot infer new tool adoption from a newly separate category, or map-creation market from these shares."
+    },
+    {
+      "id": "worldbuilding",
+      "locators": {
+        "y2025": "Q6 lines80-89",
+        "y2026": "Q19 lines239-249"
+      },
+      "question_verbatim": null,
+      "wording_status": "Report category only",
+      "role": "GM-oriented",
+      "recall_period": null,
+      "selection": "Published partition, form control unknown",
+      "y2025": {
+        "Google Sheets/Docs": 32.7,
+        "Obsidian": 30.6,
+        "Notion": 12.2,
+        "Legend Keeper": 4.1,
+        "Other": 20.4
+      },
+      "y2026": {
+        "Google Sheets/Docs": 34,
+        "Obsidian": 27.3,
+        "Heart of Daggers": 7.2,
+        "Notion": 4.5,
+        "Legend Keeper": 3.2,
+        "Other": 23.7
+      },
+      "decision": "Newly separate destination and unaligned samples; existing destination context only, no attrition/growth or export-demand estimate."
+    },
+    {
+      "id": "vtt",
+      "locators": {
+        "y2025": "Q13 lines174-188",
+        "y2026": "Q25 lines325-337"
+      },
+      "question_verbatim": null,
+      "wording_status": "Report category only",
+      "role": "GM-oriented",
+      "recall_period": null,
+      "selection": "Published partition, form control unknown",
+      "y2025": {
+        "Roll20": 35.7,
+        "Foundry": 23.5,
+        "Discord": 19.4,
+        "Owlbear Rodeo": 16.3,
+        "Other": 5.1
+      },
+      "y2026": {
+        "Foundry": 29.3,
+        "Owlbear Rodeo": 18.7,
+        "Roll20": 16.3,
+        "Discord voice/video dice bot": 7.7,
+        "Alchemy": 5.7,
+        "Other": 22.2
+      },
+      "decision": "Named category and Discord label changed. Within-wave ordering is published description; do not claim same GMs migrated, platform market shares changed, or VTT usage measures regional map creation."
+    },
+    {
+      "id": "recency",
+      "locators": {
+        "y2025": "No matching item in16-category report",
+        "y2026": "Q8 lines107-117 explicitly described as new"
+      },
+      "question_verbatim": "When Did You Last Run a Daggerheart Session?",
+      "wording_status": "Published report heading; not original form",
+      "role": "Explicit self-reported GM activity for DH",
+      "recall_period": "Recency relative to response date, not November retrieval",
+      "selection": "Recency categories; exact form unknown",
+      "y2025": null,
+      "y2026": {
+        "week": 46.3,
+        "month excluding week bucket": 33.3,
+        "3months": 10.8,
+        "6months": 4.3,
+        "over6months": 3.5,
+        "not_yet": 1.8
+      },
+      "decision": "2026 baseline only; cannot construct2025→2026 retention or growth. Already covered single-wave suitability is reused, not a new observation of people."
+    }
+  ],
+  "chart_inspection": {
+    "performed": true,
+    "method": "Download exact primary chart URLs; visual inspection both originals; no item n printed in either image",
+    "assets": [
+      {
+        "year": 2025,
+        "url": "https://storage.ghost.io/c/a2/a7/a2a75ea5-215f-4389-89a4-6fca188efa90/content/images/2025/10/The-Dispatch_Survey_Maps.png",
+        "sha256": "8a7b2854926a37d964d219a324628de7311b8a8ab981fc2cd904015e870a4e2a",
+        "bytes": 69853
+      },
+      {
+        "year": 2026,
+        "url": "https://storage.ghost.io/c/a2/a7/a2a75ea5-215f-4389-89a4-6fca188efa90/content/images/2026/10/Map-Tools_Daggerheart-Dispatch.png",
+        "sha256": "6ffb5fc9e2c2ecc48d25bfb087ca62709682fe53a8deac047cb9955b49902561",
+        "bytes": 92702
+      }
+    ],
+    "archive_binary": false
+  },
+  "source_questionnaire_and_raw_data": {
+    "original_form_retrieved": false,
+    "raw_rows_retrieved": false,
+    "report_links": "Inspected result-page links offer charts and article links; original form/data not supplied there. Focused invitation search locates primary post but direct text unavailable. No claim that data do not exist elsewhere.",
+    "exact_response_counts": null
+  },
+  "facts_vs_inference": "Reported numbers/category labels are facts. Noncomparability, union bounds and product consequences are analyst reasoning. Pie shape/100% sum do not prove exact form choice type.",
+  "development_effect": {
+    "layer": "L1",
+    "decision": "Do not use reported ready-map versus tool share changes as evidence to switch HexCrawl priority from creating to importing maps, or to activate EXPORT1. Shared note/export proposals remain separately gated.",
+    "new_rules": 0,
+    "new_bindings": 0,
+    "new_tasks": 0,
+    "operational_requirement_applicability": "Not a game-rule extraction or product specification. No new product operation introduced; operational_requirement is not applicable to this measurement audit.",
+    "existing_owner_decision_preserved": "HX-BL-029-EXPORT1-v1"
+  },
+  "numeric_policy": {
+    "active_rating_changed": false,
+    "active_inputs_changed": false,
+    "active_pool_changed": false,
+    "active_numeric_method_changed": false,
+    "calibration": "qualitative only",
+    "numeric_effect_proposal_ref": null,
+    "counts_reconstruction": false,
+    "people_added": 0
+  },
+  "unknowns": [
+    "Exact item n and original form wording/control/coding manual",
+    "Repeat respondents and matched sample",
+    "Map type/scale, new geography versus ready map usage",
+    "Role of respondent for each non-DH system",
+    "GM market population, map creation prevalence and tool switching propensity"
+  ],
+  "errors": [
+    {
+      "status": "recovered_partial_source_access",
+      "run_id": "2026-11-14T1029-GM-survey",
+      "stage": "recruitment_questionnaire_check",
+      "last_successful_step": "Read both primary result articles and linked chart locators",
+      "failed_operation": {
+        "tool": "search_service_web_run.open",
+        "action": "Read primary 2026 survey invitation",
+        "locator": "https://www.reddit.com/r/daggerheart/comments/1wp3cq3/the_2026_gm_survey/"
+      },
+      "observed_error": "Failed to fetch https://www.reddit.com/r/daggerheart/comments/1wp3cq3/the_2026_gm_survey/: DisabledError",
+      "cause_status": "unknown",
+      "stop_reason": null,
+      "recovered_by": "Primary result/methods articles remain accessible; indexed invitation retained as search_snippet only. No technical bypass or questionnaire wording inferred.",
+      "needs_owner_action": false,
+      "owner_action": null
+    }
+  ]
+}
+
