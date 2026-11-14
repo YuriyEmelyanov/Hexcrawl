@@ -81,6 +81,8 @@ test('GEO2 scoped source projection retains literal choices and refuses hidden b
  assert.equal(projected.status,'projected',JSON.stringify(projected));assert.equal(projected.readyForApplication,false);assert.equal(projected.boundaryValidation,'required');
  assert.equal(projected.geometryRefinement,g);assert.equal(projected.input.map.regions[0],input.map.regions[0]);assert.deepEqual(projected.input.landCells,input.landCells);assert.equal(projected.outside.regions[0],extra);
  assert.equal(validateGeometryRefinementSource(projected.input,g),true);assert.equal(JSON.stringify(expanded),beforeProjection);
+ assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,physicalGrid:result.candidateState}},g).status,'projected');
+ const changedAuthored=copy(g.sourceState);changedAuthored.poiFootprints[0].worldAnchor.x+=.1;assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,physicalGrid:changedAuthored}},g).code,'scope_source_changed');
  const overlap=projectGeometryRefinementSource({...expanded,map:{...expanded.map,regions:[...input.map.regions,{...extra,hexes:[input.map.regions[0].hexes[0]]}]}},g);assert.equal(overlap.code,'boundary_dependency');assert.equal(overlap.input,undefined);
  const altered=projectGeometryRefinementSource({...expanded,map:{...expanded.map,roads:expanded.map.roads.map((r,i)=>i?r:{...r,segments:r.segments.map((s,j)=>j?s:{...s,kind:s.kind==='road'?'trail':'road'})})}},g);assert.equal(altered.code,'scope_source_changed');
  const lost=projectGeometryRefinementSource({...expanded,map:{...expanded.map,rivers:expanded.map.rivers.slice(1)}},g);assert.equal(lost.code,'missing_scope_reference');
