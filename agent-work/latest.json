@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "date": "2026-11-14",
+  "date": "2026-11-15",
   "branch": "agent/hx-bl-051-geo2",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-15T0108-programmer-GEO2-browser-runtime",
+  "run_id": "2026-11-15T0202-programmer-GEO2-scope-projection",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "GEO2_implementation_continues_browser_environment_blocked",
+  "status": "scope_projection_implemented_GEO2_in_progress",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,9 +40,18 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
-    "status": "verified_latest_last",
-    "materials_commit_sha": "77f5efb9967b400544323e2dff944e15359184d0",
-    "verified_material_files": 11
+    "status": "materials_verified_latest_written_last",
+    "materials_commit_sha": "4d6f7d73fade5db6860a4d77a72dd8b42cf1a033",
+    "verified_material_files": 12,
+    "method": "Exact UTF8 readback of all material files before latest-only commit",
+    "preserved": [
+      "other_active_claims",
+      "research_agent",
+      "confirmed_points",
+      "unverified_weight",
+      "latest_GEO2_implementation",
+      "latest_GEO2_runtime_verification"
+    ]
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -55,10 +64,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
   "spec_version": "GEO2-v2",
-  "result_path": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
-  "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
+  "result_path": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+  "handoff_commit_sha": "4d6f7d73fade5db6860a4d77a72dd8b42cf1a033",
   "active_claim": null,
-  "next_step": "Программист продолжает HX-BL-051/GEO2 с f522b356afadf947f5ff95ebfc8bc40f9616dbbf: реализовать scoped refinement при расширении (новые регионы не уточняются автоматически, только необходимая старая closure), затем видимый preview/карта/PNG. Эту разработку не останавливать из-за локального браузера. G210 выполнить на точном новом SHA в runner, разрешающем Chromium socket(); повторная установка бинарника не устраняет подтверждённый EPERM. После полного пакета — независимый reviewer и score_assessment1.2; публикация отдельно.",
+  "next_step": "Программист продолжает HX-BL-051/GEO2 с 8230c00dcda0e9c723278c1e71193f8b72bacf15: связать projectGeometryRefinementSource с пространственной проверкой новых границ и global physical4 bookkeeping. Сохранить новые unrefined регионы, все authored владельцы/правки, старые literal choices; обновить parser/источник и16 roundtrip, интегрировать через реальный recordGenerated/UndoRedo. Результат projected никогда не считать готовым Apply: boundaryValidation=required. Затем карта/PNG/первоначальный preview, G201–G210 и независимый exact-SHA review+score_assessment1.2. Browser — только на разрешающем Chromium socket() runner; не повторять установку без нового evidence. Публикация отдельно.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -122,15 +131,15 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340",
+  "evidence_path": "agent-work/evidence/GEO2-scope-projection-20261115-0202",
   "branch_name": "agent/hx-bl-051-geo2",
   "pr": 503,
-  "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
-  "tree_sha": "e29db566faa83fc0b8ea16dce81164b050f066b1",
-  "checks_status": "build_passed_browser_launch_permission_blocked",
+  "head_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+  "tree_sha": "6102bd7fed94a21bd944c94dbef7695d582bc633",
+  "checks_status": "node_build_passed_browser_pending_known_environment_blocker",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/checks.json",
   "review_verdict": "not_reviewed_on_this_SHA",
-  "role_selection_mode": "queue_readiness",
+  "role_selection_mode": "readiness_and_current_owner_direction",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
   "process_commit_sha": "e7e046530757ae2067de13a4075fb0526ca429ee",
@@ -230,7 +239,7 @@
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
-  "role_selection_reason": "Approved unfinished GEO2 requires G210. Newly observed system Chromium is new evidence allowing a bounded runtime recovery attempt, not repeated installation/research. No foreign active task claim.",
+  "role_selection_reason": "Continue existing approved HX-BL-051/GEO2 after completed interview; browser environment blocker does not block detached source-domain implementation; no competing active task claim.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -250,28 +259,28 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "42031f78615d5bd03cd9e7d7ab5b8e172adbafc9",
+  "base_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-14T22:08:27.646Z",
+      "checked_at": "2026-11-14T23:03:05.443Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-14T22:11:55.739Z",
+      "checked_at": "2026-11-14T23:28:20.150Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "restoration": {
       "performed": false,
-      "reason": "Both actual observations enabled"
+      "reason": "Actual start/end observations enabled"
     },
     "errors": [],
-    "scope": "Point-in-time observations; no guarantee of subsequent state. Prompt/schedule unchanged."
+    "scope": "Point-in-time checks only, no guarantee of subsequent state; same task/prompt/schedule unchanged."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_insufficient_evidence_whole_grades",
@@ -706,7 +715,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42592886004",
   "next_task_execution_allowed": true,
   "last_release_pr": 497,
-  "last_material_result_path": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
+  "last_material_result_path": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "final_ready_for_development",
   "previous_task_release_approval": {
@@ -873,7 +882,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-14T22:13:26.334Z",
+  "updated_at": "2026-11-14T23:31:49.949Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1012,38 +1021,61 @@
   },
   "test_change_summary": {
     "base_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
-    "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
-    "added": 0,
+    "head_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+    "added": 1,
     "removed": 0,
     "modified": 0,
-    "suite": "Node/browser/RNG separately",
-    "scenario_risk": "Required browser acceptance blocked before scenarios; verify runtime capability without modifying assertions.",
-    "reuse_or_new_reason": "Existing browser runners reused; no source/test edits or new statistical series.",
-    "count_source": "git diff HEAD empty and exact SHA/tree unchanged; tracked test files unchanged.",
-    "node": {
-      "executed": 0,
-      "passed": 0,
-      "skipped": 0,
-      "prior_validation_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/checks.json",
-      "prior_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
-      "prior_passed": 416,
-      "rerun": false
-    },
+    "suite": "Node",
+    "suites": [
+      {
+        "suite": "test/geometryPlan.test.mjs",
+        "base_named_cases": 2,
+        "head_named_cases": 3,
+        "added_named_cases": [
+          "GEO2 scoped source projection retains literal choices and refuses hidden boundary dependencies"
+        ],
+        "added": 1,
+        "removed": 0,
+        "modified": 0
+      }
+    ],
+    "scenario_risk": "Scope projection must retain literal model/source inputs and not hide new boundary references or changed authored geometry.",
+    "reuse_or_new_reason": "New detached selection contract absent from existing persistence/handler tests; one group reuses retained fixture and cached accepted setup, no repeated world-generation series.",
+    "count_source": "Exact base/head named logical test-call comparison; imports/whitespace are not logical modifications. Existing2 accepted/persistence groups unchanged; one source-domain group added.",
     "browser": {
-      "commands_attempted": 1,
-      "command_exit_code": 1,
-      "executed_scenarios": 0,
-      "passed_scenarios": 0,
-      "assertion_failures": 0,
-      "status": "launch_blocked"
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "executed": 0,
+      "reason": "Not rerun: detached Node-only module not activated; actual Chromium socket EPERM evidence in previous run."
     },
     "rng_browser": {
-      "commands_attempted": 1,
-      "command_exit_code": 1,
-      "executed_scenarios": 0,
-      "passed_scenarios": 0,
-      "assertion_failures": 0,
-      "status": "launch_blocked"
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "executed": 0
+    },
+    "executed": 417,
+    "passed": 417,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 865925.669964,
+    "parameterized_subscenarios": {
+      "within_one_new_case": [
+        "unchanged scope and physical4 source",
+        "outside record separation",
+        "changed authored anchor",
+        "old road class change",
+        "missing old river ID",
+        "new shared river vertex",
+        "new old crossing ref",
+        "extension of old lake ID",
+        "input permutation",
+        "capacity",
+        "cancel"
+      ],
+      "not_additional_runner_cases": true
     }
   },
   "review_url": null,
@@ -1092,7 +1124,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340",
+  "evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1409,7 +1441,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1755,7 +1787,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-12T0204-programmer-ONE-MILE1.json",
-  "handoff_path": "agent-work/handoffs/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+  "handoff_path": "agent-work/handoffs/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "ui_actual_preview": {
     "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
     "manifest_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/ui-manifest.json",
@@ -2255,9 +2287,9 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/GEO2-browser-runtime-20261115-0108/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/score-evidence.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-14T2239-programmer-GEO2-special-POI.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/score-evidence.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
   "github_review_state": "COMMENT; operational acceptance by fresh independent non-implementer. Same GitHub identity owns PR; formal self-approval unavailable.",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
@@ -2351,64 +2383,18 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": "PF2-BATCH1-lifecycle-autofill-UI",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-11T0356-PF2-BATCH1-lifecycle-UI.json",
-  "authorization_status": "approved existing task release UI-presentation only; code accepted; publication not authorized",
-  "completed_at": "2026-11-14T21:40:26.212Z",
+  "authorization_status": "approved_implementation_separate_release_gate",
+  "completed_at": "2026-11-14T23:29:26.495Z",
   "score_changed": false,
   "next_stage_id": "ONE-MILE1-GEO2-DOMAIN-UI",
   "score_evidence_updated": true,
-  "current_stage_id": "ONE-MILE1-GEO2",
+  "current_stage_id": "ONE-MILE1",
   "implementation_started": true,
   "current_stage_release_approved": false,
   "review_ready": false,
   "current_stage_ui_status": "visible_GEO2_activation_and_actual_preview_pending",
-  "completed_claim": {
-    "run_id": "2026-11-14T2340-programmer-GEO2-GeometryPlan",
-    "task_id": "HX-BL-051",
-    "role": "programmer",
-    "status": "GeometryPlan_persistence_same_domain_Q01_implemented_GEO2_in_progress",
-    "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
-    "tree_sha": "e29db566faa83fc0b8ea16dce81164b050f066b1",
-    "result_ref": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-14T2340-GEO2-GeometryPlan-continue.json",
-    "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/checks.json",
-    "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/score-evidence.json",
-    "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/test-change-summary.json",
-    "evidence_commit_sha": "e772daa952d126628a44b913f21445c40388edc0",
-    "automation_health": {
-      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
-      "start": {
-        "checked_at": "2026-11-14T20:40:27.824Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true
-      },
-      "end": {
-        "checked_at": "2026-11-14T21:44:08.689Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true
-      },
-      "restoration": {
-        "performed": false,
-        "reason": "Both actual observations enabled; update not needed"
-      },
-      "errors": [],
-      "scope": "Point-in-time actual peek observations only; no guarantee against subsequent service changes. Same task, prompt and schedule unchanged.",
-      "previous_end_observation": {
-        "checked_at": "2026-11-14T21:38:54.616Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true
-      }
-    },
-    "next_role": "programmer",
-    "next_step": "Программист продолжает утверждённую HX-BL-051/GEO2 на f522b356afadf947f5ff95ebfc8bc40f9616dbbf: реализовать область применения при расширении — новые регионы остаются неуточнёнными, затронутые пограничные зависимости атомарны, неизменённые пути буквальны. Затем подключить сохранённый GeometryPlan к карте/PNG и компактному первоначальному preview/Apply/Cancel; обычные правки уже используют Q01 без дополнительного UI. Довести G201–G210 и фактический desktop/узкий RU/EN показ, браузерные проверки после восстановления runtime; затем независимая проверка полного точного SHA с score_assessment1.2. Публикация отдельно разрешается владельцем.",
-    "review_ready": false,
-    "release_authorized": false,
-    "execution_running": false
-  },
-  "evidence_commit_sha": "e772daa952d126628a44b913f21445c40388edc0",
+  "completed_claim": "agent-work/claims/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+  "evidence_commit_sha": "4d6f7d73fade5db6860a4d77a72dd8b42cf1a033",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-11-11-PR496-release-ready.json",
   "current_stage_ui_preview": {
@@ -4256,13 +4242,21 @@
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": {
-    "build": "passed",
-    "node": "prior416/416 on same SHA reused, not rerun",
-    "browser": "EPERM before scenarios",
-    "browser_rng": "EPERM before scenarios"
+    "source_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+    "node": {
+      "executed": 417,
+      "passed": 417,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "typescript": "passed",
+    "production_build": "passed",
+    "browser": "not_rerun_detached_Node_only_module; prior Chromium socket EPERM remains environment blocker",
+    "browser_evidence_ref": "agent-work/evidence/GEO2-browser-runtime-20261115-0108/checks.json"
   },
   "full_E5_UI_pending": true,
-  "materials_commit_sha": "b507cead9d9cf315df8d2faced9d6b6a1ca9c106",
+  "materials_commit_sha": "4d6f7d73fade5db6860a4d77a72dd8b42cf1a033",
   "latest_HX_BL_023_E5_features_ui_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-features-ui",
     "role": "developer",
@@ -4858,26 +4852,56 @@
   },
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
-    "run_id": "2026-11-14T2239-programmer-GEO2-special-POI",
+    "run_id": "2026-11-15T0202-programmer-GEO2-scope-projection",
     "task_id": "HX-BL-051",
-    "stage_id": "ONE-MILE1",
-    "substage": "GEO2-SPECIAL-POI",
     "role": "programmer",
-    "status": "special_POI_implemented_GEO2_in_progress",
-    "head_sha": "cea2f93266913303833ef09477bc8f0c33be63d3",
-    "tree_sha": "70a4d7d6613cc2d0ed5b2556871b265b3f15691f",
+    "stage_id": "ONE-MILE1",
+    "substage": "GEO2-scope-projection",
+    "status": "scope_projection_implemented_GEO2_in_progress",
+    "head_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+    "tree_sha": "6102bd7fed94a21bd944c94dbef7695d582bc633",
     "working_branch": "agent/hx-bl-051-geo2",
+    "result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+    "checks_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/checks.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/score-evidence.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/test-change-summary.json",
+    "evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T0202-programmer-GEO2-scope-projection.json",
     "execution_running": false,
-    "result_ref": "agent-work/results/2026-11-14T2239-programmer-GEO2-special-POI.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-14T2239-GEO2-special-POI-continue.json",
-    "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/checks.json",
-    "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/score-evidence.json",
-    "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/test-change-summary.json",
-    "next_role": "programmer",
-    "next_step": "Программист продолжает утверждённую HX-BL-051/GEO2: собрать полный GeometryPlan и public16/physical4 с отдельными authored inputs/refined outputs, сохранёнными choices/fingerprint, Q01/историей, Apply и отображением карты/PNG/UI. Специальные привязки реализованы в candidate pipeline; использовать их без generic fallback. Затем G201–G210, браузерный runtime и независимая проверка полного точного SHA с score_assessment1.2; публикация отдельно.",
-    "bounded_special_POI_implemented": true,
+    "component_complete": true,
+    "implementation_complete": false,
+    "full_task_complete": false,
     "review_ready": false,
-    "release_authorized": false
+    "release_authorized": false,
+    "pr": 503,
+    "pr_updated": false,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "next_role": "programmer",
+    "next_step": "Программист продолжает HX-BL-051/GEO2 с 8230c00dcda0e9c723278c1e71193f8b72bacf15: связать projectGeometryRefinementSource с пространственной проверкой новых границ и global physical4 bookkeeping. Сохранить новые unrefined регионы, все authored владельцы/правки, старые literal choices; обновить parser/источник и16 roundtrip, интегрировать через реальный recordGenerated/UndoRedo. Результат projected никогда не считать готовым Apply: boundaryValidation=required. Затем карта/PNG/первоначальный preview, G201–G210 и независимый exact-SHA review+score_assessment1.2. Browser — только на разрешающем Chromium socket() runner; не повторять установку без нового evidence. Публикация отдельно.",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "start": {
+        "checked_at": "2026-11-14T23:03:05.443Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-14T23:28:20.150Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration": {
+        "performed": false,
+        "reason": "Actual start/end observations enabled"
+      },
+      "errors": [],
+      "scope": "Point-in-time checks only, no guarantee of subsequent state; same task/prompt/schedule unchanged."
+    },
+    "materials_commit_sha": "4d6f7d73fade5db6860a4d77a72dd8b42cf1a033"
   },
   "latest_concurrent_worker_observation": {
     "run_id": "2026-11-04-developer-E5-active-worker-observation-1800",
@@ -6241,7 +6265,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Existing task/spec continuation approved. No new start/design gate; exact-package publication requires separate owner permission after full independent review.",
+  "authority_status": "Approved existing task/spec implementation continuation; no additional start/design gate, no publication permission.",
   "analysis_baseline_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
   "analysis_baseline_tree": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -6699,7 +6723,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+  "result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7443,7 +7467,7 @@
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-14T2239-GEO2-special-POI-continue.json",
   "review_request_ref": "agent-work/handoffs/2026-11-13T0701-ONE-MILE1-WR1-review.json",
   "programmer_complete": false,
-  "current_programmer_result_ref": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
+  "current_programmer_result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -7464,7 +7488,7 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
+  "latest_result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "checks": {
     "head_sha": "cea2f93266913303833ef09477bc8f0c33be63d3",
     "tree_sha": "70a4d7d6613cc2d0ed5b2556871b265b3f15691f",
@@ -8117,7 +8141,7 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-14T1400-programmer-GEO2-typed-road.json",
+  "current_role_result": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "current_stage_score_assessment_status": "programmer_evidence_only_no_independent_GEO2_assessment",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
   "execution_running": false,
@@ -8578,7 +8602,7 @@
   "release_readiness": "not_ready_incomplete_GEO2",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -8627,7 +8651,7 @@
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
   "local_sha": "cea2f93266913303833ef09477bc8f0c33be63d3",
-  "checks_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/checks.json",
+  "checks_evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/checks.json",
   "execution_status": "checkpoint_completed_task_in_progress",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
@@ -8764,29 +8788,56 @@
   "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "pr_updated": false,
   "execution_routing": {
-    "run_id": "2026-11-14T0912-programmer-ONE-MILE1-GEO2",
+    "run_id": "2026-11-15T0202-programmer-GEO2-scope-projection",
     "task_id": "HX-BL-051",
-    "stage_id": "ONE-MILE1",
-    "substage": "GEO2-DEPENDENCIES",
     "role": "programmer",
-    "status": "checkpoint_saved_GEO2_road_crossing_candidates_in_progress",
-    "execution_running": false,
+    "stage_id": "ONE-MILE1",
+    "substage": "GEO2-scope-projection",
+    "status": "scope_projection_implemented_GEO2_in_progress",
+    "head_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+    "tree_sha": "6102bd7fed94a21bd944c94dbef7695d582bc633",
     "working_branch": "agent/hx-bl-051-geo2",
-    "wip_head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
-    "wip_tree_sha": "b97ccd4b215786410c7ef7ed5271b7510e1e3e00",
-    "head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
-    "tree_sha": "b97ccd4b215786410c7ef7ed5271b7510e1e3e00",
-    "pr": 503,
-    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
-    "pr_updated": false,
-    "result_ref": "agent-work/results/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-14T0912-ONE-MILE1-GEO2-continue.json",
-    "completed_claim_ref": "agent-work/claims/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json",
-    "next_role": "interviewer",
-    "next_step": "Интервьюер по HX-BL-051/ONE-MILE1-GEO2: проверить весь оставшийся контракт и действующие решения, подготовить полный первый пул вопросов с вариантами, последствиями и иным свободным ответом. Начать с развилок source-edit preview/consent versus unchanged rejection и приоритета displacement/length для обхода дороги; не повторять уже решённый GEO-D01 и не расширять отложенные C07/C08. Предъявить пул в существующем чате и сохранить раунд; ответы не выдумывать. После закрытия интервью — аналитик выпускает уточнённую чистовую спецификацию, затем программист продолжает GEO2-PLAN.",
+    "result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+    "checks_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/checks.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/score-evidence.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/test-change-summary.json",
+    "evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+    "execution_running": false,
+    "component_complete": true,
+    "implementation_complete": false,
+    "full_task_complete": false,
     "review_ready": false,
-    "full_package_release_ready": false,
-    "release_authorized": false
+    "release_authorized": false,
+    "pr": 503,
+    "pr_updated": false,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "next_role": "programmer",
+    "next_step": "Программист продолжает HX-BL-051/GEO2 с 8230c00dcda0e9c723278c1e71193f8b72bacf15: связать projectGeometryRefinementSource с пространственной проверкой новых границ и global physical4 bookkeeping. Сохранить новые unrefined регионы, все authored владельцы/правки, старые literal choices; обновить parser/источник и16 roundtrip, интегрировать через реальный recordGenerated/UndoRedo. Результат projected никогда не считать готовым Apply: boundaryValidation=required. Затем карта/PNG/первоначальный preview, G201–G210 и независимый exact-SHA review+score_assessment1.2. Browser — только на разрешающем Chromium socket() runner; не повторять установку без нового evidence. Публикация отдельно.",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "start": {
+        "checked_at": "2026-11-14T23:03:05.443Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-14T23:28:20.150Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration": {
+        "performed": false,
+        "reason": "Actual start/end observations enabled"
+      },
+      "errors": [],
+      "scope": "Point-in-time checks only, no guarantee of subsequent state; same task/prompt/schedule unchanged."
+    },
+    "materials_commit_sha": "4d6f7d73fade5db6860a4d77a72dd8b42cf1a033"
   },
   "last_team_coordination": {
     "run_id": "2026-11-10T0300-strategist-release-routing",
@@ -9229,7 +9280,7 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-15T0108-programmer-GEO2-browser-runtime",
+  "last_completed_run_id": "2026-11-15T0202-programmer-GEO2-scope-projection",
   "storage_verification": {
     "source_sha": "2b44dbd56868f7c16a963c17b1978c434fb12c7b",
     "source_tree": "a5cb959c89d265dc6fc60d3d2cf7c8deece9c9c4",
@@ -9850,7 +9901,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/GEO2-browser-runtime-20261115-0108/checks.json",
+  "checks_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/checks.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -10358,7 +10409,7 @@
     }
   },
   "source_branch": "agent/hx-bl-051-geo2",
-  "claim_completed_ref": "agent-work/claims/2026-11-14T2239-programmer-GEO2-special-POI.json",
+  "claim_completed_ref": "agent-work/claims/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "actual_full_UI_pending": false,
   "latest_DETAIL1_grid_focus": {
     "run_id": "2026-11-11T0804-programmer-DETAIL1-focus",
@@ -10904,8 +10955,8 @@
   },
   "updated_on": "2026-11-14",
   "claim_ref": null,
-  "latest_programmer_result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
-  "source_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+  "source_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
   "source_pr": 496,
   "owner_decision_required": false,
   "latest_DETAIL1_C_FILL_implementation": {
@@ -11348,7 +11399,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -11690,10 +11741,10 @@
     "result_path": "agent-work/results/2026-11-12T2302-analyst-ONE-MILE1-C02-C05.json",
     "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка."
   },
-  "substage": "GEO2-browser-runtime",
+  "substage": "GEO2-scope-projection",
   "active_claim_ref": null,
   "bounded_implementation_complete": true,
-  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/score-evidence.json",
+  "score_evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/score-evidence.json",
   "ui_actual_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "full_feedback_resolved": false,
   "known_open_requirements": [
@@ -11877,7 +11928,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+  "last_result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -12013,14 +12064,14 @@
       }
     ]
   },
-  "last_operation_result_ref": "agent-work/results/2026-11-14T2239-programmer-GEO2-special-POI.json",
+  "last_operation_result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
   "previous_primary_before_GEO2_implementation": {
     "run_id": "2026-11-13T1104-analyst-ONE-MILE1-GEO2",
     "result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
     "status": "completed_GEO2_specification_programmer_ready"
   },
-  "wip_head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
-  "wip_tree_sha": "e29db566faa83fc0b8ea16dce81164b050f066b1",
+  "wip_head_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+  "wip_tree_sha": "6102bd7fed94a21bd944c94dbef7695d582bc633",
   "latest_GEO2_implementation": {
     "run_id": "2026-11-14T2340-programmer-GEO2-GeometryPlan",
     "task_id": "HX-BL-051",
@@ -12397,5 +12448,118 @@
     "evidence_ref": "agent-work/evidence/GEO2-browser-runtime-20261115-0108",
     "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
     "status": "runtime_capability_checked_browser_launch_permission_blocked"
+  },
+  "previous_run_before_GEO2_scope_projection": {
+    "run_id": "2026-11-15T0108-programmer-GEO2-browser-runtime",
+    "status": "GEO2_implementation_continues_browser_environment_blocked",
+    "result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+    "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf"
+  },
+  "previous_execution_before_GEO2_scope_projection": {
+    "run_id": "2026-11-14T2239-programmer-GEO2-special-POI",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "substage": "GEO2-SPECIAL-POI",
+    "role": "programmer",
+    "status": "special_POI_implemented_GEO2_in_progress",
+    "head_sha": "cea2f93266913303833ef09477bc8f0c33be63d3",
+    "tree_sha": "70a4d7d6613cc2d0ed5b2556871b265b3f15691f",
+    "working_branch": "agent/hx-bl-051-geo2",
+    "execution_running": false,
+    "result_ref": "agent-work/results/2026-11-14T2239-programmer-GEO2-special-POI.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T2239-GEO2-special-POI-continue.json",
+    "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/checks.json",
+    "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/score-evidence.json",
+    "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/test-change-summary.json",
+    "next_role": "programmer",
+    "next_step": "Программист продолжает утверждённую HX-BL-051/GEO2: собрать полный GeometryPlan и public16/physical4 с отдельными authored inputs/refined outputs, сохранёнными choices/fingerprint, Q01/историей, Apply и отображением карты/PNG/UI. Специальные привязки реализованы в candidate pipeline; использовать их без generic fallback. Затем G201–G210, браузерный runtime и независимая проверка полного точного SHA с score_assessment1.2; публикация отдельно.",
+    "bounded_special_POI_implemented": true,
+    "review_ready": false,
+    "release_authorized": false
+  },
+  "previous_execution_routing_before_GEO2_scope_projection": {
+    "run_id": "2026-11-14T0912-programmer-ONE-MILE1-GEO2",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "substage": "GEO2-DEPENDENCIES",
+    "role": "programmer",
+    "status": "checkpoint_saved_GEO2_road_crossing_candidates_in_progress",
+    "execution_running": false,
+    "working_branch": "agent/hx-bl-051-geo2",
+    "wip_head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+    "wip_tree_sha": "b97ccd4b215786410c7ef7ed5271b7510e1e3e00",
+    "head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+    "tree_sha": "b97ccd4b215786410c7ef7ed5271b7510e1e3e00",
+    "pr": 503,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "pr_updated": false,
+    "result_ref": "agent-work/results/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T0912-ONE-MILE1-GEO2-continue.json",
+    "completed_claim_ref": "agent-work/claims/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json",
+    "next_role": "interviewer",
+    "next_step": "Интервьюер по HX-BL-051/ONE-MILE1-GEO2: проверить весь оставшийся контракт и действующие решения, подготовить полный первый пул вопросов с вариантами, последствиями и иным свободным ответом. Начать с развилок source-edit preview/consent versus unchanged rejection и приоритета displacement/length для обхода дороги; не повторять уже решённый GEO-D01 и не расширять отложенные C07/C08. Предъявить пул в существующем чате и сохранить раунд; ответы не выдумывать. После закрытия интервью — аналитик выпускает уточнённую чистовую спецификацию, затем программист продолжает GEO2-PLAN.",
+    "review_ready": false,
+    "full_package_release_ready": false,
+    "release_authorized": false
+  },
+  "latest_GEO2_scope_projection": {
+    "run_id": "2026-11-15T0202-programmer-GEO2-scope-projection",
+    "task_id": "HX-BL-051",
+    "role": "programmer",
+    "stage_id": "ONE-MILE1",
+    "substage": "GEO2-scope-projection",
+    "status": "scope_projection_implemented_GEO2_in_progress",
+    "head_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+    "tree_sha": "6102bd7fed94a21bd944c94dbef7695d582bc633",
+    "working_branch": "agent/hx-bl-051-geo2",
+    "result_ref": "agent-work/results/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+    "checks_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/checks.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/score-evidence.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202/test-change-summary.json",
+    "evidence_ref": "agent-work/evidence/GEO2-scope-projection-20261115-0202",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T0202-programmer-GEO2-scope-projection.json",
+    "execution_running": false,
+    "component_complete": true,
+    "implementation_complete": false,
+    "full_task_complete": false,
+    "review_ready": false,
+    "release_authorized": false,
+    "pr": 503,
+    "pr_updated": false,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "next_role": "programmer",
+    "next_step": "Программист продолжает HX-BL-051/GEO2 с 8230c00dcda0e9c723278c1e71193f8b72bacf15: связать projectGeometryRefinementSource с пространственной проверкой новых границ и global physical4 bookkeeping. Сохранить новые unrefined регионы, все authored владельцы/правки, старые literal choices; обновить parser/источник и16 roundtrip, интегрировать через реальный recordGenerated/UndoRedo. Результат projected никогда не считать готовым Apply: boundaryValidation=required. Затем карта/PNG/первоначальный preview, G201–G210 и независимый exact-SHA review+score_assessment1.2. Browser — только на разрешающем Chromium socket() runner; не повторять установку без нового evidence. Публикация отдельно.",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "start": {
+        "checked_at": "2026-11-14T23:03:05.443Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-14T23:28:20.150Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration": {
+        "performed": false,
+        "reason": "Actual start/end observations enabled"
+      },
+      "errors": [],
+      "scope": "Point-in-time checks only, no guarantee of subsequent state; same task/prompt/schedule unchanged."
+    },
+    "materials_commit_sha": "4d6f7d73fade5db6860a4d77a72dd8b42cf1a033"
+  },
+  "latest_GEO2_scope_storage_verification": {
+    "run_id": "2026-11-15T0202-programmer-GEO2-scope-projection",
+    "source_head": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+    "source_tree": "6102bd7fed94a21bd944c94dbef7695d582bc633",
+    "materials_commit_sha": "4d6f7d73fade5db6860a4d77a72dd8b42cf1a033",
+    "verified_material_files": 12,
+    "latest_written_last": true
   }
 }
