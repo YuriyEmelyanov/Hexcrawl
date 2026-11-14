@@ -1,0 +1,189 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T1259-programmer-GEO2-road-search",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-ROAD-SEARCH",
+  "role": "programmer",
+  "role_selection_reason": "Continue approved GEO2 after completed interview and final GEO2-v2 spec. Current051unclaimed, previous own checkpoint complete; full package not review_ready. Foreign claims preserved.",
+  "status": "checkpoint_saved_GEO2_road_search_in_progress",
+  "started_at": "2026-11-14T09:59:16.406Z",
+  "completed_at": "2026-11-14T10:23:44.341Z",
+  "execution_running": false,
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "spec_version": "GEO2-v2",
+  "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "head_sha": "5dda0a307b7e91f9b0389828857edc616931c8fc",
+  "tree_sha": "c03a5e349178d7c7a3c0e68c9cafd5f3b680d735",
+  "base_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+  "pr": 503,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "pr_updated": false,
+  "implemented": [
+    "Finite dry visibility search for moved-POI road parts without typed crossings; preserve mandatory entries/both approaches/unrelated parts",
+    "Physical length-first Dijkstra labels with exact lower-envelope quadratic old-polyline deviation and numeric canonical ties",
+    "Shared search budget, cancelled/capacity/no-path-in-candidate-graph atomic refs; nonfinite metric guards"
+  ],
+  "checks": {
+    "head_sha": "5dda0a307b7e91f9b0389828857edc616931c8fc",
+    "tree_sha": "c03a5e349178d7c7a3c0e68c9cafd5f3b680d735",
+    "node": "v24.22.1",
+    "command": "npm run check",
+    "exit_code": 0,
+    "tsc": "passed",
+    "node_tests": {
+      "executed": 406,
+      "passed": 406,
+      "failed": 0,
+      "skipped": 0,
+      "duration_ms": 755494.887967
+    },
+    "build": {
+      "status": "passed",
+      "duration_seconds": 13.88
+    },
+    "focused_Node": {
+      "executed": 4,
+      "passed": 4,
+      "included_in_full_total": true
+    },
+    "math_diagnostic": {
+      "examples": 40,
+      "max_error": 7.103605703662197e-9,
+      "separate_from_permanent_test_counts": true
+    },
+    "browser": {
+      "status": "not_run_in_unmounted_checkpoint",
+      "required_before_full_package_review": true
+    },
+    "rng_browser": {
+      "status": "not_run_in_unmounted_checkpoint",
+      "required_before_full_package_review": true
+    },
+    "interrupted_check": {
+      "status": "deliberately_interrupted_before_overflow_guard",
+      "exit_code": 130,
+      "accepted_as_final": false
+    },
+    "warnings": [
+      "Existing unknown npm http-proxy env configuration warning",
+      "Vite large-chunk warning; no renderer or bundle architecture changed"
+    ],
+    "complete_GEO2_acceptance": false
+  },
+  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-road-search-1259/checks.json",
+  "test_change_summary": {
+    "base_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+    "head_sha": "5dda0a307b7e91f9b0389828857edc616931c8fc",
+    "added": 2,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node test/geometryRefinementRoads.test.mjs",
+    "logical_cases": {
+      "added": [
+        "GEO2 road search minimizes physical length before exact old-route deviation and numeric ties",
+        "GEO2 dry road detours stay on generated land; exhausted/cancelled search is atomic and not no-path"
+      ],
+      "removed": [],
+      "modified": [
+        "GEO2 moved POI retains both source approaches and unrelated roads; whole-cell masks preserve data, internal joins and holes"
+      ]
+    },
+    "scenario_risk": "G206 length-first exact deviation/canonical ties; legal dry obstacle search, aggregate budget/cancel/no-path distinction; existing two-approach POI/masks retain integration and atomic failures.",
+    "reuse_or_new_reason": "Inspected existing crossing/mask and river shortest-edge coverage. Expanded existing POI case; two new cases cover independent route-choice and obstacle/bound risks. No new browser/RNG cases or generated-world series.",
+    "source": "Named test blocks matched by stable names and bodies against exact base/head diff",
+    "executed": 406,
+    "passed": 406,
+    "skipped": 0,
+    "failed": 0,
+    "focused": {
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0,
+      "included_in_full_Node_total": true
+    },
+    "diagnostic_math_examples": {
+      "count": 40,
+      "permanent_tests": false,
+      "separate_from_Node_total": true
+    }
+  },
+  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-road-search-1259/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-road-search-1259/score-evidence.json",
+  "evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-road-search-1259",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T1259-GEO2-road-search-continue.json",
+  "limitations": [
+    "Unmounted backend; no complete GeometryPlan, feature-specific POI adapter, public16/history/source-edit auto-shift or actual map/PNG acceptance",
+    "Search is shortest only in supplied finite visibility graph (<=512 vertices); sampled curve vertices do not prove globally shortest continuous path or all-path completeness. Capacity/budget/no-path-in-graph distinguished.",
+    "Integrated only affected moved-POI portions with no typed crossing; typed-crossing routes retain prior source-incidence candidate. Joint ordered crossing placement/search still pending.",
+    "No real eligible POI movement claimed: retained fixture supplies no moves/footprints to this phase; positive move/detour/mask witnesses are synthetic.",
+    "No activation, PR503 head update, fresh whole-package independent review, publication or score award."
+  ],
+  "retained_fixture_evidence": {
+    "source_segments": 53,
+    "road_parts": 31,
+    "crossings": 7,
+    "bridge": 4,
+    "ferry": 3,
+    "actual_eligible_POI_moves_supplied": 0,
+    "actual_footprints_supplied": false,
+    "searchWork": 0,
+    "accepted_save_and_rng_unchanged": true,
+    "F2_ford_variant_explicit_not_original": true
+  },
+  "negative_or_incomplete_disposition": {
+    "confirmed_defect_fixed": "Finite1e200 coordinates produced NaN deviation; final source now rejects nonfinite metric/label totals atomically",
+    "missing_evidence": "No actual eligible POI move, live stroke/dash/rails/map/PNG/public16/history/UI proof claimed",
+    "algorithmic_limit": "Visibility graph limited to512nodes; only dry moved-POI portions. No proof of globally shortest continuous path or all typed-crossing route feasibility",
+    "package_decision": "Do not activate, review as complete, publish or award score; continue approved GEO2-PLAN"
+  },
+  "next_role": "programmer",
+  "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2-PLAN с 5dda0a307b7e91f9b0389828857edc616931c8fc: сначала проверять допустимый прямой кратчайший подход без построения всей большой candidate-сети; затем связать ordered typed-crossing bank/entry constraints с поиском пути, устранить неполноту конечной visibility-сети и сохранить явные capacity/budget ошибки. Затем actual owner/requirement/feature refs (rapid/waterfall/crossing/start), единый GeometryPlan, public16/physical4, автоматическая source-closure по Q01 и одна история Undo/Redo, общие stroke/dash/rails/map/PNG маски, фактический интерфейс и G201–G210. До полного точного SHA/проверок не review_ready; после завершения — независимый проверяющий. Выпуск отдельно.",
+  "authority_status": "Existing approved GEO2-v2; continue implementation without new start permission. No activation/main/publication permission.",
+  "owner_decision_required_for_next_step": false,
+  "review_ready": false,
+  "full_package_review_ready": false,
+  "activation": false,
+  "main_changed": false,
+  "published": false,
+  "full_task_complete": false,
+  "product_score_changed": false,
+  "score_model_version": "1.2",
+  "ui_changed": false,
+  "ui_actual_pending_for_full_GEO2": true,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
+    "start": {
+      "checked_at": "2026-11-14T09:59:16.406Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-14T10:23:44.341Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Point-in-time actual observations only, no guarantee after completion. Automation prompt, schedule and environment unchanged."
+  },
+  "operation_errors": [
+    {
+      "operation": "Bulk local source snapshot read",
+      "error": "Tool output truncated; initial JSON parse failed",
+      "resolution": "Read each exact file separately; GitHub blob/content readbacks verified on source SHA; no source loss"
+    },
+    {
+      "operation": "Local checkout synchronization",
+      "error": "REST commit timestamps omit original numeric timezone; first reconstruction hash mismatch",
+      "resolution": "Reconstructed exact raw commit with verified timezone/hash; local HEAD and complete source tree equal final remote SHA, tracked diff empty"
+    }
+  ]
+}

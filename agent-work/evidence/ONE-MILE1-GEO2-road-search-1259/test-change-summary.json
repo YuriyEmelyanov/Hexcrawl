@@ -1,0 +1,36 @@
+{
+  "base_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+  "head_sha": "5dda0a307b7e91f9b0389828857edc616931c8fc",
+  "added": 2,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Node test/geometryRefinementRoads.test.mjs",
+  "logical_cases": {
+    "added": [
+      "GEO2 road search minimizes physical length before exact old-route deviation and numeric ties",
+      "GEO2 dry road detours stay on generated land; exhausted/cancelled search is atomic and not no-path"
+    ],
+    "removed": [],
+    "modified": [
+      "GEO2 moved POI retains both source approaches and unrelated roads; whole-cell masks preserve data, internal joins and holes"
+    ]
+  },
+  "scenario_risk": "G206 length-first exact deviation/canonical ties; legal dry obstacle search, aggregate budget/cancel/no-path distinction; existing two-approach POI/masks retain integration and atomic failures.",
+  "reuse_or_new_reason": "Inspected existing crossing/mask and river shortest-edge coverage. Expanded existing POI case; two new cases cover independent route-choice and obstacle/bound risks. No new browser/RNG cases or generated-world series.",
+  "source": "Named test blocks matched by stable names and bodies against exact base/head diff",
+  "executed": 406,
+  "passed": 406,
+  "skipped": 0,
+  "failed": 0,
+  "focused": {
+    "executed": 4,
+    "passed": 4,
+    "skipped": 0,
+    "included_in_full_Node_total": true
+  },
+  "diagnostic_math_examples": {
+    "count": 40,
+    "permanent_tests": false,
+    "separate_from_Node_total": true
+  }
+}
