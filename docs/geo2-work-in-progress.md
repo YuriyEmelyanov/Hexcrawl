@@ -71,3 +71,14 @@ checks do not detect a source mark still pointing to the old integer endpoint.
 This bounded integration uses already allocated endpoint edges; it preserves the
 interior route skeleton. It is not a simultaneous nearest-port rerouter or the
 actual candidate/lake/sea open-exit adapter. No river-only activation.
+
+GEO2-EXITS rationale before tests: one new Node case must use the actual App
+hydrology builder, candidates, water overrides and source adapter on the existing
+world, rather than manually label every boundary as open. The existing
+port constraint case already covers missing/internal boundary refs; do not duplicate it.
+The new adapter must reject stale/mismatched hydrology refs, retain source F/flow,
+and exclude lake/sea and internal sector borders. Actual boundary-corridor reroute
+now avoids existing interior/source/previously allocated nodes; failure remains a
+referenced atomic conflict, never a silently retained inland port. It is bounded
+sequential endpoint routing, not simultaneous global optimization or complete
+geometry. Source generator and active UI are unchanged.
