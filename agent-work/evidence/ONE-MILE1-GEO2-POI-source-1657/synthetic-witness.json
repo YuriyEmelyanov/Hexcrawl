@@ -1,0 +1,376 @@
+{
+  "kind": "synthetic_accepted_owner_policy_composition",
+  "input": {
+    "map": {
+      "regions": [
+        {
+          "id": 1,
+          "isTract": true,
+          "biomeLandType": "settled",
+          "centerHex": {
+            "q": 0,
+            "r": 0
+          },
+          "hexes": [
+            {
+              "q": 0,
+              "r": 0
+            },
+            {
+              "q": 1,
+              "r": 0
+            }
+          ],
+          "pointsOfInterest": [
+            {
+              "q": 0,
+              "r": 0
+            },
+            {
+              "q": 1,
+              "r": 0
+            }
+          ]
+        }
+      ],
+      "hexTerrainByKey": {},
+      "waterPoiByKey": {},
+      "roads": [],
+      "seas": [],
+      "physicalGrid": {
+        "schema": "hexcrawl.detail1",
+        "version": 2,
+        "active": true,
+        "viewStep": 6,
+        "grid": {
+          "origin": {
+            "x": 0,
+            "y": 0
+          },
+          "orientation": "pointy",
+          "convention": "across_flats"
+        },
+        "source": {
+          "stepMiles": 6,
+          "physicalConvention": "unknown",
+          "displayAssumption": "project_across_flats_6mi"
+        },
+        "poiIdentities": {
+          "version": 1,
+          "nextId": 3,
+          "byLegacyRef": {
+            "poi:1:0,0": "detail-poi:1",
+            "poi:1:1,0": "detail-poi:2"
+          }
+        },
+        "poiFootprints": [
+          {
+            "poiId": "detail-poi:1",
+            "legacyRef": "poi:1:0,0",
+            "worldAnchor": {
+              "x": 0,
+              "y": 2
+            },
+            "cells": [
+              {
+                "q": -1,
+                "r": 2
+              }
+            ],
+            "extent": {
+              "kind": "representative",
+              "catalogueId": "POI-SIZE1",
+              "namespace": "land",
+              "typeId": "mill",
+              "representativeExtentMiles": 0.03,
+              "basis": "project_assumption_not_measured"
+            },
+            "attachments": [
+              {
+                "kind": "water",
+                "waterKind": "river",
+                "waterId": "river:1",
+                "segmentId": "a",
+                "contact": {
+                  "x": 0,
+                  "y": 0
+                }
+              }
+            ]
+          },
+          {
+            "poiId": "detail-poi:2",
+            "legacyRef": "poi:1:1,0",
+            "worldAnchor": {
+              "x": 6,
+              "y": 2
+            },
+            "cells": [
+              {
+                "q": 5,
+                "r": 2
+              }
+            ],
+            "extent": {
+              "kind": "representative",
+              "catalogueId": "POI-SIZE1",
+              "namespace": "land",
+              "typeId": "mill",
+              "representativeExtentMiles": 0.03,
+              "basis": "project_assumption_not_measured"
+            },
+            "attachments": [
+              {
+                "kind": "water",
+                "waterKind": "river",
+                "waterId": "river:1",
+                "segmentId": "a",
+                "contact": {
+                  "x": 0,
+                  "y": 0
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "knave": {
+        "content": {
+          "byPoi": {
+            "poi:1:0,0": {
+              "site": {
+                "table": "structures",
+                "sourceRow": 96
+              }
+            }
+          }
+        }
+      }
+    },
+    "sourceRivers": [
+      {
+        "riverId": 1,
+        "edgeKey": "a",
+        "fullness": 1,
+        "from": {
+          "key": "a",
+          "point": {
+            "x": -4,
+            "y": 0
+          }
+        },
+        "to": {
+          "key": "b",
+          "point": {
+            "x": 4,
+            "y": 0
+          }
+        }
+      }
+    ]
+  },
+  "requests": {
+    "status": "prepared",
+    "requests": [
+      {
+        "footprint": {
+          "worldAnchor": {
+            "x": 0,
+            "y": 2
+          },
+          "poiId": "detail-poi:1",
+          "legacyRef": "poi:1:0,0",
+          "cells": [
+            {
+              "q": -1,
+              "r": 2
+            }
+          ],
+          "extent": {
+            "kind": "representative",
+            "catalogueId": "POI-SIZE1",
+            "namespace": "land",
+            "typeId": "mill",
+            "representativeExtentMiles": 0.03,
+            "basis": "project_assumption_not_measured"
+          },
+          "attachments": [
+            {
+              "kind": "water",
+              "waterKind": "river",
+              "waterId": "river:1",
+              "segmentId": "a",
+              "contact": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          ]
+        },
+        "parent6": {
+          "q": 0,
+          "r": 0
+        },
+        "requirement": {
+          "provenance": "knave_source_row",
+          "requirement": "river",
+          "predicates": [
+            "dry_hex",
+            "river_contact"
+          ]
+        },
+        "locked": false,
+        "riverRef": {
+          "riverId": 1,
+          "sourceEdgeKey": "a"
+        },
+        "side": 1
+      },
+      {
+        "footprint": {
+          "worldAnchor": {
+            "x": 6,
+            "y": 2
+          },
+          "poiId": "detail-poi:2",
+          "legacyRef": "poi:1:1,0",
+          "cells": [
+            {
+              "q": 5,
+              "r": 2
+            }
+          ],
+          "extent": {
+            "kind": "representative",
+            "catalogueId": "POI-SIZE1",
+            "namespace": "land",
+            "typeId": "mill",
+            "representativeExtentMiles": 0.03,
+            "basis": "project_assumption_not_measured"
+          },
+          "attachments": [
+            {
+              "kind": "water",
+              "waterKind": "river",
+              "waterId": "river:1",
+              "segmentId": "a",
+              "contact": {
+                "x": 0,
+                "y": 0
+              }
+            }
+          ]
+        },
+        "parent6": {
+          "q": 1,
+          "r": 0
+        },
+        "requirement": {
+          "provenance": "unknown",
+          "requirement": "none",
+          "predicates": []
+        },
+        "locked": false
+      }
+    ],
+    "unresolved": [
+      "detail-poi:2"
+    ],
+    "unchanged": [],
+    "pendingFeatures": [],
+    "ownerCount": 2,
+    "completeGeometryPlan": false
+  },
+  "prepared": {
+    "status": "prepared",
+    "pois": [
+      {
+        "poiId": "detail-poi:1",
+        "parent6": {
+          "q": 0,
+          "r": 0
+        },
+        "oldAnchor": {
+          "x": 0,
+          "y": 2
+        },
+        "newAnchor": {
+          "x": 0,
+          "y": 0.5
+        },
+        "footprint": {
+          "worldAnchor": {
+            "x": 0,
+            "y": 0.5
+          },
+          "poiId": "detail-poi:1",
+          "legacyRef": "poi:1:0,0",
+          "cells": [
+            {
+              "q": 0,
+              "r": 0
+            }
+          ],
+          "extent": {
+            "kind": "representative",
+            "catalogueId": "POI-SIZE1",
+            "namespace": "land",
+            "typeId": "mill",
+            "representativeExtentMiles": 0.03,
+            "basis": "project_assumption_not_measured"
+          },
+          "attachments": [
+            {
+              "kind": "water",
+              "waterKind": "river",
+              "waterId": "river:1",
+              "segmentId": "a",
+              "contact": {
+                "x": 0,
+                "y": 0.5
+              }
+            }
+          ]
+        },
+        "contact": {
+          "point": {
+            "x": 0,
+            "y": 0.5
+          },
+          "riverId": 1,
+          "sourceEdgeKey": "a",
+          "stepIndex": 0,
+          "side": 1,
+          "tangent": {
+            "x": 1,
+            "y": 0
+          },
+          "distance": 1.5,
+          "cell": {
+            "q": 0,
+            "r": 0
+          }
+        },
+        "provenance": {
+          "provenance": "knave_source_row",
+          "requirement": "river",
+          "predicates": [
+            "dry_hex",
+            "river_contact"
+          ]
+        },
+        "routeEntries": []
+      }
+    ],
+    "unresolved": [
+      "detail-poi:2"
+    ],
+    "unchanged": [],
+    "completeGeometryPlan": false
+  },
+  "limitations": [
+    "Synthetic minimal accepted owner map with real source policy lookup",
+    "No real eligible river POI in retained fixture",
+    "Unmounted input adapter, not runtime GeometryPlan acceptance"
+  ]
+}
