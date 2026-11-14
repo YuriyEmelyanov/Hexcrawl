@@ -251,3 +251,19 @@ alternative, both approaches, ordering, permutation, cancellation and budgets.
 Still unmounted: actual river-side POI contact provenance in road adapters,
 complete GeometryPlan/public16/history/automatic source-edit closure, full stroke
 clipping and actual three-mode UI/PNG remain pending. No product score award.
+
+
+GEO2 POI-contact rationale before test changes: existing road tests supply dry
+synthetic moved anchors, while prepareRefinementPois returns a real exposed-bank
+anchor. Dry search rejects that endpoint unless its validated provenance is
+passed through. Add one distinct POI-preparation-to-road composition case for
+both approaches, with stale/foreign/unknown contact refusal. Reuse existing
+water, POI and typed-crossing cases; no new world/browser/RNG series.
+
+GEO2 POI-CONTACT checkpoint: prepared POI contact/provenance now validates against
+its actual river/edge/step capsule, global exposed-water boundary and footprint
+water attachment, before granting the matching endpoint-only dry contact. Both
+approaches compose directly with prepareRefinementPois output. No wet interval
+is exempted and no new crossing is fabricated. Unknown/stale contacts reject
+atomically. Actual owner/requirement/feature adapters and unchanged riverbank
+POI handling remain pending; not runtime/public16/history/UI/PNG acceptance.
