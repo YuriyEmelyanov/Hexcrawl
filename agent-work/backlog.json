@@ -16324,7 +16324,7 @@
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
       "next_role": "programmer",
       "next_role_after_approval": "programmer",
-      "next_step": "Программист продолжает утверждённую HX-BL-051/GEO2 на f522b356afadf947f5ff95ebfc8bc40f9616dbbf: реализовать область применения при расширении — новые регионы остаются неуточнёнными, затронутые пограничные зависимости атомарны, неизменённые пути буквальны. Затем подключить сохранённый GeometryPlan к карте/PNG и компактному первоначальному preview/Apply/Cancel; обычные правки уже используют Q01 без дополнительного UI. Довести G201–G210 и фактический desktop/узкий RU/EN показ, браузерные проверки после восстановления runtime; затем независимая проверка полного точного SHA с score_assessment1.2. Публикация отдельно разрешается владельцем.",
+      "next_step": "Программист продолжает HX-BL-051/GEO2 с f522b356afadf947f5ff95ebfc8bc40f9616dbbf: реализовать scoped refinement при расширении (новые регионы не уточняются автоматически, только необходимая старая closure), затем видимый preview/карта/PNG. Эту разработку не останавливать из-за локального браузера. G210 выполнить на точном новом SHA в runner, разрешающем Chromium socket(); повторная установка бинарника не устраняет подтверждённый EPERM. После полного пакета — независимый reviewer и score_assessment1.2; публикация отдельно.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16492,16 +16492,11 @@
       "spec_status": "final_ready_for_development",
       "latest_analyst_result_ref": "agent-work/results/2026-11-14T1201-analyst-GEO2-final.json",
       "next_handoff_ref": "agent-work/handoffs/2026-11-14T1858-GEO2-input-fingerprint-continue.json",
-      "active_claim": {
-        "run_id": "2026-11-15T0108-programmer-GEO2-browser-runtime",
-        "role": "programmer",
-        "claim_ref": "agent-work/claims/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
-        "status": "active"
-      },
+      "active_claim": null,
       "full_package_release_ready": false,
       "owner_clarification_ref": null,
       "catalog_ref": "agent-work/specs/HX-BL-051-POI-sizes-v1.json",
-      "claim_completed_ref": "agent-work/claims/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
+      "claim_completed_ref": "agent-work/claims/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
       "branch": "agent/hx-bl-051-one-mile1",
       "pr_draft": true,
       "latest_programmer_result_ref": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
@@ -17238,11 +17233,24 @@
         "review_ready": false,
         "release_authorized": false
       },
-      "active_claim_ref": "agent-work/claims/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
-      "execution_running": true,
+      "active_claim_ref": null,
+      "execution_running": false,
       "updated_at": "2026-11-14T21:40:26.212Z",
       "owner_priority_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-special-POI-priority.json",
-      "bounded_special_POI_implemented": true
+      "bounded_special_POI_implemented": true,
+      "latest_runtime_verification_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+      "browser_runtime": {
+        "status": "blocked_environment_permission",
+        "binary": "/usr/bin/chromium",
+        "observed_version": "Chromium156.0.8078.79 Debian13",
+        "configured_via": "CHROMIUM_EXECUTABLE_PATH",
+        "message": "FATAL chrome/browser/process_singleton_posix.cc:297: socket() failed: Operation not permitted (1)",
+        "process_exit": "SIGABRT",
+        "cause_scope": "Process socket creation denied in this execution environment; exact policy mechanism not established.",
+        "product_defect_proven": false,
+        "whole_team_blocked": false,
+        "not_a_missing_binary_when_explicit_system_path_used": true
+      }
     },
     {
       "task_id": "HX-BL-052",
@@ -20656,5 +20664,5 @@
     "result_ref": "agent-work/results/2026-11-11T0205-reviewer-TABLES1-9cf202e.json",
     "verdict": "accepted"
   },
-  "updated_at": "2026-11-14T21:40:26.212Z"
+  "updated_at": "2026-11-14T22:12:44.679Z"
 }

@@ -1001,3 +1001,8 @@ Source f522b356afadf947f5ff95ebfc8bc40f9616dbbf; evidence agent-work/evidence/ON
 - Accepted BR009 delta arms use sectorIndex0 and typed1in→2out topology. Preserve their validated physical sea terminals in a geometry-only adapter; do not charge them as ordinary numerical confluences. Actual3-edge fixture and malformed split/cycle/degree rows now protect this correspondence.
 - Additional coarse support still refuses with refinement_domain_expansion. This is a known implementation gap, not completed expansion acceptance; preserve accepted map/redo and continue the approved domain/interface work.
 - Reuse test compilation while executing separate module graphs/VM worlds/RNG. Six new logical contracts and two expanded existing cases cover useful risks;32 malformed rows are subscenarios, not32 extra tests. No new statistical seed series.
+
+
+## 2026-11-14T22:12:44.679Z — GEO2 browser runtime capability
+
+At f522b356, explicit /usr/bin/chromium (156 Debian13) is present and selected by existing CHROMIUM_EXECUTABLE_PATH; both required browser commands now fail with socket() EPERM and SIGABRT before scenarios. Missing Playwright bundle and denied system-browser startup are distinct conditions. Reinstalling a browser is not evidence of permission restoration. Use a permitted runner for exact-SHA browser acceptance; continue approved source/UI/domain work independently. Build passed, source/test files unchanged; no product-score transition. Evidence: agent-work/evidence/GEO2-browser-runtime-20261115-0108/checks.json.
