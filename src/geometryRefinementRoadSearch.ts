@@ -2,7 +2,7 @@
  * graph, not a proof of globally shortest continuous obstacle routing. */
 import type {WorldPoint} from './detailGrid.ts';
 import {shoreQuadraticRoots,shoreCurvePoint,refinementShoreIntervals,type RefinementShore} from './geometryRefinementShore.ts';
-import {refinementWaterIntervals,type RefinementWater} from './geometryRefinementWater.ts';
+import {refinementWaterIntervals,refinementWaterContains,type RefinementWater} from './geometryRefinementWater.ts';
 type Point=WorldPoint;
 type Poly=readonly Point[];
 const EPS=1e-9,finite=(p:Point)=>Number.isFinite(p.x)&&Number.isFinite(p.y);
@@ -46,7 +46,7 @@ export function searchRefinementRoad(input:Readonly<{from:Point;to:Point;origina
  const error=(reason:string)=>Object.freeze({status:'error' as const,code:reason,work,completeGeometryPlan:false as const});
  if(!Number.isSafeInteger(max)||max<1||!finite(input.from)||!finite(input.to)||dist(input.from,input.to)<1e-12||input.original.length<2||input.original.length>64||input.original.some(p=>!finite(p))||input.vertices.some(p=>!finite(p)))return error('invalid_search');
  const old=clean(input.original);if(old.length<2)return error('invalid_search');
- const unique=new Map<string,Point>();for(const p of [input.from,input.to,...input.vertices])unique.set(JSON.stringify([p.x===0?0:p.x,p.y===0?0:p.y]),{...p});
+ const unique=new Map<string,Point>();for(const p of [input.from,input.to,...input.vertices])unique.set(JSON.stringify([p.x===0?0:p.x,p.y===0?0:p.y]),{x:p.x===0?0:p.x,y:p.y===0?0:p.y});
  const points=[...unique.values()].sort(numeric);if(points.length>512)return error('search_incomplete_capacity');
  const index=(p:Point)=>points.findIndex(q=>q.x===p.x&&q.y===p.y),start=index(input.from),target=index(input.to);
  const tick=()=>{if(input.cancelled?.())throw Error('search_cancelled');if(++work>max)throw Error('search_incomplete_budget');};
@@ -66,18 +66,29 @@ export function searchRefinementRoad(input:Readonly<{from:Point;to:Point;origina
 
 /** Exact edge admissibility, finite candidate vertices. Curved obstacles are
  * queried analytically; sampled candidate vertices do not prove completeness. */
-export function prepareRefinementDryRoadPath(input:Readonly<{from:Point;to:Point;original:Poly;land:RefinementShore;lakes:readonly RefinementShore[];water:RefinementWater;maxWork?:number;cancelled?:()=>boolean}>){
- const vertices:Point[]=[];
- for(const body of [input.land,...input.lakes])for(const loop of body.loops)for(const curve of loop)for(const t of [0,.25,.5,.75])vertices.push(shoreCurvePoint(curve,t));
- // Circumscribed octagons give useful cap detours without mistaking polygon
- // approximations for the actual finite round water envelope.
- for(const c of input.water.capsules)for(const end of [c.from,c.to])for(let i=0;i<8;i++){const angle=i*Math.PI/4,r=c.radius/Math.cos(Math.PI/8)+1e-7;vertices.push({x:end.x+r*Math.cos(angle),y:end.y+r*Math.sin(angle)});}
- return searchRefinementRoad({...input,vertices,legal:(a,b,charge)=>{
+export function prepareRefinementDryRoadPath(input:Readonly<{from:Point;to:Point;original:Poly;land:RefinementShore;lakes:readonly RefinementShore[];water:RefinementWater;maxWork?:number;cancelled?:()=>boolean;allowedBankContacts?:Poly}>){
+ const legal=(a:Point,b:Point,charge:()=>void)=>{
   for(const loop of input.land.loops)for(const _ of loop)charge();
   for(let i=0;i<input.water.capsules.length;i++)charge();
   const query={from:a,to:b},dry=refinementShoreIntervals(input.land,query);
   if(dry.status==='error'||dry.intervals.length!==1||!dry.intervals[0].startClipped||!dry.intervals[0].endClipped)return false;
-  for(const lake of input.lakes){for(const loop of lake.loops)for(const _ of loop)charge();const wet=refinementShoreIntervals(lake,query);if(wet.status==='error'||wet.intervals.some(i=>(i.endFraction-i.startFraction)*dist(a,b)>1e-9))return false;}
-  const wet=refinementWaterIntervals(input.water,query);return wet.status==='prepared'&&wet.intervals.length===0;
- }});
+  for(const lake of input.lakes){for(const loop of lake.loops)for(const _ of loop)charge();const wet=refinementShoreIntervals(lake,query);if(wet.status==='error'||wet.intervals.some(i=>(i.endFraction-i.startFraction)*dist(a,b)>EPS))return false;}
+  const wet=refinementWaterIntervals(input.water,query);if(wet.status!=='prepared')return false;
+  const bank=(point:Point)=>(input.allowedBankContacts??[]).some(p=>dist(p,point)<=EPS)&&(()=>{const location=refinementWaterContains(input.water,point);return location.status==='prepared'&&location.clearance!==null&&Math.abs(location.clearance)<=EPS;})();
+  for(const endpoint of [a,b]){const location=refinementWaterContains(input.water,endpoint);if(location.status!=='prepared'||location.inside&&!bank(endpoint))return false;}
+  return wet.intervals.every(w=>(w.endFraction-w.startFraction)*dist(a,b)<=EPS&&((dist(w.from,a)<=EPS&&dist(w.to,a)<=EPS&&bank(a))||(dist(w.from,b)<=EPS&&dist(w.to,b)<=EPS&&bank(b))));
+ };
+ // A legal straight segment attains the Euclidean lower bound. Do not let an
+ // unrelated large candidate graph reject it, or charge graph allocation first.
+ const direct=searchRefinementRoad({...input,vertices:[],legal});
+ if(direct.status==='prepared')return Object.freeze({...direct,optimality:'direct_euclidean' as const});
+ if(direct.code!=='no_path_in_candidate_graph')return direct;
+ const remaining=(input.maxWork??2000000)-direct.work;
+ if(remaining<1)return Object.freeze({...direct,code:'search_incomplete_budget'});
+ const vertices:Point[]=[];
+ for(const body of [input.land,...input.lakes])for(const loop of body.loops)for(const curve of loop)for(const t of [0,.25,.5,.75])vertices.push(shoreCurvePoint(curve,t));
+ // Circumscribed water octagons are candidates, never an obstacle substitute.
+ for(const c of input.water.capsules)for(const end of [c.from,c.to])for(let i=0;i<8;i++){const angle=i*Math.PI/4,r=c.radius/Math.cos(Math.PI/8)+1e-7;vertices.push({x:end.x+r*Math.cos(angle),y:end.y+r*Math.sin(angle)});}
+ const result=searchRefinementRoad({...input,maxWork:remaining,vertices,legal});
+ return Object.freeze({...result,work:direct.work+result.work});
 }

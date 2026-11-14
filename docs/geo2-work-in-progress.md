@@ -197,3 +197,28 @@ All original actual seven crossings/31parts remain the retained-world witness;
 positive moved-POI/detour/length witnesses are synthetic. No eligible real POI
 movement, accepted-map transaction, ordinary source auto-shift, UI, PNG or
 public16/history is claimed. No backend activation or PR503 update.
+
+GEO2 typed-bank continuation rationale before implementation: reuse the existing
+length/deviation and dry-obstacle cases for direct Euclidean first, large graph,
+bank-endpoint contact, budget/cancel and zero-coordinate normalization. Add one
+logical integration case for a moved POI road retaining ordered typed crossings,
+fixed validated bank paths and both approaches while routing dry legs around a
+lake. Existing dry-only moved-POI/crossing-only cases cannot detect their broken
+composition. Do not add another real-world fixture or browser/RNG case. Fixed
+source-axis bank seeds are an explicit intermediate constraint, not global
+joint relocation/optimality or full GeometryPlan/public16/UI acceptance.
+
+
+GEO2 FIXED-BANKS checkpoint: first test a legal direct Euclidean leg before any
+large graph, preserving aggregate work/cancel accounting. Only validated named
+bank endpoints can touch river water; a positive wet interval still rejects the
+dry edge. Signed-zero vertices normalize numerically for input permutation.
+For moved-POI parts with typed crossings, validate the old source-axis bank
+corridors, preserve every ordered crossing bankPath/key/kind, then route dry legs
+through mandatory POI entries and between those corridors. Revalidate the entire
+assembled path with a shared2million intersection-work bound. Both approaches,
+unrelated roads, and whole-cell/multicell masks remain. A missing valid source
+bank seed is an explicit intermediate limitation; this is not global joint
+crossing relocation or proof of continuous shortest-path completeness. Actual
+eligible POI movement, accepted GeometryPlan/public16/history/source-edit-auto/UI
+and PNG still require full integration and independent whole-SHA review.
