@@ -224,3 +224,14 @@ GEO2 общий лимит подготовки (не подключено): к�
 доказывает отсутствие пути. Это не измерение времени/CPU/токенов. Предварительная
 подготовка river/mouth пока находится за границами общего счётчика; законченный
 GeometryPlan/Apply и публичные схемы остаются следующим этапом.
+
+GEO2 special POI/crossing links (unmounted): a crossing-dependent POI retains
+its exact crossing ID, river ref and required bridge/ford/ferry kind. A preliminary
+bounded crossing candidate supplies its real bank endpoints; after dependent POI
+and road preparation the contact must still equal a bank of that same final
+crossing. If the selected joint candidate changes that contact, reject the whole
+plan with crossing_feature_contact_changed; this finite candidate rejection is
+not a proof that no other joint allocation exists. Rapid/waterfall/start POI
+contacts may authorize dry road approaches only with confirmed requirement,
+matching stable water attachment and an actual exposed finite bank contact.
+No new crossings, kind substitution or extra design approval.

@@ -370,3 +370,22 @@ Shore helpers reserve bounded input work; interval queries charge curve-dependen
 logical units between calls, not preemption inside a native/analytic call.
 Hydrology construction and renderer-owned lake contour generation remain supplied
 inputs. This is not a wall-time/CPU/subscription bound or full GeometryPlan/Apply.
+
+Special POI rationale before tests: existing generic-bank cases do not protect
+rapid/waterfall/crossing/start identity or point-feature location. Extend the
+existing source-policy adapter and POI candidate cases for real eligible rows,
+stale/foreign/missing refs, crossing kinds, feature-local bank contacts, locks,
+rigid footprints, permutation, and unknown provenance. Reuse existing road
+contact case for feature provenance; no new world/fixture/browser lifecycle.
+
+Special-POI checkpoint implements rapid, waterfall, typed crossing and true
+river-start source refs in the existing candidate pipeline. Exact feature ID,
+water kind, same parent, side, extent and route identities survive; point-feature
+bank constraints and final crossing-bank validation prevent generic-bank fallback.
+Source fingerprint now binds consumed prepared ports/rapids/waterfall incidences
+and points as well as source geometry. Two existing Node cases are expanded;
+positive feature examples use explicit synthetic geometry and real eligible
+policy rows. They do not prove generated-world prevalence or complete G201–G210.
+The retained world still has unknown catalogue requirements. Full GeometryPlan,
+public16/physical4/choices/Q01/history/Apply/map/PNG/UI and independent full-package
+acceptance remain pending; no active feature/UI/publication is enabled here.

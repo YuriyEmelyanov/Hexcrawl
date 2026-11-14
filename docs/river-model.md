@@ -363,3 +363,14 @@ input work; query loops charge between bounded analytic calls. Cancellation and
 budget exhaustion propagate atomically. Hydrology construction and renderer-owned
 lake contour generation remain supplied inputs; this is not a CPU/time bound or
 an active generator change. GeometryPlan/persistence/Apply remain pending.
+
+GEO2 special POI contacts (unmounted): only a confirmed eligible source-policy
+row permits a move. Rapids retain their accepted marked source segment; a
+waterfall retains its vertex/ref and adapted point, a river-start POI requires
+an actual river_start boundary and its prepared port (not a lake/open terminal).
+Point-feature contact lies on the nearest exposed finite bank to that feature
+within the existing parent/side constraints; old-anchor displacement breaks
+eligible contact ties. Conditional footprints translate rigidly, measured/locked
+positions stay fixed or conflict. Water attachment kind and stable feature ref
+remain separate from the fine river-edge contact. Missing/foreign feature refs
+reject atomically; unknown provenance remains unknown, never a generic fallback.
