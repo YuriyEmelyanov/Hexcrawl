@@ -267,3 +267,20 @@ approaches compose directly with prepareRefinementPois output. No wet interval
 is exempted and no new crossing is fabricated. Unknown/stale contacts reject
 atomically. Actual owner/requirement/feature adapters and unchanged riverbank
 POI handling remain pending; not runtime/public16/history/UI/PNG acceptance.
+
+GEO2 accepted-source adapter rationale before tests: previous POI preparation
+requires callers to manufacture requests; dry synthetic anchors do not prove
+that actual accepted owners and Knave source rows are used. Add one distinct
+adapter composition case covering explicit mill river_contact, an unknown owner
+with a water attachment, missing/stale owner/ref and preserved locked/measured
+inputs. Reuse existing bank/POI/road geometry coverage. No new world lifecycle.
+
+GEO2 POI-SOURCE checkpoint: accepted physicalGrid/owner IDs and the existing
+source-policy lookup now supply preparation requests. No IDs/extents are
+allocated or inferred by catalogue/attachment. Known river refs must uniquely
+resolve to the normalized source edge; an accepted anchor's directed-edge side
+is retained when known. Unknown/no-river owners retain literal footprints.
+Missing accepted footprints, owners or known river refs fail atomically;
+feature-specific requests are listed in pendingFeatures, never silently treated
+as eligible generic banks. This is unmounted input preparation, not GeometryPlan
+or runtime activation. Unchanged-bank POI and shared prepare budget still pending.
