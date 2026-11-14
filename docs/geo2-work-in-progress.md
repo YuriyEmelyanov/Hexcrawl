@@ -222,3 +222,32 @@ bank seed is an explicit intermediate limitation; this is not global joint
 crossing relocation or proof of continuous shortest-path completeness. Actual
 eligible POI movement, accepted GeometryPlan/public16/history/source-edit-auto/UI
 and PNG still require full integration and independent whole-SHA review.
+
+GEO2 crossing-candidate continuation rationale before tests: current fixed-bank
+composition refuses a road when both its old source-axis path and new direct
+approach are blocked by a lake, even if legal approaches through the same linked
+rivers exist. Add one logical integration case for this distinct recovery and
+ordered joint candidate selection, with atomic budget/cancel and permutation
+checks. Update the prior fixed-bank test to assert the actual contract (same
+key/kind/order and valid banks), not the obsolete intermediate requirement of
+literal old bank coordinates. Reuse all other crossing/dry/POI cases and the
+existing retained world; no added fixture lifecycle/browser/RNG series. Candidate
+sampling remains finite, not a proof of continuous geometry optimality.
+
+
+GEO2 CROSSING-CANDIDATES checkpoint: valid direct mandatory-entry paths reach
+an explicit Euclidean lower bound. Otherwise build a deterministic finite catalog
+from source-axis seed (when valid), old-point projection, fine-step midpoint and
+direct-path intersection; validate each local transverse corridor. Layered search
+jointly chooses ordered corridors and legal dry transitions by physical length,
+exact integrated old-route deviation and numeric ties, then revalidates the whole
+road. Bounds: 16 crossings/part, 64 candidates/crossing, 4096 path points, shared
+2million search and intersection budgets. Candidate absence is limited to this
+finite model, never continuous no-path proof or complete global optimality.
+The existing typed test now asserts key/kind/F/source identity, valid exposed
+banks and actual lake exclusion instead of literal banks or vertex count.
+One additional regression covers lake-blocked old/direct paths with a legal joint
+alternative, both approaches, ordering, permutation, cancellation and budgets.
+Still unmounted: actual river-side POI contact provenance in road adapters,
+complete GeometryPlan/public16/history/automatic source-edit closure, full stroke
+clipping and actual three-mode UI/PNG remain pending. No product score award.

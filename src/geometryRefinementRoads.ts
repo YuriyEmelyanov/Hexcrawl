@@ -7,7 +7,7 @@ import type {NormalizedRefinementSource} from './geometryRefinementSource.ts';
 import type {DetailPoiFootprint} from './detailModel.ts';
 import {detailFootprintWorldAnchor,detailFootprintHasOutline,detailFootprintPolygons,detailPointInPolygon,detailSegmentPolygonEntry} from './detailSizes.ts';
 import {prepareRefinementShoreCells,refinementShoreIntervals,refinementShoreContains,type RefinementShore} from './geometryRefinementShore.ts';
-import {prepareRefinementDryRoadPath} from './geometryRefinementRoadSearch.ts';
+import {prepareRefinementDryRoadPath,refinementRoadObjective} from './geometryRefinementRoadSearch.ts';
 import {refinementWaterIntervals,type RefinementWater} from './geometryRefinementWater.ts';
 type River=Readonly<{riverId:number;sourceEdgeKey:string;fullness:number;points:readonly WorldPoint[]}>;
 type PoiMove=Readonly<{poiId:string;parent6:DetailCell;oldAnchor:WorldPoint;newAnchor:WorldPoint;footprint:DetailPoiFootprint;routeEntries:readonly Readonly<{routeId:string;accessNodeId:string;oldEntry:WorldPoint;newEntry:WorldPoint}>[]}>;
@@ -81,7 +81,7 @@ export function prepareRefinementRoads(input:Input){
  }
  const results=[],crossingResults=[];
  let validationWork=0;
- const validatePart=(p:typeof parts[number])=>{const ref=pair(p.roadId,p.sourceRoadSegmentKey),arcs=arcTable(p.points),total=arcs[arcs.length-1],expected=input.crossings.filter(c=>c.roadId===p.roadId&&c.roadSegmentKey===p.sourceRoadSegmentKey).map(c=>{const s=source.get(pair(c.riverId,c.riverEdgeKey))!,point=detailCrossingPoint({from:p.sourceFrom,to:p.sourceTo},{from:s.from.point,to:s.to.point});return {c,s,point,t:point?fraction(p.sourceFrom,p.sourceTo,point):NaN};});
+ const validatePart=(p:typeof parts[number],onlyCrossing?:string)=>{const ref=pair(p.roadId,p.sourceRoadSegmentKey),arcs=arcTable(p.points),total=arcs[arcs.length-1],expected=input.crossings.filter(c=>c.roadId===p.roadId&&c.roadSegmentKey===p.sourceRoadSegmentKey&&(!onlyCrossing||c.key===onlyCrossing)).map(c=>{const s=source.get(pair(c.riverId,c.riverEdgeKey))!,point=detailCrossingPoint({from:p.sourceFrom,to:p.sourceTo},{from:s.from.point,to:s.to.point});return {c,s,point,t:point?fraction(p.sourceFrom,p.sourceTo,point):NaN};});
   if(expected.some(e=>!e.point))return fail([ref,'stale_source_crossing_position']);expected.sort((a,b)=>a.t-b.t||lexical(a.c.key,b.c.key));
   const wet:{a:number;b:number;contributors:{riverId:number;sourceEdgeKey:string;stepIndex:number}[]}[]=[],hits:{point:WorldPoint;distance:number;riverId:number;sourceEdgeKey:string;fullness:number;roadIndex:number;roadFraction:number;riverIndex:number;riverFraction:number;river:River}[]=[];
   for(let i=1;i<p.points.length;i++){if(input.cancelled?.())return fail([ref,'search_cancelled']);validationWork+=stepCount+land.loops.reduce((n,l)=>n+l.length,0)+(input.lakes??[]).reduce((n,b)=>n+b.loops.reduce((n,l)=>n+l.length,0),0);if(validationWork>2000000)return fail([ref,'road_intersection_capacity']);const query={from:p.points[i-1],to:p.points[i]},span=arcs[i]-arcs[i-1],dry=refinementShoreIntervals(land,query);if(dry.status==='error'||dry.intervals.length!==1||!dry.intervals[0].startClipped||!dry.intervals[0].endClipped)return fail([ref,'candidate_outside_generated_land']);
@@ -101,24 +101,49 @@ export function prepareRefinementRoads(input:Input){
  };
  for(const p of parts){
   if(p.linkedPoiIds.length&&input.crossings.some(c=>c.roadId===p.roadId&&c.roadSegmentKey===p.sourceRoadSegmentKey)){
-   // Freeze the already valid source-axis crossing corridors; compose shortest
-   // dry legs around them, then validate the entire resulting path again.
-   const seed=validatePart({...p,points:[p.sourceFrom,p.sourceTo]});
-   if(seed.status==='error')return fail([...seed.refs,'missing_valid_source_bank_seed']);
-   const contacts=seed.crossings.flatMap(c=>[c.bankEntry,c.bankExit]),adapted:WorldPoint[]=[{...p.points[0]}];
-   const append=(point:WorldPoint)=>{if(distance(adapted[adapted.length-1],point)>EPS)adapted.push({...point});};
-   const dryLeg=(to:WorldPoint)=>{
-    const from=adapted[adapted.length-1];if(distance(from,to)<=EPS)return null;
-    if(searchWork>=searchBudget)return fail([pair(p.roadId,p.sourceRoadSegmentKey),'search_incomplete_budget']);
-    const route=prepareRefinementDryRoadPath({from,to,original:[p.sourceFrom,p.sourceTo],land,lakes:input.lakes??[],water:input.water,allowedBankContacts:contacts,maxWork:searchBudget-searchWork,cancelled:input.cancelled});searchWork+=route.work;
-    if(route.status==='error')return fail([pair(p.roadId,p.sourceRoadSegmentKey),route.code]);
-    for(const point of route.points)append(point);return null;
-   };
-   const entryError=dryLeg(p.fromEntry??p.points[0]);if(entryError)return entryError;
-   for(const c of seed.crossings){const error=dryLeg(c.bankEntry);if(error)return error;for(const point of c.bankPath)append(point);}
-   const exitError=dryLeg(p.toEntry??p.points[p.points.length-1]);if(exitError)return exitError;
-   const anchorError=dryLeg(p.points[p.points.length-1]);if(anchorError)return anchorError;
-   p.points=adapted;
+   const direct=validatePart(p);
+   if(direct.status==='error'){
+    // Missing/invalid original bank seeds are not a no-route proof. Build a
+    // finite catalog per source crossing and optimize ordered dry transitions.
+    const ref=pair(p.roadId,p.sourceRoadSegmentKey);
+    const fatal=(refs:readonly string[])=>refs.some(r=>['search_cancelled','road_intersection_capacity','stale_source_crossing_position','invalid_lake'].includes(r));
+    if(fatal(direct.refs))return direct;
+    const charge=(n=1)=>{if(input.cancelled?.())throw Error('search_cancelled');searchWork+=n;if(searchWork>searchBudget)throw Error('search_incomplete_budget');};
+    type Label={length:number;area:number;path:WorldPoint[]};
+    const compare=(a:Label,b:Label)=>{if(Math.abs(a.length-b.length)>1e-9)return a.length-b.length;const ad=a.area/Math.max(a.length,1e-9),bd=b.area/Math.max(b.length,1e-9);if(Math.abs(ad-bd)>1e-9)return ad-bd;for(let i=0;i<Math.min(a.path.length,b.path.length);i++){const d=a.path[i].x-b.path[i].x||a.path[i].y-b.path[i].y;if(d)return d;}return a.path.length-b.path.length;};
+    const extend=(label:Label,path:readonly WorldPoint[]):Label=>{const points:WorldPoint[]=[];for(const point of path)if(!points.length||distance(points[points.length-1],point)>EPS)points.push(point);if(points.length<2)return label;charge(points.length*4);const cost=refinementRoadObjective(points,[p.sourceFrom,p.sourceTo]);const joined=[...label.path];for(const point of points)if(distance(joined[joined.length-1],point)>EPS)joined.push({...point});if(joined.length>4096)throw Error('crossing_path_capacity');return {length:label.length+cost.lengthMiles,area:label.area+cost.lengthMiles*cost.deviationSquareMiles,path:joined};};
+    const dry=(label:Label,to:WorldPoint,contacts:readonly WorldPoint[]):Label|null=>{const from=label.path[label.path.length-1];if(distance(from,to)<=EPS)return label;charge();if(searchWork>=searchBudget)throw Error('search_incomplete_budget');const route=prepareRefinementDryRoadPath({from,to,original:[p.sourceFrom,p.sourceTo],land,lakes:input.lakes??[],water:input.water,allowedBankContacts:contacts,maxWork:searchBudget-searchWork,cancelled:input.cancelled});searchWork+=route.work;if(route.status==='error'){if(route.code==='no_path_in_candidate_graph')return null;throw Error(route.code);}return extend(label,route.points);};
+    try{
+     const expected=input.crossings.filter(c=>c.roadId===p.roadId&&c.roadSegmentKey===p.sourceRoadSegmentKey).map(c=>{const r=source.get(pair(c.riverId,c.riverEdgeKey))!,point=detailCrossingPoint({from:p.sourceFrom,to:p.sourceTo},{from:r.from.point,to:r.to.point});if(!point)throw Error('stale_source_crossing_position');return {c,r,point,t:fraction(p.sourceFrom,p.sourceTo,point)};}).sort((a,b)=>a.t-b.t||lexical(a.c.key,b.c.key));
+     if(expected.length>16)throw Error('crossing_candidate_capacity');
+     const seed=validatePart({...p,points:[p.sourceFrom,p.sourceTo]});if(seed.status==='error'&&fatal(seed.refs))return seed;
+     type Corridor=Extract<ReturnType<typeof validatePart>,{status:'prepared'}>['crossings'][number];
+     const catalogs:Corridor[][]=[];
+     for(const old of expected){
+      const candidates=new Map<string,Corridor>(),river=rivers.get(pair(old.c.riverId,old.c.riverEdgeKey))!;
+      const add=(c:Corridor)=>{candidates.set(JSON.stringify(c.bankPath),c);if(candidates.size>64)throw Error('crossing_candidate_capacity');};
+      if(seed.status==='prepared')for(const c of seed.crossings)if(c.key===old.c.key)add(c);
+      const sd={x:p.sourceTo.x-p.sourceFrom.x,y:p.sourceTo.y-p.sourceFrom.y},st={x:old.r.to.point.x-old.r.from.point.x,y:old.r.to.point.y-old.r.from.point.y},sign=Math.sign(sd.x*st.y-sd.y*st.x);if(!sign)throw Error('stale_source_crossing_position');
+      for(let j=1;j<river.points.length;j++){
+       const a=river.points[j-1],b=river.points[j],length=distance(a,b),normal={x:sign*(b.y-a.y)/length,y:-sign*(b.x-a.x)/length},t=Math.max(0,Math.min(1,fraction(a,b,old.point))),projection={x:a.x+t*(b.x-a.x),y:a.y+t*(b.y-a.y)},hit=detailCrossingPoint({from:p.fromEntry??p.points[0],to:p.toEntry??p.points[p.points.length-1]},{from:a,to:b});
+       const samples=[projection,{x:(a.x+b.x)/2,y:(a.y+b.y)/2},...(hit?[hit]:[])];
+       for(const point of samples){charge(input.water.capsules.length+1);const extent=1+Math.max(...input.water.capsules.map(c=>Math.max(Math.abs((c.from.x-point.x)*normal.x+(c.from.y-point.y)*normal.y),Math.abs((c.to.x-point.x)*normal.x+(c.to.y-point.y)*normal.y))+c.radius));if(!Number.isFinite(extent))throw Error('invalid_search');
+        const query={from:{x:point.x-normal.x*extent,y:point.y-normal.y*extent},to:{x:point.x+normal.x*extent,y:point.y+normal.y*extent}},wet=refinementWaterIntervals(input.water,query);if(wet.status==='error')throw Error('invalid_water_query');
+        const row=wet.intervals.find(w=>w.startFraction<=.5&&w.endFraction>=.5&&!w.startClipped&&!w.endClipped);if(!row)continue;
+        const probe=[{x:row.from.x-normal.x*1e-6,y:row.from.y-normal.y*1e-6},row.from,point,row.to,{x:row.to.x+normal.x*1e-6,y:row.to.y+normal.y*1e-6}].filter((v,i,a)=>i===0||distance(v,a[i-1])>EPS),checked=validatePart({...p,points:probe},old.c.key);
+        if(checked.status==='error'){if(fatal(checked.refs))return checked;continue;}if(checked.crossings.length===1)add(checked.crossings[0]);
+       }
+      }
+      const sorted=[...candidates.values()].sort((a,b)=>a.point.x-b.point.x||a.point.y-b.point.y||a.bankEntry.x-b.bankEntry.x||a.bankEntry.y-b.bankEntry.y||a.bankExit.x-b.bankExit.x||a.bankExit.y-b.bankExit.y);
+      if(!sorted.length)throw Error('no_crossing_in_candidate_catalog');catalogs.push(sorted);
+     }
+     let states:Label[]=[{length:0,area:0,path:[{...p.points[0]}]}];
+     const first=dry(states[0],p.fromEntry??p.points[0],[]);if(!first)throw Error('no_route_in_candidate_catalog');states=[first];
+     for(const catalog of catalogs){const next:Label[]=[];for(const corridor of catalog){let best:Label|null=null;for(const label of states){charge();const approach=dry(label,corridor.bankEntry,[label.path[label.path.length-1],corridor.bankEntry]);if(!approach)continue;const candidate=extend(approach,corridor.bankPath);if(!best||compare(candidate,best)<0)best=candidate;}if(best)next.push(best);}if(!next.length)throw Error('no_route_in_candidate_catalog');states=next;}
+     const completed:Label[]=[];for(const label of states){const last=dry(label,p.toEntry??p.points[p.points.length-1],[label.path[label.path.length-1]]);if(!last)continue;const anchor=dry(last,p.points[p.points.length-1],[]);if(anchor)completed.push(anchor);}if(!completed.length)throw Error('no_route_in_candidate_catalog');completed.sort(compare);p.points=completed[0].path;
+    }catch(error){return fail([ref,error instanceof Error?error.message:'crossing_candidate_error']);}
+   }
+
   }
   const checked=validatePart(p);if(checked.status==='error')return checked;
   const {arcs,crossings}=checked;
@@ -127,5 +152,5 @@ export function prepareRefinementRoads(input:Input){
   }
   results.push({...p,sourceFrom:{...p.sourceFrom},sourceTo:{...p.sourceTo},adapted:p.linkedPoiIds.length>0,crossingKeys:crossings.map(c=>c.key),paint});crossingResults.push(...crossings);
  }
- return immutable({status:'prepared' as const,roads:results,crossings:crossingResults,masks:masks.masks,allocation:'fixed_typed_bank_paths_with_visibility_approaches' as const,searchWork,validationWork,searchScope:'moved_POI_parts_with_fixed_source_axis_crossings' as const,completeGeometryPlan:false as const});
+ return immutable({status:'prepared' as const,roads:results,crossings:crossingResults,masks:masks.masks,allocation:'ordered_crossing_candidates_with_visibility_approaches' as const,searchWork,validationWork,searchScope:'moved_POI_parts_with_ordered_crossing_candidates' as const,completeGeometryPlan:false as const});
 }
