@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T1100-interviewer-ONE-MILE1-GEO2",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1-GEO2",
+  "from_role": "interviewer",
+  "to_role": "interviewer",
+  "status": "questionnaire_prepared_current_response_then_owner_answers",
+  "round_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/round-001.json",
+  "result_ref": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
+  "source_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "input_evidence": [
+    "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+    "agent-work/decisions/owner-decision-2026-11-14-interviewer-role.json",
+    "agent-work/decisions/owner-decision-2026-11-13-ONE-MILE1-GEO-D01-edge-detours.json",
+    "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
+    "agent-work/results/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json"
+  ],
+  "scope": "Only GEO2-Q01/Q02 material choices; preserve settled GEO-D01/WR1/C02/C05, legacy final and completed code checkpoints. Do not reopen excluded C07/C08 or infer answers.",
+  "completion_criteria": [
+    "Confirm actual current-chat delivery before marking presented",
+    "Save owner raw answers and source/date plus interpretation; recommendation/silence not answer",
+    "Check new material questions/contradictions; append only necessary rounds",
+    "When all resolved/delegated/deferred explicitly, hand complete decision trace to analyst; do not write final spec as interviewer"
+  ],
+  "open_question_ids": [
+    "GEO2-Q01",
+    "GEO2-Q02"
+  ],
+  "analyst_following_step": {
+    "role": "business_analyst",
+    "scope": "Produce final GEO2 revision from interview decisions; formalize road displacement metric and source-edit transaction, map answers to G205/G206/G208/G209; update existing UI example if behavior changes without design approval gate",
+    "completion": "Usable final spec with interview decision refs and measurable AC, same approved scope"
+  },
+  "programmer_following_handoff": "agent-work/handoffs/2026-11-14T0912-ONE-MILE1-GEO2-continue.json#following_implementation",
+  "next_role": "interviewer",
+  "next_step": "В существующем чате получить ответы владельца по GEO2-Q01 (предпросмотр ручных смещений или отказ) и GEO2-Q02 (близость прежней дороги или длина), либо явное делегирование/отложение. Интервьюер сохраняет ответы и снимает противоречия; при новых существенных вопросах — следующий раунд. После закрытия аналитик выпускает чистовую GEO2 с трассировкой к G205/G206/G208/G209, затем программист продолжает GEO2-PLAN.",
+  "authority_status": "Existing approved GEO2 only; dependent choices unresolved, independent approved work allowed; no publication permission"
+}

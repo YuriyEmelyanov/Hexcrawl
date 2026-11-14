@@ -1,0 +1,199 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1-GEO2",
+  "round_id": "round-001",
+  "run_id": "2026-11-14T1100-interviewer-ONE-MILE1-GEO2",
+  "draft_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "draft_spec_version": "GEO2-v1 (legacy final; on-demand material clarification)",
+  "draft_spec_blob_sha": "b1c30b3cbfc0c92ac74850fc5540424b5514f37b",
+  "source_head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+  "trigger": "Material source-edit alternative and road objective priority left open; owner interviewer process is active",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-decision-2026-11-14-interviewer-role.json",
+    "agent-work/decisions/owner-decision-2026-11-13-ONE-MILE1-GEO-D01-edge-detours.json",
+    "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json"
+  ],
+  "full_draft_independently_reviewed": true,
+  "coverage_review": [
+    {
+      "section": "Goal, limits and user effect",
+      "disposition": "settled",
+      "basis": "GEO-D01 direction, linked fine/coarse identity, opt-in coherent package; no grid migration, widths/catalog or new world algorithms"
+    },
+    {
+      "section": "Data contract and reproducibility",
+      "disposition": "settled",
+      "basis": "Immutable plan, persisted actual routes, canonical keys, defined hash, no global RNG consumption; not a product choice to re-ask"
+    },
+    {
+      "section": "River paths, connectivity and lake boundary",
+      "disposition": "settled",
+      "basis": "Finite fine-edge corridor, explicit constraint priority, same topology/marks/F, actual three-mode shore clipping, atomic errors. Incomplete implementation/evidence belongs to programmer/reviewer, not new owner questions"
+    },
+    {
+      "section": "POI eligibility, parent and footprints",
+      "disposition": "settled",
+      "basis": "Provenance required, unknown not inferred, same6 parent/bank/extent, measured/locked no translation, no legal placement atomic conflict"
+    },
+    {
+      "section": "Crossings and road graph/masks",
+      "disposition": "one_material_choice",
+      "question_ids": [
+        "GEO2-Q02"
+      ],
+      "basis": "All source crossing kinds/order/refs and approaches fixed; route objective priority unspecified. Mask union/holes/marker/full-stroke/PNG behavior explicit"
+    },
+    {
+      "section": "UI, transaction and compatibility",
+      "disposition": "one_material_choice",
+      "question_ids": [
+        "GEO2-Q01"
+      ],
+      "basis": "Explicit preview/apply/cancel, stale revision/accepted-only export, one undo, v16/physical4 and legacy atomic import explicit; source-edit alternative needs owner answer"
+    },
+    {
+      "section": "Acceptance, evidence, tests and score1.2",
+      "disposition": "settled",
+      "basis": "G201–G210 required, exact changed SHA independent review, no award inferred; tests reused per governance, counts not substituted for requirements"
+    },
+    {
+      "section": "G2-P1 proposal and excluded C07/C08",
+      "disposition": "no_new_question_in_this_scope",
+      "basis": "Previously shown proposal not a third gate; actual UI later required. Width calibration/town-size evidence remains deferred beyond this GEO2, not silently resolved"
+    }
+  ],
+  "questions": [
+    {
+      "question_id": "GEO2-Q01",
+      "intake_topic_id": "GEO2-T01",
+      "topic": "Обычная правка исходной карты, затрагивающая ручную детальную геометрию",
+      "requirement_refs": [
+        "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md#UI, transaction and compatibility",
+        "G208",
+        "G209",
+        "GEO-D01-R2",
+        "GEO-D01-R3"
+      ],
+      "spec_excerpt": "If rebuilding changes authored geometry or causes a conflict, use existing preview/consent flow or reject that source edit unchanged.",
+      "question": "Если обычная правка 6-мильной карты требует сдвинуть ранее вручную заданный, но не закреплённый объект или связанный подход дороги на 1-мильной карте, а корректный вариант существует, что делать?",
+      "why_material": "Выбор определяет, можно ли продолжить обычное редактирование после просмотра последствий или правка будет отклонена даже при наличии безопасного варианта.",
+      "options": [
+        {
+          "option_id": "A",
+          "label": "Предпросмотр с отдельным применением",
+          "effect": "Показать старые и новые положения и причины; пользователь применяет исходную правку и весь согласованный пересчёт одним действием Undo либо отменяет без изменений.",
+          "limits": "Не разрешает двигать закреплённые/измеренные объекты, терять ручные данные или применять невалидный результат. Если корректного варианта нет — отказ без изменений."
+        },
+        {
+          "option_id": "B",
+          "label": "Отказ без изменения карты",
+          "effect": "Отклонить такую правку с причиной и затронутыми объектами. Пользователь сначала сам устраняет зависимость в существующем редакторе и повторяет правку.",
+          "limits": "Проще и строже защищает расположение ручных объектов, но правку нельзя завершить через предлагаемый пересчёт даже при наличии корректного варианта."
+        }
+      ],
+      "recommendation": {
+        "option_id": "A",
+        "reason": "Сохраняет возможность редактировать карту, делает перемещения явными и оставляет владельцу карты выбор до единой обратимой записи."
+      },
+      "invariants": [
+        "Неподвижные измеренные/locked объекты не переводятся автоматически",
+        "Невалидный пересчёт в любом варианте отклоняется атомарно",
+        "Незатронутые данные остаются дословными; глобальный RNG не меняется",
+        "Полный reset/замена мира не получает нового разрешения или нового поведения этим ответом"
+      ],
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "owner_answer_source": null,
+      "owner_answer_at": null,
+      "interpretation": null,
+      "dependent_questions": []
+    },
+    {
+      "question_id": "GEO2-Q02",
+      "intake_topic_id": "GEO2-T02",
+      "topic": "Приоритет при выборе новой трассы связанной дороги",
+      "requirement_refs": [
+        "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md#POI, crossings and roads",
+        "G205",
+        "G206",
+        "GEO-D01-R3"
+      ],
+      "spec_excerpt": "Minimum displacement/length and stable-key tie-break",
+      "question": "Если оба допустимых обхода сохраняют нужные входы и все прежние переправы, но маршрут ближе к старой трассе длиннее другого, какой выбрать?",
+      "why_material": "Близость к прежней дороге и минимальная длина могут дать разные видимые маршруты; косая черта в текущем контракте не задаёт их приоритет.",
+      "options": [
+        {
+          "option_id": "A",
+          "label": "Сначала близость к прежней трассе",
+          "effect": "Выбирать минимальное отклонение от исходного пути; среди равноценных по отклонению — меньшую длину, затем устойчивое разрешение равенства.",
+          "limits": "Результат может быть длиннее другого допустимого обхода; аналитик должен определить измеримую метрику отклонения и пример приёмки."
+        },
+        {
+          "option_id": "B",
+          "label": "Сначала меньшая длина",
+          "effect": "Выбирать самый короткий допустимый путь; среди одинаковых по длине — ближе к прежнему, затем устойчивое разрешение равенства.",
+          "limits": "Связанный участок может заметнее отойти от старого коридора, даже когда близкий к нему вариант тоже допустим."
+        }
+      ],
+      "recommendation": {
+        "option_id": "A",
+        "reason": "Задача адаптирует существующую карту, поэтому предсказуемое сохранение знакомой трассы предпочтительнее её незапрошенной оптимизации."
+      },
+      "invariants": [
+        "Меняются только связанные участки, а не все дороги",
+        "Существующие ID/типы/порядок переправ и все подходы POI сохраняются",
+        "Новые переправы, нарушение допустимости или скрытое удаление пути не разрешены ни одним ответом",
+        "Правило выбора случайной стороны речного обхода не переоткрывается этим вопросом"
+      ],
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "owner_answer_source": null,
+      "owner_answer_at": null,
+      "interpretation": null,
+      "dependent_questions": []
+    }
+  ],
+  "presented_in_chat_at": null,
+  "presented_in_chat_ref": null,
+  "presentation_status": "prepared_for_current_final_response",
+  "presentation_note": "Persistence precedes actual final-response delivery. No chat message identifier available. Mark presented only after actual delivery is observed; do not infer owner answer.",
+  "owner_answers": [],
+  "interpretation": null,
+  "open_question_ids": [
+    "GEO2-Q01",
+    "GEO2-Q02"
+  ],
+  "new_question_ids": [
+    "GEO2-Q01",
+    "GEO2-Q02"
+  ],
+  "status": "prepared_for_chat_delivery",
+  "interview_completed": false,
+  "next_role": "interviewer",
+  "next_role_after_completion": "business_analyst",
+  "next_step": "Предъявить полный раунд в текущем ответе; получить ответы GEO2-Q01/Q02 либо явное делегирование/отложение; проверить противоречия и новые вопросы. После завершения — аналитик выпускает чистовую GEO2 с трассировкой ответов к G205/G206/G208/G209, затем программист продолжает GEO2-PLAN.",
+  "authority_status": "Existing approved GEO2 only; dependent choices unresolved, independent approved work allowed; no publication permission",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
+    "start": {
+      "checked_at": "2026-11-14T08:00:14.731Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-14T08:04:15.084Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "limitation": "Actual point-in-time checks only; no guarantee against subsequent service disable. Same automation, schedule and prompt unchanged."
+  }
+}
