@@ -115,3 +115,27 @@ Nonterminal lake incidence rejects explicitly; the bounded sequential allocator
 is still not a simultaneous solver. Remaining POI/roads/crossings, public16/history,
 dependency closure, preview and actual three-mode renderer integration are required
 before independent combined-package review.
+
+GEO2-POI rationale before tests: existing capsule/shore cases do not find the
+nearest exposed bank from an inside point or reject a buried confluence bank.
+Add one bank geometry case for exposed finite boundaries, parent/side constraints
+and lake masks. Add one placement case for known-vs-unknown requirement provenance,
+rigid conditional footprint/route-entry translation and atomic locked/no-fit errors.
+Extend the existing actual hydrology case with its real POI requirement inventory
+and bank query rather than another generated-world lifecycle. Do not infer a
+river requirement from an attachment or catalogue town name. Still unmounted.
+
+The POI backend now enumerates exposed finite capsule boundaries, including
+line/circle overlaps, parent/footprint constraints and quadratic lake intersections
+(the latter use bounded derivative-subdivision roots through degree4). It rejects
+buried banks at confluences and returns canonical nearest contact within the
+provided same-parent constraints, not negative inside clearance. Whole authored
+footprints enumerate rigid integer-grid translations and preserve cell count,
+extent and every route-entry reference; marker anchors move to the actual bank.
+Unknown source requirements remain unresolved without automatic movement. Existing
+Knave policy is read through a pure alias lookup; attachment alone is not authority.
+Locked/measured shapes do not translate. Feature-specific rapid/waterfall/crossing
+contacts return explicit pending conflict until the adapted mark/crossing phase.
+This phase expects accepted land parents/source refs; full GeometryPlan spatial
+validation, ordinary source-edit rebuilding, roads/PNG/public16/history/UI and
+independent review remain pending. No generator or active renderer change.

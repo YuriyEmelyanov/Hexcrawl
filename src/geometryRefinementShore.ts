@@ -30,12 +30,13 @@ function loopContains(loop:readonly ShoreCurve[],p:WorldPoint,boundary:boolean){
  }
  return inside;
 }
-export function refinementShoreContains(body:RefinementShore,p:WorldPoint):boolean{
+export function refinementShoreLocation(body:RefinementShore,p:WorldPoint):'inside'|'boundary'|'outside'{
  if(!valid(p))throw Error('Invalid shore query');
  // Boundary membership is inclusive, including hole shores.
- for(const loop of body.loops)if(loopContains(loop,p,true))return true;
- return body.loops.reduce((inside,loop)=>inside!==loopContains(loop,p,false),false);
+ for(const loop of body.loops)if(loopContains(loop,p,true))return 'boundary';
+ return body.loops.reduce((inside,loop)=>inside!==loopContains(loop,p,false),false)?'inside':'outside';
 }
+export function refinementShoreContains(body:RefinementShore,p:WorldPoint):boolean{return refinementShoreLocation(body,p)!=='outside';}
 function finish(loops:ShoreCurve[][]):RefinementShore|ReturnType<typeof fail>{
  if(!loops.length||loops.length>4096||loops.reduce((n,l)=>n+l.length,0)>24576)return fail('capacity');
  for(const loop of loops){let area=0;if(loop.length<2)return fail('empty_loop');for(const c of loop){if(![c.from,c.control,c.to].every(valid))return fail('nonfinite');const x=coefficients(c.from.x,c.control.x,c.to.x),y=coefficients(c.from.y,c.control.y,c.to.y);area+=(x[1]*y[0]-x[0]*y[1])/3+x[2]*y[0]-y[2]*x[0]+x[2]*y[1]-y[2]*x[1];}if(Math.abs(area)<1e-10)return fail('zero_area');}

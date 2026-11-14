@@ -50,6 +50,11 @@ function requirement(map:DetailGeographyMap,alias:string,water:boolean):DetailWa
  const needs:DetailWaterRequirement=predicates.includes('river_waterfall')?'waterfall':predicates.includes('river_rapids')?'rapid':predicates.some(p=>p.startsWith('crossing_'))?'crossing':predicates.some(p=>p==='river_contact'||p==='river_start')?'river':predicates.includes('water_contact')?'water':'none';
  return {provenance:'knave_source_row',requirement:needs,predicates:[...predicates]};
 }
+/** Read existing source policy; an attachment or catalogue name is not a rule. */
+export function detailPoiWaterRequirement(map:DetailGeographyMap,alias:string):DetailWaterProvenance {
+ if(!poiNameLocators({regions:[...map.regions],waterPoiByKey:new Map(map.waterPoiByKey)},true).has(alias))fail('unknown_poi_alias');
+ const r=requirement(map,alias,alias.startsWith('waterPoi:'));return Object.freeze({...r,predicates:Object.freeze([...r.predicates])});
+}
 function waterIdentity(map:DetailGeographyMap,cellKey:string):string {
  const terrain=map.hexTerrainByKey.get(cellKey);
  if(terrain?.terrainOverride==='lake'&&Number.isSafeInteger(terrain.lakeId)&&(terrain.lakeId??0)>0)return `lake:${terrain.lakeId}`;

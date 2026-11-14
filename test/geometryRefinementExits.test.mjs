@@ -1,5 +1,9 @@
+import {detailPoiWaterRequirement} from '../src/detailGeography.ts';
+import {poiNameLocators} from '../src/manualPois.ts';
+import {refinementNearestRiverBank} from '../src/geometryRefinementBanks.ts';
+import {createDetailGrid,worldToDetailCell} from '../src/detailGrid.ts';
 import {prepareRefinementMouths,refinementRiverPaintIntervals} from '../src/geometryRefinementMouths.ts';
-import {refinementShoreContains} from '../src/geometryRefinementShore.ts';
+import {refinementShoreContains,refinementShoreLocation} from '../src/geometryRefinementShore.ts';
 import {buildNaturalLakes} from '../src/rendering/lakeGeometry.ts';
 import {prepareRefinementWetRoutes,refinementWaterContains,refinementWaterIntervals} from '../src/geometryRefinementWater.ts';
 import {detailSourcePixelToWorld} from '../src/detailGeography.ts';
@@ -50,5 +54,9 @@ test('GEO2 actual source hydrology separates open exits from lake/source and enf
  }
  const noLake=prepareRefinementMouths(input,{hydrology,candidates:map.candidateHexes},widths,[]);assert.equal(noLake.status,'error');assert.equal(noLake.paths,undefined);
  const remoteLake=prepareRefinementMouths(input,{hydrology,candidates:map.candidateHexes},widths,lakeInputs.map(l=>({...l,colorPath:'M100000 100000L100001 100000L100001 100001L100000 100001Z'})));assert.equal(remoteLake.code,'mouth_conflict');assert.equal(remoteLake.paths,undefined);
+ const requirements=[...poiNameLocators(map,true)].map(alias=>({alias,...detailPoiWaterRequirement(map,alias)}));assert.ok(requirements.some(r=>r.provenance==='unknown'),'actual catalogue POIs have no invented river requirement');
+ const land=new Set(map.regions.flatMap(r=>r.hexes.map(c=>`${c.q},${c.r}`))),lakeMasks=constrained.lakes.flatMap(l=>Object.values(l.modes));let actualBank=null;
+ for(const c of constrained.paintWater.capsules){const point={x:(c.from.x+c.to.x)/2,y:(c.from.y+c.to.y)/2},parent6=worldToDetailCell(createDetailGrid(6),point);if(!land.has(`${parent6.q},${parent6.r}`))continue;const bank=refinementNearestRiverBank(constrained.paintWater,{point,parent6,origin,riverId:c.riverId,sourceEdgeKey:c.sourceEdgeKey,lakes:lakeMasks});assert.equal(bank.status,'prepared',JSON.stringify(bank));if(bank.contact){actualBank=bank.contact;break;}}
+ assert.ok(actualBank,'actual finite route has an exposed same-parent bank');assert.ok(Math.abs(refinementWaterContains(constrained.paintWater,actualBank.point).clearance)<1e-7);assert.ok(lakeMasks.every(l=>refinementShoreLocation(l,actualBank.point)!=='inside'));
  const after=JSON.parse(JSON.stringify(a.createSaveData())),old=JSON.parse(before);delete after.savedAt;delete old.savedAt;assert.deepEqual(after,old);
 });
