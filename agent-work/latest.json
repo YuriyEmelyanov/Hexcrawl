@@ -5231,22 +5231,29 @@
     "state_ref": "agent-work/research/state.json",
     "method_ref": "agent-work/research/method.json",
     "proposals_ref": "agent-work/research/proposals.json",
-    "last_completed_run": "2026-11-14T0435-KNAVE2-corpus-disposition",
-    "result_ref": "agent-work/research/runs/2026-11-14T0435-KNAVE2-corpus-disposition.json",
-    "previous_result_ref": "agent-work/research/runs/2026-11-14T0332-KNAVE2-handdrawn-resume.json",
-    "checkpoint_ref": "agent-work/research/checkpoints/KNAVE2-handdrawn-map.json",
-    "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
+    "last_completed_run": "2026-11-14T0521-owner-survey-source",
+    "result_ref": "agent-work/research/runs/2026-11-14T0521-owner-survey-source.json",
+    "previous_result_ref": "agent-work/research/runs/2026-11-14T0435-KNAVE2-corpus-disposition.json",
+    "checkpoint_ref": null,
+    "evidence_ref": "agent-work/research/experiments/Survey-suitability-v1.json",
     "next_candidate": {
-      "id": "HX-RSR-SD-TRENDALOR-ARTIFACT-GUIDE",
-      "game_id": "SD",
-      "layer": "L1",
-      "active_reference_rank": 4,
-      "target_url": "https://revivifygames.com/blogs/news/the-overachiever-s-guide-to-lazy-hexcrawl-building",
-      "action": "Start from retainedTrendalorobservation, inspect previously uninspected regional map and linked public playerguide as one bounded project; determine authored-vs-borrowed geography and concrete map-preparation use.",
-      "completion_condition": "Complete accessible map/guide corpus with author/project dedup and source applicability; no repeat of already closed article summary or SD rule audit.",
-      "why_now": "Knave available corpus has an admissibility result; next high-ranked game with a recorded explicit artifact/guide gap and a primary blog source.",
-      "existing_observation_ref": "agent-work/research/observations.json#HX-OBS-SD-TRENDALOR-20250801",
-      "priority_reassessment_required": true
+      "id": "HX-RSR-RECENT-RPG-PLAY-SURVEY",
+      "kind": "bounded_primary_survey_wave",
+      "action": "Выбрать одну пригодную свежую волну2025–2026 об играемых/ведомых НРИ; начать с первичных вопроса/выборки/данных и проверить пригодность к рейтингу, используяrpg_play_surveysиpilotv1.",
+      "completion_condition": "Один законченный срез: точный вопрос, роли, период, n/знаменатель, варианты/редакции/дубли/смещения, сопоставимые результаты и решение о применимости. Нельзя закончить просто ссылкой или общимunknown.",
+      "selection_gate": "Fresh owner survey direction informs priority; reassess against owner decisions and attainableL1high-rank gaps. No fixed recurring survey quota.",
+      "deferred_game_candidate": {
+        "id": "HX-RSR-SD-TRENDALOR-ARTIFACT-GUIDE",
+        "game_id": "SD",
+        "layer": "L1",
+        "active_reference_rank": 4,
+        "target_url": "https://revivifygames.com/blogs/news/the-overachiever-s-guide-to-lazy-hexcrawl-building",
+        "action": "Start from retainedTrendalorobservation, inspect previously uninspected regional map and linked public playerguide as one bounded project; determine authored-vs-borrowed geography and concrete map-preparation use.",
+        "completion_condition": "Complete accessible map/guide corpus with author/project dedup and source applicability; no repeat of already closed article summary or SD rule audit.",
+        "why_now": "Knave available corpus has an admissibility result; next high-ranked game with a recorded explicit artifact/guide gap and a primary blog source.",
+        "existing_observation_ref": "agent-work/research/observations.json#HX-OBS-SD-TRENDALOR-20250801",
+        "priority_reassessment_required": true
+      }
     },
     "active_ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-06.json",
     "active_ranking_changed": false,
@@ -5260,26 +5267,31 @@
       }
     ],
     "automation_health": {
-      "start": [
-        {
-          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+      "start": {
+        "research_agent": {
+          "status": "checked_enabled",
           "is_enabled": true,
-          "checked_at": "2026-11-14T04:35:46.993Z",
+          "checked_at": null,
+          "stage": "initial_preclaim_inspection",
+          "note": "Initialsnapshotretained; exactwallclockchecktimewasnotcaptured.",
           "run_details": {
             "last_run": {
               "id": "2c0f4b83-65e8-8325-9ee2-40796c44a0f8",
-              "recorded_status": "in_progress",
+              "recorded_status": "completed",
               "scheduled_for": "2026-11-14T04:30:00Z",
               "started_at": "2026-11-14T04:34:55.212191Z",
-              "completed_at": null,
-              "chat_ref": null
+              "completed_at": "2026-11-14T04:42:32.312555Z",
+              "chat_ref": {
+                "type": "chatgpt",
+                "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+              }
             },
             "latest_result": {
-              "run_id": "36510b71-e5b8-8325-9fcc-b8868663147e",
-              "created_at": "2026-11-14T03:39:04.020596Z",
-              "scheduled_for": "2026-11-14T03:30:00Z",
-              "completed_at": "2026-11-14T03:39:04.613033Z",
-              "content_text": "Проверил оба изображения: первая действительно является региональной гекс-картой с местностью, водными путями и подписанными местами. Это усиливает свидетельство реальной подготовки карты, но не подтверждает использование таблиц Knave или спрос на генератор.\n\n[Результат сохранён в GitHub](https://github.com/YuriyEmelyanov/Hexcrawl/blob/46ba90a77eee74146fd5f41fc0770a2c1dd8ae31/agent-work/research/market/KNAVE2-handdrawn-resume-2026-11-14.md), обратное чтение проверено. Рейтинг и очередь не изменены.\n\nОстановился только на сверке кросспоста: HTTP403/DisabledError, причина неизвестна. Далее — проверить его автора и изображения; уже просмотренное повторять не нужно. Действий владельца не требуется.",
+              "run_id": "2c0f4b83-65e8-8325-9ee2-40796c44a0f8",
+              "created_at": "2026-11-14T04:42:31.990078Z",
+              "scheduled_for": "2026-11-14T04:30:00Z",
+              "completed_at": "2026-11-14T04:42:32.312555Z",
+              "content_text": "Завершил [сводный разбор доступного корпуса Knave 2e](https://github.com/YuriyEmelyanov/Hexcrawl/blob/d13325bc7d66f58f2a3c66714357adcac124adaa/agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.md).\n\nГлавное решение: предпочтение бумажной карты **не обосновывает снижение доли создающих карты**. Готовность пользоваться цифровым генератором — отдельная, пока неизмеренная величина.\n\nКросспост остался непроверенным: получен DisabledError. Он исключён из независимого счёта; вернуться к нему можно при появлении доступных данных.\n\nРезультат сохранён и проверен обратным чтением. Рейтинг и очередь не изменены, новых решений владельцу нет. Далее — карта и публичное руководство проекта Trendalor для Shadowdark.",
               "content_truncated": false,
               "chat_ref": {
                 "type": "chatgpt",
@@ -5291,60 +5303,31 @@
             "delivery_status": "unknown"
           }
         },
-        {
-          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-          "is_enabled": true,
-          "checked_at": "2026-11-14T04:35:47.171Z",
-          "run_details": {
-            "last_run": {
-              "id": "02c6d681-ec28-832b-bb9d-e9023ba1ffea",
-              "recorded_status": "completed",
-              "scheduled_for": "2026-11-14T04:00:00Z",
-              "started_at": "2026-11-14T04:00:49.282423Z",
-              "completed_at": "2026-11-14T04:21:15.925417Z",
-              "chat_ref": {
-                "type": "chatgpt",
-                "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
-              }
-            },
-            "latest_result": {
-              "run_id": "02c6d681-ec28-832b-bb9d-e9023ba1ffea",
-              "created_at": "2026-11-14T04:21:15.307472Z",
-              "scheduled_for": "2026-11-14T04:00:00Z",
-              "completed_at": "2026-11-14T04:21:15.925417Z",
-              "content_text": "Программист: в GEO2 добавлен расчёт водной полосы на изгибах и концах рек, включая точные пересечения с ней. Сохранена существующая видимая ширина рек.\n\nПроверки: **399/399**, сборка успешна.\n\nТесты: +2 / −0 / изменено 1 — защищают округлые стыки, конечные пересечения и сухие промежутки.\n\nДалее — устья и обрезка полосы по настоящему берегу озера. GEO2 пока не активирован в интерфейсе.\n\n[Результат сохранён](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/results/2026-11-14T0701-programmer-ONE-MILE1-GEO2.json). Автоматизация включена, проверки начала и конца подтверждены.",
-              "content_truncated": false,
-              "chat_ref": {
-                "type": "chatgpt",
-                "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
-              },
-              "requires_user_action": false,
-              "is_failure_message": false
-            },
-            "delivery_status": "unknown"
-          }
+        "main_team": {
+          "status": "unchecked_at_initial_stage",
+          "note": "No preclaimteampeek was performed; later actualpoint-in-time checks recorded below, not backdated."
         }
-      ],
+      },
       "end": [
         {
           "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
           "is_enabled": true,
-          "checked_at": "2026-11-14T04:40:48.866Z",
+          "checked_at": "2026-11-14T05:29:09.492Z",
           "run_details": {
             "last_run": {
-              "id": "2c0f4b83-65e8-8325-9ee2-40796c44a0f8",
+              "id": "d5fa9a3b-9394-8325-8539-16a824241553",
               "recorded_status": "in_progress",
-              "scheduled_for": "2026-11-14T04:30:00Z",
-              "started_at": "2026-11-14T04:34:55.212191Z",
+              "scheduled_for": "2026-11-14T05:30:00Z",
+              "started_at": "2026-11-14T05:26:03.333517Z",
               "completed_at": null,
               "chat_ref": null
             },
             "latest_result": {
-              "run_id": "36510b71-e5b8-8325-9fcc-b8868663147e",
-              "created_at": "2026-11-14T03:39:04.020596Z",
-              "scheduled_for": "2026-11-14T03:30:00Z",
-              "completed_at": "2026-11-14T03:39:04.613033Z",
-              "content_text": "Проверил оба изображения: первая действительно является региональной гекс-картой с местностью, водными путями и подписанными местами. Это усиливает свидетельство реальной подготовки карты, но не подтверждает использование таблиц Knave или спрос на генератор.\n\n[Результат сохранён в GitHub](https://github.com/YuriyEmelyanov/Hexcrawl/blob/46ba90a77eee74146fd5f41fc0770a2c1dd8ae31/agent-work/research/market/KNAVE2-handdrawn-resume-2026-11-14.md), обратное чтение проверено. Рейтинг и очередь не изменены.\n\nОстановился только на сверке кросспоста: HTTP403/DisabledError, причина неизвестна. Далее — проверить его автора и изображения; уже просмотренное повторять не нужно. Действий владельца не требуется.",
+              "run_id": "2c0f4b83-65e8-8325-9ee2-40796c44a0f8",
+              "created_at": "2026-11-14T04:42:31.990078Z",
+              "scheduled_for": "2026-11-14T04:30:00Z",
+              "completed_at": "2026-11-14T04:42:32.312555Z",
+              "content_text": "Завершил [сводный разбор доступного корпуса Knave 2e](https://github.com/YuriyEmelyanov/Hexcrawl/blob/d13325bc7d66f58f2a3c66714357adcac124adaa/agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.md).\n\nГлавное решение: предпочтение бумажной карты **не обосновывает снижение доли создающих карты**. Готовность пользоваться цифровым генератором — отдельная, пока неизмеренная величина.\n\nКросспост остался непроверенным: получен DisabledError. Он исключён из независимого счёта; вернуться к нему можно при появлении доступных данных.\n\nРезультат сохранён и проверен обратным чтением. Рейтинг и очередь не изменены, новых решений владельцу нет. Далее — карта и публичное руководство проекта Trendalor для Shadowdark.",
               "content_truncated": false,
               "chat_ref": {
                 "type": "chatgpt",
@@ -5359,18 +5342,15 @@
         {
           "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
           "is_enabled": true,
-          "checked_at": "2026-11-14T04:40:48.856Z",
+          "checked_at": "2026-11-14T05:29:09.612Z",
           "run_details": {
             "last_run": {
-              "id": "02c6d681-ec28-832b-bb9d-e9023ba1ffea",
-              "recorded_status": "completed",
-              "scheduled_for": "2026-11-14T04:00:00Z",
-              "started_at": "2026-11-14T04:00:49.282423Z",
-              "completed_at": "2026-11-14T04:21:15.925417Z",
-              "chat_ref": {
-                "type": "chatgpt",
-                "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
-              }
+              "id": "3b518d97-fc04-8322-a76f-3924b9a4f3a6",
+              "recorded_status": "in_progress",
+              "scheduled_for": "2026-11-14T05:00:00Z",
+              "started_at": "2026-11-14T05:04:38.395900Z",
+              "completed_at": null,
+              "chat_ref": null
             },
             "latest_result": {
               "run_id": "02c6d681-ec28-832b-bb9d-e9023ba1ffea",
@@ -5390,105 +5370,141 @@
           }
         }
       ],
+      "prompt_change_verification": {
+        "prompt_exact": true,
+        "prior_prompt_preserved": true,
+        "schedule_preserved": true,
+        "enabled_preserved": true,
+        "timezone_preserved": true,
+        "environment_selection_preserved": true,
+        "environments_preserved": true
+      },
       "restoration_performed": false,
       "point_in_time_only": true,
-      "not_research_completion_evidence": true,
       "final_persistence_end": [
         {
           "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
           "is_enabled": true,
-          "checked_at": "2026-11-14T04:41:59.859Z"
+          "checked_at": "2026-11-14T05:31:49.064Z"
         },
         {
           "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
           "is_enabled": true,
-          "checked_at": "2026-11-14T04:41:59.467Z"
+          "checked_at": "2026-11-14T05:31:49.116Z"
         }
       ]
     },
     "latest_research_storage_verification": {
-      "data_commit_sha": "f9c2045669b834f98d458b2bc983cce4af2f19f7",
+      "data_commit_sha": "3ccecf0800d1a7fe7d3d87f5ccdc1d7e2b7acf8f",
       "verified_files": [
         {
-          "path": "agent-work/claims/2026-11-14T0435-KNAVE2-corpus-disposition.json",
-          "sha": "18402af1f9282c63e2ebbe0b9075cf7cf662c201",
+          "path": "agent-work/research/work-plan.json",
+          "sha": "d404c610294d825aff88091f00833b7aa6cc3cae",
+          "exact": true
+        },
+        {
+          "path": "agent-work/claims/2026-11-14T0521-owner-survey-source.json",
+          "sha": "aad8eb0d094799a364b2db68b1ada3b6373d8e20",
+          "exact": true
+        },
+        {
+          "path": "agent-work/research/experiments/Survey-suitability-v1.json",
+          "sha": "84e9f911679dcfc4469c45aa96f431d12d8061f9",
+          "exact": true
+        },
+        {
+          "path": "agent-work/research/runs/2026-11-14T0521-owner-survey-source.json",
+          "sha": "ab69b25aeae88a89173184af1987f4809216097a",
+          "exact": true
+        },
+        {
+          "path": "agent-work/decisions/owner-decision-2026-11-14-research-surveys.json",
+          "sha": "08c6aff874448a544c63077d652d903f643dc79d",
           "exact": true
         },
         {
           "path": "agent-work/research/README.md",
-          "sha": "f2a2306bbcf83af42de580bd48627a6b31b9b24d",
+          "sha": "1b88f140124a9ad2e234363208f796f54b65de6e",
           "exact": true
         },
         {
-          "path": "agent-work/research/checkpoints/KNAVE2-handdrawn-map.json",
-          "sha": "71149c627ef8327ff9144e11c0c91c24ef665416",
-          "exact": true
-        },
-        {
-          "path": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.md",
-          "sha": "ec5cf41be5c3f15a5967d9ceea34af8b72e45f20",
-          "exact": true
-        },
-        {
-          "path": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
-          "sha": "05a1ab435f9177486d911b29b63d05b857867866",
+          "path": "agent-work/research/method.json",
+          "sha": "635a86650d41ea4e2dd51bb4ff9d1fc003b206e1",
           "exact": true
         },
         {
           "path": "agent-work/research/state.json",
-          "sha": "99c94f13f6539cbe198577a0812f4855cf447ff5",
+          "sha": "eb1d8964cdf3c16a36706bacd8bd734d1a866452",
           "exact": true
         },
         {
-          "path": "agent-work/research/runs/2026-11-14T0435-KNAVE2-corpus-disposition.json",
-          "sha": "4767932734d886cc9de097e030aba13b6ece5c9e",
+          "path": "agent-work/research/observations.json",
+          "sha": "3cbaa6dd98e28e84853a1b2dba93d1c57ddc432d",
+          "exact": true
+        },
+        {
+          "path": "agent-work/research/contract.md",
+          "sha": "82086248fd3d1a8ecb2238f2d7c0980567b4717b",
           "exact": true
         }
       ],
       "protected_inputs": [
         {
-          "path": "agent-work/claims/2026-11-06-strategist-map-creation-ranking.json",
-          "before_sha": "54a98ef60305b9e57bdacaadadb69179cdef5d3b",
-          "after_sha": "54a98ef60305b9e57bdacaadadb69179cdef5d3b",
-          "unchanged": true
-        },
-        {
-          "path": "agent-work/research/method.json",
-          "before_sha": "974e8cedcdefee386c1a5f35c0288751edb1ccba",
-          "after_sha": "974e8cedcdefee386c1a5f35c0288751edb1ccba",
-          "unchanged": true
-        },
-        {
           "path": "agent-work/score/cohorts-2026-11-06.json",
           "before_sha": "7bdcc478177f521dbae993854459b03803159249",
           "after_sha": "7bdcc478177f521dbae993854459b03803159249",
-          "unchanged": true
+          "unchanged": true,
+          "write_performed": false,
+          "before_ref": "5b3abc9e09ba18bc2d1337735dbb34d828487eba"
         },
         {
-          "path": "agent-work/research/observations.json",
-          "before_sha": "21f752ff015c653043a98ddc7a5fcec80711464f",
-          "after_sha": "21f752ff015c653043a98ddc7a5fcec80711464f",
-          "unchanged": true
-        },
-        {
-          "path": "agent-work/backlog.json",
-          "before_sha": "c3670064f546a6fd54f1b03416cf4dc984aa5a41",
-          "after_sha": "c3670064f546a6fd54f1b03416cf4dc984aa5a41",
-          "unchanged": true
+          "path": "agent-work/rules/game-bindings.json",
+          "before_sha": "ff5af8b9dc320e474b3d3b9317dc63c834afbd64",
+          "after_sha": "ff5af8b9dc320e474b3d3b9317dc63c834afbd64",
+          "unchanged": true,
+          "write_performed": false,
+          "before_ref": "5b3abc9e09ba18bc2d1337735dbb34d828487eba"
         },
         {
           "path": "agent-work/research/proposals.json",
           "before_sha": "af09728951ab4a24d5750e56c3545683de76822e",
           "after_sha": "af09728951ab4a24d5750e56c3545683de76822e",
-          "unchanged": true
+          "unchanged": true,
+          "write_performed": false,
+          "before_ref": "5b3abc9e09ba18bc2d1337735dbb34d828487eba"
+        },
+        {
+          "path": "agent-work/backlog.json",
+          "before_sha": "66fab349680d2745b9a15172052c85614e07d22d",
+          "after_sha": "66fab349680d2745b9a15172052c85614e07d22d",
+          "unchanged": true,
+          "write_performed": false
+        },
+        {
+          "path": "agent-work/rules/common-rules.json",
+          "before_sha": "a396eaa1084f97c20b2f73c3ead68f86df15016e",
+          "after_sha": "a396eaa1084f97c20b2f73c3ead68f86df15016e",
+          "unchanged": true,
+          "write_performed": false,
+          "before_ref": "5b3abc9e09ba18bc2d1337735dbb34d828487eba"
         },
         {
           "path": "agent-work/market/three-scenario-ranking-2026-11-06.json",
           "before_sha": "ea0d62e91e7e97f938268e14e4fdd484668748d8",
           "after_sha": "ea0d62e91e7e97f938268e14e4fdd484668748d8",
-          "unchanged": true
+          "unchanged": true,
+          "write_performed": false
         }
       ],
+      "automation_prompt": {
+        "prompt_exact": true,
+        "prior_prompt_preserved": true,
+        "schedule_preserved": true,
+        "enabled_preserved": true,
+        "timezone_preserved": true,
+        "environment_selection_preserved": true,
+        "environments_preserved": true
+      },
       "nonresearch_latest_fields_preserved": true,
       "latest_written_last": true
     },
@@ -5537,15 +5553,15 @@
       }
     ],
     "authority_status": "explicit_owner_resume",
-    "finalized_at": "2026-11-14T04:42:16.407Z",
+    "finalized_at": "2026-11-14T05:32:16.139Z",
     "program_id": "HX-RSR-001",
-    "run_id": "2026-11-14T0435-KNAVE2-corpus-disposition",
-    "last_result_ref": "agent-work/research/runs/2026-11-14T0435-KNAVE2-corpus-disposition.json",
-    "updated_at": "2026-11-14T04:42:16.407Z",
+    "run_id": "2026-11-14T0521-owner-survey-source",
+    "last_result_ref": "agent-work/research/runs/2026-11-14T0521-owner-survey-source.json",
+    "updated_at": "2026-11-14T05:32:16.139Z",
     "active_rating_changed": false,
-    "last_run_id": "2026-11-14T0435-KNAVE2-corpus-disposition",
-    "result_commit_sha": "f9c2045669b834f98d458b2bc983cce4af2f19f7",
-    "last_run": "2026-11-14T0435-KNAVE2-corpus-disposition",
+    "last_run_id": "2026-11-14T0521-owner-survey-source",
+    "result_commit_sha": "3ccecf0800d1a7fe7d3d87f5ccdc1d7e2b7acf8f",
+    "last_run": "2026-11-14T0521-owner-survey-source",
     "new_owner_decisions_needed": [],
     "pending_product_proposal_refs": [
       "agent-work/proposals/2026-11-10-HX-BL-054-PF2-FILL1.json",
@@ -5553,7 +5569,7 @@
     ],
     "proposal_ref": null,
     "owner_work_policy_ref": "agent-work/decisions/owner-decision-2026-11-10-research-outcomes.json",
-    "last_owner_instruction_applied": "Finish available-corpus admissibility and source-to-active-model disposition. Inaccessible crosspost remains explicitly unverified/excluded with conditional reopen, not an endless access-only primary cursor; no numeric or product queue changes.",
+    "last_owner_instruction_applied": "RPG-play surveys added as regular primary research source; exactquestion/role/period/itemn and selection/multiselect/dedup checks; qualitative methodv1.1 and historicalpilot only; active numeric model and product queue preserved.",
     "summary_ref": "agent-work/research/README.md",
     "resolved_product_owner_decisions": [
       {
@@ -5627,12 +5643,11 @@
       "latest_written_last": true
     },
     "latest_startup_diagnosis": {
-      "run_id": "2026-11-14T0435-KNAVE2-corpus-disposition",
-      "status": "completed_bounded_admissibility_source_identity_unverified",
-      "started_marker_ref": "agent-work/claims/2026-11-14T0435-KNAVE2-corpus-disposition.json",
-      "result_ref": "agent-work/research/runs/2026-11-14T0435-KNAVE2-corpus-disposition.json",
-      "stop_reason": "Crosspost identity verification stopped on inaccessible source; explicitly excluded. Available-corpus admissibility goal completed; no claim that inaccessible identity is verified.",
-      "cause_status": "unknown",
+      "run_id": "2026-11-14T0521-owner-survey-source",
+      "status": "completed_owner_survey_source_update_with_qualified_pilot",
+      "started_marker_ref": "agent-work/claims/2026-11-14T0521-owner-survey-source.json",
+      "result_ref": "agent-work/research/runs/2026-11-14T0521-owner-survey-source.json",
+      "stop_reason": null,
       "needs_owner_action": false
     },
     "stop_reason_reporting_policy": {
@@ -5652,7 +5667,7 @@
       "runtime_failure_reporting_tested": false,
       "latest_written_last": true
     },
-    "checks_ref": "agent-work/research/runs/2026-11-14T0435-KNAVE2-corpus-disposition.json#verification",
+    "checks_ref": "agent-work/research/experiments/Survey-suitability-v1.json#validation_or_falsification",
     "latest_card_comparison": {
       "ref": "agent-work/research/resources/HexAtlas-local-cards-2026-11-12.json",
       "status": "completed_bounded_local_card_and_mixed_group_comparison"
@@ -5874,6 +5889,29 @@
         "no_unconditional_repeat": true
       },
       "numeric_change": false
+    },
+    "qualitative_method_version": "research-method-1.1",
+    "qualitative_method_changed": true,
+    "active_numeric_method_changed": false,
+    "latest_owner_source_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-research-surveys.json",
+    "latest_survey_source_update": {
+      "decision_ref": "agent-work/decisions/owner-decision-2026-11-14-research-surveys.json",
+      "experiment_ref": "agent-work/research/experiments/Survey-suitability-v1.json",
+      "result_ref": "agent-work/research/runs/2026-11-14T0521-owner-survey-source.json",
+      "source_type": "rpg_play_surveys",
+      "status": "applied_with_completed_qualitative_pilot",
+      "observations_added": 2,
+      "active_rating_changed": false,
+      "prompt_verified": true
+    },
+    "latest_method_experiment": {
+      "experiment_id": "HX-RSR-EXP-SURVEY-SUITABILITY-v1",
+      "version": 1,
+      "status": "qualitative_only_item_denominator_and_construct_validation",
+      "ref": "agent-work/research/experiments/Survey-suitability-v1.json",
+      "related_experiment_ref": "agent-work/research/experiments/GM-survey-suitability-v1.json",
+      "active_numeric_method_changed": false,
+      "numeric_effect_proposal_ref": null
     }
   },
   "latest_ranking_activation": {
