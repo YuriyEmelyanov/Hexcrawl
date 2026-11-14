@@ -893,3 +893,7 @@ Source-six/fine scene coordinates are the same frame; dividing only water width 
 
 ### 14 ноября2026 — резервировать подходы до прокладки первого русла
 GEO2: последовательный маршрут закрывал подход позднему притоку (synthetic b-j и retained river5). Предварительное распределение разных подходов у общего sourceport исправило оба случая: 53/53 пути сохраняют IDs/F/инцидентность, перестановка входа не меняет результат. Это один fixture и bounded sequential allocator, не доказательство глобальной оптимальности/полноты. При невозможности распределения возвращать atomicerror, не выбрасывать приток. Evidence: agent-work/evidence/ONE-MILE1-GEO2-rivers-0157/checks.json, witness.json; exactSHA cd4249d6e70099c3581eb1c5882824a6a8443b96.
+
+
+### 14 ноября2026 — направление source и отметки проверять до маршрутизации
+GEO2 source bridge сверяет primary vertexPath и sectors: одна directed edge coverage, F и refs без fallback/reverse. На53 retained сегментах сохраняются11секторов/22boundary refs; перестановка входных массивов не меняет результат. Rapid переносится по normalized arc length с downstream tangent; waterfall сохраняет общий vertex и все106направленных incidences в отдельной forced-mark диагностике. Её53/55отметок не являются числом реальных eligible/visible marks. Сохранённый region_boundary tag также не доказывает continuable fine boundary exit: геометрические terminal/boundary constraints — следующий этап. Evidence: agent-work/evidence/ONE-MILE1-GEO2-source-0304/checks.json, mark-diagnostic.json; exactSHA f92bb54c3405aa4aadfafb69ee6d58ca10227bfb.
