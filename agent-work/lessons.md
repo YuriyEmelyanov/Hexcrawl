@@ -1011,3 +1011,8 @@ At f522b356, explicit /usr/bin/chromium (156 Debian13) is present and selected b
 ## 2026-11-14T23:29:26.495Z — GEO2 retained-source projection
 
 At 8230c00dcda0e9c723278c1e71193f8b72bacf15, projecting only stable old region/river/road/crossing/body refs reproduces old fingerprint while returning stored choices literally. Shared graph/body refs, missing old IDs and changed authored inputs must not be silently filtered. A successful projection does not certify spatial independence: boundaryValidation=required and readyForApplication=false remain mandatory until mixed-interface/global physical4 integration. One distinct contract case reuses the existing53/31/7 fixture; no seed series. Evidence: agent-work/evidence/GEO2-scope-projection-20261115-0202/implementation.md.
+
+
+## 2026-11-14T23:56:34.963Z — GEO2 global authored scope and live metadata
+
+At 7c9f049befa1c7b3a09d357b6992fe3e0b1db9a3, retained source fingerprint can stay literal when new authored POIs are outside scope: filter geometric owner/footprint inputs while returning the full global snapshot and outside records; preserve the global monotonic nextId, reject missing/rebound old IDs and dangling aliases. Do not use the projected input as a full document. Reproduced second issue: physical4 sourceState stores historical local metadata; current fine edits/view/focus must come from the live outer state, including cleared focus. Expanded one existing contract, reused53/31/7 fixture: Node+0/-0/modified1, final417/417 and build passed. Structural owner projection is still not spatial-boundary or global physical4/public16/handler acceptance; readyForApplication remainsfalse. Evidence agent-work/evidence/GEO2-authored-scope-20261115-0234/implementation.md.

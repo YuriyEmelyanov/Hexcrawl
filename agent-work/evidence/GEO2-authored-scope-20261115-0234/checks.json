@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T0234-programmer-GEO2-authored-scope",
+  "role": "programmer",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-authored-scope",
+  "base_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+  "head_sha": "7c9f049befa1c7b3a09d357b6992fe3e0b1db9a3",
+  "tree_sha": "ff9e50e4c3b653b09c7f86574fcd65ae9b265b26",
+  "source_commit_history": [
+    "d35da9686bae14ea51990a9f6d9ed7144097e537",
+    "7c9f049befa1c7b3a09d357b6992fe3e0b1db9a3"
+  ],
+  "working_branch": "agent/hx-bl-051-geo2",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "spec_version": "GEO2-v2",
+  "claim_ref": "agent-work/claims/2026-11-15T0234-programmer-GEO2-authored-scope.json",
+  "result_ref": "agent-work/results/2026-11-15T0234-programmer-GEO2-authored-scope.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0234-programmer-GEO2-authored-scope.json",
+  "evidence_ref": "agent-work/evidence/GEO2-authored-scope-20261115-0234",
+  "checks_ref": "agent-work/evidence/GEO2-authored-scope-20261115-0234/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-authored-scope-20261115-0234/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/GEO2-authored-scope-20261115-0234/score-evidence.json",
+  "next_role": "programmer",
+  "next_step": "Программист продолжает HX-BL-051/GEO2 на 7c9f049befa1c7b3a09d357b6992fe3e0b1db9a3: завершить пространственную проверку новых/старых границ и global physical4 bookkeeping/persisted scope, затем подключить расширение к реальному recordGenerated/UndoRedo и public16 roundtrip. Сохранить новый неуточнённый домен, все глобальные владельцы/ручные правки, текущие fine edits/focus и старые literal choices; projected.input не заменяет весь документ. До этой интеграции refinement_domain_expansion остаётся отказом, readyForApplication=false. Затем карта/PNG/initial preview, G201–G210 и независимая проверка полного точного SHA с score_assessment1.2. Browser acceptance требует разрешающего Chromium socket() runner; публикация отдельно.",
+  "release_authorized": false,
+  "main_changed": false,
+  "published": false,
+  "pr": 503,
+  "pr_updated": false,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "review_ready": false,
+  "full_task_complete": false,
+  "implementation_complete": false,
+  "owner_decision_required_for_next_step": false,
+  "product_score_changed": false,
+  "score_model_version": "1.2",
+  "checked_at": "2026-11-14T23:55:27.288Z",
+  "node_version": "v24.22.1",
+  "source_remote_readbacks": [
+    {
+      "path": "src/geometryRefinementScope.ts",
+      "blob": "86b68f27432f4ef74c46ae943db3f468733c3e2b",
+      "exact": true
+    },
+    {
+      "path": "test/geometryPlan.test.mjs",
+      "blob": "e27af804a455ab10c884557951528284962dfb2e",
+      "exact": true
+    }
+  ],
+  "local_tree_exact": true,
+  "full_check": {
+    "command": "npm run check",
+    "source_sha": "7c9f049befa1c7b3a09d357b6992fe3e0b1db9a3",
+    "exit_code": 0,
+    "typescript": "passed",
+    "node": {
+      "tests": 417,
+      "pass": 417,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "duration_ms": 682791.608609
+    },
+    "build": {
+      "status": "passed",
+      "duration_seconds": 14.38
+    }
+  },
+  "focused": {
+    "command": "node --test test/geometryPlan.test.mjs",
+    "executed": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0
+  },
+  "reproductions": [
+    {
+      "before_sha": "8230c00dcda0e9c723278c1e71193f8b72bacf15",
+      "scenario": "Appending authored owner to scope source",
+      "result": "scope_source_changed",
+      "ref": "agent-work/evidence/GEO2-authored-scope-20261115-0234/owner-append-before.log"
+    },
+    {
+      "before_sha": "d35da9686bae14ea51990a9f6d9ed7144097e537",
+      "scenario": "Live physical4 local note after accepted refinement",
+      "result": "Historical {} returned instead of current note",
+      "ref": "agent-work/evidence/GEO2-authored-scope-20261115-0234/live-edit-before.log"
+    }
+  ],
+  "intermediate_check": {
+    "sha": "d35da9686bae14ea51990a9f6d9ed7144097e537",
+    "status": "interrupted_superseded",
+    "exit_code": 130,
+    "reason": "Additional live-edit defect reproduced before final code; partial output is not a passing check",
+    "log_ref": "agent-work/evidence/GEO2-authored-scope-20261115-0234/intermediate-full-check-interrupted.log"
+  },
+  "browser": {
+    "status": "not_rerun",
+    "executed": 0,
+    "reason": "Detached Node-only projector; no App/generation/render activation. Prior actual system Chromium socket EPERM still requires a permitted runner for package acceptance.",
+    "environment_evidence_ref": "agent-work/evidence/GEO2-browser-runtime-20261115-0108/checks.json",
+    "not_evidence_of_product_failure": true
+  },
+  "rng_browser": {
+    "status": "not_rerun",
+    "executed": 0
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
+    "start": {
+      "checked_at": "2026-11-14T23:34:50.454Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-14T23:55:27.288Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual point-in-time checks enabled"
+    },
+    "errors": [],
+    "scope": "Actual start/end observations, not a guarantee of later service status. Same task/prompt/schedule unchanged."
+  }
+}

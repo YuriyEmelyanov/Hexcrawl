@@ -21,3 +21,7 @@ An intermediate full check on d35da9686bae14ea51990a9f6d9ed7144097e537 was delib
 Программист продолжает HX-BL-051/GEO2 на 7c9f049befa1c7b3a09d357b6992fe3e0b1db9a3: завершить пространственную проверку новых/старых границ и global physical4 bookkeeping/persisted scope, затем подключить расширение к реальному recordGenerated/UndoRedo и public16 roundtrip. Сохранить новый неуточнённый домен, все глобальные владельцы/ручные правки, текущие fine edits/focus и старые literal choices; projected.input не заменяет весь документ. До этой интеграции refinement_domain_expansion остаётся отказом, readyForApplication=false. Затем карта/PNG/initial preview, G201–G210 и независимая проверка полного точного SHA с score_assessment1.2. Browser acceptance требует разрешающего Chromium socket() runner; публикация отдельно.
 
 No main/PR503 update/publication and no product score change. All model1.2 affected grades/points/deltas remain unknown; programmer evidence is not independent score_assessment.
+
+## Final verification
+
+Final exact-SHA npm run check passed:417/417 Node,0 failed/skipped/cancelled, TypeScript and build passed14.38s. Node test duration 682791.608609ms, exit0. Actual start/end team automation checks enabled. No additional source changes after this verification.
