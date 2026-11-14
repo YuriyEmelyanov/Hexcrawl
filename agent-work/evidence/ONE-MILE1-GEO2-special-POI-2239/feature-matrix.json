@@ -1,0 +1,66 @@
+{
+  "head_sha": "a65b5e77711fc5f57e1672c4ede45954f7f03230",
+  "kind": "programmer_evidence_not_independent_assessment",
+  "source_policy": "src/tags/knavePolicy.json",
+  "profiles": [
+    {
+      "kind": "rapid",
+      "source_row": {
+        "table": "locations",
+        "row": 73
+      },
+      "predicate": "river_rapids",
+      "attachment": "rapid / river:<id> / source edge",
+      "constraint": "Same accepted marked source edge; nearest eligible exposed bank."
+    },
+    {
+      "kind": "waterfall",
+      "source_row": {
+        "table": "locations",
+        "row": 98
+      },
+      "predicate": "river_waterfall",
+      "attachment": "waterfall / river:<id> / vertex:<key>",
+      "constraint": "Same prepared waterfall vertex/point and incident directed source edge; contact constrained to nearest feature bank."
+    },
+    {
+      "kind": "crossing",
+      "source_row": {
+        "table": "locations",
+        "row": 22
+      },
+      "predicate": "crossing_any",
+      "attachment": "crossing / river:<id> / crossing:<key>",
+      "constraint": "Exact crossing/river identity, all required kind predicates, real candidate bank endpoints and final road/crossing bank revalidation.",
+      "negative_kind": {
+        "table": "structures",
+        "row": 29,
+        "predicate": "crossing_ferry",
+        "rejected_actual_kind": "bridge"
+      }
+    },
+    {
+      "kind": "river_start",
+      "source_row": {
+        "table": "locations",
+        "row": 85
+      },
+      "predicate": "river_start",
+      "attachment": "river / river:<id> / start",
+      "constraint": "Unique true river_start boundary and prepared port, not lake/open terminal; nearest feature-bank contact."
+    }
+  ],
+  "common_checks": [
+    "Source adapter plus marker and rigid conditional outline candidates",
+    "Locks reject necessary movement but already valid locked contact is retained",
+    "Measured overrides remain fixed; no shape shrink",
+    "Missing, foreign, stale feature refs and wrong crossing kinds reject",
+    "No known feature-to-generic fallback; unknown provenance remains unresolved",
+    "Synthetic complete composed-candidate variants for all four profiles",
+    "Prepared waterfall/start point changes invalidate expected fingerprint",
+    "Rapid/waterfall/start provenance supports both dry road approaches"
+  ],
+  "examples_are_synthetic": true,
+  "actual_generated_eligible_special_POI_proven": false,
+  "full_GEO2_acceptance": false
+}
