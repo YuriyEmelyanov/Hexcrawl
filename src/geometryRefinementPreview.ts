@@ -1,6 +1,7 @@
 /** Unmounted atomic composition. Candidate state is never applied or exported;
  * public16/history/UI and complete all-phase budgets remain separate gates. */
 import {buildDetailGeographyPreview,type DetailGeographyMap,type DetailLiveRiver} from './detailGeography.ts';
+import {refinementInputFingerprint} from './geometryRefinementFingerprint.ts';
 import {parseDetail1StateV11} from './detailModel.ts';
 import type {DetailCell,WorldPoint} from './detailGrid.ts';
 import type {EditableRiver} from './manualRivers.ts';
@@ -12,7 +13,7 @@ import {prepareRefinementPois} from './geometryRefinementPois.ts';
 import {prepareRefinementRoads} from './geometryRefinementRoads.ts';
 type SourceMap=DetailGeographyMap&Readonly<{rivers:readonly EditableRiver[];roads:readonly EditableRoad[];crossings:readonly EditableCrossing[]}>;
 type RiverPlan=Extract<ReturnType<typeof prepareRefinementMouths>,{status:'prepared'}>;
-export function prepareRefinementGeographyPreview(input:Readonly<{map:SourceMap;liveRivers:readonly DetailLiveRiver[];riverPlan:RiverPlan;marks:Parameters<typeof normalizeRefinementRiverSource>[0]['marks'];origin:WorldPoint;landCells:readonly DetailCell[];lockedPoiIds?:ReadonlySet<string>;searchWorkBudget?:number;cancelled?:()=>boolean}>){
+export function prepareRefinementGeographyPreview(input:Readonly<{map:SourceMap;liveRivers:readonly DetailLiveRiver[];riverPlan:RiverPlan;marks:Parameters<typeof normalizeRefinementRiverSource>[0]['marks'];origin:WorldPoint;landCells:readonly DetailCell[];lockedPoiIds?:ReadonlySet<string>;searchWorkBudget?:number;expectedSourceFingerprint?:string;cancelled?:()=>boolean}>){
  const fail=(stage:string,refs:readonly string[])=>Object.freeze({status:'error' as const,code:'geography_conflict' as const,stage,refs:Object.freeze([...refs]),completeGeometryPlan:false as const,readyForApplication:false as const});
  let stage='source';
  try{
@@ -26,6 +27,7 @@ export function prepareRefinementGeographyPreview(input:Readonly<{map:SourceMap;
   const bootstrap=!input.map.physicalGrid,initial=bootstrap?buildDetailGeographyPreview(input.map,input.liveRivers,input.origin):null;
   const candidateState=parseDetail1StateV11(input.map.physicalGrid??{schema:'hexcrawl.detail1',version:3,active:true,viewStep:6,grid:initial!.grid,source:initial!.source,poiIdentities:initial!.poiIdentities,poiFootprints:initial!.poiFootprints,fineCellEdits:{}});
   if(cancelled())return fail(stage,['prepare_cancelled']);
+  stage='fingerprint';const sourceFingerprint=refinementInputFingerprint(input,candidateState);if(input.expectedSourceFingerprint!==undefined&&input.expectedSourceFingerprint!==sourceFingerprint)return fail(stage,['stale_source_fingerprint']);
   stage='poi_source';
   const requests=prepareRefinementPoiRequests({map:{...input.map,physicalGrid:candidateState},sourceRivers:source.segments,lockedPoiIds:input.lockedPoiIds});
   if(requests.status==='error')return fail(stage,requests.refs);
@@ -40,6 +42,6 @@ export function prepareRefinementGeographyPreview(input:Readonly<{map:SourceMap;
   const roads=prepareRefinementRoads({roads:input.map.roads,crossings:input.map.crossings,sourceRivers:source.segments,rivers:input.riverPlan.paths,water:input.riverPlan.paintWater,origin:input.origin,landCells:input.landCells,lakes,poiMoves:pois.pois,footprints,searchWorkBudget:input.searchWorkBudget,cancelled:input.cancelled});
   if(roads.status==='error')return fail(stage,roads.refs);
   if(cancelled())return fail(stage,['prepare_cancelled']);
-  return Object.freeze({status:'prepared' as const,bootstrap,candidateState,sourceSignature:source.sourceSignature,rivers:input.riverPlan,requests,pois,footprints,roads,unresolved:requests.unresolved,completeGeometryPlan:false as const,readyForApplication:false as const,activation:false as const});
+  return Object.freeze({status:'prepared' as const,bootstrap,candidateState,sourceFingerprint,sourceFingerprintVersion:1 as const,sourceSignature:source.sourceSignature,rivers:input.riverPlan,requests,pois,footprints,roads,unresolved:requests.unresolved,completeGeometryPlan:false as const,readyForApplication:false as const,activation:false as const});
  }catch(error){return fail(stage,[error instanceof Error?error.message:'invalid_geography_input']);}
 }

@@ -304,3 +304,22 @@ river consistency check, not the complete sourceFingerprint. candidateState is
 bootstrap/identity input, not an exportable completed physical4 state. Explicit
 readyForApplication=false and completeGeometryPlan=false: whole-phase budgets,
 feature placement, complete fingerprint/public16/history/UI/PNG still pending.
+
+GEO2 fingerprint rationale before test changes: reuse the retained composed-world
+case to check exact canonical relevant input identity, stable array order and
+name/note/view/RNG exclusions, and rejection of stale lake/road/extent/lock inputs.
+No new permanent test or fixture lifecycle. Keep explicit input version; exact
+canonical content, not a probabilistic digest, avoids collision claims. Source
+footprint inputs must remain separate from future refined output at persistence.
+
+GEO2 INPUT-FINGERPRINT checkpoint: exact versioned canonical content covers
+consumed source and prepared geometry, lake curves/modes, water/land membership,
+owner/source policy refs, source footprints/extents/attachments and explicit
+locks. Object keys and collection records sort; ordered polyline/curve coordinates
+remain ordered. Names, GM/fine notes, fine names, view/camera/locale and RNG
+continuation are excluded. This is a collision-free equality signature, not a
+cryptographic digest; capped2million characters/1million serialization visits.
+Expected-input mismatch returns no partial candidate at fingerprint stage.
+Canonical source footprints are inputs, not future refined output replacements;
+public16/physical4 persistence/parser integration and all-phase budgets remain
+unimplemented. readyForApplication and completeGeometryPlan remain false.
