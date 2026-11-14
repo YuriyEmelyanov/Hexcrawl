@@ -7,10 +7,11 @@ import type {NormalizedRefinementSource} from './geometryRefinementSource.ts';
 import type {DetailPoiFootprint} from './detailModel.ts';
 import {detailFootprintWorldAnchor,detailFootprintHasOutline,detailFootprintPolygons,detailPointInPolygon,detailSegmentPolygonEntry} from './detailSizes.ts';
 import {prepareRefinementShoreCells,refinementShoreIntervals,refinementShoreContains,type RefinementShore} from './geometryRefinementShore.ts';
+import {prepareRefinementDryRoadPath} from './geometryRefinementRoadSearch.ts';
 import {refinementWaterIntervals,type RefinementWater} from './geometryRefinementWater.ts';
 type River=Readonly<{riverId:number;sourceEdgeKey:string;fullness:number;points:readonly WorldPoint[]}>;
 type PoiMove=Readonly<{poiId:string;parent6:DetailCell;oldAnchor:WorldPoint;newAnchor:WorldPoint;footprint:DetailPoiFootprint;routeEntries:readonly Readonly<{routeId:string;accessNodeId:string;oldEntry:WorldPoint;newEntry:WorldPoint}>[]}>;
-type Input=Readonly<{roads:readonly EditableRoad[];crossings:readonly EditableCrossing[];sourceRivers:NormalizedRefinementSource['segments'];rivers:readonly River[];water:RefinementWater;origin:WorldPoint;landCells:readonly DetailCell[];lakes?:readonly RefinementShore[];poiMoves?:readonly PoiMove[];footprints?:readonly DetailPoiFootprint[]}>;
+type Input=Readonly<{roads:readonly EditableRoad[];crossings:readonly EditableCrossing[];sourceRivers:NormalizedRefinementSource['segments'];rivers:readonly River[];water:RefinementWater;origin:WorldPoint;landCells:readonly DetailCell[];lakes?:readonly RefinementShore[];poiMoves?:readonly PoiMove[];footprints?:readonly DetailPoiFootprint[];searchWorkBudget?:number;cancelled?:()=>boolean}>;
 const EPS=1e-8,key=(c:DetailCell)=>`${c.q},${c.r}`,lexical=(a:string,b:string)=>a<b?-1:a>b?1:0,finite=(p:WorldPoint)=>Number.isFinite(p.x)&&Number.isFinite(p.y),distance=(a:WorldPoint,b:WorldPoint)=>Math.hypot(a.x-b.x,a.y-b.y),pair=(r:number,e:string)=>JSON.stringify([r,e]);
 const fail=(refs:string[])=>Object.freeze({status:'error' as const,code:'road_conflict' as const,refs:Object.freeze(refs),completeGeometryPlan:false as const});
 function immutable<T>(v:T):T{if(Array.isArray(v))return Object.freeze(v.map(immutable)) as T;if(v&&typeof v==='object')return Object.freeze(Object.fromEntries(Object.entries(v).map(([k,v])=>[k,immutable(v)]))) as T;return v;}
@@ -64,6 +65,19 @@ export function prepareRefinementRoads(input:Input){
  for(const p of moved.values())for(const e of p.routeEntries)if(!usedPorts.has(JSON.stringify([p.poiId,e.routeId,e.accessNodeId])))return fail([p.poiId,e.accessNodeId,'missing_source_approach']);
  const stepCount=input.rivers.reduce((n,r)=>n+r.points.length-1,0);if(stepCount>24576||parts.reduce((n,p)=>n+p.points.length-1,0)*(stepCount+land.loops.reduce((n,l)=>n+l.length,0)+(input.lakes??[]).reduce((n,b)=>n+b.loops.reduce((n,l)=>n+l.length,0),0)+masks.masks.reduce((n,m)=>n+m.body.loops.reduce((n,l)=>n+l.length,0),0))>2000000)return fail(['road_intersection_capacity']);
  const seenCrossings=new Set<string>();for(const c of input.crossings){if(seenCrossings.has(c.key)||!partKeys.has(pair(c.roadId,c.roadSegmentKey))||!source.has(pair(c.riverId,c.riverEdgeKey))||!['bridge','ford','ferry'].includes(c.kind))return fail([c.key,'invalid_source_crossing']);seenCrossings.add(c.key);if(c.kind==='ford'&&source.get(pair(c.riverId,c.riverEdgeKey))!.fullness>2)return fail([c.key,'ford_fullness']);}
+ let searchWork=0;const searchBudget=input.searchWorkBudget??2000000;
+ if(!Number.isSafeInteger(searchBudget)||searchBudget<1)return fail(['invalid_search_budget']);
+ for(const part of parts){
+  if(!part.linkedPoiIds.length||input.crossings.some(c=>c.roadId===part.roadId&&c.roadSegmentKey===part.sourceRoadSegmentKey))continue;
+  const adapted:WorldPoint[]=[];
+  for(let i=1;i<part.points.length;i++){
+   if(searchWork>=searchBudget)return fail([pair(part.roadId,part.sourceRoadSegmentKey),'search_incomplete_budget']);
+   const route=prepareRefinementDryRoadPath({from:part.points[i-1],to:part.points[i],original:[part.sourceFrom,part.sourceTo],land,lakes:input.lakes??[],water:input.water,maxWork:searchBudget-searchWork,cancelled:input.cancelled});searchWork+=route.work;
+   if(route.status==='error')return fail([pair(part.roadId,part.sourceRoadSegmentKey),route.code]);
+   adapted.push(...route.points.slice(adapted.length?1:0));
+  }
+  part.points=adapted;
+ }
  const results=[],crossingResults=[];
  for(const p of parts){const ref=pair(p.roadId,p.sourceRoadSegmentKey),arcs=arcTable(p.points),total=arcs[arcs.length-1],expected=input.crossings.filter(c=>c.roadId===p.roadId&&c.roadSegmentKey===p.sourceRoadSegmentKey).map(c=>{const s=source.get(pair(c.riverId,c.riverEdgeKey))!,point=detailCrossingPoint({from:p.sourceFrom,to:p.sourceTo},{from:s.from.point,to:s.to.point});return {c,s,point,t:point?fraction(p.sourceFrom,p.sourceTo,point):NaN};});
   if(expected.some(e=>!e.point))return fail([ref,'stale_source_crossing_position']);expected.sort((a,b)=>a.t-b.t||lexical(a.c.key,b.c.key));
@@ -86,5 +100,5 @@ export function prepareRefinementRoads(input:Input){
   }
   results.push({...p,sourceFrom:{...p.sourceFrom},sourceTo:{...p.sourceTo},adapted:p.linkedPoiIds.length>0,crossingKeys:crossings.map(c=>c.key),paint});crossingResults.push(...crossings);
  }
- return immutable({status:'prepared' as const,roads:results,crossings:crossingResults,masks:masks.masks,allocation:'source_incidence_candidates_only' as const,completeGeometryPlan:false as const});
+ return immutable({status:'prepared' as const,roads:results,crossings:crossingResults,masks:masks.masks,allocation:'source_incidence_with_dry_visibility_search' as const,searchWork,searchScope:'moved_POI_parts_without_typed_crossings' as const,completeGeometryPlan:false as const});
 }

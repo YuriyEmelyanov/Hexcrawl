@@ -168,3 +168,32 @@ exist. Full dependency search, feature-specific POI refs, accepted-owner adapter
 public16/history/source-edit closure, active map/PNG/UI and independent combined
 review remain required before activation. No source generation or active
 presentation has changed; no new crossing type has been rolled.
+
+GEO2-v2 road-search rationale before implementation: extend the existing moved-POI
+case for integration/permutation and retain all existing crossing/mask checks.
+Two distinct logical cases are needed: length-first route choice with exact
+arc-integrated old-path deviation/canonical ties, and legal obstacle detour with
+atomic finite-budget/cancellation/no-route distinction. Current direct-candidate
+and river shortest-edge tests do not exercise these requirements. No new world
+series or browser cases. This remains unmounted preparation; typed-crossing
+rerouting and full GeometryPlan/UI/save acceptance must not be inferred.
+
+GEO2-v2 ROAD-SEARCH checkpoint: affected moved-POI parts without typed crossings
+now search a finite visibility graph for each mandatory anchor/entry interval.
+Legal-edge queries use exact generated-land/lake curves and finite water union;
+the length objective uses physical miles before exact integrated mean squared
+old-polyline deviation and numeric canonical path order. The metric integrates
+the lower envelope of clamped segment-distance quadratics, without fixed samples.
+Graph vertices include all supplied land/lake boundary quarter points and
+circumscribed water-cap octagons, capped at512 vertices. The graph is finite and
+its shortest result is NOT a globally shortest continuous path certificate.
+Typed-crossing relocation still uses source-incidence allocation, without this
+reroute; complete joint constrained crossing search/GeometryPlan remains pending.
+The total search budget is shared by all affected dry intervals (default2million
+work units); capacity, budget, cancellation and no-path-in-this-graph are distinct
+referenced atomic failures. No partially adapted network is returned. These
+bounds are operational safeguards, not a new map-size product benchmark.
+All original actual seven crossings/31parts remain the retained-world witness;
+positive moved-POI/detour/length witnesses are synthetic. No eligible real POI
+movement, accepted-map transaction, ordinary source auto-shift, UI, PNG or
+public16/history is claimed. No backend activation or PR503 update.
