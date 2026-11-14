@@ -9,7 +9,7 @@ const freeze=<T>(a:T[])=>Object.freeze(a);
 const edge=(a:GridVertex,b:GridVertex)=>{const [x,y]=a.x-b.x||a.y-b.y?[a,b].sort((a,b)=>a.x-b.x||a.y-b.y):[a,b];return `${x.x},${x.y}|${y.x},${y.y}`;};
 const vertex=(v:GridVertex)=>JSON.stringify(['vertex',v.x,v.y]);
 const pid=(r:number,e:string)=>JSON.stringify([r,e]);
-export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareRefinementRiverNetwork>[0]&Readonly<{openExits?:readonly Readonly<{sourceKey:string;sourceExitRef:string;edgeKeys:readonly string[]}>[]}>){
+export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareRefinementRiverNetwork>[0]&Readonly<{openExits?:readonly Readonly<{sourceKey:string;sourceExitRef:string;edgeKeys:readonly string[]}>[];shorePorts?:readonly Readonly<{sourceKey:string;edgeKeys:readonly string[]}>[]}>){
  const base=prepareRefinementRiverNetwork(input);if(base.status==='error')return base;
  const fail=(refs:string[])=>Object.freeze({status:'error' as const,code:'terminal_conflict' as const,refs:freeze(refs),completeGeometryPlan:false as const});
  const requests=new Map<string,{sourceKey:string;point:{x:number;y:number};degree:1|2|3;allowedEdgeKeys:string[]}>();
@@ -23,8 +23,10 @@ export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareR
  }
  const exits=new Map((input.openExits??[]).map(e=>[e.sourceKey,e]));if(exits.size!==(input.openExits??[]).length)return fail(['duplicate_exit']);
  for(const [key,e]of exits)if(!requests.has(key)||requests.get(key)!.degree!==1)return fail([key]);
+ const shores=new Map((input.shorePorts??[]).map(s=>[s.sourceKey,s]));if(shores.size!==(input.shorePorts??[]).length)return fail(['duplicate_shore']);for(const k of shores.keys())if(exits.has(k)||!requests.has(k)||requests.get(k)!.degree!==1)return fail([k]);
+ const rerouted=new Set([...exits.keys(),...shores.keys()]);
  const oldNodes=new Set(base.rivers.paths.flatMap(p=>p.vertices.map(vertex))),usedNodes=new Set<string>();
- const prepared=prepareRefinementPorts({origin:input.origin,cells:input.cells,requests:[...requests.values()].map(r=>({...r,...(exits.has(r.sourceKey)?{allowedEdgeKeys:[...exits.get(r.sourceKey)!.edgeKeys],exit:{sourceExitRef:exits.get(r.sourceKey)!.sourceExitRef,edgeKeys:exits.get(r.sourceKey)!.edgeKeys}}:{})}))});if(prepared.status==='error')return prepared;
+ const prepared=prepareRefinementPorts({origin:input.origin,cells:input.cells,requests:[...requests.values()].map(r=>({...r,...(shores.has(r.sourceKey)?{allowedEdgeKeys:[...shores.get(r.sourceKey)!.edgeKeys]}:{}),...(exits.has(r.sourceKey)?{allowedEdgeKeys:[...exits.get(r.sourceKey)!.edgeKeys],exit:{sourceExitRef:exits.get(r.sourceKey)!.sourceExitRef,edgeKeys:exits.get(r.sourceKey)!.edgeKeys}}:{})}))});if(prepared.status==='error')return prepared;
  const ports=new Map(prepared.ports.map(p=>[p.sourceKey,p])),nodes=new Map(prepared.nodes.map(n=>[n.key,n.point]));
  const sourceNodes=new Map(base.rivers.nodes.map(n=>[n.sourceKey,vertex(n.vertex)]));
  const byEdge=new Map<string,typeof prepared.edges[number][]>();for(const e of prepared.edges)byEdge.set(e.sourceEdgeKey,[...(byEdge.get(e.sourceEdgeKey)??[]),e]);
@@ -37,15 +39,15 @@ export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareR
   const source=base.source.segments.find(s=>s.riverId===path.riverId&&s.edgeKey===path.sourceEdgeKey)!;
   const fineGrid=createDetailGrid(1,input.origin);
   const directions=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]],available=new Map(input.cells.map(c=>[`${c.q},${c.r}`,c])),corridor=new Map<string,typeof input.cells[number]>();
-  if(exits.has(path.fromNode)||exits.has(path.toNode))for(const c of input.cells)if(detailSegmentSpan(fineGrid,c,{from:source.from.point,to:source.to.point},true)){corridor.set(`${c.q},${c.r}`,c);for(const [dq,dr]of directions){const key=`${c.q+dq},${c.r+dr}`;if(available.has(key))corridor.set(key,available.get(key)!);}}
+  if(rerouted.has(path.fromNode)||rerouted.has(path.toNode))for(const c of input.cells)if(detailSegmentSpan(fineGrid,c,{from:source.from.point,to:source.to.point},true)){corridor.set(`${c.q},${c.r}`,c);for(const [dq,dr]of directions){const key=`${c.q+dq},${c.r+dr}`;if(available.has(key))corridor.set(key,available.get(key)!);}}
   const allowed=new Set(refinementEdgeGraph([...corridor.values()]).edges.map(e=>e.key));
   const steps=[];
   for(let i=1;i<keys.length;i++){
    if(keys[i-1]===keys[i])return fail([path.sourceEdgeKey]);
-   const sourceEdgeKey=edge(path.vertices[i-1],path.vertices[i]),reroute=i===1&&exits.has(path.fromNode)||i===keys.length-1&&exits.has(path.toNode);
+   const sourceEdgeKey=edge(path.vertices[i-1],path.vertices[i]),reroute=i===1&&rerouted.has(path.fromNode)||i===keys.length-1&&rerouted.has(path.toNode);
    const pieces=reroute?prepared.edges.filter(e=>allowed.has(e.sourceEdgeKey)):byEdge.get(sourceEdgeKey)??[];
    const blocked=new Set([...oldNodes,...usedNodes,...prepared.ports.map(p=>p.nodeKey)]);
-   if(exits.has(path.fromNode))blocked.delete(sourceNodes.get(path.fromNode)!);if(exits.has(path.toNode))blocked.delete(sourceNodes.get(path.toNode)!);
+   if(rerouted.has(path.fromNode))blocked.delete(sourceNodes.get(path.fromNode)!);if(rerouted.has(path.toNode))blocked.delete(sourceNodes.get(path.toNode)!);
    blocked.delete(keys[i-1]);blocked.delete(keys[i]);
    const adjacency=new Map<string,typeof pieces>();for(const p of pieces){adjacency.set(p.from,[...(adjacency.get(p.from)??[]),p]);adjacency.set(p.to,[...(adjacency.get(p.to)??[]),p]);}
    const queue=[keys[i-1]],previous=new Map<string,{node:string;piece:typeof pieces[number]}|null>([[keys[i-1],null]]);
@@ -80,5 +82,5 @@ export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareR
  const index=new Map(paths.map(p=>[pid(p.riverId,p.sourceEdgeKey),p]));
  const rapids=freeze(base.source.rapids.map(r=>Object.freeze({...r,kind:'rapid' as const,sourceRef:`rapid:${r.riverId}:${r.sourceEdgeKey}`,...refinementPolylineArc(index.get(pid(r.riverId,r.sourceEdgeKey))!.points,.5)})));
  const waterfalls=freeze(base.source.waterfalls.map(sourceNodeKey=>Object.freeze({kind:'waterfall' as const,sourceRef:`vertex:${sourceNodeKey}`,sourceNodeKey,point:ports.get(sourceNodeKey)!.point,incidences:freeze(paths.filter(p=>p.fromNode===sourceNodeKey||p.toNode===sourceNodeKey).map(p=>Object.freeze({riverId:p.riverId,sourceEdgeKey:p.sourceEdgeKey,flow:p.fromNode===sourceNodeKey?'leaving' as const:'entering' as const,...refinementPolylineArc(p.points,p.fromNode===sourceNodeKey?0:1)})))})));
- return Object.freeze({status:'prepared' as const,source:base.source,ports:prepared.ports,paths:freeze(paths),rapids,waterfalls,boundaries:freeze(base.source.boundaries.map(b=>Object.freeze({...b,point:ports.get(b.sourceNodeKey)!.point}))),allocation:input.openExits?.length?'endpoint_corridor_boundaries' as const:'existing_endpoint_edges_only' as const,completeGeometryPlan:false as const});
+ return Object.freeze({status:'prepared' as const,source:base.source,ports:prepared.ports,paths:freeze(paths),rapids,waterfalls,boundaries:freeze(base.source.boundaries.map(b=>Object.freeze({...b,point:ports.get(b.sourceNodeKey)!.point}))),allocation:input.shorePorts?.length?'endpoint_corridor_shores' as const:input.openExits?.length?'endpoint_corridor_boundaries' as const:'existing_endpoint_edges_only' as const,completeGeometryPlan:false as const});
 }

@@ -91,3 +91,27 @@ fixture case with real renderer width conversion and water-envelope preparation,
 instead of adding another world lifecycle. Capsule union models round caps/joins;
 it is not lake clipping, nearest-bank placement from inside water, or map/PNG UI
 acceptance. Query endpoints clipped inside water must never be called bank points.
+
+GEO2-MOUTHS rationale before tests: existing finite-water tests know no lake body
+or island. Add one distinct Node case for exact displayed M/L/Q/Z shore curves,
+point membership, clipped line intervals and island boundaries. Expand the
+existing actual hydrology/wet-route lifecycle with real lake geometry in all3
+modes, not another retained-world import case. Old Color mouth connectors cannot
+be used as evidence of correct new shoreline. No active renderer/generator change.
+
+The mouths backend now consumes actual lake-cell union boundaries for Tiles/Emoji
+and the seeded Color basin M/L/Q/Z path, retaining exact quadratic intersections
+and even-odd islands. It chooses a common submerged fine-edge port, reroutes only
+the source endpoint within the existing finite source-plus-one-ring corridor,
+and finds each mode's first external bank contact. A bank-following step ending
+exactly at a fine vertex retains the next step's zero-distance shoreline contact.
+The existing world supplies one actual outlet (three mode contacts); it does not
+supply an inlet or rotation/PNG/runtime proof. Pure shore examples cover curved
+contacts, endpoint contacts, islands and no-contact conflicts. A missing lake or
+non-overlapping Color body rejects the whole candidate. Internal lake edges are
+excluded from river paint, and finite river queries subtract each actual body.
+This is a query-space mask, not active map/PNG clipping or a public save contract.
+Nonterminal lake incidence rejects explicitly; the bounded sequential allocator
+is still not a simultaneous solver. Remaining POI/roads/crossings, public16/history,
+dependency closure, preview and actual three-mode renderer integration are required
+before independent combined-package review.

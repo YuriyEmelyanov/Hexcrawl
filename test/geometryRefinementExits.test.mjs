@@ -1,3 +1,6 @@
+import {prepareRefinementMouths,refinementRiverPaintIntervals} from '../src/geometryRefinementMouths.ts';
+import {refinementShoreContains} from '../src/geometryRefinementShore.ts';
+import {buildNaturalLakes} from '../src/rendering/lakeGeometry.ts';
 import {prepareRefinementWetRoutes,refinementWaterContains,refinementWaterIntervals} from '../src/geometryRefinementWater.ts';
 import {detailSourcePixelToWorld} from '../src/detailGeography.ts';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
@@ -25,7 +28,8 @@ test('GEO2 actual source hydrology separates open exits from lake/source and enf
  // endpoint corridors can be rerouted without new source joins.
  const widths=new Map([1,2,3,4,5].map(f=>[f,detailSourcePixelToWorld({x:h.geometry.getRiverWidth(h.geometry.getHexWidth(28),f),y:0}).x]));
  for(const [f,width]of widths)assert.ok(Math.abs(width-6*(.04+f*.035))<1e-12,'same existing visible width, no extra /6');
- const constrained=prepareRefinementWetRoutes(input,{hydrology,candidates:map.candidateHexes},widths);assert.equal(constrained.status,'prepared',JSON.stringify(constrained));assert.equal(constrained.paths.length,53);for(const e of r.exits){const port=constrained.ports.find(p=>p.sourceKey===e.sourceKey);assert.equal(port.sourceExitRef,e.sourceExitRef);assert.ok(port.location.kind==='edge'?e.edgeKeys.includes(port.location.edgeKey):e.edgeKeys.some(k=>k.includes(`${port.location.vertex.x},${port.location.vertex.y}`)));}
+ const lakeGroups=h.geometry.getLakesForRegions(map.regions,map.hexTerrainByKey),lakeInputs=lakeGroups.map(l=>{const shapes=buildNaturalLakes(l.hexes.map(c=>({...c,...h.geometry.toPixel(c.q,c.r),lakeId:l.lakeId})),28,map.toponymSeed,[]);assert.equal(shapes.length,1);return {lakeId:l.lakeId,cells:[...l.hexes],colorPath:shapes[0].path,colorScale:detailSourcePixelToWorld({x:1,y:0}).x,origin};});
+ const constrained=prepareRefinementMouths(input,{hydrology,candidates:map.candidateHexes},widths,lakeInputs);assert.equal(constrained.status,'prepared',JSON.stringify(constrained));assert.equal(constrained.paths.length,53);for(const e of r.exits){const port=constrained.ports.find(p=>p.sourceKey===e.sourceKey);assert.equal(port.sourceExitRef,e.sourceExitRef);assert.ok(port.location.kind==='edge'?e.edgeKeys.includes(port.location.edgeKey):e.edgeKeys.some(k=>k.includes(`${port.location.vertex.x},${port.location.vertex.y}`)));}
  const seen=new Map(),sourceIds=new Set();
  for(const p of constrained.paths){const s=source.segments.find(s=>s.riverId===p.riverId&&s.edgeKey===p.sourceEdgeKey);assert.ok(s);assert.equal(p.fullness,s.fullness);assert.equal(p.fromNode,s.from.key);assert.equal(p.toNode,s.to.key);sourceIds.add(JSON.stringify([p.riverId,p.sourceEdgeKey]));
   for(const [i,k]of p.nodeKeys.entries()){const n=i===0?p.fromNode:i===p.nodeKeys.length-1?p.toNode:null;if(seen.has(k))assert.ok(n&&seen.get(k)===n,'no new source join or overlap');else seen.set(k,n);}
@@ -33,12 +37,18 @@ test('GEO2 actual source hydrology separates open exits from lake/source and enf
  }
  assert.equal(sourceIds.size,53);assert.equal(constrained.rapids.length,marks.rapids.size);assert.equal(constrained.waterfalls.length,marks.waterfalls.size);
  for(const fall of constrained.waterfalls)for(const link of fall.incidences)assert.deepEqual(link.point,fall.point);
- assert.deepEqual(prepareRefinementWetRoutes({...input,cells:cells.toReversed(),rivers:map.rivers.toReversed()}, {hydrology,candidates:map.candidateHexes.toReversed()},widths),constrained);
+ assert.deepEqual(prepareRefinementMouths({...input,cells:cells.toReversed(),rivers:map.rivers.toReversed()}, {hydrology,candidates:map.candidateHexes.toReversed()},widths,lakeInputs.toReversed()),constrained);
  assert.equal(constrained.water.capsules.length,constrained.paths.reduce((n,p)=>n+p.points.length-1,0));
  for(const c of constrained.water.capsules){const mid={x:(c.from.x+c.to.x)/2,y:(c.from.y+c.to.y)/2};assert.equal(refinementWaterContains(constrained.water,mid).inside,true);assert.equal(c.radius,widths.get(constrained.paths.find(p=>p.riverId===c.riverId&&p.sourceEdgeKey===c.sourceEdgeKey).fullness)/2);
   const span=c.radius*4,query={from:{x:mid.x-c.uy*span,y:mid.y+c.ux*span},to:{x:mid.x+c.uy*span,y:mid.y-c.ux*span}},cut=refinementWaterIntervals(constrained.water,query);assert.equal(cut.status,'prepared');assert.ok(cut.intervals.length);
   for(const row of cut.intervals){assert.ok(row.startFraction>=0&&row.endFraction<=1);for(const [point,clipped]of [[row.from,row.startClipped],[row.to,row.endClipped]])if(!clipped)assert.ok(Math.abs(refinementWaterContains(constrained.water,point).clearance)<1e-8,'exposed union bank, not an internal overlap');}
  }
  const badWidth=prepareRefinementWetRoutes(input,{hydrology,candidates:map.candidateHexes},new Map());assert.equal(badWidth.status,'error');assert.equal(badWidth.paths,undefined);
+ assert.equal(constrained.mouths.length,3);assert.deepEqual(constrained.mouths.map(m=>m.mode),['tiles','emoji','color']);
+ for(const mouth of constrained.mouths){const lake=constrained.lakes.find(l=>l.lakeId===mouth.lakeId),shape=lake.modes[mouth.mode];assert.equal(mouth.direction,'outlet');assert.equal(refinementShoreContains(shape,mouth.point),true);const path=constrained.paths.find(p=>p.riverId===mouth.riverId&&p.sourceEdgeKey===mouth.sourceEdgeKey),a=path.points[mouth.stepIndex],b=path.points[mouth.stepIndex+1];assert.ok(Math.hypot(mouth.point.x-a.x-mouth.stepFraction*(b.x-a.x),mouth.point.y-a.y-mouth.stepFraction*(b.y-a.y))<1e-8);
+  const query={from:path.points[0],to:path.points.at(-1)},paint=refinementRiverPaintIntervals(constrained,query,mouth.mode);assert.equal(paint.status,'prepared');for(const row of paint.intervals){const mid={x:(row.from.x+row.to.x)/2,y:(row.from.y+row.to.y)/2};assert.equal(refinementShoreContains(shape,mid),false,'no submerged connector paint');}
+ }
+ const noLake=prepareRefinementMouths(input,{hydrology,candidates:map.candidateHexes},widths,[]);assert.equal(noLake.status,'error');assert.equal(noLake.paths,undefined);
+ const remoteLake=prepareRefinementMouths(input,{hydrology,candidates:map.candidateHexes},widths,lakeInputs.map(l=>({...l,colorPath:'M100000 100000L100001 100000L100001 100001L100000 100001Z'})));assert.equal(remoteLake.code,'mouth_conflict');assert.equal(remoteLake.paths,undefined);
  const after=JSON.parse(JSON.stringify(a.createSaveData())),old=JSON.parse(before);delete after.savedAt;delete old.savedAt;assert.deepEqual(after,old);
 });
