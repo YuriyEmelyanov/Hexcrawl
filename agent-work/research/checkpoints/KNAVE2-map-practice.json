@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T0133-KNAVE2-map-practice",
+  "status": "closed_completed_bounded_corpus",
+  "result_ref": "agent-work/research/runs/2026-11-14T0133-KNAVE2-map-practice.json",
+  "evidence_ref": "agent-work/research/market/KNAVE2-map-practice-2026-11-14.json",
+  "checks_ref": "agent-work/research/market/KNAVE2-map-practice-2026-11-14-checks.json",
+  "completed_at": "2026-11-14T01:44:16.135Z",
+  "selected_task": {
+    "id": "HX-RSR-KNAVE2-HISAGOL-MAP-PRACTICE",
+    "outcome": "Complete bounded source-to-scenario disposition of Hisagol campaign: edition, author/project dedup, borrowed-vs-new geography, map artifact and preparation/use, mixed procedures, existing development handoff.",
+    "completion_condition": "Read full canonical retrospective and its map; check project tag/index and prior evidence duplicates; classify create/develop/play evidence and limits; publish checked ledger plus concrete existing-task research note, without numeric/queue/product changes."
+  },
+  "remainder": [],
+  "continuation": null,
+  "next_candidate": {
+    "id": "HX-RSR-KNAVE2-HANDDRAWN-MAP-EDITION",
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "target_url": "https://www.reddit.com/r/osr/comments/1ggcjsa",
+    "goal": "Check the hand-drawn Sunday-campaign map and NSRRPG crosspost as one author/project; distinguish declared2ePDF/draft timing, authored geography vs module remix, and actual campaign practice.",
+    "completion_condition": "Read full post and accessible map corpus plus author clarifications; dedup crosspost; decide source applicability and scenario evidence without prevalence conversion.",
+    "selection_gate": "Candidate only; reassess current owner priorities, source access and claims next run. Do not inherit rank for another edition."
+  },
+  "diagnostics": {
+    "status": "completed_bounded_with_recovered_read_errors",
+    "run_id": "2026-11-14T0133-KNAVE2-map-practice",
+    "stage": "source_analysis_and_data_readback_complete",
+    "last_successful_step": "Exact commit readback of ledger, overview, three observations and source-note-only backlog patch",
+    "failed_operation": {
+      "tool": "github_fetch_file",
+      "action": "Read guessed registry path",
+      "locator": "agent-work/market/rules/game-bindings.json"
+    },
+    "observed_error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+    "error_code": "NOT_FOUND",
+    "stop_reason": null,
+    "cause_status": "confirmed",
+    "cause_scope": "The final recovered lookup used a nonexistent path; separate image-tool cause remains unknown. Neither stopped the research.",
+    "errors": [
+      {
+        "stage": "map_artifact_access",
+        "failed_operation": {
+          "tool": "search_service_web_run.open",
+          "action": "Open original image URL without width parameter",
+          "locator": "https://auguryignored.wordpress.com/wp-content/uploads/2024/01/elatri-new-map.png"
+        },
+        "observed_error": "URL https://auguryignored.wordpress.com/wp-content/uploads/2024/01/elatri-new-map.png is not accessible via this tool.",
+        "stop_reason": null,
+        "cause_status": "unknown",
+        "recovered_by": "Downloaded actual linked ?w=809 PNG via urllib HTTP200; visually inspected local image."
+      },
+      {
+        "stage": "canonical_registry_lookup",
+        "failed_operation": {
+          "tool": "github_fetch_file",
+          "action": "Read guessed registry path",
+          "locator": "agent-work/market/rules/common-rules.json"
+        },
+        "observed_error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+        "error_code": "NOT_FOUND",
+        "stop_reason": null,
+        "cause_status": "confirmed",
+        "confirmed_cause": "Requested path not found; recover with repository tree; does not imply GitHub unavailable.",
+        "recovered_by": "Repository tree resolved correct agent-work/rules/ path; exact blobs read successfully."
+      },
+      {
+        "stage": "canonical_registry_lookup",
+        "failed_operation": {
+          "tool": "github_fetch_file",
+          "action": "Read guessed registry path",
+          "locator": "agent-work/market/rules/game-bindings.json"
+        },
+        "observed_error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+        "error_code": "NOT_FOUND",
+        "stop_reason": null,
+        "cause_status": "confirmed",
+        "confirmed_cause": "Requested path not found; recover with repository tree; does not imply GitHub unavailable.",
+        "recovered_by": "Repository tree resolved correct agent-work/rules/ path; exact blobs read successfully."
+      }
+    ],
+    "saved_results": [
+      "agent-work/research/market/KNAVE2-map-practice-2026-11-14.json",
+      "agent-work/research/market/KNAVE2-map-practice-2026-11-14.md",
+      "agent-work/research/observations.json",
+      "agent-work/backlog.json#HX-BL-043.research_source_notes"
+    ],
+    "continuation": "No remainder in selected corpus; next candidate is separate handdrawn-map edition/provenance check, subject to fresh priorities.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "needs_owner_action": false
+}
