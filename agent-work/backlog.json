@@ -15848,7 +15848,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "GEO2_interview_completed_final_spec_pending",
+      "status": "GEO2_v2_final_spec_ready_for_programmer",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15911,7 +15911,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "business_analyst_final_specification_ready",
+      "readiness": "ready_for_development",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -16322,9 +16322,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
-      "next_role": "business_analyst",
+      "next_role": "programmer",
       "next_role_after_approval": "programmer",
-      "next_step": "Аналитик готовит чистовую GEO2-v2 по решениям GEO2-Q01/Q02: при обычной правке исходной карты корректные связанные смещения выполняются автоматически без дополнительного предпросмотра/согласия, в одной Undo-транзакции; дорога выбирается сначала по минимальной длине, затем по отклонению и устойчивому ключу. Обновить требования и G205/G206/G208/G209, отделить исходное явное «Уточнить геометрию» от обычных правок. Затем программист продолжает GEO2-PLAN с 359f1c1; публикация отдельно.",
+      "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2-PLAN с agent/hx-bl-051-geo2 @359f1c1 по чистовой GEO2-v2: единый GeometryPlan с реальными refs и всеми зависимостями, кратчайшие допустимые дорожные трассы и автоматические source-смещения без дополнительного preview/consent, public16/physical4, одна Undo/Redo, общие stroke/dash/rails/PNG маски и фактический интерфейс. После G201–G210 и обязательных проверок — независимая проверка целого точного нового SHA; отдельное разрешение публикации.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16359,9 +16359,9 @@
         "Prepare specification/analysis and UI then programmer work in approvedscope; independent exactSHAreview and distinct releaseapproval stillrequired."
       ],
       "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
-      "spec_version": "GEO2-v1",
+      "spec_version": "GEO2-v2",
       "acceptance_ref": "agent-work/specs/HX-BL-051-ONE-MILE1.acceptance.json",
-      "handoff_ref": "agent-work/handoffs/2026-11-14T0912-ONE-MILE1-GEO2-continue.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-14T1201-GEO2-v2-programmer.json",
       "active_stage": "ONE-MILE1",
       "head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
       "result_ref": "agent-work/results/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json",
@@ -16489,9 +16489,9 @@
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
         "handoff_ref": "agent-work/handoffs/2026-11-12-ONE-MILE1-owner-corrections-analyst.json"
       },
-      "spec_status": "legacy_final_preserved_revision_pending_after_interview",
-      "latest_analyst_result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-14T1124-GEO2-final-spec-analyst.json",
+      "spec_status": "final_ready_for_development",
+      "latest_analyst_result_ref": "agent-work/results/2026-11-14T1201-analyst-GEO2-final.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-14T1201-GEO2-v2-programmer.json",
       "active_claim": null,
       "full_package_release_ready": false,
       "owner_clarification_ref": null,
@@ -16987,7 +16987,7 @@
           "owner_approval_inferred": false
         }
       },
-      "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-C02-C05.md",
+      "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
       "latest_correction_spec": {
         "run_id": "2026-11-12T2302-analyst-ONE-MILE1-C02-C05",
         "result_ref": "agent-work/results/2026-11-12T2302-analyst-ONE-MILE1-C02-C05.json",
@@ -17207,9 +17207,18 @@
         "interview_completed": true,
         "presentation_status": "presented_in_existing_chat_verified"
       },
-      "dependent_implementation_status": "owner_decisions_resolved_analyst_final_revision_pending",
+      "dependent_implementation_status": "ready_after_completed_interview_and_GEO2_v2_final",
       "independent_approved_work_allowed": true,
-      "owner_answers_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json"
+      "owner_answers_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+      "final_spec_version": "GEO2-v2",
+      "latest_GEO2_v2_final": {
+        "run_id": "2026-11-14T1201-analyst-GEO2-final",
+        "result_ref": "agent-work/results/2026-11-14T1201-analyst-GEO2-final.json",
+        "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+        "spec_version": "GEO2-v2",
+        "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-14T1201-GEO2-v2-programmer.json"
+      }
     },
     {
       "task_id": "HX-BL-052",
