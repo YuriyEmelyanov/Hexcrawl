@@ -12,6 +12,7 @@ const pid=(r:number,e:string)=>JSON.stringify([r,e]);
 export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareRefinementRiverNetwork>[0]&Readonly<{openExits?:readonly Readonly<{sourceKey:string;sourceExitRef:string;edgeKeys:readonly string[]}>[];shorePorts?:readonly Readonly<{sourceKey:string;edgeKeys:readonly string[]}>[]}>){
  const base=prepareRefinementRiverNetwork(input);if(base.status==='error')return base;
  const fail=(refs:string[])=>Object.freeze({status:'error' as const,code:'terminal_conflict' as const,refs:freeze(refs),completeGeometryPlan:false as const});
+ input.consumeWork?.(1+base.rivers.paths.reduce((n,p)=>n+p.vertices.length,0));
  const requests=new Map<string,{sourceKey:string;point:{x:number;y:number};degree:1|2|3;allowedEdgeKeys:string[]}>();
  for(const path of base.rivers.paths){
   const s=base.source.segments.find(s=>s.riverId===path.riverId&&s.edgeKey===path.sourceEdgeKey)!;
@@ -26,12 +27,12 @@ export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareR
  const shores=new Map((input.shorePorts??[]).map(s=>[s.sourceKey,s]));if(shores.size!==(input.shorePorts??[]).length)return fail(['duplicate_shore']);for(const k of shores.keys())if(exits.has(k)||!requests.has(k)||requests.get(k)!.degree!==1)return fail([k]);
  const rerouted=new Set([...exits.keys(),...shores.keys()]);
  const oldNodes=new Set(base.rivers.paths.flatMap(p=>p.vertices.map(vertex))),usedNodes=new Set<string>();
- const prepared=prepareRefinementPorts({origin:input.origin,cells:input.cells,requests:[...requests.values()].map(r=>({...r,...(shores.has(r.sourceKey)?{allowedEdgeKeys:[...shores.get(r.sourceKey)!.edgeKeys]}:{}),...(exits.has(r.sourceKey)?{allowedEdgeKeys:[...exits.get(r.sourceKey)!.edgeKeys],exit:{sourceExitRef:exits.get(r.sourceKey)!.sourceExitRef,edgeKeys:exits.get(r.sourceKey)!.edgeKeys}}:{})}))});if(prepared.status==='error')return prepared;
+ const prepared=prepareRefinementPorts({origin:input.origin,cells:input.cells,consumeWork:input.consumeWork,requests:[...requests.values()].map(r=>({...r,...(shores.has(r.sourceKey)?{allowedEdgeKeys:[...shores.get(r.sourceKey)!.edgeKeys]}:{}),...(exits.has(r.sourceKey)?{allowedEdgeKeys:[...exits.get(r.sourceKey)!.edgeKeys],exit:{sourceExitRef:exits.get(r.sourceKey)!.sourceExitRef,edgeKeys:exits.get(r.sourceKey)!.edgeKeys}}:{})}))});if(prepared.status==='error')return prepared;
  const ports=new Map(prepared.ports.map(p=>[p.sourceKey,p])),nodes=new Map(prepared.nodes.map(n=>[n.key,n.point]));
  const sourceNodes=new Map(base.rivers.nodes.map(n=>[n.sourceKey,vertex(n.vertex)]));
  const byEdge=new Map<string,typeof prepared.edges[number][]>();for(const e of prepared.edges)byEdge.set(e.sourceEdgeKey,[...(byEdge.get(e.sourceEdgeKey)??[]),e]);
  const paths:Readonly<{riverId:number;sourceEdgeKey:string;fromNode:string;toNode:string;fullness:number;nodeKeys:readonly string[];points:readonly WorldPoint[];steps:readonly Readonly<{sourceEdgeKey:string;from:string;to:string;startFraction:number;endFraction:number}>[]}>[]=[];
- for(const path of base.rivers.paths){
+ for(const path of base.rivers.paths){input.consumeWork?.(1+input.cells.length+prepared.edges.length+oldNodes.size);
   const a=ports.get(path.fromNode)!,b=ports.get(path.toNode)!;
   // Junction identity must remain the existing shared integer port.
   for(const n of [path.fromNode,path.toNode])if(requests.get(n)!.degree>1&&ports.get(n)!.nodeKey!==sourceNodes.get(n))return fail([n]);
@@ -42,7 +43,7 @@ export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareR
   if(rerouted.has(path.fromNode)||rerouted.has(path.toNode))for(const c of input.cells)if(detailSegmentSpan(fineGrid,c,{from:source.from.point,to:source.to.point},true)){corridor.set(`${c.q},${c.r}`,c);for(const [dq,dr]of directions){const key=`${c.q+dq},${c.r+dr}`;if(available.has(key))corridor.set(key,available.get(key)!);}}
   const allowed=new Set(refinementEdgeGraph([...corridor.values()]).edges.map(e=>e.key));
   const steps=[];
-  for(let i=1;i<keys.length;i++){
+  for(let i=1;i<keys.length;i++){input.consumeWork?.(1+prepared.edges.length+oldNodes.size+usedNodes.size+prepared.ports.length);
    if(keys[i-1]===keys[i])return fail([path.sourceEdgeKey]);
    const sourceEdgeKey=edge(path.vertices[i-1],path.vertices[i]),reroute=i===1&&rerouted.has(path.fromNode)||i===keys.length-1&&rerouted.has(path.toNode);
    const pieces=reroute?prepared.edges.filter(e=>allowed.has(e.sourceEdgeKey)):byEdge.get(sourceEdgeKey)??[];
@@ -51,14 +52,14 @@ export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareR
    blocked.delete(keys[i-1]);blocked.delete(keys[i]);
    const adjacency=new Map<string,typeof pieces>();for(const p of pieces){adjacency.set(p.from,[...(adjacency.get(p.from)??[]),p]);adjacency.set(p.to,[...(adjacency.get(p.to)??[]),p]);}
    const queue=[keys[i-1]],previous=new Map<string,{node:string;piece:typeof pieces[number]}|null>([[keys[i-1],null]]);
-   for(let j=0;j<queue.length;j++)for(const p of adjacency.get(queue[j])??[]){const next=p.from===queue[j]?p.to:p.from;if((!reroute||!blocked.has(next))&&!previous.has(next)){previous.set(next,{node:queue[j],piece:p});queue.push(next);}}
+   for(let j=0;j<queue.length;j++)for(const p of adjacency.get(queue[j])??[]){input.consumeWork?.(1);const next=p.from===queue[j]?p.to:p.from;if((!reroute||!blocked.has(next))&&!previous.has(next)){previous.set(next,{node:queue[j],piece:p});queue.push(next);}}
    if(reroute&&previous.has(keys[i])){
     // BFS fixes minimum step count. Rank equal-length chains by source
     // deviation, seeded side and numeric world-node sequence, as GEO2 specifies.
     const levels=new Map([[keys[i-1],0]]);for(const k of queue){const link=previous.get(k);if(link)levels.set(k,levels.get(link.node)!+1);}
     const costs=new Map<string,{deviation:number;side:number;path:string[]}>([[keys[i-1],{deviation:0,side:0,path:[keys[i-1]]}]]);
     const numeric=(a:string[],b:string[])=>{for(let j=0;j<Math.min(a.length,b.length);j++){const p=nodes.get(a[j])!,q=nodes.get(b[j])!,d=p.x-q.x||p.y-q.y;if(d)return d;}return a.length-b.length;};
-    for(const k of queue){const prior=costs.get(k);if(!prior)continue;for(const piece of adjacency.get(k)??[]){
+    for(const k of queue){const prior=costs.get(k);if(!prior)continue;for(const piece of adjacency.get(k)??[]){input.consumeWork?.(1);
      const next=piece.from===k?piece.to:piece.from;if(levels.get(next)!==levels.get(k)!+1)continue;
      const a=nodes.get(k)!,b=nodes.get(next)!,mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2},dx=source.to.point.x-source.from.point.x,dy=source.to.point.y-source.from.point.y;
      const t=Math.max(0,Math.min(1,((mid.x-source.from.point.x)*dx+(mid.y-source.from.point.y)*dy)/(dx*dx+dy*dy))),foot={x:source.from.point.x+t*dx,y:source.from.point.y+t*dy},cross=dx*(mid.y-source.from.point.y)-dy*(mid.x-source.from.point.x);

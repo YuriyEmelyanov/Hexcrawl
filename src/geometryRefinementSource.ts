@@ -9,7 +9,7 @@ import {refinementWorldPoint} from './geometryRefinementGrid.ts';
 type Boundary=Readonly<{riverId:number;sectorId:string;sourceNodeKey:string;end:'start'|'end';reason:string;assignedRegionId:number|null}>;
 type SectorRef=Readonly<{riverId:number;sectorId:string;sectorIndex:number;assignedRegionId:number|null;edgeKeys:readonly string[]}>;
 type Rapid=Readonly<{riverId:number;sourceEdgeKey:string}>;
-type SourceInput=Readonly<{rivers:readonly EditableRiver[];origin:WorldPoint;marks:Readonly<{rapids:ReadonlySet<string>;waterfalls:ReadonlySet<string>}>}>;
+type SourceInput=Readonly<{consumeWork?:(units:number)=>void;rivers:readonly EditableRiver[];origin:WorldPoint;marks:Readonly<{rapids:ReadonlySet<string>;waterfalls:ReadonlySet<string>}>}>;
 export type NormalizedRefinementSource=Readonly<{status:'prepared';segments:readonly RefinementRiverSegment[];sectors:readonly SectorRef[];boundaries:readonly Boundary[];rapids:readonly Rapid[];waterfalls:readonly string[];sourceSignature:string;completeGeometryPlan:false}>;
 type SourceError=Readonly<{status:'error';code:'invalid_source'|'capacity'|'feature_conflict';refs:readonly string[];completeGeometryPlan:false}>;
 const lexical=(a:string,b:string)=>a<b?-1:a>b?1:0;
@@ -28,14 +28,15 @@ const ends=new Set(['river_end','river_confluence','lake','region_boundary','spl
 export function normalizeRefinementRiverSource(input:SourceInput):NormalizedRefinementSource|SourceError {
  if(![input.origin.x,input.origin.y].every(Number.isFinite))return error('invalid_source');
  if(input.rivers.length>4096||input.marks.rapids.size>4096||input.marks.waterfalls.size>4096)return error('capacity');
+ input.consumeWork?.(1+input.rivers.length+input.marks.rapids.size+input.marks.waterfalls.size);
  const seenRivers=new Set<number>(),positions=new Map<string,WorldPoint>(),allEdges=new Set<string>(),segments:RefinementRiverSegment[]=[],sectors:SectorRef[]=[],boundaries:Boundary[]=[],rapids:Rapid[]=[];
- for(const river of [...input.rivers].sort((a,b)=>a.id-b.id)){
+ for(const river of [...input.rivers].sort((a,b)=>a.id-b.id)){input.consumeWork?.(1+river.vertexPath.length+river.sectors.length);
   const ref=`river:${river.id}`;
   if(!positive(river.id)||seenRivers.has(river.id)||!positive(river.regionId)||river.vertexPath.length<2||river.sectors.length===0)return error('invalid_source',[ref]);
   seenRivers.add(river.id);
   if(segments.length+river.vertexPath.length-1>4096||river.sectors.length>4096)return error('capacity',[ref]);
   const pathNodes=new Map<string,WorldPoint>(),pathEdges=new Map<string,{from:string;to:string}>();
-  for(const v of river.vertexPath){
+  for(const v of river.vertexPath){input.consumeWork?.(1);
    if(!validKey(v.key)||![v.x,v.y].every(Number.isFinite)||pathNodes.has(v.key))return error('invalid_source',[ref,String(v.key)]);
    const p=detailSourcePixelToWorld(v,input.origin),old=positions.get(v.key);
    if(old&&Math.hypot(old.x-p.x,old.y-p.y)>1e-8)return error('invalid_source',[ref,v.key]);
@@ -51,7 +52,7 @@ export function normalizeRefinementRiverSource(input:SourceInput):NormalizedRefi
    if(!validKey(s.id)||sectorIds.has(s.id)||!positive(s.sectorIndex)||indices.has(s.sectorIndex)||String(s.riverId)!==String(river.id)||!Number.isInteger(s.fullness)||s.fullness<1||s.fullness>5||s.vertexPath.length<2||s.edgeKeys.length!==s.vertexPath.length-1||s.assignedRegionId!==undefined&&!positive(s.assignedRegionId)||!starts.has(s.startReason)||!ends.has(s.endReason)||s.startVertexKey!==s.vertexPath[0].key||s.endVertexKey!==s.vertexPath[s.vertexPath.length-1].key)return error('invalid_source',[ref,s.id]);
    sectorIds.add(s.id);indices.add(s.sectorIndex);
    const listed=new Set(s.edgeKeys);if(listed.size!==s.edgeKeys.length)return error('invalid_source',[ref,s.id]);
-   const ordered:string[]=[];
+   input.consumeWork?.(s.edgeKeys.length+s.vertexPath.length);const ordered:string[]=[];
    for(let i=0;i<s.vertexPath.length;i++){
     const v=s.vertexPath[i],p=pathNodes.get(v.key);
     if(!p||![v.x,v.y].every(Number.isFinite))return error('invalid_source',[ref,s.id,v.key]);

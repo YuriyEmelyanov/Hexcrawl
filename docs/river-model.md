@@ -355,3 +355,11 @@ port allocation and BFS/DAG routing accept incremental logical work charges.
 prepare_incomplete_budget/prepare_cancelled propagate without returning a partial
 river candidate. Without a hook geometry is unchanged. This is not a full
 river/mouth aggregate budget, CPU bound or active generation change.
+
+GEO2 upstream composition (unmounted): one optional logical work controller
+now spans normalized source, river skeleton, open exits, terminal/split graph,
+finite water and all-mode mouth preparation, then POI/roads. Shore helpers reserve
+input work; query loops charge between bounded analytic calls. Cancellation and
+budget exhaustion propagate atomically. Hydrology construction and renderer-owned
+lake contour generation remain supplied inputs; this is not a CPU/time bound or
+an active generator change. GeometryPlan/persistence/Apply remain pending.

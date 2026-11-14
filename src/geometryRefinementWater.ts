@@ -12,13 +12,13 @@ const finite=(p:WorldPoint)=>Number.isFinite(p.x)&&Number.isFinite(p.y);
 const lexical=(a:string,b:string)=>a<b?-1:a>b?1:0;
 const refKey=(r:Ref)=>JSON.stringify([r.riverId,r.sourceEdgeKey,r.stepIndex]);
 const fail=(code:'invalid_water'|'invalid_query'|'capacity',refs:string[]=[])=>Object.freeze({status:'error' as const,code,refs:freeze(refs),completeGeometryPlan:false as const});
-export function prepareRefinementWater(input:Readonly<{paths:readonly Path[];widthByFullness:ReadonlyMap<number,number>}>){
+export function prepareRefinementWater(input:Readonly<{paths:readonly Path[];widthByFullness:ReadonlyMap<number,number>;consumeWork?:(units:number)=>void}>){
  if(input.paths.length>4096||input.paths.reduce((n,p)=>n+Math.max(0,p.points.length-1),0)>24576)return fail('capacity');
  const seen=new Set<string>(),capsules:Capsule[]=[];
  for(const path of [...input.paths].sort((a,b)=>a.riverId-b.riverId||lexical(a.sourceEdgeKey,b.sourceEdgeKey))){
-  const id=JSON.stringify([path.riverId,path.sourceEdgeKey]),width=input.widthByFullness.get(path.fullness);
+  input.consumeWork?.(1+path.points.length);const id=JSON.stringify([path.riverId,path.sourceEdgeKey]),width=input.widthByFullness.get(path.fullness);
   if(!Number.isSafeInteger(path.riverId)||path.riverId<1||!path.sourceEdgeKey||seen.has(id)||!Number.isInteger(path.fullness)||path.fullness<1||path.fullness>5||width===undefined||!Number.isFinite(width)||width<=0||path.points.length<2||path.points.some(p=>!finite(p)))return fail('invalid_water',[id]);seen.add(id);
-  for(let i=1;i<path.points.length;i++){
+  for(let i=1;i<path.points.length;i++){input.consumeWork?.(1);
    const a=path.points[i-1],b=path.points[i],length=Math.hypot(b.x-a.x,b.y-a.y);
    if(!Number.isFinite(length)||length<1e-10)return fail('invalid_water',[id]);
    capsules.push(Object.freeze({riverId:path.riverId,sourceEdgeKey:path.sourceEdgeKey,stepIndex:i-1,from:Object.freeze({...a}),to:Object.freeze({...b}),radius:width/2,length,ux:(b.x-a.x)/length,uy:(b.y-a.y)/length}));
@@ -81,6 +81,6 @@ export function refinementWaterFirstContact(water:RefinementWater,query:Readonly
  * partial routes. Lake-body clipping and dependent POI/road work remain pending. */
 export function prepareRefinementWetRoutes(input:Parameters<typeof prepareRefinementBoundaryRoutes>[0],context:Parameters<typeof prepareRefinementBoundaryRoutes>[1],widthByFullness:ReadonlyMap<number,number>){
  const routes=prepareRefinementBoundaryRoutes(input,context);if(routes.status==='error')return routes;
- const water=prepareRefinementWater({paths:routes.paths,widthByFullness});if(water.status==='error')return water;
+ const water=prepareRefinementWater({paths:routes.paths,widthByFullness,consumeWork:input.consumeWork});if(water.status==='error')return water;
  return Object.freeze({...routes,water,completeGeometryPlan:false as const});
 }

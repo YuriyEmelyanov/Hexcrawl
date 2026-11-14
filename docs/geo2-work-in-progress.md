@@ -352,3 +352,21 @@ geometry, exact sufficient work succeeds, a late exhausted charge and an inner
 cancellation propagate as prepare_* rather than no-path or invalid-source.
 No new permanent case or world fixture. This hook is only river skeleton work;
 normalization, terminal/mouth geometry and aggregate orchestration still pending.
+
+GEO2 upstream-composition rationale before checks: an upstream hook alone cannot
+bound the river/mouth plus POI/road preparation together. Reuse the existing
+actual53-segment/7-crossing composed-world case for one shared receipt, exact
+sufficient limit, late exhaustion, upstream cancellation and unchanged source/RNG.
+No new permanent case/world setup. Reserve bounded black-box shore helper input
+work, charge normalization/ports/terminal/water/mouth loops incrementally, and
+retain the explicit distinction between logical work and CPU/time/subscription.
+
+GEO2 from-source composition now shares one receipt across river/mouth and the
+existing source/footprint/fingerprint/POI/road preview. Its default20million
+logical units covers the retained fixture's15.5million envelope, including all
+three shore modes and repeated constrained river preparation; the prepared-input
+preview keeps its existing2million default. Both accept explicit finite limits.
+Shore helpers reserve bounded input work; interval queries charge curve-dependent
+logical units between calls, not preemption inside a native/analytic call.
+Hydrology construction and renderer-owned lake contour generation remain supplied
+inputs. This is not a wall-time/CPU/subscription bound or full GeometryPlan/Apply.
