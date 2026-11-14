@@ -990,3 +990,14 @@ GEO2: допустимый прямой сухопутный отрезок пр
 ### 2026-11-14 — GEO2: специальные POI, ручное выполнение сейчас
 
 По прямому поручению владельца выполнен manual stage на cea2f93266913303833ef09477bc8f0c33be63d3: rapid edge / waterfall vertex / crossing ID+kind / true river_start port. Не заменять point-feature обычным ближайшим берегом и не менять stable attachment ref на fine edge key; хранить их отдельно. agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/feature-matrix.json. Условные контуры двигаются rigidly, measured/locked остаются fixed; already-valid locked contact допустим. Final crossing bank проверяется после дорог, а подготовленные feature points/ports входят в fingerprint. Подтверждённая погрешность: allowed contact5e-8,.5 заменялся близкой точкой0,.5 и мог давать ложный финальный конфликт. Сначала воспроизведено existing bank case, затем перечисляются только literal supplied contacts; предыдущий full run superseded, окончательный SHA прошёл410/410 и сборку. Три existing cases изменены без нового fixture/browser lifecycle. Positive profiles синтетические с реальными policy rows; unknown catalogue POI не считать solved. Headless Chromium download тоже дал повреждённый/не-ZIP архив; причина unknown, browser acceptance не объявлять. Полный GeometryPlan/persistence/Q01/UI/PNG/review остаются впереди.
+
+
+## 2026-11-14T21:40:26.212Z — GEO2 GeometryPlan / persistence / Q01
+
+Source f522b356afadf947f5ff95ebfc8bc40f9616dbbf; evidence agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/implementation.md.
+
+- Authored physical3 source and accepted physical4 output must remain separate. Exact stored choices/fingerprint plus validation on load preserve history without rerouting; actual handlers prove one source+POI+road Undo/Redo transaction and redo preservation on failure.
+- A marker-only sub-mile representative POI does not define an exact physical circle. Applying outlined-entry constraints to it caused a real false approach conflict; the known-source mill witness detects it.
+- Accepted BR009 delta arms use sectorIndex0 and typed1in→2out topology. Preserve their validated physical sea terminals in a geometry-only adapter; do not charge them as ordinary numerical confluences. Actual3-edge fixture and malformed split/cycle/degree rows now protect this correspondence.
+- Additional coarse support still refuses with refinement_domain_expansion. This is a known implementation gap, not completed expansion acceptance; preserve accepted map/redo and continue the approved domain/interface work.
+- Reuse test compilation while executing separate module graphs/VM worlds/RNG. Six new logical contracts and two expanded existing cases cover useful risks;32 malformed rows are subscenarios, not32 extra tests. No new statistical seed series.
