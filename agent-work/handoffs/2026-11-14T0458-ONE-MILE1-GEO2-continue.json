@@ -1,0 +1,34 @@
+{
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-TERMINALS",
+  "source_sha": "5fe958d762bd988497f307893f477041dd498a56",
+  "source_tree": "3d720f5f354cf7b18c64708b81a3d86152024eb4",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "next_role": "programmer",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "authority_status": "approved_GEO2_implementation_no_release",
+  "next_step": "Программист продолжает HX-BL-051/GEO2 с 5fe958d762bd988497f307893f477041dd498a56: следующий ограниченный этап — actual open-exit adapter и ограниченная перепрокладка endpoint corridor при конфликте границы. Связать candidate/lake/sea условия buildRegionRiverNetwork с принятыми oneMileSources/water overrides; передавать реальные sourceExitRefs и допустимые fine boundary edges, сохраняя source direction/F. Не объявлять sector region_boundary либо берег озера открытым выходом. При необходимости маршрута вне уже выделенного endpoint edge — явный bounded reroute/atomic route_conflict, без ложного доказательства невозможности. Сохранить53source IDs/общие узлы/отметки и exact endpoint correspondence. Затем единая POI/road/crossing/envelope/mouth геометрия, public16/history/UI и независимая проверка целогоSHA. Текущий helper unmounted, PR503 пока3344159; публикация запрещена.",
+  "next_bounded_scope": [
+    "Actual open-exit adapter from existing candidates/lake/sea semantics and accepted water overrides",
+    "Explicit source exit refs/allowed fine edges with direction/F retained",
+    "When allocated endpoint edge is not a legal exit, bounded endpoint-corridor reroute or atomic referenced conflict; no invented frontier or source loss"
+  ],
+  "completion": [
+    "Retained53 source segment/node incidence and forced mark correspondence stay valid after exit constraints.",
+    "Positive real frontier and closed lake/sea/internal boundary cases are distinguished.",
+    "Source/RNG remain unchanged; no partial candidate; route_conflict does not claim global impossibility."
+  ],
+  "input_evidence": [
+    "agent-work/evidence/ONE-MILE1-GEO2-terminals-0458/witness.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-terminals-0458/checks.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-ports-0403/integration-notes.md"
+  ],
+  "limitations": [
+    "Current integrated terminal placement is constrained to already allocated endpoint edges:6interior+2integer terminals, not simultaneous nearest-port re-optimization.",
+    "No actual semantic open exits yet; no POI/roads/crossings/shore/save/UI integration.",
+    "No new start approval required; independent review required on complete integrated newSHA before asking separate publication permission."
+  ],
+  "review_ready": false,
+  "release_authorized": false
+}

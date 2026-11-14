@@ -901,3 +901,7 @@ GEO2 source bridge сверяет primary vertexPath и sectors: одна direct
 
 ### 14 ноября2026 — edge-local terminal refs не являются дробными адресами
 GEO2-PORTS: terminal внутри ребра хранится как sourceEdgeKey+fraction; split graph сохраняет positive interval partitions и связность. Не помещать дробные координаты в integer GridVertex. На retained fixture55узлов/8terminal ports; это ещё не интеграция с53речными маршрутами. Топологический boundary клетки не доказывает open frontier: использовать actual candidates/lake/sea resolver и water overrides, а не sector region_boundary. Evidence: agent-work/evidence/ONE-MILE1-GEO2-ports-0403/witness.json, integration-notes.md; SHA 61f69e3fd8d3f04c4db71447156e3dcadb872ca2.
+
+
+### 14 ноября2026 — terminal points должны войти в маршруты и mark arcs вместе
+GEO2-TERMINALS интегрирует split ports с53реальными маршрутами и424fine-edge intervals, сохраняя общие узлы/F/направление. На выделенных endpoint edges6terminals стали interior,2остались integer; прежний standalone8 не является приёмкой глобального reroute. Общий arc-helper пересчитывал конечную точку с drift~2e-16; сохранение точного endpoint устранило расхождение waterfall/node. Forced53/55marks и106incidences — диагностическое соответствие, не feature eligibility. Actual open exits/shore/POI/roads/save/UI остаются незавершёнными. Evidence: agent-work/evidence/ONE-MILE1-GEO2-terminals-0458/witness.json, checks.json; SHA 5fe958d762bd988497f307893f477041dd498a56.
