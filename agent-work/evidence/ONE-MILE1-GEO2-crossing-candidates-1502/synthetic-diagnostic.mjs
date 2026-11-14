@@ -1,13 +1,15 @@
+import path from 'node:path';import {pathToFileURL} from 'node:url';
+const root=path.resolve(process.argv[2]??process.cwd()),mod=p=>import(pathToFileURL(path.join(root,p)).href);
 import assert from 'node:assert/strict';
-import {prepareRefinementRoads,prepareRefinementRoadMasks,refinementRoadMaskIntervals} from '/workspace/scratch/93351762c143/geo2-implementation/src/geometryRefinementRoads.ts';
-import {prepareRefinementWater,refinementWaterContains} from '/workspace/scratch/93351762c143/geo2-implementation/src/geometryRefinementWater.ts';
-import {roadPair} from '/workspace/scratch/93351762c143/geo2-implementation/src/manualRoads.ts';
+const {prepareRefinementRoads,prepareRefinementRoadMasks,refinementRoadMaskIntervals}=await mod('src/geometryRefinementRoads.ts');
+const {prepareRefinementWater,refinementWaterContains}=await mod('src/geometryRefinementWater.ts');
+const {roadPair}=await mod('src/manualRoads.ts');
 const p=(x,y)=>({x,y}),origin=p(0,0),cell=(q,r)=>({q,r}),near=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`),road=(id,segments)=>({id,regionId:1,segments:segments.map(([a,b])=>({from:a,to:b,kind:'road'}))});
 const river=(riverId,sourceEdgeKey,fullness,points)=>({riverId,sourceEdgeKey,fullness,points}),source=r=>({riverId:r.riverId,edgeKey:r.sourceEdgeKey,fullness:r.fullness,from:{key:`${r.riverId}:a`,point:p(r.points[0].x,-2)},to:{key:`${r.riverId}:b`,point:p(r.points[0].x,2)}});
 const water=rivers=>prepareRefinementWater({paths:rivers,widthByFullness:new Map([[1,.5],[2,2],[3,2]])});
 const crossing=(r,segmentKey,kind='bridge')=>({key:`1:${segmentKey}:${r.riverId}`,roadId:1,roadSegmentKey:segmentKey,riverId:r.riverId,riverEdgeKey:r.sourceEdgeKey,kind});
 
- const {prepareRefinementShorePath,refinementShoreIntervals}=await import('/workspace/scratch/93351762c143/geo2-implementation/src/geometryRefinementShore.ts');
+ const {prepareRefinementShorePath,refinementShoreIntervals}=await mod('src/geometryRefinementShore.ts');
  const part=roadPair(cell(0,0),cell(2,0)),r1=river(1,'one',1,[p(3,-2),p(3,2)]),r2=river(2,'two',1,[p(9,-2),p(9,2)]),f={poiId:'moved',legacyRef:null,worldAnchor:p(0,1),cells:[cell(0,1)],extent:{kind:'representative',catalogueId:'POI-SIZE1',namespace:'land',typeId:'village',representativeExtentMiles:.3,basis:'project_assumption_not_measured'},attachments:[]},move={poiId:f.poiId,parent6:cell(0,0),oldAnchor:p(0,0),newAnchor:p(0,1),footprint:f,routeEntries:[]},lake=prepareRefinementShorePath('M .5 -.25 L 1.5 -.25 L 1.5 1.2 L .5 1.2 Z'),input={roads:[road(1,[[cell(0,0),cell(2,0)],[cell(-1,0),cell(0,0)]])],crossings:[crossing(r1,part,'ferry'),crossing(r2,part,'bridge')],sourceRivers:[source(r1),source(r2)],rivers:[r1,r2],water:water([r1,r2]),origin,landCells:[cell(-1,0),cell(0,0),cell(1,0),cell(2,0)],poiMoves:[move],footprints:[f],lakes:[lake]},before=JSON.stringify(input),old=prepareRefinementRoads({...input,poiMoves:[]});
  assert.equal(old.status,'error');assert.ok(old.refs.includes('candidate_crosses_lake'));
  const result=prepareRefinementRoads(input);assert.equal(result.status,'prepared',JSON.stringify(result));assert.equal(result.roads.length,2);assert.deepEqual(result.crossings.map(c=>[c.key,c.kind]),input.crossings.map(c=>[c.key,c.kind]));assert.deepEqual(result.crossings.map(c=>c.riverId),[1,2]);
