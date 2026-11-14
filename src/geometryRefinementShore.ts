@@ -56,12 +56,12 @@ export function prepareRefinementShorePath(path:string,scale=1,origin:WorldPoint
   else throw Error();}if(current)throw Error();}catch{return fail('path');}
  return finish(loops);
 }
-/** Exact union boundary of coarse lake hex cells; shared internal edges vanish. */
-export function prepareRefinementShoreCells(cells:readonly DetailCell[],origin:WorldPoint={x:0,y:0}){
- if(!valid(origin)||cells.length>4096)return fail('cells');const all=new Map<string,{from:{x:number;y:number};to:{x:number;y:number};count:number}>();
+/** Exact cell-union boundary; default6 for lake cells,1 for POI paint masks. */
+export function prepareRefinementShoreCells(cells:readonly DetailCell[],origin:WorldPoint={x:0,y:0},step:1|6=6){
+ if(!valid(origin)||cells.length>4096||step!==1&&step!==6)return fail('cells');const all=new Map<string,{from:{x:number;y:number};to:{x:number;y:number};count:number}>();
  try{for(const cell of new Map(cells.map(c=>[`${c.q},${c.r}`,c])).values()){const vs=refinementCellVertices(cell);for(let i=0;i<6;i++){const from=vs[i],to=vs[(i+1)%6],k=[refinementVertexKey(from),refinementVertexKey(to)].sort().join('|'),old=all.get(k);if(old)old.count++;else all.set(k,{from,to,count:1});}}}catch{return fail('cells');}
  const next=new Map([...all.values()].filter(e=>e.count===1).map(e=>[refinementVertexKey(e.from),e]));const loops:ShoreCurve[][]=[];
- const world=(v:{x:number;y:number})=>({x:origin.x+3*v.x,y:origin.y+3/Math.sqrt(3)*v.y});
+ const world=(v:{x:number;y:number})=>({x:origin.x+step/2*v.x,y:origin.y+step/(2*Math.sqrt(3))*v.y});
  while(next.size){const start=[...next.keys()].sort()[0],loop:ShoreCurve[]=[];let k=start;
   do{const e=next.get(k);if(!e)return fail('boundary');next.delete(k);const a=world(e.from),b=world(e.to);loop.push({from:a,control:{x:(a.x+b.x)/2,y:(a.y+b.y)/2},to:b});k=refinementVertexKey(e.to);if(loop.length>24576)return fail('capacity');}while(k!==start);loops.push(loop);
  }

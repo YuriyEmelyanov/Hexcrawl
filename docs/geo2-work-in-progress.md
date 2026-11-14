@@ -139,3 +139,32 @@ contacts return explicit pending conflict until the adapted mark/crossing phase.
 This phase expects accepted land parents/source refs; full GeometryPlan spatial
 validation, ordinary source-edit rebuilding, roads/PNG/public16/history/UI and
 independent review remain pending. No generator or active renderer change.
+
+GEO2-DEPENDENCIES rationale before tests: existing straight presentation cases
+cannot detect lost source crossing keys, buried/corner finite-bank contacts or
+severing the second approach of a moved POI. Add one road/crossing candidate case
+for finite transverse cuts, source order/type/F and atomic untyped conflicts;
+add one source-incidence/POI mask case for both approaches, unrelated roads,
+occupied-cell union/holes and marker exclusion. Extend the existing actual
+hydrology lifecycle with its31road parts/7crossings, including an explicitly
+labelled legal F2ford variant, rather than a second retained-world import test.
+This remains an unmounted bounded candidate phase, not actual renderer/PNG proof.
+
+The road dependency backend now normalizes every source road part and keeps its
+node/road/region/segment/kind identity. Moved POI endpoints share one new fine
+node; explicit entries retain their refs, while other source approaches of the
+same road obtain a footprint entry without disappearing. Unrelated parts retain
+the source segment. Finite water intervals merge across polyline vertices;
+alternating road/river rays identify transverse corner contacts, and old crossing
+keys/F/kind/order must match one-to-one. Untyped, collapsed, clipped or ambiguous
+contacts reject the whole candidate. Banks and bridge bank paths use the finite
+water envelope. A separate mask body is the union of occupied1mile cells (with
+holes), never a camera icon or deletion of the data route. Masked centerline
+spans do not certify complete stroke/dash/rail/PNG clipping.
+
+This is a bounded source-incidence candidate, not a complete constrained land
+router: a blocked direct approach can refuse even if a more distant detour might
+exist. Full dependency search, feature-specific POI refs, accepted-owner adapter,
+public16/history/source-edit closure, active map/PNG/UI and independent combined
+review remain required before activation. No source generation or active
+presentation has changed; no new crossing type has been rolled.
