@@ -1,0 +1,93 @@
+{
+  "base_sha": "42031f78615d5bd03cd9e7d7ab5b8e172adbafc9",
+  "head_sha": "cea2f93266913303833ef09477bc8f0c33be63d3",
+  "added": 0,
+  "removed": 0,
+  "modified": 3,
+  "suite": "Node",
+  "suites": [
+    {
+      "suite": "test/geometryRefinementPois.test.mjs",
+      "base_cases": 3,
+      "head_cases": 3,
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "scenario_risk": "Known special feature identity/location, source policy, same-parent rigid and locked placement, composed candidate and stale-point fingerprint. Exact supplied-bank constraint must not accept a nearby numeric candidate."
+    },
+    {
+      "suite": "test/geometryRefinementRoads.test.mjs",
+      "base_cases": 7,
+      "head_cases": 7,
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "Special POI bank provenance authorizes both actual dry road approaches; mismatched stable feature ref rejects."
+    }
+  ],
+  "scenario_matrix": [
+    {
+      "kind": "rapid",
+      "source_row": {
+        "table": "locations",
+        "row": 73
+      },
+      "runner": "subscenarios inside one reused source-adapter case; not additional named runner cases"
+    },
+    {
+      "kind": "waterfall",
+      "source_row": {
+        "table": "locations",
+        "row": 98
+      },
+      "runner": "subscenarios inside one reused source-adapter case; not additional named runner cases"
+    },
+    {
+      "kind": "crossing",
+      "source_row": {
+        "table": "locations",
+        "row": 22
+      },
+      "runner": "subscenarios inside one reused source-adapter case; not additional named runner cases"
+    },
+    {
+      "kind": "river_start",
+      "source_row": {
+        "table": "locations",
+        "row": 85
+      },
+      "runner": "subscenarios inside one reused source-adapter case; not additional named runner cases"
+    }
+  ],
+  "reuse_or_new_reason": "Extended three existing logical cases: bank query, accepted-source adapter and dry-road contact; reused setup and fixtures. No new permanent named case, generated-world series or browser lifecycle.",
+  "count_source": "Exact base42031f7/headcea2f93266913303833ef09477bc8f0c33be63d3 named test-block diff: same3 POI and7 road cases; two POI bodies and one road body modified. Matrix subscenarios listed separately, not summed with runner counts.",
+  "focused": {
+    "executed": 11,
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 13488.554438,
+    "included_in_full_total": true
+  },
+  "temporary_diagnostics": {
+    "new_permanent_cases": 0
+  },
+  "development_regression": {
+    "pre_fix_sha": "a65b5e77711fc5f57e1672c4ede45954f7f03230",
+    "case": "GEO2 nearest exposed bank handles inside starts, buried confluence banks, side, parent and quadratic lake constraints",
+    "expected_point": {
+      "x": 5e-8,
+      "y": 0.5
+    },
+    "actual_pre_fix": {
+      "x": 0,
+      "y": 0.5
+    },
+    "final_exact_point_selection": true
+  },
+  "executed": 410,
+  "passed": 410,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0
+}

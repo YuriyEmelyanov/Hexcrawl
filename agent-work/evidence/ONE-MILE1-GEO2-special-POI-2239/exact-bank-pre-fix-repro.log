@@ -1,0 +1,35 @@
+✖ GEO2 nearest exposed bank handles inside starts, buried confluence banks, side, parent and quadratic lake constraints (41.895077ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 401.013097
+
+✖ failing tests:
+
+test at test/geometryRefinementPois.test.mjs:12:1
+✖ GEO2 nearest exposed bank handles inside starts, buried confluence banks, side, parent and quadratic lake constraints (41.895077ms)
+  AssertionError [ERR_ASSERTION]: crossing contact must use the exact supplied bank point
+  + actual - expected
+  
+    {
+  +   x: 0,
+  -   x: 5e-8,
+      y: 0.5
+    }
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/93351762c143/geo2-implementation/test/geometryRefinementPois.test.mjs:14:133)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1402:25)
+      at Test.start (node:internal/test_runner/test:1262:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { x: 0, y: 0.5 },
+    expected: { x: 5e-8, y: 0.5 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
