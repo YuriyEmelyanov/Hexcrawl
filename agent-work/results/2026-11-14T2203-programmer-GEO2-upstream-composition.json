@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T2203-programmer-GEO2-upstream-composition",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-UPSTREAM-COMPOSITION",
+  "role": "programmer",
+  "status": "checkpoint_saved_GEO2_upstream_composition_in_progress",
+  "head_sha": "42031f78615d5bd03cd9e7d7ab5b8e172adbafc9",
+  "tree_sha": "687431f8a4d108e368b4973564a73cba608ef093",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "execution_running": false,
+  "result_ref": "agent-work/results/2026-11-14T2203-programmer-GEO2-upstream-composition.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T2203-GEO2-upstream-composition-continue.json",
+  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-upstream-composition-2203/checks.json",
+  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-upstream-composition-2203/score-evidence.json",
+  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-upstream-composition-2203/test-change-summary.json",
+  "next_role": "programmer",
+  "next_step": "Программист продолжает HX-BL-051/GEO2: реализовать известные feature-specific POI/исток без generic fallback и завершить GeometryPlan/public16/physical4 с отдельными authored inputs/refined outputs, сохранёнными choices, Q01/историей и Apply/UI/PNG. Использовать единый from-source controller; гидрология и renderer contours остаются входами. Затем G201–G210 и независимая проверка полного точного SHA с score_assessment1.2; публикация отдельно.",
+  "review_ready": false,
+  "release_authorized": false,
+  "started_at": "2026-11-14T19:03:51.436Z",
+  "completed_at": "2026-11-14T19:23:20.316Z",
+  "automation_execution_id": "4636af17-4504-8332-9942-740ad4667f5f",
+  "base_sha": "e1c00e4cdcaed2d5d1047ae535bebf560619fa52",
+  "role_selection_reason": "Approved unfinished GEO2-v2 after completed interview; preceding checkpoint completed, task unclaimed, no reviewer changes or full-package review_ready. Continue shared upstream+composition work control, foreign041claim preserved.",
+  "implemented": [
+    "One shared logical work controller spans source normalization, river skeleton, open exits, terminal/split ports and routes, finite water, all-mode mouth preparation, then footprint/fingerprint/POI/roads.",
+    "Bounded shore helper reservations and curve-dependent inter-query charges; prepare_* errors return atomic no-candidate failure.",
+    "Default20million full from-source route, prepared-input preview default2million retained; default/exact limit reproduces old geometry/fingerprint, late upstream/road exhaustion and cancellation reject atomically."
+  ],
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "spec_version": "GEO2-v2",
+  "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+  "claim_ref": "agent-work/claims/2026-11-14T2203-programmer-GEO2-upstream-composition.json",
+  "evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-upstream-composition-2203",
+  "previous_result_ref": "agent-work/results/2026-11-14T2101-programmer-GEO2-river-work.json",
+  "checks": {
+    "head_sha": "42031f78615d5bd03cd9e7d7ab5b8e172adbafc9",
+    "tree_sha": "687431f8a4d108e368b4973564a73cba608ef093",
+    "node": "v24.22.1",
+    "command": "npm run check",
+    "exit_code": 0,
+    "tsc": "passed",
+    "node_tests": {
+      "executed": 410,
+      "passed": 410,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 742428.246547
+    },
+    "build": {
+      "status": "passed",
+      "duration_seconds": 15.72
+    },
+    "browser": {
+      "command": "npm run test:browser",
+      "exit_code": 1,
+      "status": "blocked_missing_chromium_executable",
+      "after_build": true,
+      "browser_scenarios_executed": 0,
+      "scripts_attempted": 1,
+      "scripts_not_started": 8
+    },
+    "rng_browser": {
+      "command": "npm run test:browser:rng",
+      "exit_code": 1,
+      "status": "blocked_missing_chromium_executable",
+      "after_build": true,
+      "browser_scenarios_executed": 0
+    },
+    "full_GEO2_acceptance": false,
+    "checkout_identity": {
+      "launch_HEAD": "e1c00e4cdcaed2d5d1047ae535bebf560619fa52",
+      "exact_tree": "687431f8a4d108e368b4973564a73cba608ef093",
+      "aligned_HEAD": "42031f78615d5bd03cd9e7d7ab5b8e172adbafc9",
+      "source_content_changed_during_run": false,
+      "tracked_worktree_clean_at_end": true,
+      "source_readbacks": 10
+    },
+    "development_checks": {
+      "focused_cases": 16,
+      "passed": 16,
+      "failed": 0,
+      "scope": "Before final additional upstream-budget assertion; final exact-SHA verification is full410/410. Do not sum reruns with full suite."
+    },
+    "development_corrections": [
+      "Initial redundant timestamped export assertion failed on savedAt; removed it and reused the existing final normalized-save comparison and RNG guard. No product mutation identified."
+    ],
+    "warnings": [
+      "Existing npm http-proxy env warning",
+      "Existing Vite large chunk warning"
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "e1c00e4cdcaed2d5d1047ae535bebf560619fa52",
+    "head_sha": "42031f78615d5bd03cd9e7d7ab5b8e172adbafc9",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node test/geometryRefinementExits.test.mjs",
+    "scenario_risk": "Prepared-input-only budget excludes expensive river/mouth phases; one shared receipt must preserve geometry, exact sufficient limit, late upstream/road exhaustion, early cancellation and source/RNG immutability.",
+    "reuse_or_new_reason": "Extended one existing actual hydrology/retained-world/composed preview case; reused its source map, hydrology, lakes, generation harness and existing final save/RNG guards. No new permanent case or fixture lifecycle.",
+    "count_source": "Exact base/head diff: same one named test case, modified body and import; count logical cases, not lines/files/assertions/runs.",
+    "logical_case_modified": "GEO2 actual source hydrology separates open exits from lake/source and enforces fine boundary refs",
+    "temporary_diagnostics": {
+      "additional_permanent_cases": 0,
+      "receipt_printed_by_existing_case": true
+    },
+    "executed": 410,
+    "passed": 410,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
+    "start": {
+      "checked_at": "2026-11-14T19:03:51.436Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-14T19:22:20.371Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Actual start and end enabled"
+    },
+    "errors": [],
+    "scope": "Point-in-time only; same task, prompt and schedule unchanged. No guarantee after completion."
+  },
+  "work_receipt": {
+    "model": "geo2-composition-work-v1",
+    "limit": 20000000,
+    "used": 15503281,
+    "remaining": 4496719,
+    "phases": {
+      "river_mouth": 15199382,
+      "source": 743,
+      "footprints": 240656,
+      "fingerprint": 42200,
+      "poi_source": 677,
+      "pois": 170,
+      "roads": 19453
+    }
+  },
+  "limitations": [
+    "Hydrology network construction and renderer-owned lake contour creation are supplied inputs outside the shared controller.",
+    "Logical work accounting/reservations, not CPU/time/token/subscription limits or preemption inside analytic helpers.",
+    "Known feature-specific POI/river-start constraints, complete GeometryPlan/public16/physical4/persisted choices/Q01/history/Apply/UI/PNG remain pending.",
+    "No independent full-package acceptance, main/publication/PR503 update or score transition."
+  ],
+  "pr": 503,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "pr_updated": false,
+  "source_readbacks": {
+    "files": 10,
+    "exact": true
+  },
+  "main_changed": false,
+  "actual_main_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+  "published": false,
+  "activation": false,
+  "implementation_complete": false,
+  "full_task_complete": false,
+  "full_package_review_ready": false,
+  "full_package_release_ready": false,
+  "ui_changed": false,
+  "ui_actual_pending_for_full_GEO2": true,
+  "score_model_version": "1.2",
+  "product_score_changed": false,
+  "score_update_status": "not_applicable_unpublished",
+  "owner_decision_required_for_next_step": false,
+  "authority_status": "Approved existing GEO2-v2; no new start/design approval, no main/publication/extra-spend permission.",
+  "operation_errors": [
+    {
+      "stage": "browser_launch",
+      "status": "unresolved_environment_blocker",
+      "commands": [
+        "npm run test:browser",
+        "npm run test:browser:rng"
+      ],
+      "observed": "Missing Playwright Chromium headless executable; both commands exited1 before browser scenarios.",
+      "next_step": "Restore runtime before full-package browser acceptance; continue approved implementation. Not a full team block."
+    }
+  ]
+}
