@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T0837-programmer-ONE-MILE1-GEO2",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-POI",
+  "role": "programmer",
+  "status": "checkpoint_saved_GEO2_bank_POI_in_progress",
+  "execution_running": false,
+  "working_branch": "agent/hx-bl-051-geo2",
+  "wip_head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+  "wip_tree_sha": "e3d32a539346800e35770adde969392c77302950",
+  "head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+  "tree_sha": "e3d32a539346800e35770adde969392c77302950",
+  "pr": 503,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "pr_updated": false,
+  "result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T0837-ONE-MILE1-GEO2-continue.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+  "next_role": "programmer",
+  "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с af7fb8c23e949120930ea80e5bb1373f11c616ec: следующий этап GEO2-DEPENDENCIES — связать bank/POI candidates с настоящими source requirement/physicalGrid identities и адаптацией зависимых дорог/переправ в одной атомарной prepare-фазе. Сохранить все7исходных crossing keys/types (4bridge/3ferry, legalF2ford только отдельный вариант), river/road refs, F, порядок и все подходы к перемещённому POI; nearest transverse contact считать по конечной водной полосе, без midpoint/perpendicular assumptions. Изменять только связанные участки дорог, сохранять остальные ID/класс/выходы. Подключить stable rapid/waterfall/crossing/river_start refs вместо явного feature_contact_pending. Merge POI candidates поID: unresolved/unchanged не удалять и не перемещать. Whole-cell/multicell paint mask поunion occupied cells, включаяdash/rails; markerне маскирует. Затем public16/history/dependency closure, фактический UI/PNG во всех3режимах и независимая проверка всего новогоSHA; текущий backend unmounted, PR503/main не публиковать.",
+  "review_ready": false,
+  "full_package_release_ready": false,
+  "release_authorized": false,
+  "base_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
+  "started_at": "2026-11-14T05:38:15.041Z",
+  "completed_at": "2026-11-14T06:07:07.623Z",
+  "role_selection_reason": "Approved unfinished GEO2, previous mouths run completed and051has no active claim; ready bank-POI scope from existing handoff. Other foreign claims preserved.",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "implemented": [
+    "Nearest exposed finite-river bank candidates with source ref, same6parent, known side, global union/confluence, footprint and quadratic lake-body constraints",
+    "Known basic river-contact marker placement and rigid integer-grid translation of conditional whole footprints, preserving extent/cell count/both road entries",
+    "Read-only existing POI source requirement lookup; unknown requirements remain unresolved without automatic movement",
+    "Canonical locale-independent ordering, immutable candidates and atomic locked/measured/no-fit/foreign-ref refusals"
+  ],
+  "actual_evidence": {
+    "source_segments": 53,
+    "fine_intervals": 432,
+    "open_exits": 4,
+    "poi_aliases": 22,
+    "unknown_source_requirements": 21,
+    "known_river_required_POI": 0,
+    "actual_bank_queries": 10,
+    "actual_POI_relocation_claimed": false,
+    "synthetic_example": "Explicit conditional two-cell shape, 1mile rigid translation with both route entries, not an eligible POI in actual retained world"
+  },
+  "limitations": [
+    "Unmounted backend, no complete GeometryPlan/accepted map/PNG/public16/history/UI acceptance",
+    "Feature-specific rapid/waterfall/crossing/river_start still return explicit feature_contact_pending; adapted feature association is next approved work",
+    "Phase assumes accepted land parent/source ref inputs; complete ownership/map/POI validation and candidate merge remain for integration",
+    "Whole footprints use rigid integer-grid translations; aggregate async/cancellation budget pending, no product-scale performance claim",
+    "Actual road graph/7crossings/paint masks/dependency closure and independent complete-SHA review remain"
+  ],
+  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/score-evidence.json",
+  "source_provenance_ref": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/source-provenance.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-14T05:37:44.022Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-14T06:06:06.618Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Point-in-time only; no guarantee against later service disable. Existing schedule/prompt/environment unchanged."
+  },
+  "validation": {
+    "npm_run_check": "passed",
+    "node": {
+      "executed": 402,
+      "passed": 402,
+      "failed": 0,
+      "skipped": 0
+    },
+    "build": "passed",
+    "code_readbacks": [
+      {
+        "path": "docs/geo2-work-in-progress.md",
+        "sha": "cc7fd23c08e53e8b786c623314c91627f58edc26",
+        "exact_utf8": true
+      },
+      {
+        "path": "src/detailGeography.ts",
+        "sha": "e265b02710eb6c5d46c7b3c7ba80c830a20b6b7a",
+        "exact_utf8": true
+      },
+      {
+        "path": "src/geometryRefinementShore.ts",
+        "sha": "bef8bbfe0ccaf202820dd4e138b1050ec04817f5",
+        "exact_utf8": true
+      },
+      {
+        "path": "src/geometryRefinementBanks.ts",
+        "sha": "c27c4b303371dc52ded2b3a9bff017f9fed5ff0b",
+        "exact_utf8": true
+      },
+      {
+        "path": "src/geometryRefinementPois.ts",
+        "sha": "b523fb847c583e2536cbe4d18a2ac608af6acaac",
+        "exact_utf8": true
+      },
+      {
+        "path": "test/geometryRefinementExits.test.mjs",
+        "sha": "5b867446f74e7e89beaa76ad00c0ca6c8ebd20ce",
+        "exact_utf8": true
+      },
+      {
+        "path": "test/geometryRefinementPois.test.mjs",
+        "sha": "80a637c8f8113e72bd200c8933ba919ec0115514",
+        "exact_utf8": true
+      }
+    ],
+    "witness_ref": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/witness.json",
+    "accepted_save_and_rng_unchanged": true,
+    "browser_or_rng_browser_acceptance": false
+  },
+  "full_task_complete": false,
+  "activation": false,
+  "main_changed": false,
+  "published": false,
+  "product_score_changed": false,
+  "ui_changed": false,
+  "ui_actual_pending_for_full_GEO2": true,
+  "independent_review_performed": false,
+  "claim_disposition": "Only own0837claim completed; foreign claims preserved",
+  "authority_status": "Continue already approved GEO2 scope; owner approval separately required for exact reviewed publication package",
+  "owner_decision_required_for_next_step": false
+}
