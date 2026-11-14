@@ -82,3 +82,12 @@ now avoids existing interior/source/previously allocated nodes; failure remains 
 referenced atomic conflict, never a silently retained inland port. It is bounded
 sequential endpoint routing, not simultaneous global optimization or complete
 geometry. Source generator and active UI are unchanged.
+
+GEO2-WATER rationale before test changes: existing presentation tests exercise
+straight-line crossing widths, not finite joined water geometry. Add two Node
+cases for analytic capsule/corner/end/parallel/tangent intersection and variable
+width union/disjoint gaps/invalid inputs. Expand the existing actual hydrology
+fixture case with real renderer width conversion and water-envelope preparation,
+instead of adding another world lifecycle. Capsule union models round caps/joins;
+it is not lake clipping, nearest-bank placement from inside water, or map/PNG UI
+acceptance. Query endpoints clipped inside water must never be called bank points.
