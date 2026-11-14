@@ -1,0 +1,871 @@
+{
+  "set": "deciduous-forest-crisp-v4",
+  "created_on": "2026-11-14",
+  "tool": "image_gen.imagegen",
+  "status": "new forest candidate for visual review; renderer not connected",
+  "source_set": "deciduous-forest-edge-v2 foreground clarity; gradient-v3 ground-transition reference for initial proof",
+  "owner_request": "Сделай тайлы менее размытыми. Размыть надо было только фон, а не объекты - деревья и холмы.",
+  "art_changes": [
+    "Restored clean opaque silhouettes and broad painted light/shadow shapes of trees, hills and mountain ridges, including peripheral and far objects.",
+    "Soft blending is restricted to ground color, forest-floor soil and ground shadows between and around objects. Tree crowns and terrain forms are not intentionally faded, misted or softened.",
+    "The hills-pointy proof supplies the shared treatment reference for the remaining five edits; each retains its own original terrain layout and upright composition.",
+    "Moderate detail and dense forest core remain. A slight natural contour of outer individual trees is intentional; the ground stain should have no hard geometric outline.",
+    "Ground is painted toward grass.png; pixel identity with grass or between edited variants is not claimed. Measured outside-hex background means are included per asset."
+  ],
+  "export": "210x210 sRGB RGB PNG, opaque. Whole generated source resized without additional blur or sharpening filters. Regular hex masks are used only for map/contact previews.",
+  "validation": "Six square sources and final RGB formats checked. Clarity and ground transition reviewed at210px and60px and in both hex layouts. Outside-dark-green count is a color heuristic, not exact foreground segmentation.",
+  "accepted_relief_preservation": {
+    "status": "verified unchanged",
+    "sha256": {
+      "open-hills-pointy.png": "0c2c64a85fcb7287b48e5b135255436e2ea42ff2f7e42ebb39efc0590a4dd997",
+      "open-hills-flat.png": "ab0760889c1952c228daf77e580fd6fc6f88c84085ee486b942a28b9e469302a",
+      "mountains-pointy.png": "2f1b6d470918ab240fb5585b34438acbfabfd0637eca10577b7432367bc00596",
+      "mountains-flat.png": "c93aab2e4b4c0884cdfeadaaf71b6c1abb800c984626679bc3b8a3f55644375d"
+    }
+  },
+  "proof": {
+    "id": "deciduous-forest-hills-pointy",
+    "prompt": "Use case: precise-object-edit. Asset: one square dense deciduous forest on rounded hills tile for a Civilization V strategic-view-inspired schematic map, final210x210px. Image1 is the EDIT TARGET with correct clear object forms. Image2 is a later version whose ground transition is softer but whose TREES AND HILLS ARE TOO BLURRY. Image3 is the shared grass ground. Primary request: take Image1's CLEAR TREES AND CLEAR HILL FORMS, and improve ONLY THE GROUND'S blend toward the grass using the ground transition in Image2. Keep the original tree arrangement, full rounded crowns, crown sizes, dense canopy, upright composition and all six original hill domes/crests. Every tree crown including the outermost crowns must retain a definite clean, opaque silhouette and readable broad light/shadow shapes, with the same clarity as Image1. The hills, including the far upper hill, also remain solid clean readable objects with well-defined crests; gentle slope shading is fine but no soft-focus hills. Only the forest floor, patches of soil, ground color and ground shadows BETWEEN and AROUND the objects should merge gradually into the surrounding grass. The dark ground stain underneath the forest must not end in an abrupt oval or geometric edge. Smaller outer understory can be sparse but must also be drawn clearly, not transparent. No opacity fading across tree crowns, no blurred object edges, no mist, no haze or atmospheric veiling at the top, no glow. This is not a global sharpening filter: retain the low-detail broad painted forms of Image1 without extra individual leaves, white ridges or busy speckles. Keep the same muted olive/grass palette, same scale, same footprint and same hex fit. Complete crowns and hills fit the original full regular pointy-top hex, while ground fills the whole square. No visible hex border, labels, UI or transparency. Output exactly one complete square tile. Objects = crisp; ground color and ground shadows = smoothly blended.",
+    "source": "/workspace/scratch/1cbadecbe9c5/generated_images/exec-f97153d6-a58e-4f7b-a72e-f719805ecbf7.png"
+  },
+  "perimeter_correction": {
+    "id": "deciduous-forest-hills-pointy",
+    "prompt": "Use case: precise-object-edit. Image1 is the finished210x210 forest-on-hills tile to correct. Image2 is a GEOMETRY GUIDE ONLY showing the complete pointy-top regular hex; never copy its border, dark outside region or guide lines into the output. Make ONE small localized placement correction in Image1. A few outer tree/underbrush tips currently protrude outside the hex along the left vertical side, the upper-left diagonal shoulder and the far right side. Move only those small peripheral clusters inward by about5–7px at210px scale, redrawing them as COMPLETE CLEAR bushes/crowns. Keep the central forest and every main hill dome/crest exactly in their current placement and scale; do not shrink or redesign the whole forest. Do not clip or erase part of a crown. Keep clear opaque silhouettes of all trees and landforms with the present broad painted light/shadow. No blur, haze or opacity fade over any objects. The ground, soil and ground shadows around those shifted clusters keep their smooth blend into the grassy background; no new dark geometrical outline. Keep the current composition, tree scale, dense forest core, palette and low-detail style. The full hex in210px square has vertices(105,0),(195.93,52.5),(195.93,157.5),(105,210),(14.07,157.5),(14.07,52.5). Fit every significant crown, stem, underbrush cluster and hill entirely inside that polygon; an unobtrusive2px gap at the three corrected edge segments is enough, no broad river reserve or lawn moat. Grass still fills the whole opaque square. Output only the corrected complete square tile, without hex outlines, labels, guides, UI, transparent areas or comparisons. Restrict the edit to the handful of peripheral clusters; foreground clarity must be unchanged.",
+    "source": "/workspace/scratch/1cbadecbe9c5/generated_images/exec-ce681e8f-f484-4645-9125-4188f11f8af2.png",
+    "previous_source": "exec-f97153d6-a58e-4f7b-a72e-f719805ecbf7.png"
+  },
+  "assets": [
+    {
+      "id": "deciduous-forest-plains-pointy",
+      "file": "deciduous-forest-plains-pointy-crisp-v4.png",
+      "terrain": "plains",
+      "orientation": "pointy",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 95395,
+      "source_file": "exec-a51f3461-d3af-4221-ace6-7a8340446174.png",
+      "outside_hex_canopy_like_pixels": 25,
+      "outside_hex_background_mean_RGB": [
+        151.76,
+        175.17,
+        73.5
+      ],
+      "sha256": "9e1683e0010f0c7e7a40c45001fabdd37c397b5eaab24106136623560038a3bd",
+      "prompt": "Use case: precise-object-edit. Asset: a dense deciduous forest plains tile for a Civilization V strategic-view-inspired schematic game map, final210x210px. Image1 is the EDIT TARGET. Image2 is an approved TECHNICAL TREATMENT EXAMPLE: crisp opaque trees and landforms against softly blended ground. Image3 is the shared grass ground. Change only the ground transition of Image1 to match that principle. Preserve Image1's tree placement, rounded crown sizes (ordinary adult crowns around28–32px at210px scale), dense closed canopy and upright composition. Preserve the flat terrain; do NOT import hills from Image2. Every foreground object including every outermost crown remains clear, opaque, with clean readable silhouette and broad painted light/shadow forms. Trees stay flat-ground trees. The user's correction is that only the BACKGROUND should be soft, not the trees or relief. Blend only the forest-floor color, soil patches and contact/cast shadows BETWEEN and AROUND objects gradually into surrounding grass. Eliminate a hard boundary of the dark ground stain, while keeping the actual outlines of tree crowns readable. Outer small shrubs remain clearly drawn instead of transparent or soft-focus. No blur, opacity fade, haze or atmospheric veil across ANY tree or landform. No glowing halo. Keep the moderate low-detail cartographic style: large coherent crown masses, no extra leaves, tiny white speckles, excessive sharp microdetail or new ridges. This is not a global sharpening filter. Retain muted olive and shared grass colors. Preserve original footprint and fitting: full upright objects fit inside the same full regular pointy-top hex in a210px square; no chopped crowns or peaks. Background fills the whole square. No visible hex outline, labels, border, UI, transparency or comparison layout. Return one complete square tile. Objects = crisp; ground and ground shadows = softly blended."
+    },
+    {
+      "id": "deciduous-forest-plains-flat",
+      "file": "deciduous-forest-plains-flat-crisp-v4.png",
+      "terrain": "plains",
+      "orientation": "flat",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 94155,
+      "source_file": "exec-97d7dc00-0ab2-4b2c-bf7a-50848e9b14be.png",
+      "outside_hex_canopy_like_pixels": 56,
+      "outside_hex_background_mean_RGB": [
+        155.17,
+        178.34,
+        76.69
+      ],
+      "sha256": "9791ea5b7e9176742ff1dd8cb8d18eb3bf18cca4d340747334dafa8e06cc8e6a",
+      "prompt": "Use case: precise-object-edit. Asset: a dense deciduous forest plains tile for a Civilization V strategic-view-inspired schematic game map, final210x210px. Image1 is the EDIT TARGET. Image2 is an approved TECHNICAL TREATMENT EXAMPLE: crisp opaque trees and landforms against softly blended ground. Image3 is the shared grass ground. Change only the ground transition of Image1 to match that principle. Preserve Image1's tree placement, rounded crown sizes (ordinary adult crowns around28–32px at210px scale), dense closed canopy and upright composition. Preserve the flat terrain; do NOT import hills from Image2. Every foreground object including every outermost crown remains clear, opaque, with clean readable silhouette and broad painted light/shadow forms. Trees stay flat-ground trees. The user's correction is that only the BACKGROUND should be soft, not the trees or relief. Blend only the forest-floor color, soil patches and contact/cast shadows BETWEEN and AROUND objects gradually into surrounding grass. Eliminate a hard boundary of the dark ground stain, while keeping the actual outlines of tree crowns readable. Outer small shrubs remain clearly drawn instead of transparent or soft-focus. No blur, opacity fade, haze or atmospheric veil across ANY tree or landform. No glowing halo. Keep the moderate low-detail cartographic style: large coherent crown masses, no extra leaves, tiny white speckles, excessive sharp microdetail or new ridges. This is not a global sharpening filter. Retain muted olive and shared grass colors. Preserve original footprint and fitting: full upright objects fit inside the same full regular flat-top hex in a210px square; no chopped crowns or peaks. Background fills the whole square. No visible hex outline, labels, border, UI, transparency or comparison layout. Return one complete square tile. Objects = crisp; ground and ground shadows = softly blended."
+    },
+    {
+      "id": "deciduous-forest-hills-pointy",
+      "file": "deciduous-forest-hills-pointy-crisp-v4.png",
+      "terrain": "hills",
+      "orientation": "pointy",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 98693,
+      "source_file": "exec-ce681e8f-f484-4645-9125-4188f11f8af2.png",
+      "outside_hex_canopy_like_pixels": 5,
+      "outside_hex_background_mean_RGB": [
+        151.36,
+        178.34,
+        63.41
+      ],
+      "sha256": "498e12f991b810d27af66be7957342d1563c5f56e5132447924cc87991225169",
+      "prompt": "Use case: precise-object-edit. Asset: one square dense deciduous forest on rounded hills tile for a Civilization V strategic-view-inspired schematic map, final210x210px. Image1 is the EDIT TARGET with correct clear object forms. Image2 is a later version whose ground transition is softer but whose TREES AND HILLS ARE TOO BLURRY. Image3 is the shared grass ground. Primary request: take Image1's CLEAR TREES AND CLEAR HILL FORMS, and improve ONLY THE GROUND'S blend toward the grass using the ground transition in Image2. Keep the original tree arrangement, full rounded crowns, crown sizes, dense canopy, upright composition and all six original hill domes/crests. Every tree crown including the outermost crowns must retain a definite clean, opaque silhouette and readable broad light/shadow shapes, with the same clarity as Image1. The hills, including the far upper hill, also remain solid clean readable objects with well-defined crests; gentle slope shading is fine but no soft-focus hills. Only the forest floor, patches of soil, ground color and ground shadows BETWEEN and AROUND the objects should merge gradually into the surrounding grass. The dark ground stain underneath the forest must not end in an abrupt oval or geometric edge. Smaller outer understory can be sparse but must also be drawn clearly, not transparent. No opacity fading across tree crowns, no blurred object edges, no mist, no haze or atmospheric veiling at the top, no glow. This is not a global sharpening filter: retain the low-detail broad painted forms of Image1 without extra individual leaves, white ridges or busy speckles. Keep the same muted olive/grass palette, same scale, same footprint and same hex fit. Complete crowns and hills fit the original full regular pointy-top hex, while ground fills the whole square. No visible hex border, labels, UI or transparency. Output exactly one complete square tile. Objects = crisp; ground color and ground shadows = smoothly blended.\n\nLocalized perimeter correction:\nUse case: precise-object-edit. Image1 is the finished210x210 forest-on-hills tile to correct. Image2 is a GEOMETRY GUIDE ONLY showing the complete pointy-top regular hex; never copy its border, dark outside region or guide lines into the output. Make ONE small localized placement correction in Image1. A few outer tree/underbrush tips currently protrude outside the hex along the left vertical side, the upper-left diagonal shoulder and the far right side. Move only those small peripheral clusters inward by about5–7px at210px scale, redrawing them as COMPLETE CLEAR bushes/crowns. Keep the central forest and every main hill dome/crest exactly in their current placement and scale; do not shrink or redesign the whole forest. Do not clip or erase part of a crown. Keep clear opaque silhouettes of all trees and landforms with the present broad painted light/shadow. No blur, haze or opacity fade over any objects. The ground, soil and ground shadows around those shifted clusters keep their smooth blend into the grassy background; no new dark geometrical outline. Keep the current composition, tree scale, dense forest core, palette and low-detail style. The full hex in210px square has vertices(105,0),(195.93,52.5),(195.93,157.5),(105,210),(14.07,157.5),(14.07,52.5). Fit every significant crown, stem, underbrush cluster and hill entirely inside that polygon; an unobtrusive2px gap at the three corrected edge segments is enough, no broad river reserve or lawn moat. Grass still fills the whole opaque square. Output only the corrected complete square tile, without hex outlines, labels, guides, UI, transparent areas or comparisons. Restrict the edit to the handful of peripheral clusters; foreground clarity must be unchanged."
+    },
+    {
+      "id": "deciduous-forest-hills-flat",
+      "file": "deciduous-forest-hills-flat-crisp-v4.png",
+      "terrain": "hills",
+      "orientation": "flat",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 94286,
+      "source_file": "exec-d16aebcd-aee6-4079-a18a-14f289b8c928.png",
+      "outside_hex_canopy_like_pixels": 10,
+      "outside_hex_background_mean_RGB": [
+        154.45,
+        179.85,
+        81.44
+      ],
+      "sha256": "365c1bf09c10b4cf9ede75482648e2748e5a4bf6c0ca3d990ea8290cae0f1cf3",
+      "prompt": "Use case: precise-object-edit. Asset: a dense deciduous forest hills tile for a Civilization V strategic-view-inspired schematic game map, final210x210px. Image1 is the EDIT TARGET. Image2 is an approved TECHNICAL TREATMENT EXAMPLE: crisp opaque trees and landforms against softly blended ground. Image3 is the shared grass ground. Change only the ground transition of Image1 to match that principle. Preserve Image1's tree placement, rounded crown sizes (ordinary adult crowns around28–32px at210px scale), dense closed canopy and upright composition. Preserve all the original rounded hill domes, crests, proportions and placement; do NOT import Image2's different arrangement. Every foreground object including every outermost crown remains clear, opaque, with clean readable silhouette and broad painted light/shadow forms. All hills, including the far upper hill, remain solid clean landforms with clearly defined crests and simple smooth slope shading. The user's correction is that only the BACKGROUND should be soft, not the trees or relief. Blend only the forest-floor color, soil patches and contact/cast shadows BETWEEN and AROUND objects gradually into surrounding grass. Eliminate a hard boundary of the dark ground stain, while keeping the actual outlines of tree crowns readable. Outer small shrubs remain clearly drawn instead of transparent or soft-focus. No blur, opacity fade, haze or atmospheric veil across ANY tree or landform. No glowing halo. Keep the moderate low-detail cartographic style: large coherent crown masses, no extra leaves, tiny white speckles, excessive sharp microdetail or new ridges. This is not a global sharpening filter. Retain muted olive and shared grass colors. Preserve original footprint and fitting: full upright objects fit inside the same full regular flat-top hex in a210px square; no chopped crowns or peaks. Background fills the whole square. No visible hex outline, labels, border, UI, transparency or comparison layout. Return one complete square tile. Objects = crisp; ground and ground shadows = softly blended."
+    },
+    {
+      "id": "deciduous-forest-mountains-pointy",
+      "file": "deciduous-forest-mountains-pointy-crisp-v4.png",
+      "terrain": "mountains",
+      "orientation": "pointy",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 95845,
+      "source_file": "exec-a100159f-5328-49dc-8634-9bef429c155a.png",
+      "outside_hex_canopy_like_pixels": 0,
+      "outside_hex_background_mean_RGB": [
+        151.45,
+        178.43,
+        69.06
+      ],
+      "sha256": "3a88767e31c2b35bdf56639ff52bbd634569d25277ae85dc55b64ffc149f3733",
+      "prompt": "Use case: precise-object-edit. Asset: a dense deciduous forest mountains tile for a Civilization V strategic-view-inspired schematic game map, final210x210px. Image1 is the EDIT TARGET. Image2 is an approved TECHNICAL TREATMENT EXAMPLE: crisp opaque trees and landforms against softly blended ground. Image3 is the shared grass ground. Change only the ground transition of Image1 to match that principle. Preserve Image1's tree placement, rounded crown sizes (ordinary adult crowns around28–32px at210px scale), dense closed canopy and upright composition. Preserve all the original rocky mountain peaks, ridges, proportions and placement; do NOT import hills from Image2. Every foreground object including every outermost crown remains clear, opaque, with clean readable silhouette and broad painted light/shadow forms. All rocky peaks and slope ridges stay crisp and easily distinguishable above the forest. No blurry far peaks. The user's correction is that only the BACKGROUND should be soft, not the trees or relief. Blend only the forest-floor color, soil patches and contact/cast shadows BETWEEN and AROUND objects gradually into surrounding grass. Eliminate a hard boundary of the dark ground stain, while keeping the actual outlines of tree crowns readable. Outer small shrubs remain clearly drawn instead of transparent or soft-focus. No blur, opacity fade, haze or atmospheric veil across ANY tree or landform. No glowing halo. Keep the moderate low-detail cartographic style: large coherent crown masses, no extra leaves, tiny white speckles, excessive sharp microdetail or new ridges. This is not a global sharpening filter. Retain muted olive and shared grass colors. Preserve original footprint and fitting: full upright objects fit inside the same full regular pointy-top hex in a210px square; no chopped crowns or peaks. Background fills the whole square. No visible hex outline, labels, border, UI, transparency or comparison layout. Return one complete square tile. Objects = crisp; ground and ground shadows = softly blended."
+    },
+    {
+      "id": "deciduous-forest-mountains-flat",
+      "file": "deciduous-forest-mountains-flat-crisp-v4.png",
+      "terrain": "mountains",
+      "orientation": "flat",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 97173,
+      "source_file": "exec-2b6d4d5f-ae97-4d54-a3c3-09f7d643e701.png",
+      "outside_hex_canopy_like_pixels": 34,
+      "outside_hex_background_mean_RGB": [
+        148.67,
+        174.51,
+        68.64
+      ],
+      "sha256": "9356fa0d3602ac8b65abf3150956a0cb5fb0bce8af771a4adcd4aa88c659d676",
+      "prompt": "Use case: precise-object-edit. Asset: a dense deciduous forest mountains tile for a Civilization V strategic-view-inspired schematic game map, final210x210px. Image1 is the EDIT TARGET. Image2 is an approved TECHNICAL TREATMENT EXAMPLE: crisp opaque trees and landforms against softly blended ground. Image3 is the shared grass ground. Change only the ground transition of Image1 to match that principle. Preserve Image1's tree placement, rounded crown sizes (ordinary adult crowns around28–32px at210px scale), dense closed canopy and upright composition. Preserve all the original rocky mountain peaks, ridges, proportions and placement; do NOT import hills from Image2. Every foreground object including every outermost crown remains clear, opaque, with clean readable silhouette and broad painted light/shadow forms. All rocky peaks and slope ridges stay crisp and easily distinguishable above the forest. No blurry far peaks. The user's correction is that only the BACKGROUND should be soft, not the trees or relief. Blend only the forest-floor color, soil patches and contact/cast shadows BETWEEN and AROUND objects gradually into surrounding grass. Eliminate a hard boundary of the dark ground stain, while keeping the actual outlines of tree crowns readable. Outer small shrubs remain clearly drawn instead of transparent or soft-focus. No blur, opacity fade, haze or atmospheric veil across ANY tree or landform. No glowing halo. Keep the moderate low-detail cartographic style: large coherent crown masses, no extra leaves, tiny white speckles, excessive sharp microdetail or new ridges. This is not a global sharpening filter. Retain muted olive and shared grass colors. Preserve original footprint and fitting: full upright objects fit inside the same full regular flat-top hex in a210px square; no chopped crowns or peaks. Background fills the whole square. No visible hex outline, labels, border, UI, transparency or comparison layout. Return one complete square tile. Objects = crisp; ground and ground shadows = softly blended."
+    }
+  ],
+  "preview_map": {
+    "title": "Все готовые типы местности · по 2d6",
+    "created_on": "2026-11-14",
+    "dice_method": "Each type independently rolled with two crypto.randomInt(1,7) draws, once. Both orientations reuse the same rolls and axial cell assignment.",
+    "layout_method": "Compact hex field partitioned into exact-size connected regions; complement connectivity preserved at each carving step. Layout attempts do not reroll dice.",
+    "layout_seed": 3688483614,
+    "layout_trial": 138,
+    "layout_score": 381.89478227403754,
+    "total_cells": 83,
+    "types": [
+      {
+        "id": "grass",
+        "label": "Открытая равнина",
+        "file": "grass.png",
+        "target": [
+          -0.28,
+          0.02
+        ],
+        "dice": [
+          3,
+          3
+        ],
+        "count": 6
+      },
+      {
+        "id": "stone",
+        "label": "Каменистая земля",
+        "file": "stone.png",
+        "target": [
+          0.62,
+          0.58
+        ],
+        "dice": [
+          1,
+          6
+        ],
+        "count": 7
+      },
+      {
+        "id": "swamp",
+        "label": "Болото",
+        "file": "swamp.png",
+        "target": [
+          -0.02,
+          -0.08
+        ],
+        "dice": [
+          5,
+          1
+        ],
+        "count": 6
+      },
+      {
+        "id": "sand",
+        "label": "Полупустыня",
+        "file": "sand.png",
+        "target": [
+          -0.58,
+          0.59
+        ],
+        "dice": [
+          6,
+          3
+        ],
+        "count": 9
+      },
+      {
+        "id": "lake",
+        "label": "Озеро",
+        "file": "lake.png",
+        "target": [
+          -0.13,
+          -0.43
+        ],
+        "dice": [
+          4,
+          6
+        ],
+        "count": 10
+      },
+      {
+        "id": "sea",
+        "label": "Море",
+        "file": "sea.png",
+        "target": [
+          -0.8,
+          0
+        ],
+        "dice": [
+          6,
+          3
+        ],
+        "count": 9
+      },
+      {
+        "id": "hills",
+        "label": "Открытые холмы",
+        "file": "open-hills-{orientation}.png",
+        "target": [
+          0.26,
+          0.28
+        ],
+        "dice": [
+          5,
+          6
+        ],
+        "count": 11
+      },
+      {
+        "id": "mountains",
+        "label": "Голые горы",
+        "file": "mountains-{orientation}.png",
+        "target": [
+          0.8,
+          0.02
+        ],
+        "dice": [
+          4,
+          3
+        ],
+        "count": 7
+      },
+      {
+        "id": "forest_plains",
+        "label": "Лиственный лес · равнина",
+        "file": "deciduous-forest-plains-{orientation}-crisp-v4.png",
+        "target": [
+          -0.03,
+          0.57
+        ],
+        "dice": [
+          1,
+          4
+        ],
+        "count": 5
+      },
+      {
+        "id": "forest_hills",
+        "label": "Лиственный лес · холмы",
+        "file": "deciduous-forest-hills-{orientation}-crisp-v4.png",
+        "target": [
+          0.32,
+          -0.26
+        ],
+        "dice": [
+          1,
+          4
+        ],
+        "count": 5
+      },
+      {
+        "id": "forest_mountains",
+        "label": "Лиственный лес · горы",
+        "file": "deciduous-forest-mountains-{orientation}-crisp-v4.png",
+        "target": [
+          0.65,
+          -0.59
+        ],
+        "dice": [
+          2,
+          6
+        ],
+        "count": 8
+      }
+    ],
+    "cells": [
+      {
+        "q": 0,
+        "r": 0,
+        "type": "hills"
+      },
+      {
+        "q": -1,
+        "r": 0,
+        "type": "grass"
+      },
+      {
+        "q": -1,
+        "r": 1,
+        "type": "forest_plains"
+      },
+      {
+        "q": 0,
+        "r": -1,
+        "type": "hills"
+      },
+      {
+        "q": 0,
+        "r": 1,
+        "type": "hills"
+      },
+      {
+        "q": 1,
+        "r": -1,
+        "type": "forest_hills"
+      },
+      {
+        "q": 1,
+        "r": 0,
+        "type": "hills"
+      },
+      {
+        "q": -2,
+        "r": 1,
+        "type": "grass"
+      },
+      {
+        "q": -1,
+        "r": -1,
+        "type": "grass"
+      },
+      {
+        "q": -1,
+        "r": 2,
+        "type": "forest_plains"
+      },
+      {
+        "q": 1,
+        "r": -2,
+        "type": "lake"
+      },
+      {
+        "q": 1,
+        "r": 1,
+        "type": "hills"
+      },
+      {
+        "q": 2,
+        "r": -1,
+        "type": "forest_hills"
+      },
+      {
+        "q": -2,
+        "r": 0,
+        "type": "sea"
+      },
+      {
+        "q": -2,
+        "r": 2,
+        "type": "sand"
+      },
+      {
+        "q": 0,
+        "r": -2,
+        "type": "lake"
+      },
+      {
+        "q": 0,
+        "r": 2,
+        "type": "hills"
+      },
+      {
+        "q": 2,
+        "r": -2,
+        "type": "forest_hills"
+      },
+      {
+        "q": 2,
+        "r": 0,
+        "type": "mountains"
+      },
+      {
+        "q": -3,
+        "r": 1,
+        "type": "sea"
+      },
+      {
+        "q": -3,
+        "r": 2,
+        "type": "grass"
+      },
+      {
+        "q": -2,
+        "r": -1,
+        "type": "sea"
+      },
+      {
+        "q": -2,
+        "r": 3,
+        "type": "sand"
+      },
+      {
+        "q": -1,
+        "r": -2,
+        "type": "swamp"
+      },
+      {
+        "q": -1,
+        "r": 3,
+        "type": "forest_plains"
+      },
+      {
+        "q": 1,
+        "r": -3,
+        "type": "lake"
+      },
+      {
+        "q": 1,
+        "r": 2,
+        "type": "stone"
+      },
+      {
+        "q": 2,
+        "r": -3,
+        "type": "lake"
+      },
+      {
+        "q": 2,
+        "r": 1,
+        "type": "stone"
+      },
+      {
+        "q": 3,
+        "r": -2,
+        "type": "forest_hills"
+      },
+      {
+        "q": 3,
+        "r": -1,
+        "type": "mountains"
+      },
+      {
+        "q": -3,
+        "r": 0,
+        "type": "sea"
+      },
+      {
+        "q": -3,
+        "r": 3,
+        "type": "sand"
+      },
+      {
+        "q": 0,
+        "r": -3,
+        "type": "lake"
+      },
+      {
+        "q": 0,
+        "r": 3,
+        "type": "hills"
+      },
+      {
+        "q": 3,
+        "r": -3,
+        "type": "forest_hills"
+      },
+      {
+        "q": 3,
+        "r": 0,
+        "type": "mountains"
+      },
+      {
+        "q": -4,
+        "r": 2,
+        "type": "grass"
+      },
+      {
+        "q": -2,
+        "r": -2,
+        "type": "swamp"
+      },
+      {
+        "q": -2,
+        "r": 4,
+        "type": "forest_plains"
+      },
+      {
+        "q": 2,
+        "r": -4,
+        "type": "lake"
+      },
+      {
+        "q": 2,
+        "r": 2,
+        "type": "stone"
+      },
+      {
+        "q": 4,
+        "r": -2,
+        "type": "forest_mountains"
+      },
+      {
+        "q": -4,
+        "r": 1,
+        "type": "sea"
+      },
+      {
+        "q": -4,
+        "r": 3,
+        "type": "sand"
+      },
+      {
+        "q": -3,
+        "r": -1,
+        "type": "sea"
+      },
+      {
+        "q": -3,
+        "r": 4,
+        "type": "sand"
+      },
+      {
+        "q": -1,
+        "r": -3,
+        "type": "swamp"
+      },
+      {
+        "q": -1,
+        "r": 4,
+        "type": "hills"
+      },
+      {
+        "q": 1,
+        "r": -4,
+        "type": "lake"
+      },
+      {
+        "q": 1,
+        "r": 3,
+        "type": "stone"
+      },
+      {
+        "q": 3,
+        "r": -4,
+        "type": "forest_mountains"
+      },
+      {
+        "q": 3,
+        "r": 1,
+        "type": "mountains"
+      },
+      {
+        "q": 4,
+        "r": -3,
+        "type": "forest_mountains"
+      },
+      {
+        "q": 4,
+        "r": -1,
+        "type": "mountains"
+      },
+      {
+        "q": -4,
+        "r": 0,
+        "type": "sea"
+      },
+      {
+        "q": -4,
+        "r": 4,
+        "type": "sand"
+      },
+      {
+        "q": 0,
+        "r": -4,
+        "type": "lake"
+      },
+      {
+        "q": 0,
+        "r": 4,
+        "type": "hills"
+      },
+      {
+        "q": 4,
+        "r": -4,
+        "type": "forest_mountains"
+      },
+      {
+        "q": 4,
+        "r": 0,
+        "type": "mountains"
+      },
+      {
+        "q": -5,
+        "r": 2,
+        "type": "grass"
+      },
+      {
+        "q": -5,
+        "r": 3,
+        "type": "sand"
+      },
+      {
+        "q": -3,
+        "r": -2,
+        "type": "swamp"
+      },
+      {
+        "q": -3,
+        "r": 5,
+        "type": "forest_plains"
+      },
+      {
+        "q": -2,
+        "r": -3,
+        "type": "swamp"
+      },
+      {
+        "q": -2,
+        "r": 5,
+        "type": "hills"
+      },
+      {
+        "q": 2,
+        "r": -5,
+        "type": "lake"
+      },
+      {
+        "q": 2,
+        "r": 3,
+        "type": "stone"
+      },
+      {
+        "q": 3,
+        "r": -5,
+        "type": "forest_mountains"
+      },
+      {
+        "q": 3,
+        "r": 2,
+        "type": "stone"
+      },
+      {
+        "q": 5,
+        "r": -3,
+        "type": "forest_mountains"
+      },
+      {
+        "q": 5,
+        "r": -2,
+        "type": "forest_mountains"
+      },
+      {
+        "q": -5,
+        "r": 1,
+        "type": "sea"
+      },
+      {
+        "q": -5,
+        "r": 4,
+        "type": "sand"
+      },
+      {
+        "q": -4,
+        "r": -1,
+        "type": "sea"
+      },
+      {
+        "q": -4,
+        "r": 5,
+        "type": "sand"
+      },
+      {
+        "q": -1,
+        "r": -4,
+        "type": "swamp"
+      },
+      {
+        "q": -1,
+        "r": 5,
+        "type": "hills"
+      },
+      {
+        "q": 1,
+        "r": -5,
+        "type": "lake"
+      },
+      {
+        "q": 1,
+        "r": 4,
+        "type": "stone"
+      },
+      {
+        "q": 4,
+        "r": -5,
+        "type": "forest_mountains"
+      },
+      {
+        "q": 4,
+        "r": 1,
+        "type": "mountains"
+      }
+    ],
+    "validation": {
+      "total": 83,
+      "whole_map_connected": true,
+      "regions": [
+        {
+          "id": "grass",
+          "count": 6,
+          "dice": [
+            3,
+            3
+          ],
+          "connected": true
+        },
+        {
+          "id": "stone",
+          "count": 7,
+          "dice": [
+            1,
+            6
+          ],
+          "connected": true
+        },
+        {
+          "id": "swamp",
+          "count": 6,
+          "dice": [
+            5,
+            1
+          ],
+          "connected": true
+        },
+        {
+          "id": "sand",
+          "count": 9,
+          "dice": [
+            6,
+            3
+          ],
+          "connected": true
+        },
+        {
+          "id": "lake",
+          "count": 10,
+          "dice": [
+            4,
+            6
+          ],
+          "connected": true
+        },
+        {
+          "id": "sea",
+          "count": 9,
+          "dice": [
+            6,
+            3
+          ],
+          "connected": true
+        },
+        {
+          "id": "hills",
+          "count": 11,
+          "dice": [
+            5,
+            6
+          ],
+          "connected": true
+        },
+        {
+          "id": "mountains",
+          "count": 7,
+          "dice": [
+            4,
+            3
+          ],
+          "connected": true
+        },
+        {
+          "id": "forest_plains",
+          "count": 5,
+          "dice": [
+            1,
+            4
+          ],
+          "connected": true
+        },
+        {
+          "id": "forest_hills",
+          "count": 5,
+          "dice": [
+            1,
+            4
+          ],
+          "connected": true
+        },
+        {
+          "id": "forest_mountains",
+          "count": 8,
+          "dice": [
+            2,
+            6
+          ],
+          "connected": true
+        }
+      ]
+    }
+  }
+}
