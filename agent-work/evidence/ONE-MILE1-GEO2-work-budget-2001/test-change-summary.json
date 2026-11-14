@@ -1,0 +1,59 @@
+{
+  "base_sha": "4f22f0f19db4dce49aa977f796b51303fc61ed43",
+  "head_sha": "466c36aec1be90e652a54141e9441a3000ddc918",
+  "added": 0,
+  "removed": 0,
+  "modified": 3,
+  "suite": "Node",
+  "suites": [
+    {
+      "suite": "test/geometryRefinementExits.test.mjs",
+      "base_cases": 1,
+      "head_cases": 1,
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "Shared phase accounting, exact sufficient limit, late exhaustion, invalid limits and atomic no-partial refusal."
+    },
+    {
+      "suite": "test/geometryRefinementPois.test.mjs",
+      "base_cases": 3,
+      "head_cases": 3,
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "Cancellation and shared budget exhaustion inside nearest exposed bank work."
+    },
+    {
+      "suite": "test/geometryRefinementRoads.test.mjs",
+      "base_cases": 7,
+      "head_cases": 7,
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "scenario_risk": "Cancellation and shared budget exhaustion inside dry road search, distinct from no legal path."
+    }
+  ],
+  "reuse_or_new_reason": "Extended three existing retained-world/bank/search logical cases and existing setup; per-phase counters previously could not bound combined work or cancel inside fingerprint/bank/road loops. No additional case/world fixture lifecycle; existing geometry scenarios retained.",
+  "count_source": "Exact base/head named Node test-block diff; unchanged case names/counts1+3+7, modifications within one case per suite. Counts are logical cases, not lines/files/assertions/runs.",
+  "rationale_before_change_ref": "docs/geo2-work-in-progress.md at 466c36aec1be90e652a54141e9441a3000ddc918",
+  "focused": {
+    "executed": 11,
+    "passed": 11,
+    "failed": 0,
+    "skipped": 0,
+    "included_in_full_total": true
+  },
+  "temporary_diagnostics": {
+    "retained_world_budget": 1,
+    "separate_from_Node_total": true,
+    "permanent_case_growth": false,
+    "invocations": 2,
+    "reason_for_second_invocation": "Verified corrected newline in temporary evidence script reproduces JSON receipt; not a new permanent test or additional accepted coverage."
+  },
+  "executed": 410,
+  "passed": 410,
+  "failed": 0,
+  "skipped": 0,
+  "cancelled": 0
+}
