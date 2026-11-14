@@ -1,0 +1,823 @@
+{
+  "schema_version": 1,
+  "experiment_id": "HX-RSR-EXP-FOUNDRY-CROSS-YEAR-v1",
+  "version": 1,
+  "run_id": "2026-11-14T1131-Foundry2026",
+  "status": "completed_25_row_unit_and_rank_admissibility",
+  "selected_task": {
+    "id": "HX-RSR-FOUNDRY-CROSS-YEAR-UNIT-v1",
+    "outcome": "Reconcile all25 prior2025 game rows with2026 published table; audit installed versus most-played definitions and prevent invalid temporal comparisons.",
+    "completion_condition": "Complete25-row crosswalk, source methods/period/denominator and alias check, validate transcription/arithmetic and discriminating fixtures for user/world/hour units; preserve exact no-change decision for active inputs.",
+    "alternatives": [
+      {
+        "id": "Repeat2026-population-provenance",
+        "reason": "Prior9Nov bounded corpus closed; no newly disclosed population calibration. Reuse rather than reopen."
+      },
+      {
+        "id": "RepeatDH-wave-audit",
+        "reason": "Five-family cross-wave result completed previous run; new independent primary data schema is more useful."
+      }
+    ]
+  },
+  "definition": "Qualitative admissibility audit of cross-year reporting definitions; not a new numerical audience metric.",
+  "prior_evidence_reused": [
+    "agent-work/research/market/Foundry-proxy-provenance-2026-11-09.json",
+    "agent-work/market/foundry-systems-2026.json"
+  ],
+  "novelty": "2026 single-wave percentages/formula already audited. New result: complete2025/2026 crosswalk, independent HTML extraction,13 published Change mismatches and discriminating fixtures for worlds/users/hours.",
+  "sources": [
+    {
+      "id": "FND25",
+      "url": "https://foundryvtt.com/article/year-in-review-2025/",
+      "published_at": null,
+      "publication_date_context": "Official anniversary2025 page announces article for2025-05-26; exact article timestamp not asserted",
+      "access_level": "full_text",
+      "locator": "Software Usage lines109–111; Game Systems lines132–161",
+      "author_project_key": "foundry-vtt:anonymous-usage:year-in-review-2025",
+      "page_sha256": "c03e1dce08448604c99c4988e528debed94e82e6e371ebee85ad5cf478ec26f6"
+    },
+    {
+      "id": "FND26",
+      "url": "https://foundryvtt.com/article/year-in-review-2026/",
+      "published_at": null,
+      "publication_date_context": "May2026 retrospective; text writing context afterMay20/companionMay23, not an exact publication timestamp",
+      "access_level": "full_text",
+      "locator": "Software Usage lines133–169; entire Game Systems table172–203",
+      "author_project_key": "foundry-vtt:anonymous-usage:year-in-review-2026",
+      "page_sha256": "6fe6053115e43936031e4a911c4eedf560b62366dd75a9c634aaea3dae0e08eb"
+    }
+  ],
+  "collection": {
+    "kind": "Opt-in anonymous platform analytics, not questionnaire responses",
+    "wave_keys": [
+      "foundry-vtt:anonymous-usage:year-in-review-2025",
+      "foundry-vtt:anonymous-usage:year-in-review-2026"
+    ],
+    "N": null,
+    "item_n": null,
+    "question_verbatim": null,
+    "questionnaire_applicability": "Not a respondent survey; no wording fabricated from article's conversational use of survey",
+    "role": "Reporting users/license owners; verified unique GM role unknown",
+    "language_geography": "Global platform; English reports; no geographic/language stratification disclosed",
+    "selection": "Voluntary anonymous statistics; users may install multiple systems; dominant-world play assignment in2026",
+    "period": "Anniversary snapshots with prior-year retrospective; exact collection cutoffs/time window/tie handling undisclosed",
+    "opt_in_share_2025_pct": 51,
+    "opt_in_share_2026_pct": null,
+    "deduplication": "Two reporting waves of same project; matched persons, license-to-user cardinality and repeated reporters unknown. Not independent new people."
+  },
+  "definitions": {
+    "installed_2025": "Percent license owners with system installed, under analytics source context",
+    "ordering_2025": "Described as recorded in-game-hour ordering; per-user/global aggregation not specified",
+    "most_played_pct_2025": "Column not published; null rather than zero",
+    "installed_2026": "Percent users with system installed",
+    "most_played_2026": "System of world having largest playtime for each reporting user over retrospective period",
+    "change_2026": "Publisher describes as change of most-played order since last year",
+    "definition_change_vs_implementation": "Published descriptions differ; no verified claim that underlying telemetry algorithm changed."
+  },
+  "source_tables_ref": "agent-work/research/market/Foundry2026-2026-11-14-source-tables.json",
+  "crosswalk": [
+    {
+      "source_key": "DND5",
+      "source_label_2025": "Dungeons & Dragons Fifth Edition",
+      "rank_2025": 1,
+      "installed_pct_2025": 64.28,
+      "most_played_pct_2025": null,
+      "rank_2026": 1,
+      "installed_pct_2026": 62.68,
+      "most_played_pct_2026": 52.11,
+      "published_change_2026": 0,
+      "rank_difference_between_published_tables": 0,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -1.6,
+      "source_label_2026": "Dungeons & Dragons Fifth Edition",
+      "published_change_2026_raw": "-",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "PF2",
+      "source_label_2025": "Pathfinder Second Edition",
+      "rank_2025": 2,
+      "installed_pct_2025": 30.52,
+      "most_played_pct_2025": null,
+      "rank_2026": 2,
+      "installed_pct_2026": 27.58,
+      "most_played_pct_2026": 18.49,
+      "published_change_2026": 0,
+      "rank_difference_between_published_tables": 0,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -2.94,
+      "source_label_2026": "Pathfinder Second Edition",
+      "published_change_2026_raw": "-",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "PF1",
+      "source_label_2025": "Pathfinder 1",
+      "rank_2025": 3,
+      "installed_pct_2025": 4.32,
+      "most_played_pct_2025": null,
+      "rank_2026": 4,
+      "installed_pct_2026": 4.1,
+      "most_played_pct_2026": 1.69,
+      "published_change_2026": -1,
+      "rank_difference_between_published_tables": -1,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.22,
+      "source_label_2026": "Pathfinder 1",
+      "published_change_2026_raw": "-1",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "WFRP",
+      "source_label_2025": "Warhammer Fantasy Roleplay 4th Edition",
+      "rank_2025": 4,
+      "installed_pct_2025": 4.16,
+      "most_played_pct_2025": null,
+      "rank_2026": 5,
+      "installed_pct_2026": 3.7,
+      "most_played_pct_2026": 1.33,
+      "published_change_2026": -1,
+      "rank_difference_between_published_tables": -1,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.46,
+      "source_label_2026": "Warhammer Fantasy Roleplay 4th Edition",
+      "published_change_2026_raw": "-1",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "LANCER",
+      "source_label_2025": "LANCER",
+      "rank_2025": 5,
+      "installed_pct_2025": 3.87,
+      "most_played_pct_2025": null,
+      "rank_2026": 3,
+      "installed_pct_2026": 4.04,
+      "most_played_pct_2026": 1.73,
+      "published_change_2026": 2,
+      "rank_difference_between_published_tables": 2,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": 0.17,
+      "source_label_2026": "LANCER",
+      "published_change_2026_raw": "+2",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "SWS",
+      "source_label_2025": "Simple Worldbuilding System",
+      "rank_2025": 6,
+      "installed_pct_2025": 6.22,
+      "most_played_pct_2025": null,
+      "rank_2026": 6,
+      "installed_pct_2026": 5.9,
+      "most_played_pct_2026": 1.27,
+      "published_change_2026": 0,
+      "rank_difference_between_published_tables": 0,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.32,
+      "source_label_2026": "Simple Worldbuilding System",
+      "published_change_2026_raw": "-",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "CYBER",
+      "source_label_2025": "Cyberpunk RED",
+      "rank_2025": 7,
+      "installed_pct_2025": 3.5,
+      "most_played_pct_2025": null,
+      "rank_2026": 8,
+      "installed_pct_2026": 2.98,
+      "most_played_pct_2026": 0.97,
+      "published_change_2026": -1,
+      "rank_difference_between_published_tables": -1,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.52,
+      "source_label_2026": "Cyberpunk RED",
+      "published_change_2026_raw": "-1",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "COC",
+      "source_label_2025": "Call of Cthulhu 7th edition",
+      "rank_2025": 8,
+      "installed_pct_2025": 6.71,
+      "most_played_pct_2025": null,
+      "rank_2026": 7,
+      "installed_pct_2026": 6.41,
+      "most_played_pct_2026": 1.05,
+      "published_change_2026": 1,
+      "rank_difference_between_published_tables": 1,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.3,
+      "source_label_2026": "Call of Cthulhu 7th edition",
+      "published_change_2026_raw": "+1",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "CUSTOM",
+      "source_label_2025": "Custom System Builder",
+      "rank_2025": 9,
+      "installed_pct_2025": 3.84,
+      "most_played_pct_2025": null,
+      "rank_2026": 10,
+      "installed_pct_2026": 3.6,
+      "most_played_pct_2026": 0.88,
+      "published_change_2026": -1,
+      "rank_difference_between_published_tables": -1,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.24,
+      "source_label_2026": "Custom System Builder",
+      "published_change_2026_raw": "-1",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "SWADE",
+      "source_label_2025": "Savage Worlds Adventure Edition",
+      "rank_2025": 10,
+      "installed_pct_2025": 3.94,
+      "most_played_pct_2025": null,
+      "rank_2026": 11,
+      "installed_pct_2026": 3.51,
+      "most_played_pct_2026": 0.83,
+      "published_change_2026": -1,
+      "rank_difference_between_published_tables": -1,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.43,
+      "source_label_2026": "Savage Worlds Adventure Edition",
+      "published_change_2026_raw": "-1",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "SF",
+      "source_label_2025": "Starfinder",
+      "rank_2025": 11,
+      "installed_pct_2025": 4.06,
+      "most_played_pct_2025": null,
+      "rank_2026": 15,
+      "installed_pct_2026": 3.21,
+      "most_played_pct_2026": 0.46,
+      "published_change_2026": -5,
+      "rank_difference_between_published_tables": -4,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.85,
+      "source_label_2026": "Starfinder First Edition",
+      "published_change_2026_raw": "-5",
+      "mapping_basis": "Explicit nomenclature alignment only; not proof of code/edition identity"
+    },
+    {
+      "source_key": "SWFFG",
+      "source_label_2025": "Star Wars FFG system for Foundry VTT",
+      "rank_2025": 12,
+      "installed_pct_2025": 3.28,
+      "most_played_pct_2025": null,
+      "rank_2026": 13,
+      "installed_pct_2026": 2.64,
+      "most_played_pct_2026": 0.5,
+      "published_change_2026": -2,
+      "rank_difference_between_published_tables": -1,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.64,
+      "source_label_2026": "Star Wars FFG system for Foundry VTT",
+      "published_change_2026_raw": "-2",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "WOD5",
+      "source_label_2025": "World of Darkness 5e",
+      "rank_2025": 13,
+      "installed_pct_2025": 3.61,
+      "most_played_pct_2025": null,
+      "rank_2026": 24,
+      "installed_pct_2026": 2.86,
+      "most_played_pct_2026": 0.34,
+      "published_change_2026": -12,
+      "rank_difference_between_published_tables": -11,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.75,
+      "source_label_2026": "World of Darkness 5e",
+      "published_change_2026_raw": "-12",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "GURPS",
+      "source_label_2025": "GURPS 4th Edition Game Aid (Unofficial)",
+      "rank_2025": 14,
+      "installed_pct_2025": 1.85,
+      "most_played_pct_2025": null,
+      "rank_2026": 14,
+      "installed_pct_2026": 1.73,
+      "most_played_pct_2026": 0.47,
+      "published_change_2026": -1,
+      "rank_difference_between_published_tables": 0,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.12,
+      "source_label_2026": "GURPS 4th Edition Game Aid",
+      "published_change_2026_raw": "-1",
+      "mapping_basis": "Explicit nomenclature alignment only; not proof of code/edition identity"
+    },
+    {
+      "source_key": "DSA",
+      "source_label_2025": "Das Schwarze Auge / The Dark Eye (5th Edition)",
+      "rank_2025": 15,
+      "installed_pct_2025": 1.01,
+      "most_played_pct_2025": null,
+      "rank_2026": 17,
+      "installed_pct_2026": 0.93,
+      "most_played_pct_2026": 0.43,
+      "published_change_2026": -3,
+      "rank_difference_between_published_tables": -2,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.08,
+      "source_label_2026": "Das Schwarze Auge / The Dark Eye (5th Edition)",
+      "published_change_2026_raw": "-3",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "ALIEN",
+      "source_label_2025": "Alien RPG",
+      "rank_2025": 16,
+      "installed_pct_2025": 3.02,
+      "most_played_pct_2025": null,
+      "rank_2026": 20,
+      "installed_pct_2026": 2.64,
+      "most_played_pct_2026": 0.4,
+      "published_change_2026": -5,
+      "rank_difference_between_published_tables": -4,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.38,
+      "source_label_2026": "Alien RPG",
+      "published_change_2026_raw": "-5",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "TORM",
+      "source_label_2025": "Tormenta20",
+      "rank_2025": 17,
+      "installed_pct_2025": 0.9,
+      "most_played_pct_2025": null,
+      "rank_2026": 18,
+      "installed_pct_2026": 0.82,
+      "most_played_pct_2026": 0.42,
+      "published_change_2026": -2,
+      "rank_difference_between_published_tables": -1,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.08,
+      "source_label_2026": "Tormenta20",
+      "published_change_2026_raw": "-2",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "SD",
+      "source_label_2025": "Shadowdark RPG",
+      "rank_2025": 18,
+      "installed_pct_2025": 1.85,
+      "most_played_pct_2025": null,
+      "rank_2026": 12,
+      "installed_pct_2026": 2.2,
+      "most_played_pct_2026": 0.52,
+      "published_change_2026": 8,
+      "rank_difference_between_published_tables": 6,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": 0.35,
+      "source_label_2026": "Shadowdark RPG",
+      "published_change_2026_raw": "+8",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "W40",
+      "source_label_2025": "Warhammer 40,000 Roleplay: Wrath & Glory",
+      "rank_2025": 19,
+      "installed_pct_2025": 2.37,
+      "most_played_pct_2025": null,
+      "rank_2026": 16,
+      "installed_pct_2026": 2.3,
+      "most_played_pct_2026": 0.44,
+      "published_change_2026": 2,
+      "rank_difference_between_published_tables": 3,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.07,
+      "source_label_2026": "Warhammer 40,000 Roleplay: Wrath & Glory",
+      "published_change_2026_raw": "+2",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "DB",
+      "source_label_2025": "Dragonbane - Drakar och Demoner",
+      "rank_2025": 20,
+      "installed_pct_2025": 1.43,
+      "most_played_pct_2025": null,
+      "rank_2026": 22,
+      "installed_pct_2026": 1.46,
+      "most_played_pct_2026": 0.38,
+      "published_change_2026": -3,
+      "rank_difference_between_published_tables": -2,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": 0.03,
+      "source_label_2026": "Dragonbane - Drakar och Demoner",
+      "published_change_2026_raw": "-3",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "A5E",
+      "source_label_2025": "Level Up: Advanced 5th Edition (Official)",
+      "rank_2025": 21,
+      "installed_pct_2025": 2.34,
+      "most_played_pct_2025": null,
+      "rank_2026": 28,
+      "installed_pct_2026": 1.59,
+      "most_played_pct_2026": 0.27,
+      "published_change_2026": -11,
+      "rank_difference_between_published_tables": -7,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.75,
+      "source_label_2026": "Level Up: Advanced 5th Edition",
+      "published_change_2026_raw": "-11",
+      "mapping_basis": "Explicit nomenclature alignment only; not proof of code/edition identity"
+    },
+    {
+      "source_key": "WOD20",
+      "source_label_2025": "World of Darkness 20th edition",
+      "rank_2025": 22,
+      "installed_pct_2025": 2.1,
+      "most_played_pct_2025": null,
+      "rank_2026": 21,
+      "installed_pct_2026": 2.4,
+      "most_played_pct_2026": 0.4,
+      "published_change_2026": 0,
+      "rank_difference_between_published_tables": 1,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": 0.3,
+      "source_label_2026": "World of Darkness 20th edition",
+      "published_change_2026_raw": "-",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "FL",
+      "source_label_2025": "Forbidden Lands",
+      "rank_2025": 23,
+      "installed_pct_2025": 1.87,
+      "most_played_pct_2025": null,
+      "rank_2026": 26,
+      "installed_pct_2026": 1.55,
+      "most_played_pct_2026": 0.28,
+      "published_change_2026": -3,
+      "rank_difference_between_published_tables": -3,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.32,
+      "source_label_2026": "Forbidden Lands",
+      "published_change_2026_raw": "-3",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "DG",
+      "source_label_2025": "Delta Green: The Role-Playing Game",
+      "rank_2025": 24,
+      "installed_pct_2025": 2.26,
+      "most_played_pct_2025": null,
+      "rank_2026": 23,
+      "installed_pct_2026": 2.21,
+      "most_played_pct_2026": 0.35,
+      "published_change_2026": 1,
+      "rank_difference_between_published_tables": 1,
+      "change_matches_published_rank_difference": true,
+      "installed_delta_pp": -0.05,
+      "source_label_2026": "Delta Green: The Role-Playing Game",
+      "published_change_2026_raw": "+1",
+      "mapping_basis": "Exact source label"
+    },
+    {
+      "source_key": "D35",
+      "source_label_2025": "3.5e for Foundry VTT",
+      "rank_2025": 25,
+      "installed_pct_2025": 1.51,
+      "most_played_pct_2025": null,
+      "rank_2026": 29,
+      "installed_pct_2026": 1.19,
+      "most_played_pct_2026": 0.27,
+      "published_change_2026": -2,
+      "rank_difference_between_published_tables": -4,
+      "change_matches_published_rank_difference": false,
+      "installed_delta_pp": -0.32,
+      "source_label_2026": "3.5e for Foundry VTT",
+      "published_change_2026_raw": "-2",
+      "mapping_basis": "Exact source label"
+    }
+  ],
+  "source2026": [
+    {
+      "source_key": "DND5",
+      "rank": 1,
+      "installed_pct": 62.68,
+      "most_played_pct": 52.11,
+      "published_change": 0
+    },
+    {
+      "source_key": "PF2",
+      "rank": 2,
+      "installed_pct": 27.58,
+      "most_played_pct": 18.49,
+      "published_change": 0
+    },
+    {
+      "source_key": "LANCER",
+      "rank": 3,
+      "installed_pct": 4.04,
+      "most_played_pct": 1.73,
+      "published_change": 2
+    },
+    {
+      "source_key": "PF1",
+      "rank": 4,
+      "installed_pct": 4.1,
+      "most_played_pct": 1.69,
+      "published_change": -1
+    },
+    {
+      "source_key": "WFRP",
+      "rank": 5,
+      "installed_pct": 3.7,
+      "most_played_pct": 1.33,
+      "published_change": -1
+    },
+    {
+      "source_key": "SWS",
+      "rank": 6,
+      "installed_pct": 5.9,
+      "most_played_pct": 1.27,
+      "published_change": 0
+    },
+    {
+      "source_key": "COC",
+      "rank": 7,
+      "installed_pct": 6.41,
+      "most_played_pct": 1.05,
+      "published_change": 1
+    },
+    {
+      "source_key": "CYBER",
+      "rank": 8,
+      "installed_pct": 2.98,
+      "most_played_pct": 0.97,
+      "published_change": -1
+    },
+    {
+      "source_key": "DH",
+      "rank": 9,
+      "installed_pct": 3.64,
+      "most_played_pct": 0.97,
+      "published_change": 290
+    },
+    {
+      "source_key": "CUSTOM",
+      "rank": 10,
+      "installed_pct": 3.6,
+      "most_played_pct": 0.88,
+      "published_change": -1
+    },
+    {
+      "source_key": "SWADE",
+      "rank": 11,
+      "installed_pct": 3.51,
+      "most_played_pct": 0.83,
+      "published_change": -1
+    },
+    {
+      "source_key": "SD",
+      "rank": 12,
+      "installed_pct": 2.2,
+      "most_played_pct": 0.52,
+      "published_change": 8
+    },
+    {
+      "source_key": "SWFFG",
+      "rank": 13,
+      "installed_pct": 2.64,
+      "most_played_pct": 0.5,
+      "published_change": -2
+    },
+    {
+      "source_key": "GURPS",
+      "rank": 14,
+      "installed_pct": 1.73,
+      "most_played_pct": 0.47,
+      "published_change": -1
+    },
+    {
+      "source_key": "SF",
+      "rank": 15,
+      "installed_pct": 3.21,
+      "most_played_pct": 0.46,
+      "published_change": -5
+    },
+    {
+      "source_key": "W40",
+      "rank": 16,
+      "installed_pct": 2.3,
+      "most_played_pct": 0.44,
+      "published_change": 2
+    },
+    {
+      "source_key": "DSA",
+      "rank": 17,
+      "installed_pct": 0.93,
+      "most_played_pct": 0.43,
+      "published_change": -3
+    },
+    {
+      "source_key": "TORM",
+      "rank": 18,
+      "installed_pct": 0.82,
+      "most_played_pct": 0.42,
+      "published_change": -2
+    },
+    {
+      "source_key": "COS",
+      "rank": 19,
+      "installed_pct": 1.29,
+      "most_played_pct": 0.41,
+      "published_change": 92
+    },
+    {
+      "source_key": "ALIEN",
+      "rank": 20,
+      "installed_pct": 2.64,
+      "most_played_pct": 0.4,
+      "published_change": -5
+    },
+    {
+      "source_key": "WOD20",
+      "rank": 21,
+      "installed_pct": 2.4,
+      "most_played_pct": 0.4,
+      "published_change": 0
+    },
+    {
+      "source_key": "DB",
+      "rank": 22,
+      "installed_pct": 1.46,
+      "most_played_pct": 0.38,
+      "published_change": -3
+    },
+    {
+      "source_key": "DG",
+      "rank": 23,
+      "installed_pct": 2.21,
+      "most_played_pct": 0.35,
+      "published_change": 1
+    },
+    {
+      "source_key": "WOD5",
+      "rank": 24,
+      "installed_pct": 2.86,
+      "most_played_pct": 0.34,
+      "published_change": -12
+    },
+    {
+      "source_key": "FO",
+      "rank": 25,
+      "installed_pct": 2.05,
+      "most_played_pct": 0.3,
+      "published_change": 0
+    },
+    {
+      "source_key": "FL",
+      "rank": 26,
+      "installed_pct": 1.55,
+      "most_played_pct": 0.28,
+      "published_change": -3
+    },
+    {
+      "source_key": "DRAW",
+      "rank": 27,
+      "installed_pct": 1.42,
+      "most_played_pct": 0.28,
+      "published_change": 169
+    },
+    {
+      "source_key": "A5E",
+      "rank": 28,
+      "installed_pct": 1.59,
+      "most_played_pct": 0.27,
+      "published_change": -11
+    },
+    {
+      "source_key": "D35",
+      "rank": 29,
+      "installed_pct": 1.19,
+      "most_played_pct": 0.27,
+      "published_change": -2
+    },
+    {
+      "source_key": "IM",
+      "rank": 30,
+      "installed_pct": 1.42,
+      "most_played_pct": 0.21,
+      "published_change": 4
+    },
+    {
+      "source_key": "CRUC",
+      "rank": 65,
+      "installed_pct": 1.28,
+      "most_played_pct": 0.09,
+      "published_change": 28
+    }
+  ],
+  "findings": [
+    {
+      "id": "FND-X-01",
+      "status": "confirmed",
+      "observed": "All25 previous rows matched to2026;13 Change entries differ from direct published2025-rank minus2026-rank.",
+      "examples": [
+        {
+          "game": "Shadowdark RPG",
+          "rank2025": 18,
+          "rank2026": 12,
+          "computed_change": 6,
+          "published_change": 8
+        },
+        {
+          "game": "Level Up: Advanced5th Edition",
+          "rank2025": 21,
+          "rank2026": 28,
+          "computed_change": -7,
+          "published_change": -11
+        }
+      ],
+      "cause_status": "unknown",
+      "possible_causes_not_confirmed": [
+        "Different internal baseline or ordering definition",
+        "Revisions/filters not documented in selected publication",
+        "Reporting error"
+      ],
+      "decision": "Retain both original Change and independently computed differences; do not overwrite source or use column as verified comparable growth."
+    },
+    {
+      "id": "FND-X-02",
+      "status": "confirmed",
+      "observed": "2025 installed percentages and2026 dominant-world percentages are different columns.",
+      "decision": "No64.28→52.11 DND5 or30.52→18.49 PF2 play-prevalence trend. Same-labelled installed snapshot deltas are descriptive only, not matched-GM changes."
+    },
+    {
+      "id": "FND-X-03",
+      "status": "confirmed",
+      "observed": "2025 opting-in51% cannot supply2026 denominator; installed systems overlap;2026 table is truncated.",
+      "decision": "No counts, globalmarket normalization, installed-to-active conversion or reweighting."
+    },
+    {
+      "id": "FND-X-04",
+      "status": "confirmed",
+      "observed": "Synthetic fixtures distinguish dominant world, sum of system worlds and aggregate hours.",
+      "decision": "Demonstrates non-equivalence of metrics, not recovered vendor implementation or observed behavior."
+    }
+  ],
+  "rating_disposition": {
+    "active_rating_changed": false,
+    "active_numeric_method_changed": false,
+    "active_inputs_changed": false,
+    "active_pool_changed": false,
+    "proposal_ref": null,
+    "reason": "Existing DND5/PF2 proxy arithmetic has already been verified and labelled uncalibrated. This new cross-wave audit invalidates automatic time-series substitutions; it does not establish replacement M/p/T values or owner-approved revisions.",
+    "product_effect": "No reprioritization/new development/score credit based on popularity changes; preserve current GEO2 queue."
+  },
+  "operational_requirement": null,
+  "operational_requirement_applicability": "Not applicable: no game rule or product operation introduced. Existing canonical registries/backlog preserved.",
+  "new_rules": 0,
+  "new_bindings": 0,
+  "new_tasks": 0,
+  "new_people_counted": 0,
+  "unknowns": [
+    "Vendor reason for13 Change mismatches",
+    "Original analytic aggregation2025 and identical cohort/cutoffs",
+    "2026opt-in share/count and role/edition splits",
+    "Regional map creation/refinement and unmet tool need"
+  ],
+  "next_candidate": {
+    "id": "HX-RSR-COS-L1-PRIMARY-SCREEN",
+    "game_id": "COS",
+    "target_source": "Official Cosmere RPG publisher/free starter or rules preview and supplied maps",
+    "action": "Assess one accessible primary GM-preparation/map corpus for existing low-priority COS: distinguish supplied geography, custom map creation, local battle maps and worldhopping. Follow source lead from Foundry but do not treat platform use as hex/map demand.",
+    "completion_condition": "Bounded primary-source map/workflow suitability result with edition/access/source locators and concrete source operations if any; separate candidate proposal only when justified. No book purchase or active-pool change.",
+    "priority_reassessment_required": true,
+    "reason": "COS already exists in market pool, but Foundry uptake alone does not establish L1 regional-map fit. This gap differs from closed DND5/PF2 proxy audit."
+  },
+  "errors": [
+    {
+      "status": "recovered",
+      "run_id": "2026-11-14T1131-Foundry2026",
+      "stage": "independent_table_extraction",
+      "last_successful_step": "Manual primary-source25-row crosswalk",
+      "failed_operation": {
+        "tool": "exec_command/python",
+        "action": "Parse primary HTML tables with optional bs4",
+        "locator": "Local read-only source QA"
+      },
+      "observed_error": "ModuleNotFoundError: No module named 'bs4'",
+      "cause_status": "confirmed",
+      "confirmed_cause": "Optional parser module absent in execution environment",
+      "recovered_by": "Use Python standard-library HTMLParser; no installation or permission bypass",
+      "stop_reason": null,
+      "needs_owner_action": false,
+      "owner_action": null
+    }
+  ]
+}
+
