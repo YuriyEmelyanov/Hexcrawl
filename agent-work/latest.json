@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-14T0806-programmer-ONE-MILE1-GEO2",
+  "run_id": "2026-11-14T0837-programmer-ONE-MILE1-GEO2",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "checkpoint_saved_GEO2_mouths_in_progress",
+  "status": "checkpoint_saved_GEO2_bank_POI_in_progress",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -55,10 +55,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
   "spec_version": "GEO2-v1",
-  "result_path": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "result_path": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с 91b5cbca31b92b3dbe4afc2813ba7e808e096430: GEO2-POI — подготовить атомарное размещение только POI с подтверждённым river requirement и стабильным river/segment ref. Использовать existing detailGeography requirement provenance/physicalGrid identities+extents и finite water/shore backend. Выбрать минимальное смещение к exposed bank в том же6mile parent, сохранив известную сторону, ID, размер, связный footprint и все route entries. Unknown town requirement остаётся unknown/без автоматического переноса; measured polygon/locked anchor не переводить, no legal fit — poi_conflict без partial state. Не считать inside clearance из water helper расстоянием до exposed bank и не использовать river centerline как берег. После этого roads/crossings/masks, public16/history/dependency closure, UI/map/PNG во всех3режимах и свежая независимая проверка общегоSHA; текущий mouths backend unmounted, PR503/main не обновлять до целостного пакета.",
+  "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с af7fb8c23e949120930ea80e5bb1373f11c616ec: следующий этап GEO2-DEPENDENCIES — связать bank/POI candidates с настоящими source requirement/physicalGrid identities и адаптацией зависимых дорог/переправ в одной атомарной prepare-фазе. Сохранить все7исходных crossing keys/types (4bridge/3ferry, legalF2ford только отдельный вариант), river/road refs, F, порядок и все подходы к перемещённому POI; nearest transverse contact считать по конечной водной полосе, без midpoint/perpendicular assumptions. Изменять только связанные участки дорог, сохранять остальные ID/класс/выходы. Подключить stable rapid/waterfall/crossing/river_start refs вместо явного feature_contact_pending. Merge POI candidates поID: unresolved/unchanged не удалять и не перемещать. Whole-cell/multicell paint mask поunion occupied cells, включаяdash/rails; markerне маскирует. Затем public16/history/dependency closure, фактический UI/PNG во всех3режимах и независимая проверка всего новогоSHA; текущий backend unmounted, PR503/main не публиковать.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -125,8 +125,8 @@
   "evidence_path": "agent-work/previews/ONE-MILE1-C02-C05-P1",
   "branch_name": "agent/hx-bl-051-one-mile1",
   "pr": 503,
-  "head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-  "tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+  "head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+  "tree_sha": "e3d32a539346800e35770adde969392c77302950",
   "checks_status": "official_CI_and_independent_review_accepted",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43215219149",
   "review_verdict": "reopened_owner_corrections_prior_acceptance_historical",
@@ -254,13 +254,13 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-14T05:05:55.262Z",
+      "checked_at": "2026-11-14T05:37:44.022Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-14T05:33:45.793Z",
+      "checked_at": "2026-11-14T06:08:18.704Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
@@ -270,9 +270,9 @@
       "reason": "Both actual observations enabled"
     },
     "errors": [],
-    "scope": "Point-in-time observations only; no guarantee against subsequent service disable. Existing schedule/prompt/environment unchanged.",
+    "scope": "Point-in-time only; no guarantee against later service disable. Existing schedule/prompt/environment unchanged.",
     "pre_persistence_end": {
-      "checked_at": "2026-11-14T05:31:07.467Z",
+      "checked_at": "2026-11-14T06:06:06.618Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
@@ -878,7 +878,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-14T05:34:26.272Z",
+  "updated_at": "2026-11-14T06:08:50.514Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1443,7 +1443,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-14T0806-ONE-MILE1-GEO2-continue.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T0837-ONE-MILE1-GEO2-continue.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -2295,7 +2295,7 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/test-change-summary.json",
+  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/programmer-score-evidence1.2.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
@@ -4886,26 +4886,26 @@
   },
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
-    "run_id": "2026-11-14T0806-programmer-ONE-MILE1-GEO2",
+    "run_id": "2026-11-14T0837-programmer-ONE-MILE1-GEO2",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "GEO2-MOUTHS",
+    "substage": "GEO2-POI",
     "role": "programmer",
-    "status": "checkpoint_saved_GEO2_mouths_in_progress",
+    "status": "checkpoint_saved_GEO2_bank_POI_in_progress",
     "execution_running": false,
     "working_branch": "agent/hx-bl-051-geo2",
-    "wip_head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-    "wip_tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
-    "head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-    "tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+    "wip_head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+    "wip_tree_sha": "e3d32a539346800e35770adde969392c77302950",
+    "head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+    "tree_sha": "e3d32a539346800e35770adde969392c77302950",
     "pr": 503,
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "pr_updated": false,
-    "result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-14T0806-ONE-MILE1-GEO2-continue.json",
-    "completed_claim_ref": "agent-work/claims/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+    "result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T0837-ONE-MILE1-GEO2-continue.json",
+    "completed_claim_ref": "agent-work/claims/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
     "next_role": "programmer",
-    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с 91b5cbca31b92b3dbe4afc2813ba7e808e096430: GEO2-POI — подготовить атомарное размещение только POI с подтверждённым river requirement и стабильным river/segment ref. Использовать existing detailGeography requirement provenance/physicalGrid identities+extents и finite water/shore backend. Выбрать минимальное смещение к exposed bank в том же6mile parent, сохранив известную сторону, ID, размер, связный footprint и все route entries. Unknown town requirement остаётся unknown/без автоматического переноса; measured polygon/locked anchor не переводить, no legal fit — poi_conflict без partial state. Не считать inside clearance из water helper расстоянием до exposed bank и не использовать river centerline как берег. После этого roads/crossings/masks, public16/history/dependency closure, UI/map/PNG во всех3режимах и свежая независимая проверка общегоSHA; текущий mouths backend unmounted, PR503/main не обновлять до целостного пакета.",
+    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с af7fb8c23e949120930ea80e5bb1373f11c616ec: следующий этап GEO2-DEPENDENCIES — связать bank/POI candidates с настоящими source requirement/physicalGrid identities и адаптацией зависимых дорог/переправ в одной атомарной prepare-фазе. Сохранить все7исходных crossing keys/types (4bridge/3ferry, legalF2ford только отдельный вариант), river/road refs, F, порядок и все подходы к перемещённому POI; nearest transverse contact считать по конечной водной полосе, без midpoint/perpendicular assumptions. Изменять только связанные участки дорог, сохранять остальные ID/класс/выходы. Подключить stable rapid/waterfall/crossing/river_start refs вместо явного feature_contact_pending. Merge POI candidates поID: unresolved/unchanged не удалять и не перемещать. Whole-cell/multicell paint mask поunion occupied cells, включаяdash/rails; markerне маскирует. Затем public16/history/dependency closure, фактический UI/PNG во всех3режимах и независимая проверка всего новогоSHA; текущий backend unmounted, PR503/main не публиковать.",
     "review_ready": false,
     "full_package_release_ready": false,
     "release_authorized": false
@@ -6557,7 +6557,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7301,7 +7301,7 @@
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-12T0603-ONE-MILE1-completion.json",
   "review_request_ref": "agent-work/handoffs/2026-11-13T0701-ONE-MILE1-WR1-review.json",
   "programmer_complete": false,
-  "current_programmer_result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "current_programmer_result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -7322,7 +7322,7 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "latest_result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "checks": {
     "run_id": 43363246575,
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
@@ -7922,7 +7922,7 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "current_role_result": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "current_stage_score_assessment_status": "incomplete_package_unverified_no_grade_claim",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
   "execution_running": false,
@@ -8383,7 +8383,7 @@
   "release_readiness": "not_ready_GEO2_in_progress",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-14T0806-ONE-MILE1-GEO2-continue.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-14T0837-ONE-MILE1-GEO2-continue.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -8569,26 +8569,26 @@
   "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "pr_updated": false,
   "execution_routing": {
-    "run_id": "2026-11-14T0806-programmer-ONE-MILE1-GEO2",
+    "run_id": "2026-11-14T0837-programmer-ONE-MILE1-GEO2",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "GEO2-MOUTHS",
+    "substage": "GEO2-POI",
     "role": "programmer",
-    "status": "checkpoint_saved_GEO2_mouths_in_progress",
+    "status": "checkpoint_saved_GEO2_bank_POI_in_progress",
     "execution_running": false,
     "working_branch": "agent/hx-bl-051-geo2",
-    "wip_head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-    "wip_tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
-    "head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-    "tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+    "wip_head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+    "wip_tree_sha": "e3d32a539346800e35770adde969392c77302950",
+    "head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+    "tree_sha": "e3d32a539346800e35770adde969392c77302950",
     "pr": 503,
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "pr_updated": false,
-    "result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-14T0806-ONE-MILE1-GEO2-continue.json",
-    "completed_claim_ref": "agent-work/claims/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+    "result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T0837-ONE-MILE1-GEO2-continue.json",
+    "completed_claim_ref": "agent-work/claims/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
     "next_role": "programmer",
-    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с 91b5cbca31b92b3dbe4afc2813ba7e808e096430: GEO2-POI — подготовить атомарное размещение только POI с подтверждённым river requirement и стабильным river/segment ref. Использовать existing detailGeography requirement provenance/physicalGrid identities+extents и finite water/shore backend. Выбрать минимальное смещение к exposed bank в том же6mile parent, сохранив известную сторону, ID, размер, связный footprint и все route entries. Unknown town requirement остаётся unknown/без автоматического переноса; measured polygon/locked anchor не переводить, no legal fit — poi_conflict без partial state. Не считать inside clearance из water helper расстоянием до exposed bank и не использовать river centerline как берег. После этого roads/crossings/masks, public16/history/dependency closure, UI/map/PNG во всех3режимах и свежая независимая проверка общегоSHA; текущий mouths backend unmounted, PR503/main не обновлять до целостного пакета.",
+    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с af7fb8c23e949120930ea80e5bb1373f11c616ec: следующий этап GEO2-DEPENDENCIES — связать bank/POI candidates с настоящими source requirement/physicalGrid identities и адаптацией зависимых дорог/переправ в одной атомарной prepare-фазе. Сохранить все7исходных crossing keys/types (4bridge/3ferry, legalF2ford только отдельный вариант), river/road refs, F, порядок и все подходы к перемещённому POI; nearest transverse contact считать по конечной водной полосе, без midpoint/perpendicular assumptions. Изменять только связанные участки дорог, сохранять остальные ID/класс/выходы. Подключить stable rapid/waterfall/crossing/river_start refs вместо явного feature_contact_pending. Merge POI candidates поID: unresolved/unchanged не удалять и не перемещать. Whole-cell/multicell paint mask поunion occupied cells, включаяdash/rails; markerне маскирует. Затем public16/history/dependency closure, фактический UI/PNG во всех3режимах и независимая проверка всего новогоSHA; текущий backend unmounted, PR503/main не публиковать.",
     "review_ready": false,
     "full_package_release_ready": false,
     "release_authorized": false
@@ -9031,106 +9031,106 @@
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
   "last_completed_run_id": "2026-11-14T0157-programmer-ONE-MILE1-GEO2",
   "storage_verification": {
-    "data_commit_sha": "ca480716959f04d2711e08f9d4d756c48cc17104",
-    "final_data_commit_sha": "3990e5ac375bb9e8fba1445390a94622a3963aa7",
-    "source_commit_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-    "source_tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+    "data_commit_sha": "afb423314a95d169a242eb950775f0abab6787af",
+    "final_data_commit_sha": "707c3c43a04b45bf46a10b908dc9ff243f4f0370",
+    "source_commit_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+    "source_tree_sha": "e3d32a539346800e35770adde969392c77302950",
     "source_readbacks": [
       {
         "path": "docs/geo2-work-in-progress.md",
-        "sha": "0ebae88ea29b24cb2829534c42956321f377c29f",
-        "byte_exact": true
+        "sha": "cc7fd23c08e53e8b786c623314c91627f58edc26",
+        "exact_utf8": true
       },
       {
-        "path": "src/geometryRefinementTerminalRoutes.ts",
-        "sha": "0c54375885fecd27bd73af65e377b46dd4786f8e",
-        "byte_exact": true
+        "path": "src/detailGeography.ts",
+        "sha": "e265b02710eb6c5d46c7b3c7ba80c830a20b6b7a",
+        "exact_utf8": true
       },
       {
         "path": "src/geometryRefinementShore.ts",
-        "sha": "03884c53d552f12cb918cd1de9226500c2d9ad2b",
-        "byte_exact": true
+        "sha": "bef8bbfe0ccaf202820dd4e138b1050ec04817f5",
+        "exact_utf8": true
       },
       {
-        "path": "src/geometryRefinementMouths.ts",
-        "sha": "2b80a1ce4d0f9fd2605d87f10f53cf907d5d947e",
-        "byte_exact": true
+        "path": "src/geometryRefinementBanks.ts",
+        "sha": "c27c4b303371dc52ded2b3a9bff017f9fed5ff0b",
+        "exact_utf8": true
+      },
+      {
+        "path": "src/geometryRefinementPois.ts",
+        "sha": "b523fb847c583e2536cbe4d18a2ac608af6acaac",
+        "exact_utf8": true
       },
       {
         "path": "test/geometryRefinementExits.test.mjs",
-        "sha": "84f0a2db7f963fc9b32eb2029a9595e8c7971334",
-        "byte_exact": true
+        "sha": "5b867446f74e7e89beaa76ad00c0ca6c8ebd20ce",
+        "exact_utf8": true
       },
       {
-        "path": "test/geometryRefinementShore.test.mjs",
-        "sha": "d4ec5785c9ddf2464c1a3c58379758fb277a1fa0",
-        "byte_exact": true
-      },
-      {
-        "path": "test/helpers/generation-harness.mjs",
-        "sha": "f480ff43b24af05085988230223186560950ba18",
-        "byte_exact": true
+        "path": "test/geometryRefinementPois.test.mjs",
+        "sha": "80a637c8f8113e72bd200c8933ba919ec0115514",
+        "exact_utf8": true
       }
     ],
     "data_readbacks": [
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/witness.mjs",
-        "sha": "bcf51dda041561142fb39e9e189b8a5cec762bcc",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/witness.mjs",
+        "sha": "f252cbf41ff4ad16887979205b00266cee969cc6",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/witness.json",
-        "sha": "7a4b8d146f71fb0122ce7931a34068d71eb30286",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/witness.json",
+        "sha": "c32528569f75e802b2e21890db1fa0146163ecb2",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/focused.log",
-        "sha": "c777183b60e13588c027c206d5586bb8dbba55e2",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/focused.log",
+        "sha": "b2f357de46eccc80e29007ed471eb2833f1fd862",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/initial-mouth-failure.log",
-        "sha": "1ee5cc1078908f09c6a14944b8db3d511219c7d5",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/aborted-check.log",
+        "sha": "d249e7a7ee0d59c679d1ffa23f459c7962e5a9d0",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/check.log",
-        "sha": "8536389ba20c976c96a0888405ba3f35991f9211",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/check.log",
+        "sha": "751683f2c50a488b973fa082b12453097f97bf99",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/checks.json",
-        "sha": "13e885222884a800e670f73cc8ee886df4bab9b8",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/checks.json",
+        "sha": "7fb7c9b33112238851958ed4304190b93682f02c",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/test-change-summary.json",
-        "sha": "c7e400842b63a3924d87fa53ae35e8339557c052",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/test-change-summary.json",
+        "sha": "3c478a6b0fb6767cd6ca9f5126eb86a7699e087d",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/score-evidence.json",
-        "sha": "432ffe3d7a814374c2e745e0f01ff7b855e63801",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/score-evidence.json",
+        "sha": "66d4a1f8776232cf75bbd13a42499ffa06822350",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/source-provenance.json",
-        "sha": "618f440e1b950ae7019dc8086d44a115bbe18632",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/source-provenance.json",
+        "sha": "0a72fc93412dfd6faf366706146de28ccb16eaf5",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/integration-notes.md",
-        "sha": "d155ea4b668d47ce8c3e878a6eb4883377b28177",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/integration-notes.md",
+        "sha": "7d1d92d08d502f789179e57faf6373dbb77535ed",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/handoffs/2026-11-14T0806-ONE-MILE1-GEO2-continue.json",
-        "sha": "fc8e6c8a13dced6841d6c8a63cae6ad28480bf67",
+        "path": "agent-work/handoffs/2026-11-14T0837-ONE-MILE1-GEO2-continue.json",
+        "sha": "bc0b563da8d50fe0b9e65040bd8c686709c99b72",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/claims/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
-        "sha": "2548722e1376094b157757a195ed01c51407bca1",
+        "path": "agent-work/claims/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+        "sha": "bec15d751e5e24a08b02033c284b47941eab5590",
         "exact_utf8": true
       },
       {
@@ -9140,33 +9140,25 @@
       },
       {
         "path": "agent-work/lessons.md",
-        "sha": "34eeeda2cfdca050168597abbbe3213d4e03f761",
+        "sha": "b4e10da175d399911a3ce54b873c587d5fef1139",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
-        "sha": "b1c797b199625c9156aa38fbe5694c493674c463",
+        "path": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+        "sha": "0f9f365e08c6054080dd92fa7f7b1ca2dbd94e23",
         "exact_utf8": true
       }
     ],
-    "method": "Exact UTF8 GitHub readback; CAS branch updates",
+    "method": "Exact UTF8 GitHub readback; CAS updates",
     "research_latest_preserved": true,
     "foreign_claims_preserved": true,
     "other_backlog_tasks_preserved": true,
     "main_and_PR503_heads": {
-      "pr": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+      "pr503": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
       "main": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-      "wip": "91b5cbca31b92b3dbe4afc2813ba7e808e096430"
+      "wip": "af7fb8c23e949120930ea80e5bb1373f11c616ec"
     },
-    "latest_written_last": true,
-    "recovered_persistence_error": {
-      "at": "2026-11-14T05:32:27Z",
-      "service": "GitHub",
-      "operation": "create tree/commit for operations data",
-      "message": "GithubGraphQLAPIError: Something went wrong while executing your query",
-      "request_id": "83EC:B6921:46B20CB:DEE297F:6AF7F26A",
-      "resolution": "Read latest branch head, verify backlog/lessons/own claim unchanged, retry CAS on current head; no disable or owner approval required"
-    }
+    "latest_written_last": true
   },
   "current_functional_findings": [],
   "release_preview_responsible": "programmer",
@@ -9190,7 +9182,7 @@
     "review_verdict": "pending_new_exact_SHA"
   },
   "full_package_accepted": false,
-  "current_stage_code_status": "GEO2_actual_shore_mouth_query_mask_unmounted_not_activated",
+  "current_stage_code_status": "GEO2_bank_POI_candidates_unmounted_feature_dependencies_pending",
   "accepted_dependency_package": {
     "task_id": "HX-BL-051",
     "pr": 496,
@@ -9715,7 +9707,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/checks.json",
+  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/checks.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -10769,7 +10761,7 @@
   },
   "updated_on": "2026-11-14",
   "claim_ref": null,
-  "latest_programmer_result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "source_sha": "1c6cb9091cbd2b5310224cff09e535899824d873",
   "source_pr": 496,
   "owner_decision_required": false,
@@ -11213,7 +11205,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -11555,10 +11547,10 @@
     "result_path": "agent-work/results/2026-11-12T2302-analyst-ONE-MILE1-C02-C05.json",
     "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка."
   },
-  "substage": "GEO2-MOUTHS",
+  "substage": "GEO2-POI",
   "active_claim_ref": null,
   "bounded_implementation_complete": true,
-  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/score-evidence.json",
+  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/score-evidence.json",
   "ui_actual_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "full_feedback_resolved": false,
   "known_open_requirements": [
@@ -11742,7 +11734,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "last_result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -11878,35 +11870,35 @@
       }
     ]
   },
-  "last_operation_result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+  "last_operation_result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
   "previous_primary_before_GEO2_implementation": {
     "run_id": "2026-11-13T1104-analyst-ONE-MILE1-GEO2",
     "result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
     "status": "completed_GEO2_specification_programmer_ready"
   },
-  "wip_head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-  "wip_tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+  "wip_head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+  "wip_tree_sha": "e3d32a539346800e35770adde969392c77302950",
   "latest_GEO2_implementation": {
-    "run_id": "2026-11-14T0806-programmer-ONE-MILE1-GEO2",
+    "run_id": "2026-11-14T0837-programmer-ONE-MILE1-GEO2",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "GEO2-MOUTHS",
+    "substage": "GEO2-POI",
     "role": "programmer",
-    "status": "checkpoint_saved_GEO2_mouths_in_progress",
+    "status": "checkpoint_saved_GEO2_bank_POI_in_progress",
     "execution_running": false,
     "working_branch": "agent/hx-bl-051-geo2",
-    "wip_head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-    "wip_tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
-    "head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-    "tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+    "wip_head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+    "wip_tree_sha": "e3d32a539346800e35770adde969392c77302950",
+    "head_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+    "tree_sha": "e3d32a539346800e35770adde969392c77302950",
     "pr": 503,
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "pr_updated": false,
-    "result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-14T0806-ONE-MILE1-GEO2-continue.json",
-    "completed_claim_ref": "agent-work/claims/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+    "result_ref": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T0837-ONE-MILE1-GEO2-continue.json",
+    "completed_claim_ref": "agent-work/claims/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
     "next_role": "programmer",
-    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с 91b5cbca31b92b3dbe4afc2813ba7e808e096430: GEO2-POI — подготовить атомарное размещение только POI с подтверждённым river requirement и стабильным river/segment ref. Использовать existing detailGeography requirement provenance/physicalGrid identities+extents и finite water/shore backend. Выбрать минимальное смещение к exposed bank в том же6mile parent, сохранив известную сторону, ID, размер, связный footprint и все route entries. Unknown town requirement остаётся unknown/без автоматического переноса; measured polygon/locked anchor не переводить, no legal fit — poi_conflict без partial state. Не считать inside clearance из water helper расстоянием до exposed bank и не использовать river centerline как берег. После этого roads/crossings/masks, public16/history/dependency closure, UI/map/PNG во всех3режимах и свежая независимая проверка общегоSHA; текущий mouths backend unmounted, PR503/main не обновлять до целостного пакета.",
+    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с af7fb8c23e949120930ea80e5bb1373f11c616ec: следующий этап GEO2-DEPENDENCIES — связать bank/POI candidates с настоящими source requirement/physicalGrid identities и адаптацией зависимых дорог/переправ в одной атомарной prepare-фазе. Сохранить все7исходных crossing keys/types (4bridge/3ferry, legalF2ford только отдельный вариант), river/road refs, F, порядок и все подходы к перемещённому POI; nearest transverse contact считать по конечной водной полосе, без midpoint/perpendicular assumptions. Изменять только связанные участки дорог, сохранять остальные ID/класс/выходы. Подключить stable rapid/waterfall/crossing/river_start refs вместо явного feature_contact_pending. Merge POI candidates поID: unresolved/unchanged не удалять и не перемещать. Whole-cell/multicell paint mask поunion occupied cells, включаяdash/rails; markerне маскирует. Затем public16/history/dependency closure, фактический UI/PNG во всех3режимах и независимая проверка всего новогоSHA; текущий backend unmounted, PR503/main не публиковать.",
     "review_ready": false,
     "full_package_release_ready": false,
     "release_authorized": false
@@ -11952,106 +11944,106 @@
   "next_step_authorization": "approved_in_scope",
   "activation": false,
   "latest_GEO2_storage_verification": {
-    "data_commit_sha": "ca480716959f04d2711e08f9d4d756c48cc17104",
-    "final_data_commit_sha": "3990e5ac375bb9e8fba1445390a94622a3963aa7",
-    "source_commit_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
-    "source_tree_sha": "f2abf376ac3eac01fef2af59fddab08669c1b597",
+    "data_commit_sha": "afb423314a95d169a242eb950775f0abab6787af",
+    "final_data_commit_sha": "707c3c43a04b45bf46a10b908dc9ff243f4f0370",
+    "source_commit_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+    "source_tree_sha": "e3d32a539346800e35770adde969392c77302950",
     "source_readbacks": [
       {
         "path": "docs/geo2-work-in-progress.md",
-        "sha": "0ebae88ea29b24cb2829534c42956321f377c29f",
-        "byte_exact": true
+        "sha": "cc7fd23c08e53e8b786c623314c91627f58edc26",
+        "exact_utf8": true
       },
       {
-        "path": "src/geometryRefinementTerminalRoutes.ts",
-        "sha": "0c54375885fecd27bd73af65e377b46dd4786f8e",
-        "byte_exact": true
+        "path": "src/detailGeography.ts",
+        "sha": "e265b02710eb6c5d46c7b3c7ba80c830a20b6b7a",
+        "exact_utf8": true
       },
       {
         "path": "src/geometryRefinementShore.ts",
-        "sha": "03884c53d552f12cb918cd1de9226500c2d9ad2b",
-        "byte_exact": true
+        "sha": "bef8bbfe0ccaf202820dd4e138b1050ec04817f5",
+        "exact_utf8": true
       },
       {
-        "path": "src/geometryRefinementMouths.ts",
-        "sha": "2b80a1ce4d0f9fd2605d87f10f53cf907d5d947e",
-        "byte_exact": true
+        "path": "src/geometryRefinementBanks.ts",
+        "sha": "c27c4b303371dc52ded2b3a9bff017f9fed5ff0b",
+        "exact_utf8": true
+      },
+      {
+        "path": "src/geometryRefinementPois.ts",
+        "sha": "b523fb847c583e2536cbe4d18a2ac608af6acaac",
+        "exact_utf8": true
       },
       {
         "path": "test/geometryRefinementExits.test.mjs",
-        "sha": "84f0a2db7f963fc9b32eb2029a9595e8c7971334",
-        "byte_exact": true
+        "sha": "5b867446f74e7e89beaa76ad00c0ca6c8ebd20ce",
+        "exact_utf8": true
       },
       {
-        "path": "test/geometryRefinementShore.test.mjs",
-        "sha": "d4ec5785c9ddf2464c1a3c58379758fb277a1fa0",
-        "byte_exact": true
-      },
-      {
-        "path": "test/helpers/generation-harness.mjs",
-        "sha": "f480ff43b24af05085988230223186560950ba18",
-        "byte_exact": true
+        "path": "test/geometryRefinementPois.test.mjs",
+        "sha": "80a637c8f8113e72bd200c8933ba919ec0115514",
+        "exact_utf8": true
       }
     ],
     "data_readbacks": [
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/witness.mjs",
-        "sha": "bcf51dda041561142fb39e9e189b8a5cec762bcc",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/witness.mjs",
+        "sha": "f252cbf41ff4ad16887979205b00266cee969cc6",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/witness.json",
-        "sha": "7a4b8d146f71fb0122ce7931a34068d71eb30286",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/witness.json",
+        "sha": "c32528569f75e802b2e21890db1fa0146163ecb2",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/focused.log",
-        "sha": "c777183b60e13588c027c206d5586bb8dbba55e2",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/focused.log",
+        "sha": "b2f357de46eccc80e29007ed471eb2833f1fd862",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/initial-mouth-failure.log",
-        "sha": "1ee5cc1078908f09c6a14944b8db3d511219c7d5",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/aborted-check.log",
+        "sha": "d249e7a7ee0d59c679d1ffa23f459c7962e5a9d0",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/check.log",
-        "sha": "8536389ba20c976c96a0888405ba3f35991f9211",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/check.log",
+        "sha": "751683f2c50a488b973fa082b12453097f97bf99",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/checks.json",
-        "sha": "13e885222884a800e670f73cc8ee886df4bab9b8",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/checks.json",
+        "sha": "7fb7c9b33112238851958ed4304190b93682f02c",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/test-change-summary.json",
-        "sha": "c7e400842b63a3924d87fa53ae35e8339557c052",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/test-change-summary.json",
+        "sha": "3c478a6b0fb6767cd6ca9f5126eb86a7699e087d",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/score-evidence.json",
-        "sha": "432ffe3d7a814374c2e745e0f01ff7b855e63801",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/score-evidence.json",
+        "sha": "66d4a1f8776232cf75bbd13a42499ffa06822350",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/source-provenance.json",
-        "sha": "618f440e1b950ae7019dc8086d44a115bbe18632",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/source-provenance.json",
+        "sha": "0a72fc93412dfd6faf366706146de28ccb16eaf5",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/evidence/ONE-MILE1-GEO2-mouths-0806/integration-notes.md",
-        "sha": "d155ea4b668d47ce8c3e878a6eb4883377b28177",
+        "path": "agent-work/evidence/ONE-MILE1-GEO2-poi-0837/integration-notes.md",
+        "sha": "7d1d92d08d502f789179e57faf6373dbb77535ed",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/handoffs/2026-11-14T0806-ONE-MILE1-GEO2-continue.json",
-        "sha": "fc8e6c8a13dced6841d6c8a63cae6ad28480bf67",
+        "path": "agent-work/handoffs/2026-11-14T0837-ONE-MILE1-GEO2-continue.json",
+        "sha": "bc0b563da8d50fe0b9e65040bd8c686709c99b72",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/claims/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
-        "sha": "2548722e1376094b157757a195ed01c51407bca1",
+        "path": "agent-work/claims/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+        "sha": "bec15d751e5e24a08b02033c284b47941eab5590",
         "exact_utf8": true
       },
       {
@@ -12061,32 +12053,30 @@
       },
       {
         "path": "agent-work/lessons.md",
-        "sha": "34eeeda2cfdca050168597abbbe3213d4e03f761",
+        "sha": "b4e10da175d399911a3ce54b873c587d5fef1139",
         "exact_utf8": true
       },
       {
-        "path": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
-        "sha": "b1c797b199625c9156aa38fbe5694c493674c463",
+        "path": "agent-work/results/2026-11-14T0837-programmer-ONE-MILE1-GEO2.json",
+        "sha": "0f9f365e08c6054080dd92fa7f7b1ca2dbd94e23",
         "exact_utf8": true
       }
     ],
-    "method": "Exact UTF8 GitHub readback; CAS branch updates",
+    "method": "Exact UTF8 GitHub readback; CAS updates",
     "research_latest_preserved": true,
     "foreign_claims_preserved": true,
     "other_backlog_tasks_preserved": true,
     "main_and_PR503_heads": {
-      "pr": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+      "pr503": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
       "main": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-      "wip": "91b5cbca31b92b3dbe4afc2813ba7e808e096430"
+      "wip": "af7fb8c23e949120930ea80e5bb1373f11c616ec"
     },
-    "latest_written_last": true,
-    "recovered_persistence_error": {
-      "at": "2026-11-14T05:32:27Z",
-      "service": "GitHub",
-      "operation": "create tree/commit for operations data",
-      "message": "GithubGraphQLAPIError: Something went wrong while executing your query",
-      "request_id": "83EC:B6921:46B20CB:DEE297F:6AF7F26A",
-      "resolution": "Read latest branch head, verify backlog/lessons/own claim unchanged, retry CAS on current head; no disable or owner approval required"
-    }
+    "latest_written_last": true
+  },
+  "previous_primary_before_GEO2_bank_POI": {
+    "run_id": "2026-11-14T0806-programmer-ONE-MILE1-GEO2",
+    "result_ref": "agent-work/results/2026-11-14T0806-programmer-ONE-MILE1-GEO2.json",
+    "head_sha": "91b5cbca31b92b3dbe4afc2813ba7e808e096430",
+    "status": "checkpoint_saved_GEO2_mouths_in_progress"
   }
 }
