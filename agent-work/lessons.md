@@ -1006,3 +1006,8 @@ Source f522b356afadf947f5ff95ebfc8bc40f9616dbbf; evidence agent-work/evidence/ON
 ## 2026-11-14T22:12:44.679Z — GEO2 browser runtime capability
 
 At f522b356, explicit /usr/bin/chromium (156 Debian13) is present and selected by existing CHROMIUM_EXECUTABLE_PATH; both required browser commands now fail with socket() EPERM and SIGABRT before scenarios. Missing Playwright bundle and denied system-browser startup are distinct conditions. Reinstalling a browser is not evidence of permission restoration. Use a permitted runner for exact-SHA browser acceptance; continue approved source/UI/domain work independently. Build passed, source/test files unchanged; no product-score transition. Evidence: agent-work/evidence/GEO2-browser-runtime-20261115-0108/checks.json.
+
+
+## 2026-11-14T23:29:26.495Z — GEO2 retained-source projection
+
+At 8230c00dcda0e9c723278c1e71193f8b72bacf15, projecting only stable old region/river/road/crossing/body refs reproduces old fingerprint while returning stored choices literally. Shared graph/body refs, missing old IDs and changed authored inputs must not be silently filtered. A successful projection does not certify spatial independence: boundaryValidation=required and readyForApplication=false remain mandatory until mixed-interface/global physical4 integration. One distinct contract case reuses the existing53/31/7 fixture; no seed series. Evidence: agent-work/evidence/GEO2-scope-projection-20261115-0202/implementation.md.
