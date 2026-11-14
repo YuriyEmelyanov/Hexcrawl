@@ -1,0 +1,93 @@
+{
+  "experiment_id": "HX-RSR-EXP-WARHORN-GRID-SUITABILITY-v1",
+  "version": 1,
+  "status": "qualitative_only_reject_grid_to_GM_sessions_hours_conversion",
+  "id": "warhorn_grid_unit_validation",
+  "definition": "Test whether public scenario×timeslot presence marks identify scheduled tables, uniqueGMaccounts, conducted sessions or activityduration.",
+  "unit": "scenario_rows and occupied_scenario_slot_cells; namedGMrole per public campaign separately",
+  "period": "BridgingtheGap2026advertisedMay22–25, with selectedPbPwindowsMay26/27–Aug14; retrieved2026-11-14",
+  "geography_language": "Online event advertisedworldwide/multilingual; two checked campaign extractsEnglish; not a national census",
+  "population_or_sampling_frame": "Purposive completePFS1block of one retrieved publicgrid; two linked9-00campaign pages selected by accessible public references, not exhaustiveeventtablelist",
+  "availability_and_access": "Warhorngridfull_text; homeJoinnowwall/agendaempty; Paizoindexedmetadata+discussion, directgameplay403",
+  "deduplication": "Eventslug bridging-the-gap-2026; scenario code≠campaignID; differentpage tabs samecampaign; GM alias→account whereexplicit; sameaccount mayGMone andplayeranother.",
+  "biases": [
+    "Oneeventselection",
+    "Registration/access/index coverage",
+    "Preparedorganisedplayformat",
+    "Snapshotstaleness",
+    "Rolemixing and aliasinflation",
+    "Asynchronoussignupcolumns not sessionlength"
+  ],
+  "target_variable": "Resource suitability for bounded public role/activity evidence, not worldwideM/p_create",
+  "calibration_or_qualitative_only": "qualitative_only; no conversion/weight/numericratingproposal",
+  "uncertainty": [
+    "19marks mayhide multiple tables; gridnotfullGMroster",
+    "2publicGMhandles not2verifieduniquepeopleorannualGMs",
+    "Inactive/headerenddate do not provecompletion",
+    "No exactindividualgridcell↔campaignIDmapping established",
+    "No full gameplay read, no own-geography use observed"
+  ],
+  "validation_or_falsification": [
+    {
+      "case_id": "WH-V01",
+      "given": "13PFS1scenario rows in retrievedgrid",
+      "check": "Deduplicatecodes andcountXperrow",
+      "actual": {
+        "unique_rows": 13,
+        "occupied_cells": 19,
+        "special9_00_cells": 7
+      },
+      "result": "passed_raw_surface_inventory_only"
+    },
+    {
+      "case_id": "WH-V02",
+      "given": "Same9-00scenario has7occupiedcells and2selectedcampaignIDs",
+      "check": "Does one scenario equalone table/person?",
+      "actual": "No; scenariolevel grouping and campaign/tableidentity differ. Doesnotestablish7total tables.",
+      "result": "reject_row_to_table_or_GMconversion"
+    },
+    {
+      "case_id": "WH-V03",
+      "given": "CampaignheaderGMnoral andGMNowruz playedbynoral",
+      "check": "Can aliases countasadditionalmasters?",
+      "actual": "No; aliasexplicitlymaps tooneaccount.",
+      "result": "reject_alias_to_personconversion"
+    },
+    {
+      "case_id": "WH-V04",
+      "given": "Mike...R isGMinonecampaign, playerinother",
+      "check": "Can all rosteraccounts countasGMs?",
+      "actual": "No; recordrolepercampaign.",
+      "result": "reject_roster_to_GMconversion"
+    },
+    {
+      "case_id": "WH-V05",
+      "given": "Gridhas30minutePbPcolumns; organiser/calendar andcampaignenddates differ",
+      "check": "Can sumslotduration asactualplayhours or assumeMay25endsallactivity?",
+      "actual": "No; selectedPbPwindowrunslateMay–August; sourcecolumnsnotverifiedduration.",
+      "result": "reject_grid_to_session_hoursconversion"
+    },
+    {
+      "case_id": "WH-V06",
+      "given": "DatedJune/JulyGMprogressdiscussions andInactiveheaders",
+      "check": "Does pastschedule proveplayed/completed?",
+      "actual": "Progressdiscussionssupportactivity forcheckedcases; completionunknown; othergridcells remainannouncedonly.",
+      "result": "partial_activity_evidence_not_completioncensus"
+    }
+  ],
+  "numeric_effect_proposal_ref": null,
+  "active_numeric_method_changed": false,
+  "candidate_numeric_method": null,
+  "result": {
+    "raw_rows": 13,
+    "raw_cells": 19,
+    "selected_campaign_records": 2,
+    "distinct_public_GM_handles_in_selected_records": 2,
+    "verified_unique_people": null,
+    "completed_sessions": null,
+    "market_conversion": "rejected",
+    "usable_for": "Discover bounded named roles and primary discussion followups; no demand/prevalencecalibration."
+  },
+  "evidence_ref": "agent-work/research/market/PF1-organized-play-2026-11-14.json",
+  "rule_or_product_requirement": null
+}
