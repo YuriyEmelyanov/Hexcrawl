@@ -4,7 +4,8 @@ import fs from 'node:fs';
 import {prepareRefinementRivers} from '../src/geometryRefinementRivers.ts';
 import {refinementEdgeGraph,refinementVertexKey} from '../src/geometryRefinementGrid.ts';
 import {projectOneMile} from '../src/oneMile.ts';
-import {detailSourcePixelToWorld} from '../src/detailGeography.ts';
+import {normalizeRefinementRiverSource,prepareRefinementRiverNetwork} from '../src/geometryRefinementSource.ts';
+import {refinementWorldPoint} from '../src/geometryRefinementGrid.ts';
 const node=(key,x,y)=>({key,point:{x,y}}),seg=(edgeKey,from,to,riverId=1)=>({edgeKey,from,to,riverId,fullness:1});
 const cells=Array.from({length:7},(_,q)=>Array.from({length:7},(_,r)=>({q:q-3,r:r-3}))).flat();
 const a=node('a',-2,0),j=node('j',0,0),b=node('b',0,-2),c=node('c',2,0);
@@ -43,10 +44,48 @@ test('GEO2 river conflicts return no partial plan for cycles, aliases and unavai
 test('GEO2 retained zigzag world preserves all53 source segment IDs without new river joins',()=>{
  const world=JSON.parse(fs.readFileSync(new URL('fixtures/road-entry-zigzags.json',import.meta.url))),before=JSON.stringify(world);
  const available=projectOneMile(world.map.regions.flatMap(r=>r.hexes.map(cell=>({cell,landBiomeId:r.biomeId})))).map(c=>c.cell);
- const segments=world.map.rivers.flatMap(r=>r.vertexPath.slice(1).map((to,i)=>{const from=r.vertexPath[i],edgeKey=[from.key,to.key].sort().join('|'),sector=r.sectors.find(s=>s.edgeKeys.includes(edgeKey));assert.ok(sector);return {riverId:r.id,edgeKey,from:{key:from.key,point:detailSourcePixelToWorld(from)},to:{key:to.key,point:detailSourcePixelToWorld(to)},fullness:sector.fullness};}));
- assert.equal(segments.length,53);
- const r=prepareRefinementRivers({seed:423493684,origin:{x:0,y:0},cells:available,segments});assertTopology(r,segments,available);
- assert.deepEqual(prepareRefinementRivers({seed:423493684,origin:{x:0,y:0},cells:[...available].reverse(),segments:[...segments].reverse()}),r);
+ const origin={x:0,y:0},marks={rapids:new Set(),waterfalls:new Set()};
+ const source=normalizeRefinementRiverSource({rivers:world.map.rivers,origin,marks});assert.equal(source.status,'prepared');
+ const segments=source.segments;assert.equal(segments.length,53);
+ const prepared=prepareRefinementRiverNetwork({seed:423493684,origin,cells:available,rivers:world.map.rivers,marks});
+ assert.equal(prepared.status,'prepared');const r=prepared.rivers;assertTopology(r,segments,available);
+ assert.equal(prepared.boundaries.length,world.map.rivers.reduce((n,r)=>n+2*r.sectors.length,0));
+ for(const s of source.sectors){const original=world.map.rivers.find(r=>r.id===s.riverId).sectors.find(v=>v.id===s.sectorId);assert.equal(s.assignedRegionId,original.assignedRegionId??null);}
+ const reordered=world.map.rivers.toReversed().map(r=>({...r,sectors:r.sectors.toReversed().map(s=>({...s,edgeKeys:s.edgeKeys.toReversed()}))}));
+ assert.deepEqual(prepareRefinementRiverNetwork({seed:423493684,origin,cells:[...available].reverse(),rivers:reordered,marks}),prepared);
  assert.deepEqual(new Set(r.paths.map(p=>JSON.stringify([p.riverId,p.sourceEdgeKey]))),new Set(segments.map(p=>JSON.stringify([p.riverId,p.edgeKey]))));
  assert.equal(JSON.stringify(world),before);
+});
+
+// A directed synthetic diameter, not a claim about generated-world mark counts.
+function sourceDiameter(){
+ const scale=Math.sqrt(3)*28/6,up={key:'z-up',x:0,y:-scale/Math.sqrt(3)},down={key:'a-down',x:0,y:scale/Math.sqrt(3)},edgeKey=[up.key,down.key].sort().join('|');
+ const river={id:1,regionId:4,vertexPath:[up,down],sectors:[{id:'one',riverId:1,sectorIndex:1,vertexPath:[up,down],edgeKeys:[edgeKey],startVertexKey:up.key,endVertexKey:down.key,startReason:'river_start',endReason:'region_boundary',assignedRegionId:4,fullness:2}]};
+ return {rivers:[river],origin:{x:12,y:-7},marks:{rapids:new Set([edgeKey]),waterfalls:new Set([down.key])}};
+}
+test('GEO2 source bridge rejects sector direction, coverage and mark-reference contradictions atomically',()=>{
+ const data=sourceDiameter(),before=JSON.stringify(data.rivers),source=normalizeRefinementRiverSource(data);
+ assert.equal(source.status,'prepared');assert.equal(source.segments[0].from.key,'z-up');assert.equal(source.segments[0].to.key,'a-down');assert.equal(source.segments[0].fullness,2);
+ const changed=structuredClone(data);changed.rivers[0].name='ignored';assert.deepEqual(normalizeRefinementRiverSource(changed),source);
+ for(const change of [r=>{r.sectors[0].vertexPath.reverse();r.sectors[0].startVertexKey='a-down';r.sectors[0].endVertexKey='z-up';},r=>r.sectors.push({...r.sectors[0],id:'duplicate',sectorIndex:2}),r=>r.sectors[0].edgeKeys[0]='missing',r=>r.sectors[0].vertexPath[0]={...r.sectors[0].vertexPath[0],x:9}]){
+  const invalid=structuredClone(data);change(invalid.rivers[0]);const result=normalizeRefinementRiverSource(invalid);assert.equal(result.status,'error');assert.equal(result.segments,undefined);assert.ok(result.refs.length);
+ }
+ for(const marks of [{rapids:new Set(['foreign']),waterfalls:new Set()},{rapids:new Set(),waterfalls:new Set(['foreign'])}])assert.equal(normalizeRefinementRiverSource({...data,marks}).code,'feature_conflict');
+ const hidden=normalizeRefinementRiverSource({...data,marks:{rapids:new Set(),waterfalls:new Set()}});assert.equal(hidden.rapids.length,0);assert.equal(hidden.waterfalls.length,0);assert.notEqual(hidden.sourceSignature,source.sourceSignature);
+ assert.equal(JSON.stringify(data.rivers),before);
+});
+test('GEO2 marks use directed arc position on bent refined paths and preserve sector exit refs',()=>{
+ const data=sourceDiameter(),input={...data,seed:42,cells:[{q:0,r:0}]},r=prepareRefinementRiverNetwork(input);
+ assert.equal(r.status,'prepared',JSON.stringify(r));const path=r.rivers.paths[0],points=path.vertices.map(v=>refinementWorldPoint(v,data.origin));assert.equal(points.length,4);
+ // Independent half-length interpolation: three equal physical edge steps.
+ const rapid=r.rapids[0];assert.equal(rapid.sourceEdgeKey,data.rivers[0].sectors[0].edgeKeys[0]);assert.equal(rapid.fraction,.5);
+ assert.ok(Math.hypot(rapid.point.x-(points[1].x+points[2].x)/2,rapid.point.y-(points[1].y+points[2].y)/2)<1e-10);
+ const checkTangent=(actual,a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy);assert.ok(Math.abs(actual.x-dx/length)<1e-10);assert.ok(Math.abs(actual.y-dy/length)<1e-10);};
+ checkTangent(rapid.tangent,points[1],points[2]);const fall=r.waterfalls[0];assert.deepEqual(fall.point,points.at(-1));assert.equal(fall.sourceRef,'vertex:a-down');assert.equal(fall.incidences.length,1);assert.equal(fall.incidences[0].flow,'entering');assert.equal(fall.incidences[0].fraction,1);checkTangent(fall.incidences[0].tangent,points.at(-2),points.at(-1));
+ const boundary=r.boundaries.find(b=>b.end==='end');assert.equal(boundary.sectorId,'one');assert.equal(boundary.reason,'region_boundary');assert.equal(boundary.assignedRegionId,4);assert.equal(boundary.sourceNodeKey,'a-down');assert.deepEqual(boundary.point,fall.point);
+ assert.equal(r.completeGeometryPlan,false);assert.ok(Object.isFrozen(rapid.point));assert.ok(Object.isFrozen(fall.incidences));
+ assert.deepEqual(prepareRefinementRiverNetwork(input),r);
+ // The same undirected geometry with explicit reversed source flow reverses tangents.
+ const reverse=structuredClone(data);const river=reverse.rivers[0],s=river.sectors[0];river.vertexPath.reverse();s.vertexPath=[...river.vertexPath];s.startVertexKey='a-down';s.endVertexKey='z-up';reverse.marks.waterfalls=new Set(['z-up']);
+ const reversed=prepareRefinementRiverNetwork({...reverse,seed:42,cells:input.cells});assert.equal(reversed.status,'prepared');assert.equal(reversed.rivers.paths[0].fromNode,'a-down');assert.equal(reversed.rivers.paths[0].toNode,'z-up');assert.equal(reversed.waterfalls[0].incidences[0].flow,'entering');assert.ok(reversed.rapids[0].tangent.y<0);assert.ok(rapid.tangent.y>0);
 });

@@ -31,3 +31,25 @@ node incidence. A center-cell diameter exercises both seeded alternatives.
 Terminal splitting, physical water envelopes, marks and actual boundary exits
 still need full GeometryPlan integration; nearest vertex ports alone are not
 acceptance of those contracts. No new controls or public save format activated.
+
+This source-adapter checkpoint reuses the existing retained-world case rather
+than adding another fixture run. Two additional logical Node cases are needed:
+sector/path contradictions must reject before routing, and resolved rapid/
+waterfall marks must keep directed arc correspondence on bent fine paths.
+Existing grid/routing tests and manual feature-override tests do not check this
+bridge. The adapter consumes the existing resolved regionMarkKeys sets; it must
+not reroll feature eligibility or infer direction from lexically sorted keys.
+Boundary reason/sector references are retained, but mapping them to ports is not
+yet the geometric boundary-exit/shore constraint required for activation.
+
+The unmounted source bridge now validates exact sector/path directed coverage,
+fullness and region ownership, then retains start/end reasons and linked feature
+refs. Contradictory or stale refs reject before routing. Already resolved rapid
+and waterfall sets are required from the existing mark resolver; they are not
+regenerated. Rapid centers follow normalized arc position with a downstream
+unit tangent; waterfalls retain one vertex identity and every directed incident
+segment (no arbitrary river choice at a junction). Synthetic feature evidence is
+separate from the original53-segment world, whose diagnostic uses empty mark
+sets explicitly. Actual resolver/UI wiring and geometric terminal/boundary
+constraints are still pending; stored boundary provenance is not proof of a
+continuable fine-map exit.
