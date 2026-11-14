@@ -1,0 +1,58 @@
+{
+  "task_id": "HX-BL-051",
+  "substage": "GEO2-DEPENDENCIES",
+  "base_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+  "head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+  "fixture": "test/fixtures/road-entry-zigzags.json",
+  "fixture_sha256": "cb2333bc60a64dcdffe44f49bbba680b6f496afc6f7a0d46cb38d56a26f52d01",
+  "source": "Actual App import/hydrology/width/lake preparation from prior mouths backend, no new world generation",
+  "actual": {
+    "source_segments": 53,
+    "fine_intervals": 432,
+    "open_exits": 4,
+    "road_ids": 7,
+    "road_source_parts": 31,
+    "crossings": 7,
+    "bridge": 4,
+    "ferry": 3,
+    "untyped_water_intersections": 0,
+    "actual_POI_moves_supplied": 0,
+    "actual_mask_count": 0,
+    "footprint_mask_scope": "No actual footprint list supplied in this retained-world road witness; mask proof is the explicit synthetic occupied-cell test."
+  },
+  "ford_variant": {
+    "explicit_not_original": true,
+    "source_key": "2:-7,2|-8,2:3",
+    "fullness": 2,
+    "original_kind": "bridge",
+    "result_kind": "ford"
+  },
+  "method": {
+    "source_incidence": "Same roadId/regionId/segmentKey/fromNode/toNode/kind; all incident approaches of a moved source parent share its new detailed anchor",
+    "crossing_geometry": "Global finite water intervals merge across road pieces; alternating road/river rays establish transverse contact including corners, preserving source key/type/F/order",
+    "banks": "Finite water union query endpoints, no infinite width/sine; bank path retains road vertices inside wet span",
+    "masks": "Exact union of occupied1mile cells per outlined POI, holes retained/shared edges removed; marker excluded; data road remains",
+    "canonical_order": "Explicit source-key/numeric order, no localeCompare/name/viewport ties",
+    "candidate_failure": "No partial roads/crossings on missing/stale/ambiguous/untyped/forbidden/clipped contacts",
+    "search_limit": "Direct source-incidence/footprint-entry candidates only, not complete constrained land path search"
+  },
+  "finite_work_bounds": {
+    "source_road_ids": 4096,
+    "source_parts": 24576,
+    "crossings": 4096,
+    "river_steps": 24576,
+    "combined_intersection_guard": 2000000,
+    "mask_owners": 4096,
+    "body_cells": 4096,
+    "interpretation": "Technical finite-work guard, not an approved product-scale performance threshold or impossible-path proof"
+  },
+  "pending": [
+    "Constrained land-route fallback and feature-specific POI refs",
+    "Actual accepted-owner/requirement/physicalGrid adapter and merge of all unchanged/unresolved footprints",
+    "Full-stroke/dash/bridge-rail mask application in map/PNG, not merely centerline spans",
+    "Public16/history/source-edit closure/preview/UI/independent full-SHA review"
+  ],
+  "active_source_generation_changed": false,
+  "active_UI_changed": false,
+  "accepted_save_or_rng_changed": false
+}

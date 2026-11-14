@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T0912-programmer-ONE-MILE1-GEO2",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-DEPENDENCIES",
+  "role": "programmer",
+  "status": "checkpoint_saved_GEO2_road_crossing_candidates_in_progress",
+  "execution_running": false,
+  "working_branch": "agent/hx-bl-051-geo2",
+  "wip_head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+  "wip_tree_sha": "b97ccd4b215786410c7ef7ed5271b7510e1e3e00",
+  "head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+  "tree_sha": "b97ccd4b215786410c7ef7ed5271b7510e1e3e00",
+  "pr": 503,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "pr_updated": false,
+  "result_ref": "agent-work/results/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T0912-ONE-MILE1-GEO2-continue.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json",
+  "next_role": "programmer",
+  "next_step": "Программист продолжает HX-BL-051/ONE-MILE1-GEO2 с 359f1c1c1243ebf3d293ab49a77abec3895f142d: этап GEO2-PLAN — собрать единый prepare-кандидат из настоящих source requirement/physicalGrid identities, рек, POI, дорог и7переправ. Текущий source-incidence road candidate уже сохраняет31исходный участок/7crossing refs, но не выполняет полный обход препятствий: добавить ограниченный поиск легального пути для отклонённого прямого подхода, без новых пересечений воды и без объявления route_conflict доказательством невозможности. Подключить stable rapid/waterfall/crossing/river_start refs вместо feature_contact_pending. Merge POI candidates поID, сохраняя literal unresolved/unchanged и все подходы одного Road.id. Передать настоящие merged footprints в mask phase; clipping всехstroke/dash/rails/map/PNG пообщим union-маскам не заменять обрезкой оси. Затем public16/physical4, sourceFingerprint/actual choices, dependency closure иоднаUndo/Redo, существующийpreview/Apply/Cancel/accepted-onlyexport, фактический6/1before-after и независимая проверка целогоSHA. Без активации частичного слоя, main/PR503/публикацию пока не менять.",
+  "review_ready": false,
+  "full_package_release_ready": false,
+  "release_authorized": false,
+  "base_sha": "af7fb8c23e949120930ea80e5bb1373f11c616ec",
+  "started_at": "2026-11-14T06:13:34.896Z",
+  "completed_at": "2026-11-14T06:46:51.177Z",
+  "role_selection_reason": "Approved unfinished GEO2 dependencies; previous own POI checkpoint completed,051unclaimed, no ready independent full-package review or current reviewer findings. Preserve foreign claims.",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "implemented": [
+    "Bounded immutable source-incidence road candidates retaining road/region/segment/kind/node references; shared new POI node retains every incident approach",
+    "Finite water intervals/transverse corner classification and one-to-one crossing source key/type/F/order/bank correspondence, including river-corner bank paths",
+    "Whole-cell/multicell masks from occupied1mile cell unions with holes/shared edges, marker exclusion and centerline paint spans without deleting data paths"
+  ],
+  "actual_evidence": {
+    "source_segments": 53,
+    "fine_intervals": 432,
+    "open_exits": 4,
+    "road_ids": 7,
+    "source_road_parts": 31,
+    "original_crossings": 7,
+    "bridge": 4,
+    "ferry": 3,
+    "new_untyped_water_intersections": 0,
+    "source_road_axes_retained": true,
+    "actual_POI_moves_supplied": 0,
+    "actual_footprint_list_supplied": false,
+    "actual_mask_count": 0,
+    "ford_variant": {
+      "explicit_not_original": true,
+      "source_key": "2:-7,2|-8,2:3",
+      "fullness": 2,
+      "original_kind": "bridge",
+      "result_kind": "ford"
+    },
+    "positive_POI_mask_example": "Synthetic same-Road.id two-approach example and occupied-cell ring/marker cases, not an actual accepted-map movement or PNG proof"
+  },
+  "limitations": [
+    "Unmounted backend, no complete GeometryPlan/accepted map/public16/history/UI/PNG acceptance",
+    "Source-incidence candidate only: blocked direct approaches may refuse despite a possible detour; complete constrained road search and aggregate cancellation budget pending",
+    "Feature-specific rapid/waterfall/crossing/river_start POI refs and actual accepted-owner/requirement/physicalGrid adapter still pending",
+    "Mask body/centerline queries do not certify full-stroke/dash/bridge-rail or PNG clipping",
+    "Fresh independent full-SHA review and separate owner exact-package publication approval still required"
+  ],
+  "negative_or_incomplete_disposition": {
+    "unsafe_synthetic_paths": "IllegalF3ford, untyped/grazing water, crossing-order change and stale/outside POI entry reject atomically without roads",
+    "algorithm_limit": "A rejected direct candidate is not proof that all legal land detours are impossible",
+    "missing_evidence": "No actual eligible POI move/footprint mask or live rendering is claimed from this fixture",
+    "current_package_decision": "Not review_ready, activate or publish; continue approved GEO2-PLAN work"
+  },
+  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-dependencies-0912/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-dependencies-0912/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-dependencies-0912/score-evidence.json",
+  "source_provenance_ref": "agent-work/evidence/ONE-MILE1-GEO2-dependencies-0912/source-provenance.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-14T06:12:35.189Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-14T06:45:13.127Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Point-in-time observations only; not a guarantee against later service disable. Schedule/prompt/environment unchanged."
+  },
+  "validation": {
+    "npm_run_check": "passed",
+    "node": {
+      "executed": 404,
+      "passed": 404,
+      "failed": 0,
+      "skipped": 0
+    },
+    "build": "passed",
+    "code_readbacks": [
+      {
+        "path": "docs/geo2-work-in-progress.md",
+        "sha": "9d0587a5e080321f7f6d383446d68cb7119b350f",
+        "exact_utf8": true
+      },
+      {
+        "path": "src/geometryRefinementShore.ts",
+        "sha": "3bf75a9400dac03bece9344ebc8a94846914f52f",
+        "exact_utf8": true
+      },
+      {
+        "path": "src/geometryRefinementRoads.ts",
+        "sha": "7d28ed29d9fb6bc8ef9f013ea042b67361b86b7b",
+        "exact_utf8": true
+      },
+      {
+        "path": "test/geometryRefinementExits.test.mjs",
+        "sha": "4c7e1b800937aa1f196bc156bd6bf57ed71e9599",
+        "exact_utf8": true
+      },
+      {
+        "path": "test/geometryRefinementRoads.test.mjs",
+        "sha": "d9cc7b559434b11aa9b3111fab95712326948e02",
+        "exact_utf8": true
+      }
+    ],
+    "witness_ref": "agent-work/evidence/ONE-MILE1-GEO2-dependencies-0912/witness.json",
+    "accepted_save_and_rng_unchanged": true,
+    "browser_or_rng_browser_acceptance": false
+  },
+  "full_task_complete": false,
+  "activation": false,
+  "main_changed": false,
+  "published": false,
+  "product_score_changed": false,
+  "ui_changed": false,
+  "ui_actual_pending_for_full_GEO2": true,
+  "independent_review_performed": false,
+  "claim_disposition": "Only own0912claim completed; foreign claims and results preserved",
+  "authority_status": "Continue already approved GEO2 scope; no exact-package publication permission",
+  "owner_decision_required_for_next_step": false,
+  "operation_errors": [
+    {
+      "at": "2026-11-14T06:47:14Z",
+      "service": "GitHub",
+      "operation": "operations data tree/commit",
+      "message": "GithubGraphQLAPIError: Something went wrong while executing your query",
+      "request_id": "E2B4:18AFFA:2CBEFA4:8D2C01A:6AF803F1",
+      "resolution": "Read fresh branch and confirm source backlog/lessons/own claim unchanged, then retry CAS; transient error did not disable team"
+    }
+  ]
+}
