@@ -1,0 +1,9 @@
+# GEO2 upstream river work hook
+
+Base 466c36aec1be90e652a54141e9441a3000ddc918; exact head e1c00e4cdcaed2d5d1047ae535bebf560619fa52, tree d4778daf83c14ac422df0e00eedf137467f06b08.
+
+Optional consumeWork propagates through prepareRefinementRiverNetwork into river skeleton corridor enumeration, fine graph reservation, port sorting/allocation and BFS/DAG route work. Default geometry/output is unchanged. prepare_incomplete_budget and prepare_cancelled propagate to the caller, including from existing invalid-input catch boundaries; no partial river candidate is returned. Existing confluence test verifies exact sufficient logical budget, late exhaustion, inner cancellation and unchanged source; retained53-segment adapter verifies forwarding with limit1. These are two extended existing cases among five, not new permanent tests.
+
+The callback is groundwork for upstream aggregate integration, not a completed all-phase controller: source normalization, terminal/shore/finite water/mouth work, composition sharing and application transaction remain pending. Black-box reservation units are logical accounting, not CPU/ms/subscription consumption. No active UI/generation handler changed; completeGeometryPlan remains false. Known feature-specific POI/river-start constraints and final public16/physical4/choices/Q01/history/UI/PNG remain pending. Current six model1.2 criteria stay unknown/unverified with no award. Full exact-SHA independent review and separate owner release permission remain required.
+
+Next: Программист продолжает HX-BL-051/GEO2: подключить единый счётчик к нормализации, terminal/shore/water/mouth и композиции; завершить feature-specific POI/исток, GeometryPlan/public16/physical4, Q01/историю и Apply/UI/PNG по GEO2-v2. Затем независимая проверка полного точного SHA и отдельное разрешение публикации.
