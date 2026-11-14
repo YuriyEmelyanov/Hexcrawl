@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-14T0157-programmer-ONE-MILE1-GEO2",
+  "run_id": "2026-11-14T0304-programmer-ONE-MILE1-GEO2",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "checkpoint_saved_GEO2_river_candidate_in_progress",
+  "status": "checkpoint_saved_GEO2_source_marks_in_progress",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -55,10 +55,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
   "spec_version": "GEO2-v1",
-  "result_path": "agent-work/results/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json",
+  "result_path": "agent-work/results/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "Продолжить утверждённую GEO2 с agent/hx-bl-051-geo2 @cd4249d6e70099c3581eb1c5882824a6a8443b96. Речной preparer теперь даёт53связанных пути/55sourceузлов и резервирует подходы кслияниям, но это не полный GeometryPlan. Проверить направлениепотока по реальнымsectorrefs, terminal/boundary ports и rapid/waterfall correspondence; устранить ограничение последовательного распределения/оптимальности при необходимости. Затем единый prepare для river-requiredPOI в томже6parent, roads/crossings с finitewaterenvelopes и actual lake mouths, public16/physical4, preview/apply/cancel/UndoRedo и фактический UI. Не монтировать river-only кандидат; старый PR503 остаётся3344159 до целостной интеграции. После G201–G210 и проверок — независимыйreview точного новогоSHA. Новое согласованиестарта не нужно; публикация запрещена.",
+  "next_step": "Программист продолжает HX-BL-051/ONE-MILE1/GEO2 с f92bb54c3405aa4aadfafb69ee6d58ca10227bfb: следующий ограниченный этап — terminal/boundary ports. Использовать нормализованные реальные sector refs, отличать внутренние границы секторов от открытых выходов карты; добавить допустимые точки на fine-рёбрах для degree1 terminals и сохранить continuable source exit refs без новых слияний/потери участков. Проверяемый результат: на том же53-segment fixture и ограниченных конфликтных примерах сохраняются направления/F/IDs, общие узлы/отметки и атомарные ошибки. Затем продолжить единую геометрию POI/roads/crossings/envelopes/mouths, public16/history/UI. River-only кандидат не включать; PR503 остаётся3344159 до целостной интеграции. Независимая проверка — после полного G201–G210 новогоSHA; разрешения публикации нет.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -125,8 +125,8 @@
   "evidence_path": "agent-work/previews/ONE-MILE1-C02-C05-P1",
   "branch_name": "agent/hx-bl-051-one-mile1",
   "pr": 503,
-  "head_sha": "cd4249d6e70099c3581eb1c5882824a6a8443b96",
-  "tree_sha": "4358b603f8913a81a1f811043ac1aa04cede20e5",
+  "head_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+  "tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
   "checks_status": "official_CI_and_independent_review_accepted",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43215219149",
   "review_verdict": "reopened_owner_corrections_prior_acceptance_historical",
@@ -254,23 +254,23 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-13T22:58:25.792Z",
+      "checked_at": "2026-11-14T00:06:33.967Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-13T23:20:55.952Z",
+      "checked_at": "2026-11-14T00:24:54.445Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "restoration": {
       "performed": false,
-      "reason": "Both actualobservations enabled"
+      "reason": "Both actual observations enabled"
     },
     "errors": [],
-    "scope": "Point-in-time checks only, not a guarantee against later service disable. Same task,prompt,schedule unchanged."
+    "scope": "Point-in-time checks only; not a guarantee against later service disable. Same task, prompt and schedule unchanged."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_insufficient_evidence_whole_grades",
@@ -872,7 +872,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-13T23:21:41.568Z",
+  "updated_at": "2026-11-14T00:26:02.662Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1437,7 +1437,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-14T0157-ONE-MILE1-GEO2-continue.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T0304-ONE-MILE1-GEO2-continue.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -2289,7 +2289,7 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-rivers-0157/test-change-summary.json",
+  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-source-0304/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-OM-REV-001-1200/programmer-score-evidence1.2.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
@@ -4880,25 +4880,29 @@
   },
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
-    "run_id": "2026-11-13T0701-programmer-ONE-MILE1-WR1",
+    "run_id": "2026-11-14T0304-programmer-ONE-MILE1-GEO2",
+    "role": "programmer",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "WR1",
-    "role": "programmer",
-    "status": "completed_WR1_review_ready",
+    "substage": "GEO2",
+    "status": "checkpoint_saved_GEO2_source_marks_in_progress",
     "execution_running": false,
-    "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
-    "tree_sha": "1b782342aad359487fe35c9050cff7a78c4fb7b5",
-    "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-13T0701-ONE-MILE1-WR1-review.json",
-    "claim_ref": null,
-    "completed_claim_ref": "agent-work/claims/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
-    "review_ready": true,
-    "independent_accepted": false,
+    "working_branch": "agent/hx-bl-051-geo2",
+    "wip_head_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+    "wip_tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
+    "head_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+    "tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
+    "pr": 503,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "pr_updated": false,
+    "result_ref": "agent-work/results/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T0304-ONE-MILE1-GEO2-continue.json",
+    "next_role": "programmer",
+    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1/GEO2 с f92bb54c3405aa4aadfafb69ee6d58ca10227bfb: следующий ограниченный этап — terminal/boundary ports. Использовать нормализованные реальные sector refs, отличать внутренние границы секторов от открытых выходов карты; добавить допустимые точки на fine-рёбрах для degree1 terminals и сохранить continuable source exit refs без новых слияний/потери участков. Проверяемый результат: на том же53-segment fixture и ограниченных конфликтных примерах сохраняются направления/F/IDs, общие узлы/отметки и атомарные ошибки. Затем продолжить единую геометрию POI/roads/crossings/envelopes/mouths, public16/history/UI. River-only кандидат не включать; PR503 остаётся3344159 до целостной интеграции. Независимая проверка — после полного G201–G210 новогоSHA; разрешения публикации нет.",
+    "review_ready": false,
     "full_package_release_ready": false,
-    "next_role": "reviewer",
-    "next_step": "Проверяющий со свежим отдельным агентом независимо проверяет PR503 SHA 3344159406c3619bc3903e7185f7b0a5c4d13de5 tree1b782342aad359487fe35c9050cff7a78c4fb7b5 по GEO1-WR1 WR01–05 и совместным регрессиям C02/C05/OM01–14. Сверяет shared visible width, F1–5 ratio6, действительные gap/ford/rails при новой полосе, PNG opacity/dash/rail/label parity,53 DOM segments, native6 pixelidentity1500/390, JSON/IDs/RNG/author edits и реальный1500/390/320 UI. Проверяет необходимость и чувствительность2 изменённых Node и2 browser cases (без роста набора), отдельно ограничение текущих перпендикулярных внутренних crossings. Записывает независимый score_assessment1.2 по5criterion_ids. При замечаниях — точные исправления программисту; при принятии — только boundedWR1, не fullHX-FB-023. GEO-D01/калибровка/устья/береговыеPOI/размергородка остаются открытыми. До полного пакета и отдельного решения владельца не merge/deploy.",
-    "release_authorized": false
+    "release_authorized": false,
+    "completed_claim_ref": "agent-work/claims/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json"
   },
   "latest_concurrent_worker_observation": {
     "run_id": "2026-11-04-developer-E5-active-worker-observation-1800",
@@ -5912,7 +5916,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "approved_GEO2_continue_no_release",
+  "authority_status": "Approved GEO2 implementation continues; exact package publication not authorized",
   "analysis_baseline_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
   "analysis_baseline_tree": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -6370,7 +6374,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json",
+  "result_ref": "agent-work/results/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7735,7 +7739,7 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json",
+  "current_role_result": "agent-work/results/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
   "current_stage_score_assessment_status": "incomplete_package_unverified_no_grade_claim",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
   "execution_running": false,
@@ -8382,22 +8386,29 @@
   "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "pr_updated": false,
   "execution_routing": {
-    "run_id": "2026-11-12T1400-reviewer-ONE-MILE1",
+    "run_id": "2026-11-14T0304-programmer-ONE-MILE1-GEO2",
+    "role": "programmer",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "role": "reviewer",
-    "status": "completed_accepted_release_preview_pending",
+    "substage": "GEO2",
+    "status": "checkpoint_saved_GEO2_source_marks_in_progress",
     "execution_running": false,
-    "result_ref": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-12T1400-ONE-MILE1-release-preview.json",
-    "claim_ref": null,
-    "completed_claim_ref": "agent-work/claims/2026-11-12T1400-reviewer-ONE-MILE1.json",
-    "head_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
-    "tree_sha": "ec3fbcab8bb976cdd189f82f1b21bf264f23e7db",
-    "independent_accepted": true,
+    "working_branch": "agent/hx-bl-051-geo2",
+    "wip_head_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+    "wip_tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
+    "head_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+    "tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
+    "pr": 503,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "pr_updated": false,
+    "result_ref": "agent-work/results/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T0304-ONE-MILE1-GEO2-continue.json",
     "next_role": "programmer",
-    "next_step": "Программист по утверждённой HX-BL-051 готовит и предъявляет фактический release walkthrough: опубликованный main1962fb9a835a9c310e55c1a09415fe180f22cca9 → принятый PR503d41911b8d7c2248f115b182923350dc8d08c0a48 на одной карте, desktop и узкий экран, выбор1мили/локальное чтение/правка/отмена и известные ограничения. Код и SHA не менять; если SHA меняется — новая независимая проверка. После готового показа — отдельное разрешение владельца на этот конкретный пакет. До него main не сливать и не публиковать.",
-    "release_authorized": false
+    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1/GEO2 с f92bb54c3405aa4aadfafb69ee6d58ca10227bfb: следующий ограниченный этап — terminal/boundary ports. Использовать нормализованные реальные sector refs, отличать внутренние границы секторов от открытых выходов карты; добавить допустимые точки на fine-рёбрах для degree1 terminals и сохранить continuable source exit refs без новых слияний/потери участков. Проверяемый результат: на том же53-segment fixture и ограниченных конфликтных примерах сохраняются направления/F/IDs, общие узлы/отметки и атомарные ошибки. Затем продолжить единую геометрию POI/roads/crossings/envelopes/mouths, public16/history/UI. River-only кандидат не включать; PR503 остаётся3344159 до целостной интеграции. Независимая проверка — после полного G201–G210 новогоSHA; разрешения публикации нет.",
+    "review_ready": false,
+    "full_package_release_ready": false,
+    "release_authorized": false,
+    "completed_claim_ref": "agent-work/claims/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json"
   },
   "last_team_coordination": {
     "run_id": "2026-11-10T0300-strategist-release-routing",
@@ -8837,10 +8848,53 @@
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
   "last_completed_run_id": "2026-11-14T0157-programmer-ONE-MILE1-GEO2",
   "storage_verification": {
-    "data_commit_sha": "7dfe490aeb255c7c5ffe927663d965f84df60bab",
-    "proof_commit_sha": "413823b4b4253991e66bcb7f013a7039d68529c2",
-    "verified_files": 17,
-    "source_remote_readback_verified": true,
+    "data_commit_sha": "eafba710fffacaf0bd18a1b1667604f4c8742e2e",
+    "checks_commit_sha": "0adc3df5f139e8342a708413eb486907e78f248c",
+    "source_code_commit_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+    "source_code_tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
+    "source_readback": [
+      {
+        "path": "src/geometryRefinementSource.ts",
+        "sha": "64543110ac516d3951c79294eed4ef12dfb288e8",
+        "exact": true
+      },
+      {
+        "path": "test/geometryRefinementRivers.test.mjs",
+        "sha": "ee3c7c0fe2158c1e1b54cfa8135c0f41c6c6f4e8",
+        "exact": true
+      },
+      {
+        "path": "docs/geo2-work-in-progress.md",
+        "sha": "abc334f918e3c59a22ab04cfefb120464db93570",
+        "exact": true
+      }
+    ],
+    "verified_files": [
+      {
+        "path": "agent-work/results/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
+        "sha": "124416bd596692e3261a80d4e12f647da2d1ff37",
+        "exact": true
+      },
+      {
+        "path": "agent-work/handoffs/2026-11-14T0304-ONE-MILE1-GEO2-continue.json",
+        "sha": "54db8e0e73ef74728245a4224f106f7a4d6259d7",
+        "exact": true
+      },
+      {
+        "path": "agent-work/claims/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
+        "sha": "c5460b2dae39ecb16ae4af055560843255b5f752",
+        "exact": true
+      },
+      {
+        "path": "agent-work/backlog.json",
+        "exact": true
+      },
+      {
+        "path": "agent-work/lessons.md",
+        "sha": "74a8811b801974d0dcf4659705fdd1a58b6a0de7",
+        "exact": true
+      }
+    ],
     "latest_written_last": true
   },
   "current_functional_findings": [],
@@ -8865,7 +8919,7 @@
     "review_verdict": "pending_new_exact_SHA"
   },
   "full_package_accepted": false,
-  "current_stage_code_status": "GEO2_river_candidate_not_mounted",
+  "current_stage_code_status": "GEO2_source_marks_candidate_not_mounted",
   "accepted_dependency_package": {
     "task_id": "HX-BL-051",
     "pr": 496,
@@ -9390,7 +9444,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-rivers-0157/checks.json",
+  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-source-0304/checks.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -9898,7 +9952,7 @@
     }
   },
   "source_branch": "agent/hx-bl-051-geo2",
-  "claim_completed_ref": "agent-work/claims/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json",
+  "claim_completed_ref": "agent-work/claims/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
   "actual_full_UI_pending": false,
   "latest_DETAIL1_grid_focus": {
     "run_id": "2026-11-11T0804-programmer-DETAIL1-focus",
@@ -10888,7 +10942,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -11233,7 +11287,7 @@
   "substage": "GEO2",
   "active_claim_ref": null,
   "bounded_implementation_complete": true,
-  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-rivers-0157/score-evidence1.2.json",
+  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-source-0304/score-evidence1.2.json",
   "ui_actual_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "full_feedback_resolved": false,
   "known_open_requirements": [
@@ -11417,7 +11471,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json",
+  "last_result_ref": "agent-work/results/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -11559,35 +11613,43 @@
     "result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
     "status": "completed_GEO2_specification_programmer_ready"
   },
-  "wip_head_sha": "cd4249d6e70099c3581eb1c5882824a6a8443b96",
-  "wip_tree_sha": "4358b603f8913a81a1f811043ac1aa04cede20e5",
+  "wip_head_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+  "wip_tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
   "latest_GEO2_implementation": {
-    "run_id": "2026-11-14T0157-programmer-ONE-MILE1-GEO2",
+    "run_id": "2026-11-14T0304-programmer-ONE-MILE1-GEO2",
     "role": "programmer",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
     "substage": "GEO2",
-    "status": "checkpoint_saved_GEO2_river_candidate_in_progress",
+    "status": "checkpoint_saved_GEO2_source_marks_in_progress",
     "execution_running": false,
     "working_branch": "agent/hx-bl-051-geo2",
-    "wip_head_sha": "cd4249d6e70099c3581eb1c5882824a6a8443b96",
-    "wip_tree_sha": "4358b603f8913a81a1f811043ac1aa04cede20e5",
-    "head_sha": "cd4249d6e70099c3581eb1c5882824a6a8443b96",
-    "tree_sha": "4358b603f8913a81a1f811043ac1aa04cede20e5",
+    "wip_head_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+    "wip_tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
+    "head_sha": "f92bb54c3405aa4aadfafb69ee6d58ca10227bfb",
+    "tree_sha": "71e743051a2e5bdb2acc930d47eb31bbc7f2b964",
     "pr": 503,
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
-    "result_ref": "agent-work/results/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-14T0157-ONE-MILE1-GEO2-continue.json",
+    "pr_updated": false,
+    "result_ref": "agent-work/results/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T0304-ONE-MILE1-GEO2-continue.json",
     "next_role": "programmer",
-    "next_step": "Продолжить утверждённую GEO2 с agent/hx-bl-051-geo2 @cd4249d6e70099c3581eb1c5882824a6a8443b96. Речной preparer теперь даёт53связанных пути/55sourceузлов и резервирует подходы кслияниям, но это не полный GeometryPlan. Проверить направлениепотока по реальнымsectorrefs, terminal/boundary ports и rapid/waterfall correspondence; устранить ограничение последовательного распределения/оптимальности при необходимости. Затем единый prepare для river-requiredPOI в томже6parent, roads/crossings с finitewaterenvelopes и actual lake mouths, public16/physical4, preview/apply/cancel/UndoRedo и фактический UI. Не монтировать river-only кандидат; старый PR503 остаётся3344159 до целостной интеграции. После G201–G210 и проверок — независимыйreview точного новогоSHA. Новое согласованиестарта не нужно; публикация запрещена.",
+    "next_step": "Программист продолжает HX-BL-051/ONE-MILE1/GEO2 с f92bb54c3405aa4aadfafb69ee6d58ca10227bfb: следующий ограниченный этап — terminal/boundary ports. Использовать нормализованные реальные sector refs, отличать внутренние границы секторов от открытых выходов карты; добавить допустимые точки на fine-рёбрах для degree1 terminals и сохранить continuable source exit refs без новых слияний/потери участков. Проверяемый результат: на том же53-segment fixture и ограниченных конфликтных примерах сохраняются направления/F/IDs, общие узлы/отметки и атомарные ошибки. Затем продолжить единую геометрию POI/roads/crossings/envelopes/mouths, public16/history/UI. River-only кандидат не включать; PR503 остаётся3344159 до целостной интеграции. Независимая проверка — после полного G201–G210 новогоSHA; разрешения публикации нет.",
     "review_ready": false,
     "full_package_release_ready": false,
     "release_authorized": false,
-    "completed_claim_ref": "agent-work/claims/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json"
+    "completed_claim_ref": "agent-work/claims/2026-11-14T0304-programmer-ONE-MILE1-GEO2.json"
   },
   "previous_primary_before_GEO2_river_candidate": {
     "run_id": "2026-11-14T0055-programmer-ONE-MILE1-GEO2",
     "result_ref": "agent-work/results/2026-11-14T0055-programmer-ONE-MILE1-GEO2.json",
     "status": "checkpoint_saved_GEO2_implementation_in_progress"
-  }
+  },
+  "previous_primary_before_GEO2_source_marks": {
+    "run_id": "2026-11-14T0157-programmer-ONE-MILE1-GEO2",
+    "result_ref": "agent-work/results/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json",
+    "status": "checkpoint_saved_GEO2_river_candidate_in_progress"
+  },
+  "product_score_changed": false,
+  "ui_actual_pending_for_full_GEO2": true
 }
