@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-14T2340-programmer-GEO2-GeometryPlan",
+  "run_id": "2026-11-15T0108-programmer-GEO2-browser-runtime",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "GeometryPlan_persistence_same_domain_Q01_implemented_GEO2_in_progress",
+  "status": "GEO2_implementation_continues_browser_environment_blocked",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -40,9 +40,9 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
-    "status": "materials_verified_latest_written_last",
-    "materials_commit_sha": "e772daa952d126628a44b913f21445c40388edc0",
-    "verified_material_files": 15
+    "status": "verified_latest_last",
+    "materials_commit_sha": "77f5efb9967b400544323e2dff944e15359184d0",
+    "verified_material_files": 11
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -55,10 +55,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
   "spec_version": "GEO2-v2",
-  "result_path": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
+  "result_path": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "Программист продолжает утверждённую HX-BL-051/GEO2 на f522b356afadf947f5ff95ebfc8bc40f9616dbbf: реализовать область применения при расширении — новые регионы остаются неуточнёнными, затронутые пограничные зависимости атомарны, неизменённые пути буквальны. Затем подключить сохранённый GeometryPlan к карте/PNG и компактному первоначальному preview/Apply/Cancel; обычные правки уже используют Q01 без дополнительного UI. Довести G201–G210 и фактический desktop/узкий RU/EN показ, браузерные проверки после восстановления runtime; затем независимая проверка полного точного SHA с score_assessment1.2. Публикация отдельно разрешается владельцем.",
+  "next_step": "Программист продолжает HX-BL-051/GEO2 с f522b356afadf947f5ff95ebfc8bc40f9616dbbf: реализовать scoped refinement при расширении (новые регионы не уточняются автоматически, только необходимая старая closure), затем видимый preview/карта/PNG. Эту разработку не останавливать из-за локального браузера. G210 выполнить на точном новом SHA в runner, разрешающем Chromium socket(); повторная установка бинарника не устраняет подтверждённый EPERM. После полного пакета — независимый reviewer и score_assessment1.2; публикация отдельно.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -127,7 +127,7 @@
   "pr": 503,
   "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
   "tree_sha": "e29db566faa83fc0b8ea16dce81164b050f066b1",
-  "checks_status": "node_build_passed_browser_blocked",
+  "checks_status": "build_passed_browser_launch_permission_blocked",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/evidence/ONE-MILE1-GEO2-special-POI-2239/checks.json",
   "review_verdict": "not_reviewed_on_this_SHA",
   "role_selection_mode": "queue_readiness",
@@ -230,7 +230,7 @@
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
-  "role_selection_reason": "Latest explicit owner instruction to implement GeometryPlan/save-load/dependency updates/UndoRedo immediately, within approved HX-BL-051/GEO2-v2 after completed interview. Own claim held; no hourly role assignment.",
+  "role_selection_reason": "Approved unfinished GEO2 requires G210. Newly observed system Chromium is new evidence allowing a bounded runtime recovery attempt, not repeated installation/research. No foreign active task claim.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -255,29 +255,23 @@
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-14T20:40:27.824Z",
+      "checked_at": "2026-11-14T22:08:27.646Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-14T21:44:08.689Z",
+      "checked_at": "2026-11-14T22:11:55.739Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "restoration": {
       "performed": false,
-      "reason": "Both actual observations enabled; update not needed"
+      "reason": "Both actual observations enabled"
     },
     "errors": [],
-    "scope": "Point-in-time actual peek observations only; no guarantee against subsequent service changes. Same task, prompt and schedule unchanged.",
-    "previous_end_observation": {
-      "checked_at": "2026-11-14T21:38:54.616Z",
-      "method": "automations.peek",
-      "status": "checked",
-      "is_enabled": true
-    }
+    "scope": "Point-in-time observations; no guarantee of subsequent state. Prompt/schedule unchanged."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_insufficient_evidence_whole_grades",
@@ -879,7 +873,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-14T21:44:21.883Z",
+  "updated_at": "2026-11-14T22:13:26.334Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1017,87 +1011,39 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "cea2f93266913303833ef09477bc8f0c33be63d3",
+    "base_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
     "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
-    "added": 6,
+    "added": 0,
     "removed": 0,
-    "modified": 2,
-    "suite": "Node",
-    "suites": [
-      {
-        "suite": "test/geometryPlan.test.mjs",
-        "added": 2,
-        "removed": 0,
-        "modified": 0,
-        "scenario_risk": "Accepted cross-phase model/parser correspondence, actual BR009 split/index0/sea-terminal fixture, source3/output4 separation, exact persisted choices and malformed records.",
-        "reuse_or_new_reason": "New accepted boundary had no prior contract coverage. Reuses retained road-entry-zigzags fixture once; bounded physical delta fixture complements it. Existing routing algorithm suites retained.",
-        "parameterized_subscenarios": {
-          "general_bad_refinements": 23,
-          "bad_outer_states": 6,
-          "bad_delta_topology": 3,
-          "total_malformed_rows": 32,
-          "not_additional_runner_cases": true
-        }
-      },
-      {
-        "suite": "test/mapTransactions.test.mjs",
-        "added": 4,
-        "removed": 0,
-        "modified": 0,
-        "scenario_risk": "Real App initial preview/cancel/stale/budget, ordinary source+POI+road one transaction, literal unaffected geometry,16 roundtrip, busy/invalid import and failed closure preserving redo.",
-        "reuse_or_new_reason": "Reuses real App harness and existing river fixture. Pure preparers cannot prove accepted writes/history; four lifecycle risk groups."
-      },
-      {
-        "suite": "test/saveSafety.test.mjs",
-        "added": 0,
-        "removed": 0,
-        "modified": 2,
-        "scenario_risk": "Old public10/15 Knave compatibility plus16 and exact public/physical/refinement mismatch refusal.",
-        "reuse_or_new_reason": "Extended two existing cases instead of adding duplicate gate tests.",
-        "parameterized_subscenarios": {
-          "knave": "10/15/16 × classic/mythic;11–14/17 rejected",
-          "invalid_import": "New16 mismatch/incomplete/foreign layer rows inside existing refusal case; no extra named cases."
-        }
-      }
-    ],
-    "scenario_risk": "Useful new accepted-state and actual writer contracts; no seed/10k series or test-count target.",
-    "reuse_or_new_reason": "New cases only where existing pure/old-format cases could not prove the requirement; existing cases and real fixtures reused.",
-    "count_source": "Exact diff cea2f93266913303833ef09477bc8f0c33be63d3..f522b356afadf947f5ff95ebfc8bc40f9616dbbf:2 new GeometryPlan cases+4 new real App lifecycle cases;2 existing saveSafety bodies modified. Harness/compiler cache is support, not a logical test. Parameter matrices and reruns separate.",
-    "browser": {
-      "added": 0,
-      "removed": 0,
-      "modified": 0,
-      "status": "blocked_runtime_missing_chromium",
+    "modified": 0,
+    "suite": "Node/browser/RNG separately",
+    "scenario_risk": "Required browser acceptance blocked before scenarios; verify runtime capability without modifying assertions.",
+    "reuse_or_new_reason": "Existing browser runners reused; no source/test edits or new statistical series.",
+    "count_source": "git diff HEAD empty and exact SHA/tree unchanged; tracked test files unchanged.",
+    "node": {
       "executed": 0,
       "passed": 0,
-      "skipped": null
+      "skipped": 0,
+      "prior_validation_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/checks.json",
+      "prior_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
+      "prior_passed": 416,
+      "rerun": false
+    },
+    "browser": {
+      "commands_attempted": 1,
+      "command_exit_code": 1,
+      "executed_scenarios": 0,
+      "passed_scenarios": 0,
+      "assertion_failures": 0,
+      "status": "launch_blocked"
     },
     "rng_browser": {
-      "added": 0,
-      "removed": 0,
-      "modified": 0,
-      "status": "blocked_runtime_missing_chromium",
-      "executed": 0,
-      "passed": 0,
-      "skipped": null
-    },
-    "temporary_diagnostics": {
-      "new_permanent_cases": 0
-    },
-    "executed": 416,
-    "passed": 416,
-    "failed": 0,
-    "skipped": 0,
-    "cancelled": 0,
-    "duration_ms": 644752.112589,
-    "full_run": {
-      "command": "npm run check",
-      "exit_code": 0,
-      "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
-      "executed": 416,
-      "passed": 416,
-      "failed": 0,
-      "skipped": 0
+      "commands_attempted": 1,
+      "command_exit_code": 1,
+      "executed_scenarios": 0,
+      "passed_scenarios": 0,
+      "assertion_failures": 0,
+      "status": "launch_blocked"
     }
   },
   "review_url": null,
@@ -1463,7 +1409,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-14T2340-GEO2-GeometryPlan-continue.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1809,7 +1755,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-12T0204-programmer-ONE-MILE1.json",
-  "handoff_path": "agent-work/handoffs/2026-11-14T2340-GEO2-GeometryPlan-continue.json",
+  "handoff_path": "agent-work/handoffs/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
   "ui_actual_preview": {
     "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
     "manifest_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/ui-manifest.json",
@@ -2309,7 +2255,7 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/test-change-summary.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-browser-runtime-20261115-0108/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/score-evidence.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-14T2239-programmer-GEO2-special-POI.json",
   "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
@@ -4310,17 +4256,10 @@
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": {
-    "npm_run_check": "passed",
-    "node": {
-      "executed": 416,
-      "passed": 416,
-      "failed": 0,
-      "skipped": 0
-    },
-    "typescript": "passed",
     "build": "passed",
-    "browser": "blocked_missing_chromium",
-    "browser_rng": "blocked_missing_chromium"
+    "node": "prior416/416 on same SHA reused, not rerun",
+    "browser": "EPERM before scenarios",
+    "browser_rng": "EPERM before scenarios"
   },
   "full_E5_UI_pending": true,
   "materials_commit_sha": "b507cead9d9cf315df8d2faced9d6b6a1ca9c106",
@@ -6760,7 +6699,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
+  "result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -8639,7 +8578,7 @@
   "release_readiness": "not_ready_incomplete_GEO2",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-14T2340-GEO2-GeometryPlan-continue.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -9290,7 +9229,7 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-14T2340-programmer-GEO2-GeometryPlan",
+  "last_completed_run_id": "2026-11-15T0108-programmer-GEO2-browser-runtime",
   "storage_verification": {
     "source_sha": "2b44dbd56868f7c16a963c17b1978c434fb12c7b",
     "source_tree": "a5cb959c89d265dc6fc60d3d2cf7c8deece9c9c4",
@@ -9911,7 +9850,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/checks.json",
+  "checks_ref": "agent-work/evidence/GEO2-browser-runtime-20261115-0108/checks.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -10965,7 +10904,7 @@
   },
   "updated_on": "2026-11-14",
   "claim_ref": null,
-  "latest_programmer_result_ref": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
   "source_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
   "source_pr": 496,
   "owner_decision_required": false,
@@ -11409,7 +11348,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -11751,7 +11690,7 @@
     "result_path": "agent-work/results/2026-11-12T2302-analyst-ONE-MILE1-C02-C05.json",
     "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка."
   },
-  "substage": "GEO2-GEOMETRYPLAN",
+  "substage": "GEO2-browser-runtime",
   "active_claim_ref": null,
   "bounded_implementation_complete": true,
   "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-GeometryPlan-2340/score-evidence.json",
@@ -11938,7 +11877,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-14T2239-programmer-GEO2-special-POI.json",
+  "last_result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -12434,5 +12373,29 @@
     "health_ledger_commit": "83f86481b0835f93b56a7088217214fe81f8bd8c",
     "verified_files": 4,
     "latest_written_last": true
+  },
+  "previous_run_before_GEO2_runtime": {
+    "run_id": "2026-11-14T2340-programmer-GEO2-GeometryPlan",
+    "result_ref": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
+    "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf"
+  },
+  "browser_runtime": {
+    "status": "blocked_environment_permission",
+    "binary": "/usr/bin/chromium",
+    "observed_version": "Chromium156.0.8078.79 Debian13",
+    "configured_via": "CHROMIUM_EXECUTABLE_PATH",
+    "message": "FATAL chrome/browser/process_singleton_posix.cc:297: socket() failed: Operation not permitted (1)",
+    "process_exit": "SIGABRT",
+    "cause_scope": "Process socket creation denied in this execution environment; exact policy mechanism not established.",
+    "product_defect_proven": false,
+    "whole_team_blocked": false,
+    "not_a_missing_binary_when_explicit_system_path_used": true
+  },
+  "latest_GEO2_runtime_verification": {
+    "run_id": "2026-11-15T0108-programmer-GEO2-browser-runtime",
+    "result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
+    "evidence_ref": "agent-work/evidence/GEO2-browser-runtime-20261115-0108",
+    "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf",
+    "status": "runtime_capability_checked_browser_launch_permission_blocked"
   }
 }
