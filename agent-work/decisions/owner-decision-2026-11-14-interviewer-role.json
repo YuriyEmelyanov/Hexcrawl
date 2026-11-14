@@ -1,0 +1,57 @@
+{
+  "decision_id": "owner-decision-2026-11-14-interviewer-role",
+  "status": "active",
+  "recorded_at": "2026-11-14T06:54:06.621Z",
+  "source": "Explicit current owner instruction in existing HexCrawl task chat",
+  "owner_instruction": "Добавить роль Интервьюер: после черновой спецификации аналитика подготовить исчерпывающий пул вопросов с вариантами и возможностью иного ответа; при необходимости проводить дополнительные раунды; после завершения аналитик готовит чистовую спецификацию для программиста. Интервьюер подключается на любом этапе при вопросах к владельцу.",
+  "roles": [
+    "strategist-manager",
+    "business-analyst",
+    "interviewer",
+    "programmer",
+    "reviewer"
+  ],
+  "workflow": [
+    "analyst_draft",
+    "interviewer_question_pool",
+    "owner_answers_and_additional_rounds",
+    "interviewer_completion",
+    "analyst_final_specification",
+    "programmer",
+    "independent_review",
+    "owner_exact_package_release_approval"
+  ],
+  "question_contract": {
+    "complete_known_pool": true,
+    "stable_question_ids": true,
+    "options_with_consequences": true,
+    "free_text_other_always": true,
+    "recommendations_not_answers": true,
+    "answered_questions_not_repeated_without_new_reason": true
+  },
+  "on_demand_at_any_stage": true,
+  "answers_and_traceability_saved_in_GitHub": true,
+  "existing_chat_reused": true,
+  "interview_completion": "All material questions answered or explicitly delegated/deferred by owner, contradictions resolved; then analyst publishes final spec",
+  "rollout": {
+    "new_drafts_and_material_revisions": "mandatory interview cycle",
+    "existing_final_specs": "Not automatically invalidated; not_run_legacy_final_spec is factual, new material questions trigger interviewer",
+    "foreign_claims": "Preserved; no takeover",
+    "current_HX_BL_051": "Existing GEO2-v1 final spec/claim/checkpoint preserved; no retrospective interview is claimed and no artificial questionnaire created"
+  },
+  "unchanged": {
+    "main": true,
+    "source_code": true,
+    "score_model": "1.2",
+    "score_weights_and_points": true,
+    "two_owner_approval_gates": true,
+    "publication_requires_exact_package_approval": true,
+    "automation_schedule": true,
+    "research_scope": true
+  },
+  "automation_health_applies_to_interviewer": true,
+  "process_ref": "agent-work/process.md",
+  "interview_contract_ref": "agent-work/interviews/README.md",
+  "independent_draft_scan_required": true,
+  "zero_question_pool": "Only interviewer's documented full-draft review can establish that no material question remains; analyst cannot skip interviewer by declaring no questions"
+}
