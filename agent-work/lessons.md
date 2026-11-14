@@ -905,3 +905,7 @@ GEO2-PORTS: terminal внутри ребра хранится как sourceEdgeK
 
 ### 14 ноября2026 — terminal points должны войти в маршруты и mark arcs вместе
 GEO2-TERMINALS интегрирует split ports с53реальными маршрутами и424fine-edge intervals, сохраняя общие узлы/F/направление. На выделенных endpoint edges6terminals стали interior,2остались integer; прежний standalone8 не является приёмкой глобального reroute. Общий arc-helper пересчитывал конечную точку с drift~2e-16; сохранение точного endpoint устранило расхождение waterfall/node. Forced53/55marks и106incidences — диагностическое соответствие, не feature eligibility. Actual open exits/shore/POI/roads/save/UI остаются незавершёнными. Evidence: agent-work/evidence/ONE-MILE1-GEO2-terminals-0458/witness.json, checks.json; SHA 5fe958d762bd988497f307893f477041dd498a56.
+
+
+### 14 ноября2026 — открытые выходы определяет actual hydrology, а не sector label
+GEO2-EXITS использует buildRegionRiverNetwork complete=true, реальные candidates/oneMileSources water overrides и regionMarkKeys:4open/1lake/3source,53segments/55nodes/430intervals,3actualrapids. Endpoint corridors обходят занятые узлы; при равной длине — deviation/seeded side/numeric sequence. Предел1mile для exit edge midpoint и sequential allocation остаются техническими ограничениями, не доказательством полного решения/новым игровым правилом. Actual sea fixtures и полный geometry/UI ещё не сертифицированы. Evidence: agent-work/evidence/ONE-MILE1-GEO2-exits-0603/witness.json, checks.json; SHA fd3ee6109d787a6c37173b2dee8c36b8e5bacf90.
