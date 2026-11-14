@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T1124-interviewer-GEO2-owner-answers",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1-GEO2",
+  "from_role": "interviewer",
+  "to_role": "business_analyst",
+  "status": "interview_completed_ready_for_final_spec",
+  "source_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "source_spec_version": "GEO2-v1",
+  "source_head_sha": "359f1c1c1243ebf3d293ab49a77abec3895f142d",
+  "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+  "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-interview-answers.json",
+  "decisions": [
+    {
+      "decision_id": "GEO2-ID01",
+      "question_id": "GEO2-Q01",
+      "owner_answer_raw": "Q01 - ничего не показывай, сдвигай.",
+      "normalized_selection": "custom_automatic_shift_no_preview",
+      "interpretation": "Для обычной source-правки при наличии корректного пересчёта зависимые незакреплённые объекты/подходы сдвигаются автоматически, без дополнительного предпросмотра, сообщения о перемещении или согласия. Это не выбранный рекомендованный вариант A. Исходная правка и вся её dependency closure принимаются одной Undo-транзакцией.",
+      "bounds": "Вопрос относится к обычным правкам и незакреплённой геометрии. Не отменены запрет потери данных, atomic failure невалидного плана, ограничения measured/locked объектов, сохранение незатронутых путей/RNG, отдельное явное действие первоначального уточнения геометрии. Existing error reporting remains on rejected invalid edit.",
+      "source": {
+        "kind": "explicit_owner_message_in_existing_task_chat",
+        "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+        "message_id": null,
+        "message_timestamp": null,
+        "observed_at": "2026-11-14T08:25:05.024Z",
+        "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+      },
+      "requirement_refs": [
+        "GEO2 source-edit dependency closure",
+        "GEO-D01-R2",
+        "GEO-D01-R3"
+      ],
+      "acceptance_refs": [
+        "G208",
+        "G209"
+      ],
+      "analyst_changes": [
+        "Заменить source-edit preview/consent OR rejection альтернативу автоматическим корректным пересчётом без промежуточного UI/confirmation",
+        "AC: успешная обычная правка автоматически обновляет closure, без дополнительного Apply, сохраняет остальные данные и отменяется одним Undo",
+        "AC: невозможный/невалидный пересчёт не меняет карту; первоначальный Refine preview/apply/cancel остаётся самостоятельным контрактом"
+      ]
+    },
+    {
+      "decision_id": "GEO2-ID02",
+      "question_id": "GEO2-Q02",
+      "owner_answer_raw": "Q02 - делай дорогу короче.",
+      "normalized_selection": "B_length_first",
+      "interpretation": "Среди допустимых трасс меняемого связанного участка дороги первой минимизировать физическую длину; при равной длине — отклонение от прежней трассы, затем устойчивый canonical key. Близость к старой трассе не может побеждать меньшую допустимую длину.",
+      "bounds": "Сохраняются ограничения входов POI, типов/ID/порядка старых переправ, отсутствие новых неразрешённых пересечений воды и неизменность несвязанных участков. Это не переразмещение всех дорог карты.",
+      "source": {
+        "kind": "explicit_owner_message_in_existing_task_chat",
+        "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+        "message_id": null,
+        "message_timestamp": null,
+        "observed_at": "2026-11-14T08:25:05.024Z",
+        "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+      },
+      "requirement_refs": [
+        "GEO2 road-route objective",
+        "GEO-D01-R3"
+      ],
+      "acceptance_refs": [
+        "G205",
+        "G206"
+      ],
+      "analyst_changes": [
+        "Задать однозначный length-first порядок и измеримую длину в модельных физических координатах",
+        "AC: при выборе между длинной близкой к старой и короткой более смещённой допустимыми трассами выигрывает короткая",
+        "AC: одинаковая длина разрешается стабильно; constraints не ослабляются ради короткого пути"
+      ]
+    }
+  ],
+  "scope": "Update existing GEO2 contract only; not product implementation, new research, width/town-size calibration or release.",
+  "completion_criteria": [
+    "Чистовая версия устраняет обе альтернативы и ссылается на question_id/owner answer/decision/AC",
+    "G208/G209 различают автоматические обычные source-правки и исходное явное уточнение; атомарная одна Undo-запись без дополнительного preview/consent на Q01",
+    "G205/G206 проверяют длину раньше отклонения на явной паре допустимых маршрутов; фиксируют физическую метрику длины и детерминированные равенства",
+    "Все прочие GEO2 требования/границы, модели1.2 и прежние checkpoints сохраняются; обновить связанный UI пример при необходимости без третьего approval gate",
+    "После пригодной чистовой версии передать программисту GEO2-PLAN с checkpoint359f1c1, затем fresh independent exactSHA review"
+  ],
+  "next_role": "business_analyst",
+  "next_step": "Аналитик готовит чистовую GEO2-v2 по решениям GEO2-Q01/Q02: при обычной правке исходной карты корректные связанные смещения выполняются автоматически без дополнительного предпросмотра/согласия, в одной Undo-транзакции; дорога выбирается сначала по минимальной длине, затем по отклонению и устойчивому ключу. Обновить требования и G205/G206/G208/G209, отделить исходное явное «Уточнить геометрию» от обычных правок. Затем программист продолжает GEO2-PLAN с 359f1c1; публикация отдельно.",
+  "following_programmer_handoff": "agent-work/handoffs/2026-11-14T0912-ONE-MILE1-GEO2-continue.json#following_implementation",
+  "authority_status": "Existing approved task; no new start permission needed. Dependent implementation after analyst final revision; publication separately.",
+  "release_authorized": false
+}

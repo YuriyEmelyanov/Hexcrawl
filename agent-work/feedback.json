@@ -1332,8 +1332,8 @@
       ],
       "production_fixed": false,
       "release_ready": false,
-      "next_role": "interviewer",
-      "next_step": "В существующем чате получить ответы владельца по GEO2-Q01 (предпросмотр ручных смещений или отказ) и GEO2-Q02 (близость прежней дороги или длина), либо явное делегирование/отложение. Интервьюер сохраняет ответы и снимает противоречия; при новых существенных вопросах — следующий раунд. После закрытия аналитик выпускает чистовую GEO2 с трассировкой к G205/G206/G208/G209, затем программист продолжает GEO2-PLAN.",
+      "next_role": "business_analyst",
+      "next_step": "Аналитик готовит чистовую GEO2-v2 по решениям GEO2-Q01/Q02: при обычной правке исходной карты корректные связанные смещения выполняются автоматически без дополнительного предпросмотра/согласия, в одной Undo-транзакции; дорога выбирается сначала по минимальной длине, затем по отклонению и устойчивому ключу. Обновить требования и G205/G206/G208/G209, отделить исходное явное «Уточнить геометрию» от обычных правок. Затем программист продолжает GEO2-PLAN с 359f1c1; публикация отдельно.",
       "bounded_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-C02-C05.md",
       "full_feedback_resolved": false,
       "bounded_implementation": {
@@ -1380,14 +1380,14 @@
         "result_ref": "agent-work/results/2026-11-14T0157-programmer-ONE-MILE1-GEO2.json"
       },
       "latest_GEO2_interview": {
-        "run_id": "2026-11-14T1100-interviewer-ONE-MILE1-GEO2",
-        "result_ref": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
+        "run_id": "2026-11-14T1124-interviewer-GEO2-owner-answers",
+        "result_ref": "agent-work/results/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
         "round_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/round-001.json",
-        "questionnaire_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/questions-001.md",
-        "handoff_ref": "agent-work/handoffs/2026-11-14T1100-ONE-MILE1-GEO2-interview.json",
-        "answers_received": 0,
-        "interview_completed": false,
-        "presentation_status": "prepared_for_current_final_response"
+        "decisions_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-14T1124-GEO2-final-spec-analyst.json",
+        "answers_received": 2,
+        "interview_completed": true,
+        "presentation_status": "presented_in_existing_chat_verified"
       }
     }
   ]

@@ -103,11 +103,23 @@
         "Полный reset/замена мира не получает нового разрешения или нового поведения этим ответом"
       ],
       "always_allow_free_text": true,
-      "owner_answer": null,
-      "owner_answer_source": null,
+      "owner_answer": {
+        "raw": "Q01 - ничего не показывай, сдвигай.",
+        "selection": "custom_automatic_shift_no_preview",
+        "source_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-interview-answers.json"
+      },
+      "owner_answer_source": {
+        "kind": "explicit_owner_message_in_existing_task_chat",
+        "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+        "message_id": null,
+        "message_timestamp": null,
+        "observed_at": "2026-11-14T08:25:05.024Z",
+        "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+      },
       "owner_answer_at": null,
-      "interpretation": null,
-      "dependent_questions": []
+      "interpretation": "Для обычной source-правки при наличии корректного пересчёта зависимые незакреплённые объекты/подходы сдвигаются автоматически, без дополнительного предпросмотра, сообщения о перемещении или согласия. Это не выбранный рекомендованный вариант A. Исходная правка и вся её dependency closure принимаются одной Undo-транзакцией.",
+      "dependent_questions": [],
+      "owner_answer_observed_at": "2026-11-14T08:25:05.024Z"
     },
     {
       "question_id": "GEO2-Q02",
@@ -147,32 +159,67 @@
         "Правило выбора случайной стороны речного обхода не переоткрывается этим вопросом"
       ],
       "always_allow_free_text": true,
-      "owner_answer": null,
-      "owner_answer_source": null,
+      "owner_answer": {
+        "raw": "Q02 - делай дорогу короче.",
+        "selection": "B_length_first",
+        "source_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-interview-answers.json"
+      },
+      "owner_answer_source": {
+        "kind": "explicit_owner_message_in_existing_task_chat",
+        "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+        "message_id": null,
+        "message_timestamp": null,
+        "observed_at": "2026-11-14T08:25:05.024Z",
+        "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+      },
       "owner_answer_at": null,
-      "interpretation": null,
-      "dependent_questions": []
+      "interpretation": "Среди допустимых трасс меняемого связанного участка дороги первой минимизировать физическую длину; при равной длине — отклонение от прежней трассы, затем устойчивый canonical key. Близость к старой трассе не может побеждать меньшую допустимую длину.",
+      "dependent_questions": [],
+      "owner_answer_observed_at": "2026-11-14T08:25:05.024Z"
     }
   ],
   "presented_in_chat_at": null,
   "presented_in_chat_ref": null,
-  "presentation_status": "prepared_for_current_final_response",
-  "presentation_note": "Persistence precedes actual final-response delivery. No chat message identifier available. Mark presented only after actual delivery is observed; do not infer owner answer.",
-  "owner_answers": [],
-  "interpretation": null,
-  "open_question_ids": [
-    "GEO2-Q01",
-    "GEO2-Q02"
+  "presentation_status": "presented_in_existing_chat_verified",
+  "presentation_note": "Verified by visible previous assistant questionnaire and owner's explicit ID-addressed answers. Exact message timestamp/ID unavailable; presented_in_chat_at remains null rather than invented.",
+  "owner_answers": [
+    {
+      "question_id": "GEO2-Q01",
+      "raw": "Q01 - ничего не показывай, сдвигай.",
+      "normalized_selection": "custom_automatic_shift_no_preview",
+      "decision_id": "GEO2-ID01",
+      "source": {
+        "kind": "explicit_owner_message_in_existing_task_chat",
+        "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+        "message_id": null,
+        "message_timestamp": null,
+        "observed_at": "2026-11-14T08:25:05.024Z",
+        "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+      }
+    },
+    {
+      "question_id": "GEO2-Q02",
+      "raw": "Q02 - делай дорогу короче.",
+      "normalized_selection": "B_length_first",
+      "decision_id": "GEO2-ID02",
+      "source": {
+        "kind": "explicit_owner_message_in_existing_task_chat",
+        "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+        "message_id": null,
+        "message_timestamp": null,
+        "observed_at": "2026-11-14T08:25:05.024Z",
+        "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+      }
+    }
   ],
-  "new_question_ids": [
-    "GEO2-Q01",
-    "GEO2-Q02"
-  ],
-  "status": "prepared_for_chat_delivery",
-  "interview_completed": false,
-  "next_role": "interviewer",
+  "interpretation": "Both known material alternatives resolved by explicit owner answers; Q01 is custom no-preview automatic shift, Q02 is B length-first. No new material conflict/question.",
+  "open_question_ids": [],
+  "new_question_ids": [],
+  "status": "interview_completed",
+  "interview_completed": true,
+  "next_role": "business_analyst",
   "next_role_after_completion": "business_analyst",
-  "next_step": "Предъявить полный раунд в текущем ответе; получить ответы GEO2-Q01/Q02 либо явное делегирование/отложение; проверить противоречия и новые вопросы. После завершения — аналитик выпускает чистовую GEO2 с трассировкой ответов к G205/G206/G208/G209, затем программист продолжает GEO2-PLAN.",
+  "next_step": "Аналитик готовит чистовую GEO2-v2 по решениям GEO2-Q01/Q02: при обычной правке исходной карты корректные связанные смещения выполняются автоматически без дополнительного предпросмотра/согласия, в одной Undo-транзакции; дорога выбирается сначала по минимальной длине, затем по отклонению и устойчивому ключу. Обновить требования и G205/G206/G208/G209, отделить исходное явное «Уточнить геометрию» от обычных правок. Затем программист продолжает GEO2-PLAN с 359f1c1; публикация отдельно.",
   "authority_status": "Existing approved GEO2 only; dependent choices unresolved, independent approved work allowed; no publication permission",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -201,5 +248,30 @@
       "status": "checked",
       "is_enabled": true
     }
+  },
+  "completed_at": "2026-11-14T08:25:56.880Z",
+  "completion_run_id": "2026-11-14T1124-interviewer-GEO2-owner-answers",
+  "presentation_observed_at": "2026-11-14T08:25:05.024Z",
+  "decisions_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+  "completion_automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-14T08:23:55.202Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-14T08:25:56.880Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Point-in-time observations only; same automation, prompt and schedule unchanged."
   }
 }

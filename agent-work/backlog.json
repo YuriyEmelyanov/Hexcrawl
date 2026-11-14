@@ -15848,7 +15848,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "GEO2_interview_first_round_prepared",
+      "status": "GEO2_interview_completed_final_spec_pending",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -15911,7 +15911,7 @@
       },
       "research_handoff_ref": "agent-work/research/requirements/WWN-nested-maps-L1.json",
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
-      "readiness": "interviewer_owner_answers_pending_after_current_chat_delivery",
+      "readiness": "business_analyst_final_specification_ready",
       "implementation_authorized": true,
       "release_authorized": false,
       "research_components": [
@@ -16322,9 +16322,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
-      "next_role": "interviewer",
+      "next_role": "business_analyst",
       "next_role_after_approval": "programmer",
-      "next_step": "В существующем чате получить ответы владельца по GEO2-Q01 (предпросмотр ручных смещений или отказ) и GEO2-Q02 (близость прежней дороги или длина), либо явное делегирование/отложение. Интервьюер сохраняет ответы и снимает противоречия; при новых существенных вопросах — следующий раунд. После закрытия аналитик выпускает чистовую GEO2 с трассировкой к G205/G206/G208/G209, затем программист продолжает GEO2-PLAN.",
+      "next_step": "Аналитик готовит чистовую GEO2-v2 по решениям GEO2-Q01/Q02: при обычной правке исходной карты корректные связанные смещения выполняются автоматически без дополнительного предпросмотра/согласия, в одной Undo-транзакции; дорога выбирается сначала по минимальной длине, затем по отклонению и устойчивому ключу. Обновить требования и G205/G206/G208/G209, отделить исходное явное «Уточнить геометрию» от обычных правок. Затем программист продолжает GEO2-PLAN с 359f1c1; публикация отдельно.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16489,9 +16489,9 @@
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
         "handoff_ref": "agent-work/handoffs/2026-11-12-ONE-MILE1-owner-corrections-analyst.json"
       },
-      "spec_status": "legacy_final_preserved_material_clarification_pending",
+      "spec_status": "legacy_final_preserved_revision_pending_after_interview",
       "latest_analyst_result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-14T1100-ONE-MILE1-GEO2-interview.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-14T1124-GEO2-final-spec-analyst.json",
       "active_claim": null,
       "full_package_release_ready": false,
       "owner_clarification_ref": null,
@@ -16704,7 +16704,7 @@
         "readable_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/README.md",
         "publication_authorized": false
       },
-      "owner_decision_required": true,
+      "owner_decision_required": false,
       "known_residual_risks": [
         {
           "id": "PR496-GEN-OBS-1803",
@@ -17076,7 +17076,7 @@
         "ref": "agent-work/decisions/proposed-ONE-MILE1-GEO-D01.json"
       },
       "owner_decision_scope": "GEO-D01 direction resolved; only later exactpackage publication needs ownerpermission",
-      "owner_decision_required_for_next_step": true,
+      "owner_decision_required_for_next_step": false,
       "latest_WR1_implementation": {
         "run_id": "2026-11-13T0701-programmer-ONE-MILE1-WR1",
         "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
@@ -17190,31 +17190,26 @@
         "release_authorized": false
       },
       "interview_required": true,
-      "interview_status": "round_001_prepared_for_current_response",
-      "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/round-001.json",
+      "interview_status": "interview_completed",
+      "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
       "interview_round": 1,
       "interview_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-interviewer-role.json",
-      "open_question_ids": [
-        "GEO2-Q01",
-        "GEO2-Q02"
-      ],
-      "open_question_topic_ids": [
-        "GEO2-T01",
-        "GEO2-T02"
-      ],
+      "open_question_ids": [],
+      "open_question_topic_ids": [],
       "final_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
       "latest_GEO2_interview": {
-        "run_id": "2026-11-14T1100-interviewer-ONE-MILE1-GEO2",
-        "result_ref": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
+        "run_id": "2026-11-14T1124-interviewer-GEO2-owner-answers",
+        "result_ref": "agent-work/results/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
         "round_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/round-001.json",
-        "questionnaire_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/questions-001.md",
-        "handoff_ref": "agent-work/handoffs/2026-11-14T1100-ONE-MILE1-GEO2-interview.json",
-        "answers_received": 0,
-        "interview_completed": false,
-        "presentation_status": "prepared_for_current_final_response"
+        "decisions_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+        "handoff_ref": "agent-work/handoffs/2026-11-14T1124-GEO2-final-spec-analyst.json",
+        "answers_received": 2,
+        "interview_completed": true,
+        "presentation_status": "presented_in_existing_chat_verified"
       },
-      "dependent_implementation_status": "source_edit_policy_and_road_objective_await_owner_answers_then_analyst_final",
-      "independent_approved_work_allowed": true
+      "dependent_implementation_status": "owner_decisions_resolved_analyst_final_revision_pending",
+      "independent_approved_work_allowed": true,
+      "owner_answers_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json"
     },
     {
       "task_id": "HX-BL-052",

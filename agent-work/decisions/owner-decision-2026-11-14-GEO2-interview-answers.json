@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "id": "owner-decision-2026-11-14-GEO2-interview-answers",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1-GEO2",
+  "status": "active",
+  "type": "owner_requirement_decisions_in_existing_approved_scope",
+  "recorded_at": "2026-11-14T08:25:05.024Z",
+  "source": {
+    "kind": "explicit_owner_message_in_existing_task_chat",
+    "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+    "message_id": null,
+    "message_timestamp": null,
+    "observed_at": "2026-11-14T08:25:05.024Z",
+    "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+  },
+  "decisions": [
+    {
+      "decision_id": "GEO2-ID01",
+      "question_id": "GEO2-Q01",
+      "owner_answer_raw": "Q01 - ничего не показывай, сдвигай.",
+      "normalized_selection": "custom_automatic_shift_no_preview",
+      "interpretation": "Для обычной source-правки при наличии корректного пересчёта зависимые незакреплённые объекты/подходы сдвигаются автоматически, без дополнительного предпросмотра, сообщения о перемещении или согласия. Это не выбранный рекомендованный вариант A. Исходная правка и вся её dependency closure принимаются одной Undo-транзакцией.",
+      "bounds": "Вопрос относится к обычным правкам и незакреплённой геометрии. Не отменены запрет потери данных, atomic failure невалидного плана, ограничения measured/locked объектов, сохранение незатронутых путей/RNG, отдельное явное действие первоначального уточнения геометрии. Existing error reporting remains on rejected invalid edit.",
+      "source": {
+        "kind": "explicit_owner_message_in_existing_task_chat",
+        "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+        "message_id": null,
+        "message_timestamp": null,
+        "observed_at": "2026-11-14T08:25:05.024Z",
+        "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+      },
+      "requirement_refs": [
+        "GEO2 source-edit dependency closure",
+        "GEO-D01-R2",
+        "GEO-D01-R3"
+      ],
+      "acceptance_refs": [
+        "G208",
+        "G209"
+      ],
+      "analyst_changes": [
+        "Заменить source-edit preview/consent OR rejection альтернативу автоматическим корректным пересчётом без промежуточного UI/confirmation",
+        "AC: успешная обычная правка автоматически обновляет closure, без дополнительного Apply, сохраняет остальные данные и отменяется одним Undo",
+        "AC: невозможный/невалидный пересчёт не меняет карту; первоначальный Refine preview/apply/cancel остаётся самостоятельным контрактом"
+      ]
+    },
+    {
+      "decision_id": "GEO2-ID02",
+      "question_id": "GEO2-Q02",
+      "owner_answer_raw": "Q02 - делай дорогу короче.",
+      "normalized_selection": "B_length_first",
+      "interpretation": "Среди допустимых трасс меняемого связанного участка дороги первой минимизировать физическую длину; при равной длине — отклонение от прежней трассы, затем устойчивый canonical key. Близость к старой трассе не может побеждать меньшую допустимую длину.",
+      "bounds": "Сохраняются ограничения входов POI, типов/ID/порядка старых переправ, отсутствие новых неразрешённых пересечений воды и неизменность несвязанных участков. Это не переразмещение всех дорог карты.",
+      "source": {
+        "kind": "explicit_owner_message_in_existing_task_chat",
+        "raw_message": "Q01 - ничего не показывай, сдвигай.\nQ02 - делай дорогу короче.",
+        "message_id": null,
+        "message_timestamp": null,
+        "observed_at": "2026-11-14T08:25:05.024Z",
+        "note": "Original message visible in current conversation; exact provider ID/time unavailable, not invented."
+      },
+      "requirement_refs": [
+        "GEO2 road-route objective",
+        "GEO-D01-R3"
+      ],
+      "acceptance_refs": [
+        "G205",
+        "G206"
+      ],
+      "analyst_changes": [
+        "Задать однозначный length-first порядок и измеримую длину в модельных физических координатах",
+        "AC: при выборе между длинной близкой к старой и короткой более смещённой допустимыми трассами выигрывает короткая",
+        "AC: одинаковая длина разрешается стабильно; constraints не ослабляются ради короткого пути"
+      ]
+    }
+  ],
+  "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+  "release_authorized": false,
+  "new_spend_authorized": false
+}
