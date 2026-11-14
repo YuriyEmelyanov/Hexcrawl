@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-14T0701-programmer-ONE-MILE1-GEO2",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-WATER",
+  "role": "programmer",
+  "status": "checkpoint_saved_GEO2_finite_water_in_progress",
+  "execution_running": false,
+  "working_branch": "agent/hx-bl-051-geo2",
+  "wip_head_sha": "33b362caeb536a265f30323fdf0e942b481306b1",
+  "wip_tree_sha": "53800049cf56305a7d31d15a9c1adf831ca0ca8c",
+  "head_sha": "33b362caeb536a265f30323fdf0e942b481306b1",
+  "tree_sha": "53800049cf56305a7d31d15a9c1adf831ca0ca8c",
+  "pr": 503,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "pr_updated": false,
+  "result_ref": "agent-work/results/2026-11-14T0701-programmer-ONE-MILE1-GEO2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T0701-ONE-MILE1-GEO2-continue.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-14T0701-programmer-ONE-MILE1-GEO2.json",
+  "next_role": "programmer",
+  "next_step": "Программист продолжает HX-BL-051/GEO2 с 33b362caeb536a265f30323fdf0e942b481306b1: следующий ограниченный этап — actual lake mouths/shore clipping (G207) до береговых POI. Использовать существующие lake cells и реальные видимые контуры: Tiles/Emoji union polygons; Color seeded basin path из buildNaturalLakes/lakeGeometry, включая islands и quadratic shoreline. Сопоставить axis/capsule envelope с первым корректным береговым контактом, обрезать river paint по телу озера и не рисовать сухопутный connector к центру. Не считать старый mouth-connector доказательством контакта; сохранить lake IDs/cells/seed, inlet/outlet direction,53source paths/F и4exit refs. На том жеfixture и ограниченном island/no-contact случае валидировать все3режима до Apply; ошибка возвращает refs без partial state. Затем river-requiredPOI в том же6parent, roads/crossings/masks, public16/history/UI и независимая проверка целогоSHA. Текущая водная полоса unmasked/unmounted, физическая калибровка/публикация не разрешены.",
+  "review_ready": false,
+  "full_package_release_ready": false,
+  "release_authorized": false,
+  "base_sha": "fd3ee6109d787a6c37173b2dee8c36b8e5bacf90",
+  "started_at": "2026-11-14T04:02:51.017Z",
+  "completed_at": "2026-11-14T04:19:07.907Z",
+  "role_selection_reason": "Approved unfinished GEO2; prior own claim completed and051 free. Next finite water envelope stage from ready handoff.",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "implemented": [
+    "Analytic union of finite round segment capsules at existing renderer widths, immutable source refs/radii.",
+    "Finite line-query intervals from clipped rectangles and endpoint circles; merged global union preserves dry gaps and flags tangency/clipped endpoints.",
+    "Outside first-contact query and explicit starts_in_water; inside clearance not mislabelled bank distance.",
+    "Atomic prepareRefinementWetRoutes retains53paths/55nodes/4exit refs and430water capsules; missing width returns no partial routes.",
+    "Reuse actual renderer width helpers and existing retained-world lifecycle;2new analytic Node cases and1expanded case."
+  ],
+  "limitations": [
+    "Water is unmasked river paint; actual lake-body/mode/island shore clipping and G207 still pending.",
+    "Filtered source intervals are not exposed global confluence bank; nearest-bank placement from inside water is not implemented.",
+    "No POI/road/crossing relocation, masks, public16/history/UI/PNG/browser acceptance or fresh independent fullSHA review.",
+    "Legacy F visual widths are not physical calibration; existing bounded route/exit allocator limitations remain."
+  ],
+  "checks_ref": "agent-work/evidence/ONE-MILE1-GEO2-water-0701/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/ONE-MILE1-GEO2-water-0701/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/ONE-MILE1-GEO2-water-0701/score-evidence1.2.json",
+  "source_provenance_ref": "agent-work/evidence/ONE-MILE1-GEO2-water-0701/source-provenance.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-14T04:01:36.495Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-14T04:19:07.907Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Point-in-time only; not a guarantee against later service disable. Same task/prompt/schedule unchanged."
+  },
+  "validation": {
+    "status": "passed",
+    "exit_code": 0,
+    "executed": 399,
+    "passed": 399,
+    "failed": 0,
+    "skipped": 0,
+    "duration_ms": 674815.037649,
+    "includes": [
+      "TypeScript noEmit",
+      "Node full suite",
+      "Vite build"
+    ]
+  },
+  "full_task_complete": false,
+  "activation": false,
+  "main_changed": false,
+  "published": false,
+  "product_score_changed": false,
+  "ui_changed": false,
+  "ui_actual_pending_for_full_GEO2": true,
+  "independent_review_performed": false,
+  "claim_disposition": "Own run completed with verified WIP checkpoint; task remains in progress; fresh claims check before continuation"
+}

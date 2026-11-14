@@ -1,0 +1,49 @@
+{
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-WATER",
+  "source_sha": "33b362caeb536a265f30323fdf0e942b481306b1",
+  "source_tree": "53800049cf56305a7d31d15a9c1adf831ca0ca8c",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "next_role": "programmer",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "authority_status": "approved_GEO2_implementation_no_release",
+  "next_step": "Программист продолжает HX-BL-051/GEO2 с 33b362caeb536a265f30323fdf0e942b481306b1: следующий ограниченный этап — actual lake mouths/shore clipping (G207) до береговых POI. Использовать существующие lake cells и реальные видимые контуры: Tiles/Emoji union polygons; Color seeded basin path из buildNaturalLakes/lakeGeometry, включая islands и quadratic shoreline. Сопоставить axis/capsule envelope с первым корректным береговым контактом, обрезать river paint по телу озера и не рисовать сухопутный connector к центру. Не считать старый mouth-connector доказательством контакта; сохранить lake IDs/cells/seed, inlet/outlet direction,53source paths/F и4exit refs. На том жеfixture и ограниченном island/no-contact случае валидировать все3режима до Apply; ошибка возвращает refs без partial state. Затем river-requiredPOI в том же6parent, roads/crossings/masks, public16/history/UI и независимая проверка целогоSHA. Текущая водная полоса unmasked/unmounted, физическая калибровка/публикация не разрешены.",
+  "next_bounded_stage": {
+    "id": "GEO2-MOUTHS",
+    "scope": [
+      "Actual lake-body contours and inlet/outlet shore contact in Tiles/Emoji/Color, including islands",
+      "Clip river finite envelope inside lake body; no extra dry-land line to lake center",
+      "Retain lake/source identity, generated shape seed and flow, with atomic mouth_conflict"
+    ],
+    "completion": [
+      "Retained world correct first shoreline contact and no dry-land connector in all3modes.",
+      "Island/no-contact invalid input rejects with refs and unchanged accepted state.",
+      "Same model geometry reusable by future map/PNG transaction; actual UI/browser verification remains required later."
+    ]
+  },
+  "input_evidence": [
+    "agent-work/evidence/ONE-MILE1-GEO2-water-0701/witness.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-water-0701/contact-examples.json",
+    "agent-work/evidence/ONE-MILE1-GEO2-water-0701/checks.json"
+  ],
+  "source_lookup": {
+    "files": [
+      "src/rendering/lakeGeometry.ts",
+      "src/rendering/LakeWater.tsx"
+    ],
+    "notes": [
+      "LakeShape.path uses smooth quadratic contours; loops alone are not exact displayed Q curves.",
+      "Color LakeWater adds old mouth paths to silhouette/clip; do not certify old problematic land-side connectors as correct new shore.",
+      "Use actual basin path/island membership and new underwater blend, not a regularized invented contour."
+    ]
+  },
+  "known_remaining": [
+    "Unmasked river envelope is not yet exposed bank at a lake/body overlap.",
+    "Inside clearance is not exposed-bank distance; firstContact explicitly reports starts_in_water.",
+    "River-filtered intervals select source paint; global confluence bank still needs validation.",
+    "POI/roads/crossings/public16/history/UI/browser/RNG and independent fullSHA acceptance pending."
+  ],
+  "review_ready": false,
+  "release_authorized": false
+}

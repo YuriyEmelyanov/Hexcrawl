@@ -909,3 +909,7 @@ GEO2-TERMINALS интегрирует split ports с53реальными мар�
 
 ### 14 ноября2026 — открытые выходы определяет actual hydrology, а не sector label
 GEO2-EXITS использует buildRegionRiverNetwork complete=true, реальные candidates/oneMileSources water overrides и regionMarkKeys:4open/1lake/3source,53segments/55nodes/430intervals,3actualrapids. Endpoint corridors обходят занятые узлы; при равной длине — deviation/seeded side/numeric sequence. Предел1mile для exit edge midpoint и sequential allocation остаются техническими ограничениями, не доказательством полного решения/новым игровым правилом. Actual sea fixtures и полный geometry/UI ещё не сертифицированы. Evidence: agent-work/evidence/ONE-MILE1-GEO2-exits-0603/witness.json, checks.json; SHA fd3ee6109d787a6c37173b2dee8c36b8e5bacf90.
+
+
+### 14 ноября2026 — finite water union и clipped endpoints
+GEO2-WATER использует union конечных round capsules и analytic rectangle/circle intervals вместо infinite width/sin. На430capsules проверено430normal queries/1386nonclipped union-bank assertions. Inside clearance не является расстоянием до exposed bank; clipped query endpoint и starts_in_water нельзя выдать за берег. Сохранены actual WR1 visual widths через App helpers; это не физическая калибровка. Следующий shore-helper должен использовать реальный quadratic Color basin path/islands, а не только loops или старые dry-land mouth connectors. Lake clipping/POI/roads/save/UI пока не приняты. Evidence: agent-work/evidence/ONE-MILE1-GEO2-water-0701/witness.json, checks.json; SHA 33b362caeb536a265f30323fdf0e942b481306b1.
