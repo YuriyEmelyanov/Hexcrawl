@@ -1,3 +1,4 @@
+import {createRefinementWorkBudget} from '../src/geometryRefinementWork.ts';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {prepareRefinementWater,refinementWaterContains} from '../src/geometryRefinementWater.ts';
 import {refinementNearestRiverBank} from '../src/geometryRefinementBanks.ts';
@@ -9,7 +10,7 @@ const p=(x,y)=>({x,y}),origin=p(0,0),parent6={q:0,r:0},fine=createDetailGrid(1),
 const path=(riverId,sourceEdgeKey,points)=>({riverId,sourceEdgeKey,fullness:1,points}),water=paths=>prepareRefinementWater({paths,widthByFullness:new Map([[1,1]])});
 const request=point=>({point,parent6,origin,riverId:1,sourceEdgeKey:'a'});
 test('GEO2 nearest exposed bank handles inside starts, buried confluence banks, side, parent and quadratic lake constraints',()=>{
- const straight=water([path(1,'a',[p(-4,0),p(4,0)])]),inside=refinementNearestRiverBank(straight,request(p(0,0)));assert.equal(inside.status,'prepared');near(inside.contact.distance,.5);near(Math.abs(inside.contact.point.y),.5);
+ const straight=water([path(1,'a',[p(-4,0),p(4,0)])]),inside=refinementNearestRiverBank(straight,request(p(0,0)));assert.equal(inside.status,'prepared');near(inside.contact.distance,.5);near(Math.abs(inside.contact.point.y),.5);const bankLimit=createRefinementWorkBudget(5);assert.throws(()=>refinementNearestRiverBank(straight,{...request(p(0,0)),consumeWork:bankLimit.charge}),/prepare_incomplete_budget/);assert.ok(bankLimit.snapshot().used<=5);let bankTicks=0;const bankCancel=createRefinementWorkBudget(2000000,()=>++bankTicks>20);assert.throws(()=>refinementNearestRiverBank(straight,{...request(p(0,0)),consumeWork:bankCancel.charge}),/prepare_cancelled/);assert.ok(bankTicks>20);
  const top=refinementNearestRiverBank(straight,{...request(p(0,-2)),side:1});near(top.contact.point.y,.5);assert.ok(detailPointInPolygon(top.contact.point,detailCellPolygon(createDetailGrid(6),parent6)));
  const joined=prepareRefinementWater({paths:[path(1,'a',[p(0,0),p(2,0)]),path(2,'b',[p(0,0),p(0,2)])],widthByFullness:new Map([[1,2]])}),outer=refinementNearestRiverBank(joined,{...request(p(.2,.2)),side:1});assert.equal(outer.status,'prepared');near(outer.contact.point.x,1);near(outer.contact.point.y,1);near(refinementWaterContains(joined,outer.contact.point).clearance,0);assert.ok(refinementWaterContains(joined,p(.2,1)).clearance<0,'filtered river bank is buried by other river');
  const lake=prepareRefinementShorePath('M-.5 .25L.5 .25L.5 3L-.5 3Z'),masked=refinementNearestRiverBank(straight,{...request(p(0,2)),side:1,lakes:[lake]});near(Math.abs(masked.contact.point.x),.5);near(masked.contact.point.y,.5);

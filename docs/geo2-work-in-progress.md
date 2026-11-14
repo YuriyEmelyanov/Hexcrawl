@@ -323,3 +323,25 @@ Expected-input mismatch returns no partial candidate at fingerprint stage.
 Canonical source footprints are inputs, not future refined output replacements;
 public16/physical4 persistence/parser integration and all-phase budgets remain
 unimplemented. readyForApplication and completeGeometryPlan remain false.
+
+GEO2 composition-work rationale before checks: per-phase counters cannot bound
+combined preparation or cancel inside expensive bank/road/fingerprint loops.
+Reuse retained composed-world case for total/phase accounting, exact sufficient
+limit, exhaustion during a late phase, invalid limits and atomic cancellation.
+Extend existing nearest-bank case for budget exhaustion/cancel inside that phase;
+no new permanent case/world fixture lifecycle. Units are deterministic accounting,
+with upfront source/footprint helper reservations, not CPU/time/subscription units.
+
+GEO2 WORK-BUDGET checkpoint: composed preview uses one deterministic logical
+work budget (default2million units). Source/footprint black-box helpers reserve
+input-dependent work before execution; fingerprint, exposed-bank and road loops
+charge incrementally. Every charge checks cancellation. Receipts report limit,
+used, remaining and phase totals; neither exhaustion nor cancellation exposes a
+partial candidate or claims that a legal path does not exist. Runtime controls
+and limits do not change sourceFingerprint. Existing retained-world, bank and
+dry-search cases cover sufficient/exact/late-exhausted limits and cancellation;
+no additional permanent cases. This accounts composition work, not wall time,
+CPU cost, tokens or subscription usage. Upstream river/mouth preparation is still
+a supplied input outside this aggregate budget. Feature-specific POI constraints,
+whole GeometryPlan/public16/physical4/history/Q01 closure/Apply/UI/PNG remain
+pending; readyForApplication=false and completeGeometryPlan=false.

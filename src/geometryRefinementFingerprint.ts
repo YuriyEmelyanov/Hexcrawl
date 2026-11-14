@@ -7,9 +7,9 @@ import {detailPoiWaterRequirement} from './detailGeography.ts';
 import {poiNameLocators,hasCentralPoi} from './manualPois.ts';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource.ts';
 type Input=Parameters<typeof prepareRefinementGeographyPreview>[0];
-export function refinementInputFingerprint(input:Input,state:Detail1State):string {
+export function refinementInputFingerprint(input:Input,state:Detail1State,consumeWork?:(units:number)=>void):string {
  let nodes=0;
- const canonical=(v:unknown):string=>{if(++nodes>1000000)throw Error('fingerprint_capacity');if(v===null||typeof v==='string'||typeof v==='boolean')return JSON.stringify(v);if(typeof v==='number'){if(!Number.isFinite(v))throw Error('nonfinite_fingerprint_input');return JSON.stringify(v);}if(Array.isArray(v))return '['+v.map(canonical).join(',')+']';if(v&&typeof v==='object')return '{'+Object.keys(v).filter(k=>(v as Record<string,unknown>)[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+canonical((v as Record<string,unknown>)[k])).join(',')+'}';throw Error('invalid_fingerprint_input');};
+ const canonical=(v:unknown):string=>{consumeWork?.(1);if(++nodes>1000000)throw Error('fingerprint_capacity');if(v===null||typeof v==='string'||typeof v==='boolean')return JSON.stringify(v);if(typeof v==='number'){if(!Number.isFinite(v))throw Error('nonfinite_fingerprint_input');return JSON.stringify(v);}if(Array.isArray(v))return '['+v.map(canonical).join(',')+']';if(v&&typeof v==='object')return '{'+Object.keys(v).filter(k=>(v as Record<string,unknown>)[k]!==undefined).sort().map(k=>JSON.stringify(k)+':'+canonical((v as Record<string,unknown>)[k])).join(',')+'}';throw Error('invalid_fingerprint_input');};
  const ordered=<T>(a:readonly T[])=>a.map(value=>({value,key:canonical(value)})).sort((a,b)=>a.key<b.key?-1:a.key>b.key?1:0).map(x=>x.value);
  const source=normalizeRefinementRiverSource({rivers:input.map.rivers,marks:input.marks,origin:input.origin});if(source.status==='error')throw Error('invalid_fingerprint_source');
  const aliases=[...poiNameLocators({regions:[...input.map.regions],waterPoiByKey:new Map(input.map.waterPoiByKey)},true)].sort();

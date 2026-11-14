@@ -33,15 +33,15 @@ function edgeIntegral(a:Point,b:Point,old:Poly,tick:()=>void){
  return total*dist(a,b);
 }
 function clean(p:Poly){return p.filter((v,i)=>i===0||dist(v,p[i-1])>1e-12);}
-export function refinementRoadObjective(points:Poly,original:Poly){
+export function refinementRoadObjective(points:Poly,original:Poly,consumeWork?:(units:number)=>void){
  if(points.length<2||original.length<2||[...points,...original].some(p=>!finite(p)))throw Error('invalid_road_objective');
  const path=clean(points),old=clean(original);if([...path,...old].some((p,i,a)=>i>0&&!Number.isFinite(dist(p,a[i-1])))||path.length<2||old.length<2||path.length>512||old.length>64)throw Error('invalid_road_objective');
- let lengthMiles=0,area=0,work=0;const tick=()=>{if(++work>2000000)throw Error('road_objective_capacity');};
+ let lengthMiles=0,area=0,work=0;const tick=()=>{consumeWork?.(1);if(++work>2000000)throw Error('road_objective_capacity');};
  for(let i=1;i<path.length;i++){lengthMiles+=dist(path[i-1],path[i]);area+=edgeIntegral(path[i-1],path[i],old,tick);}
  if(!Number.isFinite(lengthMiles)||!Number.isFinite(area))throw Error('invalid_road_objective');
  return Object.freeze({lengthMiles,deviationSquareMiles:area/lengthMiles});
 }
-export function searchRefinementRoad(input:Readonly<{from:Point;to:Point;original:Poly;vertices:Poly;legal:(a:Point,b:Point,charge:()=>void)=>boolean;maxWork?:number;cancelled?:()=>boolean}>){
+export function searchRefinementRoad(input:Readonly<{from:Point;to:Point;original:Poly;vertices:Poly;legal:(a:Point,b:Point,charge:()=>void)=>boolean;maxWork?:number;cancelled?:()=>boolean;consumeWork?:(units:number)=>void}>){
  let work=0;const max=input.maxWork??2000000;
  const error=(reason:string)=>Object.freeze({status:'error' as const,code:reason,work,completeGeometryPlan:false as const});
  if(!Number.isSafeInteger(max)||max<1||!finite(input.from)||!finite(input.to)||dist(input.from,input.to)<1e-12||input.original.length<2||input.original.length>64||input.original.some(p=>!finite(p))||input.vertices.some(p=>!finite(p)))return error('invalid_search');
@@ -49,7 +49,7 @@ export function searchRefinementRoad(input:Readonly<{from:Point;to:Point;origina
  const unique=new Map<string,Point>();for(const p of [input.from,input.to,...input.vertices])unique.set(JSON.stringify([p.x===0?0:p.x,p.y===0?0:p.y]),{x:p.x===0?0:p.x,y:p.y===0?0:p.y});
  const points=[...unique.values()].sort(numeric);if(points.length>512)return error('search_incomplete_capacity');
  const index=(p:Point)=>points.findIndex(q=>q.x===p.x&&q.y===p.y),start=index(input.from),target=index(input.to);
- const tick=()=>{if(input.cancelled?.())throw Error('search_cancelled');if(++work>max)throw Error('search_incomplete_budget');};
+ const tick=()=>{input.consumeWork?.(1);if(input.cancelled?.())throw Error('search_cancelled');if(++work>max)throw Error('search_incomplete_budget');};
  type Label={length:number;area:number;path:number[]};
  const compare=(a:Label,b:Label)=>{if(Math.abs(a.length-b.length)>EPS)return a.length-b.length;const ad=a.area/Math.max(a.length,EPS),bd=b.area/Math.max(b.length,EPS);if(Math.abs(ad-bd)>EPS)return ad-bd;for(let i=0;i<Math.min(a.path.length,b.path.length);i++)if(a.path[i]!==b.path[i])return a.path[i]-b.path[i];return a.path.length-b.path.length;};
  const labels=new Map<number,Label>([[start,{length:0,area:0,path:[start]}]]),settled=new Set<number>(),edges=new Map<string,{length:number;area:number}|null>();
@@ -66,7 +66,7 @@ export function searchRefinementRoad(input:Readonly<{from:Point;to:Point;origina
 
 /** Exact edge admissibility, finite candidate vertices. Curved obstacles are
  * queried analytically; sampled candidate vertices do not prove completeness. */
-export function prepareRefinementDryRoadPath(input:Readonly<{from:Point;to:Point;original:Poly;land:RefinementShore;lakes:readonly RefinementShore[];water:RefinementWater;maxWork?:number;cancelled?:()=>boolean;allowedBankContacts?:Poly}>){
+export function prepareRefinementDryRoadPath(input:Readonly<{from:Point;to:Point;original:Poly;land:RefinementShore;lakes:readonly RefinementShore[];water:RefinementWater;maxWork?:number;cancelled?:()=>boolean;allowedBankContacts?:Poly;consumeWork?:(units:number)=>void}>){
  const legal=(a:Point,b:Point,charge:()=>void)=>{
   for(const loop of input.land.loops)for(const _ of loop)charge();
   for(let i=0;i<input.water.capsules.length;i++)charge();

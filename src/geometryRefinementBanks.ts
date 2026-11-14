@@ -8,7 +8,7 @@ type Capsule=RefinementWater['capsules'][number];
 type Line=Readonly<{kind:'line';a:WorldPoint;b:WorldPoint}>;
 type Circle=Readonly<{kind:'circle';center:WorldPoint;radius:number}>;
 type Primitive=Line|Circle;
-export type RefinementBankRequest=Readonly<{point:WorldPoint;parent6:DetailCell;origin:WorldPoint;riverId:number;sourceEdgeKey:string;side?:-1|1;sideAnchor?:WorldPoint;allowedPolygons?:readonly (readonly WorldPoint[])[];lakes?:readonly RefinementShore[]}>;
+export type RefinementBankRequest=Readonly<{point:WorldPoint;parent6:DetailCell;origin:WorldPoint;riverId:number;sourceEdgeKey:string;side?:-1|1;sideAnchor?:WorldPoint;allowedPolygons?:readonly (readonly WorldPoint[])[];lakes?:readonly RefinementShore[];consumeWork?:(units:number)=>void}>;
 const lexical=(a:string,b:string)=>a<b?-1:a>b?1:0;
 const freeze=<T>(a:T[])=>Object.freeze(a),finite=(p:WorldPoint)=>Number.isFinite(p.x)&&Number.isFinite(p.y),cross=(a:WorldPoint,b:WorldPoint)=>a.x*b.y-a.y*b.x;
 const fail=(refs:string[])=>Object.freeze({status:'error' as const,code:'poi_conflict' as const,refs:freeze(refs),completeGeometryPlan:false as const});
@@ -34,7 +34,7 @@ function curveCircle(curve:ShoreCurve,circle:Circle):WorldPoint[]{const x=[curve
 export function refinementNearestRiverBank(water:RefinementWater,input:RefinementBankRequest){
  if(!finite(input.point)||!finite(input.origin)||!Number.isSafeInteger(input.riverId)||input.riverId<1||!input.sourceEdgeKey||input.side!==undefined&&input.side!==1&&input.side!==-1||input.sideAnchor&&!finite(input.sideAnchor))return fail(['invalid_bank_request']);
  let parent:readonly WorldPoint[];try{parent=detailCellPolygon(createDetailGrid(6,input.origin),input.parent6);}catch{return fail(['invalid_parent']);}
- const polygons=input.allowedPolygons??[parent],lakes=[...(input.lakes??[])].sort((a,b)=>lexical(a.signature,b.signature));
+ input.consumeWork?.(water.capsules.length+1);const polygons=input.allowedPolygons??[parent],lakes=[...(input.lakes??[])].sort((a,b)=>lexical(a.signature,b.signature));
  if(!polygons.length||polygons.length>4096||polygons.some(p=>p.length<3||p.some(p=>!finite(p))))return fail(['invalid_allowed_footprint']);
  const box={x0:Math.min(...parent.map(p=>p.x)),x1:Math.max(...parent.map(p=>p.x)),y0:Math.min(...parent.map(p=>p.y)),y1:Math.max(...parent.map(p=>p.y))};
  const local=[...water.capsules].filter(c=>Math.min(c.from.x,c.to.x)-c.radius<=box.x1&&Math.max(c.from.x,c.to.x)+c.radius>=box.x0&&Math.min(c.from.y,c.to.y)-c.radius<=box.y1&&Math.max(c.from.y,c.to.y)+c.radius>=box.y0).sort((a,b)=>a.riverId-b.riverId||lexical(a.sourceEdgeKey,b.sourceEdgeKey)||a.stepIndex-b.stepIndex);
@@ -47,9 +47,9 @@ export function refinementNearestRiverBank(water:RefinementWater,input:Refinemen
   for(const primitive of primitives(c)){const points:WorldPoint[]=[];
    if(primitive.kind==='line'){const dx=primitive.b.x-primitive.a.x,dy=primitive.b.y-primitive.a.y,t=Math.max(0,Math.min(1,((input.point.x-primitive.a.x)*dx+(input.point.y-primitive.a.y)*dy)/(dx*dx+dy*dy)));points.push(primitive.a,primitive.b,at(primitive,t));}
    else{const dx=input.point.x-primitive.center.x,dy=input.point.y-primitive.center.y,d=Math.hypot(dx,dy);if(d>1e-12)points.push({x:primitive.center.x+dx/d*primitive.radius,y:primitive.center.y+dy/d*primitive.radius});for(const [x,y]of [[1,0],[0,1],[-1,0],[0,-1]])points.push({x:primitive.center.x+x*primitive.radius,y:primitive.center.y+y*primitive.radius});}
-   for(const other of [...boundaries,...(input.side?[axis]:[])]){work++;points.push(...intersections(primitive,other));}
-   for(const lake of lakes){if(primitive.kind==='line'){const cut=refinementShoreIntervals(lake,{from:primitive.a,to:primitive.b});if(cut.status==='error')return fail(['invalid_lake_mask']);points.push(...cut.cuts.map(c=>c.point));}else for(const loop of lake.loops)for(const curve of loop){work++;points.push(...curveCircle(curve,primitive));}}
-   for(const p of points){const inside=refinementWaterContains(water,p);if(inside.status==='error'||inside.clearance===null||Math.abs(inside.clearance)>1e-7||!detailPointInPolygon(p,parent)||!polygons.some(poly=>detailPointInPolygon(p,poly))||lakes.some(l=>refinementShoreLocation(l,p)==='inside'))continue;
+   for(const other of [...boundaries,...(input.side?[axis]:[])]){work++;input.consumeWork?.(1);points.push(...intersections(primitive,other));}
+   for(const lake of lakes){if(primitive.kind==='line'){const cut=refinementShoreIntervals(lake,{from:primitive.a,to:primitive.b});if(cut.status==='error')return fail(['invalid_lake_mask']);points.push(...cut.cuts.map(c=>c.point));}else for(const loop of lake.loops)for(const curve of loop){work++;input.consumeWork?.(1);points.push(...curveCircle(curve,primitive));}}
+   for(const p of points){input.consumeWork?.(water.capsules.length+parent.length+polygons.reduce((n,p)=>n+p.length,0)+lakes.reduce((n,l)=>n+l.loops.reduce((n,c)=>n+c.length,0),0)+1);const inside=refinementWaterContains(water,p);if(inside.status==='error'||inside.clearance===null||Math.abs(inside.clearance)>1e-7||!detailPointInPolygon(p,parent)||!polygons.some(poly=>detailPointInPolygon(p,poly))||lakes.some(l=>refinementShoreLocation(l,p)==='inside'))continue;
     const signed=c.ux*(p.y-c.from.y)-c.uy*(p.x-c.from.x),side=signed>1e-9?1:signed< -1e-9?-1:0;
     if(input.side&&side!==0&&side!==input.side)continue;if(input.side&&input.sideAnchor&&input.side*(c.ux*(input.sideAnchor.y-c.from.y)-c.uy*(input.sideAnchor.x-c.from.x))< -1e-9)continue;
     candidates.push({point:Object.freeze({...p}),riverId:c.riverId,sourceEdgeKey:c.sourceEdgeKey,stepIndex:c.stepIndex,side,tangent:Object.freeze({x:c.ux,y:c.uy}),distance:Math.hypot(p.x-input.point.x,p.y-input.point.y),cell:Object.freeze(worldToDetailCell(createDetailGrid(1,input.origin),p))});
