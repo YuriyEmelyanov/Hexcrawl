@@ -1,4 +1,4 @@
-# Подложки и рельеф схематичной карты — v1
+# Подложки и биомы схематичной карты — v1
 
 Подготовленные ассеты. **К действующему рендереру пока не подключены.**
 Все PNG — **210 × 210 px, RGB/sRGB без прозрачности**. Подложка заполняет весь квадрат; внешний контур гекса применяется при отрисовке.
@@ -140,3 +140,33 @@
 Итоговая карта для просмотра включает все 17 готовых типов: шесть подложек, открытые холмы, голые горы и девять сочетаний лесного семейства и рельефа. Для каждого типа один раз независимо брошены 2d4: получилось 73 гекса. Броски сохранены до поиска раскладки; обе ориентации используют те же количества и координаты, все группы связны. Принятые фоны, открытый рельеф и лиственные crisp-v4 сохранены без изменений. Новое отображение к действующей карте не подключалось.
 
 Запросы, пробные правки размещения хвойных верхушек, формат, SHA-256, проверка сохранения принятых ассетов и полная раскладка 2d4: [coniferous-mixed-forest-generation.json](coniferous-mixed-forest-generation.json).
+
+## Полный каталог биомов проекта — 26 типов
+
+Каталог сверён с `BiomeId` и `BIOMES` в `src/App.tsx` на `main` (`1962fb9a835a9c310e55c1a09415fe180f22cca9`), а состав редколесий — с `src/rendering/forestStyle.ts`: 24 сухопутных биома плюс озеро и море. Каменистая подложка stone.png не является отдельным биомом. Холмистое редколесье в коде одно, лиственное; горное редколесье одно, хвойное. Дополнительные сочетания вне текущего каталога не создавались.
+
+Добавлен рисунок оставшимся 13 типам, по две ориентации — 26 новых PNG:
+
+| Биом | Общая подложка | Вершиной вверх | Стороной вверх |
+|---|---|---|---|
+| Открытые равнины | grass.png | [open-plains-pointy.png](open-plains-pointy.png) | [open-plains-flat.png](open-plains-flat.png) |
+| Болото | swamp.png | [swamp-biome-pointy.png](swamp-biome-pointy.png) | [swamp-biome-flat.png](swamp-biome-flat.png) |
+| Полупустыня | sand.png | [semi-desert-pointy.png](semi-desert-pointy.png) | [semi-desert-flat.png](semi-desert-flat.png) |
+| Заболоченный лес | swamp.png | [swamp-forest-pointy.png](swamp-forest-pointy.png) | [swamp-forest-flat.png](swamp-forest-flat.png) |
+| Лиственное редколесье | grass.png | [deciduous-woodland-pointy.png](deciduous-woodland-pointy.png) | [deciduous-woodland-flat.png](deciduous-woodland-flat.png) |
+| Смешанное редколесье | grass.png | [mixed-woodland-pointy.png](mixed-woodland-pointy.png) | [mixed-woodland-flat.png](mixed-woodland-flat.png) |
+| Хвойное редколесье | grass.png | [coniferous-woodland-pointy.png](coniferous-woodland-pointy.png) | [coniferous-woodland-flat.png](coniferous-woodland-flat.png) |
+| Холмистое редколесье | grass.png | [hilly-woodland-pointy.png](hilly-woodland-pointy.png) | [hilly-woodland-flat.png](hilly-woodland-flat.png) |
+| Горное редколесье | grass.png | [mountain-woodland-pointy.png](mountain-woodland-pointy.png) | [mountain-woodland-flat.png](mountain-woodland-flat.png) |
+| Мёртвый лес | stone.png | [dead-forest-pointy.png](dead-forest-pointy.png) | [dead-forest-flat.png](dead-forest-flat.png) |
+| Мёртвое редколесье | stone.png | [dead-woodland-pointy.png](dead-woodland-pointy.png) | [dead-woodland-flat.png](dead-woodland-flat.png) |
+| Мёртвый лес на холмах | stone.png | [dead-forested-hills-pointy.png](dead-forested-hills-pointy.png) | [dead-forested-hills-flat.png](dead-forested-hills-flat.png) |
+| Мёртвый горный лес | stone.png | [dead-mountain-forest-pointy.png](dead-mountain-forest-pointy.png) | [dead-mountain-forest-flat.png](dead-mountain-forest-flat.png) |
+
+Редколесья используют взрослые деревья того же масштаба, что и густые леса, с заметно меньшим числом деревьев и просветами по всей площади. У мёртвых лесов — крупные голые стволы и ветви на общей каменистой подложке. Болото и заболоченный лес объединены болотным фоном и видимой мелкой водой; равнины и полупустыня получили сдержанный условный рисунок растительности и камней.
+
+Объекты и рельеф остаются чёткими, плавный переход относится к земле и фоновым теням. Рисунок вертикальный в обеих ориентациях полного правильного гекса. Все новые PNG — 210 × 210 px, RGB/sRGB без прозрачности. Предыдущие подготовленные фоны, принятый открытый рельеф и густые леса сохранены без изменений.
+
+Итоговая карта включает все 26 настоящих типов, по одному независимому броску 2d3 каждого: 93 гекса. Броски зафиксированы до поиска раскладки; обе ориентации используют те же количества и координаты. Все группы и поле целиком связны. К действующему рендереру новый набор пока не подключён.
+
+Полная привязка реальных IDs к PNG, источники каталога, запросы, SHA-256 всех новых тайлов и сохранённая раскладка 2d3: [complete-biomes-generation.json](complete-biomes-generation.json).
