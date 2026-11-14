@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "id": "HX-RSR-EEM-GENERATORS-v1",
+  "version": 1,
+  "run_id": "2026-11-14T0933-Eem-generators",
+  "status": "completed_two_generator_workflow",
+  "baseline_sha": "25f5638baa1b845858dba38b18b802e8306ce3fe",
+  "candidate_id": "HX-RSR-CAND-LAND-EEM-v1",
+  "observed_at": "2026-11-14T09:44:00Z",
+  "source": {
+    "id": "EEM-GEN-UI",
+    "url": "https://www.landofeem.com/random-generators",
+    "published_at": null,
+    "edition": "Current undated official web tool; build/source tables not pinned to Core v1.2",
+    "locator": "Embedded app > Town and Tavern; category switch; location selection; Roll; full page reload",
+    "access_level": "full_text",
+    "author_project_key": "landofeem:ben-costa-james-parks:official-generators",
+    "language": "English",
+    "geography": "Publisher website; user geography unknown",
+    "method": "Browser direct UI observations after successful public-page web lookup; static extraction alone did not contain runtime outputs."
+  },
+  "bounded_corpus": {
+    "inspected_categories": [
+      "Town",
+      "Tavern"
+    ],
+    "not_inspected": [
+      "NPC",
+      "Dungeons",
+      "Encounters",
+      "Adversaries",
+      "Treasure Hoard",
+      "Items",
+      "Crafting Components"
+    ],
+    "town_rolls_before_reload": 3,
+    "town_rolls_after_reload": 1,
+    "standalone_tavern_rolls": 1,
+    "standalone_tavern_category_entries": 2,
+    "full_reloads": 1,
+    "login_or_signup": false
+  },
+  "facts": [
+    {
+      "id": "Town actual output",
+      "status": "pass",
+      "evidence": "Roll produced a town, 4 notable residents and a nested tavern."
+    },
+    {
+      "id": "Town repeated roll",
+      "status": "pass",
+      "evidence": "Second Roll replaced both town and nested tavern."
+    },
+    {
+      "id": "Standalone Tavern output",
+      "status": "pass",
+      "evidence": "Opening Tavern produced a tavern distinct from town's nested tavern."
+    },
+    {
+      "id": "Standalone Tavern repeated roll",
+      "status": "pass",
+      "evidence": "Roll replaced standalone tavern; one keeper + 4 patrons in inspected output."
+    },
+    {
+      "id": "In-page category retention",
+      "status": "pass",
+      "evidence": "Return to Town retained its second result after standalone tavern reroll."
+    },
+    {
+      "id": "Location input choices",
+      "status": "pass",
+      "evidence": "Seven options exposed; default mountain/hill category."
+    },
+    {
+      "id": "Location edit without Roll",
+      "status": "pass",
+      "evidence": "Selecting urban category changed control while prior output remained."
+    },
+    {
+      "id": "Location + Roll",
+      "status": "pass",
+      "evidence": "Roll after urban selection produced a third compound town. Distribution conformity not tested."
+    },
+    {
+      "id": "Reload selected category",
+      "status": "pass",
+      "evidence": "Full reload returned NPC default."
+    },
+    {
+      "id": "Reload Town data",
+      "status": "pass",
+      "evidence": "Town reopened empty and default location restored; prior town not restored."
+    },
+    {
+      "id": "Reload Tavern data",
+      "status": "pass",
+      "evidence": "Tavern opened with new output, not prior standalone result."
+    },
+    {
+      "id": "Save/export/seed/undo scope",
+      "status": "pass",
+      "evidence": "No visible dedicated save/export/copy/seed/undo/map placement controls in inspected Town/Tavern surfaces and page snapshot; absence limited to scope."
+    },
+    {
+      "id": "Independent audience unit",
+      "status": "pass",
+      "evidence": "One publisher project, zero newly counted GM projects/people; generated examples not population."
+    },
+    {
+      "id": "Canonical dedup",
+      "status": "pass",
+      "evidence": "Reuse existing place_description and roll_table_resolution; no new binding/rule/task."
+    },
+    {
+      "id": "Active gates",
+      "status": "pass",
+      "evidence": "No active pool/rating/weight/score or product development initiated."
+    }
+  ],
+  "output_trace": {
+    "first_town": "Sludgedingle",
+    "second_town": "Overtown",
+    "third_town": "Willowthorp",
+    "town_residents_each_observed": 4,
+    "tavern_keeper_each_observed": 1,
+    "tavern_patrons_each_observed": 4,
+    "nested_tavern_replaced_with_town": true,
+    "standalone_state_separate_from_town": true,
+    "category_switch_preserved_result": true,
+    "reload_restored_results": false
+  },
+  "interpretation": {
+    "L1": "Verified external resource for filling places/GM preparation, especially develop existing map; no geographic hex generation or map attachment observed.",
+    "L2": "Potential at-table content use; no travel/session procedure audited.",
+    "create_geography": "Not demonstrated by these two categories.",
+    "competition": "Useful immediate content alternative. In-page retention does not establish persistent prep storage; observed reload loss distinguishes session output from saved map lifecycle.",
+    "population": "No new adoption, unique GM, current player or p_create estimate.",
+    "numeric_method": "Existing qualitative gm-materials resource evidence; no new indicator, experiment weight or numerical input."
+  },
+  "unknowns": [
+    "Internal probability tables/biome distribution and seeds",
+    "Every generator outside selected two",
+    "Authenticated/private/undocumented persistence",
+    "Exact app build and equivalence to current book",
+    "HexCrawl current implementation at exact code SHA; not audited here"
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "EEM-GEN-UI#Town/Tavern compound-output and reload test",
+    "normative_kind": "analyst_acceptance_interpretation_of_observed_resource_not_game_rule",
+    "applicability": "GM transfers their chosen place-preparation text into an existing place/note; source tool has no observed map-placement control.",
+    "layer": "L1",
+    "trigger_or_user_action": "Save chosen preparation for an existing place, then change generator category or reroll unrelated content and reload saved map.",
+    "inputs_and_units": {
+      "fixture_place_id": "place-01",
+      "own_test_note": "Town A | tavern B | 4 residents | 1 keeper | 4 patrons",
+      "unit": "one plain-text preparation note",
+      "source_context": "Selected Town includes 4 residents and nested tavern with keeper + 4 patrons in inspected samples; no universal random-content guarantee."
+    },
+    "product_operation": "Use existing content.place_description to store the exact chosen note, with source URL and selected category/location recorded as provenance where supported; no silent reroll during save/load. Reuse content.roll_table_resolution for any future structured recipe, without creating Eem-specific duplicate mechanics.",
+    "expected_output": "place-01 retains exact test note through save/load. Reroll of other content leaves stored text unchanged. Undo of note edit changes only note.",
+    "constraints_and_exceptions": [
+      "Candidate acceptance for existing shared operation, not a new authorized feature or claimed implementation.",
+      "No automatic scrape/import, copyrighted table ingestion, Eem binding or integration implemented.",
+      "Unselected generators, internal RNG distributions/seeds, authentication/private persistence and full Core rules are outside inspected corpus.",
+      "Source application's in-page retention and loss after reload are observations, not a requirement that HexCrawl copy the loss."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Saved map fixture place-01 has empty note; existing geography and POIs fixed",
+        "when": "Set own_test_note exactly and save/reload map",
+        "expected": "Exact note text survives; geography and POIs unchanged; no random-generation action invoked."
+      },
+      {
+        "given": "place-01 retains chosen text; another place is selected",
+        "when": "Reroll only other place content, save/reload",
+        "expected": "place-01 text remains byte-for-byte unchanged; only explicitly selected result may differ."
+      },
+      {
+        "given": "place-01 note changes from empty to own_test_note in one edit",
+        "when": "Undo that note edit",
+        "expected": "place-01 note is empty; all pre-existing geographic objects remain unchanged."
+      }
+    ],
+    "source_vs_product_interpretation": "Live source demonstrates compound preparation and volatile unsaved state; saveable attachment is analyst reuse criterion. HexCrawl runtime at exact SHA is unknown in this resource-only run; task status is not implementation proof.",
+    "canonical_rule_refs": [
+      "content.place_description",
+      "content.roll_table_resolution"
+    ],
+    "existing_backlog_context": [
+      "HX-BL-024",
+      "HX-BL-043"
+    ],
+    "new_task_required": false,
+    "backlog_disposition": "No new source rule or distinct product gap established beyond existing shared note/table operations; unified backlog preserved.",
+    "unresolved_parameters": [
+      "Actual HexCrawl current runtime/DOM evidence for this transfer criterion",
+      "Structured field-level reroll/attachment would require separate reviewed specification",
+      "Tool build/version and internal table probabilities unknown"
+    ]
+  },
+  "rules_registry_changed": false,
+  "game_bindings_changed": false,
+  "new_product_tasks": 0,
+  "active_rating_changed": false,
+  "active_pool_changed": false,
+  "active_numeric_method_changed": false,
+  "source_copyright": "Only structural observations/minimal example identifiers retained; complete generated NPC prose not republished.",
+  "screenshot": {
+    "archive_ref": "agent-work/research/resources/Eem-generators-2026-11-14-town.jpg.base64.txt",
+    "encoding": "base64 JPEG",
+    "bytes": 155948,
+    "sha256": "75d3d51ff3fca062acf4d987efb6f792512723ad88acc65f262c5336a3def7dd"
+  },
+  "next_candidate": {
+    "id": "HX-RSR-CURRENT-GM-SURVEY-VALIDATION",
+    "action": "Find and fully validate one recent primary survey question about systems actually run by GMs (not lifetime play/preferences), prioritizing high-ranked map-creation games. Reuse existing survey audits; choose a distinct wave only. Capture exact wording, dates/recall period, N/n, selection, roles, language/geography, denominator and aliases; determine whether any map-preparation inference is admissible.",
+    "completion_condition": "A complete question-level source/denominator/construct suitability decision for one accessible primary wave, with candidate leads or explicit exclusion; no new numerical weight or active input change.",
+    "priority_reassessment_required": true,
+    "alternatives": "Do not repeat completed Eem generator screen or RatInASuit2025 denominator audit without new evidence."
+  },
+  "errors": [
+    {
+      "stage": "resource_mapping",
+      "failed_operation": {
+        "tool": "github.fetch_file",
+        "action": "read canonical registry",
+        "locator": "YuriyEmelyanov/Hexcrawl@agent-operations:agent-work/research/common-rules.json"
+      },
+      "observed_error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+      "error_code": "NOT_FOUND",
+      "cause_status": "confirmed",
+      "cause": "Incorrect registry path used; resolve canonical ref from contract before reading.",
+      "recovered": true,
+      "recovered_by": "Read AGENTS/process exact canonical path and fetched agent-work/rules/common-rules.json successfully; no permission/service-failure inference.",
+      "status": "recovered",
+      "run_id": "2026-11-14T0933-Eem-generators",
+      "last_successful_step": "Live two-generator workflow and reload completed",
+      "stop_reason": null,
+      "needs_owner_action": false,
+      "owner_action": null,
+      "exact_continuation": "Canonical registry read succeeded; continue scoped evidence persistence."
+    }
+  ]
+}
+
