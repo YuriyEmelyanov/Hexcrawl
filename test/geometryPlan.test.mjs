@@ -10,6 +10,7 @@ import {detailSourcePixelToWorld} from '../src/detailGeography.ts';
 import {buildNaturalLakes} from '../src/rendering/lakeGeometry.ts';
 import {migrateSeas} from '../src/seaIdentity.ts';
 import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
+import {createDetailGrid,detailCellCenter,worldToDetailCell} from '../src/detailGrid.ts';
 
 // Test governance: two logical cases for the new accepted boundary. Existing
 // river/mouth/road suites own routing algorithms; saveSafety owns old formats
@@ -91,6 +92,23 @@ test('GEO2 scoped source projection retains literal choices and refuses hidden b
 
  const newCrossing={...input.map.crossings[0],key:'outside-crossing'};assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,crossings:[...expanded.map.crossings,newCrossing]}},g).code,'boundary_dependency');
  const lake=[...input.map.hexTerrainByKey].find(([,v])=>v.terrainOverride==='lake');assert.ok(lake);const joined=new Map(expanded.map.hexTerrainByKey);joined.set('1000,1000',lake[1]);assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,hexTerrainByKey:joined}},g).code,'boundary_dependency');
+
+ // G208: expansion allocates new authored owners. A scoped signature must
+ // retain the old owners without discarding the new global data/counter.
+ const alias='poi:999999:1000,1000',id=`detail-poi:${g.sourceState.poiIdentities.nextId}`,anchor=detailCellCenter(createDetailGrid(6),extra.hexes[0]),cell=worldToDetailCell(createDetailGrid(1),anchor);
+ const newFootprint={poiId:id,legacyRef:alias,worldAnchor:anchor,cells:[cell],extent:{kind:'manual_size',diameterMiles:.1,basis:'conditional',note:'new authored site'},attachments:[]};
+ const globalAuthored=parseDetail1StateV11({...g.sourceState,poiIdentities:{...g.sourceState.poiIdentities,nextId:g.sourceState.poiIdentities.nextId+2,byLegacyRef:{...g.sourceState.poiIdentities.byLegacyRef,[alias]:id}},poiFootprints:[...g.sourceState.poiFootprints,newFootprint],fineCellEdits:{...g.sourceState.fineCellEdits,[`${cell.q},${cell.r}`]:{name:{ru:'Новое место',en:'New site'},note:'retain outside edit'}}});
+ const withOwner={...expanded,map:{...expanded.map,physicalGrid:globalAuthored,regions:[...input.map.regions,{...extra,pointsOfInterest:[extra.hexes[0]],pointOfInterestKinds:{'1000,1000':'ruins'}}]}};
+ const beforeOwner=JSON.stringify(withOwner),ownerProjection=projectGeometryRefinementSource(withOwner,g);
+ assert.equal(ownerProjection.status,'projected',JSON.stringify(ownerProjection));assert.equal(ownerProjection.readyForApplication,false);assert.equal(ownerProjection.boundaryValidation,'required');assert.equal(ownerProjection.geometryRefinement,g);
+ assert.equal(validateGeometryRefinementSource(ownerProjection.input,g),true);
+ assert.deepEqual(ownerProjection.input.map.physicalGrid.poiFootprints,g.sourceState.poiFootprints);assert.deepEqual(ownerProjection.input.map.physicalGrid.poiIdentities.byLegacyRef,g.sourceState.poiIdentities.byLegacyRef);
+ assert.equal(ownerProjection.input.map.physicalGrid.poiIdentities.nextId,globalAuthored.poiIdentities.nextId);assert.deepEqual(ownerProjection.globalAuthoredState,globalAuthored);assert.deepEqual(ownerProjection.globalAuthoredState.fineCellEdits,globalAuthored.fineCellEdits);
+ assert.deepEqual(ownerProjection.outside.authoredFootprints,[newFootprint]);assert.deepEqual(ownerProjection.outside.authoredIdentityRefs,{[alias]:id});assert.equal(JSON.stringify(withOwner),beforeOwner);
+ const missingOwner=copy(globalAuthored);delete missingOwner.poiIdentities.byLegacyRef[g.sourceState.poiFootprints[0].legacyRef];assert.equal(projectGeometryRefinementSource({...withOwner,map:{...withOwner.map,physicalGrid:missingOwner}},g).code,'missing_scope_reference');
+ const reboundOwner=copy(globalAuthored);reboundOwner.poiIdentities.byLegacyRef[g.sourceState.poiFootprints[0].legacyRef]=`detail-poi:${globalAuthored.poiIdentities.nextId}`;reboundOwner.poiIdentities.nextId++;assert.equal(projectGeometryRefinementSource({...withOwner,map:{...withOwner.map,physicalGrid:reboundOwner}},g).code,'scope_source_changed');
+ const danglingOwner=copy(globalAuthored);danglingOwner.poiIdentities.byLegacyRef['poi:999998:1001,1000']=`detail-poi:${globalAuthored.poiIdentities.nextId}`;danglingOwner.poiIdentities.nextId++;assert.equal(projectGeometryRefinementSource({...withOwner,map:{...withOwner.map,physicalGrid:danglingOwner}},g).code,'invalid_authored_source');
+ const regressCounter=copy(g.sourceState);regressCounter.poiIdentities.nextId--;assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,physicalGrid:regressCounter}},g).status,'error');
 });
 
 test('GEO2 persisted records reject broken source, topology, contacts and outer authored correspondence atomically',async()=>{
