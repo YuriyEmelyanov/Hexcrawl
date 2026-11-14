@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "program_id": "HX-RSR-001",
+  "run_id": "2026-11-14T1131-Foundry2026",
+  "status": "completed",
+  "program_status": "active",
+  "started_at": "2026-11-14T11:31:54.623Z",
+  "completed_at": "2026-11-14T11:38:57.575Z",
+  "selected_task": {
+    "id": "HX-RSR-FOUNDRY-CROSS-YEAR-UNIT-v1",
+    "outcome": "Reconcile all25 prior2025 game rows with2026 published table; audit installed versus most-played definitions and prevent invalid temporal comparisons.",
+    "completion_condition": "Complete25-row crosswalk, source methods/period/denominator and alias check, validate transcription/arithmetic and discriminating fixtures for user/world/hour units; preserve exact no-change decision for active inputs.",
+    "alternatives": [
+      {
+        "id": "Repeat2026-population-provenance",
+        "reason": "Prior9Nov bounded corpus closed; no newly disclosed population calibration. Reuse rather than reopen."
+      },
+      {
+        "id": "RepeatDH-wave-audit",
+        "reason": "Five-family cross-wave result completed previous run; new independent primary data schema is more useful."
+      }
+    ]
+  },
+  "selection_reason": "Retained2026 proxy audit already complete, so no re-count of same evidence. New25-row cross-year unit reconciliation tests whether ranking uses comparable series; this closes a specific previously untested data-quality gap affecting high-ranked DND5/PF2 and source growth claims.",
+  "alternatives": [
+    {
+      "id": "Repeat2026-population-provenance",
+      "reason": "Prior9Nov bounded corpus closed; no newly disclosed population calibration. Reuse rather than reopen."
+    },
+    {
+      "id": "RepeatDH-wave-audit",
+      "reason": "Five-family cross-wave result completed previous run; new independent primary data schema is more useful."
+    }
+  ],
+  "inputs_and_versions": {
+    "branch": "agent-operations",
+    "baseline_sha": "acb454cefcc38a41839c2eb769fe65341fd24a35",
+    "read_refs": {
+      "AGENTS.md": "169d591d0fd1809152e18c1e8b98a3a89248207b",
+      "README.md": "b753a6ac0222bc5e7efc7f5a26f32f81f9433916",
+      "agent-work/research/contract.md": "82086248fd3d1a8ecb2238f2d7c0980567b4717b",
+      "agent-work/research/method.json": "635a86650d41ea4e2dd51bb4ff9d1fc003b206e1",
+      "agent-work/research/proposals.json": "af09728951ab4a24d5750e56c3545683de76822e",
+      "agent-work/research/data-contract.json": "a0169c3728db91d9d34b4e1e8a19e4e9ade9aa50",
+      "agent-work/process.md": "620ab85dd179be12030e45bc16816e3660bdf324",
+      "agent-work/backlog.json": "fdc0dc29c0bb3341a8906594a458d4b7f73dc16e",
+      "agent-work/approvals.json": "8f01bd5d6ea27672c1405b316af930fb42a21628",
+      "agent-work/feedback.json": "997568185f544b591591c24d5435c5a90c66361e",
+      "agent-work/budget.json": "96a4d74dcd8ad38aaed6158e8126ba4b09c73736"
+    },
+    "prior_provenance_ref": "agent-work/research/market/Foundry-proxy-provenance-2026-11-09.json",
+    "prior_provenance_sha": "69f5ec4c7e4b81c54b5476fd0b74bc7c8939ecae",
+    "started_marker_ref": "agent-work/claims/2026-11-14T1131-Foundry2026.json",
+    "started_marker_commit": "70ac0621a6cfd149bfa76365c3d08f352a82bb86",
+    "source_refs": [
+      {
+        "id": "FND25",
+        "url": "https://foundryvtt.com/article/year-in-review-2025/",
+        "published_at": null,
+        "publication_date_context": "Official anniversary2025 page announces article for2025-05-26; exact article timestamp not asserted",
+        "access_level": "full_text",
+        "locator": "Software Usage lines109–111; Game Systems lines132–161",
+        "author_project_key": "foundry-vtt:anonymous-usage:year-in-review-2025",
+        "page_sha256": "c03e1dce08448604c99c4988e528debed94e82e6e371ebee85ad5cf478ec26f6"
+      },
+      {
+        "id": "FND26",
+        "url": "https://foundryvtt.com/article/year-in-review-2026/",
+        "published_at": null,
+        "publication_date_context": "May2026 retrospective; text writing context afterMay20/companionMay23, not an exact publication timestamp",
+        "access_level": "full_text",
+        "locator": "Software Usage lines133–169; entire Game Systems table172–203",
+        "author_project_key": "foundry-vtt:anonymous-usage:year-in-review-2026",
+        "page_sha256": "6fe6053115e43936031e4a911c4eedf560b62366dd75a9c634aaea3dae0e08eb"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "id": "FND-X-01",
+      "status": "confirmed",
+      "observed": "All25 previous rows matched to2026;13 Change entries differ from direct published2025-rank minus2026-rank.",
+      "examples": [
+        {
+          "game": "Shadowdark RPG",
+          "rank2025": 18,
+          "rank2026": 12,
+          "computed_change": 6,
+          "published_change": 8
+        },
+        {
+          "game": "Level Up: Advanced5th Edition",
+          "rank2025": 21,
+          "rank2026": 28,
+          "computed_change": -7,
+          "published_change": -11
+        }
+      ],
+      "cause_status": "unknown",
+      "possible_causes_not_confirmed": [
+        "Different internal baseline or ordering definition",
+        "Revisions/filters not documented in selected publication",
+        "Reporting error"
+      ],
+      "decision": "Retain both original Change and independently computed differences; do not overwrite source or use column as verified comparable growth."
+    },
+    {
+      "id": "FND-X-02",
+      "status": "confirmed",
+      "observed": "2025 installed percentages and2026 dominant-world percentages are different columns.",
+      "decision": "No64.28→52.11 DND5 or30.52→18.49 PF2 play-prevalence trend. Same-labelled installed snapshot deltas are descriptive only, not matched-GM changes."
+    },
+    {
+      "id": "FND-X-03",
+      "status": "confirmed",
+      "observed": "2025 opting-in51% cannot supply2026 denominator; installed systems overlap;2026 table is truncated.",
+      "decision": "No counts, globalmarket normalization, installed-to-active conversion or reweighting."
+    },
+    {
+      "id": "FND-X-04",
+      "status": "confirmed",
+      "observed": "Synthetic fixtures distinguish dominant world, sum of system worlds and aggregate hours.",
+      "decision": "Demonstrates non-equivalence of metrics, not recovered vendor implementation or observed behavior."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/market/Foundry2026-2026-11-14-source-tables.json",
+    "agent-work/research/market/Foundry2026-2026-11-14.json",
+    "agent-work/research/market/Foundry2026-2026-11-14-checks.json",
+    "agent-work/research/market/Foundry2026-2026-11-14.md",
+    "agent-work/research/market/Foundry2026-2026-11-14-checks.py",
+    "agent-work/claims/2026-11-14T1131-Foundry2026.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/runs/2026-11-14T1131-Foundry2026.json",
+    "agent-work/latest.json#research_agent"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "checks_passed": 71,
+    "source_crosswalk_rows": 25,
+    "independently_extracted2026_rows": 31,
+    "Change_mismatches": 13,
+    "mismatch_cause_status": "unknown",
+    "kind": "Read-only source QA and synthetic counterexamples; not product implementation tests",
+    "readbacks": [
+      {
+        "path": "agent-work/research/market/Foundry2026-2026-11-14-source-tables.json",
+        "sha": "d6c38fa24d2925ef6001b2af0721626a17abfe71",
+        "exact": true
+      },
+      {
+        "path": "agent-work/research/market/Foundry2026-2026-11-14.json",
+        "sha": "81d34276ca73a33558207a3fbed7af49f1616870",
+        "exact": true
+      },
+      {
+        "path": "agent-work/research/market/Foundry2026-2026-11-14-checks.json",
+        "sha": "764d448e9cfdef14ac999541e2b3cf46247e6f87",
+        "exact": true
+      },
+      {
+        "path": "agent-work/research/market/Foundry2026-2026-11-14.md",
+        "sha": "0e83cb6729dfd08322790543c5fe5ad7391ef93a",
+        "exact": true
+      },
+      {
+        "path": "agent-work/research/market/Foundry2026-2026-11-14-checks.py",
+        "sha": "bbde2e8ab8aa13bc4560a2df9eb2d96cc839518a",
+        "exact": true
+      },
+      {
+        "path": "agent-work/research/state.json",
+        "sha": "7d01af0067aaff337734184a06fdbe95e622304a",
+        "exact": true
+      },
+      {
+        "path": "agent-work/claims/2026-11-14T1131-Foundry2026.json",
+        "sha": "bfe70e340c517f85b3653669b35c697b15eb7588",
+        "exact": true
+      },
+      {
+        "path": "agent-work/research/README.md",
+        "sha": "c0cbb62930528b8c0e0bf0fcb6537ddf18b6b51e",
+        "exact": true
+      }
+    ],
+    "protected_inputs": [
+      {
+        "path": "agent-work/market/three-scenario-ranking-2026-11-06.json",
+        "before_sha": "ea0d62e91e7e97f938268e14e4fdd484668748d8",
+        "after_sha": "ea0d62e91e7e97f938268e14e4fdd484668748d8",
+        "unchanged": true,
+        "write_performed": false
+      },
+      {
+        "path": "agent-work/score/cohorts-2026-11-06.json",
+        "before_sha": "7bdcc478177f521dbae993854459b03803159249",
+        "after_sha": "7bdcc478177f521dbae993854459b03803159249",
+        "unchanged": true,
+        "write_performed": false
+      },
+      {
+        "path": "agent-work/research/games-index.json",
+        "before_sha": "d569ad8ff688cfc8430596661ec4fc09e01dc614",
+        "after_sha": "d569ad8ff688cfc8430596661ec4fc09e01dc614",
+        "unchanged": true,
+        "write_performed": false
+      },
+      {
+        "path": "agent-work/market/foundry-systems-2026.json",
+        "before_sha": "5b9858f0f73ae2249b5be2b128393a5b5b38c3f5",
+        "after_sha": "5b9858f0f73ae2249b5be2b128393a5b5b38c3f5",
+        "unchanged": true,
+        "write_performed": false
+      },
+      {
+        "path": "agent-work/market/annual-audience-data.json",
+        "before_sha": "774038364014d716881f2aa1b93bf812f229e41a",
+        "after_sha": "774038364014d716881f2aa1b93bf812f229e41a",
+        "unchanged": true,
+        "write_performed": false
+      },
+      {
+        "path": "agent-work/research/method.json",
+        "before_sha": "635a86650d41ea4e2dd51bb4ff9d1fc003b206e1",
+        "after_sha": "635a86650d41ea4e2dd51bb4ff9d1fc003b206e1",
+        "unchanged": true,
+        "write_performed": false
+      },
+      {
+        "path": "agent-work/research/proposals.json",
+        "before_sha": "af09728951ab4a24d5750e56c3545683de76822e",
+        "after_sha": "af09728951ab4a24d5750e56c3545683de76822e",
+        "unchanged": true,
+        "write_performed": false
+      },
+      {
+        "path": "agent-work/backlog.json",
+        "before_sha": "fdc0dc29c0bb3341a8906594a458d4b7f73dc16e",
+        "after_sha": "fdc0dc29c0bb3341a8906594a458d4b7f73dc16e",
+        "unchanged": true,
+        "write_performed": false
+      }
+    ],
+    "active_rating_changed": false,
+    "active_inputs_changed": false,
+    "active_numeric_method_changed": false,
+    "active_pool_changed": false,
+    "score_changed": false,
+    "main_write": false,
+    "product_development_started": false,
+    "foreign_claims_changed": false,
+    "operational_requirement": "Not applicable: methodological source audit, no game rule/product action introduced",
+    "new_people_counted": 0
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-14T11:31:54.623Z",
+        "run_details": {
+          "last_run": {
+            "id": "fa7787fa-0894-8321-a175-074ae807d20e",
+            "recorded_status": "in_progress",
+            "scheduled_for": "2026-11-14T11:30:00Z",
+            "started_at": "2026-11-14T11:31:12.919837Z",
+            "completed_at": null,
+            "chat_ref": null
+          },
+          "latest_result": {
+            "run_id": "706c0dcc-8c7c-8321-a4cd-2d125c2d2fd7",
+            "created_at": "2026-11-14T10:36:40.572424Z",
+            "scheduled_for": "2026-11-14T10:30:00Z",
+            "completed_at": "2026-11-14T10:36:40.905605Z",
+            "content_text": "[Аудит опросов сохранён](https://github.com/YuriyEmelyanov/Hexcrawl/blob/604bfac5a9575f2a3e5b4267ddf41f5da9b09084/agent-work/research/market/GM-survey-2026-11-14.md).\n\nОбнаружена важная ловушка сравнения: **D&D и Pathfinder в 2025 году объединены, а в 2026 разделены; категории карт тоже изменились**. Эти проценты нельзя напрямую трактовать как рост аудитории или переход к готовым картам. genui{\"citation\":{\"refs\":[\"turn679698837view1\",\"turn563436520view0\"]}}\n\nПроверены пять блоков и обе диаграммы; прошли 18 проверок. Рейтинг и очередь сохранены, новых согласований нет.\n\nДалее — проверка единиц и сопоставимости данных Foundry за 2026 год.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-14T11:31:54.623Z",
+        "run_details": {
+          "last_run": {
+            "id": "a5879a54-3de8-832a-816b-3c0becbc489d",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-14T11:00:00Z",
+            "started_at": "2026-11-14T11:00:25.917240Z",
+            "completed_at": "2026-11-14T11:23:14.161166Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+            }
+          },
+          "latest_result": {
+            "run_id": "a5879a54-3de8-832a-816b-3c0becbc489d",
+            "created_at": "2026-11-14T11:23:13.942496Z",
+            "scheduled_for": "2026-11-14T11:00:00Z",
+            "completed_at": "2026-11-14T11:23:14.161166Z",
+            "content_text": "Программист: связал перестройку подходов к POI с сохранением типов и порядка проверенных переправ. Прямой допустимый путь теперь проверяется до построения большой сети поиска.\n\nПроверки: 407/407, сборка успешна. Тесты: +1 / −0 / изменено 2 — защищают переправы, береговые контакты и выбор пути.\n\nРезультат сохранён в GitHub, без публикации. Дальше — совместный выбор положений переправ и единый план геометрии с сохранением и отменой. Автоматизация включена на обеих проверках.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      }
+    ],
+    "start_time_note": "Actual pre-marker peeks; marker timestamp is upper bound",
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-14T11:38:06.648Z",
+        "run_details": {
+          "last_run": {
+            "id": "fa7787fa-0894-8321-a175-074ae807d20e",
+            "recorded_status": "in_progress",
+            "scheduled_for": "2026-11-14T11:30:00Z",
+            "started_at": "2026-11-14T11:31:12.919837Z",
+            "completed_at": null,
+            "chat_ref": null
+          },
+          "latest_result": {
+            "run_id": "706c0dcc-8c7c-8321-a4cd-2d125c2d2fd7",
+            "created_at": "2026-11-14T10:36:40.572424Z",
+            "scheduled_for": "2026-11-14T10:30:00Z",
+            "completed_at": "2026-11-14T10:36:40.905605Z",
+            "content_text": "[Аудит опросов сохранён](https://github.com/YuriyEmelyanov/Hexcrawl/blob/604bfac5a9575f2a3e5b4267ddf41f5da9b09084/agent-work/research/market/GM-survey-2026-11-14.md).\n\nОбнаружена важная ловушка сравнения: **D&D и Pathfinder в 2025 году объединены, а в 2026 разделены; категории карт тоже изменились**. Эти проценты нельзя напрямую трактовать как рост аудитории или переход к готовым картам. genui{\"citation\":{\"refs\":[\"turn679698837view1\",\"turn563436520view0\"]}}\n\nПроверены пять блоков и обе диаграммы; прошли 18 проверок. Рейтинг и очередь сохранены, новых согласований нет.\n\nДалее — проверка единиц и сопоставимости данных Foundry за 2026 год.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-14T11:38:06.648Z",
+        "run_details": {
+          "last_run": {
+            "id": "a5879a54-3de8-832a-816b-3c0becbc489d",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-14T11:00:00Z",
+            "started_at": "2026-11-14T11:00:25.917240Z",
+            "completed_at": "2026-11-14T11:23:14.161166Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+            }
+          },
+          "latest_result": {
+            "run_id": "a5879a54-3de8-832a-816b-3c0becbc489d",
+            "created_at": "2026-11-14T11:23:13.942496Z",
+            "scheduled_for": "2026-11-14T11:00:00Z",
+            "completed_at": "2026-11-14T11:23:14.161166Z",
+            "content_text": "Программист: связал перестройку подходов к POI с сохранением типов и порядка проверенных переправ. Прямой допустимый путь теперь проверяется до построения большой сети поиска.\n\nПроверки: 407/407, сборка успешна. Тесты: +1 / −0 / изменено 2 — защищают переправы, береговые контакты и выбор пути.\n\nРезультат сохранён в GitHub, без публикации. Дальше — совместный выбор положений переправ и единый план геометрии с сохранением и отменой. Автоматизация включена на обеих проверках.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      }
+    ],
+    "schedule_changed": false,
+    "restoration_performed": false,
+    "enabled_not_completion_evidence": true
+  },
+  "diagnostic": {
+    "status": "completed_with_recovered_local_error",
+    "run_id": "2026-11-14T1131-Foundry2026",
+    "stage": "completed_source_crosswalk",
+    "last_successful_step": "Independent HTML extraction and71 source/fixture QA checks completed; five artifacts saved with exact readback",
+    "failed_operation": {
+      "tool": "exec_command/python",
+      "action": "Parse primary HTML tables with optional bs4",
+      "locator": "Local read-only source QA"
+    },
+    "observed_error": "ModuleNotFoundError: No module named 'bs4'",
+    "cause_status": "confirmed",
+    "confirmed_cause": "Optional bs4 module absent; recovered with standard-library parser",
+    "stop_reason": "completion_condition_met",
+    "saved_results": [
+      "agent-work/research/market/Foundry2026-2026-11-14-source-tables.json",
+      "agent-work/research/market/Foundry2026-2026-11-14.json",
+      "agent-work/research/market/Foundry2026-2026-11-14-checks.json",
+      "agent-work/research/market/Foundry2026-2026-11-14.md",
+      "agent-work/research/market/Foundry2026-2026-11-14-checks.py"
+    ],
+    "exact_continuation": "Assess one accessible primary GM-preparation/map corpus for existing low-priority COS: distinguish supplied geography, custom map creation, local battle maps and worldhopping. Follow source lead from Foundry but do not treat platform use as hex/map demand.",
+    "needs_owner_action": false,
+    "owner_action": null,
+    "started_marker_ref": "agent-work/claims/2026-11-14T1131-Foundry2026.json"
+  },
+  "errors": [
+    {
+      "status": "recovered",
+      "run_id": "2026-11-14T1131-Foundry2026",
+      "stage": "independent_table_extraction",
+      "last_successful_step": "Manual primary-source25-row crosswalk",
+      "failed_operation": {
+        "tool": "exec_command/python",
+        "action": "Parse primary HTML tables with optional bs4",
+        "locator": "Local read-only source QA"
+      },
+      "observed_error": "ModuleNotFoundError: No module named 'bs4'",
+      "cause_status": "confirmed",
+      "confirmed_cause": "Optional parser module absent in execution environment",
+      "recovered_by": "Use Python standard-library HTMLParser; no installation or permission bypass",
+      "stop_reason": null,
+      "needs_owner_action": false,
+      "owner_action": null,
+      "saved_results": [
+        "agent-work/research/market/Foundry2026-2026-11-14-source-tables.json",
+        "agent-work/research/market/Foundry2026-2026-11-14.json",
+        "agent-work/research/market/Foundry2026-2026-11-14-checks.json",
+        "agent-work/research/market/Foundry2026-2026-11-14.md",
+        "agent-work/research/market/Foundry2026-2026-11-14-checks.py"
+      ],
+      "exact_continuation": "Assess one accessible primary GM-preparation/map corpus for existing low-priority COS: distinguish supplied geography, custom map creation, local battle maps and worldhopping. Follow source lead from Foundry but do not treat platform use as hex/map demand."
+    }
+  ],
+  "checkpoint": null,
+  "next_candidate": {
+    "id": "HX-RSR-COS-L1-PRIMARY-SCREEN",
+    "game_id": "COS",
+    "target_source": "Official Cosmere RPG publisher/free starter or rules preview and supplied maps",
+    "action": "Assess one accessible primary GM-preparation/map corpus for existing low-priority COS: distinguish supplied geography, custom map creation, local battle maps and worldhopping. Follow source lead from Foundry but do not treat platform use as hex/map demand.",
+    "completion_condition": "Bounded primary-source map/workflow suitability result with edition/access/source locators and concrete source operations if any; separate candidate proposal only when justified. No book purchase or active-pool change.",
+    "priority_reassessment_required": true,
+    "reason": "COS already exists in market pool, but Foundry uptake alone does not establish L1 regional-map fit. This gap differs from closed DND5/PF2 proxy audit."
+  },
+  "owner_decisions": {
+    "new": [],
+    "existing_preserved": [
+      "HX-BL-029-EXPORT1-v1"
+    ]
+  },
+  "stop_reason": "completion_condition_met"
+}
