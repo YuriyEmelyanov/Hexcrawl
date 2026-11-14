@@ -1,3 +1,4 @@
+import {projectGeometryRefinementSource} from '../src/geometryRefinementScope.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -57,6 +58,7 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  assert.deepEqual(parseGeometryRefinement(copy(g),parseDetail1StateV11),g);assert.deepEqual(parseDetail1StateV11(copy(result.candidateState)),result.candidateState);
  assert.deepEqual(parseDetail1StateV11(reverseKeys(copy(result.candidateState))),result.candidateState,'object key order is not geometry');
  assert.equal(validateGeometryRefinementSource(input,g),true);
+
  const namesOnly={...input,map:{...input.map,physicalGrid:result.candidateState,editorNames:{changed:'new title'},gmNotesByHexKey:{'0,0':'new note'},language:'en'}};
  const unchanged=prepareGeometryPlan(namesOnly);assert.equal(unchanged.status,'unchanged',JSON.stringify(unchanged));assert.equal(unchanged.geometryRefinement,g);
  const wrong={...input,map:{...input.map,rivers:input.map.rivers.map((r,i)=>i?r:{...r,sectors:r.sectors.map((s,j)=>j?s:{...s,fullness:s.fullness===5?4:s.fullness+1})})}};
@@ -64,6 +66,29 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  const cancelled=prepareGeometryPlan({...input,cancelled:()=>true});assert.equal(cancelled.status,'error');assert.equal(cancelled.candidateState,undefined);
  const bounded=prepareGeometryPlan({...input,prepareWorkBudget:1});assert.equal(bounded.status,'error');assert.equal(bounded.candidateState,undefined);
  const delta=acceptedDelta(),dg=delta.result.geometryRefinement;assert.equal(dg.riverPlan.paths.length,3);assert.equal(dg.riverPlan.paths.filter(p=>p.fromNode===delta.j).length,2);assert.equal(dg.riverPlan.paths.filter(p=>p.toNode===delta.j).length,1);assert.deepEqual(parseGeometryRefinement(copy(dg),parseDetail1StateV11),dg);assert.equal(validateGeometryRefinementSource(delta.input,dg),true);
+});
+
+test('GEO2 scoped source projection retains literal choices and refuses hidden boundary dependencies',async()=>{
+ const {input,result}=await accepted(),g=result.geometryRefinement;
+ // Scope projection is a prerequisite, never an expansion Apply decision.
+ // New risk: source-domain filtering must not hide seam refs or changed inputs.
+ // Reuse the accepted53/31/7 fixture; do not add another expensive setup.
+ const extra={...input.map.regions[0],id:999999,hexes:[{q:1000,r:1000}],centerHex:{q:1000,r:1000},pointsOfInterest:[],pointOfInterestKinds:{},suppressCentralPoi:true};
+ const expanded={...input,map:{...input.map,regions:[...input.map.regions,extra]},landCells:[...input.landCells,...extra.hexes]};
+ assert.equal(projectGeometryRefinementSource({...expanded,cancelled:()=>true},g).code,'prepare_cancelled');
+ assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,regions:Array(20001).fill(extra)}},g).code,'scope_capacity');
+ const beforeProjection=JSON.stringify(expanded),projected=projectGeometryRefinementSource(expanded,g);
+ assert.equal(projected.status,'projected',JSON.stringify(projected));assert.equal(projected.readyForApplication,false);assert.equal(projected.boundaryValidation,'required');
+ assert.equal(projected.geometryRefinement,g);assert.equal(projected.input.map.regions[0],input.map.regions[0]);assert.deepEqual(projected.input.landCells,input.landCells);assert.equal(projected.outside.regions[0],extra);
+ assert.equal(validateGeometryRefinementSource(projected.input,g),true);assert.equal(JSON.stringify(expanded),beforeProjection);
+ const overlap=projectGeometryRefinementSource({...expanded,map:{...expanded.map,regions:[...input.map.regions,{...extra,hexes:[input.map.regions[0].hexes[0]]}]}},g);assert.equal(overlap.code,'boundary_dependency');assert.equal(overlap.input,undefined);
+ const altered=projectGeometryRefinementSource({...expanded,map:{...expanded.map,roads:expanded.map.roads.map((r,i)=>i?r:{...r,segments:r.segments.map((s,j)=>j?s:{...s,kind:s.kind==='road'?'trail':'road'})})}},g);assert.equal(altered.code,'scope_source_changed');
+ const lost=projectGeometryRefinementSource({...expanded,map:{...expanded.map,rivers:expanded.map.rivers.slice(1)}},g);assert.equal(lost.code,'missing_scope_reference');
+ const newArm={...input.map.rivers[0],id:999999};const seam=projectGeometryRefinementSource({...expanded,map:{...expanded.map,rivers:[...expanded.map.rivers,newArm]}},g);assert.equal(seam.code,'boundary_dependency');
+ const shuffled=projectGeometryRefinementSource({...expanded,map:{...expanded.map,regions:expanded.map.regions.toReversed(),roads:expanded.map.roads.toReversed(),rivers:expanded.map.rivers.toReversed()}},g);assert.equal(shuffled.status,'projected');assert.equal(validateGeometryRefinementSource(shuffled.input,g),true);
+
+ const newCrossing={...input.map.crossings[0],key:'outside-crossing'};assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,crossings:[...expanded.map.crossings,newCrossing]}},g).code,'boundary_dependency');
+ const lake=[...input.map.hexTerrainByKey].find(([,v])=>v.terrainOverride==='lake');assert.ok(lake);const joined=new Map(expanded.map.hexTerrainByKey);joined.set('1000,1000',lake[1]);assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,hexTerrainByKey:joined}},g).code,'boundary_dependency');
 });
 
 test('GEO2 persisted records reject broken source, topology, contacts and outer authored correspondence atomically',async()=>{
