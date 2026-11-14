@@ -9,6 +9,7 @@ type Line=Readonly<{kind:'line';a:WorldPoint;b:WorldPoint}>;
 type Circle=Readonly<{kind:'circle';center:WorldPoint;radius:number}>;
 type Primitive=Line|Circle;
 export type RefinementBankRequest=Readonly<{point:WorldPoint;parent6:DetailCell;origin:WorldPoint;riverId:number;sourceEdgeKey:string;side?:-1|1;sideAnchor?:WorldPoint;allowedPolygons?:readonly (readonly WorldPoint[])[];lakes?:readonly RefinementShore[]}>;
+const lexical=(a:string,b:string)=>a<b?-1:a>b?1:0;
 const freeze=<T>(a:T[])=>Object.freeze(a),finite=(p:WorldPoint)=>Number.isFinite(p.x)&&Number.isFinite(p.y),cross=(a:WorldPoint,b:WorldPoint)=>a.x*b.y-a.y*b.x;
 const fail=(refs:string[])=>Object.freeze({status:'error' as const,code:'poi_conflict' as const,refs:freeze(refs),completeGeometryPlan:false as const});
 const at=(l:Line,t:number)=>({x:l.a.x+t*(l.b.x-l.a.x),y:l.a.y+t*(l.b.y-l.a.y)});
@@ -33,10 +34,10 @@ function curveCircle(curve:ShoreCurve,circle:Circle):WorldPoint[]{const x=[curve
 export function refinementNearestRiverBank(water:RefinementWater,input:RefinementBankRequest){
  if(!finite(input.point)||!finite(input.origin)||!Number.isSafeInteger(input.riverId)||input.riverId<1||!input.sourceEdgeKey||input.side!==undefined&&input.side!==1&&input.side!==-1||input.sideAnchor&&!finite(input.sideAnchor))return fail(['invalid_bank_request']);
  let parent:readonly WorldPoint[];try{parent=detailCellPolygon(createDetailGrid(6,input.origin),input.parent6);}catch{return fail(['invalid_parent']);}
- const polygons=input.allowedPolygons??[parent],lakes=[...(input.lakes??[])].sort((a,b)=>a.signature.localeCompare(b.signature));
+ const polygons=input.allowedPolygons??[parent],lakes=[...(input.lakes??[])].sort((a,b)=>lexical(a.signature,b.signature));
  if(!polygons.length||polygons.length>4096||polygons.some(p=>p.length<3||p.some(p=>!finite(p))))return fail(['invalid_allowed_footprint']);
  const box={x0:Math.min(...parent.map(p=>p.x)),x1:Math.max(...parent.map(p=>p.x)),y0:Math.min(...parent.map(p=>p.y)),y1:Math.max(...parent.map(p=>p.y))};
- const local=[...water.capsules].filter(c=>Math.min(c.from.x,c.to.x)-c.radius<=box.x1&&Math.max(c.from.x,c.to.x)+c.radius>=box.x0&&Math.min(c.from.y,c.to.y)-c.radius<=box.y1&&Math.max(c.from.y,c.to.y)+c.radius>=box.y0).sort((a,b)=>a.riverId-b.riverId||a.sourceEdgeKey.localeCompare(b.sourceEdgeKey)||a.stepIndex-b.stepIndex);
+ const local=[...water.capsules].filter(c=>Math.min(c.from.x,c.to.x)-c.radius<=box.x1&&Math.max(c.from.x,c.to.x)+c.radius>=box.x0&&Math.min(c.from.y,c.to.y)-c.radius<=box.y1&&Math.max(c.from.y,c.to.y)+c.radius>=box.y0).sort((a,b)=>a.riverId-b.riverId||lexical(a.sourceEdgeKey,b.sourceEdgeKey)||a.stepIndex-b.stepIndex);
  if(local.length>1024||lakes.reduce((n,l)=>n+l.loops.reduce((n,c)=>n+c.length,0),0)>24576)return fail(['bank_capacity']);
  const target=local.filter(c=>c.riverId===input.riverId&&c.sourceEdgeKey===input.sourceEdgeKey);if(!water.capsules.some(c=>c.riverId===input.riverId&&c.sourceEdgeKey===input.sourceEdgeKey))return fail(['unknown_river_ref',input.sourceEdgeKey]);
  const boundaries:Primitive[]=[...parent.map((a,i)=>({kind:'line' as const,a,b:parent[(i+1)%parent.length]})),...polygons.flatMap(p=>p.map((a,i)=>({kind:'line' as const,a,b:p[(i+1)%p.length]}))),...local.flatMap(primitives),...detailPositiveAreaIntersections(createDetailGrid(1,input.origin),parent).flatMap(({cell})=>{const p=detailCellPolygon(createDetailGrid(1,input.origin),cell);return p.map((a,i)=>({kind:'line' as const,a,b:p[(i+1)%p.length]}));})];
