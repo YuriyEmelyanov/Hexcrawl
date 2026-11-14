@@ -1,0 +1,210 @@
+{
+  "set": "deciduous-forest-v1",
+  "created_on": "2026-11-14",
+  "tool": "image_gen.imagegen",
+  "status": "prepared six-tile set for owner review; renderer not connected",
+  "owner_constraints": {
+    "types": [
+      "dense deciduous forest on plains",
+      "dense deciduous forest on hills",
+      "dense deciduous mountain forest"
+    ],
+    "orientations": [
+      "pointy",
+      "flat"
+    ],
+    "shared_background": "grass.png for all living forest types including mountains",
+    "density": "closed crowns with only narrow openings in forest-growing areas, sufficiently dense to make a later sparse-woodland variant by removing crowns",
+    "relief": "retain owner-accepted detail-v5 hills/mountains; rounded hill crests and rocky mountain ridges remain visible above the dense forest",
+    "integration": "one opaque painting with natural ground/root/footslope transitions, no cutout rim",
+    "geometry": "complete regular hex in each orientation; upright artwork and complete crowns/peaks reviewed within the footprint"
+  },
+  "export": "Each square image resized to210x210, sRGB RGB PNG, no alpha; no foreground extraction or geometric cropping of the source artwork. Hex clipping used for previews only.",
+  "validation": "Format, dimensions and opacity checked; six-tile sheet and144-cell maps in both orientations reviewed. Outside canopy pixel metric is a heuristic based on dark green colors, complemented by visual inspection.",
+  "style_seed": {
+    "file": "exec-ffbd1dc2-64b0-4682-b647-5750e4e4d2d8.png",
+    "purpose": "Initial dense broadleaf crown-family reference; not a final asset."
+  },
+  "assets": [
+    {
+      "id": "deciduous-forest-plains-pointy",
+      "file": "deciduous-forest-plains-pointy.png",
+      "terrain": "plains",
+      "orientation": "pointy",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 86778,
+      "source_file": "exec-a315d00f-233c-4f5c-a760-e6416d3b9fa9.png",
+      "outside_hex_canopy_like_pixels": 0,
+      "outside_hex_background_mean_RGB": [
+        154.32,
+        177.8,
+        76.86
+      ],
+      "sha256": "4864e60793835e4e81292fcbb571008edecddfed45b1a5e14dd43887cb708976",
+      "prompt": "Use case: precise-object-edit. Image1 is the dense deciduous forest TO KEEP, image2 is the approved grass base, image3 is ONLY a regular-hex footprint guide. FIX ONLY THE PERIMETER FIT: some side crowns of image1 cross the left/right hex sides when clipped. Contract and slightly rearrange the intact whole tree stand by about8-10percent around its center as needed, so every leaf lobe/root is fully INSIDE the guide, never cropped. Keep the same large dense connected forest, mature rounded tree shapes, colors, tree scale hierarchy, upper-left light, simplification, flat ground and natural base integration. Do not turn it into a small isolated island or sparse park; only a narrow grass skirt, no big empty band. The new outline must have complete natural crowns/footings, never an abrupt polygon cut or flat wall.\nAsset type: opaque painted 210x210 terrain tile for a schematic strategy hex map, in the approved clean Civilization-V-strategic-view-inspired cartographic style. Mature DENSE DECIDUOUS broadleaf forest, with broad rounded leafy crowns, tree trunks and connected canopy masses. This is the REGULAR THICK FOREST baseline from which a much sparser woodland will later be made: the crowns must be crowded, overlapping and mostly touching, with only a few narrow ground openings. No widely separated trees, open park, sparse grove, scattered dots or large central clearing. Cover about75-85percent of the regular hex with the dense forest-bearing landscape, almost the whole usable footprint; keep all crowns and branches COMPLETE and fully inside it, with a very narrow varied grass skirt. Use a few LARGE clear groups of canopy volumes with secondary overlapping mature crowns, recognizable rounded leafy tops. No needle-shaped conifers or triangular trees, no individually drawn leaves, twigs, grass strands, veins, tiny white light speckles or micro-texture. Keep SIMPLE LARGE LIGHT/MIDTONE/SHADOW MASSES, clear rounded silhouettes and convincingly painted dimensional volume, sufficiently crisp and rich at60px/hex. Match the approved relief's low detail and upper-left lighting. Natural restrained warm olive-green foliage, darker than the shared grass ground, with broad modest lights and deeper olive shadows. NO bright lime/chartreuse saturation, no pale pastel wash, no global blur, no black/white outlines, no plastic CGI or flat vector icons. All tree bases, contact shadows and low vegetation must blend naturally into the approved grass color and texture so the whole tile looks like ONE unified painting, no sticker boundary, glowing keyline, hard cutout rim or geometric slab. Square opaque complete image, approved grass background fills all corners, no transparency, frame, labels, hex border, UI or watermark. No roads, rivers, buildings, rocks added as unrelated objects.\nPOINTY-TOP complete regular hex in a210square: (105,0),(195.93,52.5),(195.93,157.5),(105,210),(14.07,157.5),(14.07,52.5). Keep ALL leaf lobes, twigs, trunks, shadows and relief inside these six sides with a narrow3-5px breathing margin, also respecting the slanted top and bottom edges. No leaves crossing x14 or x196 in the middle. Trees remain vertical. Use the last image only as the allowed footprint guide, not as artwork; no line/hex frame may appear.",
+      "references": [
+        "exec-ffbd1dc2-64b0-4682-b647-5750e4e4d2d8.png",
+        "grass.png",
+        "grass-visible-pointy.png"
+      ]
+    },
+    {
+      "id": "deciduous-forest-plains-flat",
+      "file": "deciduous-forest-plains-flat.png",
+      "terrain": "plains",
+      "orientation": "flat",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 85439,
+      "source_file": "exec-0ca9dabe-895b-43c3-beb0-27bb09b25206.png",
+      "outside_hex_canopy_like_pixels": 0,
+      "outside_hex_background_mean_RGB": [
+        155.69,
+        178.25,
+        78.86
+      ],
+      "sha256": "271c82739fcb7e43c1c5e0f0100b6eb5485b701ff05b4663d186bf94288b3c70",
+      "prompt": "Use case: precise-object-edit / composition variant. Image1 is the SAME FOREST CANOPY STYLE AND DENSITY to reproduce; image2 the approved grass base; image3 only the new allowed hex footprint. Create its FLAT-TOP version on flat ground, keeping the same mature rounded deciduous crown family, palette, low detail and dense closed canopy. Recompose the trees within the wider hex shape instead of rotating them. Keep roughly the same amount of overlapping foliage, a few tiny gaps and short visible trunk sections at the foreground edge. NO hills or mountains: ground stays flat.\nAsset type: opaque painted 210x210 terrain tile for a schematic strategy hex map, in the approved clean Civilization-V-strategic-view-inspired cartographic style. Mature DENSE DECIDUOUS broadleaf forest, with broad rounded leafy crowns, tree trunks and connected canopy masses. This is the REGULAR THICK FOREST baseline from which a much sparser woodland will later be made: the crowns must be crowded, overlapping and mostly touching, with only a few narrow ground openings. No widely separated trees, open park, sparse grove, scattered dots or large central clearing. Cover about75-85percent of the regular hex with the dense forest-bearing landscape, almost the whole usable footprint; keep all crowns and branches COMPLETE and fully inside it, with a very narrow varied grass skirt. Use a few LARGE clear groups of canopy volumes with secondary overlapping mature crowns, recognizable rounded leafy tops. No needle-shaped conifers or triangular trees, no individually drawn leaves, twigs, grass strands, veins, tiny white light speckles or micro-texture. Keep SIMPLE LARGE LIGHT/MIDTONE/SHADOW MASSES, clear rounded silhouettes and convincingly painted dimensional volume, sufficiently crisp and rich at60px/hex. Match the approved relief's low detail and upper-left lighting. Natural restrained warm olive-green foliage, darker than the shared grass ground, with broad modest lights and deeper olive shadows. NO bright lime/chartreuse saturation, no pale pastel wash, no global blur, no black/white outlines, no plastic CGI or flat vector icons. All tree bases, contact shadows and low vegetation must blend naturally into the approved grass color and texture so the whole tile looks like ONE unified painting, no sticker boundary, glowing keyline, hard cutout rim or geometric slab. Square opaque complete image, approved grass background fills all corners, no transparency, frame, labels, hex border, UI or watermark. No roads, rivers, buildings, rocks added as unrelated objects.\nFLAT-TOP complete regular hex in a210square: (210,105),(157.5,195.93),(52.5,195.93),(0,105),(52.5,14.07),(157.5,14.07). Keep ALL leaf lobes, twigs, trunks, shadows and relief inside these six sides with a narrow3-5px breathing margin, respecting the slanted corners. Trees remain vertical, never rotate them. Use the last image only as the allowed footprint guide, not as artwork; no line/hex frame may appear.",
+      "references": [
+        "exec-ffbd1dc2-64b0-4682-b647-5750e4e4d2d8.png",
+        "grass.png",
+        "grass-visible-flat.png"
+      ]
+    },
+    {
+      "id": "deciduous-forest-hills-pointy",
+      "file": "deciduous-forest-hills-pointy.png",
+      "terrain": "hills",
+      "orientation": "pointy",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 89189,
+      "source_file": "exec-36832ed3-5fe1-4138-bd34-876629e042af.png",
+      "outside_hex_canopy_like_pixels": 0,
+      "outside_hex_background_mean_RGB": [
+        152.29,
+        177,
+        74.98
+      ],
+      "sha256": "d45119d98f5e40124e38b7bf500e9e39d5ac983a168b4cd76f670bc458dbf01b",
+      "prompt": "Use case: precise-object-edit. Image1 is the approved OPEN HILLS whose ORIGINAL SHAPE, POSITION, HEIGHT, LIT TOPS and ROUNDED SUMMIT PROFILES MUST STAY. Image2 is the dense forest style/density reference, but its foliage hides the hills and it reads as flat forest. FIX THAT SPECIFIC FAILURE. Image3 is the shared grass base. Image4 only shows the complete regular hex footprint.\nKeep the exact hill arrangement and draw dense deciduous forest mostly in the valleys and on the LOWER AND MIDDLE SIDES of those same hills. Tree crowns must be small/low enough relative to the original hill relief that AT LEAST FOUR DISTINCT ORIGINAL ROUNDED GRASS-COVERED HILLTOPS AND THEIR UPPER LIT SLOPES ARE CLEARLY VISIBLE ABOVE THE TREE LINE, as ground forms, not tree crowns. Preserve these recognizable exposed tops from image1, occupying roughly the upper20-30percent of the individual hills. The forest must NOT erase or replace their silhouettes. The remaining forest-growing slopes/valleys stay tightly packed with overlapping touching rounded crowns, a dense connected belt around the hill shoulders; do not turn it into sparse woodland. Small exposed summit caps are expected, NOT a huge central clearing. At60px per hex it must instantly read as HILLS WITH FOREST, different from flat forest.\nAsset type: opaque painted 210x210 terrain tile for a schematic strategy hex map, in the approved clean Civilization-V-strategic-view-inspired cartographic style. Mature DENSE DECIDUOUS broadleaf forest, with broad rounded leafy crowns, tree trunks and connected canopy masses. This is the REGULAR THICK FOREST baseline from which a much sparser woodland will later be made: the crowns must be crowded, overlapping and mostly touching, with only a few narrow ground openings. No widely separated trees, open park, sparse grove, scattered dots or large central clearing. Cover about75-85percent of the regular hex with the dense forest-bearing landscape, almost the whole usable footprint; keep all crowns and branches COMPLETE and fully inside it, with a very narrow varied grass skirt. Use a few LARGE clear groups of canopy volumes with secondary overlapping mature crowns, recognizable rounded leafy tops. No needle-shaped conifers or triangular trees, no individually drawn leaves, twigs, grass strands, veins, tiny white light speckles or micro-texture. Keep SIMPLE LARGE LIGHT/MIDTONE/SHADOW MASSES, clear rounded silhouettes and convincingly painted dimensional volume, sufficiently crisp and rich at60px/hex. Match the approved relief's low detail and upper-left lighting. Natural restrained warm olive-green foliage, darker than the shared grass ground, with broad modest lights and deeper olive shadows. NO bright lime/chartreuse saturation, no pale pastel wash, no global blur, no black/white outlines, no plastic CGI or flat vector icons. All tree bases, contact shadows and low vegetation must blend naturally into the approved grass color and texture so the whole tile looks like ONE unified painting, no sticker boundary, glowing keyline, hard cutout rim or geometric slab. Square opaque complete image, approved grass background fills all corners, no transparency, frame, labels, hex border, UI or watermark. No roads, rivers, buildings, rocks added as unrelated objects.\nChoose smaller crowns than image2 if needed to keep the original hill crests and contours readable, but combine the crowns into a few broad coherent foliage masses, no fine leaf speckles or countless little outlined dots. Match the same restrained forest color and one-piece grass/roots integration. No jagged rock peaks: these are low rounded hills. All tree crowns, hill crests and shadows stay INSIDE the pointy-top guide with a narrow varied3-5px margin at210px scale, no chopped leaf lobes and no polygon outline. The terrain and trees stay upright.",
+      "references": [
+        "open-hills-pointy-detail-v5.png",
+        "exec-38f48167-1da1-49f9-9bb9-473090529f5a.png",
+        "grass.png",
+        "grass-visible-pointy.png"
+      ],
+      "initial_prompt": "Use case: precise-object-edit / compositing. Image1 is the OWNER-APPROVED HILLS TERRAIN TO PRESERVE: retain the same shape, number and position of its major hills/peaks, principal ridge lines, relative heights, natural footprint, low detail and clear light/shadow forms. Image2 supplies ONLY the dense DECIDUOUS TREE STYLE, crown size/color, connected-canopy density and lighting. Image3 is the SHARED GRASS BACKGROUND: ALL living forest tiles, including mountains, use this SAME grass base. Image4 is only the allowed regular hex footprint. Add the dense forest naturally ONTO image1's terrain, without redesigning/flattening/rotating the approved relief.\nAsset type: opaque painted 210x210 terrain tile for a schematic strategy hex map, in the approved clean Civilization-V-strategic-view-inspired cartographic style. Mature DENSE DECIDUOUS broadleaf forest, with broad rounded leafy crowns, tree trunks and connected canopy masses. This is the REGULAR THICK FOREST baseline from which a much sparser woodland will later be made: the crowns must be crowded, overlapping and mostly touching, with only a few narrow ground openings. No widely separated trees, open park, sparse grove, scattered dots or large central clearing. Cover about75-85percent of the regular hex with the dense forest-bearing landscape, almost the whole usable footprint; keep all crowns and branches COMPLETE and fully inside it, with a very narrow varied grass skirt. Use a few LARGE clear groups of canopy volumes with secondary overlapping mature crowns, recognizable rounded leafy tops. No needle-shaped conifers or triangular trees, no individually drawn leaves, twigs, grass strands, veins, tiny white light speckles or micro-texture. Keep SIMPLE LARGE LIGHT/MIDTONE/SHADOW MASSES, clear rounded silhouettes and convincingly painted dimensional volume, sufficiently crisp and rich at60px/hex. Match the approved relief's low detail and upper-left lighting. Natural restrained warm olive-green foliage, darker than the shared grass ground, with broad modest lights and deeper olive shadows. NO bright lime/chartreuse saturation, no pale pastel wash, no global blur, no black/white outlines, no plastic CGI or flat vector icons. All tree bases, contact shadows and low vegetation must blend naturally into the approved grass color and texture so the whole tile looks like ONE unified painting, no sticker boundary, glowing keyline, hard cutout rim or geometric slab. Square opaque complete image, approved grass background fills all corners, no transparency, frame, labels, hex border, UI or watermark. No roads, rivers, buildings, rocks added as unrelated objects.\nHILLY DECIDUOUS FOREST: put the crowded connected crowns on the EXISTING rolling slopes and in the valleys. Keep original rounded hill crests protruding above the dense canopy, so the hill profiles and elevations remain immediately legible at60px, with forest wrapping their sides. Preserve the original back/middle/foreground hill arrangement and its rounded summit shapes. Do not replace it with a forest clump on flat ground or cover all the relief with an indistinct flat carpet. The forest-growing slopes are densely closed, not scattered isolated trees with broad clearings.\nPOINTY-TOP complete regular hex in a210square: (105,0),(195.93,52.5),(195.93,157.5),(105,210),(14.07,157.5),(14.07,52.5). Keep ALL leaf lobes, twigs, trunks, shadows and relief inside these six sides with a narrow3-5px breathing margin, also respecting the slanted top and bottom edges. No leaves crossing x14 or x196 in the middle. Trees remain vertical. Use the last image only as the allowed footprint guide, not as artwork; no line/hex frame may appear."
+    },
+    {
+      "id": "deciduous-forest-hills-flat",
+      "file": "deciduous-forest-hills-flat.png",
+      "terrain": "hills",
+      "orientation": "flat",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 91452,
+      "source_file": "exec-0a0d1e90-d6b0-4a00-bdfa-c4626b59ef8a.png",
+      "outside_hex_canopy_like_pixels": 0,
+      "outside_hex_background_mean_RGB": [
+        156.05,
+        179.56,
+        67
+      ],
+      "sha256": "97afbf49e9b6e6f5b29bcfbb6718cc0df6f1f572e04d6662f928d5d209fd1402",
+      "prompt": "Use case: precise-object-edit. Image1 is the approved OPEN HILLS whose ORIGINAL SHAPE, POSITION, HEIGHT, LIT TOPS and ROUNDED SUMMIT PROFILES MUST STAY. Image2 is the dense forest style/density reference, but its foliage hides the hills and it reads as flat forest. FIX THAT SPECIFIC FAILURE. Image3 is the shared grass base. Image4 only shows the complete regular hex footprint.\nKeep the exact hill arrangement and draw dense deciduous forest mostly in the valleys and on the LOWER AND MIDDLE SIDES of those same hills. Tree crowns must be small/low enough relative to the original hill relief that AT LEAST FOUR DISTINCT ORIGINAL ROUNDED GRASS-COVERED HILLTOPS AND THEIR UPPER LIT SLOPES ARE CLEARLY VISIBLE ABOVE THE TREE LINE, as ground forms, not tree crowns. Preserve these recognizable exposed tops from image1, occupying roughly the upper20-30percent of the individual hills. The forest must NOT erase or replace their silhouettes. The remaining forest-growing slopes/valleys stay tightly packed with overlapping touching rounded crowns, a dense connected belt around the hill shoulders; do not turn it into sparse woodland. Small exposed summit caps are expected, NOT a huge central clearing. At60px per hex it must instantly read as HILLS WITH FOREST, different from flat forest.\nAsset type: opaque painted 210x210 terrain tile for a schematic strategy hex map, in the approved clean Civilization-V-strategic-view-inspired cartographic style. Mature DENSE DECIDUOUS broadleaf forest, with broad rounded leafy crowns, tree trunks and connected canopy masses. This is the REGULAR THICK FOREST baseline from which a much sparser woodland will later be made: the crowns must be crowded, overlapping and mostly touching, with only a few narrow ground openings. No widely separated trees, open park, sparse grove, scattered dots or large central clearing. Cover about75-85percent of the regular hex with the dense forest-bearing landscape, almost the whole usable footprint; keep all crowns and branches COMPLETE and fully inside it, with a very narrow varied grass skirt. Use a few LARGE clear groups of canopy volumes with secondary overlapping mature crowns, recognizable rounded leafy tops. No needle-shaped conifers or triangular trees, no individually drawn leaves, twigs, grass strands, veins, tiny white light speckles or micro-texture. Keep SIMPLE LARGE LIGHT/MIDTONE/SHADOW MASSES, clear rounded silhouettes and convincingly painted dimensional volume, sufficiently crisp and rich at60px/hex. Match the approved relief's low detail and upper-left lighting. Natural restrained warm olive-green foliage, darker than the shared grass ground, with broad modest lights and deeper olive shadows. NO bright lime/chartreuse saturation, no pale pastel wash, no global blur, no black/white outlines, no plastic CGI or flat vector icons. All tree bases, contact shadows and low vegetation must blend naturally into the approved grass color and texture so the whole tile looks like ONE unified painting, no sticker boundary, glowing keyline, hard cutout rim or geometric slab. Square opaque complete image, approved grass background fills all corners, no transparency, frame, labels, hex border, UI or watermark. No roads, rivers, buildings, rocks added as unrelated objects.\nChoose smaller crowns than image2 if needed to keep the original hill crests and contours readable, but combine the crowns into a few broad coherent foliage masses, no fine leaf speckles or countless little outlined dots. Match the same restrained forest color and one-piece grass/roots integration. No jagged rock peaks: these are low rounded hills. All tree crowns, hill crests and shadows stay INSIDE the flat-top guide with a narrow varied3-5px margin at210px scale, no chopped leaf lobes and no polygon outline. The terrain and trees stay upright.",
+      "references": [
+        "open-hills-flat-detail-v5.png",
+        "exec-6cef80de-c7d6-4fd2-b7bf-9ff7c90582f1.png",
+        "grass.png",
+        "grass-visible-flat.png"
+      ],
+      "initial_prompt": "Use case: precise-object-edit / compositing. Image1 is the OWNER-APPROVED HILLS TERRAIN TO PRESERVE: retain the same shape, number and position of its major hills/peaks, principal ridge lines, relative heights, natural footprint, low detail and clear light/shadow forms. Image2 supplies ONLY the dense DECIDUOUS TREE STYLE, crown size/color, connected-canopy density and lighting. Image3 is the SHARED GRASS BACKGROUND: ALL living forest tiles, including mountains, use this SAME grass base. Image4 is only the allowed regular hex footprint. Add the dense forest naturally ONTO image1's terrain, without redesigning/flattening/rotating the approved relief.\nAsset type: opaque painted 210x210 terrain tile for a schematic strategy hex map, in the approved clean Civilization-V-strategic-view-inspired cartographic style. Mature DENSE DECIDUOUS broadleaf forest, with broad rounded leafy crowns, tree trunks and connected canopy masses. This is the REGULAR THICK FOREST baseline from which a much sparser woodland will later be made: the crowns must be crowded, overlapping and mostly touching, with only a few narrow ground openings. No widely separated trees, open park, sparse grove, scattered dots or large central clearing. Cover about75-85percent of the regular hex with the dense forest-bearing landscape, almost the whole usable footprint; keep all crowns and branches COMPLETE and fully inside it, with a very narrow varied grass skirt. Use a few LARGE clear groups of canopy volumes with secondary overlapping mature crowns, recognizable rounded leafy tops. No needle-shaped conifers or triangular trees, no individually drawn leaves, twigs, grass strands, veins, tiny white light speckles or micro-texture. Keep SIMPLE LARGE LIGHT/MIDTONE/SHADOW MASSES, clear rounded silhouettes and convincingly painted dimensional volume, sufficiently crisp and rich at60px/hex. Match the approved relief's low detail and upper-left lighting. Natural restrained warm olive-green foliage, darker than the shared grass ground, with broad modest lights and deeper olive shadows. NO bright lime/chartreuse saturation, no pale pastel wash, no global blur, no black/white outlines, no plastic CGI or flat vector icons. All tree bases, contact shadows and low vegetation must blend naturally into the approved grass color and texture so the whole tile looks like ONE unified painting, no sticker boundary, glowing keyline, hard cutout rim or geometric slab. Square opaque complete image, approved grass background fills all corners, no transparency, frame, labels, hex border, UI or watermark. No roads, rivers, buildings, rocks added as unrelated objects.\nHILLY DECIDUOUS FOREST: put the crowded connected crowns on the EXISTING rolling slopes and in the valleys. Keep original rounded hill crests protruding above the dense canopy, so the hill profiles and elevations remain immediately legible at60px, with forest wrapping their sides. Preserve the original back/middle/foreground hill arrangement and its rounded summit shapes. Do not replace it with a forest clump on flat ground or cover all the relief with an indistinct flat carpet. The forest-growing slopes are densely closed, not scattered isolated trees with broad clearings.\nFLAT-TOP complete regular hex in a210square: (210,105),(157.5,195.93),(52.5,195.93),(0,105),(52.5,14.07),(157.5,14.07). Keep ALL leaf lobes, twigs, trunks, shadows and relief inside these six sides with a narrow3-5px breathing margin, respecting the slanted corners. Trees remain vertical, never rotate them. Use the last image only as the allowed footprint guide, not as artwork; no line/hex frame may appear."
+    },
+    {
+      "id": "deciduous-forest-mountains-pointy",
+      "file": "deciduous-forest-mountains-pointy.png",
+      "terrain": "mountains",
+      "orientation": "pointy",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 89896,
+      "source_file": "exec-319a9fc5-7103-4aa1-b522-3a5be6ba0cd7.png",
+      "outside_hex_canopy_like_pixels": 0,
+      "outside_hex_background_mean_RGB": [
+        153.04,
+        175.03,
+        77.42
+      ],
+      "sha256": "1a70acc672db1f73e96bc26fabd59856666a7f89b07273fbc78b1745086c6c7d",
+      "prompt": "Use case: precise-object-edit / compositing. Image1 is the OWNER-APPROVED MOUNTAINS TERRAIN TO PRESERVE: retain the same shape, number and position of its major hills/peaks, principal ridge lines, relative heights, natural footprint, low detail and clear light/shadow forms. Image2 supplies ONLY the dense DECIDUOUS TREE STYLE, crown size/color, connected-canopy density and lighting. Image3 is the SHARED GRASS BACKGROUND: ALL living forest tiles, including mountains, use this SAME grass base. Image4 is only the allowed regular hex footprint. Add the dense forest naturally ONTO image1's terrain, without redesigning/flattening/rotating the approved relief.\nAsset type: opaque painted 210x210 terrain tile for a schematic strategy hex map, in the approved clean Civilization-V-strategic-view-inspired cartographic style. Mature DENSE DECIDUOUS broadleaf forest, with broad rounded leafy crowns, tree trunks and connected canopy masses. This is the REGULAR THICK FOREST baseline from which a much sparser woodland will later be made: the crowns must be crowded, overlapping and mostly touching, with only a few narrow ground openings. No widely separated trees, open park, sparse grove, scattered dots or large central clearing. Cover about75-85percent of the regular hex with the dense forest-bearing landscape, almost the whole usable footprint; keep all crowns and branches COMPLETE and fully inside it, with a very narrow varied grass skirt. Use a few LARGE clear groups of canopy volumes with secondary overlapping mature crowns, recognizable rounded leafy tops. No needle-shaped conifers or triangular trees, no individually drawn leaves, twigs, grass strands, veins, tiny white light speckles or micro-texture. Keep SIMPLE LARGE LIGHT/MIDTONE/SHADOW MASSES, clear rounded silhouettes and convincingly painted dimensional volume, sufficiently crisp and rich at60px/hex. Match the approved relief's low detail and upper-left lighting. Natural restrained warm olive-green foliage, darker than the shared grass ground, with broad modest lights and deeper olive shadows. NO bright lime/chartreuse saturation, no pale pastel wash, no global blur, no black/white outlines, no plastic CGI or flat vector icons. All tree bases, contact shadows and low vegetation must blend naturally into the approved grass color and texture so the whole tile looks like ONE unified painting, no sticker boundary, glowing keyline, hard cutout rim or geometric slab. Square opaque complete image, approved grass background fills all corners, no transparency, frame, labels, hex border, UI or watermark. No roads, rivers, buildings, rocks added as unrelated objects.\nMOUNTAIN DECIDUOUS FOREST: keep the original high rocky summits and major connected ridge silhouettes EXPOSED ABOVE the canopy and preserve their exact arrangement/proportions. Dense mature broadleaf crowns blanket the lower slopes, middle wooded slopes and valleys with the same closed-canopy density as the flat forest. Tiny openings only in the forest-growing land; do not confuse exposed summit rock with sparse forest. Do not let tree height overwhelm or erase the mountain summit. Replace the bare stone ground OUTSIDE the rocky relief with shared grass, and blend rocky lower slopes naturally into this grass/forest painting. The original warm stone summits/planes keep their colors and forms. No extra mountains and no conifers.\nPOINTY-TOP complete regular hex in a210square: (105,0),(195.93,52.5),(195.93,157.5),(105,210),(14.07,157.5),(14.07,52.5). Keep ALL leaf lobes, twigs, trunks, shadows and relief inside these six sides with a narrow3-5px breathing margin, also respecting the slanted top and bottom edges. No leaves crossing x14 or x196 in the middle. Trees remain vertical. Use the last image only as the allowed footprint guide, not as artwork; no line/hex frame may appear.",
+      "references": [
+        "mountains-pointy-detail-v5.png",
+        "exec-ffbd1dc2-64b0-4682-b647-5750e4e4d2d8.png",
+        "grass.png",
+        "grass-visible-pointy.png"
+      ]
+    },
+    {
+      "id": "deciduous-forest-mountains-flat",
+      "file": "deciduous-forest-mountains-flat.png",
+      "terrain": "mountains",
+      "orientation": "flat",
+      "background": "grass.png",
+      "density": "dense closed-canopy baseline for later sparse woodland",
+      "dimensions": [
+        210,
+        210
+      ],
+      "channels": 3,
+      "has_alpha": false,
+      "bytes": 91996,
+      "source_file": "exec-8ffb39b7-dcd3-4f2d-9457-3bc94c137d5d.png",
+      "outside_hex_canopy_like_pixels": 0,
+      "outside_hex_background_mean_RGB": [
+        156.25,
+        179.65,
+        74.27
+      ],
+      "sha256": "c12574f2d440bbf36030d37e84f9ea7e327b7efc1b37c33782c493b352cd09e2",
+      "prompt": "Use case: precise-object-edit. Image1 is the final dense DECIDUOUS MOUNTAIN FOREST TO KEEP. Image2 is the approved grass base, image3 only shows the allowed full flat-top regular hex area. FIX ONLY THE PERIMETER FIT: some outer tree crowns cross the lower/side hex edges and the highest rocky summit comes too close to the top edge. Preserve the mountain's exact recognizable shape, ridge arrangement, relative proportions, original simplified painted planes and dense forest coverage, palette, broad rounded deciduous crowns and one-piece transitions into grass.\nVery slightly contract/reposition the whole terrain+forest composition by about6-8percent around its center if needed, and tuck in the outlying tree crowns so ALL leaf lobes, trunks, shadows, rocky peaks and slopes are complete INSIDE the full hex with a narrow3-5pixel breathing margin at final210px. In particular the entire highest summit must fit visibly below the top horizontal edge, and left/right/bottom tree crowns must end naturally before the slanted sides. DO NOT crop a forest silhouette with a geometric mask; each outer crown retains its complete natural outline. Do NOT make a small isolated center island or wide empty band; the existing forested mountain still fills almost the whole hex. Keep dense closed forest on the low/mid slopes and the original rocky summits/ridges exposed above it. The output is a full square OPAQUE image with the same grass filling every corner, no hex border or drawn guide, no labels, frame, watermark, transparency, halo, outline or global blur. Keep all trees and peaks vertical.",
+      "references": [
+        "exec-957a7822-a08b-44ad-a5bd-e165dedc91ad.png",
+        "grass.png",
+        "grass-visible-flat.png"
+      ],
+      "initial_prompt": "Use case: precise-object-edit / compositing. Image1 is the OWNER-APPROVED MOUNTAINS TERRAIN TO PRESERVE: retain the same shape, number and position of its major hills/peaks, principal ridge lines, relative heights, natural footprint, low detail and clear light/shadow forms. Image2 supplies ONLY the dense DECIDUOUS TREE STYLE, crown size/color, connected-canopy density and lighting. Image3 is the SHARED GRASS BACKGROUND: ALL living forest tiles, including mountains, use this SAME grass base. Image4 is only the allowed regular hex footprint. Add the dense forest naturally ONTO image1's terrain, without redesigning/flattening/rotating the approved relief.\nAsset type: opaque painted 210x210 terrain tile for a schematic strategy hex map, in the approved clean Civilization-V-strategic-view-inspired cartographic style. Mature DENSE DECIDUOUS broadleaf forest, with broad rounded leafy crowns, tree trunks and connected canopy masses. This is the REGULAR THICK FOREST baseline from which a much sparser woodland will later be made: the crowns must be crowded, overlapping and mostly touching, with only a few narrow ground openings. No widely separated trees, open park, sparse grove, scattered dots or large central clearing. Cover about75-85percent of the regular hex with the dense forest-bearing landscape, almost the whole usable footprint; keep all crowns and branches COMPLETE and fully inside it, with a very narrow varied grass skirt. Use a few LARGE clear groups of canopy volumes with secondary overlapping mature crowns, recognizable rounded leafy tops. No needle-shaped conifers or triangular trees, no individually drawn leaves, twigs, grass strands, veins, tiny white light speckles or micro-texture. Keep SIMPLE LARGE LIGHT/MIDTONE/SHADOW MASSES, clear rounded silhouettes and convincingly painted dimensional volume, sufficiently crisp and rich at60px/hex. Match the approved relief's low detail and upper-left lighting. Natural restrained warm olive-green foliage, darker than the shared grass ground, with broad modest lights and deeper olive shadows. NO bright lime/chartreuse saturation, no pale pastel wash, no global blur, no black/white outlines, no plastic CGI or flat vector icons. All tree bases, contact shadows and low vegetation must blend naturally into the approved grass color and texture so the whole tile looks like ONE unified painting, no sticker boundary, glowing keyline, hard cutout rim or geometric slab. Square opaque complete image, approved grass background fills all corners, no transparency, frame, labels, hex border, UI or watermark. No roads, rivers, buildings, rocks added as unrelated objects.\nMOUNTAIN DECIDUOUS FOREST: keep the original high rocky summits and major connected ridge silhouettes EXPOSED ABOVE the canopy and preserve their exact arrangement/proportions. Dense mature broadleaf crowns blanket the lower slopes, middle wooded slopes and valleys with the same closed-canopy density as the flat forest. Tiny openings only in the forest-growing land; do not confuse exposed summit rock with sparse forest. Do not let tree height overwhelm or erase the mountain summit. Replace the bare stone ground OUTSIDE the rocky relief with shared grass, and blend rocky lower slopes naturally into this grass/forest painting. The original warm stone summits/planes keep their colors and forms. No extra mountains and no conifers.\nFLAT-TOP complete regular hex in a210square: (210,105),(157.5,195.93),(52.5,195.93),(0,105),(52.5,14.07),(157.5,14.07). Keep ALL leaf lobes, twigs, trunks, shadows and relief inside these six sides with a narrow3-5px breathing margin, respecting the slanted corners. Trees remain vertical, never rotate them. Use the last image only as the allowed footprint guide, not as artwork; no line/hex frame may appear."
+    }
+  ]
+}
