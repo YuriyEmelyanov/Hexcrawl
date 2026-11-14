@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-14T1100-interviewer-ONE-MILE1-GEO2",
+  "run_id": "2026-11-14T1124-interviewer-GEO2-owner-answers",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "GEO2_interview_first_round_prepared_for_current_response",
+  "status": "GEO2_interview_completed_final_spec_pending",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -51,14 +51,14 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "interviewer",
-  "next_role": "interviewer",
+  "next_role": "business_analyst",
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
   "spec_version": "GEO2-v1",
-  "result_path": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
+  "result_path": "agent-work/results/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
   "handoff_commit_sha": "33d9f25778e4e5217bbbb7eea42b0f969cef2782",
   "active_claim": null,
-  "next_step": "В существующем чате получить ответы владельца по GEO2-Q01 (предпросмотр ручных смещений или отказ) и GEO2-Q02 (близость прежней дороги или длина), либо явное делегирование/отложение. Интервьюер сохраняет ответы и снимает противоречия; при новых существенных вопросах — следующий раунд. После закрытия аналитик выпускает чистовую GEO2 с трассировкой к G205/G206/G208/G209, затем программист продолжает GEO2-PLAN.",
+  "next_step": "Аналитик готовит чистовую GEO2-v2 по решениям GEO2-Q01/Q02: при обычной правке исходной карты корректные связанные смещения выполняются автоматически без дополнительного предпросмотра/согласия, в одной Undo-транзакции; дорога выбирается сначала по минимальной длине, затем по отклонению и устойчивому ключу. Обновить требования и G205/G206/G208/G209, отделить исходное явное «Уточнить геометрию» от обычных правок. Затем программист продолжает GEO2-PLAN с 359f1c1; публикация отдельно.",
   "owner_decisions_needed": [
     {
       "task_id": "HX-BL-047",
@@ -230,7 +230,7 @@
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
-  "role_selection_reason": "Explicit owner interviewer workflow and ready unclaimed GEO2 intake; previous programmer checkpoint completed. Full contract reviewed before new questions; foreign HX-BL-041 claim preserved.",
+  "role_selection_reason": "Explicit owner answers to current round; close same interview and hand to analyst, preserve foreign claims.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -253,15 +253,14 @@
   "base_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-14T08:00:14.731Z",
+      "checked_at": "2026-11-14T08:23:55.202Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-14T08:05:25.767Z",
+      "checked_at": "2026-11-14T08:25:56.880Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
@@ -271,13 +270,7 @@
       "reason": "Both actual observations enabled"
     },
     "errors": [],
-    "limitation": "Actual point-in-time checks only; no guarantee against subsequent service disable. Same automation, schedule and prompt unchanged.",
-    "pre_persistence_end": {
-      "checked_at": "2026-11-14T08:04:15.084Z",
-      "method": "automations.peek",
-      "status": "checked",
-      "is_enabled": true
-    }
+    "scope": "Point-in-time observations only; same automation, prompt and schedule unchanged."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "completed_insufficient_evidence_whole_grades",
@@ -714,7 +707,7 @@
   "last_release_pr": 497,
   "last_material_result_path": "agent-work/results/2026-11-12T1400-reviewer-ONE-MILE1.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
-  "spec_status": "legacy_final_preserved_material_clarification_pending",
+  "spec_status": "legacy_final_preserved_revision_pending_after_interview",
   "previous_task_release_approval": {
     "task_id": "HX-BL-043",
     "stage_id": "TABLES1",
@@ -879,7 +872,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-14T08:05:25.767Z",
+  "updated_at": "2026-11-14T08:25:56.880Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1444,7 +1437,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-14T1100-ONE-MILE1-GEO2-interview.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-14T1124-GEO2-final-spec-analyst.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -6123,7 +6116,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Existing approved GEO2; source-edit policy and road objective await answers then analyst final spec. Independent approved work may continue. No publication authorization.",
+  "authority_status": "Existing approved task; no new start permission needed. Dependent implementation after analyst final revision; publication separately.",
   "analysis_baseline_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
   "analysis_baseline_tree": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -6581,7 +6574,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
+  "result_ref": "agent-work/results/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7346,7 +7339,7 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "role": "interviewer",
-  "latest_result_ref": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
+  "latest_result_ref": "agent-work/results/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
   "checks": {
     "run_id": 43363246575,
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
@@ -7946,7 +7939,7 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
+  "current_role_result": "agent-work/results/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
   "current_stage_score_assessment_status": "incomplete_package_unverified_no_grade_claim",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
   "execution_running": false,
@@ -8407,7 +8400,7 @@
   "release_readiness": "not_ready_GEO2_in_progress",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-14T1100-ONE-MILE1-GEO2-interview.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-14T1124-GEO2-final-spec-analyst.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -8457,7 +8450,7 @@
   },
   "local_sha": "aad4516f3f01443c7c6c12fa7403e66f6a3a3201",
   "checks_evidence_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/root-checks.json",
-  "execution_status": "interviewer_checkpoint_completed_owner_answers_pending_after_delivery",
+  "execution_status": "interview_completed_analyst_final_specification_pending",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8886,7 +8879,7 @@
   "full_package_review_ready": false,
   "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": true,
-  "owner_decision_required_for_next_step": true,
+  "owner_decision_required_for_next_step": false,
   "independent_accepted": false,
   "latest_DETAIL1_export_style": {
     "run_id": "2026-11-10T1156-programmer-HX-BL-051-export-style",
@@ -9053,47 +9046,20 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-14T1100-interviewer-ONE-MILE1-GEO2",
+  "last_completed_run_id": "2026-11-14T1124-interviewer-GEO2-owner-answers",
   "storage_verification": {
-    "data_commit_sha": "d6982d3888ae1f39400fdf2e9789830a34a43b07",
-    "health_commit_sha": "5e2b8f455a422129fc7217858acde3c061a37268",
-    "exact_utf8_readbacks": [
-      {
-        "path": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/round-001.json",
-        "exact_utf8": true
-      },
-      {
-        "path": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/questions-001.md",
-        "exact_utf8": true
-      },
-      {
-        "path": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/intake.json",
-        "exact_utf8": true
-      },
-      {
-        "path": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
-        "exact_utf8": true
-      },
-      {
-        "path": "agent-work/handoffs/2026-11-14T1100-ONE-MILE1-GEO2-interview.json",
-        "exact_utf8": true
-      },
-      {
-        "path": "agent-work/claims/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
-        "exact_utf8": true
-      },
-      {
-        "path": "agent-work/backlog.json",
-        "exact_utf8": true
-      },
-      {
-        "path": "agent-work/lessons.md",
-        "exact_utf8": true
-      },
-      {
-        "path": "agent-work/feedback.json",
-        "exact_utf8": true
-      }
+    "data_commit_sha": "eebeb83adb9d54dba2bf3eaffbea37f8fd257017",
+    "data_files_verified": [
+      "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/round-001.json",
+      "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/intake.json",
+      "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+      "agent-work/decisions/owner-decision-2026-11-14-GEO2-interview-answers.json",
+      "agent-work/handoffs/2026-11-14T1124-GEO2-final-spec-analyst.json",
+      "agent-work/results/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
+      "agent-work/claims/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json"
     ],
     "latest_written_last": true
   },
@@ -10701,7 +10667,7 @@
   "latest_programmer_result_ref": "agent-work/results/2026-11-14T0912-programmer-ONE-MILE1-GEO2.json",
   "source_sha": "1c6cb9091cbd2b5310224cff09e535899824d873",
   "source_pr": 496,
-  "owner_decision_required": true,
+  "owner_decision_required": false,
   "latest_DETAIL1_C_FILL_implementation": {
     "run_id": "2026-11-11T1803-programmer-PR496-CI-retry",
     "status": "accepted_awaiting_owner_publication_permission",
@@ -10744,7 +10710,7 @@
     "product_routing_unchanged": true
   },
   "latest_PR496_CI_retry_claim_ref": "agent-work/claims/2026-11-11T1803-programmer-PR496-CI-retry.json",
-  "next_actor": "owner",
+  "next_actor": "business_analyst",
   "publication_authorized": false,
   "previous_root_release_approval_before_PR496": {
     "task_id": "HX-BL-054",
@@ -11142,7 +11108,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -11437,7 +11403,7 @@
     }
   },
   "requirements_addendum_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-owner-corrections-2026-11-12.md",
-  "owner_decision_required_now": true,
+  "owner_decision_required_now": false,
   "latest_ONE_MILE1_owner_corrections": {
     "run_id": "2026-11-12-manual-analyst-ONE-MILE1-owner-corrections",
     "feedback_id": "HX-FB-023",
@@ -11878,7 +11844,7 @@
     "head_sha": "33b362caeb536a265f30323fdf0e942b481306b1",
     "status": "checkpoint_saved_GEO2_finite_water_in_progress"
   },
-  "next_step_authorization": "approved_interview_within_HX_BL_051",
+  "next_step_authorization": "approved_analyst_final_revision_with_owner_interview_decisions",
   "activation": false,
   "latest_GEO2_storage_verification": {
     "data_commit_sha": "8dd1466a484be9e520f96c08f70056277c6dc447",
@@ -12064,23 +12030,22 @@
     "interview_completed": false,
     "legacy_final_specs_not_automatically_invalidated": true
   },
-  "interview_status": "round_001_prepared_for_current_response",
+  "interview_status": "interview_completed",
   "interview_required": true,
-  "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/round-001.json",
+  "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
   "previous_run_before_GEO2_interview": "2026-11-14T0912-programmer-ONE-MILE1-GEO2",
-  "open_question_ids": [
-    "GEO2-Q01",
-    "GEO2-Q02"
-  ],
+  "open_question_ids": [],
   "latest_GEO2_interview": {
-    "run_id": "2026-11-14T1100-interviewer-ONE-MILE1-GEO2",
-    "round_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/round-001.json",
-    "questionnaire_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/questions-001.md",
-    "result_ref": "agent-work/results/2026-11-14T1100-interviewer-ONE-MILE1-GEO2.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-14T1100-ONE-MILE1-GEO2-interview.json",
-    "question_count": 2,
-    "answers_received": 0,
-    "interview_completed": false,
-    "presentation_status": "prepared_for_current_final_response"
-  }
+    "run_id": "2026-11-14T1124-interviewer-GEO2-owner-answers",
+    "result_ref": "agent-work/results/2026-11-14T1124-interviewer-GEO2-owner-answers.json",
+    "decisions_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-14T1124-GEO2-final-spec-analyst.json",
+    "answers_received": 2,
+    "interview_completed": true,
+    "open_question_ids": [],
+    "presentation_status": "presented_in_existing_chat_verified"
+  },
+  "previous_run_before_GEO2_owner_answers": "2026-11-14T1100-interviewer-ONE-MILE1-GEO2",
+  "owner_answers_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+  "latest_owner_interview_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-interview-answers.json"
 }
