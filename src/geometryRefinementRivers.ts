@@ -29,20 +29,20 @@ function better(a:RouteCost,b:RouteCost){
 }
 /** BFS levels enforce shortest length. Dynamic programming on that DAG then
  * chooses source deviation, seeded side and numeric vertex sequence in order. */
-function route(graph:RefinementGraph,start:GridVertex,end:GridVertex,source:RefinementRiverSegment,seed:number,origin:WorldPoint,blockedVertices:ReadonlySet<string>,blockedEdges:ReadonlySet<string>):readonly GridVertex[]|null {
+function route(graph:RefinementGraph,start:GridVertex,end:GridVertex,source:RefinementRiverSegment,seed:number,origin:WorldPoint,blockedVertices:ReadonlySet<string>,blockedEdges:ReadonlySet<string>,consumeWork?:(units:number)=>void):readonly GridVertex[]|null {
  const adjacent=new Map<string,{v:GridVertex;e:GridEdge}[]>();
- for(const e of graph.edges){
+ for(const e of graph.edges){consumeWork?.(1);
   if(blockedEdges.has(e.key)||[e.from,e.to].some(v=>blockedVertices.has(key(v))))continue;
   for(const [a,b]of [[e.from,e.to],[e.to,e.from]]){const k=key(a);const rows=adjacent.get(k)??[];rows.push({v:b,e});adjacent.set(k,rows);}
  }
  for(const rows of adjacent.values())rows.sort((a,b)=>cmp(a.v,b.v));
  const sk=key(start),ek=key(end),levels=new Map([[sk,0]]),queue=[start];
- for(let i=0;i<queue.length;i++)for(const {v}of adjacent.get(key(queue[i]))??[])if(!levels.has(key(v))){levels.set(key(v),levels.get(key(queue[i]))!+1);queue.push(v);}
+ for(let i=0;i<queue.length;i++)for(const {v}of adjacent.get(key(queue[i]))??[]){consumeWork?.(1);if(!levels.has(key(v))){levels.set(key(v),levels.get(key(queue[i]))!+1);queue.push(v);}}
  const length=levels.get(ek);if(length===undefined)return null;
  const costs=new Map<string,RouteCost>([[sk,{deviation:0,side:0,path:[start]}]]),grid=createDetailGrid(1,origin);
- for(const v of queue){
+ for(const v of queue){consumeWork?.(1);
   const row=costs.get(key(v)),level=levels.get(key(v))!;if(!row||level>=length)continue;
-  for(const {v:next,e}of adjacent.get(key(v))??[]){
+  for(const {v:next,e}of adjacent.get(key(v))??[]){consumeWork?.(1);
    if(levels.get(key(next))!==level+1)continue;
    const a=refinementWorldPoint(e.from,origin),b=refinementWorldPoint(e.to,origin),mid={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
    const d=distance(mid,source.from.point,source.to.point),cross=(source.to.point.x-source.from.point.x)*(mid.y-source.from.point.y)-(source.to.point.y-source.from.point.y)*(mid.x-source.from.point.x);
@@ -58,13 +58,14 @@ function route(graph:RefinementGraph,start:GridVertex,end:GridVertex,source:Refi
  * Allocation is deterministic source-key order. It does not backtrack earlier
  * paths: route_conflict means bounded allocation failed, not a proof that no
  * other simultaneous allocation exists. Caller must not fall back to old lines. */
-export function prepareRefinementRivers(input:Readonly<{seed:number;origin:WorldPoint;cells:readonly DetailCell[];segments:readonly RefinementRiverSegment[]}>):RefinementRiverResult {
+export function prepareRefinementRivers(input:Readonly<{seed:number;origin:WorldPoint;cells:readonly DetailCell[];segments:readonly RefinementRiverSegment[];consumeWork?:(units:number)=>void}>):RefinementRiverResult {
  const fail=(code:Extract<RefinementRiverResult,{status:'error'}>['code'],refs:string[]=[]):RefinementRiverResult=>Object.freeze({status:'error',code,refs:Object.freeze(refs),completeGeometryPlan:false});
  if(!Number.isSafeInteger(input.seed)||input.seed<0||input.seed>4294967295||![input.origin.x,input.origin.y].every(Number.isFinite))return fail('invalid_source');
  if(input.cells.length>200000||input.segments.length>4096||input.cells.length*input.segments.length>2000000)return fail('capacity');
+ input.consumeWork?.(1+input.cells.length+input.segments.length);
  const sorted=[...input.segments].sort((a,b)=>a.riverId-b.riverId||lexical(a.edgeKey,b.edgeKey)),ids=new Set<string>(),nodes=new Map<string,WorldPoint>(),incidence=new Map<string,Set<string>>(),parents=new Map<string,string>();
  const root=(s:string):string=>{let r=s;while(parents.get(r)!==r)r=parents.get(r)!;return r;};
- for(const s of sorted){
+ for(const s of sorted){input.consumeWork?.(1);
   const id=JSON.stringify([s.riverId,s.edgeKey]);
   if(!Number.isSafeInteger(s.riverId)||s.riverId<1||!s.edgeKey||ids.has(id)||!Number.isInteger(s.fullness)||s.fullness<1||s.fullness>5||s.from.key===s.to.key)return fail('invalid_source',[id]);
   ids.add(id);
@@ -83,20 +84,20 @@ export function prepareRefinementRivers(input:Readonly<{seed:number;origin:World
  const graphs=new Map<string,RefinementGraph>(),nodeCandidates=new Map<string,Map<string,GridVertex>>();
  try{for(const s of sorted){
   const cells=new Map<string,DetailCell>();
-  for(const c of available.values())if(detailSegmentSpan(grid,c,{from:s.from.point,to:s.to.point},true)){
+  for(const c of available.values())if((input.consumeWork?.(1),true)&&detailSegmentSpan(grid,c,{from:s.from.point,to:s.to.point},true)){
    cells.set(cellKey(c),c);for(const [dq,dr]of directions){const n={q:c.q+dq,r:c.r+dr};if(available.has(cellKey(n)))cells.set(cellKey(n),available.get(cellKey(n))!);}
   }
   if(cells.size>4096)return fail('capacity',[s.edgeKey]);
-  const graph=refinementEdgeGraph([...cells.values()]);graphs.set(JSON.stringify([s.riverId,s.edgeKey]),graph);
+  input.consumeWork?.(cells.size*6);const graph=refinementEdgeGraph([...cells.values()]);graphs.set(JSON.stringify([s.riverId,s.edgeKey]),graph);
   for(const n of [s.from,s.to]){
    const vs=new Map(graph.vertices.map(v=>[key(v),v])),old=nodeCandidates.get(n.key);
    nodeCandidates.set(n.key,old?new Map([...old].filter(([k])=>vs.has(k))):vs);
   }
- }}catch{return fail('invalid_source');}
+ }}catch(error){if(error instanceof Error&&/^(prepare_|invalid_prepare_)/.test(error.message))throw error;return fail('invalid_source');}
  const ports=new Map<string,GridVertex>(),reserved=new Map<string,string>();
  for(const [sourceKey,p]of [...nodes].sort(([a],[b])=>lexical(a,b))){
   const candidates=[...(nodeCandidates.get(sourceKey)?.values()??[])];
-  candidates.sort((a,b)=>{const ap=refinementWorldPoint(a,input.origin),bp=refinementWorldPoint(b,input.origin),ad=(ap.x-p.x)**2+(ap.y-p.y)**2,bd=(bp.x-p.x)**2+(bp.y-p.y)**2;return Math.abs(ad-bd)>1e-10?ad-bd:cmp(a,b);});
+  candidates.sort((a,b)=>{input.consumeWork?.(1);const ap=refinementWorldPoint(a,input.origin),bp=refinementWorldPoint(b,input.origin),ad=(ap.x-p.x)**2+(ap.y-p.y)**2,bd=(bp.x-p.x)**2+(bp.y-p.y)**2;return Math.abs(ad-bd)>1e-10?ad-bd:cmp(a,b);});
   const chosen=candidates[0];if(!chosen||reserved.has(key(chosen)))return fail('node_conflict',[sourceKey]);
   ports.set(sourceKey,chosen);reserved.set(key(chosen),sourceKey);
  }
@@ -108,7 +109,7 @@ export function prepareRefinementRivers(input:Readonly<{seed:number;origin:World
   const rows=sorted.filter(s=>s.from.key===n||s.to.key===n),p=refinementWorldPoint(port,input.origin);
   let best:{cost:number;side:number;choices:GridVertex[]}|undefined;
   const choose=(i:number,choices:GridVertex[],cost:number,side:number)=>{
-   if(i===rows.length){if(!best||cost<best.cost-1e-12||Math.abs(cost-best.cost)<=1e-12&&(side<best.side||side===best.side&&comparePath(choices,best.choices)<0))best={cost,side,choices};return;}
+   input.consumeWork?.(1);if(i===rows.length){if(!best||cost<best.cost-1e-12||Math.abs(cost-best.cost)<=1e-12&&(side<best.side||side===best.side&&comparePath(choices,best.choices)<0))best={cost,side,choices};return;}
    const s=rows[i],other=ports.get(s.from.key===n?s.to.key:s.from.key)!,target=refinementWorldPoint(other,input.origin),dx=target.x-p.x,dy=target.y-p.y,length=Math.hypot(dx,dy);
    const graph=graphs.get(JSON.stringify([s.riverId,s.edgeKey]))!;
    const adjacent=graph.edges.flatMap(e=>key(e.from)===key(port)?[e.to]:key(e.to)===key(port)?[e.from]:[]).sort(cmp);
@@ -124,9 +125,9 @@ export function prepareRefinementRivers(input:Readonly<{seed:number;origin:World
   for(let i=0;i<rows.length;i++){stubs.set(stubKey(rows[i],n),best.choices[i]);reservedStubs.add(key(best.choices[i]));}
  }
  const occupied=new Set<string>(),usedEdges=new Set<string>(),paths:RefinementRiverPath[]=[];
- for(const s of sorted){
+ for(const s of sorted){input.consumeWork?.(1);
   const a=ports.get(s.from.key)!,b=ports.get(s.to.key)!,sa=stubs.get(stubKey(s,s.from.key))!,sb=stubs.get(stubKey(s,s.to.key))!,blocked=new Set([...occupied,...reserved.keys(),...reservedStubs]);blocked.delete(key(sa));blocked.delete(key(sb));
-  const graph=graphs.get(JSON.stringify([s.riverId,s.edgeKey]))!,middle=route(graph,sa,sb,s,input.seed,input.origin,blocked,usedEdges);
+  const graph=graphs.get(JSON.stringify([s.riverId,s.edgeKey]))!,middle=route(graph,sa,sb,s,input.seed,input.origin,blocked,usedEdges,input.consumeWork);
   if(!middle)return fail('route_conflict',[String(s.riverId),s.edgeKey]);
   const path=[a,...middle,b];
   for(let i=0;i<path.length;i++){

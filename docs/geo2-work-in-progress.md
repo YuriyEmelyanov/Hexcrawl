@@ -345,3 +345,10 @@ CPU cost, tokens or subscription usage. Upstream river/mouth preparation is stil
 a supplied input outside this aggregate budget. Feature-specific POI constraints,
 whole GeometryPlan/public16/physical4/history/Q01 closure/Apply/UI/PNG remain
 pending; readyForApplication=false and completeGeometryPlan=false.
+
+GEO2 river-work rationale before checks: reuse the existing immutable confluence
+case to verify that incremental upstream routing charges preserve identical
+geometry, exact sufficient work succeeds, a late exhausted charge and an inner
+cancellation propagate as prepare_* rather than no-path or invalid-source.
+No new permanent case or world fixture. This hook is only river skeleton work;
+normalization, terminal/mouth geometry and aggregate orchestration still pending.

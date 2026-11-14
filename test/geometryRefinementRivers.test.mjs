@@ -1,3 +1,4 @@
+import {createRefinementWorkBudget} from '../src/geometryRefinementWork.ts';
 import test from 'node:test';
 import {prepareRefinementTerminalRoutes} from '../src/geometryRefinementTerminalRoutes.ts';
 import assert from 'node:assert/strict';
@@ -30,6 +31,10 @@ test('GEO2 river confluence uses shared ports, stable correspondence and immutab
  const data=input(),before=JSON.stringify(data),r=prepareRefinementRivers(data);assertTopology(r,data.segments,cells);
  const reordered={...data,cells:[...cells].reverse(),segments:[...data.segments].reverse().map(s=>({...s,name:'ignored display name',from:{key:s.from.key,point:{y:s.from.point.y,x:s.from.point.x}}}))};
  assert.deepEqual(prepareRefinementRivers(reordered),r);assert.equal(JSON.stringify(data),before);
+ let units=0;assert.deepEqual(prepareRefinementRivers({...data,consumeWork:n=>{units+=n;}}),r);assert.ok(units>data.cells.length);
+ const exact=createRefinementWorkBudget(units);assert.deepEqual(prepareRefinementRivers({...data,consumeWork:exact.charge}),r);assert.equal(exact.snapshot().remaining,0);
+ const late=createRefinementWorkBudget(units-1);assert.throws(()=>prepareRefinementRivers({...data,consumeWork:late.charge}),/prepare_incomplete_budget/);assert.ok(late.snapshot().used<=units-1);
+ let ticks=0;const cancel=createRefinementWorkBudget(2000000,()=>++ticks>100);assert.throws(()=>prepareRefinementRivers({...data,consumeWork:cancel.charge}),/prepare_cancelled/);assert.equal(JSON.stringify(data),before);
  assert.equal(r.completeGeometryPlan,false);assert.ok(Object.isFrozen(r.paths));
  const center=seg('diameter',node('top',0,-1/Math.sqrt(3)),node('bottom',0,1/Math.sqrt(3)));
  const alternatives=new Set(Array.from({length:8},(_,seed)=>{const result=prepareRefinementRivers({seed,origin:data.origin,cells:[{q:0,r:0}],segments:[center]});assert.equal(result.status,'prepared');return JSON.stringify(result.paths[0].vertices);}));
@@ -49,6 +54,7 @@ test('GEO2 retained zigzag world preserves all53 source segment IDs without new 
  const source=normalizeRefinementRiverSource({rivers:world.map.rivers,origin,marks});assert.equal(source.status,'prepared');
  const segments=source.segments;assert.equal(segments.length,53);
  const prepared=prepareRefinementRiverNetwork({seed:423493684,origin,cells:available,rivers:world.map.rivers,marks});
+ assert.throws(()=>prepareRefinementRiverNetwork({seed:423493684,origin,cells:available,rivers:world.map.rivers,marks,consumeWork:createRefinementWorkBudget(1).charge}),/prepare_incomplete_budget/);
  assert.equal(prepared.status,'prepared');const r=prepared.rivers;assertTopology(r,segments,available);
  assert.equal(prepared.boundaries.length,world.map.rivers.reduce((n,r)=>n+2*r.sectors.length,0));
  for(const s of source.sectors){const original=world.map.rivers.find(r=>r.id===s.riverId).sectors.find(v=>v.id===s.sectorId);assert.equal(s.assignedRegionId,original.assignedRegionId??null);}

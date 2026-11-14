@@ -349,3 +349,9 @@ Production-браузерная проверка остаётся для CI; л�
 ### Ручная вода E6 — проверка изменённого контекста
 
 Ручное изменение берега/площади озера проверяется по прежним RIV-правилам при фиксированных руслах и F. Принятая и предполагаемая физические сети строятся в своих геометрических контекстах: сравнение обеих сетей в новой геометрии скрыло бы новый дефект площади/устья. Изменившаяся площадь, lake ports и морские вершины требуют новой проверки; legacy allowance относится к прежним фактическим условиям. Полное описание атомарности и UI — [water-editing.md](water-editing.md). Числовые нормы/веса/пороги не изменяются.
+
+GEO2 upstream work hook (unmounted): river skeleton corridor enumeration,
+port allocation and BFS/DAG routing accept incremental logical work charges.
+prepare_incomplete_budget/prepare_cancelled propagate without returning a partial
+river candidate. Without a hook geometry is unchanged. This is not a full
+river/mouth aggregate budget, CPU bound or active generation change.

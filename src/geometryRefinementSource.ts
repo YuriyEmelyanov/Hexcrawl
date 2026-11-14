@@ -101,9 +101,9 @@ export function refinementPolylineArc(points:readonly WorldPoint[],fraction:numb
 }
 /** Still only a river candidate. Boundary refs are preserved, not a claim that
  * exits already satisfy the future generated-map boundary/shore constraints. */
-export function prepareRefinementRiverNetwork(input:SourceInput&Readonly<{seed:number;cells:readonly DetailCell[]}>){
+export function prepareRefinementRiverNetwork(input:SourceInput&Readonly<{seed:number;cells:readonly DetailCell[];consumeWork?:(units:number)=>void}>){
  const source=normalizeRefinementRiverSource(input);if(source.status==='error')return source;
- const rivers=prepareRefinementRivers({seed:input.seed,origin:input.origin,cells:input.cells,segments:source.segments});if(rivers.status==='error')return rivers;
+ const rivers=prepareRefinementRivers({seed:input.seed,origin:input.origin,cells:input.cells,segments:source.segments,consumeWork:input.consumeWork});if(rivers.status==='error')return rivers;
  const paths=new Map(rivers.paths.map(p=>[id(p),p])),ports=new Map(rivers.nodes.map(n=>[n.sourceKey,n.vertex]));
  const rapids=frozen(source.rapids.map(r=>Object.freeze({...r,kind:'rapid' as const,sourceRef:`rapid:${r.riverId}:${r.sourceEdgeKey}`,...arc(paths.get(id(r))!,input.origin,.5)})));
  const waterfalls=frozen(source.waterfalls.map(sourceNodeKey=>Object.freeze({kind:'waterfall' as const,sourceRef:`vertex:${sourceNodeKey}`,sourceNodeKey,point:Object.freeze(refinementWorldPoint(ports.get(sourceNodeKey)!,input.origin)),incidences:frozen(rivers.paths.filter(p=>p.fromNode===sourceNodeKey||p.toNode===sourceNodeKey).map(p=>Object.freeze({riverId:p.riverId,sourceEdgeKey:p.sourceEdgeKey,flow:p.fromNode===sourceNodeKey?'leaving' as const:'entering' as const,...arc(p,input.origin,p.fromNode===sourceNodeKey?0:1)})))})));
