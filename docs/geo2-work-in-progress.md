@@ -389,3 +389,10 @@ policy rows. They do not prove generated-world prevalence or complete G201–G21
 The retained world still has unknown catalogue requirements. Full GeometryPlan,
 public16/physical4/choices/Q01/history/Apply/map/PNG/UI and independent full-package
 acceptance remain pending; no active feature/UI/publication is enabled here.
+
+Manual development correction: an exact crossing-bank regression reproduced
+before final handoff (query0,.5 selected instead of supplied5e-8,.5). Extend the
+existing bank case to protect literal allowed-contact selection; nearby numeric
+candidates cannot replace an exact crossing endpoint. This is a third modified
+existing case, no new lifecycle. Supersede the first in-flight full check and
+verify the corrected frozen SHA with one fresh full check.
