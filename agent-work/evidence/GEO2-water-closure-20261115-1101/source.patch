@@ -1,0 +1,105 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index c0af9b0..e3b8aa0 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -1160,7 +1160,13 @@ function refinementSourceInput(map:OneMileDocumentMap,state:Detail1State,riverPl
+ }
+ /** All accepted writers prepare a detached candidate before touching history. */
+ function geometryLakeInputs(map:Pick<MapSnapshot,'regions'|'hexTerrainByKey'|'toponymSeed'>,origin:{x:number;y:number}){
+- return getLakesForRegions(map.regions,map.hexTerrainByKey).map(lake=>{
++ // One stable body may span several source regions. Per-region rendering
++ // fragments are not separate hydrological bodies or contour inputs.
++ const bodies=new Map<number,AxialHex[]>();
++ for(const [key,value]of map.hexTerrainByKey)if(value.terrainOverride==='lake'&&value.lakeId!==undefined){
++  const [q,r]=key.split(',').map(Number),cells=bodies.get(value.lakeId)??[];cells.push({q,r});bodies.set(value.lakeId,cells);
++ }
++ return [...bodies].sort(([a],[b])=>a-b).map(([lakeId,hexes])=>({lakeId,hexes:hexes.sort((a,b)=>a.q-b.q||a.r-b.r)})).map(lake=>{
+   const shapes=buildNaturalLakes(lake.hexes.map(c=>({...c,...toPixel(c.q,c.r),lakeId:lake.lakeId})),28,map.toponymSeed,[]);
+   if(shapes.length!==1)throw Error('GEO2 ambiguous_lake_contour');
+   return {lakeId:lake.lakeId,cells:[...lake.hexes],colorPath:shapes[0].path,colorScale:detailSourcePixelToWorld({x:1,y:0}).x,origin};
+diff --git a/src/geometryRefinementBoundary.ts b/src/geometryRefinementBoundary.ts
+index 8037662..e721521 100644
+--- a/src/geometryRefinementBoundary.ts
++++ b/src/geometryRefinementBoundary.ts
+@@ -241,9 +241,14 @@ export function geometryBoundaryHasValidClosure(result:ReturnType<typeof prepare
+   for(const f of scope.input.map.physicalGrid.poiFootprints)if(!checkPoi(refined.get(f.poiId)??f,addedWater))return false;
+   const mixedWater={...accepted.riverPlan.paintWater,capsules:[...accepted.riverPlan.paintWater.capsules,...addedWater.capsules]};
+   for(const f of scope.outside.authoredFootprints)if(!checkPoi(f,mixedWater))return false;
+-  // Water-body growth or new contacts require a shoreline/mouth closure, not
+-  // a river endpoint certificate. Keep them explicit conflicts for now.
+-  if(result.potentialDependencies.some(p=>/^(lake|sea):/.test(p.retainedRef)||/^(lake|sea):/.test(p.addedRef)))return false;
++  // The full current body and all lake mode signatures were validated above.
++  // A shoreline may overlap empty opposite-region support: that support is
++  // not an occupied feature. The enclosing mode hulls, source/fine water,
++  // road strokes/rails and POI extents were all compared in both directions.
++  // Only support/body pairs are resolved here; even a potential opposite
++  // feature/body contact remains an explicit conflict, never a movement grant.
++  const body=(ref:string)=>/^(lake|sea):/.test(ref),support=(ref:string)=>ref.startsWith('region:');
++  if(result.potentialDependencies.some(p=>body(p.retainedRef)&&!support(p.addedRef)||body(p.addedRef)&&!support(p.retainedRef)))return false;
+   return true;
+  }catch{return false;}
+ }
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index 5121495..76d4f68 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -1083,3 +1083,31 @@ test('GEO2 actual mixed dry road approach preserves existing typed crossing and
+  assert.deepEqual(after.map.crossings,generated.map.crossings);assert.deepEqual(after.generation,generated.generation);assertUndoRedo(h,generated,after);
+  await load(h,after);assert.deepEqual(stable(h.render()),after);
+ });
++
++// Separate risk: a complete all-mode shoreline may overlap new empty region
++// support. No road/river/POI contact is authorized by this support-only case.
++test('GEO2 scoped lake growth across empty support replans shoreline in one actual water transaction',async()=>{
++ const {h}=geometryRiverBackendFixture(),base=h.render().captureDocument().map;const regions=base.regions.map(r=>r.id===2?{...r,hexes:[...r.hexes,{q:6,r:0}],finalSize:3,targetSize:3}:r);h.render().restoreSnapshot({...base,regions,candidateHexes:h.geometry.getCandidateHexes(regions.flatMap(r=>r.hexes),new Set())});h.render().setEditMode(true);h.render().setSelectedHex({q:6,r:0});assert.equal(h.render().startWaterDraft('lake'),true);assert.equal(h.render().finishWaterDraft(),true);
++ h.render().setEditMode(false);const adaptation=h.render().previewOneMile();assert.ok(adaptation);assert.equal(h.render().applyOneMilePreview(adaptation),true);await acceptGeometryRefinement(h);
++ const doc=h.render().captureDocument(),cell={q:7,r:0},anchor={q:8,r:0},template=doc.map.regions[0],region={...template,id:3,hexes:[cell,anchor],centerHex:anchor,anchorHex:anchor,finalSize:2,targetSize:2,pointsOfInterest:[],pointOfInterestKinds:{},isTract:true,suppressCentralPoi:true};
++ const sourceMap={...doc.map,regions:[...doc.map.regions,region],physicalGrid:detailAuthoredState(doc.map.physicalGrid),candidateHexes:h.geometry.getCandidateHexes([...regions.flatMap(r=>r.hexes),cell,anchor],new Set(doc.map.hexTerrainByKey.keys()))};
++ sourceMap.toponyms=synchronizeToponyms(doc.map.toponyms,[...Object.entries(doc.map.toponyms).map(([key,value])=>({key,kind:value.kind})),{key:'region:3',kind:doc.map.toponyms['region:1'].kind}],doc.map.toponymSeed);
++ const authored=reconcileDetailGeography(sourceMap,h.geometry.detailMapRiverGeometry(sourceMap,sourceMap.physicalGrid.grid.origin));
++ const incoming=serial(h.render().createSaveData({...doc,map:{...sourceMap,physicalGrid:composeScopedDetailState(authored,doc.map.physicalGrid.geometryRefinement)}}));delete incoming.savedAt;
++ await load(h,incoming);assert.equal(h.render().captureDocument().map.regions.length,3,'scope with shoreline contact imports');
++ h.render().setEditMode(true);h.render().setSelectedHex(cell);
++ const before=stable(h.render()),count=h.render().undoHistory.length,oldLake=before.map.terrainByHexKey['6,0'].lakeId,oldBody=before.map.physicalGrid.geometryRefinement.riverPlan.lakes.find(l=>l.lakeId===oldLake);
++ assert.equal(h.render().startWaterDraft('lake'),true);assert.equal(h.render().finishWaterDraft(),true,h.render().editError??JSON.stringify(h.render().waterPreview));
++ const after=stable(h.render()),newBody=after.map.physicalGrid.geometryRefinement.riverPlan.lakes.find(l=>l.lakeId===oldLake);
++ assert.equal(after.map.terrainByHexKey['7,0'].lakeId,oldLake);assert.equal(h.render().undoHistory.length,count+1);
++ for(const mode of ['tiles','emoji','color'])assert.notEqual(newBody.modes[mode].signature,oldBody.modes[mode].signature,'each shoreline rebuilt');
++ assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(after.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);
++ assert.equal(JSON.parse(after.map.physicalGrid.geometryRefinement.sourceFingerprint.slice('geo2-source-input-v1:'.length)).regions.some(r=>r.id===3),false,'new region stays outside refinement');
++ assert.deepEqual(after.map.physicalGrid.geometryRefinement.riverPlan.paths,before.map.physicalGrid.geometryRefinement.riverPlan.paths,'unrelated rivers literal');
++ assertUndoRedo(h,before,after);h.render().undoMap();const stacks=serial([h.render().undoHistory,h.render().redoHistory]);
++ const restore=h.injectFunction('geometryLakeInputs',()=>{throw Error('injected shoreline failure');});
++ assert.equal(h.render().startWaterDraft('lake'),true);assert.equal(h.render().finishWaterDraft(),false);restore();
++ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'failure preserves redo');h.render().resetWaterDraft();
++ const invalid=structuredClone(after);delete invalid.map.terrainByHexKey['7,0'];await load(h,invalid);assert.deepEqual(stable(h.render()),before,'stale water body16 is rejected');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);h.render().redoMap();
++ await load(h,after);assert.deepEqual(stable(h.render()),after,'exact16 shoreline readback');
++});
+diff --git a/docs/water-editing.md b/docs/water-editing.md
+index e1a68dc..732acec 100644
+--- a/docs/water-editing.md
++++ b/docs/water-editing.md
+@@ -32,3 +32,23 @@
+ ## E8-N-SEA — JSON v9
+ 
+ Имена морей используют устойчивый Sea ID и общий парный редактор. Split/merge, явные потери, миграция v2…v8 и checkpoint описаны в [sea-names.md](sea-names.md), SEA01–SEA06. Это расширяет редактор воды, сохраняя прежние геометрические ограничения.
++
++
++## GEO2: берег на границе с пустой областью (в разработке)
++
++GeometryPlan получает одно полное тело озера на устойчивый lakeId из текущих
++клеток воды; региональные фрагменты не являются отдельными входными контурами.
++Это позволяет E6 подготовить выросшее через границу тело с общим контуром
++Tiles/Emoji/Color. Сохранённый16 обязан соответствовать текущему телу буквально;
++импорт не достраивает берег или устье. Полная подготовка и проверка предшествуют
++записи истории; ошибка сохраняет карту и доступную ветку Redo.
++
++Общий берег может касаться пустого регионального support: это не отдельный
++занятый объект. Сертификат разрешает только пары водоём/регион. Все исходные и
++уточнённые водные полосы, дороги с запасом штриха/перил, POI/привязки и контуры
++трёх режимов предварительно сравниваются с противоположной областью. Любой
++потенциальный контакт водоёма с рекой, дорогой, POI или другим водоёмом всё ещё
++требует отдельного разрешимого геометрического замыкания; прямоугольное
++пересечение не объявляется подтверждённым дефектом или разрешением сдвига.
++Это ограниченный этап, не готовность сложных устьев/слияний/разделений,
++фактической карты/PNG или полного пакета GEO2 к публикации.
