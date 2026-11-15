@@ -1,0 +1,114 @@
+{
+  "run_id": "2026-11-16-DND5-L1-v2-213047",
+  "research_baseline": "ef34aae890fe8334de7e6a73958f757bc9ff666e",
+  "product_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "product_branch_read_only": "main",
+  "critical_findings": [
+    "agent-operations source tree is older than current main; reading its src/App.tsx cannot establish current release support.",
+    "Historical DND5-2014-002 finding that only zoom exists is stale for current product. Direct detailGrid execution confirms independent physical geometry1/6/12/24, across_flats.",
+    "60-mile createDetailGrid rejects. This is a narrow module boundary, not proof every possible mapping60 is absent or permission to add it.",
+    "No new source rules or canonical registry entries established.24 source-derived legacy L1 translations are draft pending original text;22 common mechanics reused."
+  ],
+  "source_access": {
+    "library_exact_results": 0,
+    "library_broader_results": 0,
+    "drive": "Keyword search returned unrelated titles; no supplied DMG resolved, not proof absent from account.",
+    "official_toc": "https://www.dndbeyond.com/sources/dnd/dmg-2014",
+    "official_chapter_result": "Both clicked chapters redirected to marketplace, not full rule text.",
+    "mirror": "English credits/TOC accessible; subsequent fetch failed403; not owner binary"
+  },
+  "code_evidence": [
+    {
+      "path": "src/detailGrid.ts",
+      "blob_sha": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+      "lines": "5–28,53–57",
+      "facts": "DetailStep1|6|12|24, explicit miles, across_flats, geometric area"
+    },
+    {
+      "path": "src/App.tsx",
+      "blob_sha": "39acbcd2252333a63498fd9437ea113b7b5f54d3",
+      "lines": "1014–1024,13709–13716,15212,15260–15316,16969",
+      "facts": "static only: physicalGrid validation, one-mile edit, JSON serialization/import and grid selector. UI/integration not executed here."
+    }
+  ],
+  "runtime": {
+    "method": "Node v24.22.1 native TS strip; unchanged fetched detailGrid.ts",
+    "passed_assertions": 17,
+    "inputs": {
+      "steps": [
+        1,
+        6,
+        12,
+        24
+      ],
+      "origin": {
+        "x": 10,
+        "y": -4
+      },
+      "center_cells": [
+        {
+          "q": 0,
+          "r": 0
+        },
+        {
+          "q": 1,
+          "r": 0
+        }
+      ],
+      "roundtrip_cell": {
+        "q": -7,
+        "r": 11
+      },
+      "unsupported_step": 60
+    },
+    "observed": {
+      "neighbor_center_distances": [
+        1,
+        6,
+        12,
+        24
+      ],
+      "areas_square_miles": [
+        0.8660254037844386,
+        31.176914536239792,
+        124.70765814495917,
+        498.8306325798367
+      ],
+      "inverse_center_roundtrips": "4/4",
+      "polygon_area_matches": "4/4",
+      "step60": "throws"
+    },
+    "limits": [
+      "Temporary diagnostic, not new committed tests",
+      "No UI/save roundtrip executed",
+      "No assertion that source sets same axis or accepts project12/24"
+    ]
+  },
+  "errors": [
+    {
+      "tool": "search_service.open",
+      "action": "read mirror101–150",
+      "safe_locator": "https://anyflip.com/sqwmo/burk/basic/101-150",
+      "observed_error": "Failed to fetch https://anyflip.com/sqwmo/burk/basic/101-150: (403) Forbidden",
+      "cause_status": "unknown"
+    },
+    {
+      "tool": "github_fetch_file",
+      "action": "look for focused existing test",
+      "safe_locator": "test/detailGrid.test.mjs@b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+      "observed_error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+      "cause_status": "confirmed",
+      "explanation": "Guessed test path not present in exact tree; recovered by direct unchanged module diagnostic."
+    }
+  ],
+  "handoff": {
+    "recipient": "strategist",
+    "queue_write": false,
+    "recommendation": "Do not restore retired scale tasks or treat the old zoom-only statement as a current gap. Before any DND candidate, recover exact source profile and compare against actual main, not research branch.",
+    "product_development_authorized": false
+  },
+  "next": {
+    "same_goal": "Recover full original DMG2014 source and screen complete book; use exact unresolved chapter list; then source-full24 entries+new applicable rules, full UI/profile checks.",
+    "fallback": "If source remains unavailable without new access signal, retain DND checkpoint and take PF2 top5 alignment; no repeated identical unavailable search."
+  }
+}
