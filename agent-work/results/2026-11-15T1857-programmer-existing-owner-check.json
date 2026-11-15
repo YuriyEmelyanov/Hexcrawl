@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T1857-programmer-existing-owner-check",
+  "task_id": "HX-BL-051",
+  "role": "programmer",
+  "role_selection_reason": "Approved PR503 implementation remains owned by the manual programmer in the single-executor registry; this hourly run may only inspect readiness and must not duplicate implementation or checks.",
+  "status": "waiting_existing_programmer_owner_no_duplicate_execution",
+  "observed_at": "2026-11-15T16:03:37.600Z",
+  "source": {
+    "branch": "agent/hx-bl-051-geo2",
+    "head_sha": "c950e166760d2f454e921df7b6b09dccf1c59991",
+    "pr": 503,
+    "pr_head_sha": "c950e166760d2f454e921df7b6b09dccf1c59991",
+    "pr_state": "open",
+    "pr_draft": true,
+    "commits_since_owner_base": 3,
+    "visible_change": "Actual map/UI/PNG geometry integration is connected for the approved GEO2-v2 path; real browser evidence covers desktop, 390px and 320px, save/load, Undo/Redo and PNG.",
+    "visible_evidence": [
+      "https://github.com/YuriyEmelyanov/Hexcrawl/pull/503",
+      "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43731714225"
+    ]
+  },
+  "existing_owner": {
+    "run_id": "2026-11-15-manual-programmer-PR503-ui",
+    "generation": 6,
+    "registry_revision": 12,
+    "registry_state": "owned",
+    "claim_status": "in_progress",
+    "execution_running": true,
+    "claim_ref": "agent-work/claims/2026-11-15-manual-programmer-PR503-ui.json",
+    "stage": "final_integrated_CI_and_package_review",
+    "no_takeover_reason": "Final CI success does not release the claim; only the current owner may save its result and atomically release its registry entry."
+  },
+  "checks_observed": {
+    "exact_head_ci": {
+      "run_id": 43731714225,
+      "head_sha": "c950e166760d2f454e921df7b6b09dccf1c59991",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43731714225"
+    },
+    "independent_package_assessment_ref": "agent-work/evidence/PR503-visible-integration-20261115-manual/score-assessment1.2.json",
+    "assessment_summary": "No confirmed remaining P1/P2 in bounded inspected code; no score awarded before release/full breadth evidence.",
+    "this_run_executed_no_tests": true
+  },
+  "test_change_summary": {
+    "base_sha": "390a5237bb9c3dd377383c9e4ca87ba0d0e9cfb3",
+    "head_sha": "c950e166760d2f454e921df7b6b09dccf1c59991",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suite": [
+      {
+        "suite": "browser",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "GEO2-UI-preview-apply-history-roundtrip-PNG",
+        "risk": "Actual UI/map/PNG path across desktop and narrow viewports"
+      },
+      {
+        "suite": "node",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Existing geometry plan/map transaction case extended",
+        "risk": "Ordinary source edit and dependent atomic behavior"
+      }
+    ],
+    "reuse_or_new_reason": "One browser case is new for the previously unverified connected runtime path; one existing Node case was extended instead of duplicating it.",
+    "source": "manual programmer checks.json plus GitHub compare 390a523...c950e166",
+    "executed_by_this_run": {
+      "executed": 0,
+      "passed": 0,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "progress": {
+    "completed_user_scenario": "On a real map, the refinement preview can be applied; dependent geometry/card/rendering updates, save/load, Undo/Redo and PNG were exercised in working CI.",
+    "remaining_acceptance": [
+      "Current programmer must persist the exact final result/handoff and release only its own registry entry.",
+      "If handed off as review_ready, an independent reviewer must verify the exact package SHA and final acceptance before any publication request.",
+      "Publication remains separately owner-authorized."
+    ],
+    "forecast": {
+      "first_visible_result": "achieved_on_c950e166",
+      "remaining_active_hours": null,
+      "remaining_role_runs": null,
+      "confidence": "not_reforecast_by_non_owner",
+      "note": "Do not replace the active owner's forecast while its final package handoff is still being written."
+    }
+  },
+  "mutations": {
+    "source": false,
+    "tests": false,
+    "execution_locks": false,
+    "claim": false,
+    "schedule": false,
+    "latest_scope_only": true
+  },
+  "next_role": "programmer",
+  "next_step": "Existing owner saves the exact c950e166 final package result/handoff and atomically releases generation 6. Only then route review_ready to an independent reviewer; do not restart release-boundary interviewing.",
+  "owner_decisions_needed": [],
+  "release": {
+    "authorized": false,
+    "published": false,
+    "main_changed": false
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
+    "start": {
+      "checked_at": "2026-11-15T16:02:58.514Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T16:03:37.600Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both recorded actual observations returned enabled."
+    },
+    "errors": [],
+    "limitation": "Point-in-time checks only; schedule and prompt unchanged."
+  }
+}
