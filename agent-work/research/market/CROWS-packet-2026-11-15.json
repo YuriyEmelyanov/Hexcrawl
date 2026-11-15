@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15-CROWS-packet-assessment",
+  "game_id_candidate": "CROWS",
+  "name": "Crows: Fortune or Death",
+  "publisher": "MCDM",
+  "status": "completed_bounded_regional_preparation_assessment",
+  "source": {
+    "archive": {
+      "library_file_id": "libfile_fde3_f-a90b5bc473248191b5ede33e68df66e2_3c7ce53bef508191bc31de4d3dfa12cc",
+      "sha256": "54b1e71ff83ca4bd7cd6e69f53bc3e29a2e10cf605462a57b1e4a6aa8b3f55a5",
+      "name": "MCDM Crows Public Playtest October 2026.zip",
+      "access": "user_supplied_full_file",
+      "source_error_recovered": "Prior publicdownload403 is no longer a rules-accessblocker; original cause remainsunknown."
+    },
+    "edition": "PublicPlaytest3,October2026;notfinalrelease",
+    "corpus": [
+      {
+        "file": "00 Read Me First Crows Playtest October 2026.pdf",
+        "pages": 1,
+        "read": "all",
+        "finding": "Refadvice/art/editing incomplete; testpacketnotfinal"
+      },
+      {
+        "file": "01 Crows Rules Booklet for Playtest 3.pdf",
+        "pages": 37,
+        "sha256": "be72077ce74f71bb4f4529a730c1a608fb24068ccfc667f6f2f07e67c6357974",
+        "read": "PDFpp24–29 completeoverlandsection; completefile keywordscan and headingsinventory",
+        "not_read": "Combat,spells,crafting etc outsidebounded regionalpreparationscope",
+        "visual_pages": [
+          24
+        ]
+      },
+      {
+        "file": "02 Crows Character Booklet for Playtest 3.pdf",
+        "pages": 62,
+        "sha256": "4400d79d88581fb701c394a95d8207d6f59c5122a81c4c1121b4046e7a4f66c0",
+        "read": "PDFpp48–50 completevillageinitialization/economyboundary; fullfilekeywordscan",
+        "not_read": "Detailedinstitution/tradeeventtablesandcharacteroptions outsideL1scope",
+        "visual_pages": [
+          48
+        ]
+      },
+      {
+        "file": "03 Crows The Ref for Playtest 3.pdf",
+        "pages": 67,
+        "sha256": "9407e22f639b568c877d671f21000a51ca473a4a32cf059eb2763ec96ddf8103",
+        "read": "Completefilekeywordscan andheadinginventoryonly",
+        "not_read": "Encounter/bestiarybodyexcludedL3; no fullRefreadingclaim"
+      },
+      {
+        "file": "04 Crows Dungeons for Playtest 3.pdf",
+        "pages": 55,
+        "sha256": "df96a65a40b2272fe403dabe571ac2562ab0a8cdbe422efac718431692c6ef8d",
+        "read": "PDFpp1–11 complete3villages/8POIpreparationcorpus",
+        "not_read": "Fivekeyeddungeons pp12–55 excludedlocal/tacticalbody"
+      },
+      {
+        "file": "Maps/Cornath Map TEMP.png",
+        "read": "wholeimagevisual",
+        "finding": "Regionalhexmap withterrain,roads,river,settlements,POIsand5dungeonanchors;visibleMadeWithHexercredit"
+      }
+    ],
+    "excluded": [
+      "Pregens,inventorycards,monsterart not rules forregionalgeography",
+      "XLSX changelognotread; editionidentifiedfrompacketreadmeandbooklets,not inferredfromspreadsheet",
+      "No earlierpacket or unofficialcrowdexcontentmerged"
+    ]
+  },
+  "findings": {
+    "L1_create": "Geographygenerationprocedure not established in read corpus; sourcepacket explicitly lacks someRefadvice, so absence is not proof ofzero p_create. Village authoring and relocationofauthoredPOIs provide limitedcreation.",
+    "L1_develop": "Directlyconfirmed:5milehexhabitats,describedplacedPOIs,villagepreparation;customization of existing region is a relevant scenario.",
+    "L2": "Directlyconfirmed:sixpageoverlandprocedures,roles,scouting,lostmovement andPOI scenes.",
+    "L3": "Encounters,Miasma,settlementeconomy,combatanddungeonturnsystems;not automatically L1 functionality",
+    "existing_alternative": "OfficialtemporaryCornathmap suppliedandmadeinHexer; preparedcontentisavailablewithoutHexCrawl. No measured unmetneed or switchingintent.",
+    "important_parameters": {
+      "source_hex_miles": 5,
+      "base_daily_hexes": [
+        1,
+        2,
+        3
+      ],
+      "base_EN": [
+        2,
+        4,
+        6
+      ],
+      "village_initial_institutions": 6,
+      "initial_institution_level": 1,
+      "village_cycle_days": 20,
+      "initial_prosperity": 0
+    },
+    "map_key_caveat": "RuinedWindmillappears inwrittenPOIcorpus butwasnotseenamongmaplabels;donotassume allauthoredPOIs are placed or report a confirmedmapdefect.",
+    "implementation": "Unknown; no productruntime/codeaudit.5mile is not currentapproved1/6/12/24mode.",
+    "audience": "8181historicalbackerspreviouslyverified,notGMcount;2027estimateddeliverydoesnotmean no2026playtestactivity."
+  },
+  "operational_requirements": [
+    {
+      "id": "CROWS-PT3-01",
+      "source_rule_ref": "Rules PDFp24 Hexes",
+      "normative_kind": "playtest_rule_or_preparation_guidance",
+      "applicability": "Crows PublicPlaytest3 October2026 only",
+      "layer": "L1",
+      "trigger_or_user_action": "Create or import a Crows regional map",
+      "inputs_and_units": {
+        "hex_length": 5,
+        "unit": "mile",
+        "source_word": "across",
+        "geometric_convention": "not further specified"
+      },
+      "product_operation": "Store physical scale without changing it to the app default.",
+      "expected_output": "Persisted 5mile value, correct unit and unresolved convention if not supplied.",
+      "constraints_and_exceptions": [
+        "Current approved1/6/12/24 features do not establish5mile support; no feature expansion authorized."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "Synthetic Crows map metadata5miles; no geometric convention.",
+          "when": "Save/reopen.",
+          "expected": "5miles retained, not6; no inferred precise flat/vertex convention."
+        }
+      ],
+      "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+      "canonical_rule_refs": [
+        "map.physical_hex_scale"
+      ],
+      "unresolved_parameters": [
+        "Runtime evidence unknown; no score or approved implementation asserted."
+      ]
+    },
+    {
+      "id": "CROWS-PT3-02",
+      "source_rule_ref": "Rules PDFp24 Hexes",
+      "normative_kind": "playtest_rule_or_preparation_guidance",
+      "applicability": "Crows PublicPlaytest3 October2026 only",
+      "layer": "L1",
+      "trigger_or_user_action": "Assign habitat to a selected hex",
+      "inputs_and_units": {
+        "hex": "A",
+        "habitat": "forest"
+      },
+      "product_operation": "Keep a per-hex habitat classification for preparation.",
+      "expected_output": "HexA storesforest; another hex staysunchanged.",
+      "constraints_and_exceptions": [
+        "Habitat encounter selection belongsL3, not L1; source gives examples, not exhaustive biome taxonomy."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "HexAforest,HexBmountain.",
+          "when": "SetA to plains andsave/reopen.",
+          "expected": "Aplains,Bmountain; no encounter roll generated."
+        }
+      ],
+      "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+      "canonical_rule_refs": [
+        "map.terrain_zones"
+      ],
+      "unresolved_parameters": [
+        "Runtime evidence unknown; no score or approved implementation asserted."
+      ]
+    },
+    {
+      "id": "CROWS-PT3-03",
+      "source_rule_ref": "Characters PDFp48 StartingVillage;PDFp49 NPCConnection",
+      "normative_kind": "playtest_rule_or_preparation_guidance",
+      "applicability": "Crows PublicPlaytest3 October2026 only",
+      "layer": "L1",
+      "trigger_or_user_action": "Prepare and name the party's home village",
+      "inputs_and_units": {
+        "name": "TestVillage",
+        "baseline_institutions": [
+          "blacksmith",
+          "crypt",
+          "general_store",
+          "inn",
+          "temple"
+        ],
+        "selected_sixth": "alchemist",
+        "initial_level": 1,
+        "npc_note": "Nina, cousin of testPC"
+      },
+      "product_operation": "Create a named placed-village note with six institution entries and optional narrative/NPC fields.",
+      "expected_output": "One village record, six level1 institutions and a namedconnectionnote.",
+      "constraints_and_exceptions": [
+        "The six institutions are not six mapPOIs; building upgrades/economy are L3.",
+        "No street plan or settlement diameter inferred."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "Five prescribed institutions, selectedalchemist and nameTestVillage.",
+          "when": "Accept preparation note andsave/reopen.",
+          "expected": "Exactly6 entries, alllevel1; name preserved; no extra random facility."
+        },
+        {
+          "given": "Savedvillage andNPCnote.",
+          "when": "Edit descriptive text.",
+          "expected": "Location and other notes remain; no prosperity/event advance."
+        }
+      ],
+      "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+      "canonical_rule_refs": [
+        "content.place_description"
+      ],
+      "unresolved_parameters": [
+        "Runtime evidence unknown; no score or approved implementation asserted."
+      ]
+    },
+    {
+      "id": "CROWS-PT3-04",
+      "source_rule_ref": "Dungeons PDFpp1–11;Cornath Map TEMP.png",
+      "normative_kind": "playtest_rule_or_preparation_guidance",
+      "applicability": "Crows PublicPlaytest3 October2026 only",
+      "layer": "L1",
+      "trigger_or_user_action": "Place an authored POI on an existing region",
+      "inputs_and_units": {
+        "poi_id": "test-sawmill",
+        "location": "selected riverbank",
+        "description": "Original synthetic description",
+        "source_ref": "Dungeons PDFp7"
+      },
+      "product_operation": "Store point type, place description and source locator without replacing accepted regional terrain.",
+      "expected_output": "One placedPOI retainsidentity and editeddescription.",
+      "constraints_and_exceptions": [
+        "Manual authored preparation is not automatic regional generation or permission to publish book text.",
+        "Source's map already provides an alternative; no unsatisfied adoption demand inferred."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "Accepted region with river and test-sawmill record.",
+          "when": "Revise millnote,save/reopen.",
+          "expected": "River andPOIpositionunchanged; descriptionupdated."
+        }
+      ],
+      "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "map.routes_and_barriers"
+      ],
+      "unresolved_parameters": [
+        "Runtime evidence unknown; no score or approved implementation asserted."
+      ]
+    },
+    {
+      "id": "CROWS-PT3-05",
+      "source_rule_ref": "Rules PDFp26 ScoutForPlaces",
+      "normative_kind": "playtest_rule_or_preparation_guidance",
+      "applicability": "Crows PublicPlaytest3 October2026 only",
+      "layer": "L2",
+      "trigger_or_user_action": "Resolve the safe scouting action in a traveled hex",
+      "inputs_and_units": {
+        "known": [],
+        "contents": [
+          "poi-A",
+          "dungeon-B",
+          "village-C"
+        ],
+        "scout_task": "Scout for Places"
+      },
+      "product_operation": "Record discovery of existing eligible places; keep underlying content stable.",
+      "expected_output": "A/B/C become known to the party.",
+      "constraints_and_exceptions": [
+        "Canonicalref is L1 content substrate only; trigger/reveal operation L2. Does not imply implementation.",
+        "This task permits a second scout doing a different task today; normal role limits still apply."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "Hex contains unknownA/B/C and no otherplaces.",
+          "when": "Resolve thissafeaction.",
+          "expected": "A/B/C are known; no newPOI or random discovery roll."
+        }
+      ],
+      "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+      "canonical_rule_refs": [
+        "content.discovery_levels"
+      ],
+      "unresolved_parameters": [
+        "Runtime evidence unknown; no score or approved implementation asserted."
+      ]
+    },
+    {
+      "id": "CROWS-PT3-06",
+      "source_rule_ref": "Rules PDFp27 Lost",
+      "normative_kind": "playtest_rule_or_preparation_guidance",
+      "applicability": "Crows PublicPlaytest3 October2026 only",
+      "layer": "L2",
+      "trigger_or_user_action": "Move a lost party out of its current hex",
+      "inputs_and_units": {
+        "die": "d6",
+        "directions": [
+          "N",
+          "NE",
+          "SE",
+          "S",
+          "SW",
+          "NW"
+        ]
+      },
+      "product_operation": "Record actual nexthex independently of intendedroute and player's knownposition.",
+      "expected_output": "Direction follows clockwise order fromnorth; actualpath concealed as needed.",
+      "constraints_and_exceptions": [
+        "Do not create newgeography when lost.",
+        "Boundary/missingneighbor policy is not specified in source."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "Synthetic centrehexwith6neighbors, fixedroll1.",
+          "when": "Leave whilelost.",
+          "expected": "Actualnexthex north."
+        },
+        {
+          "given": "Samehex,fixedroll2.",
+          "when": "Leave whilelost.",
+          "expected": "Actualnexthex northeast."
+        },
+        {
+          "given": "Samehex,fixedroll6.",
+          "when": "Leave whilelost.",
+          "expected": "Actualnexthex northwest; intendedroute not overwritten."
+        }
+      ],
+      "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+      "canonical_rule_refs": [
+        "travel.actual_vs_intended_route"
+      ],
+      "unresolved_parameters": [
+        "Runtime evidence unknown; no score or approved implementation asserted."
+      ]
+    },
+    {
+      "id": "CROWS-PT3-07",
+      "source_rule_ref": "Rules PDFp24 TravelPace/RiversAndRoads;PDFp29 POIs",
+      "normative_kind": "playtest_rule_or_preparation_guidance",
+      "applicability": "Crows PublicPlaytest3 October2026 only",
+      "layer": "L2",
+      "trigger_or_user_action": "Resolve distance for one travel day",
+      "inputs_and_units": {
+        "pace_hexes": {
+          "slow": 1,
+          "normal": 2,
+          "fast": 3
+        },
+        "source_hex_miles": 5,
+        "road_all_day_bonus_hexes": 1,
+        "unbridged_crossing_or_upstream_penalty_hexes": 1,
+        "downstream_bonus_hexes": 1
+      },
+      "product_operation": "Calculate daily movement with applicable modifiers, keeping POI adjudication explicit.",
+      "expected_output": "Nominal distance and reason for each modifier recorded.",
+      "constraints_and_exceptions": [
+        "These are synthetic isolated fixtures, not full movement test or app evidence.",
+        "1/2/3 base values exclude guide/role/creature speed modifiers, rest/Miasma and Ref discretion."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "Normalpace2hexes, guide/risky roles absent, speed4, no other modifiers.",
+          "when": "Travel onroad allday.",
+          "expected": "3hexes nominal15miles."
+        },
+        {
+          "given": "Normalpace2,speed4,no roles,rivercrossing withoutbridge/watervehicle.",
+          "when": "Resolve modifier.",
+          "expected": "1hex nominal5miles."
+        },
+        {
+          "given": "Normalpace2,speed4,no roles,crossriverusingbridge.",
+          "when": "Resolve modifier.",
+          "expected": "2hexes nominal10miles; crossingpenaltydoesnotapply."
+        },
+        {
+          "given": "POIinvestigationlasts4dungeonturns.",
+          "when": "Returntojourney.",
+          "expected": "Ref may reduce day distance by1or morehexes; no mandatory fixed penalty invented."
+        }
+      ],
+      "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+      "canonical_rule_refs": [
+        "travel.route_distance",
+        "travel.route_selection"
+      ],
+      "unresolved_parameters": [
+        "Runtime evidence unknown; no score or approved implementation asserted."
+      ]
+    }
+  ],
+  "canonical_reuse": {
+    "common_registry_sha": "a396eaa1084f97c20b2f73c3ead68f86df15016e",
+    "bindings_sha": "ff5af8b9dc320e474b3d3b9317dc63c834afbd64",
+    "new_rules": 0,
+    "new_bindings": 0,
+    "reason": "Candidate acceptance profiles reuse canonical operations; formal registration/scorecoverage notclaimed."
+  },
+  "ranking_decision": {
+    "proposal_id": "HX-RSR-CROWS-MCDM-INCLUSION-v2",
+    "recommended": "Add separateunranked CROWS record; do not lose candidate because Munknown; numeric placecannotbejustifiedbybacker substitution.",
+    "M": null,
+    "p_s": [
+      null,
+      null,
+      null
+    ],
+    "T_s": [
+      null,
+      null,
+      null
+    ],
+    "D_s": [
+      null,
+      null,
+      null
+    ],
+    "U_s": [
+      null,
+      null,
+      null
+    ],
+    "overall_place": null,
+    "reason": "ActiveformulaD=M*p*T. Backercountdoesnotidentify anyoftheseinputs. Currentmodelalreadyretainsunknownpopulationswithoutzeroplaces.",
+    "sensitivity": {
+      "type": "Existingformula break-even diagnostic, not newmetric or numericalmethod",
+      "condition": "ForD>1000,requiredM>1000/q,whereq=p*T",
+      "rows": [
+        {
+          "q": 0.1,
+          "required_M_strictly_greater_than": 10000
+        },
+        {
+          "q": 0.25,
+          "required_M_strictly_greater_than": 4000
+        },
+        {
+          "q": 0.5,
+          "required_M_strictly_greater_than": 2000
+        },
+        {
+          "q": 1,
+          "required_M_strictly_greater_than": 1000
+        }
+      ],
+      "q_values_are": "Illustrativehypothesesonly,notCrowsprevalenceestimates"
+    },
+    "active_rating_changed": false,
+    "cohorts_changed": false
+  },
+  "development_effect": {
+    "existing_tasks_context": [
+      "HX-BL-024 notes",
+      "HX-BL-027 ownerdeferredmapunderlay",
+      "HX-BL-051 approvedscale/geometrywork"
+    ],
+    "new_tasks": 0,
+    "score_delta": null,
+    "decision": "Reuse existingnote/placedcontentmodel;5mileprofileandL2movement are futureproposals,not change currentqueue."
+  },
+  "next_step": "Owner disposition of exactinclusionv2; targetedpopulationcalibration(role-specificcorebuyers/GMactualmaps) before numericrank. No morePDFrequired for thiscompletedthematiccorpus.",
+  "errors": [
+    {
+      "status": "recovered_local_orchestration_error",
+      "failed_operation": {
+        "tool": "functions.exec",
+        "action": "Prepare narrowPOIread andpagevisualization",
+        "safe_locator": "localCrowsPDFcorpus"
+      },
+      "observed_error": "SyntaxError: Unexpected token ')'",
+      "cause_status": "confirmed",
+      "confirmed_cause": "Extra closingparenthesis inJS; correctedbefore anyoperationexecuted",
+      "needs_owner_action": false
+    }
+  ]
+}
