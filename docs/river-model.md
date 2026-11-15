@@ -349,3 +349,56 @@ Production-браузерная проверка остаётся для CI; л�
 ### Ручная вода E6 — проверка изменённого контекста
 
 Ручное изменение берега/площади озера проверяется по прежним RIV-правилам при фиксированных руслах и F. Принятая и предполагаемая физические сети строятся в своих геометрических контекстах: сравнение обеих сетей в новой геометрии скрыло бы новый дефект площади/устья. Изменившаяся площадь, lake ports и морские вершины требуют новой проверки; legacy allowance относится к прежним фактическим условиям. Полное описание атомарности и UI — [water-editing.md](water-editing.md). Числовые нормы/веса/пороги не изменяются.
+
+GEO2 upstream work hook (unmounted): river skeleton corridor enumeration,
+port allocation and BFS/DAG routing accept incremental logical work charges.
+prepare_incomplete_budget/prepare_cancelled propagate without returning a partial
+river candidate. Without a hook geometry is unchanged. This is not a full
+river/mouth aggregate budget, CPU bound or active generation change.
+
+GEO2 upstream composition (unmounted): one optional logical work controller
+now spans normalized source, river skeleton, open exits, terminal/split graph,
+finite water and all-mode mouth preparation, then POI/roads. Shore helpers reserve
+input work; query loops charge between bounded analytic calls. Cancellation and
+budget exhaustion propagate atomically. Hydrology construction and renderer-owned
+lake contour generation remain supplied inputs; this is not a CPU/time bound or
+an active generator change. GeometryPlan/persistence/Apply remain pending.
+
+GEO2 special POI contacts (unmounted): only a confirmed eligible source-policy
+row permits a move. Rapids retain their accepted marked source segment; a
+waterfall retains its vertex/ref and adapted point, a river-start POI requires
+an actual river_start boundary and its prepared port (not a lake/open terminal).
+Point-feature contact lies on the nearest exposed finite bank to that feature
+within the existing parent/side constraints; old-anchor displacement breaks
+eligible contact ties. Conditional footprints translate rigidly, measured/locked
+positions stay fixed or conflict. Water attachment kind and stable feature ref
+remain separate from the fine river-edge contact. Missing/foreign feature refs
+reject atomically; unknown provenance remains unknown, never a generic fallback.
+
+### GEO2: стык уточнённой и новой области (разработка, не опубликовано)
+
+RIV-014/015 сохраняют исходные ID, направления, полноводность и геометрию
+обычного генератора. Область уточнения проецируется по исходным участкам и
+их владельцам, а не по целому River.id: продолжение под тем же ID в новом
+регионе остаётся неуточнённым. Чистый стык суши и реальные контакты объектов
+проверяются отдельно от пересечения их ограничивающих прямоугольников.
+
+Конец старого уточнённого русла получает классификацию `continuation`, а не
+ложный исток/устье. Крупная вершина может оказаться центром мелкого гекса:
+нельзя выдавать её за вершину мелкой сетки. Сохраняется настоящий порт на
+ребре мелкой сетки. Чистая функция `geometryMixedRiverPaths` соединяет новый
+обобщённый участок с этим сохранённым портом; она не запускает поиск пути
+и не меняет координаты исходной шестимильной реки. Сохранение содержит
+исходную сеть и порт, поэтому загрузка воспроизводит соответствие без бросков.
+
+Проверка стыка учитывает направленность и F в общем узле, конечную водную
+полосу, существующие дороги/типы переправ и контуры POI. Необъяснённое
+пересечение или недопустимая зависимость отклоняют всю исходную операцию;
+Undo/Redo и RNG при отказе сохраняются. Новые области не приобретают слой
+уточнения без явного preview/Apply. Дальняя старая геометрия остаётся буквальной.
+
+Это ограниченная backend-интеграция. Слияние/рост водоёмов, несколько раздельных
+сохранённых фрагментов одного River.id и подходы, требующие нового переноса
+внешней дороги к перемещённому POI, пока дают атомарный отказ. Подключение
+общего GEO2 к карте/PNG и полная приёмка пакета остаются отдельным этапом;
+данная запись не объявляет PR503 готовым к выпуску.

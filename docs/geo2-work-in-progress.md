@@ -1,0 +1,398 @@
+# GEO2 implementation checkpoint
+
+Approved specification: agent-operations/agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md.
+This unmounted primitive is not a GeometryPlan, public16 support, complete routing,
+or acceptance of G201–G210. App/save/rendering remain unchanged until dependent
+river/POI/road/crossing/mouth preparation and transaction are coherent.
+
+Before adding tests, existing detailGrid/oneMile cases were inspected: polygon
+intersection/footprint and old straight crossing paint are covered, but stable
+side selection, perimeter alternatives and a constrained integer edge graph are
+not. Four new logical Node cases cover distinct G201/G202 risks: canonical shared
+edges, seeded sides, six-oriented perimeter detours, and blocked graph routing.
+They do not duplicate browser lifecycle, certify a generated world or grow the
+permanent browser/RNG suites. No implementation-specific cache/layout assertions.
+
+Next checkpoint adds river-source allocation (still unmounted): common ports,
+source-correspondence paths, shortest-length/deviation/seeded-side ordering and
+reservation against new joins. Existing four primitive cases cannot detect a
+lost confluence or partially returned candidate: add three named Node cases for
+shared confluence/permutation invariants, atomic source/constraint errors, and
+the existing53-segment fixture. No new generated-world series. The allocator
+is bounded sequential search, not a complete simultaneous solver: failure is
+not proof that the requested topology is impossible. It must not be activated
+without dependent POI/road/crossing/mouth/save/UI preparation.
+
+River preparation now reserves distinct approaches at each shared source port,
+so processing an earlier downstream path cannot close a later tributary. Port
+assignment uses direction, seeded-side tie-break and numeric keys. The retained
+53-segment fixture and its permuted form preserve every source ID/F and exact
+node incidence. A center-cell diameter exercises both seeded alternatives.
+Terminal splitting, physical water envelopes, marks and actual boundary exits
+still need full GeometryPlan integration; nearest vertex ports alone are not
+acceptance of those contracts. No new controls or public save format activated.
+
+This source-adapter checkpoint reuses the existing retained-world case rather
+than adding another fixture run. Two additional logical Node cases are needed:
+sector/path contradictions must reject before routing, and resolved rapid/
+waterfall marks must keep directed arc correspondence on bent fine paths.
+Existing grid/routing tests and manual feature-override tests do not check this
+bridge. The adapter consumes the existing resolved regionMarkKeys sets; it must
+not reroll feature eligibility or infer direction from lexically sorted keys.
+Boundary reason/sector references are retained, but mapping them to ports is not
+yet the geometric boundary-exit/shore constraint required for activation.
+
+The unmounted source bridge now validates exact sector/path directed coverage,
+fullness and region ownership, then retains start/end reasons and linked feature
+refs. Contradictory or stale refs reject before routing. Already resolved rapid
+and waterfall sets are required from the existing mark resolver; they are not
+regenerated. Rapid centers follow normalized arc position with a downstream
+unit tangent; waterfalls retain one vertex identity and every directed incident
+segment (no arbitrary river choice at a junction). Synthetic feature evidence is
+separate from the original53-segment world, whose diagnostic uses empty mark
+sets explicitly. Actual resolver/UI wiring and geometric terminal/boundary
+constraints are still pending; stored boundary provenance is not proof of a
+continuable fine-map exit.
+
+GEO2-PORTS test rationale, before implementation: existing graph and source cases
+only allocate integer vertices. Two distinct Node cases are needed for terminal
+projection/interior-edge splitting with preserved graph connectivity, and explicit
+boundary/allowed-edge constraints with atomic collision failures. Reuse current
+hex geometry and small fixed examples; no generated-world series. This checkpoint
+prepares a split graph and port references, not the existing river allocator's
+integration or a complete GeometryPlan. The caller must supply actual open-exit
+refs/allowed boundary edges; internal sector tags cannot create exits.
+
+GEO2 terminal-route integration rationale before test changes: extend the existing
+retained-world logical case to exercise terminal subedge routes, source topology,
+mark arcs and permutation together. Extend existing source-conflict and mark-direction cases rather than add a new
+case for an already covered source path. Existing standalone port
+checks do not detect a source mark still pointing to the old integer endpoint.
+This bounded integration uses already allocated endpoint edges; it preserves the
+interior route skeleton. It is not a simultaneous nearest-port rerouter or the
+actual candidate/lake/sea open-exit adapter. No river-only activation.
+
+GEO2-EXITS rationale before tests: one new Node case must use the actual App
+hydrology builder, candidates, water overrides and source adapter on the existing
+world, rather than manually label every boundary as open. The existing
+port constraint case already covers missing/internal boundary refs; do not duplicate it.
+The new adapter must reject stale/mismatched hydrology refs, retain source F/flow,
+and exclude lake/sea and internal sector borders. Actual boundary-corridor reroute
+now avoids existing interior/source/previously allocated nodes; failure remains a
+referenced atomic conflict, never a silently retained inland port. It is bounded
+sequential endpoint routing, not simultaneous global optimization or complete
+geometry. Source generator and active UI are unchanged.
+
+GEO2-WATER rationale before test changes: existing presentation tests exercise
+straight-line crossing widths, not finite joined water geometry. Add two Node
+cases for analytic capsule/corner/end/parallel/tangent intersection and variable
+width union/disjoint gaps/invalid inputs. Expand the existing actual hydrology
+fixture case with real renderer width conversion and water-envelope preparation,
+instead of adding another world lifecycle. Capsule union models round caps/joins;
+it is not lake clipping, nearest-bank placement from inside water, or map/PNG UI
+acceptance. Query endpoints clipped inside water must never be called bank points.
+
+GEO2-MOUTHS rationale before tests: existing finite-water tests know no lake body
+or island. Add one distinct Node case for exact displayed M/L/Q/Z shore curves,
+point membership, clipped line intervals and island boundaries. Expand the
+existing actual hydrology/wet-route lifecycle with real lake geometry in all3
+modes, not another retained-world import case. Old Color mouth connectors cannot
+be used as evidence of correct new shoreline. No active renderer/generator change.
+
+The mouths backend now consumes actual lake-cell union boundaries for Tiles/Emoji
+and the seeded Color basin M/L/Q/Z path, retaining exact quadratic intersections
+and even-odd islands. It chooses a common submerged fine-edge port, reroutes only
+the source endpoint within the existing finite source-plus-one-ring corridor,
+and finds each mode's first external bank contact. A bank-following step ending
+exactly at a fine vertex retains the next step's zero-distance shoreline contact.
+The existing world supplies one actual outlet (three mode contacts); it does not
+supply an inlet or rotation/PNG/runtime proof. Pure shore examples cover curved
+contacts, endpoint contacts, islands and no-contact conflicts. A missing lake or
+non-overlapping Color body rejects the whole candidate. Internal lake edges are
+excluded from river paint, and finite river queries subtract each actual body.
+This is a query-space mask, not active map/PNG clipping or a public save contract.
+Nonterminal lake incidence rejects explicitly; the bounded sequential allocator
+is still not a simultaneous solver. Remaining POI/roads/crossings, public16/history,
+dependency closure, preview and actual three-mode renderer integration are required
+before independent combined-package review.
+
+GEO2-POI rationale before tests: existing capsule/shore cases do not find the
+nearest exposed bank from an inside point or reject a buried confluence bank.
+Add one bank geometry case for exposed finite boundaries, parent/side constraints
+and lake masks. Add one placement case for known-vs-unknown requirement provenance,
+rigid conditional footprint/route-entry translation and atomic locked/no-fit errors.
+Extend the existing actual hydrology case with its real POI requirement inventory
+and bank query rather than another generated-world lifecycle. Do not infer a
+river requirement from an attachment or catalogue town name. Still unmounted.
+
+The POI backend now enumerates exposed finite capsule boundaries, including
+line/circle overlaps, parent/footprint constraints and quadratic lake intersections
+(the latter use bounded derivative-subdivision roots through degree4). It rejects
+buried banks at confluences and returns canonical nearest contact within the
+provided same-parent constraints, not negative inside clearance. Whole authored
+footprints enumerate rigid integer-grid translations and preserve cell count,
+extent and every route-entry reference; marker anchors move to the actual bank.
+Unknown source requirements remain unresolved without automatic movement. Existing
+Knave policy is read through a pure alias lookup; attachment alone is not authority.
+Locked/measured shapes do not translate. Feature-specific rapid/waterfall/crossing
+contacts return explicit pending conflict until the adapted mark/crossing phase.
+This phase expects accepted land parents/source refs; full GeometryPlan spatial
+validation, ordinary source-edit rebuilding, roads/PNG/public16/history/UI and
+independent review remain pending. No generator or active renderer change.
+
+GEO2-DEPENDENCIES rationale before tests: existing straight presentation cases
+cannot detect lost source crossing keys, buried/corner finite-bank contacts or
+severing the second approach of a moved POI. Add one road/crossing candidate case
+for finite transverse cuts, source order/type/F and atomic untyped conflicts;
+add one source-incidence/POI mask case for both approaches, unrelated roads,
+occupied-cell union/holes and marker exclusion. Extend the existing actual
+hydrology lifecycle with its31road parts/7crossings, including an explicitly
+labelled legal F2ford variant, rather than a second retained-world import test.
+This remains an unmounted bounded candidate phase, not actual renderer/PNG proof.
+
+The road dependency backend now normalizes every source road part and keeps its
+node/road/region/segment/kind identity. Moved POI endpoints share one new fine
+node; explicit entries retain their refs, while other source approaches of the
+same road obtain a footprint entry without disappearing. Unrelated parts retain
+the source segment. Finite water intervals merge across polyline vertices;
+alternating road/river rays identify transverse corner contacts, and old crossing
+keys/F/kind/order must match one-to-one. Untyped, collapsed, clipped or ambiguous
+contacts reject the whole candidate. Banks and bridge bank paths use the finite
+water envelope. A separate mask body is the union of occupied1mile cells (with
+holes), never a camera icon or deletion of the data route. Masked centerline
+spans do not certify complete stroke/dash/rail/PNG clipping.
+
+This is a bounded source-incidence candidate, not a complete constrained land
+router: a blocked direct approach can refuse even if a more distant detour might
+exist. Full dependency search, feature-specific POI refs, accepted-owner adapter,
+public16/history/source-edit closure, active map/PNG/UI and independent combined
+review remain required before activation. No source generation or active
+presentation has changed; no new crossing type has been rolled.
+
+GEO2-v2 road-search rationale before implementation: extend the existing moved-POI
+case for integration/permutation and retain all existing crossing/mask checks.
+Two distinct logical cases are needed: length-first route choice with exact
+arc-integrated old-path deviation/canonical ties, and legal obstacle detour with
+atomic finite-budget/cancellation/no-route distinction. Current direct-candidate
+and river shortest-edge tests do not exercise these requirements. No new world
+series or browser cases. This remains unmounted preparation; typed-crossing
+rerouting and full GeometryPlan/UI/save acceptance must not be inferred.
+
+GEO2-v2 ROAD-SEARCH checkpoint: affected moved-POI parts without typed crossings
+now search a finite visibility graph for each mandatory anchor/entry interval.
+Legal-edge queries use exact generated-land/lake curves and finite water union;
+the length objective uses physical miles before exact integrated mean squared
+old-polyline deviation and numeric canonical path order. The metric integrates
+the lower envelope of clamped segment-distance quadratics, without fixed samples.
+Graph vertices include all supplied land/lake boundary quarter points and
+circumscribed water-cap octagons, capped at512 vertices. The graph is finite and
+its shortest result is NOT a globally shortest continuous path certificate.
+Typed-crossing relocation still uses source-incidence allocation, without this
+reroute; complete joint constrained crossing search/GeometryPlan remains pending.
+The total search budget is shared by all affected dry intervals (default2million
+work units); capacity, budget, cancellation and no-path-in-this-graph are distinct
+referenced atomic failures. No partially adapted network is returned. These
+bounds are operational safeguards, not a new map-size product benchmark.
+All original actual seven crossings/31parts remain the retained-world witness;
+positive moved-POI/detour/length witnesses are synthetic. No eligible real POI
+movement, accepted-map transaction, ordinary source auto-shift, UI, PNG or
+public16/history is claimed. No backend activation or PR503 update.
+
+GEO2 typed-bank continuation rationale before implementation: reuse the existing
+length/deviation and dry-obstacle cases for direct Euclidean first, large graph,
+bank-endpoint contact, budget/cancel and zero-coordinate normalization. Add one
+logical integration case for a moved POI road retaining ordered typed crossings,
+fixed validated bank paths and both approaches while routing dry legs around a
+lake. Existing dry-only moved-POI/crossing-only cases cannot detect their broken
+composition. Do not add another real-world fixture or browser/RNG case. Fixed
+source-axis bank seeds are an explicit intermediate constraint, not global
+joint relocation/optimality or full GeometryPlan/public16/UI acceptance.
+
+
+GEO2 FIXED-BANKS checkpoint: first test a legal direct Euclidean leg before any
+large graph, preserving aggregate work/cancel accounting. Only validated named
+bank endpoints can touch river water; a positive wet interval still rejects the
+dry edge. Signed-zero vertices normalize numerically for input permutation.
+For moved-POI parts with typed crossings, validate the old source-axis bank
+corridors, preserve every ordered crossing bankPath/key/kind, then route dry legs
+through mandatory POI entries and between those corridors. Revalidate the entire
+assembled path with a shared2million intersection-work bound. Both approaches,
+unrelated roads, and whole-cell/multicell masks remain. A missing valid source
+bank seed is an explicit intermediate limitation; this is not global joint
+crossing relocation or proof of continuous shortest-path completeness. Actual
+eligible POI movement, accepted GeometryPlan/public16/history/source-edit-auto/UI
+and PNG still require full integration and independent whole-SHA review.
+
+GEO2 crossing-candidate continuation rationale before tests: current fixed-bank
+composition refuses a road when both its old source-axis path and new direct
+approach are blocked by a lake, even if legal approaches through the same linked
+rivers exist. Add one logical integration case for this distinct recovery and
+ordered joint candidate selection, with atomic budget/cancel and permutation
+checks. Update the prior fixed-bank test to assert the actual contract (same
+key/kind/order and valid banks), not the obsolete intermediate requirement of
+literal old bank coordinates. Reuse all other crossing/dry/POI cases and the
+existing retained world; no added fixture lifecycle/browser/RNG series. Candidate
+sampling remains finite, not a proof of continuous geometry optimality.
+
+
+GEO2 CROSSING-CANDIDATES checkpoint: valid direct mandatory-entry paths reach
+an explicit Euclidean lower bound. Otherwise build a deterministic finite catalog
+from source-axis seed (when valid), old-point projection, fine-step midpoint and
+direct-path intersection; validate each local transverse corridor. Layered search
+jointly chooses ordered corridors and legal dry transitions by physical length,
+exact integrated old-route deviation and numeric ties, then revalidates the whole
+road. Bounds: 16 crossings/part, 64 candidates/crossing, 4096 path points, shared
+2million search and intersection budgets. Candidate absence is limited to this
+finite model, never continuous no-path proof or complete global optimality.
+The existing typed test now asserts key/kind/F/source identity, valid exposed
+banks and actual lake exclusion instead of literal banks or vertex count.
+One additional regression covers lake-blocked old/direct paths with a legal joint
+alternative, both approaches, ordering, permutation, cancellation and budgets.
+Still unmounted: actual river-side POI contact provenance in road adapters,
+complete GeometryPlan/public16/history/automatic source-edit closure, full stroke
+clipping and actual three-mode UI/PNG remain pending. No product score award.
+
+
+GEO2 POI-contact rationale before test changes: existing road tests supply dry
+synthetic moved anchors, while prepareRefinementPois returns a real exposed-bank
+anchor. Dry search rejects that endpoint unless its validated provenance is
+passed through. Add one distinct POI-preparation-to-road composition case for
+both approaches, with stale/foreign/unknown contact refusal. Reuse existing
+water, POI and typed-crossing cases; no new world/browser/RNG series.
+
+GEO2 POI-CONTACT checkpoint: prepared POI contact/provenance now validates against
+its actual river/edge/step capsule, global exposed-water boundary and footprint
+water attachment, before granting the matching endpoint-only dry contact. Both
+approaches compose directly with prepareRefinementPois output. No wet interval
+is exempted and no new crossing is fabricated. Unknown/stale contacts reject
+atomically. Actual owner/requirement/feature adapters and unchanged riverbank
+POI handling remain pending; not runtime/public16/history/UI/PNG acceptance.
+
+GEO2 accepted-source adapter rationale before tests: previous POI preparation
+requires callers to manufacture requests; dry synthetic anchors do not prove
+that actual accepted owners and Knave source rows are used. Add one distinct
+adapter composition case covering explicit mill river_contact, an unknown owner
+with a water attachment, missing/stale owner/ref and preserved locked/measured
+inputs. Reuse existing bank/POI/road geometry coverage. No new world lifecycle.
+
+GEO2 POI-SOURCE checkpoint: accepted physicalGrid/owner IDs and the existing
+source-policy lookup now supply preparation requests. No IDs/extents are
+allocated or inferred by catalogue/attachment. Known river refs must uniquely
+resolve to the normalized source edge; an accepted anchor's directed-edge side
+is retained when known. Unknown/no-river owners retain literal footprints.
+Missing accepted footprints, owners or known river refs fail atomically;
+feature-specific requests are listed in pendingFeatures, never silently treated
+as eligible generic banks. This is unmounted input preparation, not GeometryPlan
+or runtime activation. Unchanged-bank POI and shared prepare budget still pending.
+
+GEO2 composed-preview rationale before checks: reuse the existing retained-world
+exit/mouth case for atomic legacy footprint bootstrap plus POI/road composition;
+no additional fixture lifecycle. Extend existing prepared-bank road case for an
+already-correct bank anchor: zero displacement must not drop its approach refs.
+Check accepted source unchanged, complete candidate membership, stale river plan,
+cancellation and atomic downstream errors. No new permanent test case is needed.
+
+GEO2 COMPOSED-PREVIEW checkpoint: prepared river/mouth/lake data now composes
+with source validation, legacy-only footprint bootstrap, owner/policy requests,
+POI placement and all roads into one immutable, unapplied preview. Existing
+physicalGrid is reused literally. Unknown footprints remain; feature-specific
+pending requests refuse the whole composition. Stale river signature, phase
+cancellation and any downstream road failure return no partial candidate.
+Validated stationary bank POI is retained as a road endpoint constraint rather
+than dropped because displacement is zero. River sourceSignature is only a
+river consistency check, not the complete sourceFingerprint. candidateState is
+bootstrap/identity input, not an exportable completed physical4 state. Explicit
+readyForApplication=false and completeGeometryPlan=false: whole-phase budgets,
+feature placement, complete fingerprint/public16/history/UI/PNG still pending.
+
+GEO2 fingerprint rationale before test changes: reuse the retained composed-world
+case to check exact canonical relevant input identity, stable array order and
+name/note/view/RNG exclusions, and rejection of stale lake/road/extent/lock inputs.
+No new permanent test or fixture lifecycle. Keep explicit input version; exact
+canonical content, not a probabilistic digest, avoids collision claims. Source
+footprint inputs must remain separate from future refined output at persistence.
+
+GEO2 INPUT-FINGERPRINT checkpoint: exact versioned canonical content covers
+consumed source and prepared geometry, lake curves/modes, water/land membership,
+owner/source policy refs, source footprints/extents/attachments and explicit
+locks. Object keys and collection records sort; ordered polyline/curve coordinates
+remain ordered. Names, GM/fine notes, fine names, view/camera/locale and RNG
+continuation are excluded. This is a collision-free equality signature, not a
+cryptographic digest; capped2million characters/1million serialization visits.
+Expected-input mismatch returns no partial candidate at fingerprint stage.
+Canonical source footprints are inputs, not future refined output replacements;
+public16/physical4 persistence/parser integration and all-phase budgets remain
+unimplemented. readyForApplication and completeGeometryPlan remain false.
+
+GEO2 composition-work rationale before checks: per-phase counters cannot bound
+combined preparation or cancel inside expensive bank/road/fingerprint loops.
+Reuse retained composed-world case for total/phase accounting, exact sufficient
+limit, exhaustion during a late phase, invalid limits and atomic cancellation.
+Extend existing nearest-bank case for budget exhaustion/cancel inside that phase;
+no new permanent case/world fixture lifecycle. Units are deterministic accounting,
+with upfront source/footprint helper reservations, not CPU/time/subscription units.
+
+GEO2 WORK-BUDGET checkpoint: composed preview uses one deterministic logical
+work budget (default2million units). Source/footprint black-box helpers reserve
+input-dependent work before execution; fingerprint, exposed-bank and road loops
+charge incrementally. Every charge checks cancellation. Receipts report limit,
+used, remaining and phase totals; neither exhaustion nor cancellation exposes a
+partial candidate or claims that a legal path does not exist. Runtime controls
+and limits do not change sourceFingerprint. Existing retained-world, bank and
+dry-search cases cover sufficient/exact/late-exhausted limits and cancellation;
+no additional permanent cases. This accounts composition work, not wall time,
+CPU cost, tokens or subscription usage. Upstream river/mouth preparation is still
+a supplied input outside this aggregate budget. Feature-specific POI constraints,
+whole GeometryPlan/public16/physical4/history/Q01 closure/Apply/UI/PNG remain
+pending; readyForApplication=false and completeGeometryPlan=false.
+
+GEO2 river-work rationale before checks: reuse the existing immutable confluence
+case to verify that incremental upstream routing charges preserve identical
+geometry, exact sufficient work succeeds, a late exhausted charge and an inner
+cancellation propagate as prepare_* rather than no-path or invalid-source.
+No new permanent case or world fixture. This hook is only river skeleton work;
+normalization, terminal/mouth geometry and aggregate orchestration still pending.
+
+GEO2 upstream-composition rationale before checks: an upstream hook alone cannot
+bound the river/mouth plus POI/road preparation together. Reuse the existing
+actual53-segment/7-crossing composed-world case for one shared receipt, exact
+sufficient limit, late exhaustion, upstream cancellation and unchanged source/RNG.
+No new permanent case/world setup. Reserve bounded black-box shore helper input
+work, charge normalization/ports/terminal/water/mouth loops incrementally, and
+retain the explicit distinction between logical work and CPU/time/subscription.
+
+GEO2 from-source composition now shares one receipt across river/mouth and the
+existing source/footprint/fingerprint/POI/road preview. Its default20million
+logical units covers the retained fixture's15.5million envelope, including all
+three shore modes and repeated constrained river preparation; the prepared-input
+preview keeps its existing2million default. Both accept explicit finite limits.
+Shore helpers reserve bounded input work; interval queries charge curve-dependent
+logical units between calls, not preemption inside a native/analytic call.
+Hydrology construction and renderer-owned lake contour generation remain supplied
+inputs. This is not a wall-time/CPU/subscription bound or full GeometryPlan/Apply.
+
+Special POI rationale before tests: existing generic-bank cases do not protect
+rapid/waterfall/crossing/start identity or point-feature location. Extend the
+existing source-policy adapter and POI candidate cases for real eligible rows,
+stale/foreign/missing refs, crossing kinds, feature-local bank contacts, locks,
+rigid footprints, permutation, and unknown provenance. Reuse existing road
+contact case for feature provenance; no new world/fixture/browser lifecycle.
+
+Special-POI checkpoint implements rapid, waterfall, typed crossing and true
+river-start source refs in the existing candidate pipeline. Exact feature ID,
+water kind, same parent, side, extent and route identities survive; point-feature
+bank constraints and final crossing-bank validation prevent generic-bank fallback.
+Source fingerprint now binds consumed prepared ports/rapids/waterfall incidences
+and points as well as source geometry. Two existing Node cases are expanded;
+positive feature examples use explicit synthetic geometry and real eligible
+policy rows. They do not prove generated-world prevalence or complete G201–G210.
+The retained world still has unknown catalogue requirements. Full GeometryPlan,
+public16/physical4/choices/Q01/history/Apply/map/PNG/UI and independent full-package
+acceptance remain pending; no active feature/UI/publication is enabled here.
+
+Manual development correction: an exact crossing-bank regression reproduced
+before final handoff (query0,.5 selected instead of supplied5e-8,.5). Extend the
+existing bank case to protect literal allowed-contact selection; nearby numeric
+candidates cannot replace an exact crossing endpoint. This is a third modified
+existing case, no new lifecycle. Supersede the first in-flight full check and
+verify the corrected frozen SHA with one fresh full check.

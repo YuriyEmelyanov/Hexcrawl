@@ -28,7 +28,7 @@ function occurrences(doc:PoiDocument,k:string){
   return doc.regions.reduce((n,r)=>n+r.pointsOfInterest.filter(h=>waterHexKey(h)===k).length+(hasCentralPoi(r)&&waterHexKey(r.centerHex)===k?1:0),0)+(doc.waterPoiByKey.has(k)?1:0);
 }
 /** Enumerate live POI name addresses, without manufacturing settlement entities. */
-export function poiNameLocators(doc:Pick<PoiDocument,'regions'|'waterPoiByKey'>):Set<string>{
+export function poiNameLocators(doc:Pick<PoiDocument,'regions'|'waterPoiByKey'>,rejectAmbiguous=false):Set<string>{
   // A storage address may name exactly one physical object. Do not collapse
   // central/ordinary duplicates into one apparently valid name target.
   const counts=new Map<string,number>(),add=(key:string)=>counts.set(key,(counts.get(key)??0)+1);
@@ -37,6 +37,7 @@ export function poiNameLocators(doc:Pick<PoiDocument,'regions'|'waterPoiByKey'>)
     if(hasCentralPoi(r))add(`poi:${r.id}:${waterHexKey(r.centerHex)}`);
   }
   for(const k of doc.waterPoiByKey.keys())add(`waterPoi:${k}`);
+  if(rejectAmbiguous&&[...counts.values()].some(count=>count!==1))fail('ambiguous_poi_identity');
   return new Set([...counts].filter(([,count])=>count===1).map(([key])=>key));
 }
 export function assertPoiEditorNames(value:unknown,live:ReadonlySet<string>):asserts value is EditorNames {
