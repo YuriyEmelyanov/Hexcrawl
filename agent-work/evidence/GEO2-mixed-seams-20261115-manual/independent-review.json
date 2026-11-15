@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "scope": "bounded backend mixed river/road seams; not full GEO2 acceptance",
+  "reviewer": "independent fresh-context review_mixed_seams",
+  "reviewed_local_sha": "e437f577860a5bd48fe341fcae6b744c3f2ce37e",
+  "head_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
+  "tree_sha": "4d510922baf6d41bd23586834f1fbb98056db284",
+  "tree_bridge": {
+    "method": "GitHub create_tree matched local tree; fetched remote and git diff --exit-code local_tree remote_tree",
+    "changed_files": 0
+  },
+  "verdict": "no_unresolved_blocking_finding_reproduced_for_bounded_backend",
+  "findings": [
+    {
+      "id": "GEO2-MIX-REV-001",
+      "severity": "P1",
+      "status": "resolved",
+      "before_sha": "2bde92cde2eb8584c31314e90f68b1dae2f929c8",
+      "cause": "outside POIs were checked only against retained water; endpoint-adjusted added water could engulf a POI",
+      "reproduction": "assertHexcrawlSaveData and actual handleImportJson accepted outside POI anchor (3.2,-2.078460969082653), mixed-water clearance about -0.33 mile",
+      "fix": "Check outside POIs against combined water, polygon edges and enclosed capsule endpoints. Same actual import now refuses and preserves the accepted document/history."
+    }
+  ],
+  "reviewed_additional": [
+    "positive collinear old/new road overlap refusal",
+    "exact route-kind attachment update without moving access port"
+  ],
+  "limitations": [
+    "Whole GEO2 map/PNG remains unmounted.",
+    "Lake growth/join, disconnected retained fragments of a single river ID, and relocated external approaches to moved POIs reject atomically.",
+    "Logical work limits are not a CPU-time or cancellation-latency guarantee.",
+    "Final full checks owned by root, not repeated by independent reviewer."
+  ],
+  "score_assessment": "insufficient_evidence_for_full_GEO2_or_grade_transition; no score award"
+}
