@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T0856-programmer-GEO2-scoped-road-removal",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-scoped-road-removal",
+  "role": "programmer",
+  "base_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
+  "head_sha": "14e1d740649dbf86e523f528dee693276637b40a",
+  "tree_sha": "2575e5d84ceff5c376ccfb5cfbabff2d4e5357cd",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "spec_version": "GEO2-v2",
+  "result_ref": "agent-work/results/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
+  "claim_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
+  "evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856",
+  "checks_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/score-evidence.json",
+  "next_role": "programmer",
+  "next_task_id": "HX-BL-051",
+  "next_step": "Продолжить HX-BL-051/GEO2 на 14e1d740649dbf86e523f528dee693276637b40a: реализовать непустой mixed closure для продолжения реки через общий старый/новый source-узел по RIV-014. Вход: GEO2-v2, текущая проекция scope, полный GeometryPlan, old/new boundary evidence; результат: согласованные source/fine порты и зависимые переправы/POI одной атомарной транзакцией, буквальная сохранность несвязанных путей и глобальных ID/локальных записей, сохранение Redo при неразрешимом конфликте и точный16 round-trip. Новую область автоматически не уточнять. Затем остальные виды непустых стыков/миграции scope, initial UI/overlays, фактическая карта/PNG и G201–G210; после полного пакета независимый exact-SHA review и score_assessment1.2. Публикация отдельно.",
+  "status": "scoped_road_removal_implemented_GEO2_in_progress",
+  "component_complete": true,
+  "implementation_complete": false,
+  "full_task_complete": false,
+  "review_ready": false,
+  "execution_running": false,
+  "published": false,
+  "main_changed": false,
+  "release_authorized": false,
+  "pr": 503,
+  "pr_updated": false,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "product_score_changed": false,
+  "score_model_version": "1.2",
+  "owner_decision_required_for_next_step": false,
+  "role_selection_reason": "Approved unfinished GEO2 implementation;051 claim clear. Complete explicit road/part removal intent within scoped source membership, preserving strict other references and original ROAD rules.",
+  "implemented": [
+    "Explicit road/segment remove command supplies exact old part keys only after the ordinary ROAD/name/feature guards. A whole absent road is permitted only when every old part is selected and absent.",
+    "Crossings may disappear only with actually absent selected road parts or explicitly removed absent rivers. Wrong/missing intent and surviving-part crossing loss remain errors; importer stays strict.",
+    "Actual whole road and one crossing-part removal each update source/fine state in one existing UndoRedo and exact16 reload. Unrelated river/road geometry, POI identities/global edits, counters and RNG remain literal. Previous river remove context is preserved through both preparation passes."
+  ],
+  "limitations": [
+    "Finite backend examples on interior two-part road and alternate loop; no claim of broad road removal coverage or new generation/game support.",
+    "Nonempty mixed boundary continuation/relocation and broader source-scope migration are pending.",
+    "Initial actual UI/overlays/map/PNG, full G201–G210, independent exact-SHA review and score_assessment1.2 are not ready.",
+    "PR503 still points to separate old branch/head; current source is on agent/hx-bl-051-geo2. No main change, publication or score award."
+  ],
+  "owner_decisions_needed": [],
+  "whole_team_blocked": false,
+  "feedback_disposition": [
+    {
+      "id": "HX-FB-023",
+      "decision": "include",
+      "reason": "Approved GEO2 source/history scope; full feedback remains open."
+    },
+    {
+      "id": "HX-FB-002",
+      "decision": "defer",
+      "reason": "Prior audit complete; reused scoped setup and existing actual case, one new distinct road-part membership risk. No repeated full audit."
+    }
+  ],
+  "authorization_status": "approved_implementation_separate_release_gate",
+  "checks": {
+    "head_sha": "14e1d740649dbf86e523f528dee693276637b40a",
+    "tree_sha": "2575e5d84ceff5c376ccfb5cfbabff2d4e5357cd",
+    "node": "v24.22.1",
+    "command": "npm run check",
+    "exit_code": 0,
+    "typescript": "passed",
+    "node_tests": {
+      "executed": 421,
+      "passed": 421,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 623131.984608
+    },
+    "build": {
+      "status": "passed",
+      "duration_seconds": 14.34
+    },
+    "focused": {
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "included_in_full_total": true
+    },
+    "reproduction": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "expected_failure_before_fix": true,
+      "ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/repro.log",
+      "not_summed_with_final_total": true
+    },
+    "browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "rng_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "superseded_launcher_attempts": {
+      "count": 2,
+      "status": "configuration_error",
+      "method": "Initial shell used unsupported PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH variable; runner reads CHROMIUM_EXECUTABLE_PATH. Repeated only browser/RNG with correct existing /usr/bin/chromium after same successful build; no install or permission bypass.",
+      "scenarios_executed": 0,
+      "not_summed_with_final_total": true
+    },
+    "source_files_exact": 4,
+    "tracked_worktree_clean": true,
+    "full_GEO2_acceptance": false,
+    "warnings": [
+      "Existing npm http-proxy env warning",
+      "Existing Vite large chunk warning"
+    ],
+    "environment_limitation": "Both corrected actual Chromium launches abort process_singleton_posix.cc socket() EPERM and crashpad ptrace EPERM before scenarios. This is partial environment blockage, not a product browser verdict or reason to disable the team."
+  },
+  "test_change_summary": {
+    "base_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
+    "head_sha": "14e1d740649dbf86e523f528dee693276637b40a",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node",
+    "suites": [
+      {
+        "suite": "test/mapTransactions.test.mjs",
+        "base_named_cases": 30,
+        "head_named_cases": 31,
+        "added": 1,
+        "removed": 0,
+        "modified": 1,
+        "added_names": [
+          "GEO2 actual scoped road and crossing-part removal preserve surviving geometry and one undo redo"
+        ],
+        "modified_names": [
+          "G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo"
+        ]
+      }
+    ],
+    "scenario_risk": "Selected road part/crossing may disappear while road ID survives; whole-road remove must not bypass ROAD rules or hide other references. Real source/fine/history/save atomicity and preservation.",
+    "reuse_or_new_reason": "Shared scoped fixture extracted from existing G208 lifecycle. Extend original source-edit case for context API; one distinct case for whole/partial road membership with alternate loop. Existing required-river/closure failure tests reused unchanged.",
+    "count_source": "Exact base/head diff plus TypeScript AST top-level named Node calls30→31; 1 added, 0 removed, 1 changed body. Assertions/subscenarios/helper changes/diagnostic runs are not additional cases.",
+    "browser_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "rng_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "executions": {
+      "full_node": {
+        "executed": 421,
+        "passed": 421,
+        "failed": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "duration_ms": 623131.984608
+      },
+      "focused": {
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "included_in_full_total": true
+      },
+      "base_reproduction": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "expected_failure_before_fix": true,
+        "ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/repro.log",
+        "not_summed_with_final_total": true
+      },
+      "browser": {
+        "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+        "exit_code": 1,
+        "after_build": true,
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
+      },
+      "rng_browser": {
+        "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+        "exit_code": 1,
+        "after_build": true,
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
+      },
+      "superseded_launcher_attempts": {
+        "count": 2,
+        "status": "configuration_error",
+        "method": "Initial shell used unsupported PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH variable; runner reads CHROMIUM_EXECUTABLE_PATH. Repeated only browser/RNG with correct existing /usr/bin/chromium after same successful build; no install or permission bypass.",
+        "scenarios_executed": 0,
+        "not_summed_with_final_total": true
+      }
+    }
+  },
+  "completed_at": "2026-11-15T06:22:53.910Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
+    "start": {
+      "checked_at": "2026-11-15T05:57:54.082Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T06:22:53.910Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Actual point-in-time checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
+  }
+}

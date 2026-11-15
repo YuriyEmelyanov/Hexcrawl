@@ -1,0 +1,83 @@
+{
+  "base_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
+  "head_sha": "14e1d740649dbf86e523f528dee693276637b40a",
+  "added": 1,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Node",
+  "suites": [
+    {
+      "suite": "test/mapTransactions.test.mjs",
+      "base_named_cases": 30,
+      "head_named_cases": 31,
+      "added": 1,
+      "removed": 0,
+      "modified": 1,
+      "added_names": [
+        "GEO2 actual scoped road and crossing-part removal preserve surviving geometry and one undo redo"
+      ],
+      "modified_names": [
+        "G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo"
+      ]
+    }
+  ],
+  "scenario_risk": "Selected road part/crossing may disappear while road ID survives; whole-road remove must not bypass ROAD rules or hide other references. Real source/fine/history/save atomicity and preservation.",
+  "reuse_or_new_reason": "Shared scoped fixture extracted from existing G208 lifecycle. Extend original source-edit case for context API; one distinct case for whole/partial road membership with alternate loop. Existing required-river/closure failure tests reused unchanged.",
+  "count_source": "Exact base/head diff plus TypeScript AST top-level named Node calls30→31; 1 added, 0 removed, 1 changed body. Assertions/subscenarios/helper changes/diagnostic runs are not additional cases.",
+  "browser_changes": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "rng_changes": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "executions": {
+    "full_node": {
+      "executed": 421,
+      "passed": 421,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 623131.984608
+    },
+    "focused": {
+      "executed": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "included_in_full_total": true
+    },
+    "base_reproduction": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "expected_failure_before_fix": true,
+      "ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/repro.log",
+      "not_summed_with_final_total": true
+    },
+    "browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "rng_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "superseded_launcher_attempts": {
+      "count": 2,
+      "status": "configuration_error",
+      "method": "Initial shell used unsupported PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH variable; runner reads CHROMIUM_EXECUTABLE_PATH. Repeated only browser/RNG with correct existing /usr/bin/chromium after same successful build; no install or permission bypass.",
+      "scenarios_executed": 0,
+      "not_summed_with_final_total": true
+    }
+  }
+}
