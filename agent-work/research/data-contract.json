@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "HexCrawl research records",
-  "description": "Required structure for future research facts, decisions and handoffs; existing rule matrices use their established schema.",
+  "description": "Required structure for future research facts, decisions and handoffs; existing rule matrices use their established schema. Rules-analysis v2: new or aligned game records additionally use rule_analysis_entry_v2, rule_source_coverage_v2 and rule_analysis_quality_report_v2 under rule-analysis-standard.md. Legacy records are not silently migrated or accepted.",
   "$defs": {
     "observation": {
       "type": "object",
@@ -442,6 +442,861 @@
         }
       },
       "additionalProperties": true
+    },
+    "rule_source_coverage_v2": {
+      "type": "object",
+      "required": [
+        "game_id",
+        "edition",
+        "declared_corpus",
+        "coverage_ledger",
+        "unresolved_relevant_refs",
+        "completeness_status"
+      ],
+      "properties": {
+        "game_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "declared_corpus": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "source_ref",
+              "version",
+              "full_extent"
+            ],
+            "properties": {
+              "source_ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "full_extent": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "coverage_ledger": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "source_ref",
+              "range_or_section",
+              "status",
+              "source_rule_ids",
+              "reason",
+              "evidence_ref"
+            ],
+            "properties": {
+              "source_ref": {
+                "type": "string",
+                "minLength": 1
+              },
+              "range_or_section": {
+                "type": "string",
+                "minLength": 1
+              },
+              "status": {
+                "enum": [
+                  "applicable_extracted",
+                  "reviewed_not_applicable",
+                  "partially_read",
+                  "not_read",
+                  "unavailable",
+                  "open_cross_reference"
+                ]
+              },
+              "source_rule_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_ref": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "unresolved_relevant_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "completeness_status": {
+          "enum": [
+            "draft",
+            "checkpoint",
+            "complete_declared_thematic_corpus"
+          ]
+        }
+      },
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "completeness_status": {
+                "const": "complete_declared_thematic_corpus"
+              }
+            },
+            "required": [
+              "completeness_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "unresolved_relevant_refs": {
+                "maxItems": 0
+              },
+              "coverage_ledger": {
+                "items": {
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "applicable_extracted",
+                        "reviewed_not_applicable"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "rule_analysis_entry_v2": {
+      "type": "object",
+      "required": [
+        "id",
+        "game_id",
+        "edition",
+        "source_rule",
+        "layer",
+        "operational_requirement",
+        "canonical_mapping",
+        "implementation",
+        "owner_decision_refs",
+        "open_decisions",
+        "backlog_refs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "game_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_rule": {
+          "type": "object",
+          "required": [
+            "source_ref",
+            "locator",
+            "self_contained_rule",
+            "normative_kind",
+            "parameters_and_units",
+            "conditions",
+            "exceptions",
+            "cross_references"
+          ],
+          "properties": {
+            "source_ref": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locator": {
+              "type": "string",
+              "minLength": 1
+            },
+            "self_contained_rule": {
+              "type": "string",
+              "minLength": 20
+            },
+            "normative_kind": {
+              "enum": [
+                "mandatory_rule",
+                "recommendation",
+                "optional_variant",
+                "adventure_example",
+                "flavour",
+                "owner_decision"
+              ]
+            },
+            "parameters_and_units": {
+              "type": "object"
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "exceptions": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "cross_references": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "additionalProperties": true
+        },
+        "layer": {
+          "enum": [
+            "L1",
+            "L2",
+            "L3"
+          ]
+        },
+        "operational_requirement": {
+          "$ref": "#/$defs/operational_requirement"
+        },
+        "canonical_mapping": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "rule_id",
+              "binding_ref",
+              "disposition",
+              "semantic_comparison",
+              "profile_differences"
+            ],
+            "properties": {
+              "rule_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "binding_ref": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "disposition": {
+                "enum": [
+                  "reuse",
+                  "new_distinct_mechanic",
+                  "pending"
+                ]
+              },
+              "semantic_comparison": {
+                "type": "string",
+                "minLength": 1
+              },
+              "profile_differences": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "implementation": {
+          "type": "object",
+          "required": [
+            "status",
+            "mode",
+            "comment",
+            "verified_parts",
+            "missing_or_unverified_parts",
+            "release_sha",
+            "method",
+            "evidence_refs"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "full",
+                "partial",
+                "absent",
+                "unverified"
+              ]
+            },
+            "mode": {
+              "enum": [
+                "manual_existing_tools",
+                "automatic_feature",
+                "both",
+                "unknown"
+              ]
+            },
+            "comment": {
+              "type": "string",
+              "minLength": 1
+            },
+            "verified_parts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "missing_or_unverified_parts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "release_sha": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "pattern": "^[0-9a-f]{40}$"
+            },
+            "method": {
+              "type": "string",
+              "minLength": 1
+            },
+            "evidence_refs": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "additionalProperties": true,
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "enum": [
+                      "full",
+                      "partial",
+                      "absent"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "release_sha": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{40}$"
+                  },
+                  "evidence_refs": {
+                    "minItems": 1
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "partial"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "verified_parts": {
+                    "minItems": 1
+                  },
+                  "missing_or_unverified_parts": {
+                    "minItems": 1
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "const": "full"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "missing_or_unverified_parts": {
+                    "maxItems": 0
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "owner_decision_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "open_decisions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "backlog_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "rule_analysis_quality_report_v2": {
+      "type": "object",
+      "required": [
+        "standard_ref",
+        "game_id",
+        "edition",
+        "source_inventory_ref",
+        "analysis_ref",
+        "reviewed_sha",
+        "reviewer",
+        "overall_status",
+        "checks",
+        "remaining_work"
+      ],
+      "properties": {
+        "standard_ref": {
+          "const": "agent-work/research/rule-analysis-standard.md"
+        },
+        "game_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_inventory_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "analysis_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewed_sha": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "overall_status": {
+          "enum": [
+            "not_reviewed",
+            "draft",
+            "checkpoint",
+            "accepted"
+          ]
+        },
+        "checks": {
+          "type": "array",
+          "minItems": 15,
+          "maxItems": 15,
+          "items": {
+            "type": "object",
+            "required": [
+              "criterion_id",
+              "result",
+              "comment",
+              "evidence_refs",
+              "exact_continuation"
+            ],
+            "properties": {
+              "criterion_id": {
+                "enum": [
+                  "RA-Q01",
+                  "RA-Q02",
+                  "RA-Q03",
+                  "RA-Q04",
+                  "RA-Q05",
+                  "RA-Q06",
+                  "RA-Q07",
+                  "RA-Q08",
+                  "RA-Q09",
+                  "RA-Q10",
+                  "RA-Q11",
+                  "RA-Q12",
+                  "RA-Q13",
+                  "RA-Q14",
+                  "RA-Q15"
+                ]
+              },
+              "result": {
+                "enum": [
+                  "pass",
+                  "fail",
+                  "blocked",
+                  "not_reviewed",
+                  "not_applicable"
+                ]
+              },
+              "comment": {
+                "type": "string",
+                "minLength": 1
+              },
+              "evidence_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "exact_continuation": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": true,
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "result": {
+                      "const": "pass"
+                    }
+                  },
+                  "required": [
+                    "result"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "evidence_refs": {
+                      "minItems": 1
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "allOf": [
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q01"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q02"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q03"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q04"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q05"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q06"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q07"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q08"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q09"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q10"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q11"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q12"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q13"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q14"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            },
+            {
+              "contains": {
+                "type": "object",
+                "required": [
+                  "criterion_id"
+                ],
+                "properties": {
+                  "criterion_id": {
+                    "const": "RA-Q15"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            }
+          ]
+        },
+        "remaining_work": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": true,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "overall_status": {
+                "const": "accepted"
+              }
+            },
+            "required": [
+              "overall_status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "checks": {
+                "items": {
+                  "properties": {
+                    "result": {
+                      "enum": [
+                        "pass",
+                        "not_applicable"
+                      ]
+                    }
+                  }
+                }
+              },
+              "remaining_work": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
     }
   },
   "type": "object"
