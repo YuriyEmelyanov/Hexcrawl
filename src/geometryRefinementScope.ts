@@ -8,6 +8,16 @@ import {assertDetailPoiOwners} from './detailIdentity.ts';
 import {poiNameLocators} from './manualPois.ts';
 const key=(p:{q:number;r:number})=>`${p.q},${p.r}`;
 export function projectGeometryRefinementSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement){
+ return projectSource(input,accepted,true);
+}
+/** Detached current input for replanning an edit of retained entities. This
+ * does NOT certify the old fingerprint against the changed source, and is
+ * never import/boundary acceptance. Caller must prepare a complete new plan,
+ * compose global authored data and validate the resulting boundary. */
+export function projectGeometryRefinementEdit(input:GeometrySourceValidationInput,accepted:GeometryRefinement){
+ return projectSource(input,accepted,false);
+}
+function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement,requireUnchanged:boolean){
  const fail=(code:string,refs:readonly string[])=>Object.freeze({status:'error' as const,code,refs:Object.freeze([...refs]),readyForApplication:false as const});
  try{
   if(input.cancelled?.())return fail('prepare_cancelled',[]);
@@ -62,8 +72,8 @@ export function projectGeometryRefinementSource(input:GeometrySourceValidationIn
   }catch{return fail('invalid_authored_source',['physicalGrid.poiIdentities','physicalGrid.poiFootprints']);}
   const authored=Object.freeze({...globalAuthoredState,...(globalAuthoredState.poiIdentities?{poiIdentities:Object.freeze({...globalAuthoredState.poiIdentities,byLegacyRef:Object.freeze(Object.fromEntries(Object.entries(globalAuthoredState.poiIdentities.byLegacyRef).filter(([alias])=>aliases.has(alias))))})}:{}),poiFootprints:Object.freeze(globalAuthoredState.poiFootprints.filter(f=>retainedPoiIds.has(f.poiId)))});
   const projected=Object.freeze({...input,riverPlan:accepted.riverPlan,map:Object.freeze({...input.map,physicalGrid:authored,regions:Object.freeze(regions),rivers:Object.freeze(rivers),roads:Object.freeze(roads),crossings:Object.freeze(crossings),hexTerrainByKey:new Map([...input.map.hexTerrainByKey].filter(([k])=>oldCells.has(k)||oldWater.has(k))),waterPoiByKey:new Map([...input.map.waterPoiByKey].filter(([k])=>aliases.has(`waterPoi:${k}`))),seas:Object.freeze(input.map.seas.filter(s=>seaIds.has(s.id)))}),liveRivers:Object.freeze(input.liveRivers.filter(r=>riverIds.has(r.id))),landCells:Object.freeze(input.landCells.filter(c=>land.has(key(c)))),marks:Object.freeze({rapids:new Set([...input.marks.rapids].filter(k=>edgeKeys.has(k))),waterfalls:new Set([...input.marks.waterfalls].filter(k=>nodeKeys.has(k)))})});
-  if(!validateGeometryRefinementSource(projected,{...accepted,sourceState:authored}))return fail('scope_source_changed',['sourceFingerprint']);
+  if(requireUnchanged&&!validateGeometryRefinementSource(projected,{...accepted,sourceState:authored}))return fail('scope_source_changed',['sourceFingerprint']);
   if(input.cancelled?.())return fail('prepare_cancelled',[]);
-  return Object.freeze({status:'projected' as const,input:projected,globalAuthoredState,outside:Object.freeze({regions:Object.freeze(outside.regions),rivers:Object.freeze(outside.rivers),roads:Object.freeze(outside.roads),crossings:Object.freeze(outside.crossings),water:Object.freeze(outside.water),authoredFootprints:Object.freeze(globalAuthoredState.poiFootprints.filter(f=>!retainedPoiIds.has(f.poiId))),authoredIdentityRefs:Object.freeze(Object.fromEntries(Object.entries(globalAuthoredState.poiIdentities?.byLegacyRef??{}).filter(([alias])=>!aliases.has(alias))))}),geometryRefinement:accepted,boundaryValidation:'required' as const,readyForApplication:false as const});
+  return Object.freeze({status:'projected' as const,input:projected,globalAuthoredState,outside:Object.freeze({regions:Object.freeze(outside.regions),rivers:Object.freeze(outside.rivers),roads:Object.freeze(outside.roads),crossings:Object.freeze(outside.crossings),water:Object.freeze(outside.water),authoredFootprints:Object.freeze(globalAuthoredState.poiFootprints.filter(f=>!retainedPoiIds.has(f.poiId))),authoredIdentityRefs:Object.freeze(Object.fromEntries(Object.entries(globalAuthoredState.poiIdentities?.byLegacyRef??{}).filter(([alias])=>!aliases.has(alias))))}),geometryRefinement:accepted,sourceCorrespondence:requireUnchanged?'validated_unchanged' as const:'requires_new_plan' as const,boundaryValidation:'required' as const,readyForApplication:false as const});
  }catch{return fail('invalid_scope',['geometryRefinement.sourceFingerprint']);}
 }

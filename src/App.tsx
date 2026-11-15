@@ -7,6 +7,7 @@ import {prepareRefinementLakeModes} from './geometryRefinementMouths';
 import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
 import {prepareGeometryRefinementBoundary} from './geometryRefinementBoundary';
 import {composeScopedDetailState} from './geometryRefinementState';
+import {projectGeometryRefinementEdit} from './geometryRefinementScope';
 import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
 import {buildDetailGeographyPreview,reconcileDetailGeography,validateDetailGeographyFootprints,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
 import {projectOneMile,oneMileCandidates,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
@@ -1216,7 +1217,14 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
  for(const alias of Object.keys(source.poiIdentities?.byLegacyRef??{}))if(!live.has(alias)&&!removals.has(alias))removals.set(alias,null);
  const authored=reconcileDetailGeography(sourceMap,detailMapRiverGeometry(sourceMap,source.grid.origin),removals)!;
  if(accepted.globalAuthoredState){
-  const scoped=composeScopedDetailState(authored,layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
+  // Project changed authored input before composing: the old layer is stale
+  // until a new complete plan has passed its existing dependency checks.
+  const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement);
+  if(projected.status==='error')throw Error(`GEO2 scoped_closure_pending: ${projected.code}`);
+  const retainedMap={...candidate,...projected.input.map,physicalGrid:{...projected.input.map.physicalGrid,version:4 as const,geometryRefinement:layer.geometryRefinement}} as MapSnapshot;
+  const result=prepareGeometryPlan({...geometryPlanInput(retainedMap),authoredState:projected.input.map.physicalGrid});
+  if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
+  const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
   if(boundary.status==='prepared'&&boundary.boundaryValidation==='disjoint_model_envelopes')return map;
   // Potential pairs are not confirmed defects or permission to move them.
   // Until exact mixed closure is integrated, preserve the complete old state.

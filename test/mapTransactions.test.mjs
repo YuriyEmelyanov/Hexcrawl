@@ -867,7 +867,22 @@ test('G208-AUTO actual ordinary river edit atomically updates physical4, preserv
  const reopened=stable(h.render());assert.deepEqual(reopened,incoming,'actual public16 loader retains global owners and exact scoped choices');assert.equal(h.render().undoHistory.length,beforeCount+1);assertUndoRedo(h,beforeScoped,reopened);
  assert.equal(reopened.map.physicalGrid.poiIdentities.byLegacyRef['poi:3:40,40'],outside.poiId);assert.deepEqual(reopened.map.physicalGrid.geometryRefinement.riverPlan.paths,after.map.physicalGrid.geometryRefinement.riverPlan.paths);assert.deepEqual(reopened.generation,after.generation);
  h.render().setSelectedHex(cell);const beforeMetadata=stable(h.render()),metadataCount=h.render().undoHistory.length;h.render().setSelectedHexBiomeOverride('open_hills');const metadata=stable(h.render());assert.equal(metadata.map.biomeOverrideByHexKey[key],'open_hills');assert.equal(h.render().undoHistory.length,metadataCount+1);assert.deepEqual(metadata.map.physicalGrid.geometryRefinement.riverPlan.paths,reopened.map.physicalGrid.geometryRefinement.riverPlan.paths);assert.deepEqual(metadata.map.physicalGrid.fineCellEdits,global.fineCellEdits);assertUndoRedo(h,beforeMetadata,metadata);
+ // G208: a source edit in the retained scope must replan that scope, not
+ // compose changed authored footprints against the stale accepted layer.
+ const beforeScopedEdit=stable(h.render()),scopedHistory=h.render().undoHistory.length;
+ assert.equal(h.render().editRiverDocument({type:'fullness',riverId:1,edgeKey:edge,fullness:2}),true,h.render().editError??'scoped source edit');
+ const adapted=stable(h.render());assert.equal(h.render().undoHistory.length,scopedHistory+1);
+ assert.notEqual(adapted.map.physicalGrid.geometryRefinement.sourceFingerprint,beforeScopedEdit.map.physicalGrid.geometryRefinement.sourceFingerprint);
+ assert.deepEqual(geometryChoicePaths(adapted,2),geometryChoicePaths(beforeScopedEdit,2));
+ assert.deepEqual(adapted.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===2),beforeScopedEdit.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===2));
+ assert.deepEqual(adapted.map.physicalGrid.poiIdentities,beforeScopedEdit.map.physicalGrid.poiIdentities);
+ assert.deepEqual(adapted.map.physicalGrid.poiFootprints.find(f=>f.poiId===outside.poiId),beforeScopedEdit.map.physicalGrid.poiFootprints.find(f=>f.poiId===outside.poiId));
+ assert.deepEqual(adapted.map.physicalGrid.fineCellEdits,global.fineCellEdits);assert.deepEqual(adapted.generation,beforeScopedEdit.generation);
+ assert.deepEqual(dialogs,[]);assertUndoRedo(h,beforeScopedEdit,adapted);
+ await load(h,adapted);assert.deepEqual(stable(h.render()),adapted,'updated scoped16 imports exact stored choices');
  h.render().undoMap();const protectedSave=stable(h.render()),protectedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(protectedStacks[1].length);
+ assert.equal(h.render().editRiverDocument({type:'remove',riverId:1,includeArms:false},{confirmed:true}),false,'missing retained dependency rejects scoped edit');
+ assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
  const alerts=[];h.setWindow({alert:message=>alerts.push(message),confirm:()=>true,matchMedia:()=>({matches:false})});
  const invalidScoped=structuredClone(protectedSave);invalidScoped.map.physicalGrid.globalAuthoredState.poiFootprints[0].worldAnchor.x+=.01;await load(h,invalidScoped);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
  const touching=structuredClone(protectedSave),near={q:-2,r:0};touching.map.regions.push({...region,id:4,hexes:[near],centerHex:near,anchorHex:near,pointsOfInterest:[],pointOfInterestKinds:{}});touching.map.candidateHexes=h.geometry.getCandidateHexes(touching.map.regions.flatMap(r=>r.hexes),new Set(Object.keys(touching.map.terrainByHexKey)));
