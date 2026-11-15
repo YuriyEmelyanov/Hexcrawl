@@ -7,7 +7,10 @@ import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {detailAuthoredState} from '../src/detailModel.ts';
 import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
 import {prepareGeometryPlan} from '../src/geometryPlan.ts';
-import {geometryMixedRiverPaths} from '../src/geometryRefinementBoundary.ts';
+import {detailFootprintPolygons} from '../src/detailSizes.ts';
+import {refinementShoreContains,refinementShoreIntervals} from '../src/geometryRefinementShore.ts';
+import {createDetailGrid,worldToDetailCell} from '../src/detailGrid.ts';
+import {prepareGeometryRefinementBoundary,geometryMixedRiverPaths} from '../src/geometryRefinementBoundary.ts';
 import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
 import {projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
 import {reconcileDetailGeography} from '../src/detailGeography.ts';
@@ -1110,4 +1113,20 @@ test('GEO2 scoped lake growth across empty support replans shoreline in one actu
  assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'failure preserves redo');h.render().resetWaterDraft();
  const invalid=structuredClone(after);delete invalid.map.terrainByHexKey['7,0'];await load(h,invalid);assert.deepEqual(stable(h.render()),before,'stale water body16 is rejected');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);h.render().redoMap();
  await load(h,after);assert.deepEqual(stable(h.render()),after,'exact16 shoreline readback');
+ // Reuse this accepted grown body: a marker on the dry side of its broad
+ // control-hull/fine-cell envelope is not an occupied water intersection.
+ h.render().setEditMode(true);h.render().setSelectedHex(anchor);h.render().setSelectedPoiKind('lair');
+ const withPoi=h.render().captureDocument(),authoredPoi=detailAuthoredState(withPoi.map.physicalGrid),marker=authoredPoi.poiFootprints.find(f=>f.legacyRef==='poi:3:8,0');assert.ok(marker);
+ const point={x:45.2,y:0},grid=createDetailGrid(1,authoredPoi.grid.origin),shifted={...marker,worldAnchor:point,cells:[worldToDetailCell(grid,point)]};
+ const nextAuthored={...authoredPoi,poiFootprints:authoredPoi.poiFootprints.map(f=>f.poiId===marker.poiId?shifted:f)};
+ const markerSave=serial(h.render().createSaveData({...withPoi,map:{...withPoi.map,physicalGrid:composeScopedDetailState(nextAuthored,withPoi.map.physicalGrid.geometryRefinement)}}));delete markerSave.savedAt;
+ const candidateMap={...withPoi.map,physicalGrid:composeScopedDetailState(nextAuthored,withPoi.map.physicalGrid.geometryRefinement)},g=candidateMap.physicalGrid.geometryRefinement;
+ const boundary=prepareGeometryRefinementBoundary({...h.geometry.geometryPlanInput(candidateMap),riverPlan:g.riverPlan,roadPaddingMiles:3},g);assert.equal(boundary.status,'prepared',JSON.stringify(boundary));assert.ok(boundary.potentialDependencies.some(p=>p.retainedRef.startsWith('lake:')&&p.addedRef===`POI:${marker.poiId}`),'actual control-hull/support candidate');
+ await load(h,markerSave);assert.deepEqual(stable(h.render()),markerSave,'dry marker near current shoreline is allowed without relocation');
+ const markerStacks=serial([h.render().undoHistory,h.render().redoHistory]),fringe={...shifted,worldAnchor:{x:45.01,y:0},cells:[worldToDetailCell(grid,{x:45.01,y:0})]},shape=g.riverPlan.lakes.find(l=>l.lakeId===oldLake).modes.tiles,polygon=detailFootprintPolygons(fringe,grid)[0];
+ assert.equal(refinementShoreContains(shape,fringe.worldAnchor),false,'fringe anchor itself is dry');assert.ok(polygon.some((p,i)=>refinementShoreIntervals(shape,{from:p,to:polygon[(i+1)%polygon.length]}).intervals?.length),'model perimeter touches actual water');
+ const invalidAuthored={...nextAuthored,poiFootprints:nextAuthored.poiFootprints.map(f=>f.poiId===marker.poiId?fringe:f)},wetSave=serial(h.render().createSaveData({...withPoi,map:{...withPoi.map,physicalGrid:composeScopedDetailState(invalidAuthored,g)}}));delete wetSave.savedAt;
+ await load(h,wetSave);assert.deepEqual(stable(h.render()),markerSave,'dry center cannot authorize wet footprint');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),markerStacks);
+
+
 });

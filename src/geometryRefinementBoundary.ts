@@ -12,6 +12,7 @@ import {projectGeometryRefinementSource} from './geometryRefinementScope.ts';
 import {prepareRefinementLakeModes,type RefinementLakeInput} from './geometryRefinementMouths.ts';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource.ts';
 import {prepareRefinementWater,refinementWaterIntervals,refinementWaterContains} from './geometryRefinementWater.ts';
+import {refinementShoreContains,refinementShoreIntervals} from './geometryRefinementShore.ts';
 import {createRefinementWorkBudget} from './geometryRefinementWork.ts';
 
 type Input=GeometrySourceValidationInput&Readonly<{
@@ -245,10 +246,33 @@ export function geometryBoundaryHasValidClosure(result:ReturnType<typeof prepare
   // A shoreline may overlap empty opposite-region support: that support is
   // not an occupied feature. The enclosing mode hulls, source/fine water,
   // road strokes/rails and POI extents were all compared in both directions.
-  // Only support/body pairs are resolved here; even a potential opposite
-  // feature/body contact remains an explicit conflict, never a movement grant.
+  // Support/body pairs and certified dry unbound catalogue markers may pass.
+  // Other potential feature/body contacts remain explicit conflicts, never
+  // movement grants.
   const body=(ref:string)=>/^(lake|sea):/.test(ref),support=(ref:string)=>ref.startsWith('region:');
-  if(result.potentialDependencies.some(p=>body(p.retainedRef)&&!support(p.addedRef)||body(p.addedRef)&&!support(p.retainedRef)))return false;
+  const footprints=new Map([...scope.input.map.physicalGrid.poiFootprints.map(f=>refined.get(f.poiId)??f),...scope.outside.authoredFootprints].map(f=>[f.poiId,f]));
+  const dryMarker=(bodyRef:string,otherRef:string)=>{
+   if(!bodyRef.startsWith('lake:')||!otherRef.startsWith('POI:'))return false;
+   const lake=result.bodies.find(l=>l.lakeId===Number(bodyRef.slice(5))),f=footprints.get(otherRef.slice(4));
+   // Resolve only an unbound known catalogue marker, without moving it or
+   // inventing a size for unknown/measured/locked/attached geometry.
+   if(!lake||!f||accepted.lockedPoiIds.includes(f.poiId)||f.attachments.length||f.cells.length!==1||f.extent.kind!=='representative'||f.extent.representativeExtentMiles===null||f.extent.representativeExtentMiles>=1)return false;
+   const anchor=detailFootprintWorldAnchor(f,fine),polygons=detailFootprintPolygons(f,fine);
+   for(const mode of ['tiles','emoji','color'] as const){
+    const shape=lake.modes[mode],curves=shape.loops.reduce((n,l)=>n+l.length,0);
+    budget.charge((1+curves)**2*(1+polygons.reduce((n,p)=>n+p.length,0)));
+    if(refinementShoreContains(shape,anchor))return false;
+    for(const polygon of polygons){
+     if(polygon.some(p=>refinementShoreContains(shape,p))||shape.loops.some(loop=>loop.some(c=>detailPointInPolygon(c.from,polygon))))return false;
+     for(let i=0;i<polygon.length;i++){
+      const cut=refinementShoreIntervals(shape,{from:polygon[i],to:polygon[(i+1)%polygon.length]});
+      if(cut.status!=='prepared'||cut.intervals.length)return false;
+     }
+    }
+   }
+   return true;
+  };
+  if(result.potentialDependencies.some(p=>body(p.retainedRef)&&!support(p.addedRef)&&!dryMarker(p.retainedRef,p.addedRef)||body(p.addedRef)&&!support(p.retainedRef)&&!dryMarker(p.addedRef,p.retainedRef)))return false;
   return true;
  }catch{return false;}
 }
