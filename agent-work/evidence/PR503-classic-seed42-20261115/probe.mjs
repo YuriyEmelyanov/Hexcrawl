@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import {createGenerationHarness} from './test/helpers/generation-harness.mjs';
+import {prepareGeometryPlan} from './src/geometryPlan.ts';
+import {prepareRefinementWetRoutes} from './src/geometryRefinementWater.ts';
+import {prepareRefinementLakeModes,refinementMouthContact} from './src/geometryRefinementMouths.ts';
+import {refinementShoreContains} from './src/geometryRefinementShore.ts';
+const h=createGenerationHarness(42);h.render();h.guardRandom();h.setWindow({alert:()=>{},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
+await h.render().handleImportJson({target:{files:[{text:fs.readFileSync('../pr503-classic-preview/classic-six-regions-6mi.json','utf8')}],value:'map'}});
+const input=h.geometry.geometryPlanInput(h.render().captureDocument().map);
+const before=JSON.stringify(h.render().captureDocument()),r=prepareGeometryPlan(input);
+const routes=prepareRefinementWetRoutes(input.riverInput,input.riverContext,input.widths),bodies=prepareRefinementLakeModes(input.lakeInputs);
+const node='72.746,-70',port=routes.ports.find(p=>p.sourceKey===node),body=bodies.lakes.find(l=>l.lakeId===1);
+console.log(JSON.stringify({source:'afebeb085e0bc0059e317ff6a64d02a9f8e46393',result:r,sourceUnchanged:before===JSON.stringify(h.render().captureDocument()),node,port,modeContainment:Object.fromEntries(['tiles','emoji','color'].map(mode=>[mode,refinementShoreContains(body.modes[mode],port.point)])),internalLakeEdges:[...input.riverContext.hydrology.internalLakeEdges],affectedPaths:routes.paths.filter(p=>p.fromNode===node||p.toNode===node).map(p=>({sourceEdgeKey:p.sourceEdgeKey,fromNode:p.fromNode,toNode:p.toNode,contacts:Object.fromEntries(['tiles','emoji','color'].map(mode=>[mode,refinementMouthContact(body.modes[mode],[...p.points].reverse())]))}))},null,2));
