@@ -16324,7 +16324,7 @@
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
       "next_role": "interviewer",
       "next_role_after_approval": "programmer",
-      "next_step": "Проверить исправленный весь VISIBLE-D2, подтвердить/конкретно оспорить VIS-D1-F01/F02; сохранить GEO2-VIS-Q01 и прежние ответы Q01/Q02. Далее требуется реальное предъявление актуального пула в существующем чате; ответов и новой границы нет.",
+      "next_step": "Present existing current full pool GEO2-VIS-Q01 in existing chat when interaction is available; no repeat analyst rewrite or whole unchanged D2 review. No answer/delegation yet.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16491,7 +16491,7 @@
       },
       "spec_status": "final_ready_for_development",
       "latest_analyst_result_ref": "agent-work/results/2026-11-14T1201-analyst-GEO2-final.json",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-15T1559-analyst-GEO2-visible-D2.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-15T1701-interviewer-GEO2-visible-D2.json",
       "active_claim": null,
       "full_package_release_ready": false,
       "owner_clarification_ref": null,
@@ -17224,7 +17224,7 @@
         }
       },
       "interview_required": true,
-      "interview_status": "corrected_draft_ready_for_interviewer",
+      "interview_status": "questionnaire_prepared_unpresented",
       "interview_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/decisions.json",
       "interview_round": 1,
       "interview_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-interviewer-role.json",
@@ -17282,7 +17282,7 @@
       },
       "active_claim_ref": null,
       "execution_running": false,
-      "updated_at": "2026-11-15T13:04:20.980Z",
+      "updated_at": "2026-11-15T14:05:20.987Z",
       "owner_priority_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-special-POI-priority.json",
       "bounded_special_POI_implemented": true,
       "latest_runtime_verification_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
@@ -17874,7 +17874,7 @@
         "handoff_ref": "agent-work/handoffs/2026-11-15T1156-programmer-GEO2-lake-marker-contact.json",
         "active_stage": "ONE-MILE1"
       },
-      "delivery_replan_status": "corrected_draft_ready_for_interviewer",
+      "delivery_replan_status": "D2_reviewed_boundary_interview_pending",
       "delivery_plan_ref": "agent-work/plans/PR503-visible-delivery-2026-11-15.md",
       "delivery_history_ref": "agent-work/evidence/execution-reconciliation-20261115/delivery-history.json",
       "delivery_contract_decision_required": true,
@@ -17950,26 +17950,53 @@
       "questionnaire_presented": false,
       "draft_contract_findings": [
         {
-          "finding_id": "VIS-D1-F01",
-          "status": "addressed_pending_interviewer_confirmation",
-          "scenario_refs": [
-            "D2-H01",
-            "D2-H02",
-            "D2-H03"
-          ]
+          "id": "VIS-D1-F01",
+          "status": "closed_by_interviewer",
+          "scope": "Draft wording/acceptance only, not runtime acceptance",
+          "method": "Whole D2 read plus exact source static import/Undo reference verification",
+          "evidence": {
+            "draft_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D2.md",
+            "scenarios": [
+              "D2-H01",
+              "D2-H02",
+              "D2-H03"
+            ],
+            "source_sha": "390a5237bb9c3dd377383c9e4ca87ba0d0e9cfb3",
+            "source_path": "src/App.tsx",
+            "line_refs": [
+              [
+                13756,
+                13770
+              ],
+              [
+                15285,
+                15300
+              ]
+            ]
+          },
+          "reason": "Live refinement history, accepted document persistence and live import transaction history are distinct; no persistent Undo-stack requirement implied."
         },
         {
-          "finding_id": "VIS-D1-F02",
-          "status": "addressed_pending_interviewer_confirmation",
-          "section": "Conditional forecasts and retained history",
-          "decision_id": "GEO2-VIS-Q01",
-          "current_selected_scope_forecast": "unknown"
+          "id": "VIS-D1-F02",
+          "status": "closed_by_interviewer",
+          "scope": "Draft forecast labeling only; no selected release forecast confirmed",
+          "method": "Read A/B/C table and explicit inherited/overlap/wait/history conditions",
+          "evidence": {
+            "draft_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D2.md",
+            "section": "Conditional forecasts and retained history — VIS-D1-F02"
+          },
+          "reason": "14–24 restricted A baseline explicitly separated from arithmetic B and inherited parent C envelopes. Selected current remaining unknown; >24 still requires useful repartition and full review."
         }
       ],
-      "latest_visible_release_interview_result": "agent-work/results/2026-11-15T1455-interviewer-GEO2-visible-D1.json",
+      "latest_visible_release_interview_result": "agent-work/results/2026-11-15T1701-interviewer-GEO2-visible-D2.json",
       "ready_for_development": false,
       "scope_boundary_approved": false,
-      "previous_visible_release_draft_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D1.md"
+      "previous_visible_release_draft_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D1.md",
+      "draft_clarification_review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
+      "draft_clarifications_closed": true,
+      "unchanged_draft_rewrite_needed": false,
+      "queue_coordination_next_role": "strategist-manager",
+      "queue_coordination_handoff_ref": "agent-work/handoffs/2026-11-15T1701-interviewer-GEO2-visible-D2.json"
     },
     {
       "task_id": "HX-BL-052",
