@@ -1,0 +1,152 @@
+{
+  "run_id": "2026-11-16-PF2-L1-v2-233326",
+  "research_baseline_sha": "61b7e232ba1615ff8668cbcfaa8c758712df9a2a",
+  "product_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "product_read_only_branch": "main",
+  "edition": "PF2 Remaster",
+  "selected_source_access": {
+    "accessed_at": "2026-11-15T23:42:27.909Z",
+    "access_level": "full_text_selected_primary_sections",
+    "language": "en",
+    "author_project_dedup_key": "paizo:pathfinder2:remaster",
+    "primary_host": "Archives of Nethys",
+    "sources": [
+      "https://2e.aonprd.com/Rules.aspx?ID=3104",
+      "https://2e.aonprd.com/Rules.aspx?ID=3105",
+      "https://2e.aonprd.com/Rules.aspx?ID=3106",
+      "https://2e.aonprd.com/Rules.aspx?ID=3109",
+      "https://2e.aonprd.com/Rules.aspx?ID=3110",
+      "https://2e.aonprd.com/Actions.aspx?ID=476",
+      "https://2e.aonprd.com/Actions.aspx?ID=477",
+      "https://2e.aonprd.com/Rules.aspx?ID=3113",
+      "https://2e.aonprd.com/Rules.aspx?ID=3115",
+      "https://2e.aonprd.com/Actions.aspx?ID=2406",
+      "https://2e.aonprd.com/Actions.aspx?ID=2408",
+      "https://2e.aonprd.com/Rules.aspx?ID=2582 + https://2e.aonprd.com/Rules.aspx?ID=2583",
+      "https://2e.aonprd.com/Rules.aspx?ID=2953",
+      "https://2e.aonprd.com/Rules.aspx?ID=2963",
+      "https://2e.aonprd.com/Rules.aspx?ID=2960"
+    ],
+    "scope": "24 regional L1 rows and direct preparation cross-references; complete whole-book audit is NOT claimed"
+  },
+  "critical_findings": [
+    {
+      "id": "PF2-v2-F01",
+      "finding": "12mi PF2 across-vertices and project step12 across-flats are not equivalent; area ratio4/3. Existing physical grid does not establish PF2 profile.",
+      "source": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+      "product_component": "src/detailGrid.ts",
+      "observed": {
+        "pf2CornerMiles": 12,
+        "pf2AcrossFlats": 10.392304845413264,
+        "pf2Area": 93.53074360871938,
+        "currentProjectStep12Width": 12,
+        "currentProjectStep12Height": 13.85640646055102,
+        "currentProjectArea": 124.70765814495917,
+        "areaRatio": 1.3333333333333333,
+        "exactPf2AcrossFlatsRejected": true,
+        "assertions": 2
+      },
+      "impact": "Do not inherit PF2 evidence from a number12 or from DND unknown axis; no automatic development/score/rating change."
+    },
+    {
+      "id": "PF2-v2-F02",
+      "finding": "PF2-RM-118 source localization conflated36 Navigating and37 Getting Lost; correct URLs2582/2583 now separated in v2 candidate.",
+      "sources": [
+        "https://2e.aonprd.com/Rules.aspx?ID=2582",
+        "https://2e.aonprd.com/Rules.aspx?ID=2583"
+      ],
+      "impact": "Keep2–3 landmarks recommendation tied to Navigating, not to source37."
+    },
+    {
+      "id": "PF2-v2-F03",
+      "finding": "Old completed_base_thematic_corpus does not meet whole-book v2 screening. GMCore135 explicitly references settlements168; followup coverage required.",
+      "source": "https://2e.aonprd.com/Rules.aspx?ID=2960",
+      "impact": "No full PF2 completion claim; remaining39 rows and book-level links retained."
+    }
+  ],
+  "product_evidence": [
+    {
+      "path": "src/detailGrid.ts",
+      "blob_sha": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+      "method": "Direct execution of unchanged code",
+      "observed": "Across-flats1/6/12/24 enum; exact PF2 across-flats6√3 rejected;12step actual area124.707658 vsPF2 required93.530744"
+    },
+    {
+      "path": "test/oneMile.test.mjs",
+      "blob_sha": "c6dd5ff590d19f98ef6a28ee9a67f6d437afa215",
+      "method": "Existing tests, unchanged, Node24 native TS",
+      "observed": "13/13 pass",
+      "limits": "Domain/selected presentation only. No App UI, save schema, history or full source profile acceptance."
+    },
+    {
+      "path": "src/App.tsx",
+      "blob_sha": "39acbcd2252333a63498fd9437ea113b7b5f54d3",
+      "locators": [
+        16969,
+        15206,
+        15260,
+        15284
+      ],
+      "method": "Static read only",
+      "observed": "Fine-grid selector, document/JSON handlers and Knave-specific annotations; not runtime proof of full PF2 operations."
+    }
+  ],
+  "runtime_outputs": {
+    "existing_tests": "✔ partial fine display is full while accepted geography area stays exact (15.726917ms)\n✔ dominant biome aggregates duplicate IDs then uses a canonical maximum tie (0.475715ms)\n✔ source permutation and fixed origin preserve biome assignments and water coverage (30.451768ms)\n✔ candidates form one legal fine row, never the whole source candidate projection (25.35623ms)\n✔ enclosed holes get only legal accessible edge neighbours (1.388852ms)\n✔ pointer and keyboard select ordinary anchors with stable q/r ties (1.009365ms)\n✔ local command edits one fine target and current language without source-six writes (3.405271ms)\n✔ stale, malformed, unsafe and unsupported local fields fail without partial writes (2.657281ms)\n✔ mixed and water cells retain local name/notes but refuse land overrides (2.182659ms)\n✔ destructive support loss requires consent and leaves an exact undo snapshot (2.227416ms)\n✔ fine POI label retains localized type and explicit name without fallback duplication (0.17918ms)\n✔ fine crossing paint distinguishes bridge, translucent ford and a real ferry road gap (1.454232ms)\n✔ fine crossing splits all ordered unique crossings and clamps endpoint or degenerate input (19.157909ms)\nℹ tests 13\nℹ suites 0\nℹ pass 13\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 453.184881\n",
+    "geometry_probe": "{\"pf2CornerMiles\":12,\"pf2AcrossFlats\":10.392304845413264,\"pf2Area\":93.53074360871938,\"currentProjectStep12Width\":12,\"currentProjectStep12Height\":13.85640646055102,\"currentProjectArea\":124.70765814495917,\"areaRatio\":1.3333333333333333,\"exactPf2AcrossFlatsRejected\":true,\"assertions\":2}\n"
+  },
+  "schema_validation": {
+    "validated_objects": 26,
+    "errors": [],
+    "product_test": false
+  },
+  "canonical_review": {
+    "registry_count": 679,
+    "all24_binding_ids_resolved": true,
+    "canonical_ids": [
+      "map.physical_hex_scale",
+      "map.terrain_zones",
+      "map.routes_and_barriers",
+      "content.place_description",
+      "map.reference_labels",
+      "content.adventure_hooks",
+      "content.site_links",
+      "map.extend_preserving_content",
+      "map.generate_on_discovery",
+      "map.terrain_compatibility",
+      "map.terrain_distribution",
+      "content.feature_distribution",
+      "content.discovery_levels",
+      "map.resource_availability",
+      "content.landmarks",
+      "content.tracks_and_ground",
+      "map.display_detail",
+      "map.land_water_shapes",
+      "map.relief_transitions",
+      "map.river_network",
+      "map.settlement_resources"
+    ],
+    "new_rule_ids": 0,
+    "registry_writes": false
+  },
+  "non_duplication": {
+    "retired_tasks_not_restored": true,
+    "backlog_changed": false,
+    "new_task_count": 0,
+    "strategist_handoff": "Reuse universal editor capabilities; treat exact PF2 preset/distributions as separate proposed profile, only after corpus/acceptance. Do not create37local scene forms or revive047/051 from historic refs."
+  },
+  "errors": [
+    {
+      "status": "recovered",
+      "tool": "exec_command/node",
+      "action": "Run existing oneMile test from temporary fetched source tree",
+      "safe_locator": "pf2-review/test/oneMile.test.mjs",
+      "observed_error": "Error [ERR_MODULE_NOT_FOUND]: Cannot find module '/workspace/scratch/0700384ffa28/pf2-review/src/oneMilePresentation.ts' imported from /workspace/scratch/0700384ffa28/pf2-review/test/oneMile.test.mjs",
+      "error_code": "ERR_MODULE_NOT_FOUND",
+      "cause_status": "confirmed",
+      "confirmed_cause": "Temporary local tree initially lacked a test dependency; fetched exact module from same main SHA and reran13tests successfully. Not a product failure."
+    }
+  ],
+  "remaining_ref": "agent-work/research/requirements/PF2-Remaster-v2-remaining.json",
+  "coverage_ref": "agent-work/research/requirements/PF2-Remaster-v2-coverage.json"
+}
