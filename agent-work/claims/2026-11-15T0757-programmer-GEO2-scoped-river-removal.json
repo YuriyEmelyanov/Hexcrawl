@@ -5,8 +5,8 @@
   "role": "programmer",
   "stage_id": "ONE-MILE1",
   "substage": "GEO2-scoped-river-removal",
-  "status": "active",
-  "execution_running": true,
+  "status": "completed",
+  "execution_running": false,
   "started_at": "2026-11-15T04:58:38.547Z",
   "base_sha": "d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f",
   "working_branch": "agent/hx-bl-051-geo2",
@@ -20,6 +20,7 @@
   },
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
     "start": {
       "checked_at": "2026-11-15T04:58:38.547Z",
       "method": "automations.peek",
@@ -27,12 +28,21 @@
       "is_enabled": true
     },
     "end": {
-      "status": "pending"
-    }
+      "checked_at": "2026-11-15T05:20:30.800Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Actual point-in-time checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
   },
   "head_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
   "tree_sha": "ae243bc8e9f95055aeb8ab12e38634f663886507",
-  "updated_at": "2026-11-15T05:08:34.317Z",
+  "updated_at": "2026-11-15T05:20:30.800Z",
   "test_change_summary": {
     "base_sha": "d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f",
     "head_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
@@ -70,9 +80,14 @@
   "progress": {
     "source_remote_readbacks": 4,
     "local_head_aligned": true,
-    "focused_handler": "2/2 passed",
-    "typescript": "passed",
-    "full_check": "running; fresh browser/RNG browser attempts follow successful build",
-    "full_task_complete": false
-  }
+    "full_check": "420/420 Node, TS and build passed",
+    "browser": "Both fresh post-build attempts abort before scenarios: socket EPERM",
+    "scope": "Scoped retained-river removal and associated crossing update integrated; nonempty interfaces and actual UI/map/PNG remain pending"
+  },
+  "completed_at": "2026-11-15T05:20:30.800Z",
+  "result_ref": "agent-work/results/2026-11-15T0757-programmer-GEO2-scoped-river-removal.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0757-programmer-GEO2-scoped-river-removal.json",
+  "checks_ref": "agent-work/evidence/GEO2-scoped-river-removal-20261115-0757/checks.json",
+  "full_task_complete": false,
+  "review_ready": false
 }

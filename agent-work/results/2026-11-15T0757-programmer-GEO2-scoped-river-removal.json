@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T0757-programmer-GEO2-scoped-river-removal",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-scoped-river-removal",
+  "role": "programmer",
+  "base_sha": "d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f",
+  "head_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
+  "tree_sha": "ae243bc8e9f95055aeb8ab12e38634f663886507",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "spec_version": "GEO2-v2",
+  "result_ref": "agent-work/results/2026-11-15T0757-programmer-GEO2-scoped-river-removal.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0757-programmer-GEO2-scoped-river-removal.json",
+  "claim_ref": "agent-work/claims/2026-11-15T0757-programmer-GEO2-scoped-river-removal.json",
+  "evidence_ref": "agent-work/evidence/GEO2-scoped-river-removal-20261115-0757",
+  "checks_ref": "agent-work/evidence/GEO2-scoped-river-removal-20261115-0757/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-river-removal-20261115-0757/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/GEO2-scoped-river-removal-20261115-0757/score-evidence.json",
+  "next_role": "programmer",
+  "next_step": "Продолжить HX-BL-051/GEO2 на 0832eedfc65895197e2cc098d5b694a3d9f4acc7: непустая mixed dependency closure для продолжения/сдвига рек, дорог, POI и водных стыков между старой и новой областями, RIV-014 и прочая миграция source-scope. Явное допустимое удаление сохранённой реки/её переправ теперь проходит оба подготовительных этапа; потеря ссылок без команды и удаление обязательной для POI реки остаются отказами. Новые области не уточнять автоматически; сохранять буквальные несвязанные пути, глобальные ID/счётчики/локальные записи и атомарный Undo/Redo. Затем initial UI/overlays, фактическая карта/PNG, G201–G210 и независимый exact-SHA review+score_assessment1.2. Публикация отдельно.",
+  "status": "scoped_river_removal_implemented_GEO2_in_progress",
+  "component_complete": true,
+  "implementation_complete": false,
+  "full_task_complete": false,
+  "review_ready": false,
+  "execution_running": false,
+  "published": false,
+  "main_changed": false,
+  "release_authorized": false,
+  "pr": 503,
+  "pr_updated": false,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "product_score_changed": false,
+  "score_model_version": "1.2",
+  "owner_decision_required_for_next_step": false,
+  "completed_at": "2026-11-15T05:20:30.800Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
+    "start": {
+      "checked_at": "2026-11-15T04:58:38.547Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T05:20:30.800Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Actual point-in-time checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
+  },
+  "role_selection_reason": "Approved unfinished GEO2 implementation;051 claim clear. Source membership change for explicit valid river removal is next bounded dependency operation on partial scoped state.",
+  "implemented": [
+    "Only an ordinary explicit river-remove command supplies its target/immediate included delta-child IDs as detached intent through both prepareRiverMapEdit and commitManualMap preparation passes.",
+    "Edit projection tolerates only an authorized actually absent retained river and that river's own absent crossing keys; other missing refs and strict import validation remain errors.",
+    "Actual confirmed river2/crossing removal updates coarse/fine accepted scope in one UndoRedo with exact16 reload, preserving unrelated river1/road1 choices, all POI identities/footprints/global local records, counters and RNG. Unconfirmed/wrong-ID/surviving-river crossing/required-POI guards remain."
+  ],
+  "checks": {
+    "head_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
+    "tree_sha": "ae243bc8e9f95055aeb8ab12e38634f663886507",
+    "node": "v24.22.1",
+    "command": "npm run check",
+    "exit_code": 0,
+    "typescript": "passed",
+    "node_tests": {
+      "executed": 420,
+      "passed": 420,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 633691.431136
+    },
+    "build": {
+      "status": "passed",
+      "duration_seconds": 13.5
+    },
+    "focused": {
+      "executed": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "included_in_full_total": true
+    },
+    "reproduction": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "expected_failure_before_fix": true,
+      "ref": "agent-work/evidence/GEO2-scoped-river-removal-20261115-0757/repro.log",
+      "not_summed_with_final_total": true
+    },
+    "development_diagnostic": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "temporary": true,
+      "superseded_before_final_source": true,
+      "permanent_test": false,
+      "not_summed_with_final_total": true,
+      "ref": "agent-work/evidence/GEO2-scoped-river-removal-20261115-0757/development-diagnostic.log",
+      "method": "Owned temporary case copy confirmed pure prepare succeeded while actual commit failed at a second preparation; file deleted after diagnosis."
+    },
+    "browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "rng_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "source_files_exact": 4,
+    "tracked_worktree_clean": true,
+    "full_GEO2_acceptance": false,
+    "warnings": [
+      "Existing npm http-proxy env warning",
+      "Existing Vite large chunk warning"
+    ],
+    "environment_limitation": "Both actual Chromium launches abort at process_singleton_posix.cc socket() EPERM before browser scenarios. No screenshots/PNG/UI/full acceptance or confirmed product browser defect claimed."
+  },
+  "test_change_summary": {
+    "base_sha": "d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f",
+    "head_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node",
+    "suites": [
+      {
+        "suite": "test/mapTransactions.test.mjs",
+        "base_named_cases": 30,
+        "head_named_cases": 30,
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "modified_names": [
+          "G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo"
+        ]
+      }
+    ],
+    "scenario_risk": "G208 scoped source membership: explicit unneeded river deletion and its dependent crossing must update full accepted state in one history action, preserving global data/RNG and strict missing-ref/required-POI/confirmation guards.",
+    "reuse_or_new_reason": "Extend the existing actual scoped source-edit lifecycle with its coupled river/road/crossing and external POI; unchanged required-river refusal case reused as focused regression. No duplicate setup, new logical case or seed series.",
+    "count_source": "Exact base/head diff and named Node cases30→30; one existing body extended. No parameterized tests changed; subscenarios and temporary diagnostic are not additional permanent cases.",
+    "browser_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "rng_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "executions": {
+      "full_node": {
+        "executed": 420,
+        "passed": 420,
+        "failed": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "duration_ms": 633691.431136
+      },
+      "focused": {
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "included_in_full_total": true
+      },
+      "temporary_development_diagnostic": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "temporary": true,
+        "superseded_before_final_source": true,
+        "permanent_test": false,
+        "not_summed_with_final_total": true,
+        "ref": "agent-work/evidence/GEO2-scoped-river-removal-20261115-0757/development-diagnostic.log",
+        "method": "Owned temporary case copy confirmed pure prepare succeeded while actual commit failed at a second preparation; file deleted after diagnosis."
+      },
+      "browser": {
+        "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+        "exit_code": 1,
+        "after_build": true,
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
+      },
+      "rng_browser": {
+        "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+        "exit_code": 1,
+        "after_build": true,
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
+      }
+    }
+  },
+  "limitations": [
+    "Finite positive removes one of two old rivers with a dependent crossing and an outside POI; scoped delta-child removal not separately demonstrated.",
+    "Nonempty old/new river/road/POI/body continuation or relocation closure and broader source membership migration still pending.",
+    "Actual initial UI/overlays/map/PNG and full G201–G210 still pending. Browsers abort socket EPERM before scenarios; independent exact-SHA review+score_assessment1.2 not ready.",
+    "No new game support, confirmed points, main change, publication or PR503 update claimed."
+  ],
+  "owner_decisions_needed": [],
+  "whole_team_blocked": false,
+  "feedback_disposition": [
+    {
+      "id": "HX-FB-023",
+      "decision": "include",
+      "reason": "Existing approved GEO2 source/history contract; full feedback remains open."
+    },
+    {
+      "id": "HX-FB-002",
+      "decision": "defer",
+      "reason": "Audit already complete; existing actual lifecycle extended, no new logical case or repeated audit."
+    }
+  ],
+  "authorization_status": "approved_implementation_separate_release_gate"
+}
