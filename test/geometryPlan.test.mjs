@@ -2,6 +2,7 @@ import {detailCatalogueExtent,detailFootprintPolygons,detailPointInPolygon} from
 import {prepareRefinementShorePath,refinementShoreContains,refinementShoreIntervals} from '../src/geometryRefinementShore.ts';
 import {projectGeometryRefinementSource,projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
 import {geometryBoundaryHasValidClosure,prepareGeometryRefinementBoundary} from '../src/geometryRefinementBoundary.ts';
+import {renderRefinedArtwork,renderRefinedLakeWater,refinementLakeShapes} from './helpers/artwork-renderer.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -58,6 +59,22 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  const {input,result}=await accepted(),g=result.geometryRefinement;
  assert.equal(result.completeGeometryPlan,true);assert.equal(result.readyForApplication,true);assert.equal(result.candidateState.version,4);assert.equal(g.sourceState.version,3);
  assert.equal(g.riverPlan.paths.length,53);assert.equal(g.roads.crossings.length,7);assert.equal(g.unresolved.length,21);assert.equal(g.riverPlan.mouths.length,3);
+ // Actual mounted component: retained paint/crossings come from physical4,
+ // including lake masks and prepared POI road gaps. No source geometry writes.
+ const props={state:result.candidateState,source:normalizeRefinementRiverSource(input.riverInput),offset:{x:20,y:30},mode:'color',widthByFullness:new Map([[1,1],[5,3]]),rivers:[],roads:[],crossings:[],rapids:[],waterfalls:[],rotated:false};
+ const svg=renderRefinedArtwork(props);
+ assert.equal((svg.match(/data-fine-crossing=/g)??[]).length,7);
+ assert.equal((svg.match(/data-refined-road=/g)??[]).length,g.roads.roads.length);
+ assert.ok(svg.includes('mask='));assert.ok(svg.includes('data-refined-river='));assert.ok(!/NaN|Infinity|undefined/.test(svg));
+ for(const mode of ['tiles','emoji','color']){
+  const lakes=refinementLakeShapes(props.state,mode,props.offset,[]),water=renderRefinedLakeWater({...props,mode,shapes:[],cells:[],seed:1}),clipped=renderRefinedArtwork({...props,mode});
+  assert.ok(lakes.length);for(const lake of lakes){assert.ok(water.includes(`d="${lake.path}"`),'visible water uses accepted contour');assert.ok(clipped.includes(`d="${lake.path}"`),'river clipping uses that same visible contour');assert.equal(lake.mouths.length,0,'old source mouth polygons cannot shift the accepted shore');}
+ }
+ const outside={...props.source,segments:[...props.source.segments,...[1,5].map((fullness,i)=>({riverId:999,edgeKey:`outside${i}`,fullness,from:{key:`new${i}a`,point:{x:100+i*10,y:100}},to:{key:`new${i}b`,point:{x:105+i*10,y:100}}}))]};
+ const mixed=renderRefinedArtwork({...props,source:outside});
+ assert.match(mixed,/data-source-edge="outside0"[^>]*stroke-width="1"/);
+ assert.match(mixed,/data-source-edge="outside1"[^>]*stroke-width="3"/);
+
  assert.ok(Object.isFrozen(g.riverPlan.paths[0].steps[0]));assert.ok(Object.isFrozen(g.sourceState.poiFootprints[0].extent));
  assert.equal(g.sideChoices.length,g.riverPlan.paths.reduce((n,p)=>n+p.steps.length,0));
  assert.deepEqual(parseGeometryRefinement(copy(g),parseDetail1StateV11),g);assert.deepEqual(parseDetail1StateV11(copy(result.candidateState)),result.candidateState);

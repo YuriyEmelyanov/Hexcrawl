@@ -1,0 +1,94 @@
+import {useId} from 'react';
+import type {Detail1State} from './detailModel';
+import type {WorldPoint} from './detailGrid';
+import type {GeometryRefinement} from './geometryPlan';
+import {geometryMixedRiverPaths} from './geometryRefinementBoundary';
+import type {normalizeRefinementRiverSource} from './geometryRefinementSource';
+import type {FineRoad,FineCrossing} from './oneMilePresentation';
+import {fineRoadPresentation} from './oneMilePresentation';
+import {LakeWater} from './rendering/LakeWater';
+import type {LakeShape,NaturalLakeCell} from './rendering/lakeGeometry';
+import type {RefinementShore} from './geometryRefinementShore';
+
+type River={key:string;x1:number;y1:number;x2:number;y2:number;width:number};
+type Source=Extract<ReturnType<typeof normalizeRefinementRiverSource>,{status:'prepared'}>;
+type Props={state:Detail1State;source:Source;offset:WorldPoint;mode:'tiles'|'emoji'|'color';
+ rivers:readonly River[];roads:readonly FineRoad[];crossings:readonly FineCrossing[];hiddenRiverEdgeKeys?:ReadonlySet<string>;widthByFullness:ReadonlyMap<number,number>;
+ rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number;edgeKey?:string}[];
+ waterfalls:readonly {key:string;x:number;y:number}[];rotated:boolean};
+const pair=(id:number,key:string)=>JSON.stringify([id,key]);
+const svgPoint=(v:WorldPoint,origin:WorldPoint,offset:WorldPoint)=>({x:(v.x-origin.x)*Math.sqrt(3)*28/6+offset.x,y:(v.y-origin.y)*Math.sqrt(3)*28/6+offset.y});
+function shorePath(body:RefinementShore,point:(v:WorldPoint)=>WorldPoint){return body.loops.map(loop=>{
+ const start=point(loop[0].from);return `M${start.x} ${start.y}`+loop.map(c=>{const q=point(c.control),b=point(c.to);return `Q${q.x} ${q.y} ${b.x} ${b.y}`;}).join('')+'Z';
+}).join('');}
+/** Water and river clipping share the exact accepted mode contour. Native
+ * source-mouth embellishments must not move an accepted refined shore. */
+export function refinementLakeShapes(state:Detail1State,mode:Props['mode'],offset:WorldPoint,shapes:readonly LakeShape[]):LakeShape[]{
+ const accepted=state.geometryRefinement!;
+ const ids=new Set(accepted.riverPlan.lakes.map(l=>l.lakeId));
+ const point=(v:WorldPoint)=>svgPoint(v,state.grid.origin,offset);
+ return [...shapes.filter(l=>!l.cells.some(c=>c.lakeId!==undefined&&ids.has(c.lakeId))),...accepted.riverPlan.lakes.map(l=>{
+  const body=l.modes[mode],loops=body.loops.map(loop=>loop.map(c=>point(c.from))),all=body.loops.flatMap(loop=>loop.flatMap(c=>[point(c.from),point(c.control),point(c.to)]));
+  const xs=all.map(p=>p.x),ys=all.map(p=>p.y),x=Math.min(...xs),y=Math.min(...ys);
+  return {key:`refined-lake-${l.lakeId}`,cells:[],path:shorePath(body,point),loops,mouths:[],bounds:{x,y,width:Math.max(...xs)-x,height:Math.max(...ys)-y}};
+ })];
+}
+export function RefinedLakeWater(p:Pick<Props,'state'|'mode'|'offset'>&{shapes:readonly LakeShape[];cells:NaturalLakeCell[];seed:number}){
+ const prefix=useId().replace(/:/g,'_');
+ return <LakeWater shapes={refinementLakeShapes(p.state,p.mode,p.offset,p.shapes).map(l=>({...l,key:`${prefix}-${l.key}`}))} cells={p.cells} radius={28} seed={p.seed}/>;
+}
+/** A view of accepted physical4 only. Preview candidates never enter map or PNG. */
+export function refinementVisiblePaths(source:Source,accepted:GeometryRefinement){
+ return [...accepted.riverPlan.paths,...geometryMixedRiverPaths(source,accepted)];
+}
+export function RefinedGeographyArtwork(p:Props){
+ const id=useId().replace(/:/g,'_'),refinement=p.state.geometryRefinement!;
+ const factor=Math.sqrt(3)*28/6,origin=p.state.grid.origin;
+ const point=(v:WorldPoint)=>svgPoint(v,origin,p.offset);
+ const points=(vs:readonly WorldPoint[])=>vs.map(point).map(v=>`${v.x},${v.y}`).join(' ');
+ const shore=(body:RefinementShore)=>shorePath(body,point);
+ const widths=new Map(refinement.riverPlan.water.capsules.map(c=>[pair(c.riverId,c.sourceEdgeKey),c.radius*2*factor]));
+ const retained=new Set(refinement.roads.roads.map(r=>pair(r.roadId,r.sourceRoadSegmentKey)));
+ const outsideRoads=p.roads.filter(r=>!retained.has(pair(r.roadId,r.segmentKey)));
+ const retainedRapids=new Set(refinement.riverPlan.source.segments.map(s=>pair(s.riverId,s.edgeKey)));
+ const retainedPaths=new Set(refinement.riverPlan.paths.map(path=>pair(path.riverId,path.sourceEdgeKey)));
+ const visiblePaths=refinementVisiblePaths(p.source,refinement).filter(path=>retainedPaths.has(pair(path.riverId,path.sourceEdgeKey))||!p.hiddenRiverEdgeKeys?.has(path.sourceEdgeKey));
+ const locations=[...visiblePaths.flatMap(path=>path.points.map(point)),...p.roads.flatMap(r=>[{x:r.x1,y:r.y1},{x:r.x2,y:r.y2}])];
+ if(!locations.length)locations.push(p.offset);
+ const xs=locations.map(v=>v.x),ys=locations.map(v=>v.y),padding=10*factor;
+ const bounds={x:Math.min(...xs)-padding,y:Math.min(...ys)-padding,width:Math.max(...xs)-Math.min(...xs)+padding*2,height:Math.max(...ys)-Math.min(...ys)+padding*2};
+ const retainedWaterfalls=new Set(refinement.riverPlan.waterfalls.map(w=>w.sourceNodeKey));
+ return <g data-refined-geography pointerEvents="none">
+  <defs><mask id={id} maskUnits="userSpaceOnUse" {...bounds} style={{maskType:'luminance'}}>
+   <rect {...bounds} fill="white"/>
+   {refinement.riverPlan.lakes.map(l=><path key={l.lakeId} d={shore(l.modes[p.mode])} fill="black" fillRule="evenodd"/>)}
+  </mask><mask id={`${id}-roads`} maskUnits="userSpaceOnUse" {...bounds} style={{maskType:'luminance'}}>
+   <rect {...bounds} fill="white"/>
+   {refinement.roads.masks.map(m=><path key={m.poiId} d={shore(m.body)} fill="black" fillRule="evenodd"/>)}
+  </mask></defs>
+  <g className="rivers-layer" mask={`url(#${id})`}>
+   {visiblePaths.map(path=>{
+    const width=widths.get(pair(path.riverId,path.sourceEdgeKey))??p.widthByFullness.get(path.fullness)!;
+    const internal=refinement.riverPlan.water.capsules.some(c=>c.riverId===path.riverId&&c.sourceEdgeKey===path.sourceEdgeKey)&&!refinement.riverPlan.paintWater.capsules.some(c=>c.riverId===path.riverId&&c.sourceEdgeKey===path.sourceEdgeKey);
+    return internal?null:<polyline key={pair(path.riverId,path.sourceEdgeKey)} data-refined-river={path.riverId} data-source-edge={path.sourceEdgeKey} points={points(path.points)} className="river-polyline" strokeWidth={width} fill="none"/>;
+   })}
+  </g>
+  <g className="roads-layer" mask={`url(#${id}-roads)`}>
+   {outsideRoads.map(r=>{const plan=fineRoadPresentation(r,p.crossings,p.rivers);return <g key={r.key} data-fine-road={r.key}>
+    {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>)}
+    {plan.rails.map(rail=><polyline key={rail.key} points={rail.points} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
+   </g>;})}
+   {refinement.roads.roads.map(road=>{let distance=0;return <g key={pair(road.roadId,road.sourceRoadSegmentKey)} data-refined-road={road.roadId}>
+    {road.paint.map((part,i)=>{const dashOffset=-distance;distance+=Math.hypot(part.to.x-part.from.x,part.to.y-part.from.y)*factor;if(!part.visible)return null;const a=point(part.from),b=point(part.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} strokeDashoffset={dashOffset} opacity={part.waterKind==='ford'?.42:1} stroke="#8b6a3f" strokeWidth={road.kind==='trail'?1.5/6:3/6} strokeDasharray={road.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>;})}
+   </g>;})}
+   {refinement.roads.crossings.map(c=><g key={c.key} data-fine-crossing={c.key} data-crossing-kind={c.kind}>
+    <title>{c.kind}</title>
+    {c.kind==='bridge'&&[-1,1].map(side=><polyline key={side} points={c.bankPath.map((v,i,vs)=>{const a=vs[Math.max(0,i-1)],b=vs[Math.min(vs.length-1,i+1)],length=Math.hypot(b.x-a.x,b.y-a.y)||1,q=point(v);return `${q.x-(b.y-a.y)/length*side*4/6},${q.y+(b.x-a.x)/length*side*4/6}`;}).join(' ')} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
+   </g>)}
+  </g>
+  {p.rapids.filter(m=>!retainedRapids.has(pair(Number(m.key.match(/^river-rapid-(\d+)-/)?.[1]),m.edgeKey??''))).map(m=><line key={m.key} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} className="river-rapid-mark" style={{strokeWidth:.2}}/>)}
+  {refinement.riverPlan.rapids.map(m=>{const q=point(m.point),dx=-m.tangent.y*.8,dy=m.tangent.x*.8;return <line key={m.sourceRef} x1={q.x-dx} y1={q.y-dy} x2={q.x+dx} y2={q.y+dy} className="river-rapid-mark" style={{strokeWidth:.2}}/>;})}
+  {p.waterfalls.filter(w=>![...retainedWaterfalls].some(key=>w.key===`river-waterfall-${key}`)).map(w=><image key={w.key} href="/waterfall-color.svg" x={w.x-1.3} y={w.y-1.3} width={2.6} height={2.6}/>)}
+  {refinement.riverPlan.waterfalls.map(w=>{const q=point(w.point);return <image key={w.sourceRef} transform={p.rotated?`rotate(-90 ${q.x} ${q.y})`:undefined} href="/waterfall-color.svg" x={q.x-1.3} y={q.y-1.3} width={2.6} height={2.6}/>;})}
+ </g>;
+}

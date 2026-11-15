@@ -6,12 +6,13 @@ import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import os from 'node:os';
 import {createGenerationHarness} from '../helpers/generation-harness.mjs';
+import {checkGeometryRefinement} from './geometry-refinement-evidence.mjs';
 import {prepareFineEvidenceFixture,fineEvidenceSamples,checkFineCamera,checkFineObjectsAndPng,checkFineModeCandidates} from './one-mile-evidence.mjs';
 const root=new URL('../../',import.meta.url),out=new URL('../../reports/ONE-MILE1-UI/',import.meta.url);
 await fs.mkdir(out,{recursive:true});
 const h=createGenerationHarness(42);h.render();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
 await h.render().handleImportJson({target:{files:[{text:await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url),'utf8')}],value:'x'}});
-const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.render().applyOneMilePreview(prepared),true);prepareFineEvidenceFixture(h);const fixture=structuredClone(h.render().createSaveData());
+const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.render().applyOneMilePreview(prepared),true);const geometryFixture=structuredClone(h.render().createSaveData());prepareFineEvidenceFixture(h);const fixture=structuredClone(h.render().createSaveData());
 // P02: explicit legal F2 ford variant of the same existing world, no geometry edit.
 fixture.map.crossings.find(c=>c.riverId===3).kind='ford';
 delete fixture.map.physicalGrid.selectedCell;delete fixture.map.physicalGrid.selectedWorldPoint;
@@ -109,6 +110,7 @@ try{
  if(afterGen.map.regions.length>beforeGen.map.regions.length){assert.equal(afterGen.map.regions.length,beforeGen.map.regions.length+1,'double click gives one ordinary Classic unit');assert.equal(`${afterGen.map.physicalGrid.selectedCell.q},${afterGen.map.physicalGrid.selectedCell.r}`,target);await button('Отменить').click();assert.deepEqual(await snap(),beforeGen,'one Undo restores the whole ordinary unit');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'accepted_and_undo_exact'});}
  else {assert.deepEqual(afterGen,beforeGen,'failed ordinary generation is atomic');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'bounded_refusal_no_success_claim'});}
  await checkFineModeCandidates({page,snap,shot,button,manifest});
+ await checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture:geometryFixture});
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated
