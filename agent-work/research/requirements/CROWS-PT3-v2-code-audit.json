@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "game_id": "CROWS",
+  "audit_kind": "bounded_read_only_static_implementation_inventory",
+  "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "runtime_verified": false,
+  "scope": "Regional L1 substrate and availability of source-specific operations; no product changes, browser execution, automations or GitHub mutations.",
+  "files": [
+    {
+      "path": "src/App.tsx",
+      "blob_sha": "39acbcd2252333a63498fd9437ea113b7b5f54d3",
+      "review": "Selected full state/save/import and relevant control/callback/render surfaces; not all generator algorithms"
+    },
+    {
+      "path": "src/detailModel.ts",
+      "blob_sha": "bc36183b34d8f1f4e06a01b2c28911cf377f5fd4",
+      "review": "Physical-grid type/parser and state persistence"
+    },
+    {
+      "path": "src/manualPois.ts",
+      "blob_sha": "41a7d1b6b24bbdab42971deecb404f43efa9d40c",
+      "review": "POI names, identity and relocation complete"
+    },
+    {
+      "path": "src/saveValidation.ts",
+      "blob_sha": "71e6f79924d60d6180ab6ebd3c3478f1fe30b4a5",
+      "review": "Save structure and notes/biome/road fields"
+    },
+    {
+      "path": "src/modes/persistence.ts",
+      "blob_sha": "7129765b98cf5a40e6632c5367b1bb76216b1104",
+      "review": "Kingdom/obstacle persistence"
+    },
+    {
+      "path": "src/modes/pointsOfInterest.ts",
+      "blob_sha": "0d125cc1fef244c980d502d15c32d0e6e60d97f4",
+      "review": "Fixed Mythic POI semantics; not Crows"
+    },
+    {
+      "path": "docs/poi-editor-data.md",
+      "blob_sha": "cfb4703584f05e4164f7a690b6de07cfa2422565",
+      "review": "Historical product specification, not independent runtime evidence"
+    }
+  ],
+  "findings": [
+    {
+      "id": "CROWS-CODE-V2-SCALE5",
+      "operation": "Create/save a real five-mile hex profile used by map geometry",
+      "code_status": "absent_in_exposed_supported_profile",
+      "suggested_owner_status": "Не реализовано для 5-мильного профиля; не путать с новым 1/6-мильным интерфейсом",
+      "locators": [
+        "src/detailModel.ts:24-29",
+        "src/detailModel.ts:90-115",
+        "src/App.tsx:16969",
+        "src/App.tsx:16330-16345"
+      ],
+      "observed": "physicalGrid.source.stepMiles is literal6; parser rejects other stepMiles and supports physical viewStep1/6; UI selector only1mile/6mile. ui.mapScale is screen zoom. Current PR503 HAS physical-grid semantics, so old1962 statement 'only zoom' is obsolete.",
+      "gap": "Crows5mile profile/geometry convention not supported by active parser/control; across convention source still separate question.",
+      "manual_substitute": "A note saying5miles is possible but does not change measured physical grid.",
+      "runtime_followup": "Open hex-size selector, inspect JSON physicalGrid.source, try deliberate5mile profile through supported UI; do not equate JSON unknown key with support."
+    },
+    {
+      "id": "CROWS-CODE-V2-MODES",
+      "operation": "Choose existing general generation mode and source profiles",
+      "code_status": "classic_and_mythic_plus_knave",
+      "suggested_owner_status": "Режима Crows нет; необходимость отдельного режима НЕ следует автоматически из книги",
+      "locators": [
+        "src/App.tsx:16871-16876",
+        "src/App.tsx:14440-14459",
+        "src/manualPois.ts:11"
+      ],
+      "observed": "Mode selector lists classic and Mythic Bastionland; Classic optional Knave2 checkbox. No universal open-ended game-profile selector.",
+      "gap": "Do not invent requirement for another mode merely because game namedCrows."
+    },
+    {
+      "id": "CROWS-CODE-V2-HABITAT",
+      "operation": "Assign/edit a hex environment using existing biome types",
+      "code_status": "manual_callback_present",
+      "suggested_owner_status": "Код общего ручного редактирования есть; фактический сквозной проход требует runtime",
+      "locators": [
+        "src/App.tsx:190-214",
+        "src/App.tsx:14729-14749",
+        "src/App.tsx:15229",
+        "src/saveValidation.ts:135-139"
+      ],
+      "observed": "BIOME_ID includes plains/forest/mountain/etc; per-hex sparse override callback validates existing dry land/knownbiome, saves layer and commits manual map.",
+      "gap": "No source-native full Crows habitat taxonomy/table allocation proven; do not infer encounter table resolution from biome display.",
+      "runtime_followup": "Createhex, change plains→mountain, save/load; check POI stays and Undo restores."
+    },
+    {
+      "id": "CROWS-CODE-V2-POI",
+      "operation": "Place a chosen location/village on an existing land hex",
+      "code_status": "manual_callback_present",
+      "suggested_owner_status": "Ручная общая постановка POI есть; подтвердить UI/roundtrip на выбранном примере",
+      "locators": [
+        "src/App.tsx:153-186",
+        "src/App.tsx:8824",
+        "src/App.tsx:14727-14738",
+        "src/App.tsx:14751-14765",
+        "src/App.tsx:17102-17109"
+      ],
+      "observed": "Editable types include city/town/village plus ruin,graveyard,fort,mill,sawmill,mine,tavern,tower,holy_place etc. On chosen landhex callback adds or edits POI. Central-point types edited separately.",
+      "gap": "No automatic Cornath preset, wholebook content library or Crows-defined explicit automatic distribution established. Such automation is analyst proposal, not necessarily source obligation."
+    },
+    {
+      "id": "CROWS-CODE-V2-NAMES",
+      "operation": "Give village/location an authored name",
+      "code_status": "manual_implementation_present",
+      "suggested_owner_status": "Код поддерживает авторские имена RU/EN; проверить фактический ввод",
+      "locators": [
+        "src/manualPois.ts:40-63",
+        "src/App.tsx:15527",
+        "src/App.tsx:15217",
+        "src/App.tsx:15315"
+      ],
+      "observed": "Sparse editorNames pairs are validated for live unique POI addresses, nonempty bothlanguages, trimmed≤80UTF16; save/import retained.",
+      "gap": "Requires namingbothlanguages, not arbitraryone-language structuredbookcontent; no sourceimposedtranslationrule."
+    },
+    {
+      "id": "CROWS-CODE-V2-NOTES",
+      "operation": "Record all chosen institution names/levels, NPC relationship, shelter capacity, fixed site information in GM notes",
+      "code_status": "manual_implementation_present",
+      "suggested_owner_status": "Ручное описание общими заметками возможно; НЕ объявлять всё отсутствующим из-за отсутствия пресета",
+      "locators": [
+        "src/App.tsx:13643-13665",
+        "src/App.tsx:17145-17157",
+        "src/App.tsx:15220",
+        "src/App.tsx:15315",
+        "src/saveValidation.ts:128-134"
+      ],
+      "observed": "Per-existing-hex text notes accept arbitrary text; callback updates document, grouped Undo/Redo; save/export/import carries note string.",
+      "gap": "Notes are coordinate-scoped rather than POI-scoped; do not move with POI. No machine enforcement of6institutions,level1,capacity1Medium or villagecycle. Raw source facts can nevertheless be stored manually without new development.",
+      "runtime_followup": "Createvillage+note listingrequired6institutions,NPC and shelter; roundtrip+undo; compare text. Distinguish manual representability from automatic compliance."
+    },
+    {
+      "id": "CROWS-CODE-V2-VILLAGE-STRUCTURE",
+      "operation": "Automatically initialize required six institutions, levels, home-base role and village network",
+      "code_status": "not_in_saved_document_or_supported_mutations",
+      "suggested_owner_status": "Автоматическая структурированная функция не реализована; ручной способ есть",
+      "locators": [
+        "src/App.tsx:216-260",
+        "src/App.tsx:486-538",
+        "src/App.tsx:1978-2011",
+        "src/App.tsx:13576",
+        "src/App.tsx:14751-14765",
+        "src/App.tsx:15206-15240",
+        "src/App.tsx:15314-15323"
+      ],
+      "observed": "Region/POI fields are kind,coordinates and names/tags; document/map serializers and imports explicitly enumerate persisted layers. No village/institution/homebase records or initializing operation; visible settlement action onlysetsPOIkind.",
+      "gap": "If ownerchooses automation, need generic base/placeproperties model or newprofile. Do not make structuredcard mandatory from sourcealone."
+    },
+    {
+      "id": "CROWS-CODE-V2-BEACON-ZONE",
+      "operation": "Show/protect all hexes radiusr from a beacon, combine sources, recompute on level/prosperity",
+      "code_status": "not_in_saved_document_or_supported_render_layers",
+      "suggested_owner_status": "Геометрическая зона защиты не реализована; возможна только ручная заметка",
+      "locators": [
+        "src/App.tsx:486-538",
+        "src/App.tsx:1978-2011",
+        "src/App.tsx:13576",
+        "src/App.tsx:15206-15240",
+        "src/detailModel.ts:24-29",
+        "src/modes/persistence.ts:7-27"
+      ],
+      "observed": "Saved/domain layers include terrain,POIs,notes,tags,kingdoms/obstacles,roads/rivers andphysicalGridfootprints; no sourcedenvironmentzone/radius. Kingdom area is fixed Mythic boundary, not arbitrary radiussourcedzone; footprint is POIextent, not effectcoverage. No render/control operation found across boundedmode/editor/state surfaces.",
+      "gap": "Need generic sourced hexcoverage if chosen. Colouring/relabeling biomes would change terrain, not correctly represent protective overlay. Static boundary supports absence claim for dedicated automatic zone, not lack of manualdescription."
+    },
+    {
+      "id": "CROWS-CODE-V2-SHELTER",
+      "operation": "Record enclosed shelter and capacity/protectionconditions of a location",
+      "code_status": "notes_manual_only",
+      "suggested_owner_status": "Ручная запись реализуема; структурированная проверка защиты/вместимости не реализована",
+      "locators": [
+        "src/App.tsx:13643-13665",
+        "src/App.tsx:486-538",
+        "src/App.tsx:1978-2011"
+      ],
+      "observed": "Existingnote can say stoneenclosed/1Medium. No typed constructionmaterial/enclosure/capacity/protectionfield in document state.",
+      "gap": "Do not turn charactermechanicalprotection into terrainbiome orwholehexbeaconimmunity. No automatic partycapacity/resistance checks proven."
+    },
+    {
+      "id": "CROWS-CODE-V2-RELOCATION",
+      "operation": "Move an existing noncentral chosen location while retaining its authored name/type/tags",
+      "code_status": "manual_implementation_present_with_constraints",
+      "suggested_owner_status": "Частично для произвольного переноса готовых мест: конкретные ограничения важны",
+      "locators": [
+        "src/manualPois.ts:65-125",
+        "src/App.tsx:15367-15373",
+        "src/App.tsx:15634-15644"
+      ],
+      "observed": "Moves permitted live noncentralPOI to unoccupied compatibleland/waterhex; keepsauthoredname/type/tags. CentralPOI immovable; roadtouchingorigincausesexplicitpathdependency; notesstayatcoordinates.",
+      "gap": "Cannot assume full relocatable module/villagepack. To move note-based Crowsdetails user mustcopytext separately. UI/rng/roundtrip notexecutedhere.",
+      "runtime_followup": "Move independentnoncentralPOI with customname; note remains sourcehex; centralvillage move blocked by design."
+    },
+    {
+      "id": "CROWS-CODE-V2-SECRECY",
+      "operation": "Maintain known/unknown POI and private details versus player export",
+      "code_status": "partial_metadata_but_no_general_audience_view",
+      "suggested_owner_status": "Есть GMnotes и Knave-метаданные обнаружения; отдельная карта игроков/раскрытие Crows не подтверждены",
+      "locators": [
+        "src/App.tsx:15620-15630",
+        "src/App.tsx:1677-1703",
+        "src/App.tsx:17145-17157",
+        "src/App.tsx:15210-15240"
+      ],
+      "observed": "Knave discoverylabels passage/exploration/interaction+clue exist whenKnaveprofileenabled. PNG exporter clonesmapSVG andremovesdata-editor-only; notes liveoutsideSVG. No generalaudienceknownpositions/hiddenPOIstate in map/document fields reviewed.",
+      "gap": "Do not claim private GMnotes are exported in PNG; conversely settingKnaveSecretdoesnotestablish a separate playerknownPOI filter. Parent runtime shouldtestvisiblemarkerbehavior before strong absenceofprivacy claim.",
+      "layer_boundary": "Knowledge/reveal of gameparty is L2; secretpreparedinformation in GMnotes may satisfy L1manual need."
+    },
+    {
+      "id": "CROWS-CODE-V2-READYMAP",
+      "operation": "Import Cornath image as geographic underlay or load a predefined Crowsregion template",
+      "code_status": "not_exposed_by_current_import_path",
+      "suggested_owner_status": "Подложка-картинка/готовый шаблон Cornath не реализованы; JSON импорт есть",
+      "locators": [
+        "src/App.tsx:1787-1793",
+        "src/App.tsx:15280-15327",
+        "src/App.tsx:16995-16997",
+        "src/App.tsx:486-538"
+      ],
+      "observed": "Soleuserfileinputacceptsapplication/json,.json andreadAsText→JSONparse→savevalidation. No rasterunderlay/templateidentity/layer in document or importer; imagefilehandling elsewhereis PNG export-inlining, notimport.",
+      "gap": "User canmanuallycomposeanalogousgeography/markersusinggeneraleditor or importalreadyvalidappJSON; not native Cornath rasterregistration. Do not infer randomworldgeneration rulefromreadyCornathmap."
+    },
+    {
+      "id": "CROWS-CODE-V2-SAVE",
+      "operation": "Save/load existing generic map, POIs, names, notes, biomes and supported physicalgrid",
+      "code_status": "explicit_document_serialization_present",
+      "suggested_owner_status": "Общий механизм есть; Crows-сценарий требует сквозного подтверждения на примере",
+      "locators": [
+        "src/App.tsx:13576-13629",
+        "src/App.tsx:15206-15240",
+        "src/App.tsx:15280-15327",
+        "src/saveValidation.ts:128-139"
+      ],
+      "observed": "Exactdocumentfieldenumeration andvalidatedatomicimport; underlyingnotes/biomes/POIsstatecaptured. UnsupportedCrowsobjects added asunknownrootfields would notbecome supportedpersistentdomainrecords.",
+      "gap": "No executedruntime/DOM/browserpass by thisaudit; cannot label entireprofilefull because serializers exist."
+    }
+  ],
+  "not_performed": [
+    "No browser/DOM execution",
+    "No source-rule extraction (other agents own it)",
+    "No tests, CI or app build",
+    "No GitHub/file mutations outside local read-only copies and report",
+    "No common-rules/bindings/backlog edits"
+  ],
+  "required_owner_report_cautions": [
+    "Classify concrete requestedfunction, not game-namepresence.",
+    "Manual note workflow may satisfy sourceinstruction to record villagefacts without automation; distinguish chosen productenhancement.",
+    "Current mergedmain has physical1/6grid, so do notrepeatobsolete1962onlyzoomfinding.",
+    "No5mile profile control/parser yet; note≠physicalscale.",
+    "Use source-specific UI scenario/runtime to promote staticpossible manual functions to verified full/partial."
+  ]
+}
