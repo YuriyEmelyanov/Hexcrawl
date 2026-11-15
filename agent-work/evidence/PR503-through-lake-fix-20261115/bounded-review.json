@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "head_sha": "953d15699134b00a50da46066a86143c28fe840b",
+  "tree_sha": "1f7815ef80c38ade1f3f7e3462371bd68961477d",
+  "reviewer": "through_lake_review",
+  "independent": true,
+  "scope": "All changed route/shore/plan parser code, saved fixture, related test and browser test diff; bounded regression review of changed scope",
+  "verdict": "no_confirmed_open_P1_P2_in_inspected_scope",
+  "closed_findings": [
+    {
+      "severity": "P2",
+      "issue": "Omitting all three through-lake mouths and external paint, then updating fingerprint could make the external river invisible.",
+      "fix": "Strict paint-water correspondence to original lake topology; negative case rejects corrupted document."
+    }
+  ],
+  "evidence": [
+    "Independent full assertHexcrawlSaveData corruption probe rejects paint-water omission",
+    "Removing lake1 and repainting internal edges rejected by stale_lake_contours",
+    "Shared integer ports and blocked unrelated source/interior ports inspected",
+    "Native6 raster comparison allows only maxDelta3 and changedFraction0.001, dimension mismatch fails"
+  ],
+  "limitations": [
+    "Reviewer did not run full check/browser; exact final CI must pass before release-ready",
+    "Finite saved map does not prove all possible lake junctions"
+  ],
+  "test_governance": {
+    "node_added": 1,
+    "browser_added": 1,
+    "browser_modified": 1,
+    "reason": "Saved owner map adds previously uncovered through-lake topology; runtime scenario protects actual UI/save/history/PNG. Existing native6 check updated for independently measured antialiasing noise."
+  },
+  "release_authorized": false
+}
