@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T2001-programmer-PR503-classic-mouth",
+  "task_id": "HX-BL-051",
+  "role": "programmer",
+  "status": "confirmed_defect_diagnosed_fix_pending",
+  "head_sha": "afebeb085e0bc0059e317ff6a64d02a9f8e46393",
+  "pr": 503,
+  "completed_at": "2026-11-15T17:06:26.199Z",
+  "role_selection_reason": "New concrete classic-map failure supersedes historical ready_for_owner_review. Prior owner explicitly completed and released generation6; generation7 acquired with Contents API CAS.",
+  "evidence_ref": "agent-work/evidence/PR503-classic-seed42-20261115",
+  "diagnosis_ref": "agent-work/evidence/PR503-classic-seed42-20261115/diagnosis.json",
+  "source_fixture_ref": "agent-work/evidence/PR503-classic-seed42-20261115/classic-six-regions-6mi.json",
+  "observed_failure": {
+    "seed": 42,
+    "mode": "classic",
+    "regions": 6,
+    "hexes": 52,
+    "rivers": 4,
+    "roads": 5,
+    "code": "geometry_conflict",
+    "stage": "river_mouth",
+    "refs": [
+      "72.746,-70",
+      "nonterminal_lake_incidence"
+    ],
+    "source_unchanged": true
+  },
+  "root_cause": "prepareRefinementMouths assumes lake incidence is degree1; the actual coarse river passes through lake1 via three internalLakeEdges, so its inlet/outlet node has degree2. Merely accepting degree2 still fails: its existing allocated port is outside tiles/emoji/color lake contours.",
+  "rejected_experiment": "Temporary degree2/internal-edge allowance plus retained shared port check reached internal_port_outside_body. Experiment reverted; no product-source diff retained and no fix claimed.",
+  "next_role": "programmer",
+  "next_step": "Support a shared integer port for a verified river-through-lake incidence: allocate within the intersection of all three lake bodies, reroute both adjacent paths as one dependency closure preserving shared identity and source topology, keep internal lake paint masked; update strict persisted-plan correspondence. Verify the saved seed42 fixture via real App preview/apply, unchanged document on failures, save/load, Undo/Redo and map/PNG in working CI. Then fresh independent review of final SHA.",
+  "remaining_acceptance": [
+    "Implementation of river-through-lake port/path closure",
+    "Same six-region classic-map real browser acceptance in 6mi and 1mi, save/load UndoRedo PNG",
+    "Proportionate related Node checks; full coherent package check and independent review after fix",
+    "Separate owner permission for exact publication package"
+  ],
+  "forecast": {
+    "remaining_active_hours": [
+      2,
+      5
+    ],
+    "remaining_role_runs": [
+      2,
+      5
+    ],
+    "confidence": "low",
+    "basis": "Cause is now reproduced; affected allocator, route assembly and stored-plan validator all need consistent changes. Not a one-line guard removal.",
+    "external_waits": "Owner publication decision only after verified package; no decision needed for fix",
+    "parent_history_reset": false
+  },
+  "product_source_changed": false,
+  "release_ready": false,
+  "published": false,
+  "release_authorized": false,
+  "score_model_version": "1.2",
+  "score_change": 0,
+  "test_change_summary": {
+    "base_sha": "afebeb085e0bc0059e317ff6a64d02a9f8e46393",
+    "head_sha": "afebeb085e0bc0059e317ff6a64d02a9f8e46393",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "temporary diagnostic, not permanent tests",
+    "scenario": "exact owner-preview saved map seed42",
+    "reuse_or_new_reason": "Existing accepted fixture exercises terminal lake; this probe isolates previously uncovered through-lake topology. Add permanent regression during actual fix rather than cementing current failure.",
+    "source": "git diff --stat empty after reverting experiment",
+    "executed": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "expected_failure_reproduced": true
+  },
+  "no_writing_processes_running": true,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-15T17:02:06.932Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-15T17:06:26.199Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false
+    },
+    "errors": []
+  },
+  "limitation": "Implementation remains pending; prior green CI and bounded review did not cover this owner-generated map. Historical readiness/evidence retained but invalidated for publication by this finding."
+}
