@@ -7,6 +7,7 @@ import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {detailAuthoredState} from '../src/detailModel.ts';
 import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
 import {prepareGeometryPlan} from '../src/geometryPlan.ts';
+import {projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
 import {reconcileDetailGeography} from '../src/detailGeography.ts';
 import {synchronizeToponyms} from '../src/toponyms.ts';
 const serial=v=>JSON.parse(JSON.stringify(v));
@@ -867,6 +868,20 @@ test('G208-AUTO actual ordinary river edit atomically updates physical4, preserv
  try{await load(h,incoming);}finally{restorePrepare();}
  const reopened=stable(h.render());assert.deepEqual(reopened,incoming,'actual public16 loader retains global owners and exact scoped choices');assert.equal(h.render().undoHistory.length,beforeCount+1);assertUndoRedo(h,beforeScoped,reopened);
  assert.equal(reopened.map.physicalGrid.poiIdentities.byLegacyRef['poi:3:40,40'],outside.poiId);assert.deepEqual(reopened.map.physicalGrid.geometryRefinement.riverPlan.paths,after.map.physicalGrid.geometryRefinement.riverPlan.paths);assert.deepEqual(reopened.generation,after.generation);
+ // Only the ordinary remove command may drop a retained river reference.
+ const removeMap=h.render().captureDocument().map,missingRiver={...removeMap,rivers:removeMap.rivers.filter(r=>r.id!==2),crossings:removeMap.crossings.filter(c=>c.riverId!==2)};
+ assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingRiver),removeMap.physicalGrid.geometryRefinement).code,'missing_scope_reference','an ungranted missing river remains a conflict');
+ assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingRiver),removeMap.physicalGrid.geometryRefinement,new Set([1])).code,'missing_scope_reference','permission for another river cannot hide this loss');
+ const missingCrossing={...removeMap,crossings:removeMap.crossings.filter(c=>c.riverId!==2)};
+ assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingCrossing),removeMap.physicalGrid.geometryRefinement,new Set([2])).code,'missing_scope_reference','crossing is still required while its river survives');
+ const beforeRemove=stable(h.render()),removeStacks=serial([h.render().undoHistory,h.render().redoHistory]),removeCount=h.render().undoHistory.length;
+ assert.equal(h.render().editRiverDocument({type:'remove',riverId:2,includeArms:false}),false,'ordinary removal confirmation remains required');assert.deepEqual(stable(h.render()),beforeRemove);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),removeStacks);
+ assert.equal(h.render().editRiverDocument({type:'remove',riverId:2,includeArms:false},{confirmed:true}),true,h.render().editError??'valid scoped river removal');
+ const removed=stable(h.render());assert.equal(h.render().undoHistory.length,removeCount+1);assert.equal(removed.map.rivers.some(r=>r.id===2),false);assert.equal(removed.map.crossings.some(c=>c.riverId===2),false);
+ assert.equal(removed.map.physicalGrid.geometryRefinement.riverPlan.paths.some(p=>p.riverId===2),false);assert.equal(removed.map.physicalGrid.geometryRefinement.roads.crossings.some(c=>c.riverId===2),false);
+ assert.deepEqual(geometryChoicePaths(removed,1),geometryChoicePaths(beforeRemove,1));assert.deepEqual(removed.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===1),beforeRemove.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===1));
+ assert.deepEqual(removed.map.physicalGrid.poiIdentities,beforeRemove.map.physicalGrid.poiIdentities);assert.deepEqual(removed.map.physicalGrid.poiFootprints,beforeRemove.map.physicalGrid.poiFootprints);assert.deepEqual(removed.map.physicalGrid.fineCellEdits,beforeRemove.map.physicalGrid.fineCellEdits);assert.deepEqual(removed.generation,beforeRemove.generation);assert.deepEqual(removed.counters,beforeRemove.counters);
+ assertUndoRedo(h,beforeRemove,removed);await load(h,removed);assert.deepEqual(stable(h.render()),removed,'removed scoped16 reloads exact choices');await load(h,reopened);assert.deepEqual(stable(h.render()),reopened,'restore accepted source fixture for remaining lifecycle');
  h.render().setSelectedHex(cell);const beforeMetadata=stable(h.render()),metadataCount=h.render().undoHistory.length;h.render().setSelectedHexBiomeOverride('open_hills');const metadata=stable(h.render());assert.equal(metadata.map.biomeOverrideByHexKey[key],'open_hills');assert.equal(h.render().undoHistory.length,metadataCount+1);assert.deepEqual(metadata.map.physicalGrid.geometryRefinement.riverPlan.paths,reopened.map.physicalGrid.geometryRefinement.riverPlan.paths);assert.deepEqual(metadata.map.physicalGrid.fineCellEdits,global.fineCellEdits);assertUndoRedo(h,beforeMetadata,metadata);
  // G208: a source edit in the retained scope must replan that scope, not
  // compose changed authored footprints against the stale accepted layer.

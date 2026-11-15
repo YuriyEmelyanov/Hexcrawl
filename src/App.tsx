@@ -1205,7 +1205,7 @@ function scopedGeometryBoundary(map:OneMileDocumentMap,state:Detail1State){
  // This outward envelope changes no road/rail width or physical calibration.
  return prepareGeometryRefinementBoundary({...refinementSourceInput(map,state,refinement.riverPlan),widths,lakeInputs:geometryLakeInputs(map,state.grid.origin),roadPaddingMiles:detailSourcePixelToWorld({x:14,y:0}).x},refinement);
 }
-function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map()):MapSnapshot{
+function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map(),permittedRiverRemovals:ReadonlySet<number>=new Set()):MapSnapshot{
  const layer=before.physicalGrid;
  if(!layer?.geometryRefinement)return candidate;
  const accepted=candidate.physicalGrid??layer;
@@ -1220,7 +1220,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
  if(accepted.globalAuthoredState||candidate.regions.some(r=>!priorRegions.has(r.id))){
   // Project changed authored input before composing: the old layer is stale
   // until a new complete plan has passed its existing dependency checks.
-  const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement);
+  const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement,permittedRiverRemovals);
   if(projected.status==='error')throw Error(`GEO2 scoped_closure_pending: ${projected.code}`);
   const retainedMap={...candidate,...projected.input.map,physicalGrid:{...projected.input.map.physicalGrid,version:4 as const,geometryRefinement:layer.geometryRefinement}} as MapSnapshot;
   const result=prepareGeometryPlan({...geometryPlanInput(retainedMap),authoredState:projected.input.map.physicalGrid});
@@ -1499,7 +1499,8 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
   const removedRiverIds=map.rivers.filter(r=>!result.rivers.some(n=>n.id===r.id)).map(r=>r.id);
   const losses={crossings:map.crossings.filter(c=>!crossings.some(n=>n.key===c.key)).length,rapids:map.riverFeatures.rapids.length-result.riverFeatures.rapids.length,waterfalls:map.riverFeatures.waterfalls.length-result.riverFeatures.waterfalls.length,removedRiverIds};
   const changed=result.rivers!==map.rivers||crossings!==map.crossings||riverFeatures!==map.riverFeatures||result.nextRiverId!==map.nextRiverId;
-  return {map:changed?checkedRiverMap(prepareSourceTransition(map,{...map,...result,crossings,riverFeatures})):map,losses,unresolvedCrossings,unresolvedFeatures,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
+  const permittedRiverRemovals=edit.type==='remove'?new Set([edit.riverId,...map.rivers.filter(r=>edit.includeArms&&r.deltaParentRiverId===edit.riverId).map(r=>r.id)]):new Set<number>();
+  return {map:changed?checkedRiverMap(prepareSourceTransition(map,{...map,...result,crossings,riverFeatures},new Map(),permittedRiverRemovals)):map,losses,unresolvedCrossings,unresolvedFeatures,permittedRiverRemovals,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
 }
 
 type WaterEditOptions=SeaChoices&{acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
@@ -13761,7 +13762,7 @@ export function App() {
     ? language==='ru' ? (error.capacity==='owner'?'На объекте уже 64 тега. Карта не изменена.':'В этом тексте уже 8 языков. Карта не изменена.')
       : (error.capacity==='owner'?'This object already has 64 tags. Your map is unchanged.':'This text already has 8 languages. Your map is unchanged.')
     : language==='ru'?'Не удалось изменить тег. Карта не изменена.':'Could not change tag. Your map is unchanged.';
-  const commitManualMap = (map: MapSnapshot, reconcileNames = true) => {
+  const commitManualMap = (map: MapSnapshot, reconcileNames = true,permittedRiverRemovals:ReadonlySet<number>=new Set()) => {
     try {
       // Preserve a settlement label before the type ceases to enumerate it.
       const nextEntities=new Set(getToponymEntities(map.regions,map.rivers,map.hexTerrainByKey).map(e=>e.key));
@@ -13773,7 +13774,7 @@ export function App() {
       if(map.knave){const losses=knaveLosses(map.knave,knaveMapContext(map));
         if(losses.length){if(!window.confirm(language==='ru'?`Изменение удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`This edit removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
           const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
-      map=prepareSourceTransition(captureMap(),map);
+      map=prepareSourceTransition(captureMap(),map,new Map(),permittedRiverRemovals);
       checkedRiverMap(map);
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
         getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
@@ -13801,7 +13802,7 @@ export function App() {
       const original=captureMap(),plan=prepareRiverMapEdit(original,edit,options);
       if(plan.map===original)return true;
       if(plan.confirmationRequired&&!options.confirmed){setEditError(language==='ru'?'Подтвердите изменение реки и её зависимостей.':'Confirm the river change and its dependencies.');return false;}
-      finishNotesGroup();return commitManualMap(plan.map);
+      finishNotesGroup();return commitManualMap(plan.map,true,plan.permittedRiverRemovals);
     }catch(error){setEditError(riverCommandError(error));return false;}
   };
   const requestRiverCommand=(edit:RiverEdit,options:RiverEditOptions={},draft?:RiverDraft):boolean=>{
