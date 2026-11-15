@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-15T0336-programmer-GEO2-scoped-persistence",
+  "run_id": "2026-11-15T0457-programmer-GEO2-scoped-source-edit",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "scoped_persistence_implemented_GEO2_in_progress",
+  "status": "scoped_source_edit_implemented_GEO2_in_progress",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -41,8 +41,8 @@
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
     "status": "materials_verified_latest_written_last",
-    "materials_commit_sha": "65e76370f25f4bd10524746cb18e9c41304423bc",
-    "run_id": "2026-11-15T0336-programmer-GEO2-scoped-persistence"
+    "materials_commit_sha": "76a398619257535a85a2569019e3e1c88e007d3e",
+    "run_id": "2026-11-15T0457-programmer-GEO2-scoped-source-edit"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -55,10 +55,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
   "spec_version": "GEO2-v2",
-  "result_path": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "result_path": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "handoff_commit_sha": "805223da3d6210f449792ffe3160eb6fa675d937",
   "active_claim": null,
-  "next_step": "Программист продолжает HX-BL-051/GEO2 на f0d977f2de32ef3ca691fe13640db9f73275968f: реализовать точную mixed dependency closure для касающихся старой и новой областей и перерасчёт изменённого старого source-scope с сохранением globalAuthoredState. Новый домен остаётся неуточнённым до explicit Apply; потенциальные пары не разрешают переноса всех объектов. Затем подключить scoped-создание к настоящему recordGenerated/обычному связному расширению и одной Undo/Redo, проверить public16 полный roundtrip. Сохранить глобальные IDs/монотонный nextId/локальные записи и буквальные несвязанные старые пути. Initial preview/Apply/Cancel, карта/PNG, G201–G210 и независимый exact-SHA review+score_assessment1.2 остаются впереди. Публикация отдельно; обычные новые scope-изменения пока отказываются атомарно вместо потери данных.",
+  "next_step": "Продолжить HX-BL-051/GEO2 на 8f5a77bf1c365eeb5d582989324f2b157a120822: реализовать точную mixed dependency closure для контактов старой и новой областей и изменение состава source-scope; затем настоящее recordGenerated/связное расширение как одну Undo/Redo с полным public16 roundtrip. Новая область остаётся неуточнённой до explicit Apply, несвязанные принятые пути и глобальные ID/счётчик/локальные записи сохраняются. Initial preview/Apply/Cancel, карта/PNG, G201–G210 и независимая проверка нового SHA со score_assessment1.2 впереди. Публикация отдельно.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-051",
@@ -70,11 +70,11 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336",
+  "evidence_path": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457",
   "branch_name": "agent/hx-bl-051-geo2",
   "pr": 503,
-  "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-  "tree_sha": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
+  "head_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+  "tree_sha": "907bf8efcbf6fc2f9ee6edd4c2f3b05c7d8e8136",
   "checks_status": "node_build_passed_browser_pending_environment_socket_EPERM",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/805223da3d6210f449792ffe3160eb6fa675d937/agent-work/evidence/GEO2-boundary-preflight-20261115-0303/checks.json",
   "review_verdict": "pending_full_GEO2_implementation",
@@ -178,7 +178,7 @@
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
-  "role_selection_reason": "Continue approved immediate GEO2-v2 after completed boundary checkpoint; no foreign051 claim, ready independent package or publication authority.",
+  "role_selection_reason": "Approved continuation;051 claim clear, old scoped source replan is next bounded part of existing handoff.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -198,37 +198,28 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
+  "base_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-15T00:36:11.090Z",
+      "checked_at": "2026-11-15T01:58:06.769Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
-    "additional_start_checks": [
-      {
-        "checked_at": "2026-11-15T01:10:56.928Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true,
-        "phase": "same_task_invocation_while_existing_claim_active"
-      }
-    ],
     "end": {
-      "checked_at": "2026-11-15T01:22:47.231Z",
+      "checked_at": "2026-11-15T02:14:12.831Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "restoration": {
       "performed": false,
-      "reason": "All actual start/resume/end observations enabled"
+      "reason": "Both actual observations enabled"
     },
     "errors": [],
-    "scope": "Point-in-time actual checks only; no guarantee against later service changes. Existing task/prompt/schedule unchanged."
+    "scope": "Actual point-in-time checks only; no claim about later service state. Task/prompt/schedule unchanged."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "not_ready",
@@ -663,7 +654,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42592886004",
   "next_task_execution_allowed": true,
   "last_release_pr": 497,
-  "last_material_result_path": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "last_material_result_path": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "final_ready_for_development",
   "previous_task_release_approval": {
@@ -830,7 +821,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "PR498 publication decision is premature while mandatory CI validation finding is unresolved. Existing028/050/052 proposals preserved.",
-  "updated_at": "2026-11-15T01:22:47.231Z",
+  "updated_at": "2026-11-15T02:14:12.831Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -968,52 +959,37 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
-    "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-    "suite": "Node",
-    "added": 1,
+    "base_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
+    "head_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+    "added": 0,
     "removed": 0,
     "modified": 1,
+    "suite": "Node test/mapTransactions.test.mjs",
+    "scenario_risk": "Ordinary river change in retained scope of disjoint global16; preserve detached owners/local edits, literal unrelated paths, RNG, one transaction and invalid-edit redo",
+    "reuse_or_new_reason": "Extend existing G208-AUTO lifecycle; same accepted fixture/import/history machinery, no extra case or seed",
     "suites": [
       {
-        "suite": "test/geometryPlan.test.mjs",
-        "added": 1,
-        "removed": 0,
-        "modified": 0,
-        "added_names": [
-          "GEO2 scoped physical4 preserves global authored owners and strictly binds the retained source"
-        ],
-        "modified_names": [],
-        "base_static_cases": 4,
-        "head_static_cases": 5
-      },
-      {
         "suite": "test/mapTransactions.test.mjs",
+        "base_named_cases": 29,
+        "head_named_cases": 29,
         "added": 0,
         "removed": 0,
         "modified": 1,
-        "added_names": [],
         "modified_names": [
           "G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo"
-        ],
-        "base_static_cases": 29,
-        "head_static_cases": 29
+        ]
       }
     ],
-    "count_source": "Exact git base/head named Node test-body comparison. Changed static cases correspond to one runner case each; unchanged parameterized cases not recounted as changes. Subscenarios not extra tests.",
-    "scenario_risk": "G202/G208: scoped saved geometry must retain global authored owners, monotonically allocated IDs, current fine notes/names/focus and atomic import/UndoRedo without silently losing outside objects or redo.",
-    "reuse_or_new_reason": "One new unit contract for independent global/scoped identity guards using existing cached53/31/7 fixture. Extended one existing real handler lifecycle instead of adding a second lifecycle. No unchanged parameterized cases recounted.",
-    "other_suites": {
-      "browser": {
-        "added": 0,
-        "removed": 0,
-        "modified": 0
-      },
-      "rng": {
-        "added": 0,
-        "removed": 0,
-        "modified": 0
-      }
+    "count_source": "Exact base/head git diff; same29 named static Node cases, one existing body extended. No parameterized cases changed. Subscenarios not counted as added tests.",
+    "browser_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "rng_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
     },
     "executions": {
       "full_node": {
@@ -1022,45 +998,28 @@
         "failed": 0,
         "skipped": 0,
         "cancelled": 0,
-        "duration_ms": 640350.860521
+        "duration_ms": 612384.881371
       },
-      "focused": [
-        {
-          "suite": "geometryPlan",
-          "executed": 5,
-          "passed": 5,
-          "included_in_full_total": true
-        },
-        {
-          "suite": "actual mapTransactions selected lifecycle",
-          "executed": 1,
-          "passed": 1,
-          "included_in_full_total": true
-        }
-      ],
-      "temporary_diagnostic": {
+      "focused": {
         "executed": 1,
         "passed": 1,
-        "permanent_test": false,
-        "included_in_full_total": false,
-        "method": "Temporary additional redo assertion after both rejected imports restores normalized full document; owned temp file deleted after pass",
-        "log_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/temporary-redo-diagnostic.log"
+        "failed": 0,
+        "skipped": 0,
+        "included_in_full_total": true
       },
       "browser": {
         "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
         "exit_code": 1,
-        "status": "blocked_environment_socket_EPERM",
         "after_build": true,
-        "browser_scenarios_executed": 0,
-        "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/browser.log"
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
       },
       "rng_browser": {
         "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
         "exit_code": 1,
-        "status": "blocked_environment_socket_EPERM",
         "after_build": true,
-        "browser_scenarios_executed": 0,
-        "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/browser-rng.log"
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
       }
     }
   },
@@ -1110,7 +1069,7 @@
     "nav_status_success": 24,
     "png_captured": 4
   },
-  "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336",
+  "evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1427,7 +1386,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1576,23 +1535,32 @@
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-15T00:03:23.142Z",
+      "checked_at": "2026-11-15T00:36:11.090Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
+    "additional_start_checks": [
+      {
+        "checked_at": "2026-11-15T01:10:56.928Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true,
+        "phase": "same_task_invocation_while_existing_claim_active"
+      }
+    ],
     "end": {
-      "checked_at": "2026-11-15T00:32:38.278Z",
+      "checked_at": "2026-11-15T01:22:47.231Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
     "restoration": {
       "performed": false,
-      "reason": "Both actual start/end observations enabled"
+      "reason": "All actual start/resume/end observations enabled"
     },
     "errors": [],
-    "scope": "Point-in-time actual checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
+    "scope": "Point-in-time actual checks only; no guarantee against later service changes. Existing task/prompt/schedule unchanged."
   },
   "previous_completed_claim": "agent-work/claims/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
   "test_audit": {
@@ -1765,7 +1733,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-12T0204-programmer-ONE-MILE1.json",
-  "handoff_path": "agent-work/handoffs/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "handoff_path": "agent-work/handoffs/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "ui_actual_preview": {
     "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
     "manifest_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/ui-manifest.json",
@@ -2265,9 +2233,9 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/score-evidence.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/score-evidence.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
   "github_review_state": "COMMENT; operational acceptance by fresh independent non-implementer. Same GitHub identity owns PR; formal self-approval unavailable.",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
@@ -2362,7 +2330,7 @@
   "next_approved_stage": "PF2-BATCH1-lifecycle-autofill-UI",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-11T0356-PF2-BATCH1-lifecycle-UI.json",
   "authorization_status": "approved_implementation_separate_release_gate",
-  "completed_at": "2026-11-15T01:22:47.231Z",
+  "completed_at": "2026-11-15T02:14:12.831Z",
   "score_changed": false,
   "next_stage_id": "ONE-MILE1-GEO2-DOMAIN-UI",
   "score_evidence_updated": true,
@@ -2371,8 +2339,8 @@
   "current_stage_release_approved": false,
   "review_ready": false,
   "current_stage_ui_status": "pending_initial_UI_map_PNG",
-  "completed_claim": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-  "evidence_commit_sha": "65e76370f25f4bd10524746cb18e9c41304423bc",
+  "completed_claim": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+  "evidence_commit_sha": "76a398619257535a85a2569019e3e1c88e007d3e",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-11-11-PR496-release-ready.json",
   "current_stage_ui_preview": {
@@ -3979,7 +3947,7 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "scoped_persistence_implemented_GEO2_in_progress",
+  "current_stage_status": "scoped_source_edit_implemented_GEO2_in_progress",
   "current_stage_review_status": "not_ready",
   "accepted": false,
   "full_UI_pending": true,
@@ -4219,9 +4187,9 @@
   "ui_actual_responsible": "programmer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
-  "checks_summary": "419/419 Node; TypeScript and build passed. Both fresh post-build Chromium browser commands abort before scenarios: socket() EPERM.",
+  "checks_summary": "419/419 Node; TypeScript/build passed. Both actual post-build browser commands abort socket() EPERM before scenarios.",
   "full_E5_UI_pending": true,
-  "materials_commit_sha": "65e76370f25f4bd10524746cb18e9c41304423bc",
+  "materials_commit_sha": "76a398619257535a85a2569019e3e1c88e007d3e",
   "latest_HX_BL_023_E5_features_ui_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-features-ui",
     "role": "developer",
@@ -4818,75 +4786,66 @@
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
     "schema_version": 1,
-    "run_id": "2026-11-15T0336-programmer-GEO2-scoped-persistence",
+    "run_id": "2026-11-15T0457-programmer-GEO2-scoped-source-edit",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "GEO2-scoped-persistence",
+    "substage": "GEO2-scoped-source-edit",
     "role": "programmer",
-    "base_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
-    "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-    "tree_sha": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
+    "base_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
+    "head_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+    "tree_sha": "907bf8efcbf6fc2f9ee6edd4c2f3b05c7d8e8136",
     "working_branch": "agent/hx-bl-051-geo2",
     "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
     "spec_version": "GEO2-v2",
-    "claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-    "result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-    "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336",
-    "checks_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/checks.json",
-    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/test-change-summary.json",
-    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/score-evidence.json",
+    "result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "claim_ref": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457",
+    "checks_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/test-change-summary.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/score-evidence.json",
     "next_role": "programmer",
-    "next_step": "Программист продолжает HX-BL-051/GEO2 на f0d977f2de32ef3ca691fe13640db9f73275968f: реализовать точную mixed dependency closure для касающихся старой и новой областей и перерасчёт изменённого старого source-scope с сохранением globalAuthoredState. Новый домен остаётся неуточнённым до explicit Apply; потенциальные пары не разрешают переноса всех объектов. Затем подключить scoped-создание к настоящему recordGenerated/обычному связному расширению и одной Undo/Redo, проверить public16 полный roundtrip. Сохранить глобальные IDs/монотонный nextId/локальные записи и буквальные несвязанные старые пути. Initial preview/Apply/Cancel, карта/PNG, G201–G210 и независимый exact-SHA review+score_assessment1.2 остаются впереди. Публикация отдельно; обычные новые scope-изменения пока отказываются атомарно вместо потери данных.",
-    "review_ready": false,
+    "next_step": "Продолжить HX-BL-051/GEO2 на 8f5a77bf1c365eeb5d582989324f2b157a120822: реализовать точную mixed dependency closure для контактов старой и новой областей и изменение состава source-scope; затем настоящее recordGenerated/связное расширение как одну Undo/Redo с полным public16 roundtrip. Новая область остаётся неуточнённой до explicit Apply, несвязанные принятые пути и глобальные ID/счётчик/локальные записи сохраняются. Initial preview/Apply/Cancel, карта/PNG, G201–G210 и независимая проверка нового SHA со score_assessment1.2 впереди. Публикация отдельно.",
+    "status": "scoped_source_edit_implemented_GEO2_in_progress",
+    "component_complete": true,
     "implementation_complete": false,
     "full_task_complete": false,
-    "release_authorized": false,
+    "review_ready": false,
+    "execution_running": false,
     "published": false,
     "main_changed": false,
+    "release_authorized": false,
     "pr": 503,
     "pr_updated": false,
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "product_score_changed": false,
     "score_model_version": "1.2",
     "owner_decision_required_for_next_step": false,
-    "status": "scoped_persistence_implemented_GEO2_in_progress",
-    "component_complete": true,
-    "execution_running": false,
-    "completed_at": "2026-11-15T01:22:47.231Z",
+    "completed_at": "2026-11-15T02:14:12.831Z",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "title": "Команда HexCrawl",
       "start": {
-        "checked_at": "2026-11-15T00:36:11.090Z",
+        "checked_at": "2026-11-15T01:58:06.769Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
-      "additional_start_checks": [
-        {
-          "checked_at": "2026-11-15T01:10:56.928Z",
-          "method": "automations.peek",
-          "status": "checked",
-          "is_enabled": true,
-          "phase": "same_task_invocation_while_existing_claim_active"
-        }
-      ],
       "end": {
-        "checked_at": "2026-11-15T01:22:47.231Z",
+        "checked_at": "2026-11-15T02:14:12.831Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
       "restoration": {
         "performed": false,
-        "reason": "All actual start/resume/end observations enabled"
+        "reason": "Both actual observations enabled"
       },
       "errors": [],
-      "scope": "Point-in-time actual checks only; no guarantee against later service changes. Existing task/prompt/schedule unchanged."
+      "scope": "Actual point-in-time checks only; no claim about later service state. Task/prompt/schedule unchanged."
     },
-    "materials_commit_sha": "65e76370f25f4bd10524746cb18e9c41304423bc",
-    "completed_claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json"
+    "materials_commit_sha": "76a398619257535a85a2569019e3e1c88e007d3e",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json"
   },
   "latest_concurrent_worker_observation": {
     "run_id": "2026-11-04-developer-E5-active-worker-observation-1800",
@@ -6250,7 +6209,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "Approved existing GEO2-v2 continuation; no release authority.",
+  "authority_status": "Existing approved GEO2-v2 after completed interview; connected closure continuation ready, no release authority.",
   "analysis_baseline_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
   "analysis_baseline_tree": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -6708,7 +6667,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7401,7 +7360,7 @@
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MC1-EN.json"
   },
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
-  "next_task_handoff_ref": "agent-work/handoffs/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "next_task_handoff_ref": "agent-work/handoffs/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
     "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
     "status": "published_verified_score_completed",
@@ -7452,7 +7411,7 @@
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-14T2239-GEO2-special-POI-continue.json",
   "review_request_ref": "agent-work/handoffs/2026-11-13T0701-ONE-MILE1-WR1-review.json",
   "programmer_complete": false,
-  "current_programmer_result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "current_programmer_result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -7473,81 +7432,63 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "latest_result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "checks": {
-    "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-    "tree_sha": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
+    "head_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+    "tree_sha": "907bf8efcbf6fc2f9ee6edd4c2f3b05c7d8e8136",
     "node": "v24.22.1",
     "command": "npm run check",
     "exit_code": 0,
-    "typescript": {
-      "status": "passed",
-      "command": "npx tsc --noEmit",
-      "exact_sha": true
-    },
+    "typescript": "passed",
     "node_tests": {
       "executed": 419,
       "passed": 419,
       "failed": 0,
       "skipped": 0,
       "cancelled": 0,
-      "duration_ms": 640350.860521
+      "duration_ms": 612384.881371
     },
     "build": {
       "status": "passed",
-      "duration_seconds": 13.61
+      "duration_seconds": 12.56
     },
-    "focused": [
-      {
-        "suite": "geometryPlan",
-        "executed": 5,
-        "passed": 5,
-        "included_in_full_total": true
-      },
-      {
-        "suite": "actual mapTransactions selected lifecycle",
-        "executed": 1,
-        "passed": 1,
-        "included_in_full_total": true
-      }
-    ],
-    "temporary_reviewer_diagnostic": {
+    "focused": {
       "executed": 1,
       "passed": 1,
-      "permanent_test": false,
-      "included_in_full_total": false,
-      "method": "Temporary additional redo assertion after both rejected imports restores normalized full document; owned temp file deleted after pass",
-      "log_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/temporary-redo-diagnostic.log"
+      "failed": 0,
+      "skipped": 0,
+      "included_in_full_total": true
+    },
+    "reproduction": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "expected_failure_before_fix": true,
+      "ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/repro.log",
+      "not_summed_with_final_total": true
     },
     "browser": {
       "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
       "exit_code": 1,
-      "status": "blocked_environment_socket_EPERM",
       "after_build": true,
-      "browser_scenarios_executed": 0,
-      "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/browser.log"
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
     },
     "rng_browser": {
       "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
       "exit_code": 1,
-      "status": "blocked_environment_socket_EPERM",
       "after_build": true,
-      "browser_scenarios_executed": 0,
-      "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/browser-rng.log"
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
     },
-    "environment_error": "Both Chromium processes abort before scenarios: process_singleton_posix.cc socket() failed: Operation not permitted (1); crashpad ptrace also denied. No product browser acceptance claimed.",
-    "source_readbacks": {
-      "files": 9,
-      "all_exact": true,
-      "local_head": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-      "local_tree": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
-      "tracked_worktree_clean": true
-    },
+    "source_files_exact": 4,
+    "tracked_worktree_clean": true,
+    "full_GEO2_acceptance": false,
     "warnings": [
       "Existing npm http-proxy env warning",
       "Existing Vite large chunk warning"
     ],
-    "full_GEO2_acceptance": false
+    "environment_limitation": "Both actual Chromium launches abort at process_singleton_posix.cc socket() EPERM before browser scenarios; not evidence of product browser failure or full acceptance."
   },
   "score_assessment_status": "independent_review_pending",
   "review_report_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
@@ -8119,7 +8060,7 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "current_role_result": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "current_stage_score_assessment_status": "pending_independent_exact_SHA_review",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
   "execution_running": false,
@@ -8580,7 +8521,7 @@
   "release_readiness": "not_ready",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -8628,9 +8569,9 @@
     "full_task_complete": false,
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
-  "local_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-  "checks_evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/checks.json",
-  "execution_status": "scoped_persistence_implemented_GEO2_in_progress",
+  "local_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+  "checks_evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/checks.json",
+  "execution_status": "scoped_source_edit_implemented_GEO2_in_progress",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8767,75 +8708,66 @@
   "pr_updated": false,
   "execution_routing": {
     "schema_version": 1,
-    "run_id": "2026-11-15T0336-programmer-GEO2-scoped-persistence",
+    "run_id": "2026-11-15T0457-programmer-GEO2-scoped-source-edit",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "GEO2-scoped-persistence",
+    "substage": "GEO2-scoped-source-edit",
     "role": "programmer",
-    "base_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
-    "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-    "tree_sha": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
+    "base_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
+    "head_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+    "tree_sha": "907bf8efcbf6fc2f9ee6edd4c2f3b05c7d8e8136",
     "working_branch": "agent/hx-bl-051-geo2",
     "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
     "spec_version": "GEO2-v2",
-    "claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-    "result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-    "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336",
-    "checks_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/checks.json",
-    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/test-change-summary.json",
-    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/score-evidence.json",
+    "result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "claim_ref": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457",
+    "checks_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/test-change-summary.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/score-evidence.json",
     "next_role": "programmer",
-    "next_step": "Программист продолжает HX-BL-051/GEO2 на f0d977f2de32ef3ca691fe13640db9f73275968f: реализовать точную mixed dependency closure для касающихся старой и новой областей и перерасчёт изменённого старого source-scope с сохранением globalAuthoredState. Новый домен остаётся неуточнённым до explicit Apply; потенциальные пары не разрешают переноса всех объектов. Затем подключить scoped-создание к настоящему recordGenerated/обычному связному расширению и одной Undo/Redo, проверить public16 полный roundtrip. Сохранить глобальные IDs/монотонный nextId/локальные записи и буквальные несвязанные старые пути. Initial preview/Apply/Cancel, карта/PNG, G201–G210 и независимый exact-SHA review+score_assessment1.2 остаются впереди. Публикация отдельно; обычные новые scope-изменения пока отказываются атомарно вместо потери данных.",
-    "review_ready": false,
+    "next_step": "Продолжить HX-BL-051/GEO2 на 8f5a77bf1c365eeb5d582989324f2b157a120822: реализовать точную mixed dependency closure для контактов старой и новой областей и изменение состава source-scope; затем настоящее recordGenerated/связное расширение как одну Undo/Redo с полным public16 roundtrip. Новая область остаётся неуточнённой до explicit Apply, несвязанные принятые пути и глобальные ID/счётчик/локальные записи сохраняются. Initial preview/Apply/Cancel, карта/PNG, G201–G210 и независимая проверка нового SHA со score_assessment1.2 впереди. Публикация отдельно.",
+    "status": "scoped_source_edit_implemented_GEO2_in_progress",
+    "component_complete": true,
     "implementation_complete": false,
     "full_task_complete": false,
-    "release_authorized": false,
+    "review_ready": false,
+    "execution_running": false,
     "published": false,
     "main_changed": false,
+    "release_authorized": false,
     "pr": 503,
     "pr_updated": false,
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "product_score_changed": false,
     "score_model_version": "1.2",
     "owner_decision_required_for_next_step": false,
-    "status": "scoped_persistence_implemented_GEO2_in_progress",
-    "component_complete": true,
-    "execution_running": false,
-    "completed_at": "2026-11-15T01:22:47.231Z",
+    "completed_at": "2026-11-15T02:14:12.831Z",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "title": "Команда HexCrawl",
       "start": {
-        "checked_at": "2026-11-15T00:36:11.090Z",
+        "checked_at": "2026-11-15T01:58:06.769Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
-      "additional_start_checks": [
-        {
-          "checked_at": "2026-11-15T01:10:56.928Z",
-          "method": "automations.peek",
-          "status": "checked",
-          "is_enabled": true,
-          "phase": "same_task_invocation_while_existing_claim_active"
-        }
-      ],
       "end": {
-        "checked_at": "2026-11-15T01:22:47.231Z",
+        "checked_at": "2026-11-15T02:14:12.831Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
       "restoration": {
         "performed": false,
-        "reason": "All actual start/resume/end observations enabled"
+        "reason": "Both actual observations enabled"
       },
       "errors": [],
-      "scope": "Point-in-time actual checks only; no guarantee against later service changes. Existing task/prompt/schedule unchanged."
+      "scope": "Actual point-in-time checks only; no claim about later service state. Task/prompt/schedule unchanged."
     },
-    "materials_commit_sha": "65e76370f25f4bd10524746cb18e9c41304423bc",
-    "completed_claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json"
+    "materials_commit_sha": "76a398619257535a85a2569019e3e1c88e007d3e",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json"
   },
   "last_team_coordination": {
     "run_id": "2026-11-10T0300-strategist-release-routing",
@@ -9278,13 +9210,14 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-15T0336-programmer-GEO2-scoped-persistence",
+  "last_completed_run_id": "2026-11-15T0457-programmer-GEO2-scoped-source-edit",
   "storage_verification": {
-    "materials_commit_sha": "65e76370f25f4bd10524746cb18e9c41304423bc",
-    "materials_exact_readbacks": 15,
-    "source_files_exact": 9,
-    "source_head": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-    "source_tree": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
+    "materials_commit_sha": "76a398619257535a85a2569019e3e1c88e007d3e",
+    "materials_exact_readbacks": 13,
+    "early_evidence_exact_readbacks": 5,
+    "source_files_exact": 4,
+    "source_head": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+    "source_tree": "907bf8efcbf6fc2f9ee6edd4c2f3b05c7d8e8136",
     "score_blob_unchanged": "0b3526f8f4665067276c159508c730790aac5448",
     "latest_written_last": true
   },
@@ -9835,7 +9768,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/checks.json",
+  "checks_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/checks.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -10888,9 +10821,9 @@
     }
   },
   "updated_on": "2026-11-14",
-  "claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-  "latest_programmer_result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
-  "source_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
+  "claim_ref": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+  "source_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
   "source_pr": 496,
   "owner_decision_required": false,
   "latest_DETAIL1_C_FILL_implementation": {
@@ -11333,7 +11266,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -11675,10 +11608,10 @@
     "result_path": "agent-work/results/2026-11-12T2302-analyst-ONE-MILE1-C02-C05.json",
     "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка."
   },
-  "substage": "GEO2-scoped-persistence",
+  "substage": "GEO2-scoped-source-edit",
   "active_claim_ref": null,
   "bounded_implementation_complete": true,
-  "score_evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/score-evidence.json",
+  "score_evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/score-evidence.json",
   "ui_actual_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "full_feedback_resolved": false,
   "known_open_requirements": [
@@ -11862,7 +11795,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "last_result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -11998,14 +11931,14 @@
       }
     ]
   },
-  "last_operation_result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "last_operation_result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
   "previous_primary_before_GEO2_implementation": {
     "run_id": "2026-11-13T1104-analyst-ONE-MILE1-GEO2",
     "result_ref": "agent-work/results/2026-11-13T1104-analyst-ONE-MILE1-GEO2.json",
     "status": "completed_GEO2_specification_programmer_ready"
   },
-  "wip_head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
-  "wip_tree_sha": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
+  "wip_head_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+  "wip_tree_sha": "907bf8efcbf6fc2f9ee6edd4c2f3b05c7d8e8136",
   "latest_GEO2_implementation": {
     "run_id": "2026-11-14T2340-programmer-GEO2-GeometryPlan",
     "task_id": "HX-BL-051",
@@ -12364,7 +12297,7 @@
     "result_ref": "agent-work/results/2026-11-14T2340-programmer-GEO2-GeometryPlan.json",
     "head_sha": "f522b356afadf947f5ff95ebfc8bc40f9616dbbf"
   },
-  "browser_runtime": "Both Chromium processes abort before scenarios: process_singleton_posix.cc socket() failed: Operation not permitted (1); crashpad ptrace also denied. No product browser acceptance claimed.",
+  "browser_runtime": "Both actual Chromium launches abort at process_singleton_posix.cc socket() EPERM before browser scenarios; not evidence of product browser failure or full acceptance.",
   "latest_GEO2_runtime_verification": {
     "run_id": "2026-11-15T0108-programmer-GEO2-browser-runtime",
     "result_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
@@ -12873,5 +12806,146 @@
     },
     "materials_commit_sha": "65e76370f25f4bd10524746cb18e9c41304423bc",
     "completed_claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json"
+  },
+  "previous_run_before_GEO2_scoped_source_edit": {
+    "run_id": "2026-11-15T0336-programmer-GEO2-scoped-persistence",
+    "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
+    "result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+    "status": "scoped_persistence_implemented_GEO2_in_progress"
+  },
+  "previous_execution_before_GEO2_scoped_source_edit": {
+    "schema_version": 1,
+    "run_id": "2026-11-15T0336-programmer-GEO2-scoped-persistence",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "substage": "GEO2-scoped-persistence",
+    "role": "programmer",
+    "base_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
+    "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
+    "tree_sha": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
+    "working_branch": "agent/hx-bl-051-geo2",
+    "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+    "spec_version": "GEO2-v2",
+    "claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+    "result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+    "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336",
+    "checks_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/test-change-summary.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/score-evidence.json",
+    "next_role": "programmer",
+    "next_step": "Программист продолжает HX-BL-051/GEO2 на f0d977f2de32ef3ca691fe13640db9f73275968f: реализовать точную mixed dependency closure для касающихся старой и новой областей и перерасчёт изменённого старого source-scope с сохранением globalAuthoredState. Новый домен остаётся неуточнённым до explicit Apply; потенциальные пары не разрешают переноса всех объектов. Затем подключить scoped-создание к настоящему recordGenerated/обычному связному расширению и одной Undo/Redo, проверить public16 полный roundtrip. Сохранить глобальные IDs/монотонный nextId/локальные записи и буквальные несвязанные старые пути. Initial preview/Apply/Cancel, карта/PNG, G201–G210 и независимый exact-SHA review+score_assessment1.2 остаются впереди. Публикация отдельно; обычные новые scope-изменения пока отказываются атомарно вместо потери данных.",
+    "review_ready": false,
+    "implementation_complete": false,
+    "full_task_complete": false,
+    "release_authorized": false,
+    "published": false,
+    "main_changed": false,
+    "pr": 503,
+    "pr_updated": false,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "product_score_changed": false,
+    "score_model_version": "1.2",
+    "owner_decision_required_for_next_step": false,
+    "status": "scoped_persistence_implemented_GEO2_in_progress",
+    "component_complete": true,
+    "execution_running": false,
+    "completed_at": "2026-11-15T01:22:47.231Z",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "start": {
+        "checked_at": "2026-11-15T00:36:11.090Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "additional_start_checks": [
+        {
+          "checked_at": "2026-11-15T01:10:56.928Z",
+          "method": "automations.peek",
+          "status": "checked",
+          "is_enabled": true,
+          "phase": "same_task_invocation_while_existing_claim_active"
+        }
+      ],
+      "end": {
+        "checked_at": "2026-11-15T01:22:47.231Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration": {
+        "performed": false,
+        "reason": "All actual start/resume/end observations enabled"
+      },
+      "errors": [],
+      "scope": "Point-in-time actual checks only; no guarantee against later service changes. Existing task/prompt/schedule unchanged."
+    },
+    "materials_commit_sha": "65e76370f25f4bd10524746cb18e9c41304423bc",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T0336-programmer-GEO2-scoped-persistence.json"
+  },
+  "latest_GEO2_scoped_source_edit": {
+    "schema_version": 1,
+    "run_id": "2026-11-15T0457-programmer-GEO2-scoped-source-edit",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "substage": "GEO2-scoped-source-edit",
+    "role": "programmer",
+    "base_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
+    "head_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+    "tree_sha": "907bf8efcbf6fc2f9ee6edd4c2f3b05c7d8e8136",
+    "working_branch": "agent/hx-bl-051-geo2",
+    "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+    "spec_version": "GEO2-v2",
+    "result_ref": "agent-work/results/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "claim_ref": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json",
+    "evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457",
+    "checks_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/test-change-summary.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-source-edit-20261115-0457/score-evidence.json",
+    "next_role": "programmer",
+    "next_step": "Продолжить HX-BL-051/GEO2 на 8f5a77bf1c365eeb5d582989324f2b157a120822: реализовать точную mixed dependency closure для контактов старой и новой областей и изменение состава source-scope; затем настоящее recordGenerated/связное расширение как одну Undo/Redo с полным public16 roundtrip. Новая область остаётся неуточнённой до explicit Apply, несвязанные принятые пути и глобальные ID/счётчик/локальные записи сохраняются. Initial preview/Apply/Cancel, карта/PNG, G201–G210 и независимая проверка нового SHA со score_assessment1.2 впереди. Публикация отдельно.",
+    "status": "scoped_source_edit_implemented_GEO2_in_progress",
+    "component_complete": true,
+    "implementation_complete": false,
+    "full_task_complete": false,
+    "review_ready": false,
+    "execution_running": false,
+    "published": false,
+    "main_changed": false,
+    "release_authorized": false,
+    "pr": 503,
+    "pr_updated": false,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "product_score_changed": false,
+    "score_model_version": "1.2",
+    "owner_decision_required_for_next_step": false,
+    "completed_at": "2026-11-15T02:14:12.831Z",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "title": "Команда HexCrawl",
+      "start": {
+        "checked_at": "2026-11-15T01:58:06.769Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-15T02:14:12.831Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration": {
+        "performed": false,
+        "reason": "Both actual observations enabled"
+      },
+      "errors": [],
+      "scope": "Actual point-in-time checks only; no claim about later service state. Task/prompt/schedule unchanged."
+    },
+    "materials_commit_sha": "76a398619257535a85a2569019e3e1c88e007d3e",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T0457-programmer-GEO2-scoped-source-edit.json"
   }
 }
