@@ -1,0 +1,271 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 09cfe53..60b52c7 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -7,7 +7,7 @@ import {prepareRefinementLakeModes} from './geometryRefinementMouths';
+ import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
+ import {prepareGeometryRefinementBoundary,geometryBoundaryHasEmptyClosure} from './geometryRefinementBoundary';
+ import {composeScopedDetailState} from './geometryRefinementState';
+-import {projectGeometryRefinementEdit} from './geometryRefinementScope';
++import {projectGeometryRefinementEdit,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
+ import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
+ import {buildDetailGeographyPreview,reconcileDetailGeography,validateDetailGeographyFootprints,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
+ import {projectOneMile,oneMileCandidates,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
+@@ -1205,7 +1205,7 @@ function scopedGeometryBoundary(map:OneMileDocumentMap,state:Detail1State){
+  // This outward envelope changes no road/rail width or physical calibration.
+  return prepareGeometryRefinementBoundary({...refinementSourceInput(map,state,refinement.riverPlan),widths,lakeInputs:geometryLakeInputs(map,state.grid.origin),roadPaddingMiles:detailSourcePixelToWorld({x:14,y:0}).x},refinement);
+ }
+-function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map(),permittedRiverRemovals:ReadonlySet<number>=new Set()):MapSnapshot{
++function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map(),permittedScopeRemovals:GeometryScopeRemovalIntent={}):MapSnapshot{
+  const layer=before.physicalGrid;
+  if(!layer?.geometryRefinement)return candidate;
+  const accepted=candidate.physicalGrid??layer;
+@@ -1220,7 +1220,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
+  if(accepted.globalAuthoredState||candidate.regions.some(r=>!priorRegions.has(r.id))){
+   // Project changed authored input before composing: the old layer is stale
+   // until a new complete plan has passed its existing dependency checks.
+-  const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement,permittedRiverRemovals);
++  const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement,permittedScopeRemovals);
+   if(projected.status==='error')throw Error(`GEO2 scoped_closure_pending: ${projected.code}`);
+   const retainedMap={...candidate,...projected.input.map,physicalGrid:{...projected.input.map.physicalGrid,version:4 as const,geometryRefinement:layer.geometryRefinement}} as MapSnapshot;
+   const result=prepareGeometryPlan({...geometryPlanInput(retainedMap),authoredState:projected.input.map.physicalGrid});
+@@ -1499,8 +1499,8 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
+   const removedRiverIds=map.rivers.filter(r=>!result.rivers.some(n=>n.id===r.id)).map(r=>r.id);
+   const losses={crossings:map.crossings.filter(c=>!crossings.some(n=>n.key===c.key)).length,rapids:map.riverFeatures.rapids.length-result.riverFeatures.rapids.length,waterfalls:map.riverFeatures.waterfalls.length-result.riverFeatures.waterfalls.length,removedRiverIds};
+   const changed=result.rivers!==map.rivers||crossings!==map.crossings||riverFeatures!==map.riverFeatures||result.nextRiverId!==map.nextRiverId;
+-  const permittedRiverRemovals=edit.type==='remove'?new Set([edit.riverId,...map.rivers.filter(r=>edit.includeArms&&r.deltaParentRiverId===edit.riverId).map(r=>r.id)]):new Set<number>();
+-  return {map:changed?checkedRiverMap(prepareSourceTransition(map,{...map,...result,crossings,riverFeatures},new Map(),permittedRiverRemovals)):map,losses,unresolvedCrossings,unresolvedFeatures,permittedRiverRemovals,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
++  const permittedScopeRemovals:GeometryScopeRemovalIntent={riverIds:edit.type==='remove'?new Set([edit.riverId,...map.rivers.filter(r=>edit.includeArms&&r.deltaParentRiverId===edit.riverId).map(r=>r.id)]):new Set<number>()};
++  return {map:changed?checkedRiverMap(prepareSourceTransition(map,{...map,...result,crossings,riverFeatures},new Map(),permittedScopeRemovals)):map,losses,unresolvedCrossings,unresolvedFeatures,permittedScopeRemovals,confirmationRequired:changed&&(edit.type==='remove'||edit.type==='reverse'||edit.type==='replace'||crossings!==map.crossings||losses.rapids>0||losses.waterfalls>0||invalidFeatures.length>0)};
+ }
+ 
+ type WaterEditOptions=SeaChoices&{acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
+@@ -13720,7 +13720,8 @@ export function App() {
+         if(confirmedNames.some(key=>!allowed.has(key)))return false;
+         editorNames=Object.fromEntries(Object.entries(editorNames).filter(([key])=>!confirmedNames.includes(key)));
+       }
+-      const after = copyDocument({...captureDocument(), map: prepareSourceTransition(captureMap(),{...captureMap(), ...result,riverFeatures,editorNames})});
++      const permittedScopeRemovals:GeometryScopeRemovalIntent=edit.type==='remove'?{roadParts:new Map([[edit.roadId,new Set((roads.find(r=>r.id===edit.roadId)?.segments??[]).filter(s=>!edit.segmentKey||pairKey(s.from,s.to)===edit.segmentKey).map(s=>pairKey(s.from,s.to)))]])}:{};
++      const after = copyDocument({...captureDocument(), map: prepareSourceTransition(captureMap(),{...captureMap(), ...result,riverFeatures,editorNames},new Map(),permittedScopeRemovals)});
+       // Both copies are complete before any state write. Never reconcile crossings here.
+       setUndoHistory(current => [...current, {before, after}].slice(-100)); setRedoHistory([]);
+       applyPreparedDocument(after);
+@@ -13762,7 +13763,7 @@ export function App() {
+     ? language==='ru' ? (error.capacity==='owner'?'На объекте уже 64 тега. Карта не изменена.':'В этом тексте уже 8 языков. Карта не изменена.')
+       : (error.capacity==='owner'?'This object already has 64 tags. Your map is unchanged.':'This text already has 8 languages. Your map is unchanged.')
+     : language==='ru'?'Не удалось изменить тег. Карта не изменена.':'Could not change tag. Your map is unchanged.';
+-  const commitManualMap = (map: MapSnapshot, reconcileNames = true,permittedRiverRemovals:ReadonlySet<number>=new Set()) => {
++  const commitManualMap = (map: MapSnapshot, reconcileNames = true,permittedScopeRemovals:GeometryScopeRemovalIntent={}) => {
+     try {
+       // Preserve a settlement label before the type ceases to enumerate it.
+       const nextEntities=new Set(getToponymEntities(map.regions,map.rivers,map.hexTerrainByKey).map(e=>e.key));
+@@ -13774,7 +13775,7 @@ export function App() {
+       if(map.knave){const losses=knaveLosses(map.knave,knaveMapContext(map));
+         if(losses.length){if(!window.confirm(language==='ru'?`Изменение удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`This edit removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
+           const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
+-      map=prepareSourceTransition(captureMap(),map,new Map(),permittedRiverRemovals);
++      map=prepareSourceTransition(captureMap(),map,new Map(),permittedScopeRemovals);
+       checkedRiverMap(map);
+       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
+         getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
+@@ -13802,7 +13803,7 @@ export function App() {
+       const original=captureMap(),plan=prepareRiverMapEdit(original,edit,options);
+       if(plan.map===original)return true;
+       if(plan.confirmationRequired&&!options.confirmed){setEditError(language==='ru'?'Подтвердите изменение реки и её зависимостей.':'Confirm the river change and its dependencies.');return false;}
+-      finishNotesGroup();return commitManualMap(plan.map,true,plan.permittedRiverRemovals);
++      finishNotesGroup();return commitManualMap(plan.map,true,plan.permittedScopeRemovals);
+     }catch(error){setEditError(riverCommandError(error));return false;}
+   };
+   const requestRiverCommand=(edit:RiverEdit,options:RiverEditOptions={},draft?:RiverDraft):boolean=>{
+diff --git a/src/geometryRefinementScope.ts b/src/geometryRefinementScope.ts
+index 42dc68a..de9685e 100644
+--- a/src/geometryRefinementScope.ts
++++ b/src/geometryRefinementScope.ts
+@@ -1,7 +1,8 @@
+ /** Detached GEO2 input projection. This is deliberately not an activation or
+  * an expansion acceptance decision: spatial/mixed-boundary validation and
+  * global physical4 persistence must follow before any accepted write. */
+-import type {EditableRoad} from './manualRoads.ts';
++import {roadPair,type EditableRoad} from './manualRoads.ts';
++export type GeometryScopeRemovalIntent=Readonly<{riverIds?:ReadonlySet<number>;roadParts?:ReadonlyMap<number,ReadonlySet<string>>}>;
+ import {validateGeometryRefinementSource,type GeometryRefinement,type GeometrySourceValidationInput} from './geometryPlan.ts';
+ import {parseDetail1StateV11} from './detailModel.ts';
+ import {assertDetailPoiOwners} from './detailIdentity.ts';
+@@ -14,10 +15,10 @@ export function projectGeometryRefinementSource(input:GeometrySourceValidationIn
+  * does NOT certify the old fingerprint against the changed source, and is
+  * never import/boundary acceptance. Caller must prepare a complete new plan,
+  * compose global authored data and validate the resulting boundary. */
+-export function projectGeometryRefinementEdit(input:GeometrySourceValidationInput,accepted:GeometryRefinement,permittedRiverRemovals:ReadonlySet<number>=new Set()){
+- return projectSource(input,accepted,false,permittedRiverRemovals);
++export function projectGeometryRefinementEdit(input:GeometrySourceValidationInput,accepted:GeometryRefinement,removals:GeometryScopeRemovalIntent={}){
++ return projectSource(input,accepted,false,removals);
+ }
+-function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement,requireUnchanged:boolean,permittedRiverRemovals:ReadonlySet<number>=new Set()){
++function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement,requireUnchanged:boolean,removals:GeometryScopeRemovalIntent={}){
+  const fail=(code:string,refs:readonly string[])=>Object.freeze({status:'error' as const,code,refs:Object.freeze([...refs]),readyForApplication:false as const});
+  try{
+   if(input.cancelled?.())return fail('prepare_cancelled',[]);
+@@ -33,13 +34,22 @@ function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefi
+   const nodeKeys=new Set(accepted.riverPlan.source.segments.flatMap(s=>[s.from.key,s.to.key]));
+   const regions=input.map.regions.filter(r=>regionIds.has(r.id)),rivers=input.map.rivers.filter(r=>riverIds.has(r.id)),roads=(input.map.roads as readonly EditableRoad[]).filter(r=>roadIds.has(r.id)),crossings=input.map.crossings.filter(c=>crossingKeys.has(c.key));
+   const missingRefs=<T extends string|number>(expected:ReadonlySet<T>,values:readonly T[],kind:string)=>{const present=new Set(values);return [...expected].filter(id=>!present.has(id)).map(id=>`${kind}:${id}`);};
+-  // A missing reference is never inferred to be a requested deletion. Only
+-  // an explicit river-remove command supplies this detached permission; the
+-  // importer and all other callers remain strict. Crossings may disappear
+-  // only when they belong to a permitted river that is actually absent.
+-  const presentRivers=new Set(rivers.map(r=>r.id)),removedRivers=new Set(requireUnchanged?[]:[...riverIds].filter(id=>permittedRiverRemovals.has(id)&&!presentRivers.has(id)));
+-  const requiredRivers=new Set([...riverIds].filter(id=>!removedRivers.has(id))),requiredCrossings=new Set<string>(payload.crossings.filter((c:{key:string;riverId:number})=>!removedRivers.has(c.riverId)).map((c:{key:string})=>c.key));
+-  const missing=[...missingRefs(regionIds,regions.map(r=>r.id),'region'),...missingRefs(requiredRivers,rivers.map(r=>r.id),'river'),...missingRefs(roadIds,roads.map(r=>r.id),'road'),...missingRefs(requiredCrossings,crossings.map(c=>c.key),'crossing')];
++  // Missing references never imply a deletion. Only an explicit edit may
++  // permit an old river or exact old road part that is actually absent now.
++  // Import always remains strict and receives no edit intent.
++  const presentRivers=new Set(rivers.map(r=>r.id)),removedRivers=new Set(requireUnchanged?[]:[...riverIds].filter(id=>removals.riverIds?.has(id)&&!presentRivers.has(id)));
++  const currentRoadParts=new Map(roads.map(r=>[r.id,new Set(r.segments.map(s=>roadPair(s.from,s.to)))]));
++  const removedRoadParts=new Map<number,Set<string>>(),removedRoads=new Set<number>();
++  if(!requireUnchanged)for(const road of payload.roads as {id:number;segments:{ends:[{q:number;r:number},{q:number;r:number}]}[]}[]){
++   const permitted=removals.roadParts?.get(road.id),present=currentRoadParts.get(road.id);
++   const oldParts=road.segments.map(s=>roadPair(s.ends[0],s.ends[1]));
++   const removed=new Set(oldParts.filter(part=>permitted?.has(part)&&!present?.has(part)));
++   removedRoadParts.set(road.id,removed);
++   if(!present&&oldParts.length>0&&oldParts.every(part=>removed.has(part)))removedRoads.add(road.id);
++  }
++  const requiredRivers=new Set([...riverIds].filter(id=>!removedRivers.has(id))),requiredRoads=new Set([...roadIds].filter(id=>!removedRoads.has(id)));
++  const requiredCrossings=new Set<string>(payload.crossings.filter((c:{key:string;riverId:number;roadId:number;roadSegmentKey:string})=>!removedRivers.has(c.riverId)&&!removedRoadParts.get(c.roadId)?.has(c.roadSegmentKey)).map((c:{key:string})=>c.key));
++  const missing=[...missingRefs(regionIds,regions.map(r=>r.id),'region'),...missingRefs(requiredRivers,rivers.map(r=>r.id),'river'),...missingRefs(requiredRoads,roads.map(r=>r.id),'road'),...missingRefs(requiredCrossings,crossings.map(c=>c.key),'crossing')];
+   if(missing.length)return fail('missing_scope_reference',missing);
+   const outside={regions:input.map.regions.filter(r=>!regionIds.has(r.id)),rivers:input.map.rivers.filter(r=>!riverIds.has(r.id)),roads:(input.map.roads as readonly EditableRoad[]).filter(r=>!roadIds.has(r.id)),crossings:input.map.crossings.filter(c=>!crossingKeys.has(c.key)),water:[...input.map.hexTerrainByKey].filter(([k,v])=>!oldWater.has(k)&&['lake','sea'].includes(v.terrainOverride??''))};
+   // Explicit graph/body seams must not disappear merely because their new
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index 32fcd95..4212d20 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -767,19 +767,27 @@ function geometryRiverBackendFixture(){
+ function geometryChoicePaths(save,riverId){
+  return save.map.physicalGrid.geometryRefinement.riverPlan.paths.filter(p=>p.riverId===riverId);
+ }
+-function geometryPoiRiverBackendFixture(){
++function geometryPoiRiverBackendFixture(extraRoadPart=false){
+  const f=geometryRiverBackendFixture(),{h,a,b,edge}=f,map=h.render().captureDocument().map;
+  const owner='poi:1:0,0',content=knaveContentFixture(owner,{river:true});
+  content.byPoi[owner]={...content.byPoi[owner],category:'structure',site:{selection:'compatible_pool',table:'structures',sourceRow:96,
+    ru:'Authored fixture structures 96',references:[],representation:'mill'}};
+  const west={q:-1,r:0};
+  const regions=map.regions.map(r=>r.id===1?{...r,hexes:[west,...r.hexes],finalSize:3,targetSize:3,pointsOfInterest:[a],pointOfInterestKinds:{'0,0':'mill'}}:r);
+- const c={q:4,r:0},d={q:5,r:0},otherRiver=map.rivers.find(r=>r.id===2),otherEdge=otherRiver.vertexPath.map(v=>v.key).sort().join('|');
++ const c={q:4,r:0},d={q:5,r:0},e={q:6,r:0},otherRiver=map.rivers.find(r=>r.id===2),otherEdge=otherRiver.vertexPath.map(v=>v.key).sort().join('|');
++ if(extraRoadPart){const r=regions.find(r=>r.id===2);const cells=new Map([c,d,e].flatMap(cell=>[cell,...h.geometry.getHexNeighbors(cell)]).map(cell=>[`${cell.q},${cell.r}`,cell]));r.hexes=[...cells.values()];r.finalSize=r.hexes.length;r.targetSize=r.hexes.length;
++  // Keep the real river mouth on the enlarged land boundary, not an invented lake.
++  const incidence=new Map(),adjacent=new Map();for(const cell of r.hexes){const corners=h.geometry.getHexCornerPoints(cell);for(let i=0;i<corners.length;i++){const v=corners[i],w=corners[(i+1)%corners.length];incidence.set(v.key,(incidence.get(v.key)??0)+1);const list=adjacent.get(v.key)??[];list.push(w,corners[(i+corners.length-1)%corners.length]);adjacent.set(v.key,list);}}
++  const old=otherRiver.vertexPath,queue=[[old.at(-1)]],seen=new Set(old.map(v=>v.key));let extension;while(queue.length){const path=queue.shift(),last=path.at(-1);if(incidence.get(last.key)<3){extension=path;break;}for(const next of adjacent.get(last.key)??[])if(!seen.has(next.key)){seen.add(next.key);queue.push([...path,next]);}}
++  assert.ok(extension);otherRiver.vertexPath=[...old,...extension.slice(1)];otherRiver.sectors=h.geometry.createInitialRiverSectors(2,otherRiver.vertexPath,2,{},2);
++ }
+  const roads=[{id:1,regionId:1,segments:[{from:a,to:b,kind:'road'}]},
+-   {id:2,regionId:2,segments:[{from:c,to:d,kind:'trail'}]}];
++   {id:2,regionId:2,segments:[{from:c,to:d,kind:'trail'},...(extraRoadPart?[{from:d,to:e,kind:'trail'}]:[])]}];
++ if(extraRoadPart){const loop=[d,{q:5,r:-1},{q:6,r:-1},e,{q:6,r:1},{q:5,r:1},d];roads.push({id:3,regionId:2,segments:loop.slice(1).map((to,i)=>({from:loop[i],to,kind:'trail'}))});}
+  const crossings=[{key:'1:0,0|1,0:1',roadId:1,roadSegmentKey:'0,0|1,0',riverId:1,riverEdgeKey:edge,kind:'bridge'},
+    {key:'2:4,0|5,0:2',roadId:2,roadSegmentKey:'4,0|5,0',riverId:2,riverEdgeKey:otherEdge,kind:'bridge'}];
+- h.render().restoreSnapshot({...map,regions,roads,crossings,nextRoadId:3,candidateHexes:h.geometry.getCandidateHexes(regions.flatMap(r=>r.hexes),new Set()),
++ if(extraRoadPart){const edges=new Set(otherRiver.vertexPath.slice(1).map((v,i)=>[otherRiver.vertexPath[i].key,v.key].sort().join('|')));for(const road of roads.filter(r=>r.id!==1))for(const part of road.segments){const other=new Set(h.geometry.getHexCornerPoints(part.to).map(v=>v.key)),edge=h.geometry.getHexCornerPoints(part.from).filter(v=>other.has(v.key)).map(v=>v.key).sort().join('|'),pair=[`${part.from.q},${part.from.r}`,`${part.to.q},${part.to.r}`].sort().join('|'),key=`${road.id}:${pair}:2`;if(edges.has(edge)&&!crossings.some(c=>c.key===key))crossings.push({key,roadId:road.id,roadSegmentKey:pair,riverId:2,riverEdgeKey:edge,kind:'bridge'});}}
++ h.render().restoreSnapshot({...map,regions,roads,crossings,nextRoadId:extraRoadPart?4:3,candidateHexes:h.geometry.getCandidateHexes(regions.flatMap(r=>r.hexes),new Set()),
+    editorNames:{[owner]:{en:'Authored Mill',ru:'Авторская мельница'}},gmNotesByHexKey:{'0,0':'Keep the mill and both approaches.'},
+    knave:{profile:{id:'classic.knave2',version:1,physicalHex:{length:6,unit:'mile',measurementConvention:null}},
+      difficultyByHex:{},discoveryByPoi:{},content}});
+@@ -803,6 +811,14 @@ async function acceptGeometryRefinement(h){
+  assertUndoRedo(h,before,after);
+  return after;
+ }
++function scopedOutsideDocument(h){
++ const doc=h.render().captureDocument(),cell={q:40,r:40},key='40,40',template=doc.map.regions[0],region={...template,id:3,hexes:[cell],centerHex:cell,anchorHex:cell,finalSize:1,targetSize:1,heightLevel:1,isTract:true,isCoastal:false,suppressCentralPoi:true,pointsOfInterest:[cell],pointOfInterestKinds:{[key]:'mill'}};
++ const sourceMap={...doc.map,regions:[...doc.map.regions,region],physicalGrid:detailAuthoredState(doc.map.physicalGrid),candidateHexes:h.geometry.getCandidateHexes([...doc.map.regions.flatMap(r=>r.hexes),cell],new Set(doc.map.hexTerrainByKey.keys()))};
++ sourceMap.toponyms=synchronizeToponyms(doc.map.toponyms,[...Object.entries(doc.map.toponyms).map(([key,value])=>({key,kind:value.kind})),{key:'region:3',kind:doc.map.toponyms[`region:${template.id}`].kind}],doc.map.toponymSeed);
++ const authored=reconcileDetailGeography(sourceMap,h.geometry.detailMapRiverGeometry(sourceMap,sourceMap.physicalGrid.grid.origin)),outside=authored.poiFootprints.find(f=>f.legacyRef==='poi:3:40,40'),fineKey=`${outside.cells[0].q},${outside.cells[0].r}`;
++ const global={...authored,fineCellEdits:{...authored.fineCellEdits,[fineKey]:{name:{ru:'Новое место',en:'New site'},note:'keep unrefined authored data'}}},scoped=composeScopedDetailState(global,doc.map.physicalGrid.geometryRefinement),incoming=serial(h.render().createSaveData({...doc,map:{...sourceMap,physicalGrid:scoped}}));delete incoming.savedAt;
++ return {doc,cell,key,region,sourceMap,global,outside,incoming};
++}
+ test('G208-AUTO real refinement preview cancel, stale revision and failed prepare preserve accepted state and redo',async()=>{
+  const {h,a}=geometryRiverBackendFixture();h.render().setSelectedHex(a);
+  h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+@@ -858,11 +874,7 @@ test('G208-AUTO actual ordinary river edit atomically updates physical4, preserv
+  // Reuse this real accepted lifecycle for the new global/scoped public16
+  // boundary, not another setup/seed. The added tract is a detached source
+  // snapshot, not proof of ordinary connected expansion or UI activation.
+- const doc=h.render().captureDocument(),cell={q:40,r:40},key='40,40',template=doc.map.regions[0],region={...template,id:3,hexes:[cell],centerHex:cell,anchorHex:cell,finalSize:1,targetSize:1,heightLevel:1,isTract:true,isCoastal:false,suppressCentralPoi:true,pointsOfInterest:[cell],pointOfInterestKinds:{[key]:'mill'}};
+- const sourceMap={...doc.map,regions:[...doc.map.regions,region],physicalGrid:detailAuthoredState(doc.map.physicalGrid),candidateHexes:h.geometry.getCandidateHexes([...doc.map.regions.flatMap(r=>r.hexes),cell],new Set(doc.map.hexTerrainByKey.keys()))};
+- sourceMap.toponyms=synchronizeToponyms(doc.map.toponyms,[...Object.entries(doc.map.toponyms).map(([key,value])=>({key,kind:value.kind})),{key:'region:3',kind:doc.map.toponyms[`region:${template.id}`].kind}],doc.map.toponymSeed);
+- const authored=reconcileDetailGeography(sourceMap,h.geometry.detailMapRiverGeometry(sourceMap,sourceMap.physicalGrid.grid.origin)),outside=authored.poiFootprints.find(f=>f.legacyRef==='poi:3:40,40'),fineKey=`${outside.cells[0].q},${outside.cells[0].r}`;
+- const global={...authored,fineCellEdits:{...authored.fineCellEdits,[fineKey]:{name:{ru:'Новое место',en:'New site'},note:'keep unrefined authored data'}}},scoped=composeScopedDetailState(global,doc.map.physicalGrid.geometryRefinement),incoming=serial(h.render().createSaveData({...doc,map:{...sourceMap,physicalGrid:scoped}}));delete incoming.savedAt;
++ const {doc,cell,key,region,sourceMap,global,outside,incoming}=scopedOutsideDocument(h);
+  const beforeScoped=stable(h.render()),beforeCount=h.render().undoHistory.length;
+  const restorePrepare=h.injectFunction('geometryPlanInput',()=>{throw Error('Import must not prepare/reroute stored choices');});
+  try{await load(h,incoming);}finally{restorePrepare();}
+@@ -871,9 +883,9 @@ test('G208-AUTO actual ordinary river edit atomically updates physical4, preserv
+  // Only the ordinary remove command may drop a retained river reference.
+  const removeMap=h.render().captureDocument().map,missingRiver={...removeMap,rivers:removeMap.rivers.filter(r=>r.id!==2),crossings:removeMap.crossings.filter(c=>c.riverId!==2)};
+  assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingRiver),removeMap.physicalGrid.geometryRefinement).code,'missing_scope_reference','an ungranted missing river remains a conflict');
+- assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingRiver),removeMap.physicalGrid.geometryRefinement,new Set([1])).code,'missing_scope_reference','permission for another river cannot hide this loss');
++ assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingRiver),removeMap.physicalGrid.geometryRefinement,{riverIds:new Set([1])}).code,'missing_scope_reference','permission for another river cannot hide this loss');
+  const missingCrossing={...removeMap,crossings:removeMap.crossings.filter(c=>c.riverId!==2)};
+- assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingCrossing),removeMap.physicalGrid.geometryRefinement,new Set([2])).code,'missing_scope_reference','crossing is still required while its river survives');
++ assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingCrossing),removeMap.physicalGrid.geometryRefinement,{riverIds:new Set([2])}).code,'missing_scope_reference','crossing is still required while its river survives');
+  const beforeRemove=stable(h.render()),removeStacks=serial([h.render().undoHistory,h.render().redoHistory]),removeCount=h.render().undoHistory.length;
+  assert.equal(h.render().editRiverDocument({type:'remove',riverId:2,includeArms:false}),false,'ordinary removal confirmation remains required');assert.deepEqual(stable(h.render()),beforeRemove);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),removeStacks);
+  assert.equal(h.render().editRiverDocument({type:'remove',riverId:2,includeArms:false},{confirmed:true}),true,h.render().editError??'valid scoped river removal');
+@@ -953,6 +965,30 @@ test('GEO2 actual connected land-only generation retains old refinement and leav
+  const terminal=protectedSave.map.rivers.find(r=>r.id===1).vertexPath[0],unsafe=h.render().candidateHexes.find(c=>h.geometry.getHexCornerPoints(c).some(v=>v.key===terminal.key));assert.ok(unsafe,'unknown cell touches the actual source terminal');
+  h.render().safelyAddRegionToMap(unsafe,options);assert.ok(h.render().generationError,'a source terminal contact still requires nonempty closure');
+  assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks,'failed connected expansion preserves redo and RNG');
++});
++// Separate risk: removing one road part while its ID and another part survive.
++// Reuse the accepted/scoped fixture builder, not another seed series.
++test('GEO2 actual scoped road and crossing-part removal preserve surviving geometry and one undo redo',async()=>{
++ const {h}=geometryPoiRiverBackendFixture(true);await acceptGeometryRefinement(h);
++ const {incoming}=scopedOutsideDocument(h);await load(h,incoming);const before=stable(h.render()),count=h.render().undoHistory.length;
++ assert.equal(before.map.roads.find(r=>r.id===2).segments.length,2);
++ const source=h.render().captureDocument().map,accepted=source.physicalGrid.geometryRefinement;
++ assert.equal(h.render().editRoadDocument({type:'remove',roadId:2}),true,h.render().editError??'whole scoped road removal');
++ const whole=stable(h.render());assert.equal(h.render().undoHistory.length,count+1);assert.equal(whole.map.roads.some(r=>r.id===2),false);assert.equal(whole.map.crossings.some(c=>c.roadId===2),false);assert.equal(whole.map.physicalGrid.geometryRefinement.roads.roads.some(r=>r.roadId===2),false);
++ assert.deepEqual(whole.map.physicalGrid.geometryRefinement.riverPlan,before.map.physicalGrid.geometryRefinement.riverPlan);assert.deepEqual(whole.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===1),before.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===1));assert.deepEqual(whole.map.physicalGrid.poiIdentities,before.map.physicalGrid.poiIdentities);assert.deepEqual(whole.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);assert.deepEqual(whole.generation,before.generation);assert.deepEqual([whole.map.nextRoadId,whole.map.nextRiverId],[before.map.nextRoadId,before.map.nextRiverId]);assert.deepEqual(whole.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===3),before.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===3));assertUndoRedo(h,before,whole);
++ await load(h,whole);assert.deepEqual(stable(h.render()),whole);await load(h,before);const partBefore=stable(h.render()),partCount=h.render().undoHistory.length;
++ assert.equal(h.render().editRoadDocument({type:'remove',roadId:2,segmentKey:'4,0|5,0'}),true,h.render().editError??'one scoped crossing part removal');
++ const part=stable(h.render());assert.equal(h.render().undoHistory.length,partCount+1);assert.equal(part.map.roads.find(r=>r.id===2).segments.length,1);assert.equal(part.map.crossings.some(c=>c.roadId===2),false);assert.equal(part.map.physicalGrid.geometryRefinement.roads.crossings.some(c=>c.roadId===2),false);
++ assert.deepEqual(part.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===2&&r.sourceRoadSegmentKey==='5,0|6,0'),partBefore.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===2&&r.sourceRoadSegmentKey==='5,0|6,0'),'unremoved part remains literal');assert.deepEqual(part.map.physicalGrid.geometryRefinement.riverPlan,partBefore.map.physicalGrid.geometryRefinement.riverPlan);assert.deepEqual(part.map.physicalGrid.poiIdentities,partBefore.map.physicalGrid.poiIdentities);assert.deepEqual(part.map.physicalGrid.fineCellEdits,partBefore.map.physicalGrid.fineCellEdits);assert.deepEqual(part.generation,partBefore.generation);assert.deepEqual([part.map.nextRoadId,part.map.nextRiverId],[partBefore.map.nextRoadId,partBefore.map.nextRiverId]);assertUndoRedo(h,partBefore,part);
++ await load(h,part);assert.deepEqual(stable(h.render()),part,'part removal16 imports the retained road ID and exact choices');
++ const missingRoad={...source,roads:source.roads.filter(r=>r.id!==2),crossings:source.crossings.filter(c=>c.roadId!==2)};
++ assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingRoad),accepted).code,'missing_scope_reference','an unrequested whole road loss stays an error');
++ assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingRoad),accepted,{roadParts:new Map([[2,new Set(['4,0|5,0'])]])}).code,'missing_scope_reference','one permitted part cannot authorize losing the whole two-part road');
++ const missingCrossing={...source,crossings:source.crossings.filter(c=>c.key!=='2:4,0|5,0:2')};
++ assert.equal(projectGeometryRefinementEdit(h.geometry.geometryPlanInput(missingCrossing),accepted,{roadParts:new Map([[2,new Set(['4,0|5,0'])]])}).code,'missing_scope_reference','permission does not hide a crossing loss while its exact part survives');
++ assert.ok(before.map.physicalGrid.geometryRefinement.roads.roads.some(r=>r.roadId===2&&r.sourceRoadSegmentKey==='5,0|6,0'));
++
++
+ });
+ test('G208-AUTO actual closure failure and invalid16 import preserve source, refinement and the available redo branch',async()=>{
+  const {h,edge,a}=geometryRiverBackendFixture();await acceptGeometryRefinement(h);
+diff --git a/docs/region-generation.md b/docs/region-generation.md
+index 5050ce5..db201fb 100644
+--- a/docs/region-generation.md
++++ b/docs/region-generation.md
+@@ -505,3 +505,22 @@ POI/дорог и глобальных границ. Нужная для POI р
+ ID/счётчики, внешние POI, локальные записи и RNG сохраняются. Новый16 загружается
+ с уже сохранённым обновлённым scope без перестроения. Непустые стыки продолжения
+ и переноса между областями, прочая миграция scope и actual UI/карта/PNG ещё впереди.
++
++
++### Удаление сохранённой дороги и участка в частичном scope
++
++Обычная команда удаления пути передаёт в подготовку правки точные пары концов
++старых участков выбранной дороги. Пропажа целой дороги разрешена только если
++команда выбрала все её старые участки и они действительно отсутствуют. Пропажа
++переправы разрешена только для такого исчезнувшего участка или явно удалённой
++реки. Разрешение одного участка не скрывает потерю другого; переправа при
++сохранённом участке остаётся обязательной. Строгий импорт контекст правки
++не получает и не исправляет неполное сохранение16.
++
++Это разрешение применяется после обычной проверки ROAD: нельзя потерять выход
++с карты, создать недопустимый тупик, разорвать обязательную связь или нарушить
++минимум дорог. Подтверждения имён и конфликтов порогов сохраняются. Новый полный
++GeometryPlan и проверка глобальных границ предшествуют записи. Валидное удаление
++исходного пути/участка и его уточнённой переправы составляет одну Undo/Redo;
++оставшиеся пути, реки, ID, счётчики, внешние POI, локальные правки и RNG сохраняются.
++Этот ограниченный этап не завершает непустые смешанные стыки и UI/карту/PNG GEO2.
