@@ -112,6 +112,25 @@ try{
  else {assert.deepEqual(afterGen,beforeGen,'failed ordinary generation is atomic');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'bounded_refusal_no_success_claim'});}
  await checkFineModeCandidates({page,snap,shot,button,manifest});
  await checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture:geometryFixture});
+ // Owner's real six-region classic world exposed a through-lake river,
+ // unlike the terminal-lake fixture above. Keep it as one bounded scenario.
+ await lang('ru');await page.setViewportSize({width:1500,height:1000});
+ await page.locator('input[type=file]').setInputFiles(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url).pathname);
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ await step.selectOption('6');await shot('classic42-6mi-before.jpg');
+ await step.selectOption('1');const classicBefore=await snap();await shot('classic42-1mi-before.jpg');
+ await page.locator('[data-refine-geography]').click();const classicPreview=page.locator('[data-geometry-preview]');await classicPreview.waitFor();
+ await classicPreview.getByRole('button',{name:'Применить',exact:true}).click();await classicPreview.waitFor({state:'detached'});
+ const classicAccepted=await snap();assert.equal(classicAccepted.map.physicalGrid.geometryRefinement.riverPlan.mouths.length,9);
+ assert.deepEqual(classicAccepted.generation,classicBefore.generation);await shot('classic42-1mi-after.jpg');
+ await button('Отменить').click();assert.deepEqual((await snap()).map,classicBefore.map);await button('Повторить').click();assert.deepEqual((await snap()).map,classicAccepted.map);
+ await page.locator('input[type=file]').setInputFiles({name:'classic42-v16.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicAccepted))});
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual((await snap()).map,classicAccepted.map);
+ await fs.writeFile(new URL('classic42-accepted.json',out),JSON.stringify(classicAccepted));
+ const [classicPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await classicPng.path(),new URL('classic42-accepted.png',out));
+ await step.selectOption('6');await shot('classic42-6mi-after.jpg');await step.selectOption('1');
+ await page.setViewportSize({width:390,height:1000});await shot('classic42-1mi-after-390.jpg');
+ manifest.cases.push('GEO2-classic42-through-lake-save-history-PNG');
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated

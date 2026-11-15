@@ -42,7 +42,7 @@ export function prepareRefinementMouths(input:Parameters<typeof prepareRefinemen
  for(const edge of context.hydrology.network.edges)for(const end of ['from','to'] as const)if(nodeKinds.get(edge[end])==='lake'){
   const id=Number(edge[end].replace(/^lake:/,'')),s=original.source.segments.find(s=>s.edgeKey===edge.id);
   if(!s||!lakeById.has(id))return fail([edge.id,edge[end],'missing_lake_ref']);const sourceNodeKey=s[end].key;
-  if(degree.get(sourceNodeKey)!==1)return fail([sourceNodeKey,'nonterminal_lake_incidence']);
+  if(degree.get(sourceNodeKey)!==1&&(degree.get(sourceNodeKey)!==2||!original.source.segments.some(p=>(p.from.key===sourceNodeKey||p.to.key===sourceNodeKey)&&context.hydrology.internalLakeEdges?.get(p.edgeKey)===edge[end])))return fail([sourceNodeKey,'nonterminal_lake_incidence']);
   incidences.push(Object.freeze({riverId:s.riverId,sourceEdgeKey:s.edgeKey,sourceNodeKey,lakeId:id,direction:end==='from'?'outlet':'inlet'}));
  }
  input.consumeWork?.(1+input.cells.length*6);const graph=refinementEdgeGraph(input.cells),shorePorts=[];

@@ -95,7 +95,7 @@ function chosenSide(source:Prepared['rivers']['source']['segments'][number],a:Wo
  const t=Math.max(0,Math.min(1,((mid.x-base.x)*dx+(mid.y-base.y)*dy)/(dx*dx+dy*dy))),projected={x:base.x+t*dx,y:base.y+t*dy},cross=dx*(mid.y-base.y)-dy*(mid.x-base.x);
  return {cell:worldToDetailCell(createDetailGrid(1,origin),projected),side:Math.abs(cross)<1e-12?null:cross>0?'left' as const:'right' as const};
 }
-function validateRivers(g:GeometryRefinement){
+function validateRivers(g:GeometryRefinement,inputs:Obj){
  const r=g.riverPlan,origin=g.sourceState.grid.origin;
  prepared(r,'river plan',['source','ports','paths','rapids','waterfalls','boundaries','allocation','exitConstraints','terminations','water','lakes','mouths','paintWater']);
  if(!['existing_endpoint_edges_only','endpoint_corridor_boundaries','endpoint_corridor_shores'].includes(r.allocation))return fail('river allocation');
@@ -152,7 +152,29 @@ function validateRivers(g:GeometryRefinement){
  const exits=unique(list<typeof r.exitConstraints[number]>(r.exitConstraints,'exit constraints',8192),e=>e.sourceKey,'exits');for(const e of exits.values()){object(e,'exit',['sourceKey','sourceExitRef','edgeKeys','riverId','sourceEdgeKey','flow','fullness']);const p=ports.get(e.sourceKey),s=source.get(pair(e.riverId,e.sourceEdgeKey));if(!p||!s||p.sourceExitRef!==e.sourceExitRef||e.fullness!==s.fullness||e.flow!==(s.from.key===e.sourceKey?'entering':'leaving'))return fail('exit correspondence');const edges=strings(e.edgeKeys,'exit edges');if(!edges.length||!edges.some(k=>{gridEdge(k,'exit edge');const a=onEdge(k,0,origin),b=onEdge(k,1,origin);return Math.abs(dist(a,p.point)+dist(p.point,b)-dist(a,b))<EPS;}))return fail('exit edge');}
  for(const p of ports.values())if(p.sourceExitRef!==null&&!exits.has(p.sourceKey))return fail('missing exit');
  const terminations=unique(list<typeof r.terminations[number]>(r.terminations,'terminations',8192),t=>t.sourceKey,'terminations');for(const t of terminations.values()){object(t,'termination',['sourceKey','kind','hydrologyNodeId']);const degree=incidences.get(t.sourceKey);if(!ports.has(t.sourceKey)||!degree||degree.incoming+degree.outgoing!==1||exits.has(t.sourceKey)||!['source','sea','lake','continuation'].includes(t.kind))return fail('termination');text(t.hydrologyNodeId,'termination id');if(t.kind!=='lake'&&(t.hydrologyNodeId!==t.sourceKey||src.boundaries.some(b=>b.sourceNodeKey===t.sourceKey&&b.reason==='lake')))return fail('termination correspondence');if(t.kind==='lake'){const lakeId=Number(t.hydrologyNodeId.replace(/^lake:/,''));if(!lakes.has(String(lakeId)))return fail('termination lake');for(const p of paths.values())if((p.fromNode===t.sourceKey||p.toNode===t.sourceKey)&&r.paintWater.capsules.some(c=>c.riverId===p.riverId&&c.sourceEdgeKey===p.sourceEdgeKey)&&!mouthGroups.has(JSON.stringify([p.riverId,p.sourceEdgeKey,t.sourceKey,lakeId])))return fail('missing lake mouths');}}
- for(const m of mouths.values()){const t=terminations.get(m.sourceNodeKey);if(t?.kind!=='lake'||t.hydrologyNodeId!==`lake:${m.lakeId}`)return fail('mouth terminal correspondence');}
+ const coarseLakes=new Map<number,RefinementShore>();
+ for(const lake of lakes.values()){
+  const cells=(inputs.waterTerrain as {key:string;kind:string;lakeId?:number}[]).filter(c=>c.kind==='lake'&&c.lakeId===lake.lakeId).map(c=>{const [q,r]=c.key.split(',').map(Number);return {q,r};});
+  const body=prepareRefinementShoreCells(cells,origin);if(body.status==='prepared')coarseLakes.set(lake.lakeId,body);
+ }
+ const internalFor=(p:typeof r.paths[number],lakeId:number)=>{
+  const s=source.get(pair(p.riverId,p.sourceEdgeKey))!,body=coarseLakes.get(lakeId);
+  return !!body&&!r.paintWater.capsules.some(c=>c.riverId===p.riverId&&c.sourceEdgeKey===p.sourceEdgeKey)&&[s.from.point,s.to.point].every(point=>refinementShoreLocation(body,point)!=='outside');
+ };
+ for(const m of mouths.values()){
+  const t=terminations.get(m.sourceNodeKey);if(t?.kind==='lake'&&t.hydrologyNodeId===`lake:${m.lakeId}`)continue;
+  const degree=incidences.get(m.sourceNodeKey),body=lakes.get(String(m.lakeId))!,port=ports.get(m.sourceNodeKey)!;
+  const inside=(p:WorldPoint)=>['tiles','emoji','color'].every(mode=>refinementShoreLocation(body.modes[mode as keyof typeof body.modes],p)!=='outside');
+  // A through-lake shore is a shared degree2 integer port, adjoining an
+  // unpainted internal lake path. It is not a hydrological termination.
+  const internal=[...paths.values()].some(p=>(p.fromNode===m.sourceNodeKey||p.toNode===m.sourceNodeKey)&&internalFor(p,m.lakeId));
+  if(t||degree?.incoming!==1||degree.outgoing!==1||port.location.kind!=='vertex'||!inside(port.point)||!internal)return fail('mouth terminal correspondence');
+ }
+ for(const p of paths.values())for(const key of [p.fromNode,p.toNode])for(const lake of lakes.values()){
+  const degree=incidences.get(key)!;
+  if(degree.incoming!==1||degree.outgoing!==1||!r.paintWater.capsules.some(c=>c.riverId===p.riverId&&c.sourceEdgeKey===p.sourceEdgeKey))continue;
+  if([...paths.values()].some(other=>(other.fromNode===key||other.toNode===key)&&internalFor(other,lake.lakeId))&&!mouthGroups.has(JSON.stringify([p.riverId,p.sourceEdgeKey,key,lake.lakeId])))return fail('missing through-lake mouths');
+ }
  for(const [key,n]of incidences)if(n.incoming+n.outgoing===1&&!exits.has(key)&&!terminations.has(key))return fail('missing terminal classification');
  for(const b of unique(list<typeof r.boundaries[number]>(r.boundaries,'boundaries',8192),b=>JSON.stringify([b.riverId,b.sectorId,b.end]),'boundaries').values()){object(b,'boundary',['riverId','sectorId','sourceNodeKey','end','reason','assignedRegionId','point']);const p=ports.get(b.sourceNodeKey);if(!p||!src.boundaries.some(s=>Object.keys(s).every(k=>(s as unknown as Obj)[k]===(b as unknown as Obj)[k])))return fail('boundary ref');same(point(b.point,'boundary'),p.point,'boundary');}
  if(r.boundaries.length!==src.boundaries.length)return fail('boundary count');
@@ -238,7 +260,7 @@ export function parseGeometryRefinement(value:unknown,parseSourceState:(value:un
  const fingerprint=text(root.sourceFingerprint,'source fingerprint',2000000),prefix='geo2-source-input-v1:';if(!fingerprint.startsWith(prefix))return fail('source fingerprint');const inputs=JSON.parse(fingerprint.slice(prefix.length));if(!inputs||typeof inputs!=='object'||inputs.version!==1||inputs.algorithmVersion!=='geo2-v1')return fail('source fingerprint payload');
  if(!root.sourceState||typeof root.sourceState!=='object'||(root.sourceState as Obj).version!==3||Object.prototype.hasOwnProperty.call(root.sourceState,'geometryRefinement'))return fail('authored physical3');
  const sourceState=parseSourceState(root.sourceState);if(sourceState.version!==3)return fail('authored physical3');const g=Object.freeze({...root,sourceState}) as unknown as GeometryRefinement;
- const owners=new Set(sourceState.poiFootprints.map(f=>f.poiId));if(strings(g.lockedPoiIds,'locks').some(id=>!owners.has(id)))return fail('lock owner');strings(g.unresolved,'unresolved');validateRivers(g);const footprints=validatePois(g,parseSourceState,inputs);validateRoads(g,footprints,inputs);
+ const owners=new Set(sourceState.poiFootprints.map(f=>f.poiId));if(strings(g.lockedPoiIds,'locks').some(id=>!owners.has(id)))return fail('lock owner');strings(g.unresolved,'unresolved');validateRivers(g,inputs);const footprints=validatePois(g,parseSourceState,inputs);validateRoads(g,footprints,inputs);
  return g;
 }
 

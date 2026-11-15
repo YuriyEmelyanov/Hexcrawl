@@ -37,6 +37,25 @@ async function accepted(){
  fixture={input,result};return fixture;
 }
 const copy=value=>JSON.parse(JSON.stringify(value));
+// Owner preview exposed a through-lake topology absent from the terminal-lake
+// fixture above. One saved world protects the actual App transaction boundary.
+test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes atomically',async()=>{
+ const h=createGenerationHarness(42);h.render();h.guardRandom();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
+ await h.render().handleImportJson({target:{files:[{text:fs.readFileSync(new URL('fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8')}],value:'map'}});
+ const before=JSON.stringify(h.render().captureDocument()),preview=h.render().previewGeometryRefinement();
+ assert.ok(preview,h.render().editError);assert.equal(JSON.stringify(h.render().captureDocument()),before);
+ assert.equal(h.render().applyGeometryRefinementPreview(preview),true);
+ const accepted=h.render().captureDocument(),g=accepted.map.physicalGrid.geometryRefinement;
+ assert.equal(g.riverPlan.mouths.length,9);assert.deepEqual(accepted.generation,JSON.parse(before).generation);
+ for(const key of ['72.746,-70','24.249,-14']){
+  const p=g.riverPlan.ports.find(p=>p.sourceKey===key),lake=g.riverPlan.lakes.find(l=>l.lakeId===1);
+  assert.equal(p.location.kind,'vertex');for(const mode of ['tiles','emoji','color'])assert.ok(refinementShoreContains(lake.modes[mode],p.point));
+ }
+ const saved=h.render().createSaveData();assert.equal(saved.version,16);assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(saved));
+ h.render().undoMap();assert.equal(JSON.stringify(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(h.render().captureDocument(),accepted);
+ const bad=copy(g);bad.riverPlan.mouths[0].lakeId=999999;assert.throws(()=>parseGeometryRefinement(bad,parseDetail1StateV11));
+ const missing=copy(g);missing.riverPlan.mouths=missing.riverPlan.mouths.filter(m=>m.sourceNodeKey!=='72.746,-70');assert.throws(()=>parseGeometryRefinement(missing,parseDetail1StateV11),/missing through-lake mouths/);
+});
 const reverseKeys=value=>Array.isArray(value)?value.map(reverseKeys):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).reverse().map(([k,v])=>[k,reverseKeys(v)])):value;
 let deltaFixture;
 function acceptedDelta(){

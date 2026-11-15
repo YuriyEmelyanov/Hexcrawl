@@ -24,7 +24,7 @@ export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareR
  }
  const exits=new Map((input.openExits??[]).map(e=>[e.sourceKey,e]));if(exits.size!==(input.openExits??[]).length)return fail(['duplicate_exit']);
  for(const [key,e]of exits)if(!requests.has(key)||requests.get(key)!.degree!==1)return fail([key]);
- const shores=new Map((input.shorePorts??[]).map(s=>[s.sourceKey,s]));if(shores.size!==(input.shorePorts??[]).length)return fail(['duplicate_shore']);for(const k of shores.keys())if(exits.has(k)||!requests.has(k)||requests.get(k)!.degree!==1)return fail([k]);
+ const shores=new Map((input.shorePorts??[]).map(s=>[s.sourceKey,s]));if(shores.size!==(input.shorePorts??[]).length)return fail(['duplicate_shore']);for(const k of shores.keys())if(exits.has(k)||!requests.has(k)||requests.get(k)!.degree>2)return fail([k]);
  const rerouted=new Set([...exits.keys(),...shores.keys()]);
  const oldNodes=new Set(base.rivers.paths.flatMap(p=>p.vertices.map(vertex))),usedNodes=new Set<string>();
  const prepared=prepareRefinementPorts({origin:input.origin,cells:input.cells,consumeWork:input.consumeWork,requests:[...requests.values()].map(r=>({...r,...(shores.has(r.sourceKey)?{allowedEdgeKeys:[...shores.get(r.sourceKey)!.edgeKeys]}:{}),...(exits.has(r.sourceKey)?{allowedEdgeKeys:[...exits.get(r.sourceKey)!.edgeKeys],exit:{sourceExitRef:exits.get(r.sourceKey)!.sourceExitRef,edgeKeys:exits.get(r.sourceKey)!.edgeKeys}}:{})}))});if(prepared.status==='error')return prepared;
@@ -35,19 +35,22 @@ export function prepareRefinementTerminalRoutes(input:Parameters<typeof prepareR
  for(const path of base.rivers.paths){input.consumeWork?.(1+input.cells.length+prepared.edges.length+oldNodes.size);
   const a=ports.get(path.fromNode)!,b=ports.get(path.toNode)!;
   // Junction identity must remain the existing shared integer port.
-  for(const n of [path.fromNode,path.toNode])if(requests.get(n)!.degree>1&&ports.get(n)!.nodeKey!==sourceNodes.get(n))return fail([n]);
-  const keys=path.vertices.map(vertex);keys[0]=a.nodeKey;keys[keys.length-1]=b.nodeKey;
+  for(const n of [path.fromNode,path.toNode])if(requests.get(n)!.degree>1&&!shores.has(n)&&ports.get(n)!.nodeKey!==sourceNodes.get(n))return fail([n]);
+  const relocateShared=[path.fromNode,path.toNode].some(n=>shores.has(n)&&requests.get(n)!.degree===2);
+  const keys=relocateShared?[a.nodeKey,b.nodeKey]:path.vertices.map(vertex);keys[0]=a.nodeKey;keys[keys.length-1]=b.nodeKey;
   const source=base.source.segments.find(s=>s.riverId===path.riverId&&s.edgeKey===path.sourceEdgeKey)!;
   const fineGrid=createDetailGrid(1,input.origin);
   const directions=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]],available=new Map(input.cells.map(c=>[`${c.q},${c.r}`,c])),corridor=new Map<string,typeof input.cells[number]>();
-  if(rerouted.has(path.fromNode)||rerouted.has(path.toNode))for(const c of input.cells)if(detailSegmentSpan(fineGrid,c,{from:source.from.point,to:source.to.point},true)){corridor.set(`${c.q},${c.r}`,c);for(const [dq,dr]of directions){const key=`${c.q+dq},${c.r+dr}`;if(available.has(key))corridor.set(key,available.get(key)!);}}
+  const spans=[{from:source.from.point,to:source.to.point},...(relocateShared?[{from:a.point,to:source.from.point},{from:source.to.point,to:b.point}]:[])];
+  if(rerouted.has(path.fromNode)||rerouted.has(path.toNode))for(const c of input.cells)if(spans.some(span=>detailSegmentSpan(fineGrid,c,span,true))){corridor.set(`${c.q},${c.r}`,c);for(const [dq,dr]of directions){const key=`${c.q+dq},${c.r+dr}`;if(available.has(key))corridor.set(key,available.get(key)!);}}
   const allowed=new Set(refinementEdgeGraph([...corridor.values()]).edges.map(e=>e.key));
   const steps=[];
   for(let i=1;i<keys.length;i++){input.consumeWork?.(1+prepared.edges.length+oldNodes.size+usedNodes.size+prepared.ports.length);
    if(keys[i-1]===keys[i])return fail([path.sourceEdgeKey]);
-   const sourceEdgeKey=edge(path.vertices[i-1],path.vertices[i]),reroute=i===1&&rerouted.has(path.fromNode)||i===keys.length-1&&rerouted.has(path.toNode);
+   const sourceEdgeKey=edge(path.vertices[i-1],path.vertices[i]),reroute=relocateShared||i===1&&rerouted.has(path.fromNode)||i===keys.length-1&&rerouted.has(path.toNode);
    const pieces=reroute?prepared.edges.filter(e=>allowed.has(e.sourceEdgeKey)):byEdge.get(sourceEdgeKey)??[];
    const blocked=new Set([...oldNodes,...usedNodes,...prepared.ports.map(p=>p.nodeKey)]);
+   if(relocateShared)for(const k of path.vertices.slice(1,-1).map(vertex))if(!usedNodes.has(k)&&!prepared.ports.some(p=>p.nodeKey===k))blocked.delete(k);
    if(rerouted.has(path.fromNode))blocked.delete(sourceNodes.get(path.fromNode)!);if(rerouted.has(path.toNode))blocked.delete(sourceNodes.get(path.toNode)!);
    blocked.delete(keys[i-1]);blocked.delete(keys[i]);
    const adjacency=new Map<string,typeof pieces>();for(const p of pieces){adjacency.set(p.from,[...(adjacency.get(p.from)??[]),p]);adjacency.set(p.to,[...(adjacency.get(p.to)??[]),p]);}
