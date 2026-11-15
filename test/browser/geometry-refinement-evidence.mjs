@@ -17,6 +17,7 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
  await refine.click();await preview.getByRole('button',{name:'Apply',exact:true}).click();
  await page.waitForFunction(()=>document.querySelector('[data-fine-step]')?.value==='1'&&!document.querySelector('[data-geometry-preview]'));
  const accepted=await snap(),g=accepted.map.physicalGrid.geometryRefinement;
+ assert.match(await page.locator('details.export-menu small').textContent(),/JSON v16/);
  assert.equal(g.riverPlan.paths.length,53);assert.equal(g.roads.crossings.length,7);
  assert.deepEqual(accepted.generation,before.generation);
  const artwork=page.locator('svg[data-render-phase] [data-refined-geography]');

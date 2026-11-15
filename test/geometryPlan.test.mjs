@@ -1,3 +1,4 @@
+import {summarizeDetailCell,detailSegmentCellIntersection} from '../src/detailSummary.ts';
 import {detailCatalogueExtent,detailFootprintPolygons,detailPointInPolygon} from '../src/detailSizes.ts';
 import {prepareRefinementShorePath,refinementShoreContains,refinementShoreIntervals} from '../src/geometryRefinementShore.ts';
 import {projectGeometryRefinementSource,projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
@@ -74,6 +75,35 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  const mixed=renderRefinedArtwork({...props,source:outside});
  assert.match(mixed,/data-source-edge="outside0"[^>]*stroke-width="1"/);
  assert.match(mixed,/data-source-edge="outside1"[^>]*stroke-width="3"/);
+ const fineState={...result.candidateState,viewStep:1,selectedWorldPoint:undefined},coarseOnly={...fineState,geometryRefinement:undefined};
+ const terrain=new Map(input.map.regions.flatMap(r=>r.hexes.map(c=>[`${c.q},${c.r}`,r.biomeId]))),geography={rivers:input.liveRivers,roads:input.map.roads};
+ const summarize=(state,point)=>summarizeDetailCell(state,worldToDetailCell(createDetailGrid(1,state.grid.origin),point),terrain,geography);
+ let shiftedRiverCell=false;
+ for(const path of g.riverPlan.paths)for(let i=1;i<path.points.length;i++){
+  const a=path.points[i-1],b=path.points[i],point={x:(a.x+b.x)/2,y:(a.y+b.y)/2};
+  assert.ok(summarize(fineState,point).rivers.some(r=>r.id===path.riverId),'card follows every visible retained chain');
+  if(!summarize(coarseOnly,point).rivers.some(r=>r.id===path.riverId))shiftedRiverCell=true;
+ }
+ assert.ok(shiftedRiverCell,'fixture witnesses a fine card that source6 geometry cannot describe');
+ const movedSource=g.riverPlan.source.segments.flatMap(s=>[s.from,s.to]).find(n=>{const p=g.riverPlan.ports.find(p=>p.sourceKey===n.key);return p&&Math.hypot(p.point.x-n.point.x,p.point.y-n.point.y)>1e-8;});
+ assert.ok(movedSource);const port=g.riverPlan.ports.find(p=>p.sourceKey===movedSource.key).point,grid=createDetailGrid(1,fineState.grid.origin);
+ let mixedWitness=false;
+ for(const direction of [{x:3,y:0},{x:0,y:3},{x:-3,y:0},{x:0,y:-3}]){
+  const end={x:port.x+direction.x,y:port.y+direction.y},edge={id:`${movedSource.key}|new-source-node`,segment:{from:{x:movedSource.point.x+1e-12,y:movedSource.point.y},to:end},rapid:false,crossings:[]};
+  const mixedGeography={rivers:[{id:999,edges:[edge],starts:[],waterfalls:[]}]};
+  for(let i=0;i<=12;i++)for(const from of [port,movedSource.point]){
+   const point={x:from.x+(end.x-from.x)*i/12,y:from.y+(end.y-from.y)*i/12},cell=worldToDetailCell(grid,point),expected=!!detailSegmentCellIntersection(grid,cell,{from:port,to:end}),old=!!detailSegmentCellIntersection(grid,cell,edge.segment);
+   if(expected!==old)mixedWitness=true;
+   assert.equal(summarizeDetailCell(fineState,cell,terrain,mixedGeography).rivers.some(r=>r.id===999),expected,'new river ID shares the same persisted port in card and artwork');
+  }
+ }
+ assert.ok(mixedWitness,'mixed fixture distinguishes old and shared-port geometry');
+
+ for(const road of g.roads.roads)for(let i=1;i<road.points.length;i++){
+  const a=road.points[i-1],b=road.points[i];assert.ok(summarize(fineState,{x:(a.x+b.x)/2,y:(a.y+b.y)/2}).routes.some(r=>r.id===road.roadId),'card retains the connected route, including masked POI parts');
+ }
+ for(const crossing of g.roads.crossings)assert.ok(summarize(fineState,crossing.point).rivers.some(r=>r.id===crossing.riverId&&r.crossingIds.includes(`crossing:${crossing.key}`)),'card uses relocated typed crossing');
+
 
  assert.ok(Object.isFrozen(g.riverPlan.paths[0].steps[0]));assert.ok(Object.isFrozen(g.sourceState.poiFootprints[0].extent));
  assert.equal(g.sideChoices.length,g.riverPlan.paths.reduce((n,p)=>n+p.steps.length,0));

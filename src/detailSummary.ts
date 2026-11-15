@@ -73,7 +73,22 @@ export function summarizeDetailCell(state:Detail1State,anchor:DetailCell,terrain
   byPoi.set(p.poiId,{poiId:p.poiId,legacyRef:p.legacyRef,partCells,totalCells:p.cells.length,partial,extent:p.extent,attachments});
  }
  const riverOwners=new Map<number,{id:number;edgeIds:string[];crossingIds:string[];waterfallIds:string[];boundaryOnly:boolean}>();
- for(const river of geography.rivers??[]){
+ const refinement=state.viewStep===1?state.geometryRefinement:undefined;
+ const pair=(id:number,key:string)=>JSON.stringify([id,key]);
+ const paths=new Map(refinement?.riverPlan.paths.map(p=>[pair(p.riverId,p.sourceEdgeKey),p])??[]);
+ const ports=new Map(refinement?.riverPlan.ports.map(p=>[p.sourceKey,p.point])??[]);
+ const sourceNodes=new Map((refinement?.riverPlan.source.segments??[]).flatMap(edge=>[edge.from,edge.to]).map(node=>[node.key,node.point]));
+ for(const original of geography.rivers??[]){
+  const river=refinement?{...original,edges:original.edges.flatMap(edge=>{
+   const path=paths.get(pair(original.id,edge.id));
+   // Source edge IDs contain canonical endpoint keys. Resolve orientation
+   // within the source normalizer's tolerance: adjacent native hex corners
+   // may have different raw floats despite the exact same vertex key.
+   const adjusted=(p:WorldPoint)=>{const endpoint=edge.id.split('|').find(key=>{const node=sourceNodes.get(key);return node&&Math.hypot(node.x-p.x,node.y-p.y)<=1e-8;});return endpoint?ports.get(endpoint)??p:p;};
+   const points=path?.points??[adjusted(edge.segment.from),adjusted(edge.segment.to)];
+   const crossings=path?refinement.roads.crossings.filter(c=>c.riverId===original.id&&c.riverEdgeKey===edge.id).map(c=>({id:`crossing:${c.key}`,kind:c.kind,point:c.point})):edge.crossings;
+   return points.slice(1).map((to,i)=>({...edge,segment:{from:points[i],to},crossings}));
+  }),waterfalls:original.waterfalls.map(w=>({...w,point:refinement.riverPlan.waterfalls.find(p=>w.id===`vertex:${p.sourceNodeKey}`)?.point??w.point}))}:original;
   const hits=river.edges.map(edge=>({edge,hit:detailSegmentCellIntersection(grid,cell,edge.segment)})).filter(p=>p.hit!==null);
   if(!hits.length)continue;
   const pointHere=(point:WorldPoint)=>detailSegmentCellIntersection(grid,cell,{from:point,to:point})!==null;
@@ -81,10 +96,17 @@ export function summarizeDetailCell(state:Detail1State,anchor:DetailCell,terrain
   riverOwners.set(river.id,{id:river.id,edgeIds:[...new Set([...(existing?.edgeIds??[]),...hits.map(h=>h.edge.id)])].sort(),crossingIds:[...new Set([...(existing?.crossingIds??[]),...hits.flatMap(h=>h.edge.crossings.filter(c=>pointHere(c.point)).map(c=>c.id))])].sort(),waterfallIds:[...new Set([...(existing?.waterfallIds??[]),...river.waterfalls.filter(w=>pointHere(w.point)).map(w=>w.id)])].sort(),boundaryOnly:(existing?.boundaryOnly??true)&&hits.every(h=>h.hit!.boundaryOnly)});
  }
  const routeOwners=new Map<number,{id:number;kinds:('road'|'trail')[];segmentKeys:string[];boundaryOnly:boolean}>();
+ const retainedRoads=new Set(refinement?.roads.roads.map(r=>pair(r.roadId,r.sourceRoadSegmentKey))??[]);
  for(const road of geography.roads??[])for(const segment of road.segments){
-  const hit=detailSegmentCellIntersection(grid,cell,{from:detailCellCenter(source,segment.from),to:detailCellCenter(source,segment.to)});if(!hit)continue;
   const existing=routeOwners.get(road.id),segmentKey=[key(segment.from),key(segment.to)].sort().join('|');
+  if(retainedRoads.has(pair(road.id,segmentKey)))continue;
+  const hit=detailSegmentCellIntersection(grid,cell,{from:detailCellCenter(source,segment.from),to:detailCellCenter(source,segment.to)});if(!hit)continue;
   routeOwners.set(road.id,{id:road.id,kinds:[...new Set([...(existing?.kinds??[]),segment.kind])].sort(),segmentKeys:[...new Set([...(existing?.segmentKeys??[]),segmentKey])].sort(),boundaryOnly:(existing?.boundaryOnly??true)&&hit.boundaryOnly});
+ }
+ for(const road of refinement?.roads.roads??[])for(let i=1;i<road.points.length;i++){
+  const hit=detailSegmentCellIntersection(grid,cell,{from:road.points[i-1],to:road.points[i]});if(!hit)continue;
+  const existing=routeOwners.get(road.roadId);
+  routeOwners.set(road.roadId,{id:road.roadId,kinds:[...new Set([...(existing?.kinds??[]),road.kind])].sort(),segmentKeys:[...new Set([...(existing?.segmentKeys??[]),road.sourceRoadSegmentKey])].sort(),boundaryOnly:(existing?.boundaryOnly??true)&&hit.boundaryOnly});
  }
  const localNote=state.fineCellEdits?.[key(cell)]?.note;
  const notes=localNote?[{key:key(cell),text:localNote,partial:false}]:[];

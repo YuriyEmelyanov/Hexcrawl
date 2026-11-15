@@ -13668,6 +13668,7 @@ export function App() {
   const cancelOneMilePreview = () => {oneMilePreviewRef.current=null;};
   const previewGeometryRefinement = (options:{prepareWorkBudget?:number;cancelled?:()=>boolean}={}) => {
     if(mutationBlocked())return null;
+    geometryRefinementPreviewRef.current=null;setGeometryPreview(null);
     try{
       const map=captureMap();checkedRiverMap(map);
       const plan=prepareGeometryPlan({...geometryPlanInput(map),...options,scopePolicy:'explicit_preview'});
@@ -13684,7 +13685,8 @@ export function App() {
       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);geometryRefinementPreviewRef.current=null;return true;
     }catch(error){setEditError(error instanceof Error?error.message:String(error));return false;}
   };
-  const cancelGeometryRefinementPreview = () => {geometryRefinementPreviewRef.current=null;setGeometryPreview(null);requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('[data-refine-geography]')?.focus());};
+  const cancelGeometryRefinementPreview = () => {geometryRefinementPreviewRef.current=null;setGeometryPreview(null);};
+  const closeGeometryRefinementPreview = () => {cancelGeometryRefinementPreview();requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('[data-refine-geography]')?.focus());};
   const editOneMileCell = (target:AxialHex,values:{name?:string;note?:string;landBiomeId?:string},revision:number,locale:Language) => {
     const state=physicalGridRef.current;
     if(!state||!state.selectedCell||state.selectedCell.q!==target.q||state.selectedCell.r!==target.r||mutationBlocked())return false;
@@ -16746,7 +16748,7 @@ export function App() {
 
   return (
     <div className="app" onClickCapture={e=>{if(fineGate(e))poiClickGate(e);}} onChangeCapture={e=>{if(fineGate(e))poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
-      if(geometryRefinementPreviewRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelGeometryRefinementPreview();return;}
+      if(geometryRefinementPreviewRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();closeGeometryRefinementPreview();return;}
       if(fineDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelFineDraft();return;}
       if(fineExit&&e.key==='Tab'){const buttons=[...e.currentTarget.querySelectorAll<HTMLButtonElement>('[data-fine-exit] button')],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(e.key!=='Tab'&&guardMaterialRead(e))return;
@@ -16966,7 +16968,7 @@ export function App() {
                   <div className="export-menu__items">
                     <button type="button" data-poi-export disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" data-poi-export onClick={handleExportJson} className="secondary">JSON</button>
-                    <small>{language==='ru'?`JSON v${physicalGrid?15:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid?15:10}: older app versions cannot open this file.`}</small>
+                    <small>{language==='ru'?`JSON v${physicalGrid?.geometryRefinement?16:physicalGrid?15:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid?.geometryRefinement?16:physicalGrid?15:10}: older app versions cannot open this file.`}</small>
                   </div>
                 </details>
               <button type="button" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob} onClick={handleImportJsonClick} className="secondary">{t.importJson}</button>
@@ -17013,9 +17015,9 @@ export function App() {
                 <strong>{language==='ru'?'Уточнение географии':'Refine geography'}</strong>
                 <p>{language==='ru'?'Реки следуют границам гексов в 1 милю. Связанные места и дороги согласованы с новыми берегами. Исходная карта в 6 миль сохраняется.':'Rivers follow the one-mile hex edges. Linked places and roads follow the new banks. The original six-mile map is preserved.'}</p>
                 <p>{language==='ru'?`Реки: ${geometryPreview.plan.changes.riverIds.length}; места: ${geometryPreview.plan.changes.poiIds.length}; дороги: ${geometryPreview.plan.changes.roadIds.length}. Пунктир — до уточнения.`:`Rivers: ${geometryPreview.plan.changes.riverIds.length}; places: ${geometryPreview.plan.changes.poiIds.length}; roads: ${geometryPreview.plan.changes.roadIds.length}. Dashed: before refinement.`}</p>
-                <svg data-geometry-preview-artwork viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:'100%',maxHeight:240,background:'#d9e3d2'}} aria-label={language==='ru'?'Предпросмотр уточнённой карты':'Refined map preview'}>
-                  <OneMileArtwork state={geometryPreview.state} cells={projectOneMile(oneMileSources(captureMap()),geometryPreview.state.grid.origin)} candidates={[]} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={geometryPreview.revision} coordinates={false} busy={true}
-                    visual={(id,cell)=>({color:id?GROUND_COLORS[id as BiomeId]:GROUND_WATER_COLOR})} poi={finePoi} rapids={[]} waterfalls={[]} crossings={[]} roads={[]} rivers={[]} water={fineWaterArtwork(geometryPreview.state)} geography={refinedArtwork(geometryPreview.state)} onHover={()=>{}} onPick={()=>{}}/>
+                <svg data-geometry-preview-artwork role="img" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:'100%',maxHeight:240,background:'#d9e3d2'}} aria-label={language==='ru'?'Предпросмотр уточнённой карты':'Refined map preview'}>
+                  <OneMileArtwork interactive={false} state={geometryPreview.state} cells={projectOneMile(oneMileSources(captureMap()),geometryPreview.state.grid.origin)} candidates={[]} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={geometryPreview.revision} coordinates={false} busy={true}
+                    visual={fineArtwork?.props.visual??((id,cell)=>({color:id?GROUND_COLORS[id as BiomeId]:GROUND_WATER_COLOR}))} poi={finePoi} rapids={[]} waterfalls={[]} crossings={[]} roads={[]} rivers={[]} water={fineWaterArtwork(geometryPreview.state)} geography={refinedArtwork(geometryPreview.state)} onHover={()=>{}} onPick={()=>{}}/>
                   <g data-geometry-before transform={mapRotationTransform} opacity={.45} pointerEvents="none" stroke="#8b1a1a" strokeDasharray="2 1">
                     {riverSegments.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} strokeWidth={.5}/>)}
                     {roadSegments.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} strokeWidth={.3}/>)}
@@ -17023,7 +17025,7 @@ export function App() {
                   </g>
                 </svg>
                 <button disabled={geometryPreview.revision!==documentRevision.current||documentBusy()} onClick={()=>{if(applyGeometryRefinementPreview(geometryPreview))setFineRequestedStep(1);}}>{language==='ru'?'Применить':'Apply'}</button>
-                <button className="secondary" onClick={cancelGeometryRefinementPreview}>{language==='ru'?'Отмена':'Cancel'}</button>
+                <button className="secondary" onClick={closeGeometryRefinementPreview}>{language==='ru'?'Отмена':'Cancel'}</button>
               </section>}
               {finePreview&&<section className="info-block" data-fine-preview><p>{language==='ru'?'Подробная сетка: предпросмотр готов.':'Detailed grid preview is ready.'}</p><button onClick={()=>{const p=finePreview;if(applyOneMilePreview(p))setFineRequestedStep(1);}}>{language==='ru'?'Применить':'Apply'}</button><button className="secondary" onClick={()=>{cancelOneMilePreview();setFinePreview(null);setFineRequestedStep(null);}}>{language==='ru'?'Отмена':'Cancel'}</button></section>}
               {fineActive&&editError&&!fineDraft&&<p role="alert" className="direct-error">{editError}</p>}
