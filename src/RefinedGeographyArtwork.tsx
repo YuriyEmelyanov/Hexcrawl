@@ -4,6 +4,7 @@ import type {WorldPoint} from './detailGrid';
 import type {GeometryRefinement} from './geometryPlan';
 import {geometryMixedRiverPaths} from './geometryRefinementBoundary';
 import type {normalizeRefinementRiverSource} from './geometryRefinementSource';
+import {refinementPolylineArc} from './geometryRefinementSource';
 import type {FineRoad,FineCrossing} from './oneMilePresentation';
 import {fineRoadPresentation} from './oneMilePresentation';
 import {LakeWater} from './rendering/LakeWater';
@@ -53,6 +54,7 @@ export function RefinedGeographyArtwork(p:Props){
  const retainedRapids=new Set(refinement.riverPlan.source.segments.map(s=>pair(s.riverId,s.edgeKey)));
  const retainedPaths=new Set(refinement.riverPlan.paths.map(path=>pair(path.riverId,path.sourceEdgeKey)));
  const visiblePaths=refinementVisiblePaths(p.source,refinement).filter(path=>retainedPaths.has(pair(path.riverId,path.sourceEdgeKey))||!p.hiddenRiverEdgeKeys?.has(path.sourceEdgeKey));
+ const pathByRef=new Map(visiblePaths.map(path=>[pair(path.riverId,path.sourceEdgeKey),path]));
  const locations=[...visiblePaths.flatMap(path=>path.points.map(point)),...p.roads.flatMap(r=>[{x:r.x1,y:r.y1},{x:r.x2,y:r.y2}])];
  if(!locations.length)locations.push(p.offset);
  const xs=locations.map(v=>v.x),ys=locations.map(v=>v.y),padding=10*factor;
@@ -86,9 +88,14 @@ export function RefinedGeographyArtwork(p:Props){
     {c.kind==='bridge'&&[-1,1].map(side=><polyline key={side} points={c.bankPath.map((v,i,vs)=>{const a=vs[Math.max(0,i-1)],b=vs[Math.min(vs.length-1,i+1)],length=Math.hypot(b.x-a.x,b.y-a.y)||1,q=point(v);return `${q.x-(b.y-a.y)/length*side*4/6},${q.y+(b.x-a.x)/length*side*4/6}`;}).join(' ')} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
    </g>)}
   </g>
-  {p.rapids.filter(m=>!retainedRapids.has(pair(Number(m.key.match(/^river-rapid-(\d+)-/)?.[1]),m.edgeKey??''))).map(m=><line key={m.key} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} className="river-rapid-mark" style={{strokeWidth:.2}}/>)}
+  {p.rapids.filter(m=>!retainedRapids.has(pair(Number(m.key.match(/^river-rapid-(\d+)-/)?.[1]),m.edgeKey??''))).map(m=>{
+   const path=pathByRef.get(pair(Number(m.key.match(/^river-rapid-(\d+)-/)?.[1]),m.edgeKey??''));
+   if(!path)return <line key={m.key} data-fine-rapid={m.key} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} className="river-rapid-mark" style={{strokeWidth:.2}}/>;
+   const fraction=Number(m.key.slice(m.key.lastIndexOf('-')+1)),arc=refinementPolylineArc(path.points,Number.isFinite(fraction)?fraction:.5),q=point(arc.point),half=Math.hypot(m.x2-m.x1,m.y2-m.y1)/2,dx=-arc.tangent.y*half,dy=arc.tangent.x*half;
+   return <line key={m.key} data-fine-rapid={m.key} x1={q.x-dx} y1={q.y-dy} x2={q.x+dx} y2={q.y+dy} className="river-rapid-mark" style={{strokeWidth:.2}}/>;
+  })}
   {refinement.riverPlan.rapids.map(m=>{const q=point(m.point),dx=-m.tangent.y*.8,dy=m.tangent.x*.8;return <line key={m.sourceRef} x1={q.x-dx} y1={q.y-dy} x2={q.x+dx} y2={q.y+dy} className="river-rapid-mark" style={{strokeWidth:.2}}/>;})}
-  {p.waterfalls.filter(w=>![...retainedWaterfalls].some(key=>w.key===`river-waterfall-${key}`)).map(w=><image key={w.key} href="/waterfall-color.svg" x={w.x-1.3} y={w.y-1.3} width={2.6} height={2.6}/>)}
+  {p.waterfalls.filter(w=>![...retainedWaterfalls].some(key=>w.key===`river-waterfall-${key}`)).map(w=><image key={w.key} transform={p.rotated?`rotate(-90 ${w.x} ${w.y})`:undefined} href="/waterfall-color.svg" x={w.x-1.3} y={w.y-1.3} width={2.6} height={2.6}/>)}
   {refinement.riverPlan.waterfalls.map(w=>{const q=point(w.point);return <image key={w.sourceRef} transform={p.rotated?`rotate(-90 ${q.x} ${q.y})`:undefined} href="/waterfall-color.svg" x={q.x-1.3} y={q.y-1.3} width={2.6} height={2.6}/>;})}
  </g>;
 }

@@ -87,6 +87,14 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  assert.ok(shiftedRiverCell,'fixture witnesses a fine card that source6 geometry cannot describe');
  const movedSource=g.riverPlan.source.segments.flatMap(s=>[s.from,s.to]).find(n=>{const p=g.riverPlan.ports.find(p=>p.sourceKey===n.key);return p&&Math.hypot(p.point.x-n.point.x,p.point.y-n.point.y)>1e-8;});
  assert.ok(movedSource);const port=g.riverPlan.ports.find(p=>p.sourceKey===movedSource.key).point,grid=createDetailGrid(1,fineState.grid.origin);
+ const outsideEnd={x:port.x+3,y:port.y+2},outsideEdge=`${movedSource.key}|new-source-node`,sourceWithRapid={...props.source,segments:[...props.source.segments,{riverId:999,edgeKey:outsideEdge,fullness:1,from:movedSource,to:{key:'new-source-node',point:outsideEnd}}]};
+ const projected=renderRefinedArtwork({...props,source:sourceWithRapid,rotated:true,rapids:[{key:'river-rapid-999-1-0.5',edgeKey:outsideEdge,x1:-1,y1:0,x2:1,y2:0}],waterfalls:[{key:'new-waterfall',x:17,y:18}]});
+ assert.ok(projected.includes('transform="rotate(-90 17 18)"'),'unrefined waterfall stays upright under the same view rotation');
+ const rapid=projected.match(/<line[^>]*data-fine-rapid="river-rapid-999-1-0.5"[^>]*>/)?.[0];assert.ok(rapid);
+ const number=name=>Number(rapid.match(new RegExp(`${name}="([^\"]+)"`))[1]),factor=Math.sqrt(3)*28/6;
+ const expectedCenter={x:((port.x+outsideEnd.x)/2-fineState.grid.origin.x)*factor+props.offset.x,y:((port.y+outsideEnd.y)/2-fineState.grid.origin.y)*factor+props.offset.y};
+ assert.ok(Math.abs((number('x1')+number('x2'))/2-expectedCenter.x)<1e-8);assert.ok(Math.abs((number('y1')+number('y2'))/2-expectedCenter.y)<1e-8,'outside rapid follows the actual mixed river midpoint');
+
  let mixedWitness=false;
  for(const direction of [{x:3,y:0},{x:0,y:3},{x:-3,y:0},{x:0,y:-3}]){
   const end={x:port.x+direction.x,y:port.y+direction.y},edge={id:`${movedSource.key}|new-source-node`,segment:{from:{x:movedSource.point.x+1e-12,y:movedSource.point.y},to:end},rapid:false,crossings:[]};
