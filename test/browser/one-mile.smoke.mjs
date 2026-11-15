@@ -127,7 +127,11 @@ try{
  await page.locator('input[type=file]').setInputFiles(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url).pathname);
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  await step.selectOption('6');await shot('classic42-6mi-before.jpg');
- await step.selectOption('1');const classicBefore=await snap();await shot('classic42-1mi-before.jpg');
+ await step.selectOption('1');
+ const fineSetup=page.getByText('Подробная сетка: предпросмотр готов.',{exact:true});await fineSetup.waitFor();
+ await fineSetup.locator('..').getByRole('button',{name:'Применить',exact:true}).click();
+ await page.waitForFunction(()=>document.querySelector('[data-fine-step]')?.value==='1'&&document.querySelector('[data-fine-world]'));
+ const classicBefore=await snap();await shot('classic42-1mi-before.jpg');
  await page.locator('[data-refine-geography]').click();const classicPreview=page.locator('[data-geometry-preview]');await classicPreview.waitFor();
  await classicPreview.getByRole('button',{name:'Применить',exact:true}).click();await classicPreview.waitFor({state:'detached'});
  const classicAccepted=await snap();assert.equal(classicAccepted.map.physicalGrid.geometryRefinement.riverPlan.mouths.length,9);
