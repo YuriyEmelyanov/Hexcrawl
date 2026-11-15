@@ -1,0 +1,42 @@
+{
+  "url": "https://app.hexcrawl.ru/",
+  "checked_at": "2026-11-15T19:45:20.958Z",
+  "main_sha_inspected": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "app_version_link": "Observed UI1/6mile and JSONv10 matches inspected schema; exact served bundle SHA not independently established",
+  "fixtures": {
+    "seed": "20261115",
+    "hex": "-1/-1",
+    "name": "Crows audit village",
+    "note": "CROWS audit fixture\nHome village: enclosed stone ruin.\nBlacksmith 1 - steward Ada\nCrypt 1 - steward Ben\nGeneral store 1 - steward Cara\nInn 1 - steward Don\nTemple 1 - steward Eva\nBeacon 1 - steward Finn\nShelter: one Medium creature. Protection radius is a manual note only."
+  },
+  "observed": [
+    "Classic/MB modes, Knavecheckbox; physicalview1mile/6mile only",
+    "Changed generated Town to Village; authoredname displayed",
+    "Sixinstitutions/stewards/localprotection described in GMnote; no automaticzonechange",
+    "Undo removednote; Redo restorednote",
+    "Export JSONv10, reload clears unsaved currentdocument, LoadJSON restored village/name/note/seed"
+  ],
+  "download_path": "/opt/codex/downloads/aeedde5e-9ac6-457d-930b-131d492226e6/c917fef2-2014-481f-a622-65b3badd904d",
+  "errors": [
+    {
+      "tool": "mcp__cua_repl.js",
+      "action": "Click getByText('Export ▾',exact)",
+      "safe_locator": "https://app.hexcrawl.ru/ Exportcontrol",
+      "observed_error": "Playwright selector deadline exceeded\nwaiting on click for selector internal:text=\"Export ▾\"s",
+      "cause_status": "confirmed",
+      "cause": "Locator did not match actual SUMMARY text Export; inspected DOM and selected summary; continued successfully."
+    }
+  ],
+  "slow_operation": {
+    "tool": "mcp__cua_repl.js",
+    "action": "reload then Load JSON via filechooser",
+    "elapsed_seconds": 519.1468,
+    "outcome": "completed; loaded fixture note visible",
+    "cause_status": "unknown"
+  },
+  "limitations": [
+    "Livebundle exactSHA not independently proved; runtime behavior is observedsiteevidence, codeanalysis pinnedmain separately",
+    "No player-map secrecy validation or5mile physicalgeometry workaround proven",
+    "Genericnote does not implement rules/checks/cycles"
+  ]
+}
