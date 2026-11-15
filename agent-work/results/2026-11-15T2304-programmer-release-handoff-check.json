@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T2304-programmer-release-handoff-check",
+  "role": "programmer",
+  "task_id": "HX-BL-051",
+  "status": "pages_deployed_existing_owner_live_handoff_unconfirmed",
+  "observed_at": "2026-11-15T20:06:19.346Z",
+  "role_selection_reason": "Existing registry owner generation9 retains release and live verification scope. Successful deployment does not authorize taking that owner's slot or duplicating its checks.",
+  "existing_owner": {
+    "run_id": "2026-11-15-manual-programmer-release-PR503",
+    "generation": 9,
+    "claim_ref": "agent-work/claims/2026-11-15-manual-programmer-release-PR503.json",
+    "claim_status": "active",
+    "execution_running_recorded": true,
+    "execution_liveness_independently_established": false,
+    "registry_revision": 23
+  },
+  "reconciliation": {
+    "current_claims": 334,
+    "baseline_claims": 318,
+    "unchanged_baseline_claim_blobs": 317,
+    "changed_and_original_unfinished_claims_read": 20,
+    "result_refs_read": true,
+    "legacy_research_claims_reconciled_by_registry_history": true,
+    "separate_active_manual_CROWS_claim_preserved": true
+  },
+  "release": {
+    "pr": 503,
+    "authorization_ref": "agent-work/decisions/owner-decision-2026-11-15-PR503-publication.json",
+    "source_head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+    "merge_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "merge_tree": "00006887cb0bc94481ef75960ca137ec2dd0ed5d",
+    "accepted_tree_exact_match": true,
+    "pages_run": 43748705026,
+    "pages_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43748705026",
+    "pages_status": "completed",
+    "pages_conclusion": "success",
+    "build_completed_at": "2026-11-15T19:04:32Z",
+    "deploy_completed_at": "2026-11-15T19:04:46Z",
+    "live_site": "https://app.hexcrawl.ru",
+    "live_verification": "not_confirmed_by_saved_release_result",
+    "operational_release_close": "pending_existing_owner_result_and_live_evidence"
+  },
+  "next_role": "programmer",
+  "next_step": "Current generation9 owner must persist live verification for published PR503/adc96d8, save exact merge SHA and score_update_pending handoff, finish own writing processes/claim and release only its own registry entry. Next free strategist then processes score1.2/current/history and proposes next concrete product task in the same run.",
+  "remaining_acceptance": [
+    "Saved live-site verification of accepted package and classic seed42 scenario",
+    "Current owner release result and own slot release",
+    "Mandatory exact-release score event and next-task proposal"
+  ],
+  "forecast": {
+    "deployment_complete": true,
+    "remaining_live_verification_and_handoff": "unconfirmed_duration_unknown",
+    "no_liveness_inferred_from_age_or_schedule": true
+  },
+  "projection_discrepancies": [
+    "Root latest still says publishing and old release SHA; preserved because it belongs to active manual owner. This scoped observation records the newer successful Pages result."
+  ],
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-15T20:05:31.200Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T20:06:19.346Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false
+    },
+    "errors": [],
+    "schedule_changed": false,
+    "prompt_changed": false,
+    "limitation": "Point-in-time checks only."
+  },
+  "test_change_summary": {
+    "base_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+    "head_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "read-only release readiness observation",
+    "scenario": "Registry/claim/result inventory, authorization, accepted tree and Pages workflow conclusions",
+    "reuse_or_new_reason": "Do not duplicate active owner's release/live verification",
+    "source": "Identical accepted and merged trees; no source writes by this run",
+    "executed": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "mutations": {
+    "source": false,
+    "claims": false,
+    "execution_locks": false,
+    "release": false,
+    "routing": false,
+    "schedule": false
+  },
+  "score_updated": false,
+  "owner_decisions_needed": [],
+  "limitation": "No reason invented for the missing final handoff; stale heartbeat alone is not completion or takeover authorization."
+}
