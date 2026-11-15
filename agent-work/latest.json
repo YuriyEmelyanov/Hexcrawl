@@ -29,7 +29,7 @@
   "run_id": "2026-11-15T1101-programmer-GEO2-water-closure",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "checkpoint_water_projection_only_not_complete",
+  "status": "water_support_growth_implemented_complex_feature_closure_pending",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -41,8 +41,8 @@
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
     "status": "materials_verified_latest_written_last",
-    "materials_commit_sha": "fe96b2345e31591574b4ba8505462ee4cc117043",
-    "run_id": "2026-11-15T0856-programmer-GEO2-scoped-road-removal"
+    "materials_commit_sha": "4ba081704af8af5467e03382ff45457f7a464fd3",
+    "run_id": "2026-11-15T1101-programmer-GEO2-water-closure"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -55,10 +55,10 @@
   "current_task_id": "HX-BL-051",
   "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
   "spec_version": "GEO2-v2",
-  "result_path": "agent-work/results/2026-11-15-manual-GEO2-water-seams.json",
-  "handoff_commit_sha": "fe96b2345e31591574b4ba8505462ee4cc117043",
-  "active_claim": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
-  "next_step": "Действующий запуск 2026-11-15T1101-programmer-GEO2-water-closure завершает полные проверки текущего1a8c632, затем продолжает реальные контакты водоёмов с реками/дорогами/POI. Сохранён независимый ограниченный обзор: agent-work/results/2026-11-15-manual-GEO2-water-shore.json. Не дублировать активную реализацию.",
+  "result_path": "agent-work/results/2026-11-15T1101-programmer-GEO2-water-closure.json",
+  "handoff_commit_sha": "4ba081704af8af5467e03382ff45457f7a464fd3",
+  "active_claim": null,
+  "next_step": "Продолжить приоритет HX-BL-051/GEO2: замыкание фактических контактов текущего берега с противоположными реками/устьями, дорогами и POI, затем слияние/разделение/переход море↔озеро через реальные E6 handlers. Вход — целое текущее тело по lakeId и консервативный body/region certificate на 1a8c632; body/feature кандидаты остаются pending, а не подтверждёнными дефектами. Для каждого поддержанного стыка: все3 shoreline modes/устья, строгий16, сохранность несвязанных путей и RNG, одна UndoRedo и неизменный Redo при конфликте. Новые области не уточнять автоматически. Затем оставшиеся POI-подходы, фактическая карта/PNG/UI, полный G201–G210 и независимая проверка всего точного пакета с score_assessment1.2. Публикация отдельно.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-051",
@@ -70,14 +70,14 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json"
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/GEO2-mixed-seams-20261115-manual",
+  "evidence_path": "agent-work/evidence/GEO2-water-closure-20261115-1101",
   "branch_name": "agent/hx-bl-051-geo2",
   "pr": 503,
   "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
   "tree_sha": "c683bc12e37479195c8c3a160f77d16afc14152d",
-  "checks_status": "423_node_TS_build_passed_browser_environment_socket_EPERM",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/fe96b2345e31591574b4ba8505462ee4cc117043/agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/checks.json",
-  "review_verdict": "bounded_backend_no_unresolved_blocker_full_package_pending",
+  "checks_status": "node_build_passed_browser_pending_environment_socket_EPERM",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/4ba081704af8af5467e03382ff45457f7a464fd3/agent-work/evidence/GEO2-water-closure-20261115-1101/checks.json",
+  "review_verdict": "pending_full_GEO2_implementation",
   "role_selection_mode": "readiness_and_current_owner_direction",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -178,7 +178,7 @@
   "score_update_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": null,
-  "role_selection_reason": "Approved unfinished GEO2 implementation;051 claim clear. Complete explicit road/part removal intent within scoped source membership, preserving strict other references and original ROAD rules.",
+  "role_selection_reason": "Owner explicit complex-water-seams instruction; manual checkpoint ended execution and cleared latest claim. Same approved task, no duplicate active execution.",
   "score_update_result_ref": "agent-work/results/2026-11-10T0400-strategist-score-PR499.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -198,17 +198,24 @@
     "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/40874465786",
     "published": true
   },
-  "base_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
+  "base_sha": "f733cfb372d1db611187528b877930f24e8792ee",
   "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "is_enabled": true,
-      "method": "automations.peek"
+      "checked_at": "2026-11-15T08:01:40.105Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
     },
     "end": {
-      "is_enabled": true,
+      "checked_at": "2026-11-15T08:24:50.436Z",
       "method": "automations.peek",
-      "recorded_at": "2026-11-15T07:55:19.017Z"
-    }
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "limitation": "Point-in-time only; same task, prompt and schedule unchanged."
   },
   "open_findings": [],
   "current_review_score_assessment_status": "not_ready",
@@ -643,7 +650,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/42592886004",
   "next_task_execution_allowed": true,
   "last_release_pr": 497,
-  "last_material_result_path": "agent-work/results/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "last_material_result_path": "agent-work/results/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "final_ready_for_development",
   "previous_task_release_approval": {
@@ -948,14 +955,90 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "added": 2,
+    "base_sha": "f733cfb372d1db611187528b877930f24e8792ee",
+    "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+    "added": 1,
     "removed": 0,
-    "modified": 2,
-    "named_cases_source": "TypeScript AST top-level Node test calls31→33; subscenarios/helper edits not separate cases",
-    "focused": {
-      "executed": 13,
-      "passed": 13,
-      "included_in_full_total": true
+    "modified": 0,
+    "suite": "Node",
+    "suites": [
+      {
+        "suite": "test/mapTransactions.test.mjs",
+        "base_named_cases": 33,
+        "head_named_cases": 34,
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "added_names": [
+          "GEO2 scoped lake growth across empty support replans shoreline in one actual water transaction"
+        ]
+      }
+    ],
+    "scenario_risk": "Complete same-ID lake body crossing source region boundary; all-mode contour replacement, strict16 and actual history atomically",
+    "reuse_or_new_reason": "Reuse actual water/scoped/rivers fixture helpers. One distinct handler case; no new seed series or implementation-mirroring permanent truth table.",
+    "count_source": "Exact f733cfb..1a8c632 diff and TS AST top-level named cases33→34, +1/-0/modified0. Parameterized suites unchanged. Assertions/subscenarios/temporary diagnostics are not new cases.",
+    "browser_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "rng_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "executions": {
+      "full_node": {
+        "executed": 424,
+        "passed": 424,
+        "failed": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "duration_ms": 826433.344361
+      },
+      "focused": {
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0,
+        "included_in_full_total": true
+      },
+      "browser": {
+        "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+        "exit_code": 1,
+        "after_build": true,
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
+      },
+      "rng_browser": {
+        "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+        "exit_code": 1,
+        "after_build": true,
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
+      },
+      "base_reproduction": {
+        "executed": 1,
+        "passed": 0,
+        "failed": 1,
+        "expected_failure_before_fix": true,
+        "ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/repro.log",
+        "not_summed_with_final_total": true
+      },
+      "temporary_reviewer": {
+        "suite": "temporary_reviewer_truth_table",
+        "executed": 24,
+        "passed": 24,
+        "failed": 0,
+        "skipped": 0,
+        "permanent_test": false,
+        "not_summed_with_node": true,
+        "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+        "node": "v24.22.1",
+        "method": "Synthetic prepared context, 2 body kinds x2 directions x6 opposite ref types. Only region counterpart may return true; no full geometry acceptance.",
+        "command": "node --input-type=module <<'JS' ... stdin ... JS",
+        "exit_code": 0
+      }
     }
   },
   "review_url": null,
@@ -1321,7 +1404,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1659,7 +1742,7 @@
     "approval_ref": "owner-decision-2026-11-06-rating-v1.4-approved"
   },
   "previous_result_path": "agent-work/results/2026-11-12T0204-programmer-ONE-MILE1.json",
-  "handoff_path": "agent-work/handoffs/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "handoff_path": "agent-work/handoffs/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "ui_actual_preview": {
     "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
     "manifest_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/ui-manifest.json",
@@ -2159,9 +2242,9 @@
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
-  "test_change_summary_ref": "agent-work/evidence/GEO2-mixed-seams-20261115-manual/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/GEO2-mixed-seams-20261115-manual/score-evidence.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/test-change-summary.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/score-evidence.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
   "github_review_state": "COMMENT; operational acceptance by fresh independent non-implementer. Same GitHub identity owns PR; formal self-approval unavailable.",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
@@ -2256,7 +2339,7 @@
   "next_approved_stage": "PF2-BATCH1-lifecycle-autofill-UI",
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-11T0356-PF2-BATCH1-lifecycle-UI.json",
   "authorization_status": "approved_implementation_separate_release_gate",
-  "completed_at": "2026-11-15T07:35:45.116122+00:00",
+  "completed_at": "2026-11-15T08:24:50.436Z",
   "score_changed": false,
   "next_stage_id": "ONE-MILE1-GEO2-DOMAIN-UI",
   "score_evidence_updated": true,
@@ -2265,7 +2348,7 @@
   "current_stage_release_approved": false,
   "review_ready": false,
   "current_stage_ui_status": "pending_initial_UI_map_PNG",
-  "completed_claim": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
+  "completed_claim": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "evidence_commit_sha": "a4ce553233ab9effa6b11202a89e3fa8b069b534",
   "finding_ids": [],
   "current_release_package_ref": "agent-work/handoffs/2026-11-11-PR496-release-ready.json",
@@ -4114,67 +4197,87 @@
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
   "checks_summary": {
-    "head_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
-    "tree_sha": "4d510922baf6d41bd23586834f1fbb98056db284",
-    "node": "v24.22.1",
+    "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+    "tree_sha": "c683bc12e37479195c8c3a160f77d16afc14152d",
     "command": "npm run check",
+    "node": "v24.22.1",
     "exit_code": 0,
     "typescript": "passed",
     "node_tests": {
-      "executed": 423,
-      "passed": 423,
+      "executed": 424,
+      "passed": 424,
       "failed": 0,
       "skipped": 0,
       "cancelled": 0,
-      "duration_ms": 688032.828352
+      "duration_ms": 826433.344361
     },
     "build": {
       "status": "passed",
-      "duration_seconds": 15.19
+      "duration_seconds": 14.8
     },
     "focused": {
-      "executed": 13,
-      "passed": 13,
+      "executed": 4,
+      "passed": 4,
       "failed": 0,
       "skipped": 0,
       "included_in_full_total": true
     },
+    "reproduction": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "expected_failure_before_fix": true,
+      "ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/repro.log",
+      "not_summed_with_final_total": true
+    },
+    "development_diagnostic": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "temporary": true,
+      "superseded_before_final_source": true,
+      "not_permanent_growth": true,
+      "ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/development-diagnostic.log"
+    },
+    "temporary_reviewer_diagnostic": {
+      "suite": "temporary_reviewer_truth_table",
+      "executed": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "permanent_test": false,
+      "not_summed_with_node": true,
+      "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+      "node": "v24.22.1",
+      "method": "Synthetic prepared context, 2 body kinds x2 directions x6 opposite ref types. Only region counterpart may return true; no full geometry acceptance.",
+      "command": "node --input-type=module <<'JS' ... stdin ... JS",
+      "exit_code": 0
+    },
     "browser": {
       "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
       "exit_code": 1,
+      "after_build": true,
       "status": "blocked_environment_socket_EPERM",
-      "scenarios_executed": 0,
-      "checkout_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
-      "after_build": true
+      "scenarios_executed": 0
     },
     "rng_browser": {
       "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
       "exit_code": 1,
+      "after_build": true,
       "status": "blocked_environment_socket_EPERM",
-      "scenarios_executed": 0,
-      "after_build": true
-    },
-    "source_tree_bridge": {
-      "local_reviewed_sha": "e437f577860a5bd48fe341fcae6b744c3f2ce37e",
-      "remote_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
-      "tree_sha": "4d510922baf6d41bd23586834f1fbb98056db284",
-      "changed_files": 0,
-      "verified_by": "GitHub tree result plus fetched git diff --exit-code tree tree"
-    },
-    "superseded_full_check": {
-      "status": "diagnostic_not_final_acceptance",
-      "reason": "Initial full run overlapped the independently found correction; not counted as final exact-tree evidence. No code changes during final run; only Git metadata moved to byte-identical remote tree."
+      "scenarios_executed": 0
     },
     "tracked_worktree_clean": true,
+    "source_files_exact": 4,
     "full_GEO2_acceptance": false,
     "warnings": [
       "Existing npm http-proxy env warning",
       "Existing Vite large chunk warning"
     ],
-    "environment_limitation": "Both installed /usr/bin/chromium launches abort socket() EPERM and crashpad ptrace EPERM before scenarios. No install, escalation or environment bypass."
+    "limitation": "Actual Chromium launch socket/ptrace EPERM before scenarios; no UI/map/PNG acceptance. Full source/Node/build verification only."
   },
   "full_E5_UI_pending": true,
-  "materials_commit_sha": "c87d02f7fd7fe7c5ed3117bb790cbf40ecd91ae0",
+  "materials_commit_sha": "4ba081704af8af5467e03382ff45457f7a464fd3",
   "latest_HX_BL_023_E5_features_ui_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-features-ui",
     "role": "developer",
@@ -4771,31 +4874,32 @@
   "owner_resume_dispatch_ref": "agent-work/handoffs/2026-11-04-HX-BL-023-E5-programmer-resume.json",
   "execution": {
     "schema_version": 1,
-    "run_id": "2026-11-15T0856-programmer-GEO2-scoped-road-removal",
+    "run_id": "2026-11-15T1101-programmer-GEO2-water-closure",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "GEO2-scoped-road-removal",
+    "substage": "GEO2-water-support-closure",
     "role": "programmer",
-    "base_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
-    "head_sha": "14e1d740649dbf86e523f528dee693276637b40a",
-    "tree_sha": "2575e5d84ceff5c376ccfb5cfbabff2d4e5357cd",
+    "base_sha": "f733cfb372d1db611187528b877930f24e8792ee",
+    "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+    "tree_sha": "c683bc12e37479195c8c3a160f77d16afc14152d",
     "working_branch": "agent/hx-bl-051-geo2",
     "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
     "spec_version": "GEO2-v2",
-    "result_ref": "agent-work/results/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "claim_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856",
-    "checks_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/checks.json",
-    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/test-change-summary.json",
-    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/score-evidence.json",
+    "result_ref": "agent-work/results/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101",
+    "checks_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/test-change-summary.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/score-evidence.json",
+    "bounded_review_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/bounded-review.json",
     "next_role": "programmer",
     "next_task_id": "HX-BL-051",
-    "next_step": "Продолжить HX-BL-051/GEO2 на 14e1d740649dbf86e523f528dee693276637b40a: реализовать непустой mixed closure для продолжения реки через общий старый/новый source-узел по RIV-014. Вход: GEO2-v2, текущая проекция scope, полный GeometryPlan, old/new boundary evidence; результат: согласованные source/fine порты и зависимые переправы/POI одной атомарной транзакцией, буквальная сохранность несвязанных путей и глобальных ID/локальных записей, сохранение Redo при неразрешимом конфликте и точный16 round-trip. Новую область автоматически не уточнять. Затем остальные виды непустых стыков/миграции scope, initial UI/overlays, фактическая карта/PNG и G201–G210; после полного пакета независимый exact-SHA review и score_assessment1.2. Публикация отдельно.",
-    "status": "scoped_road_removal_implemented_GEO2_in_progress",
+    "next_step": "Продолжить приоритет HX-BL-051/GEO2: замыкание фактических контактов текущего берега с противоположными реками/устьями, дорогами и POI, затем слияние/разделение/переход море↔озеро через реальные E6 handlers. Вход — целое текущее тело по lakeId и консервативный body/region certificate на 1a8c632; body/feature кандидаты остаются pending, а не подтверждёнными дефектами. Для каждого поддержанного стыка: все3 shoreline modes/устья, строгий16, сохранность несвязанных путей и RNG, одна UndoRedo и неизменный Redo при конфликте. Новые области не уточнять автоматически. Затем оставшиеся POI-подходы, фактическая карта/PNG/UI, полный G201–G210 и независимая проверка всего точного пакета с score_assessment1.2. Публикация отдельно.",
+    "status": "water_support_growth_implemented_complex_feature_closure_pending",
     "component_complete": true,
-    "implementation_complete": false,
     "full_task_complete": false,
+    "implementation_complete": false,
     "review_ready": false,
     "execution_running": false,
     "published": false,
@@ -4806,32 +4910,29 @@
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "product_score_changed": false,
     "score_model_version": "1.2",
+    "owner_decisions_needed": [],
     "owner_decision_required_for_next_step": false,
-    "completed_at": "2026-11-15T06:22:53.910Z",
+    "completed_at": "2026-11-15T08:24:50.436Z",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
       "start": {
-        "checked_at": "2026-11-15T05:57:54.082Z",
+        "checked_at": "2026-11-15T08:01:40.105Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
       "end": {
-        "checked_at": "2026-11-15T06:22:53.910Z",
+        "checked_at": "2026-11-15T08:24:50.436Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
-      "restoration": {
-        "performed": false,
-        "reason": "Both actual observations enabled"
-      },
+      "restoration_performed": false,
       "errors": [],
-      "scope": "Actual point-in-time checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
+      "limitation": "Point-in-time only; same task, prompt and schedule unchanged."
     },
-    "materials_commit_sha": "fe96b2345e31591574b4ba8505462ee4cc117043",
-    "completed_claim_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json"
+    "materials_commit_sha": "4ba081704af8af5467e03382ff45457f7a464fd3",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json"
   },
   "latest_concurrent_worker_observation": {
     "run_id": "2026-11-04-developer-E5-active-worker-observation-1800",
@@ -6195,7 +6296,7 @@
     "delta_points": null,
     "applied_at": "2026-11-06T07:21:35Z"
   },
-  "authority_status": "approved_same_task_implementation_separate_release_gate",
+  "authority_status": "approved_complex_water_seams_existing_task_separate_release_gate",
   "analysis_baseline_sha": "8ada7b9f706c4dc93e8bb7aee8c7d31caf1296fe",
   "analysis_baseline_tree": "a3cadaa32a53e9dfa146c7955ee1718f28877abc",
   "previous_evidence_path": "agent-work/evidence/score-PR491-7547a67/accounting.json",
@@ -6653,7 +6754,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-15-manual-GEO2-water-seams.json",
+  "result_ref": "agent-work/results/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7346,7 +7447,7 @@
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MC1-EN.json"
   },
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
-  "next_task_handoff_ref": "agent-work/handoffs/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "next_task_handoff_ref": "agent-work/handoffs/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
     "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
     "status": "published_verified_score_completed",
@@ -7420,23 +7521,23 @@
   "role": "programmer",
   "latest_result_ref": "agent-work/results/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
   "checks": {
-    "head_sha": "14e1d740649dbf86e523f528dee693276637b40a",
-    "tree_sha": "2575e5d84ceff5c376ccfb5cfbabff2d4e5357cd",
-    "node": "v24.22.1",
+    "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+    "tree_sha": "c683bc12e37479195c8c3a160f77d16afc14152d",
     "command": "npm run check",
+    "node": "v24.22.1",
     "exit_code": 0,
     "typescript": "passed",
     "node_tests": {
-      "executed": 421,
-      "passed": 421,
+      "executed": 424,
+      "passed": 424,
       "failed": 0,
       "skipped": 0,
       "cancelled": 0,
-      "duration_ms": 623131.984608
+      "duration_ms": 826433.344361
     },
     "build": {
       "status": "passed",
-      "duration_seconds": 14.34
+      "duration_seconds": 14.8
     },
     "focused": {
       "executed": 4,
@@ -7450,8 +7551,31 @@
       "passed": 0,
       "failed": 1,
       "expected_failure_before_fix": true,
-      "ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/repro.log",
+      "ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/repro.log",
       "not_summed_with_final_total": true
+    },
+    "development_diagnostic": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "temporary": true,
+      "superseded_before_final_source": true,
+      "not_permanent_growth": true,
+      "ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/development-diagnostic.log"
+    },
+    "temporary_reviewer_diagnostic": {
+      "suite": "temporary_reviewer_truth_table",
+      "executed": 24,
+      "passed": 24,
+      "failed": 0,
+      "skipped": 0,
+      "permanent_test": false,
+      "not_summed_with_node": true,
+      "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+      "node": "v24.22.1",
+      "method": "Synthetic prepared context, 2 body kinds x2 directions x6 opposite ref types. Only region counterpart may return true; no full geometry acceptance.",
+      "command": "node --input-type=module <<'JS' ... stdin ... JS",
+      "exit_code": 0
     },
     "browser": {
       "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
@@ -7467,21 +7591,14 @@
       "status": "blocked_environment_socket_EPERM",
       "scenarios_executed": 0
     },
-    "superseded_launcher_attempts": {
-      "count": 2,
-      "status": "configuration_error",
-      "method": "Initial shell used unsupported PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH variable; runner reads CHROMIUM_EXECUTABLE_PATH. Repeated only browser/RNG with correct existing /usr/bin/chromium after same successful build; no install or permission bypass.",
-      "scenarios_executed": 0,
-      "not_summed_with_final_total": true
-    },
-    "source_files_exact": 4,
     "tracked_worktree_clean": true,
+    "source_files_exact": 4,
     "full_GEO2_acceptance": false,
     "warnings": [
       "Existing npm http-proxy env warning",
       "Existing Vite large chunk warning"
     ],
-    "environment_limitation": "Both corrected actual Chromium launches abort process_singleton_posix.cc socket() EPERM and crashpad ptrace EPERM before scenarios. This is partial environment blockage, not a product browser verdict or reason to disable the team."
+    "limitation": "Actual Chromium launch socket/ptrace EPERM before scenarios; no UI/map/PNG acceptance. Full source/Node/build verification only."
   },
   "score_assessment_status": "independent_review_pending",
   "review_report_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
@@ -8056,7 +8173,7 @@
   "current_role_result": "agent-work/results/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
   "current_stage_score_assessment_status": "pending_independent_exact_SHA_review",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
-  "execution_running": true,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -8514,7 +8631,7 @@
   "release_readiness": "not_ready",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "not_applicable_unpublished",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -8563,8 +8680,8 @@
     "next_handoff_ref": "agent-work/handoffs/2026-11-09-HX-BL-051-DETAIL1-D2b1-resume.json"
   },
   "local_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
-  "checks_evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/checks.json",
-  "execution_status": "bounded_mixed_seams_backend_complete_full_GEO2_in_progress",
+  "checks_evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/checks.json",
+  "execution_status": "water_support_growth_implemented_complex_feature_closure_pending",
   "latest_DETAIL1_lifecycle": {
     "run_id": "2026-11-09T2204-programmer-HX-BL-051-DETAIL1-lifecycle",
     "head_sha": "616e063569ba046c9fbabae6132df3b19e3ea95f",
@@ -8701,31 +8818,32 @@
   "pr_updated": false,
   "execution_routing": {
     "schema_version": 1,
-    "run_id": "2026-11-15T0856-programmer-GEO2-scoped-road-removal",
+    "run_id": "2026-11-15T1101-programmer-GEO2-water-closure",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "GEO2-scoped-road-removal",
+    "substage": "GEO2-water-support-closure",
     "role": "programmer",
-    "base_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
-    "head_sha": "14e1d740649dbf86e523f528dee693276637b40a",
-    "tree_sha": "2575e5d84ceff5c376ccfb5cfbabff2d4e5357cd",
+    "base_sha": "f733cfb372d1db611187528b877930f24e8792ee",
+    "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+    "tree_sha": "c683bc12e37479195c8c3a160f77d16afc14152d",
     "working_branch": "agent/hx-bl-051-geo2",
     "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
     "spec_version": "GEO2-v2",
-    "result_ref": "agent-work/results/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "claim_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856",
-    "checks_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/checks.json",
-    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/test-change-summary.json",
-    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/score-evidence.json",
+    "result_ref": "agent-work/results/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101",
+    "checks_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/test-change-summary.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/score-evidence.json",
+    "bounded_review_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/bounded-review.json",
     "next_role": "programmer",
     "next_task_id": "HX-BL-051",
-    "next_step": "Продолжить HX-BL-051/GEO2 на 14e1d740649dbf86e523f528dee693276637b40a: реализовать непустой mixed closure для продолжения реки через общий старый/новый source-узел по RIV-014. Вход: GEO2-v2, текущая проекция scope, полный GeometryPlan, old/new boundary evidence; результат: согласованные source/fine порты и зависимые переправы/POI одной атомарной транзакцией, буквальная сохранность несвязанных путей и глобальных ID/локальных записей, сохранение Redo при неразрешимом конфликте и точный16 round-trip. Новую область автоматически не уточнять. Затем остальные виды непустых стыков/миграции scope, initial UI/overlays, фактическая карта/PNG и G201–G210; после полного пакета независимый exact-SHA review и score_assessment1.2. Публикация отдельно.",
-    "status": "scoped_road_removal_implemented_GEO2_in_progress",
+    "next_step": "Продолжить приоритет HX-BL-051/GEO2: замыкание фактических контактов текущего берега с противоположными реками/устьями, дорогами и POI, затем слияние/разделение/переход море↔озеро через реальные E6 handlers. Вход — целое текущее тело по lakeId и консервативный body/region certificate на 1a8c632; body/feature кандидаты остаются pending, а не подтверждёнными дефектами. Для каждого поддержанного стыка: все3 shoreline modes/устья, строгий16, сохранность несвязанных путей и RNG, одна UndoRedo и неизменный Redo при конфликте. Новые области не уточнять автоматически. Затем оставшиеся POI-подходы, фактическая карта/PNG/UI, полный G201–G210 и независимая проверка всего точного пакета с score_assessment1.2. Публикация отдельно.",
+    "status": "water_support_growth_implemented_complex_feature_closure_pending",
     "component_complete": true,
-    "implementation_complete": false,
     "full_task_complete": false,
+    "implementation_complete": false,
     "review_ready": false,
     "execution_running": false,
     "published": false,
@@ -8736,32 +8854,29 @@
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "product_score_changed": false,
     "score_model_version": "1.2",
+    "owner_decisions_needed": [],
     "owner_decision_required_for_next_step": false,
-    "completed_at": "2026-11-15T06:22:53.910Z",
+    "completed_at": "2026-11-15T08:24:50.436Z",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
       "start": {
-        "checked_at": "2026-11-15T05:57:54.082Z",
+        "checked_at": "2026-11-15T08:01:40.105Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
       "end": {
-        "checked_at": "2026-11-15T06:22:53.910Z",
+        "checked_at": "2026-11-15T08:24:50.436Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
-      "restoration": {
-        "performed": false,
-        "reason": "Both actual observations enabled"
-      },
+      "restoration_performed": false,
       "errors": [],
-      "scope": "Actual point-in-time checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
+      "limitation": "Point-in-time only; same task, prompt and schedule unchanged."
     },
-    "materials_commit_sha": "fe96b2345e31591574b4ba8505462ee4cc117043",
-    "completed_claim_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json"
+    "materials_commit_sha": "4ba081704af8af5467e03382ff45457f7a464fd3",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json"
   },
   "last_team_coordination": {
     "run_id": "2026-11-10T0300-strategist-release-routing",
@@ -9205,7 +9320,7 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-15-manual-programmer-GEO2-mixed-seams",
+  "last_completed_run_id": "2026-11-15T1101-programmer-GEO2-water-closure",
   "storage_verification": {
     "materials_commit_sha": "c87d02f7fd7fe7c5ed3117bb790cbf40ecd91ae0",
     "result_readback": true,
@@ -9760,7 +9875,7 @@
     "next_role": "programmer",
     "next_step": "Продолжить PR501: полный protected mask, адресная категория, подтверждение/удержание PF2 потерь, autofill новой территории и dirty replay, затем checkbox/button/маркеры/карточка/редактор и actualUI1500/390/320. После целого пакета — независимая проверка."
   },
-  "checks_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/checks.json",
+  "checks_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/checks.json",
   "latest_PF2_BATCH1_lifecycle": {
     "run_id": "2026-11-11T0504-programmer-PF2-lifecycle",
     "result_ref": "agent-work/results/2026-11-11T0504-programmer-PF2-lifecycle.json",
@@ -10268,7 +10383,7 @@
     }
   },
   "source_branch": "agent/hx-bl-051-geo2",
-  "claim_completed_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
+  "claim_completed_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "actual_full_UI_pending": false,
   "latest_DETAIL1_grid_focus": {
     "run_id": "2026-11-11T0804-programmer-DETAIL1-focus",
@@ -10813,7 +10928,7 @@
     }
   },
   "updated_on": "2026-11-14",
-  "claim_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
+  "claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "latest_programmer_result_ref": "agent-work/results/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
   "source_sha": "f733cfb372d1db611187528b877930f24e8792ee",
   "source_pr": 496,
@@ -11258,7 +11373,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -11601,9 +11716,9 @@
     "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка."
   },
   "substage": "GEO2-scoped-river-removal",
-  "active_claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
+  "active_claim_ref": null,
   "bounded_implementation_complete": true,
-  "score_evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/score-evidence.json",
+  "score_evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/score-evidence.json",
   "ui_actual_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
   "full_feedback_resolved": false,
   "known_open_requirements": [
@@ -11933,31 +12048,32 @@
   "wip_tree_sha": "4d510922baf6d41bd23586834f1fbb98056db284",
   "latest_GEO2_implementation": {
     "schema_version": 1,
-    "run_id": "2026-11-15T0856-programmer-GEO2-scoped-road-removal",
+    "run_id": "2026-11-15T1101-programmer-GEO2-water-closure",
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
-    "substage": "GEO2-scoped-road-removal",
+    "substage": "GEO2-water-support-closure",
     "role": "programmer",
-    "base_sha": "0832eedfc65895197e2cc098d5b694a3d9f4acc7",
-    "head_sha": "14e1d740649dbf86e523f528dee693276637b40a",
-    "tree_sha": "2575e5d84ceff5c376ccfb5cfbabff2d4e5357cd",
+    "base_sha": "f733cfb372d1db611187528b877930f24e8792ee",
+    "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+    "tree_sha": "c683bc12e37479195c8c3a160f77d16afc14152d",
     "working_branch": "agent/hx-bl-051-geo2",
     "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
     "spec_version": "GEO2-v2",
-    "result_ref": "agent-work/results/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "claim_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json",
-    "evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856",
-    "checks_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/checks.json",
-    "test_change_summary_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/test-change-summary.json",
-    "score_evidence_ref": "agent-work/evidence/GEO2-scoped-road-removal-20261115-0856/score-evidence.json",
+    "result_ref": "agent-work/results/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101",
+    "checks_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/test-change-summary.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/score-evidence.json",
+    "bounded_review_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/bounded-review.json",
     "next_role": "programmer",
     "next_task_id": "HX-BL-051",
-    "next_step": "Продолжить HX-BL-051/GEO2 на 14e1d740649dbf86e523f528dee693276637b40a: реализовать непустой mixed closure для продолжения реки через общий старый/новый source-узел по RIV-014. Вход: GEO2-v2, текущая проекция scope, полный GeometryPlan, old/new boundary evidence; результат: согласованные source/fine порты и зависимые переправы/POI одной атомарной транзакцией, буквальная сохранность несвязанных путей и глобальных ID/локальных записей, сохранение Redo при неразрешимом конфликте и точный16 round-trip. Новую область автоматически не уточнять. Затем остальные виды непустых стыков/миграции scope, initial UI/overlays, фактическая карта/PNG и G201–G210; после полного пакета независимый exact-SHA review и score_assessment1.2. Публикация отдельно.",
-    "status": "scoped_road_removal_implemented_GEO2_in_progress",
+    "next_step": "Продолжить приоритет HX-BL-051/GEO2: замыкание фактических контактов текущего берега с противоположными реками/устьями, дорогами и POI, затем слияние/разделение/переход море↔озеро через реальные E6 handlers. Вход — целое текущее тело по lakeId и консервативный body/region certificate на 1a8c632; body/feature кандидаты остаются pending, а не подтверждёнными дефектами. Для каждого поддержанного стыка: все3 shoreline modes/устья, строгий16, сохранность несвязанных путей и RNG, одна UndoRedo и неизменный Redo при конфликте. Новые области не уточнять автоматически. Затем оставшиеся POI-подходы, фактическая карта/PNG/UI, полный G201–G210 и независимая проверка всего точного пакета с score_assessment1.2. Публикация отдельно.",
+    "status": "water_support_growth_implemented_complex_feature_closure_pending",
     "component_complete": true,
-    "implementation_complete": false,
     "full_task_complete": false,
+    "implementation_complete": false,
     "review_ready": false,
     "execution_running": false,
     "published": false,
@@ -11968,32 +12084,29 @@
     "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "product_score_changed": false,
     "score_model_version": "1.2",
+    "owner_decisions_needed": [],
     "owner_decision_required_for_next_step": false,
-    "completed_at": "2026-11-15T06:22:53.910Z",
+    "completed_at": "2026-11-15T08:24:50.436Z",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "title": "Команда HexCrawl",
       "start": {
-        "checked_at": "2026-11-15T05:57:54.082Z",
+        "checked_at": "2026-11-15T08:01:40.105Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
       "end": {
-        "checked_at": "2026-11-15T06:22:53.910Z",
+        "checked_at": "2026-11-15T08:24:50.436Z",
         "method": "automations.peek",
         "status": "checked",
         "is_enabled": true
       },
-      "restoration": {
-        "performed": false,
-        "reason": "Both actual observations enabled"
-      },
+      "restoration_performed": false,
       "errors": [],
-      "scope": "Actual point-in-time checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
+      "limitation": "Point-in-time only; same task, prompt and schedule unchanged."
     },
-    "materials_commit_sha": "fe96b2345e31591574b4ba8505462ee4cc117043",
-    "completed_claim_ref": "agent-work/claims/2026-11-15T0856-programmer-GEO2-scoped-road-removal.json"
+    "materials_commit_sha": "4ba081704af8af5467e03382ff45457f7a464fd3",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json"
   },
   "previous_primary_before_GEO2_river_candidate": {
     "run_id": "2026-11-14T0055-programmer-ONE-MILE1-GEO2",
@@ -13735,5 +13848,86 @@
     "completed_at": "2026-11-15T08:17:01.618Z",
     "result_ref": "agent-work/results/2026-11-15-manual-GEO2-water-shore.json"
   },
-  "last_manual_water_review_ref": "agent-work/results/2026-11-15-manual-GEO2-water-shore.json"
+  "last_manual_water_review_ref": "agent-work/results/2026-11-15-manual-GEO2-water-shore.json",
+  "previous_run_before_GEO2_water_support_closure": {
+    "run_id": "2026-11-15T1101-programmer-GEO2-water-closure",
+    "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+    "result_ref": "agent-work/results/2026-11-15-manual-GEO2-water-seams.json",
+    "status": "checkpoint_water_projection_only_not_complete"
+  },
+  "latest_GEO2_water_support_closure": {
+    "schema_version": 1,
+    "run_id": "2026-11-15T1101-programmer-GEO2-water-closure",
+    "task_id": "HX-BL-051",
+    "stage_id": "ONE-MILE1",
+    "substage": "GEO2-water-support-closure",
+    "role": "programmer",
+    "base_sha": "f733cfb372d1db611187528b877930f24e8792ee",
+    "head_sha": "1a8c632777eb26549e1834d1f69a98fe7656885f",
+    "tree_sha": "c683bc12e37479195c8c3a160f77d16afc14152d",
+    "working_branch": "agent/hx-bl-051-geo2",
+    "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+    "spec_version": "GEO2-v2",
+    "result_ref": "agent-work/results/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json",
+    "evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101",
+    "checks_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/checks.json",
+    "test_change_summary_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/test-change-summary.json",
+    "score_evidence_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/score-evidence.json",
+    "bounded_review_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/bounded-review.json",
+    "next_role": "programmer",
+    "next_task_id": "HX-BL-051",
+    "next_step": "Продолжить приоритет HX-BL-051/GEO2: замыкание фактических контактов текущего берега с противоположными реками/устьями, дорогами и POI, затем слияние/разделение/переход море↔озеро через реальные E6 handlers. Вход — целое текущее тело по lakeId и консервативный body/region certificate на 1a8c632; body/feature кандидаты остаются pending, а не подтверждёнными дефектами. Для каждого поддержанного стыка: все3 shoreline modes/устья, строгий16, сохранность несвязанных путей и RNG, одна UndoRedo и неизменный Redo при конфликте. Новые области не уточнять автоматически. Затем оставшиеся POI-подходы, фактическая карта/PNG/UI, полный G201–G210 и независимая проверка всего точного пакета с score_assessment1.2. Публикация отдельно.",
+    "status": "water_support_growth_implemented_complex_feature_closure_pending",
+    "component_complete": true,
+    "full_task_complete": false,
+    "implementation_complete": false,
+    "review_ready": false,
+    "execution_running": false,
+    "published": false,
+    "main_changed": false,
+    "release_authorized": false,
+    "pr": 503,
+    "pr_updated": false,
+    "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+    "product_score_changed": false,
+    "score_model_version": "1.2",
+    "owner_decisions_needed": [],
+    "owner_decision_required_for_next_step": false,
+    "completed_at": "2026-11-15T08:24:50.436Z",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-15T08:01:40.105Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-15T08:24:50.436Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true
+      },
+      "restoration_performed": false,
+      "errors": [],
+      "limitation": "Point-in-time only; same task, prompt and schedule unchanged."
+    },
+    "materials_commit_sha": "4ba081704af8af5467e03382ff45457f7a464fd3",
+    "completed_claim_ref": "agent-work/claims/2026-11-15T1101-programmer-GEO2-water-closure.json"
+  },
+  "bounded_review_ref": "agent-work/evidence/GEO2-water-closure-20261115-1101/bounded-review.json",
+  "latest_GEO2_water_support_storage_verification": {
+    "source_exact_files": 4,
+    "early_materials": {
+      "sha": "3bdfe8913ff839c39e3c5ba7f7758a11b69de675",
+      "count": 7
+    },
+    "final_materials": {
+      "sha": "4ba081704af8af5467e03382ff45457f7a464fd3",
+      "count": 14
+    },
+    "latest_written_last": true
+  }
 }
