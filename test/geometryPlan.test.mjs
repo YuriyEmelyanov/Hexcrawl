@@ -55,6 +55,7 @@ test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes
  h.render().undoMap();assert.equal(JSON.stringify(h.render().captureDocument()),before);h.render().redoMap();assert.deepEqual(h.render().captureDocument(),accepted);
  const bad=copy(g);bad.riverPlan.mouths[0].lakeId=999999;assert.throws(()=>parseGeometryRefinement(bad,parseDetail1StateV11));
  const missing=copy(g);missing.riverPlan.mouths=missing.riverPlan.mouths.filter(m=>m.sourceNodeKey!=='72.746,-70');assert.throws(()=>parseGeometryRefinement(missing,parseDetail1StateV11),/missing through-lake mouths/);
+ const hidden=copy(missing);hidden.riverPlan.paintWater.capsules=hidden.riverPlan.paintWater.capsules.filter(c=>c.sourceEdgeKey!=='72.746,-70|72.746,-98');assert.throws(()=>parseGeometryRefinement(hidden,parseDetail1StateV11),/paint water source correspondence/);
 });
 const reverseKeys=value=>Array.isArray(value)?value.map(reverseKeys):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).reverse().map(([k,v])=>[k,reverseKeys(v)])):value;
 let deltaFixture;

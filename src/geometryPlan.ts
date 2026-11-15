@@ -161,6 +161,11 @@ function validateRivers(g:GeometryRefinement,inputs:Obj){
   const s=source.get(pair(p.riverId,p.sourceEdgeKey))!,body=coarseLakes.get(lakeId);
   return !!body&&!r.paintWater.capsules.some(c=>c.riverId===p.riverId&&c.sourceEdgeKey===p.sourceEdgeKey)&&[s.from.point,s.to.point].every(point=>refinementShoreLocation(body,point)!=='outside');
  };
+ for(const p of paths.values()){
+  const s=source.get(pair(p.riverId,p.sourceEdgeKey))!,masked=[...coarseLakes.values()].some(body=>[s.from.point,s.to.point].every(point=>refinementShoreLocation(body,point)!=='outside'));
+  const paint=r.paintWater.capsules.filter(c=>c.riverId===p.riverId&&c.sourceEdgeKey===p.sourceEdgeKey);
+  if(paint.length!==(masked?0:p.steps.length))return fail('paint water source correspondence');
+ }
  for(const m of mouths.values()){
   const t=terminations.get(m.sourceNodeKey);if(t?.kind==='lake'&&t.hydrologyNodeId===`lake:${m.lakeId}`)continue;
   const degree=incidences.get(m.sourceNodeKey),body=lakes.get(String(m.lakeId))!,port=ports.get(m.sourceNodeKey)!;
