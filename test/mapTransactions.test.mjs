@@ -832,7 +832,7 @@ test('G208-AUTO real refinement preview cancel, stale revision and failed prepar
  assert.equal(await h.render().previewGeometryRefinement({prepareWorkBudget:1}),null);
  assert.match(h.render().editError,/Карта сохранена без изменений/);assert.doesNotMatch(h.render().editError,/GEO2|prepare_|river_mouth/);
  h.render().setLanguage('en');assert.equal(await h.render().previewGeometryRefinement({prepareWorkBudget:1}),null);assert.match(h.render().editError,/Map unchanged/);h.render().setLanguage('ru');
- const restoreInput=h.injectFunction('geometryPlanInput',()=>{throw 'GEO2 poi: POI:detail-poi:1; river:3';});
+ const restoreInput=h.injectFunction('geometryPlanInput',()=>{throw 'GEO2 poi: detail-poi:1; river:3';});
  for(const locale of ['ru','en']){h.render().setLanguage(locale);assert.equal(await h.render().previewGeometryRefinement(),null);assert.match(h.render().editError,/detail-poi:1/);assert.match(h.render().editError,locale==='ru'?/Карта сохранена без изменений/:/Map unchanged/);}
  restoreInput();h.render().setLanguage('ru');
  assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);

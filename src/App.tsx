@@ -615,7 +615,7 @@ function geometryCommandError(error:unknown,language:Language):string|null{
   :/mouth|lake|water/.test(raw)?(ru?'Не удалось согласовать устья рек с берегами водоёмов.':'River mouths could not be reconciled with the water shores.')
   :(ru?'Не удалось согласовать реки и связанные объекты.':'Rivers and linked places could not be reconciled.');
  const labels:Record<string,string>=ru?{river:'река',road:'дорога',lake:'озеро',POI:'объект'}:{river:'river',road:'road',lake:'lake',POI:'place'};
- const entities=[...new Set([...raw.matchAll(/\b(river|road|lake|POI):([\w:-]+)/g)].map(m=>`${labels[m[1]]} ${m[2]}`))].slice(0,3);
+ const entities=[...new Set([...raw.matchAll(/\b(river|road|lake|POI):([\w:-]+)/g)].map(m=>`${labels[m[1]]} ${m[2]}`).concat([...raw.matchAll(/\bdetail-poi:\d+\b/g)].map(m=>`${labels.POI} ${m[0]}`)))].slice(0,3);
  return `${cause}${entities.length?` (${entities.join(', ')})`:''} ${ru?'Карта сохранена без изменений.':'Map unchanged.'}`;
 }
 
@@ -12039,6 +12039,8 @@ export function App() {
   const [fineExit,setFineExit]=useState<{action:()=>void;revision:number;draft:FineDraft}|null>(null);
   const [finePreview,setFinePreview]=useState<NonNullable<typeof oneMilePreviewRef.current>|null>(null);
   const [geometryPreview,setGeometryPreview]=useState<NonNullable<typeof geometryRefinementPreviewRef.current>|null>(null);
+  const geometryPreviewPanelRef=useRef<HTMLElement>(null);
+  useEffect(()=>{const panel=geometryPreviewPanelRef.current;if(geometryPreview&&panel){panel.scrollIntoView({block:'nearest'});panel.focus({preventScroll:true});}},[geometryPreview]);
   const [fineRequestedStep,setFineRequestedStep]=useState<1|6|null>(null);
   const fineLegacyRef=useRef(false);
   const fineFocusRef=useRef<{x:number;y:number;clientX:number;clientY:number}|null>(null);
@@ -17030,7 +17032,7 @@ export function App() {
           <aside id="side-panel-info" className="roll-card">
             <div className="info-body">
               {regions.length > 0 || hexTerrainByKey.size > 0 ? <>
-              {geometryPreview&&<section className="info-block" data-geometry-preview data-editor-only="geometry-preview">
+              {geometryPreview&&<section ref={geometryPreviewPanelRef} tabIndex={-1} aria-label={language==='ru'?'Предпросмотр уточнения':'Refinement preview'} className="info-block" data-geometry-preview data-editor-only="geometry-preview">
                 <strong>{language==='ru'?'Уточнение географии':'Refine geography'}</strong>
                 <p>{language==='ru'?'Реки следуют границам гексов в 1 милю. Связанные места и дороги согласованы с новыми берегами. Исходная карта в 6 миль сохраняется.':'Rivers follow the one-mile hex edges. Linked places and roads follow the new banks. The original six-mile map is preserved.'}</p>
                 <p>{language==='ru'?`Реки: ${geometryPreview.plan.changes.riverIds.length}; места: ${geometryPreview.plan.changes.poiIds.length}; дороги: ${geometryPreview.plan.changes.roadIds.length}. Пунктир — до уточнения.`:`Rivers: ${geometryPreview.plan.changes.riverIds.length}; places: ${geometryPreview.plan.changes.poiIds.length}; roads: ${geometryPreview.plan.changes.roadIds.length}. Dashed: before refinement.`}</p>
@@ -17361,6 +17363,12 @@ export function App() {
               style={{ width: `${displayMapWidth}px`, height: `${displayMapHeight}px`, transform: `translateZ(0) scale(${mapScaleRef.current})`, '--road-hit-width': `${44/mapScaleRef.current}px`, '--crossing-hit-radius': `${22/mapScaleRef.current}px`, '--water-color': WATER_PALETTE.river, '--water-marks': WATER_PALETTE.marks } as CSSProperties}
             >
             {fineActive?<g data-fine-busy-snapshot={busyFineView?true:undefined} transform="translate(8 8)">{busyFineView?.artwork??fineArtwork}</g>:mapArtwork}
+            {fineActive&&geometryPreview&&<g data-geometry-preview-overlay data-editor-only="geometry-refinement" pointerEvents="none" transform="translate(8 8)">
+              <g transform={mapRotationTransform} opacity={.7} style={{'--water-color':'#facc15'} as CSSProperties}>
+                {refinedArtwork(geometryPreview.state)}
+                {geometryPreview.state.geometryRefinement!.pois.pois.map(p=>{const factor=Math.sqrt(3)*HEX_SIZE/6,origin=geometryPreview.state.grid.origin,point=(v:{x:number;y:number})=>({x:(v.x-origin.x)*factor+riverOffset.x,y:(v.y-origin.y)*factor+riverOffset.y}),a=point(p.oldAnchor),b=point(p.newAnchor);return <g key={p.poiId}><line x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke="#facc15" strokeWidth={.3} strokeDasharray="1 1"/><circle cx={b.x} cy={b.y} r={1.5} fill="none" stroke="#facc15" strokeWidth={.4}><title>{p.poiId}</title></circle></g>;})}
+              </g>
+            </g>}
             {fineActive&&physicalGrid?.selectedCell&&<g data-editor-only="fine-selection" transform={`translate(8 8) ${mapRotationTransform??''}`} pointerEvents="none"><polygon data-fine-selected={hexKey(physicalGrid.selectedCell)} points={detailCellPolygon(createDetailGrid(1,physicalGrid.grid.origin),physicalGrid.selectedCell).map(p=>`${(p.x-physicalGrid.grid.origin.x)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.x},${(p.y-physicalGrid.grid.origin.y)*Math.sqrt(3)*HEX_SIZE/6+riverOffset.y}`).join(' ')} fill="none" stroke="#7dd3fc" strokeWidth={2/mapScaleRef.current} vectorEffect="non-scaling-stroke"/></g>}
             {editMode&&riverFeatureTarget&&!riverDraft&&<g data-editor-only="river-selected" transform={mapRotationTransform} pointerEvents="none">
               <defs><marker id="river-selected-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#7dd3fc" /></marker></defs>

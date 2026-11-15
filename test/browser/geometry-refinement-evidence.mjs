@@ -10,10 +10,14 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
  const before=await snap(),refine=page.locator('[data-refine-geography]'),preview=page.locator('[data-geometry-preview]');
  await refine.click();await preview.waitFor();
  assert.ok(await preview.locator('[data-refined-river]').count());
- assert.equal(await page.locator('svg[data-render-phase] [data-refined-geography]').count(),0,'candidate is separate from accepted map');
+ assert.equal(await page.locator('svg[data-render-phase] [data-fine-world] [data-refined-geography]').count(),0,'candidate is separate from accepted scene');
  assert.deepEqual(await snap(),before,'Preview does not change document or RNG');
- for(const locale of ['ru','en'])for(const width of [1500,390,320]){await lang(locale);await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await shot(`geo2-preview-${locale}-${width}.jpg`);}
+ for(const locale of ['ru','en'])for(const width of [1500,390,320]){await lang(locale);await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await preview.scrollIntoViewIfNeeded();await shot(`geo2-preview-${locale}-${width}.jpg`);}
  await lang('en');await page.setViewportSize({width:1500,height:1000});
+ assert.equal(await page.locator('[data-geometry-preview-overlay] [data-refined-geography]').count(),1,'proposed geometry is visible over the main map');
+ const exportMenu=page.locator('details.export-menu');if(await exportMenu.getAttribute('open')===null)await exportMenu.locator('summary').click();
+ await page.evaluate(()=>window.__oneSvg=null);const [pendingPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await pendingPng.path(),new URL('geo2-preview-accepted-only.png',out));
+ assert.doesNotMatch(await page.evaluate(()=>window.__oneSvg),/data-geometry-preview|data-refined-geography/,'PNG excludes the unaccepted overlay');
  await page.keyboard.press('Escape');await preview.waitFor({state:'detached'});assert.equal(await refine.evaluate(el=>el===document.activeElement),true);assert.deepEqual(await snap(),before);
  await refine.click();await preview.getByRole('button',{name:'Cancel',exact:true}).click();assert.deepEqual(await snap(),before);
  await refine.click();await preview.getByRole('button',{name:'Apply',exact:true}).click();
