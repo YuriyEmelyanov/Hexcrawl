@@ -23,7 +23,7 @@ export type GeometryRefinement=Readonly<{
  riverPlan:Prepared['rivers'];pois:Prepared['pois'];roads:Prepared['roads'];
  unresolved:readonly string[];lockedPoiIds:readonly string[];sideChoices:readonly GeometrySideChoice[];
 }>;
-export type GeometryPlanInput=(SourceInput|PreviewInput&Readonly<{seed:number}>)&Readonly<{authoredState?:Detail1State}>;
+export type GeometryPlanInput=(SourceInput|PreviewInput&Readonly<{seed:number}>)&Readonly<{authoredState?:Detail1State;scopePolicy?:'explicit_preview'}>;
 export type GeometryPlanChanges=Readonly<{riverIds:readonly number[];poiIds:readonly string[];roadIds:readonly number[];crossingKeys:readonly string[]}>;
 export type GeometryPlanError=Readonly<{status:'error';code:'geometry_conflict';stage:string;refs:readonly string[];completeGeometryPlan:false;readyForApplication:false}>;
 const EPS=1e-8;
@@ -255,16 +255,15 @@ export function validateGeometryRefinementSource(input:GeometrySourceValidationI
 
 function equality(a:unknown,b:unknown):boolean{if(a===b)return true;if(!a||!b||typeof a!=='object'||typeof b!=='object'||Array.isArray(a)!==Array.isArray(b))return false;if(Array.isArray(a)&&Array.isArray(b))return a.length===b.length&&a.every((v,i)=>equality(v,b[i]));const ka=Object.keys(a).sort(),kb=Object.keys(b).sort();return ka.length===kb.length&&ka.every((k,i)=>k===kb[i]&&equality((a as Obj)[k],(b as Obj)[k]));}
 function inputPayload(g:GeometryRefinement):Obj{return JSON.parse(g.sourceFingerprint.slice('geo2-source-input-v1:'.length)) as Obj;}
-/** A new generated domain must remain unrefined. Until a stored subdomain can
- * be projected independently, refuse that transition rather than acquire or
- * move its geometry implicitly. Ordinary edits inside the accepted domain do
- * not have this restriction. */
-function dependencyClosure(previous:GeometryRefinement,next:GeometryRefinement){
+/** A generated domain stays unrefined during ordinary edits/generation.
+ * Only the explicit preview/Apply entry point may acquire that domain. Even
+ * there, all affected/unrelated geometry checks below remain mandatory. */
+function dependencyClosure(previous:GeometryRefinement,next:GeometryRefinement,explicitPreview=false){
  const before=inputPayload(previous),after=inputPayload(next),riverIds=new Set<number>(),roadIds=new Set<number>(),poiIds=new Set<string>();
  const diff=<T>(a:readonly T[],b:readonly T[],key:(v:T)=>string,changed:(v:T)=>void)=>{const old=new Map(a.map(v=>[key(v),v])),current=new Map(b.map(v=>[key(v),v]));for(const [k,v]of current)if(!equality(old.get(k),v))changed(v);for(const [k,v]of old)if(!current.has(k))changed(v);};
  const oldRegions=list<{id:number;hexes:readonly unknown[]}>(before.regions,'old regions'),newRegions=list<{id:number;hexes:readonly unknown[]}>(after.regions,'new regions');
  const domain=(regions:typeof oldRegions)=>new Set(regions.flatMap(r=>r.hexes.map(h=>JSON.stringify([r.id,h]))));const oldDomain=domain(oldRegions),newDomain=domain(newRegions);
- if([...newDomain].some(k=>!oldDomain.has(k)))return fail('refinement_domain_expansion');
+ if(!explicitPreview&&[...newDomain].some(k=>!oldDomain.has(k)))return fail('refinement_domain_expansion');
  const oldSegments=previous.riverPlan.source.segments,newSegments=next.riverPlan.source.segments;
  diff(oldSegments,newSegments,s=>pair(s.riverId,s.edgeKey),s=>riverIds.add(s.riverId));
  diff(previous.riverPlan.source.boundaries,next.riverPlan.source.boundaries,b=>JSON.stringify([b.riverId,b.sectorId,b.end]),b=>riverIds.add(b.riverId));
@@ -299,6 +298,7 @@ export function prepareGeometryPlan(input:GeometryPlanInput){
  try {
   const accepted=input.map.physicalGrid,previous=accepted?.version===4?accepted.geometryRefinement:undefined;
   if(input.cancelled?.())return error('source',['prepare_cancelled']);
+  if(input.scopePolicy!==undefined&&input.scopePolicy!=='explicit_preview')return error('source',['invalid_scope_policy']);
   const authored=input.authoredState??accepted?.globalAuthoredState??previous?.sourceState??accepted;
   if(authored&&authored.version!==3)return error('source',['authored_physical3_required']);
   const sourceState=authored?parseDetail1StateV11(authored):undefined;
@@ -314,7 +314,7 @@ export function prepareGeometryPlan(input:GeometryPlanInput){
   const source=prepared.candidateState,origin=source.grid.origin,sourceSegments=new Map(prepared.rivers.source.segments.map(s=>[pair(s.riverId,s.edgeKey),s]));
   const sideChoices=prepared.rivers.paths.flatMap(p=>p.steps.map((_,stepIndex)=>{const actual=chosenSide(sourceSegments.get(pair(p.riverId,p.sourceEdgeKey))!,p.points[stepIndex],p.points[stepIndex+1],origin),preferredSide=refinementPreferredSide(seed,p.riverId,p.sourceEdgeKey,actual.cell);return {riverId:p.riverId,sourceEdgeKey:p.sourceEdgeKey,stepIndex,cell:actual.cell,preferredSide,chosenSide:actual.side,constraintFallback:actual.side!==null&&actual.side!==preferredSide};}));
   const refinement=parseGeometryRefinement({version:1,algorithmVersion:'geo2-v1',sourceFingerprint:prepared.sourceFingerprint,sourceState:source,riverPlan:prepared.rivers,pois:prepared.pois,roads:prepared.roads,unresolved:prepared.unresolved,lockedPoiIds:[...(input.lockedPoiIds??previous?.lockedPoiIds??[])].sort(),sideChoices},parseDetail1StateV11);
-  if(previous)dependencyClosure(previous,refinement);
+  if(previous)dependencyClosure(previous,refinement,input.scopePolicy==='explicit_preview');
   const candidateState=parseDetail1StateV11({...source,version:4,poiFootprints:prepared.footprints,geometryRefinement:refinement,...(accepted?{viewStep:accepted.viewStep,fineCellEdits:accepted.fineCellEdits,...(accepted.selectedCell?{selectedCell:accepted.selectedCell}:{}),...(accepted.selectedWorldPoint?{selectedWorldPoint:accepted.selectedWorldPoint}:{})}:{})});
   return Object.freeze({status:'prepared' as const,candidateState,geometryRefinement:candidateState.geometryRefinement!,changes:changes(previous,refinement),sourceFingerprint:prepared.sourceFingerprint,workBudget:prepared.workBudget,bootstrap:prepared.bootstrap,completeGeometryPlan:true as const,readyForApplication:true as const});
  }catch(e){return error('validation',[e instanceof Error?e.message:'invalid_geometry_plan']);}

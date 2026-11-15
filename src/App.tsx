@@ -13650,10 +13650,10 @@ export function App() {
   };
   const cancelOneMilePreview = () => {oneMilePreviewRef.current=null;};
   const previewGeometryRefinement = (options:{prepareWorkBudget?:number;cancelled?:()=>boolean}={}) => {
-    if(mutationBlocked()||physicalGridRef.current?.geometryRefinement)return null;
+    if(mutationBlocked())return null;
     try{
       const map=captureMap();checkedRiverMap(map);
-      const plan=prepareGeometryPlan({...geometryPlanInput(map),...options});
+      const plan=prepareGeometryPlan({...geometryPlanInput(map),...options,scopePolicy:'explicit_preview'});
       if(plan.status==='error')throw Error(`GEO2 ${plan.stage}: ${plan.refs.join('; ')}`);
       if(plan.status==='unchanged')return null;
       const state=plan.candidateState;validateOneMileMap(map,state);
@@ -13661,7 +13661,7 @@ export function App() {
     }catch(error){setEditError(error instanceof Error?error.message:String(error));return null;}
   };
   const applyGeometryRefinementPreview = (expected:NonNullable<typeof geometryRefinementPreviewRef.current>) => {
-    if(expected!==geometryRefinementPreviewRef.current||expected.revision!==documentRevision.current||mutationBlocked()||physicalGridRef.current?.geometryRefinement)return false;
+    if(expected!==geometryRefinementPreviewRef.current||expected.revision!==documentRevision.current||mutationBlocked())return false;
     try{
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:{...captureMap(),physicalGrid:expected.state}});
       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);geometryRefinementPreviewRef.current=null;return true;

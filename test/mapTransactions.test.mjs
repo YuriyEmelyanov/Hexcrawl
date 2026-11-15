@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {detailAuthoredState} from '../src/detailModel.ts';
 import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
+import {prepareGeometryPlan} from '../src/geometryPlan.ts';
 import {reconcileDetailGeography} from '../src/detailGeography.ts';
 import {synchronizeToponyms} from '../src/toponyms.ts';
 const serial=v=>JSON.parse(JSON.stringify(v));
@@ -910,6 +911,29 @@ test('GEO2 actual connected land-only generation retains old refinement and leav
  for(const k of ['regions','rivers','roads','crossings','terrainByHexKey','waterPoiByHexKey','toponyms','nextRiverId','nextRoadId'])assert.deepEqual(after.map[k],plain.map[k],`ordinary generated source ${k} unchanged by refinement`);
  assert.deepEqual(after.counters,plain.counters);assert.deepEqual(after.generation,plain.generation,'refinement integration consumes no extra world RNG');assertUndoRedo(h,before,after);
  await load(h,after);assert.deepEqual(stable(h.render()),after,'connected scoped16 imports stored geometry exactly');
+ // Historical global source metadata can lag behind the live outer layer.
+ const liveMap=h.render().captureDocument().map,liveLayer=liveMap.physicalGrid;
+ const {selectedCell:ignoredCell,selectedWorldPoint:ignoredPoint,...clearedLayer}=liveLayer;
+ h.render().restoreSnapshot({...liveMap,physicalGrid:{...clearedLayer,globalAuthoredState:{...liveLayer.globalAuthoredState,selectedCell:{q:0,r:0}},fineCellEdits:{...liveLayer.fineCellEdits,'0,0':{name:{ru:'После расширения',en:'After expansion'},note:'Latest live local note'}}}});
+ // New land remains unrefined until a fresh explicit preview/Apply.
+ const scopeInput=h.geometry.geometryPlanInput(h.render().captureDocument().map),ordinary=prepareGeometryPlan(scopeInput);
+ assert.equal(ordinary.status,'error');assert.ok(ordinary.refs.some(r=>r.includes('refinement_domain_expansion')),'automatic plan still cannot acquire a new domain');
+ h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+ const beforeExplicit=stable(h.render()),explicitStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(explicitStacks[1].length,'explicit preview starts with an available redo branch');
+ const cancelled=await h.render().previewGeometryRefinement();assert.ok(cancelled,h.render().editError??'explicit preview must include the new domain');
+ assert.deepEqual(stable(h.render()),beforeExplicit);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),explicitStacks);
+ h.render().cancelGeometryRefinementPreview();assert.equal(h.render().applyGeometryRefinementPreview(cancelled),false);assert.deepEqual(stable(h.render()),beforeExplicit);
+ const stale=await h.render().previewGeometryRefinement();assert.ok(stale);h.render().applyDocument(h.render().captureDocument());
+ assert.equal(h.render().applyGeometryRefinementPreview(stale),false,'explicit expanded-scope preview obeys the same revision guard');assert.deepEqual(stable(h.render()),beforeExplicit);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),explicitStacks);
+ const preview=await h.render().previewGeometryRefinement();assert.ok(preview,h.render().editError??'fresh explicit scope preview');
+ assert.equal(h.render().applyGeometryRefinementPreview(preview),true,h.render().editError??'apply expanded explicit scope');
+ const expanded=stable(h.render());assert.equal(h.render().undoHistory.length,explicitStacks[0].length+1);
+ assert.equal(JSON.parse(expanded.map.physicalGrid.geometryRefinement.sourceFingerprint.slice('geo2-source-input-v1:'.length)).regions.some(r=>r.id===newRegion.id),true);
+ assert.deepEqual(expanded.map.physicalGrid.geometryRefinement.riverPlan.paths,after.map.physicalGrid.geometryRefinement.riverPlan.paths,'unrelated old river paths remain literal');
+ assert.equal(expanded.map.physicalGrid.selectedCell,undefined,'cleared live focus must not return from historical global source');assert.deepEqual(expanded.map.physicalGrid.fineCellEdits,beforeExplicit.map.physicalGrid.fineCellEdits);assert.deepEqual(expanded.generation,beforeExplicit.generation);assert.deepEqual(expanded.counters,beforeExplicit.counters);
+ assertUndoRedo(h,beforeExplicit,expanded);assert.equal(h.render().applyGeometryRefinementPreview(preview),false,'applied callback cannot apply twice');
+ const expandedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.equal(await h.render().previewGeometryRefinement(),null,'already current full scope is unchanged');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),expandedStacks);
+ await load(h,expanded);assert.deepEqual(stable(h.render()),expanded,'expanded refinement16 reopens stored choices without rerouting');
  h.render().undoMap();const protectedSave=stable(h.render()),protectedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(protectedStacks[1].length);
  const terminal=protectedSave.map.rivers.find(r=>r.id===1).vertexPath[0],unsafe=h.render().candidateHexes.find(c=>h.geometry.getHexCornerPoints(c).some(v=>v.key===terminal.key));assert.ok(unsafe,'unknown cell touches the actual source terminal');
  h.render().safelyAddRegionToMap(unsafe,options);assert.ok(h.render().generationError,'a source terminal contact still requires nonempty closure');
