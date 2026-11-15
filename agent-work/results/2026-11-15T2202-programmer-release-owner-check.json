@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T2202-programmer-release-owner-check",
+  "role": "programmer",
+  "task_id": "HX-BL-051",
+  "status": "waiting_existing_release_owner_no_duplicate_execution",
+  "role_selection_reason": "The owner-authorized PR503 release is actively held by a manual programmer, generation9. Hourly run may inspect readiness and record observations without duplicating release/live checks or acquiring the same task.",
+  "observed_at": "2026-11-15T19:04:24.912Z",
+  "existing_owner": {
+    "run_id": "2026-11-15-manual-programmer-release-PR503",
+    "generation": 9,
+    "registry_revision": 23,
+    "claim_ref": "agent-work/claims/2026-11-15-manual-programmer-release-PR503.json",
+    "claim_status": "active",
+    "execution_running": true
+  },
+  "claim_reconciliation": {
+    "total_claims": 332,
+    "baseline_claims": 318,
+    "unchanged_baseline_blobs": 317,
+    "changed_or_original_unfinished_claims_read": 18,
+    "other_legacy_research_claims_reconciled_by_history": true,
+    "legacy_presentation_superseded_by_owner": true
+  },
+  "release": {
+    "authorization_ref": "agent-work/decisions/owner-decision-2026-11-15-PR503-publication.json",
+    "authorized": true,
+    "pr": 503,
+    "source_head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+    "merged": true,
+    "merge_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "merge_tree": "00006887cb0bc94481ef75960ca137ec2dd0ed5d",
+    "accepted_tree_exact_match": true,
+    "pages_run": 43748705026,
+    "pages_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43748705026",
+    "status": "in_progress",
+    "observed_active_step": "Verify generation in the production build",
+    "live_verified_by_this_run": false,
+    "published_claimed": false
+  },
+  "projection_discrepancies": [
+    "latest.execution_running=false while actual active claim execution_running=true; registry and claim govern ownership. Foreign projection not corrected by this run.",
+    "latest merge_sha/release_sha still point to previous main; actual merged PR SHA recorded in this observation without rewriting current owner routing."
+  ],
+  "next_role": "programmer",
+  "next_step": "Existing generation9 owner completes Pages deployment and live verification, saves release result/score_update_pending, then releases own slot. Next free strategist run must apply assessment1.2 for exact release and propose next useful product task.",
+  "remaining_acceptance": [
+    "GitHub Pages deployment completes",
+    "Current owner verifies live accepted package on classic seed42, including6/1mi refinement",
+    "After saved release event, strategist performs score/history update and next-task proposal"
+  ],
+  "forecast": {
+    "calendar_remaining": "unknown_depends_on_existing_deployment_and_live_verification",
+    "new_implementation_runs": 0,
+    "owner_forecast_not_replaced": true
+  },
+  "test_change_summary": {
+    "base_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+    "head_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "No test execution in readiness observation",
+    "scenario": "Read-only registry/claim/release authorization and workflow state",
+    "reuse_or_new_reason": "Do not duplicate active owner's release checks",
+    "source": "Merge tree exactly equals accepted tree; no source writes by this run",
+    "executed": 0,
+    "passed": 0,
+    "failed": 0,
+    "skipped": 0
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-15T19:03:35.235Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T19:04:24.912Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false
+    },
+    "errors": [],
+    "schedule_changed": false,
+    "prompt_changed": false,
+    "limitation": "Point-in-time observations only."
+  },
+  "mutations": {
+    "source": false,
+    "main": false,
+    "claims": false,
+    "execution_locks": false,
+    "routing": false,
+    "schedule": false
+  },
+  "score_updated": false,
+  "owner_decisions_needed": []
+}
