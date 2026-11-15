@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T1559-analyst-GEO2-visible-D2",
+  "base_draft_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D1.md",
+  "revised_draft_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D2.md",
+  "findings": [
+    {
+      "finding_id": "VIS-D1-F01",
+      "status": "addressed_pending_interviewer_confirmation",
+      "scenario_refs": [
+        "D2-H01",
+        "D2-H02",
+        "D2-H03"
+      ]
+    },
+    {
+      "finding_id": "VIS-D1-F02",
+      "status": "addressed_pending_interviewer_confirmation",
+      "section": "Conditional forecasts and retained history",
+      "decision_id": "GEO2-VIS-Q01",
+      "current_selected_scope_forecast": "unknown"
+    }
+  ],
+  "source_evidence": {
+    "sha": "390a5237bb9c3dd377383c9e4ca87ba0d0e9cfb3",
+    "path": "src/App.tsx",
+    "static_only": true,
+    "line_refs": {
+      "live_history_state": [
+        12080,
+        12083
+      ],
+      "record_transaction": [
+        13566,
+        13571
+      ],
+      "undo_redo": [
+        13756,
+        13770
+      ],
+      "import_transaction": [
+        15285,
+        15300
+      ]
+    },
+    "conclusion": "Existing live history/import transactions justify splitting narrative branches; no new persisted stack is specified. Static evidence is not runtime acceptance."
+  },
+  "history_scenarios": [
+    {
+      "id": "D2-H01",
+      "parent_refs": [
+        "G202",
+        "G208"
+      ],
+      "risk": "Apply and all refinement/source/authored data one live history transaction; rejected action preserves Redo"
+    },
+    {
+      "id": "D2-H02",
+      "parent_refs": [
+        "G202",
+        "G208"
+      ],
+      "risk": "Public16 accepted document roundtrip without reroute/RNG, no implied persistence of undo stack"
+    },
+    {
+      "id": "D2-H03",
+      "parent_refs": [
+        "G208"
+      ],
+      "risk": "Existing accepted import transaction separately undone/redone; invalid import preserves live document/Redo"
+    }
+  ],
+  "question_options_unchanged": [
+    "A",
+    "B",
+    "C"
+  ],
+  "new_owner_answers": 0,
+  "question_presented": false,
+  "acceptance_by_interviewer": false
+}
