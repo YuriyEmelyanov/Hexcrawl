@@ -2,7 +2,7 @@
   "plan_id": "HX-RSR-PLAN-20261109-v1",
   "version": 2,
   "date": "2026-11-15",
-  "status": "paused_by_owner_policy_update_only",
+  "status": "authorized_resume_configuration_pending",
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-research-full-remit.json",
   "purpose": "Улучшать выбор игр и достоверность оценок потенциального спроса на HexCrawl; связывать выводы с полезными возможностями продукта.",
   "workstreams": [
@@ -58,7 +58,7 @@
     }
   ],
   "selection_gate": [
-    "Приоритет15.11: сначала проверить owner pause. Не исполнять приоритетный план без явного resume; после resume P1 top5 alignment имеет приоритет над обычным выбором до закрытия или нового решения владельца.",
+    "Приоритет15.11: отдельный явный resume дан; перед исполнением проверить новые ownerpause/claims. P1 top5alignment выше обычных микроисследований; Crows v2 читать как выполненный sourceкорпус с остатком, не пересканировать.",
     "Прочитать свежие решения,claims и этотплан.",
     "Перед очередным разбором правил сравнить его с существенной неопределённостью рейтинга и сигналом нового/недооценённого кандидата.",
     "Выбрать один достижимыйрезультат с максимальной ожидаемой полезностьюдлярешения; сравнить1–2альтернативы.",
@@ -67,12 +67,12 @@
   ],
   "current_diagnosis": "В существующих материалах выявлены неполнота/неоднородность перевода, но массовый аудит не проводился. Исторические completed и числа строк не доказывают соответствие стандартуv2; действуют исходные evidence до адресной проверки.",
   "next_selected_task": {
-    "task_id": "HX-RSR-TOP5-RULES-ALIGNMENT-v1",
+    "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
     "game_id": "DND5",
     "layer": "L1",
-    "status": "planned_paused_not_started",
-    "action": "После отдельного явного resume начать полное выравнивание DND5 как эталона; затем остальных игр общего top5. Сейчас только правила и план, никакого аудита.",
-    "completion_condition": "For each of five: exhaustive declared thematic source coverage, self-contained source rules, application behaviors, universal rules/profiles and factually verified statuses; RA-Q01..15 pass or justified applicable exclusions; remaining work prevents accepted status."
+    "status": "queued_authorized_after_activation",
+    "action": "Выровнять DND5/DMG2014 по новому стандарту: исчерпывающий самодостаточный перечень L1; конкретный перевод в функции; фактические статусы на свежемSHA; универсальные правила/профили; RA-Q01–15. Использовать существующие материалы и первичный текст, не объявлять старые28строк полным результатом.",
+    "completion_condition": "Полный заявленный тематический корпус и понятная матрица правило→функция→статус с проверкой качества; реальный source/платформенный блокер — точный checkpoint и независимая достижимая задача другой игры top5."
   },
   "other_open_tracks": [
     {
@@ -145,7 +145,7 @@
   "rules_alignment_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json",
   "rules_alignment_priority": {
     "priority_id": "HX-RSR-TOP5-RULES-ALIGNMENT-v1",
-    "status": "planned_paused_not_started",
+    "status": "authorized_for_scheduled_execution",
     "priority": "P1_owner_directed_data_alignment",
     "authority_ref": "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json",
     "standard_ref": "agent-work/research/rule-analysis-standard.md",
@@ -179,8 +179,10 @@
         "game_id": "CROWS",
         "edition_basis": "October2026PublicPlaytest3 owner packet; not final",
         "reference_place": 4.5,
-        "alignment_status": "not_reviewed_against_standard_v2",
-        "execution_started": false
+        "alignment_status": "manual_v2_source_inventory_and_L1_comparison_complete_quality_checkpoint",
+        "execution_started": false,
+        "current_result_ref": "agent-work/research/runs/2026-11-15-193126-CROWS-L1-v2.json",
+        "exact_continuation": "Reuse50clauses/35operations and recordedsource/productdecisions; do not rescan339pages."
       },
       {
         "game_id": "SD",
@@ -191,7 +193,7 @@
       }
     ],
     "initial_focus": "DND5 restore a content-verified reference result; then PF2 and KNAVE2; CROWS/SD tied, choose reachable priority without inventing tiebreak rank.",
-    "entry_condition": "Only explicit owner resume; current instruction authorizes policy/priority storage only.",
+    "entry_condition": "Explicit owner resume15Nov given; automationactualstatus must be verified, then execute standardv2 and freshclaims.",
     "completion_condition": "For each of five: exhaustive declared thematic source coverage, self-contained source rules, application behaviors, universal rules/profiles and factually verified statuses; RA-Q01..15 pass or justified applicable exclusions; remaining work prevents accepted status.",
     "legacy_handling": "Retain prior source facts/evidence/statuses with originalSHA; historical completed does not establish standard-v2 acceptance. No automatic score reset or audit performed now.",
     "dedup_policy": "common-rules and game-bindings sole registries; reuse semantics and verify differing profiles; unified backlog only, no product queue change.",
@@ -214,8 +216,9 @@
       "RA-Q14",
       "RA-Q15"
     ],
-    "research_schedule_resume": false,
-    "no_product_development": true
+    "research_schedule_resume": true,
+    "no_product_development": true,
+    "current_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json"
   },
   "previous_next_selected_task_before_top5_alignment": {
     "task_id": "HX-RSR-PF2-FULL-L1-IMPLEMENTATION",
@@ -224,5 +227,15 @@
     "status": "candidate_recheck_fresh_decisions",
     "action": "Довести полную сверку всех применимых L1-профилей PF2Remaster с точным publishedSHA и конкретным остатком existing054/PF2-FILL1. Использовать имеющийся корпус; не искать ещё один проект ради ссылки. Сравнить со свежим существенным рыночным сигналом перед выбором.",
     "completion_condition": "Один полный слой в матрице, проверенные переиспользуемые компоненты, конкретные остаточные операции и последствия для existingbacklog; без запуска продукта."
-  }
+  },
+  "execution_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+  "previous_next_selected_task_before_resume": {
+    "task_id": "HX-RSR-TOP5-RULES-ALIGNMENT-v1",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "planned_paused_not_started",
+    "action": "После отдельного явного resume начать полное выравнивание DND5 как эталона; затем остальных игр общего top5. Сейчас только правила и план, никакого аудита.",
+    "completion_condition": "For each of five: exhaustive declared thematic source coverage, self-contained source rules, application behaviors, universal rules/profiles and factually verified statuses; RA-Q01..15 pass or justified applicable exclusions; remaining work prevents accepted status."
+  },
+  "research_product_handoff_policy": "Research artifacts and strategist handoff only; strategist owns new productbacklog candidates. No deleted/retired tasks restored and no statuses promoted by researcher."
 }
