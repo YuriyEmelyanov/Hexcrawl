@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T2056-programmer-PR503-through-lake-fix",
+  "task_id": "HX-BL-051",
+  "feature_id": "ONE-MILE1-GEO2",
+  "parent_id": "HX-BL-051",
+  "role": "programmer",
+  "status": "ready_for_owner_review",
+  "started_at": "2026-11-15T17:57:38.453Z",
+  "completed_at": "2026-11-15T18:30:52.285Z",
+  "base_sha": "afebeb085e0bc0059e317ff6a64d02a9f8e46393",
+  "head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+  "tree_sha": "00006887cb0bc94481ef75960ca137ec2dd0ed5d",
+  "local_equivalent_sha": "429dda37682fdf7e79c6a5c9c7b26b19b9d1944d",
+  "branches": [
+    "agent/hx-bl-051-one-mile1",
+    "agent/hx-bl-051-geo2"
+  ],
+  "pr": 503,
+  "owner_approved_scope": "Existing GEO2-v2; fix actual classic seed42 through-lake defect, preserve parent requirements/history",
+  "user_visible_result": "The exact six-region Classic seed42 map now successfully refines a river passing through a lake; continuous shared edge routes survive JSON16 reload, Undo/Redo and PNG.",
+  "checks_ref": "agent-work/evidence/PR503-through-lake-fix-20261115/checks.json",
+  "review_ref": "agent-work/evidence/PR503-through-lake-fix-20261115/package-review.json",
+  "score_assessment_ref": "agent-work/evidence/PR503-through-lake-fix-20261115/score-assessment1.2.json",
+  "user_walkthrough": {
+    "package_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+    "before_package_sha": "afebeb085e0bc0059e317ff6a64d02a9f8e46393",
+    "scenario": "Classic seed42 /6regions/52coarsecells/4rivers/5roads",
+    "steps": [
+      "Load saved classic world",
+      "Choose1mile; apply detailed-grid preview",
+      "Refine geography; apply",
+      "Save/reload JSON16",
+      "Undo/Redo refinement",
+      "Export PNG; switch back6mile"
+    ],
+    "checks_ref": "agent-work/evidence/PR503-through-lake-fix-20261115/checks.json",
+    "artifact_id": 14174452800,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43745760981/artifacts/14174452800",
+    "desktop": true,
+    "narrow390": true,
+    "shown_in_chat": true,
+    "shown_at": "2026-11-15T18:29:49.439Z",
+    "reviewer_verification": "agent-work/evidence/PR503-through-lake-fix-20261115/package-review.json",
+    "known_limitations": [
+      "Finite scenario corpus; not universal correctness",
+      "C07 physical calibration and C08 settlement size catalogue remain separate questions",
+      "Fine POI readability limitation shown to owner"
+    ],
+    "png_sha256": "d8497b2c7a8cda7902a4fb2525cb72c0a2755cc16a325cf37f4dcb596be40c32",
+    "next_visible_result": "Publish this exact accepted package after separate owner release permission, then verify live site."
+  },
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43745760981/artifacts/14174452800",
+  "source_work_remaining_confirmed_blockers": [],
+  "known_limitations": [
+    "Fine POI are present but dark approximately6x6px icons blend into tiles in the full PNG; shown and independently verified as readability, not object loss.",
+    "Finite corpus; no universal geometry proof. C07/C08 remain separate questions."
+  ],
+  "remaining_acceptance": [
+    "Separate exact-package owner permission to merge/publish",
+    "After permission, release only this accepted package and verify live site",
+    "Post-release score update event processed with no invented criterion uplift"
+  ],
+  "forecast": {
+    "original_fix_active_hours": [
+      2,
+      5
+    ],
+    "implementation_remaining_active_hours": 0,
+    "current_release_remaining_active_hours_after_permission": [
+      0.25,
+      1
+    ],
+    "release_owner_wait": "unknown",
+    "elapsed_calendar_minutes": 33,
+    "confidence": "high_for_verified_corpus_not_universal",
+    "parent_history_reset": false
+  },
+  "experience": "A generic green UI fixture did not cover a normal generated river passing through a lake. Keep the owner's exact saved world as one bounded Node/browser regression; never infer universal release readiness from terminal-lake evidence. Pixel-byte comparisons can fail on measured antialiasing; retain tight pixel tolerances plus original screenshots and independent review.",
+  "test_change_summary": {
+    "base_sha": "afebeb085e0bc0059e317ff6a64d02a9f8e46393",
+    "head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "executed": 425,
+        "passed": 425,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "browser ONE-MILE1 named cases",
+        "added": 1,
+        "removed": 0,
+        "modified": 1,
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "scenario": "One real owner-generated classic six-region seed42 map covers previously missing river-through-lake topology, actual transaction/history, corruption rejection, UI/import/PNG. Existing optional native6 comparison retains strict measured antialias bounds.",
+    "reuse_or_new_reason": "Terminal-lake fixture cannot exercise degree2 shore nodes. Extended existing files, not another seed sweep; parser corruption checks remain within the one added Node case.",
+    "source": "git diff afebeb0-equivalent04f7ad3...429dda37 plus exact CI runner/manifest; Node and browser counted separately"
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-15T17:56:58.760Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-15T18:30:22.586Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false
+    },
+    "errors": [],
+    "schedule_changed": false,
+    "prompt_changed": false,
+    "limitation": "Actual point-in-time observations only"
+  },
+  "next_role": "strategist-manager",
+  "next_step": "Owner reviews shown PR503/adc96d8 package and fine-POI readability limitation. Await separate publication permission; after permission programmer releases exact accepted package and verifies live site.",
+  "owner_decisions_needed": [
+    {
+      "type": "publication",
+      "pr": 503,
+      "head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+      "status": "awaiting_explicit_permission",
+      "user_preview_shown": true
+    }
+  ],
+  "release_authorized": false,
+  "published": false,
+  "main_changed": false,
+  "score_model_version": "1.2",
+  "product_score_changed": false,
+  "no_writing_processes_running": true
+}
