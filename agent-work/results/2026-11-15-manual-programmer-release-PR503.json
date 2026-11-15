@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15-manual-programmer-release-PR503",
+  "role": "programmer",
+  "task_id": "HX-BL-051",
+  "pr": 503,
+  "status": "published",
+  "head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+  "merge_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "tree_sha": "00006887cb0bc94481ef75960ca137ec2dd0ed5d",
+  "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-PR503-publication.json",
+  "deploy": {
+    "id": 43748705026,
+    "sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43748705026"
+  },
+  "live": {
+    "url": "https://app.hexcrawl.ru/",
+    "http": "200 confirmed by successful curl",
+    "asset_before": "/assets/index-CCJloUhR.js",
+    "asset_after": "/assets/index-BsfYUFVS.js",
+    "css_after": "/assets/index-DN11dL2N.css",
+    "browser": "Cloud browser, public live site",
+    "checks": [
+      "Fresh Classic Locality generated with seed42",
+      "6-mile view ->1-mile view",
+      "Refinement preview ->Apply succeeded:1 river,2 roads",
+      "Undo then Redo succeeded",
+      "Russian interface and one-mile map visible"
+    ],
+    "screenshot_ref": "agent-work/evidence/PR503-release-20261115/live-1mi.jpg",
+    "limitations": [
+      "Original six-region seed42 live import was not completed: file chooser call stalled and the cloud tab disappeared. This exact six-region scenario passed accepted pre-release CI; live smoke used a freshly generated single region with seed42.",
+      "Fine POI icon readability limitation from acceptance remains."
+    ]
+  },
+  "tests": {
+    "added": 0,
+    "modified": 0,
+    "pre_release_CI": 43745760981,
+    "deploy_checks": "npm run check and npm run test:browser passed"
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-15T18:46:26.160Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T20:14:23.078Z",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false
+    }
+  },
+  "next_role": "strategist-manager",
+  "next_step": "Post-release score assessment/update for published PR503 only; preserve other scale work and existing owner decisions.",
+  "score_update_pending": true,
+  "finished_at": "2026-11-15T20:15:13.510Z",
+  "operational_incident": {
+    "kind": "cloud_browser_filechooser_stall",
+    "wall_seconds": 3995.88,
+    "impact": "Delayed final report after successful Pages release; no product source changes or duplicated execution."
+  }
+}
