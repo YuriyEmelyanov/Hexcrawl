@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T1404-analyst-GEO2-visible-draft",
+  "source_sha": "390a5237bb9c3dd377383c9e4ca87ba0d0e9cfb3",
+  "method": "Static reads of exact remote source and real saved fixture only; no browser/test execution",
+  "fixture": {
+    "path": "test/fixtures/road-entry-zigzags.json",
+    "version": 2,
+    "regions": 4,
+    "rivers": 6,
+    "source_segments": 53,
+    "roads": 7,
+    "crossings": 7,
+    "kinds": {
+      "bridge": 4,
+      "ferry": 3
+    }
+  },
+  "findings": [
+    {
+      "id": "D1-AUD01",
+      "status": "confirmed_static",
+      "path": "src/App.tsx",
+      "lines": [
+        13663,
+        13674,
+        13681
+      ],
+      "finding": "preview/apply/cancel functions each occur only at definition in App; no UI invocation references found in this file.",
+      "limitation": "Static reference analysis, not runtime. Do not claim developer test bridge exposes a working user control."
+    },
+    {
+      "id": "D1-AUD02",
+      "status": "confirmed_static",
+      "path": "src/OneMileArtwork.tsx",
+      "lines": [
+        8,
+        29,
+        31
+      ],
+      "finding": "Artwork receives line arrays and renders source-style river lines; no geometryRefinement/GeometryPlan reference in this component. Full refined route/water/road mask integration not evidenced.",
+      "limitation": "Component can receive derived input from caller; absence of direct reference alone does not prove all caller data wrong. Final handler and PNG must be observed."
+    },
+    {
+      "id": "D1-AUD03",
+      "status": "reported_not_rerun",
+      "ref": "agent-work/results/2026-11-15T1156-programmer-GEO2-lake-marker-contact.json",
+      "finding": "Bounded marker/water closure evidence and424Node checks reported; explicitly excludes actual full UI/map/PNG and moved mouths/merge/split. Not full accepted scope."
+    }
+  ],
+  "readiness": "draft_only_not_ready_for_development",
+  "runtime_scenarios_executed": 0,
+  "feedback": [
+    {
+      "id": "HX-FB-015",
+      "title": "Удалить служебный текст об охватах и дублирующий заголовок масштаба",
+      "status": "ONE_MILE1_scope_accepted_release_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    },
+    {
+      "id": "HX-FB-016",
+      "title": "Изображение биома отдельно в каждой одномильной клетке",
+      "status": "ONE_MILE1_scope_accepted_release_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    },
+    {
+      "id": "HX-FB-017",
+      "title": "Одномильный пояс кандидатов в один ряд вдоль построенной территории",
+      "status": "ONE_MILE1_scope_accepted_release_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    },
+    {
+      "id": "HX-FB-018",
+      "title": "Наведение на одномильный гекс показывает только локальную информацию",
+      "status": "ONE_MILE1_scope_accepted_release_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    },
+    {
+      "id": "HX-FB-019",
+      "title": "Цельное отображение одномильной клетки с выбором доминирующего биома",
+      "status": "ONE_MILE1_scope_accepted_release_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    },
+    {
+      "id": "HX-FB-020",
+      "title": "Режим редактирования выбранного одномильного гекса",
+      "status": "ONE_MILE1_scope_accepted_release_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    },
+    {
+      "id": "HX-FB-021",
+      "title": "Отдельный PR для1-мильного режима; последовательная реализация масштабов",
+      "status": "ONE_MILE1_scope_accepted_release_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    },
+    {
+      "id": "HX-FB-022",
+      "title": "Одномильная карточка как шестимильная; показать дороги и реки, редактировать локальный гекс",
+      "status": "ONE_MILE1_scope_accepted_release_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    },
+    {
+      "id": "HX-FB-023",
+      "title": "Рёбра и ширина рек, переходы, размещение/тип/размерPOI и устье в1/6",
+      "status": "GEO2_special_POI_implemented_unmounted_GeometryPlan_UI_pending",
+      "disposition": "retain_for_first_visible_release_or_explicit_parent_residual"
+    }
+  ],
+  "no_source_changes": true
+}
