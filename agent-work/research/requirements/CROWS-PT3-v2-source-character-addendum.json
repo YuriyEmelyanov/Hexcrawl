@@ -1,0 +1,282 @@
+{
+  "source_id": "CROWS-PT3-CHARACTER",
+  "edition": "October2026PublicPlaytest3",
+  "purpose": "Source-completeness QA addendum: explicit L1 editable-state consequences plus preparation dependencies of GuildHouse L2 knowledge; not product design or runtime evidence.",
+  "L1_source_clauses": [
+    {
+      "local_clause_id": "CH-L1-15",
+      "pdf_pages": [
+        50,
+        51,
+        52,
+        53
+      ],
+      "section": "Village Events: institution/NPC/village state",
+      "normative_kind": "conditional_rule",
+      "self_contained_rule": "В конце каждого 20-дневного деревенского цикла Ref бросает d10 + текущее процветание (от -10 до 10), чтобы определить событие следующего цикла. Событие происходит независимо от присутствия персонажей. Если оно непосредственно касается персонажей, оно происходит при их следующем присутствии в деревне. Если не указано исключение, Ref случайно выбирает упомянутые учреждение, NPC, персонажа или предмет. Результаты -9, -8, -7, -6, -2, -1, 0, 2, 3, 5, 9, 11, 13, 16, 17, 19 и 20 могут уничтожить учреждение, изменить его постоянный или временный эффективный уровень, остановить все либо выбранные услуги, изменить процветание или основать новое учреждение. Результат 1 убивает NPC-связь и даёт новую после установленного условия; результат -2 убивает управляющего, которым не может оказаться ушедший на покой персонаж. Результат -4 описывает взлом и порчу жилья персонажа. Точные числа, условия и сроки всех 30 результатов сохранены ниже в village_events_full_catalog. Источник описывает изменяемые поселения, учреждения и обитателей, а не постоянный список названий.",
+      "parameters_and_units": {
+        "cycle_days": 20,
+        "event_roll": "d10+Prosperity",
+        "Prosperity_min": -10,
+        "Prosperity_max": 10,
+        "event_results": [
+          -9,
+          20
+        ],
+        "permanent_institution_effects": {
+          "5": "destroy unlessloan1000gc AND Prosperityraised bycycleend",
+          "19": "institutionunder5 level+1",
+          "20": "foundrequested; ifallfounded upgradeinstead",
+          "-9": "destroy one",
+          "-8": "two levels-1; ifbothwere1 destroyoneinstead",
+          "-7": "level-1; ifwas1 destroy",
+          "-6": "Prosperity-1; ifalready-10 destroyinstitutioninstead"
+        },
+        "temporary_institution_effects": {
+          "0": "effectivelevel-3 untilcycleend; if0closed",
+          "2": "goodsalesblocked ifpower>10monsterunresolvedbycycleend, untilkilledorledaway",
+          "3": "effectivelevel-1 untilcycleend; if0closed",
+          "9": "effectivelevel+1 untilcycleend",
+          "11": "effectivelevel+2 untilcycleend",
+          "13": "2craftingrolls/day nextcycle",
+          "16": "allmerchants effectivelevel+1 untilcycleend",
+          "-2": "alloperationsclosed nextcycle; stewarddies exceptretiredPC",
+          "-1": "no crafting/tools/materialssales nextcycle"
+        },
+        "NPCeffects": {
+          "1": "connectiondeath; replacementafterconfrontingmurderer",
+          "8": "passingNPC departs cycleend",
+          "-2": "stewarddeath; retiredPCexempt"
+        },
+        "homeeffect": {
+          "-4": "quartersbroken/vandalized; mundaneitemdestroyed"
+        }
+      },
+      "L1_L3_boundary": "Бросок, выбор участников и экономическое разрешение события относятся к L3. Подтверждённый результат меняет записанные характеристики, доступность и состав поселения — данные места L1. Источник не говорит, что уничтоженное учреждение нужно автоматически удалять вместе с географией гекса либо заменять новой POI руин. Выбор такого отображения — продуктовое решение, а не правило книги.",
+      "exceptions_and_unknowns": [
+        "Результат 0 буквально говорит о снижении уровня «до 0», но не объясняет снижение, например, уровня 1 на 3 до -2. Нельзя молча добавлять ограничение снизу.",
+        "Результат -8 отдельно описывает случай, когда оба учреждения были первого уровня. Смешанный случай (одно уровня 1, другое выше) и возможный нулевой уровень не разъяснены.",
+        "Результат 19 явно относится к учреждению уровня строго меньше 5. Нельзя заменить это условие индивидуальным максимальным уровнем: книготорговец имеет шестой уровень в каталоге, но его пятый уровень не удовлетворяет условию события.",
+        "Временное «считать выше/ниже» не обязательно меняет постоянный уровень. Нужно сохранять срок эффекта и отличие от настоящего улучшения.",
+        "В результате 7 ссылка «тот же эффект, что 5» противоречит описанию нехватки товара. Сохранить как редакционную неопределённость, не заменять ссылкой на 6 молча."
+      ]
+    },
+    {
+      "local_clause_id": "CH-L1-16",
+      "pdf_pages": [
+        57
+      ],
+      "section": "CrowGuildHouse: map-information preparation dependency",
+      "normative_kind": "dependency_of_L2_rule",
+      "self_contained_rule": "Дом гильдии позволяет получать сведения об уже существующих местах карты. What’s in the Hex: выбирается один гекс; находящийся в гильдии ворон сообщает местоположение неизвестных группе POI, подземелий и других деревень в пределах одного гекса от выбранного. Пользоваться услугой можно число раз, равное уровню дома, за каждый 20-дневный цикл. Shared Information: можно спросить ворона, посещавшего известный группе POI или подземелье, любой вопрос об этом месте. Он отвечает честно; Ref может определить, что NPC не знает ответа, тогда можно задать другой вопрос. Число полученных ответов за цикл равно уровню дома.",
+      "parameters_and_units": {
+        "what_in_hex": {
+          "chosen_hex_count": 1,
+          "radius_hexes": 1,
+          "targets": [
+            "unknown POI",
+            "unknown dungeon",
+            "unknown other village"
+          ],
+          "uses_per_cycle": "GuildHouse level",
+          "cycle_days": 20
+        },
+        "shared_information": {
+          "target": "known POI or dungeon visited by answeringcrow",
+          "answer": "honest if known; differentquestion if NPCdoesnotknow",
+          "answers_per_cycle": "GuildHouse level",
+          "cycle_days": 20
+        }
+      },
+      "L1_L2_boundary": "Получение и раскрытие сведений, а также учёт использований — L2 или системная процедура. Подготовительная зависимость L1: иметь существующие места и различать истину карты ведущего и сведения, уже известные группе. Услуга не предписывает создавать новые места при её использовании и не является случайной таблицей наполнения карты. Размещение самого дома гильдии не должно автоматически открывать все места вокруг него.",
+      "exceptions_and_unknowns": [
+        "Within 1 hex обычно переводится в выбранный гекс и соседей, но книга прямо не перечисляет множество из семи клеток. Включение центра и графовое расстояние следует обозначить как геометрическую трактовку продукта.",
+        "Неизвестность места игрокам не означает отсутствия места на истинной карте Ref.",
+        "Получение местоположения не раскрывает автоматически секретные комнаты, ловушки и всё внутреннее содержимое места."
+      ]
+    }
+  ],
+  "village_events_full_catalog": [
+    {
+      "event_roll_d10_plus_prosperity": -9,
+      "pdf_page": 51,
+      "self_contained_effect": "Нападение чудовищ уничтожает одно учреждение.",
+      "map_preparation_relevance": "institution destroyed"
+    },
+    {
+      "event_roll_d10_plus_prosperity": -8,
+      "pdf_page": 51,
+      "self_contained_effect": "Нападение серьёзно повреждает два учреждения: уровень каждого уменьшается на 1. Если оба до снижения были первого уровня, вместо этого уничтожается одно из них.",
+      "map_preparation_relevance": "two institution levels -1; special destruction"
+    },
+    {
+      "event_roll_d10_plus_prosperity": -7,
+      "pdf_page": 51,
+      "self_contained_effect": "Бандиты нападают на учреждение, убивают некоторых его участников и крадут припасы. Уровень учреждения уменьшается на 1. Если до уменьшения он равнялся 1, учреждение уничтожается.",
+      "map_preparation_relevance": "institution level -1 or destroyed"
+    },
+    {
+      "event_roll_d10_plus_prosperity": -6,
+      "pdf_page": 51,
+      "self_contained_effect": "Нападение оставляет много погибших и разрушенных домов. Процветание деревни уменьшается на 1. Если оно и до уменьшения было−10, вместо уменьшения уничтожается учреждение.",
+      "map_preparation_relevance": "village aftermath; prosperity -1 or destroyedinstitution"
+    },
+    {
+      "event_roll_d10_plus_prosperity": -5,
+      "pdf_page": 51,
+      "self_contained_effect": "Жители считают PC причиной нападений. До тех пор, пока PC не основывают новое учреждение, никто в деревне не ведёт с ними дел.",
+      "map_preparation_relevance": "PC-specific trading/service availability condition"
+    },
+    {
+      "event_roll_d10_plus_prosperity": -4,
+      "pdf_page": 51,
+      "self_contained_effect": "Пока PC находится по делам в деревне, в его жильё вламываются и портят его. Один обычный предмет в хранилище или при PC уничтожен.",
+      "map_preparation_relevance": "home vandalized narrative; inventory consequence"
+    },
+    {
+      "event_roll_d10_plus_prosperity": -3,
+      "pdf_page": 51,
+      "self_contained_effect": "До конца цикла действует небольшой спад: процент стоимости продаваемых учреждениям предметов уменьшается на 5 процентных пунктов.",
+      "map_preparation_relevance": "L3 economy only"
+    },
+    {
+      "event_roll_d10_plus_prosperity": -2,
+      "pdf_page": 51,
+      "self_contained_effect": "Управляющий учреждения убит. Учреждение прекращает все операции на следующий цикл, восстанавливаясь и подыскивая нового управляющего. Убитым управляющим не может быть PC, ушедший на покой.",
+      "map_preparation_relevance": "steward death; closed nextcycle; retiredPCexception"
+    },
+    {
+      "event_roll_d10_plus_prosperity": -1,
+      "pdf_page": 51,
+      "self_contained_effect": "Жители портят ремесленное учреждение. На протяжении следующего цикла оно не делает craftingrolls и не продаёт инструменты/материалы для изготовления.",
+      "map_preparation_relevance": "partial services disabled nextcycle, not necessarily total closure"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 0,
+      "pdf_page": 51,
+      "self_contained_effect": "Из-за тяжёлого ограбления уровень торгового учреждения уменьшается на 3 до конца цикла. Если это снижает уровень до 0, учреждение закрыто до конца цикла.",
+      "map_preparation_relevance": "temporary level -3; closure at0; lower-than0 not explained"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 1,
+      "pdf_page": 51,
+      "self_contained_effect": "Убит NPC-связь одного из PC; убийца покидает деревню. После того как PC найдут убийцу и столкнутся с ним, персонаж, потерявший связь, получает новую.",
+      "map_preparation_relevance": "NPCconnection dead/replacement condition"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 2,
+      "pdf_page": 51,
+      "self_contained_effect": "Чудовище силы строго больше 10 бродит за стенами деревни и препятствует поставкам. Если не разобраться с ним к концу цикла, все учреждения, продающие товары, прекращают их продажу до убийства чудовища или увода его прочь.",
+      "map_preparation_relevance": "outside-village threat; conditional sales block"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 3,
+      "pdf_page": 52,
+      "self_contained_effect": "После мелких краж уровень одного торгового учреждения уменьшается на 1 до конца цикла. Если уровень становится 0, оно закрыто до конца цикла.",
+      "map_preparation_relevance": "temporary level -1; closure at0"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 4,
+      "pdf_page": 52,
+      "self_contained_effect": "Стража подозревает желающих войти путешественников в воздействии Миазмы. PC просят разобраться; вероятность подтверждения 50%. Ref может собрать встречу с этими людьми, выдающими себя за торговцев, по таблицам TheRef.",
+      "map_preparation_relevance": "L3 encounter/narrative at villagegate"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 5,
+      "pdf_page": 52,
+      "self_contained_effect": "Управляющий просит заём 10×100gc, то есть 1000gc. Если PC не дают его до конца цикла, учреждение уничтожается; оно также уничтожается, если заёмдан, но процветание деревни до конца цикла не повышено. Еслизаёмдан и процветаниеповышено, управляющий возвращаетденьги с 50%процентами.",
+      "map_preparation_relevance": "institution destruction conditional on loan+prosperity"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 6,
+      "pdf_page": 52,
+      "self_contained_effect": "До конца этого цикла торговое учреждение испытывает нехватку припасов. Каждая попытка PC что-либо купить имеет 30%вероятность отсутствия нужного предмета.",
+      "map_preparation_relevance": "temporary stock shortage; L3 chance"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 7,
+      "pdf_page": 52,
+      "self_contained_effect": "Учреждение испытывает нехватку запасов до конца цикла, но может позволить себе купитьбольше. Текст говорит «тот же эффект, что 5», кроме увеличения на 5 процентныхпунктов процента стоимости товаров, которые оно покупает. Это противоречитописанию 5 (заём); не заменятьссылку на 6 молча.",
+      "map_preparation_relevance": "temporary stock/economy; sourceeditorial conflict"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 8,
+      "pdf_page": 52,
+      "self_contained_effect": "Проходящийчерез деревню NPC предлагает PC предмет из MajorTreasures взамен добычи другого редкогопредмета из ближайшегоподземелья. NPC покидаетдеревнювконцецикла.",
+      "map_preparation_relevance": "temporary NPCpresence and existingdungeonhook; notnewgeography"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 9,
+      "pdf_page": 52,
+      "self_contained_effect": "У торгового учреждения небольшой избыток: до концацикла считать его на 1 уровеньвыше.",
+      "map_preparation_relevance": "temporary effectivelevel +1, not permanentupgrade"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 10,
+      "pdf_page": 52,
+      "self_contained_effect": "Жители даюткаждому PC по 6 рационов на следующийвыход.",
+      "map_preparation_relevance": "L3 resources only"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 11,
+      "pdf_page": 52,
+      "self_contained_effect": "У торгового учреждения избыток: до концацикла считатьего на 2 уровнявыше.",
+      "map_preparation_relevance": "temporary effectivelevel +2"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 12,
+      "pdf_page": 52,
+      "self_contained_effect": "Учреждение даёт каждому PC100gc кредита натоварыилиуслуги; кредитистекаетвконцецикла.",
+      "map_preparation_relevance": "L3 credits only"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 13,
+      "pdf_page": 52,
+      "self_contained_effect": "Ремесленноеучреждение нанимает помощников. Вследующемцикле оно делает 2craftingrolls вдень длякаждогоизготавливаемогопредмета.",
+      "map_preparation_relevance": "temporary institutionservice rate"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 14,
+      "pdf_page": 52,
+      "self_contained_effect": "Жители покупаюткаждому PC лечебноезелье.",
+      "map_preparation_relevance": "L3 resources only"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 15,
+      "pdf_page": 52,
+      "self_contained_effect": "До концацикла экономическийрост повышаетпроцентстоимости продаваемыхучреждениямпредметов на 5 процентныхпунктов.",
+      "map_preparation_relevance": "L3 villageeconomy only"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 16,
+      "pdf_page": 52,
+      "self_contained_effect": "Вдеревне проходитторговыйфестиваль; все торговыеучреждения считаютсяна 1 уровеньвыше доконцацикла.",
+      "map_preparation_relevance": "allmerchant temporaryeffectivelevel+1"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 17,
+      "pdf_page": 53,
+      "self_contained_effect": "Процветаниеувеличиваетсяна 1. Еслионоитакбыло 10, вместороста процентстоимости всех покупаемыхторговцамипредметов увеличиваетсяна 10 процентныхпунктов на следующийцикл.",
+      "map_preparation_relevance": "villageprosperity+1 or temporaryeconomy"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 18,
+      "pdf_page": 53,
+      "self_contained_effect": "Учреждение даёткаждому PC500gc кредита натоварыилиуслуги; он истекаетвконцецикла.",
+      "map_preparation_relevance": "L3 credits only"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 19,
+      "pdf_page": 53,
+      "self_contained_effect": "Одноучреждение с уровнемстрогоменьше 5 увеличиваетсвойуровеньна 1.",
+      "map_preparation_relevance": "permanentinstitutionlevel+1 underlevel5 condition"
+    },
+    {
+      "event_roll_d10_plus_prosperity": 20,
+      "pdf_page": 53,
+      "self_contained_effect": "Жители хотятосноватьучреждение и просят PC выбратькакое; основываютпредложенное. Есливсеучрежденияужесуществуют, вместотого повышаютуровеньодногоучреждения.",
+      "map_preparation_relevance": "institutionfounding or upgrade; genericactivation rules stillsource53"
+    }
+  ],
+  "not_a_new_product_scope": "Two sourceaddendumclauses only; no newproducttask,implementation,tableweight,UI orJSONmigrationauthorized."
+}
