@@ -1,0 +1,10 @@
+--- test/mapTransactions.test.mjs
++++ test/mapTransactions.test.mjs
+@@ -873,6 +873,7 @@
+  const touching=structuredClone(protectedSave),near={q:-2,r:0};touching.map.regions.push({...region,id:4,hexes:[near],centerHex:near,anchorHex:near,pointsOfInterest:[],pointOfInterestKinds:{}});touching.map.candidateHexes=h.geometry.getCandidateHexes(touching.map.regions.flatMap(r=>r.hexes),new Set(Object.keys(touching.map.terrainByHexKey)));
+  touching.map.toponyms.names=synchronizeToponyms(touching.map.toponyms.names,[...Object.entries(touching.map.toponyms.names).map(([key,value])=>({key,kind:value.kind})),{key:'region:4',kind:touching.map.toponyms.names['region:3'].kind}],touching.map.toponyms.seed);
+  assert.throws(()=>h.geometry.assertHexcrawlSaveData(touching),/scoped_boundary_requires_closure/,'potential touching scope is not silently accepted as a complete mixed closure');await load(h,touching);assert.equal(alerts.length,2);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
++ h.render().redoMap();assert.deepEqual(stable(h.render()),metadata,'temporary diagnostic: the available redo restores the entire normalized global document after both rejected imports');
+ });
+ test('G208-AUTO actual closure failure and invalid16 import preserve source, refinement and the available redo branch',async()=>{
+  const {h,edge,a}=geometryRiverBackendFixture();await acceptGeometryRefinement(h);
