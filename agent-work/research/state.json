@@ -1,22 +1,25 @@
 {
   "schema_version": 1,
   "program_id": "HX-RSR-001",
-  "status": "paused_by_owner",
+  "status": "resume_configuration_pending",
   "automation": {
     "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
     "title": "Исследователь HexCrawl",
     "frequency": "HOURLY",
     "minute": 30,
-    "enabled": true,
+    "enabled": false,
     "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
     "default_timezone": "Europe/Moscow",
     "environment_selection": "inherited",
     "environments_observed": null,
-    "interval": 1,
-    "interval_hours": 1,
+    "interval": 2,
+    "interval_hours": 2,
     "cadence_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
     "verified_at": "2026-11-13T21:19:18.627Z",
-    "is_enabled": true
+    "is_enabled": false,
+    "desired_enabled": true,
+    "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+    "verification_status": "configuration_pending"
   },
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
   "contract_ref": "agent-work/research/contract.md",
@@ -60,11 +63,12 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "HX-RSR-DND2024-FAERUN-L1-SCREEN",
+    "id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
     "game_id": "DND5",
-    "action": "Screen the newest accessible official Forgotten Realms: Adventures in Faerun (2025, DND2024-era) preview/download corpus for regional L1 preparation versus local/tactical or L2 procedures. Establish exact edition and corpus, reuse existing registries; no paid book or unofficial full text.",
-    "completion_condition": "Complete disposition of the accessible official thematic corpus with source locators and operational requirements, or evidence-backed exclusion; no extrapolation from2014 matrix or community remixes.",
-    "reason": "2026 discovery surfaced a current-edition regional remix lead; official source applicability is a new edition gap, separate from completed historical campaign case.",
+    "layer": "L1",
+    "action": "Выровнять DND5/DMG2014 по новому стандарту: исчерпывающий самодостаточный перечень L1; конкретный перевод в функции; фактические статусы на свежемSHA; универсальные правила/профили; RA-Q01–15. Использовать существующие материалы и первичный текст, не объявлять старые28строк полным результатом.",
+    "completion_condition": "Полный заявленный тематический корпус и понятная матрица правило→функция→статус с проверкой качества; реальный source/платформенный блокер — точный checkpoint и независимая достижимая задача другой игры top5.",
+    "reason": "Ownerprioritizedtop5andexplicitlyresumed; DND5first; legacybounded28rowsnotcompletenessproof.",
     "priority_reassessment_required": true
   },
   "active_task": null,
@@ -288,8 +292,8 @@
   "last_result_ref": "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json",
-  "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
+  "checkpoint_ref": null,
+  "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "source_access_resolved": {
     "KNAVE2": {
       "resolved": true,
@@ -1166,22 +1170,29 @@
     "runtime": "unknown"
   },
   "owner_pause": {
-    "active": true,
-    "status": "active",
+    "active": false,
+    "status": "superseded_by_explicit_owner_resume",
     "paused_at": "2026-11-14T15:33:08.567Z",
     "reason": "explicit_owner_stop",
     "owner_quote": "Останови исследователя",
     "resume": "Only explicit owner instruction",
     "automatic_recovery_allowed": false,
-    "result_ref": "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json"
+    "result_ref": "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json",
+    "resumed_at": "2026-11-15T20:50:37.888Z",
+    "resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+    "resume_quote": "Запускай исследователя - интервал 2 часа."
   },
-  "authority_status": "owner_paused",
-  "execution_status": "paused_by_owner",
+  "authority_status": "owner_authorized_research",
+  "execution_status": "awaiting_schedule_verification",
   "owner_resume": {
-    "decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
-    "resumed_at": "2026-11-13T21:19:18.627Z",
-    "prior_pause_ref": "agent-work/decisions/owner-pause-2026-11-12-HX-RSR-001-token-budget.json",
-    "automation_verified_at": "2026-11-13T21:19:18.627Z"
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+    "requested_at": "2026-11-15T20:50:37.888Z",
+    "frequency": "HOURLY",
+    "interval": 2,
+    "interval_hours": 2,
+    "timezone": "Europe/Moscow",
+    "is_enabled_verified": false,
+    "semantic_authorization": true
   },
   "previous_claim": {
     "run_id": "2026-11-14T0835-LandEem-screen",
@@ -1355,30 +1366,7 @@
     "active_numeric_method_changed": false
   },
   "last_run": "2026-11-14T1531-Faerun-L1",
-  "checkpoint": {
-    "status": "paused_by_owner",
-    "run_id": "2026-11-14T1531-Faerun-L1",
-    "stage": "official_source_discovery",
-    "last_successful_step": "Started marker and claim saved; current contracts/registries read; initial official-source search returned links.",
-    "failed_operation": null,
-    "observed_error": null,
-    "stop_reason": "explicit_owner_stop",
-    "cause_status": "confirmed",
-    "saved_results": [
-      "agent-work/claims/2026-11-14T1531-Faerun-L1.json",
-      "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json"
-    ],
-    "exact_continuation": "Only after explicit owner resume: open https://www.dndbeyond.com/sources/dnd/fraif and official product/preview pages; establish date, edition and accessible thematic corpus before extracting L1 operational requirements. No source body or rules verified in this run.",
-    "needs_owner_action": false,
-    "owner_action": null,
-    "resume_condition": "Explicit owner instruction to resume; no automatic health restoration.",
-    "search_leads_not_verified": [
-      "https://www.dndbeyond.com/sources/dnd/fraif",
-      "https://www.dndbeyond.com/resources/1782-map-of-faerun",
-      "https://www.dndbeyond.com/posts/2032-everything-you-need-to-know-about-the-new"
-    ],
-    "research_outcome_completed": false
-  },
+  "checkpoint": null,
   "latest_recent_survey_audit": {
     "ref": "agent-work/research/market/recent-survey-2026-11-14.json",
     "source_ref": "agent-work/research/market/recent-survey-2026-11-14-source.json",
@@ -1625,12 +1613,13 @@
       "RA-Q15"
     ],
     "legacy_acceptance": "not_implied_by_completed_status",
-    "current_scope": "policy_only_no_execution",
-    "resume_requires_explicit_owner_instruction": true
+    "current_scope": "research_execution_authorized_by_explicit_resume",
+    "resume_requires_explicit_owner_instruction": false,
+    "current_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json"
   },
   "rules_alignment_priority": {
     "priority_id": "HX-RSR-TOP5-RULES-ALIGNMENT-v1",
-    "status": "planned_paused_not_started",
+    "status": "authorized_for_scheduled_execution",
     "priority": "P1_owner_directed_data_alignment",
     "authority_ref": "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json",
     "standard_ref": "agent-work/research/rule-analysis-standard.md",
@@ -1664,8 +1653,10 @@
         "game_id": "CROWS",
         "edition_basis": "October2026PublicPlaytest3 owner packet; not final",
         "reference_place": 4.5,
-        "alignment_status": "not_reviewed_against_standard_v2",
-        "execution_started": false
+        "alignment_status": "manual_v2_source_inventory_and_L1_comparison_complete_quality_checkpoint",
+        "execution_started": false,
+        "current_result_ref": "agent-work/research/runs/2026-11-15-193126-CROWS-L1-v2.json",
+        "exact_continuation": "Reuse50clauses/35operations and recordedsource/productdecisions; do not rescan339pages."
       },
       {
         "game_id": "SD",
@@ -1676,7 +1667,7 @@
       }
     ],
     "initial_focus": "DND5 restore a content-verified reference result; then PF2 and KNAVE2; CROWS/SD tied, choose reachable priority without inventing tiebreak rank.",
-    "entry_condition": "Only explicit owner resume; current instruction authorizes policy/priority storage only.",
+    "entry_condition": "Explicit owner resume15Nov given; automationactualstatus must be verified, then execute standardv2 and freshclaims.",
     "completion_condition": "For each of five: exhaustive declared thematic source coverage, self-contained source rules, application behaviors, universal rules/profiles and factually verified statuses; RA-Q01..15 pass or justified applicable exclusions; remaining work prevents accepted status.",
     "legacy_handling": "Retain prior source facts/evidence/statuses with originalSHA; historical completed does not establish standard-v2 acceptance. No automatic score reset or audit performed now.",
     "dedup_policy": "common-rules and game-bindings sole registries; reuse semantics and verify differing profiles; unified backlog only, no product queue change.",
@@ -1699,8 +1690,9 @@
       "RA-Q14",
       "RA-Q15"
     ],
-    "research_schedule_resume": false,
-    "no_product_development": true
+    "research_schedule_resume": true,
+    "no_product_development": true,
+    "current_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json"
   },
   "manual_CROWS_rules_v2": {
     "run_id": "2026-11-15-193126-CROWS-L1-v2",
@@ -1731,5 +1723,57 @@
     "schedule_pause_preserved": true,
     "scope_authority": "Owner manual current Crows request; not automatic or general resume.",
     "next_step": "Owner reviews direct rule/function/status report; do not rescan closed339-pagecorpus. Resolve chosen source/product questions before finalspec; no code starts from this result."
+  },
+  "previous_owner_pause_before_2h_resume": {
+    "active": true,
+    "status": "active",
+    "paused_at": "2026-11-14T15:33:08.567Z",
+    "reason": "explicit_owner_stop",
+    "owner_quote": "Останови исследователя",
+    "resume": "Only explicit owner instruction",
+    "automatic_recovery_allowed": false,
+    "result_ref": "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json"
+  },
+  "previous_owner_resume_before_2h": {
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
+    "resumed_at": "2026-11-13T21:19:18.627Z",
+    "prior_pause_ref": "agent-work/decisions/owner-pause-2026-11-12-HX-RSR-001-token-budget.json",
+    "automation_verified_at": "2026-11-13T21:19:18.627Z"
+  },
+  "previous_next_candidate_before_2h_resume": {
+    "id": "HX-RSR-DND2024-FAERUN-L1-SCREEN",
+    "game_id": "DND5",
+    "action": "Screen the newest accessible official Forgotten Realms: Adventures in Faerun (2025, DND2024-era) preview/download corpus for regional L1 preparation versus local/tactical or L2 procedures. Establish exact edition and corpus, reuse existing registries; no paid book or unofficial full text.",
+    "completion_condition": "Complete disposition of the accessible official thematic corpus with source locators and operational requirements, or evidence-backed exclusion; no extrapolation from2014 matrix or community remixes.",
+    "reason": "2026 discovery surfaced a current-edition regional remix lead; official source applicability is a new edition gap, separate from completed historical campaign case.",
+    "priority_reassessment_required": true
+  },
+  "previous_checkpoint_before_top5_resume": {
+    "checkpoint": {
+      "status": "paused_by_owner",
+      "run_id": "2026-11-14T1531-Faerun-L1",
+      "stage": "official_source_discovery",
+      "last_successful_step": "Started marker and claim saved; current contracts/registries read; initial official-source search returned links.",
+      "failed_operation": null,
+      "observed_error": null,
+      "stop_reason": "explicit_owner_stop",
+      "cause_status": "confirmed",
+      "saved_results": [
+        "agent-work/claims/2026-11-14T1531-Faerun-L1.json",
+        "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json"
+      ],
+      "exact_continuation": "Only after explicit owner resume: open https://www.dndbeyond.com/sources/dnd/fraif and official product/preview pages; establish date, edition and accessible thematic corpus before extracting L1 operational requirements. No source body or rules verified in this run.",
+      "needs_owner_action": false,
+      "owner_action": null,
+      "resume_condition": "Explicit owner instruction to resume; no automatic health restoration.",
+      "search_leads_not_verified": [
+        "https://www.dndbeyond.com/sources/dnd/fraif",
+        "https://www.dndbeyond.com/resources/1782-map-of-faerun",
+        "https://www.dndbeyond.com/posts/2032-everything-you-need-to-know-about-the-new"
+      ],
+      "research_outcome_completed": false
+    },
+    "checkpoint_ref": "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json",
+    "reason": "Retain Faerun/historical checkpoint; not the first task of explicit top5alignment. Do not lose source continuation."
   }
 }
