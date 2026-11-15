@@ -601,6 +601,23 @@ const SVG_EXPORT_STYLES = `
 
 
 type Language = 'ru' | 'en';
+/** Domain failures retain stable entity references without exposing internal
+ * stage names as the user-facing explanation. No success/movement notice. */
+function geometryCommandError(error:unknown,language:Language):string|null{
+ const raw=error instanceof Error?error.message:String(error);
+ if(!raw.startsWith('GEO2 '))return null;
+ const ru=language==='ru';
+ const cause=/budget|capacity/.test(raw)?(ru?'Не удалось завершить уточнение этой карты.':'This map could not be fully refined.')
+  :/stale|fingerprint/.test(raw)?(ru?'Карта изменилась после подготовки уточнения.':'The map changed after refinement was prepared.')
+  :/scoped_|boundary|closure/.test(raw)?(ru?'Не удалось согласовать географию на границе областей.':'Geography at the area boundary could not be reconciled.')
+  :/poi|footprint/i.test(raw)?(ru?'Не удалось согласовать положение связанного объекта с берегом и дорогами.':'The linked place could not be reconciled with its bank and roads.')
+  :/road|crossing/.test(raw)?(ru?'Не удалось согласовать дороги и переправы с берегами.':'Roads and crossings could not be reconciled with the banks.')
+  :/mouth|lake|water/.test(raw)?(ru?'Не удалось согласовать устья рек с берегами водоёмов.':'River mouths could not be reconciled with the water shores.')
+  :(ru?'Не удалось согласовать реки и связанные объекты.':'Rivers and linked places could not be reconciled.');
+ const labels:Record<string,string>=ru?{river:'река',road:'дорога',lake:'озеро',POI:'объект'}:{river:'river',road:'road',lake:'lake',POI:'place'};
+ const entities=[...new Set([...raw.matchAll(/\b(river|road|lake|POI):([\w:-]+)/g)].map(m=>`${labels[m[1]]} ${m[2]}`))].slice(0,3);
+ return `${cause}${entities.length?` (${entities.join(', ')})`:''} ${ru?'Карта сохранена без изменений.':'Map unchanged.'}`;
+}
 
 const UI_TEXT = {
   ru: {
@@ -13676,7 +13693,7 @@ export function App() {
       if(plan.status==='unchanged'){setEditError(language==='ru'?'География уже уточнена.':'Geography is already refined.');return null;}
       const state=plan.candidateState;validateOneMileMap(map,state);
       const preview={revision:documentRevision.current,state,plan};geometryRefinementPreviewRef.current=preview;setGeometryPreview(preview);setEditError(null);return preview;
-    }catch(error){setEditError(error instanceof Error?error.message:String(error));return null;}
+    }catch(error){setEditError(geometryCommandError(error,language)??(error instanceof Error?error.message:String(error)));return null;}
   };
   const applyGeometryRefinementPreview = (expected:NonNullable<typeof geometryRefinementPreviewRef.current>) => {
     if(expected!==geometryRefinementPreviewRef.current||expected.revision!==documentRevision.current||mutationBlocked())return false;
@@ -13801,11 +13818,12 @@ export function App() {
       recordTransaction(before, after); applyExactMap(prepared); closeEditors();
       return true;
     } catch (error) {
-      setEditError(authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
+      setEditError(geometryCommandError(error,language)??authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
       return false;
     }
   };
   const riverCommandError=(error:unknown)=>{
+    const geography=geometryCommandError(error,language);if(geography)return geography;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const reason=error instanceof Error?error.message:'';
     const rules:[string,string,string][]=[['CYCLE','Русло создаёт замкнутый цикл.','The route creates a directed cycle.'],['RIV-007','Сухопутный исток должен иметь полноводность 1.','A dry source must have fullness 1.'],['RIV-005','Полноводность в месте слияния несовместима с притоками.','Fullness at the confluence conflicts with its tributaries.'],['RIV-008','Площадь озера недостаточна для этого истока.','The lake is too small for this source.'],['RIV-009','Площадь озера не выдерживает разницу входа и выхода.','The lake cannot support this inflow/outflow difference.'],['RIV-010','Площадь озера недостаточна для закрытого устья.','The lake is too small for this closed mouth.'],['RIV-006','Недопустимый исток, устье или разветвление; море не может быть истоком.','Invalid source, mouth or split; the sea cannot be a source.'],['owner','Регион владельца не прилегает к ребру.','The owner region does not adjoin the edge.'],['unknown_fixed_river_fullness','Неоднозначная полноводность старого участка.','The old reach has ambiguous fullness.']];
@@ -13867,6 +13885,7 @@ export function App() {
   const waterKindLabel=(kind:WaterKind)=>language==='ru'?({land:'Суша',lake:'Озеро',sea:'Море'}[kind]):({land:'Land',lake:'Lake',sea:'Sea'}[kind]);
   const waterName=(key:string)=>editorNames[key]?.[language]??toponyms[key]?.[language]??(language==='ru'?'Без названия':'Unnamed');
   const waterCommandError=(error:unknown)=>{
+    const geography=geometryCommandError(error,language);if(geography)return geography;
     const authored=authoredNameError(error,language);if(authored)return authored;
     const ru=language==='ru',end=ru?' Карта не изменена.':' Your map is unchanged.';
     if(!(error instanceof WaterEditError))return (error instanceof TagCapacityError?tagCommandError(error):ru?'Не удалось подготовить изменение воды.':'Could not prepare the water edit.')+end;
