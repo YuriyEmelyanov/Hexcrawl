@@ -15,6 +15,7 @@ await h.render().handleImportJson({target:{files:[{text:await fs.readFile(new UR
 const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.render().applyOneMilePreview(prepared),true);const geometryFixture=structuredClone(h.render().createSaveData());prepareFineEvidenceFixture(h);const fixture=structuredClone(h.render().createSaveData());
 // P02: explicit legal F2 ford variant of the same existing world, no geometry edit.
 fixture.map.crossings.find(c=>c.riverId===3).kind='ford';
+geometryFixture.map.crossings.find(c=>c.riverId===3).kind='ford';
 delete fixture.map.physicalGrid.selectedCell;delete fixture.map.physicalGrid.selectedWorldPoint;
 const oracle=fineEvidenceSamples(h);
 for(const road of fixture.map.roads)fixture.map.editorNames[`road:${road.id}`]={ru:`OM дорога ${road.id}`,en:`OM route ${road.id}`};
