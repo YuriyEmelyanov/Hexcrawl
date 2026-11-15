@@ -1,5 +1,7 @@
+import {detailCatalogueExtent,detailFootprintPolygons,detailPointInPolygon} from '../src/detailSizes.ts';
+import {prepareRefinementShorePath,refinementShoreContains,refinementShoreIntervals} from '../src/geometryRefinementShore.ts';
 import {projectGeometryRefinementSource,projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
-import {prepareGeometryRefinementBoundary} from '../src/geometryRefinementBoundary.ts';
+import {geometryBoundaryHasValidClosure,prepareGeometryRefinementBoundary} from '../src/geometryRefinementBoundary.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -189,6 +191,20 @@ test('GEO2 boundary preflight conservatively separates supplied envelopes or req
  const original=input.map.rivers[0],rename=v=>({...v,key:`boundary-probe:${v.key}`}),newRiver={...original,id:999999,regionId:extra.id,vertexPath:original.vertexPath.map(rename),sectors:original.sectors.map(s=>({...s,id:`boundary-probe:${s.id}`,riverId:999999,assignedRegionId:extra.id,vertexPath:s.vertexPath.map(rename),startVertexKey:`boundary-probe:${s.startVertexKey}`,endVertexKey:`boundary-probe:${s.endVertexKey}`,edgeKeys:s.vertexPath.slice(1).map((v,i)=>[rename(s.vertexPath[i]).key,rename(v).key].sort().join('|'))}))};
  const geometricAlias=prepareGeometryRefinementBoundary({...boundaryInput,map:{...boundaryInput.map,rivers:[...input.map.rivers,newRiver]}},g);assert.equal(geometricAlias.status,'prepared',JSON.stringify(geometricAlias));assert.equal(geometricAlias.boundaryValidation,'dependency_closure_required');assert.ok(geometricAlias.potentialDependencies.some(p=>p.addedRef==='river:999999'));
  assert.equal(JSON.stringify(boundaryInput),before);
+ // Reviewer regression: actual quadratic tangency at a polygon edge midpoint
+ // has cuts but no positive wet interval. Synthetic certificate input only;
+ // actual map/import behavior is covered in mapTransactions.
+ {
+  const r=.025,a=Math.PI/96,n={x:Math.cos(a),y:Math.sin(a)},e={x:-n.y,y:n.x},d=r*Math.cos(a),h=.2;
+  const v=(x,y)=>({x:n.x*x+e.x*y,y:n.y*x+e.y*y}),s=p=>`${p.x} ${p.y}`;
+  const shore=prepareRefinementShorePath(`M ${s(v(d+h*h,-h))} Q ${s(v(d-h*h,0))} ${s(v(d+h*h,h))} L ${s(v(1,h))} L ${s(v(1,-h))} Z`);
+  const f={poiId:'p',cells:[{q:0,r:0}],attachments:[],worldAnchor:{x:0,y:0},extent:detailCatalogueExtent('land','lair')},poly=detailFootprintPolygons(f,createDetailGrid(1))[0],cut=refinementShoreIntervals(shore,{from:poly[0],to:poly[1]});
+  assert.equal(refinementShoreContains(shore,f.worldAnchor),false);assert.equal(poly.some(p=>refinementShoreContains(shore,p)),false);assert.equal(shore.loops.some(l=>l.some(c=>detailPointInPolygon(c.from,poly))),false);assert.equal(cut.cuts.length,1);assert.equal(cut.intervals.length,0);
+  const empty={status:'prepared',capsules:[],completeGeometryPlan:false},accepted={riverPlan:{source:{segments:[]},paths:[],ports:[],terminations:[],water:empty,paintWater:empty},pois:{pois:[]},roads:{roads:[]},lockedPoiIds:[]};
+  const certificate={status:'prepared',boundaryValidation:'dependency_closure_required',potentialDependencies:[{retainedRef:'lake:1',addedRef:'POI:p'}],scope:{input:{origin:{x:0,y:0},map:{regions:[],roads:[],crossings:[],physicalGrid:{poiFootprints:[]}}},outside:{regions:[],roads:[],crossings:[],authoredFootprints:[f]},continuationKeys:new Set()},source:{segments:[]},accepted,widths:new Map(),bodies:[{lakeId:1,modes:{tiles:shore,emoji:shore,color:shore}}]};
+  assert.equal(geometryBoundaryHasValidClosure(certificate),false,'tangent contact is not certified dry');
+ }
+
 });
 
 test('GEO2 persisted records reject broken source, topology, contacts and outer authored correspondence atomically',async()=>{

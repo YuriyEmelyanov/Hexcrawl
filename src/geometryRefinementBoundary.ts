@@ -266,7 +266,7 @@ export function geometryBoundaryHasValidClosure(result:ReturnType<typeof prepare
      if(polygon.some(p=>refinementShoreContains(shape,p))||shape.loops.some(loop=>loop.some(c=>detailPointInPolygon(c.from,polygon))))return false;
      for(let i=0;i<polygon.length;i++){
       const cut=refinementShoreIntervals(shape,{from:polygon[i],to:polygon[(i+1)%polygon.length]});
-      if(cut.status!=='prepared'||cut.intervals.length)return false;
+      if(cut.status!=='prepared'||cut.cuts.length||cut.intervals.length)return false;
      }
     }
    }
