@@ -1,0 +1,114 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index 52585fb..c8ac3a8 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -7,6 +7,7 @@ import {prepareRefinementLakeModes} from './geometryRefinementMouths';
+ import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
+ import {prepareGeometryRefinementBoundary} from './geometryRefinementBoundary';
+ import {composeScopedDetailState} from './geometryRefinementState';
++import {projectGeometryRefinementEdit} from './geometryRefinementScope';
+ import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
+ import {buildDetailGeographyPreview,reconcileDetailGeography,validateDetailGeographyFootprints,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
+ import {projectOneMile,oneMileCandidates,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
+@@ -1216,7 +1217,14 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
+  for(const alias of Object.keys(source.poiIdentities?.byLegacyRef??{}))if(!live.has(alias)&&!removals.has(alias))removals.set(alias,null);
+  const authored=reconcileDetailGeography(sourceMap,detailMapRiverGeometry(sourceMap,source.grid.origin),removals)!;
+  if(accepted.globalAuthoredState){
+-  const scoped=composeScopedDetailState(authored,layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
++  // Project changed authored input before composing: the old layer is stale
++  // until a new complete plan has passed its existing dependency checks.
++  const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement);
++  if(projected.status==='error')throw Error(`GEO2 scoped_closure_pending: ${projected.code}`);
++  const retainedMap={...candidate,...projected.input.map,physicalGrid:{...projected.input.map.physicalGrid,version:4 as const,geometryRefinement:layer.geometryRefinement}} as MapSnapshot;
++  const result=prepareGeometryPlan({...geometryPlanInput(retainedMap),authoredState:projected.input.map.physicalGrid});
++  if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
++  const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
+   if(boundary.status==='prepared'&&boundary.boundaryValidation==='disjoint_model_envelopes')return map;
+   // Potential pairs are not confirmed defects or permission to move them.
+   // Until exact mixed closure is integrated, preserve the complete old state.
+
+diff --git a/src/geometryRefinementScope.ts b/src/geometryRefinementScope.ts
+index 90edc1c..6ba1788 100644
+--- a/src/geometryRefinementScope.ts
++++ b/src/geometryRefinementScope.ts
+@@ -8,6 +8,16 @@ import {assertDetailPoiOwners} from './detailIdentity.ts';
+ import {poiNameLocators} from './manualPois.ts';
+ const key=(p:{q:number;r:number})=>`${p.q},${p.r}`;
+ export function projectGeometryRefinementSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement){
++ return projectSource(input,accepted,true);
++}
++/** Detached current input for replanning an edit of retained entities. This
++ * does NOT certify the old fingerprint against the changed source, and is
++ * never import/boundary acceptance. Caller must prepare a complete new plan,
++ * compose global authored data and validate the resulting boundary. */
++export function projectGeometryRefinementEdit(input:GeometrySourceValidationInput,accepted:GeometryRefinement){
++ return projectSource(input,accepted,false);
++}
++function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement,requireUnchanged:boolean){
+  const fail=(code:string,refs:readonly string[])=>Object.freeze({status:'error' as const,code,refs:Object.freeze([...refs]),readyForApplication:false as const});
+  try{
+   if(input.cancelled?.())return fail('prepare_cancelled',[]);
+@@ -62,8 +72,8 @@ export function projectGeometryRefinementSource(input:GeometrySourceValidationIn
+   }catch{return fail('invalid_authored_source',['physicalGrid.poiIdentities','physicalGrid.poiFootprints']);}
+   const authored=Object.freeze({...globalAuthoredState,...(globalAuthoredState.poiIdentities?{poiIdentities:Object.freeze({...globalAuthoredState.poiIdentities,byLegacyRef:Object.freeze(Object.fromEntries(Object.entries(globalAuthoredState.poiIdentities.byLegacyRef).filter(([alias])=>aliases.has(alias))))})}:{}),poiFootprints:Object.freeze(globalAuthoredState.poiFootprints.filter(f=>retainedPoiIds.has(f.poiId)))});
+   const projected=Object.freeze({...input,riverPlan:accepted.riverPlan,map:Object.freeze({...input.map,physicalGrid:authored,regions:Object.freeze(regions),rivers:Object.freeze(rivers),roads:Object.freeze(roads),crossings:Object.freeze(crossings),hexTerrainByKey:new Map([...input.map.hexTerrainByKey].filter(([k])=>oldCells.has(k)||oldWater.has(k))),waterPoiByKey:new Map([...input.map.waterPoiByKey].filter(([k])=>aliases.has(`waterPoi:${k}`))),seas:Object.freeze(input.map.seas.filter(s=>seaIds.has(s.id)))}),liveRivers:Object.freeze(input.liveRivers.filter(r=>riverIds.has(r.id))),landCells:Object.freeze(input.landCells.filter(c=>land.has(key(c)))),marks:Object.freeze({rapids:new Set([...input.marks.rapids].filter(k=>edgeKeys.has(k))),waterfalls:new Set([...input.marks.waterfalls].filter(k=>nodeKeys.has(k)))})});
+-  if(!validateGeometryRefinementSource(projected,{...accepted,sourceState:authored}))return fail('scope_source_changed',['sourceFingerprint']);
++  if(requireUnchanged&&!validateGeometryRefinementSource(projected,{...accepted,sourceState:authored}))return fail('scope_source_changed',['sourceFingerprint']);
+   if(input.cancelled?.())return fail('prepare_cancelled',[]);
+-  return Object.freeze({status:'projected' as const,input:projected,globalAuthoredState,outside:Object.freeze({regions:Object.freeze(outside.regions),rivers:Object.freeze(outside.rivers),roads:Object.freeze(outside.roads),crossings:Object.freeze(outside.crossings),water:Object.freeze(outside.water),authoredFootprints:Object.freeze(globalAuthoredState.poiFootprints.filter(f=>!retainedPoiIds.has(f.poiId))),authoredIdentityRefs:Object.freeze(Object.fromEntries(Object.entries(globalAuthoredState.poiIdentities?.byLegacyRef??{}).filter(([alias])=>!aliases.has(alias))))}),geometryRefinement:accepted,boundaryValidation:'required' as const,readyForApplication:false as const});
++  return Object.freeze({status:'projected' as const,input:projected,globalAuthoredState,outside:Object.freeze({regions:Object.freeze(outside.regions),rivers:Object.freeze(outside.rivers),roads:Object.freeze(outside.roads),crossings:Object.freeze(outside.crossings),water:Object.freeze(outside.water),authoredFootprints:Object.freeze(globalAuthoredState.poiFootprints.filter(f=>!retainedPoiIds.has(f.poiId))),authoredIdentityRefs:Object.freeze(Object.fromEntries(Object.entries(globalAuthoredState.poiIdentities?.byLegacyRef??{}).filter(([alias])=>!aliases.has(alias))))}),geometryRefinement:accepted,sourceCorrespondence:requireUnchanged?'validated_unchanged' as const:'requires_new_plan' as const,boundaryValidation:'required' as const,readyForApplication:false as const});
+  }catch{return fail('invalid_scope',['geometryRefinement.sourceFingerprint']);}
+ }
+
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index 2d90391..0e21a92 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -867,7 +867,22 @@ test('G208-AUTO actual ordinary river edit atomically updates physical4, preserv
+  const reopened=stable(h.render());assert.deepEqual(reopened,incoming,'actual public16 loader retains global owners and exact scoped choices');assert.equal(h.render().undoHistory.length,beforeCount+1);assertUndoRedo(h,beforeScoped,reopened);
+  assert.equal(reopened.map.physicalGrid.poiIdentities.byLegacyRef['poi:3:40,40'],outside.poiId);assert.deepEqual(reopened.map.physicalGrid.geometryRefinement.riverPlan.paths,after.map.physicalGrid.geometryRefinement.riverPlan.paths);assert.deepEqual(reopened.generation,after.generation);
+  h.render().setSelectedHex(cell);const beforeMetadata=stable(h.render()),metadataCount=h.render().undoHistory.length;h.render().setSelectedHexBiomeOverride('open_hills');const metadata=stable(h.render());assert.equal(metadata.map.biomeOverrideByHexKey[key],'open_hills');assert.equal(h.render().undoHistory.length,metadataCount+1);assert.deepEqual(metadata.map.physicalGrid.geometryRefinement.riverPlan.paths,reopened.map.physicalGrid.geometryRefinement.riverPlan.paths);assert.deepEqual(metadata.map.physicalGrid.fineCellEdits,global.fineCellEdits);assertUndoRedo(h,beforeMetadata,metadata);
++ // G208: a source edit in the retained scope must replan that scope, not
++ // compose changed authored footprints against the stale accepted layer.
++ const beforeScopedEdit=stable(h.render()),scopedHistory=h.render().undoHistory.length;
++ assert.equal(h.render().editRiverDocument({type:'fullness',riverId:1,edgeKey:edge,fullness:2}),true,h.render().editError??'scoped source edit');
++ const adapted=stable(h.render());assert.equal(h.render().undoHistory.length,scopedHistory+1);
++ assert.notEqual(adapted.map.physicalGrid.geometryRefinement.sourceFingerprint,beforeScopedEdit.map.physicalGrid.geometryRefinement.sourceFingerprint);
++ assert.deepEqual(geometryChoicePaths(adapted,2),geometryChoicePaths(beforeScopedEdit,2));
++ assert.deepEqual(adapted.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===2),beforeScopedEdit.map.physicalGrid.geometryRefinement.roads.roads.filter(r=>r.roadId===2));
++ assert.deepEqual(adapted.map.physicalGrid.poiIdentities,beforeScopedEdit.map.physicalGrid.poiIdentities);
++ assert.deepEqual(adapted.map.physicalGrid.poiFootprints.find(f=>f.poiId===outside.poiId),beforeScopedEdit.map.physicalGrid.poiFootprints.find(f=>f.poiId===outside.poiId));
++ assert.deepEqual(adapted.map.physicalGrid.fineCellEdits,global.fineCellEdits);assert.deepEqual(adapted.generation,beforeScopedEdit.generation);
++ assert.deepEqual(dialogs,[]);assertUndoRedo(h,beforeScopedEdit,adapted);
++ await load(h,adapted);assert.deepEqual(stable(h.render()),adapted,'updated scoped16 imports exact stored choices');
+  h.render().undoMap();const protectedSave=stable(h.render()),protectedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(protectedStacks[1].length);
++ assert.equal(h.render().editRiverDocument({type:'remove',riverId:1,includeArms:false},{confirmed:true}),false,'missing retained dependency rejects scoped edit');
++ assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
+  const alerts=[];h.setWindow({alert:message=>alerts.push(message),confirm:()=>true,matchMedia:()=>({matches:false})});
+  const invalidScoped=structuredClone(protectedSave);invalidScoped.map.physicalGrid.globalAuthoredState.poiFootprints[0].worldAnchor.x+=.01;await load(h,invalidScoped);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
+  const touching=structuredClone(protectedSave),near={q:-2,r:0};touching.map.regions.push({...region,id:4,hexes:[near],centerHex:near,anchorHex:near,pointsOfInterest:[],pointOfInterestKinds:{}});touching.map.candidateHexes=h.geometry.getCandidateHexes(touching.map.regions.flatMap(r=>r.hexes),new Set(Object.keys(touching.map.terrainByHexKey)));
+
+diff --git a/docs/region-generation.md b/docs/region-generation.md
+index e0810f9..f7308e1 100644
+--- a/docs/region-generation.md
++++ b/docs/region-generation.md
+@@ -426,6 +426,16 @@ source-scope. Пока точная mixed closure не реализована, 
+ Сохранение/загрузка раздельного scoped-снимка и обычная правка метаданных
+ сохраняют новые неуточнённые объекты, ID, локальные записи, RNG и старые пути.
+ Импорт/правка используют прежнюю одну транзакцию Undo/Redo; отказ сохраняет
+-доступную ветку Redo. Автоматическое создание scoped-слоя генератором, точные
+-связные стыки и перерасчёт изменённого старого scope, initial UI/карта/PNG и
+-приёмка полного GEO2 остаются незавершёнными этапами; публикация не разрешена.
++доступную ветку Redo. Обычная правка исходной геометрии внутри сохранённой области теперь выделяет
++актуальный авторский source-scope, готовит полный новый GeometryPlan по прежним
++правилам dependency closure и только затем накладывает его на полные глобальные
++данные. Старый fingerprint не объявляется подходящим к изменённому источнику:
++проверка импорта и boundary по-прежнему требует точного соответствия. Перед
++записью новая геометрия снова проходит проверку раздельности с внешними объектами.
++Неизменённые старые пути сохраняются буквально; ID/счётчик, внешние неуточнённые
++POI, локальные записи и RNG не теряются. Исходная правка и зависимые сдвиги —
++одна прежняя Undo/Redo, без дополнительного подтверждения. Отсутствие старой
++ссылки или новый потенциальный контакт с внешней областью отклоняет всю правку.
++Автоматическое создание scoped-слоя генератором, точные связные стыки,
++initial UI/карта/PNG и приёмка полного GEO2 остаются незавершёнными этапами;
++публикация не разрешена.
