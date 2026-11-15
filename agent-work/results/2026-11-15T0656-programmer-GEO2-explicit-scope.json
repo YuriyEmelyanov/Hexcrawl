@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T0656-programmer-GEO2-explicit-scope",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-explicit-scope",
+  "role": "programmer",
+  "base_sha": "ddb3ceb2709c7c6c16d3b7a6a1bede904a864ead",
+  "head_sha": "d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f",
+  "tree_sha": "16bee13dc019543bb532c171106d58c25b766578",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "spec_version": "GEO2-v2",
+  "result_ref": "agent-work/results/2026-11-15T0656-programmer-GEO2-explicit-scope.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0656-programmer-GEO2-explicit-scope.json",
+  "claim_ref": "agent-work/claims/2026-11-15T0656-programmer-GEO2-explicit-scope.json",
+  "evidence_ref": "agent-work/evidence/GEO2-explicit-scope-20261115-0656",
+  "checks_ref": "agent-work/evidence/GEO2-explicit-scope-20261115-0656/checks.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-explicit-scope-20261115-0656/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/GEO2-explicit-scope-20261115-0656/score-evidence.json",
+  "next_role": "programmer",
+  "next_step": "Продолжить HX-BL-051/GEO2 на d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f: непустая mixed dependency closure для продолжения/сдвига рек, дорог, POI и водных стыков между старой и новой областями, RIV-014 и изменение состава source-scope. Пустой стык и recordGenerated уже подключены, повторный явный preview/Apply может включать новый домен; это не разрешает автоматическое расширение уточнения. Контакты с объектами пока отказываются атомарно. Несвязанные старые пути/глобальные ID/счётчик/локальные записи сохранять. Затем initial UI/ghost overlays, фактическая карта/PNG, полный G201–G210 и независимый exact-SHA review+score_assessment1.2. Публикация отдельно.",
+  "status": "explicit_scope_preview_apply_implemented_GEO2_in_progress",
+  "component_complete": true,
+  "implementation_complete": false,
+  "full_task_complete": false,
+  "review_ready": false,
+  "execution_running": false,
+  "published": false,
+  "main_changed": false,
+  "release_authorized": false,
+  "pr": 503,
+  "pr_updated": false,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "product_score_changed": false,
+  "score_model_version": "1.2",
+  "owner_decision_required_for_next_step": false,
+  "completed_at": "2026-11-15T04:18:58.528Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
+    "start": {
+      "checked_at": "2026-11-15T03:57:24.848Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T04:18:58.528Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "errors": [],
+    "scope": "Actual point-in-time checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
+  },
+  "role_selection_reason": "Approved implementation continuation;051 claim clear. Existing final spec explicitly permits new domains only through explicit preview/Apply, but current handler refuses any preexisting refinement. Repair this scoped activation contract before broader nonempty closure.",
+  "implemented": [
+    "Explicit preview/Apply no longer refuses solely because an accepted refinement exists.",
+    "Only explicit preview sets internal scopePolicy=explicit_preview to acquire new domain; ordinary source/generator paths retain default domain-expansion refusal and all affected/unrelated checks remain.",
+    "Actual existing connected-generator lifecycle demonstrates accepted-only preview/cancel with available redo, stale/cancelled/double callback refusal, one Apply/UndoRedo, unchanged current full-scope no-op, exact16 reload and preserved latest local metadata/cleared focus/counters/RNG."
+  ],
+  "checks": {
+    "head_sha": "d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f",
+    "tree_sha": "16bee13dc019543bb532c171106d58c25b766578",
+    "node": "v24.22.1",
+    "command": "npm run check",
+    "exit_code": 0,
+    "typescript": "passed",
+    "node_tests": {
+      "executed": 420,
+      "passed": 420,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 821151.822295
+    },
+    "build": {
+      "status": "passed",
+      "duration_seconds": 24.19
+    },
+    "focused": {
+      "executed": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "included_in_full_total": true
+    },
+    "reproduction": {
+      "executed": 1,
+      "passed": 0,
+      "failed": 1,
+      "expected_failure_before_fix": true,
+      "ref": "agent-work/evidence/GEO2-explicit-scope-20261115-0656/repro.log",
+      "not_summed_with_final_total": true
+    },
+    "browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "rng_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "source_files_exact": 4,
+    "tracked_worktree_clean": true,
+    "full_GEO2_acceptance": false,
+    "warnings": [
+      "Existing npm http-proxy env warning",
+      "Existing Vite large chunk warning"
+    ],
+    "environment_limitation": "Both actual Chromium launches abort at process_singleton_posix.cc socket() EPERM before browser scenarios. No screenshots/PNG/UI/full acceptance or confirmed product browser defect claimed."
+  },
+  "test_change_summary": {
+    "base_sha": "ddb3ceb2709c7c6c16d3b7a6a1bede904a864ead",
+    "head_sha": "d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node",
+    "suites": [
+      {
+        "suite": "test/mapTransactions.test.mjs",
+        "base_named_cases": 30,
+        "head_named_cases": 30,
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "modified_names": [
+          "GEO2 actual connected land-only generation retains old refinement and leaves new domain unrefined in one history action"
+        ]
+      }
+    ],
+    "scenario_risk": "G202/G208 explicit new-scope acquisition after generation, preserving automatic expansion refusal, accepted-only preview/cancel, available redo, revision/stale/double-Apply guards, local data/focus, one transaction and16 roundtrip.",
+    "reuse_or_new_reason": "Extend existing real connected-generator lifecycle, using already accepted partial state and fixture. No new logical case/seed/runner; prior initial-preview case reused unchanged as focused regression.",
+    "count_source": "Exact base/head diff and named Node cases30→30; one existing case body extended. No parameterized tests changed; subscenarios are not additional tests.",
+    "browser_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "rng_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "executions": {
+      "full_node": {
+        "executed": 420,
+        "passed": 420,
+        "failed": 0,
+        "skipped": 0,
+        "cancelled": 0,
+        "duration_ms": 821151.822295
+      },
+      "focused": {
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "included_in_full_total": true
+      },
+      "browser": {
+        "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+        "exit_code": 1,
+        "after_build": true,
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
+      },
+      "rng_browser": {
+        "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+        "exit_code": 1,
+        "after_build": true,
+        "status": "blocked_environment_socket_EPERM",
+        "scenarios_executed": 0
+      }
+    }
+  },
+  "limitations": [
+    "Finite existing generated land-only fixture; explicit input can still reject when full constraints/unrelated-geometry checks fail.",
+    "Nonempty mixed closure/source membership migration involving river/road/POI/body contacts or terminal continuation remain pending.",
+    "No new UI introduced or claimed shown: initial controls/ghost overlays, actual map/PNG and full G201–G210 acceptance remain pending. Browsers abort socket EPERM before scenarios.",
+    "Independent exact-SHA review+score_assessment1.2 not ready; no new game support or confirmed points claimed."
+  ],
+  "owner_decisions_needed": [],
+  "whole_team_blocked": false,
+  "feedback_disposition": [
+    {
+      "id": "HX-FB-023",
+      "decision": "include",
+      "reason": "Existing approved GEO2 preview/history contract; full feedback not closed."
+    },
+    {
+      "id": "HX-FB-002",
+      "decision": "defer",
+      "reason": "Audit already completed; existing lifecycle extended, no repeated audit/new logical case."
+    }
+  ],
+  "authorization_status": "approved_implementation_separate_release_gate"
+}

@@ -19,3 +19,7 @@ Node+0/-0/modified1; named cases30→30. Extended the existing connected land-on
 ## Remaining scope / score
 
 Nonempty mixed closure (river/road/POI/body contact/terminal continuation and source membership migration), actual initial UI/ghost overlays, actual map/PNG and full G201–G210 remain pending. Explicit acquisition is demonstrated on the finite existing land-only expansion fixture; other input can still reject if complete constraints/unrelated checks fail. No claimed general connected-flow resolution or game compatibility. Independent new-SHA review and score_assessment1.2 remain required. S01-C02/C04,S02-C02,S04-C03/C04,S05-C01 grade/points/delta unknown, no current-score/history change. HX-FB-023 included within approved GEO2 only; full feedback remains open. HX-FB-002 audit already completed and not repeated. No new start/design/release approval or paid costs.
+
+## Final verification
+
+Exact d30a9464ea9c2bda63fc1d94b1b83b13eaceba3f / tree 16bee13dc019543bb532c171106d58c25b766578: npm run check exit0,420/420 Node,0 failed/skipped/cancelled; TypeScript and build passed. Both actual post-build browser and RNG-browser commands exit1 at Chromium socket() EPERM before scenarios. No screenshots/PNG/UI acceptance. Source4 files and early evidence5 files read back exactly; local HEAD/tree exact, tracked diff empty. Actual automation start/end enabled, no restoration. Node+0/-0/modified1; focused2 cases included in420, not added on top.
