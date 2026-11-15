@@ -3492,6 +3492,39 @@
           "scope_effect": "Research annotation only; owner deferral, dependencies, proposal and queue unchanged",
           "score_delta": null
         }
+      ],
+      "research_components": [
+        {
+          "component_id": "CROWS-PT3-HX-BL-027-v2",
+          "status": "proposed_research_handoff_not_start_authority",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "source_coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+          "requirement_refs": [
+            "CROWS-PT3-L1-022"
+          ],
+          "operations": [
+            "Использовать Cornath или перенести выбранные места в свой мир, сохранив содержание."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Мастер выбрал часть готовых мест Cornath для своего мира.",
+              "when": "Использовать готовые региональные места",
+              "expected": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается."
+            }
+          ],
+          "known_current_support": [
+            {
+              "id": "CROWS-PT3-L1-022",
+              "status": "partial",
+              "comment": "Ручная подготовка доступна; подложка и готовый импорт Cornath отсутствуют. Заметка не переезжает вместе с POI."
+            }
+          ],
+          "open_source_or_product_decisions": [],
+          "scope_preservation": "Keep existing task approval/status/primary queue. No automatic Crows expansion or new implementation."
+        }
       ]
     },
     {
@@ -4883,7 +4916,7 @@
         },
         {
           "component_id": "CROWS-PT3-042-v1",
-          "status": "proposed_research_profile_only",
+          "status": "superseded_by_v2_source_review",
           "game_id": "CROWS",
           "edition": "October2026PublicPlaytest3",
           "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
@@ -4912,7 +4945,54 @@
           ],
           "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
           "implementation_status": "unverified",
-          "score_delta": null
+          "score_delta": null,
+          "historical_matrix_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/37bef9bbfa62806ac761f038ff219f5f1b9f066b/agent-work/market/rules/CROWS-PT3.json",
+          "superseded_by": "CROWS-PT3-HX-BL-042-v2"
+        },
+        {
+          "component_id": "CROWS-PT3-HX-BL-042-v2",
+          "status": "proposed_research_handoff_not_start_authority",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "source_coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+          "requirement_refs": [
+            "CROWS-PT3-L1-002",
+            "CROWS-PT3-L1-004"
+          ],
+          "operations": [
+            "Задать 5 миль как физическую длину, отдельно от экранного увеличения.",
+            "Подготовить дорогу, реку и мост, сохранив свойства пути для будущего расчёта движения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Нужен профиль 5 mile across; экранный zoom равен 1,3.",
+              "when": "Назначить карте физический профиль Crows",
+              "expected": "Физическая длина сохранена как 5 миль; zoom остаётся 1,3. Способ измерения выбран явно, а не приписан книге."
+            },
+            {
+              "given": "Дорога пересекает реку по мосту.",
+              "when": "Подготовить дорожную сеть и переправу",
+              "expected": "Мост, дорога и река сохраняются после загрузки. Этот случай не помечен как переход без моста; расчёт дневной дистанции остаётся L2."
+            }
+          ],
+          "known_current_support": [
+            {
+              "id": "CROWS-PT3-L1-002",
+              "status": "absent",
+              "comment": "В текущей физической модели допустимы 1/6 миль, профиль 5 миль отсутствует."
+            },
+            {
+              "id": "CROWS-PT3-L1-004",
+              "status": "partial",
+              "comment": "На карте есть дороги, вода и мосты. Профиль полного дневного движения Crows не проверен."
+            }
+          ],
+          "open_source_or_product_decisions": [
+            "across не уточняет способ измерения. Явный проектный выбор конвенции должен быть обозначен; неизвестность источника не означает запрета работать с согласованной конвенцией."
+          ],
+          "scope_preservation": "Keep existing task approval/status/primary queue. No automatic Crows expansion or new implementation."
         }
       ],
       "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
@@ -9093,7 +9173,7 @@
         },
         {
           "component_id": "CROWS-PT3-044-v1",
-          "status": "proposed_research_profile_only",
+          "status": "superseded_by_v2_source_review",
           "game_id": "CROWS",
           "edition": "October2026PublicPlaytest3",
           "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
@@ -9113,7 +9193,40 @@
           "unresolved_parameters": [],
           "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
           "implementation_status": "unverified",
-          "score_delta": null
+          "score_delta": null,
+          "historical_matrix_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/37bef9bbfa62806ac761f038ff219f5f1b9f066b/agent-work/market/rules/CROWS-PT3.json",
+          "superseded_by": "CROWS-PT3-HX-BL-044-v2"
+        },
+        {
+          "component_id": "CROWS-PT3-HX-BL-044-v2",
+          "status": "proposed_research_handoff_not_start_authority",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "source_coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+          "requirement_refs": [
+            "CROWS-PT3-L1-003"
+          ],
+          "operations": [
+            "Задать биом и при необходимости отдельно указать холодный климат или побережье для выбора таблицы встреч."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Лесной гекс находится в холодном климате.",
+              "when": "Назначить среду и при необходимости климат места",
+              "expected": "На карте остаётся лес; холодный климат указан отдельно. Не создана выдуманная единственная категория «холод» вместо всех видов местности."
+            }
+          ],
+          "known_current_support": [
+            {
+              "id": "CROWS-PT3-L1-003",
+              "status": "partial",
+              "comment": "Биом редактируется; семь областей таблиц Crows не имеют проверенного полного соответствия биомам приложения."
+            }
+          ],
+          "open_source_or_product_decisions": [],
+          "scope_preservation": "Keep existing task approval/status/primary queue. No automatic Crows expansion or new implementation."
         }
       ],
       "source_clarification_refs": [
@@ -10874,7 +10987,7 @@
       "research_components": [
         {
           "component_id": "CROWS-PT3-045-v1",
-          "status": "proposed_research_profile_only",
+          "status": "superseded_by_v2_source_review",
           "game_id": "CROWS",
           "edition": "October2026PublicPlaytest3",
           "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
@@ -10953,7 +11066,56 @@
           ],
           "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
           "implementation_status": "unverified",
-          "score_delta": null
+          "score_delta": null,
+          "historical_matrix_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/37bef9bbfa62806ac761f038ff219f5f1b9f066b/agent-work/market/rules/CROWS-PT3.json",
+          "superseded_by": "CROWS-PT3-HX-BL-045-v2"
+        },
+        {
+          "component_id": "CROWS-PT3-HX-BL-045-v2",
+          "status": "proposed_research_handoff_not_start_authority",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "source_coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+          "requirement_refs": [
+            "CROWS-PT3-L1-005",
+            "CROWS-PT3-L1-035"
+          ],
+          "operations": [
+            "Хранить существующие места, наблюдаемое описание и секреты отдельно; выдавать игрокам только известное.",
+            "Сохранить существующие места, их известность и источник сведений; получение информации гильдии относится к последующему L2."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Деревня известна группе; тайник и ловушка не известны.",
+              "when": "Подготовить карту известных мест и секреты ведущего",
+              "expected": "Представление игроков показывает разрешённую деревню и не раскрывает тайник/ловушку; истинные сведения ведущего сохранены."
+            },
+            {
+              "given": "Дом гильдии уровня 2; выбран гекс с неизвестным POI и соседней деревней.",
+              "when": "Подготовить истинные места и известные группе сведения",
+              "expected": "Подготовка не создаёт новые места. Доступны сведения о существующих местах и до двух использований за цикл; получение координат не раскрывает все секреты. Само раскрытие - L2."
+            }
+          ],
+          "known_current_support": [
+            {
+              "id": "CROWS-PT3-L1-005",
+              "status": "partial",
+              "comment": "Заметки мастера есть. Общая фильтрация карты игроков под этот сценарий не подтверждена."
+            },
+            {
+              "id": "CROWS-PT3-L1-035",
+              "status": "partial",
+              "comment": "Частично: места и текст существуют, но общий профиль знаний/карты игроков и связанный учёт услуг гильдии не подтверждены."
+            }
+          ],
+          "open_source_or_product_decisions": [
+            "Within 1 hex обычно переводится в выбранный гекс и соседей, но книга прямо не перечисляет множество из семи клеток. Включение центра и графовое расстояние следует обозначить как геометрическую трактовку продукта.",
+            "Неизвестность места игрокам не означает отсутствия места на истинной карте Ref.",
+            "Получение местоположения не раскрывает автоматически секретные комнаты, ловушки и всё внутреннее содержимое места."
+          ],
+          "scope_preservation": "Keep existing task approval/status/primary queue. No automatic Crows expansion or new implementation."
         }
       ]
     },
@@ -14026,7 +14188,7 @@
       "research_components": [
         {
           "component_id": "CROWS-PT3-046-v1",
-          "status": "proposed_research_profile_only",
+          "status": "superseded_by_v2_source_review",
           "game_id": "CROWS",
           "edition": "October2026PublicPlaytest3",
           "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
@@ -14160,7 +14322,71 @@
           ],
           "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
           "implementation_status": "unverified",
-          "score_delta": null
+          "score_delta": null,
+          "historical_matrix_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/37bef9bbfa62806ac761f038ff219f5f1b9f066b/agent-work/market/rules/CROWS-PT3.json",
+          "superseded_by": "CROWS-PT3-HX-BL-046-v2"
+        },
+        {
+          "component_id": "CROWS-PT3-HX-BL-046-v2",
+          "status": "proposed_research_handoff_not_start_authority",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "source_coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+          "requirement_refs": [
+            "CROWS-PT3-L1-015",
+            "CROWS-PT3-L1-030",
+            "CROWS-PT3-L1-034"
+          ],
+          "operations": [
+            "Различать действующий уровень и оплаченное улучшение; активировать его после подтверждения нового цикла.",
+            "Связать последствие с домашней деревней и сохранить срок, явно выбранный Ref после разрешения противоречия.",
+            "Сохранить постоянные и временные изменения учреждения/управляющего, срок закрытия и действующий уровень отдельно от эффективного."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Маяк уровня 1; улучшение до 2 оплачено посреди цикла.",
+              "when": "Записать ожидаемое учреждение/улучшение",
+              "expected": "Активен уровень 1, отдельно ожидается 2. Только после подтверждённой границы цикла активным становится 2; дата открытия карты не запускает переход."
+            },
+            {
+              "given": "После спор источник даёт и конец цикла, и «в течение двух недель».",
+              "when": "Записать событие, переданное внешними правилами",
+              "expected": "Обе формулировки и выбранное Ref решение сохранены. Автоматический единственный срок не придуман."
+            },
+            {
+              "given": "Учреждение постоянно уровня 2, временно действует как уровень 1.",
+              "when": "Принять результат события деревни",
+              "expected": "Сохранены исходный уровень, временное состояние и срок. Конец временного эффекта не считается постоянным улучшением; уничтожение службы не стирает географию гекса."
+            }
+          ],
+          "known_current_support": [
+            {
+              "id": "CROWS-PT3-L1-015",
+              "status": "partial",
+              "comment": "Ручное описание возможно. Связанного перехода состояния на границе цикла нет."
+            },
+            {
+              "id": "CROWS-PT3-L1-030",
+              "status": "partial",
+              "comment": "Ручное описание возможно. Источник даёт разные сроки, поэтому единственный автоматический таймер не определён."
+            },
+            {
+              "id": "CROWS-PT3-L1-034",
+              "status": "partial",
+              "comment": "Частично: сведения можно сохранить вручную. Предметных учреждений, временных модификаторов и связанных событий в приложении нет."
+            }
+          ],
+          "open_source_or_product_decisions": [
+            "Сроквконцедеревенскогоциклаиподсказкавтечениедвухнедельнеравнозначны.",
+            "Результат 0 буквально говорит о снижении уровня «до 0», но не объясняет снижение, например, уровня 1 на 3 до -2. Нельзя молча добавлять ограничение снизу.",
+            "Результат -8 отдельно описывает случай, когда оба учреждения были первого уровня. Смешанный случай (одно уровня 1, другое выше) и возможный нулевой уровень не разъяснены.",
+            "Результат 19 явно относится к учреждению уровня строго меньше 5. Нельзя заменить это условие индивидуальным максимальным уровнем: книготорговец имеет шестой уровень в каталоге, но его пятый уровень не удовлетворяет условию события.",
+            "Временное «считать выше/ниже» не обязательно меняет постоянный уровень. Нужно сохранять срок эффекта и отличие от настоящего улучшения.",
+            "В результате 7 ссылка «тот же эффект, что 5» противоречит описанию нехватки товара. Сохранить как редакционную неопределённость, не заменять ссылкой на 6 молча."
+          ],
+          "scope_preservation": "Keep existing task approval/status/primary queue. No automatic Crows expansion or new implementation."
         }
       ]
     },
@@ -18528,7 +18754,7 @@
         },
         {
           "component_id": "CROWS-PT3-052-v1",
-          "status": "proposed_research_profile_only",
+          "status": "superseded_by_v2_source_review",
           "game_id": "CROWS",
           "edition": "October2026PublicPlaytest3",
           "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
@@ -18576,7 +18802,160 @@
           "unresolved_parameters": [],
           "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
           "implementation_status": "unverified",
-          "score_delta": null
+          "score_delta": null,
+          "historical_matrix_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/37bef9bbfa62806ac761f038ff219f5f1b9f066b/agent-work/market/rules/CROWS-PT3.json",
+          "superseded_by": "CROWS-PT3-HX-BL-052-v2"
+        },
+        {
+          "component_id": "CROWS-PT3-HX-BL-052-v2",
+          "status": "proposed_research_handoff_not_start_authority",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "source_coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+          "requirement_refs": [
+            "CROWS-PT3-L1-006",
+            "CROWS-PT3-L1-011",
+            "CROWS-PT3-L1-012",
+            "CROWS-PT3-L1-013",
+            "CROWS-PT3-L1-014",
+            "CROWS-PT3-L1-016",
+            "CROWS-PT3-L1-018",
+            "CROWS-PT3-L1-019",
+            "CROWS-PT3-L1-020",
+            "CROWS-PT3-L1-021",
+            "CROWS-PT3-L1-033"
+          ],
+          "operations": [
+            "Записать, какое помещение закрыто камнем/металлом, его вместимость и обитаемость.",
+            "Обозначить деревню, дать имя, добавить пять обязательных и одно выбранное учреждение первого уровня.",
+            "По желанию записать ответы про руину, власть, еду/напитки и праздник.",
+            "Записать имя NPC, отношение к персонажу и одну выбранную выгоду связи.",
+            "Для каждого учреждения хранить собственные тип, уровень и управляющего, учитывая различающиеся пределы.",
+            "Хранить значение конкретной деревни: начальное 0, пределы от -10 до 10.",
+            "В описании деревни указать жильё для безопасного хранения; не выделять каждому дому региональный гекс.",
+            "После подтверждённых 15 000 игровых gc и 10 дней обозначить новую домашнюю деревню, сохранив прежнюю и выбранных NPC.",
+            "Записать выбранные ведущим состав и состояние без обязательного ведения циклов.",
+            "Заменить управляющего ушедшим на покой PC; эффективное процветание 10 учреждения отличать от реального показателя деревни.",
+            "Отметить вместимость до четырёх людей и погодную защиту; не выдавать брезент за защиту от Миазмы."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Мастер записал укрытие Camp Builder для одного Medium и открытый двор рядом.",
+              "when": "Записать укрытие и условия его защиты",
+              "expected": "Текст вместимости и условий сохранился; в записи защищено помещение, а не весь гекс. Приложение не разрешает проверку Миазмы вместо ведущего."
+            },
+            {
+              "given": "Для новой домашней деревни шестым учреждением выбран маяк.",
+              "when": "Создать и назвать домашнюю деревню, выбрать шестое учреждение",
+              "expected": "У деревни пять обязательных учреждений и маяк, все уровня 1. Повторное открытие не добавляет ещё шесть учреждений."
+            },
+            {
+              "given": "Ведущий ввёл только власть и праздник деревни.",
+              "when": "Описать выбранные особенности деревни",
+              "expected": "Два ответа сохранены; руина и еда/напитки не выдуманы и не становятся обязательными полями."
+            },
+            {
+              "given": "NPC Б - наставник персонажа A; выбрана одна выгода связи.",
+              "when": "Добавить NPC-связь",
+              "expected": "Имя, отношение и выбранная выгода остаются в описании после загрузки; остальные выгоды не назначены."
+            },
+            {
+              "given": "Магазин уровня 3 и книготорговец уровня 6, разные управляющие.",
+              "when": "Записать/изменить данные учреждения",
+              "expected": "Сохраняются разные уровни и управляющие. Единый предел 5 не понижает книготорговца. Проверка допустимых значений - отдельная предметная функция."
+            },
+            {
+              "given": "Процветание деревни A равно 0, деревни Б равно 5.",
+              "when": "Записать переданное процветание",
+              "expected": "Значения не смешаны. Для предметного поля допустимы только значения от -10 до 10; текстовая заметка такого контроля не обеспечивает."
+            },
+            {
+              "given": "Ведущий описывает жильё персонажа A внутри деревни.",
+              "when": "Записать жильё персонажа",
+              "expected": "Описание безопасного жилья сохранено, но для него не создан целый региональный гекс или отдельная деревня."
+            },
+            {
+              "given": "Основание оплачено в день 30; завершение подтверждено в день 40.",
+              "when": "Принять завершение основания и выбрать новую базу",
+              "expected": "До завершения прежняя деревня A остаётся базой; затем базой становится Б. A и невыбранные для переезда NPC сохраняются."
+            },
+            {
+              "given": "Для чужой деревни Ref выбрал состав учреждений и состояние.",
+              "when": "Описать чужую деревню",
+              "expected": "Эти сведения сохраняются без обязательного цикла; открытие карточки само не создаёт экономическое событие."
+            },
+            {
+              "given": "Реальное процветание деревни 2; retired PC назначен управляющим учреждения.",
+              "when": "Записать результат Retirement",
+              "expected": "У учреждения отдельно отмечено действие как при процветании 10; реальное значение всей деревни остаётся 2. Спорный эффект маяка не разрешается молча."
+            },
+            {
+              "given": "В лагере водонепроницаемый брезентовый тент для четырёх людей.",
+              "when": "Отметить лагерь с тентом",
+              "expected": "В описании есть вместимость 4 и защита от погоды; нет ложной защиты от Миазмы. Игровые эффекты сами не рассчитываются."
+            }
+          ],
+          "known_current_support": [
+            {
+              "id": "CROWS-PT3-L1-006",
+              "status": "full",
+              "comment": "Проверено ручное сохранение описания. Миазма, вместимость и вероятность обитаемости автоматически не рассчитываются."
+            },
+            {
+              "id": "CROWS-PT3-L1-011",
+              "status": "partial",
+              "comment": "Village, имя и текст сохраняются. Создание шести учреждений, их связей и формальной роли домашней базы не выполняется."
+            },
+            {
+              "id": "CROWS-PT3-L1-012",
+              "status": "full",
+              "comment": "Обычная заметка решает эту информационную задачу; обязательная анкета и случайные ответы не нужны."
+            },
+            {
+              "id": "CROWS-PT3-L1-013",
+              "status": "full",
+              "comment": "Ручное хранение текста доступно. Это не отдельная сущность NPC и не исполнение персонажной выгоды."
+            },
+            {
+              "id": "CROWS-PT3-L1-014",
+              "status": "partial",
+              "comment": "Поля можно внести текстом. Отдельные учреждения и контроль диапазонов 1-3/4/5/6 не реализованы этой заметкой."
+            },
+            {
+              "id": "CROWS-PT3-L1-016",
+              "status": "partial",
+              "comment": "Текст сохраняется, но приложение не ведёт этот показатель и не проверяет границы."
+            },
+            {
+              "id": "CROWS-PT3-L1-018",
+              "status": "full",
+              "comment": "Это описание можно сохранить вручную. Инвентарь и расчёт расходов остаются вне L1."
+            },
+            {
+              "id": "CROWS-PT3-L1-019",
+              "status": "partial",
+              "comment": "Места и текст редактируются. Связанной операции смены базы и переноса данных нет; заметки привязаны к гексу."
+            },
+            {
+              "id": "CROWS-PT3-L1-020",
+              "status": "full",
+              "comment": "Ручной способ доступен. Источник прямо не требует вести циклы каждого чужого поселения."
+            },
+            {
+              "id": "CROWS-PT3-L1-021",
+              "status": "partial",
+              "comment": "Можно записать решение. Предметных связей и расчёта эффективного показателя нет."
+            },
+            {
+              "id": "CROWS-PT3-L1-033",
+              "status": "full",
+              "comment": "Описание сохраняется. Проверка вместимости, погоды и игровых состояний этим не выполняется."
+            }
+          ],
+          "open_source_or_product_decisions": [],
+          "scope_preservation": "Keep existing task approval/status/primary queue. No automatic Crows expansion or new implementation."
         }
       ],
       "research_handoff_refs": [
@@ -20124,7 +20503,7 @@
         },
         {
           "component_id": "CROWS-PT3-053-v1",
-          "status": "proposed_research_profile_only",
+          "status": "superseded_by_v2_source_review",
           "game_id": "CROWS",
           "edition": "October2026PublicPlaytest3",
           "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
@@ -20151,7 +20530,187 @@
           "unresolved_parameters": [],
           "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
           "implementation_status": "unverified",
-          "score_delta": null
+          "score_delta": null,
+          "historical_matrix_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/37bef9bbfa62806ac761f038ff219f5f1b9f066b/agent-work/market/rules/CROWS-PT3.json",
+          "superseded_by": "CROWS-PT3-HX-BL-053-v2"
+        },
+        {
+          "component_id": "CROWS-PT3-HX-BL-053-v2",
+          "status": "proposed_research_handoff_not_start_authority",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "source_coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+          "requirement_refs": [
+            "CROWS-PT3-L1-007",
+            "CROWS-PT3-L1-008",
+            "CROWS-PT3-L1-009",
+            "CROWS-PT3-L1-010",
+            "CROWS-PT3-L1-023",
+            "CROWS-PT3-L1-024",
+            "CROWS-PT3-L1-025",
+            "CROWS-PT3-L1-026",
+            "CROWS-PT3-L1-027",
+            "CROWS-PT3-L1-028",
+            "CROWS-PT3-L1-029",
+            "CROWS-PT3-L1-031",
+            "CROWS-PT3-L1-032"
+          ],
+          "operations": [
+            "Добавить выбранное место с подходящим типом, именем и описанием; не размещать весь каталог автоматически.",
+            "В описании подземелья указать тип обитателей для последующего внешнего выбора встречи.",
+            "Связать исходное место и тайник; для лесопилки сохранить предел 2 гекса, для Rekhya не придумывать такой предел.",
+            "Записать источник утверждения и его истинность отдельно от фактов о месте.",
+            "Сохранить выбранную деревню и её исходные учреждения/уровни/управляющих.",
+            "Держать отдельные места и условия подхода, а комнаты связывать с локальными картами.",
+            "После внешне разрешённого действия записать, находится особняк в воздухе или на земле.",
+            "Записать известные входы/выходы и неизвестную пространственную границу без выдуманного радиуса.",
+            "После внешнего события сохранить старое место руин и новое место восстановления, не стирая историю деревни.",
+            "Сохранить описание источника и ссылку на заданную локальную карту, не заменяя её кругом региональных гексов.",
+            "Хранить участок, сбор за час, остаток из 20 единиц и восстановление к следующему утру.",
+            "Принять состояние после внешнего расчёта: более 500 из 1000 панелей разрушены; восстановление при выживших растениях за 1d6 месяцев.",
+            "Добавить постоянное строение с материалом, размером Huge, мебелью и камином; не выделять целый мильный гекс без основания."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Мастер выбрал Ruined Sawmill для обычного гекса у реки.",
+              "when": "Добавить выбранное место и его описание",
+              "expected": "Выбран тип лесопилки, авторское имя и описание. Остальные семь готовых мест не добавлены автоматически."
+            },
+            {
+              "given": "Ведущий записал, что в подземелье A обитает нежить.",
+              "when": "Записать обитателей подземелья",
+              "expected": "Тип обитателей сохранён в описании A; новая локация не создана. Автоматическая встреча этим не вычислялась."
+            },
+            {
+              "given": "Тайник B выбран в двух гексах от лесопилки A; тайник C известен Rekhya.",
+              "when": "Связать найденную карту/сведения с выбранной целью",
+              "expected": "Для связи A→B сохранён предел 2 гекса. Связь Rekhya→C не получает выдуманного числового предела."
+            },
+            {
+              "given": "Ведущий записал ложное утверждение NPC о деревне A.",
+              "when": "Записать сведения и их источник отдельно от истины",
+              "expected": "Содержание утверждения и источник сохраняются отдельно в описании; фактическая деревня A не перестраивается из-за вымысла."
+            },
+            {
+              "given": "Выбрана готовая деревня Farcliffe.",
+              "when": "Записать выбранную подготовленную деревню",
+              "expected": "Сохранён её исходный состав из приложения к отчёту, а не стартовый шаблон из шести учреждений уровня 1."
+            },
+            {
+              "given": "На региональной карте добавлены Blood Library и Floating Manor.",
+              "when": "Добавить выбранный региональный вход",
+              "expected": "Для первого сохранены кровавое озеро и вход, для второго - лес и парящий особняк. Локальные комнаты не превращены в региональные гексы."
+            },
+            {
+              "given": "Ref подтвердил опускание Floating Manor.",
+              "when": "Принять результат действия со SkyPillar",
+              "expected": "В описании состояния указано «на земле», место не перенесено в другой региональный гекс и не объявлено всё ещё парящим."
+            },
+            {
+              "given": "Пространственная граница внешнего эффекта Godswound повреждена в тексте.",
+              "when": "Описать заданные ограничения места",
+              "expected": "Неизвестность указана явно; ни радиус 1 гекс, ни другая вычислимая область не назначены без решения Ref."
+            },
+            {
+              "given": "Ref подтвердил разрушение храма; восстановление назначено в другом месте.",
+              "when": "Принять подтверждённое разрушение храма",
+              "expected": "Старый участок обозначен осквернёнными руинами, новый храм связан с новым местом; сама деревня не удалена. Эта пространственная операция не заменяется одной заметкой."
+            },
+            {
+              "given": "Освещённые области Hall of Angels заданы отдельной локальной картой.",
+              "when": "Записать источник и локальную карту освещённых участков",
+              "expected": "Сохранены описание и ссылка на неё; числовой круговой радиус по региональным гексам не выдуман."
+            },
+            {
+              "given": "За день на холме добыто 18 единиц пищи, затем ещё 2.",
+              "when": "Записать ресурс участка",
+              "expected": "Лимит 20 исчерпан; отмечено истощение до следующего утра. Приложение пока не считает остаток и не сбрасывает его по времени."
+            },
+            {
+              "given": "Разрушены 500 панелей, затем 501; после события растения выжили.",
+              "when": "Принять внешний итог повреждения/ремонта",
+              "expected": "При 500 порог не пересечён, при 501 теплица обрушена; срок восстановления задан внешним 1d6 месяцев. Приложение пока не вычисляет эти условия."
+            },
+            {
+              "given": "Персонаж разместил постоянный дом Cozy Cottage размера Huge.",
+              "when": "Принять появление постоянного строения",
+              "expected": "Дом сохраняется как постоянное место с камином и каменным материалом. Huge не превращён без основания в один региональный гекс."
+            }
+          ],
+          "known_current_support": [
+            {
+              "id": "CROWS-PT3-L1-007",
+              "status": "partial",
+              "comment": "Типы шахты и лесопилки существуют для обычных POI. Готовые тексты Crows и связь с конкретным сеттингом не встроены."
+            },
+            {
+              "id": "CROWS-PT3-L1-008",
+              "status": "full",
+              "comment": "Сохранить это описание можно вручную. Поиск ближайшего подземелья и разрешение встречи не заявлены реализованными."
+            },
+            {
+              "id": "CROWS-PT3-L1-009",
+              "status": "partial",
+              "comment": "Возможно текстовое указание связи. Структурированные ссылки и проверка заданного расстояния Crows отсутствуют в проверенной операции."
+            },
+            {
+              "id": "CROWS-PT3-L1-010",
+              "status": "full",
+              "comment": "Ручная заметка может хранить обе части. Автоматическое ведение знаний и раскрытие карты этим не доказаны."
+            },
+            {
+              "id": "CROWS-PT3-L1-023",
+              "status": "full",
+              "comment": "Сведения можно вручную внести. Все четыре исходных состава приведены в приложении; стартовый шаблон 6×1 их не заменяет."
+            },
+            {
+              "id": "CROWS-PT3-L1-024",
+              "status": "partial",
+              "comment": "Региональные маркеры/текст возможны; dungeon доступен в отдельных контекстах. Готовая сборка Crows и связь уровней карты не проверены."
+            },
+            {
+              "id": "CROWS-PT3-L1-025",
+              "status": "full",
+              "comment": "Текст состояния редактируется. Это не собственная симуляция магического столпа или 3D-перемещения."
+            },
+            {
+              "id": "CROWS-PT3-L1-026",
+              "status": "partial",
+              "comment": "Текст доступен, но точная вычислимая область не выводится из повреждённой фразы источника."
+            },
+            {
+              "id": "CROWS-PT3-L1-027",
+              "status": "partial",
+              "comment": "Можно описать результат. Связанные учреждения/участки и отдельная операция их преобразования не реализованы."
+            },
+            {
+              "id": "CROWS-PT3-L1-028",
+              "status": "full",
+              "comment": "Запись доступна. Тактический контур света и урон не входят в региональную функцию."
+            },
+            {
+              "id": "CROWS-PT3-L1-029",
+              "status": "partial",
+              "comment": "Ручная запись есть. Расходование ресурса, истощение и временной сброс автоматически не выполняются."
+            },
+            {
+              "id": "CROWS-PT3-L1-031",
+              "status": "partial",
+              "comment": "Состояние можно записать. Порог, условия и календарное восстановление приложение не рассчитывает."
+            },
+            {
+              "id": "CROWS-PT3-L1-032",
+              "status": "partial",
+              "comment": "Общие типы постройки/хижины и заметки доступны для обычного POI. Игровое действие и точный региональный контур дома не реализованы/не заданы."
+            }
+          ],
+          "open_source_or_product_decisions": [
+            "Фраза entersorexitsthistest не задаёт область действия; нуженавторскийответ/явноеRefрешение.",
+            "Huge не означает целыйрегиональныйгекс; источникнедаетзанятоечислоhex."
+          ],
+          "scope_preservation": "Keep existing task approval/status/primary queue. No automatic Crows expansion or new implementation."
         }
       ],
       "research_handoff_refs": [
@@ -21609,6 +22168,50 @@
       ],
       "priority_rationale": "New L1 gap, reusable with source-specific profiles. Existing scale/home/placement tasks reused rather than duplicated; no automatic reprioritization of approved primary queue.",
       "estimate": {
+        "status": "requires_reassessment_before_implementation",
+        "reason": "Prior3–6hour estimate not validated by this source reanalysis; scope/manual-vs-profile/UI and dependencies must be chosen first."
+      },
+      "research_components": [
+        {
+          "component_id": "CROWS-BEACON1-v1",
+          "status": "proposed",
+          "traceability_ref": "agent-work/research/requirements/CROWS-PT3-traceability.json"
+        },
+        {
+          "component_id": "CROWS-PT3-HX-BL-056-v2",
+          "status": "proposed_research_handoff_not_start_authority",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "source_coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "quality_ref": "agent-work/research/requirements/CROWS-PT3-v2-quality.json",
+          "requirement_refs": [
+            "CROWS-PT3-L1-017"
+          ],
+          "operations": [
+            "Показывать радиус защиты, пересчитывать его при изменении параметров и сохранять перекрытия источников."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Маяк меняется с уровня 1 на 2; затем уровень 5 при процветании 9→10.",
+              "when": "Добавить маяк и назначить уровень/условие процветания",
+              "expected": "На полной сетке защищены 7→19 и 91→127 гексов соответственно. Перекрытие двух маяков сохраняет защиту второго после удаления первого."
+            }
+          ],
+          "known_current_support": [
+            {
+              "id": "CROWS-PT3-L1-017",
+              "status": "absent",
+              "comment": "Геометрического слоя зоны маяка нет. Надпись о радиусе в заметке его не заменяет."
+            }
+          ],
+          "open_source_or_product_decisions": [
+            "Для BestStewardEver иособогоусловия маяка требуется явное решение о трактовке эффективногоProsperity10; реальное значение деревни не менять."
+          ],
+          "scope_preservation": "Keep existing task approval/status/primary queue. No automatic Crows expansion or new implementation."
+        }
+      ],
+      "previous_preliminary_estimate_v1": {
         "status": "planning_only_not_measured",
         "active_hours_range": [
           3,
@@ -21622,13 +22225,7 @@
         "assumptions": "Existing map overlay/persistence APIs usable after current delivery; analyst/interviewer resolve UI and scope before implementation.",
         "split_trigger": "Forecast beyond ~24 runs: first manually defined saved radius overlay, then Crows parameter adapter as separate user-visible slice."
       },
-      "research_components": [
-        {
-          "component_id": "CROWS-BEACON1-v1",
-          "status": "proposed",
-          "traceability_ref": "agent-work/research/requirements/CROWS-PT3-traceability.json"
-        }
-      ]
+      "priority_recommendation_status": "no_automatic_first_choice_from_old_PDF"
     }
   ],
   "last_review": {
