@@ -1160,7 +1160,13 @@ function refinementSourceInput(map:OneMileDocumentMap,state:Detail1State,riverPl
 }
 /** All accepted writers prepare a detached candidate before touching history. */
 function geometryLakeInputs(map:Pick<MapSnapshot,'regions'|'hexTerrainByKey'|'toponymSeed'>,origin:{x:number;y:number}){
- return getLakesForRegions(map.regions,map.hexTerrainByKey).map(lake=>{
+ // One stable body may span several source regions. Per-region rendering
+ // fragments are not separate hydrological bodies or contour inputs.
+ const bodies=new Map<number,AxialHex[]>();
+ for(const [key,value]of map.hexTerrainByKey)if(value.terrainOverride==='lake'&&value.lakeId!==undefined){
+  const [q,r]=key.split(',').map(Number),cells=bodies.get(value.lakeId)??[];cells.push({q,r});bodies.set(value.lakeId,cells);
+ }
+ return [...bodies].sort(([a],[b])=>a-b).map(([lakeId,hexes])=>({lakeId,hexes:hexes.sort((a,b)=>a.q-b.q||a.r-b.r)})).map(lake=>{
   const shapes=buildNaturalLakes(lake.hexes.map(c=>({...c,...toPixel(c.q,c.r),lakeId:lake.lakeId})),28,map.toponymSeed,[]);
   if(shapes.length!==1)throw Error('GEO2 ambiguous_lake_contour');
   return {lakeId:lake.lakeId,cells:[...lake.hexes],colorPath:shapes[0].path,colorScale:detailSourcePixelToWorld({x:1,y:0}).x,origin};

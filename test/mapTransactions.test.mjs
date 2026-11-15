@@ -1083,3 +1083,31 @@ test('GEO2 actual mixed dry road approach preserves existing typed crossing and 
  assert.deepEqual(after.map.crossings,generated.map.crossings);assert.deepEqual(after.generation,generated.generation);assertUndoRedo(h,generated,after);
  await load(h,after);assert.deepEqual(stable(h.render()),after);
 });
+
+// Separate risk: a complete all-mode shoreline may overlap new empty region
+// support. No road/river/POI contact is authorized by this support-only case.
+test('GEO2 scoped lake growth across empty support replans shoreline in one actual water transaction',async()=>{
+ const {h}=geometryRiverBackendFixture(),base=h.render().captureDocument().map;const regions=base.regions.map(r=>r.id===2?{...r,hexes:[...r.hexes,{q:6,r:0}],finalSize:3,targetSize:3}:r);h.render().restoreSnapshot({...base,regions,candidateHexes:h.geometry.getCandidateHexes(regions.flatMap(r=>r.hexes),new Set())});h.render().setEditMode(true);h.render().setSelectedHex({q:6,r:0});assert.equal(h.render().startWaterDraft('lake'),true);assert.equal(h.render().finishWaterDraft(),true);
+ h.render().setEditMode(false);const adaptation=h.render().previewOneMile();assert.ok(adaptation);assert.equal(h.render().applyOneMilePreview(adaptation),true);await acceptGeometryRefinement(h);
+ const doc=h.render().captureDocument(),cell={q:7,r:0},anchor={q:8,r:0},template=doc.map.regions[0],region={...template,id:3,hexes:[cell,anchor],centerHex:anchor,anchorHex:anchor,finalSize:2,targetSize:2,pointsOfInterest:[],pointOfInterestKinds:{},isTract:true,suppressCentralPoi:true};
+ const sourceMap={...doc.map,regions:[...doc.map.regions,region],physicalGrid:detailAuthoredState(doc.map.physicalGrid),candidateHexes:h.geometry.getCandidateHexes([...regions.flatMap(r=>r.hexes),cell,anchor],new Set(doc.map.hexTerrainByKey.keys()))};
+ sourceMap.toponyms=synchronizeToponyms(doc.map.toponyms,[...Object.entries(doc.map.toponyms).map(([key,value])=>({key,kind:value.kind})),{key:'region:3',kind:doc.map.toponyms['region:1'].kind}],doc.map.toponymSeed);
+ const authored=reconcileDetailGeography(sourceMap,h.geometry.detailMapRiverGeometry(sourceMap,sourceMap.physicalGrid.grid.origin));
+ const incoming=serial(h.render().createSaveData({...doc,map:{...sourceMap,physicalGrid:composeScopedDetailState(authored,doc.map.physicalGrid.geometryRefinement)}}));delete incoming.savedAt;
+ await load(h,incoming);assert.equal(h.render().captureDocument().map.regions.length,3,'scope with shoreline contact imports');
+ h.render().setEditMode(true);h.render().setSelectedHex(cell);
+ const before=stable(h.render()),count=h.render().undoHistory.length,oldLake=before.map.terrainByHexKey['6,0'].lakeId,oldBody=before.map.physicalGrid.geometryRefinement.riverPlan.lakes.find(l=>l.lakeId===oldLake);
+ assert.equal(h.render().startWaterDraft('lake'),true);assert.equal(h.render().finishWaterDraft(),true,h.render().editError??JSON.stringify(h.render().waterPreview));
+ const after=stable(h.render()),newBody=after.map.physicalGrid.geometryRefinement.riverPlan.lakes.find(l=>l.lakeId===oldLake);
+ assert.equal(after.map.terrainByHexKey['7,0'].lakeId,oldLake);assert.equal(h.render().undoHistory.length,count+1);
+ for(const mode of ['tiles','emoji','color'])assert.notEqual(newBody.modes[mode].signature,oldBody.modes[mode].signature,'each shoreline rebuilt');
+ assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(after.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);
+ assert.equal(JSON.parse(after.map.physicalGrid.geometryRefinement.sourceFingerprint.slice('geo2-source-input-v1:'.length)).regions.some(r=>r.id===3),false,'new region stays outside refinement');
+ assert.deepEqual(after.map.physicalGrid.geometryRefinement.riverPlan.paths,before.map.physicalGrid.geometryRefinement.riverPlan.paths,'unrelated rivers literal');
+ assertUndoRedo(h,before,after);h.render().undoMap();const stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+ const restore=h.injectFunction('geometryLakeInputs',()=>{throw Error('injected shoreline failure');});
+ assert.equal(h.render().startWaterDraft('lake'),true);assert.equal(h.render().finishWaterDraft(),false);restore();
+ assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'failure preserves redo');h.render().resetWaterDraft();
+ const invalid=structuredClone(after);delete invalid.map.terrainByHexKey['7,0'];await load(h,invalid);assert.deepEqual(stable(h.render()),before,'stale water body16 is rejected');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);h.render().redoMap();
+ await load(h,after);assert.deepEqual(stable(h.render()),after,'exact16 shoreline readback');
+});

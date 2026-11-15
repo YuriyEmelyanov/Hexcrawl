@@ -241,9 +241,14 @@ export function geometryBoundaryHasValidClosure(result:ReturnType<typeof prepare
   for(const f of scope.input.map.physicalGrid.poiFootprints)if(!checkPoi(refined.get(f.poiId)??f,addedWater))return false;
   const mixedWater={...accepted.riverPlan.paintWater,capsules:[...accepted.riverPlan.paintWater.capsules,...addedWater.capsules]};
   for(const f of scope.outside.authoredFootprints)if(!checkPoi(f,mixedWater))return false;
-  // Water-body growth or new contacts require a shoreline/mouth closure, not
-  // a river endpoint certificate. Keep them explicit conflicts for now.
-  if(result.potentialDependencies.some(p=>/^(lake|sea):/.test(p.retainedRef)||/^(lake|sea):/.test(p.addedRef)))return false;
+  // The full current body and all lake mode signatures were validated above.
+  // A shoreline may overlap empty opposite-region support: that support is
+  // not an occupied feature. The enclosing mode hulls, source/fine water,
+  // road strokes/rails and POI extents were all compared in both directions.
+  // Only support/body pairs are resolved here; even a potential opposite
+  // feature/body contact remains an explicit conflict, never a movement grant.
+  const body=(ref:string)=>/^(lake|sea):/.test(ref),support=(ref:string)=>ref.startsWith('region:');
+  if(result.potentialDependencies.some(p=>body(p.retainedRef)&&!support(p.addedRef)||body(p.addedRef)&&!support(p.retainedRef)))return false;
   return true;
  }catch{return false;}
 }
