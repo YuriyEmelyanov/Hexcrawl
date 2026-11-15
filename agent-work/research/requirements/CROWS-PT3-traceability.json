@@ -1,0 +1,2068 @@
+{
+  "schema_version": 1,
+  "game_id": "CROWS",
+  "version": "CROWS-PT3-traceability-v1",
+  "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+  "source_inventory": [
+    {
+      "id": "CROWS-PT3-RULES",
+      "title": "01 Crows Rules Booklet for Playtest 3.pdf",
+      "sha256": "be72077ce74f71bb4f4529a730c1a608fb24068ccfc667f6f2f07e67c6357974",
+      "pages": 37,
+      "edition": "October 2026 Public Playtest 3; not final",
+      "author_project_dedup_key": "MCDM:Crows:PublicPlaytest3:2026-10",
+      "access_level": "owner_supplied_primary_PDF",
+      "page_numbering": "1-based PDF page positions",
+      "packet_library_id": "libfile_fde3_f-a90b5bc473248191b5ede33e68df66e2_3c7ce53bef508191bc31de4d3dfa12cc"
+    },
+    {
+      "id": "CROWS-PT3-CHARACTER",
+      "title": "02 Crows Character Booklet for Playtest 3.pdf",
+      "sha256": "4400d79d88581fb701c394a95d8207d6f59c5122a81c4c1121b4046e7a4f66c0",
+      "pages": 62,
+      "edition": "October 2026 Public Playtest 3; not final",
+      "author_project_dedup_key": "MCDM:Crows:PublicPlaytest3:2026-10",
+      "access_level": "owner_supplied_primary_PDF",
+      "page_numbering": "1-based PDF page positions",
+      "packet_library_id": "libfile_fde3_f-a90b5bc473248191b5ede33e68df66e2_3c7ce53bef508191bc31de4d3dfa12cc"
+    },
+    {
+      "id": "CROWS-PT3-REF",
+      "title": "03 Crows The Ref for Playtest 3.pdf",
+      "sha256": "9407e22f639b568c877d671f21000a51ca473a4a32cf059eb2763ec96ddf8103",
+      "pages": 67,
+      "edition": "October 2026 Public Playtest 3; not final",
+      "author_project_dedup_key": "MCDM:Crows:PublicPlaytest3:2026-10",
+      "access_level": "owner_supplied_primary_PDF",
+      "page_numbering": "1-based PDF page positions",
+      "packet_library_id": "libfile_fde3_f-a90b5bc473248191b5ede33e68df66e2_3c7ce53bef508191bc31de4d3dfa12cc"
+    },
+    {
+      "id": "CROWS-PT3-DUNGEONS",
+      "title": "04 Crows Dungeons for Playtest 3.pdf",
+      "sha256": "df96a65a40b2272fe403dabe571ac2562ab0a8cdbe422efac718431692c6ef8d",
+      "pages": 55,
+      "edition": "October 2026 Public Playtest 3; not final",
+      "author_project_dedup_key": "MCDM:Crows:PublicPlaytest3:2026-10",
+      "access_level": "owner_supplied_primary_PDF",
+      "page_numbering": "1-based PDF page positions",
+      "packet_library_id": "libfile_fde3_f-a90b5bc473248191b5ede33e68df66e2_3c7ce53bef508191bc31de4d3dfa12cc"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "CROWS-PT3-001-L1",
+      "source_rule_id": "CROWS-PT3-001",
+      "source_locator": "CROWS-PT3-RULES:PDF24",
+      "canonical_rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-001",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать профиль Crows",
+        "inputs_and_units": {
+          "length": 5,
+          "unit": "mile",
+          "wording": "across",
+          "geometry_convention": null
+        },
+        "product_operation": "Сохранить физическую длину отдельно от экранного zoom",
+        "expected_output": "JSON содержит length=5 mile; zoom остаётся1.3; повторная загрузка сохраняет оба значения",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "Новая карта Crows, zoom=1.3",
+            "when": "Выбрать профиль Crows",
+            "expected": "JSON содержит length=5 mile; zoom остаётся1.3; повторная загрузка сохраняет оба значения"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "across не уточняет flat-to-flat или vertex-to-vertex; не выбирать геометрию без решения"
+        ]
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-SCALE"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-042"
+    },
+    {
+      "id": "CROWS-PT3-002-L1",
+      "source_rule_id": "CROWS-PT3-002",
+      "source_locator": "CROWS-PT3-RULES:PDF24",
+      "canonical_rule_ids": [
+        "map.terrain_zones"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-002",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить среду гекса",
+        "inputs_and_units": {
+          "examples": [
+            "forest",
+            "mountain",
+            "plains"
+          ],
+          "taxonomy_complete": false
+        },
+        "product_operation": "Записать преобладающую среду и сохранить существующие места",
+        "expected_output": "После save/load A=mountain, P на прежнем месте; выбор таблицы встреч только внешний",
+        "constraints_and_exceptions": [
+          "Примеры не полная таблица генерации; не придумывать вероятности"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "ГексA forest с POI P; мастер меняет на mountain",
+            "when": "Назначить среду гекса",
+            "expected": "После save/load A=mountain, P на прежнем месте; выбор таблицы встреч только внешний"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-TERRAIN"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-044"
+    },
+    {
+      "id": "CROWS-PT3-003-L1",
+      "source_rule_id": "CROWS-PT3-003",
+      "source_locator": "CROWS-PT3-DUNGEONS:PDF1–11",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links",
+        "map.reference_labels"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-003",
+        "normative_kind": "example_adventure_procedure",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить выбранное готовое место",
+        "inputs_and_units": {
+          "villages": [
+            "Burrfield",
+            "Gadwick",
+            "Liston"
+          ],
+          "poi_count": 8,
+          "placement": "Ref-selected"
+        },
+        "product_operation": "Создать запись с устойчивым ID, координатами, видимым описанием и отдельным секретным разделом",
+        "expected_output": "Одно место у рекиA; описания и секреты раздельны; не размещены автоматически остальные7 POI",
+        "constraints_and_exceptions": [
+          "Без публикации полного текста/арта; Cornath — пример, не алгоритм создания мира"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Мастер выбирает Ruined Sawmill и существующий речной гекс A",
+            "when": "Добавить выбранное готовое место",
+            "expected": "Одно место у рекиA; описания и секреты раздельны; не размещены автоматически остальные7 POI"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.site_links",
+          "map.reference_labels"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-053"
+    },
+    {
+      "id": "CROWS-PT3-004-L1",
+      "source_rule_id": "CROWS-PT3-004",
+      "source_locator": "CROWS-PT3-DUNGEONS:PDF1–11",
+      "canonical_rule_ids": [
+        "content.site_links",
+        "content.adventure_hooks"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-004",
+        "normative_kind": "example_adventure_procedure",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Привязать выбранный тайник к мельнице",
+        "inputs_and_units": {
+          "treasure_max_distance_hexes": 2,
+          "optional": true
+        },
+        "product_operation": "Проверить расстояние до выбранного мастером гекса; сохранить направленную связь",
+        "expected_output": "Связь допустима; (3,0) требует коррекции/явного отступления; другие гексы не получают сокровище",
+        "constraints_and_exceptions": [
+          "Опциональная подсказка приключения, не общий закон для всех мельниц"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Мельница(0,0), тайник(2,0)",
+            "when": "Привязать выбранный тайник к мельнице",
+            "expected": "Связь допустима; (3,0) требует коррекции/явного отступления; другие гексы не получают сокровище"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "content.site_links",
+          "content.adventure_hooks"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-053"
+    },
+    {
+      "id": "CROWS-PT3-005-L1",
+      "source_rule_id": "CROWS-PT3-005",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF48",
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-005",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать домашнюю деревню",
+        "inputs_and_units": {
+          "required": [
+            "blacksmith",
+            "crypt",
+            "general_store",
+            "inn",
+            "temple"
+          ],
+          "extra": 1,
+          "initial_level": 1
+        },
+        "product_operation": "Назначить выбранное базовое место, пять обязательных учреждений и одно выбранное, имя и необязательные ответы",
+        "expected_output": "Oak — база, ровно6 учреждений уровня1; повторное открытие не создаёт дубликатов",
+        "constraints_and_exceptions": [
+          "Игроки совместно выбирают имя; не создавать новый регион автоматически"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Дополнительное учреждение beacon; имя Oak",
+            "when": "Создать домашнюю деревню",
+            "expected": "Oak — база, ровно6 учреждений уровня1; повторное открытие не создаёт дубликатов"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-NOTES"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-052"
+    },
+    {
+      "id": "CROWS-PT3-006-L1",
+      "source_rule_id": "CROWS-PT3-006",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF48–49",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-006",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Записать связь персонажа с NPC",
+        "inputs_and_units": {
+          "npc_link_per_pc": 1,
+          "benefit_table": "Character49"
+        },
+        "product_operation": "Сохранить NPC/отношение/ссылку на выбранную выгоду без вычисления листа персонажа",
+        "expected_output": "После save/load связь PC1→NPC1 и отношение сохранены; выгода передаётся наружу",
+        "constraints_and_exceptions": [
+          "Не требуется делать учёт персонажей или все10 выгод в карте"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "PC1 связан с NPC1 как родственник",
+            "when": "Записать связь персонажа с NPC",
+            "expected": "После save/load связь PC1→NPC1 и отношение сохранены; выгода передаётся наружу"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.site_links"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-NOTES"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-052"
+    },
+    {
+      "id": "CROWS-PT3-007-L1",
+      "source_rule_id": "CROWS-PT3-007",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF55",
+      "canonical_rule_ids": [
+        "map.environment_zones"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-007",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать/изменить маяк",
+        "inputs_and_units": {
+          "radii_by_level": {
+            "1": 1,
+            "2": 2,
+            "3": 3,
+            "4": 4,
+            "5": 5
+          },
+          "level5_prosperity10_radius": 6,
+          "distance": "hex graph",
+          "includes_origin": true
+        },
+        "product_operation": "Выделить гексы в радиусе, сохранить происхождение зоны и объединять перекрытия",
+        "expected_output": "Сначала7 гексов, затем19; биомы/POI/seed не меняются; удаление одного маяка оставляет покрытие второго",
+        "constraints_and_exceptions": [
+          "Обрезка видимых гексов не меняет определение зоны; 5mile across не заменять евклидовым кругом"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Маяк(0,0) level1; затем level2",
+            "when": "Создать/изменить маяк",
+            "expected": "Сначала7 гексов, затем19; биомы/POI/seed не меняются; удаление одного маяка оставляет покрытие второго"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "map.environment_zones"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-056"
+    },
+    {
+      "id": "CROWS-PT3-008-L1",
+      "source_rule_id": "CROWS-PT3-008",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF55",
+      "canonical_rule_ids": [
+        "map.environment_zones"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-008",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Принять новые параметры маяка",
+        "inputs_and_units": {
+          "level": 5,
+          "prosperity_required": 10,
+          "ordinary_radius": 5,
+          "bright_radius": 6
+        },
+        "product_operation": "Пересчитать покрытие по сохранённым level/prosperity",
+        "expected_output": "91→127→91 гексов на неограниченной сетке; профиль не повышает процветание сам",
+        "constraints_and_exceptions": [
+          "Параметры могут приходить из внешнего учёта"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "level5 prosperity9→10→9",
+            "when": "Принять новые параметры маяка",
+            "expected": "91→127→91 гексов на неограниченной сетке; профиль не повышает процветание сам"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "map.environment_zones"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-056"
+    },
+    {
+      "id": "CROWS-PT3-009-L1",
+      "source_rule_id": "CROWS-PT3-009",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF62",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-009",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Принять подтверждение основания",
+        "inputs_and_units": {
+          "cost_gc": 15000,
+          "construction_days": 10,
+          "requires": "suitable ruin"
+        },
+        "product_operation": "Сохранить pending-поселение; по внешнему подтверждению завершения назначить новую базу, оставить старую",
+        "expected_output": "До завершенияA остаётся базой; после завершенияB база, A существует; связиNPC не переселены без выбора",
+        "constraints_and_exceptions": [
+          "Стоимость/прошедшее время — внешние подтверждённые входы; чужие деревни не обязаны вести циклы"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Начатоday30, подтвержденоday40; старая базаA",
+            "when": "Принять подтверждение основания",
+            "expected": "До завершенияA остаётся базой; после завершенияB база, A существует; связиNPC не переселены без выбора"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.site_links"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-NOTES"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-052"
+    },
+    {
+      "id": "CROWS-PT3-010-L2",
+      "source_rule_id": "CROWS-PT3-010",
+      "source_locator": "CROWS-PT3-RULES:PDF24",
+      "canonical_rule_ids": [
+        "travel.activity_selection"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-010",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L2",
+        "trigger_or_user_action": "Начать дорожный день",
+        "inputs_and_units": {
+          "order": [
+            "pace_route",
+            "roles_supporter_guide_scout_tracker",
+            "distance",
+            "travel_encounters",
+            "POI_DT",
+            "rest",
+            "Miasma_RR"
+          ],
+          "default_travel_checks": 2
+        },
+        "product_operation": "Сохранить упорядоченный план и итоговые внешние модификаторы",
+        "expected_output": "Поддержка применена до результата guide; за день запланированы2 дорожные проверки; отдельный отдых отдельно",
+        "constraints_and_exceptions": [
+          "Ref может добавить проверки; не угадывать исходы бросков"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Поддержка дала+1 guide, guideдал+1hex",
+            "when": "Начать дорожный день",
+            "expected": "Поддержка применена до результата guide; за день запланированы2 дорожные проверки; отдельный отдых отдельно"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "travel.activity_selection"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    },
+    {
+      "id": "CROWS-PT3-011-L2",
+      "source_rule_id": "CROWS-PT3-011",
+      "source_locator": "CROWS-PT3-RULES:PDF24",
+      "canonical_rule_ids": [
+        "travel.time_from_speed"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-011",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L2",
+        "trigger_or_user_action": "Выбрать темп",
+        "inputs_and_units": {
+          "slow": {
+            "hexes": 1,
+            "EN": 2,
+            "roles": "edge"
+          },
+          "normal": {
+            "hexes": 2,
+            "EN": 4
+          },
+          "fast": {
+            "hexes": 3,
+            "EN": 6,
+            "roles": "bane"
+          }
+        },
+        "product_operation": "Рассчитать дневную базу и запросить внешний модификатор ролей",
+        "expected_output": "Дистанция2hex, EN4; slow=1/2/edge, fast=3/6/bane",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "given": "normal, speed5, без дорог/модификаторов",
+            "when": "Выбрать темп",
+            "expected": "Дистанция2hex, EN4; slow=1/2/edge, fast=3/6/bane"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "travel.time_from_speed"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    },
+    {
+      "id": "CROWS-PT3-012-L2",
+      "source_rule_id": "CROWS-PT3-012",
+      "source_locator": "CROWS-PT3-RULES:PDF24",
+      "canonical_rule_ids": [
+        "travel.time_from_speed"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-012",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L2",
+        "trigger_or_user_action": "Изменить состав путешественников",
+        "inputs_and_units": {
+          "bands": [
+            {
+              "max": 3,
+              "delta": -1
+            },
+            {
+              "min": 4,
+              "max": 6,
+              "delta": 0
+            },
+            {
+              "min": 7,
+              "max": 9,
+              "delta": 1
+            },
+            {
+              "min": 10,
+              "delta": 2
+            }
+          ]
+        },
+        "product_operation": "Выбрать минимальную переданную скорость, применить одну полосу",
+        "expected_output": "Дистанции2 и3hex соответственно",
+        "constraints_and_exceptions": [
+          "Скорость верхового/транспорта только если фактически используется"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "normal; скорости[5,8] затем[8,10]",
+            "when": "Изменить состав путешественников",
+            "expected": "Дистанции2 и3hex соответственно"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "travel.time_from_speed"
+        ],
+        "unresolved_parameters": [
+          "Единица Speed — игровое значение, не мили/час"
+        ]
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    },
+    {
+      "id": "CROWS-PT3-013-L2",
+      "source_rule_id": "CROWS-PT3-013",
+      "source_locator": "CROWS-PT3-RULES:PDF24",
+      "canonical_rule_ids": [
+        "travel.environment_effects"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-013",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L2",
+        "trigger_or_user_action": "Проложить дневной маршрут",
+        "inputs_and_units": {
+          "all_day_road": 1,
+          "unbridged_without_water_vehicle": -1,
+          "upstream": -1,
+          "downstream": 1
+        },
+        "product_operation": "Применить только подтверждённые свойства маршрута и сохранить причины",
+        "expected_output": "2+1−1=2hex; при мосте3hex",
+        "constraints_and_exceptions": [
+          "Дорога даёт бонус только весь день"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "normal2; вся дорога; один брод без моста и без лодки",
+            "when": "Проложить дневной маршрут",
+            "expected": "2+1−1=2hex; при мосте3hex"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "travel.environment_effects"
+        ],
+        "unresolved_parameters": [
+          "Минимум/нулевая дистанция и суммирование многих пересечений не уточнены; не придумывать clamp/stack"
+        ]
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    },
+    {
+      "id": "CROWS-PT3-014-L3",
+      "source_rule_id": "CROWS-PT3-014",
+      "source_locator": "CROWS-PT3-RULES:PDF25",
+      "canonical_rule_ids": [
+        "mechanics.navigation"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-014",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Запросить/принять исход guide",
+        "inputs_and_units": {
+          "safe_normal_route": 1,
+          "secret_path": {
+            "1": "lost",
+            "2": {
+              "EN": -1,
+              "hexes": -1
+            },
+            "3": {
+              "EN": -2
+            }
+          },
+          "shortcut": {
+            "1": "lost",
+            "2": {
+              "hexes": 1,
+              "EN": 1
+            },
+            "3": {
+              "hexes": 2
+            }
+          }
+        },
+        "product_operation": "Передать действие и профиль внешнему resolver, применить нормализованный результат один раз",
+        "expected_output": "3hex EN5; повторный response_id не добавляет бонус ещё раз",
+        "constraints_and_exceptions": [
+          "2d10+A/M; не бросать неизвестный результат автоматически"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "normal2 EN4; shortcut tier2",
+            "when": "Запросить/принять исход guide",
+            "expected": "3hex EN5; повторный response_id не добавляет бонус ещё раз"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.navigation"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-015-L3",
+      "source_rule_id": "CROWS-PT3-015",
+      "source_locator": "CROWS-PT3-RULES:PDF25",
+      "canonical_rule_ids": [
+        "mechanics.expert_assistance"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-015",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Назначить поддержку",
+        "inputs_and_units": {
+          "safe_next_Miasma_RR_bonus": 1,
+          "risky_targets_max": 3,
+          "risky_tiers": {
+            "1": -1,
+            "2": 1,
+            "3": 2
+          }
+        },
+        "product_operation": "Передать выбранных союзников/действие, сохранить модификатор с областью действия",
+        "expected_output": "Только A/B/C получают+2 к дорожным ролям; четвёртая цель отклонена",
+        "constraints_and_exceptions": [
+          "Безопасная поддержка относится к следующему MiasmaRR, не ко всем броскам"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "risky tier3, цели[A,B,C]",
+            "when": "Назначить поддержку",
+            "expected": "Только A/B/C получают+2 к дорожным ролям; четвёртая цель отклонена"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.expert_assistance"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-016-L2",
+      "source_rule_id": "CROWS-PT3-016",
+      "source_locator": "CROWS-PT3-RULES:PDF26",
+      "canonical_rule_ids": [
+        "travel.visit_and_reveal"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-016",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L2",
+        "trigger_or_user_action": "Назначить scout: места",
+        "inputs_and_units": {
+          "safe_search_places": true,
+          "second_scout_if_places": true
+        },
+        "product_operation": "Раскрыть существующее неизвестное место в посещённом гексе, не сгенерировать новое",
+        "expected_output": "P становится известным группе; число мест неизменно; второй scout разрешён с другой задачей",
+        "constraints_and_exceptions": [
+          "Не раскрывать скрытую ловушку/комнату из-за открытия общегоPOI"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "ГексA с неизвестным P; scout1=places, scout2=danger",
+            "when": "Назначить scout: места",
+            "expected": "P становится известным группе; число мест неизменно; второй scout разрешён с другой задачей"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "travel.visit_and_reveal"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    },
+    {
+      "id": "CROWS-PT3-017-L3",
+      "source_rule_id": "CROWS-PT3-017",
+      "source_locator": "CROWS-PT3-RULES:PDF26",
+      "canonical_rule_ids": [
+        "mechanics.scouting"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-017",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Принять результат scout",
+        "inputs_and_units": {
+          "safe_danger_EN": -1,
+          "shelter": {
+            "1": "extra_rest_check",
+            "2": {
+              "rest_EN": -1,
+              "travel_EN": 1
+            },
+            "3": "stone_ruin_shelter_10pct_inhabited"
+          },
+          "treasure": {
+            "1": "extra_check",
+            "2": "minor_treasure_and_extra_check",
+            "3": "minor_treasure"
+          }
+        },
+        "product_operation": "Связать эффект с дневным маршрутом/местом/следующим отдыхом",
+        "expected_output": "travelEN5, restEN2; эффекты не переходят на все будущие дни",
+        "constraints_and_exceptions": [
+          "10%обитаемости — отдельный внешний бросок, не гарантированно пустое место"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Shelter tier2, travelEN4 restEN3",
+            "when": "Принять результат scout",
+            "expected": "travelEN5, restEN2; эффекты не переходят на все будущие дни"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.scouting"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-018-L3",
+      "source_rule_id": "CROWS-PT3-018",
+      "source_locator": "CROWS-PT3-RULES:PDF26",
+      "canonical_rule_ids": [
+        "mechanics.forage_and_consumption",
+        "mechanics.tracking"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-018",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Принять охоту/следы",
+        "inputs_and_units": {
+          "safe_forage_rations": 1,
+          "hunt": {
+            "1": "extra_check",
+            "2": "d6_rations_EN+1",
+            "3": "3d6_rations_d6_parts"
+          },
+          "specific_tier2_detour_hexes": 1
+        },
+        "product_operation": "Хранить полученное число рационов/частей или выбранный Ref одногексовый крюк",
+        "expected_output": "4рациона, EN5, не4человека; повторный ответ не удваивает ресурсы",
+        "constraints_and_exceptions": [
+          "Конкретную цель/расположение/время встречи определяет Ref"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Hunt tier2 d6=4 EN4",
+            "when": "Принять охоту/следы",
+            "expected": "4рациона, EN5, не4человека; повторный ответ не удваивает ресурсы"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.forage_and_consumption",
+          "mechanics.tracking"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-019-L2",
+      "source_rule_id": "CROWS-PT3-019",
+      "source_locator": "CROWS-PT3-RULES:PDF27",
+      "canonical_rule_ids": [
+        "travel.actual_vs_intended_route"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-019",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L2",
+        "trigger_or_user_action": "Покинуть гекс потерявшейся группой",
+        "inputs_and_units": {
+          "d6_directions": {
+            "1": "N",
+            "2": "NE",
+            "3": "SE",
+            "4": "S",
+            "5": "SW",
+            "6": "NW"
+          }
+        },
+        "product_operation": "Хранить фактический путь отдельно от предполагаемого и скрывать позицию от игрока",
+        "expected_output": "Фактический выходSE, планN сохранён; игрок не получает точную позицию",
+        "constraints_and_exceptions": [
+          "Не менять направление каждой перерисовкой; бросок связан с переходом"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Группа в(0,0), планN, внешнийd6=3",
+            "when": "Покинуть гекс потерявшейся группой",
+            "expected": "Фактический выходSE, планN сохранён; игрок не получает точную позицию"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "travel.actual_vs_intended_route"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    },
+    {
+      "id": "CROWS-PT3-020-L3",
+      "source_rule_id": "CROWS-PT3-020",
+      "source_locator": "CROWS-PT3-RULES:PDF27",
+      "canonical_rule_ids": [
+        "mechanics.navigation"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-020",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Принять Back On Track",
+        "inputs_and_units": {
+          "tiers": {
+            "1": "still_lost",
+            "2": "position_known_end_day",
+            "3": "position_known_start_day"
+          },
+          "other_recovery": [
+            "recognized_landmark",
+            "map",
+            "NPC_directions"
+          ]
+        },
+        "product_operation": "Сохранить момент раскрытия позиции и проверить ограничения роли",
+        "expected_output": "Позиция не открыта сразу; раскрывается в конце дня",
+        "constraints_and_exceptions": [
+          "Потерявшийся guide выбирает только BackOnTrack"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "tier2 в начале дня",
+            "when": "Принять Back On Track",
+            "expected": "Позиция не открыта сразу; раскрывается в конце дня"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.navigation"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-021-L2",
+      "source_rule_id": "CROWS-PT3-021",
+      "source_locator": "CROWS-PT3-RULES:PDF29",
+      "canonical_rule_ids": [
+        "travel.narration_modes",
+        "travel.elapsed_time"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-021",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L2",
+        "trigger_or_user_action": "Завершить посещение POI",
+        "inputs_and_units": {
+          "threshold_DT": 3,
+          "comparison": ">",
+          "distance_reduction": "Ref chooses one or more hexes",
+          "retain_travel_EN": true
+        },
+        "product_operation": "Сохранить числоDT и запросить решение Ref о сокращении пути",
+        "expected_output": "При3 нет порога; при4 предлагается решение Ref, дистанция не уменьшается молча; EN4 сохранён",
+        "constraints_and_exceptions": [
+          "Решение о штрафе необязательно, не фиксированное −1"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "3DT затем4DT, EN4",
+            "when": "Завершить посещение POI",
+            "expected": "При3 нет порога; при4 предлагается решение Ref, дистанция не уменьшается молча; EN4 сохранён"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "travel.narration_modes",
+          "travel.elapsed_time"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    },
+    {
+      "id": "CROWS-PT3-022-L3",
+      "source_rule_id": "CROWS-PT3-022",
+      "source_locator": "CROWS-PT3-RULES:PDF24,29",
+      "canonical_rule_ids": [
+        "mechanics.encounters"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-022",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Провести проверку встречи",
+        "inputs_and_units": {
+          "default_checks": 2,
+          "EN_min": 1,
+          "context_dungeon_hex_optional": 1
+        },
+        "product_operation": "Отправить итоговый EN и уникальныйcheck_id внешнемуresolver",
+        "expected_output": "ОтправленEN1, не−2; две штатные дорожные проверки имеют разныеID",
+        "constraints_and_exceptions": [
+          "Дополнительные проверки Ref/ролей отдельны; правила отдыха не считать третьей дорожной автоматически"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "БазаEN2, суммарные−4",
+            "when": "Провести проверку встречи",
+            "expected": "ОтправленEN1, не−2; две штатные дорожные проверки имеют разныеID"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.encounters"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-023-L1",
+      "source_rule_id": "CROWS-PT3-023",
+      "source_locator": "CROWS-PT3-RULES:PDF27",
+      "canonical_rule_ids": [
+        "content.static_hazard",
+        "content.place_description"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-023",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Отметить тип укрытия места",
+        "inputs_and_units": {
+          "blocked_by": "fully enclosed stone or metal",
+          "scope": "interior not whole hex"
+        },
+        "product_operation": "Сохранить условия защиты внутри конкретного здания",
+        "expected_output": "Комната помечена защищённой, двор нет; целый гекс не становится безопасным",
+        "constraints_and_exceptions": [
+          "Камень без полного ограждения недостаточен; beacon — отдельная зона"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В одномгексе закрытая каменная комната и открытый двор",
+            "when": "Отметить тип укрытия места",
+            "expected": "Комната помечена защищённой, двор нет; целый гекс не становится безопасным"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "content.static_hazard",
+          "content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-NOTES"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-052"
+    },
+    {
+      "id": "CROWS-PT3-024-L3",
+      "source_rule_id": "CROWS-PT3-024",
+      "source_locator": "CROWS-PT3-RULES:PDF27–28",
+      "canonical_rule_ids": [
+        "mechanics.environment_conditions",
+        "mechanics.rest"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-024",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Принять итог человеческого MindRR",
+        "inputs_and_units": {
+          "cruelty_penalty_per_level": -1,
+          "rest_in_miasma_effort": false,
+          "tiers": {
+            "1": "cruelty+1 and effect",
+            "2": "none",
+            "3": "clear_cruelty_or_boost_other_human_one_tier"
+          },
+          "effect_roll": "1d10+cruelty; duplicates reroll"
+        },
+        "product_operation": "Передать условия защиты/отдыха и применить один связанный внешний ответ",
+        "expected_output": "ШтрафRR−2 передан; cruelty остаётся2; Effort не восстановлен обычным отдыхом",
+        "constraints_and_exceptions": [
+          "GoodNightRest — явное исключение +1temporaryEffort; не выводить число людей из группыжетонов"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Cruelty2, rest_in_miasma, tier2",
+            "when": "Принять итог человеческого MindRR",
+            "expected": "ШтрафRR−2 передан; cruelty остаётся2; Effort не восстановлен обычным отдыхом"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.environment_conditions",
+          "mechanics.rest"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-025-L2",
+      "source_rule_id": "CROWS-PT3-025",
+      "source_locator": "CROWS-PT3-RULES:PDF14",
+      "canonical_rule_ids": [
+        "travel.elapsed_time",
+        "travel.narration_modes"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-025",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L2",
+        "trigger_or_user_action": "Начать/приостановить DT",
+        "inputs_and_units": {
+          "DT_real_minutes": 30,
+          "optional_minutes": [
+            20,
+            60
+          ],
+          "outside_dungeon_hours_per_DT": 2,
+          "non_timer_mode": "1d6 rooms per DT"
+        },
+        "product_operation": "Разделить real timer и fictional time, сохранить выбранный режим",
+        "expected_output": "Каждый даёт1DT в своёмрежиме; 30минут реальных не добавляет30минутfictional автоматически",
+        "constraints_and_exceptions": [
+          "Пауза для группового перерыва/объяснения; Refможет закончитьDTраньше"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "30реальныхминут dungeon и2fictionalhours outside",
+            "when": "Начать/приостановить DT",
+            "expected": "Каждый даёт1DT в своёмрежиме; 30минут реальных не добавляет30минутfictional автоматически"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "travel.elapsed_time",
+          "travel.narration_modes"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    },
+    {
+      "id": "CROWS-PT3-026-L3",
+      "source_rule_id": "CROWS-PT3-026",
+      "source_locator": "CROWS-PT3-RULES:PDF15–16",
+      "canonical_rule_ids": [
+        "mechanics.rest"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-026",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Начать/завершить отдых",
+        "inputs_and_units": {
+          "hours_total_min": 6,
+          "sleep_min": 4,
+          "rations_min": 1,
+          "repeat_delay_hours": 6,
+          "repeat_delay_DT": 3
+        },
+        "product_operation": "Завершить текущийDT без его encountercheck, отправить событие внешнемуresolver отдыха, при окончании новыйDT",
+        "expected_output": "Условие отдыха выполнено; текущийDTзакрытбезегоcheck; новыйDTначат; персонажныевосстановления вернулresolver",
+        "constraints_and_exceptions": [
+          "Стренозное прерывание требует новогоотдыха; однапроверкаотдыха отдельна; середина отдыха истекаютDT/UDэффекты"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "6часов,4сон,1рацион; защищённое место",
+            "when": "Начать/завершить отдых",
+            "expected": "Условие отдыха выполнено; текущийDTзакрытбезегоcheck; новыйDTначат; персонажныевосстановления вернулresolver"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.rest"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-027-L3",
+      "source_rule_id": "CROWS-PT3-027",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF29",
+      "canonical_rule_ids": [
+        "mechanics.travel_roles_and_scenes"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-027",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Назначить дорожные роли с чертой",
+        "inputs_and_units": {
+          "ordinary_guide": 1,
+          "ordinary_scout": 1,
+          "equipment_traits_allow_roles_max": 2,
+          "forage_bonuses_stack": true
+        },
+        "product_operation": "Передать черту/снаряжение и разрешённое исключение в проверку назначения",
+        "expected_output": "2роли допустимы; безчерты стандартное ограничение; ThisWayпослеуспеханепотерявшегосяguideдаёт+1hex",
+        "constraints_and_exceptions": [
+          "ScoutForFree требует свойпредмет; поискместотдельноразрешаетвторогоscout"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "PC сGuideForFree+compass назначенguide+supporter",
+            "when": "Назначить дорожные роли с чертой",
+            "expected": "2роли допустимы; безчерты стандартное ограничение; ThisWayпослеуспеханепотерявшегосяguideдаёт+1hex"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.travel_roles_and_scenes"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-028-L1",
+      "source_rule_id": "CROWS-PT3-028",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF29",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.static_hazard"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-028",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Записать результат CampBuilder",
+        "inputs_and_units": {
+          "trait": "CampBuilder",
+          "tools": "blacksmith tools",
+          "activity": "seclude camp outdoors",
+          "capacity_medium": 1
+        },
+        "product_operation": "Создать локальное укрытие с вместимостью, связать с действием, не менятьпокрытиегекса",
+        "expected_output": "Укрытиеcapacity1Medium; второйMediumнепомещается; областьмаяканесоздана",
+        "constraints_and_exceptions": [
+          "Не спутать с beacon/постройкой деревни"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "CampBuilder, инструменты, seclude camp",
+            "when": "Записать результат CampBuilder",
+            "expected": "Укрытиеcapacity1Medium; второйMediumнепомещается; областьмаяканесоздана"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.static_hazard"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-NOTES"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-052"
+    },
+    {
+      "id": "CROWS-PT3-029-L3",
+      "source_rule_id": "CROWS-PT3-029",
+      "source_locator": "CROWS-PT3-REF:PDF2–3",
+      "canonical_rule_ids": [
+        "mechanics.weather"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-029",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Принять погодное событие",
+        "inputs_and_units": {
+          "duration_hours": 24,
+          "rain_hex_delta": -1,
+          "thunderstorm_hex_delta": -2,
+          "blizzard_hex_delta": -2,
+          "heatwave_check_if_hexes": ">2"
+        },
+        "product_operation": "Сохранить время начала/конца и внешниемодификаторы; применить к затронутомудню",
+        "expected_output": "Дистанция2hex; эффектистекаетчерез24fictionalhours",
+        "constraints_and_exceptions": [
+          "Проверкирационов/баны внешние"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "normal2+дорога1, rain−1",
+            "when": "Принять погодное событие",
+            "expected": "Дистанция2hex; эффектистекаетчерез24fictionalhours"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.weather"
+        ],
+        "unresolved_parameters": [
+          "В описании sandstorm встречается blizzard; невыводитьновыеэффектыизопечатки"
+        ]
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-030-L3",
+      "source_rule_id": "CROWS-PT3-030",
+      "source_locator": "CROWS-PT3-REF:PDF7",
+      "canonical_rule_ids": [
+        "mechanics.environment_conditions"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-030",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Принять Strong Miasma encounter",
+        "inputs_and_units": {
+          "duration_hours": 24,
+          "lost_teleport_hexes": "1d10",
+          "direction": "Ref chooses",
+          "no_effect_if": "no Miasma hex visited today"
+        },
+        "product_operation": "Проверитьпересечениефактическогопути с зоной; передать/принять relocation",
+        "expected_output": "Эффект не применяется; иначеlost+d10=4+RefNперемещает4hexNпоскрытомуфактическомупути",
+        "constraints_and_exceptions": [
+          "Не применять телепорт толькоиз-заналичияжетонаМиазмынакарте"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Все сегодняшние гексы защищенымаяками",
+            "when": "Принять Strong Miasma encounter",
+            "expected": "Эффект не применяется; иначеlost+d10=4+RefNперемещает4hexNпоскрытомуфактическомупути"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.environment_conditions"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-031-L3",
+      "source_rule_id": "CROWS-PT3-031",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF49–53",
+      "canonical_rule_ids": [
+        "mechanics.settlement_cycles"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-031",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Закрыть внешний20дневныйцикл",
+        "inputs_and_units": {
+          "cycle_days": 20,
+          "initial_prosperity": 0,
+          "min": -10,
+          "max": 10,
+          "increases": [
+            "found",
+            "upgrade",
+            "spend>=10000gc_per_cycle"
+          ],
+          "no_increase_delta": -1
+        },
+        "product_operation": "Хранить village_id/cycle_id и подтверждённыеизменения; не удваивать повторныйответ",
+        "expected_output": "Итог−1, не−2; следующийцикл имеетдругойID",
+        "constraints_and_exceptions": [
+          "При10потенциальныйростпредотвращаетспад; события могутвступатьвследующийцикл"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Cycle1 безроста, prosperity0; responseRдважды",
+            "when": "Закрыть внешний20дневныйцикл",
+            "expected": "Итог−1, не−2; следующийцикл имеетдругойID"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.settlement_cycles"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-032-L3",
+      "source_rule_id": "CROWS-PT3-032",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF51–55",
+      "canonical_rule_ids": [
+        "mechanics.settlement_cycles"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-032",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Принять оплату/завершить цикл",
+        "inputs_and_units": {
+          "activation": "next cycle start",
+          "beacon_found_gc": 1000
+        },
+        "product_operation": "Записатьpendingupgrade и активировать поcycleboundary, затем обновить связанные зоны",
+        "expected_output": "До границырадиус1; после подтвержденияследцикларадиус2; ценыневычисляютсяядромкарты",
+        "constraints_and_exceptions": [
+          "Расходы персонажей внутри игры, не разрешение покупать реальные данные"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Маякlevel1, оплаченоlevel2посредицикла",
+            "when": "Принять оплату/завершить цикл",
+            "expected": "До границырадиус1; после подтвержденияследцикларадиус2; ценыневычисляютсяядромкарты"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.settlement_cycles"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-033-L3",
+      "source_rule_id": "CROWS-PT3-033",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF62",
+      "canonical_rule_ids": [
+        "mechanics.settlement_cycles"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-033",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Передать торговую операцию внешнему учёту",
+        "inputs_and_units": {
+          "purchase_multiplier": 1.2,
+          "sale_fraction_base": 0.2,
+          "track_other_villages": "Ref discretionary"
+        },
+        "product_operation": "Сохранить baseprice и тип операции; получить итог и ссылку на деревню",
+        "expected_output": "Покупка120gc, продажа20gc; не80gc; циклчужойдеревнинеобязателен",
+        "constraints_and_exceptions": [
+          "Не создавать автоматический экономическийдвижок"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Базоваяцена100gc, чужаядеревня",
+            "when": "Передать торговую операцию внешнему учёту",
+            "expected": "Покупка120gc, продажа20gc; не80gc; циклчужойдеревнинеобязателен"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.settlement_cycles"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-034-L3",
+      "source_rule_id": "CROWS-PT3-034",
+      "source_locator": "CROWS-PT3-CHARACTER:PDF55",
+      "canonical_rule_ids": [
+        "mechanics.travel_roles_and_scenes"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-034",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Принять внешнее перемещение",
+        "inputs_and_units": {
+          "fade_out_others_max": 4,
+          "fade_out_gc_per_hex": 100,
+          "fade_in_token_gc": 500,
+          "fade_in_willing_others_max": 4,
+          "fade_in_other_distance_squares": 10
+        },
+        "product_operation": "Проверить связь с нужным маяком, покрытие выбранного гекса и применить переданную позицию один раз",
+        "expected_output": "Внешняяцена300gc, позицияцель; FadeInтокенчужогомаяканеразрешаетвозвраткэтому",
+        "constraints_and_exceptions": [
+          "10squares — локальнаядистанция, не10hex; ресурсы/желаниеучастников подтверждаетвнешняя система"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "FadeOut на3гекса,5существ включаяинициатора, цельвзоне",
+            "when": "Принять внешнее перемещение",
+            "expected": "Внешняяцена300gc, позицияцель; FadeInтокенчужогомаяканеразрешаетвозвраткэтому"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.travel_roles_and_scenes"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-035-L3",
+      "source_rule_id": "CROWS-PT3-035",
+      "source_locator": "CROWS-PT3-RULES:PDF15–16",
+      "canonical_rule_ids": [
+        "mechanics.camp_defence",
+        "mechanics.rest"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-035",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Назначить действие отдыха",
+        "inputs_and_units": {
+          "seclude_camp_EN_delta": -1,
+          "max_participants": 1,
+          "good_night_rest_temporary_effort": 1
+        },
+        "product_operation": "Передать временную защиту лагеря и отдельное исключение восстановления",
+        "expected_output": "restEN2; +1temporaryEffortдлявторого несмотряМиазму;новыйsecludeнестакается",
+        "constraints_and_exceptions": [
+          "Эффектsecludeнетребуетзавершённогоотдыха"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "restEN3;1участникseclude;другойGoodNightRestвМиазме",
+            "when": "Назначить действие отдыха",
+            "expected": "restEN2; +1temporaryEffortдлявторого несмотряМиазму;новыйsecludeнестакается"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.camp_defence",
+          "mechanics.rest"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-036-L3",
+      "source_rule_id": "CROWS-PT3-036",
+      "source_locator": "CROWS-PT3-RULES:PDF14",
+      "canonical_rule_ids": [
+        "mechanics.encounters"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-036",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L3",
+        "trigger_or_user_action": "Закончить DT без начала отдыха",
+        "inputs_and_units": {
+          "default_EN": 3,
+          "min_EN": 1,
+          "event_roll": "d10<=EN",
+          "roll1": "immediate",
+          "roll2plus": "foreshadow within next DT"
+        },
+        "product_operation": "Запросить внешний результат проверки и сохранить дедлайн события",
+        "expected_output": "Событиепредвосхищено;RefназначаетегонепозжеследующегоDT;при4нетсобытия",
+        "constraints_and_exceptions": [
+          "НачалоотдыхазакрываетDTбезэтойпроверки;RefможетповышатьEN"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "EN3,d10=2",
+            "when": "Закончить DT без начала отдыха",
+            "expected": "Событиепредвосхищено;RefназначаетегонепозжеследующегоDT;при4нетсобытия"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "mechanics.encounters"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-046"
+    },
+    {
+      "id": "CROWS-PT3-037-L1",
+      "source_rule_id": "CROWS-PT3-037",
+      "source_locator": "CROWS-PT3-RULES:PDF24",
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-037",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Записать путь и пересечение",
+        "inputs_and_units": {
+          "route_attributes": [
+            "road",
+            "upstream",
+            "downstream",
+            "unbridged_crossing",
+            "bridge"
+          ],
+          "water_vehicle": "travel input"
+        },
+        "product_operation": "Сохранить тип переправы и направления, не применять движение до дорожного дня",
+        "expected_output": "Послеsave/loadвAbridge;такое пересечение не считаетсяunbridged при будущем расчёте",
+        "constraints_and_exceptions": [
+          "Физическаягеометрия — ужеобщаязадача042/051;нерасширятьтекущий051профилемCrows"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "РекапересеченадорогойвA;мастерназначилbridge",
+            "when": "Записать путь и пересечение",
+            "expected": "Послеsave/loadвAbridge;такое пересечение не считаетсяunbridged при будущем расчёте"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-042"
+    },
+    {
+      "id": "CROWS-PT3-038-L1",
+      "source_rule_id": "CROWS-PT3-038",
+      "source_locator": "CROWS-PT3-RULES:PDF27",
+      "canonical_rule_ids": [
+        "map.audience_views"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-038",
+        "normative_kind": "rule",
+        "applicability": "CROWS October2026 PublicPlaytest3 regional campaign; selected thematic corpus",
+        "layer": "L1",
+        "trigger_or_user_action": "Открыть карту игроков",
+        "inputs_and_units": {
+          "hide": "actual party position while lost",
+          "keep": "intended route"
+        },
+        "product_operation": "Применить состояние видимости, исключить секретную фактическую позицию из экспортируемого игроку представления",
+        "expected_output": "ИгроквидитпредполагаемыйNбезточногоSE;ведущийSEвидит",
+        "constraints_and_exceptions": [
+          "Не удалять фактические данные изGMсохранения; отдельныйбезопасныйэкспорт"
+        ],
+        "acceptance_cases": [
+          {
+            "given": "ФактическийSE,предполагаемыйN;lost=true",
+            "when": "Открыть карту игроков",
+            "expected": "ИгроквидитпредполагаемыйNбезточногоSE;ведущийSEвидит"
+          },
+          {
+            "given": "Сохранённое состояние после принятого действия",
+            "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+            "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/ограничения — источник. ID, JSON, идемпотентность, способы ввода/отображения — предлагаемый продуктовый контракт, не цитата Crows. L3 вычисляет внешний resolver; конкретный сервис не выбран.",
+        "canonical_rule_refs": [
+          "map.audience_views"
+        ],
+        "unresolved_parameters": []
+      },
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "CROWS-CODE-REGIONAL"
+      ],
+      "backlog_task_ref": "agent-work/backlog.json#HX-BL-045"
+    }
+  ],
+  "unknowns": [
+    {
+      "source_rule_id": "CROWS-PT3-001",
+      "questions": [
+        "across не уточняет flat-to-flat или vertex-to-vertex; не выбирать геометрию без решения"
+      ]
+    },
+    {
+      "source_rule_id": "CROWS-PT3-012",
+      "questions": [
+        "Единица Speed — игровое значение, не мили/час"
+      ]
+    },
+    {
+      "source_rule_id": "CROWS-PT3-013",
+      "questions": [
+        "Минимум/нулевая дистанция и суммирование многих пересечений не уточнены; не придумывать clamp/stack"
+      ]
+    },
+    {
+      "source_rule_id": "CROWS-PT3-029",
+      "questions": [
+        "В описании sandstorm встречается blizzard; невыводитьновыеэффектыизопечатки"
+      ]
+    }
+  ],
+  "dedup": {
+    "new_common_rules": [
+      "map.environment_zones",
+      "mechanics.settlement_cycles"
+    ],
+    "reason": [
+      "Distinct from terrain, political territory and point hazard: derived coverage set with provenance and overlap invariants; numeric Crows radius stays in binding.",
+      "Not rest, faction-control or geography: settlement-scoped periodic state with activation boundary. No built-in economic engine implied."
+    ],
+    "existing_rules_reused": [
+      "map.physical_hex_scale",
+      "map.terrain_zones",
+      "content.place_description",
+      "content.site_links",
+      "map.reference_labels",
+      "content.adventure_hooks",
+      "travel.activity_selection",
+      "travel.time_from_speed",
+      "travel.environment_effects",
+      "mechanics.navigation",
+      "mechanics.expert_assistance",
+      "travel.visit_and_reveal",
+      "mechanics.scouting",
+      "mechanics.forage_and_consumption",
+      "mechanics.tracking",
+      "travel.actual_vs_intended_route",
+      "travel.narration_modes",
+      "travel.elapsed_time",
+      "mechanics.encounters",
+      "content.static_hazard",
+      "mechanics.environment_conditions",
+      "mechanics.rest",
+      "mechanics.travel_roles_and_scenes",
+      "mechanics.weather",
+      "mechanics.camp_defence",
+      "map.routes_and_barriers",
+      "map.audience_views"
+    ]
+  },
+  "development_policy": "Proposed components in unified backlog only; existing approved scopes/status/primary queue remain unchanged."
+}
