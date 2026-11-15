@@ -1,0 +1,151 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index ee5583a..762a9f1 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -13650,10 +13650,10 @@ export function App() {
+   };
+   const cancelOneMilePreview = () => {oneMilePreviewRef.current=null;};
+   const previewGeometryRefinement = (options:{prepareWorkBudget?:number;cancelled?:()=>boolean}={}) => {
+-    if(mutationBlocked()||physicalGridRef.current?.geometryRefinement)return null;
++    if(mutationBlocked())return null;
+     try{
+       const map=captureMap();checkedRiverMap(map);
+-      const plan=prepareGeometryPlan({...geometryPlanInput(map),...options});
++      const plan=prepareGeometryPlan({...geometryPlanInput(map),...options,scopePolicy:'explicit_preview'});
+       if(plan.status==='error')throw Error(`GEO2 ${plan.stage}: ${plan.refs.join('; ')}`);
+       if(plan.status==='unchanged')return null;
+       const state=plan.candidateState;validateOneMileMap(map,state);
+@@ -13661,7 +13661,7 @@ export function App() {
+     }catch(error){setEditError(error instanceof Error?error.message:String(error));return null;}
+   };
+   const applyGeometryRefinementPreview = (expected:NonNullable<typeof geometryRefinementPreviewRef.current>) => {
+-    if(expected!==geometryRefinementPreviewRef.current||expected.revision!==documentRevision.current||mutationBlocked()||physicalGridRef.current?.geometryRefinement)return false;
++    if(expected!==geometryRefinementPreviewRef.current||expected.revision!==documentRevision.current||mutationBlocked())return false;
+     try{
+       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:{...captureMap(),physicalGrid:expected.state}});
+       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);geometryRefinementPreviewRef.current=null;return true;
+
+diff --git a/src/geometryPlan.ts b/src/geometryPlan.ts
+index 42d8e34..2384f99 100644
+--- a/src/geometryPlan.ts
++++ b/src/geometryPlan.ts
+@@ -23,7 +23,7 @@ export type GeometryRefinement=Readonly<{
+  riverPlan:Prepared['rivers'];pois:Prepared['pois'];roads:Prepared['roads'];
+  unresolved:readonly string[];lockedPoiIds:readonly string[];sideChoices:readonly GeometrySideChoice[];
+ }>;
+-export type GeometryPlanInput=(SourceInput|PreviewInput&Readonly<{seed:number}>)&Readonly<{authoredState?:Detail1State}>;
++export type GeometryPlanInput=(SourceInput|PreviewInput&Readonly<{seed:number}>)&Readonly<{authoredState?:Detail1State;scopePolicy?:'explicit_preview'}>;
+ export type GeometryPlanChanges=Readonly<{riverIds:readonly number[];poiIds:readonly string[];roadIds:readonly number[];crossingKeys:readonly string[]}>;
+ export type GeometryPlanError=Readonly<{status:'error';code:'geometry_conflict';stage:string;refs:readonly string[];completeGeometryPlan:false;readyForApplication:false}>;
+ const EPS=1e-8;
+@@ -255,16 +255,15 @@ export function validateGeometryRefinementSource(input:GeometrySourceValidationI
+ 
+ function equality(a:unknown,b:unknown):boolean{if(a===b)return true;if(!a||!b||typeof a!=='object'||typeof b!=='object'||Array.isArray(a)!==Array.isArray(b))return false;if(Array.isArray(a)&&Array.isArray(b))return a.length===b.length&&a.every((v,i)=>equality(v,b[i]));const ka=Object.keys(a).sort(),kb=Object.keys(b).sort();return ka.length===kb.length&&ka.every((k,i)=>k===kb[i]&&equality((a as Obj)[k],(b as Obj)[k]));}
+ function inputPayload(g:GeometryRefinement):Obj{return JSON.parse(g.sourceFingerprint.slice('geo2-source-input-v1:'.length)) as Obj;}
+-/** A new generated domain must remain unrefined. Until a stored subdomain can
+- * be projected independently, refuse that transition rather than acquire or
+- * move its geometry implicitly. Ordinary edits inside the accepted domain do
+- * not have this restriction. */
+-function dependencyClosure(previous:GeometryRefinement,next:GeometryRefinement){
++/** A generated domain stays unrefined during ordinary edits/generation.
++ * Only the explicit preview/Apply entry point may acquire that domain. Even
++ * there, all affected/unrelated geometry checks below remain mandatory. */
++function dependencyClosure(previous:GeometryRefinement,next:GeometryRefinement,explicitPreview=false){
+  const before=inputPayload(previous),after=inputPayload(next),riverIds=new Set<number>(),roadIds=new Set<number>(),poiIds=new Set<string>();
+  const diff=<T>(a:readonly T[],b:readonly T[],key:(v:T)=>string,changed:(v:T)=>void)=>{const old=new Map(a.map(v=>[key(v),v])),current=new Map(b.map(v=>[key(v),v]));for(const [k,v]of current)if(!equality(old.get(k),v))changed(v);for(const [k,v]of old)if(!current.has(k))changed(v);};
+  const oldRegions=list<{id:number;hexes:readonly unknown[]}>(before.regions,'old regions'),newRegions=list<{id:number;hexes:readonly unknown[]}>(after.regions,'new regions');
+  const domain=(regions:typeof oldRegions)=>new Set(regions.flatMap(r=>r.hexes.map(h=>JSON.stringify([r.id,h]))));const oldDomain=domain(oldRegions),newDomain=domain(newRegions);
+- if([...newDomain].some(k=>!oldDomain.has(k)))return fail('refinement_domain_expansion');
++ if(!explicitPreview&&[...newDomain].some(k=>!oldDomain.has(k)))return fail('refinement_domain_expansion');
+  const oldSegments=previous.riverPlan.source.segments,newSegments=next.riverPlan.source.segments;
+  diff(oldSegments,newSegments,s=>pair(s.riverId,s.edgeKey),s=>riverIds.add(s.riverId));
+  diff(previous.riverPlan.source.boundaries,next.riverPlan.source.boundaries,b=>JSON.stringify([b.riverId,b.sectorId,b.end]),b=>riverIds.add(b.riverId));
+@@ -299,6 +298,7 @@ export function prepareGeometryPlan(input:GeometryPlanInput){
+  try {
+   const accepted=input.map.physicalGrid,previous=accepted?.version===4?accepted.geometryRefinement:undefined;
+   if(input.cancelled?.())return error('source',['prepare_cancelled']);
++  if(input.scopePolicy!==undefined&&input.scopePolicy!=='explicit_preview')return error('source',['invalid_scope_policy']);
+   const authored=input.authoredState??accepted?.globalAuthoredState??previous?.sourceState??accepted;
+   if(authored&&authored.version!==3)return error('source',['authored_physical3_required']);
+   const sourceState=authored?parseDetail1StateV11(authored):undefined;
+@@ -314,7 +314,7 @@ export function prepareGeometryPlan(input:GeometryPlanInput){
+   const source=prepared.candidateState,origin=source.grid.origin,sourceSegments=new Map(prepared.rivers.source.segments.map(s=>[pair(s.riverId,s.edgeKey),s]));
+   const sideChoices=prepared.rivers.paths.flatMap(p=>p.steps.map((_,stepIndex)=>{const actual=chosenSide(sourceSegments.get(pair(p.riverId,p.sourceEdgeKey))!,p.points[stepIndex],p.points[stepIndex+1],origin),preferredSide=refinementPreferredSide(seed,p.riverId,p.sourceEdgeKey,actual.cell);return {riverId:p.riverId,sourceEdgeKey:p.sourceEdgeKey,stepIndex,cell:actual.cell,preferredSide,chosenSide:actual.side,constraintFallback:actual.side!==null&&actual.side!==preferredSide};}));
+   const refinement=parseGeometryRefinement({version:1,algorithmVersion:'geo2-v1',sourceFingerprint:prepared.sourceFingerprint,sourceState:source,riverPlan:prepared.rivers,pois:prepared.pois,roads:prepared.roads,unresolved:prepared.unresolved,lockedPoiIds:[...(input.lockedPoiIds??previous?.lockedPoiIds??[])].sort(),sideChoices},parseDetail1StateV11);
+-  if(previous)dependencyClosure(previous,refinement);
++  if(previous)dependencyClosure(previous,refinement,input.scopePolicy==='explicit_preview');
+   const candidateState=parseDetail1StateV11({...source,version:4,poiFootprints:prepared.footprints,geometryRefinement:refinement,...(accepted?{viewStep:accepted.viewStep,fineCellEdits:accepted.fineCellEdits,...(accepted.selectedCell?{selectedCell:accepted.selectedCell}:{}),...(accepted.selectedWorldPoint?{selectedWorldPoint:accepted.selectedWorldPoint}:{})}:{})});
+   return Object.freeze({status:'prepared' as const,candidateState,geometryRefinement:candidateState.geometryRefinement!,changes:changes(previous,refinement),sourceFingerprint:prepared.sourceFingerprint,workBudget:prepared.workBudget,bootstrap:prepared.bootstrap,completeGeometryPlan:true as const,readyForApplication:true as const});
+  }catch(e){return error('validation',[e instanceof Error?e.message:'invalid_geometry_plan']);}
+
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index c05edc0..f51e7a9 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -6,6 +6,7 @@ import fs from 'node:fs';
+ import {createGenerationHarness} from './helpers/generation-harness.mjs';
+ import {detailAuthoredState} from '../src/detailModel.ts';
+ import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
++import {prepareGeometryPlan} from '../src/geometryPlan.ts';
+ import {reconcileDetailGeography} from '../src/detailGeography.ts';
+ import {synchronizeToponyms} from '../src/toponyms.ts';
+ const serial=v=>JSON.parse(JSON.stringify(v));
+@@ -910,6 +911,29 @@ test('GEO2 actual connected land-only generation retains old refinement and leav
+  for(const k of ['regions','rivers','roads','crossings','terrainByHexKey','waterPoiByHexKey','toponyms','nextRiverId','nextRoadId'])assert.deepEqual(after.map[k],plain.map[k],`ordinary generated source ${k} unchanged by refinement`);
+  assert.deepEqual(after.counters,plain.counters);assert.deepEqual(after.generation,plain.generation,'refinement integration consumes no extra world RNG');assertUndoRedo(h,before,after);
+  await load(h,after);assert.deepEqual(stable(h.render()),after,'connected scoped16 imports stored geometry exactly');
++ // Historical global source metadata can lag behind the live outer layer.
++ const liveMap=h.render().captureDocument().map,liveLayer=liveMap.physicalGrid;
++ const {selectedCell:ignoredCell,selectedWorldPoint:ignoredPoint,...clearedLayer}=liveLayer;
++ h.render().restoreSnapshot({...liveMap,physicalGrid:{...clearedLayer,globalAuthoredState:{...liveLayer.globalAuthoredState,selectedCell:{q:0,r:0}},fineCellEdits:{...liveLayer.fineCellEdits,'0,0':{name:{ru:'После расширения',en:'After expansion'},note:'Latest live local note'}}}});
++ // New land remains unrefined until a fresh explicit preview/Apply.
++ const scopeInput=h.geometry.geometryPlanInput(h.render().captureDocument().map),ordinary=prepareGeometryPlan(scopeInput);
++ assert.equal(ordinary.status,'error');assert.ok(ordinary.refs.some(r=>r.includes('refinement_domain_expansion')),'automatic plan still cannot acquire a new domain');
++ h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
++ const beforeExplicit=stable(h.render()),explicitStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(explicitStacks[1].length,'explicit preview starts with an available redo branch');
++ const cancelled=await h.render().previewGeometryRefinement();assert.ok(cancelled,h.render().editError??'explicit preview must include the new domain');
++ assert.deepEqual(stable(h.render()),beforeExplicit);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),explicitStacks);
++ h.render().cancelGeometryRefinementPreview();assert.equal(h.render().applyGeometryRefinementPreview(cancelled),false);assert.deepEqual(stable(h.render()),beforeExplicit);
++ const stale=await h.render().previewGeometryRefinement();assert.ok(stale);h.render().applyDocument(h.render().captureDocument());
++ assert.equal(h.render().applyGeometryRefinementPreview(stale),false,'explicit expanded-scope preview obeys the same revision guard');assert.deepEqual(stable(h.render()),beforeExplicit);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),explicitStacks);
++ const preview=await h.render().previewGeometryRefinement();assert.ok(preview,h.render().editError??'fresh explicit scope preview');
++ assert.equal(h.render().applyGeometryRefinementPreview(preview),true,h.render().editError??'apply expanded explicit scope');
++ const expanded=stable(h.render());assert.equal(h.render().undoHistory.length,explicitStacks[0].length+1);
++ assert.equal(JSON.parse(expanded.map.physicalGrid.geometryRefinement.sourceFingerprint.slice('geo2-source-input-v1:'.length)).regions.some(r=>r.id===newRegion.id),true);
++ assert.deepEqual(expanded.map.physicalGrid.geometryRefinement.riverPlan.paths,after.map.physicalGrid.geometryRefinement.riverPlan.paths,'unrelated old river paths remain literal');
++ assert.equal(expanded.map.physicalGrid.selectedCell,undefined,'cleared live focus must not return from historical global source');assert.deepEqual(expanded.map.physicalGrid.fineCellEdits,beforeExplicit.map.physicalGrid.fineCellEdits);assert.deepEqual(expanded.generation,beforeExplicit.generation);assert.deepEqual(expanded.counters,beforeExplicit.counters);
++ assertUndoRedo(h,beforeExplicit,expanded);assert.equal(h.render().applyGeometryRefinementPreview(preview),false,'applied callback cannot apply twice');
++ const expandedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.equal(await h.render().previewGeometryRefinement(),null,'already current full scope is unchanged');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),expandedStacks);
++ await load(h,expanded);assert.deepEqual(stable(h.render()),expanded,'expanded refinement16 reopens stored choices without rerouting');
+  h.render().undoMap();const protectedSave=stable(h.render()),protectedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(protectedStacks[1].length);
+  const terminal=protectedSave.map.rivers.find(r=>r.id===1).vertexPath[0],unsafe=h.render().candidateHexes.find(c=>h.geometry.getHexCornerPoints(c).some(v=>v.key===terminal.key));assert.ok(unsafe,'unknown cell touches the actual source terminal');
+  h.render().safelyAddRegionToMap(unsafe,options);assert.ok(h.render().generationError,'a source terminal contact still requires nonempty closure');
+
+diff --git a/docs/region-generation.md b/docs/region-generation.md
+index 66f0a58..4659e2a 100644
+--- a/docs/region-generation.md
++++ b/docs/region-generation.md
+@@ -463,3 +463,23 @@ Strict public16 импорт использует тот же сертифика
+ Случай с необходимым сдвигом/продолжением рек/дорог/POI между областями по-прежнему
+ отказывается атомарно; не выдаётся за завершённую mixed closure. Обычная генерация
+ источника и RNG не меняются. Карта/PNG, initial UI и полная приёмка GEO2 ещё впереди.
++
++
++### Явное уточнение новой области после расширения
++
++Сохранённый старый scope не блокирует новый явный preview/Apply. Только этот
++обработчик передаёт внутреннюю политику `explicit_preview` в GeometryPlan; она
++разрешает включить новый домен в план, сохраняя все прежние проверки затронутых
++объектов и буквального равенства несвязанных старых путей. Это параметр подготовки,
++не поле public16 и не разрешение на автоматическое уточнение. Обычная генерация
++и исходные правки не передают эту политику: их прежний запрет неявного расширения
++области сохраняется. Непустая mixed closure этим изменением не реализована.
++
++Подготовка/Cancel не записывают карту, RNG или историю, включая доступную ветку
++Redo. Apply применяет только актуальный по revision и ссылке preview одной
++транзакцией. Повторное применение, отменённый и устаревший callback отказываются;
++повторный preview уже полного актуального scope не создаёт транзакцию. Принятый
++public16 вновь загружает сохранённые варианты без перестроения. Текущие локальные
++RU/EN имена/заметки и очищенный фокус не заменяются историческими метаданными
++внутреннего globalAuthoredState. Это подключение существующих обработчиков;
++фактические UI/карта/PNG и полная приёмка GEO2 остаются впереди.
