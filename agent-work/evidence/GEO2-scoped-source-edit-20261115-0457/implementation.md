@@ -17,3 +17,7 @@ One existing logical Node case extended (+0/-0/modified1): genuine river-source 
 ## Limits and next step
 
 Support remains only separated model envelopes after the complete plan. Missing/rebound retained refs and graph/body seams still refuse. Exact mixed old/new contacts, source-domain changes/deletions requiring scope migration and ordinary connected generated expansion need further work. New domain remains unrefined until explicit Apply. Initial preview/Apply/Cancel, actual map/PNG, full G201–G210 and independent exact-SHA review+score_assessment1.2 remain pending. No current-score/history increase. No new benchmark series or paid costs. HX-FB-023 stays within GEO2; other feedback not expanded, HX-FB-002 test audit not repeated (already audit_completed).
+
+## Final verification
+
+Exact 8f5a77bf1c365eeb5d582989324f2b157a120822 / tree 907bf8efcbf6fc2f9ee6edd4c2f3b05c7d8e8136: npm run check exit0;419/419 Node,0 failed/skipped/cancelled, TypeScript and build passed. Both actual post-build browser and RNG-browser commands exit1 before scenarios at Chromium socket() EPERM. No screenshots or browser acceptance. Source4 files and early evidence5 files read back exactly; local HEAD/tree exact, no tracked diff. Automation actual start/end enabled; no restoration.
