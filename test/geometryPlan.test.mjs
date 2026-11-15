@@ -1,4 +1,5 @@
 import {projectGeometryRefinementSource} from '../src/geometryRefinementScope.ts';
+import {prepareGeometryRefinementBoundary} from '../src/geometryRefinementBoundary.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -116,6 +117,48 @@ test('GEO2 scoped source projection retains literal choices and refuses hidden b
  const clearedProjection=projectGeometryRefinementSource({...expanded,map:{...expanded.map,physicalGrid:clearedOuter}},withSnapshotFocus);assert.equal(clearedProjection.status,'projected',JSON.stringify(clearedProjection));assert.equal(clearedProjection.globalAuthoredState.selectedCell,undefined);assert.equal(clearedProjection.globalAuthoredState.selectedWorldPoint,undefined);
  const laterCounter=parseGeometryRefinement({...g,sourceState:{...g.sourceState,poiIdentities:{...g.sourceState.poiIdentities,nextId:g.sourceState.poiIdentities.nextId+3}}},parseDetail1StateV11);
  assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,physicalGrid:g.sourceState}},laterCounter).code,'scope_source_changed','counter cannot regress even when all currently live IDs still fit');
+});
+
+test('GEO2 boundary preflight conservatively separates supplied envelopes or requires dependency closure',async()=>{
+ const {input,result}=await accepted(),g=result.geometryRefinement;
+ // A distinct composition risk, not another routing/seed test. Reuse the
+ // accepted fixture. Synthetic added records probe model envelopes only;
+ // neither their classification nor this case is global-map acceptance.
+ const extra={...input.map.regions[0],id:999999,hexes:[{q:1000,r:1000}],centerHex:{q:1000,r:1000},pointsOfInterest:[],pointOfInterestKinds:{},suppressCentralPoi:true};
+ const boundaryInput={...input,map:{...input.map,physicalGrid:result.candidateState,regions:[...input.map.regions,extra]},landCells:[...input.landCells,...extra.hexes],roadPaddingMiles:.1}; // explicit test envelope, not renderer calibration
+ const before=JSON.stringify(boundaryInput),separated=prepareGeometryRefinementBoundary(boundaryInput,g);
+ assert.equal(separated.status,'prepared',JSON.stringify(separated));assert.equal(separated.boundaryValidation,'disjoint_model_envelopes');assert.deepEqual(separated.potentialDependencies,[]);assert.equal(separated.confirmedIntersections,false);assert.equal(separated.readyForApplication,false);assert.equal(separated.globalPersistenceValidation,'required');assert.equal(separated.scope.geometryRefinement,g);assert.equal(JSON.stringify(boundaryInput),before);
+ assert.ok(separated.counts.retainedEnvelopes>0);assert.equal(separated.counts.addedEnvelopes,1);
+ assert.equal(prepareGeometryRefinementBoundary({...boundaryInput,roadPaddingMiles:0},g).code,'invalid_boundary_input');
+ assert.equal(prepareGeometryRefinementBoundary({...boundaryInput,boundaryWorkBudget:1},g).code,'prepare_incomplete_budget');
+ assert.equal(prepareGeometryRefinementBoundary({...boundaryInput,landCells:input.landCells},g).code,'boundary_evidence_missing');
+ let calls=0;const cancelled=prepareGeometryRefinementBoundary({...boundaryInput,cancelled:()=>++calls>200},g);assert.equal(cancelled.code,'prepare_cancelled');assert.equal(cancelled.scope,undefined);
+ const edge=input.map.regions.flatMap(r=>r.hexes).toSorted((a,b)=>b.q-a.q||b.r-a.r)[0],adjacent={q:edge.q+1,r:edge.r};
+ const touching=prepareGeometryRefinementBoundary({...boundaryInput,map:{...boundaryInput.map,regions:[...input.map.regions,{...extra,hexes:[adjacent],centerHex:adjacent}]},landCells:[...input.landCells,adjacent]},g);
+ assert.equal(touching.status,'prepared',JSON.stringify(touching));assert.equal(touching.boundaryValidation,'dependency_closure_required');assert.ok(touching.potentialDependencies.some(p=>p.addedRef==='region:999999'&&p.retainedRef.startsWith('region:')));assert.equal(touching.confirmedIntersections,false);
+ // The reference-only projector cannot discover a new line with new endpoint
+ // addresses crossing retained geometry; the spatial preflight must list it.
+ const oldCell=input.map.regions[0].hexes[0],road={...input.map.roads[0],id:999999,regionId:extra.id,segments:[{...input.map.roads[0].segments[0],from:{q:oldCell.q-1000,r:oldCell.r},to:{q:oldCell.q+1000,r:oldCell.r}}]},crossingInput={...boundaryInput,map:{...boundaryInput.map,roads:[...input.map.roads,road]}};
+ assert.equal(projectGeometryRefinementSource(crossingInput,g).status,'projected');
+ const crossing=prepareGeometryRefinementBoundary(crossingInput,g);assert.equal(crossing.status,'prepared',JSON.stringify(crossing));assert.equal(crossing.boundaryValidation,'dependency_closure_required');assert.ok(crossing.potentialDependencies.some(p=>p.addedRef==='road:999999'));assert.equal(crossing.readyForApplication,false);
+ const incomplete=prepareGeometryRefinementBoundary({...crossingInput,boundaryWorkBudget:crossing.workBudget.used-1},g);assert.equal(incomplete.code,'prepare_incomplete_budget');assert.equal(incomplete.scope,undefined);assert.equal(incomplete.potentialDependencies,undefined,'late exhaustion cannot expose an incomplete dependency list');
+ const shuffled=prepareGeometryRefinementBoundary({...crossingInput,map:{...crossingInput.map,regions:crossingInput.map.regions.toReversed(),roads:crossingInput.map.roads.toReversed()},lakeInputs:crossingInput.lakeInputs.toReversed(),landCells:crossingInput.landCells.toReversed()},g);assert.equal(shuffled.status,'prepared',JSON.stringify(shuffled));assert.deepEqual(shuffled.potentialDependencies,crossing.potentialDependencies);
+ assert.ok(input.lakeInputs.length>0);assert.equal(prepareGeometryRefinementBoundary({...boundaryInput,lakeInputs:input.lakeInputs.slice(1)},g).code,'boundary_evidence_missing');
+ const changedShape=prepareGeometryRefinementBoundary({...boundaryInput,lakeInputs:input.lakeInputs.map((l,i)=>i?l:{...l,colorScale:l.colorScale*1.01})},g);assert.equal(changedShape.code,'boundary_source_changed');
+ const f=g.riverPlan.paths[0].fullness,widths=new Map(input.widths);widths.set(f,widths.get(f)*1.01);assert.equal(prepareGeometryRefinementBoundary({...boundaryInput,widths},g).code,'boundary_source_changed');
+ const alias='poi:999999:1000,1000',identity=g.sourceState.poiIdentities,withoutFootprint={...g.sourceState,poiIdentities:{...identity,nextId:identity.nextId+1,byLegacyRef:{...identity.byLegacyRef,[alias]:`detail-poi:${identity.nextId}`}}};
+ const unknownExtent={...boundaryInput,map:{...boundaryInput.map,physicalGrid:withoutFootprint,regions:[...input.map.regions,{...extra,pointsOfInterest:extra.hexes,pointOfInterestKinds:{'1000,1000':'ruins'}}]}};assert.equal(projectGeometryRefinementSource(unknownExtent,g).status,'projected');assert.equal(prepareGeometryRefinementBoundary(unknownExtent,g).code,'boundary_evidence_missing');
+ const ghostCrossing={...input.map.crossings[0],key:'outside-ghost',riverId:999999,roadId:999999};assert.equal(prepareGeometryRefinementBoundary({...boundaryInput,map:{...boundaryInput.map,crossings:[...input.map.crossings,ghostCrossing]}},g).code,'boundary_evidence_missing');
+ const anchor=detailCellCenter(createDetailGrid(6,input.origin),extra.hexes[0]),cell=worldToDetailCell(createDetailGrid(1,input.origin),anchor),newFootprint={poiId:`detail-poi:${identity.nextId}`,legacyRef:alias,worldAnchor:anchor,cells:[cell],extent:{kind:'manual_size',diameterMiles:.1,basis:'conditional',note:'boundary probe'},attachments:[]};
+ const withSite={...unknownExtent,map:{...unknownExtent.map,physicalGrid:{...withoutFootprint,poiFootprints:[...g.sourceState.poiFootprints,newFootprint]}}},site=prepareGeometryRefinementBoundary(withSite,g);assert.equal(site.status,'prepared',JSON.stringify(site));assert.equal(site.boundaryValidation,'disjoint_model_envelopes');assert.equal(site.counts.addedEnvelopes,2);
+ const terrain=new Map(input.map.hexTerrainByKey);terrain.set('1000,1000',{terrainOverride:'lake',lakeId:999999});const x=anchor.x-input.origin.x,y=anchor.y-input.origin.y,lake={lakeId:999999,cells:extra.hexes,colorPath:`M ${x-1} ${y-1} L ${x+1} ${y-1} L ${x+1} ${y+1} L ${x-1} ${y+1} Z`,colorScale:1,origin:input.origin};
+ const withLake={...boundaryInput,map:{...boundaryInput.map,hexTerrainByKey:terrain},landCells:input.landCells,lakeInputs:[...input.lakeInputs,lake]},farLake=prepareGeometryRefinementBoundary(withLake,g);assert.equal(farLake.status,'prepared',JSON.stringify(farLake));assert.equal(farLake.boundaryValidation,'disjoint_model_envelopes');
+ // A quadratic control hull can overlap while the curve itself stays away.
+ // This is intentionally only a candidate: never report a proven collision.
+ const oldPoint=detailCellCenter(createDetailGrid(6,input.origin),oldCell),bulging={...lake,colorPath:`M ${x} ${y} Q ${oldPoint.x-input.origin.x} ${oldPoint.y-input.origin.y} ${x+1} ${y} L ${x+1} ${y+1} L ${x} ${y+1} Z`},hull=prepareGeometryRefinementBoundary({...withLake,lakeInputs:[...input.lakeInputs,bulging]},g);assert.equal(hull.status,'prepared',JSON.stringify(hull));assert.equal(hull.boundaryValidation,'dependency_closure_required');assert.ok(hull.potentialDependencies.some(p=>p.addedRef==='lake:999999'));assert.equal(hull.confirmedIntersections,false);
+ const original=input.map.rivers[0],rename=v=>({...v,key:`boundary-probe:${v.key}`}),newRiver={...original,id:999999,regionId:extra.id,vertexPath:original.vertexPath.map(rename),sectors:original.sectors.map(s=>({...s,id:`boundary-probe:${s.id}`,riverId:999999,assignedRegionId:extra.id,vertexPath:s.vertexPath.map(rename),startVertexKey:`boundary-probe:${s.startVertexKey}`,endVertexKey:`boundary-probe:${s.endVertexKey}`,edgeKeys:s.vertexPath.slice(1).map((v,i)=>[rename(s.vertexPath[i]).key,rename(v).key].sort().join('|'))}))};
+ const geometricAlias=prepareGeometryRefinementBoundary({...boundaryInput,map:{...boundaryInput.map,rivers:[...input.map.rivers,newRiver]}},g);assert.equal(geometricAlias.status,'prepared',JSON.stringify(geometricAlias));assert.equal(geometricAlias.boundaryValidation,'dependency_closure_required');assert.ok(geometricAlias.potentialDependencies.some(p=>p.addedRef==='river:999999'));
+ assert.equal(JSON.stringify(boundaryInput),before);
 });
 
 test('GEO2 persisted records reject broken source, topology, contacts and outer authored correspondence atomically',async()=>{
