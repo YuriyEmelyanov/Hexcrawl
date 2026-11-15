@@ -1,4 +1,5 @@
 import {spawn} from 'node:child_process';
+import {stripVTControlCharacters} from 'node:util';
 import fs from 'node:fs/promises';
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
@@ -7,7 +8,7 @@ const manifest={source:'afebeb085e0bc0059e317ff6a64d02a9f8e46393',seed:42,genera
 const server=spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4173','--strictPort'],{stdio:['ignore','pipe','inherit']});
 let browser,page;
 try{
-await new Promise((resolve,reject)=>{let s='';server.stdout.on('data',d=>{s+=d;if(s.includes('Local:'))resolve();});setTimeout(()=>reject(Error(s)),15000).unref();});
+await new Promise((resolve,reject)=>{let s='';server.stdout.on('data',d=>{s+=d;if(stripVTControlCharacters(s).includes('Local:'))resolve();});setTimeout(()=>reject(Error(s)),15000).unref();});
 browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
 page=await browser.newPage({viewport:{width:1700,height:1100}});page.setDefaultTimeout(60000);page.on('pageerror',e=>manifest.errors.push(e.message));page.on('dialog',d=>d.accept());
 await page.route(/mc\.yandex/,r=>r.abort());
