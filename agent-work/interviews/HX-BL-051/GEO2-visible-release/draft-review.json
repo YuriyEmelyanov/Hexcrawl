@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T1455-interviewer-GEO2-visible-D1",
+  "task_id": "HX-BL-051",
+  "draft_spec_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D1.md",
+  "draft_spec_version": "VISIBLE-D1",
+  "draft_blob_sha": "f1343f7052534f7f2e26622e48b24a00dccf4657",
+  "parent_final_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "full_draft_reviewed": true,
+  "coverage": [
+    {
+      "section": "Цель/наблюдаемый результат/реальныйfixture",
+      "reviewed": true,
+      "disposition": "Inherited unambiguous constraints retained; no artificial question"
+    },
+    {
+      "section": "Границы/согласованные Q01/Q02/разбиение",
+      "reviewed": true,
+      "disposition": "GEO2-VIS-Q01"
+    },
+    {
+      "section": "Геометрия/топология/POI/дороги/переправы/берега",
+      "reviewed": true,
+      "disposition": "Inherited unambiguous constraints retained; no artificial question"
+    },
+    {
+      "section": "Данные/public16/совместимость/переходV1→V2→V3",
+      "reviewed": true,
+      "disposition": "VIS-D1-F01 and inherited contract; no new owner question"
+    },
+    {
+      "section": "НачальныйUI/состояния/desktop/390/320/RUEN",
+      "reviewed": true,
+      "disposition": "Inherited unambiguous constraints retained; no artificial question"
+    },
+    {
+      "section": "Ошибки/бюджет поиска/отмена/stale/busy/Redo",
+      "reviewed": true,
+      "disposition": "Inherited unambiguous constraints retained; no artificial question"
+    },
+    {
+      "section": "Обычные правки/расширение/неизменность несвязанных данных/RNG",
+      "reviewed": true,
+      "disposition": "GEO2-VIS-Q01"
+    },
+    {
+      "section": "Сквозная приёмка/G201–G210/OM-C01–08/feedback",
+      "reviewed": true,
+      "disposition": "VIS-D1-F01 and inherited contract; no new owner question"
+    },
+    {
+      "section": "Score1.2/отдельноеevidence/качество и широта",
+      "reviewed": true,
+      "disposition": "Inherited unambiguous constraints retained; no artificial question"
+    },
+    {
+      "section": "Тестовая необходимость/CI/browser/RNG/независимый review",
+      "reviewed": true,
+      "disposition": "Inherited unambiguous constraints retained; no artificial question"
+    },
+    {
+      "section": "Прогноз всех ролей/два owner gates/наследиеclaims",
+      "reviewed": true,
+      "disposition": "VIS-D1-F02"
+    }
+  ],
+  "findings": [
+    {
+      "id": "VIS-D1-F01",
+      "severity": "contract_clarification",
+      "owner_question": false,
+      "location": "VISIBLE-D1 walkthrough step4; parentG208",
+      "finding": "Последовательность «export/reopen, затем Undo» можно прочитать как обещание восстановить всю Undo-историю изJSON. Ни этот черновик, ни parentpublic16 не устанавливают новый формат сохранения stack.",
+      "required_fix": "Явно разделить ветви: (1) до экспорта Apply→Undo→Redo в живом сеансе; (2) export/reopen сравнивает принятое состояние/choices без обещания восстановить прежний stack; (3) Undo/Redo принятого импорта проверяет существующий import transaction отдельно. Не менять format/history contract для прохождения сценария.",
+      "completion": "Два/три подписанных сценария, no implied stack serialization; existing import/history semantics preserved."
+    },
+    {
+      "id": "VIS-D1-F02",
+      "severity": "planning_clarification",
+      "owner_question": false,
+      "location": "VISIBLE-D1 forecast / CandidateB / strategyplan",
+      "finding": "14–24запуска относится только к ограниченномуV1; вариантB комбинирует обычные правки и требует отдельного суммарного прогноза. Его нельзя представлять как тот же суточный пакет.",
+      "required_fix": "Добавить вариантыA/B/C и отдельные диапазоны/ограничения, не суммировать общие этапы слепо:15–26ч/22–38runs — только верхнеуровневая сумма исходных диапазонов, не самостоятельный пересчёт. После boundary decision пересчитать полный путь и до расширения разделить>24 на полезные результаты. Сохранить исходную историю.",
+      "completion": "Один прогноз на выбранный контракт; все роли/CI/review/fixes/release/score включены; ожидания отдельно; original history retained."
+    }
+  ],
+  "known_material_question_ids": [
+    "GEO2-VIS-Q01"
+  ],
+  "topics_disposition": [
+    {
+      "topic_id": "D1-T01",
+      "disposition": "GEO2-VIS-Q01"
+    },
+    {
+      "topic_id": "D1-T02",
+      "disposition": "Merged into same question: mutually exclusive release frontiers, including intermediateV2 expansion behavior"
+    },
+    {
+      "topic_id": "D1-T03",
+      "disposition": "No extra owner question now; finalGEO2-v2 explicitly excludes newF1–5calibration/catalogue and keeps C07/C08 open. Retain qualitative width/manual-size requirements, do not claim full closure or automatic release waiver. Release still exact-package gate, not a second advance blanket approval."
+    }
+  ],
+  "settled_answers_preserved": [
+    "GEO2-Q01 automatic shifts without added preview/consent/notice",
+    "GEO2-Q02 length-first legal roads",
+    "Nov13 stable edge detours and same-parent eligible POI/road adaptation"
+  ],
+  "no_other_material_questions_reason": "Data/compatibility/geometry/limits and UI states are inherited in detail from governing final v2. No new grid, format, town-size numbers, rendering modes, spending or test policy is proposed. Undo wording and forecast mapping are analyst clarifications, not new product choices.",
+  "independence_limit": "Separate interviewer run reviewing primary decisions/full draft. Same conversation contains prior analyst work; no fresh-context subagent or externally independent assessment claimed.",
+  "runtime_acceptance": false,
+  "score_assessment": false,
+  "parent_final_spec_changed": false
+}

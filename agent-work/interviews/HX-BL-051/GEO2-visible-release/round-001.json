@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-051",
+  "stage_id": "GEO2-visible-release",
+  "round_id": "round-001",
+  "run_id": "2026-11-15T1455-interviewer-GEO2-visible-D1",
+  "draft_spec_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D1.md",
+  "draft_spec_version": "VISIBLE-D1",
+  "trigger": "New whole-draft analyst handoff after owner15Nov daily-features decision",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-decision-2026-11-15-daily-features.json",
+    "agent-work/decisions/owner-decision-2026-11-14-GEO2-interview-answers.json",
+    "agent-work/decisions/owner-decision-2026-11-14-GEO2-GeometryPlan-now.json"
+  ],
+  "questions": [
+    {
+      "question_id": "GEO2-VIS-Q01",
+      "topic": "Граница первого самостоятельно пригодного выпуска",
+      "requirement_refs": [
+        "VISIBLE-D1 D1-T01",
+        "VISIBLE-D1 D1-T02",
+        "G208-AUTO",
+        "G209-AUTO",
+        "GEO2-v2 operation matrix / Expand generated geography"
+      ],
+      "question": "Какой набор действий должен оставаться доступным в первом опубликованном одномильном выпуске после уточнения карты?",
+      "why_important": "Самый короткий прогноз14–24запуска относится к варианту с временными запретами. Действующие решения требуют автоматических обычных правок и согласованного расширения; запрет успешной операции нельзя внедрить как обычный конфликт без нового решения.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Сначала уточнение, сохранение и PNG",
+          "user_effect": "Можно уточнить существующую карту, просматривать, подписывать, сохранять и экспортировать; геометрические правки уточнённой области и расширение временно недоступны. В следующемV2 правки включаются автоматически, расширение остаётся недоступным доV3.",
+          "limitations": "Это явное временное уменьшение возможностей; нужны атомарные понятные guards, безопасная загрузка16 следующей версией, отдельная публикация каждого среза.",
+          "forecast": "Только этот вариант имеет черновой прогноз10–17активных часов/14–24запуска; низкая уверенность, ожидания отдельно."
+        },
+        {
+          "id": "B",
+          "label": "Сразу уточнение и обычные правки",
+          "user_effect": "Первый выпуск включает автоматическое движение всех зависимостей при обычном редактировании без добавочного UI по ранее решённому Q01. Расширение после уточнения временно недоступно до следующего выпуска.",
+          "limitations": "Требует явного решения только о временной недоступности расширения. Суммарный предварительный диапазонV1+V2 —15–26активных часов/22–38запусков, не14–24. До большой реализации нужен уточнённый план/полезное разбиение при прогнозе>24."
+        },
+        {
+          "id": "C",
+          "label": "Сохранить все действующие операции",
+          "user_effect": "В первом опубликованном пакете доступны начальное уточнение, обычные автоматические правки и корректное расширение мира без временного запрета этих действий.",
+          "limitations": "Сохраняет текущий контракт. Черновой общий остаток22–38активных часов/32–56запусков; требуется альтернативное полезное разбиение по правилу15ноября, это не разрешение игнорировать его и не одобрение единого большого выпуска."
+        }
+      ],
+      "recommendation": {
+        "option_id": "B",
+        "status": "advice_not_decision",
+        "reason": "Сохраняет уже выбранный владельцем способ обычного редактирования; отделение расширения заметно пользователю и не требует отказа отQ01. Но прогноз всё ещё может превышать24, поэтому выбор не делает разработку автоматически готовой."
+      },
+      "always_allow_free_text": true,
+      "free_text_prompt": "Допустим иной набор границ или явное делегирование выбора с ограничениями.",
+      "owner_answer": null,
+      "answer_source": null,
+      "interpretation": null,
+      "dependent_topics": [
+        "scope of V2 expansion guard",
+        "final release-specific forecast and acceptance",
+        "public16 unchanged upgrade"
+      ],
+      "presented_in_chat": false
+    }
+  ],
+  "presented_in_chat_at": null,
+  "presented_in_chat_ref": null,
+  "owner_answers": [],
+  "interpretation": null,
+  "open_question_ids": [
+    "GEO2-VIS-Q01"
+  ],
+  "new_question_ids": [
+    "GEO2-VIS-Q01"
+  ],
+  "status": "questionnaire_prepared_unpresented",
+  "presentation_status": "pending_existing_chat_presentation",
+  "presentation_limitation": "Current run must not ask follow-up questions; questionnaire is prepared as an artifact only, not claimed presented or answered.",
+  "next_role": "business-analyst",
+  "next_step": "Address VIS-D1-F01/F02 only within current draft, preserving questionID/options and governing parent; interviewer later presents full current pool in existing chat before any interview completion.",
+  "review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-15T11:56:12.227Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T11:59:39.318Z",
+      "status": "checked",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false
+    },
+    "errors": [],
+    "limitation": "Actual point-in-time observations only; no claim of later service state. Schedule/prompt unchanged."
+  }
+}

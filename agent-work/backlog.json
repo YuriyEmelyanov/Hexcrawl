@@ -16322,9 +16322,9 @@
       "release_approved": false,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
-      "next_role": "interviewer",
+      "next_role": "business-analyst",
       "next_role_after_approval": "programmer",
-      "next_step": "Независимо проверить весь VISIBLE-D1 и родительский GEO2-v2, подготовить полный пул существенных вопросов о границах первого выпуска и переходах; Q01/Q02 не спрашивать повторно. Новый черновик не готов программисту.",
+      "next_step": "Выполнить только VIS-D1-F01/F02: развести живую UndoRedo-историю и сохранённый roundtrip; связать прогноз с вариантомA/B/C. Ответов о новых границах нет; затем вернуть исправленный черновик интервьюеру для фактического предъявления текущего пула.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -16491,7 +16491,7 @@
       },
       "spec_status": "final_ready_for_development",
       "latest_analyst_result_ref": "agent-work/results/2026-11-14T1201-analyst-GEO2-final.json",
-      "next_handoff_ref": "agent-work/handoffs/2026-11-15T1404-analyst-GEO2-visible-draft.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-15T1455-interviewer-GEO2-visible-D1.json",
       "active_claim": null,
       "full_package_release_ready": false,
       "owner_clarification_ref": null,
@@ -17224,15 +17224,16 @@
         }
       },
       "interview_required": true,
-      "interview_status": "draft_ready",
-      "interview_ref": "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+      "interview_status": "questionnaire_prepared_unpresented",
+      "interview_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/decisions.json",
       "interview_round": 1,
       "interview_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-interviewer-role.json",
-      "open_question_ids": [],
+      "open_question_ids": [
+        "GEO2-VIS-Q01"
+      ],
       "open_question_topic_ids": [
         "D1-T01",
-        "D1-T02",
-        "D1-T03"
+        "D1-T02"
       ],
       "final_spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
       "latest_GEO2_interview": {
@@ -17281,7 +17282,7 @@
       },
       "active_claim_ref": null,
       "execution_running": false,
-      "updated_at": "2026-11-15T11:10:31.026Z",
+      "updated_at": "2026-11-15T12:00:33.175Z",
       "owner_priority_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-special-POI-priority.json",
       "bounded_special_POI_implemented": true,
       "latest_runtime_verification_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
@@ -17873,7 +17874,7 @@
         "handoff_ref": "agent-work/handoffs/2026-11-15T1156-programmer-GEO2-lake-marker-contact.json",
         "active_stage": "ONE-MILE1"
       },
-      "delivery_replan_status": "draft_ready_for_independent_interviewer",
+      "delivery_replan_status": "interviewer_reviewed_draft_clarifications_requested",
       "delivery_plan_ref": "agent-work/plans/PR503-visible-delivery-2026-11-15.md",
       "delivery_history_ref": "agent-work/evidence/execution-reconciliation-20261115/delivery-history.json",
       "delivery_contract_decision_required": true,
@@ -17931,7 +17932,33 @@
         ],
         "waits": "Owner answers, legacy041 disposition and release permission; durations unknown",
         "history_reset": false
-      }
+      },
+      "interview_round_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/round-001.json",
+      "interview_completed": false,
+      "questionnaire_presented": false,
+      "draft_contract_findings": [
+        {
+          "id": "VIS-D1-F01",
+          "severity": "contract_clarification",
+          "owner_question": false,
+          "location": "VISIBLE-D1 walkthrough step4; parentG208",
+          "finding": "Последовательность «export/reopen, затем Undo» можно прочитать как обещание восстановить всю Undo-историю изJSON. Ни этот черновик, ни parentpublic16 не устанавливают новый формат сохранения stack.",
+          "required_fix": "Явно разделить ветви: (1) до экспорта Apply→Undo→Redo в живом сеансе; (2) export/reopen сравнивает принятое состояние/choices без обещания восстановить прежний stack; (3) Undo/Redo принятого импорта проверяет существующий import transaction отдельно. Не менять format/history contract для прохождения сценария.",
+          "completion": "Два/три подписанных сценария, no implied stack serialization; existing import/history semantics preserved."
+        },
+        {
+          "id": "VIS-D1-F02",
+          "severity": "planning_clarification",
+          "owner_question": false,
+          "location": "VISIBLE-D1 forecast / CandidateB / strategyplan",
+          "finding": "14–24запуска относится только к ограниченномуV1; вариантB комбинирует обычные правки и требует отдельного суммарного прогноза. Его нельзя представлять как тот же суточный пакет.",
+          "required_fix": "Добавить вариантыA/B/C и отдельные диапазоны/ограничения, не суммировать общие этапы слепо:15–26ч/22–38runs — только верхнеуровневая сумма исходных диапазонов, не самостоятельный пересчёт. После boundary decision пересчитать полный путь и до расширения разделить>24 на полезные результаты. Сохранить исходную историю.",
+          "completion": "Один прогноз на выбранный контракт; все роли/CI/review/fixes/release/score включены; ожидания отдельно; original history retained."
+        }
+      ],
+      "latest_visible_release_interview_result": "agent-work/results/2026-11-15T1455-interviewer-GEO2-visible-D1.json",
+      "ready_for_development": false,
+      "scope_boundary_approved": false
     },
     {
       "task_id": "HX-BL-052",

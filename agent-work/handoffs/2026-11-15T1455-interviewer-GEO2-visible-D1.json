@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15T1455-interviewer-GEO2-visible-D1",
+  "task_id": "HX-BL-051",
+  "stage_id": "GEO2-visible-release",
+  "next_role": "business-analyst",
+  "status": "bounded_draft_corrections_ready",
+  "draft_spec_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D1.md",
+  "draft_spec_version": "VISIBLE-D1",
+  "findings": [
+    {
+      "id": "VIS-D1-F01",
+      "severity": "contract_clarification",
+      "owner_question": false,
+      "location": "VISIBLE-D1 walkthrough step4; parentG208",
+      "finding": "Последовательность «export/reopen, затем Undo» можно прочитать как обещание восстановить всю Undo-историю изJSON. Ни этот черновик, ни parentpublic16 не устанавливают новый формат сохранения stack.",
+      "required_fix": "Явно разделить ветви: (1) до экспорта Apply→Undo→Redo в живом сеансе; (2) export/reopen сравнивает принятое состояние/choices без обещания восстановить прежний stack; (3) Undo/Redo принятого импорта проверяет существующий import transaction отдельно. Не менять format/history contract для прохождения сценария.",
+      "completion": "Два/три подписанных сценария, no implied stack serialization; existing import/history semantics preserved."
+    },
+    {
+      "id": "VIS-D1-F02",
+      "severity": "planning_clarification",
+      "owner_question": false,
+      "location": "VISIBLE-D1 forecast / CandidateB / strategyplan",
+      "finding": "14–24запуска относится только к ограниченномуV1; вариантB комбинирует обычные правки и требует отдельного суммарного прогноза. Его нельзя представлять как тот же суточный пакет.",
+      "required_fix": "Добавить вариантыA/B/C и отдельные диапазоны/ограничения, не суммировать общие этапы слепо:15–26ч/22–38runs — только верхнеуровневая сумма исходных диапазонов, не самостоятельный пересчёт. После boundary decision пересчитать полный путь и до расширения разделить>24 на полезные результаты. Сохранить исходную историю.",
+      "completion": "Один прогноз на выбранный контракт; все роли/CI/review/fixes/release/score включены; ожидания отдельно; original history retained."
+    }
+  ],
+  "scope": "Clarify only live history vs imported-document roundtrip and branch-specific estimates. No new source work or interpretation of unanswered release choice.",
+  "completion_criteria": [
+    "Separate live Apply→UndoRedo, exported-state roundtrip and existing import-transaction history; don't imply stack serialization.",
+    "Map estimates toA/B/C with lowconfidence/overlap limitations and retain parent elapsed history; do not promise14–24 forB/C.",
+    "Keep GEO2-VIS-Q01 ID/options and no-answer state; no final spec/ready_for_development; return corrected draft to same interview stage."
+  ],
+  "interview_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/decisions.json",
+  "round_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/round-001.json",
+  "questionnaire_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/questions.md",
+  "interview_completed": false,
+  "questionnaire_presented": false,
+  "open_question_ids": [
+    "GEO2-VIS-Q01"
+  ],
+  "scope_boundary_approved": false,
+  "parent_final_spec_preserved": true,
+  "legacy_programmer_slot": "reserved_041",
+  "after_corrections": "Interviewer presents current full pool in existing chat when interactive presentation is permitted; recommendations/no-response are not answers.",
+  "authority_status": "Independent bounded analyst corrections inside approved051, not product implementation/publication"
+}
