@@ -1,7 +1,8 @@
 /** Detached GEO2 input projection. This is deliberately not an activation or
  * an expansion acceptance decision: spatial/mixed-boundary validation and
  * global physical4 persistence must follow before any accepted write. */
-import type {EditableRoad} from './manualRoads.ts';
+import {roadPair,type EditableRoad} from './manualRoads.ts';
+export type GeometryScopeRemovalIntent=Readonly<{riverIds?:ReadonlySet<number>;roadParts?:ReadonlyMap<number,ReadonlySet<string>>}>;
 import {validateGeometryRefinementSource,type GeometryRefinement,type GeometrySourceValidationInput} from './geometryPlan.ts';
 import {parseDetail1StateV11} from './detailModel.ts';
 import {assertDetailPoiOwners} from './detailIdentity.ts';
@@ -14,10 +15,10 @@ export function projectGeometryRefinementSource(input:GeometrySourceValidationIn
  * does NOT certify the old fingerprint against the changed source, and is
  * never import/boundary acceptance. Caller must prepare a complete new plan,
  * compose global authored data and validate the resulting boundary. */
-export function projectGeometryRefinementEdit(input:GeometrySourceValidationInput,accepted:GeometryRefinement,permittedRiverRemovals:ReadonlySet<number>=new Set()){
- return projectSource(input,accepted,false,permittedRiverRemovals);
+export function projectGeometryRefinementEdit(input:GeometrySourceValidationInput,accepted:GeometryRefinement,removals:GeometryScopeRemovalIntent={}){
+ return projectSource(input,accepted,false,removals);
 }
-function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement,requireUnchanged:boolean,permittedRiverRemovals:ReadonlySet<number>=new Set()){
+function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefinement,requireUnchanged:boolean,removals:GeometryScopeRemovalIntent={}){
  const fail=(code:string,refs:readonly string[])=>Object.freeze({status:'error' as const,code,refs:Object.freeze([...refs]),readyForApplication:false as const});
  try{
   if(input.cancelled?.())return fail('prepare_cancelled',[]);
@@ -33,13 +34,22 @@ function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefi
   const nodeKeys=new Set(accepted.riverPlan.source.segments.flatMap(s=>[s.from.key,s.to.key]));
   const regions=input.map.regions.filter(r=>regionIds.has(r.id)),rivers=input.map.rivers.filter(r=>riverIds.has(r.id)),roads=(input.map.roads as readonly EditableRoad[]).filter(r=>roadIds.has(r.id)),crossings=input.map.crossings.filter(c=>crossingKeys.has(c.key));
   const missingRefs=<T extends string|number>(expected:ReadonlySet<T>,values:readonly T[],kind:string)=>{const present=new Set(values);return [...expected].filter(id=>!present.has(id)).map(id=>`${kind}:${id}`);};
-  // A missing reference is never inferred to be a requested deletion. Only
-  // an explicit river-remove command supplies this detached permission; the
-  // importer and all other callers remain strict. Crossings may disappear
-  // only when they belong to a permitted river that is actually absent.
-  const presentRivers=new Set(rivers.map(r=>r.id)),removedRivers=new Set(requireUnchanged?[]:[...riverIds].filter(id=>permittedRiverRemovals.has(id)&&!presentRivers.has(id)));
-  const requiredRivers=new Set([...riverIds].filter(id=>!removedRivers.has(id))),requiredCrossings=new Set<string>(payload.crossings.filter((c:{key:string;riverId:number})=>!removedRivers.has(c.riverId)).map((c:{key:string})=>c.key));
-  const missing=[...missingRefs(regionIds,regions.map(r=>r.id),'region'),...missingRefs(requiredRivers,rivers.map(r=>r.id),'river'),...missingRefs(roadIds,roads.map(r=>r.id),'road'),...missingRefs(requiredCrossings,crossings.map(c=>c.key),'crossing')];
+  // Missing references never imply a deletion. Only an explicit edit may
+  // permit an old river or exact old road part that is actually absent now.
+  // Import always remains strict and receives no edit intent.
+  const presentRivers=new Set(rivers.map(r=>r.id)),removedRivers=new Set(requireUnchanged?[]:[...riverIds].filter(id=>removals.riverIds?.has(id)&&!presentRivers.has(id)));
+  const currentRoadParts=new Map(roads.map(r=>[r.id,new Set(r.segments.map(s=>roadPair(s.from,s.to)))]));
+  const removedRoadParts=new Map<number,Set<string>>(),removedRoads=new Set<number>();
+  if(!requireUnchanged)for(const road of payload.roads as {id:number;segments:{ends:[{q:number;r:number},{q:number;r:number}]}[]}[]){
+   const permitted=removals.roadParts?.get(road.id),present=currentRoadParts.get(road.id);
+   const oldParts=road.segments.map(s=>roadPair(s.ends[0],s.ends[1]));
+   const removed=new Set(oldParts.filter(part=>permitted?.has(part)&&!present?.has(part)));
+   removedRoadParts.set(road.id,removed);
+   if(!present&&oldParts.length>0&&oldParts.every(part=>removed.has(part)))removedRoads.add(road.id);
+  }
+  const requiredRivers=new Set([...riverIds].filter(id=>!removedRivers.has(id))),requiredRoads=new Set([...roadIds].filter(id=>!removedRoads.has(id)));
+  const requiredCrossings=new Set<string>(payload.crossings.filter((c:{key:string;riverId:number;roadId:number;roadSegmentKey:string})=>!removedRivers.has(c.riverId)&&!removedRoadParts.get(c.roadId)?.has(c.roadSegmentKey)).map((c:{key:string})=>c.key));
+  const missing=[...missingRefs(regionIds,regions.map(r=>r.id),'region'),...missingRefs(requiredRivers,rivers.map(r=>r.id),'river'),...missingRefs(requiredRoads,roads.map(r=>r.id),'road'),...missingRefs(requiredCrossings,crossings.map(c=>c.key),'crossing')];
   if(missing.length)return fail('missing_scope_reference',missing);
   const outside={regions:input.map.regions.filter(r=>!regionIds.has(r.id)),rivers:input.map.rivers.filter(r=>!riverIds.has(r.id)),roads:(input.map.roads as readonly EditableRoad[]).filter(r=>!roadIds.has(r.id)),crossings:input.map.crossings.filter(c=>!crossingKeys.has(c.key)),water:[...input.map.hexTerrainByKey].filter(([k,v])=>!oldWater.has(k)&&['lake','sea'].includes(v.terrainOverride??''))};
   // Explicit graph/body seams must not disappear merely because their new
