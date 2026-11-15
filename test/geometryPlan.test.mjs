@@ -1,4 +1,4 @@
-import {projectGeometryRefinementSource} from '../src/geometryRefinementScope.ts';
+import {projectGeometryRefinementSource,projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
 import {prepareGeometryRefinementBoundary} from '../src/geometryRefinementBoundary.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -94,6 +94,15 @@ test('GEO2 scoped source projection retains literal choices and refuses hidden b
 
  const newCrossing={...input.map.crossings[0],key:'outside-crossing'};assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,crossings:[...expanded.map.crossings,newCrossing]}},g).code,'boundary_dependency');
  const lake=[...input.map.hexTerrainByKey].find(([,v])=>v.terrainOverride==='lake');assert.ok(lake);const joined=new Map(expanded.map.hexTerrainByKey);joined.set('1000,1000',lake[1]);assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,hexTerrainByKey:joined}},g).code,'boundary_dependency');
+ const growing=projectGeometryRefinementEdit({...expanded,map:{...expanded.map,hexTerrainByKey:joined}},g);assert.equal(growing.status,'projected');assert.equal(growing.input.map.hexTerrainByKey.get('1000,1000').lakeId,lake[1].lakeId);assert.equal(growing.sourceCorrespondence,'requires_new_plan');assert.equal(growing.readyForApplication,false,'body acquisition is not an accepted contour or mouth repair');assert.equal(growing.outside.water.length,0);
+ assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,hexTerrainByKey:joined}},g).code,'boundary_dependency','an edit projection must not weaken import');
+ const heirId=900001,merged=new Map(joined);for(const [k,v]of merged)if(v.terrainOverride==='lake'&&v.lakeId===lake[1].lakeId)merged.set(k,{...v,lakeId:heirId});
+ const mergedInput={...expanded,map:{...expanded.map,hexTerrainByKey:merged}},mergedBefore=JSON.stringify([...merged]);
+ const heir=projectGeometryRefinementEdit(mergedInput,g);assert.equal(heir.status,'projected');assert.equal(heir.input.map.hexTerrainByKey.get('1000,1000').lakeId,heirId);assert.equal(JSON.stringify([...merged]),mergedBefore);assert.notEqual(projectGeometryRefinementSource(mergedInput,g).status,'projected');
+ const converted=new Map(expanded.map.hexTerrainByKey);converted.set(lake[0],{terrainOverride:'sea'});converted.set('1000,1000',{terrainOverride:'sea'});
+ const convertedInput={...expanded,map:{...expanded.map,hexTerrainByKey:converted,seas:[...expanded.map.seas,{id:heirId,hexKeys:[lake[0],'1000,1000']}]}},sea=projectGeometryRefinementEdit(convertedInput,g);
+ assert.equal(sea.status,'projected');assert.ok(sea.input.map.seas.some(s=>s.id===heirId));assert.equal(sea.input.map.hexTerrainByKey.get('1000,1000').terrainOverride,'sea');assert.notEqual(projectGeometryRefinementSource(convertedInput,g).status,'projected');
+
 
  // G208: expansion allocates new authored owners. A scoped signature must
  // retain the old owners without discarding the new global data/counter.

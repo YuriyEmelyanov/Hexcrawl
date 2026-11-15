@@ -33,6 +33,18 @@ function projectSource(input:GeometrySourceValidationInput,accepted:GeometryRefi
   const oldCells=new Set<string>(payload.regions.flatMap((r:{hexes:{q:number;r:number}[]})=>r.hexes.map(key))),oldWater=new Set<string>(payload.waterTerrain.map((w:{key:string})=>w.key));
   const land=new Set<string>(payload.landCells.map(key)),seaIds=new Set<number>(payload.seas.map((s:{id:number})=>s.id));
   const lakeIds=new Set<number>(payload.waterTerrain.filter((w:{kind:string})=>w.kind==='lake').map((w:{lakeId:number})=>w.lakeId));
+  // Only an explicit source edit may acquire the CURRENT complete body of
+  // an already retained lake/sea. Loading still projects the exact saved body:
+  // a changed contour must never be silently repaired during import.
+  if(!requireUnchanged){
+   // E6 already resolved split/merge ownership. Follow actual old-cell
+   // membership to every surviving descendant/body; never allocate IDs or
+   // resolve E6's choice here. Splits can contribute more than one body.
+   for(const cell of oldWater){const value=input.map.hexTerrainByKey.get(cell);if(value?.terrainOverride==='lake'&&value.lakeId!==undefined)lakeIds.add(value.lakeId);}
+   for(const sea of input.map.seas)if(sea.hexKeys.some(cell=>oldWater.has(cell)))seaIds.add(sea.id);
+   for(const [cell,value]of input.map.hexTerrainByKey)if(value.terrainOverride==='lake'&&value.lakeId!==undefined&&lakeIds.has(value.lakeId))oldWater.add(cell);
+   for(const sea of input.map.seas)if(seaIds.has(sea.id))for(const cell of sea.hexKeys)oldWater.add(cell);
+  }
   const aliases=new Set<string>(payload.owners.map((o:{alias:string})=>o.alias)),edgeKeys=new Set(accepted.riverPlan.source.segments.map(s=>s.edgeKey));
   const nodeKeys=new Set(accepted.riverPlan.source.segments.flatMap(s=>[s.from.key,s.to.key]));
   const fullSource=normalizeRefinementRiverSource({rivers:input.map.rivers,marks:input.marks,origin:input.origin});
