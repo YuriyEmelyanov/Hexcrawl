@@ -5,7 +5,7 @@ import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIn
 import {summarizeDetailCell} from './detailSummary';
 import {prepareRefinementLakeModes} from './geometryRefinementMouths';
 import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
-import {prepareGeometryRefinementBoundary,geometryBoundaryHasEmptyClosure} from './geometryRefinementBoundary';
+import {prepareGeometryRefinementBoundary,geometryBoundaryHasValidClosure} from './geometryRefinementBoundary';
 import {composeScopedDetailState} from './geometryRefinementState';
 import {projectGeometryRefinementEdit,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
 import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
@@ -1186,16 +1186,19 @@ function geometryRiverHydrology(map:MapSnapshot){
  }
  return {...hydrology,network:{nodes:[...nodes.values()],edges}};
 }
-function geometryPlanInput(map:MapSnapshot){
+function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuationKeys?:ReadonlySet<string>){
  const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
  const cells=projectOneMile(oneMileSources(map),origin).map(row=>row.cell);
  const marks=regionMarkKeys(map);
  const widths=new Map(([1,2,3,4,5] as const).map(f=>[f,detailSourcePixelToWorld({x:getRiverWidth(getHexWidth(28),f),y:0}).x]));
  const lakeInputs=geometryLakeInputs(map,origin);
+ const hydrology=geometryRiverHydrology(boundaryMap??map);
+ const retainedEdges=new Set(map.rivers.flatMap(r=>r.sectors.flatMap(s=>s.edgeKeys)));
+ const scopedHydrology=boundaryMap?{...hydrology,network:{...hydrology.network,edges:hydrology.network.edges.filter(e=>retainedEdges.has(e.id))},internalLakeEdges:new Map([...(hydrology.internalLakeEdges??[])].filter(([k])=>retainedEdges.has(k)))}:hydrology;
  return {map,origin,liveRivers:detailMapRiverGeometry(map,origin),marks,
   landCells:map.regions.flatMap(r=>r.hexes).filter(c=>!['lake','sea'].includes(map.hexTerrainByKey.get(hexKey(c))?.terrainOverride??'')),
   riverInput:{rivers:map.rivers,marks,origin,cells,seed:map.generation.masterSeed},
-  riverContext:{hydrology:geometryRiverHydrology(map),candidates:map.candidateHexes},widths,lakeInputs};
+  riverContext:{hydrology:scopedHydrology,candidates:map.candidateHexes,continuationKeys},widths,lakeInputs};
 }
 function scopedGeometryBoundary(map:OneMileDocumentMap,state:Detail1State){
  const refinement=state.geometryRefinement;if(!refinement)throw Error('GEO2 missing_scoped_refinement');
@@ -1223,10 +1226,10 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
   const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement,permittedScopeRemovals);
   if(projected.status==='error')throw Error(`GEO2 scoped_closure_pending: ${projected.code}`);
   const retainedMap={...candidate,...projected.input.map,physicalGrid:{...projected.input.map.physicalGrid,version:4 as const,geometryRefinement:layer.geometryRefinement}} as MapSnapshot;
-  const result=prepareGeometryPlan({...geometryPlanInput(retainedMap),authoredState:projected.input.map.physicalGrid});
+  const result=prepareGeometryPlan({...geometryPlanInput(retainedMap,candidate,projected.continuationKeys),authoredState:projected.input.map.physicalGrid});
   if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
   const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
-  if(geometryBoundaryHasEmptyClosure(boundary))return map;
+  if(geometryBoundaryHasValidClosure(boundary))return map;
   // Potential pairs are not confirmed defects or permission to move them.
   // Until exact mixed closure is integrated, preserve the complete old state.
   throw Error(`GEO2 scoped_closure_pending: ${boundary.status==='error'?boundary.code:'potential_boundary_dependency'}`);
@@ -1244,9 +1247,10 @@ function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
   if(map.rivers.some(r=>r.deltaParentRiverId!==undefined))validateEditedRiverDeltas([],map.rivers,buildManualRiverGeometryContext(map).geometry);
   if(state.globalAuthoredState){
    const boundary=scopedGeometryBoundary(map,state);
-   if(!geometryBoundaryHasEmptyClosure(boundary))throw Error(`GEO2 scoped_boundary_requires_closure: ${boundary.status==='error'?boundary.code:'potential_dependency'}`);
+   if(!geometryBoundaryHasValidClosure(boundary))throw Error(`GEO2 scoped_boundary_requires_closure: ${boundary.status==='error'?boundary.code:'potential_dependency'}`);
   }else if(!validateGeometryRefinementSource(refinementSourceInput(map,state,state.geometryRefinement.riverPlan),state.geometryRefinement))throw Error('GEO2 stale_source_fingerprint');
   if(!state.globalAuthoredState){
+   if(state.geometryRefinement.riverPlan.terminations.some(t=>t.kind==='continuation'))throw Error('GEO2 continuation_requires_scoped_source');
    const lakes=prepareRefinementLakeModes(geometryLakeInputs(map,state.grid.origin));
    if(lakes.status!=='prepared'||lakes.lakes.length!==state.geometryRefinement.riverPlan.lakes.length||lakes.lakes.some(l=>{const old=state.geometryRefinement!.riverPlan.lakes.find(old=>old.lakeId===l.lakeId);return !old||(['tiles','emoji','color'] as const).some(mode=>l.modes[mode].signature!==old.modes[mode].signature);}))throw Error('GEO2 stale_lake_contours');
   }

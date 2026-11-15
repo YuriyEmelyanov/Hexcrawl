@@ -3,7 +3,7 @@
  * candidate dependency, not a confirmed intersection or permission to reroute.
  * Global physical4 persistence/handler validation is required even on success. */
 import {createDetailGrid,detailCellCenter,detailCellPolygon,type WorldPoint} from './detailGrid.ts';
-import {detailFootprintPolygons,detailFootprintWorldAnchor} from './detailSizes.ts';
+import {detailFootprintPolygons,detailFootprintWorldAnchor,detailFootprintHasOutline,detailPointInPolygon} from './detailSizes.ts';
 import {detailCrossingPoint} from './detailGeography.ts';
 import {roadPair} from './manualRoads.ts';
 import type {DetailPoiFootprint} from './detailModel.ts';
@@ -11,6 +11,7 @@ import type {GeometryRefinement,GeometrySourceValidationInput} from './geometryP
 import {projectGeometryRefinementSource} from './geometryRefinementScope.ts';
 import {prepareRefinementLakeModes,type RefinementLakeInput} from './geometryRefinementMouths.ts';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource.ts';
+import {prepareRefinementWater,refinementWaterIntervals,refinementWaterContains} from './geometryRefinementWater.ts';
 import {createRefinementWorkBudget} from './geometryRefinementWork.ts';
 
 type Input=GeometrySourceValidationInput&Readonly<{
@@ -44,13 +45,13 @@ export function prepareGeometryRefinementBoundary(input:Input,accepted:GeometryR
   budget.enter('source');
   const source=normalizeRefinementRiverSource({rivers:input.map.rivers,marks:input.marks,origin:input.origin,consumeWork:budget.charge});
   if(source.status==='error')return fail(source.code,source.refs);
-  const retainedRivers=new Set(scope.input.map.rivers.map(r=>r.id)),retainedRegions=new Set(scope.input.map.regions.map(r=>r.id)),retainedRoads=new Set(scope.input.map.roads.map(r=>r.id));
+  const retainedSegments=new Set(accepted.riverPlan.source.segments.map(s=>JSON.stringify([s.riverId,s.edgeKey]))),retainedRegions=new Set(scope.input.map.regions.map(r=>r.id));
   const oldWater=new Set([...scope.input.map.hexTerrainByKey].filter(([,v])=>['lake','sea'].includes(v.terrainOverride??'')).map(([k])=>k));
   const width=(fullness:number)=>{const value=input.widths.get(fullness);if(value===undefined||!Number.isFinite(value)||value<=0)throw Error('invalid_boundary_width');return value;};
   const paths=new Map(accepted.riverPlan.paths.map(p=>[JSON.stringify([p.riverId,p.sourceEdgeKey]),p]));
   for(const c of accepted.riverPlan.water.capsules){budget.charge();const path=paths.get(JSON.stringify([c.riverId,c.sourceEdgeKey]));if(!path||Math.abs(c.radius*2-width(path.fullness))>1e-9)return fail('boundary_source_changed',[`river:${c.riverId}`,c.sourceEdgeKey,'width']);}
   const grid=createDetailGrid(6,input.origin),riverParts=new Map(source.segments.map(s=>[JSON.stringify([s.riverId,s.edgeKey]),s])),roadParts=new Map<string,Readonly<{from:WorldPoint;to:WorldPoint}>>();
-  for(const road of scope.outside.roads)for(const part of road.segments){budget.charge();const ref=JSON.stringify([road.id,roadPair(part.from,part.to)]);if(roadParts.has(ref))return fail('invalid_boundary_input',[`road:${road.id}`,'duplicate part']);roadParts.set(ref,{from:detailCellCenter(grid,part.from),to:detailCellCenter(grid,part.to)});}
+  for(const road of input.map.roads)for(const part of road.segments){budget.charge();const ref=JSON.stringify([road.id,roadPair(part.from,part.to)]);if(roadParts.has(ref))return fail('invalid_boundary_input',[`road:${road.id}`,'duplicate part']);roadParts.set(ref,{from:detailCellCenter(grid,part.from),to:detailCellCenter(grid,part.to)});}
   for(const c of scope.outside.crossings){budget.charge();const river=riverParts.get(JSON.stringify([c.riverId,c.riverEdgeKey])),road=roadParts.get(JSON.stringify([c.roadId,c.roadSegmentKey]));if(!river||!road)return fail('boundary_evidence_missing',[`crossing:${c.key}`]);if(!detailCrossingPoint({from:river.from.point,to:river.to.point},road))return fail('invalid_boundary_input',[`crossing:${c.key}`,'no transverse source contact']);}
 
   budget.enter('water_bodies');
@@ -90,9 +91,11 @@ export function prepareGeometryRefinementBoundary(input:Input,accepted:GeometryR
   for(const c of accepted.riverPlan.water.capsules)add(retained,`river:${c.riverId}`,[c.from,c.to],c.radius);
   // Include source6 and stored fine geometry: switching overview must not
   // turn a separated persisted snapshot into a new untyped contact.
-  for(const s of source.segments)add(retainedRivers.has(s.riverId)?retained:added,`river:${s.riverId}`,[s.from.point,s.to.point],width(s.fullness)/2);
+  for(const p of geometryMixedRiverPaths(source,accepted))add(added,`river:${p.riverId}`,p.points,width(p.fullness)/2);
+  for(const s of source.segments)add(retainedSegments.has(JSON.stringify([s.riverId,s.edgeKey]))?retained:added,`river:${s.riverId}`,[s.from.point,s.to.point],width(s.fullness)/2);
   for(const r of accepted.roads.roads)add(retained,`road:${r.roadId}`,r.points,input.roadPaddingMiles);
-  for(const road of input.map.roads)for(const s of road.segments)add(retainedRoads.has(road.id)?retained:added,`road:${road.id}`,[detailCellCenter(coarse,s.from),detailCellCenter(coarse,s.to)],input.roadPaddingMiles);
+  const retainedParts=new Set(scope.input.map.roads.flatMap(r=>r.segments.map(s=>JSON.stringify([r.id,roadPair(s.from,s.to)]))));
+  for(const road of input.map.roads)for(const s of road.segments)add(retainedParts.has(JSON.stringify([road.id,roadPair(s.from,s.to)]))?retained:added,`road:${road.id}`,[detailCellCenter(coarse,s.from),detailCellCenter(coarse,s.to)],input.roadPaddingMiles);
   const poi=(target:Box[],f:DetailPoiFootprint)=>{
    const anchor=detailFootprintWorldAnchor(f,fine),polygons=detailFootprintPolygons(f,fine);
    add(target,`POI:${f.poiId}`,[anchor,...polygons.flat(),...f.cells.flatMap(c=>detailCellPolygon(fine,c)),...f.attachments.map(a=>a.kind==='water'?a.contact:a.entry)]);
@@ -108,14 +111,15 @@ export function prepareGeometryRefinementBoundary(input:Input,accepted:GeometryR
    const key=JSON.stringify([a.ref,b.ref]);if(!candidates.has(key)){if(candidates.size>=4096)throw Error('boundary_capacity');candidates.set(key,Object.freeze({retainedRef:a.ref,addedRef:b.ref}));}
   }
   const pairs=Object.freeze([...candidates.values()].sort((a,b)=>lexical(a.retainedRef,b.retainedRef)||lexical(a.addedRef,b.addedRef)));
-  return Object.freeze({status:'prepared' as const,boundaryValidation:pairs.length?'dependency_closure_required' as const:'disjoint_model_envelopes' as const,potentialDependencies:pairs,confirmedIntersections:false as const,scope,counts:Object.freeze({retainedEnvelopes:retained.length,addedEnvelopes:added.length}),roadPaddingMiles:input.roadPaddingMiles,workBudget:budget.snapshot(),completeGeometryPlan:false as const,readyForApplication:false as const,globalPersistenceValidation:'required' as const});
+  return Object.freeze({status:'prepared' as const,boundaryValidation:pairs.length?'dependency_closure_required' as const:'disjoint_model_envelopes' as const,potentialDependencies:pairs,confirmedIntersections:false as const,scope,source,accepted,widths:input.widths,bodies:bodies.lakes,counts:Object.freeze({retainedEnvelopes:retained.length,addedEnvelopes:added.length}),roadPaddingMiles:input.roadPaddingMiles,workBudget:budget.snapshot(),completeGeometryPlan:false as const,readyForApplication:false as const,globalPersistenceValidation:'required' as const});
  }catch(error){return fail(error instanceof Error?error.message:'invalid_boundary_input',[]);}
 }
 
 /** An empty mixed closure can be certified when the ONLY box candidates are
  * land-support pairs. Distinct integer axial cells in the same regular6 grid
  * have disjoint interiors, including adjacent cells with a shared edge. The
- * projection already rejects shared cells and explicit graph/body seams.
+ * projection rejects shared cells; feature/graph seams stay outside this
+ * empty certificate and require the exact mixed validator below.
  * Every source/fine river capsule (including terminal caps), road/rail bound,
  * POI/attachment and all-mode water contour was also compared with the full
  * opposite support: any potential feature contact keeps the closure pending.
@@ -135,4 +139,111 @@ export function geometryBoundaryHasEmptyClosure(result:ReturnType<typeof prepare
  const added=new Set<string>();
  for(const region of scope.outside.regions)for(const cell of region.hexes){const k=cellKey(cell);if(!valid(cell)||retained.has(k)||added.has(k))return false;added.add(k);}
  return true;
+}
+
+
+/** Direct view projection, never a route search. New source segments stay
+ * generalized; only endpoints incident to stored fine ports are substituted.
+ * Both source map and stored port are already persisted in public16. */
+export function geometryMixedRiverPaths(source:Extract<ReturnType<typeof normalizeRefinementRiverSource>,{status:'prepared'}>,accepted:GeometryRefinement){
+ const retained=new Set(accepted.riverPlan.paths.map(p=>JSON.stringify([p.riverId,p.sourceEdgeKey]))),ports=new Map(accepted.riverPlan.ports.map(p=>[p.sourceKey,p.point]));
+ const sourceNodes=new Set(accepted.riverPlan.source.segments.flatMap(s=>[s.from.key,s.to.key]));
+ const continued=new Set(source.segments.filter(s=>!retained.has(JSON.stringify([s.riverId,s.edgeKey]))).flatMap(s=>[s.from.key,s.to.key].filter(k=>sourceNodes.has(k))));
+ return source.segments.filter(s=>!retained.has(JSON.stringify([s.riverId,s.edgeKey]))).map(s=>Object.freeze({riverId:s.riverId,sourceEdgeKey:s.edgeKey,fullness:s.fullness,points:Object.freeze([continued.has(s.from.key)?ports.get(s.from.key)!:s.from.point,continued.has(s.to.key)?ports.get(s.to.key)!:s.to.point])}));
+}
+
+/** Validate the mixed model without searching or rewriting stored geometry.
+ * Box candidates are only a broad phase. Land support may touch; actual new
+ * water/road/POI contacts need exact graph incidence or typed crossings. */
+export function geometryBoundaryHasValidClosure(result:ReturnType<typeof prepareGeometryRefinementBoundary>):boolean {
+ if(geometryBoundaryHasEmptyClosure(result)&&!(result.status==='prepared'&&result.accepted.riverPlan.terminations.some(t=>t.kind==='continuation')))return true;
+ if(result.status!=='prepared')return false;
+ try{
+  const {scope,source,accepted,widths}=result,origin=scope.input.origin;
+  const budget=createRefinementWorkBudget(20000000,scope.input.cancelled);budget.enter('mixed_closure');
+  const coarse=createDetailGrid(6,origin),fine=createDetailGrid(1,origin);
+  const oldCells=new Set(scope.input.map.regions.flatMap(r=>r.hexes.map(cellKey))),newCells=scope.outside.regions.flatMap(r=>r.hexes);
+  if(!Number.isFinite(origin.x)||!Number.isFinite(origin.y)||Math.abs(origin.x)>1000000||Math.abs(origin.y)>1000000||newCells.some(c=>!Number.isSafeInteger(c.q)||!Number.isSafeInteger(c.r)||Math.abs(c.q)>1000000||Math.abs(c.r)>1000000||oldCells.has(cellKey(c)))||new Set(newCells.map(cellKey)).size!==newCells.length)return false;
+  const ref=(riverId:number,edgeKey:string)=>JSON.stringify([riverId,edgeKey]);
+  const retained=new Map(accepted.riverPlan.source.segments.map(s=>[ref(s.riverId,s.edgeKey),s]));
+  const added=source.segments.filter(s=>!retained.has(ref(s.riverId,s.edgeKey)));
+  const addedWater=prepareRefinementWater({paths:geometryMixedRiverPaths(source,accepted),widthByFullness:widths,consumeWork:budget.charge});
+  if(addedWater.status!=='prepared')return false;
+  const distance=(a:WorldPoint,b:WorldPoint)=>Math.hypot(a.x-b.x,a.y-b.y);
+  // A coarse/fine correspondence uses a persisted nearby edge port, not a
+  // fabricated lattice vertex at a coarse corner. Both domains share that port.
+  for(const key of scope.continuationKeys){budget.charge(source.segments.length);
+   const links=source.segments.filter(s=>s.from.key===key||s.to.key===key),old=links.filter(s=>retained.has(ref(s.riverId,s.edgeKey))),next=links.filter(s=>!retained.has(ref(s.riverId,s.edgeKey)));
+   const incoming=links.filter(s=>s.to.key===key),outgoing=links.filter(s=>s.from.key===key);
+   if(![1,2].includes(old.length)||!next.length||links.length>3||outgoing.length!==1||incoming.length<1||incoming.length>2)return false;
+   if(incoming.length===1&&incoming[0].fullness!==outgoing[0].fullness)return false;
+   if(incoming.length===2){const a=Math.max(...incoming.map(s=>s.fullness)),b=Math.min(...incoming.map(s=>s.fullness)),f=outgoing[0].fullness;if(f!==a&&!(a<5&&b>=a-1&&f===a+1))return false;}
+   const sourcePoint=old[0].from.key===key?old[0].from.point:old[0].to.point,port=accepted.riverPlan.ports.find(p=>p.sourceKey===key),terminal=accepted.riverPlan.terminations.find(t=>t.sourceKey===key);
+   if(!port||distance(port.point,sourcePoint)>1+1e-8||old.length===1&&(terminal?.kind!=='continuation'||terminal.hydrologyNodeId!==key)||old.length===2&&terminal)return false;
+  }
+  for(const t of accepted.riverPlan.terminations)if(t.kind==='continuation'&&!scope.continuationKeys.has(t.sourceKey))return false;
+  // Reject unintended joins, including finite-width contact of independent
+  // rivers. A declared graph seam permits the ordinary joined water envelope,
+  // but never a second centerline intersection or a collinear overlap.
+  for(const a of addedWater.capsules)for(const b of accepted.riverPlan.water.capsules){budget.charge();
+   const query={from:a.from,to:a.to},expanded={status:'prepared' as const,capsules:[{...b,radius:a.radius+b.radius}],completeGeometryPlan:false as const},wet=refinementWaterIntervals(expanded,query);
+   if(wet.status!=='prepared')return false;if(!wet.intervals.length)continue;
+   const os=retained.get(ref(b.riverId,b.sourceEdgeKey))!,ns=added.find(s=>s.riverId===a.riverId&&s.edgeKey===a.sourceEdgeKey)!;
+   const shared=[os.from,os.to].filter(n=>n.key===ns.from.key||n.key===ns.to.key).find(n=>scope.continuationKeys.has(n.key));
+   if(!shared)return false;
+   const sharedPort=accepted.riverPlan.ports.find(p=>p.sourceKey===shared.key)!.point;
+   const hit=detailCrossingPoint(query,{from:b.from,to:b.to});if(hit&&distance(hit,sharedPort)>1e-8)return false;
+   const cross=a.ux*b.uy-a.uy*b.ux;
+   if(Math.abs(cross)<1e-10){const cut=refinementWaterIntervals({...expanded,capsules:[{...b,radius:1e-9}]},query);if(cut.status!=='prepared'||cut.intervals.some(i=>distance(i.from,i.to)>1e-7))return false;}
+  }
+  // Check an actual polyline against the opposite water. No new crossing is
+  // inferred from proximity. Only its exact source river/edge and road/part
+  // identity, legal kind and transverse, dry-to-dry interval authorize water.
+  const checkRoad=(roadId:number,part:string,points:readonly WorldPoint[],water:typeof accepted.riverPlan.water)=>{
+   for(let i=1;i<points.length;i++){budget.charge(water.capsules.length+scope.input.map.crossings.length+scope.outside.crossings.length);
+    const query={from:points[i-1],to:points[i]},wet=refinementWaterIntervals(water,query);if(wet.status!=='prepared')return false;
+    for(const interval of wet.intervals){if(interval.touchOnly)continue;
+     for(const c of interval.contributors){const crossing=[...scope.input.map.crossings,...scope.outside.crossings].find(x=>x.roadId===roadId&&x.roadSegmentKey===part&&x.riverId===c.riverId&&x.riverEdgeKey===c.sourceEdgeKey),river=source.segments.find(s=>s.riverId===c.riverId&&s.edgeKey===c.sourceEdgeKey);
+      if(!crossing||!river||!['bridge','ferry','ford'].includes(crossing.kind)||crossing.kind==='ford'&&river.fullness>2||interval.startClipped||interval.endClipped)return false;
+      const hits=water.capsules.filter(p=>p.riverId===c.riverId&&p.sourceEdgeKey===c.sourceEdgeKey).map(p=>detailCrossingPoint(query,p)).filter((p):p is WorldPoint=>!!p);
+      if(!hits.length)return false;
+     }
+    }
+   }return true;
+  };
+  for(const r of accepted.roads.roads)if(!checkRoad(r.roadId,r.sourceRoadSegmentKey,r.points,addedWater))return false;
+  for(const r of scope.outside.roads)for(const s of r.segments){budget.charge(accepted.roads.roads.length);
+   const points=[detailCellCenter(coarse,s.from),detailCellCenter(coarse,s.to)];
+   const mixedWater={...accepted.riverPlan.paintWater,capsules:[...accepted.riverPlan.paintWater.capsules,...addedWater.capsules]};
+   if(!checkRoad(r.id,roadPair(s.from,s.to),points,mixedWater))return false;
+   // A new approach must meet the actual retained endpoint, not the coarse
+   // center of a POI that moved during refinement. Such a contact needs replan.
+   for(const old of accepted.roads.roads){const sourcePart=scope.input.map.roads.find(x=>x.id===old.roadId)?.segments.find(p=>roadPair(p.from,p.to)===old.sourceRoadSegmentKey);if(!sourcePart)return false;
+    const shared=[s.from,s.to].filter(c=>cellKey(c)===cellKey(sourcePart.from)||cellKey(c)===cellKey(sourcePart.to)).map(c=>detailCellCenter(coarse,c));
+    for(const point of shared)if(![old.points[0],old.points[old.points.length-1]].some(p=>distance(p,point)<1e-8))return false;
+    for(let i=1;i<old.points.length;i++){budget.charge();
+     const dx=points[1].x-points[0].x,dy=points[1].y-points[0].y,len=Math.hypot(dx,dy),u=old.points[i-1],v=old.points[i],ox=v.x-u.x,oy=v.y-u.y;
+     if(Math.abs(dx*oy-dy*ox)<=1e-10*len*Math.hypot(ox,oy)&&Math.abs(dx*(u.y-points[0].y)-dy*(u.x-points[0].x))<=1e-8*len){const a=((u.x-points[0].x)*dx+(u.y-points[0].y)*dy)/(len*len),b=((v.x-points[0].x)*dx+(v.y-points[0].y)*dy)/(len*len);if((Math.min(1,Math.max(a,b))-Math.max(0,Math.min(a,b)))*len>1e-8)return false;}
+     const hit=detailCrossingPoint({from:points[0],to:points[1]},{from:old.points[i-1],to:old.points[i]});if(hit&&!shared.some(p=>distance(p,hit)<1e-8))return false;}
+
+   }
+  }
+  const checkPoi=(f:DetailPoiFootprint,water:typeof accepted.riverPlan.water)=>{
+   budget.charge(1+water.capsules.length);const p=detailFootprintWorldAnchor(f,fine),at=refinementWaterContains(water,p);if(at.status!=='prepared'||at.inside)return false;
+   // Geometry footprints are real occupied space. Unknown marker icons have
+   // no model radius and cannot authorize a new contact with water.
+   const polygons=f.extent.kind==='measured_polygon'||f.extent.kind==='manual_size'||detailFootprintHasOutline(f,fine)?detailFootprintPolygons(f,fine):[];
+   for(const polygon of polygons){budget.charge(water.capsules.length*polygon.length);if(water.capsules.some(c=>detailPointInPolygon(c.from,polygon)||detailPointInPolygon(c.to,polygon)))return false;}
+   for(const polygon of polygons)for(let i=0;i<polygon.length;i++){budget.charge(water.capsules.length);const cut=refinementWaterIntervals(water,{from:polygon[i],to:polygon[(i+1)%polygon.length]});if(cut.status!=='prepared'||cut.intervals.some(x=>!x.touchOnly))return false;}
+   return true;
+  };
+  const refined=new Map(accepted.pois.pois.map(p=>[p.poiId,p.footprint]));
+  for(const f of scope.input.map.physicalGrid.poiFootprints)if(!checkPoi(refined.get(f.poiId)??f,addedWater))return false;
+  const mixedWater={...accepted.riverPlan.paintWater,capsules:[...accepted.riverPlan.paintWater.capsules,...addedWater.capsules]};
+  for(const f of scope.outside.authoredFootprints)if(!checkPoi(f,mixedWater))return false;
+  // Water-body growth or new contacts require a shoreline/mouth closure, not
+  // a river endpoint certificate. Keep them explicit conflicts for now.
+  if(result.potentialDependencies.some(p=>/^(lake|sea):/.test(p.retainedRef)||/^(lake|sea):/.test(p.addedRef)))return false;
+  return true;
+ }catch{return false;}
 }

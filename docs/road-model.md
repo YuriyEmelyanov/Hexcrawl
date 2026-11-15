@@ -235,3 +235,15 @@ not a proof that no other joint allocation exists. Rapid/waterfall/start POI
 contacts may authorize dry road approaches only with confirmed requirement,
 matching stable water attachment and an actual exposed finite bank contact.
 No new crossings, kind substitution or extra design approval.
+
+### GEO2: новые подходы на границе областей (разработка)
+
+Новый исходный участок, в том числе продолжение под прежним Road.id, не
+приобретает уточнение всего нового региона. В стыке проверяется совпадение
+его конца с фактическим сохранённым концом старого пути, а также отсутствие
+необъяснённых пересечений с уточнённой водой/путями. Переправы сохраняют
+исходные ключи и типы; новый контакт с водой не создаёт переправу автоматически.
+При смене road/trail привязка POI обновляет только routeKind на том же реальном
+accessNodeId и в той же точке; новое положение не подбирается по близости.
+Перенос внешнего подхода к смещённому POI и связанные новые пересечения пока
+отказываются атомарно, сохраняя принятую карту и историю.

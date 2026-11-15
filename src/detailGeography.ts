@@ -215,15 +215,17 @@ export function reconcileDetailGeography(map:DetailGeographyMap,rivers:readonly 
   const source=parseWaterHex(alias.slice(alias.lastIndexOf(':')+1)),routes=assignedRoutes(map,source,state.grid.origin);
   // Generation can merge road records while retaining their physical segments.
   // Rebind only an identical live subdivision port, never mere proximity.
+  // A road/trail kind edit updates that port's kind, preserving its position.
   const attachments=prior.attachments.map(ref=>{
    if(ref.kind!=='route')return ref;
-   const samePort=(r:DetailRouteAccess)=>r.accessNodeId===ref.accessNodeId&&r.kind===ref.routeKind&&prior.cells.some(cell=>{
+   const samePort=(r:DetailRouteAccess)=>r.accessNodeId===ref.accessNodeId&&prior.cells.some(cell=>{
     const span=detailSegmentSpan(createDetailGrid(1,state.grid.origin),cell,r.segment);
     return span&&(state.version===1?Math.hypot(span.from.x-ref.entry.x,span.from.y-ref.entry.y)<=1e-9:pointOnSegment(ref.entry,span));
    });
-   if(routes.some(r=>r.routeId===ref.routeId&&samePort(r)))return ref;
+   const same=routes.find(r=>r.routeId===ref.routeId&&samePort(r));
+   if(same)return same.kind===ref.routeKind?ref:{...ref,routeKind:same.kind};
    const exact=routes.find(samePort);
-   return exact?{...ref,routeId:exact.routeId}:ref;
+   return exact?{...ref,routeId:exact.routeId,routeKind:exact.kind}:ref;
   }).filter((ref,index,all)=>ref.kind!=='route'||all.findIndex(a=>a.kind==='route'&&a.routeId===ref.routeId)===index);
   const attached=new Set(attachments.filter(a=>a.kind==='route').map(a=>a.routeId));
   for(const routeId of [...new Set(routes.map(r=>r.routeId))].sort())if(!attached.has(routeId)){
