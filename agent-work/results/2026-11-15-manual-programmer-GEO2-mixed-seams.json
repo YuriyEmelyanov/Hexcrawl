@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-15-manual-programmer-GEO2-mixed-seams",
+  "task_id": "HX-BL-051",
+  "stage_id": "ONE-MILE1",
+  "substage": "GEO2-mixed-seams",
+  "role": "programmer",
+  "base_sha": "14e1d740649dbf86e523f528dee693276637b40a",
+  "head_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
+  "tree_sha": "4d510922baf6d41bd23586834f1fbb98056db284",
+  "working_branch": "agent/hx-bl-051-geo2",
+  "spec_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
+  "spec_version": "GEO2-v2",
+  "owner_instruction": "Делай стыки старой и новой областей.",
+  "status": "bounded_mixed_seams_backend_complete_full_GEO2_in_progress",
+  "component_complete": true,
+  "implementation_complete": false,
+  "full_task_complete": false,
+  "review_ready": false,
+  "bounded_independent_review": "no_unresolved_blocking_finding_reproduced",
+  "execution_running": false,
+  "published": false,
+  "main_changed": false,
+  "release_authorized": false,
+  "pr": 503,
+  "pr_code_updated": false,
+  "pr_metadata_updated": true,
+  "pr_head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
+  "result_ref": "agent-work/results/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "claim_ref": "agent-work/claims/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
+  "evidence_ref": "agent-work/evidence/GEO2-mixed-seams-20261115-manual",
+  "checks_ref": "agent-work/evidence/GEO2-mixed-seams-20261115-manual/checks.json",
+  "independent_review_ref": "agent-work/evidence/GEO2-mixed-seams-20261115-manual/independent-review.json",
+  "test_change_summary_ref": "agent-work/evidence/GEO2-mixed-seams-20261115-manual/test-change-summary.json",
+  "score_evidence_ref": "agent-work/evidence/GEO2-mixed-seams-20261115-manual/score-evidence.json",
+  "role_selection_reason": "Direct owner instruction to implement old/new area seams within the current approved GEO2-v2. No foreign active claim.",
+  "implemented": [
+    "Actual source parts, not entire river/road IDs, define retained scope; new region and new river parts stay unrefined.",
+    "Retained continuation plans use complete accepted hydrology; real fine edge ports persist and a pure mixed projection joins generalized new segments without rewriting source6 or rerolling.",
+    "Exact mixed contact checks follow conservative envelope preflight; old crossing keys/kinds and unrelated paths remain literal.",
+    "Two actual generated river/road lifecycle controls match original source/counters/RNG, roundtrip16 and restore in one UndoRedo.",
+    "Outside road/trail kind edits update the existing POI attachment kind at the exact same accessNodeId/point.",
+    "Independent P1 wet outside-POI import fixed; combined water and enclosed-capsule checks reject it with accepted state/history intact."
+  ],
+  "checks": {
+    "head_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
+    "tree_sha": "4d510922baf6d41bd23586834f1fbb98056db284",
+    "node": "v24.22.1",
+    "command": "npm run check",
+    "exit_code": 0,
+    "typescript": "passed",
+    "node_tests": {
+      "executed": 423,
+      "passed": 423,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 688032.828352
+    },
+    "build": {
+      "status": "passed",
+      "duration_seconds": 15.19
+    },
+    "focused": {
+      "executed": 13,
+      "passed": 13,
+      "failed": 0,
+      "skipped": 0,
+      "included_in_full_total": true
+    },
+    "browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+      "exit_code": 1,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0,
+      "checkout_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
+      "after_build": true
+    },
+    "rng_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+      "exit_code": 1,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0,
+      "after_build": true
+    },
+    "source_tree_bridge": {
+      "local_reviewed_sha": "e437f577860a5bd48fe341fcae6b744c3f2ce37e",
+      "remote_sha": "6ffc09c84fd9925e8df9098f522861c6505f7b7b",
+      "tree_sha": "4d510922baf6d41bd23586834f1fbb98056db284",
+      "changed_files": 0,
+      "verified_by": "GitHub tree result plus fetched git diff --exit-code tree tree"
+    },
+    "superseded_full_check": {
+      "status": "diagnostic_not_final_acceptance",
+      "reason": "Initial full run overlapped the independently found correction; not counted as final exact-tree evidence. No code changes during final run; only Git metadata moved to byte-identical remote tree."
+    },
+    "tracked_worktree_clean": true,
+    "full_GEO2_acceptance": false,
+    "warnings": [
+      "Existing npm http-proxy env warning",
+      "Existing Vite large chunk warning"
+    ],
+    "environment_limitation": "Both installed /usr/bin/chromium launches abort socket() EPERM and crashpad ptrace EPERM before scenarios. No install, escalation or environment bypass."
+  },
+  "test_change_summary": {
+    "added": 2,
+    "removed": 0,
+    "modified": 2,
+    "named_cases_source": "TypeScript AST top-level Node test calls31→33; subscenarios/helper edits not separate cases",
+    "focused": {
+      "executed": 13,
+      "passed": 13,
+      "included_in_full_total": true
+    }
+  },
+  "limitations": [
+    "This is bounded backend review; whole GEO2 UI/map/PNG still unmounted.",
+    "Lake growth/join, disconnected retained fragments of one river ID and relocated external approaches to moved POIs remain atomic refusals.",
+    "Logical work limits do not certify CPU/cancellation latency.",
+    "Browser and RNG-browser abort before any scenario with installed Chromium socket() EPERM.",
+    "Code is persisted in geo2, not PR503 head; no main change or release."
+  ],
+  "next_role": "programmer",
+  "next_task_id": "HX-BL-051",
+  "next_step": "Продолжить ту же утверждённую GEO2-v2 на 6ffc09c84fd9925e8df9098f522861c6505f7b7b: подготовить необходимый перенос нового внешнего дорожного подхода к уже смещённому уточнённому POI, включая все его входы/переправы/блокировки, без уточнения всего нового региона. Затем рост/стык водоёмов и раздельные старые фрагменты одного ID/миграция scope. Везде одна исходная транзакция, точный16 round-trip, буквальная сохранность несвязанных путей/ID/локальных данных и Redo при отказе. После доменного пакета — initial UI/overlays, actual map/PNG/G201–G210 и независимая полная проверка. Браузер требует среды с разрешённым socket(); публикация отдельно.",
+  "owner_decisions_needed": [],
+  "whole_team_blocked": false,
+  "score_model_version": "1.2",
+  "product_score_changed": false,
+  "authorization_status": "approved_same_task_implementation_separate_release_gate",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-15T06:54:16.309177+00:00",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-15T07:35:45.116122+00:00",
+      "method": "automations.peek",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual observations enabled"
+    },
+    "scope": "Actual point-in-time tool observations; no future guarantee."
+  },
+  "completed_at": "2026-11-15T07:35:45.116122+00:00"
+}
