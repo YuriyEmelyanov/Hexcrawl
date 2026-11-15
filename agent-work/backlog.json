@@ -16356,7 +16356,7 @@
     {
       "task_id": "HX-BL-051",
       "title": "Обзор карты6/12/24мили и многоуровневая детализация",
-      "status": "ready_for_owner_review",
+      "status": "published_score_update_pending",
       "problem": "Ни расширение карты на том же уровне, ни неподвижная подложка не подтверждают согласованность вложенных карт. Общее правило есть, проверенного WWN-профиля не было.",
       "benefit": "Ведущий готовит подробную начальную область, сохраняя узнаваемую географию общего региона.",
       "game_editions": [
@@ -16421,7 +16421,7 @@
       "research_result_ref": "agent-work/research/runs/2026-11-08T0935-WWN-nested-maps.json",
       "readiness": "programmer_continue_verified_checkpoint",
       "implementation_authorized": true,
-      "release_authorized": false,
+      "release_authorized": true,
       "research_components": [
         {
           "component_id": "OSE2026-map-scales-HX-BL-051",
@@ -16827,12 +16827,12 @@
       ],
       "implementation_allowed": true,
       "full_specification_allowed": true,
-      "release_approved": false,
+      "release_approved": true,
       "recommended_priority": 1,
       "owner_direction_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-finish-first.json",
       "next_role": "strategist-manager",
       "next_role_after_approval": "programmer",
-      "next_step": "Owner reviews shown PR503/adc96d8 exact accepted package; programmer may publish only after separate exact-package permission.",
+      "next_step": "Post-release score assessment/update for published PR503 only; preserve other scale work and existing owner decisions.",
       "source_compatibility_notes": [
         {
           "requirement_id": "PF2-RM-003-L1",
@@ -17194,7 +17194,7 @@
         "release_authorized": false
       },
       "implementation_completed": false,
-      "score_update_status": "not_applicable_unpublished",
+      "score_update_status": "pending",
       "latest_DETAIL1_C_FILL_implementation": {
         "run_id": "2026-11-11T1417-programmer-PR496-C-FILL",
         "head_sha": "0d19ac6a60f245cede095040ce24b682839cd17f",
@@ -17236,7 +17236,7 @@
       },
       "separate_pr": 503,
       "separate_pr_status": "draft_exact_SHA_independent_review_ready",
-      "current_package_published": false,
+      "current_package_published": true,
       "implementation_allowed_in_next_standard_programmer_run": true,
       "authority_ref": "agent-work/decisions/owner-decision-2026-11-11-ONE-MILE1-standard-agent-workflow.json",
       "score_forecast_ref": "agent-work/evidence/ONE-MILE1-GEO-0500/score-forecast1.2.json",
@@ -17412,27 +17412,10 @@
         "status": "completed_actual_walkthrough_review_ready"
       },
       "current_package_release_approval": {
-        "task_id": "HX-BL-051",
-        "stage_id": "ONE-MILE1",
+        "status": "authorized_and_published",
         "pr": 503,
-        "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
-        "tree_sha": "1b782342aad359487fe35c9050cff7a78c4fb7b5",
-        "before_release_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
-        "status": "not_release_ready_remaining_owner_corrections_WR1_bounded_accepted",
-        "release_authorized": false,
-        "review_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
-        "score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
-        "walkthrough_url": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/840edf6878477efeb17d7a0a802a7c8e373b4e68/agent-work/evidence/ONE-MILE1-release-walkthrough-1600/actual/README.md",
-        "owner_approval_inferred": false,
-        "decision_ref": "agent-work/decisions/owner-decision-2026-11-12-ONE-MILE1-rivers-crossings-POI-corrections.json",
-        "requirements_ref": "agent-work/specs/HX-BL-051-ONE-MILE1-owner-corrections-2026-11-12.md",
-        "reason": "WR1 accepted only; ownerGEO-D01 direction nowresolved, geometry/POI/roads/C06/calibration/extent work and exactpackage verification/publication remain incomplete.",
-        "prior_review_applicability": "d419 historical only",
-        "review_scope": "WR1_only_not_full_package",
-        "bounded_review_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
-        "bounded_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/score-assessment1.2.json",
-        "full_package_accepted": false,
-        "score_assessment_status": "bounded_completed_whole_criteria_insufficient_evidence"
+        "head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-15-PR503-publication.json"
       },
       "latest_release_walkthrough_review": {
         "run_id": "2026-11-12T1800-reviewer-ONE-MILE1-walkthrough",
@@ -17790,7 +17773,7 @@
       },
       "active_claim_ref": null,
       "execution_running": false,
-      "updated_at": "2026-11-15T14:05:20.987Z",
+      "updated_at": "2026-11-15T20:16:30.600Z",
       "owner_priority_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-special-POI-priority.json",
       "bounded_special_POI_implemented": true,
       "latest_runtime_verification_ref": "agent-work/results/2026-11-15T0108-programmer-GEO2-browser-runtime.json",
@@ -18526,6 +18509,20 @@
           ],
           "history_reset": false
         }
+      },
+      "latest_PR503_release": {
+        "result_ref": "agent-work/results/2026-11-15-manual-programmer-release-PR503.json",
+        "result_commit": "a7d5a3fd5499d33814460a11b26f3c18022dd8c2",
+        "head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+        "merge_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "deploy": {
+          "id": 43748705026,
+          "sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43748705026"
+        },
+        "status": "published"
       }
     },
     {
