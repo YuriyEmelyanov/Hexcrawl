@@ -5,8 +5,8 @@
   "stage_id": "ONE-MILE1",
   "substage": "GEO2-boundary-preflight",
   "role": "programmer",
-  "status": "active",
-  "execution_running": true,
+  "status": "completed",
+  "execution_running": false,
   "started_at": "2026-11-15T00:03:23.142Z",
   "base_sha": "7c9f049befa1c7b3a09d357b6992fe3e0b1db9a3",
   "working_branch": "agent/hx-bl-051-geo2",
@@ -32,6 +32,7 @@
   ],
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
     "start": {
       "checked_at": "2026-11-15T00:03:23.142Z",
       "method": "automations.peek",
@@ -39,8 +40,17 @@
       "is_enabled": true
     },
     "end": {
-      "status": "pending"
-    }
+      "checked_at": "2026-11-15T00:32:38.278Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "Both actual start/end observations enabled"
+    },
+    "errors": [],
+    "scope": "Point-in-time actual checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
   },
   "head_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
   "tree_sha": "c11a2e35c244b0bb8c99e1729a11d5f2bf4c202c",
@@ -48,11 +58,10 @@
   "progress": {
     "source_remote_verified": true,
     "local_tree_exact": true,
-    "focused": "4/4 passed",
-    "typescript": "passed",
-    "full_check": "running",
+    "full_check": "418/418 Node, TypeScript and production build passed",
     "activated_in_App": false,
-    "spatial_scope": "Conservative supplied envelopes only; overlapping hulls are candidates, full connected closure/global persistence remain pending."
+    "complete_GEO2": false,
+    "next_role": "programmer"
   },
   "test_change_summary": {
     "base_sha": "7c9f049befa1c7b3a09d357b6992fe3e0b1db9a3",
@@ -67,6 +76,50 @@
     "modified_names": [],
     "base_cases": 3,
     "head_cases": 4,
-    "count_source": "Exact git base/head named top-level test-body comparison; imports excluded; nested subscenarios not additional named tests."
-  }
+    "count_source": "Exact git base/head named top-level test-body comparison; imports excluded; nested subscenarios not additional named tests.",
+    "suites": [
+      {
+        "suite": "test/geometryPlan.test.mjs",
+        "base_cases": 3,
+        "head_cases": 4,
+        "added": 1,
+        "removed": 0,
+        "modified": 0
+      }
+    ],
+    "scenario_risk": "G203/G205/G208: reference-only scope selection must not hide mixed old/new support/water/road/POI interactions or declare separation with missing model-envelope evidence.",
+    "reuse_or_new_reason": "One new composition contract; existing source-projection case covers refs/owners but not spatial boundaries. Water/shore suites already own intersection primitives. Reuses cached53/31/7 fixture; no new fixture/seed series.",
+    "executed": 418,
+    "passed": 418,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "duration_ms": 651436.409172,
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "executed": 0,
+      "status": "not_rerun_unmounted_Node_module"
+    },
+    "rng_browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "executed": 0,
+      "status": "not_rerun"
+    },
+    "subscenarios_not_added_cases": [
+      "Distant support/site/lake and touching support",
+      "Fresh-address road and distinct-ref river geometry",
+      "Permutation of supplied source collections",
+      "Missing lake/land/owner/crossing evidence",
+      "Retained width/contour change",
+      "Cancellation and late budget exhaustion without partial pairs",
+      "Conservative bowed-curve control hull is potential only"
+    ]
+  },
+  "completed_at": "2026-11-15T00:32:38.278Z",
+  "result_ref": "agent-work/results/2026-11-15T0303-programmer-GEO2-boundary-preflight.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0303-programmer-GEO2-boundary-preflight.json"
 }

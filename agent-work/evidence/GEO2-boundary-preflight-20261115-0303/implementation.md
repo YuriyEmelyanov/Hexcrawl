@@ -21,3 +21,7 @@ Browser/RNG are not rerun for an unmounted Node-only module. Prior actual system
 Программист продолжает HX-BL-051/GEO2 на c94d959ea367815306d3178f4a9cfcca7d0fe650: связать сохранённый scope с global physical4/public16 и полным global authored state; использовать boundary preflight как консервативный фильтр, а потенциальные пары/касания передавать точной dependency closure. Не трактовать пересечение оболочек как подтверждённый дефект или готовое разрешение на Apply. Сохранить новый домен неуточнённым, старые literal choices и все глобальные ручные данные. Затем реальный recordGenerated/UndoRedo и16 roundtrip, карта/PNG/initial preview, G201–G210, независимый exact-SHA review+score_assessment1.2. До интеграции существующий refinement_domain_expansion остаётся отказом. Browser acceptance — на разрешающем Chromium socket() runner; публикация отдельно.
 
 All model1.2 grades/points/deltas remain unknown/unverified; no current score/history changes. Programmer evidence is not an independent score_assessment.
+
+## Final exact-SHA verification
+
+npm run check passed on c94d959ea367815306d3178f4a9cfcca7d0fe650:418/418 Node,0 failed/skipped/cancelled, TypeScript and production build passed14.05s, exit0; Node duration651436.409172ms. Focused4/4. Actual team automation start/end enabled; no recovery needed. Source branch/tree and all3 source files read back exactly. PR503 remains draft on3344159, not the WIP source branch. No source changes after verification.
