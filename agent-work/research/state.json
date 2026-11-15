@@ -1,27 +1,28 @@
 {
   "schema_version": 1,
   "program_id": "HX-RSR-001",
-  "status": "resume_configuration_pending",
+  "status": "active",
   "automation": {
     "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
     "title": "Исследователь HexCrawl",
     "frequency": "HOURLY",
     "minute": 30,
-    "enabled": false,
-    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+    "enabled": true,
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T003000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
     "default_timezone": "Europe/Moscow",
     "environment_selection": "inherited",
     "environments_observed": null,
     "interval": 2,
     "interval_hours": 2,
-    "cadence_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
-    "verified_at": "2026-11-13T21:19:18.627Z",
-    "is_enabled": false,
+    "cadence_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+    "verified_at": "2026-11-15T20:55:14.806Z",
+    "is_enabled": true,
     "desired_enabled": true,
     "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
-    "verification_status": "configuration_pending"
+    "verification_status": "verified_by_automations_peek",
+    "next_run_time": "2026-11-16T00:30:00+03:00"
   },
-  "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
+  "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "contract_ref": "agent-work/research/contract.md",
   "method_ref": "agent-work/research/method.json",
   "data_contract_ref": "agent-work/research/data-contract.json",
@@ -219,75 +220,150 @@
     "start": [
       {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "is_enabled": true,
+        "is_enabled": false,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-16T00:30:00+03:00",
+        "default_timezone": "Europe/Moscow",
+        "checked_at": "2026-11-15T20:55:14.806Z",
         "run_details": {
           "last_run": {
             "id": "df0850dc-b370-8321-8124-43e6f9b1215c",
-            "recorded_status": "in_progress",
+            "recorded_status": "completed",
             "scheduled_for": "2026-11-14T15:30:00Z",
             "started_at": "2026-11-14T15:31:30.873660Z",
-            "completed_at": null,
-            "chat_ref": null
-          }
+            "completed_at": "2026-11-14T15:33:38.041153Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            }
+          },
+          "latest_result": {
+            "run_id": "df0850dc-b370-8321-8124-43e6f9b1215c",
+            "created_at": "2026-11-14T15:33:37.872960Z",
+            "scheduled_for": "2026-11-14T15:30:00Z",
+            "completed_at": "2026-11-14T15:33:38.041153Z",
+            "content_text": "Исследователь остановлен, будущие запуски отключены. Точка продолжения сохранена. Возобновлю только по твоему поручению. Команда HexCrawl продолжает работать.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
         }
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
+        "checked_at": "2026-11-15T20:47:00.746Z",
         "run_details": {
           "last_run": {
-            "id": "80068e21-17e8-832e-b524-5e47ec54c997",
+            "id": "7a3ef2dd-9230-8331-a57f-63520362032f",
             "recorded_status": "completed",
-            "scheduled_for": "2026-11-14T15:00:00Z",
-            "started_at": "2026-11-14T14:59:43.065605Z",
-            "completed_at": "2026-11-14T15:19:28.113061Z",
+            "scheduled_for": "2026-11-15T20:00:00Z",
+            "started_at": "2026-11-15T20:04:39.322549Z",
+            "completed_at": "2026-11-15T20:07:18.631991Z",
             "chat_ref": {
               "type": "chatgpt",
-              "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
             }
-          }
+          },
+          "latest_result": {
+            "run_id": "7a3ef2dd-9230-8331-a57f-63520362032f",
+            "created_at": "2026-11-15T20:07:16.026787Z",
+            "scheduled_for": "2026-11-15T20:00:00Z",
+            "completed_at": "2026-11-15T20:07:18.631991Z",
+            "content_text": "Программист: [GitHub Pages успешно опубликовал PR503](https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43748705026).\n\nИтоговая проверка живого сайта ещё не подтверждена сохранённым результатом. Выпуск остаётся за ручным исполнителем; его работу не перехватывал.\n\nСледующий шаг — завершить проверку сайта и передать выпуск стратегу для учёта оценки и следующей задачи. Состояние сохранено в GitHub. Автоматизация включена.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
         }
       }
     ],
     "end": [
       {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "is_enabled": false,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "checked_at": "2026-11-14T15:32:40.323Z",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T003000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-16T00:30:00+03:00",
+        "default_timezone": "Europe/Moscow",
+        "checked_at": "2026-11-15T20:55:14.806Z",
         "run_details": {
           "last_run": {
             "id": "df0850dc-b370-8321-8124-43e6f9b1215c",
-            "recorded_status": "in_progress",
+            "recorded_status": "completed",
             "scheduled_for": "2026-11-14T15:30:00Z",
             "started_at": "2026-11-14T15:31:30.873660Z",
-            "completed_at": null,
-            "chat_ref": null
-          }
+            "completed_at": "2026-11-14T15:33:38.041153Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            }
+          },
+          "latest_result": {
+            "run_id": "df0850dc-b370-8321-8124-43e6f9b1215c",
+            "created_at": "2026-11-14T15:33:37.872960Z",
+            "scheduled_for": "2026-11-14T15:30:00Z",
+            "completed_at": "2026-11-14T15:33:38.041153Z",
+            "content_text": "Исследователь остановлен, будущие запуски отключены. Точка продолжения сохранена. Возобновлю только по твоему поручению. Команда HexCrawl продолжает работать.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
         }
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "checked_at": "2026-11-14T15:32:40.952Z",
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T000000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-16T00:00:00+03:00",
+        "default_timezone": "Europe/Moscow",
+        "checked_at": "2026-11-15T20:55:14.806Z",
         "run_details": {
           "last_run": {
-            "id": "80068e21-17e8-832e-b524-5e47ec54c997",
+            "id": "7a3ef2dd-9230-8331-a57f-63520362032f",
             "recorded_status": "completed",
-            "scheduled_for": "2026-11-14T15:00:00Z",
-            "started_at": "2026-11-14T14:59:43.065605Z",
-            "completed_at": "2026-11-14T15:19:28.113061Z",
+            "scheduled_for": "2026-11-15T20:00:00Z",
+            "started_at": "2026-11-15T20:04:39.322549Z",
+            "completed_at": "2026-11-15T20:07:18.631991Z",
             "chat_ref": {
               "type": "chatgpt",
-              "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
             }
-          }
+          },
+          "latest_result": {
+            "run_id": "7a3ef2dd-9230-8331-a57f-63520362032f",
+            "created_at": "2026-11-15T20:07:16.026787Z",
+            "scheduled_for": "2026-11-15T20:00:00Z",
+            "completed_at": "2026-11-15T20:07:18.631991Z",
+            "content_text": "Программист: [GitHub Pages успешно опубликовал PR503](https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43748705026).\n\nИтоговая проверка живого сайта ещё не подтверждена сохранённым результатом. Выпуск остаётся за ручным исполнителем; его работу не перехватывал.\n\nСледующий шаг — завершить проверку сайта и передать выпуск стратегу для учёта оценки и следующей задачи. Состояние сохранено в GitHub. Автоматизация включена.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
         }
       }
     ],
-    "research_disabled_by": "Current explicit owner instruction: Останови исследователя",
-    "team_changed": false
+    "team_changed_by_this_operation": false,
+    "proof_limit": "Enablement and recorded run status are not evidence of completed game research."
   },
   "last_result_ref": "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json",
   "blocked_source_work": [],
@@ -1005,105 +1081,15 @@
     "latest_lifecycle_ref": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11.json"
   },
   "latest_schedule_change": {
-    "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
-    "result_ref": "agent-work/results/2026-11-14-manual-agents-resume-hourly.json",
-    "run_id": "2026-11-14-manual-agents-resume-hourly",
-    "recorded_at": "2026-11-13T21:19:18.627Z",
-    "both_interval_hours": 1,
-    "automations": [
-      {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "title": "Команда HexCrawl",
-        "checked_at": "2026-11-13T21:19:17.672Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "default_timezone": "Europe/Moscow",
-        "next_run_time": "2026-11-14T01:00:00+03:00",
-        "prompt_unchanged": true,
-        "environments_unchanged": true
-      },
-      {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "title": "Исследователь HexCrawl",
-        "checked_at": "2026-11-13T21:19:18.627Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "default_timezone": "Europe/Moscow",
-        "next_run_time": "2026-11-14T00:30:00+03:00",
-        "prompt_unchanged": true,
-        "environments_unchanged": true
-      }
-    ],
-    "automation_health": {
-      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "start": {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "title": "Команда HexCrawl",
-        "checked_at": "2026-11-13T21:17:06.239Z",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "timezone": "Europe/Moscow",
-        "next_run_time": "2026-11-14T01:00:00+03:00"
-      },
-      "end": {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "title": "Команда HexCrawl",
-        "checked_at": "2026-11-13T21:19:17.672Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "default_timezone": "Europe/Moscow",
-        "next_run_time": "2026-11-14T01:00:00+03:00",
-        "prompt_unchanged": true,
-        "environments_unchanged": true
-      },
-      "restoration": {
-        "performed": false,
-        "reason": "Team already enabled; hourly schedule applied by explicit current owner decision"
-      },
-      "errors": [],
-      "research_agent": {
-        "jawbone_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "start": {
-          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-          "title": "Исследователь HexCrawl",
-          "checked_at": "2026-11-13T21:17:06.242Z",
-          "is_enabled": false,
-          "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-          "timezone": "Asia/Shanghai",
-          "next_run_time": "2026-11-14T06:30:00+08:00"
-        },
-        "end": {
-          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-          "title": "Исследователь HexCrawl",
-          "checked_at": "2026-11-13T21:19:18.627Z",
-          "method": "automations.peek",
-          "status": "checked",
-          "is_enabled": true,
-          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-          "default_timezone": "Europe/Moscow",
-          "next_run_time": "2026-11-14T00:30:00+03:00",
-          "prompt_unchanged": true,
-          "environments_unchanged": true
-        },
-        "restoration": {
-          "performed": true,
-          "authority": "Current owner explicitly resumes both agents, superseding research tokenpause"
-        }
-      },
-      "scope": "Actual point-in-time peeks, not a guarantee against later service disable. Both existing tasks updated, prompts and environments unchanged."
-    },
-    "primary_product_routing_unchanged": true,
-    "source_code_unchanged": true,
-    "existing_automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-    "interval_hours": 1,
+    "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+    "run_id": "2026-11-15-204811-research-resume2h",
+    "result_ref": "agent-work/research/runs/2026-11-15-204811-research-resume2h.json",
+    "recorded_at": "2026-11-15T20:55:14.806Z",
+    "interval_hours": 2,
     "is_enabled_verified": true,
-    "active_research_claim_unchanged": true
+    "next_run_time": "2026-11-16T00:30:00+03:00",
+    "team_changed": false,
+    "research_performed": false
   },
   "latest_scale_lifecycle_checkpoint": {
     "ref": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11.json",
@@ -1140,7 +1126,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-14T15:33:08.567Z",
+  "updated_at": "2026-11-15T20:55:14.806Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1183,7 +1169,7 @@
     "resume_quote": "Запускай исследователя - интервал 2 часа."
   },
   "authority_status": "owner_authorized_research",
-  "execution_status": "awaiting_schedule_verification",
+  "execution_status": "ready_scheduled",
   "owner_resume": {
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
     "requested_at": "2026-11-15T20:50:37.888Z",
@@ -1191,8 +1177,11 @@
     "interval": 2,
     "interval_hours": 2,
     "timezone": "Europe/Moscow",
-    "is_enabled_verified": false,
-    "semantic_authorization": true
+    "is_enabled_verified": true,
+    "semantic_authorization": true,
+    "verified_at": "2026-11-15T20:55:14.806Z",
+    "next_run_time": "2026-11-16T00:30:00+03:00",
+    "result_ref": "agent-work/research/runs/2026-11-15-204811-research-resume2h.json"
   },
   "previous_claim": {
     "run_id": "2026-11-14T0835-LandEem-screen",
@@ -1775,5 +1764,181 @@
     },
     "checkpoint_ref": "agent-work/research/runs/2026-11-14T1531-Faerun-L1.json",
     "reason": "Retain Faerun/historical checkpoint; not the first task of explicit top5alignment. Do not lose source continuation."
-  }
+  },
+  "previous_automation_health_before_2h_resume": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "run_details": {
+          "last_run": {
+            "id": "df0850dc-b370-8321-8124-43e6f9b1215c",
+            "recorded_status": "in_progress",
+            "scheduled_for": "2026-11-14T15:30:00Z",
+            "started_at": "2026-11-14T15:31:30.873660Z",
+            "completed_at": null,
+            "chat_ref": null
+          }
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "run_details": {
+          "last_run": {
+            "id": "80068e21-17e8-832e-b524-5e47ec54c997",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-14T15:00:00Z",
+            "started_at": "2026-11-14T14:59:43.065605Z",
+            "completed_at": "2026-11-14T15:19:28.113061Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+            }
+          }
+        }
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": false,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-14T15:32:40.323Z",
+        "run_details": {
+          "last_run": {
+            "id": "df0850dc-b370-8321-8124-43e6f9b1215c",
+            "recorded_status": "in_progress",
+            "scheduled_for": "2026-11-14T15:30:00Z",
+            "started_at": "2026-11-14T15:31:30.873660Z",
+            "completed_at": null,
+            "chat_ref": null
+          }
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-14T15:32:40.952Z",
+        "run_details": {
+          "last_run": {
+            "id": "80068e21-17e8-832e-b524-5e47ec54c997",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-14T15:00:00Z",
+            "started_at": "2026-11-14T14:59:43.065605Z",
+            "completed_at": "2026-11-14T15:19:28.113061Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af61b3c-035c-83ec-8e3e-34fdaba818a5"
+            }
+          }
+        }
+      }
+    ],
+    "research_disabled_by": "Current explicit owner instruction: Останови исследователя",
+    "team_changed": false
+  },
+  "previous_schedule_change_before_2h_resume": {
+    "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
+    "result_ref": "agent-work/results/2026-11-14-manual-agents-resume-hourly.json",
+    "run_id": "2026-11-14-manual-agents-resume-hourly",
+    "recorded_at": "2026-11-13T21:19:18.627Z",
+    "both_interval_hours": 1,
+    "automations": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "checked_at": "2026-11-13T21:19:17.672Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "default_timezone": "Europe/Moscow",
+        "next_run_time": "2026-11-14T01:00:00+03:00",
+        "prompt_unchanged": true,
+        "environments_unchanged": true
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "checked_at": "2026-11-13T21:19:18.627Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "default_timezone": "Europe/Moscow",
+        "next_run_time": "2026-11-14T00:30:00+03:00",
+        "prompt_unchanged": true,
+        "environments_unchanged": true
+      }
+    ],
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "checked_at": "2026-11-13T21:17:06.239Z",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "timezone": "Europe/Moscow",
+        "next_run_time": "2026-11-14T01:00:00+03:00"
+      },
+      "end": {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "checked_at": "2026-11-13T21:19:17.672Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "default_timezone": "Europe/Moscow",
+        "next_run_time": "2026-11-14T01:00:00+03:00",
+        "prompt_unchanged": true,
+        "environments_unchanged": true
+      },
+      "restoration": {
+        "performed": false,
+        "reason": "Team already enabled; hourly schedule applied by explicit current owner decision"
+      },
+      "errors": [],
+      "research_agent": {
+        "jawbone_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "start": {
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "title": "Исследователь HexCrawl",
+          "checked_at": "2026-11-13T21:17:06.242Z",
+          "is_enabled": false,
+          "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+          "timezone": "Asia/Shanghai",
+          "next_run_time": "2026-11-14T06:30:00+08:00"
+        },
+        "end": {
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "title": "Исследователь HexCrawl",
+          "checked_at": "2026-11-13T21:19:18.627Z",
+          "method": "automations.peek",
+          "status": "checked",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+          "default_timezone": "Europe/Moscow",
+          "next_run_time": "2026-11-14T00:30:00+03:00",
+          "prompt_unchanged": true,
+          "environments_unchanged": true
+        },
+        "restoration": {
+          "performed": true,
+          "authority": "Current owner explicitly resumes both agents, superseding research tokenpause"
+        }
+      },
+      "scope": "Actual point-in-time peeks, not a guarantee against later service disable. Both existing tasks updated, prompts and environments unchanged."
+    },
+    "primary_product_routing_unchanged": true,
+    "source_code_unchanged": true,
+    "existing_automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+    "interval_hours": 1,
+    "is_enabled_verified": true,
+    "active_research_claim_unchanged": true
+  },
+  "latest_resume_result_ref": "agent-work/research/runs/2026-11-15-204811-research-resume2h.json"
 }
