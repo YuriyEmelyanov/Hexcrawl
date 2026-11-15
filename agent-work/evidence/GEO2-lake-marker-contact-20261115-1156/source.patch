@@ -1,0 +1,109 @@
+diff --git a/src/geometryRefinementBoundary.ts b/src/geometryRefinementBoundary.ts
+index e721521..3c76a33 100644
+--- a/src/geometryRefinementBoundary.ts
++++ b/src/geometryRefinementBoundary.ts
+@@ -12,6 +12,7 @@ import {projectGeometryRefinementSource} from './geometryRefinementScope.ts';
+ import {prepareRefinementLakeModes,type RefinementLakeInput} from './geometryRefinementMouths.ts';
+ import {normalizeRefinementRiverSource} from './geometryRefinementSource.ts';
+ import {prepareRefinementWater,refinementWaterIntervals,refinementWaterContains} from './geometryRefinementWater.ts';
++import {refinementShoreContains,refinementShoreIntervals} from './geometryRefinementShore.ts';
+ import {createRefinementWorkBudget} from './geometryRefinementWork.ts';
+ 
+ type Input=GeometrySourceValidationInput&Readonly<{
+@@ -245,10 +246,33 @@ export function geometryBoundaryHasValidClosure(result:ReturnType<typeof prepare
+   // A shoreline may overlap empty opposite-region support: that support is
+   // not an occupied feature. The enclosing mode hulls, source/fine water,
+   // road strokes/rails and POI extents were all compared in both directions.
+-  // Only support/body pairs are resolved here; even a potential opposite
+-  // feature/body contact remains an explicit conflict, never a movement grant.
++  // Support/body pairs and certified dry unbound catalogue markers may pass.
++  // Other potential feature/body contacts remain explicit conflicts, never
++  // movement grants.
+   const body=(ref:string)=>/^(lake|sea):/.test(ref),support=(ref:string)=>ref.startsWith('region:');
+-  if(result.potentialDependencies.some(p=>body(p.retainedRef)&&!support(p.addedRef)||body(p.addedRef)&&!support(p.retainedRef)))return false;
++  const footprints=new Map([...scope.input.map.physicalGrid.poiFootprints.map(f=>refined.get(f.poiId)??f),...scope.outside.authoredFootprints].map(f=>[f.poiId,f]));
++  const dryMarker=(bodyRef:string,otherRef:string)=>{
++   if(!bodyRef.startsWith('lake:')||!otherRef.startsWith('POI:'))return false;
++   const lake=result.bodies.find(l=>l.lakeId===Number(bodyRef.slice(5))),f=footprints.get(otherRef.slice(4));
++   // Resolve only an unbound known catalogue marker, without moving it or
++   // inventing a size for unknown/measured/locked/attached geometry.
++   if(!lake||!f||accepted.lockedPoiIds.includes(f.poiId)||f.attachments.length||f.cells.length!==1||f.extent.kind!=='representative'||f.extent.representativeExtentMiles===null||f.extent.representativeExtentMiles>=1)return false;
++   const anchor=detailFootprintWorldAnchor(f,fine),polygons=detailFootprintPolygons(f,fine);
++   for(const mode of ['tiles','emoji','color'] as const){
++    const shape=lake.modes[mode],curves=shape.loops.reduce((n,l)=>n+l.length,0);
++    budget.charge((1+curves)**2*(1+polygons.reduce((n,p)=>n+p.length,0)));
++    if(refinementShoreContains(shape,anchor))return false;
++    for(const polygon of polygons){
++     if(polygon.some(p=>refinementShoreContains(shape,p))||shape.loops.some(loop=>loop.some(c=>detailPointInPolygon(c.from,polygon))))return false;
++     for(let i=0;i<polygon.length;i++){
++      const cut=refinementShoreIntervals(shape,{from:polygon[i],to:polygon[(i+1)%polygon.length]});
++      if(cut.status!=='prepared'||cut.intervals.length)return false;
++     }
++    }
++   }
++   return true;
++  };
++  if(result.potentialDependencies.some(p=>body(p.retainedRef)&&!support(p.addedRef)&&!dryMarker(p.retainedRef,p.addedRef)||body(p.addedRef)&&!support(p.retainedRef)&&!dryMarker(p.addedRef,p.retainedRef)))return false;
+   return true;
+  }catch{return false;}
+ }
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index 76d4f68..ef84897 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -7,7 +7,10 @@ import {createGenerationHarness} from './helpers/generation-harness.mjs';
+ import {detailAuthoredState} from '../src/detailModel.ts';
+ import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
+ import {prepareGeometryPlan} from '../src/geometryPlan.ts';
+-import {geometryMixedRiverPaths} from '../src/geometryRefinementBoundary.ts';
++import {detailFootprintPolygons} from '../src/detailSizes.ts';
++import {refinementShoreContains,refinementShoreIntervals} from '../src/geometryRefinementShore.ts';
++import {createDetailGrid,worldToDetailCell} from '../src/detailGrid.ts';
++import {prepareGeometryRefinementBoundary,geometryMixedRiverPaths} from '../src/geometryRefinementBoundary.ts';
+ import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
+ import {projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
+ import {reconcileDetailGeography} from '../src/detailGeography.ts';
+@@ -1110,4 +1113,20 @@ test('GEO2 scoped lake growth across empty support replans shoreline in one actu
+  assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks,'failure preserves redo');h.render().resetWaterDraft();
+  const invalid=structuredClone(after);delete invalid.map.terrainByHexKey['7,0'];await load(h,invalid);assert.deepEqual(stable(h.render()),before,'stale water body16 is rejected');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);h.render().redoMap();
+  await load(h,after);assert.deepEqual(stable(h.render()),after,'exact16 shoreline readback');
++ // Reuse this accepted grown body: a marker on the dry side of its broad
++ // control-hull/fine-cell envelope is not an occupied water intersection.
++ h.render().setEditMode(true);h.render().setSelectedHex(anchor);h.render().setSelectedPoiKind('lair');
++ const withPoi=h.render().captureDocument(),authoredPoi=detailAuthoredState(withPoi.map.physicalGrid),marker=authoredPoi.poiFootprints.find(f=>f.legacyRef==='poi:3:8,0');assert.ok(marker);
++ const point={x:45.2,y:0},grid=createDetailGrid(1,authoredPoi.grid.origin),shifted={...marker,worldAnchor:point,cells:[worldToDetailCell(grid,point)]};
++ const nextAuthored={...authoredPoi,poiFootprints:authoredPoi.poiFootprints.map(f=>f.poiId===marker.poiId?shifted:f)};
++ const markerSave=serial(h.render().createSaveData({...withPoi,map:{...withPoi.map,physicalGrid:composeScopedDetailState(nextAuthored,withPoi.map.physicalGrid.geometryRefinement)}}));delete markerSave.savedAt;
++ const candidateMap={...withPoi.map,physicalGrid:composeScopedDetailState(nextAuthored,withPoi.map.physicalGrid.geometryRefinement)},g=candidateMap.physicalGrid.geometryRefinement;
++ const boundary=prepareGeometryRefinementBoundary({...h.geometry.geometryPlanInput(candidateMap),riverPlan:g.riverPlan,roadPaddingMiles:3},g);assert.equal(boundary.status,'prepared',JSON.stringify(boundary));assert.ok(boundary.potentialDependencies.some(p=>p.retainedRef.startsWith('lake:')&&p.addedRef===`POI:${marker.poiId}`),'actual control-hull/support candidate');
++ await load(h,markerSave);assert.deepEqual(stable(h.render()),markerSave,'dry marker near current shoreline is allowed without relocation');
++ const markerStacks=serial([h.render().undoHistory,h.render().redoHistory]),fringe={...shifted,worldAnchor:{x:45.01,y:0},cells:[worldToDetailCell(grid,{x:45.01,y:0})]},shape=g.riverPlan.lakes.find(l=>l.lakeId===oldLake).modes.tiles,polygon=detailFootprintPolygons(fringe,grid)[0];
++ assert.equal(refinementShoreContains(shape,fringe.worldAnchor),false,'fringe anchor itself is dry');assert.ok(polygon.some((p,i)=>refinementShoreIntervals(shape,{from:p,to:polygon[(i+1)%polygon.length]}).intervals?.length),'model perimeter touches actual water');
++ const invalidAuthored={...nextAuthored,poiFootprints:nextAuthored.poiFootprints.map(f=>f.poiId===marker.poiId?fringe:f)},wetSave=serial(h.render().createSaveData({...withPoi,map:{...withPoi.map,physicalGrid:composeScopedDetailState(invalidAuthored,g)}}));delete wetSave.savedAt;
++ await load(h,wetSave);assert.deepEqual(stable(h.render()),markerSave,'dry center cannot authorize wet footprint');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),markerStacks);
++
++
+ });
+diff --git a/docs/water-editing.md b/docs/water-editing.md
+index 732acec..1a5a2bc 100644
+--- a/docs/water-editing.md
++++ b/docs/water-editing.md
+@@ -52,3 +52,18 @@ Tiles/Emoji/Color. Сохранённый16 обязан соответство
+ пересечение не объявляется подтверждённым дефектом или разрешением сдвига.
+ Это ограниченный этап, не готовность сложных устьев/слияний/разделений,
+ фактической карты/PNG или полного пакета GEO2 к публикации.
++
++
++### GEO2: сухой маркер около берега (в разработке)
++
++Пересечение рамок lake/POI не доказывает затопления. Для непривязанного
++незаблокированного каталожного маркера с известной проектной оценкой менее1мили
++допускается проверка неизменного anchor и модельного полигона по всем трём
++актуальным берегам. Anchor/вершины внутри или на берегу, любое пересечение
++рёбер полигона с точными линиями/квадратичными кривыми и охват берега самим
++полигоном отклоняют такую сертификацию. Сухой центр не разрешает мокрый край.
++Это проверка текущего модельного размера, не подтверждение физического размера
++локации. Размеры unknown, measured/manual, крупные/многоклеточные footprints,
++привязанные/locked POI, море, дороги и русла остаются на прежней отдельной
++проверке зависимостей. POI не сдвигается, привязки не создаются, импорт16 ничего
++не исправляет; неразрешимая геометрия сохраняет принятую карту и историю.

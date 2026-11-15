@@ -1,0 +1,70 @@
+✖ GEO2 scoped lake growth across empty support replans shoreline in one actual water transaction (5205.700994ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7173.035329
+
+✖ failing tests:
+
+test at test/mapTransactions.test.mjs:1092:1
+✖ GEO2 scoped lake growth across empty support replans shoreline in one actual water transaction (5205.700994ms)
+  AssertionError [ERR_ASSERTION]: dry marker near current shoreline is allowed without relocation
+  + actual - expected
+  ... Skipped lines
+  
+    {
+      counters: {
+        nextLakeId: 2,
+        nextObstacleId: 1,
+        nextRiverId: 3,
+  ...
+                  {
+  +                 q: 48,
+  -                 q: 45,
+                    r: 0
+                  }
+                ],
+                extent: {
+                  basis: 'project_assumption_not_measured',
+  ...
+                worldAnchor: {
+  +               x: 48,
+  -               x: 45.2,
+                  y: 0
+                }
+              }
+            ],
+            poiIdentities: {
+  ...
+                {
+  +               q: 48,
+  -               q: 45,
+                  r: 0
+                }
+              ],
+              extent: {
+                basis: 'project_assumption_not_measured',
+  ...
+              worldAnchor: {
+  +             x: 48,
+  -             x: 45.2,
+                y: 0
+              }
+            }
+          ],
+          poiIdentities: {
+  
+      at TestContext.<anonymous> (file:///workspace/scratch/7f40d8b0fb2b/water-closure/test/mapTransactions.test.mjs:1125:34)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 42, streams: [Object] }, version: 16, map: { physicalGrid: [Object], seas: [], nextSeaId: 1, editorNames: {}, riverFeatures: [Object], tags: [Object], gmNotesByHexKey: {}, kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [], crossings: [], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 2, nextRoadId: 1, nextObstacleId: 1, nextRiverId: 3 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    expected: { schema: 'hexcrawl-map', generation: { generatorVersion: 'regions-2026-10-24-rng.1', rngVersion: 'mulberry32-v1', masterSeed: 42, streams: [Object] }, version: 16, map: { physicalGrid: [Object], seas: [], nextSeaId: 1, editorNames: {}, riverFeatures: [Object], tags: [Object], gmNotesByHexKey: {}, kingdoms: [], obstacles: [], regions: [Array], candidateHexes: [Array], rivers: [Array], roads: [], crossings: [], terrainByHexKey: [Object], waterPoiByHexKey: {}, biomeOverrideByHexKey: {}, toponyms: [Object] }, counters: { nextLakeId: 2, nextRoadId: 1, nextObstacleId: 1, nextRiverId: 3 }, ui: { generationMode: 'classic', selectedHex: [Object], isMapRotated: false, mapScale: 1 } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
