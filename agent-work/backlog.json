@@ -4880,6 +4880,39 @@
           "score_delta": null,
           "implementation_authorized": false,
           "release_authorized": false
+        },
+        {
+          "component_id": "CROWS-PT3-042-v1",
+          "status": "proposed_research_profile_only",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "requirement_refs": [
+            "CROWS-PT3-001-L1",
+            "CROWS-PT3-037-L1"
+          ],
+          "user_result": [
+            "Сохранить физическую длину отдельно от экранного zoom",
+            "Сохранить тип переправы и направления, не применять движение до дорожного дня"
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Новая карта Crows, zoom=1.3",
+              "when": "Выбрать профиль Crows",
+              "expected": "JSON содержит length=5 mile; zoom остаётся1.3; повторная загрузка сохраняет оба значения"
+            },
+            {
+              "given": "РекапересеченадорогойвA;мастерназначилbridge",
+              "when": "Записать путь и пересечение",
+              "expected": "Послеsave/loadвAbridge;такое пересечение не считаетсяunbridged при будущем расчёте"
+            }
+          ],
+          "unresolved_parameters": [
+            "across не уточняет flat-to-flat или vertex-to-vertex; не выбирать геометрию без решения"
+          ],
+          "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
+          "implementation_status": "unverified",
+          "score_delta": null
         }
       ],
       "proposal_ref": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
@@ -9057,6 +9090,30 @@
             "related_source_rule": "MB-REALM-002",
             "reason": "Keep original sheet parameters/conditioned AC as historical/source-specific; attach Quickstart clarification and unresolved grouping/rounding. No equivalence/runtime score inferred."
           }
+        },
+        {
+          "component_id": "CROWS-PT3-044-v1",
+          "status": "proposed_research_profile_only",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "requirement_refs": [
+            "CROWS-PT3-002-L1"
+          ],
+          "user_result": [
+            "Записать преобладающую среду и сохранить существующие места"
+          ],
+          "acceptance_cases": [
+            {
+              "given": "ГексA forest с POI P; мастер меняет на mountain",
+              "when": "Назначить среду гекса",
+              "expected": "После save/load A=mountain, P на прежнем месте; выбор таблицы встреч только внешний"
+            }
+          ],
+          "unresolved_parameters": [],
+          "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
+          "implementation_status": "unverified",
+          "score_delta": null
         }
       ],
       "source_clarification_refs": [
@@ -10812,6 +10869,91 @@
           "overall_rank_reference": 4,
           "score_delta": null,
           "implementation_authorized": false
+        }
+      ],
+      "research_components": [
+        {
+          "component_id": "CROWS-PT3-045-v1",
+          "status": "proposed_research_profile_only",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "requirement_refs": [
+            "CROWS-PT3-010-L2",
+            "CROWS-PT3-011-L2",
+            "CROWS-PT3-012-L2",
+            "CROWS-PT3-013-L2",
+            "CROWS-PT3-016-L2",
+            "CROWS-PT3-019-L2",
+            "CROWS-PT3-021-L2",
+            "CROWS-PT3-025-L2",
+            "CROWS-PT3-038-L1"
+          ],
+          "user_result": [
+            "Сохранить упорядоченный план и итоговые внешние модификаторы",
+            "Рассчитать дневную базу и запросить внешний модификатор ролей",
+            "Выбрать минимальную переданную скорость, применить одну полосу",
+            "Применить только подтверждённые свойства маршрута и сохранить причины",
+            "Раскрыть существующее неизвестное место в посещённом гексе, не сгенерировать новое",
+            "Хранить фактический путь отдельно от предполагаемого и скрывать позицию от игрока",
+            "Сохранить числоDT и запросить решение Ref о сокращении пути",
+            "Разделить real timer и fictional time, сохранить выбранный режим",
+            "Применить состояние видимости, исключить секретную фактическую позицию из экспортируемого игроку представления"
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Поддержка дала+1 guide, guideдал+1hex",
+              "when": "Начать дорожный день",
+              "expected": "Поддержка применена до результата guide; за день запланированы2 дорожные проверки; отдельный отдых отдельно"
+            },
+            {
+              "given": "normal, speed5, без дорог/модификаторов",
+              "when": "Выбрать темп",
+              "expected": "Дистанция2hex, EN4; slow=1/2/edge, fast=3/6/bane"
+            },
+            {
+              "given": "normal; скорости[5,8] затем[8,10]",
+              "when": "Изменить состав путешественников",
+              "expected": "Дистанции2 и3hex соответственно"
+            },
+            {
+              "given": "normal2; вся дорога; один брод без моста и без лодки",
+              "when": "Проложить дневной маршрут",
+              "expected": "2+1−1=2hex; при мосте3hex"
+            },
+            {
+              "given": "ГексA с неизвестным P; scout1=places, scout2=danger",
+              "when": "Назначить scout: места",
+              "expected": "P становится известным группе; число мест неизменно; второй scout разрешён с другой задачей"
+            },
+            {
+              "given": "Группа в(0,0), планN, внешнийd6=3",
+              "when": "Покинуть гекс потерявшейся группой",
+              "expected": "Фактический выходSE, планN сохранён; игрок не получает точную позицию"
+            },
+            {
+              "given": "3DT затем4DT, EN4",
+              "when": "Завершить посещение POI",
+              "expected": "При3 нет порога; при4 предлагается решение Ref, дистанция не уменьшается молча; EN4 сохранён"
+            },
+            {
+              "given": "30реальныхминут dungeon и2fictionalhours outside",
+              "when": "Начать/приостановить DT",
+              "expected": "Каждый даёт1DT в своёмрежиме; 30минут реальных не добавляет30минутfictional автоматически"
+            },
+            {
+              "given": "ФактическийSE,предполагаемыйN;lost=true",
+              "when": "Открыть карту игроков",
+              "expected": "ИгроквидитпредполагаемыйNбезточногоSE;ведущийSEвидит"
+            }
+          ],
+          "unresolved_parameters": [
+            "Единица Speed — игровое значение, не мили/час",
+            "Минимум/нулевая дистанция и суммирование многих пересечений не уточнены; не придумывать clamp/stack"
+          ],
+          "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
+          "implementation_status": "unverified",
+          "score_delta": null
         }
       ]
     },
@@ -13879,6 +14021,146 @@
           "overall_rank_reference": 4,
           "score_delta": null,
           "implementation_authorized": false
+        }
+      ],
+      "research_components": [
+        {
+          "component_id": "CROWS-PT3-046-v1",
+          "status": "proposed_research_profile_only",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "requirement_refs": [
+            "CROWS-PT3-014-L3",
+            "CROWS-PT3-015-L3",
+            "CROWS-PT3-017-L3",
+            "CROWS-PT3-018-L3",
+            "CROWS-PT3-020-L3",
+            "CROWS-PT3-022-L3",
+            "CROWS-PT3-024-L3",
+            "CROWS-PT3-026-L3",
+            "CROWS-PT3-027-L3",
+            "CROWS-PT3-029-L3",
+            "CROWS-PT3-030-L3",
+            "CROWS-PT3-031-L3",
+            "CROWS-PT3-032-L3",
+            "CROWS-PT3-033-L3",
+            "CROWS-PT3-034-L3",
+            "CROWS-PT3-035-L3",
+            "CROWS-PT3-036-L3"
+          ],
+          "user_result": [
+            "Передать действие и профиль внешнему resolver, применить нормализованный результат один раз",
+            "Передать выбранных союзников/действие, сохранить модификатор с областью действия",
+            "Связать эффект с дневным маршрутом/местом/следующим отдыхом",
+            "Хранить полученное число рационов/частей или выбранный Ref одногексовый крюк",
+            "Сохранить момент раскрытия позиции и проверить ограничения роли",
+            "Отправить итоговый EN и уникальныйcheck_id внешнемуresolver",
+            "Передать условия защиты/отдыха и применить один связанный внешний ответ",
+            "Завершить текущийDT без его encountercheck, отправить событие внешнемуresolver отдыха, при окончании новыйDT",
+            "Передать черту/снаряжение и разрешённое исключение в проверку назначения",
+            "Сохранить время начала/конца и внешниемодификаторы; применить к затронутомудню",
+            "Проверитьпересечениефактическогопути с зоной; передать/принять relocation",
+            "Хранить village_id/cycle_id и подтверждённыеизменения; не удваивать повторныйответ",
+            "Записатьpendingupgrade и активировать поcycleboundary, затем обновить связанные зоны",
+            "Сохранить baseprice и тип операции; получить итог и ссылку на деревню",
+            "Проверить связь с нужным маяком, покрытие выбранного гекса и применить переданную позицию один раз",
+            "Передать временную защиту лагеря и отдельное исключение восстановления",
+            "Запросить внешний результат проверки и сохранить дедлайн события"
+          ],
+          "acceptance_cases": [
+            {
+              "given": "normal2 EN4; shortcut tier2",
+              "when": "Запросить/принять исход guide",
+              "expected": "3hex EN5; повторный response_id не добавляет бонус ещё раз"
+            },
+            {
+              "given": "risky tier3, цели[A,B,C]",
+              "when": "Назначить поддержку",
+              "expected": "Только A/B/C получают+2 к дорожным ролям; четвёртая цель отклонена"
+            },
+            {
+              "given": "Shelter tier2, travelEN4 restEN3",
+              "when": "Принять результат scout",
+              "expected": "travelEN5, restEN2; эффекты не переходят на все будущие дни"
+            },
+            {
+              "given": "Hunt tier2 d6=4 EN4",
+              "when": "Принять охоту/следы",
+              "expected": "4рациона, EN5, не4человека; повторный ответ не удваивает ресурсы"
+            },
+            {
+              "given": "tier2 в начале дня",
+              "when": "Принять Back On Track",
+              "expected": "Позиция не открыта сразу; раскрывается в конце дня"
+            },
+            {
+              "given": "БазаEN2, суммарные−4",
+              "when": "Провести проверку встречи",
+              "expected": "ОтправленEN1, не−2; две штатные дорожные проверки имеют разныеID"
+            },
+            {
+              "given": "Cruelty2, rest_in_miasma, tier2",
+              "when": "Принять итог человеческого MindRR",
+              "expected": "ШтрафRR−2 передан; cruelty остаётся2; Effort не восстановлен обычным отдыхом"
+            },
+            {
+              "given": "6часов,4сон,1рацион; защищённое место",
+              "when": "Начать/завершить отдых",
+              "expected": "Условие отдыха выполнено; текущийDTзакрытбезегоcheck; новыйDTначат; персонажныевосстановления вернулresolver"
+            },
+            {
+              "given": "PC сGuideForFree+compass назначенguide+supporter",
+              "when": "Назначить дорожные роли с чертой",
+              "expected": "2роли допустимы; безчерты стандартное ограничение; ThisWayпослеуспеханепотерявшегосяguideдаёт+1hex"
+            },
+            {
+              "given": "normal2+дорога1, rain−1",
+              "when": "Принять погодное событие",
+              "expected": "Дистанция2hex; эффектистекаетчерез24fictionalhours"
+            },
+            {
+              "given": "Все сегодняшние гексы защищенымаяками",
+              "when": "Принять Strong Miasma encounter",
+              "expected": "Эффект не применяется; иначеlost+d10=4+RefNперемещает4hexNпоскрытомуфактическомупути"
+            },
+            {
+              "given": "Cycle1 безроста, prosperity0; responseRдважды",
+              "when": "Закрыть внешний20дневныйцикл",
+              "expected": "Итог−1, не−2; следующийцикл имеетдругойID"
+            },
+            {
+              "given": "Маякlevel1, оплаченоlevel2посредицикла",
+              "when": "Принять оплату/завершить цикл",
+              "expected": "До границырадиус1; после подтвержденияследцикларадиус2; ценыневычисляютсяядромкарты"
+            },
+            {
+              "given": "Базоваяцена100gc, чужаядеревня",
+              "when": "Передать торговую операцию внешнему учёту",
+              "expected": "Покупка120gc, продажа20gc; не80gc; циклчужойдеревнинеобязателен"
+            },
+            {
+              "given": "FadeOut на3гекса,5существ включаяинициатора, цельвзоне",
+              "when": "Принять внешнее перемещение",
+              "expected": "Внешняяцена300gc, позицияцель; FadeInтокенчужогомаяканеразрешаетвозвраткэтому"
+            },
+            {
+              "given": "restEN3;1участникseclude;другойGoodNightRestвМиазме",
+              "when": "Назначить действие отдыха",
+              "expected": "restEN2; +1temporaryEffortдлявторого несмотряМиазму;новыйsecludeнестакается"
+            },
+            {
+              "given": "EN3,d10=2",
+              "when": "Закончить DT без начала отдыха",
+              "expected": "Событиепредвосхищено;RefназначаетегонепозжеследующегоDT;при4нетсобытия"
+            }
+          ],
+          "unresolved_parameters": [
+            "В описании sandstorm встречается blizzard; невыводитьновыеэффектыизопечатки"
+          ],
+          "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
+          "implementation_status": "unverified",
+          "score_delta": null
         }
       ]
     },
@@ -18221,6 +18503,58 @@
           ],
           "implementation_authorized": false,
           "release_authorized": false
+        },
+        {
+          "component_id": "CROWS-PT3-052-v1",
+          "status": "proposed_research_profile_only",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "requirement_refs": [
+            "CROWS-PT3-005-L1",
+            "CROWS-PT3-006-L1",
+            "CROWS-PT3-009-L1",
+            "CROWS-PT3-023-L1",
+            "CROWS-PT3-028-L1"
+          ],
+          "user_result": [
+            "Назначить выбранное базовое место, пять обязательных учреждений и одно выбранное, имя и необязательные ответы",
+            "Сохранить NPC/отношение/ссылку на выбранную выгоду без вычисления листа персонажа",
+            "Сохранить pending-поселение; по внешнему подтверждению завершения назначить новую базу, оставить старую",
+            "Сохранить условия защиты внутри конкретного здания",
+            "Создать локальное укрытие с вместимостью, связать с действием, не менятьпокрытиегекса"
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Дополнительное учреждение beacon; имя Oak",
+              "when": "Создать домашнюю деревню",
+              "expected": "Oak — база, ровно6 учреждений уровня1; повторное открытие не создаёт дубликатов"
+            },
+            {
+              "given": "PC1 связан с NPC1 как родственник",
+              "when": "Записать связь персонажа с NPC",
+              "expected": "После save/load связь PC1→NPC1 и отношение сохранены; выгода передаётся наружу"
+            },
+            {
+              "given": "Начатоday30, подтвержденоday40; старая базаA",
+              "when": "Принять подтверждение основания",
+              "expected": "До завершенияA остаётся базой; после завершенияB база, A существует; связиNPC не переселены без выбора"
+            },
+            {
+              "given": "В одномгексе закрытая каменная комната и открытый двор",
+              "when": "Отметить тип укрытия места",
+              "expected": "Комната помечена защищённой, двор нет; целый гекс не становится безопасным"
+            },
+            {
+              "given": "CampBuilder, инструменты, seclude camp",
+              "when": "Записать результат CampBuilder",
+              "expected": "Укрытиеcapacity1Medium; второйMediumнепомещается; областьмаяканесоздана"
+            }
+          ],
+          "unresolved_parameters": [],
+          "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
+          "implementation_status": "unverified",
+          "score_delta": null
         }
       ],
       "research_handoff_refs": [
@@ -19765,6 +20099,37 @@
             "decision": "Reuse existing canonical rule/binding; add verification-only research component to053, no new task or mandatory numbering/MB implementation.",
             "reason": "Same user result: map mark/reference associated with chosen place. PF2 lacks MB quotas/number1–6 and Cairn source details; no parameter equivalence inferred."
           }
+        },
+        {
+          "component_id": "CROWS-PT3-053-v1",
+          "status": "proposed_research_profile_only",
+          "game_id": "CROWS",
+          "edition": "October2026PublicPlaytest3",
+          "matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+          "requirement_refs": [
+            "CROWS-PT3-003-L1",
+            "CROWS-PT3-004-L1"
+          ],
+          "user_result": [
+            "Создать запись с устойчивым ID, координатами, видимым описанием и отдельным секретным разделом",
+            "Проверить расстояние до выбранного мастером гекса; сохранить направленную связь"
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Мастер выбирает Ruined Sawmill и существующий речной гекс A",
+              "when": "Добавить выбранное готовое место",
+              "expected": "Одно место у рекиA; описания и секреты раздельны; не размещены автоматически остальные7 POI"
+            },
+            {
+              "given": "Мельница(0,0), тайник(2,0)",
+              "when": "Привязать выбранный тайник к мельнице",
+              "expected": "Связь допустима; (3,0) требует коррекции/явного отступления; другие гексы не получают сокровище"
+            }
+          ],
+          "unresolved_parameters": [],
+          "scope_note": "Research attachment only: preserve task status and approved scope. Does not authorize Crows expansion of current PR503/HX-BL-051; future analyst/interviewer decomposes on owner start.",
+          "implementation_status": "unverified",
+          "score_delta": null
         }
       ],
       "research_handoff_refs": [
@@ -21136,6 +21501,112 @@
       "research_handoff_ref": "agent-work/research/requirements/CAIRN2-SettingSeeds-L1.json",
       "recommended_priority": "candidate_for_strategist_reassessment_after_current_approved_queue; no queue insertion",
       "owner_start_decision": "not_requested_in_this_run; explicit selected-scope approval needed before new development"
+    },
+    {
+      "task_id": "HX-BL-056",
+      "title": "Показывать зоны влияния мест на гексах",
+      "status": "proposed",
+      "problem": "Точечный маркер безопасного места не описывает область защиты маяка и перекрытия нескольких источников.",
+      "benefit": "Мастер видит, какие гексы защищены, изменяет радиус и продолжает после сохранения; это самостоятельный полезный L1-результат.",
+      "game_editions": [
+        "CROWS October2026PublicPlaytest3"
+      ],
+      "primary_scenario": "develop",
+      "layer": "L1",
+      "requirement_refs": [
+        "CROWS-PT3-007-L1",
+        "CROWS-PT3-008-L1"
+      ],
+      "canonical_rule_ids": [
+        "map.environment_zones"
+      ],
+      "binding_refs": [
+        "agent-work/rules/game-bindings.json#CROWS-PT3-007-L1",
+        "agent-work/rules/game-bindings.json#CROWS-PT3-008-L1"
+      ],
+      "criterion_ids": [
+        "S04-C04",
+        "S07-C01"
+      ],
+      "scope": {
+        "in": [
+          "Зона с source_place_id, graph_radius_hexes и типом защиты; вручную заданные level/prosperity по Crows профилю",
+          "Отрисовка множества существующих гексов, объединение перекрытий, удаление/изменение источника",
+          "Save/load и Undo/Redo сохраняют зоны/происхождение, не генерируют и не перекрашивают карту"
+        ],
+        "out": [
+          "Экономика, автоматическое продвижение циклов, листы персонажей, разрешение Миазмы, телепортация",
+          "Перестройка геометрического ядра, новые физические масштабы в текущемPR503",
+          "Импорт книги/всех учреждений, отдельный Crows генератор мира"
+        ]
+      },
+      "dependencies": [
+        {
+          "task_id": "HX-BL-042",
+          "kind": "physical_length_interoperability; graph zones may be built independently on current grid"
+        },
+        {
+          "task_id": "HX-BL-051",
+          "kind": "Do not expand or preempt current approved geometry delivery"
+        }
+      ],
+      "acceptance_checks": [
+        {
+          "given": "Маяк(0,0) level1; затем level2",
+          "when": "Создать/изменить маяк",
+          "expected": "Сначала7 гексов, затем19; биомы/POI/seed не меняются; удаление одного маяка оставляет покрытие второго"
+        },
+        {
+          "given": "Сохранённое состояние после принятого действия",
+          "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+          "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+        },
+        {
+          "given": "level5 prosperity9→10→9",
+          "when": "Принять новые параметры маяка",
+          "expected": "91→127→91 гексов на неограниченной сетке; профиль не повышает процветание сам"
+        },
+        {
+          "given": "Сохранённое состояние после принятого действия",
+          "when": "Сохранить/загрузить и повторно открыть карточку без нового игрового действия",
+          "expected": "Те же ID, значения, связи и видимость; время, RNG, ресурсы и события сами не продвигаются."
+        },
+        {
+          "given": "Два маяка с перекрывающимися зонами; ручныебиомы/POI",
+          "when": "Удалить первый; Undo; save/load",
+          "expected": "Второй сохраняет защиту, Undoвозвращаетпервый, данные карты неизменны; повторное открытие не генерирует новые сущности."
+        }
+      ],
+      "expected_evidence": {
+        "method": "Independent exact-SHA UI, persistence and boundary checks after authorized implementation",
+        "coverage_status": "unverified"
+      },
+      "score_delta": null,
+      "source_limitations": [
+        "Only October2026PT3; graph-radius/product overlap representation are analyst operationalization; not a published implementation."
+      ],
+      "priority_rationale": "New L1 gap, reusable with source-specific profiles. Existing scale/home/placement tasks reused rather than duplicated; no automatic reprioritization of approved primary queue.",
+      "estimate": {
+        "status": "planning_only_not_measured",
+        "active_hours_range": [
+          3,
+          6
+        ],
+        "runs_range": [
+          4,
+          8
+        ],
+        "confidence": "medium_low",
+        "assumptions": "Existing map overlay/persistence APIs usable after current delivery; analyst/interviewer resolve UI and scope before implementation.",
+        "split_trigger": "Forecast beyond ~24 runs: first manually defined saved radius overlay, then Crows parameter adapter as separate user-visible slice."
+      },
+      "research_components": [
+        {
+          "component_id": "CROWS-BEACON1-v1",
+          "status": "proposed",
+          "traceability_ref": "agent-work/research/requirements/CROWS-PT3-traceability.json"
+        }
+      ]
     }
   ],
   "last_review": {
