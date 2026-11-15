@@ -1,0 +1,68 @@
+{
+  "base_sha": "8f5a77bf1c365eeb5d582989324f2b157a120822",
+  "head_sha": "ddb3ceb2709c7c6c16d3b7a6a1bede904a864ead",
+  "added": 1,
+  "removed": 0,
+  "modified": 1,
+  "suite": "Node",
+  "suites": [
+    {
+      "suite": "test/mapTransactions.test.mjs",
+      "base_named_cases": 29,
+      "head_named_cases": 30,
+      "added": 1,
+      "removed": 0,
+      "modified": 1,
+      "added_names": [
+        "GEO2 actual connected land-only generation retains old refinement and leaves new domain unrefined in one history action"
+      ],
+      "modified_names": [
+        "G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo"
+      ]
+    }
+  ],
+  "scenario_risk": "G202/G208/ROAD-02/RIV-014: connected empty land support must not discard/replan old refinement or refine new domain; nonempty terminal contacts still reject atomically with redo/RNG intact.",
+  "reuse_or_new_reason": "New actual safelyAddRegionToMap/recordGenerated lifecycle is a distinct operation from ordinary river edit. Reuses existing tiny geometry fixture and adds an unrefined control, not another seed series. Existing source-edit case changes only unsafe import location to actual potential-feature contact; empty support is now valid.",
+  "count_source": "Exact base/head named static Node test diff:29→30, one added logical runner case, one existing body modified; subscenarios not additional cases. No parameterized tests changed.",
+  "browser_changes": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "rng_changes": {
+    "added": 0,
+    "removed": 0,
+    "modified": 0
+  },
+  "executions": {
+    "full_node": {
+      "executed": 420,
+      "passed": 420,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 646328.066372
+    },
+    "focused": {
+      "executed": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "included_in_full_total": true
+    },
+    "browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    },
+    "rng_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+      "exit_code": 1,
+      "after_build": true,
+      "status": "blocked_environment_socket_EPERM",
+      "scenarios_executed": 0
+    }
+  }
+}

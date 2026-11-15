@@ -19,3 +19,7 @@ Development corrections: direct low-level fallback call reproduced domain refusa
 ## Remaining work and score
 
 Nonempty mixed closure (river/road/POI/body contact and terminal continuation), changed source membership, initial preview/Apply/Cancel, actual new-SHA map/PNG/UI and full G201–G210 remain pending. New geography stays unrefined until explicit Apply. No independent review yet; exact new SHA requires it and score_assessment1.2 before release approval. Criteria S01-C02/C04,S02-C02,S04-C03/C04,S05-C01 remain grade/points/delta unknown; no current-score/history mutation or claimed game compatibility. HX-FB-023 included only as existing GEO2 scope; HX-FB-002 audit already audit_completed, not repeated. No additional expenses.
+
+## Final verification
+
+Exact ddb3ceb2709c7c6c16d3b7a6a1bede904a864ead / tree d12332725a9b20ae8fe331df39c84a797fa84f19: npm run check exit0,420/420 Node,0 failed/skipped/cancelled; TypeScript and build passed. Both actual post-build browser/RNG-browser commands exit1 at Chromium socket() EPERM before scenarios, no screenshots/acceptance. Source4 files and early evidence5 files read back exactly; local HEAD/tree aligned, tracked diff empty. Actual automation start/end enabled; no restoration. New test+1/removed0/modified1; focused2 cases included in full420, not added on top.
