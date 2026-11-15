@@ -4,6 +4,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
+import {detailAuthoredState} from '../src/detailModel.ts';
+import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
+import {reconcileDetailGeography} from '../src/detailGeography.ts';
+import {synchronizeToponyms} from '../src/toponyms.ts';
 const serial=v=>JSON.parse(JSON.stringify(v));
 const stable=app=>{const d=serial(app.createSaveData());delete d.savedAt;return d;};
 function setup(seed=42) {
@@ -849,6 +853,26 @@ test('G208-AUTO actual ordinary river edit atomically updates physical4, preserv
  assertUndoRedo(h,before,after);
  h.injectFunction('readTextFile',async file=>file.text);
  await load(h,after);assert.deepEqual(stable(h.render()),after,'public16 reopens its exact stored choices without rerouting');
+ // Reuse this real accepted lifecycle for the new global/scoped public16
+ // boundary, not another setup/seed. The added tract is a detached source
+ // snapshot, not proof of ordinary connected expansion or UI activation.
+ const doc=h.render().captureDocument(),cell={q:40,r:40},key='40,40',template=doc.map.regions[0],region={...template,id:3,hexes:[cell],centerHex:cell,anchorHex:cell,finalSize:1,targetSize:1,heightLevel:1,isTract:true,isCoastal:false,suppressCentralPoi:true,pointsOfInterest:[cell],pointOfInterestKinds:{[key]:'mill'}};
+ const sourceMap={...doc.map,regions:[...doc.map.regions,region],physicalGrid:detailAuthoredState(doc.map.physicalGrid),candidateHexes:h.geometry.getCandidateHexes([...doc.map.regions.flatMap(r=>r.hexes),cell],new Set(doc.map.hexTerrainByKey.keys()))};
+ sourceMap.toponyms=synchronizeToponyms(doc.map.toponyms,[...Object.entries(doc.map.toponyms).map(([key,value])=>({key,kind:value.kind})),{key:'region:3',kind:doc.map.toponyms[`region:${template.id}`].kind}],doc.map.toponymSeed);
+ const authored=reconcileDetailGeography(sourceMap,h.geometry.detailMapRiverGeometry(sourceMap,sourceMap.physicalGrid.grid.origin)),outside=authored.poiFootprints.find(f=>f.legacyRef==='poi:3:40,40'),fineKey=`${outside.cells[0].q},${outside.cells[0].r}`;
+ const global={...authored,fineCellEdits:{...authored.fineCellEdits,[fineKey]:{name:{ru:'Новое место',en:'New site'},note:'keep unrefined authored data'}}},scoped=composeScopedDetailState(global,doc.map.physicalGrid.geometryRefinement),incoming=serial(h.render().createSaveData({...doc,map:{...sourceMap,physicalGrid:scoped}}));delete incoming.savedAt;
+ const beforeScoped=stable(h.render()),beforeCount=h.render().undoHistory.length;
+ const restorePrepare=h.injectFunction('geometryPlanInput',()=>{throw Error('Import must not prepare/reroute stored choices');});
+ try{await load(h,incoming);}finally{restorePrepare();}
+ const reopened=stable(h.render());assert.deepEqual(reopened,incoming,'actual public16 loader retains global owners and exact scoped choices');assert.equal(h.render().undoHistory.length,beforeCount+1);assertUndoRedo(h,beforeScoped,reopened);
+ assert.equal(reopened.map.physicalGrid.poiIdentities.byLegacyRef['poi:3:40,40'],outside.poiId);assert.deepEqual(reopened.map.physicalGrid.geometryRefinement.riverPlan.paths,after.map.physicalGrid.geometryRefinement.riverPlan.paths);assert.deepEqual(reopened.generation,after.generation);
+ h.render().setSelectedHex(cell);const beforeMetadata=stable(h.render()),metadataCount=h.render().undoHistory.length;h.render().setSelectedHexBiomeOverride('open_hills');const metadata=stable(h.render());assert.equal(metadata.map.biomeOverrideByHexKey[key],'open_hills');assert.equal(h.render().undoHistory.length,metadataCount+1);assert.deepEqual(metadata.map.physicalGrid.geometryRefinement.riverPlan.paths,reopened.map.physicalGrid.geometryRefinement.riverPlan.paths);assert.deepEqual(metadata.map.physicalGrid.fineCellEdits,global.fineCellEdits);assertUndoRedo(h,beforeMetadata,metadata);
+ h.render().undoMap();const protectedSave=stable(h.render()),protectedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(protectedStacks[1].length);
+ const alerts=[];h.setWindow({alert:message=>alerts.push(message),confirm:()=>true,matchMedia:()=>({matches:false})});
+ const invalidScoped=structuredClone(protectedSave);invalidScoped.map.physicalGrid.globalAuthoredState.poiFootprints[0].worldAnchor.x+=.01;await load(h,invalidScoped);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
+ const touching=structuredClone(protectedSave),near={q:-2,r:0};touching.map.regions.push({...region,id:4,hexes:[near],centerHex:near,anchorHex:near,pointsOfInterest:[],pointOfInterestKinds:{}});touching.map.candidateHexes=h.geometry.getCandidateHexes(touching.map.regions.flatMap(r=>r.hexes),new Set(Object.keys(touching.map.terrainByHexKey)));
+ touching.map.toponyms.names=synchronizeToponyms(touching.map.toponyms.names,[...Object.entries(touching.map.toponyms.names).map(([key,value])=>({key,kind:value.kind})),{key:'region:4',kind:touching.map.toponyms.names['region:3'].kind}],touching.map.toponyms.seed);
+ assert.throws(()=>h.geometry.assertHexcrawlSaveData(touching),/scoped_boundary_requires_closure/,'potential touching scope is not silently accepted as a complete mixed closure');await load(h,touching);assert.equal(alerts.length,2);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
 });
 test('G208-AUTO actual closure failure and invalid16 import preserve source, refinement and the available redo branch',async()=>{
  const {h,edge,a}=geometryRiverBackendFixture();await acceptGeometryRefinement(h);

@@ -44,7 +44,7 @@ export function prepareGeometryRefinementBoundary(input:Input,accepted:GeometryR
   budget.enter('source');
   const source=normalizeRefinementRiverSource({rivers:input.map.rivers,marks:input.marks,origin:input.origin,consumeWork:budget.charge});
   if(source.status==='error')return fail(source.code,source.refs);
-  const retainedRivers=new Set(scope.input.map.rivers.map(r=>r.id)),retainedRegions=new Set(scope.input.map.regions.map(r=>r.id));
+  const retainedRivers=new Set(scope.input.map.rivers.map(r=>r.id)),retainedRegions=new Set(scope.input.map.regions.map(r=>r.id)),retainedRoads=new Set(scope.input.map.roads.map(r=>r.id));
   const oldWater=new Set([...scope.input.map.hexTerrainByKey].filter(([,v])=>['lake','sea'].includes(v.terrainOverride??'')).map(([k])=>k));
   const width=(fullness:number)=>{const value=input.widths.get(fullness);if(value===undefined||!Number.isFinite(value)||value<=0)throw Error('invalid_boundary_width');return value;};
   const paths=new Map(accepted.riverPlan.paths.map(p=>[JSON.stringify([p.riverId,p.sourceEdgeKey]),p]));
@@ -88,9 +88,11 @@ export function prepareGeometryRefinementBoundary(input:Input,accepted:GeometryR
   // The quadratic control hull encloses every point of each actual lake mode;
   // round segment capsules enclose finite river joins/caps, without width/sin.
   for(const c of accepted.riverPlan.water.capsules)add(retained,`river:${c.riverId}`,[c.from,c.to],c.radius);
-  for(const s of source.segments)if(!retainedRivers.has(s.riverId))add(added,`river:${s.riverId}`,[s.from.point,s.to.point],width(s.fullness)/2);
+  // Include source6 and stored fine geometry: switching overview must not
+  // turn a separated persisted snapshot into a new untyped contact.
+  for(const s of source.segments)add(retainedRivers.has(s.riverId)?retained:added,`river:${s.riverId}`,[s.from.point,s.to.point],width(s.fullness)/2);
   for(const r of accepted.roads.roads)add(retained,`road:${r.roadId}`,r.points,input.roadPaddingMiles);
-  for(const road of scope.outside.roads)for(const s of road.segments)add(added,`road:${road.id}`,[detailCellCenter(coarse,s.from),detailCellCenter(coarse,s.to)],input.roadPaddingMiles);
+  for(const road of input.map.roads)for(const s of road.segments)add(retainedRoads.has(road.id)?retained:added,`road:${road.id}`,[detailCellCenter(coarse,s.from),detailCellCenter(coarse,s.to)],input.roadPaddingMiles);
   const poi=(target:Box[],f:DetailPoiFootprint)=>{
    const anchor=detailFootprintWorldAnchor(f,fine),polygons=detailFootprintPolygons(f,fine);
    add(target,`POI:${f.poiId}`,[anchor,...polygons.flat(),...f.cells.flatMap(c=>detailCellPolygon(fine,c)),...f.attachments.map(a=>a.kind==='water'?a.contact:a.entry)]);

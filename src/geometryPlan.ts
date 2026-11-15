@@ -299,7 +299,7 @@ export function prepareGeometryPlan(input:GeometryPlanInput){
  try {
   const accepted=input.map.physicalGrid,previous=accepted?.version===4?accepted.geometryRefinement:undefined;
   if(input.cancelled?.())return error('source',['prepare_cancelled']);
-  const authored=input.authoredState??previous?.sourceState??accepted;
+  const authored=input.authoredState??accepted?.globalAuthoredState??previous?.sourceState??accepted;
   if(authored&&authored.version!==3)return error('source',['authored_physical3_required']);
   const sourceState=authored?parseDetail1StateV11(authored):undefined;
   const map=sourceState?{...input.map,physicalGrid:sourceState}:input.map;

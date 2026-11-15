@@ -18,6 +18,9 @@ export type Detail1State=Readonly<{
   schema:'hexcrawl.detail1';version:1|2|3|4;active:true;
   fineCellEdits?:FineCellEdits;
   geometryRefinement?:GeometryRefinement;
+  // A scoped refinement keeps its original authored inputs separately from
+  // the complete global source, including newly generated unrefined owners.
+  globalAuthoredState?:Detail1State;
   grid:Readonly<{origin:WorldPoint;orientation:'pointy';convention:'across_flats'}>;
   source:Readonly<{stepMiles:6;physicalConvention:'known_across_flats'|'unknown';displayAssumption:'project_across_flats_6mi'}>;
   poiIdentities?:DetailPoiIdentities;
@@ -83,7 +86,7 @@ function attachment(value:unknown):DetailAttachmentRef {
  * outer15/physical3 or outer16/physical4. Spatial refs and biome IDs require
  * the candidate map. Persisted refinement is validated without rerouting. */
 export function parseDetail1StateV11(value:unknown):Detail1State {
-  const extra=['poiIdentities','selectedCell','selectedWorldPoint','fineCellEdits','geometryRefinement'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
+  const extra=['poiIdentities','selectedCell','selectedWorldPoint','fineCellEdits','geometryRefinement','globalAuthoredState'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
   const root=object(value,'DETAIL1 state',['schema','version','active','grid','source','viewStep','poiFootprints',...extra]);
   const poiIdentities=extra.includes('poiIdentities')?parseDetailPoiIdentities(root.poiIdentities):undefined;
   if(root.schema!=='hexcrawl.detail1'||![1,2,3,4].includes(root.version as number)||root.active!==true||![1,6,12,24].includes(root.viewStep as number)||!Array.isArray(root.poiFootprints)) throw Error('Invalid DETAIL1 state');
@@ -91,6 +94,7 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
   if(isPhysical&&(!extra.includes('fineCellEdits')||![1,6].includes(root.viewStep as number)))throw Error('Invalid ONE-MILE1 state');
   if(!isPhysical&&extra.includes('fineCellEdits'))throw Error('Fine edits require physical version3 or4');
   if((root.version===4)!==extra.includes('geometryRefinement'))throw Error('Geometry refinement requires physical version4');
+  if(extra.includes('globalAuthoredState')&&root.version!==4)throw Error('Global authored source requires physical version4');
   const rawGrid=object(root.grid,'DETAIL1 grid',['origin','orientation','convention']);
   if(rawGrid.orientation!=='pointy'||rawGrid.convention!=='across_flats') throw Error('Invalid DETAIL1 grid');
   const origin=worldPoint(rawGrid.origin,'DETAIL1 origin');createDetailGrid(root.viewStep as DetailStep,origin);
@@ -144,15 +148,49 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
     if(!source||typeof source!=='object'||(source as Plain).version!==3)throw Error('Geometry source requires physical version3');
     return parseDetail1StateV11(source);
   }):undefined;
-  const state:Detail1State=Object.freeze({...(geometryRefinement?{geometryRefinement}:{}),...(fineCellEdits?{fineCellEdits}:{}),...(selectedCell?{selectedCell}:{}),...(selectedWorldPoint?{selectedWorldPoint}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:root.version as 1|2|3|4,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
+  let globalAuthoredState:Detail1State|undefined;
+  if(extra.includes('globalAuthoredState')){
+    const source=root.globalAuthoredState as Plain;
+    if(!source||typeof source!=='object'||source.version!==3||Object.prototype.hasOwnProperty.call(source,'geometryRefinement')||Object.prototype.hasOwnProperty.call(source,'globalAuthoredState'))throw Error('Global authored source requires a nonrecursive physical3 snapshot');
+    globalAuthoredState=parseDetail1StateV11(source);
+  }
+  const state:Detail1State=Object.freeze({...(globalAuthoredState?{globalAuthoredState}:{}),...(geometryRefinement?{geometryRefinement}:{}),...(fineCellEdits?{fineCellEdits}:{}),...(selectedCell?{selectedCell}:{}),...(selectedWorldPoint?{selectedWorldPoint}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:root.version as 1|2|3|4,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
   if(geometryRefinement){
-    const authored=geometryRefinement.sourceState;
+    const authored=globalAuthoredState??geometryRefinement.sourceState;
+    if(globalAuthoredState)assertScopedAuthoredState(globalAuthoredState,geometryRefinement.sourceState);
     if(!sameValue(state.grid,authored.grid)||!sameValue(state.source,authored.source)||!sameValue(state.poiIdentities,authored.poiIdentities))throw Error('Geometry source does not match physical grid');
-    const refined=new Map(geometryRefinement.pois.pois.map(p=>[p.poiId,p.footprint]));
-    const expected=new Map(authored.poiFootprints.map(p=>[p.poiId,refined.get(p.poiId)??p]));
+    const expected=new Map(detailRefinedFootprints(authored,geometryRefinement).map(p=>[p.poiId,p]));
     if(poiFootprints.length!==expected.size||poiFootprints.some(p=>!sameValue(p,expected.get(p.poiId))))throw Error('Geometry footprints do not match persisted refinement');
   }
   return state;
+}
+
+function footprintGeometry(f:DetailPoiFootprint){
+  const {note:ignored,...extent}=f.extent as DetailExtent&{note?:string};
+  const ref=(a:DetailAttachmentRef)=>a.kind==='water'?`water:${a.waterId}:${a.segmentId}`:`route:${a.routeId}:${a.accessNodeId}`;
+  return {...f,extent,cells:[...f.cells].sort((a,b)=>a.q-b.q||a.r-b.r),attachments:[...f.attachments].sort((a,b)=>ref(a)<ref(b)?-1:ref(a)>ref(b)?1:0)};
+}
+function assertScopedAuthoredState(global:Detail1State,scoped:Detail1State):void {
+  if(!sameValue(global.grid,scoped.grid)||!sameValue(global.source,scoped.source))throw Error('Scoped authored grid does not match global source');
+  const old=scoped.poiIdentities,current=global.poiIdentities;
+  if(old&&(!current||current.nextId<old.nextId||Object.entries(old.byLegacyRef).some(([alias,id])=>current.byLegacyRef[alias]!==id)))throw Error('Scoped authored identities do not match global source');
+  const owners=new Map(global.poiFootprints.map(f=>[f.poiId,f]));
+  for(const f of scoped.poiFootprints){const current=owners.get(f.poiId);if(!current||!sameValue(footprintGeometry(f),footprintGeometry(current)))throw Error('Scoped authored footprint does not match global source');}
+}
+/** Overlay only stored refined geometry. Authored extent metadata remains
+ * global; this never routes or allocates an owner. Spatial checks need a map. */
+export function detailRefinedFootprints(authored:Detail1State,refinement:GeometryRefinement):readonly DetailPoiFootprint[]{
+  const refined=new Map(refinement.pois.pois.map(p=>[p.poiId,p.footprint]));
+  return Object.freeze(authored.poiFootprints.map(f=>{const moved=refined.get(f.poiId);return moved?Object.freeze({...moved,extent:f.extent}):f;}));
+}
+/** Current local fields belong to the outer accepted layer, while physical
+ * geometry inputs come from the full authored snapshot, never refined output. */
+export function detailAuthoredState(state:Detail1State):Detail1State {
+  if(state.version!==4)return state;
+  const source=state.globalAuthoredState??state.geometryRefinement?.sourceState;
+  if(!source)throw Error('Missing authored source');
+  const {selectedCell:ignoredCell,selectedWorldPoint:ignoredPoint,...base}=source;
+  return parseDetail1StateV11({...base,viewStep:state.viewStep,fineCellEdits:state.fineCellEdits,...(state.selectedCell?{selectedCell:state.selectedCell}:{}),...(state.selectedWorldPoint?{selectedWorldPoint:state.selectedWorldPoint}:{})});
 }
 
 // Object key order is not geometry. Preserve persisted arrays and compare the

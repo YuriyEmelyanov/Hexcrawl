@@ -5,7 +5,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createGenerationHarness} from './helpers/generation-harness.mjs';
 import {prepareGeometryPlan,parseGeometryRefinement,validateGeometryRefinementSource} from '../src/geometryPlan.ts';
-import {parseDetail1StateV11} from '../src/detailModel.ts';
+import {parseDetail1StateV11,detailAuthoredState,validateDetail1Document} from '../src/detailModel.ts';
+import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
 import {projectOneMile} from '../src/oneMile.ts';
 import {detailSourcePixelToWorld} from '../src/detailGeography.ts';
 import {buildNaturalLakes} from '../src/rendering/lakeGeometry.ts';
@@ -117,6 +118,26 @@ test('GEO2 scoped source projection retains literal choices and refuses hidden b
  const clearedProjection=projectGeometryRefinementSource({...expanded,map:{...expanded.map,physicalGrid:clearedOuter}},withSnapshotFocus);assert.equal(clearedProjection.status,'projected',JSON.stringify(clearedProjection));assert.equal(clearedProjection.globalAuthoredState.selectedCell,undefined);assert.equal(clearedProjection.globalAuthoredState.selectedWorldPoint,undefined);
  const laterCounter=parseGeometryRefinement({...g,sourceState:{...g.sourceState,poiIdentities:{...g.sourceState.poiIdentities,nextId:g.sourceState.poiIdentities.nextId+3}}},parseDetail1StateV11);
  assert.equal(projectGeometryRefinementSource({...expanded,map:{...expanded.map,physicalGrid:g.sourceState}},laterCounter).code,'scope_source_changed','counter cannot regress even when all currently live IDs still fit');
+});
+
+test('GEO2 scoped physical4 preserves global authored owners and strictly binds the retained source',async()=>{
+ const {input,result}=await accepted(),g=result.geometryRefinement,identity=g.sourceState.poiIdentities,alias='poi:999999:1000,1000',id=`detail-poi:${identity.nextId}`,anchor=detailCellCenter(createDetailGrid(6),{q:1000,r:1000}),cell=worldToDetailCell(createDetailGrid(1),anchor);
+ // New persisted ownership boundary; same cached source fixture, no routing
+ // sweep. Old source scope and new global authored data must stay distinct.
+ const outside={poiId:id,legacyRef:alias,worldAnchor:anchor,cells:[cell],extent:{kind:'manual_size',diameterMiles:.1,basis:'conditional',note:'outside authored note'},attachments:[]};
+ const global=parseDetail1StateV11({...g.sourceState,poiIdentities:{...identity,nextId:identity.nextId+1,byLegacyRef:{...identity.byLegacyRef,[alias]:id}},poiFootprints:[...g.sourceState.poiFootprints,outside],fineCellEdits:{[`${cell.q},${cell.r}`]:{name:{ru:'Новое',en:'New'},note:'outside fine note'}},selectedCell:cell,selectedWorldPoint:anchor});
+ const before=JSON.stringify([global,g]),state=composeScopedDetailState(global,g);
+ assert.equal(state.version,4);assert.deepEqual(state.globalAuthoredState,global);assert.deepEqual(detailAuthoredState(state),global);assert.equal(state.poiFootprints.length,global.poiFootprints.length);assert.equal(state.poiIdentities.nextId,global.poiIdentities.nextId);assert.deepEqual(state.geometryRefinement,g);
+ assert.deepEqual(parseDetail1StateV11(copy(state)),state);assert.deepEqual(parseDetail1StateV11(reverseKeys(copy(state))),state);
+ assert.deepEqual(state.geometryRefinement.riverPlan.paths,g.riverPlan.paths);assert.deepEqual(state.geometryRefinement.roads,g.roads);assert.deepEqual(state.geometryRefinement.sideChoices,g.sideChoices);assert.equal(JSON.stringify([global,g]),before);
+ const extra={...input.map.regions[0],id:999999,hexes:[{q:1000,r:1000}],centerHex:{q:1000,r:1000},pointsOfInterest:[{q:1000,r:1000}],pointOfInterestKinds:{'1000,1000':'ruins'},suppressCentralPoi:true};
+ const scoped=projectGeometryRefinementSource({...input,map:{...input.map,physicalGrid:state,regions:[...input.map.regions,extra]},landCells:[...input.landCells,...extra.hexes]},g);assert.equal(scoped.status,'projected',JSON.stringify(scoped));assert.deepEqual(scoped.globalAuthoredState,global);assert.equal(validateGeometryRefinementSource(scoped.input,g),true);
+ const [a,b]=g.sourceState.poiFootprints,swapped=copy(global);[swapped.poiIdentities.byLegacyRef[a.legacyRef],swapped.poiIdentities.byLegacyRef[b.legacyRef]]=[b.poiId,a.poiId];swapped.poiFootprints=swapped.poiFootprints.map(f=>f.poiId===a.poiId?{...f,poiId:b.poiId}:f.poiId===b.poiId?{...f,poiId:a.poiId}:f);assert.doesNotThrow(()=>parseDetail1StateV11(swapped));assert.throws(()=>composeScopedDetailState(swapped,g),/Scoped authored identities/);
+ const changed=copy(global);changed.poiFootprints[0].worldAnchor.x+=.01;assert.throws(()=>composeScopedDetailState(changed,g),/Scoped authored footprint/);
+ const reserved=parseGeometryRefinement({...g,sourceState:{...g.sourceState,poiIdentities:{...identity,nextId:identity.nextId+3}}},parseDetail1StateV11);assert.throws(()=>composeScopedDetailState(global,reserved),/Scoped authored identities/,'counter must not regress even with legal live IDs');
+ const missing=copy(state);delete missing.globalAuthoredState;assert.throws(()=>parseDetail1StateV11(missing));
+ const recursive=copy(state);recursive.globalAuthoredState.globalAuthoredState=recursive.globalAuthoredState;assert.throws(()=>parseDetail1StateV11(recursive),/nonrecursive/);
+ assert.throws(()=>parseDetail1StateV11({...global,globalAuthoredState:global}),/physical version4/);assert.throws(()=>composeScopedDetailState(state,g),/authored physical3/);assert.throws(()=>validateDetail1Document(state,15),/requires physical version3/);
 });
 
 test('GEO2 boundary preflight conservatively separates supplied envelopes or requires dependency closure',async()=>{
