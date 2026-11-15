@@ -5,8 +5,8 @@
   "task_id": "HX-BL-051",
   "stage_id": "ONE-MILE1",
   "substage": "GEO2-scoped-persistence",
-  "status": "active",
-  "execution_running": true,
+  "status": "completed",
+  "execution_running": false,
   "started_at": "2026-11-15T00:36:11.090Z",
   "base_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
   "working_branch": "agent/hx-bl-051-geo2",
@@ -28,19 +28,38 @@
   },
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "title": "Команда HexCrawl",
     "start": {
       "checked_at": "2026-11-15T00:36:11.090Z",
       "method": "automations.peek",
       "status": "checked",
       "is_enabled": true
     },
+    "additional_start_checks": [
+      {
+        "checked_at": "2026-11-15T01:10:56.928Z",
+        "method": "automations.peek",
+        "status": "checked",
+        "is_enabled": true,
+        "phase": "same_task_invocation_while_existing_claim_active"
+      }
+    ],
     "end": {
-      "status": "pending"
-    }
+      "checked_at": "2026-11-15T01:22:47.231Z",
+      "method": "automations.peek",
+      "status": "checked",
+      "is_enabled": true
+    },
+    "restoration": {
+      "performed": false,
+      "reason": "All actual start/resume/end observations enabled"
+    },
+    "errors": [],
+    "scope": "Point-in-time actual checks only; no guarantee against later service changes. Existing task/prompt/schedule unchanged."
   },
   "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
   "tree_sha": "e5970342fe7d218e51b2ee4ca0096fe81ede071c",
-  "updated_at": "2026-11-15T01:09:02.935Z",
+  "updated_at": "2026-11-15T01:22:47.231Z",
   "test_change_summary": {
     "base_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
     "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
@@ -81,9 +100,17 @@
     "verified_files": 9,
     "local_tree_exact": true,
     "focused_unit": "5/5 passed",
-    "focused_real_handlers": "1/1 passed; actual scoped16 import/export/undo/redo, metadata commit and two invalid-import guards",
+    "focused_real_handlers": "1/1 passed",
     "typescript": "passed",
-    "full_check": "running; browser/RNG follow build using explicit existing system Chromium",
-    "scope": "Separated scoped snapshots supported; exact connected closure, generator creation and initial UI/map/PNG still pending"
-  }
+    "full_check": "419/419 passed; build passed",
+    "browser": "Both fresh post-build attempts blocked before scenarios by socket EPERM",
+    "scope": "Disjoint scoped persistence integrated; exact connected closure/generator/UI/map/PNG still pending"
+  },
+  "completed_at": "2026-11-15T01:22:47.231Z",
+  "result_ref": "agent-work/results/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-15T0336-programmer-GEO2-scoped-persistence.json",
+  "checks_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/checks.json",
+  "component_complete": true,
+  "full_task_complete": false,
+  "review_ready": false
 }

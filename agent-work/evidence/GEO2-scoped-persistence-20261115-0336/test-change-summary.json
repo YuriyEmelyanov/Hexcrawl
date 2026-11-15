@@ -1,0 +1,97 @@
+{
+  "base_sha": "c94d959ea367815306d3178f4a9cfcca7d0fe650",
+  "head_sha": "f0d977f2de32ef3ca691fe13640db9f73275968f",
+  "suite": "Node",
+  "added": 1,
+  "removed": 0,
+  "modified": 1,
+  "suites": [
+    {
+      "suite": "test/geometryPlan.test.mjs",
+      "added": 1,
+      "removed": 0,
+      "modified": 0,
+      "added_names": [
+        "GEO2 scoped physical4 preserves global authored owners and strictly binds the retained source"
+      ],
+      "modified_names": [],
+      "base_static_cases": 4,
+      "head_static_cases": 5
+    },
+    {
+      "suite": "test/mapTransactions.test.mjs",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "added_names": [],
+      "modified_names": [
+        "G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo"
+      ],
+      "base_static_cases": 29,
+      "head_static_cases": 29
+    }
+  ],
+  "count_source": "Exact git base/head named Node test-body comparison. Changed static cases correspond to one runner case each; unchanged parameterized cases not recounted as changes. Subscenarios not extra tests.",
+  "scenario_risk": "G202/G208: scoped saved geometry must retain global authored owners, monotonically allocated IDs, current fine notes/names/focus and atomic import/UndoRedo without silently losing outside objects or redo.",
+  "reuse_or_new_reason": "One new unit contract for independent global/scoped identity guards using existing cached53/31/7 fixture. Extended one existing real handler lifecycle instead of adding a second lifecycle. No unchanged parameterized cases recounted.",
+  "other_suites": {
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "rng": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    }
+  },
+  "executions": {
+    "full_node": {
+      "executed": 419,
+      "passed": 419,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "duration_ms": 640350.860521
+    },
+    "focused": [
+      {
+        "suite": "geometryPlan",
+        "executed": 5,
+        "passed": 5,
+        "included_in_full_total": true
+      },
+      {
+        "suite": "actual mapTransactions selected lifecycle",
+        "executed": 1,
+        "passed": 1,
+        "included_in_full_total": true
+      }
+    ],
+    "temporary_diagnostic": {
+      "executed": 1,
+      "passed": 1,
+      "permanent_test": false,
+      "included_in_full_total": false,
+      "method": "Temporary additional redo assertion after both rejected imports restores normalized full document; owned temp file deleted after pass",
+      "log_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/temporary-redo-diagnostic.log"
+    },
+    "browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser",
+      "exit_code": 1,
+      "status": "blocked_environment_socket_EPERM",
+      "after_build": true,
+      "browser_scenarios_executed": 0,
+      "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/browser.log"
+    },
+    "rng_browser": {
+      "command": "CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser:rng",
+      "exit_code": 1,
+      "status": "blocked_environment_socket_EPERM",
+      "after_build": true,
+      "browser_scenarios_executed": 0,
+      "evidence_ref": "agent-work/evidence/GEO2-scoped-persistence-20261115-0336/browser-rng.log"
+    }
+  }
+}
