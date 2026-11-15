@@ -1,0 +1,3 @@
+import assert from 'node:assert/strict';
+import {createDetailGrid,detailCellPolygon,detailPolygonArea} from './src/detailGrid.ts';
+const pf2Width=12*Math.sqrt(3)/2;const pf2Area=3*Math.sqrt(3)/2*6**2;const p=detailCellPolygon(createDetailGrid(12),{q:0,r:0});const width=Math.max(...p.map(p=>p.x))-Math.min(...p.map(p=>p.x)),height=Math.max(...p.map(p=>p.y))-Math.min(...p.map(p=>p.y));const actualArea=detailPolygonArea(p);assert.ok(Math.abs(actualArea/pf2Area-4/3)<1e-12);assert.throws(()=>createDetailGrid(pf2Width));console.log(JSON.stringify({pf2CornerMiles:12,pf2AcrossFlats:pf2Width,pf2Area,currentProjectStep12Width:width,currentProjectStep12Height:height,currentProjectArea:actualArea,areaRatio:actualArea/pf2Area,exactPf2AcrossFlatsRejected:true,assertions:2}));
