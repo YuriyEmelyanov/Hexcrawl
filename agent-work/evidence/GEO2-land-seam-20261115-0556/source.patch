@@ -1,0 +1,166 @@
+diff --git a/src/App.tsx b/src/App.tsx
+index c8ac3a8..ee5583a 100644
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -5,7 +5,7 @@ import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIn
+ import {summarizeDetailCell} from './detailSummary';
+ import {prepareRefinementLakeModes} from './geometryRefinementMouths';
+ import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
+-import {prepareGeometryRefinementBoundary} from './geometryRefinementBoundary';
++import {prepareGeometryRefinementBoundary,geometryBoundaryHasEmptyClosure} from './geometryRefinementBoundary';
+ import {composeScopedDetailState} from './geometryRefinementState';
+ import {projectGeometryRefinementEdit} from './geometryRefinementScope';
+ import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
+@@ -1216,7 +1216,8 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
+  const removals=new Map(moves);
+  for(const alias of Object.keys(source.poiIdentities?.byLegacyRef??{}))if(!live.has(alias)&&!removals.has(alias))removals.set(alias,null);
+  const authored=reconcileDetailGeography(sourceMap,detailMapRiverGeometry(sourceMap,source.grid.origin),removals)!;
+- if(accepted.globalAuthoredState){
++ const priorRegions=new Set(before.regions.map(r=>r.id));
++ if(accepted.globalAuthoredState||candidate.regions.some(r=>!priorRegions.has(r.id))){
+   // Project changed authored input before composing: the old layer is stale
+   // until a new complete plan has passed its existing dependency checks.
+   const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement);
+@@ -1225,7 +1226,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
+   const result=prepareGeometryPlan({...geometryPlanInput(retainedMap),authoredState:projected.input.map.physicalGrid});
+   if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
+   const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
+-  if(boundary.status==='prepared'&&boundary.boundaryValidation==='disjoint_model_envelopes')return map;
++  if(geometryBoundaryHasEmptyClosure(boundary))return map;
+   // Potential pairs are not confirmed defects or permission to move them.
+   // Until exact mixed closure is integrated, preserve the complete old state.
+   throw Error(`GEO2 scoped_closure_pending: ${boundary.status==='error'?boundary.code:'potential_boundary_dependency'}`);
+@@ -1243,7 +1244,7 @@ function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
+   if(map.rivers.some(r=>r.deltaParentRiverId!==undefined))validateEditedRiverDeltas([],map.rivers,buildManualRiverGeometryContext(map).geometry);
+   if(state.globalAuthoredState){
+    const boundary=scopedGeometryBoundary(map,state);
+-   if(boundary.status!=='prepared'||boundary.boundaryValidation!=='disjoint_model_envelopes')throw Error(`GEO2 scoped_boundary_requires_closure: ${boundary.status==='error'?boundary.code:'potential_dependency'}`);
++   if(!geometryBoundaryHasEmptyClosure(boundary))throw Error(`GEO2 scoped_boundary_requires_closure: ${boundary.status==='error'?boundary.code:'potential_dependency'}`);
+   }else if(!validateGeometryRefinementSource(refinementSourceInput(map,state,state.geometryRefinement.riverPlan),state.geometryRefinement))throw Error('GEO2 stale_source_fingerprint');
+   if(!state.globalAuthoredState){
+    const lakes=prepareRefinementLakeModes(geometryLakeInputs(map,state.grid.origin));
+
+diff --git a/src/geometryRefinementBoundary.ts b/src/geometryRefinementBoundary.ts
+index a24180b..d77940c 100644
+--- a/src/geometryRefinementBoundary.ts
++++ b/src/geometryRefinementBoundary.ts
+@@ -111,3 +111,28 @@ export function prepareGeometryRefinementBoundary(input:Input,accepted:GeometryR
+   return Object.freeze({status:'prepared' as const,boundaryValidation:pairs.length?'dependency_closure_required' as const:'disjoint_model_envelopes' as const,potentialDependencies:pairs,confirmedIntersections:false as const,scope,counts:Object.freeze({retainedEnvelopes:retained.length,addedEnvelopes:added.length}),roadPaddingMiles:input.roadPaddingMiles,workBudget:budget.snapshot(),completeGeometryPlan:false as const,readyForApplication:false as const,globalPersistenceValidation:'required' as const});
+  }catch(error){return fail(error instanceof Error?error.message:'invalid_boundary_input',[]);}
+ }
++
++/** An empty mixed closure can be certified when the ONLY box candidates are
++ * land-support pairs. Distinct integer axial cells in the same regular6 grid
++ * have disjoint interiors, including adjacent cells with a shared edge. The
++ * projection already rejects shared cells and explicit graph/body seams.
++ * Every source/fine river capsule (including terminal caps), road/rail bound,
++ * POI/attachment and all-mode water contour was also compared with the full
++ * opposite support: any potential feature contact keeps the closure pending.
++ * This certificate never resolves a feature pair or authorizes its movement.
++ * Bound embedding coordinates conservatively to avoid a floating-point alias
++ * being called a support seam. No rerouting, RNG, new domain refinement, or
++ * bypass of the full global document validation is implied. */
++export function geometryBoundaryHasEmptyClosure(result:ReturnType<typeof prepareGeometryRefinementBoundary>):boolean {
++ if(result.status!=='prepared')return false;
++ if(result.boundaryValidation==='disjoint_model_envelopes')return true;
++ if(!result.potentialDependencies.length||result.potentialDependencies.some(p=>!p.retainedRef.startsWith('region:')||!p.addedRef.startsWith('region:')))return false;
++ const {scope}=result,origin=scope.input.origin;
++ if(!Number.isFinite(origin.x)||!Number.isFinite(origin.y)||Math.abs(origin.x)>1000000||Math.abs(origin.y)>1000000)return false;
++ const valid=(c:{q:number;r:number})=>Number.isSafeInteger(c.q)&&Number.isSafeInteger(c.r)&&Math.abs(c.q)<=1000000&&Math.abs(c.r)<=1000000;
++ const retained=new Set<string>();
++ for(const region of scope.input.map.regions)for(const cell of region.hexes){if(!valid(cell))return false;retained.add(cellKey(cell));}
++ const added=new Set<string>();
++ for(const region of scope.outside.regions)for(const cell of region.hexes){const k=cellKey(cell);if(!valid(cell)||retained.has(k)||added.has(k))return false;added.add(k);}
++ return true;
++}
+
+diff --git a/test/mapTransactions.test.mjs b/test/mapTransactions.test.mjs
+index 0e21a92..c05edc0 100644
+--- a/test/mapTransactions.test.mjs
++++ b/test/mapTransactions.test.mjs
+@@ -885,10 +885,36 @@ test('G208-AUTO actual ordinary river edit atomically updates physical4, preserv
+  assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
+  const alerts=[];h.setWindow({alert:message=>alerts.push(message),confirm:()=>true,matchMedia:()=>({matches:false})});
+  const invalidScoped=structuredClone(protectedSave);invalidScoped.map.physicalGrid.globalAuthoredState.poiFootprints[0].worldAnchor.x+=.01;await load(h,invalidScoped);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
+- const touching=structuredClone(protectedSave),near={q:-2,r:0};touching.map.regions.push({...region,id:4,hexes:[near],centerHex:near,anchorHex:near,pointsOfInterest:[],pointOfInterestKinds:{}});touching.map.candidateHexes=h.geometry.getCandidateHexes(touching.map.regions.flatMap(r=>r.hexes),new Set(Object.keys(touching.map.terrainByHexKey)));
++ const touching=structuredClone(protectedSave),near={q:0,r:-1};touching.map.regions.push({...region,id:4,hexes:[near],centerHex:near,anchorHex:near,pointsOfInterest:[],pointOfInterestKinds:{}});touching.map.candidateHexes=h.geometry.getCandidateHexes(touching.map.regions.flatMap(r=>r.hexes),new Set(Object.keys(touching.map.terrainByHexKey)));
+  touching.map.toponyms.names=synchronizeToponyms(touching.map.toponyms.names,[...Object.entries(touching.map.toponyms.names).map(([key,value])=>({key,kind:value.kind})),{key:'region:4',kind:touching.map.toponyms.names['region:3'].kind}],touching.map.toponyms.seed);
+  assert.throws(()=>h.geometry.assertHexcrawlSaveData(touching),/scoped_boundary_requires_closure/,'potential touching scope is not silently accepted as a complete mixed closure');await load(h,touching);assert.equal(alerts.length,2);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
+ });
++// A generated domain is a distinct handler/history path from a source edit.
++// Reuse the tiny accepted fixture; no seed sweep or duplicate routing tests.
++test('GEO2 actual connected land-only generation retains old refinement and leaves new domain unrefined in one history action',async()=>{
++ const {h}=geometryRiverBackendFixture(),control=geometryRiverBackendFixture().h;
++ await acceptGeometryRefinement(h);
++ const initial=h.render().captureDocument().map;h.render().restoreSnapshot({...initial,physicalGrid:{...initial.physicalGrid,fineCellEdits:{'0,0':{name:{ru:'Старое место',en:'Old site'},note:'Preserve local data across expansion'}}}});
++ const before=stable(h.render()),count=h.render().undoHistory.length,anchor={q:-1,r:0};
++ assert.ok(h.render().candidateHexes.some(c=>c.q===anchor.q&&c.r===anchor.r),'new land is connected to accepted support');
++ const options={mode:'mythic',targetSize:1,biomeId:h.render().regions[0].biomeId,coastalPreference:'mainland'};
++ control.render().safelyAddRegionToMap(anchor,options);
++ h.render().safelyAddRegionToMap(anchor,options);
++ const after=stable(h.render()),plain=stable(control.render());assert.equal(h.render().generationError,null);assert.equal(after.version,16);assert.equal(after.map.regions.length,before.map.regions.length+1);
++ assert.deepEqual(after.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);
++ const newRegion=after.map.regions.at(-1);assert.equal(JSON.parse(after.map.physicalGrid.geometryRefinement.sourceFingerprint.slice('geo2-source-input-v1:'.length)).regions.some(r=>r.id===newRegion.id),false,'new region does not acquire refinement');
++ for(const [alias,id]of Object.entries(before.map.physicalGrid.poiIdentities?.byLegacyRef??{}))assert.equal(after.map.physicalGrid.poiIdentities.byLegacyRef[alias],id);
++ assert.ok((after.map.physicalGrid.poiIdentities?.nextId??0)>=(before.map.physicalGrid.poiIdentities?.nextId??0));
++ assert.equal(h.render().undoHistory.length,count+1);assert.deepEqual(after.map.physicalGrid.geometryRefinement,before.map.physicalGrid.geometryRefinement,'empty dependency closure preserves all accepted choices literally');
++ assert.ok(after.map.physicalGrid.globalAuthoredState);assert.equal(after.map.physicalGrid.geometryRefinement.sourceState.poiFootprints.length,before.map.physicalGrid.geometryRefinement.sourceState.poiFootprints.length);
++ for(const k of ['regions','rivers','roads','crossings','terrainByHexKey','waterPoiByHexKey','toponyms','nextRiverId','nextRoadId'])assert.deepEqual(after.map[k],plain.map[k],`ordinary generated source ${k} unchanged by refinement`);
++ assert.deepEqual(after.counters,plain.counters);assert.deepEqual(after.generation,plain.generation,'refinement integration consumes no extra world RNG');assertUndoRedo(h,before,after);
++ await load(h,after);assert.deepEqual(stable(h.render()),after,'connected scoped16 imports stored geometry exactly');
++ h.render().undoMap();const protectedSave=stable(h.render()),protectedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(protectedStacks[1].length);
++ const terminal=protectedSave.map.rivers.find(r=>r.id===1).vertexPath[0],unsafe=h.render().candidateHexes.find(c=>h.geometry.getHexCornerPoints(c).some(v=>v.key===terminal.key));assert.ok(unsafe,'unknown cell touches the actual source terminal');
++ h.render().safelyAddRegionToMap(unsafe,options);assert.ok(h.render().generationError,'a source terminal contact still requires nonempty closure');
++ assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks,'failed connected expansion preserves redo and RNG');
++});
+ test('G208-AUTO actual closure failure and invalid16 import preserve source, refinement and the available redo branch',async()=>{
+  const {h,edge,a}=geometryRiverBackendFixture();await acceptGeometryRefinement(h);
+  h.render().setSelectedHex(a);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
+
+diff --git a/docs/region-generation.md b/docs/region-generation.md
+index f7308e1..66f0a58 100644
+--- a/docs/region-generation.md
++++ b/docs/region-generation.md
+@@ -416,8 +416,8 @@ physical4/public16, реальный обработчик расширения/
+ свой контракт. Загрузка не перестраивает пути и не выбирает новые варианты.
+ 
+ Настоящий импорт проверяет полный авторский документ и отдельно сохранённый
+-source-scope. Пока точная mixed closure не реализована, допускаются только
+-раздельные модельные оболочки; касающиеся/потенциально зависимые области
++source-scope. Допускаются раздельные модельные оболочки или подтверждённый
++пустой стык суши по сертификату ниже. Неразрешённые потенциальные зависимости
+ отклоняются до записи документа/истории. Проверяются source6 и сохранённые fine
+ оболочки. Запас текущего штриха/перил —14 исходных пикселей: он покрывает
+ `hypot(11,4+2)+1.1/2` для концов перил и обычный half-stroke1.5px; это запас
+@@ -436,6 +436,30 @@ source-scope. Пока точная mixed closure не реализована, 
+ POI, локальные записи и RNG не теряются. Исходная правка и зависимые сдвиги —
+ одна прежняя Undo/Redo, без дополнительного подтверждения. Отсутствие старой
+ ссылки или новый потенциальный контакт с внешней областью отклоняет всю правку.
+-Автоматическое создание scoped-слоя генератором, точные связные стыки,
++Непустая mixed closure со сдвигом или продолжением зависимых объектов,
+ initial UI/карта/PNG и приёмка полного GEO2 остаются незавершёнными этапами;
+ публикация не разрешена.
++
++
++### Пустой стык суши в scoped GEO2
++
++Предварительная проверка по-прежнему возвращает все потенциальные пары оболочек.
++Отдельный сертификат пустой closure допускает только пары «регион–регион»:
++различные целые axial-клетки одной регулярной6-сетки не пересекаются внутренностями.
++Совпадение клеток/явные стыки графа или водного тела запрещены ещё проекцией.
++Конечные полосы source6/fine-рек с торцевыми caps, дороги/перила, POI с
++присоединениями и все контуры водных тел проверяются против полной противоположной
++опоры. Любая пара с таким объектом оставляет closure незавершённой; в частности,
++новая суша у открытого конца по RIV-014 не считается независимой. Сертификат
++консервативно ограничен |q|, |r| и |origin.x/y|≤1e6 во избежание численного
++слипания координат; за пределами этого диапазона касающийся стык не разрешается.
++Это техническая граница доказательства, не изменение масштаба или модели мира.
++
++При добавлении новых region-ID настоящий recordGenerated теперь сохраняет
++полный авторский слой отдельно от прежнего scope, перепроверяет источник и
++границы и записывает всё одной прежней транзакцией. Для пустого стыка принятый
++GeometryRefinement сохраняется буквально, новая область остаётся неуточнённой.
++Strict public16 импорт использует тот же сертификат без перестроения путей.
++Случай с необходимым сдвигом/продолжением рек/дорог/POI между областями по-прежнему
++отказывается атомарно; не выдаётся за завершённую mixed closure. Обычная генерация
++источника и RNG не меняются. Карта/PNG, initial UI и полная приёмка GEO2 ещё впереди.
