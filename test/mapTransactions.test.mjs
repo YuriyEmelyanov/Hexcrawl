@@ -885,9 +885,35 @@ test('G208-AUTO actual ordinary river edit atomically updates physical4, preserv
  assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
  const alerts=[];h.setWindow({alert:message=>alerts.push(message),confirm:()=>true,matchMedia:()=>({matches:false})});
  const invalidScoped=structuredClone(protectedSave);invalidScoped.map.physicalGrid.globalAuthoredState.poiFootprints[0].worldAnchor.x+=.01;await load(h,invalidScoped);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
- const touching=structuredClone(protectedSave),near={q:-2,r:0};touching.map.regions.push({...region,id:4,hexes:[near],centerHex:near,anchorHex:near,pointsOfInterest:[],pointOfInterestKinds:{}});touching.map.candidateHexes=h.geometry.getCandidateHexes(touching.map.regions.flatMap(r=>r.hexes),new Set(Object.keys(touching.map.terrainByHexKey)));
+ const touching=structuredClone(protectedSave),near={q:0,r:-1};touching.map.regions.push({...region,id:4,hexes:[near],centerHex:near,anchorHex:near,pointsOfInterest:[],pointOfInterestKinds:{}});touching.map.candidateHexes=h.geometry.getCandidateHexes(touching.map.regions.flatMap(r=>r.hexes),new Set(Object.keys(touching.map.terrainByHexKey)));
  touching.map.toponyms.names=synchronizeToponyms(touching.map.toponyms.names,[...Object.entries(touching.map.toponyms.names).map(([key,value])=>({key,kind:value.kind})),{key:'region:4',kind:touching.map.toponyms.names['region:3'].kind}],touching.map.toponyms.seed);
  assert.throws(()=>h.geometry.assertHexcrawlSaveData(touching),/scoped_boundary_requires_closure/,'potential touching scope is not silently accepted as a complete mixed closure');await load(h,touching);assert.equal(alerts.length,2);assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks);
+});
+// A generated domain is a distinct handler/history path from a source edit.
+// Reuse the tiny accepted fixture; no seed sweep or duplicate routing tests.
+test('GEO2 actual connected land-only generation retains old refinement and leaves new domain unrefined in one history action',async()=>{
+ const {h}=geometryRiverBackendFixture(),control=geometryRiverBackendFixture().h;
+ await acceptGeometryRefinement(h);
+ const initial=h.render().captureDocument().map;h.render().restoreSnapshot({...initial,physicalGrid:{...initial.physicalGrid,fineCellEdits:{'0,0':{name:{ru:'Старое место',en:'Old site'},note:'Preserve local data across expansion'}}}});
+ const before=stable(h.render()),count=h.render().undoHistory.length,anchor={q:-1,r:0};
+ assert.ok(h.render().candidateHexes.some(c=>c.q===anchor.q&&c.r===anchor.r),'new land is connected to accepted support');
+ const options={mode:'mythic',targetSize:1,biomeId:h.render().regions[0].biomeId,coastalPreference:'mainland'};
+ control.render().safelyAddRegionToMap(anchor,options);
+ h.render().safelyAddRegionToMap(anchor,options);
+ const after=stable(h.render()),plain=stable(control.render());assert.equal(h.render().generationError,null);assert.equal(after.version,16);assert.equal(after.map.regions.length,before.map.regions.length+1);
+ assert.deepEqual(after.map.physicalGrid.fineCellEdits,before.map.physicalGrid.fineCellEdits);
+ const newRegion=after.map.regions.at(-1);assert.equal(JSON.parse(after.map.physicalGrid.geometryRefinement.sourceFingerprint.slice('geo2-source-input-v1:'.length)).regions.some(r=>r.id===newRegion.id),false,'new region does not acquire refinement');
+ for(const [alias,id]of Object.entries(before.map.physicalGrid.poiIdentities?.byLegacyRef??{}))assert.equal(after.map.physicalGrid.poiIdentities.byLegacyRef[alias],id);
+ assert.ok((after.map.physicalGrid.poiIdentities?.nextId??0)>=(before.map.physicalGrid.poiIdentities?.nextId??0));
+ assert.equal(h.render().undoHistory.length,count+1);assert.deepEqual(after.map.physicalGrid.geometryRefinement,before.map.physicalGrid.geometryRefinement,'empty dependency closure preserves all accepted choices literally');
+ assert.ok(after.map.physicalGrid.globalAuthoredState);assert.equal(after.map.physicalGrid.geometryRefinement.sourceState.poiFootprints.length,before.map.physicalGrid.geometryRefinement.sourceState.poiFootprints.length);
+ for(const k of ['regions','rivers','roads','crossings','terrainByHexKey','waterPoiByHexKey','toponyms','nextRiverId','nextRoadId'])assert.deepEqual(after.map[k],plain.map[k],`ordinary generated source ${k} unchanged by refinement`);
+ assert.deepEqual(after.counters,plain.counters);assert.deepEqual(after.generation,plain.generation,'refinement integration consumes no extra world RNG');assertUndoRedo(h,before,after);
+ await load(h,after);assert.deepEqual(stable(h.render()),after,'connected scoped16 imports stored geometry exactly');
+ h.render().undoMap();const protectedSave=stable(h.render()),protectedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(protectedStacks[1].length);
+ const terminal=protectedSave.map.rivers.find(r=>r.id===1).vertexPath[0],unsafe=h.render().candidateHexes.find(c=>h.geometry.getHexCornerPoints(c).some(v=>v.key===terminal.key));assert.ok(unsafe,'unknown cell touches the actual source terminal');
+ h.render().safelyAddRegionToMap(unsafe,options);assert.ok(h.render().generationError,'a source terminal contact still requires nonempty closure');
+ assert.deepEqual(stable(h.render()),protectedSave);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),protectedStacks,'failed connected expansion preserves redo and RNG');
 });
 test('G208-AUTO actual closure failure and invalid16 import preserve source, refinement and the available redo branch',async()=>{
  const {h,edge,a}=geometryRiverBackendFixture();await acceptGeometryRefinement(h);

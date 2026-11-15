@@ -111,3 +111,28 @@ export function prepareGeometryRefinementBoundary(input:Input,accepted:GeometryR
   return Object.freeze({status:'prepared' as const,boundaryValidation:pairs.length?'dependency_closure_required' as const:'disjoint_model_envelopes' as const,potentialDependencies:pairs,confirmedIntersections:false as const,scope,counts:Object.freeze({retainedEnvelopes:retained.length,addedEnvelopes:added.length}),roadPaddingMiles:input.roadPaddingMiles,workBudget:budget.snapshot(),completeGeometryPlan:false as const,readyForApplication:false as const,globalPersistenceValidation:'required' as const});
  }catch(error){return fail(error instanceof Error?error.message:'invalid_boundary_input',[]);}
 }
+
+/** An empty mixed closure can be certified when the ONLY box candidates are
+ * land-support pairs. Distinct integer axial cells in the same regular6 grid
+ * have disjoint interiors, including adjacent cells with a shared edge. The
+ * projection already rejects shared cells and explicit graph/body seams.
+ * Every source/fine river capsule (including terminal caps), road/rail bound,
+ * POI/attachment and all-mode water contour was also compared with the full
+ * opposite support: any potential feature contact keeps the closure pending.
+ * This certificate never resolves a feature pair or authorizes its movement.
+ * Bound embedding coordinates conservatively to avoid a floating-point alias
+ * being called a support seam. No rerouting, RNG, new domain refinement, or
+ * bypass of the full global document validation is implied. */
+export function geometryBoundaryHasEmptyClosure(result:ReturnType<typeof prepareGeometryRefinementBoundary>):boolean {
+ if(result.status!=='prepared')return false;
+ if(result.boundaryValidation==='disjoint_model_envelopes')return true;
+ if(!result.potentialDependencies.length||result.potentialDependencies.some(p=>!p.retainedRef.startsWith('region:')||!p.addedRef.startsWith('region:')))return false;
+ const {scope}=result,origin=scope.input.origin;
+ if(!Number.isFinite(origin.x)||!Number.isFinite(origin.y)||Math.abs(origin.x)>1000000||Math.abs(origin.y)>1000000)return false;
+ const valid=(c:{q:number;r:number})=>Number.isSafeInteger(c.q)&&Number.isSafeInteger(c.r)&&Math.abs(c.q)<=1000000&&Math.abs(c.r)<=1000000;
+ const retained=new Set<string>();
+ for(const region of scope.input.map.regions)for(const cell of region.hexes){if(!valid(cell))return false;retained.add(cellKey(cell));}
+ const added=new Set<string>();
+ for(const region of scope.outside.regions)for(const cell of region.hexes){const k=cellKey(cell);if(!valid(cell)||retained.has(k)||added.has(k))return false;added.add(k);}
+ return true;
+}

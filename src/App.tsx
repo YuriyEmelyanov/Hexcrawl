@@ -5,7 +5,7 @@ import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIn
 import {summarizeDetailCell} from './detailSummary';
 import {prepareRefinementLakeModes} from './geometryRefinementMouths';
 import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
-import {prepareGeometryRefinementBoundary} from './geometryRefinementBoundary';
+import {prepareGeometryRefinementBoundary,geometryBoundaryHasEmptyClosure} from './geometryRefinementBoundary';
 import {composeScopedDetailState} from './geometryRefinementState';
 import {projectGeometryRefinementEdit} from './geometryRefinementScope';
 import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
@@ -1216,7 +1216,8 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
  const removals=new Map(moves);
  for(const alias of Object.keys(source.poiIdentities?.byLegacyRef??{}))if(!live.has(alias)&&!removals.has(alias))removals.set(alias,null);
  const authored=reconcileDetailGeography(sourceMap,detailMapRiverGeometry(sourceMap,source.grid.origin),removals)!;
- if(accepted.globalAuthoredState){
+ const priorRegions=new Set(before.regions.map(r=>r.id));
+ if(accepted.globalAuthoredState||candidate.regions.some(r=>!priorRegions.has(r.id))){
   // Project changed authored input before composing: the old layer is stale
   // until a new complete plan has passed its existing dependency checks.
   const projected=projectGeometryRefinementEdit(refinementSourceInput({...candidate,physicalGrid:authored},authored,layer.geometryRefinement.riverPlan),layer.geometryRefinement);
@@ -1225,7 +1226,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
   const result=prepareGeometryPlan({...geometryPlanInput(retainedMap),authoredState:projected.input.map.physicalGrid});
   if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
   const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
-  if(boundary.status==='prepared'&&boundary.boundaryValidation==='disjoint_model_envelopes')return map;
+  if(geometryBoundaryHasEmptyClosure(boundary))return map;
   // Potential pairs are not confirmed defects or permission to move them.
   // Until exact mixed closure is integrated, preserve the complete old state.
   throw Error(`GEO2 scoped_closure_pending: ${boundary.status==='error'?boundary.code:'potential_boundary_dependency'}`);
@@ -1243,7 +1244,7 @@ function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
   if(map.rivers.some(r=>r.deltaParentRiverId!==undefined))validateEditedRiverDeltas([],map.rivers,buildManualRiverGeometryContext(map).geometry);
   if(state.globalAuthoredState){
    const boundary=scopedGeometryBoundary(map,state);
-   if(boundary.status!=='prepared'||boundary.boundaryValidation!=='disjoint_model_envelopes')throw Error(`GEO2 scoped_boundary_requires_closure: ${boundary.status==='error'?boundary.code:'potential_dependency'}`);
+   if(!geometryBoundaryHasEmptyClosure(boundary))throw Error(`GEO2 scoped_boundary_requires_closure: ${boundary.status==='error'?boundary.code:'potential_dependency'}`);
   }else if(!validateGeometryRefinementSource(refinementSourceInput(map,state,state.geometryRefinement.riverPlan),state.geometryRefinement))throw Error('GEO2 stale_source_fingerprint');
   if(!state.globalAuthoredState){
    const lakes=prepareRefinementLakeModes(geometryLakeInputs(map,state.grid.origin));
