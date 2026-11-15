@@ -1,0 +1,307 @@
+{
+  "schema_version": 1,
+  "program_id": "HX-RSR-001",
+  "run_id": "2026-11-15-204811-research-resume2h",
+  "status": "completed_configuration",
+  "stage": "schedule_verified_and_persisted",
+  "started_at": "2026-11-15T20:48:11.910Z",
+  "completed_at": "2026-11-15T20:55:54.216Z",
+  "baseline_sha": "b3ed44ae9adf6ce17b135ccb9c4715896602ded2",
+  "verification_sha": "e57706c4c92635bd5120c2ac1c02b90bfee53c60",
+  "selected_task": "Resume existing researcher every two hours; reconcile prior owner pause with current explicit authorization",
+  "selection_reason": "Direct current owner instruction",
+  "alternatives_considered": [
+    "Create duplicate automation — existing ID reused",
+    "Start full manual game research — next scheduled job owns DND5 alignment"
+  ],
+  "inputs_and_versions": {
+    "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+    "rule_analysis_standard": "agent-work/research/rule-analysis-standard.md#v2.0",
+    "work_plan_ref": "agent-work/research/work-plan.json",
+    "claim_ref": "agent-work/claims/2026-11-15-204811-research-resume2h.json"
+  },
+  "findings": {
+    "researcher_enabled": true,
+    "interval_hours": 2,
+    "timezone": "Europe/Moscow",
+    "next_run_time": "2026-11-16T00:30:00+03:00",
+    "first_task": {
+      "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
+      "game_id": "DND5",
+      "layer": "L1",
+      "status": "queued_authorized_after_activation",
+      "action": "Выровнять DND5/DMG2014 по новому стандарту: исчерпывающий самодостаточный перечень L1; конкретный перевод в функции; фактические статусы на свежемSHA; универсальные правила/профили; RA-Q01–15. Использовать существующие материалы и первичный текст, не объявлять старые28строк полным результатом.",
+      "completion_condition": "Полный заявленный тематический корпус и понятная матрица правило→функция→статус с проверкой качества; реальный source/платформенный блокер — точный checkpoint и независимая достижимая задача другой игры top5."
+    },
+    "prior_pause_superseded": true,
+    "Crows_v2_reused": true,
+    "scheduled_research_performed_in_activation": false
+  },
+  "changed_refs": [
+    "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+    "AGENTS.md",
+    "agent-work/process.md",
+    "agent-work/research/contract.md",
+    "agent-work/research/rule-analysis-standard.md",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/work-plan.md",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "automation_peek_verified": true,
+    "prompt_verified": true,
+    "file_readbacks": [
+      {
+        "path": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+        "sha": "7a62827130a94ac63f0e1cd967b99610a83b83cd",
+        "verified": true
+      },
+      {
+        "path": "AGENTS.md",
+        "sha": "dcfa6b9ebf368ed20b752cb49dd3cda34392dea5",
+        "verified": true
+      },
+      {
+        "path": "agent-work/process.md",
+        "sha": "7570a84872b2c482875c61b0e60f30e8b8eac0c0",
+        "verified": true
+      },
+      {
+        "path": "agent-work/research/contract.md",
+        "sha": "861bd0cb250d2934b24e7a5223fe26e41da7f555",
+        "verified": true
+      },
+      {
+        "path": "agent-work/research/rule-analysis-standard.md",
+        "sha": "140cb8103c38bb9ebd2ed27eadcd0f28d3ebf0db",
+        "verified": true
+      },
+      {
+        "path": "agent-work/research/work-plan.json",
+        "sha": "b8a25bd15e30c948860ca059f093d0676543612e",
+        "verified": true
+      },
+      {
+        "path": "agent-work/research/work-plan.md",
+        "sha": "b0010b3d26765d97e7e0055f19eebb63e1d5cfc0",
+        "verified": true
+      },
+      {
+        "path": "agent-work/research/README.md",
+        "sha": "4de1f357d38ec799efd617c4c309a151946be27d",
+        "verified": true
+      },
+      {
+        "path": "agent-work/research/state.json",
+        "sha": "367f4ca7071bbb7be457bd3ac440c757d98e549b",
+        "verified": true
+      }
+    ],
+    "concurrent_AGENTS_process_backlog_reset_preserved": true,
+    "main_branch_modified": false,
+    "main_team_mutated": false,
+    "product_queue_mutated": false,
+    "claims_not_taken": true,
+    "latest_write_policy": "only research_agent; CAS; last repository write"
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": false,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-16T00:30:00+03:00",
+        "default_timezone": "Europe/Moscow",
+        "checked_at": "2026-11-15T20:55:14.806Z",
+        "run_details": {
+          "last_run": {
+            "id": "df0850dc-b370-8321-8124-43e6f9b1215c",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-14T15:30:00Z",
+            "started_at": "2026-11-14T15:31:30.873660Z",
+            "completed_at": "2026-11-14T15:33:38.041153Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            }
+          },
+          "latest_result": {
+            "run_id": "df0850dc-b370-8321-8124-43e6f9b1215c",
+            "created_at": "2026-11-14T15:33:37.872960Z",
+            "scheduled_for": "2026-11-14T15:30:00Z",
+            "completed_at": "2026-11-14T15:33:38.041153Z",
+            "content_text": "Исследователь остановлен, будущие запуски отключены. Точка продолжения сохранена. Возобновлю только по твоему поручению. Команда HexCrawl продолжает работать.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "checked_at": "2026-11-15T20:47:00.746Z",
+        "run_details": {
+          "last_run": {
+            "id": "7a3ef2dd-9230-8331-a57f-63520362032f",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-15T20:00:00Z",
+            "started_at": "2026-11-15T20:04:39.322549Z",
+            "completed_at": "2026-11-15T20:07:18.631991Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            }
+          },
+          "latest_result": {
+            "run_id": "7a3ef2dd-9230-8331-a57f-63520362032f",
+            "created_at": "2026-11-15T20:07:16.026787Z",
+            "scheduled_for": "2026-11-15T20:00:00Z",
+            "completed_at": "2026-11-15T20:07:18.631991Z",
+            "content_text": "Программист: [GitHub Pages успешно опубликовал PR503](https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43748705026).\n\nИтоговая проверка живого сайта ещё не подтверждена сохранённым результатом. Выпуск остаётся за ручным исполнителем; его работу не перехватывал.\n\nСледующий шаг — завершить проверку сайта и передать выпуск стратегу для учёта оценки и следующей задачи. Состояние сохранено в GitHub. Автоматизация включена.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T003000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-16T00:30:00+03:00",
+        "default_timezone": "Europe/Moscow",
+        "checked_at": "2026-11-15T20:55:14.806Z",
+        "run_details": {
+          "last_run": {
+            "id": "df0850dc-b370-8321-8124-43e6f9b1215c",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-14T15:30:00Z",
+            "started_at": "2026-11-14T15:31:30.873660Z",
+            "completed_at": "2026-11-14T15:33:38.041153Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            }
+          },
+          "latest_result": {
+            "run_id": "df0850dc-b370-8321-8124-43e6f9b1215c",
+            "created_at": "2026-11-14T15:33:37.872960Z",
+            "scheduled_for": "2026-11-14T15:30:00Z",
+            "completed_at": "2026-11-14T15:33:38.041153Z",
+            "content_text": "Исследователь остановлен, будущие запуски отключены. Точка продолжения сохранена. Возобновлю только по твоему поручению. Команда HexCrawl продолжает работать.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6af55dd3-2ba4-83ec-a460-d5d88496ee52"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T000000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-16T00:00:00+03:00",
+        "default_timezone": "Europe/Moscow",
+        "checked_at": "2026-11-15T20:55:14.806Z",
+        "run_details": {
+          "last_run": {
+            "id": "7a3ef2dd-9230-8331-a57f-63520362032f",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-15T20:00:00Z",
+            "started_at": "2026-11-15T20:04:39.322549Z",
+            "completed_at": "2026-11-15T20:07:18.631991Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            }
+          },
+          "latest_result": {
+            "run_id": "7a3ef2dd-9230-8331-a57f-63520362032f",
+            "created_at": "2026-11-15T20:07:16.026787Z",
+            "scheduled_for": "2026-11-15T20:00:00Z",
+            "completed_at": "2026-11-15T20:07:18.631991Z",
+            "content_text": "Программист: [GitHub Pages успешно опубликовал PR503](https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43748705026).\n\nИтоговая проверка живого сайта ещё не подтверждена сохранённым результатом. Выпуск остаётся за ручным исполнителем; его работу не перехватывал.\n\nСледующий шаг — завершить проверку сайта и передать выпуск стратегу для учёта оценки и следующей задачи. Состояние сохранено в GitHub. Автоматизация включена.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      }
+    ],
+    "team_changed_by_this_operation": false,
+    "proof_limit": "Enablement and recorded run status are not evidence of completed game research."
+  },
+  "checkpoint": null,
+  "next_candidate": {
+    "id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
+    "game_id": "DND5",
+    "layer": "L1",
+    "action": "Выровнять DND5/DMG2014 по новому стандарту: исчерпывающий самодостаточный перечень L1; конкретный перевод в функции; фактические статусы на свежемSHA; универсальные правила/профили; RA-Q01–15. Использовать существующие материалы и первичный текст, не объявлять старые28строк полным результатом.",
+    "completion_condition": "Полный заявленный тематический корпус и понятная матрица правило→функция→статус с проверкой качества; реальный source/платформенный блокер — точный checkpoint и независимая достижимая задача другой игры top5.",
+    "reason": "Ownerprioritizedtop5andexplicitlyresumed; DND5first; legacybounded28rowsnotcompletenessproof.",
+    "priority_reassessment_required": true
+  },
+  "errors": [
+    {
+      "status": "recovered",
+      "run_id": "2026-11-15-204811-research-resume2h",
+      "stage": "context_recovery",
+      "last_successful_step": "Owner resume decision saved",
+      "failed_operation": {
+        "tool": "functions.wait",
+        "action": "resume yielded script",
+        "safe_locator": "cell_id=6"
+      },
+      "observed_error": "exec cell 6 not found",
+      "stop_reason": null,
+      "cause_status": "unknown",
+      "saved_results": [
+        "Own initial claim and owner decision"
+      ],
+      "exact_continuation": "Completed: fresh-read changed files, preserved concurrent backlog-reset, narrow rebase, CAS writes, automation update/peek verified.",
+      "needs_owner_action": false
+    }
+  ],
+  "last_successful_step": "Actual enabled INTERVAL=2 schedule verified; scoped policy/state read back",
+  "stop_reason": "Requested configuration completed",
+  "cause_status": "confirmed",
+  "saved_results": [
+    "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+    "AGENTS.md",
+    "agent-work/process.md",
+    "agent-work/research/contract.md",
+    "agent-work/research/rule-analysis-standard.md",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/work-plan.md",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json"
+  ],
+  "exact_continuation": "16 November 00:30 Europe/Moscow scheduled researcher: fresh SHA/claims/marker, DND5/DMG2014 full L1 alignment under RA-Q01..15; Crows v2 reuse; top5 reachability and fresh owner priorities.",
+  "needs_owner_action": false,
+  "owner_action": null
+}
