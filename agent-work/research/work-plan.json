@@ -1,8 +1,8 @@
 {
   "plan_id": "HX-RSR-PLAN-20261109-v1",
-  "version": 1,
-  "date": "2026-11-09",
-  "status": "operational_research_plan_within_existing_owner_mandate",
+  "version": 2,
+  "date": "2026-11-15",
+  "status": "paused_by_owner_policy_update_only",
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-research-full-remit.json",
   "purpose": "Улучшать выбор игр и достоверность оценок потенциального спроса на HexCrawl; связывать выводы с полезными возможностями продукта.",
   "workstreams": [
@@ -58,20 +58,21 @@
     }
   ],
   "selection_gate": [
+    "Приоритет15.11: сначала проверить owner pause. Не исполнять приоритетный план без явного resume; после resume P1 top5 alignment имеет приоритет над обычным выбором до закрытия или нового решения владельца.",
     "Прочитать свежие решения,claims и этотплан.",
     "Перед очередным разбором правил сравнить его с существенной неопределённостью рейтинга и сигналом нового/недооценённого кандидата.",
     "Выбрать один достижимыйрезультат с максимальной ожидаемой полезностьюдлярешения; сравнить1–2альтернативы.",
     "Не назначать искусственное численное соотношение запусков,новые рыночныевеса или вечнуюочередь одной игры.",
     "Продолжать по конкретному checkpoint; если корпусисчерпан,закрытьего/назватьunknown,непереписыватьтежеисточники бесконечно."
   ],
-  "current_diagnosis": "Closed complete existing28 Knave L1 translation-vs-product boundary, with selected actual runtime checks. Continue by a reviewable result, not arbitrary small source slice; reassess next candidate against market evidence.",
+  "current_diagnosis": "В существующих материалах выявлены неполнота/неоднородность перевода, но массовый аудит не проводился. Исторические completed и числа строк не доказывают соответствие стандартуv2; действуют исходные evidence до адресной проверки.",
   "next_selected_task": {
-    "task_id": "HX-RSR-PF2-FULL-L1-IMPLEMENTATION",
-    "game_id": "PF2",
+    "task_id": "HX-RSR-TOP5-RULES-ALIGNMENT-v1",
+    "game_id": "DND5",
     "layer": "L1",
-    "status": "candidate_recheck_fresh_decisions",
-    "action": "Довести полную сверку всех применимых L1-профилей PF2Remaster с точным publishedSHA и конкретным остатком existing054/PF2-FILL1. Использовать имеющийся корпус; не искать ещё один проект ради ссылки. Сравнить со свежим существенным рыночным сигналом перед выбором.",
-    "completion_condition": "Один полный слой в матрице, проверенные переиспользуемые компоненты, конкретные остаточные операции и последствия для existingbacklog; без запуска продукта."
+    "status": "planned_paused_not_started",
+    "action": "После отдельного явного resume начать полное выравнивание DND5 как эталона; затем остальных игр общего top5. Сейчас только правила и план, никакого аудита.",
+    "completion_condition": "For each of five: exhaustive declared thematic source coverage, self-contained source rules, application behaviors, universal rules/profiles and factually verified statuses; RA-Q01..15 pass or justified applicable exclusions; remaining work prevents accepted status."
   },
   "other_open_tracks": [
     {
@@ -135,5 +136,93 @@
   "source_expansion_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-research-surveys.json",
   "qualitative_sources_updated_at": "2026-11-14T05:23:07.281Z",
   "method_change_scope": "qualitative_collection_only",
-  "active_numeric_method_changed": false
+  "active_numeric_method_changed": false,
+  "previous_plan_version_before_rules_alignment": {
+    "plan_id": "HX-RSR-PLAN-20261109-v1",
+    "version": 1,
+    "date": "2026-11-09"
+  },
+  "rules_alignment_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json",
+  "rules_alignment_priority": {
+    "priority_id": "HX-RSR-TOP5-RULES-ALIGNMENT-v1",
+    "status": "planned_paused_not_started",
+    "priority": "P1_owner_directed_data_alignment",
+    "authority_ref": "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json",
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "cohort_version": "2026-11-15-ranking1.4-CROWS-addition",
+    "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+    "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "scope": "Overall top5; exhaustive L1 thematic inventory -> concrete application translation -> exact-version support assessment; L2/L3 separate",
+    "games": [
+      {
+        "game_id": "DND5",
+        "edition_basis": "DMG2014 existing corpus; do not mix DND2024",
+        "reference_place": 1,
+        "alignment_status": "not_reviewed_against_standard_v2",
+        "execution_started": false
+      },
+      {
+        "game_id": "PF2",
+        "edition_basis": "Remaster GM/Player Core existing corpus; applicable cross-references",
+        "reference_place": 2,
+        "alignment_status": "not_reviewed_against_standard_v2",
+        "execution_started": false
+      },
+      {
+        "game_id": "KNAVE2",
+        "edition_basis": "Final2e owner-supplied source; no draft substitution",
+        "reference_place": 3,
+        "alignment_status": "not_reviewed_against_standard_v2",
+        "execution_started": false
+      },
+      {
+        "game_id": "CROWS",
+        "edition_basis": "October2026PublicPlaytest3 owner packet; not final",
+        "reference_place": 4.5,
+        "alignment_status": "not_reviewed_against_standard_v2",
+        "execution_started": false
+      },
+      {
+        "game_id": "SD",
+        "edition_basis": "Shadowdark Core existing exact edition; verify full thematic scope",
+        "reference_place": 4.5,
+        "alignment_status": "not_reviewed_against_standard_v2",
+        "execution_started": false
+      }
+    ],
+    "initial_focus": "DND5 restore a content-verified reference result; then PF2 and KNAVE2; CROWS/SD tied, choose reachable priority without inventing tiebreak rank.",
+    "entry_condition": "Only explicit owner resume; current instruction authorizes policy/priority storage only.",
+    "completion_condition": "For each of five: exhaustive declared thematic source coverage, self-contained source rules, application behaviors, universal rules/profiles and factually verified statuses; RA-Q01..15 pass or justified applicable exclusions; remaining work prevents accepted status.",
+    "legacy_handling": "Retain prior source facts/evidence/statuses with originalSHA; historical completed does not establish standard-v2 acceptance. No automatic score reset or audit performed now.",
+    "dedup_policy": "common-rules and game-bindings sole registries; reuse semantics and verify differing profiles; unified backlog only, no product queue change.",
+    "selection_precedence": "Owner temporary top5 correction supersedes routine micro-slices/new market leads until accepted or owner reprioritizes; old market tracks/checkpoints retained; unblock another top5 when one source blocked.",
+    "refresh_policy": "Re-read active ranking/cohorts before execution; version plan changes if membership changes, do not silently alter ranking.",
+    "acceptance_criteria": [
+      "RA-Q01",
+      "RA-Q02",
+      "RA-Q03",
+      "RA-Q04",
+      "RA-Q05",
+      "RA-Q06",
+      "RA-Q07",
+      "RA-Q08",
+      "RA-Q09",
+      "RA-Q10",
+      "RA-Q11",
+      "RA-Q12",
+      "RA-Q13",
+      "RA-Q14",
+      "RA-Q15"
+    ],
+    "research_schedule_resume": false,
+    "no_product_development": true
+  },
+  "previous_next_selected_task_before_top5_alignment": {
+    "task_id": "HX-RSR-PF2-FULL-L1-IMPLEMENTATION",
+    "game_id": "PF2",
+    "layer": "L1",
+    "status": "candidate_recheck_fresh_decisions",
+    "action": "Довести полную сверку всех применимых L1-профилей PF2Remaster с точным publishedSHA и конкретным остатком existing054/PF2-FILL1. Использовать имеющийся корпус; не искать ещё один проект ради ссылки. Сравнить со свежим существенным рыночным сигналом перед выбором.",
+    "completion_condition": "Один полный слой в матрице, проверенные переиспользуемые компоненты, конкретные остаточные операции и последствия для existingbacklog; без запуска продукта."
+  }
 }
