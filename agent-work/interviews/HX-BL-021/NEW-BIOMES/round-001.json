@@ -70,10 +70,18 @@
       },
       "condition": null,
       "always_allow_free_text": true,
-      "owner_answer": "редкие джунгли разве бывают?",
-      "answer_source": "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-01.json",
-      "interpretation": "Вопрос о реалистичности, не решение о наличии/удалении. Разреженные тропические леса существуют; название «редкие джунгли» неточно. Не удалять/переименовывать автоматически.",
-      "status": "clarification_pending"
+      "owner_answer": "Не делаем биом редких джунглей или тропаческого редколесья.",
+      "answer_source": "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-02.json",
+      "interpretation": "Не включать sparse_jungle и не заменять его тропическим редколесьем. Саванна и три плотных варианта джунглей сохраняются; прочие ответы владельца неизменны.",
+      "status": "resolved",
+      "answer_history": [
+        {
+          "owner_answer": "редкие джунгли разве бывают?",
+          "answer_source": "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-01.json",
+          "interpretation": "Вопрос о реалистичности, не решение о наличии/удалении. Разреженные тропические леса существуют; название «редкие джунгли» неточно. Не удалять/переименовывать автоматически.",
+          "status": "clarification_pending"
+        }
+      ]
     },
     {
       "question_id": "BIO-Q03",
@@ -471,12 +479,25 @@
       "source": "explicit_owner_message_existing_task_chat",
       "recorded_at": "2026-11-16T05:32:28.277Z",
       "message_id": null
+    },
+    {
+      "question_id": "BIO-Q02",
+      "owner_answer_raw": "Не делаем биом редких джунглей или тропаческого редколесья.",
+      "status": "resolved",
+      "selection": "exclude_sparse_jungle_and_tropical_woodland",
+      "interpretation": "Не включать sparse_jungle и не заменять его тропическим редколесьем. Саванна и три плотных варианта джунглей сохраняются; прочие ответы владельца неизменны.",
+      "requirement_refs": [
+        "R01",
+        "R02",
+        "AC02"
+      ],
+      "source": "explicit_owner_message_existing_task_chat",
+      "recorded_at": "2026-11-16T05:44:26.041Z",
+      "message_id": null
     }
   ],
   "interpretation": [],
-  "open_question_ids": [
-    "BIO-Q02"
-  ],
+  "open_question_ids": [],
   "new_question_ids": [
     "BIO-Q01",
     "BIO-Q02",
@@ -489,9 +510,9 @@
     "BIO-Q09",
     "BIO-Q10"
   ],
-  "status": "interview_in_progress",
-  "next_role": "interviewer",
-  "next_step": "Сохранить фактические ответы по ID/свободным текстом; проверить зависимые вопросы и противоречия; затем передать аналитику. Рекомендации не приняты автоматически.",
+  "status": "interview_completed",
+  "next_role": "business-analyst",
+  "next_step": "Подготовить чистовую спецификацию ручного каталога одним PR, исключив редкие джунгли/тропическое редколесье; устранить F01/F03. Реализация после чистовой спецификации; выпуск отдельно.",
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
@@ -511,9 +532,19 @@
     "errors": []
   },
   "owner_answer_refs": [
-    "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-01.json"
+    "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-01.json",
+    "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-02.json"
   ],
-  "interview_completed": false,
+  "interview_completed": true,
   "ready_for_development": false,
-  "updated_at": "2026-11-16T05:32:28.277Z"
+  "updated_at": "2026-11-16T05:44:26.041Z",
+  "closure": {
+    "run_id": "2026-11-16-manual-interviewer-biomes-Q02-closure-1794807826291",
+    "completed_at": "2026-11-16T05:44:26.041Z",
+    "material_questions_resolved": 10,
+    "new_question_ids": [],
+    "whole_draft_review_ref": "agent-work/interviews/HX-BL-021/NEW-BIOMES/draft-review.json",
+    "reason": "Explicit exclusion resolves final catalogue fork. Manual-only answers eliminate auto weights/adjacency/seed forks; giant above-ground mushrooms, existing mechanics and single PR fixed. F01/F03 are analyst details, not unresolved owner choices.",
+    "handoff_ref": "agent-work/handoffs/2026-11-16-manual-interviewer-biomes-Q02-closure-1794807826291-analyst.json"
+  }
 }
