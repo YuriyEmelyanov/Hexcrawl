@@ -1,0 +1,2767 @@
+{
+  "run_id": "2026-11-16-PF2-GMC1-screen-1238",
+  "game_id": "PF2",
+  "edition": "Remaster GM Core English; AoN2026-11-16",
+  "status": "checkpoint",
+  "declared_goal": "Full PF2 L1 source/function/actual support alignment",
+  "bounded_result": "Remaining GMC1 world/site/local-scene/treasure preparation translated; thematic screening reduced, not full-game acceptance",
+  "entries": [
+    {
+      "id": "PF2-RM-GMC1C-001-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2480",
+        "locator": "GM Core pp.10",
+        "self_contained_rule": "Пока деталь не объявлена игрокам, ведущий может пересмотреть свой план по контексту и предложениям группы; это не требует автоматически переписывать уже установленную истину мира.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2480",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер меняет ещё не раскрытые сведения таверны",
+        "inputs_and_units": {
+          "site": "T",
+          "revealed": false,
+          "fact": "добрый хозяин",
+          "new_fact": "агент врага"
+        },
+        "product_operation": "В карточке T заменить мастерское содержание, сохранив раздельно уже предъявленные сведения; изменение намерения не должно само менять известную игрокам географию.",
+        "expected_output": "У T мастерский факт «агент врага»; прежние раскрытые поля карты не изменены.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"T\",\"revealed\":false,\"fact\":\"добрый хозяин\",\"new_fact\":\"агент врага\"}",
+            "when": "Мастер меняет ещё не раскрытые сведения таверны; сохранить и загрузить",
+            "expected": "У T мастерский факт «агент врага»; прежние раскрытые поля карты не изменены."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#map.audience_views"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "map.audience_views",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.audience_views для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "truth"
+    },
+    {
+      "id": "PF2-RM-GMC1C-002-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2488",
+        "locator": "GM Core pp.12",
+        "self_contained_rule": "Критический провал Recall Knowledge может дать неверную информацию. Совет: правдоподобная ошибка с близкими, ограниченными последствиями; не обязательно важная ложь и не повод уводить кампанию на долгий ложный путь.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2488",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит неверную версию сведений о месте",
+        "inputs_and_units": {
+          "site": "храм H",
+          "truth": "символ — ключ",
+          "rumor": "символ — весы"
+        },
+        "product_operation": "Добавить к H отдельный вариант сообщаемых сведений, пометив для мастера как ложный; не заменять истинную карточку и не раскрывать пометку игрокам.",
+        "expected_output": "Мастер видит истину/ложную версию; выдача слуха не меняет ключ на весы в истинных данных.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"храм H\",\"truth\":\"символ — ключ\",\"rumor\":\"символ — весы\"}",
+            "when": "Мастер готовит неверную версию сведений о месте; сохранить и загрузить",
+            "expected": "Мастер видит истину/ложную версию; выдача слуха не меняет ключ на весы в истинных данных."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.discovery_levels",
+          "agent-work/rules/common-rules.json#map.audience_views"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.discovery_levels для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "map.audience_views",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.audience_views для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "rumor"
+    },
+    {
+      "id": "PF2-RM-GMC1C-003-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2491",
+        "locator": "GM Core pp.13",
+        "self_contained_rule": "При создании NPC полезно начать с одной запоминающейся черты/зацепки, затем дополнять биографию при повторном участии. Важному NPC могут требоваться характер, роль и дополнительные подсказки. Помощник не должен решать за героев все задачи.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "initial_hook": "one memorable hook, not cap"
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2491",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер добавляет жителя к поселению",
+        "inputs_and_units": {
+          "site": "V",
+          "NPC": "торговец",
+          "hook": "вдовец"
+        },
+        "product_operation": "Создать связанную с V карточку NPC с краткой чертой; последующее расширение биографии не создаёт второго торговца и не требует нового POI.",
+        "expected_output": "Один NPC с устойчивой связью V; после добавления биографии черта «вдовец» сохранена.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"V\",\"NPC\":\"торговец\",\"hook\":\"вдовец\"}",
+            "when": "Мастер добавляет жителя к поселению; сохранить и загрузить",
+            "expected": "Один NPC с устойчивой связью V; после добавления биографии черта «вдовец» сохранена."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.site_links",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.site_links для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "npc"
+    },
+    {
+      "id": "PF2-RM-GMC1C-004-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2493",
+        "locator": "GM Core pp.14",
+        "self_contained_rule": "Если планируется предательство NPC, заранее дать обнаружимые признаки или документальный след, чтобы поворот был обоснован задним числом. Это совет подготовки зацепок, не случайная вероятность предательства каждого жителя.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2493",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер связывает подозрительный документ с NPC",
+        "inputs_and_units": {
+          "NPC": "N",
+          "clue_site": "развалины R",
+          "clue": "переписка с врагом"
+        },
+        "product_operation": "В R разместить документ как содержимое/зацепку и связать с N; оставить предательство и доступную улику раздельными сведениями.",
+        "expected_output": "Из R мастер открывает улику и связанного N; связь не раскрывает игрокам будущий поворот автоматически.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"NPC\":\"N\",\"clue_site\":\"развалины R\",\"clue\":\"переписка с врагом\"}",
+            "when": "Мастер связывает подозрительный документ с NPC; сохранить и загрузить",
+            "expected": "Из R мастер открывает улику и связанного N; связь не раскрывает игрокам будущий поворот автоматически."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.adventure_hooks",
+          "agent-work/rules/common-rules.json#content.site_links",
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.adventure_hooks",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.adventure_hooks для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.site_links",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.site_links для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.discovery_levels для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "betrayal"
+    },
+    {
+      "id": "PF2-RM-GMC1C-005-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2512",
+        "locator": "GM Core pp.19–20",
+        "self_contained_rule": "Три подхода: собирать идеи игроков при сохранении авторитета ведущего; поручать им отдельные регионы/NPC с учётом авторства и согласованности; либо совместно импровизировать мир. Опциональные Story Points обычно2–3 за сессию позволяют небольшой поворот/факт, но не исход всей сцены или радикальную переделку мира.",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "story_points_typical": [
+            2,
+            3
+          ]
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2512",
+        "normative_kind": "product_interpretation_of_optional_variant",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер принимает предложенный игроком регион",
+        "inputs_and_units": {
+          "region": "R",
+          "author": "P",
+          "proposal": "новое название",
+          "confirmed": false
+        },
+        "product_operation": "Отметить предложение/автора отдельно от принятой карты; после решения ведущего применить выбранную правку к тому же R. Счётчик Story Points и сетевое соавторство не следуют как обязательные функции L1.",
+        "expected_output": "До принятия имя R прежнее; после принятия одно новое имя и сохранённое авторство, не два региона.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"region\":\"R\",\"author\":\"P\",\"proposal\":\"новое название\",\"confirmed\":false}",
+            "when": "Мастер принимает предложенный игроком регион; сохранить и загрузить",
+            "expected": "До принятия имя R прежнее; после принятия одно новое имя и сохранённое авторство, не два региона."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "collaboration"
+    },
+    {
+      "id": "PF2-RM-GMC1C-006-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2530",
+        "locator": "GM Core pp.22–23",
+        "self_contained_rule": "Common обычно доступно при выполнении prerequisites; uncommon требует доступа/усилий; rare вводит ведущий; unique — конкретный единственный объект/NPC. Редкость не означает силу. Она зависит от региона и контекста: оружие может быть uncommon в одном регионе и common в другом. Access отличается от механических prerequisites; ведущий может менять местные условия.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "rarities": [
+            "common",
+            "uncommon",
+            "rare",
+            "unique"
+          ]
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2530",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер задаёт местную доступность предмета",
+        "inputs_and_units": {
+          "item": "катана",
+          "regionA": "Inner Sea",
+          "rarityA": "uncommon",
+          "regionB": "Tian Xia",
+          "rarityB": "common"
+        },
+        "product_operation": "Указать региональные переопределения доступности, сохранив идентичность предмета и базовый профиль. Не повышать уровень/силу при смене редкости.",
+        "expected_output": "В A uncommon, в B common; уровень/урон предмета и геометрия карты прежние.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"item\":\"катана\",\"regionA\":\"Inner Sea\",\"rarityA\":\"uncommon\",\"regionB\":\"Tian Xia\",\"rarityB\":\"common\"}",
+            "when": "Мастер задаёт местную доступность предмета; сохранить и загрузить",
+            "expected": "В A uncommon, в B common; уровень/урон предмета и геометрия карты прежние."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.settlement_resources",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.settlement_resources для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "rarity"
+    },
+    {
+      "id": "PF2-RM-GMC1C-007-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2558",
+        "locator": "GM Core pp.28",
+        "self_contained_rule": "Бой можно вести без сетки, на обычной квадратной сетке, с вариантом одинаковых диагоналей5футов вместо чередования5/10 либо на гексах/смещённых квадратах. Гексы выравнивают движение по направлениям, но усложняют фланг, большие фигуры и прямоугольные комнаты. Радиус эффекта для одинаковых диагоналей выбирают по принятому способу, возможно круговым шаблоном.",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "uniform_diagonal_ft": 5,
+          "normal_diagonal_sequence_ft": [
+            5,
+            10
+          ]
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2558",
+        "normative_kind": "product_interpretation_of_optional_variant",
+        "applicability": "Local-scene preparation/integration boundary; not regional-mode defect",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер прикрепляет к региональному POI отдельный план сцены",
+        "inputs_and_units": {
+          "regional_hex_miles": 6,
+          "local_grid": "hex or square",
+          "local_units": "feet"
+        },
+        "product_operation": "Отличать локальный план боя и его профиль сетки от регионального гекса. Не менять 5–6-мильный режим из-за этого тактического варианта; локальный план — будущий интеграционный кандидат.",
+        "expected_output": "После прикрепления локального hex-плана региональный гекс остаётся6миль; вариант диагоналей относится только к локальной сцене.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"regional_hex_miles\":6,\"local_grid\":\"hex or square\",\"local_units\":\"feet\"}",
+            "when": "Мастер прикрепляет к региональному POI отдельный план сцены; сохранить и загрузить",
+            "expected": "После прикрепления локального hex-плана региональный гекс остаётся6миль; вариант диагоналей относится только к локальной сцене."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale",
+          "agent-work/rules/common-rules.json#map.nested_scales"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.physical_hex_scale",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.physical_hex_scale для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "map.nested_scales",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.nested_scales для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "grid"
+    },
+    {
+      "id": "PF2-RM-GMC1C-008-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2559",
+        "locator": "GM Core pp.28",
+        "self_contained_rule": "Укрытие в сложной сцене определяет ведущий с учётом трёхмерных деталей. Линия на плоской карте полезна лишь в простом случае; баннер может прикрывать, а высота уступа — давать обзор поверх низкой стены.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2559",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Local-scene preparation/integration boundary; not regional-mode defect",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер описывает укрытие локального места",
+        "inputs_and_units": {
+          "wall_height_ft": 3,
+          "ledge_height_ft": 8
+        },
+        "product_operation": "Сохранить высоту/форму стены и уступа в локальном плане/связанной карточке; не объявлять их универсальным закрытием видимости с любой позиции.",
+        "expected_output": "Стена3фута, уступ8футов сохранены; автоматического обещания укрытия для всех токенов нет.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"wall_height_ft\":3,\"ledge_height_ft\":8}",
+            "when": "Мастер описывает укрытие локального места; сохранить и загрузить",
+            "expected": "Стена3фута, уступ8футов сохранены; автоматического обещания укрытия для всех токенов нет."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_elevation",
+          "agent-work/rules/common-rules.json#map.visibility_geometry"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.physical_elevation",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.physical_elevation для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "map.visibility_geometry",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.visibility_geometry для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "cover"
+    },
+    {
+      "id": "PF2-RM-GMC1C-009-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2562",
+        "locator": "GM Core pp.29",
+        "self_contained_rule": "При подготовке конного боя полезно достаточно пространства для крупных существ. Если верхом только одна сторона, несколько тесных участков могут компенсировать её мобильность. При гонке на полной скорости можно отказаться от сетки и использовать относительные позиции/подсистему погони.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2562",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Local-scene preparation/integration boundary; not regional-mode defect",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит конную сцену",
+        "inputs_and_units": {
+          "scene": "S",
+          "open_yard": "Y",
+          "narrow_passage": "P",
+          "mount_passage_fit": false
+        },
+        "product_operation": "Разместить в S открытую площадку и тесный проход с заданными геометрией/ограничением; не превращать совет в обязательное количество узких проходов на каждой карте.",
+        "expected_output": "Y и P связаны с S; P явно не вмещает выбранное верховое существо; региональная плотность POI прежняя.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"scene\":\"S\",\"open_yard\":\"Y\",\"narrow_passage\":\"P\",\"mount_passage_fit\":false}",
+            "when": "Мастер готовит конную сцену; сохранить и загрузить",
+            "expected": "Y и P связаны с S; P явно не вмещает выбранное верховое существо; региональная плотность POI прежняя."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.visibility_geometry",
+          "agent-work/rules/common-rules.json#map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.visibility_geometry",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.visibility_geometry для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "map.routes_and_barriers",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.routes_and_barriers для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "mounted"
+    },
+    {
+      "id": "PF2-RM-GMC1C-010-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2563",
+        "locator": "GM Core pp.30",
+        "self_contained_rule": "Для воздушного боя заранее устанавливают высоту препятствий, потолка и деревьев; плоская сетка не описывает все ограничения. Опасные манёвры могут требовать проверки; падение/рассеивание полёта — исполнение вне подготовки карты.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "height_unit": "feet"
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2563",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Local-scene preparation/integration boundary; not regional-mode defect",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер задаёт вертикальные ограничения сцены",
+        "inputs_and_units": {
+          "scene": "пещера C",
+          "ceiling_ft": 20,
+          "tree_ft": 15
+        },
+        "product_operation": "В карточке/локальном плане C задать потолок20футов и дерево15футов; отличать абсолютную высоту поверхности от высоты преграды; показывать мастеру до игры.",
+        "expected_output": "После загрузки C содержит20/15футов; они не становятся20/15милями или высотой регионального биома.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"scene\":\"пещера C\",\"ceiling_ft\":20,\"tree_ft\":15}",
+            "when": "Мастер задаёт вертикальные ограничения сцены; сохранить и загрузить",
+            "expected": "После загрузки C содержит20/15футов; они не становятся20/15милями или высотой регионального биома."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_elevation",
+          "agent-work/rules/common-rules.json#map.visibility_geometry"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.physical_elevation",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.physical_elevation для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "map.visibility_geometry",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.visibility_geometry для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "air"
+    },
+    {
+      "id": "PF2-RM-GMC1C-011-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2564",
+        "locator": "GM Core pp.30",
+        "self_contained_rule": "Подводное плавание без swim Speed обычно имеет DC15, в спокойной воде13. Атаки через границу воды используют водные правила, когда хотя бы одна сторона в воде; ведущий может учитывать оптическое искажение. Дыхание/потеря сознания/плавучесть — исполнение L3, а не готовность карты.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "swim_DC_typical": 15,
+          "calm": 13
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2564",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Local-scene preparation/integration boundary; not regional-mode defect",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит водную часть сцены",
+        "inputs_and_units": {
+          "water_zone": "W",
+          "state": "calm",
+          "chosen_swim_DC": 13
+        },
+        "product_operation": "Задать границу водной зоны и выбранное состояние/сложность в связанной сцене. Не смешивать DC плавания с полноводностью реки и не выводить автоматическую видимость по границе.",
+        "expected_output": "W calm/DC13 сохранена; изменение отображаемой ширины реки не превращает DC13 в15.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"water_zone\":\"W\",\"state\":\"calm\",\"chosen_swim_DC\":13}",
+            "when": "Мастер готовит водную часть сцены; сохранить и загрузить",
+            "expected": "W calm/DC13 сохранена; изменение отображаемой ширины реки не превращает DC13 в15."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.land_water_shapes",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.land_water_shapes",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.land_water_shapes для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "water"
+    },
+    {
+      "id": "PF2-RM-GMC1C-012-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2608",
+        "locator": "GM Core pp.45",
+        "self_contained_rule": "Долгосрочная цель может быть восстановлением руины, созданием бизнеса/гильдии/академии, возвращением природы или изменением политики. Полезно разбить цель на стадии, показывать последствия; успех вероятен для разумной цели, но не гарантирован. Пример бизнеса: лоток→спрос→магазин→первые успехи→клиенты→служащие→снабжение/конкуренция→расширение в другом поселении.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2608",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер фиксирует принятую стадию восстановления руины",
+        "inputs_and_units": {
+          "POI": "R",
+          "old_state": "ruin",
+          "accepted_stage": "restored library"
+        },
+        "product_operation": "Обновить содержимое того же R по решению ведущего, сохранив ссылку на прежнее состояние и стадию проекта; результат броска/сроки не вычислять по одному факту наличия проекта.",
+        "expected_output": "R остаётся на месте с тем жеID; после принятия — библиотека, прежняя руина доступна в истории.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"POI\":\"R\",\"old_state\":\"ruin\",\"accepted_stage\":\"restored library\"}",
+            "when": "Мастер фиксирует принятую стадию восстановления руины; сохранить и загрузить",
+            "expected": "R остаётся на месте с тем жеID; после принятия — библиотека, прежняя руина доступна в истории."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.site_links",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.site_links для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "goals"
+    },
+    {
+      "id": "PF2-RM-GMC1C-013-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2619",
+        "locator": "GM Core pp.49",
+        "self_contained_rule": "Вложения должны менять мир, а не автоматически приносить проценты: музей расширяет коллекцию, экспедиция открывает торговые товары. Время существенно: достаточная оплата не строит форт за день. Долгий проект может продолжаться во время приключений при надёжном компетентном управляющем.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2619",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер отмечает строительство форта",
+        "inputs_and_units": {
+          "POI": "F",
+          "funded": true,
+          "stage": "construction",
+          "manager": "N",
+          "deadline": null
+        },
+        "product_operation": "Показать F как строящийся объект и связь с управляющимN; переход в готовый форт выполняет мастер по фактическому этапу, не по наличию золота.",
+        "expected_output": "F funded=true остаётся construction; внесение денег само не создаёт законченный форт/доход.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"POI\":\"F\",\"funded\":true,\"stage\":\"construction\",\"manager\":\"N\",\"deadline\":null}",
+            "when": "Мастер отмечает строительство форта; сохранить и загрузить",
+            "expected": "F funded=true остаётся construction; внесение денег само не создаёт законченный форт/доход."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.site_links",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.site_links для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "invest"
+    },
+    {
+      "id": "PF2-RM-GMC1C-014-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2625",
+        "locator": "GM Core pp.50",
+        "self_contained_rule": "Для retraining учитель необязателен: источником обучения могут быть NPC, природа или большой гримуар. Привязка к знакомому NPC/месту — сюжетная возможность. Плата обычно незначительна, около заработка за тот же срок; возможны бесплатная помощь или просьба об услуге. Список имён — примеры, не обязательные жители поселения.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2625",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер добавляет источник обучения",
+        "inputs_and_units": {
+          "site": "библиотека L",
+          "source": "гримуар G",
+          "teacher_required": false,
+          "price": null
+        },
+        "product_operation": "Привязать к L услугу/содержимое обучения с типом источника; не создавать обязательного NPC или цену из размера поселения.",
+        "expected_output": "L предлагает обучение черезG; NPCне создан, ценаunknown не0.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"библиотека L\",\"source\":\"гримуар G\",\"teacher_required\":false,\"price\":null}",
+            "when": "Мастер добавляет источник обучения; сохранить и загрузить",
+            "expected": "L предлагает обучение черезG; NPCне создан, ценаunknown не0."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.settlement_resources",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.settlement_resources для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "teacher"
+    },
+    {
+      "id": "PF2-RM-GMC1C-015-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2656",
+        "locator": "GM Core pp.59",
+        "self_contained_rule": "Бюджет Party Treasure by Level относится ко всему уровню группы из4PC, не каждой встрече/локации. Отдельно считают permanent, consumable и валюту; total приблизителен. Добыча Monster Core входит в общий бюджет, а не добавляется поверх. Строка20 относится к целому уровню приключений, хотя21уровня нет; многие permanent1уровня — обычное снаряжение PlayerCore10–20gp.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "base_party_size": 4,
+          "budget_period": "one character level",
+          "table": {
+            "level": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20
+            ],
+            "total_gp": [
+              175,
+              300,
+              500,
+              850,
+              1350,
+              2000,
+              2900,
+              4000,
+              5700,
+              8000,
+              11500,
+              16500,
+              25000,
+              36500,
+              54500,
+              82500,
+              128000,
+              208000,
+              355000,
+              490000
+            ],
+            "currency_gp": [
+              40,
+              70,
+              120,
+              200,
+              320,
+              500,
+              720,
+              1000,
+              1400,
+              2000,
+              2800,
+              4000,
+              6000,
+              9000,
+              13000,
+              20000,
+              30000,
+              48000,
+              80000,
+              140000
+            ],
+            "currency_per_extra_PC_gp": [
+              10,
+              18,
+              30,
+              50,
+              80,
+              125,
+              180,
+              250,
+              350,
+              500,
+              700,
+              1000,
+              1500,
+              2250,
+              3250,
+              5000,
+              7500,
+              12000,
+              20000,
+              35000
+            ],
+            "row1": {
+              "permanent": {
+                "1": 2,
+                "2": 2
+              },
+              "consumable": {
+                "1": 3,
+                "2": 2
+              }
+            },
+            "rows2to19": {
+              "permanent": "L+1:2,L:2",
+              "consumable": "L+1:2,L:2,L-1:2"
+            },
+            "row20": {
+              "permanent": {
+                "20": 4
+              },
+              "consumable": {
+                "19": 2,
+                "20": 4
+              }
+            }
+          }
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2656",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер распределяет добычу кампанийного этапа по нескольким местам",
+        "inputs_and_units": {
+          "party_level": 3,
+          "PC": 4,
+          "sites": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "product_operation": "Создать один план добычи этапа и распределить предметы/валюту междуA/B/C со связью с общей суммой; не клонировать полную строку в каждое место. Замены предметов по предпочтениям группы — явное решение мастера.",
+        "expected_output": "На весь этап:approx500gp;permanent4×2,3×2;consumable4×2,3×2,2×2;currency120gp. Распределение на3POI не даёт1500gp.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"party_level\":3,\"PC\":4,\"sites\":[\"A\",\"B\",\"C\"]}",
+            "when": "Мастер распределяет добычу кампанийного этапа по нескольким местам; сохранить и загрузить",
+            "expected": "На весь этап:approx500gp;permanent4×2,3×2;consumable4×2,3×2,2×2;currency120gp. Распределение на3POI не даёт1500gp."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": null,
+          "binding_ref": null,
+          "disposition": "new_distinct_mechanic",
+          "semantic_comparison": "Существующее описание места не рассчитывает общий бюджет и учёт распределения. Если функция нужна, предложить одну общую механику планирования содержимого этапа с PF2профилем, а не отдельные движки по играм.",
+          "profile_differences": [
+            "Выбор единицы budget_period, распределение по местам, связьplaced/found и двойнойучёт."
+          ]
+        },
+        {
+          "rule_id": null,
+          "binding_ref": null,
+          "disposition": "new_distinct_mechanic",
+          "semantic_comparison": "Общий бюджет и распределение междуместами не равны текстовомуописаниюPOI. Если нужен расчёт, предложить одну общую механику и PF2профиль; не регистрировать самовольно.",
+          "profile_differences": [
+            "Единица budget_period, placed/found, повторныйучёт; actualpending."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "loot_budget"
+    },
+    {
+      "id": "PF2-RM-GMC1C-016-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2661",
+        "locator": "GM Core pp.61",
+        "self_contained_rule": "За каждого PC сверх4 обычно добавляют1permanent уровня группы либо+1,2consumable обычно уровней группы/+1 и валюту из колонки дополнительногоPC. При группе меньше4 можно вычесть аналогично, но допустимо уменьшить вычет из-за более высокой сложности. Это не масштабирование всего бюджета простым множителемN/4.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "baseline_PC": 4,
+          "per_extra": {
+            "permanent": 1,
+            "consumable": 2
+          }
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2661",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер корректирует общий план под группу",
+        "inputs_and_units": {
+          "level": 3,
+          "PC": 5
+        },
+        "product_operation": "К базовому плану добавить ровно один набор за пятогоPC, сохранив выбранные уровни и30gp валюты. Для меньшей группы представить вычет как выбор, не жёсткую формулу.",
+        "expected_output": "4PC→база;5PC→+1permanent3или4,+2consumable3/4,+30gp; не500×5/4.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"level\":3,\"PC\":5}",
+            "when": "Мастер корректирует общий план под группу; сохранить и загрузить",
+            "expected": "4PC→база;5PC→+1permanent3или4,+2consumable3/4,+30gp; не500×5/4."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "loot_party"
+    },
+    {
+      "id": "PF2-RM-GMC1C-017-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2657",
+        "locator": "GM Core pp.59–60",
+        "self_contained_rule": "Валютная доля включает монеты, камни, искусство, материалы, украшения. Низкоуровневый permanent, предназначенный для продажи/материалов, учитывают за половину Price; полезный consumable, который будут использовать,—за полную. В песочнице с пропускаемой добычей совет увеличить размещённый запас как для ещё1PC, при особенно свободной структуре можно больше; тщательная группа может найти излишек.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "resale_permanent_fraction": 0.5,
+          "used_consumable_fraction": 1,
+          "sandbox_suggestion_extra_PC": 1
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2657",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер помечает назначение размещённого предмета",
+        "inputs_and_units": {
+          "permanent_price_gp": 100,
+          "purpose": "sale",
+          "consumable_price_gp": 12,
+          "purpose2": "use"
+        },
+        "product_operation": "Раздельно хранить номинал, назначение и зачёт в бюджете; для песочницы добавить резерв в общий размещённый план, не обещать его получение. Сохранять отдельный список найденной добычи.",
+        "expected_output": "Предмет100gp→50gpвалютнойдоли;расходник12gp→12gp. Резерв не помечен найденным.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"permanent_price_gp\":100,\"purpose\":\"sale\",\"consumable_price_gp\":12,\"purpose2\":\"use\"}",
+            "when": "Мастер помечает назначение размещённого предмета; сохранить и загрузить",
+            "expected": "Предмет100gp→50gpвалютнойдоли;расходник12gp→12gp. Резерв не помечен найденным."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "loot_currency"
+    },
+    {
+      "id": "PF2-RM-GMC1C-018-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2655",
+        "locator": "GM Core pp.58",
+        "self_contained_rule": "При лёгкой покупке/крафте около половины permanent выдаются как полезные основной роли предметы; при затруднениях около3/4; при отсутствии покупки предметов/формул — все. В удалённом приключении избыток денег не заменяет полезного снаряжения: можно разместить больше полезных предметов либо NPC-торговца. Это не гарантированный магазин в каждом поселении.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "core_item_fraction": {
+            "easy": 0.5,
+            "difficult": 0.75,
+            "no_market": 1
+          }
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2655",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер выбирает доступность снабжения этапа",
+        "inputs_and_units": {
+          "permanent_count": 4,
+          "market": "difficult"
+        },
+        "product_operation": "Отметить3из4permanent как основные для ролейPC и разместить их в выбранных местах; альтернативу торговца показывать как решение мастера, без автосоздания поселения.",
+        "expected_output": "Приeasy→2из4;difficult→3из4;none→4из4. Количество поселений не меняется.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"permanent_count\":4,\"market\":\"difficult\"}",
+            "when": "Мастер выбирает доступность снабжения этапа; сохранить и загрузить",
+            "expected": "Приeasy→2из4;difficult→3из4;none→4из4. Количество поселений не меняется."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса.",
+          "Округление дробных долей при числе permanent, не кратном4, источник не фиксирует."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.settlement_resources",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.settlement_resources для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "loot_access"
+    },
+    {
+      "id": "PF2-RM-GMC1C-019-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2658",
+        "locator": "GM Core pp.60",
+        "self_contained_rule": "Добыча может быть не предметом/монетами: материалы для Craft, формула, доступ к заклинанию через книгу/учёного, редкая техника у мастера в удалённом месте. Получение доступа не означает автоматического изучения или retraining.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {},
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2658",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер размещает нематериальную награду",
+        "inputs_and_units": {
+          "site": "монастырь M",
+          "reward": "доступ к технике T",
+          "mentor": "N"
+        },
+        "product_operation": "Добавить содержимое/услугу кM и ссылкуN; хранить доступную награду отдельно от изученной персонажем способности, не генерируя обязательный сундук золота.",
+        "expected_output": "M содержит доступT и наставникаN; способностьPC не меняется от открытия карточки.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"монастырь M\",\"reward\":\"доступ к технике T\",\"mentor\":\"N\"}",
+            "when": "Мастер размещает нематериальную награду; сохранить и загрузить",
+            "expected": "M содержит доступT и наставникаN; способностьPC не меняется от открытия карточки."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.site_links",
+          "agent-work/rules/common-rules.json#map.settlement_resources"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.site_links",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.site_links для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "map.settlement_resources",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.settlement_resources для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "knowledge_treasure"
+    },
+    {
+      "id": "PF2-RM-GMC1C-020-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2595",
+        "locator": "GM Core pp.41",
+        "self_contained_rule": "Detect Magic при движении не раскрывает автоматически все ауры/предметы. Опасности с минимальным рангом этим действием не обнаруживаются; иллюзии равного или более высокого ранга, чем заклинание, тоже. Замеченный магический признак предлагает остановиться для исследования или пройти дальше, а не выдаёт полное описание.",
+        "normative_kind": "mandatory_rule",
+        "parameters_and_units": {
+          "hazard_min_proficiency_blocks": true,
+          "illusion_rank_at_least_spell_blocks": true
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2595",
+        "normative_kind": "product_interpretation_of_mandatory_rule",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит обнаружение магического объекта",
+        "inputs_and_units": {
+          "object": "иллюзия I",
+          "illusion_rank": 3,
+          "detect_spell_rank": 3
+        },
+        "product_operation": "Отдельно записать истинный объект, ранг/ограничение и начальный магический признак. Предпросмотр правила для мастера не раскрывает I игрокам; расчёт результата действия L3 отдельно.",
+        "expected_output": "Для рангов3/3 автообнаружение этим действием недоступно; скрытаяI сохраняется; география/содержимое не исчезают.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"object\":\"иллюзия I\",\"illusion_rank\":3,\"detect_spell_rank\":3}",
+            "when": "Мастер готовит обнаружение магического объекта; сохранить и загрузить",
+            "expected": "Для рангов3/3 автообнаружение этим действием недоступно; скрытаяI сохраняется; география/содержимое не исчезают."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.discovery_levels",
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.discovery_levels для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "content.static_hazard",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.static_hazard для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "magic"
+    },
+    {
+      "id": "PF2-RM-GMC1C-021-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2601",
+        "locator": "GM Core pp.42–43",
+        "self_contained_rule": "Отдых без укрытия/удобства может по решению ведущего уменьшить восстановлениеHP вдвое, минимум1. Обычно сон8часов, эффект отдыха один раз за24часа; прерывания возможны и8часов не обязательно подряд. Караул/броня/состояния относятся к исполнению отдыха, а не к факту наличия лагеря на карте.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "sleep_h": 8,
+          "benefit_period_h": 24,
+          "unsheltered_heal_fraction": 0.5,
+          "minimum_heal_HP": 1
+        },
+        "conditions": [
+          "Выбранная соответствующая процедура/совет, а не обязательная механика любой карты."
+        ],
+        "exceptions": [
+          "L2/L3 исполнение и автоматический исход не выдаются за подготовку данныхL1."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2601",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер отмечает условия лагеря",
+        "inputs_and_units": {
+          "camp": "C",
+          "shelter": false,
+          "comfort": false,
+          "guaranteed_safe": false
+        },
+        "product_operation": "У лагеря C указать укрытие/удобство отдельно от опасности/караула. Не обещать безопасный ночлег от одного значка лагеря; восстановлениеHP и часы не выполнять вL1.",
+        "expected_output": "C показывается как открытый неудобный лагерь; безопасность не гарантирована иHP персонажей не меняются.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"camp\":\"C\",\"shelter\":false,\"comfort\":false,\"guaranteed_safe\":false}",
+            "when": "Мастер отмечает условия лагеря; сохранить и загрузить",
+            "expected": "C показывается как открытый неудобный лагерь; безопасность не гарантирована иHP персонажей не меняются."
+          },
+          {
+            "given": "Подготовленный объект с указанными параметрами; мастер отменяет последнее изменение",
+            "when": "Undo, затем Redo и повторная загрузка",
+            "expected": "До/после воспроизводят прежние/изменённые поля объекта без дубляID; незатронутая география прежняя."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#map.resource_availability"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse content.place_description для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        },
+        {
+          "rule_id": "map.resource_availability",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат reuse map.resource_availability для общего действия/объекта; частные параметры не доказывают эквивалентность полной автоматической процедуры. Для общего бюджета добычи существующее описание места не заменяет агрегат и расчёт.",
+          "profile_differences": [
+            "PF2-параметры/условия этой sourceстроки; фактическая совместимость не проверена."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "rest"
+    },
+    {
+      "id": "PF2-RM-GMC1C-022-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core English; AoN snapshot 2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2538",
+        "locator": "GM Core, Bypassed Encounters under Running Encounters24–30",
+        "self_contained_rule": "При обходе встречи пропущенные важные сведения/предмет можно поместить в другое разумное место; допустим перенос встречи с преимуществом для обошедших её героев. Это не обязательная компенсация любой пропущенной награды. XP за смекалку/умеренное усилие/тривиальный обход относится кL3.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "automatic_relocation": false
+        },
+        "conditions": [
+          "Имеется сюжетно обоснованное новое место."
+        ],
+        "exceptions": [
+          "Не копировать каждый пропущенный предмет автоматически."
+        ],
+        "cross_references": [],
+        "access_level": "selected_full_primary_rule_body",
+        "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2538",
+        "normative_kind": "product_interpretation_of_recommendation",
+        "applicability": "Regional/world/site preparation, with L2/L3 execution separate",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер переносит важную зацепку",
+        "inputs_and_units": {
+          "clue": "K",
+          "from": "A",
+          "to": "B",
+          "confirmed": true
+        },
+        "product_operation": "Перенести K из содержимогоA вB со стабильнымID/связями и историей. Не копировать предмет/XP и не запускать перенос по одному изменению маршрута партии.",
+        "expected_output": "Kтолько вB, ссылки прежние, Aбез активногодубля.",
+        "constraints_and_exceptions": [
+          "Приложение: предложенное поведение, не цитата и не утверждённая спецификация.",
+          "Actual UI, import/export/save/load/undo и общий профиль требуют проверки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Kтолько вA; выбранB",
+            "when": "Подтвердить перенос; сохранить/загрузить",
+            "expected": "Kтолько вB; ID/связи прежние; дополнительной награды нет."
+          },
+          {
+            "given": "Kперенесён",
+            "when": "Undo, затем Redo",
+            "expected": "KвA, затемB; всегда одна активная копия."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл/совет отдельно от предлагаемой операции и приёмки. Архитектура/интервью/разработка не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.relocate",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Проверка текущей архитектуры/точной поддержки и варианты интерфейса."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.relocate",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Перемещение содержимого с сохранением связей соответствует общему действию; уникальность/профиль и actual implementation пока не подтверждены.",
+          "profile_differences": [
+            "Только решение ведущего, не автоматическая компенсация обхода."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник и предложенная операция определены. На product SHA 7c0eb9f3c9baabc01d63356845c1372df9fc9da5 поддержка/профиль не проверены; заметка не равна функции.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/JSON/save/load/history и каждый отличающийся профиль"
+        ],
+        "release_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+        "method": "source_translation; current product head identified, runtime not tested",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Передать стратегу; без новой продуктовой задачи/разработки. Новые поля/движки не утверждены."
+      ],
+      "backlog_refs": [],
+      "scope_key": "relocate"
+    }
+  ],
+  "sensory_supplement": {
+    "normative_kind": "recommendation_and_illustrations",
+    "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2468#QuickEnvironmentalDetails",
+    "locator": "GM Core38–39, Quick Environmental Details; AoN2468 lines726–776",
+    "reviewed_cells": 35,
+    "rows": [
+      "aquatic",
+      "arctic",
+      "forest",
+      "mountain",
+      "plains",
+      "swamp",
+      "underground"
+    ],
+    "columns": [
+      "sights",
+      "sounds",
+      "smells",
+      "textures",
+      "weather"
+    ],
+    "interpretation": "Таблица даёт примеры для описания, не обязательные пять тегов или случайный генератор каждой клетки; не гарантирует наличие изб,рыб,льда и т.п. в любом гексе этого типа.",
+    "semantic_summary_by_row": {
+      "aquatic": [
+        "рябь/волны/горизонт",
+        "вода/птицы/паруса",
+        "солёность/воздух/рыба",
+        "холод/водоросли/соль",
+        "ветер/шторм"
+      ],
+      "arctic": [
+        "снег/ледники/трещины/следы",
+        "ветер/таяние/тишина",
+        "чистота/мёрзлаярастительность",
+        "снег/лёд",
+        "мороз/снегопад/метель"
+      ],
+      "forest": [
+        "деревья/подлесок/полог/корни",
+        "листья/ветви/животные",
+        "растительность/цветы/хвоя/грибы",
+        "листва/ветви/капли/кора",
+        "тень/ветер/дождь/снег"
+      ],
+      "mountain": [
+        "скалы/снег/осыпь/птицы/туман",
+        "ветер/камни/эхо/лавина",
+        "пыль/хвоя/снег",
+        "камень/снег/обломки",
+        "облака/холод/солнце/непогода"
+      ],
+      "plains": [
+        "трава/цветы/камни/горизонт",
+        "ветер/птицы/далёкиезвуки",
+        "воздух/почва/падаль",
+        "трава/кустарник/сухаяземля",
+        "ветер/жара/грозовыетучи"
+      ],
+      "swamp": [
+        "листья/мошка/вода/избы/рыба",
+        "лягушки/насекомые/вода",
+        "мох/водоросли/газы",
+        "мусор/лианы/грязь",
+        "влажность/штиль/ливень/солнце"
+      ],
+      "underground": [
+        "проходы/свет/пол/письмена/натёки",
+        "капли/живность/механизмы/эхо",
+        "затхлость/сера/металл",
+        "камень/эрозия/паутина",
+        "прохлада/геотермальноетепло"
+      ]
+    },
+    "representation": "Смысловой конспект всех35клеток; литературные формулировки не воспроизведены.",
+    "application_example": {
+      "given": "Мастер выбрал для леса только звук ломающейся ветви",
+      "when": "Сохранить/загрузить",
+      "expected": "Один выбранный звук сохранён; остальные4категории пусты, встреча/биом/погода не созданы."
+    }
+  },
+  "coverage_ledger": [
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2480",
+      "range_or_section": "GM Core pp.10",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-001-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2488",
+      "range_or_section": "GM Core pp.12",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-002-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2491",
+      "range_or_section": "GM Core pp.13",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-003-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2493",
+      "range_or_section": "GM Core pp.14",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-004-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2512",
+      "range_or_section": "GM Core pp.19–20",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-005-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2530",
+      "range_or_section": "GM Core pp.22–23",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-006-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2558",
+      "range_or_section": "GM Core pp.28",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-007-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2559",
+      "range_or_section": "GM Core pp.28",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-008-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2562",
+      "range_or_section": "GM Core pp.29",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-009-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2563",
+      "range_or_section": "GM Core pp.30",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-010-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2564",
+      "range_or_section": "GM Core pp.30",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-011-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2608",
+      "range_or_section": "GM Core pp.45",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-012-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2619",
+      "range_or_section": "GM Core pp.49",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-013-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2625",
+      "range_or_section": "GM Core pp.50",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-014-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2656",
+      "range_or_section": "GM Core pp.59",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-015-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2661",
+      "range_or_section": "GM Core pp.61",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-016-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2657",
+      "range_or_section": "GM Core pp.59–60",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-017-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2655",
+      "range_or_section": "GM Core pp.58",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-018-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2658",
+      "range_or_section": "GM Core pp.60",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-019-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2595",
+      "range_or_section": "GM Core pp.41",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-020-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2601",
+      "range_or_section": "GM Core pp.42–43",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-021-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2538",
+      "range_or_section": "GM Core, Bypassed Encounters under Running Encounters24–30",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1C-022-v2"
+      ],
+      "reason": "Конкретный source→L1 перевод; actualисполнение и common-equivalence pending",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json"
+    }
+  ],
+  "chapter_applicability_screen": [
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2469",
+      "range_or_section": "GMCore6–7 A Welcoming Environment",
+      "status": "screened_applicability",
+      "reason": "Социальные договорённости/границы содержания. Не отдельная обязательная геометрия/сетка; редактирование заготовленных сведений уже покрыто. Не придумывать фильтр по вероятностям.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2473",
+      "range_or_section": "GMCore8–9 Preparing Adventures/CharacterCreation/Planning",
+      "status": "screened_applicability",
+      "reason": "Готовое/своё приключение и адаптация уже в GMC1preparation. Sessionzero/расписание/персонажи не новые обязательные L1операции.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2480",
+      "range_or_section": "GMCore10–14 RunningSession",
+      "status": "screened_applicability",
+      "reason": "Истина/предъявление/NPC/улики извлечены. Темп, очкигероя, secretchecks, circumstancebonuses — L3/ведение.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2496",
+      "range_or_section": "GMCore15–23 SpecialConsiderations",
+      "status": "screened_applicability",
+      "reason": "Совместное авторство/местнаяредкость извлечены. Социальныепроблемы, составгруппы, персональные правила способностей не отдельная карта; sensoryaccessibility учтена общим описанием.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2538",
+      "range_or_section": "GMCore24–30 RunningEncounters",
+      "status": "screened_applicability",
+      "reason": "Локальная геометрия/препятствия и перенос содержимого извлечены. Инициатива/действия/социальныепроверки/TPK/погоня — L2/L3, не регрессия региональнойкарты.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2573",
+      "range_or_section": "GMCore34–43 RunningExploration",
+      "status": "screened_applicability",
+      "reason": "Переиспользовать hazards/investigation/search/nav из предыдущихполныхтел; добавлены detectmagic/rest. Сенсорные35клетокreviewed. Скорость/деятельности/часы/караул/голод относятся кL2/L3; не переводить в автогенерацию.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2604",
+      "range_or_section": "GMCore44–51 RunningDowntime",
+      "status": "screened_applicability",
+      "reason": "Изменениямест/строительство/наставникиизвлечены. Таблицырабочихсобытий — готовые примеры зацепок, не обязательнаяплотностьPOI. Цены/сроки/проверки/переподготовка персонажаL3; market48/59 уже закрыты отдельнымисрезами.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2627",
+      "range_or_section": "GMCore52–55 DifficultyClasses",
+      "status": "screened_applicability",
+      "reason": "Прошлыйрезультат8профилейпереиспользован, таблицы не пересозданы. Sourceparent не равен всемполнымспособностям.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2647",
+      "range_or_section": "GMCore56–61 Rewards",
+      "status": "screened_applicability",
+      "reason": "Добыча/еёбюджет/доступ/размещение извлечены. XP/HeroPoints/повышениеуровня/богатствоновогоперсонажа — L3, не данные созданнойместности.",
+      "proof_limit": "Применимые L1clauses извлечены; выполнениедействий и полныйисточник всейигры не приняты."
+    }
+  ],
+  "source_acceptance_status": "full_game_incomplete; selected22rules translated; final chapter crossref reconciliation pending",
+  "architecture_review": {
+    "current_main_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+    "common_registry_sha": "d53284a51d6fb726238f029909856ac18a652560",
+    "binding_registry_sha": "f4bb0500fff9b67585d72222253b929ba4e23422",
+    "binding_body_returned": "empty content, not evidence of empty registry",
+    "actual_code_review_complete": false,
+    "reason": "src/App.tsx body empty via connector; guessed src/types.ts returned404; no absence or runtime conclusion."
+  },
+  "remaining": [
+    "PF2: полный тематический скрининг оставшихся GMCore2–5/введения и PlayerCore1–8/приложений по15блочномуинвентарю. Следующий выбранный источник GMCoreChapter2 BuildingGames: прочитать начальные adventure design/map-seeding sections; использовать уже извлечённые regional/environment/settlementстроки, не сканировать GMCore1 заново.",
+    "GMCore1: новые22положения+сенсорный конспект35клеток сохранены; финальная сверка всех релевантных sourcecrossrefs и существующихL1строк остаётся до sourceacceptance. PlayerCore438–439/323/405/440 по применимости — действияL2/L3 отдельно.",
+    "Canonical binding normalization: реестр game-bindings получен с SHA, но тело коннектор вернул пустым; не считать его пустым реестром и не создавать второй. Common IDs найдены, pendingequivalence не принято.",
+    "Actual приложение на свежемmain: проверить каждую принятую функцию/отличающийсяпрофиль через UI, save/load, undo, права мастера/игроков. Currenthead указан, actualsupport не установлен.",
+    "DND5: сохранить блокер полного DMG2014 источника, повторный идентичный поиск без нового accesssignal не делать. После полного overalltop5 — свежая create-top10 когорта; рейтинг/score не менять."
+  ],
+  "product_queue_changed": false,
+  "canonical_registries_changed": false,
+  "rating_changed": false,
+  "source_author_project_key": "paizo:pathfinder2:remaster:gm-core",
+  "access_level": "full_text_of_selected_rule_bodies"
+}
