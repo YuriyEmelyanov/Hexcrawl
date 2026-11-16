@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-16T06:24:32.458Z",
+  "updated_at": "2026-11-16T07:03:01.747Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -79,7 +79,7 @@
     {
       "task_id": "HX-BL-055",
       "title": "Корректировка ширины рек на 1-мильной карте",
-      "status": "Согласована",
+      "status": "спецификация",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-15-one-mile-river-widths.json"
@@ -88,9 +88,9 @@
       "approved_at": "2026-11-15T21:29:57.540Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "интервью завершено: только отображаемая ширина, без изменения расположения объектов",
-      "next_role": "business-analyst",
-      "next_step": "Чистовая спецификация:1mile F1–5=10–50%, только отображение без переноса объектов/миграции; озёрные стыки и переправы проверить,6mile сохранить.",
+      "execution_state": "чистовая F1 готова после интервью; следующий этап — программист",
+      "next_role": "programmer",
+      "next_step": "Реализовать один связный пакет:1mile F1–F5=10–50% только в отображении, действительные озёрные стыки/переправы,6mile без изменений; показать фактическое до/после точного SHA и передать независимому проверяющему.",
       "requirements": [
         "Только на 1-мильной карте: F1=10%, F2=20%, F3=30%, F4=40%, F5=50% ширины гекса. Это визуальная шкала, не физическая ширина русла.",
         "6-мильная карта: существующая ширина рек и внешний вид без изменений.",
@@ -112,16 +112,16 @@
       ],
       "score_forecast": "unknown; оценить по1.2 в спецификации, без предварительного начисления",
       "draft_spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-D1.md",
-      "spec_ref": null,
-      "acceptance_ref": null,
+      "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
+      "acceptance_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.acceptance.json",
       "published_ref": null,
-      "updated_at": "2026-11-16T05:58:20.518Z",
+      "updated_at": "2026-11-16T07:03:01.747Z",
       "draft_spec_version": "D1",
       "interview_status": "interview_completed",
       "interview_completed": true,
-      "ready_for_development": false,
+      "ready_for_development": true,
       "ui_preview_pending": false,
-      "handoff_ref": "agent-work/handoffs/2026-11-16-manual-interviewer-river-width-answers-1794808661818-analyst.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-16T1000-analyst-river-width-F1-programmer.json",
       "interview_ref": "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/decisions.json",
       "interview_round_ref": "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/round-001.json",
       "open_question_ids": [],
@@ -133,6 +133,35 @@
         "preserve_positions": true,
         "legacy_width_exceptions": false,
         "source_ref": "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/owner-answers-2026-11-16-01.json"
+      },
+      "final_spec_version": "F1",
+      "ui_preview": {
+        "version": "P1-retained-after-interview",
+        "ref": "agent-work/previews/HX-BL-055-F1/README.md",
+        "presented_in_chat": true,
+        "kind": "schematic_not_runtime",
+        "reason": "No controls or layout changes; owner answer only constrains display-only behavior."
+      },
+      "forecast": {
+        "completed_runs": 5,
+        "remaining_runs": {
+          "min": 4,
+          "max": 7
+        },
+        "total_runs": {
+          "min": 9,
+          "max": 12
+        },
+        "remaining_active_hours": {
+          "min": 3,
+          "max": 5
+        },
+        "remaining_calendar_hours_excluding_owner_wait": {
+          "min": 8,
+          "max": 14
+        },
+        "confidence": "medium",
+        "history_reset": false
       }
     },
     {
