@@ -88,9 +88,9 @@
       "approved_at": "2026-11-15T21:29:57.540Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "чистовая F1 готова после интервью; следующий этап — программист",
-      "next_role": "programmer",
-      "next_step": "Реализовать один связный пакет:1mile F1–F5=10–50% только в отображении, действительные озёрные стыки/переправы,6mile без изменений; показать фактическое до/после точного SHA и передать независимому проверяющему.",
+      "execution_state": "реализация готова на точном SHA; полный CI зелёный; ожидается независимая приёмка",
+      "next_role": "reviewer",
+      "next_step": "Независимо проверить PR504 на SHA 47d0dfad85931e949be6e9a469de307cdf8f5582 по F1/AC, фактическому до/после и PNG; сохранить findings либо acceptance и score_assessment1.2. Изменение SHA требует повторной проверки.",
       "requirements": [
         "Только на 1-мильной карте: F1=10%, F2=20%, F3=30%, F4=40%, F5=50% ширины гекса. Это визуальная шкала, не физическая ширина русла.",
         "6-мильная карта: существующая ширина рек и внешний вид без изменений.",
@@ -115,7 +115,7 @@
       "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
       "acceptance_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.acceptance.json",
       "published_ref": null,
-      "updated_at": "2026-11-16T07:03:01.747Z",
+      "updated_at": "2026-11-16T09:06:14.308Z",
       "draft_spec_version": "D1",
       "interview_status": "interview_completed",
       "interview_completed": true,
@@ -143,26 +143,49 @@
         "reason": "No controls or layout changes; owner answer only constrains display-only behavior."
       },
       "forecast": {
-        "completed_runs": 5,
+        "completed_runs": 6,
         "remaining_runs": {
-          "min": 4,
-          "max": 7
-        },
-        "total_runs": {
-          "min": 9,
-          "max": 12
-        },
-        "remaining_active_hours": {
-          "min": 3,
+          "min": 2,
           "max": 5
         },
-        "remaining_calendar_hours_excluding_owner_wait": {
+        "total_runs": {
           "min": 8,
-          "max": 14
+          "max": 11
         },
+        "remaining_active_hours": {
+          "min": 1,
+          "max": 4
+        },
+        "remaining_calendar_hours_excluding_owner_wait": {
+          "min": 2,
+          "max": 6
+        },
+        "owner_publication_wait": "unknown",
         "confidence": "medium",
         "history_reset": false
-      }
+      },
+      "implementation_ref": "agent-work/results/2026-11-16T1107-programmer-river-width-F1.json",
+      "review_handoff_ref": "agent-work/handoffs/2026-11-16T1107-programmer-river-width-F1-reviewer.json",
+      "pull_request": {
+        "number": 504,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/504",
+        "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+        "state": "open",
+        "merged": false
+      },
+      "checks": {
+        "status": "passed_exact_sha",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617"
+      },
+      "actual_ui": {
+        "status": "implemented_exact_sha",
+        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617/artifacts/14210508921",
+        "presented_in_chat": true,
+        "desktop": true,
+        "narrow390": true
+      },
+      "review_status": "review_ready",
+      "acceptance_status": "pending_independent_review"
     },
     {
       "task_id": "HX-BL-056",
