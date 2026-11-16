@@ -1,0 +1,408 @@
+{
+  "run_id": "2026-11-16-PF2-source-completeness-033130",
+  "status": "checkpoint",
+  "started_at": "2026-11-16T03:31:30.564Z",
+  "finished_at": "2026-11-16T03:57:38.536Z",
+  "baseline_sha": "26a7426182bec633dcb1c4e2b5a8d19ffa7b9a1a",
+  "started_marker_ref": "agent-work/claims/2026-11-16-PF2-source-completeness-033130.json",
+  "selected_task": {
+    "id": "HX-RSR-PF2-STANDARD-V2-ALIGNMENT",
+    "game_id": "PF2",
+    "layer": "L1",
+    "bounded_result": "Missing settlement branch source→concrete operations, full-book index inventory, and previously open008/029 boundary/examples",
+    "completion_condition_before_work": "Read reachable settlement primary body and enumerate missing rules/operations without claiming whole-book or actual UI completion; preserve exact larger-goal remainder."
+  },
+  "selection_reason": "Current P1 top5 owner standard; continue the existing PF2 checkpoint with reachable primary source rather than reopen closed slices. Fresh active ranking1.4 confirms PF2 second overall.",
+  "alternatives": [
+    {
+      "game_id": "DND5",
+      "decision": "Retain first priority but source blocked",
+      "reason": "Full DMG2014 source still unresolved; no new access evidence, so identical failed searches not repeated.",
+      "checkpoint_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    {
+      "game_id": "KNAVE2",
+      "decision": "Defer",
+      "reason": "PF2 is higher in fresh cohort and current same-goal corpus remains reachable; switching would leave this important source omission unresolved."
+    }
+  ],
+  "inputs_and_versions": {
+    "branch": "agent-operations",
+    "baseline_sha": "26a7426182bec633dcb1c4e2b5a8d19ffa7b9a1a",
+    "before_write_head": "ba90f88b79bb6c2b52d1f75f79020c9118e0c8ab",
+    "main_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "active_ranking_version": "three-scenario-ranks-1.4-CROWS-addition",
+    "source_version": "GMCore/PlayerCoreRemaster; AoN English snapshot16Nov2026, GMCore source reports Spring2026errata (package not separately audited)",
+    "standard": "rule-analysis-standard.md v2 RA-Q01–15",
+    "prior_input": "Combined63 entries; CROWS50/35/339-page packet reused as closed context, not rescanned.",
+    "read_refs": [
+      "AGENTS.md",
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/feedback.json",
+      "agent-work/approvals.json",
+      "agent-work/budget.json",
+      "agent-work/research/contract.md",
+      "agent-work/research/state.json",
+      "agent-work/research/method.json",
+      "agent-work/research/proposals.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/research/data-contract.json",
+      "agent-work/research/rule-analysis-standard.md",
+      "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+      "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json",
+      "agent-work/rules/common-rules.json",
+      "agent-work/rules/game-bindings.json",
+      "agent-work/score/cohorts-2026-11-15.json"
+    ]
+  },
+  "findings": [
+    {
+      "id": "PF2-ST-F01",
+      "finding": "Settlement level is an economic/NPC guideline, not map area. Typical walls for population>1000 remain advice with exceptions.",
+      "consequence": "Do not derive physical POI footprint from level or force walls at threshold. Distinguish city sketch from regional POI and place profile.",
+      "source_refs": [
+        "https://2e.aonprd.com/Rules.aspx?ID=2975",
+        "https://2e.aonprd.com/Rules.aspx?ID=3010"
+      ]
+    },
+    {
+      "id": "PF2-ST-F02",
+      "finding": "Market default common item limit follows level, but category-specific City of Artisans +4 and Otari town4 consumables10 are explicit exceptions.",
+      "consequence": "A universal place-profile operation must preserve scope and override conditions; a generic hard level cap loses rules. No rating/score change justified.",
+      "source_refs": [
+        "https://2e.aonprd.com/Rules.aspx?ID=3003",
+        "https://2e.aonprd.com/Rules.aspx?ID=3011",
+        "https://2e.aonprd.com/Rules.aspx?ID=3013"
+      ]
+    },
+    {
+      "id": "PF2-ST-F03",
+      "finding": "008 contains advance terrain-keyed encounter-list preparation distinct from L3 selection/resolution.029 includes all seven non-guaranteed terrain/resource/secret examples.",
+      "consequence": "Added an L1 preparation candidate using existing content roll-table component; canonical008-L3 not silently rewritten. Expanded029 source parameters and seven acceptance examples.",
+      "source_refs": [
+        "https://2e.aonprd.com/Rules.aspx?ID=3107",
+        "https://2e.aonprd.com/Rules.aspx?ID=3115"
+      ]
+    },
+    {
+      "id": "PF2-ST-F04",
+      "finding": "Exact current-main rename helper passes5 focused cases; statically inspected POI/notes/save model does not prove a complete settlement profile.",
+      "consequence": "Only general name component partial in two new rows;29 other new rows unverified. No absent/full claim from word-search or note storage.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json"
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-entries.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-coverage.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-review.md",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-quality.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-entries.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-quality.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-review.md",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-validation.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-name-probe.ts",
+    "agent-work/research/handoffs/2026-11-16-PF2-source-completeness-033130-strategist.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/claims/2026-11-16-PF2-source-completeness-033130.json",
+    "agent-work/execution-locks.json",
+    "agent-work/latest.json"
+  ],
+  "artifact_commits": {
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json": "60118dbc8b9a3e316ad3c7a36f8e0224fe85efe7",
+    "agent-work/research/requirements/PF2-Remaster-v2-coverage.json": "c5c2eac12c64ce9dcac3b91acb34dd8e233aca9c",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-entries.json": "b1b89e6a1cbeeea631ab4b05364c6f0f6b110621",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-coverage.json": "693f8bfccedc807df15f35d828963f002793b907",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-review.md": "c0db2661e852b30c10101a39f268e2d18f199e6e",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-quality.json": "f33c882aabf14a9e84432a1f513b7179acfe82d1",
+    "agent-work/research/requirements/PF2-Remaster-v2-entries.json": "09fc9f3e475fbc05884c5aac8eed1647dcad363d",
+    "agent-work/research/requirements/PF2-Remaster-v2-quality.json": "8b4ca294ed912911dcb4b2283b806640d99c3331",
+    "agent-work/research/requirements/PF2-Remaster-v2-review.md": "a0477e676355a050090190f69de6a9b652971218",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-validation.json": "68fbee5f14a318d3db84f76398e88ec2a7a7d103",
+    "agent-work/research/requirements/PF2-Remaster-v2-settlements-name-probe.ts": "b64080bfdb00fa0d29545cc196a78325c7f5b715",
+    "agent-work/research/handoffs/2026-11-16-PF2-source-completeness-033130-strategist.json": "83e95165b0e04174ec72a92833fb5e9b5d9f6105",
+    "agent-work/research/work-plan.json": "817d34c2c50b253bd669708983a5f2254611efe9",
+    "agent-work/research/README.md": "e0d504f38ad7d24b122940df1dab7d4057b49734"
+  },
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "handoff_ref": "agent-work/research/handoffs/2026-11-16-PF2-source-completeness-033130-strategist.json",
+  "verification": {
+    "schema_objects_validated": 97,
+    "schema_errors": 0,
+    "combined_entries": 94,
+    "new_settlement_rows": 30,
+    "new_preparation_rows": 1,
+    "existing_029_expanded": true,
+    "chapter_inventory_blocks": 15,
+    "chapter_index_not_full_relevance_screen": true,
+    "executed_assertions": {
+      "passed": 5,
+      "failed": 0,
+      "scope": "Exact source function plus original helpers; not UI/full profile"
+    },
+    "product_test_changes": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "new_entries_status": {
+      "partial": 2,
+      "unverified": 29,
+      "full": 0,
+      "absent": 0
+    },
+    "canonical_mapping_ids_resolve": true,
+    "registries_changed": false,
+    "readback_refs": [
+      "agent-work/research/requirements/PF2-Remaster-v2-entries.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-entries.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-review.md"
+    ],
+    "readback_exact": true,
+    "source_full": false,
+    "product_full": false,
+    "run_result_schema_valid": true,
+    "protected_refs_checked_unchanged": [
+      "agent-work/backlog.json",
+      "agent-work/rules/common-rules.json",
+      "agent-work/rules/game-bindings.json",
+      "agent-work/market/three-scenario-ranking-2026-11-15.json"
+    ],
+    "data_commit": "e0d504f38ad7d24b122940df1dab7d4057b49734"
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T003000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "checked_at": null,
+        "checked_time_window": {
+          "after": "2026-11-16T03:31:30.564Z",
+          "before": "2026-11-16T03:39:23Z"
+        },
+        "time_precision": "Start peek performed during initial read phase; exact call timestamp not retained. Window reported instead of invented instant.",
+        "run_details": {
+          "last_run": {
+            "id": "8aa8ef41-ff18-8329-b759-662cfb8d7fc4",
+            "recorded_status": "in_progress",
+            "scheduled_for": "2026-11-16T03:30:00Z",
+            "started_at": "2026-11-16T03:30:48.613830Z",
+            "completed_at": null,
+            "chat_ref": null
+          },
+          "latest_result": {
+            "run_id": "00a39d57-ecfc-8329-909e-a2e60cce9dad",
+            "created_at": "2026-11-16T01:42:02.282150Z",
+            "scheduled_for": "2026-11-16T01:30:00Z",
+            "completed_at": "2026-11-16T01:42:02.631306Z",
+            "content_text": "[Единый разбор PF2](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/research/requirements/PF2-Remaster-v2-review.md) дополнен 39 пунктами: теперь 63 положения переведены в конкретные операции карты.\n\nВажный вывод: **активность опасности и её скрытость — разные состояния**. Например, потревоженный зыбучий песок остаётся опасным, хотя становится видимым. Скорость течения также нельзя выводить из полноводности реки.\n\nПолная сверка ещё не завершена: дальше — полнота книг и проверка реализации. Результат сохранён; очередь разработки и рейтинг не менялись.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa2457-6ffc-83ec-ab21-d513a1c0ede2"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T000000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "checked_at": null,
+        "checked_time_window": {
+          "after": "2026-11-16T03:31:30.564Z",
+          "before": "2026-11-16T03:39:23Z"
+        },
+        "time_precision": "Start peek performed during initial read phase; exact call timestamp not retained. Window reported instead of invented instant.",
+        "run_details": {
+          "last_run": {
+            "id": "28ebe86a-7e6c-832c-bc80-58e488ad1d42",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-16T03:00:00Z",
+            "started_at": "2026-11-16T02:58:16.938754Z",
+            "completed_at": "2026-11-16T03:11:21.913307Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            }
+          },
+          "latest_result": {
+            "run_id": "28ebe86a-7e6c-832c-bc80-58e488ad1d42",
+            "created_at": "2026-11-16T03:11:20.632018Z",
+            "scheduled_for": "2026-11-16T03:00:00Z",
+            "completed_at": "2026-11-16T03:11:21.913307Z",
+            "content_text": "Бизнес-аналитик: подготовлен [черновик HX-BL-055](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/specs/HX-BL-055-one-mile-river-width-D1.md), показаны макеты до/после.\n\nУчтены ширина **10–50%**, устья озёр, переправы, старые уточнённые карты и PNG. **6-мильный вид сохраняется.**\n\nСледующий этап — независимый интервьюер. Реализация ещё не начата; прогноз до выпуска — **16–24 часа плюс ожидание решений**.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T003000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-16T03:52:54.197Z",
+        "run_details": {
+          "last_run": {
+            "id": "8aa8ef41-ff18-8329-b759-662cfb8d7fc4",
+            "recorded_status": "in_progress",
+            "scheduled_for": "2026-11-16T03:30:00Z",
+            "started_at": "2026-11-16T03:30:48.613830Z",
+            "completed_at": null,
+            "chat_ref": null
+          },
+          "latest_result": {
+            "run_id": "00a39d57-ecfc-8329-909e-a2e60cce9dad",
+            "created_at": "2026-11-16T01:42:02.282150Z",
+            "scheduled_for": "2026-11-16T01:30:00Z",
+            "completed_at": "2026-11-16T01:42:02.631306Z",
+            "content_text": "[Единый разбор PF2](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/research/requirements/PF2-Remaster-v2-review.md) дополнен 39 пунктами: теперь 63 положения переведены в конкретные операции карты.\n\nВажный вывод: **активность опасности и её скрытость — разные состояния**. Например, потревоженный зыбучий песок остаётся опасным, хотя становится видимым. Скорость течения также нельзя выводить из полноводности реки.\n\nПолная сверка ещё не завершена: дальше — полнота книг и проверка реализации. Результат сохранён; очередь разработки и рейтинг не менялись.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa2457-6ffc-83ec-ab21-d513a1c0ede2"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T000000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-16T03:52:54.197Z",
+        "run_details": {
+          "last_run": {
+            "id": "28ebe86a-7e6c-832c-bc80-58e488ad1d42",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-16T03:00:00Z",
+            "started_at": "2026-11-16T02:58:16.938754Z",
+            "completed_at": "2026-11-16T03:11:21.913307Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            }
+          },
+          "latest_result": {
+            "run_id": "28ebe86a-7e6c-832c-bc80-58e488ad1d42",
+            "created_at": "2026-11-16T03:11:20.632018Z",
+            "scheduled_for": "2026-11-16T03:00:00Z",
+            "completed_at": "2026-11-16T03:11:21.913307Z",
+            "content_text": "Бизнес-аналитик: подготовлен [черновик HX-BL-055](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/specs/HX-BL-055-one-mile-river-width-D1.md), показаны макеты до/после.\n\nУчтены ширина **10–50%**, устья озёр, переправы, старые уточнённые карты и PNG. **6-мильный вид сохраняется.**\n\nСледующий этап — независимый интервьюер. Реализация ещё не начата; прогноз до выпуска — **16–24 часа плюс ожидание решений**.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa01e0-f180-83ec-86e6-52d3ea72481b"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        }
+      }
+    ],
+    "restoration": {
+      "performed": false,
+      "reason": "Both existing automations enabled at both peeks"
+    },
+    "schedules_mutated": false,
+    "errors": [],
+    "proof_limit": "Enabled and recorded_status completed are scheduler facts, not research completion or source/implementation acceptance."
+  },
+  "checkpoint": {
+    "status": "checkpoint_large_corpus_remaining",
+    "run_id": "2026-11-16-PF2-source-completeness-033130",
+    "stage": "PF2_settlement_source_translation_and_completeness_inventory",
+    "last_successful_step": "30 new settlement clauses and1 L1 preparation operation translated;029 all seven terrain examples expanded;97 objects schema-valid;5 exact name-helper assertions passed;11 artifact writes saved and3 key readbacks exact.",
+    "failed_operation": {
+      "tool": "functions.exec",
+      "action": "Display full multi-page source response",
+      "safe_locator": "AoN primary Rules2974/3010/Sources response held in first_sources"
+    },
+    "observed_error": "Output exceeded the available model context and was truncated",
+    "error_recovered": true,
+    "error_recovery": "Kept returned result in session store and inspected bounded source-body lines; all cited settlement bodies then read. Later oversized display warnings consolidated as the same presentation limitation.",
+    "stop_reason": "Large unfinished declared corpus and actual product acceptance remain. This is a substantive source/translation checkpoint, not a platform/GitHub block; no tool currently blocks reachable continuation.",
+    "cause_status": "confirmed",
+    "cause_note": "The reported error concerns response display truncation only. It does not establish a GitHub fault or a hung source fetch and did not cause the planned corpus checkpoint.",
+    "saved_results": [
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-entries.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-coverage.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-review.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-quality.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-entries.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-quality.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-review.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-validation.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-name-probe.ts",
+      "agent-work/research/handoffs/2026-11-16-PF2-source-completeness-033130-strategist.json",
+      "agent-work/research/runs/2026-11-16-PF2-source-completeness-033130.json"
+    ],
+    "exact_continuation": "Continue SAME PF2 alignment. Reuse combined94 entries (63 prior +30 settlement +1 preparation); do not rescan settlement138–139/168–171 or terrain/examples008/029 without new evidence. First close GMCore59 settlement stock quantities and PlayerCore228/290 dependencies. Then screen not-read chapter bodies and backmatter in the15-block inventory (index alone not acceptance), extract new map-applicable clauses, normalize candidate mappings into canonical registries through scoped claim, then verify actual UI/save/load/undo and different profiles on fresh mainSHA. Preserve DND full-source checkpoint; no identical failed search without new access.",
+    "needs_owner_action": false,
+    "owner_action": null,
+    "research_outcome_completed": false,
+    "bounded_output": "Missing settlement source branch translated with dependencies explicit; full PF2/top5 goal not completed.",
+    "additional_recovered_errors": [
+      {
+        "failed_operation": {
+          "tool": "exec_command",
+          "action": "Check optional TypeScript transpiler location",
+          "safe_locator": "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/typescript/lib/typescript.js"
+        },
+        "observed_error": "ls: cannot access '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/node_modules/typescript/lib/typescript.js': No such file or directory",
+        "cause_status": "confirmed",
+        "cause_note": "File was absent at checked path; no claim about entire runtime package set.",
+        "recovery": "Used Node24 native TypeScript stripping;5 assertions passed without installing packages.",
+        "recovered": true
+      }
+    ]
+  },
+  "next_candidate": {
+    "id": "HX-RSR-PF2-STANDARD-V2-ALIGNMENT",
+    "game_id": "PF2",
+    "layer": "L1",
+    "action": "Continue SAME PF2 alignment. Reuse combined94 entries (63 prior +30 settlement +1 preparation); do not rescan settlement138–139/168–171 or terrain/examples008/029 without new evidence. First close GMCore59 settlement stock quantities and PlayerCore228/290 dependencies. Then screen not-read chapter bodies and backmatter in the15-block inventory (index alone not acceptance), extract new map-applicable clauses, normalize candidate mappings into canonical registries through scoped claim, then verify actual UI/save/load/undo and different profiles on fresh mainSHA. Preserve DND full-source checkpoint; no identical failed search without new access.",
+    "reason": "P1 top5 remediation: DND source blocked, PF2 remains reachable and same unfinished goal. New body scan found missing settlement source; partial function probe cannot close full profile.",
+    "completion_condition": "Full declared thematic corpus + self-contained rule/function/status matrix; RA-Q01–15 pass or justified applicable exclusion, no unresolved relevant source or unverified profile."
+  },
+  "authority": {
+    "github_research_authorized": true,
+    "main_changed": false,
+    "rating_changed": false,
+    "score_changed": false,
+    "active_numeric_method_changed": false,
+    "backlog_changed": false,
+    "product_started": false,
+    "expenses": 0,
+    "messages_sent": 0
+  },
+  "budget_observed": {
+    "status": "owner_waived_usage_gate",
+    "usage_known": false,
+    "additional_spend_approved": false
+  },
+  "owner_summary": "PF2:30 settlement rules plus1 preparation candidate and seven terrain profiles retained. Settlement level≠map area; category/local market exceptions must survive universalization. Full PF2 remains checkpoint; no owner action now."
+}
