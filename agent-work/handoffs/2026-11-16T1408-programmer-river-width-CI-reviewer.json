@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-055",
+  "from_role": "programmer",
+  "to_role": "reviewer",
+  "run_id": "2026-11-16T1408-programmer-river-width-CI",
+  "status": "review_ready",
+  "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+  "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+  "pr": 504,
+  "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
+  "acceptance_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.acceptance.json",
+  "previous_review_ref": "agent-work/evidence/HX-BL-055-review-47d0dfa/review.json",
+  "result_ref": "agent-work/results/2026-11-16T1408-programmer-river-width-CI.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-055-finite-crossings-f824da1/implementation.json",
+  "checks": {
+    "affected": {
+      "executed": 17,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0
+    },
+    "local_full": {
+      "command": "npm run check",
+      "status": "passed",
+      "executed": 427,
+      "passed": 427,
+      "failed": 0,
+      "skipped": 0,
+      "typescript": "passed",
+      "build": "passed",
+      "local_head_at_run": "9407202 with final product-source changes",
+      "content_verified_against_final_sha": true,
+      "note": "Final browser-only edit validated with node --check; npm run check excludes browser script."
+    },
+    "ci": {
+      "run_id": 43857967679,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679",
+      "status": "passed",
+      "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+      "typescript": "passed",
+      "node": {
+        "executed": 427,
+        "passed": 427,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "passed",
+      "browser": "passed",
+      "world_random": "passed"
+    }
+  },
+  "actual_ui": {
+    "status": "actual_exact_sha_presented_in_chat",
+    "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+    "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+    "artifact_id": 14222178027,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679/artifacts/14222178027",
+    "artifact_digest": "sha256:d181efcfee22ab68080382d10027c5e98cc20c5bf0a993742a8f5c72254846bb",
+    "digest_verified_after_download": true,
+    "shown": "geo2-tiles.png",
+    "desktop": "geo2-accepted-1500.jpg",
+    "narrow": "geo2-accepted-390.jpg",
+    "native6_baseline": {
+      "sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+      "fixture": "same explicitF2ford variant",
+      "profiles": [
+        {
+          "width": 1500,
+          "pixelIdentical": true,
+          "raster": {
+            "maxDelta": 0,
+            "changedFraction": 0
+          }
+        },
+        {
+          "width": 390,
+          "pixelIdentical": true,
+          "raster": {
+            "maxDelta": 0,
+            "changedFraction": 0
+          }
+        }
+      ],
+      "png": {
+        "pixelIdentical": true,
+        "raster": {
+          "maxDelta": 0,
+          "changedFraction": 0
+        }
+      }
+    }
+  },
+  "review_scope": [
+    "Review all changes47d0dfa..f824da1 and verify final whole package against F1.",
+    "REV-01: clip finite visible river capsules along the full road polyline, union spans, select only connected wet span containing the crossing; preserve real dry approaches. Do not demand invented dry geometry for a synthetic road wholly underwater.",
+    "Verify ordinary/refined near-parallel, near-end, short and multiple crossings; bank/mask behavior and input immutability.",
+    "REV-02: verify native6 screenshot1500/390 and exportedPNG comparison on final SHA against b7d0a56; manifest records pixelIdentical true/maxDelta0.",
+    "Reassess score1.2 and overall acceptance independently. Previous rejection does not automatically accept newSHA."
+  ],
+  "publication_authorized": false,
+  "score_award_confirmed": false,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-16T11:08:41.069Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-16T11:40:46.605Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "recovery_performed": false,
+    "schedule_changed": false,
+    "errors": []
+  },
+  "created_at": "2026-11-16T11:40:46.605Z"
+}
