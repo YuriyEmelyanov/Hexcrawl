@@ -16,6 +16,9 @@ const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.re
 // P02: explicit legal F2 ford variant of the same existing world, no geometry edit.
 fixture.map.crossings.find(c=>c.riverId===3).kind='ford';
 geometryFixture.map.crossings.find(c=>c.riverId===3).kind='ford';
+// P03: keep one declared F3 segment as a legal F5 presentation variant so
+// the real-map browser check covers the complete F1..F5 width scale.
+const f5Sector=fixture.map.rivers.flatMap(r=>r.sectors).find(s=>s.fullness===3);assert.ok(f5Sector);f5Sector.fullness=5;
 delete fixture.map.physicalGrid.selectedCell;delete fixture.map.physicalGrid.selectedWorldPoint;
 const oracle=fineEvidenceSamples(h);
 for(const road of fixture.map.roads)fixture.map.editorNames[`road:${road.id}`]={ru:`OM дорога ${road.id}`,en:`OM route ${road.id}`};
@@ -72,9 +75,11 @@ try{
  assert.ok(raster.maxDelta<=3&&raster.changedFraction<=.001,'P04 native6 unchanged except bounded edge antialiasing '+width+' '+JSON.stringify(raster));baselineProfiles.push({width,pixelIdentical:before.equals(after),raster});}
  manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
  await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
- const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(riverPaint);assert.deepEqual(fineRiverPaint,sourceRiverPaint,'WR01 same river widths and geometry across6/1');
+ const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(nodes=>nodes.map(n=>({geometry:['x1','y1','x2','y2'].map(k=>n.getAttribute(k)),width:Number(n.getAttribute('stroke-width')),fullness:Number(n.getAttribute('data-river-fullness'))})));
  const fineHexWidth=await page.locator('[data-fine-key] polygon').first().evaluate(n=>Math.max(...[...n.points].map(p=>p.x))-Math.min(...[...n.points].map(p=>p.x)));assert.ok(Math.abs(sourceHexWidth/fineHexWidth-6)<1e-9);
- manifest.width_projection={sourceHexWidth,fineHexWidth,waterWidthPreserved:true,waterHexFractionRatio:sourceHexWidth/fineHexWidth,riverSegments:sourceRiverPaint.length};
+ assert.equal(fineRiverPaint.length,sourceRiverPaint.length);for(let i=0;i<fineRiverPaint.length;i++){assert.deepEqual(fineRiverPaint[i].geometry,sourceRiverPaint[i].slice(0,4),'WR01 centerline unchanged');assert.ok(Math.abs(fineRiverPaint[i].width/fineHexWidth-fineRiverPaint[i].fullness/10)<1e-9,`F${fineRiverPaint[i].fullness} visible fraction`);}
+ assert.deepEqual([...new Set(fineRiverPaint.map(r=>r.fullness))].sort(),[1,2,3,4,5],'real map renders every legal fullness');
+ manifest.width_projection={sourceHexWidth,fineHexWidth,fractions:[.1,.2,.3,.4,.5],sourceSixUnchanged:true,riverSegments:sourceRiverPaint.length};
  assert.equal(await page.locator('polygon.hex[data-hex-key]').count(),0,'no source-six grid under the fine grid');
  const keys=await page.locator('[data-fine-key]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-key'))),occupied=new Set(keys);
  assert.ok(keys.length>100);const candidates=await page.locator('[data-fine-candidate]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-candidate')));assert.ok(candidates.length);

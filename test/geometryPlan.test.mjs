@@ -17,6 +17,7 @@ import {buildNaturalLakes} from '../src/rendering/lakeGeometry.ts';
 import {migrateSeas} from '../src/seaIdentity.ts';
 import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
 import {createDetailGrid,detailCellCenter,worldToDetailCell} from '../src/detailGrid.ts';
+import {fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
 
 // Test governance: two logical cases for the new accepted boundary. Existing
 // river/mouth/road suites own routing algorithms; saveSafety owns old formats
@@ -93,8 +94,8 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  }
  const outside={...props.source,segments:[...props.source.segments,...[1,5].map((fullness,i)=>({riverId:999,edgeKey:`outside${i}`,fullness,from:{key:`new${i}a`,point:{x:100+i*10,y:100}},to:{key:`new${i}b`,point:{x:105+i*10,y:100}}}))]};
  const mixed=renderRefinedArtwork({...props,source:outside});
- assert.match(mixed,/data-source-edge="outside0"[^>]*stroke-width="1"/);
- assert.match(mixed,/data-source-edge="outside1"[^>]*stroke-width="3"/);
+ assert.match(mixed,new RegExp(`data-source-edge="outside0"[^>]*stroke-width="${fineRiverStrokeWidth(1)}"`));
+ assert.match(mixed,new RegExp(`data-source-edge="outside1"[^>]*stroke-width="${fineRiverStrokeWidth(5)}"`));
  const fineState={...result.candidateState,viewStep:1,selectedWorldPoint:undefined},coarseOnly={...fineState,geometryRefinement:undefined};
  const terrain=new Map(input.map.regions.flatMap(r=>r.hexes.map(c=>[`${c.q},${c.r}`,r.biomeId]))),geography={rivers:input.liveRivers,roads:input.map.roads};
  const summarize=(state,point)=>summarizeDetailCell(state,worldToDetailCell(createDetailGrid(1,state.grid.origin),point),terrain,geography);

@@ -6,15 +6,15 @@ import {geometryMixedRiverPaths} from './geometryRefinementBoundary';
 import type {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {refinementPolylineArc} from './geometryRefinementSource';
 import type {FineRoad,FineCrossing} from './oneMilePresentation';
-import {fineRoadPresentation} from './oneMilePresentation';
+import {fineRoadPresentation,fineRefinedRoadPresentation,fineRiverStrokeWidth} from './oneMilePresentation';
 import {LakeWater} from './rendering/LakeWater';
 import type {LakeShape,NaturalLakeCell} from './rendering/lakeGeometry';
 import type {RefinementShore} from './geometryRefinementShore';
 
-type River={key:string;x1:number;y1:number;x2:number;y2:number;width:number};
+type River={key:string;x1:number;y1:number;x2:number;y2:number;width:number;fullness:number};
 type Source=Extract<ReturnType<typeof normalizeRefinementRiverSource>,{status:'prepared'}>;
 type Props={state:Detail1State;source:Source;offset:WorldPoint;mode:'tiles'|'emoji'|'color';
- rivers:readonly River[];roads:readonly FineRoad[];crossings:readonly FineCrossing[];hiddenRiverEdgeKeys?:ReadonlySet<string>;widthByFullness:ReadonlyMap<number,number>;
+ rivers:readonly River[];roads:readonly FineRoad[];crossings:readonly FineCrossing[];hiddenRiverEdgeKeys?:ReadonlySet<string>;
  rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number;edgeKey?:string}[];
  waterfalls:readonly {key:string;x:number;y:number}[];rotated:boolean};
 const pair=(id:number,key:string)=>JSON.stringify([id,key]);
@@ -48,7 +48,6 @@ export function RefinedGeographyArtwork(p:Props){
  const point=(v:WorldPoint)=>svgPoint(v,origin,p.offset);
  const points=(vs:readonly WorldPoint[])=>vs.map(point).map(v=>`${v.x},${v.y}`).join(' ');
  const shore=(body:RefinementShore)=>shorePath(body,point);
- const widths=new Map(refinement.riverPlan.water.capsules.map(c=>[pair(c.riverId,c.sourceEdgeKey),c.radius*2*factor]));
  const retained=new Set(refinement.roads.roads.map(r=>pair(r.roadId,r.sourceRoadSegmentKey)));
  const outsideRoads=p.roads.filter(r=>!retained.has(pair(r.roadId,r.segmentKey)));
  const retainedRapids=new Set(refinement.riverPlan.source.segments.map(s=>pair(s.riverId,s.edgeKey)));
@@ -70,9 +69,9 @@ export function RefinedGeographyArtwork(p:Props){
   </mask></defs>
   <g className="rivers-layer" mask={`url(#${id})`}>
    {visiblePaths.map(path=>{
-    const width=widths.get(pair(path.riverId,path.sourceEdgeKey))??p.widthByFullness.get(path.fullness)!;
+    const width=fineRiverStrokeWidth(path.fullness);
     const internal=refinement.riverPlan.water.capsules.some(c=>c.riverId===path.riverId&&c.sourceEdgeKey===path.sourceEdgeKey)&&!refinement.riverPlan.paintWater.capsules.some(c=>c.riverId===path.riverId&&c.sourceEdgeKey===path.sourceEdgeKey);
-    return internal?null:<polyline key={pair(path.riverId,path.sourceEdgeKey)} data-refined-river={path.riverId} data-source-edge={path.sourceEdgeKey} points={points(path.points)} className="river-polyline" strokeWidth={width} fill="none"/>;
+    return internal?null:<polyline key={pair(path.riverId,path.sourceEdgeKey)} data-refined-river={path.riverId} data-source-edge={path.sourceEdgeKey} data-river-fullness={path.fullness} points={points(path.points)} className="river-polyline" strokeWidth={width} fill="none"/>;
    })}
   </g>
   <g className="roads-layer" mask={`url(#${id}-roads)`}>
@@ -80,13 +79,11 @@ export function RefinedGeographyArtwork(p:Props){
     {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>)}
     {plan.rails.map(rail=><polyline key={rail.key} points={rail.points} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
    </g>;})}
-   {refinement.roads.roads.map(road=>{let distance=0;return <g key={pair(road.roadId,road.sourceRoadSegmentKey)} data-refined-road={road.roadId}>
-    {road.paint.map((part,i)=>{const dashOffset=-distance;distance+=Math.hypot(part.to.x-part.from.x,part.to.y-part.from.y)*factor;if(!part.visible)return null;const a=point(part.from),b=point(part.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} strokeDashoffset={dashOffset} opacity={part.waterKind==='ford'?.42:1} stroke="#8b6a3f" strokeWidth={road.kind==='trail'?1.5/6:3/6} strokeDasharray={road.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>;})}
+   {refinement.roads.roads.map(road=>{const plan=fineRefinedRoadPresentation(road,refinement.roads.crossings,factor);return <g key={pair(road.roadId,road.sourceRoadSegmentKey)} data-refined-road={road.roadId}>
+    {plan.pieces.map((part,i)=>{const a=point(part.from),b=point(part.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} strokeDashoffset={-part.startDistance*factor} opacity={part.opacity} stroke="#8b6a3f" strokeWidth={road.kind==='trail'?1.5/6:3/6} strokeDasharray={road.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>;})}
+    {plan.rails.map(rail=><polyline key={rail.key} points={points(rail.points)} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>) }
    </g>;})}
-   {refinement.roads.crossings.map(c=><g key={c.key} data-fine-crossing={c.key} data-crossing-kind={c.kind}>
-    <title>{c.kind}</title>
-    {c.kind==='bridge'&&[-1,1].map(side=><polyline key={side} points={c.bankPath.map((v,i,vs)=>{const a=vs[Math.max(0,i-1)],b=vs[Math.min(vs.length-1,i+1)],length=Math.hypot(b.x-a.x,b.y-a.y)||1,q=point(v);return `${q.x-(b.y-a.y)/length*side*4/6},${q.y+(b.x-a.x)/length*side*4/6}`;}).join(' ')} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
-   </g>)}
+   {refinement.roads.crossings.map(c=><g key={c.key} data-fine-crossing={c.key} data-crossing-kind={c.kind}><title>{c.kind}</title></g>)}
   </g>
   {p.rapids.filter(m=>!retainedRapids.has(pair(Number(m.key.match(/^river-rapid-(\d+)-/)?.[1]),m.edgeKey??''))).map(m=>{
    const path=pathByRef.get(pair(Number(m.key.match(/^river-rapid-(\d+)-/)?.[1]),m.edgeKey??''));
