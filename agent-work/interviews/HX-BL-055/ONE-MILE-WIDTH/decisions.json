@@ -6,13 +6,95 @@
   ],
   "draft_spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-D1.md",
   "draft_spec_version": "D1",
-  "owner_answers": [],
-  "decisions": [],
-  "open_question_ids": [
-    "RW-Q01",
-    "RW-Q02"
+  "owner_answers": [
+    {
+      "question_id": "RW-Q01",
+      "owner_answer_raw": "RW-Q01 пока нет. Сузили не так сильно, чтобы менялось расположение объектов.",
+      "selection": "display_width_only_preserve_positions",
+      "status": "resolved",
+      "interpretation": "На этом этапе не перемещать POI, дороги, центральные линии или иные принятые объекты из-за новой ширины. Сужение — только представление. Не вводить миграцию, пересчёт GeometryPlan или старую ширину как исключение. Не приписывать владельцу выбор A/B или согласие на конкретный невоспроизведённый визуальный дефект.",
+      "requirement_refs": [
+        "R03",
+        "R05",
+        "R06",
+        "AC03",
+        "AC05"
+      ],
+      "source": "explicit_owner_message_existing_task_chat",
+      "recorded_at": "2026-11-16T05:58:20.518Z",
+      "message_id": null
+    },
+    {
+      "question_id": "RW-Q02",
+      "owner_answer_raw": "RW-Q02 не понимаю о чём. Меняем только отображаемую ширину рек.",
+      "selection": "not_applicable_no_relocation",
+      "status": "resolved_not_applicable",
+      "interpretation": "Вопрос о невозможном пересчёте/неподвижных объектах неприменим: пересчёт и перенос данных не входят в задачу. Новую ширину применять как отображение, без блокировки старых карт, миграции или дополнительных действий пользователя.",
+      "requirement_refs": [
+        "R03",
+        "R06",
+        "R10",
+        "AC03",
+        "AC05"
+      ],
+      "source": "explicit_owner_message_existing_task_chat",
+      "recorded_at": "2026-11-16T05:58:20.518Z",
+      "message_id": null
+    }
   ],
-  "interview_completed": false,
+  "decisions": [
+    {
+      "question_id": "RW-Q01",
+      "owner_answer_raw": "RW-Q01 пока нет. Сузили не так сильно, чтобы менялось расположение объектов.",
+      "selection": "display_width_only_preserve_positions",
+      "status": "resolved",
+      "interpretation": "На этом этапе не перемещать POI, дороги, центральные линии или иные принятые объекты из-за новой ширины. Сужение — только представление. Не вводить миграцию, пересчёт GeometryPlan или старую ширину как исключение. Не приписывать владельцу выбор A/B или согласие на конкретный невоспроизведённый визуальный дефект.",
+      "requirement_refs": [
+        "R03",
+        "R05",
+        "R06",
+        "AC03",
+        "AC05"
+      ],
+      "source": "explicit_owner_message_existing_task_chat",
+      "recorded_at": "2026-11-16T05:58:20.518Z",
+      "message_id": null
+    },
+    {
+      "question_id": "RW-Q02",
+      "owner_answer_raw": "RW-Q02 не понимаю о чём. Меняем только отображаемую ширину рек.",
+      "selection": "not_applicable_no_relocation",
+      "status": "resolved_not_applicable",
+      "interpretation": "Вопрос о невозможном пересчёте/неподвижных объектах неприменим: пересчёт и перенос данных не входят в задачу. Новую ширину применять как отображение, без блокировки старых карт, миграции или дополнительных действий пользователя.",
+      "requirement_refs": [
+        "R03",
+        "R06",
+        "R10",
+        "AC03",
+        "AC05"
+      ],
+      "source": "explicit_owner_message_existing_task_chat",
+      "recorded_at": "2026-11-16T05:58:20.518Z",
+      "message_id": null
+    }
+  ],
+  "open_question_ids": [],
+  "interview_completed": true,
   "ready_for_development": false,
-  "updated_at": "2026-11-16T05:03:18.522Z"
+  "updated_at": "2026-11-16T05:58:20.518Z",
+  "owner_answer_refs": [
+    "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/owner-answers-2026-11-16-01.json"
+  ],
+  "new_question_ids": [],
+  "status": "interview_completed",
+  "next_role": "business-analyst",
+  "next_step": "Чистовая спецификация отображаемой ширины без перемещения объектов и миграций; сохранить озёрные стыки, переправы,6mile и совместимость.",
+  "closure": {
+    "run_id": "2026-11-16-manual-interviewer-river-width-answers-1794808661818",
+    "completed_at": "2026-11-16T05:58:20.518Z",
+    "whole_draft_review_ref": "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/draft-review.json",
+    "material_questions_resolved": 2,
+    "reason": "Owner explicitly limits change to displayed river widths and rejects relocation now. Conditional fixed-object migration question no longer applies. Remaining renderer/validator separation and fixture coverage are implementation/specification details, not new owner choices.",
+    "handoff_ref": "agent-work/handoffs/2026-11-16-manual-interviewer-river-width-answers-1794808661818-analyst.json"
+  }
 }
