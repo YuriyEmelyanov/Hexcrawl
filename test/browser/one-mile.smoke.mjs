@@ -121,6 +121,11 @@ try{
  }
  manifest.cases.push({id:'UI-responsive-390-320-RU-EN',status:'pass'});
  await lang('en');await page.setViewportSize({width:1500,height:1000});await checkFineObjectsAndPng({page,step,snap,shot,button,manifest,out,oracle});await lang('ru');await page.setViewportSize({width:320,height:1000});
+ // F5 above is an isolated display witness added after the accepted fine-grid
+ // snapshot. Restore the fixture's original F3 before exercising generation;
+ // otherwise that deliberately stale variant is not a valid lifecycle input.
+ const lifecycleFixture=await snap(),restoredSector=lifecycleFixture.map.rivers.flatMap(r=>r.sectors).find(s=>s.id===f5Sector.id);assert.equal(restoredSector?.fullness,5);restoredSector.fullness=3;
+ await page.locator('input[type=file]').setInputFiles({name:'one-mile-lifecycle.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(lifecycleFixture))});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();manifest.width_projection.lifecycleSourceRestored=true;
  const beforeGen=await snap(),candidate=page.locator('[data-fine-candidate]').first(),target=await candidate.getAttribute('data-fine-candidate');await candidate.dblclick();await page.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready');const afterGen=await snap();
  if(afterGen.map.regions.length>beforeGen.map.regions.length){assert.equal(afterGen.map.regions.length,beforeGen.map.regions.length+1,'double click gives one ordinary Classic unit');assert.equal(`${afterGen.map.physicalGrid.selectedCell.q},${afterGen.map.physicalGrid.selectedCell.r}`,target);await button('Отменить').click();assert.deepEqual(await snap(),beforeGen,'one Undo restores the whole ordinary unit');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'accepted_and_undo_exact'});}
  else {assert.deepEqual(afterGen,beforeGen,'failed ordinary generation is atomic');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'bounded_refusal_no_success_claim'});}
