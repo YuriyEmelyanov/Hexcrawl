@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-055",
+  "run_id": "2026-11-16T1455-reviewer-river-width-f824da1",
+  "role": "reviewer",
+  "sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+  "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+  "pr": 504,
+  "verdict": "accept_exact_sha",
+  "acceptance_scope": "Bounded approved F1 display-only package, not unrestricted generator/hydrology certification.",
+  "reviewed_at": "2026-11-16T12:04:03.970Z",
+  "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
+  "independence": {
+    "primary_assistant_limitation": "Primary thread authored previous implementation; independent conclusion supplied by fresh-context read-only subagent.",
+    "agent": "/root/hx055_f824_fresh_review",
+    "fresh_context": true,
+    "source_changes_by_reviewer": false,
+    "methods": [
+      "Full PR source diff",
+      "30 affected Node checks",
+      "Independent old/new shallow ferry sensitivity",
+      "Actual retained river SSR93 elements/3styles",
+      "Controlled retained/mixed F1..F5 SSR480 elements/15 combinations",
+      "Actual14road paint/path length and crossing diagnostics",
+      "Independent PNG byte/pixel comparison",
+      "Exact-tree CI artifact verification"
+    ],
+    "subagent_automation_health": {
+      "start": {
+        "checked_at": "2026-11-16T11:58:02Z",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-16T12:01:51Z",
+        "is_enabled": true
+      }
+    }
+  },
+  "findings": [
+    {
+      "id": "HX-BL-055-REV-01",
+      "status": "closed_verified",
+      "evidence": "Same finite shallow ferry input:47d0dfa pieces0; f824 pieces2 with dry approaches[0,4.3958597603]and[5.6041402397,10]. Finite river caps and bent roads no longer inherit an infinite wet tangent."
+    },
+    {
+      "id": "HX-BL-055-REV-02",
+      "status": "closed_verified",
+      "evidence": "Final PR504 native6 baseline env active against b7d0a56; actual screenshots1500/390 and exportedPNG byte-identical, maxDelta0, changedFraction0."
+    }
+  ],
+  "new_blockers": [],
+  "acceptance": {
+    "AC01": "accepted_bounded: actual ordinary browser, actual retained SSR, controlled retained/mixed F1-F5 renderer diagnostics",
+    "AC02": "accepted_bounded: existing accepted-contour clipping and same-map through-lake evidence; no new gap found",
+    "AC03": "accepted: finite interval fix and actual accepted-road contracts independently checked",
+    "AC04": "accepted_bounded: literal input immutability, same accepted world across published/head and CI JSON/history/RNG",
+    "AC05": "accepted: pixel-identical native6 screen and exportedPNG against published baseline",
+    "AC06": "accepted_bounded: exact-tree CI styles/responsive/preview/busy/export plus inspected desktop/narrow/map",
+    "AC07": "accepted: independent verdict and score assessment saved, actual before/after shown; separate publication authorization still required"
+  },
+  "checks": {
+    "CI": {
+      "run_id": 43857967679,
+      "status": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679"
+    },
+    "independent_targeted_node": "30/30 passed",
+    "artifact": {
+      "id": 14222178027,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679/artifacts/14222178027",
+      "sha256": "d181efcfee22ab68080382d10027c5e98cc20c5bf0a993742a8f5c72254846bb",
+      "digest_verified_locally": true,
+      "source_head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+      "checkout_tree": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887"
+    },
+    "beforeArtifact": {
+      "id": 14174452800,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43745760981/artifacts/14174452800",
+      "source_head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+      "published_merge_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+      "source_equals_published_tree": true,
+      "sha256": "fcb9a658b7deb19a2d5d334de32875d579deb3fbe4e48669dc853330c92d8f4a",
+      "digest_verified_locally": true
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+    "added": 2,
+    "removed": 0,
+    "modified": 5,
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 2,
+        "removed": 0,
+        "modified": 4
+      },
+      {
+        "suite": "Browser ONE-MILE1",
+        "added": 0,
+        "removed": 0,
+        "modified": 1
+      }
+    ],
+    "scenario_risk": "Display width ratios, lake mouths, ordinary/refined crossing projection and missing native6 baseline/export proof.",
+    "reuse_or_new_reason": "Existing width/mouth/crossing/browser cases extended; added refined crossing case and one finite cap/bend/endpoint/short/multiple logical regression. Existing finite-water suite reused.",
+    "source": "Entire PR diff b7d0a56..f824da1; logical test declarations/cases, not changed files or number of runs.",
+    "reviewer_assessment": "Useful, bounded, stable regressions. Prior47d0 tangent implementation fails the same shallow finite-river diagnostic; corrected implementation preserves known dry approaches. No redundant suite required.",
+    "executed": {
+      "independent_targeted_node": {
+        "executed": 30,
+        "passed": 30,
+        "failed": 0,
+        "skipped": 0
+      },
+      "CI_node": {
+        "executed": 427,
+        "passed": 427,
+        "failed": 0,
+        "skipped": 0
+      },
+      "CI_browser": "passed",
+      "CI_rng": "passed",
+      "temporary_diagnostics": "separate SSR/finite-water/pixel checks; not permanent test growth"
+    }
+  },
+  "user_walkthrough_ref": "agent-work/evidence/HX-BL-055-review-f824da1/user-walkthrough.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-055-review-f824da1/score-assessment1.2.json",
+  "limitations": [
+    "Images cover actual fixed classic42 map and bounded CI scenarios, not every possible map/device.",
+    "F4/F5 retained/mixed SSR diagnostics are explicitly controlled presentation variants, not lawful saved-lifecycle evidence.",
+    "Width percentages are cartographic display, not physical river width in miles/meters.",
+    "Local supplemental browser attempt unavailable: bundled executable absent, system Chromium fails socketEPERM; no repeated same-error attempts. Acceptance uses working exact-tree CI evidence.",
+    "No full suite duplicated by reviewer; CI427/427 independently verified and targeted30 rerun."
+  ],
+  "release_eligible_for_owner_decision": true,
+  "publication_authorized": false,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-16T11:55:56.344Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-16T12:03:02.058Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "recovery_performed": false,
+    "errors": [],
+    "schedule_changed": false
+  }
+}
