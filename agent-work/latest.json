@@ -5446,19 +5446,19 @@
     ],
     "schedule": {
       "frequency": "HOURLY",
-      "interval": 2,
-      "interval_hours": 2,
+      "interval": 1,
+      "interval_hours": 1,
       "minute": 30,
       "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
       "is_enabled": true,
-      "rrule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T003000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+      "rrule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T113000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
       "default_timezone": "Europe/Moscow",
-      "verified_at": "2026-11-16T03:52:54.197Z",
-      "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+      "verified_at": "2026-11-16T07:41:35.569Z",
+      "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-16-research-hourly-creation-top10.json",
       "last_health_recovery_ref": "agent-work/results/2026-11-11T1329-operations-research-health.json",
       "enabled": true,
-      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T003000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-      "next_run_time": "2026-11-16T06:30:00+03:00"
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T113000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+      "next_run_time": "2026-11-16T11:30:00+03:00"
     },
     "latest_automation_health_event": {
       "ref": "agent-work/research/automation-health/2026-11-11T1750-research-automation-recovery.json",
@@ -6455,7 +6455,27 @@
     "handoff_ref": "agent-work/research/handoffs/2026-11-16-PF2-source-completeness-033130-strategist.json",
     "needs_owner_action": false,
     "owner_action": null,
-    "latest_written_last": true
+    "latest_written_last": true,
+    "next_alignment_phase": {
+      "phase_id": "HX-RSR-CREATE-TOP10-ALIGNMENT",
+      "status": "pending_after_overall_top5_acceptance",
+      "priority": "next_after_current_top5",
+      "selection_axis": "create_map_scenario_only",
+      "cohort_policy": "Resolve current creation-scenario top10 from fresh active ranking when phase begins; retain exact version and ties. Do not substitute overall top10 or freeze current list.",
+      "entry_condition": "Complete current overall-top5 source/function/actual-support alignment against RA-Q01–15; justified exclusions documented. A routine checkpoint/recorded_completed is not completion.",
+      "reuse_policy": "Reuse accepted overlapping games and common-rules; verify edition/profile/source freshness and remaining gaps instead of repeating full scans.",
+      "standard_ref": "agent-work/research/rule-analysis-standard.md",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-hourly-creation-top10.json",
+      "no_rating_method_score_or_product_queue_change": true
+    },
+    "latest_owner_policy_ref": "agent-work/decisions/owner-decision-2026-11-16-research-hourly-creation-top10.json",
+    "latest_cadence_change": {
+      "ref": "agent-work/decisions/owner-decision-2026-11-16-research-hourly-creation-top10.json",
+      "interval_hours": 1,
+      "verified_at": "2026-11-16T07:41:35.569Z",
+      "is_enabled": true,
+      "research_performed": false
+    }
   },
   "latest_ranking_activation": {
     "run_id": "2026-11-06-strategist-rating14-activation",
