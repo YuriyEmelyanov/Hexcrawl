@@ -7,6 +7,7 @@ import type {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {refinementPolylineArc} from './geometryRefinementSource';
 import type {FineRoad,FineCrossing} from './oneMilePresentation';
 import {fineRoadPresentation,fineRefinedRoadPresentation,fineRiverStrokeWidth} from './oneMilePresentation';
+import {prepareRefinementWater} from './geometryRefinementWater';
 import {LakeWater} from './rendering/LakeWater';
 import type {LakeShape,NaturalLakeCell} from './rendering/lakeGeometry';
 import type {RefinementShore} from './geometryRefinementShore';
@@ -53,6 +54,7 @@ export function RefinedGeographyArtwork(p:Props){
  const retainedRapids=new Set(refinement.riverPlan.source.segments.map(s=>pair(s.riverId,s.edgeKey)));
  const retainedPaths=new Set(refinement.riverPlan.paths.map(path=>pair(path.riverId,path.sourceEdgeKey)));
  const visiblePaths=refinementVisiblePaths(p.source,refinement).filter(path=>retainedPaths.has(pair(path.riverId,path.sourceEdgeKey))||!p.hiddenRiverEdgeKeys?.has(path.sourceEdgeKey));
+ const displayWater=prepareRefinementWater({paths:visiblePaths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/factor]))});
  const pathByRef=new Map(visiblePaths.map(path=>[pair(path.riverId,path.sourceEdgeKey),path]));
  const locations=[...visiblePaths.flatMap(path=>path.points.map(point)),...p.roads.flatMap(r=>[{x:r.x1,y:r.y1},{x:r.x2,y:r.y2}])];
  if(!locations.length)locations.push(p.offset);
@@ -79,7 +81,7 @@ export function RefinedGeographyArtwork(p:Props){
     {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>)}
     {plan.rails.map(rail=><polyline key={rail.key} points={rail.points} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
    </g>;})}
-   {refinement.roads.roads.map(road=>{const plan=fineRefinedRoadPresentation(road,refinement.roads.crossings,factor);return <g key={pair(road.roadId,road.sourceRoadSegmentKey)} data-refined-road={road.roadId}>
+   {refinement.roads.roads.map(road=>{const plan=displayWater.status==='prepared'?fineRefinedRoadPresentation(road,refinement.roads.crossings,factor,displayWater):{pieces:[],rails:[]};return <g key={pair(road.roadId,road.sourceRoadSegmentKey)} data-refined-road={road.roadId}>
     {plan.pieces.map((part,i)=>{const a=point(part.from),b=point(part.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} strokeDashoffset={-part.startDistance*factor} opacity={part.opacity} stroke="#8b6a3f" strokeWidth={road.kind==='trail'?1.5/6:3/6} strokeDasharray={road.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>;})}
     {plan.rails.map(rail=><polyline key={rail.key} points={points(rail.points)} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>) }
    </g>;})}
