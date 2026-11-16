@@ -1,0 +1,70 @@
+{
+  "run_id": "2026-11-16-KNAVE2-scope-audit-1794846774893",
+  "game_id": "KNAVE2",
+  "status": "research_scope_correction_no_queue_write",
+  "audit_ref": "agent-work/research/requirements/KNAVE2-scope-audit.json",
+  "overview_ref": "agent-work/research/requirements/KNAVE2.md",
+  "current_L1_ids": [
+    "KNAVE2-005-L1",
+    "KNAVE2-006-L1",
+    "KNAVE2-010-L1",
+    "KNAVE2-020-L1",
+    "KNAVE2-037-L1",
+    "KNAVE2-040-L1",
+    "KNAVE2-045-L1",
+    "KNAVE2-051-L1",
+    "KNAVE2-070-L1",
+    "KNAVE2-071-L1",
+    "KNAVE2-072-L1",
+    "KNAVE2-073-L1"
+  ],
+  "counts": {
+    "out_of_scope": 36,
+    "defer_L2": 17,
+    "keep_L1": 12,
+    "integration_L3": 10,
+    "needs_owner_decision": 3
+  },
+  "historical_gap_correction": {
+    "ref": "agent-work/research/audits/KNAVE2-L1-runtime-2026-11-10.json",
+    "code_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "unchanged": true,
+    "previous_absent": 17,
+    "no_longer_current_L1": 13,
+    "current_narrowed_L1_relevance": 4,
+    "interpretation": "13of17former absent profiles are outside currentL1; four remaining profiles were narrowed and are not newly proven absent. No score/support change."
+  },
+  "scope_policy": "Current operations only requirements[].scope_review.current_operational_requirement; originals/task IDs historical.",
+  "withdrawn_subsystems": [
+    "wounds/inventory",
+    "general checks/saves",
+    "tactical encounter geometry/combat",
+    "alchemy/crafting",
+    "hire/payroll/companion development",
+    "NPC/faction/story generation",
+    "local magic scenes",
+    "unrestricted auxiliary-table catalog"
+  ],
+  "uncertain_rows": [
+    {
+      "id": "KNAVE2-038-L1",
+      "reason": "Количество святилищ по типу поселения: Автоматическое внутреннее наполнение поселения/каталог услуг требует отдельного объёма. Обязательная структура не следует из возможности описать POI; спорное исключено до решения.",
+      "default": "excluded_pending_owner_decision"
+    },
+    {
+      "id": "KNAVE2-050-L1",
+      "reason": "Город: темы, уличные детали, здания и события: Автоматическое внутреннее наполнение поселения/каталог услуг требует отдельного объёма. Обязательная структура не следует из возможности описать POI; спорное исключено до решения.",
+      "default": "excluded_pending_owner_decision"
+    },
+    {
+      "id": "KNAVE2-056-L1",
+      "reason": "Доступность и услуги экспертов по типу поселения: Автоматическое внутреннее наполнение поселения/каталог услуг требует отдельного объёма. Обязательная структура не следует из возможности описать POI; спорное исключено до решения.",
+      "default": "excluded_pending_owner_decision"
+    }
+  ],
+  "implementation_status": "not_retested; historical audit preserved, narrowed profiles unknown",
+  "canonical_policy": "Reuse existing common-rules/game-bindings after semantic equivalence check; no registry or numerical changes.",
+  "backlog_action": "No new/restored task; existing approved tasks unaffected.",
+  "next": "CROWS50/35existing data scope review; no339page rescan",
+  "needs_owner_action": false
+}
