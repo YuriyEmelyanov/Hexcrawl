@@ -1,0 +1,137 @@
+{
+  "run_id": "2026-11-16-PF2-environment-012908",
+  "baseline_sha": "b339cfe733ea8d403bb2fcbd7570abd243a596aa",
+  "product_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "source_snapshot_date": "2026-11-16",
+  "source_access": {
+    "language": "en",
+    "level": "full_text_selected_primary",
+    "author_project_key": "paizo:pathfinder2:remaster",
+    "urls": [
+      "https://2e.aonprd.com/Rules.aspx?ID=3104",
+      "https://2e.aonprd.com/Actions.aspx?ID=479",
+      "https://2e.aonprd.com/Rules.aspx?ID=2768",
+      "https://2e.aonprd.com/Rules.aspx?ID=2824",
+      "https://2e.aonprd.com/Rules.aspx?ID=2827",
+      "https://2e.aonprd.com/Rules.aspx?ID=2828",
+      "https://2e.aonprd.com/Rules.aspx?ID=2836",
+      "https://2e.aonprd.com/Rules.aspx?ID=2842",
+      "https://2e.aonprd.com/Rules.aspx?ID=2770",
+      "https://2e.aonprd.com/Rules.aspx?ID=2773",
+      "https://2e.aonprd.com/Rules.aspx?ID=2776",
+      "https://2e.aonprd.com/Rules.aspx?ID=2779",
+      "https://2e.aonprd.com/Rules.aspx?ID=2783",
+      "https://2e.aonprd.com/Rules.aspx?ID=2789",
+      "https://2e.aonprd.com/Rules.aspx?ID=2792",
+      "https://2e.aonprd.com/Rules.aspx?ID=2795",
+      "https://2e.aonprd.com/Rules.aspx?ID=2796",
+      "https://2e.aonprd.com/Rules.aspx?ID=2802",
+      "https://2e.aonprd.com/Rules.aspx?ID=2803",
+      "https://2e.aonprd.com/Rules.aspx?ID=2805",
+      "https://2e.aonprd.com/Rules.aspx?ID=2808",
+      "https://2e.aonprd.com/Rules.aspx?ID=2847",
+      "https://2e.aonprd.com/Rules.aspx?ID=2851",
+      "https://2e.aonprd.com/Rules.aspx?ID=2858",
+      "https://2e.aonprd.com/Hazards.aspx?ID=482",
+      "https://2e.aonprd.com/Hazards.aspx?ID=473&NoRedirect=1",
+      "https://2e.aonprd.com/Hazards.aspx?ID=478",
+      "https://2e.aonprd.com/Hazards.aspx?ID=493",
+      "https://2e.aonprd.com/Hazards.aspx?ID=485",
+      "https://2e.aonprd.com/Rules.aspx?ID=2372"
+    ],
+    "fallbacks": [
+      {
+        "child": 2836,
+        "parent": 2768,
+        "section": "Volcanic Eruptions / Ash / Lava Bombs / Lava Flows / Pyroclastic Flows / Vents"
+      },
+      {
+        "child": 2789,
+        "parent": 2768,
+        "section": "Plains / Hedges"
+      }
+    ],
+    "full_book_screened": false
+  },
+  "findings": [
+    {
+      "id": "PF2-ENV-F01",
+      "fact": "Difficult/greater-difficult/uneven/hazardous/cover are separable properties, often coexisting; their execution depends on size, direction and action.",
+      "consequence": "Avoid one universal scalar standing in for all source semantics; keep existing owner display classification distinct from game profile."
+    },
+    {
+      "id": "PF2-ENV-F02",
+      "fact": "Quicksand remains dangerous while disturbed; becomes hidden again after24hours. Current/direction and water fullness are also different quantities.",
+      "consequence": "Hazard activity and visibility must not share one state; river fullness1–5 must not be treated as feet per turn."
+    },
+    {
+      "id": "PF2-ENV-F03",
+      "fact": "The5foot tree square,15foot quicksand patch and10foot flytrap jaws are local physical extents, not1mile regional hex footprints.",
+      "consequence": "Do not turn every local hazard into a whole1mile POI area or build37scene editors as assumed regional map requirements."
+    }
+  ],
+  "static_product_checks": [
+    {
+      "path": "src/knaveClassic.ts",
+      "blob_sha": "96554e3b79476aeff34bdac772f7902626728717",
+      "observed": "Difficulty normal/difficult and Discovery passage/exploration/interaction are named Knave-layer contracts; these tokens alone do not establish PF2 size/direction/rank profiles."
+    },
+    {
+      "path": "src/riverFullness.ts",
+      "blob_sha": "47d30f01d361d376ceb3bb9cd6d2aa2f502cf8b8",
+      "observed": "Fullness is ordinal1..5; connector and tributary functions do not establish a ft/turn speed calibration."
+    },
+    {
+      "path": "src/manualRegions.ts",
+      "blob_sha": "97c413e41eba79f2342b12d6e8d28e22741c7d45",
+      "observed": "Administrative heights1|2|3 are categories; no conversion to source-specific feet invented."
+    }
+  ],
+  "runtime_performed": false,
+  "product_absence_inferred": false,
+  "new_source_rules": 0,
+  "registry_writes": false,
+  "bindings_existing": 39,
+  "canonical_ids": [
+    "map.audience_views",
+    "content.discovery_levels",
+    "map.cartographic_accuracy",
+    "map.terrain_zones",
+    "content.static_hazard",
+    "map.routes_and_barriers",
+    "map.visibility_geometry",
+    "map.physical_elevation",
+    "content.place_description"
+  ],
+  "errors": [
+    {
+      "tool": "search_service.open",
+      "action": "Read selected child rules page",
+      "safe_locator": "https://2e.aonprd.com/Rules.aspx?ID=2836",
+      "observed_error": "URL https://2e.aonprd.com/Rules.aspx?ID=2836 is not accessible via this tool.",
+      "cause_status": "unknown",
+      "status": "recovered_by_accessible_parent",
+      "recovery": "Environment parent ID2768 includes corresponding named section; parent text read, child not accessed."
+    },
+    {
+      "tool": "search_service.open",
+      "action": "Read selected child rules page",
+      "safe_locator": "https://2e.aonprd.com/Rules.aspx?ID=2789",
+      "observed_error": "URL https://2e.aonprd.com/Rules.aspx?ID=2789 is not accessible via this tool.",
+      "cause_status": "unknown",
+      "status": "recovered_by_accessible_parent",
+      "recovery": "Environment parent ID2768 includes corresponding named section; parent text read, child not accessed."
+    }
+  ],
+  "handoff": {
+    "recipient": "strategist",
+    "queue_mutation": false,
+    "point": "Consider reuse of generic placed area/object properties and scene card references. Separate game consequence resolver (L3), audience/exploration state (L2), map preparation data(L1). No backlog restoration/new product starts."
+  },
+  "remaining_full_goal": [
+    "Whole GM/PlayerCore thematic screening including Settlements168 and other open references",
+    "Consolidate63v2 draft rows; verify source completeness incl appendix/actions and remaining029examples/008boundary",
+    "Actual runtime/UI/save/undo/profile checks on current main; no acceptance by JSON alone",
+    "Temperature/source numeric ambiguities retained; no active numeric/rating/score changes"
+  ]
+}
