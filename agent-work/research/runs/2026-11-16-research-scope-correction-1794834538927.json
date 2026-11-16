@@ -1,0 +1,79 @@
+{
+  "run_id": "2026-11-16-research-scope-correction-1794834538927",
+  "status": "completed_policy_update",
+  "started_at": "2026-11-16T13:08:58.927Z",
+  "finished_at": "2026-11-16T13:11:16.864Z",
+  "baseline_sha": "b29f005f65c377a77914bd239215b83ffd151d84",
+  "decision_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "changed_files": [
+    "agent-work/research/contract.md",
+    "agent-work/research/rule-analysis-standard.md",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/state.json",
+    "agent-work/research/README.md",
+    "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+  ],
+  "automation_prompt_verified": true,
+  "schedule_unchanged": true,
+  "audit_status": "pending_scheduled_execution",
+  "review_completed": false,
+  "next_step": {
+    "id": "HX-RSR-RETROSPECTIVE-PRODUCT-SCOPE-v1",
+    "status": "pending_scheduled_execution",
+    "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+    "priority": "before_new_source_expansion",
+    "completion_condition": "Every previously collected row has reasoned scope disposition; working overviews/handoffs corrected; no unrelated subsystem proposals carried as app requirements.",
+    "order": [
+      {
+        "game_id": "PF2",
+        "scope": "Last22 GMC1-content then entire132working rows"
+      },
+      {
+        "game_id": "DND5",
+        "scope": "Existing aligned and legacy records; do not repeat blocked source searches"
+      },
+      {
+        "game_id": "KNAVE2"
+      },
+      {
+        "game_id": "CROWS",
+        "scope": "Reuse50/35; no packet rescan"
+      },
+      {
+        "game_id": "SD"
+      },
+      {
+        "scope": "Remaining already analyzed games"
+      }
+    ],
+    "dispositions": [
+      "keep_L1",
+      "defer_L2",
+      "integration_L3",
+      "out_of_scope",
+      "needs_owner_decision"
+    ],
+    "cursor": {
+      "game_id": "PF2",
+      "artifact": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json",
+      "next_entry": "PF2-RM-GMC1C-001-v2"
+    },
+    "source_rules_not_deleted": true,
+    "review_completed": false
+  },
+  "diagnostics": {
+    "failed_operation": {
+      "tool": "github.update_file",
+      "action": "Acquire scoped policy claim using current blob SHA",
+      "safe_locator": "agent-work/execution-locks.json"
+    },
+    "observed_error": "ReadTimeout: ",
+    "error_code": "UNKNOWN",
+    "cause_status": "unknown",
+    "error_recovered": true,
+    "recovery": "Reread showed no owner acquired; single CAS retry succeeded.",
+    "stop_reason": "Owner-requested policy work complete; retrospective audit scheduled, not performed.",
+    "needs_owner_action": false,
+    "owner_action": null
+  }
+}
