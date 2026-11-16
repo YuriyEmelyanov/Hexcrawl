@@ -65,7 +65,58 @@
         "scope_note": "Статус относится к сформулированной функции этой строки, а не полной поддержке исходной механики Crows. Нельзя суммировать ручное хранение текста как реализованные игровые правила."
       },
       "formal_profile_coverage": "unverified",
-      "backlog_refs": []
+      "backlog_refs": [],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-001",
+        "title": "Свой мир или Cornath",
+        "source_clause_ids": [
+          "CROWS-R02-SETTING"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Карта собственного мира допустима без обязательного воспроизведения географии Cornath; это применимость набора данных, не новая подсистема.",
+        "product_boundary": "Выбор содержимого карты",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-001",
+          "normative_kind": "optional_variant",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Выбрать обычную карту своего сеттинга",
+          "inputs_and_units": {
+            "CROWS-R02-SETTING": {
+              "fixed_setting_mandatory": false
+            }
+          },
+          "product_operation": "Мастер выбирает собственную территорию или готовый сеттинг.",
+          "expected_output": "Можно подготовить собственный мир без обязательной географии и названий Cornath. Это само по себе не отключает выбранные игровые подсистемы.",
+          "constraints_and_exceptions": [
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Пустая карта, выбран Classic mode.",
+              "when": "Выбрать обычную карту своего сеттинга",
+              "expected": "Можно подготовить собственный мир без обязательной географии и названий Cornath. Это само по себе не отключает выбранные игровые подсистемы."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "map.extend_preserving_content"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Выбрать обычную карту своего сеттинга",
+        "map_object_or_state": {
+          "CROWS-R02-SETTING": {
+            "fixed_setting_mandatory": false
+          }
+        },
+        "checkable_result": "Можно подготовить собственный мир без обязательной географии и названий Cornath. Это само по себе не отключает выбранные игровые подсистемы."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-002",
@@ -136,7 +187,67 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-042"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-002",
+        "title": "Физический размер гекса",
+        "source_clause_ids": [
+          "CROWS-R24-SCALE"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Физический масштаб карты нужен, но владелец уже выбрал совместимый базовый режим5–6миль без отдельной5-мильной геометрии. Источник5across и неизвестная ось сохраняются отдельно.",
+        "product_boundary": "Физический масштаб; утверждённая граница HX-BL-058",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-002",
+          "normative_kind": "mandatory_rule",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Выбрать совместимый базовый режим карты Crows",
+          "inputs_and_units": {
+            "source_hex_miles": 5,
+            "source_axis": null,
+            "project_baseline_miles": 6,
+            "display_label": "5–6 миль",
+            "zoom": 1.3
+          },
+          "product_operation": "Выбрать совместимый базовый режим карты Crows",
+          "expected_output": "Используется действующая базовая геометрия; режим обозначается5–6миль по решению владельца. Новая5-мильная сетка не добавлена; исходное5across сохранено отдельно как правило книги.",
+          "constraints_and_exceptions": [
+            "Не подменять физическую длину экранным zoom и не выдавать выбранную приложением геометрию за уточнённый источник.",
+            "across не уточняет способ измерения. Явный проектный выбор конвенции должен быть обозначен; неизвестность источника не означает запрета работать с согласованной конвенцией.",
+            "Это осознанная продуктовая совместимость по HX-BL-058, не точное равенство5и6 и не разрешение самостоятельного отдельного режима. Статус выполнения058 здесь не проверялся.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"source_hex_miles\":5,\"source_axis\":null,\"project_baseline_miles\":6,\"display_label\":\"5–6 миль\",\"zoom\":1.3}",
+              "when": "Выбрать совместимый базовый режим карты Crows; сохранить и повторно открыть карту",
+              "expected": "Используется действующая базовая геометрия; режим обозначается5–6миль по решению владельца. Новая5-мильная сетка не добавлена; исходное5across сохранено отдельно как правило книги."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "map.physical_hex_scale"
+          ],
+          "unresolved_parameters": [
+            "across не уточняет способ измерения. Явный проектный выбор конвенции должен быть обозначен; неизвестность источника не означает запрета работать с согласованной конвенцией."
+          ]
+        },
+        "user_action": "Выбрать совместимый базовый режим карты Crows",
+        "map_object_or_state": {
+          "source_hex_miles": 5,
+          "source_axis": null,
+          "project_baseline_miles": 6,
+          "display_label": "5–6 миль",
+          "zoom": 1.3
+        },
+        "checkable_result": "Используется действующая базовая геометрия; режим обозначается5–6миль по решению владельца. Новая5-мильная сетка не добавлена; исходное5across сохранено отдельно как правило книги."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-003",
@@ -229,7 +340,110 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-044"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-003",
+        "title": "Среда и климат гекса",
+        "source_clause_ids": [
+          "CROWS-R24-HABITAT",
+          "CROWS-F10-HABITAT-DOMAINS"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Тип среды непосредственно задаёт местность; холодный климат не заменяет лес/горы. Таблицы встреч относятся к последующим слоям.",
+        "product_boundary": "Местность региональной карты",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-003",
+          "normative_kind": "mandatory_rule",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Назначить среду и при необходимости климат места",
+          "inputs_and_units": {
+            "CROWS-R24-HABITAT": {
+              "examples": [
+                "forest",
+                "mountain",
+                "plains"
+              ],
+              "examples_are_complete_taxonomy": false
+            },
+            "CROWS-F10-HABITAT-DOMAINS": {
+              "table_domains": [
+                "Coastal",
+                "Cold Climate",
+                "Desert",
+                "Forest",
+                "Grassland",
+                "Hill/Mountain",
+                "Marsh/Swamp"
+              ],
+              "dice_by_domain": {
+                "Coastal": "d10",
+                "Cold Climate": "d10",
+                "Desert": "d100",
+                "Forest": "d100",
+                "Grassland": "d100",
+                "Hill/Mountain": "d100",
+                "Marsh/Swamp": "d10"
+              }
+            }
+          },
+          "product_operation": "Задать биом и при необходимости отдельно указать холодный климат или побережье для выбора таблицы встреч.",
+          "expected_output": "На карте остаётся лес; холодный климат указан отдельно. Не создана выдуманная единственная категория «холод» вместо всех видов местности.",
+          "constraints_and_exceptions": [
+            "Не превращать эти названия в доказанную закрытую таксономию генерации мира.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Лесной гекс находится в холодном климате.",
+              "when": "Назначить среду и при необходимости климат места",
+              "expected": "На карте остаётся лес; холодный климат указан отдельно. Не создана выдуманная единственная категория «холод» вместо всех видов местности."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "map.terrain_zones"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Назначить среду и при необходимости климат места",
+        "map_object_or_state": {
+          "CROWS-R24-HABITAT": {
+            "examples": [
+              "forest",
+              "mountain",
+              "plains"
+            ],
+            "examples_are_complete_taxonomy": false
+          },
+          "CROWS-F10-HABITAT-DOMAINS": {
+            "table_domains": [
+              "Coastal",
+              "Cold Climate",
+              "Desert",
+              "Forest",
+              "Grassland",
+              "Hill/Mountain",
+              "Marsh/Swamp"
+            ],
+            "dice_by_domain": {
+              "Coastal": "d10",
+              "Cold Climate": "d10",
+              "Desert": "d100",
+              "Forest": "d100",
+              "Grassland": "d100",
+              "Hill/Mountain": "d100",
+              "Marsh/Swamp": "d10"
+            }
+          }
+        },
+        "checkable_result": "На карте остаётся лес; холодный климат указан отдельно. Не создана выдуманная единственная категория «холод» вместо всех видов местности."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-004",
@@ -301,7 +515,72 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-042"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-004",
+        "title": "Дороги, реки и переправы",
+        "source_clause_ids": [
+          "CROWS-R24-ROUTE-DATA"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Дорога, река и место переправы — географические объекты с проверяемым пересечением; дневной темп не входит.",
+        "product_boundary": "Дороги, реки, переправы",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-004",
+          "normative_kind": "recommendation",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Подготовить дорожную сеть и переправу",
+          "inputs_and_units": {
+            "CROWS-R24-ROUTE-DATA": {
+              "route_properties": [
+                "whole_day_road",
+                "water_crossing",
+                "bridge_used",
+                "water_vehicle_used",
+                "upstream",
+                "downstream"
+              ]
+            }
+          },
+          "product_operation": "Подготовить дорогу, реку и мост, сохранив свойства пути для будущего расчёта движения.",
+          "expected_output": "Мост, дорога и река сохраняются после загрузки. Этот случай не помечен как переход без моста; расчёт дневной дистанции остаётся L2.",
+          "constraints_and_exceptions": [
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Дорога пересекает реку по мосту.",
+              "when": "Подготовить дорожную сеть и переправу",
+              "expected": "Мост, дорога и река сохраняются после загрузки. Этот случай не помечен как переход без моста; расчёт дневной дистанции остаётся L2."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "map.routes_and_barriers"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Подготовить дорожную сеть и переправу",
+        "map_object_or_state": {
+          "CROWS-R24-ROUTE-DATA": {
+            "route_properties": [
+              "whole_day_road",
+              "water_crossing",
+              "bridge_used",
+              "water_vehicle_used",
+              "upstream",
+              "downstream"
+            ]
+          }
+        },
+        "checkable_result": "Мост, дорога и река сохраняются после загрузки. Этот случай не помечен как переход без моста; расчёт дневной дистанции остаётся L2."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-005",
@@ -380,7 +659,81 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-045"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-005",
+        "title": "Что известно игрокам",
+        "source_clause_ids": [
+          "CROWS-R26-EXISTING-PLACES",
+          "CROWS-DUN-002",
+          "CROWS-DUN-003"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Известные игрокам региональные места и скрытое содержание разделяются в принятой обнаружимости. Локальные ловушки не требуют тактического редактора.",
+        "product_boundary": "Представление карты игрокам/обнаружимость",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-005",
+          "normative_kind": "recommendation",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Подготовить карту известных мест и секреты ведущего",
+          "inputs_and_units": {
+            "CROWS-R26-EXISTING-PLACES": {
+              "searched_site_types": [
+                "POI",
+                "dungeon",
+                "village"
+              ],
+              "discover_existing_unknown": true,
+              "second_scout_different_task": true
+            },
+            "CROWS-DUN-002": {
+              "hooks": 4
+            },
+            "CROWS-DUN-003": {}
+          },
+          "product_operation": "Хранить существующие места, наблюдаемое описание и секреты отдельно; выдавать игрокам только известное.",
+          "expected_output": "Представление игроков показывает разрешённую деревню и не раскрывает тайник/ловушку; истинные сведения ведущего сохранены.",
+          "constraints_and_exceptions": [
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Деревня известна группе; тайник и ловушка не известны.",
+              "when": "Подготовить карту известных мест и секреты ведущего",
+              "expected": "Представление игроков показывает разрешённую деревню и не раскрывает тайник/ловушку; истинные сведения ведущего сохранены."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.discovery_levels",
+            "map.audience_views"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Подготовить карту известных мест и секреты ведущего",
+        "map_object_or_state": {
+          "CROWS-R26-EXISTING-PLACES": {
+            "searched_site_types": [
+              "POI",
+              "dungeon",
+              "village"
+            ],
+            "discover_existing_unknown": true,
+            "second_scout_different_task": true
+          },
+          "CROWS-DUN-002": {
+            "hooks": 4
+          },
+          "CROWS-DUN-003": {}
+        },
+        "checkable_result": "Представление игроков показывает разрешённую деревню и не раскрывает тайник/ловушку; истинные сведения ведущего сохранены."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-006",
@@ -483,7 +836,29 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-006",
+        "title": "Защищённое укрытие",
+        "source_clause_ids": [
+          "CROWS-R26-SHELTER-SITE",
+          "CROWS-R27-MIASMA-SPACE",
+          "CH-L1-01",
+          "CH-L1-14"
+        ],
+        "disposition": "defer_L2",
+        "reason": "Вместимость и защита помещения от Миазмы нужны при выборе ночлега, не при построении региональной геометрии. Руина может быть размещена общим механизмом мест.",
+        "product_boundary": "Ведение гекскроула: укрытие",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-007",
@@ -640,7 +1015,63 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-007",
+        "title": "Выбранные POI и их содержание",
+        "source_clause_ids": [
+          "CROWS-R29-POI",
+          "CROWS-DUN-008"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Выбранный ориентир/препятствие прямо наполняет карту; географическая привязка лесопилки к реке проверяема. Боевая детализация готовых мест исключена.",
+        "product_boundary": "Наполнение и пространственная привязка POI",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-007",
+          "normative_kind": "recommendation",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Разместить выбранную лесопилку у реки",
+          "inputs_and_units": {
+            "site": "Ruined Sawmill",
+            "type": "sawmill",
+            "river": "R",
+            "constraint": "riverbank"
+          },
+          "product_operation": "Разместить выбранную лесопилку у реки",
+          "expected_output": "На карте одна выбранная лесопилка у R с именем и краткими признаками; остальные7готовыхмест не добавлены.",
+          "constraints_and_exceptions": [
+            "Локальные ловушки, урон газа, добыча руды, панели/комнаты и игровые способности обитателей не включены в текущую операцию.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"site\":\"Ruined Sawmill\",\"type\":\"sawmill\",\"river\":\"R\",\"constraint\":\"riverbank\"}",
+              "when": "Разместить выбранную лесопилку у реки; сохранить и повторно открыть карту",
+              "expected": "На карте одна выбранная лесопилка у R с именем и краткими признаками; остальные7готовыхмест не добавлены."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.place_description",
+            "content.landmarks"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Разместить выбранную лесопилку у реки",
+        "map_object_or_state": {
+          "site": "Ruined Sawmill",
+          "type": "sawmill",
+          "river": "R",
+          "constraint": "riverbank"
+        },
+        "checkable_result": "На карте одна выбранная лесопилка у R с именем и краткими признаками; остальные7готовыхмест не добавлены."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-008",
@@ -706,7 +1137,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-008",
+        "title": "Обитатели подземелья",
+        "source_clause_ids": [
+          "CROWS-F02-NEAREST-DUNGEON"
+        ],
+        "disposition": "integration_L3",
+        "reason": "Ближайшее населённое подземелье — внешний источник встречи по пути. Запись обитателей не самостоятельная L1-функция и не разрешение движка монстров.",
+        "product_boundary": "Граница данных для встреч гекскроула",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-009",
@@ -786,7 +1236,65 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-009",
+        "title": "Карта и связанный тайник",
+        "source_clause_ids": [
+          "CROWS-F13-MAP-REWARDS",
+          "CROWS-DUN-009",
+          "CROWS-DUN-010"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Источник и цель найденной карты — конкретные географические места; опциональный предел2гекса относится только к лесопилке. Задания/экономика добычи не требуются.",
+        "product_boundary": "Географические связи и раскрытие мест",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-009",
+          "normative_kind": "adventure_example",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Связать конкретное исходное место с выбранным тайником",
+          "inputs_and_units": {
+            "source_site": "sawmill A",
+            "target": "cache B",
+            "max_hex_distance": 2,
+            "other_source": "Fort Summer / Rekhya",
+            "other_limit": null
+          },
+          "product_operation": "Связать конкретное исходное место с выбранным тайником",
+          "expected_output": "Для A/B сохранена географическая связь и предел2гекса; для второго тайника предел не выдуман.",
+          "constraints_and_exceptions": [
+            "Не создавать менеджер квестов, инвентарь карты или бюджет добычи. Условие2гекса — опция данного готового места, не генератор тайника при каждой лесопилке.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"source_site\":\"sawmill A\",\"target\":\"cache B\",\"max_hex_distance\":2,\"other_source\":\"Fort Summer / Rekhya\",\"other_limit\":null}",
+              "when": "Связать конкретное исходное место с выбранным тайником; сохранить и повторно открыть карту",
+              "expected": "Для A/B сохранена географическая связь и предел2гекса; для второго тайника предел не выдуман."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.site_links"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Связать конкретное исходное место с выбранным тайником",
+        "map_object_or_state": {
+          "source_site": "sawmill A",
+          "target": "cache B",
+          "max_hex_distance": 2,
+          "other_source": "Fort Summer / Rekhya",
+          "other_limit": null
+        },
+        "checkable_result": "Для A/B сохранена географическая связь и предел2гекса; для второго тайника предел не выдуман."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-010",
@@ -875,7 +1383,27 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-010",
+        "title": "Сведения и ложь NPC",
+        "source_clause_ids": [
+          "CROWS-F09-INFORMATION",
+          "CROWS-F05-FALSE-CLAIMS"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Сведения и ложь NPC — управление повествованием; возможность сохранить два текста у места не обосновывает отдельную систему истины/слухов.",
+        "product_boundary": "Исключено управление сюжетом/общими NPC",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-011",
@@ -951,7 +1479,74 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-011",
+        "title": "Домашняя деревня",
+        "source_clause_ids": [
+          "CROWS-R04-HOME",
+          "CH-L1-02"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Домашняя деревня — стартовое место карты; перечень имеющихся услуг допустим как простое содержание. Уровни, развитие и экономика учреждений не становятся новой подсистемой.",
+        "product_boundary": "Размещение деревни и простые сведения об услугах",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-011",
+          "normative_kind": "mandatory_rule",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Разместить и назвать стартовую деревню с простым перечнем услуг",
+          "inputs_and_units": {
+            "village": "V",
+            "name": "GM choice",
+            "services": [
+              "blacksmith",
+              "crypt",
+              "general store",
+              "inn",
+              "temple"
+            ],
+            "extra": "beacon"
+          },
+          "product_operation": "Разместить и назвать стартовую деревню с простым перечнем услуг",
+          "expected_output": "На карте одна V с выбранным именем; у неё указаны пять исходных и одна выбранная служба. Повторная загрузка не создаёт вторую V.",
+          "constraints_and_exceptions": [
+            "Уровень1 сохраняется в исходном правиле; автоматический контроллер учреждений/уровней/денег/NPC и отдельные внутренние POI не требуются этой операцией.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"village\":\"V\",\"name\":\"GM choice\",\"services\":[\"blacksmith\",\"crypt\",\"general store\",\"inn\",\"temple\"],\"extra\":\"beacon\"}",
+              "when": "Разместить и назвать стартовую деревню с простым перечнем услуг; сохранить и повторно открыть карту",
+              "expected": "На карте одна V с выбранным именем; у неё указаны пять исходных и одна выбранная служба. Повторная загрузка не создаёт вторую V."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.place_description"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Разместить и назвать стартовую деревню с простым перечнем услуг",
+        "map_object_or_state": {
+          "village": "V",
+          "name": "GM choice",
+          "services": [
+            "blacksmith",
+            "crypt",
+            "general store",
+            "inn",
+            "temple"
+          ],
+          "extra": "beacon"
+        },
+        "checkable_result": "На карте одна V с выбранным именем; у неё указаны пять исходных и одна выбранная служба. Повторная загрузка не создаёт вторую V."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-012",
@@ -1020,7 +1615,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-012",
+        "title": "Описание деревни",
+        "source_clause_ids": [
+          "CH-L1-03"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Вопросник о правителе/празднике/еде — общий совет подготовки. Географическая руина уже учтена у деревни; отдельная анкета не следует из возможности записать ответы.",
+        "product_boundary": "Исключены сюжетные/социальные советы; простое содержимое допустимо без подсистемы",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-013",
@@ -1103,7 +1717,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-013",
+        "title": "Связь персонажа с NPC",
+        "source_clause_ids": [
+          "CH-L1-04"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Связь персонажа, отношение и игровая выгода — создание/развитие персонажа, а не создание карты.",
+        "product_boundary": "Исключены персонажные связи и генератор NPC",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-014",
@@ -1185,7 +1818,27 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-014",
+        "title": "Учреждения и управляющие",
+        "source_clause_ids": [
+          "CH-L1-05",
+          "CH-L1-06"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Полный каталог уровней учреждений/управляющих требует симуляции деревни. Простое имя жителя/услуга не обосновывает этот движок.",
+        "product_boundary": "Исключены институциональная экономика и общий NPC менеджер",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-015",
@@ -1252,7 +1905,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-046"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-015",
+        "title": "Ожидающее улучшение",
+        "source_clause_ids": [
+          "CH-L1-07"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Оплата, ожидание и активация улучшений — инвестиционная/календарная симуляция учреждений; не L1-сохранение карты.",
+        "product_boundary": "Исключены инвестиции/экономика",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-016",
@@ -1319,7 +1991,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-016",
+        "title": "Процветание",
+        "source_clause_ids": [
+          "CH-L1-08"
+        ],
+        "disposition": "needs_owner_decision",
+        "reason": "Владелец предложил подумать о процветании, но не утвердил новый числовой профиль/его визуальное значение. Простая характеристика места допустима, автоматическая экономика не разрешена; до решения вне принятого объёма.",
+        "product_boundary": "Спорный профиль поселения; не автоматически согласованная функция",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-017",
@@ -1406,7 +2097,72 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-056"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-017",
+        "title": "Зона маяка",
+        "source_clause_ids": [
+          "CH-L1-09"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Зона отсутствия Миазмы имеет конкретную региональную геометрию и меняет обозначение опасности участков карты. Сохраняется лишь отображение заданной зоны; покупка/уровни/эффекты для персонажей исключены.",
+        "product_boundary": "Региональные зоны среды/опасности; без движка магии или экономики",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-017",
+          "normative_kind": "mandatory_rule",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Отметить заданную зону отсутствия Миазмы вокруг гекса деревни",
+          "inputs_and_units": {
+            "origin": "V",
+            "radius_hexes": 1,
+            "other_cases": [
+              2,
+              5,
+              6
+            ],
+            "metric": "axial hex distance research interpretation"
+          },
+          "product_operation": "Отметить заданную зону отсутствия Миазмы вокруг гекса деревни",
+          "expected_output": "На полной сетке радиусы1/2/5/6 охватывают7/19/91/127гексов. Обозначение зоны не меняет биомы, реки и POI; перекрытие двух источников не исчезает при удалении одного.",
+          "constraints_and_exceptions": [
+            "Для BestStewardEver иособогоусловия маяка требуется явное решение о трактовке эффективногоProsperity10; реальное значение деревни не менять.",
+            "Только географическое отображение заданной зоны среды. Радиус передаёт мастер; покупка/повышение маяка, проверка процветания, BestStewardEver и эффекты для персонажей не исполняются. Формула1+3r(r+1) — производный критерий геометрии, не цитата источника; край неполной карты не заполнять автоматически. Разработка зоны не утверждается этим анализом.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"origin\":\"V\",\"radius_hexes\":1,\"other_cases\":[2,5,6],\"metric\":\"axial hex distance research interpretation\"}",
+              "when": "Отметить заданную зону отсутствия Миазмы вокруг гекса деревни; сохранить и повторно открыть карту",
+              "expected": "На полной сетке радиусы1/2/5/6 охватывают7/19/91/127гексов. Обозначение зоны не меняет биомы, реки и POI; перекрытие двух источников не исчезает при удалении одного."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "map.environment_zones"
+          ],
+          "unresolved_parameters": [
+            "Для BestStewardEver иособогоусловия маяка требуется явное решение о трактовке эффективногоProsperity10; реальное значение деревни не менять."
+          ]
+        },
+        "user_action": "Отметить заданную зону отсутствия Миазмы вокруг гекса деревни",
+        "map_object_or_state": {
+          "origin": "V",
+          "radius_hexes": 1,
+          "other_cases": [
+            2,
+            5,
+            6
+          ],
+          "metric": "axial hex distance research interpretation"
+        },
+        "checkable_result": "На полной сетке радиусы1/2/5/6 охватывают7/19/91/127гексов. Обозначение зоны не меняет биомы, реки и POI; перекрытие двух источников не исчезает при удалении одного."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-018",
@@ -1472,7 +2228,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-018",
+        "title": "Жильё персонажа",
+        "source_clause_ids": [
+          "CH-L1-10"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Личное жильё, хранение снаряжения и расходы персонажа не требуют нового регионального объекта или подсистемы.",
+        "product_boundary": "Исключён персонажный инвентарь/жильё",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-019",
@@ -1551,7 +2326,63 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-019",
+        "title": "Новая деревня и смена базы",
+        "source_clause_ids": [
+          "CH-L1-11"
+        ],
+        "disposition": "keep_L1",
+        "reason": "После подтверждённого ведущим основания руина становится деревней на карте, прежняя деревня сохраняется. Списание денег, таймер строительства и управление NPC исключены.",
+        "product_boundary": "Изменение типа/содержимого конкретного места без перегенерации карты",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-019",
+          "normative_kind": "mandatory_rule",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "После подтверждения мастера обозначить новую деревню в выбранной руине",
+          "inputs_and_units": {
+            "existing_village": "A",
+            "ruin_site": "P",
+            "new_village_name": "B",
+            "completion_confirmed_by_GM": true
+          },
+          "product_operation": "После подтверждения мастера обозначить новую деревню в выбранной руине",
+          "expected_output": "P обозначено как деревня B на прежнем месте; A и её содержимое сохраняются. Мастер может выбрать B новой базой.",
+          "constraints_and_exceptions": [
+            "Text does not prescribe a mandatory distance or a new regional terrain generation algorithm.",
+            "Не рассчитывать15000gc/10дней, расходы, переезд NPC или экономические циклы. Для отрицательного подтверждения не изменять P. Источник и его числа сохраняются отдельно.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"existing_village\":\"A\",\"ruin_site\":\"P\",\"new_village_name\":\"B\",\"completion_confirmed_by_GM\":true}",
+              "when": "После подтверждения мастера обозначить новую деревню в выбранной руине; сохранить и повторно открыть карту",
+              "expected": "P обозначено как деревня B на прежнем месте; A и её содержимое сохраняются. Мастер может выбрать B новой базой."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.place_description",
+            "content.site_links"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "После подтверждения мастера обозначить новую деревню в выбранной руине",
+        "map_object_or_state": {
+          "existing_village": "A",
+          "ruin_site": "P",
+          "new_village_name": "B",
+          "completion_confirmed_by_GM": true
+        },
+        "checkable_result": "P обозначено как деревня B на прежнем месте; A и её содержимое сохраняются. Мастер может выбрать B новой базой."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-020",
@@ -1622,7 +2453,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-020",
+        "title": "Не домашняя деревня",
+        "source_clause_ids": [
+          "CH-L1-12"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Чужая деревня не требует самостоятельного профиля процветания/циклов. Простые сведения уже допустимы в существующем содержимом и готовых примерах.",
+        "product_boundary": "Исключена автоматическая экономика поселений",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-021",
@@ -1693,7 +2543,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-021",
+        "title": "Новый управляющий",
+        "source_clause_ids": [
+          "CH-L1-13"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Retirement и эффективное процветание управляющего — развитие персонажа и учреждений. Запись NPC не основание функции.",
+        "product_boundary": "Исключены персонажное развитие и экономика учреждений",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-022",
@@ -1758,7 +2627,58 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-027"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-022",
+        "title": "Готовая карта или перенос мест",
+        "source_clause_ids": [
+          "CROWS-DUN-001"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Выбранные готовые региональные места можно разместить в своей карте; это не перенос сцены вслед за партией ради сюжета.",
+        "product_boundary": "Подготовка/переиспользование географического содержимого",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-022",
+          "normative_kind": "optional_variant",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Использовать готовые региональные места",
+          "inputs_and_units": {
+            "CROWS-DUN-001": {
+              "dungeons": 5
+            }
+          },
+          "product_operation": "Использовать Cornath или перенести выбранные места в свой мир, сохранив содержание.",
+          "expected_output": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается.",
+          "constraints_and_exceptions": [
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Мастер выбрал часть готовых мест Cornath для своего мира.",
+              "when": "Использовать готовые региональные места",
+              "expected": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.relocate"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Использовать готовые региональные места",
+        "map_object_or_state": {
+          "CROWS-DUN-001": {
+            "dungeons": 5
+          }
+        },
+        "checkable_result": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-023",
@@ -2121,7 +3041,62 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-023",
+        "title": "Четыре готовые деревни",
+        "source_clause_ids": [
+          "CROWS-DUN-004",
+          "CROWS-DUN-005",
+          "CROWS-DUN-006",
+          "CROWS-DUN-007"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Готовая деревня — конкретное место с исходным названием/средой и простыми услугами; не универсальная модель уровней/управляющих/благословений.",
+        "product_boundary": "Наполнение конкретного поселения",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-023",
+          "normative_kind": "adventure_example",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Разместить выбранную готовую деревню с простыми сведениями о месте",
+          "inputs_and_units": {
+            "village": "Farcliffe",
+            "setting": "former silver mine",
+            "services": "selected source service names"
+          },
+          "product_operation": "Разместить выбранную готовую деревню с простыми сведениями о месте",
+          "expected_output": "На карте Farcliffe в бывшей шахте; выбранные исходные услуги относятся к ней. Шаблон стартовых6служб другой деревни не подставлен автоматически.",
+          "constraints_and_exceptions": [
+            "Все уровни/управляющие/благословения сохранены в источнике, но не объявлены новым структурированным модулем. Никакого расчёта экономики/NPC.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"village\":\"Farcliffe\",\"setting\":\"former silver mine\",\"services\":\"selected source service names\"}",
+              "when": "Разместить выбранную готовую деревню с простыми сведениями о месте; сохранить и повторно открыть карту",
+              "expected": "На карте Farcliffe в бывшей шахте; выбранные исходные услуги относятся к ней. Шаблон стартовых6служб другой деревни не подставлен автоматически."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.place_description"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Разместить выбранную готовую деревню с простыми сведениями о месте",
+        "map_object_or_state": {
+          "village": "Farcliffe",
+          "setting": "former silver mine",
+          "services": "selected source service names"
+        },
+        "checkable_result": "На карте Farcliffe в бывшей шахте; выбранные исходные услуги относятся к ней. Шаблон стартовых6служб другой деревни не подставлен автоматически."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-024",
@@ -2191,7 +3166,63 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-024",
+        "title": "Региональные входы в подземелья",
+        "source_clause_ids": [
+          "CROWS-DUN-011"
+        ],
+        "disposition": "keep_L1",
+        "reason": "Региональные входы и условия подхода — географические места; комнаты и тактические планы не переводятся в региональные гексы.",
+        "product_boundary": "Входы/ориентиры на региональной карте",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-024",
+          "normative_kind": "adventure_example",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Разместить региональный вход с условиями подхода",
+          "inputs_and_units": {
+            "site": "Blood Library",
+            "approach": "blood lake",
+            "another_site": "Floating Manor",
+            "another_approach": "Wist Weald forest"
+          },
+          "product_operation": "Разместить региональный вход с условиями подхода",
+          "expected_output": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами.",
+          "constraints_and_exceptions": [
+            "Рекомендуемые уровни партий и тактические планы не являются правилами новой региональной географии.",
+            "Ссылку на локальную карту можно сохранить как существующее справочное содержимое; тактические планы, LOS и управление фигурами не разрабатываются.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"site\":\"Blood Library\",\"approach\":\"blood lake\",\"another_site\":\"Floating Manor\",\"another_approach\":\"Wist Weald forest\"}",
+              "when": "Разместить региональный вход с условиями подхода; сохранить и повторно открыть карту",
+              "expected": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.place_description",
+            "content.site_links"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Разместить региональный вход с условиями подхода",
+        "map_object_or_state": {
+          "site": "Blood Library",
+          "approach": "blood lake",
+          "another_site": "Floating Manor",
+          "another_approach": "Wist Weald forest"
+        },
+        "checkable_result": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами."
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-025",
@@ -2260,7 +3291,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-025",
+        "title": "Floating Manor: изменение состояния",
+        "source_clause_ids": [
+          "CROWS-DUN-012"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Высота парения/опускание особняка — локальная магическая сцена. Запись состояния не обосновывает отдельную L1-механику.",
+        "product_boundary": "Исключены локальная магия и боевая геометрия",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-026",
@@ -2333,7 +3383,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-026",
+        "title": "Godswound: доступ и граница эффекта",
+        "source_clause_ids": [
+          "CROWS-DUN-013"
+        ],
+        "disposition": "defer_L2",
+        "reason": "Прокладка курса и доступ через известные входы относятся к движению/исследованию. Неизвестный радиус эффекта не создаёт новое географическое поле.",
+        "product_boundary": "Ведение гекскроула: доступ/навигация; локальное перемещение вне объёма",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-027",
@@ -2402,7 +3471,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-027",
+        "title": "Храм и осквернённые руины",
+        "source_clause_ids": [
+          "CROWS-DUN-014"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Ритуальное уничтожение/восстановление храма описывает магический/сюжетный эффект внутри деревни; общий редактор места не обосновывает отдельный обработчик ритуала.",
+        "product_boundary": "Исключены магия, сюжетные последствия и внутреннее строительство",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-028",
@@ -2467,7 +3555,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-028",
+        "title": "Свет Hall of Angels",
+        "source_clause_ids": [
+          "CROWS-DUN-015"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Свет показан на локальной боевой карте и причиняет урон при подходе. Ссылка на изображение в заметке не делает тактическую область света L1-функцией.",
+        "product_boundary": "Исключены тактический свет/LOS/урон",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-029",
@@ -2537,7 +3644,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-029",
+        "title": "Ресурс Verdant Creche",
+        "source_clause_ids": [
+          "CROWS-DUN-016"
+        ],
+        "disposition": "defer_L2",
+        "reason": "Добыча20единиц/истощение/утреннее восстановление — состояние припасов при исследовании места. Наличие ресурса в содержимом не обосновывает новый L1-счётчик.",
+        "product_boundary": "Ведение гекскроула: добыча припасов; не экономика дохода",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-030",
@@ -2612,7 +3738,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-046"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-030",
+        "title": "Событие от спор",
+        "source_clause_ids": [
+          "CROWS-DUN-017"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Споры, отложенная атака и события деревни — сюжет/персонажные состояния; не отдельный картографический таймер.",
+        "product_boundary": "Исключён менеджер сюжетных событий/персонажей",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-031",
@@ -2681,7 +3826,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-031",
+        "title": "Обрушение теплицы",
+        "source_clause_ids": [
+          "CROWS-DUN-018"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "1000панелей, урон и месяцы ремонта — локальная боевая/строительная симуляция. Ручной текст состояния не основание функции.",
+        "product_boundary": "Исключены локальные боевые конструкции/строительство",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-032",
@@ -2759,7 +3923,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-053"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-032",
+        "title": "Постоянный дом Cozy Cottage",
+        "source_clause_ids": [
+          "CROWS-CARD-001"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Создание Huge-дома предметом — локальный магический эффект; простое здание можно разместить общим редактором без реализации предмета.",
+        "product_boundary": "Исключён движок магических предметов/локальной сцены",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-033",
@@ -2830,7 +4013,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-052"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-033",
+        "title": "Тент и погода",
+        "source_clause_ids": [
+          "CROWS-CARD-002"
+        ],
+        "disposition": "defer_L2",
+        "reason": "Вместимость тента и защита от погоды относятся к лагерю/ночлегу; не защита целого гекса от Миазмы и не L1-геометрия.",
+        "product_boundary": "Ведение гекскроула: стоянка",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-034",
@@ -2942,7 +4144,26 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-046"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-034",
+        "title": "Изменяемые учреждения и NPC",
+        "source_clause_ids": [
+          "CH-L1-15"
+        ],
+        "disposition": "out_of_scope",
+        "reason": "Цикл деревенских событий меняет NPC, инвестиции и услуги. Возможность записать итог не разрешает экономико-сюжетную подсистему.",
+        "product_boundary": "Исключены симуляция учреждений/NPC и управление сюжетом",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     },
     {
       "id": "CROWS-PT3-L1-035",
@@ -3033,8 +4254,29 @@
       "formal_profile_coverage": "unverified",
       "backlog_refs": [
         "agent-work/backlog.json#HX-BL-045"
-      ]
+      ],
+      "scope_review": {
+        "id": "CROWS-PT3-L1-035",
+        "title": "Подготовка сведений гильдии",
+        "source_clause_ids": [
+          "CH-L1-16"
+        ],
+        "disposition": "defer_L2",
+        "reason": "Услуга гильдии раскрывает существующие места и расходует использования цикла: это состояние исследования, не создание новых мест.",
+        "product_boundary": "Ведение гекскроула: раскрытие карты; без собственного движка услуг/экономики",
+        "run_id": "2026-11-16-CROWS-scope-audit-1794853847579",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null
+      },
+      "original_operation_status": "historical; scope_review.current_operational_requirement is current"
     }
   ],
-  "legacy_v1_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/37bef9bbfa62806ac761f038ff219f5f1b9f066b/agent-work/research/requirements/CROWS-PT3-traceability.json"
+  "legacy_v1_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/blob/37bef9bbfa62806ac761f038ff219f5f1b9f066b/agent-work/research/requirements/CROWS-PT3-traceability.json",
+  "scope_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json",
+  "status": "scope_filtered_current_L1_only_via_scope_review"
 }
