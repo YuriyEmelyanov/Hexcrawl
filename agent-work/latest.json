@@ -41,9 +41,9 @@
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
     "status": "completed_claim_released_latest_written_last",
-    "materials_commit_sha": "88163a19ff7f1d0ddf3223412e870ba4cf96dda7",
-    "run_id": "2026-11-16T1319-reviewer-river-width-F1",
-    "registry_revision": 68
+    "materials_commit_sha": "ff0115b1f3a1eb0a3f4c1641825e82d48a760ff9",
+    "run_id": "2026-11-16T1408-programmer-river-width-CI",
+    "registry_revision": 72
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -52,47 +52,32 @@
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "programmer",
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-055",
   "spec_path": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-16T1319-reviewer-river-width-F1.json",
+  "result_path": "agent-work/results/2026-11-16T1408-programmer-river-width-CI.json",
   "handoff_commit_sha": "784099504c61384523140dea491898e98478c40b",
-  "active_claim": {
-    "task_id": "HX-BL-055",
-    "role": "programmer",
-    "run_id": "2026-11-16T1408-programmer-river-width-CI",
-    "claim_ref": "agent-work/claims/2026-11-16T1408-programmer-river-width-CI.json",
-    "branch": "agent/hx-bl-055-one-mile-river-width",
-    "base_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
-    "acquired_at": "2026-11-16T11:12:01.233Z",
-    "heartbeat_at": "2026-11-16T11:12:01.233Z",
-    "generation": 70,
-    "programmer_slot": true,
-    "status": "active",
-    "scope": "HX-BL-055 review follow-up: enable omitted native6 baseline CI comparison; rendering fix pending unavailable execution environment; no release.",
-    "execution_running": true
-  },
-  "next_step": "HX-BL-055: activate missing native6 baseline comparison in existing CI; rendering correction awaits available execution environment.",
+  "active_claim": null,
+  "next_step": "Independently review exact f824da1 against F1 and both findings; validate connected finite wet intervals with known dry approaches and the final native6 screen/PNG artifact; record score_assessment1.2. Publication remains separately gated.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-055",
     "pr": 504,
-    "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
-    "tree_sha": "cd18f3dc4423e6bad5c0da7709fc0bd22059b12d",
-    "status": "blocked_changes_requested_exact_sha",
-    "release_authorized": false,
-    "reason": "HX-BL-055-REV-01 confirmed defect and HX-BL-055-REV-02 native6 evidence gap"
+    "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+    "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+    "status": "not_eligible_until_new_independent_acceptance",
+    "release_authorized": false
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-055-review-47d0dfa/review.json",
+  "evidence_path": "agent-work/evidence/HX-BL-055-finite-crossings-f824da1/implementation.json",
   "branch_name": "agent/hx-bl-055-one-mile-river-width",
   "pr": 504,
-  "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
-  "tree_sha": "cd18f3dc4423e6bad5c0da7709fc0bd22059b12d",
-  "checks_status": "ci_and_local_passed_but_acceptance_failed",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617",
-  "review_verdict": "changes_requested_exact_sha",
+  "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+  "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+  "checks_status": "passed_exact_sha_check_browser_rng",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679",
+  "review_verdict": "review_ready_new_sha_pending_independent_acceptance",
   "role_selection_mode": "readiness_and_current_owner_direction",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -112,7 +97,7 @@
   "score_update_release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/HX-BL-055-review-47d0dfa/score-assessment1.2.json",
-  "role_selection_reason": "PR504 was review_ready on exact SHA; independent review reproduced a blocking R05 defect and routed a bounded correction to programmer without changing approved scope.",
+  "role_selection_reason": "Priority3: correct reviewer findings within approved HX-BL-055; environment outage recovered and bounded fixes completed, full exact-SHA CI green.",
   "score_update_result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json",
   "score_update_completed_at": "2026-11-15T21:07:07.928Z",
   "score_update_delta": null,
@@ -137,19 +122,25 @@
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
       "checked_at": "2026-11-16T11:08:41.069Z",
-      "is_enabled": true,
       "status": "checked",
+      "is_enabled": true,
       "method": "automations.peek"
     },
-    "end": null,
+    "end": {
+      "checked_at": "2026-11-16T11:42:08.068Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
     "recovery_performed": false,
+    "schedule_changed": false,
     "errors": []
   },
   "open_findings": [
     "HX-BL-055-REV-01",
     "HX-BL-055-REV-02"
   ],
-  "current_review_score_assessment_status": "insufficient_evidence_no_award",
+  "current_review_score_assessment_status": "pending_independent_reviewer_new_sha",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -648,7 +639,7 @@
   },
   "review_request": null,
   "reviewed_sha": null,
-  "current_review_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400/score-assessment1.2.json",
+  "current_review_score_assessment_ref": null,
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -886,15 +877,29 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
-    "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+    "base_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+    "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
     "added": 1,
     "removed": 0,
-    "modified": 5,
-    "suite": "Node and browser",
-    "scenario_risk": "Current crossing changes miss required shallow-angle/near-end/short/multiple edge cases.",
-    "reuse_or_new_reason": "One refined logical case was added; sensitive R05 regression coverage is still required.",
-    "source": "exact-SHA diff and reviewer evidence"
+    "modified": 2,
+    "suite": "Node test/oneMile.test.mjs",
+    "scenario_risk": "R05/REV-01: infinite tangent at shallow crossing incorrectly masks dry road beyond finite river cap or road bend.",
+    "reuse_or_new_reason": "Existing refined-crossing case now receives actual visible water. One new logical case covers ordinary/refined near-parallel, near-end, short and multiple-close crossings; reuse finite-water oracle suite without duplicating capsule math.",
+    "source": "git diff47d0dfa..f824da1: one Node test declaration added, existing refined Node case modified and existing browser native6 baseline case extended to PNG.",
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 1,
+        "removed": 0,
+        "modified": 1
+      },
+      {
+        "suite": "Browser ONE-MILE1 native6 optional baseline",
+        "added": 0,
+        "removed": 0,
+        "modified": 1
+      }
+    ]
   },
   "review_url": null,
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -1259,7 +1264,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-16T0600-analyst-river-width-D1-interviewer.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-16T1408-programmer-river-width-CI-reviewer.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -15123,25 +15128,63 @@
     "publication_authorized": false
   },
   "forecast": {
-    "completed_runs": 7,
+    "completed_runs": 8,
     "remaining_runs": {
-      "min": 3,
-      "max": 5
-    },
-    "total_runs": {
-      "min": 10,
-      "max": 12
-    },
-    "remaining_active_hours": {
       "min": 2,
       "max": 4
     },
+    "remaining_active_hours": {
+      "min": 1,
+      "max": 3
+    },
     "remaining_calendar_hours_excluding_owner_wait": {
-      "min": 3,
-      "max": 6
+      "min": 2,
+      "max": 5
     },
     "owner_publication_wait": "unknown",
     "confidence": "medium",
-    "history_reset": false
+    "history_reset": false,
+    "environment_outage": "recovered_same_run"
+  },
+  "actual_ui": {
+    "status": "actual_exact_sha_presented_in_chat",
+    "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+    "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+    "artifact_id": 14222178027,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679/artifacts/14222178027",
+    "artifact_digest": "sha256:d181efcfee22ab68080382d10027c5e98cc20c5bf0a993742a8f5c72254846bb",
+    "digest_verified_after_download": true,
+    "shown": "geo2-tiles.png",
+    "desktop": "geo2-accepted-1500.jpg",
+    "narrow": "geo2-accepted-390.jpg",
+    "native6_baseline": {
+      "sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+      "fixture": "same explicitF2ford variant",
+      "profiles": [
+        {
+          "width": 1500,
+          "pixelIdentical": true,
+          "raster": {
+            "maxDelta": 0,
+            "changedFraction": 0
+          }
+        },
+        {
+          "width": 390,
+          "pixelIdentical": true,
+          "raster": {
+            "maxDelta": 0,
+            "changedFraction": 0
+          }
+        }
+      ],
+      "png": {
+        "pixelIdentical": true,
+        "raster": {
+          "maxDelta": 0,
+          "changedFraction": 0
+        }
+      }
+    }
   }
 }
