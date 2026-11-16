@@ -1283,7 +1283,7 @@
       "source_rule": {
         "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3113",
         "locator": "Printed p208; Existing Activities / Subsist",
-        "self_contained_rule": "Subsist зависит от среды; даёт пищу и укрытие; после≤8 часов исследования допускается с−5; критуспех кормитещёодного либо повышает свойкомфорт.",
+        "self_contained_rule": "Subsist зависит от среды; даёт пищу и укрытие; после≤8 часов исследования допускается с−5; критуспех кормитещёодного либо повышает свойкомфорт. ОбычнаяDC пропитания15. Скудная среда или город, нетерпимый к странникам, могут требовать20 или выше. Точное значение выбирает ведущий; социальная доступность отличается от природных ресурсов.",
         "normative_kind": "optional_variant",
         "parameters_and_units": {
           "companion_url": "https://2e.aonprd.com/Actions.aspx?ID=2368",
@@ -1294,7 +1294,11 @@
           "critical_success": "self_plus_one_or_self_comfort",
           "failure": "fatigued_until_food_and_shelter",
           "critical_failure": "no_food_and_minus2_circumstance_for_week",
-          "skill_feats": "apply"
+          "skill_feats": "apply",
+          "GMC1_difficulty_supplement": {
+            "typical": 15,
+            "scarce_or_intolerant": "20+"
+          }
         },
         "conditions": [
           "Применяется к выбранному описанному режиму/местности; L2/L3 последствия не выдаются за реализацию карты."
@@ -1302,7 +1306,9 @@
         "exceptions": [
           "Это подготовка сведений; результат броска, штрафы и состояниеперсонажа —L2/L3. Не считать заметку исполнением Subsist."
         ],
-        "cross_references": [],
+        "cross_references": [
+          "https://2e.aonprd.com/Rules.aspx?ID=2644"
+        ],
         "access_level": "full_text_selected_sections",
         "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core-or-player-core",
         "source_status": "primary_reread_selected_clause"
@@ -1319,7 +1325,7 @@
           "food": "fish",
           "shelter": "cave"
         },
-        "product_operation": "Подготовить сведения о местных источниках еды и укрытии. У A различимы источник еды и место укрытия.",
+        "product_operation": "Подготовить сведения о местных источниках еды и укрытии. У A различимы источник еды и место укрытия. Задать отдельные доступность ресурсов, социальное ограничение и выбранную DC пропитания; не выводить её из ориентирования.",
         "expected_output": "У A различимы источник еды и место укрытия.",
         "constraints_and_exceptions": [
           "Это подготовка сведений; результат броска, штрафы и состояниеперсонажа —L2/L3. Не считать заметку исполнением Subsist.",
@@ -1330,6 +1336,16 @@
             "given": "Создать A с рыбой и пещерой; убрать рыбу",
             "when": "Подготовить сведения о местных источниках еды и укрытии",
             "expected": "Пещера остаётся; еда больше не указана"
+          },
+          {
+            "given": "deepforest navigation20+normalresources→subsist15; выбранная scarceDC25 сохраняется25",
+            "when": "Задать указанные входы, сохранить и загрузить карту",
+            "expected": "deepforest navigation20+normalresources→subsist15; выбранная scarceDC25 сохраняется25; параметры и их основания сохранены."
+          },
+          {
+            "given": "Мастер явно изменил значение/исключение",
+            "when": "Повторно открыть объект",
+            "expected": "Явное значение сохранено; подсказка не перетёрла его."
           }
         ],
         "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
@@ -1378,7 +1394,10 @@
         "ref": "agent-work/research/audits/PF2-L1-runtime-2026-11-10.json#PF2-RM-024-L1"
       },
       "legacy_op_ref": "audit_example_not_registry_replacement",
-      "registry_changed": false
+      "registry_changed": false,
+      "supplement_refs": [
+        "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.json#PF2-RM-DC-subsist-v2"
+      ]
     },
     {
       "id": "PF2-RM-029-L1-v2",
@@ -1710,13 +1729,19 @@
       "source_rule": {
         "source_ref": "https://2e.aonprd.com/Actions.aspx?ID=2406",
         "locator": "Printed p246; Sense Direction",
-        "self_contained_rule": "SenseDirection использует звёзды, солнце, географию, флору и фауну; обычнооднапроверка вдень, GM задаёт DC/время и может требоватьранг для необычнойсреды.",
+        "self_contained_rule": "SenseDirection использует звёзды, солнце, географию, флору и фауну; обычнооднапроверка вдень, GM задаёт DC/время и может требоватьранг для необычнойсреды. Ориентирование обычно имеетDC15 в обычной дикой местности,20 в глубоком лесу/подземелье,30 в безориентирной/запутанной местности,40 в странной среде иных планов. Это ориентиры ведущему, не минимальный ранг и не скорость.",
         "normative_kind": "optional_variant",
         "parameters_and_units": {
           "typical_frequency": "daily",
           "typical_time": "about_1_minute",
           "without_compass_item_penalty": -2,
-          "DC_and_frequency": "GM"
+          "DC_and_frequency": "GM",
+          "GMC1_difficulty_supplement": {
+            "ordinary": 15,
+            "deep_forest_or_underground": 20,
+            "featureless_or_tricky": 30,
+            "surreal_other_plane": 40
+          }
         },
         "conditions": [
           "Применяется к выбранному описанному режиму/местности; L2/L3 последствия не выдаются за реализацию карты."
@@ -1724,7 +1749,9 @@
         "exceptions": [
           "Проверка Survival и−2 безкомпаса относятся к L2/L3; карта сама не знает выбранный север/погоду."
         ],
-        "cross_references": [],
+        "cross_references": [
+          "https://2e.aonprd.com/Rules.aspx?ID=2642"
+        ],
         "access_level": "full_text_selected_sections",
         "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core-or-player-core",
         "source_status": "primary_reread_selected_clause"
@@ -1743,7 +1770,7 @@
             "r": 0
           }
         },
-        "product_operation": "Подготовить географические ориентиры. M имеет положение и описание, доступные мастеру.",
+        "product_operation": "Подготовить географические ориентиры. M имеет положение и описание, доступные мастеру. Сохранить профиль ориентирования и рекомендованную DC у участка отдельно от проходимости и ресурсов.",
         "expected_output": "M имеет положение и описание, доступные мастеру.",
         "constraints_and_exceptions": [
           "Проверка Survival и−2 безкомпаса относятся к L2/L3; карта сама не знает выбранный север/погоду.",
@@ -1754,6 +1781,16 @@
             "given": "Выбрать M как ориентир и сохранить/загрузить",
             "when": "Подготовить географические ориентиры",
             "expected": "Имя, местоположение и описание M прежние"
+          },
+          {
+            "given": "deep forest→navigation20; resources и скорость без изменений",
+            "when": "Задать указанные входы, сохранить и загрузить карту",
+            "expected": "deep forest→navigation20; resources и скорость без изменений; параметры и их основания сохранены."
+          },
+          {
+            "given": "Мастер явно изменил значение/исключение",
+            "when": "Повторно открыть объект",
+            "expected": "Явное значение сохранено; подсказка не перетёрла его."
           }
         ],
         "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
@@ -1813,7 +1850,10 @@
         "ref": "agent-work/research/audits/PF2-L1-runtime-2026-11-10.json#PF2-RM-039-L1"
       },
       "legacy_op_ref": "audit_example_not_registry_replacement",
-      "registry_changed": false
+      "registry_changed": false,
+      "supplement_refs": [
+        "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.json#PF2-RM-DC-navigation-v2"
+      ]
     },
     {
       "id": "PF2-RM-040-L1-v2",
@@ -1822,14 +1862,20 @@
       "source_rule": {
         "source_ref": "https://2e.aonprd.com/Actions.aspx?ID=2408",
         "locator": "Printed p246; Track",
-        "self_contained_rule": "Track ведётся со скоростью не более половины; успех позволяет продолжить до 1 часа без новойпроверки; частоту в сцене решает GM.",
+        "self_contained_rule": "Track ведётся со скоростью не более половины; успех позволяет продолжить до 1 часа без новойпроверки; частоту в сцене решает GM. Для Track ведущий выбирает простуюDC с поправками: армия — пример10, её следы в грязи — пример5. При Cover Tracks можно брать SurvivalDC цели. Для знакомой местности можно применить easy−2. Примеры не алгоритм всех следов.",
         "normative_kind": "optional_variant",
         "parameters_and_units": {
           "speed_multiplier": 0.5,
           "check": "start_each_hour_significant_change",
           "failure_delay_hours": 1,
           "critical_failure_delay_hours": 24,
-          "trained": true
+          "trained": true,
+          "GMC1_difficulty_supplement": {
+            "army": 10,
+            "army_mud": 5,
+            "familiar_adjustment": -2,
+            "concealed_basis": "target Survival DC"
+          }
         },
         "conditions": [
           "Применяется к выбранному описанному режиму/местности; L2/L3 последствия не выдаются за реализацию карты."
@@ -1837,7 +1883,9 @@
         "exceptions": [
           "Игровое распознавание/длительность/броски L2/L3; автоматического старения следа источникздесь не требует."
         ],
-        "cross_references": [],
+        "cross_references": [
+          "https://2e.aonprd.com/Rules.aspx?ID=2645"
+        ],
         "access_level": "full_text_selected_sections",
         "author_project_dedup_key": "paizo:pathfinder2:remaster:gm-core-or-player-core",
         "source_status": "primary_reread_selected_clause"
@@ -1854,7 +1902,7 @@
           "surface": "mud",
           "site": "H"
         },
-        "product_operation": "Разместить следы и указать грунт. След связан с H и грязью, описание не заменяет проверку выслеживания.",
+        "product_operation": "Разместить следы и указать грунт. След связан с H и грязью, описание не заменяет проверку выслеживания. Сохранить поверхность, создателя следов, основание и выбраннуюDC; альтернативные основания не суммировать.",
         "expected_output": "След связан с H и грязью, описание не заменяет проверку выслеживания.",
         "constraints_and_exceptions": [
           "Игровое распознавание/длительность/броски L2/L3; автоматического старения следа источник здесь не требует.",
@@ -1865,6 +1913,16 @@
             "given": "Изменить грунт H на песок",
             "when": "Разместить следы и указать грунт",
             "expected": "След остаётся у H; грунт обновлён"
+          },
+          {
+            "given": "army mud→5; concealed SurvivalDC27→27; base10/familiar−2→8",
+            "when": "Задать указанные входы, сохранить и загрузить карту",
+            "expected": "army mud→5; concealed SurvivalDC27→27; base10/familiar−2→8; параметры и их основания сохранены."
+          },
+          {
+            "given": "Мастер явно изменил значение/исключение",
+            "when": "Повторно открыть объект",
+            "expected": "Явное значение сохранено; подсказка не перетёрла его."
           }
         ],
         "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
@@ -1913,7 +1971,10 @@
         "ref": "agent-work/research/audits/PF2-L1-runtime-2026-11-10.json#PF2-RM-040-L1"
       },
       "legacy_op_ref": "audit_example_not_registry_replacement",
-      "registry_changed": false
+      "registry_changed": false,
+      "supplement_refs": [
+        "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.json#PF2-RM-DC-tracks-v2"
+      ]
     },
     {
       "id": "PF2-RM-118-L1-v2",
@@ -11936,6 +11997,623 @@
       "backlog_refs": [],
       "registry_changed": false,
       "title": "Search: время, автоматический успех и повтор"
+    },
+    {
+      "id": "PF2-RM-DC-simple-v2",
+      "game_id": "PF2",
+      "edition": "GM Core Remaster English",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2628",
+        "locator": "GM Core pp.52–53",
+        "self_contained_rule": "Простая DC выбирается по трудности задачи: untrained10/trained15/expert20/master30/legendary40. Этот ориентир обычно не требует самого ранга. Для опасных задач предпочтительнее DC по уровню.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "untrained": 10,
+          "trained": 15,
+          "expert": 20,
+          "master": 30,
+          "legendary": 40
+        },
+        "conditions": [
+          "Выбранная задача/место; решение ведущего сохраняется"
+        ],
+        "exceptions": [
+          "Не обязательная частота/плотность генерации; не автоматический результат броска"
+        ],
+        "cross_references": [
+          "GM Core52–55; Player Core соответствующие действия"
+        ],
+        "access_level": "selected_full_section",
+        "author_project_dedup_key": "paizo:pf2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2628",
+        "normative_kind": "product_interpretation",
+        "applicability": "L1 данные; исполнение проверок L2/L3 отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит/редактирует соответствующее место",
+        "inputs_and_units": {
+          "untrained": 10,
+          "trained": 15,
+          "expert": 20,
+          "master": 30,
+          "legendary": 40
+        },
+        "product_operation": "Задать у препятствия основание simple и DC, не заполняя минимальный ранг автоматически.",
+        "expected_output": "master → DC30, minimum=null",
+        "constraints_and_exceptions": [
+          "Подсказку можно изменить решением ведущего; источник не утверждает интерфейс.",
+          "Сохранение/загрузка и undo — предложенная приёмка приложения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "master → DC30, minimum=null",
+            "when": "Задать указанные входы, сохранить и загрузить карту",
+            "expected": "master → DC30, minimum=null; параметры и их основания сохранены."
+          },
+          {
+            "given": "Мастер явно изменил значение/исключение",
+            "when": "Повторно открыть объект",
+            "expected": "Явное значение сохранено; подсказка не перетёрла его."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило — пересказ отдельно от предложенной операции хранения/подсказки. Разработка не запущена.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard",
+          "agent-work/rules/common-rules.json#mechanics.check_resolution"
+        ],
+        "unresolved_parameters": [
+          "UI/архитектура и проверка исполнения остаются открытыми."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.static_hazard",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Reuse существующего объекта/действия; параметры PF2 отдельным профилем, без отдельной игровой реализации. Дополнение общей подготовки DC",
+          "profile_differences": [
+            "DC,минимумранга,причина,варианты по навыку — разные данные; проверить совместимость профиля."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан; actual UI/save/load/undo на версии не проверены. Это не доказанное отсутствие.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/save/load/undo/profile"
+        ],
+        "release_sha": null,
+        "method": "source_translation_only",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Проверить архитектуру/профиль, передать стратегу; новая очередь не создана."
+      ],
+      "backlog_refs": [],
+      "supplements_existing_entry": null
+    },
+    {
+      "id": "PF2-RM-DC-level-v2",
+      "game_id": "PF2",
+      "edition": "GM Core Remaster English",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2629",
+        "locator": "GM Core pp.52–53",
+        "self_contained_rule": "Можно задать DC по уровню предмета/препятствия или рангу заклинания вместо простой DC. Для металлической стены допустимы simple master30 либо уровень создателя15 и DC34. Это выбор ведущего, не масштабирование по партии.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "level_DC": [
+            14,
+            15,
+            16,
+            18,
+            19,
+            20,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            30,
+            31,
+            32,
+            34,
+            35,
+            36,
+            38,
+            39,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50
+          ],
+          "spell_rank_DC": [
+            15,
+            18,
+            20,
+            23,
+            26,
+            28,
+            31,
+            34,
+            36,
+            39
+          ]
+        },
+        "conditions": [
+          "Выбранная задача/место; решение ведущего сохраняется"
+        ],
+        "exceptions": [
+          "Не обязательная частота/плотность генерации; не автоматический результат броска"
+        ],
+        "cross_references": [
+          "GM Core52–55; Player Core соответствующие действия"
+        ],
+        "access_level": "selected_full_section",
+        "author_project_dedup_key": "paizo:pf2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2629",
+        "normative_kind": "product_interpretation",
+        "applicability": "L1 данные; исполнение проверок L2/L3 отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит/редактирует соответствующее место",
+        "inputs_and_units": {
+          "level_DC": [
+            14,
+            15,
+            16,
+            18,
+            19,
+            20,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            30,
+            31,
+            32,
+            34,
+            35,
+            36,
+            38,
+            39,
+            40,
+            42,
+            44,
+            46,
+            48,
+            50
+          ],
+          "spell_rank_DC": [
+            15,
+            18,
+            20,
+            23,
+            26,
+            28,
+            31,
+            34,
+            36,
+            39
+          ]
+        },
+        "product_operation": "Сохранить основание level/spell-rank, выбранный уровень/ранг и DC; уровень партии не изменяет объект.",
+        "expected_output": "level0→14; level15→34; level25→50; rank1→15; rank10→39",
+        "constraints_and_exceptions": [
+          "Подсказку можно изменить решением ведущего; источник не утверждает интерфейс.",
+          "Сохранение/загрузка и undo — предложенная приёмка приложения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "level0→14; level15→34; level25→50; rank1→15; rank10→39",
+            "when": "Задать указанные входы, сохранить и загрузить карту",
+            "expected": "level0→14; level15→34; level25→50; rank1→15; rank10→39; параметры и их основания сохранены."
+          },
+          {
+            "given": "Мастер явно изменил значение/исключение",
+            "when": "Повторно открыть объект",
+            "expected": "Явное значение сохранено; подсказка не перетёрла его."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило — пересказ отдельно от предложенной операции хранения/подсказки. Разработка не запущена.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard",
+          "agent-work/rules/common-rules.json#mechanics.check_resolution"
+        ],
+        "unresolved_parameters": [
+          "UI/архитектура и проверка исполнения остаются открытыми."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.static_hazard",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Reuse существующего объекта/действия; параметры PF2 отдельным профилем, без отдельной игровой реализации. Дополнение общей подготовки DC",
+          "profile_differences": [
+            "DC,минимумранга,причина,варианты по навыку — разные данные; проверить совместимость профиля."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан; actual UI/save/load/undo на версии не проверены. Это не доказанное отсутствие.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/save/load/undo/profile"
+        ],
+        "release_sha": null,
+        "method": "source_translation_only",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Проверить архитектуру/профиль, передать стратегу; новая очередь не создана."
+      ],
+      "backlog_refs": [],
+      "supplements_existing_entry": null
+    },
+    {
+      "id": "PF2-RM-DC-adjust-v2",
+      "game_id": "PF2",
+      "edition": "GM Core Remaster English",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2630",
+        "locator": "GM Core pp.52–53",
+        "self_contained_rule": "Коррекции DC −10/−5/−2/+2/+5/+10 относятся к задаче, а не бонусу персонажа. Uncommon/rare/unique обычно соответствуют+2/+5/+10. Разные навыки могут иметь разные DC. Для общей попытки с достаточным одним успехом ведущий может выбрать very/incredibly hard, но не обязан.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "adjustments": [
+            -10,
+            -5,
+            -2,
+            2,
+            5,
+            10
+          ],
+          "rarity": {
+            "uncommon": 2,
+            "rare": 5,
+            "unique": 10
+          }
+        },
+        "conditions": [
+          "Выбранная задача/место; решение ведущего сохраняется"
+        ],
+        "exceptions": [
+          "Не обязательная частота/плотность генерации; не автоматический результат броска"
+        ],
+        "cross_references": [
+          "GM Core52–55; Player Core соответствующие действия"
+        ],
+        "access_level": "selected_full_section",
+        "author_project_dedup_key": "paizo:pf2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2630",
+        "normative_kind": "product_interpretation",
+        "applicability": "L1 данные; исполнение проверок L2/L3 отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит/редактирует соответствующее место",
+        "inputs_and_units": {
+          "adjustments": [
+            -10,
+            -5,
+            -2,
+            2,
+            5,
+            10
+          ],
+          "rarity": {
+            "uncommon": 2,
+            "rare": 5,
+            "unique": 10
+          }
+        },
+        "product_operation": "Сохранить базовую DC и поправку с причиной отдельно для каждого способа исследования объекта; не складывать бонус персонажа в карту.",
+        "expected_output": "base19,+5→24; base19,−2→17; base19,−5→14",
+        "constraints_and_exceptions": [
+          "Подсказку можно изменить решением ведущего; источник не утверждает интерфейс.",
+          "Сохранение/загрузка и undo — предложенная приёмка приложения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "base19,+5→24; base19,−2→17; base19,−5→14",
+            "when": "Задать указанные входы, сохранить и загрузить карту",
+            "expected": "base19,+5→24; base19,−2→17; base19,−5→14; параметры и их основания сохранены."
+          },
+          {
+            "given": "Мастер явно изменил значение/исключение",
+            "when": "Повторно открыть объект",
+            "expected": "Явное значение сохранено; подсказка не перетёрла его."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило — пересказ отдельно от предложенной операции хранения/подсказки. Разработка не запущена.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard",
+          "agent-work/rules/common-rules.json#mechanics.check_resolution"
+        ],
+        "unresolved_parameters": [
+          "UI/архитектура и проверка исполнения остаются открытыми."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.static_hazard",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Reuse существующего объекта/действия; параметры PF2 отдельным профилем, без отдельной игровой реализации. Дополнение общей подготовки DC",
+          "profile_differences": [
+            "DC,минимумранга,причина,варианты по навыку — разные данные; проверить совместимость профиля."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан; actual UI/save/load/undo на версии не проверены. Это не доказанное отсутствие.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/save/load/undo/profile"
+        ],
+        "release_sha": null,
+        "method": "source_translation_only",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Проверить архитектуру/профиль, передать стратегу; новая очередь не создана."
+      ],
+      "backlog_refs": [],
+      "supplements_existing_entry": null
+    },
+    {
+      "id": "PF2-RM-DC-minimum-v2",
+      "game_id": "PF2",
+      "edition": "GM Core Remaster English",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2632",
+        "locator": "GM Core pp.53",
+        "self_contained_rule": "Для Pick a Lock/Disable a Device у замка/ловушки бывает минимальный ранг сверх DC. Ниже ранга попытка возможна, но успех невозможен. То же можно назначить другим задачам. Обычно не стоит требовать expert при уровне≤2, master≤6, legendary≤14; это рекомендации, не абсолютные запреты.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "discouraged_thresholds": {
+            "expert": 2,
+            "master": 6,
+            "legendary": 14
+          }
+        },
+        "conditions": [
+          "Выбранная задача/место; решение ведущего сохраняется"
+        ],
+        "exceptions": [
+          "Не обязательная частота/плотность генерации; не автоматический результат броска"
+        ],
+        "cross_references": [
+          "GM Core52–55; Player Core соответствующие действия"
+        ],
+        "access_level": "selected_full_section",
+        "author_project_dedup_key": "paizo:pf2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2632",
+        "normative_kind": "product_interpretation",
+        "applicability": "L1 данные; исполнение проверок L2/L3 отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит/редактирует соответствующее место",
+        "inputs_and_units": {
+          "discouraged_thresholds": {
+            "expert": 2,
+            "master": 6,
+            "legendary": 14
+          }
+        },
+        "product_operation": "Хранить DC и минимальный ранг независимо; при низком уровне задачи показать рекомендацию, разрешая осознанное исключение. Разрешение броска относится кL3.",
+        "expected_output": "DC20,min=null→нет ограничения; level2,min expert→предупреждение; успех trained при min expert невозможен",
+        "constraints_and_exceptions": [
+          "Подсказку можно изменить решением ведущего; источник не утверждает интерфейс.",
+          "Сохранение/загрузка и undo — предложенная приёмка приложения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "DC20,min=null→нет ограничения; level2,min expert→предупреждение; успех trained при min expert невозможен",
+            "when": "Задать указанные входы, сохранить и загрузить карту",
+            "expected": "DC20,min=null→нет ограничения; level2,min expert→предупреждение; успех trained при min expert невозможен; параметры и их основания сохранены."
+          },
+          {
+            "given": "Мастер явно изменил значение/исключение",
+            "when": "Повторно открыть объект",
+            "expected": "Явное значение сохранено; подсказка не перетёрла его."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило — пересказ отдельно от предложенной операции хранения/подсказки. Разработка не запущена.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard",
+          "agent-work/rules/common-rules.json#mechanics.check_resolution"
+        ],
+        "unresolved_parameters": [
+          "UI/архитектура и проверка исполнения остаются открытыми."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.static_hazard",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Reuse существующего объекта/действия; параметры PF2 отдельным профилем, без отдельной игровой реализации. Дополнение общей подготовки DC",
+          "profile_differences": [
+            "DC,минимумранга,причина,варианты по навыку — разные данные; проверить совместимость профиля."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан; actual UI/save/load/undo на версии не проверены. Это не доказанное отсутствие.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/save/load/undo/profile"
+        ],
+        "release_sha": null,
+        "method": "source_translation_only",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Проверить архитектуру/профиль, передать стратегу; новая очередь не создана."
+      ],
+      "backlog_refs": [],
+      "supplements_existing_entry": null
+    },
+    {
+      "id": "PF2-RM-DC-work-v2",
+      "game_id": "PF2",
+      "edition": "GM Core Remaster English",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2635",
+        "locator": "GM Core pp.53–54",
+        "self_contained_rule": "Максимальный уровень работы обычно равен уровню поселения. Если он неизвестен, ориентиры: деревня0–1,town2–4,city5–7,столица/метрополия8–10; выше — крупнейшие города/иные планы. Порт/культурный центр могут иметь более высокие профильные задачи; редкий навык может не иметь работы. DC — по выбранному уровню с возможной поправкой условий.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "fallback": {
+            "village": [
+              0,
+              1
+            ],
+            "town": [
+              2,
+              4
+            ],
+            "city": [
+              5,
+              7
+            ],
+            "capital": [
+              8,
+              10
+            ]
+          }
+        },
+        "conditions": [
+          "Выбранная задача/место; решение ведущего сохраняется"
+        ],
+        "exceptions": [
+          "Не обязательная частота/плотность генерации; не автоматический результат броска"
+        ],
+        "cross_references": [
+          "GM Core52–55; Player Core соответствующие действия"
+        ],
+        "access_level": "selected_full_section",
+        "author_project_dedup_key": "paizo:pf2:remaster:gm-core"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2635",
+        "normative_kind": "product_interpretation",
+        "applicability": "L1 данные; исполнение проверок L2/L3 отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер готовит/редактирует соответствующее место",
+        "inputs_and_units": {
+          "fallback": {
+            "village": [
+              0,
+              1
+            ],
+            "town": [
+              2,
+              4
+            ],
+            "city": [
+              5,
+              7
+            ],
+            "capital": [
+              8,
+              10
+            ]
+          }
+        },
+        "product_operation": "Сохранить базовую доступность работы и отдельные предложения по навыкам; неизвестный уровень показывать диапазоном, не выдуманным точным числом. Доход не считать вL1.",
+        "expected_output": "village unknown→0–1 подсказка; portlevel4+sailingoffer6→база4/исключение6/DC22",
+        "constraints_and_exceptions": [
+          "Подсказку можно изменить решением ведущего; источник не утверждает интерфейс.",
+          "Сохранение/загрузка и undo — предложенная приёмка приложения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "village unknown→0–1 подсказка; portlevel4+sailingoffer6→база4/исключение6/DC22",
+            "when": "Задать указанные входы, сохранить и загрузить карту",
+            "expected": "village unknown→0–1 подсказка; portlevel4+sailingoffer6→база4/исключение6/DC22; параметры и их основания сохранены."
+          },
+          {
+            "given": "Мастер явно изменил значение/исключение",
+            "when": "Повторно открыть объект",
+            "expected": "Явное значение сохранено; подсказка не перетёрла его."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило — пересказ отдельно от предложенной операции хранения/подсказки. Разработка не запущена.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources",
+          "agent-work/rules/common-rules.json#mechanics.check_resolution"
+        ],
+        "unresolved_parameters": [
+          "UI/архитектура и проверка исполнения остаются открытыми."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.settlement_resources",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Reuse существующего объекта/действия; параметры PF2 отдельным профилем, без отдельной игровой реализации. Дополнение общей подготовки DC",
+          "profile_differences": [
+            "DC,минимумранга,причина,варианты по навыку — разные данные; проверить совместимость профиля."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан; actual UI/save/load/undo на версии не проверены. Это не доказанное отсутствие.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Actual UI/save/load/undo/profile"
+        ],
+        "release_sha": null,
+        "method": "source_translation_only",
+        "evidence_refs": []
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Проверить архитектуру/профиль, передать стратегу; новая очередь не создана."
+      ],
+      "backlog_refs": [],
+      "supplements_existing_entry": null
     }
   ],
   "last_continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-environment-evidence.json",
@@ -11943,5 +12621,6 @@
   "last_dependency_continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json",
   "last_reference_document_continuation": "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.json",
   "last_GMC1_continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json",
-  "entry_count": 105
+  "entry_count": 110,
+  "last_GMC1_difficulty_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.json"
 }

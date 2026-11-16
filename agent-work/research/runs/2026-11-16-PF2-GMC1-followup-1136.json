@@ -1,0 +1,178 @@
+{
+  "run_id": "2026-11-16-PF2-GMC1-followup-1136",
+  "status": "checkpoint",
+  "started_at": "2026-11-16T11:37:38.359Z",
+  "finished_at": "2026-11-16T11:43:35.514Z",
+  "baseline_sha": "5734a8a4b944d09ab012167263ecf9d2bc2c3ee8",
+  "started_marker_ref": "agent-work/research/automation-health/2026-11-16-PF2-GMC1-followup-1136-started.json",
+  "selected_task": "Continue same PF2 top5 alignment: GMCore1 difficulty source dependencies",
+  "completion_condition": "Full PF2 source coverage, operational translation and actual support per RA-Q01–15; not reached",
+  "bounded_result": "Completed L1 preparation translation of 8 DC profiles from52–55;5new entries/3supplements; no new product tasks or registry writes",
+  "alternatives": [
+    {
+      "game": "DND5",
+      "reason": "Full source access blocker retained; no new access signal for identical rescan."
+    },
+    {
+      "game": "CROWS",
+      "reason": "Source packet already screened; owner discussion is not authorization to repeat full scan/develop mode."
+    }
+  ],
+  "verification": {
+    "schema": "8/8 rule_analysis_entry_v2 pass",
+    "combined_count": 110,
+    "actual_product_tested": false
+  },
+  "quality": {
+    "RA_Q01": "pass_selected_source",
+    "RA_Q02": "not_pass_full_corpus_remaining",
+    "RA_Q03_05": "selected8profiles translated; mandatory conditional minimum separated within recommendation",
+    "RA_Q06_09": "concrete prepared objects,inputs,outputs and acceptance cases; architecture/bindings pending",
+    "RA_Q10_12": "actual support unverified; reused canonical candidates; no queue write",
+    "RA_Q13_15": "human overview and honest checkpoint"
+  },
+  "checkpoint": {
+    "status": "checkpoint_large_corpus_remaining",
+    "run_id": "2026-11-16-PF2-GMC1-followup-1136",
+    "stage": "PF2_GMC1_difficulty_source_translation",
+    "last_successful_step": "8profiles source translated;5new entries+3existing supplements;110combined;8/8 schema valid. Actual implementation not verified.",
+    "failed_operation": {
+      "tool": "exec_command/urllib.request",
+      "action": "Read optional direct HTML transport",
+      "safe_locator": "https://2e.aonprd.com/Rules.aspx?ID=2468"
+    },
+    "observed_error": "HTTPError: HTTP Error 403: Forbidden",
+    "error_recovered": true,
+    "additional_observed_errors": [
+      {
+        "tool": "functions.exec",
+        "action": "Build draft source artifact",
+        "observed_error": "ReferenceError: structuredClone is not defined",
+        "error_recovered": true
+      },
+      {
+        "tool": "github.fetch_file",
+        "safe_locator": "agent-work/claims.json",
+        "observed_error": "GitHub API error 404: {\"message\":\"Not Found\",\"documentation_url\":\"https://docs.github.com/rest/repos/contents#get-repository-content\",\"status\":\"404\"}",
+        "error_code": "NOT_FOUND",
+        "error_recovered": true
+      },
+      {
+        "tool": "github.update_ref",
+        "action": "CAS publish research commit",
+        "safe_locator": "agent-operations",
+        "observed_error": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-16T11:43:57Z. Please include `DBA5:8FC2D:19CE344E:270A6C38:6AFAEC7C` when reporting this issue.'}]",
+        "error_code": "UNKNOWN",
+        "request_id": "DBA5:8FC2D:19CE344E:270A6C38:6AFAEC7C",
+        "cause_status": "unknown",
+        "retry": "Fresh head reread; rebuild without overwriting concurrent changes."
+      }
+    ],
+    "stop_reason": "Full PF2 thematic corpus and actual implementation comparison remain large; retained completed DC source branch. Owner source-location question answered while preserving research work.",
+    "cause_status": "unknown",
+    "cause_note": "Direct HTTP403 root cause unknown; web source retrieval succeeded. Local ReferenceError was corrected without structuredClone. Neither explains incomplete full-book goal.",
+    "saved_results": [
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-entries.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-coverage.json"
+    ],
+    "exact_continuation": "GMCore1: QuickEnvironmentalDetails7×5 полный каталог, оставшиеся тела RunningSession/SpecialConsiderations/RunningEncounters/RunningDowntime/Rewards; обзор/выборочные фрагменты не считаются закрытием раздела. DC2627–2646: общий родитель прочитан; L1-параметры8профилей извлечены. Остальные действия — L3/метаданные; не расширять их в отдельные реализации без исходного правила. Остальные PC/GMCore главы и backmatter по15блочномуинвентарю; PC6оборудование. Canonicalbindings и actual UI/save/load/undo/профили на свежемmain; source не acceptance. DND5 при восстановлении полного первоисточника; затем остальной overalltop5; create-top10 только после их принятия.",
+    "needs_owner_action": false,
+    "owner_action": null,
+    "research_outcome_completed": false,
+    "source_subcorpus_completed": true
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T113000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-16T11:37:38.359Z"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "checked_at": "2026-11-16T11:37:38.359Z"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T113000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "run_details": {
+          "last_run": {
+            "id": "43bf6f18-2dc4-8325-bb8e-dfabed9b8753",
+            "recorded_status": "in_progress",
+            "scheduled_for": "2026-11-16T11:30:00Z",
+            "started_at": "2026-11-16T11:36:17.628666Z",
+            "completed_at": null,
+            "chat_ref": null
+          },
+          "latest_result": {
+            "run_id": "8511cecf-29b8-8325-90e8-8a33ceef3dbc",
+            "created_at": "2026-11-16T10:55:36.566294Z",
+            "scheduled_for": "2026-11-16T10:30:00Z",
+            "completed_at": "2026-11-16T10:55:37.386001Z",
+            "content_text": "Сохранил [восемь положений PF2 → конкретные операции → приёмку](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.md).\n\nВажный пример: результат поиска **28** обнаруживает ловушку **DC25**, но не дверь **DC30**; полные свойства ловушки требуют дальнейшего осмотра. genui{\"citation\":{\"ref\":\"turn610424881view0\"}} Для приложения отдельно описаны первоначальные признаки, подробные сведения и секреты.\n\nПоддержка этих операций пока не проверена. Сохранён checkpoint; дальше — оставшийся корпус правил и фактическая сверка функций. Рейтинг и очередь не менялись, решений сейчас не требуется.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa2457-6ffc-83ec-ab21-d513a1c0ede2"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        },
+        "checked_at": "2026-11-16T11:43:46.242Z"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "run_details": {
+          "last_run": {
+            "id": "e9a3c6f9-32d8-8322-b523-4f87813f4d5f",
+            "recorded_status": "failed",
+            "scheduled_for": "2026-11-16T11:00:00Z",
+            "started_at": "2026-11-16T11:08:19.478287Z",
+            "completed_at": "2026-11-16T11:38:24.259775Z",
+            "chat_ref": null
+          },
+          "latest_result": {
+            "run_id": "6def497e-83b0-832b-963b-e53f4e811dc3",
+            "created_at": "2026-11-16T10:37:25.600971Z",
+            "scheduled_for": "2026-11-16T10:00:00Z",
+            "completed_at": "2026-11-16T10:37:25.858523Z",
+            "content_text": "Да, команда работает. Автоматизация подтверждена включённой: каждый час в `00` по Europe/Moscow.\n\nРоль: проверяющий HX-BL-055, [PR504](https://github.com/YuriyEmelyanov/Hexcrawl/pull/504).\n\nРезультат: `changes_requested`. При почти параллельной переправе может исчезнуть вся дорога. Дополнительно не выполнено доказательное сравнение 6-мильного режима до/после. Публикация не разрешена.\n\nПолная проверка: 426/426 успешно, сборка успешна, но дефект воспроизводится отдельно.\n\nТесты: +1 / −0 / изменено 5 — текущее покрытие не проверяет обязательные косые и краевые пересечения.\n\nСледующий шаг: программист исправляет дефект, добавляет чувствительные проверки и передаёт новый SHA на независимую приёмку. Осталось ориентировочно 3–5 запусков. Решений владельца сейчас не требуется.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afaa976-4f64-83ec-9282-37a5dc35b3a0"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        },
+        "checked_at": "2026-11-16T11:43:46.242Z"
+      }
+    ]
+  },
+  "rating_changed": false,
+  "score_changed": false,
+  "product_queue_changed": false,
+  "canonical_registries_changed": false,
+  "needs_owner_action": false,
+  "remaining": [
+    "GMCore1: QuickEnvironmentalDetails7×5 полный каталог, оставшиеся тела RunningSession/SpecialConsiderations/RunningEncounters/RunningDowntime/Rewards; обзор/выборочные фрагменты не считаются закрытием раздела.",
+    "DC2627–2646: общий родитель прочитан; L1-параметры8профилей извлечены. Остальные действия — L3/метаданные; не расширять их в отдельные реализации без исходного правила.",
+    "Остальные PC/GMCore главы и backmatter по15блочномуинвентарю; PC6оборудование.",
+    "Canonicalbindings и actual UI/save/load/undo/профили на свежемmain; source не acceptance.",
+    "DND5 при восстановлении полного первоисточника; затем остальной overalltop5; create-top10 только после их принятия."
+  ]
+}
