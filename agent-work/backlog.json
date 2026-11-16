@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-16T10:33:41.780Z",
+  "updated_at": "2026-11-16T11:40:46.605Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -88,9 +88,9 @@
       "approved_at": "2026-11-15T21:29:57.540Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "независимая проверка exact SHA 47d0dfa завершена с changes_requested: подтверждён дефект косой переправы; требуется исправление и повторная проверка",
-      "next_role": "programmer",
-      "next_step": "Исправить HX-BL-055-REV-01: косые/краевые/короткие/близкие переправы не должны скрывать всю дорогу; добавить чувствительные ordinary/refined регрессии, получить non-null native6 baseline evidence по AC05 и передать новый exact SHA на независимую проверку.",
+      "execution_state": "замечания исправлены на f824da1; полный CI зелёный; ожидается независимая повторная приёмка",
+      "next_role": "reviewer",
+      "next_step": "Independently review exact f824da1 against F1 and both findings; validate connected finite wet intervals with known dry approaches and the final native6 screen/PNG artifact; record score_assessment1.2. Publication remains separately gated.",
       "requirements": [
         "Только на 1-мильной карте: F1=10%, F2=20%, F3=30%, F4=40%, F5=50% ширины гекса. Это визуальная шкала, не физическая ширина русла.",
         "6-мильная карта: существующая ширина рек и внешний вид без изменений.",
@@ -115,7 +115,7 @@
       "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
       "acceptance_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.acceptance.json",
       "published_ref": null,
-      "updated_at": "2026-11-16T10:33:41.780Z",
+      "updated_at": "2026-11-16T11:40:46.605Z",
       "draft_spec_version": "D1",
       "interview_status": "interview_completed",
       "interview_completed": true,
@@ -143,49 +143,80 @@
         "reason": "No controls or layout changes; owner answer only constrains display-only behavior."
       },
       "forecast": {
-        "completed_runs": 7,
+        "completed_runs": 8,
         "remaining_runs": {
-          "min": 3,
-          "max": 5
-        },
-        "total_runs": {
-          "min": 10,
-          "max": 12
-        },
-        "remaining_active_hours": {
           "min": 2,
           "max": 4
         },
+        "remaining_active_hours": {
+          "min": 1,
+          "max": 3
+        },
         "remaining_calendar_hours_excluding_owner_wait": {
-          "min": 3,
-          "max": 6
+          "min": 2,
+          "max": 5
         },
         "owner_publication_wait": "unknown",
         "confidence": "medium",
-        "history_reset": false
+        "history_reset": false,
+        "environment_outage": "recovered_same_run"
       },
-      "implementation_ref": "agent-work/results/2026-11-16T1107-programmer-river-width-F1.json",
-      "review_handoff_ref": "agent-work/handoffs/2026-11-16T1319-reviewer-river-width-F1-programmer.json",
+      "implementation_ref": "agent-work/results/2026-11-16T1408-programmer-river-width-CI.json",
+      "review_handoff_ref": "agent-work/handoffs/2026-11-16T1408-programmer-river-width-CI-reviewer.json",
       "pull_request": {
         "number": 504,
         "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/504",
-        "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+        "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
         "state": "open",
         "merged": false
       },
       "checks": {
         "status": "passed_exact_sha",
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617"
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679"
       },
       "actual_ui": {
-        "status": "implemented_exact_sha",
-        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617/artifacts/14210508921",
-        "presented_in_chat": true,
-        "desktop": true,
-        "narrow390": true
+        "status": "actual_exact_sha_presented_in_chat",
+        "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+        "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+        "artifact_id": 14222178027,
+        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679/artifacts/14222178027",
+        "artifact_digest": "sha256:d181efcfee22ab68080382d10027c5e98cc20c5bf0a993742a8f5c72254846bb",
+        "digest_verified_after_download": true,
+        "shown": "geo2-tiles.png",
+        "desktop": "geo2-accepted-1500.jpg",
+        "narrow": "geo2-accepted-390.jpg",
+        "native6_baseline": {
+          "sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+          "fixture": "same explicitF2ford variant",
+          "profiles": [
+            {
+              "width": 1500,
+              "pixelIdentical": true,
+              "raster": {
+                "maxDelta": 0,
+                "changedFraction": 0
+              }
+            },
+            {
+              "width": 390,
+              "pixelIdentical": true,
+              "raster": {
+                "maxDelta": 0,
+                "changedFraction": 0
+              }
+            }
+          ],
+          "png": {
+            "pixelIdentical": true,
+            "raster": {
+              "maxDelta": 0,
+              "changedFraction": 0
+            }
+          }
+        }
       },
-      "review_status": "changes_requested",
-      "acceptance_status": "rejected_exact_sha_requires_new_review",
+      "review_status": "review_ready_new_sha",
+      "acceptance_status": "pending_independent_review",
       "reviewed_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
       "review_ref": "agent-work/evidence/HX-BL-055-review-47d0dfa/review.json",
       "score_assessment_ref": "agent-work/evidence/HX-BL-055-review-47d0dfa/score-assessment1.2.json",
@@ -193,7 +224,9 @@
       "open_findings": [
         "HX-BL-055-REV-01",
         "HX-BL-055-REV-02"
-      ]
+      ],
+      "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+      "finding_resolution_status": "programmer_fixed_both_pending_independent_confirmation"
     },
     {
       "task_id": "HX-BL-056",
