@@ -8,19 +8,20 @@
     "frequency": "HOURLY",
     "minute": 30,
     "enabled": true,
-    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T113000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T173000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
     "default_timezone": "Europe/Moscow",
     "environment_selection": "inherited",
     "environments_observed": null,
-    "interval": 1,
-    "interval_hours": 1,
+    "interval": 2,
+    "interval_hours": 2,
     "cadence_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-16-research-hourly-creation-top10.json",
-    "verified_at": "2026-11-16T07:39:58.335Z",
+    "verified_at": "2026-11-16T16:09:42.363Z",
     "is_enabled": true,
     "desired_enabled": true,
     "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
     "verification_status": "verified_by_automations_peek",
-    "next_run_time": "2026-11-16T11:30:00+03:00"
+    "next_run_time": "2026-11-16T11:30:00+03:00",
+    "cadence_authority": "Latest explicit owner instruction in current prompt: Переходи на интервал 2 часа; supersedes historical hourly repository entries."
   },
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "contract_ref": "agent-work/research/contract.md",
@@ -65,7 +66,7 @@
   },
   "next_candidate": {
     "id": "HX-RSR-RETROSPECTIVE-PRODUCT-SCOPE-v1",
-    "status": "PF2_complete_DND5_next",
+    "status": "PF2_DND5_complete_KNAVE2_next",
     "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
     "priority": "before_new_source_expansion",
     "completion_condition": "Every previously collected row has reasoned scope disposition; working overviews/handoffs corrected; no unrelated subsystem proposals carried as app requirements.",
@@ -100,15 +101,16 @@
       "needs_owner_decision"
     ],
     "cursor": {
-      "game_id": "DND5",
-      "artifact": "agent-work/research/requirements/DND5-2014-v2-entries.json",
-      "next_entry": "first_existing_entry"
+      "game_id": "KNAVE2",
+      "next_entry": "first_existing_row_after_inventory"
     },
     "source_rules_not_deleted": true,
     "review_completed": false,
     "PF2_completed": true,
     "PF2_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
-    "exact_continuation": "Ревизия уже собранного DND5: сначала agent-work/research/requirements/DND5-2014-v2-entries.json (24 строки), затем существующие legacy-матрицы/обзоры/передачи. Каждой строке дать disposition и предметное основание; оставить только прямые картографические операции, разделить L2/L3, отозвать лишние предложения. Исходные факты/immutable результаты и прежний блокер полного DMG2014 сохранить; одинаковый заблокированный поиск без нового access signal не повторять. Затем KNAVE2,CROWS(50/35без339страничногорескана),SD и другие уже разобранные игры. Новые главы PF2 пока не расширять."
+    "exact_continuation": "KNAVE2: найти уже сохранённые матрицы/обзоры/передачи в agent-work/market/rules и agent-work/research, перечитать текущие claims/свежиеSHA; проверить каждую существующую строку на product-scope-filter, сохранить причины keep_L1/defer_L2/integration_L3/out_of_scope/needs_owner_decision и исправленные рабочие обзоры/передачу. Не расширять главы и не повторять полный скан. Затем CROWS50/35без339страничногоперескана,SD,прочие разобранные игры. DND5 полный первичный источник остаётся отдельным блокером; одинаковые недоступные поиски без нового сигнала доступа не повторять.",
+    "DND5_completed": true,
+    "DND5_audit_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json"
   },
   "active_task": null,
   "claim": null,
@@ -243,7 +245,8 @@
     "agent-work/research/runs/2026-11-16-PF2-source-completeness-033130.json",
     "agent-work/research/runs/2026-11-16-PF2-market-dependencies-053047.json",
     "agent-work/research/runs/2026-11-16-PF2-preparation-074155.json",
-    "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json"
+    "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json",
+    "agent-work/research/runs/2026-11-16-DND5-scope-audit-1794845105225.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -263,37 +266,22 @@
       {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T113000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "checked_at": "2026-11-16T13:45:40.619Z"
-      },
-      {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "checked_at": "2026-11-16T13:45:40.619Z"
-      }
-    ],
-    "end": [
-      {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T113000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "checked_at": "2026-11-16T13:58:45.381Z",
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T173000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
         "run_details": {
           "last_run": {
-            "id": "7ab55c97-6d3c-8325-b01c-bb726588674e",
+            "id": "3d436a99-a8f4-8325-ab9e-e4cda0b2afeb",
             "recorded_status": "in_progress",
-            "scheduled_for": "2026-11-16T13:30:00Z",
-            "started_at": "2026-11-16T13:44:51.775932Z",
+            "scheduled_for": "2026-11-16T14:30:00Z",
+            "started_at": "2026-11-16T16:04:24.108976Z",
             "completed_at": null,
             "chat_ref": null
           },
           "latest_result": {
-            "run_id": "03eff28c-0170-8325-9672-79bd2a128fac",
-            "created_at": "2026-11-16T12:55:06.088786Z",
-            "scheduled_for": "2026-11-16T12:30:00Z",
-            "completed_at": "2026-11-16T12:55:06.386614Z",
-            "content_text": "Сохранил [разбор PF2: 22 положения → функции приложения → приёмка](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.md).\n\nГлавный вывод: **бюджет добычи распределяется между локациями, а не повторяется в каждой**. Для четырёх персонажей третьего уровня — около 500 золотых на весь этап. genui{\"citation\":{\"ref\":\"turn943419723view0\"}}\n\nОстановился на checkpoint: правила и передача стратегу сохранены; фактическая поддержка функций ещё не проверена. Дальше — глава 2 GM Core и оставшийся корпус, затем проверка приложения. Очередь разработки и рейтинг не менял. Решений сейчас не требуется.",
+            "run_id": "7ab55c97-6d3c-8325-b01c-bb726588674e",
+            "created_at": "2026-11-16T13:59:50.506663Z",
+            "scheduled_for": "2026-11-16T13:30:00Z",
+            "completed_at": "2026-11-16T13:59:51.305769Z",
+            "content_text": "Завершил [ревизию всех 132 строк PF2](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/research/requirements/PF2-Remaster-v2-review.md).\n\n- **29** оставлены для создания карты.\n- **22** отложены к ведению гекскроула, **1** — к интеграциям.\n- **75** исключены, **5** спорных выведены из принятого объёма.\n\nОтозвал лишние предложения о боевых, сюжетных и экономических подсистемах. Обзоры и передачу стратегу исправил, исходные правила сохранил. Это проверка применимости; реализацию заново не подтверждал.\n\nВсё сохранено в GitHub. Следом — ревизия DND5. Рейтинг и очередь разработки не менял; оба расписания включены.",
             "content_truncated": false,
             "chat_ref": {
               "type": "chatgpt",
@@ -303,50 +291,119 @@
             "is_failure_message": false
           },
           "delivery_status": "unknown"
-        }
+        },
+        "checked_at": "2026-11-16T16:05:05.225Z"
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "checked_at": "2026-11-16T13:58:45.381Z",
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
         "run_details": {
           "last_run": {
-            "id": "e9a3c6f9-32d8-8322-b523-4f87813f4d5f",
+            "id": "2341b270-2468-8326-979d-69e9a729f31a",
             "recorded_status": "completed",
-            "scheduled_for": "2026-11-16T11:00:00Z",
-            "started_at": "2026-11-16T11:55:12.430472Z",
-            "completed_at": "2026-11-16T12:06:07.640716Z",
+            "scheduled_for": "2026-11-16T15:00:00Z",
+            "started_at": "2026-11-16T15:21:52.390500Z",
+            "completed_at": "2026-11-16T15:26:20.756215Z",
             "chat_ref": {
               "type": "chatgpt",
-              "id": "6afaa976-4f64-83ec-9282-37a5dc35b3a0"
+              "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
             }
           },
           "latest_result": {
-            "run_id": "e9a3c6f9-32d8-8322-b523-4f87813f4d5f",
-            "created_at": "2026-11-16T12:06:06.925132Z",
-            "scheduled_for": "2026-11-16T11:00:00Z",
-            "completed_at": "2026-11-16T12:06:07.640716Z",
-            "content_text": "Роль: проверяющий. [PR504](https://github.com/YuriyEmelyanov/Hexcrawl/pull/504), SHA `f824da1`, принят независимо. Оба замечания закрыты; задача получила статус «разработана».\n\nДо/после показано на одной карте. География сохранена; 6-мильный экран и PNG не изменились. Оценка 1.2 сохранена без начисления баллов.\n\nТесты пакета: +2 / −0 / изменено 5 — ширина рек, устья, переправы и экспорт.\n\nТребуется ваше разрешение на публикацию этого пакета. После разрешения — ориентировочно один запуск на выпуск.\n\nПока аналитик готовит чистовую спецификацию новых биомов по вашим ответам.",
+            "run_id": "2341b270-2468-8326-979d-69e9a729f31a",
+            "created_at": "2026-11-16T15:26:20.518926Z",
+            "scheduled_for": "2026-11-16T15:00:00Z",
+            "completed_at": "2026-11-16T15:26:20.756215Z",
+            "content_text": "Стратег: закрыл обновление оценки после PR504. Баллы не начислены: исправление принято, но для оценки широких критериев доказательств недостаточно.\n\nСледующий этап — чистовая спецификация новых биомов по твоим ответам: ручной выбор, один PR. Передача сохранена в GitHub; новых решений от тебя сейчас не требуется.",
             "content_truncated": false,
             "chat_ref": {
               "type": "chatgpt",
-              "id": "6afaa976-4f64-83ec-9282-37a5dc35b3a0"
+              "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
             },
             "requires_user_action": false,
             "is_failure_message": false
           },
           "delivery_status": "unknown"
-        }
+        },
+        "checked_at": "2026-11-16T16:05:05.225Z"
       }
     ],
-    "modified": false,
-    "not_completion_evidence": true
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T173000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "run_details": {
+          "last_run": {
+            "id": "3d436a99-a8f4-8325-ab9e-e4cda0b2afeb",
+            "recorded_status": "in_progress",
+            "scheduled_for": "2026-11-16T14:30:00Z",
+            "started_at": "2026-11-16T16:04:24.108976Z",
+            "completed_at": null,
+            "chat_ref": null
+          },
+          "latest_result": {
+            "run_id": "7ab55c97-6d3c-8325-b01c-bb726588674e",
+            "created_at": "2026-11-16T13:59:50.506663Z",
+            "scheduled_for": "2026-11-16T13:30:00Z",
+            "completed_at": "2026-11-16T13:59:51.305769Z",
+            "content_text": "Завершил [ревизию всех 132 строк PF2](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/research/requirements/PF2-Remaster-v2-review.md).\n\n- **29** оставлены для создания карты.\n- **22** отложены к ведению гекскроула, **1** — к интеграциям.\n- **75** исключены, **5** спорных выведены из принятого объёма.\n\nОтозвал лишние предложения о боевых, сюжетных и экономических подсистемах. Обзоры и передачу стратегу исправил, исходные правила сохранил. Это проверка применимости; реализацию заново не подтверждал.\n\nВсё сохранено в GitHub. Следом — ревизия DND5. Рейтинг и очередь разработки не менял; оба расписания включены.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afa2457-6ffc-83ec-ab21-d513a1c0ede2"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        },
+        "checked_at": "2026-11-16T16:09:42.363Z",
+        "not_proof_of_research_completion": true
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "run_details": {
+          "last_run": {
+            "id": "2341b270-2468-8326-979d-69e9a729f31a",
+            "recorded_status": "completed",
+            "scheduled_for": "2026-11-16T15:00:00Z",
+            "started_at": "2026-11-16T15:21:52.390500Z",
+            "completed_at": "2026-11-16T15:26:20.756215Z",
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
+            }
+          },
+          "latest_result": {
+            "run_id": "2341b270-2468-8326-979d-69e9a729f31a",
+            "created_at": "2026-11-16T15:26:20.518926Z",
+            "scheduled_for": "2026-11-16T15:00:00Z",
+            "completed_at": "2026-11-16T15:26:20.756215Z",
+            "content_text": "Стратег: закрыл обновление оценки после PR504. Баллы не начислены: исправление принято, но для оценки широких критериев доказательств недостаточно.\n\nСледующий этап — чистовая спецификация новых биомов по твоим ответам: ручной выбор, один PR. Передача сохранена в GitHub; новых решений от тебя сейчас не требуется.",
+            "content_truncated": false,
+            "chat_ref": {
+              "type": "chatgpt",
+              "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
+            },
+            "requires_user_action": false,
+            "is_failure_message": false
+          },
+          "delivery_status": "unknown"
+        },
+        "checked_at": "2026-11-16T16:09:42.363Z",
+        "not_proof_of_research_completion": true
+      }
+    ],
+    "modified": false
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-16-DND5-scope-audit-1794845105225.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-16-DND5-scope-audit-1794845105225.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -1276,7 +1333,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+  "last_run_id": "2026-11-16-DND5-scope-audit-1794845105225",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1334,60 +1391,31 @@
   },
   "last_run": "2026-11-16-PF2-preparation-074155",
   "checkpoint": {
-    "status": "completed_bounded_PF2_scope_audit_remaining_games_pending",
-    "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
-    "stage": "PF2_existing132_scope_audit_completed_DND5_next",
-    "last_successful_step": "Audit/result read back exactly; saved matrix verified through exact Git blob:132source rows preserved,29currentL1operations; working views/handoffs saved.",
-    "failed_operation": {
-      "tool": "functions.exec / JSON.parse",
-      "action": "Parse fetch_file content of saved PF2 matrix",
-      "safe_locator": "agent-work/research/requirements/PF2-Remaster-v2-entries.json"
-    },
-    "observed_error": "SyntaxError: Unexpected end of JSON input",
-    "stop_reason": "PF2 bounded scope-audit completion condition met; the recovered local readback error did not prevent completion. Remaining cross-game audit continues with DND5.",
+    "status": "completed_bounded_DND5_scope_audit_remaining_games_pending",
+    "run_id": "2026-11-16-DND5-scope-audit-1794845105225",
+    "stage": "DND5_existing24_and_legacy51_scope_review_complete",
+    "last_successful_step": "24draft entries and51legacy requirements reviewed;16currentL1operations schema-valid; original source_rule/implementation unchanged.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Bounded existing DND5 audit complete; cross-game retrospective continues with KNAVE2.",
     "cause_status": "confirmed",
     "saved_results": [
-      "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-entries.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-environment-entries.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-settlements-entries.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-review.md",
-      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.md",
-      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.md",
-      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.md",
-      "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.md",
-      "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.md",
-      "agent-work/research/requirements/PF2-Remaster-v2-settlements-review.md",
+      "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
+      "agent-work/research/requirements/DND5-2014-v2-entries.json",
+      "agent-work/research/requirements/DND5-2014-v2-review.md",
+      "agent-work/research/requirements/DND5-2014-v2-legacy-scope-review.md",
+      "agent-work/research/requirements/DND5-2014-v2-quality.json",
+      "agent-work/research/handoffs/2026-11-16-DND5-scope-audit-1794845105225-strategist.json",
       "agent-work/research/README.md",
-      "agent-work/research/handoffs/2026-11-16-PF2-scope-audit-1794836736442-strategist.json",
-      "agent-work/research/handoffs/2026-11-16-PF2-GMC1-screen-1238-strategist.json",
-      "agent-work/research/handoffs/2026-11-16-PF2-source-completeness-033130-strategist.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-quality.json",
       "agent-work/research/state.json",
       "agent-work/research/work-plan.json",
-      "agent-work/claims/2026-11-16-PF2-scope-audit-1794836736442.json",
-      "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json"
+      "agent-work/claims/2026-11-16-DND5-scope-audit-1794845105225.json",
+      "agent-work/research/runs/2026-11-16-DND5-scope-audit-1794845105225.json"
     ],
-    "exact_continuation": "Ревизия уже собранного DND5: сначала agent-work/research/requirements/DND5-2014-v2-entries.json (24 строки), затем существующие legacy-матрицы/обзоры/передачи. Каждой строке дать disposition и предметное основание; оставить только прямые картографические операции, разделить L2/L3, отозвать лишние предложения. Исходные факты/immutable результаты и прежний блокер полного DMG2014 сохранить; одинаковый заблокированный поиск без нового access signal не повторять. Затем KNAVE2,CROWS(50/35без339страничногорескана),SD и другие уже разобранные игры. Новые главы PF2 пока не расширять.",
+    "exact_continuation": "KNAVE2: найти уже сохранённые матрицы/обзоры/передачи в agent-work/market/rules и agent-work/research, перечитать текущие claims/свежиеSHA; проверить каждую существующую строку на product-scope-filter, сохранить причины keep_L1/defer_L2/integration_L3/out_of_scope/needs_owner_decision и исправленные рабочие обзоры/передачу. Не расширять главы и не повторять полный скан. Затем CROWS50/35без339страничногоперескана,SD,прочие разобранные игры. DND5 полный первичный источник остаётся отдельным блокером; одинаковые недоступные поиски без нового сигнала доступа не повторять.",
     "needs_owner_action": false,
     "owner_action": null,
-    "nonblocking_owner_decision_rows": [
-      "PF2-RM-073-L1-v2",
-      "PF2-RM-ST-003-v2",
-      "PF2-RM-ST-005-v2",
-      "PF2-RM-ST-006-v2",
-      "PF2-RM-ST-010-v2"
-    ],
-    "error_recovered": true,
-    "cause_note": "Local JSON.parse received empty content. Connector returned a blob SHA but an empty content string; reason for missing body is unknown. This is not evidence of failed write or GitHub unavailability.",
-    "recovery": "Read exact saved blob a8df33d187c53dfde363e5cc78b40b2c92d37538 through github.fetch git/blobs; body matches prepared matrix exactly,132rows/29currentL1.",
-    "saved_commit_sha": "cac8b574d3825f52b78cdc501178caaee1d15d96",
-    "immutable_result_ref": "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json"
+    "source_limitation": "Historical paraphrases only; full DMG2014 source not restored; original blocker retained, not retried."
   },
   "latest_recent_survey_audit": {
     "ref": "agent-work/research/market/recent-survey-2026-11-14.json",
@@ -2096,7 +2124,7 @@
   },
   "retrospective_scope_audit": {
     "id": "HX-RSR-RETROSPECTIVE-PRODUCT-SCOPE-v1",
-    "status": "PF2_complete_DND5_next",
+    "status": "PF2_DND5_complete_KNAVE2_next",
     "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
     "priority": "before_new_source_expansion",
     "completion_condition": "Every previously collected row has reasoned scope disposition; working overviews/handoffs corrected; no unrelated subsystem proposals carried as app requirements.",
@@ -2131,15 +2159,16 @@
       "needs_owner_decision"
     ],
     "cursor": {
-      "game_id": "DND5",
-      "artifact": "agent-work/research/requirements/DND5-2014-v2-entries.json",
-      "next_entry": "first_existing_entry"
+      "game_id": "KNAVE2",
+      "next_entry": "first_existing_row_after_inventory"
     },
     "source_rules_not_deleted": true,
     "review_completed": false,
     "PF2_completed": true,
     "PF2_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
-    "exact_continuation": "Ревизия уже собранного DND5: сначала agent-work/research/requirements/DND5-2014-v2-entries.json (24 строки), затем существующие legacy-матрицы/обзоры/передачи. Каждой строке дать disposition и предметное основание; оставить только прямые картографические операции, разделить L2/L3, отозвать лишние предложения. Исходные факты/immutable результаты и прежний блокер полного DMG2014 сохранить; одинаковый заблокированный поиск без нового access signal не повторять. Затем KNAVE2,CROWS(50/35без339страничногорескана),SD и другие уже разобранные игры. Новые главы PF2 пока не расширять."
+    "exact_continuation": "KNAVE2: найти уже сохранённые матрицы/обзоры/передачи в agent-work/market/rules и agent-work/research, перечитать текущие claims/свежиеSHA; проверить каждую существующую строку на product-scope-filter, сохранить причины keep_L1/defer_L2/integration_L3/out_of_scope/needs_owner_decision и исправленные рабочие обзоры/передачу. Не расширять главы и не повторять полный скан. Затем CROWS50/35без339страничногоперескана,SD,прочие разобранные игры. DND5 полный первичный источник остаётся отдельным блокером; одинаковые недоступные поиски без нового сигнала доступа не повторять.",
+    "DND5_completed": true,
+    "DND5_audit_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json"
   },
   "owner_scope_policy_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
   "last_scope_policy_update": {
@@ -2150,7 +2179,7 @@
   },
   "checkpoint_resume_override": {
     "id": "HX-RSR-RETROSPECTIVE-PRODUCT-SCOPE-v1",
-    "status": "PF2_complete_DND5_next",
+    "status": "PF2_DND5_complete_KNAVE2_next",
     "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
     "priority": "before_new_source_expansion",
     "completion_condition": "Every previously collected row has reasoned scope disposition; working overviews/handoffs corrected; no unrelated subsystem proposals carried as app requirements.",
@@ -2185,15 +2214,16 @@
       "needs_owner_decision"
     ],
     "cursor": {
-      "game_id": "DND5",
-      "artifact": "agent-work/research/requirements/DND5-2014-v2-entries.json",
-      "next_entry": "first_existing_entry"
+      "game_id": "KNAVE2",
+      "next_entry": "first_existing_row_after_inventory"
     },
     "source_rules_not_deleted": true,
     "review_completed": false,
     "PF2_completed": true,
     "PF2_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
-    "exact_continuation": "Ревизия уже собранного DND5: сначала agent-work/research/requirements/DND5-2014-v2-entries.json (24 строки), затем существующие legacy-матрицы/обзоры/передачи. Каждой строке дать disposition и предметное основание; оставить только прямые картографические операции, разделить L2/L3, отозвать лишние предложения. Исходные факты/immutable результаты и прежний блокер полного DMG2014 сохранить; одинаковый заблокированный поиск без нового access signal не повторять. Затем KNAVE2,CROWS(50/35без339страничногорескана),SD и другие уже разобранные игры. Новые главы PF2 пока не расширять."
+    "exact_continuation": "KNAVE2: найти уже сохранённые матрицы/обзоры/передачи в agent-work/market/rules и agent-work/research, перечитать текущие claims/свежиеSHA; проверить каждую существующую строку на product-scope-filter, сохранить причины keep_L1/defer_L2/integration_L3/out_of_scope/needs_owner_decision и исправленные рабочие обзоры/передачу. Не расширять главы и не повторять полный скан. Затем CROWS50/35без339страничногоперескана,SD,прочие разобранные игры. DND5 полный первичный источник остаётся отдельным блокером; одинаковые недоступные поиски без нового сигнала доступа не повторять.",
+    "DND5_completed": true,
+    "DND5_audit_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json"
   },
   "previous_checkpoint_before_PF2_scope_audit": {
     "status": "checkpoint_large_corpus_remaining",
@@ -2254,7 +2284,7 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-16T13:56:20.304Z",
+  "last_run_at": "2026-11-16T16:09:42.363Z",
   "last_bounded_completed_run": "2026-11-16-PF2-scope-audit-1794836736442",
   "scope_audit": {
     "status": "in_progress_across_games",
@@ -2268,15 +2298,32 @@
       "needs_owner_decision": 5,
       "integration_L3": 1
     },
-    "next_game": "DND5",
+    "next_game": "KNAVE2",
     "remaining_games": [
-      "DND5",
       "KNAVE2",
       "CROWS",
       "SD",
       "other_previously_analyzed"
     ],
-    "no_new_sources_until_retrospective": true
+    "no_new_sources_until_retrospective": true,
+    "completed_games": [
+      "PF2",
+      "DND5"
+    ],
+    "DND5_counts": {
+      "draft24": {
+        "keep_L1": 16,
+        "defer_L2": 7,
+        "out_of_scope": 1
+      },
+      "legacy51": {
+        "keep_L1": 16,
+        "defer_L2": 22,
+        "out_of_scope": 7,
+        "integration_L3": 6
+      }
+    },
+    "DND5_audit_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json"
   },
   "latest_PF2_scope_audit": {
     "status": "completed_bounded_scope_audit",
@@ -2299,5 +2346,80 @@
     "matrix_blob_sha": "a8df33d187c53dfde363e5cc78b40b2c92d37538",
     "fetch_file_empty_body_not_missing_file": true,
     "fallback": "For a large file whose fetch_file returns a SHA with empty content, fetch exact git/blobs/<sha> and compare/parse body; do not infer absence."
+  },
+  "previous_checkpoint_before_DND5_scope_audit": {
+    "status": "completed_bounded_PF2_scope_audit_remaining_games_pending",
+    "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+    "stage": "PF2_existing132_scope_audit_completed_DND5_next",
+    "last_successful_step": "Audit/result read back exactly; saved matrix verified through exact Git blob:132source rows preserved,29currentL1operations; working views/handoffs saved.",
+    "failed_operation": {
+      "tool": "functions.exec / JSON.parse",
+      "action": "Parse fetch_file content of saved PF2 matrix",
+      "safe_locator": "agent-work/research/requirements/PF2-Remaster-v2-entries.json"
+    },
+    "observed_error": "SyntaxError: Unexpected end of JSON input",
+    "stop_reason": "PF2 bounded scope-audit completion condition met; the recovered local readback error did not prevent completion. Remaining cross-game audit continues with DND5.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-entries.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-environment-entries.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-entries.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-review.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-content.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-difficulty.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-review.md",
+      "agent-work/research/README.md",
+      "agent-work/research/handoffs/2026-11-16-PF2-scope-audit-1794836736442-strategist.json",
+      "agent-work/research/handoffs/2026-11-16-PF2-GMC1-screen-1238-strategist.json",
+      "agent-work/research/handoffs/2026-11-16-PF2-source-completeness-033130-strategist.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-quality.json",
+      "agent-work/research/state.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/claims/2026-11-16-PF2-scope-audit-1794836736442.json",
+      "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json"
+    ],
+    "exact_continuation": "Ревизия уже собранного DND5: сначала agent-work/research/requirements/DND5-2014-v2-entries.json (24 строки), затем существующие legacy-матрицы/обзоры/передачи. Каждой строке дать disposition и предметное основание; оставить только прямые картографические операции, разделить L2/L3, отозвать лишние предложения. Исходные факты/immutable результаты и прежний блокер полного DMG2014 сохранить; одинаковый заблокированный поиск без нового access signal не повторять. Затем KNAVE2,CROWS(50/35без339страничногорескана),SD и другие уже разобранные игры. Новые главы PF2 пока не расширять.",
+    "needs_owner_action": false,
+    "owner_action": null,
+    "nonblocking_owner_decision_rows": [
+      "PF2-RM-073-L1-v2",
+      "PF2-RM-ST-003-v2",
+      "PF2-RM-ST-005-v2",
+      "PF2-RM-ST-006-v2",
+      "PF2-RM-ST-010-v2"
+    ],
+    "error_recovered": true,
+    "cause_note": "Local JSON.parse received empty content. Connector returned a blob SHA but an empty content string; reason for missing body is unknown. This is not evidence of failed write or GitHub unavailability.",
+    "recovery": "Read exact saved blob a8df33d187c53dfde363e5cc78b40b2c92d37538 through github.fetch git/blobs; body matches prepared matrix exactly,132rows/29currentL1.",
+    "saved_commit_sha": "cac8b574d3825f52b78cdc501178caaee1d15d96",
+    "immutable_result_ref": "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json"
+  },
+  "latest_DND5_scope_audit": {
+    "status": "existing_data_scope_audit_complete",
+    "audit_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
+    "counts": {
+      "draft24": {
+        "keep_L1": 16,
+        "defer_L2": 7,
+        "out_of_scope": 1
+      },
+      "legacy51": {
+        "keep_L1": 16,
+        "defer_L2": 22,
+        "out_of_scope": 7,
+        "integration_L3": 6
+      }
+    },
+    "source_complete": false,
+    "product_retested": false
   }
 }
