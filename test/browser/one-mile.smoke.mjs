@@ -16,6 +16,9 @@ const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.re
 // P02: explicit legal F2 ford variant of the same existing world, no geometry edit.
 fixture.map.crossings.find(c=>c.riverId===3).kind='ford';
 geometryFixture.map.crossings.find(c=>c.riverId===3).kind='ford';
+// P03: keep one declared F3 segment as a legal F5 presentation variant so
+// the real-map browser check covers the complete F1..F5 width scale.
+const f5Sector=fixture.map.rivers.flatMap(r=>r.sectors).find(s=>s.fullness===3);assert.ok(f5Sector);f5Sector.fullness=5;
 delete fixture.map.physicalGrid.selectedCell;delete fixture.map.physicalGrid.selectedWorldPoint;
 const oracle=fineEvidenceSamples(h);
 for(const road of fixture.map.roads)fixture.map.editorNames[`road:${road.id}`]={ru:`OM дорога ${road.id}`,en:`OM route ${road.id}`};
@@ -59,22 +62,28 @@ try{
  const baselinePage=await browser.newPage({viewport:{width:1500,height:1000}});await baselinePage.route(/mc\.yandex/,r=>r.abort());await baselinePage.goto('http://127.0.0.1:4196/');await baselinePage.locator('input[type=file]').setInputFiles({name:'same-fine.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
  await baselinePage.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready'&&!document.querySelector('.controls--transfer > button').disabled);
  const baselineProfiles=[];
- for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>document.fonts.ready);await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
- const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});
- // Chromium can vary edge antialiasing between the two running builds.
- // Keep this opt-in diagnostic sensitive to actual changed objects/colors.
- const raster=await page.evaluate(async([a,b])=>{
+ const compareRaster=async(before,after)=>page.evaluate(async([a,b])=>{
   const decode=async s=>{const bytes=Uint8Array.from(atob(s),c=>c.charCodeAt(0)),image=await createImageBitmap(new Blob([bytes],{type:'image/png'})),canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const c=canvas.getContext('2d');c.drawImage(image,0,0);return {width:image.width,height:image.height,data:c.getImageData(0,0,image.width,image.height).data};};
   const x=await decode(a),y=await decode(b);if(x.width!==y.width||x.height!==y.height)return {maxDelta:255,changedFraction:1};let maxDelta=0,changed=0;
   for(let i=0;i<x.data.length;i+=4){let diff=0;for(let j=0;j<4;j++)diff=Math.max(diff,Math.abs(x.data[i+j]-y.data[i+j]));maxDelta=Math.max(maxDelta,diff);if(diff)changed++;}
   return {maxDelta,changedFraction:changed/(x.width*x.height)};
  },[before.toString('base64'),after.toString('base64')]);
+ for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>document.fonts.ready);await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
+ const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});
+ // Chromium can vary edge antialiasing between the two running builds.
+ // Keep this opt-in diagnostic sensitive to actual changed objects/colors.
+ const raster=await compareRaster(before,after);
  assert.ok(raster.maxDelta<=3&&raster.changedFraction<=.001,'P04 native6 unchanged except bounded edge antialiasing '+width+' '+JSON.stringify(raster));baselineProfiles.push({width,pixelIdentical:before.equals(after),raster});}
- manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
+ const exportNativePng=async(p,name)=>{const menu=p.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const [download]=await Promise.all([p.waitForEvent('download'),p.getByRole('button',{name:'PNG',exact:true}).click()]);const bytes=await fs.readFile(await download.path());await fs.writeFile(new URL(name,out),bytes);return bytes;};
+ const beforePng=await exportNativePng(baselinePage,'native6-export-before.png'),afterPng=await exportNativePng(page,'native6-export-after.png'),pngRaster=await compareRaster(beforePng,afterPng);
+ assert.ok(pngRaster.maxDelta<=3&&pngRaster.changedFraction<=.001,'AC05 native6 exported PNG unchanged '+JSON.stringify(pngRaster));
+ manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles,png:{pixelIdentical:beforePng.equals(afterPng),raster:pngRaster}};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
  await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
- const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(riverPaint);assert.deepEqual(fineRiverPaint,sourceRiverPaint,'WR01 same river widths and geometry across6/1');
+ const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(nodes=>nodes.map(n=>({geometry:['x1','y1','x2','y2'].map(k=>n.getAttribute(k)),width:Number(n.getAttribute('stroke-width')),fullness:Number(n.getAttribute('data-river-fullness'))})));
  const fineHexWidth=await page.locator('[data-fine-key] polygon').first().evaluate(n=>Math.max(...[...n.points].map(p=>p.x))-Math.min(...[...n.points].map(p=>p.x)));assert.ok(Math.abs(sourceHexWidth/fineHexWidth-6)<1e-9);
- manifest.width_projection={sourceHexWidth,fineHexWidth,waterWidthPreserved:true,waterHexFractionRatio:sourceHexWidth/fineHexWidth,riverSegments:sourceRiverPaint.length};
+ assert.equal(fineRiverPaint.length,sourceRiverPaint.length);for(let i=0;i<fineRiverPaint.length;i++){assert.deepEqual(fineRiverPaint[i].geometry,sourceRiverPaint[i].slice(0,4),'WR01 centerline unchanged');const actual=fineRiverPaint[i].width/fineHexWidth,expected=fineRiverPaint[i].fullness/10;assert.ok(Math.abs(actual-expected)<1e-6,JSON.stringify({message:`F${fineRiverPaint[i].fullness} visible fraction`,actual,expected,width:fineRiverPaint[i].width,fineHexWidth,index:i}));}
+ assert.deepEqual([...new Set(fineRiverPaint.map(r=>r.fullness))].sort(),[1,2,3,4,5],'real map renders every legal fullness');
+ manifest.width_projection={sourceHexWidth,fineHexWidth,fractions:[.1,.2,.3,.4,.5],sourceSixUnchanged:true,riverSegments:sourceRiverPaint.length};
  assert.equal(await page.locator('polygon.hex[data-hex-key]').count(),0,'no source-six grid under the fine grid');
  const keys=await page.locator('[data-fine-key]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-key'))),occupied=new Set(keys);
  assert.ok(keys.length>100);const candidates=await page.locator('[data-fine-candidate]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-candidate')));assert.ok(candidates.length);
@@ -116,6 +125,11 @@ try{
  }
  manifest.cases.push({id:'UI-responsive-390-320-RU-EN',status:'pass'});
  await lang('en');await page.setViewportSize({width:1500,height:1000});await checkFineObjectsAndPng({page,step,snap,shot,button,manifest,out,oracle});await lang('ru');await page.setViewportSize({width:320,height:1000});
+ // F5 above is an isolated display witness added after the accepted fine-grid
+ // snapshot. Restore the fixture's original F3 before exercising generation;
+ // otherwise that deliberately stale variant is not a valid lifecycle input.
+ const lifecycleFixture=await snap(),restoredSector=lifecycleFixture.map.rivers.flatMap(r=>r.sectors).find(s=>s.id===f5Sector.id);assert.equal(restoredSector?.fullness,5);restoredSector.fullness=3;
+ await page.locator('input[type=file]').setInputFiles({name:'one-mile-lifecycle.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(lifecycleFixture))});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();manifest.width_projection.lifecycleSourceRestored=true;
  const beforeGen=await snap(),candidate=page.locator('[data-fine-candidate]').first(),target=await candidate.getAttribute('data-fine-candidate');await candidate.dblclick();await page.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready');const afterGen=await snap();
  if(afterGen.map.regions.length>beforeGen.map.regions.length){assert.equal(afterGen.map.regions.length,beforeGen.map.regions.length+1,'double click gives one ordinary Classic unit');assert.equal(`${afterGen.map.physicalGrid.selectedCell.q},${afterGen.map.physicalGrid.selectedCell.r}`,target);await button('Отменить').click();assert.deepEqual(await snap(),beforeGen,'one Undo restores the whole ordinary unit');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'accepted_and_undo_exact'});}
  else {assert.deepEqual(afterGen,beforeGen,'failed ordinary generation is atomic');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'bounded_refusal_no_success_claim'});}

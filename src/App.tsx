@@ -1,4 +1,4 @@
-import {finePoiLabel} from './oneMilePresentation';
+import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork,RefinedLakeWater} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
@@ -8354,19 +8354,21 @@ function renderRiverSegments(river: River, offsetX: number, offsetY: number, lak
   const hexWidth = getHexWidth(HEX_SIZE);
   const fullnessByEdge = getRiverSectorFullnessByEdge(river);
   const fallbackFullness = getRiverFallbackFullness(river);
-  const segments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; width: number }> = [];
+  const segments: Array<{ key: string; x1: number; y1: number; x2: number; y2: number; width: number; fullness: RiverFullness }> = [];
   for (let i = 1; i < river.vertexPath.length; i += 1) {
     const start = river.vertexPath[i - 1];
     const end = river.vertexPath[i];
     const segmentEdgeKey = edgeKey(start, end);
     if (isLakeEdge(segmentEdgeKey, lakeEdgeKeys)) continue;
+    const fullness=fullnessByEdge.get(segmentEdgeKey) ?? fallbackFullness;
     segments.push({
       key: `river-segment-${river.id}-${i}`,
       x1: start.x + offsetX,
       y1: start.y + offsetY,
       x2: end.x + offsetX,
       y2: end.y + offsetY,
-      width: getRiverWidth(hexWidth, fullnessByEdge.get(segmentEdgeKey) ?? fallbackFullness)
+      width: getRiverWidth(hexWidth, fullness),
+      fullness
     });
   }
   return segments;
@@ -14910,6 +14912,9 @@ export function App() {
   }, [renderBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const lakeGeometryCache = useRef(createLakeGeometryCache());
   const lakeShapes = useMemo(()=>renderBiomeColor||physicalGrid?.viewStep===1 ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[renderBiomeColor,physicalGrid?.viewStep,lakeCells,toponymSeed,riverSegments]);
+  const fineRiverSegments=useMemo(()=>riverSegments.map(segment=>({...segment,width:fineRiverStrokeWidth(segment.fullness)})),[riverSegments]);
+  const fineLakeGeometryCache=useRef(createLakeGeometryCache()),fineLakeActive=!!physicalGrid||!!geometryPreview;
+  const fineLakeShapes=useMemo(()=>fineLakeActive?buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,fineRiverSegments,fineLakeGeometryCache.current):[],[fineLakeActive,lakeCells,toponymSeed,fineRiverSegments]);
   const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
   const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
 
@@ -16371,13 +16376,13 @@ export function App() {
     const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
   const refinedSource=useMemo(()=>(physicalGrid?.geometryRefinement||geometryPreview)?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:(geometryPreview?.state??physicalGrid!).grid.origin}):null,[physicalGrid,geometryPreview,rivers,regions,crossings,riverFeatureOverrides]);
-  const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} widthByFullness={new Map(([1,2,3,4,5] as const).map(f=>[f,getRiverWidth(getHexWidth(28),f)]))} offset={riverOffset} mode={useBiomeColor?'color':useBiomeTiles?'tiles':'emoji'} rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
-  const fineWaterArtwork=(state:Detail1State)=><>{positionedHexes.hexes.filter(h=>h.kind==='sea').map(h=><polygon key={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill={GROUND_WATER_COLOR}/>)}{state.geometryRefinement?<RefinedLakeWater state={state} mode={useBiomeColor?'color':useBiomeTiles?'tiles':'emoji'} offset={riverOffset} shapes={lakeShapes} cells={lakeCells} seed={toponymSeed}/>:<LakeWater shapes={lakeShapes} cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments}/>}</>;
+  const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode={useBiomeColor?'color':useBiomeTiles?'tiles':'emoji'} rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
+  const fineWaterArtwork=(state:Detail1State)=><>{positionedHexes.hexes.filter(h=>h.kind==='sea').map(h=><polygon key={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill={GROUND_WATER_COLOR}/>)}{state.geometryRefinement?<RefinedLakeWater state={state} mode={useBiomeColor?'color':useBiomeTiles?'tiles':'emoji'} offset={riverOffset} shapes={fineLakeShapes} cells={lakeCells} seed={toponymSeed}/>:<LakeWater shapes={fineLakeShapes} cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={fineRiverSegments}/>}</>;
   const fineArtwork=useMemo(()=>physicalGrid?<OneMileArtwork state={physicalGrid} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
     visual={(id,cell)=>{const ground=id??fineLakeGround.get(hexKey(cell)),biome=(ground??FALLBACK_BIOME_ID) as BiomeId;return {color:ground?GROUND_COLORS[biome]:GROUND_WATER_COLOR,image:ground?(useBiomeTiles?getBiomeTileHref(biome):useBiomeColor?terrainAsset(biome,cell.q,cell.r,toponymSeed):undefined):undefined,emoji:ground&&!useBiomeColor&&!useBiomeTiles?BIOMES[biome]?.primaryEmoji:undefined};}}
     geography={refinedArtwork(physicalGrid)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments} water={fineWaterArtwork(physicalGrid)}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [physicalGrid,fineCells,fineLakeGround,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,useBiomeTiles,useBiomeColor,usePoiSvg,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,lakeShapes,lakeCells,positionedHexes,toponymSeed]);
+    [physicalGrid,fineCells,fineLakeGround,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,useBiomeTiles,useBiomeColor,usePoiSvg,language,roadSegments,riverSegments,fineRiverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,fineLakeShapes,lakeCells,positionedHexes,toponymSeed]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}

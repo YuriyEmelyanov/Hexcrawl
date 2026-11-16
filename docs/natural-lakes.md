@@ -4,6 +4,11 @@ Color mode uses seeded natural basin silhouettes, shallow-to-deep colours and in
 
 River, flow and rapids colours are #159DAC and #8BDBDD in all modes. Waterfalls use waterfall-color.svg with the same palette. Nearshore lake water matches the river; the interior reaches the constant #117F8C deep plateau. Shading is a visual depth approximation based on the combined lake and mouth silhouette.
 
+In the one-mile view, inlet/outlet mouth paint uses the one-mile display width
+for the segment fullness (10%..50% of a fine hex). The stored lake cells,
+accepted shoreline/islands, river centerline and source-six mouth width remain
+unchanged; refined rivers are clipped against the exact accepted lake contour.
+
 A bounded per-layer LRU cache retains up to 64 shorelines and 100,000 points, reusing translated shapes while updating river mouths independently. Existing sea, forest, land palette, terrain artwork and POI styling are preserved.
 
 Validation: Node.js 24 `npm run check` covers type checking, 154 regression tests and the production build. Geometry checks cover deterministic curves, connected basins, island holes, river mouths, caching and bounded spill. Additional seeded checks covered 200 single lakes and 90 chain/bend/island cases. Browser smoke checks hex-shaped lakes in Tiles/Emoji, natural contours in Color, stable contours after switching modes, retained water colours, suppressed lake-cell tile images, PNG export, import/save, rotation, islands and deep single-cell water. Release browser results are recorded in CI.

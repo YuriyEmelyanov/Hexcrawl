@@ -118,7 +118,9 @@ test('destructive support loss requires consent and leaves an exact undo snapsho
 });
 
 // P01–03: distinct rendering contracts absent from existing geometry/edit cases.
-import {finePoiLabel, fineRoadPresentation, fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
+import {FINE_HEX_WIDTH, finePoiLabel, fineRefinedRoadPresentation, fineRoadPresentation, fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
+import {prepareRefinementWater} from '../src/geometryRefinementWater.ts';
+const displayWater=(paths,scale=1)=>{const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/scale]))});assert.equal(water.status,'prepared');return water;};
 test('fine POI label retains localized type and explicit name without fallback duplication',()=>{
  assert.equal(finePoiLabel('Городок','Айхенхайм'),'Городок Айхенхайм');
  assert.equal(finePoiLabel('Town','Eichenheim'),'Town Eichenheim');
@@ -126,17 +128,19 @@ test('fine POI label retains localized type and explicit name without fallback d
  assert.equal(finePoiLabel('Town','Town Hall'),'Town Town Hall','never strip words from authored names');
 });
 const road={key:'d',roadId:1,segmentKey:'s',x1:0,y1:0,x2:10,y2:0,kind:'road'};
-const river={key:'river-segment-2-1',x1:5,y1:-5,x2:5,y2:5,width:6};
+const river={key:'river-segment-2-1',x1:5,y1:-5,x2:5,y2:5,width:99,fullness:3};
 const cross=kind=>({key:'c',roadId:1,roadSegmentKey:'s',riverId:2,x:5,y:0,kind});
 test('fine crossing paint distinguishes bridge, translucent ford and a real ferry road gap',()=>{
  const inputs=JSON.stringify({road,river});
- const hex6=Math.sqrt(3)*28,hex1=hex6/6;for(let F=1;F<=5;F++){const source=hex6*(.04+F*.035),visible=fineRiverStrokeWidth(source);assert.equal(visible,source);assert.ok(Math.abs(visible/hex1/(source/hex6)-6)<1e-12);}
+ for(let F=1;F<=5;F++)assert.ok(Math.abs(fineRiverStrokeWidth(F)/FINE_HEX_WIDTH-F/10)<1e-12);
+ for(const invalid of [0,6,1.5,NaN,Infinity])assert.equal(fineRiverStrokeWidth(invalid),0);
  const bridge=fineRoadPresentation(road,[cross('bridge')],[river]);assert.equal(bridge.rails.length,2);assert.equal(bridge.pieces.length,1);
  const ford=fineRoadPresentation(road,[cross('ford')],[river]);assert.equal(ford.pieces.filter(p=>p.opacity===.42).length,1);
  const ferry=fineRoadPresentation(road,[cross('ferry')],[river]);assert.equal(ferry.rails.length,0);assert.equal(ferry.pieces.length,2);
- assert.equal(ferry.pieces[0].x2,2,'visible width6 ends at bank2');assert.equal(ferry.pieces[1].x1,8,'visible width6 starts at bank8');
- const wet=ford.pieces.find(p=>p.opacity===.42);assert.equal(wet.x1,2);assert.equal(wet.x2,8);
- for(const rail of bridge.rails){const [a,b]=rail.points.split(' ').map(p=>p.split(',').map(Number));assert.ok(a[0]<2&&b[0]>8,'rails span visible banks');}
+ const half=fineRiverStrokeWidth(river.fullness)/2;
+ assert.ok(Math.abs(ferry.pieces[0].x2-(5-half))<1e-12);assert.ok(Math.abs(ferry.pieces[1].x1-(5+half))<1e-12);
+ const wet=ford.pieces.find(p=>p.opacity===.42);assert.ok(Math.abs(wet.x1-(5-half))<1e-12);assert.ok(Math.abs(wet.x2-(5+half))<1e-12);
+ for(const rail of bridge.rails){const [a,b]=rail.points.split(' ').map(p=>p.split(',').map(Number));assert.ok(a[0]<5-half&&b[0]>5+half,'rails span visible banks');}
  assert.equal(JSON.stringify({road,river}),inputs,'input geometry stays unchanged');
 });
 test('fine crossing splits all ordered unique crossings and clamps endpoint or degenerate input',()=>{
@@ -146,5 +150,47 @@ test('fine crossing splits all ordered unique crossings and clamps endpoint or d
  for(const p of plan.pieces)assert.ok(p.x1>=0&&p.x2<=10&&p.x1<p.x2);
  assert.deepEqual(plan,fineRoadPresentation(road,[a,b],rivers));
  assert.deepEqual(fineRoadPresentation({...road,x2:0},[a],rivers).pieces,[]);
- const edge=fineRoadPresentation(road,[{...a,x:0}],[{...river,x1:0,x2:0}]);assert.equal(edge.pieces.length,1);assert.equal(edge.pieces[0].x1,3);assert.equal(edge.pieces[0].x2,10);assert.ok(edge.pieces.every(p=>Number.isFinite(p.x1)&&p.x1>=0));
+ const edge=fineRoadPresentation(road,[{...a,x:0}],[{...river,x1:0,x2:0}]);assert.equal(edge.pieces.length,1);assert.ok(Math.abs(edge.pieces[0].x1-fineRiverStrokeWidth(river.fullness)/2)<1e-12);assert.equal(edge.pieces[0].x2,10);assert.ok(edge.pieces.every(p=>Number.isFinite(p.x1)&&p.x1>=0));
+});
+test('refined crossing paint follows display width without moving accepted paths or POI masks',()=>{
+ const refined={roadId:1,sourceRoadSegmentKey:'s',kind:'road',points:[{x:0,y:0},{x:10,y:0}],paint:[{from:{x:0,y:0},to:{x:1,y:0},poiMaskIds:['poi']},{from:{x:1,y:0},to:{x:10,y:0},poiMaskIds:[]}]};
+ const crossing={key:'r',roadId:1,roadSegmentKey:'s',riverId:2,kind:'ferry',fullness:5,roadDistance:5,roadTangent:{x:1,y:0},riverTangents:[{x:0,y:1}]};
+ const water=displayWater([{riverId:2,sourceEdgeKey:'r',fullness:5,points:[{x:5,y:-5},{x:5,y:5}]}]);
+ const before=JSON.stringify({refined,crossing}),plan=fineRefinedRoadPresentation(refined,[crossing],1,water),half=fineRiverStrokeWidth(5)/2;
+ assert.equal(plan.rails.length,0);assert.equal(plan.pieces[0].from.x,1);assert.equal(plan.pieces[0].startDistance,1);assert.ok(Math.abs(plan.pieces[0].to.x-(5-half))<1e-12);assert.ok(Math.abs(plan.pieces.at(-1).from.x-(5+half))<1e-12);assert.ok(Math.abs(plan.pieces.at(-1).startDistance-(5+half))<1e-12);assert.equal(plan.pieces.at(-1).to.x,10);
+ const ford=fineRefinedRoadPresentation(refined,[{...crossing,kind:'ford'}],1,water);assert.ok(ford.pieces.some(p=>p.opacity===.42));
+ const bridge=fineRefinedRoadPresentation(refined,[{...crossing,kind:'bridge'}],1,water);assert.equal(bridge.rails.length,2);assert.ok(bridge.pieces.every(p=>p.opacity===1));
+ assert.equal(JSON.stringify({refined,crossing}),before);
+});
+// R05/REV-01: the old width/sin calculation removes the entire road even
+// where a finite river ends or a bent road has already left the water.
+test('finite visible water preserves dry approaches at shallow and endpoint crossings',()=>{
+ for(const x of [5,.1,9.9]){
+  const shortRiver={key:'river-segment-2-short',x1:x-.2,y1:-.002,x2:x+.2,y2:.002,width:99,fullness:1};
+  const c={...cross('ferry'),x};
+  const plan=fineRoadPresentation(road,[c],[shortRiver]);
+  const radius=fineRiverStrokeWidth(1)/2;
+  assert.ok(plan.pieces.length>0,'finite near-parallel river cannot erase dry road');
+  for(const p of plan.pieces)assert.ok(Number.isFinite(p.x1)&&p.x1>=0&&p.x2<=10);
+  if(x===5){assert.equal(plan.pieces.length,2);assert.ok(plan.pieces[0].x2>4);assert.ok(plan.pieces[1].x1<6);}
+  assert.ok(plan.pieces.reduce((sum,p)=>sum+p.x2-p.x1,0)>8-radius);
+ }
+ const shortRiver=x=>({key:`river-segment-2-${x}`,x1:x-.2,y1:-.002,x2:x+.2,y2:.002,width:99,fullness:1});
+ const multiple=fineRoadPresentation(road,[{...cross('ferry'),key:'a',x:4.8},{...cross('ferry'),key:'b',x:5.2}],[shortRiver(4.8),shortRiver(5.2)]);
+ assert.equal(multiple.pieces.length,2);assert.ok(multiple.pieces[0].x2>4&&multiple.pieces[1].x1<6);
+ const refined={roadId:1,sourceRoadSegmentKey:'s',kind:'road',points:[{x:0,y:3},{x:4.8,y:0},{x:5.2,y:0},{x:10,y:3}],paint:[{from:{x:0,y:3},to:{x:4.8,y:0},poiMaskIds:[]},{from:{x:4.8,y:0},to:{x:5.2,y:0},poiMaskIds:[]},{from:{x:5.2,y:0},to:{x:10,y:3},poiMaskIds:[]}]};
+ const first=Math.hypot(4.8,3),c={key:'r',roadId:1,roadSegmentKey:'s',riverId:2,kind:'ferry',fullness:5,roadDistance:first+.2,roadTangent:{x:1,y:0},riverTangents:[{x:1,y:.01}]};
+ const water=displayWater([{riverId:2,sourceEdgeKey:'r',fullness:5,points:[{x:0,y:-.05},{x:10,y:.05}]}]);
+ const before=JSON.stringify({refined,c,water}),plan=fineRefinedRoadPresentation(refined,[c],1,water);
+ assert.ok(plan.pieces.length>=2);assert.deepEqual(plan.pieces[0].from,refined.points[0]);assert.deepEqual(plan.pieces.at(-1).to,refined.points.at(-1));
+ for(const p of plan.pieces)for(const q of [p.from,p.to])assert.ok(q.y>=0&&q.x>=0&&q.x<=10);
+ assert.equal(JSON.stringify({refined,c,water}),before,'presentation does not mutate accepted geometry');
+ for(const positions of [[1],[.1],[1.9],[.8,1.2]]){
+  const points=[{x:0,y:0},{x:2,y:0}],r={roadId:1,sourceRoadSegmentKey:'s',kind:'road',points,paint:[{from:points[0],to:points[1],poiMaskIds:[]}]};
+  const crossings=positions.map((x,i)=>({...c,key:`short-${i}`,fullness:1,roadDistance:x}));
+  const water=displayWater(positions.map((x,i)=>({riverId:2,sourceEdgeKey:`short-${i}`,fullness:1,points:[{x:x-.02,y:-.0002},{x:x+.02,y:.0002}]})));
+  const view=fineRefinedRoadPresentation(r,crossings,1,water);
+  assert.ok(view.pieces.length>0,'short refined road retains dry approach at near-end or close crossings');
+  assert.ok(view.pieces.reduce((n,p)=>n+Math.hypot(p.to.x-p.from.x,p.to.y-p.from.y),0)>.5);
+ }
 });

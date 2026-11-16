@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildNaturalLakes,inLakeCell} from '../src/rendering/lakeGeometry.ts';
+import {fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
 const radius=28,cell=(q,r,lakeId=1)=>({q,r,lakeId,x:Math.sqrt(3)*radius*(q+r/2),y:radius*1.5*r});
 const dirs=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
 test('lake contours are stable after reload and input reordering; unrelated lakes cannot change them',()=>{
@@ -24,10 +25,14 @@ test('multi-cell lake shares one contour; island remains a separate hole; identi
 });
 test('river inlet and outlet anchors both receive a connected mouth, regardless of direction',()=>{
  const c=cell(0,0),a={x:radius*Math.cos(-Math.PI/6),y:-radius/2},outside={x:a.x+20,y:a.y-15};
- const seg={key:'river-1',x1:outside.x,y1:outside.y,x2:a.x,y2:a.y,width:4};
- const forward=buildNaturalLakes([c],radius,1,[seg])[0];
- const backward=buildNaturalLakes([c],radius,1,[{...seg,x1:a.x,y1:a.y,x2:outside.x,y2:outside.y}])[0];
- assert.equal(forward.mouths.length,1);assert.deepEqual(forward.mouths,backward.mouths);assert.deepEqual(forward.mouths[0].anchor,a);
+ for(let fullness=1;fullness<=5;fullness++){
+  const width=fineRiverStrokeWidth(fullness),seg={key:`river-${fullness}`,x1:outside.x,y1:outside.y,x2:a.x,y2:a.y,width};
+  const forward=buildNaturalLakes([c],radius,1,[seg])[0];
+  const backward=buildNaturalLakes([c],radius,1,[{...seg,x1:a.x,y1:a.y,x2:outside.x,y2:outside.y}])[0];
+  assert.equal(forward.mouths.length,1);assert.deepEqual(forward.mouths,backward.mouths);assert.deepEqual(forward.mouths[0].anchor,a);
+  const [x,y]=forward.mouths[0].path.match(/^M([\d.-]+) ([\d.-]+)/).slice(1).map(Number);
+  assert.ok(Math.abs(Math.hypot(x-a.x,y-a.y)-width*.55)<.002,`F${fullness} mouth begins at the same visible bank`);
+ }
 });
 
 test('bounded per-layer cache reuses unchanged lakes, including map-origin translations, and invalidates changed data',async()=>{
