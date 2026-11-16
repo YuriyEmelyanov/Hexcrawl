@@ -1,0 +1,78 @@
+{
+  "task_id": "HX-BL-059",
+  "stage_id": "RIVER-EDGES",
+  "round_id": "001",
+  "draft_spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-D1.md",
+  "draft_spec_version": "D1",
+  "trigger": "Whole draft ready after owner pause of biomes",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-decision-2026-11-13-ONE-MILE1-GEO-D01-edge-detours.json",
+    "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+    "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md"
+  ],
+  "questions": [
+    {
+      "question_id": "RE-Q01",
+      "topic": "Первоначальное применение к существующим картам",
+      "requirement_refs": [
+        "R07",
+        "R08",
+        "R09",
+        "R10",
+        "AC05",
+        "AC06"
+      ],
+      "decision": "Автоматическое одномильное представление либо отдельное явное уточнение сохранённой геометрии.",
+      "why_material": "Прежний GEO2-v2 прямо запрещает auto-run при смене масштаба/импорте; D1 предлагает противоположное. Новое требование об рёбрах не определяет само первоначальный переход и запись геометрии. Это различимое поведение, не выбор внутреннего формата.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Автоматически при переходе в1милю",
+          "effect": "Обычные и импортированные карты сразу показывают согласованные реки по рёбрам; связанные незакреплённые объекты в fine-виде адаптируются вместе. Source6 не переписывается только от просмотра; нет лишнего клика/Undo-записи от масштаба.",
+          "limits": "Потребуется спецификация устойчивого fine-представления и save/load. При невозможной/locked привязке данные остаются без изменений и показывается понятная причина, без принудительного сдвига. Автоматически это не разрешает потерю authored данных или изменение6mile."
+        },
+        {
+          "id": "B",
+          "label": "Через «Уточнить геометрию»",
+          "effect": "Старые карты сохраняют нынешний вид до отдельного Apply. Уточнение с руслами и зависимостями принимается одной отменяемой операцией по существующему GEO2-порядку.",
+          "limits": "Простое переключение в1mile не гарантирует рёбра на старых картах; это явное ограничение нового требования, которое должен принять владелец."
+        }
+      ],
+      "recommendation": "A",
+      "recommendation_reason": "Соответствует ожидаемому результату «на1мильной карте реки по рёбрам» без обязательного дополнительного действия.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "interpretation": null,
+      "dependent_questions": "Если выбран иной ответ, затрагивающий source6 или принудительный перенос закреплённого, требуется дополнительный раунд. Рекомендация не ответ."
+    }
+  ],
+  "presented_in_chat_at": "2026-11-16T19:03:49.967Z",
+  "presented_in_chat_ref": null,
+  "presentation_note": "Complete options included in this run final response in existing task chat; provider message ID unavailable.",
+  "owner_answers": [],
+  "interpretation": null,
+  "open_question_ids": [
+    "RE-Q01"
+  ],
+  "new_question_ids": [
+    "RE-Q01"
+  ],
+  "status": "awaiting_owner_answers",
+  "next_role": "business-analyst",
+  "next_step": "Independent bounded RE-D1-F01 wording correction and conditional operation matrix; no final readiness before owner RE-Q01 answer and interviewer closure.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-16T19:01:20.954Z",
+      "is_enabled": true
+    },
+    "end": {
+      "checked_at": "2026-11-16T19:03:49.967Z",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "recovery_performed": false,
+    "schedule_changed": false,
+    "errors": []
+  }
+}
