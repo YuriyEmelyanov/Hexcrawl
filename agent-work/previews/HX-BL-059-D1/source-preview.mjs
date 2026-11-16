@@ -1,0 +1,15 @@
+import fs from 'node:fs';
+import {createGenerationHarness} from '/workspace/scratch/9fae03e12224/repo/test/helpers/generation-harness.mjs';
+import {projectOneMile} from '/workspace/scratch/9fae03e12224/repo/src/oneMile.ts';
+import {normalizeRefinementRiverSource} from '/workspace/scratch/9fae03e12224/repo/src/geometryRefinementSource.ts';
+import {prepareRefinementRivers} from '/workspace/scratch/9fae03e12224/repo/src/geometryRefinementRivers.ts';
+import {refinementWorldPoint} from '/workspace/scratch/9fae03e12224/repo/src/geometryRefinementGrid.ts';
+const h=createGenerationHarness(42);h.render();h.guardRandom();h.setWindow({alert:()=>{},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
+await h.render().handleImportJson({target:{files:[{text:fs.readFileSync('/workspace/scratch/9fae03e12224/repo/test/fixtures/classic-six-regions-seed42.json','utf8')}],value:'map'}});
+const map=h.render().captureDocument().map,origin={x:0,y:0};
+const cells=projectOneMile(h.geometry.oneMileSources(map));
+const source=normalizeRefinementRiverSource({rivers:map.rivers,marks:h.geometry.regionMarkKeys(map),origin});
+if(source.status!=='prepared')throw Error(JSON.stringify(source));
+const result=prepareRefinementRivers({seed:42,origin,cells:cells.map(c=>c.cell),segments:source.segments});
+fs.writeFileSync('/workspace/scratch/d52e08d1d9db/hx059-data.json',JSON.stringify({source,result,cells},null,2));
+console.log(JSON.stringify({sourceSegments:source.segments.length,cells:cells.length,status:result.status,code:result.code,paths:result.paths?.length}));
