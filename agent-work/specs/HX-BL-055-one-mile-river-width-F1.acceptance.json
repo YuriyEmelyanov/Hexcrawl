@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-055",
+  "spec_version": "F1",
+  "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
+  "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "interview_ref": "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/decisions.json",
+  "owner_answers_ref": "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/owner-answers-2026-11-16-01.json",
+  "ready_for_development": true,
+  "release_authorized": false,
+  "scope": {
+    "mode": "one_mile_display_only",
+    "width_percent_by_fullness": {
+      "1": 10,
+      "2": 20,
+      "3": 30,
+      "4": 40,
+      "5": 50
+    },
+    "six_mile_unchanged": true,
+    "relocate_objects": false,
+    "recompute_geometry_plan": false,
+    "migrate_documents": false,
+    "new_controls": false
+  },
+  "acceptance": [
+    {
+      "id": "AC01",
+      "requirements": [
+        "R01",
+        "R02"
+      ],
+      "result": "F1–F5 render10/20/30/40/50% across-flats W1 in ordinary/refined/mixed, all styles, preview and accepted view.",
+      "evidence": [
+        "analytic world/SVG measurement",
+        "actual pixel render exact SHA"
+      ]
+    },
+    {
+      "id": "AC02",
+      "requirements": [
+        "R04"
+      ],
+      "result": "River enters/exits existing lake with finite-width continuous join; through-lake/island/oblique cases have no dry gap, old-width mouth or land connector.",
+      "evidence": [
+        "actual map screenshots",
+        "PNG",
+        "geometry measurements"
+      ]
+    },
+    {
+      "id": "AC03",
+      "requirements": [
+        "R05",
+        "R06"
+      ],
+      "result": "bridge/ford/ferry match the displayed water while all source paths, crossing coordinates, POI coordinates and semantic links remain unchanged.",
+      "evidence": [
+        "original seed42 bridges",
+        "declared legal deterministic ford/ferry variants",
+        "serialized before/after diff"
+      ]
+    },
+    {
+      "id": "AC04",
+      "requirements": [
+        "R03",
+        "R08"
+      ],
+      "result": "Supported old/current documents display new1mile width without mutations; JSON roundtrip and live edit UndoRedo preserve data/RNG.",
+      "evidence": [
+        "document structural diff",
+        "roundtrip",
+        "separate live history scenario"
+      ]
+    },
+    {
+      "id": "AC05",
+      "requirements": [
+        "R07"
+      ],
+      "result": "Six-mile map and PNG remain unchanged on identical camera/style/pixelratio.",
+      "evidence": [
+        "deterministic image or DOM geometry comparison"
+      ]
+    },
+    {
+      "id": "AC06",
+      "requirements": [
+        "R02",
+        "R08"
+      ],
+      "result": "Map matches PNG on desktop/390/320, RU/EN, tiles/emoji/color, zoom/rotation, preview/cancel/busy and no-river state.",
+      "evidence": [
+        "browser CI manifest and artifacts"
+      ]
+    },
+    {
+      "id": "AC07",
+      "requirements": [
+        "package"
+      ],
+      "result": "Independent exact-SHA acceptance and score_assessment1.2 saved; actual before/after shown; publication separately authorized.",
+      "evidence": [
+        "review result",
+        "score assessment",
+        "owner-facing evidence links"
+      ]
+    }
+  ],
+  "fixtures": {
+    "primary": "test/fixtures/classic-six-regions-seed42.json",
+    "primary_facts": {
+      "regions": 6,
+      "source_hexes": 52,
+      "rivers": 4,
+      "roads": 5,
+      "crossings": 2,
+      "fullnesses": [
+        1,
+        2,
+        3
+      ],
+      "lake_ids": [
+        1,
+        2
+      ],
+      "crossing_kinds": [
+        "bridge"
+      ]
+    },
+    "declared_variants_required": {
+      "fullnesses": [
+        4,
+        5
+      ],
+      "crossing_kinds": [
+        "ford",
+        "ferry"
+      ],
+      "rule": "Record exact legal data changes; never attribute them to original fixture."
+    }
+  },
+  "data_invariants": [
+    "river/lake/road/POI IDs",
+    "fullness/direction/topology",
+    "centerlines and accepted GeometryPlan",
+    "crossing kind/location",
+    "lake cells and shore data",
+    "names/notes/RNG/source fingerprints"
+  ],
+  "test_policy": {
+    "reuse_first": [
+      "test/oneMile.test.mjs",
+      "test/lakeGeometry.test.mjs",
+      "test/geometryRefinementWater.test.mjs",
+      "test/geometryRefinementRoads.test.mjs",
+      "test/browser/one-mile.smoke.mjs",
+      "test/browser/geometry-refinement-evidence.mjs"
+    ],
+    "full_suite_after_connected_package": true,
+    "browser_environment": "existing working CI; identical socketEPERM retry is not evidence"
+  },
+  "score_model": "1.2",
+  "score_criteria": [
+    {
+      "criterion_id": "S01-C02",
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unverified"
+      },
+      "expected": {
+        "grade": null,
+        "points": null,
+        "delta": null,
+        "status": "unknown_until_review"
+      }
+    },
+    {
+      "criterion_id": "S01-C04",
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unverified"
+      },
+      "expected": {
+        "grade": null,
+        "points": null,
+        "delta": null,
+        "status": "unknown_until_review"
+      }
+    },
+    {
+      "criterion_id": "S04-C03",
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unverified"
+      },
+      "expected": {
+        "grade": null,
+        "points": null,
+        "delta": null,
+        "status": "unknown_until_review"
+      }
+    },
+    {
+      "criterion_id": "S04-C04",
+      "before": {
+        "grade": null,
+        "points": null,
+        "status": "unverified"
+      },
+      "expected": {
+        "grade": null,
+        "points": null,
+        "delta": null,
+        "status": "unknown_until_review"
+      }
+    }
+  ],
+  "forecast": {
+    "completed_runs": 5,
+    "remaining_runs": {
+      "min": 4,
+      "max": 7
+    },
+    "total_runs": {
+      "min": 9,
+      "max": 12
+    },
+    "remaining_active_hours": {
+      "min": 3,
+      "max": 5
+    },
+    "remaining_calendar_hours_excluding_owner_wait": {
+      "min": 8,
+      "max": 14
+    },
+    "confidence": "medium",
+    "history_reset": false,
+    "next_visible_result": "Actual same-map before/after on exact implementation SHA with lake, bridge, JSON/live history and PNG."
+  }
+}
