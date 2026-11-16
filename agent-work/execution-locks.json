@@ -1,26 +1,8 @@
 {
   "schema_version": 1,
-  "revision": 84,
-  "state": "owned",
-  "owners": [
-    {
-      "task_id": "HX-RSR-001",
-      "role": "researcher",
-      "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
-      "claim_ref": "agent-work/claims/2026-11-16-PF2-scope-audit-1794836736442.json",
-      "branch": "agent-operations",
-      "base_sha": "c8eb6a7ebfcab6c56e2e197a9eaf8c4cdea605f0",
-      "started_at": "2026-11-16T13:45:36.442Z",
-      "baseline_sha": "c8eb6a7ebfcab6c56e2e197a9eaf8c4cdea605f0",
-      "first_stage": "Audit existing PF2 scope, last22 then full132; no new source expansion",
-      "acquired_at": "2026-11-16T13:45:36.442Z",
-      "heartbeat_at": "2026-11-16T13:45:36.442Z",
-      "generation": 84,
-      "programmer_slot": false,
-      "status": "active",
-      "scope": "Research PF2 scope audit, working docs/handoffs/state/README/latest research only"
-    }
-  ],
+  "revision": 85,
+  "state": "idle",
+  "owners": [],
   "history": [
     {
       "task_id": "HX-RSR-001",
@@ -793,6 +775,40 @@
       "result_commit": "5ca67aa1d0803f70caa657e74689d2b22a3b15c3",
       "released_at": "2026-11-16T13:11:47.275Z",
       "no_writing_processes_running": true
+    },
+    {
+      "task_id": "HX-RSR-001",
+      "role": "researcher",
+      "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+      "claim_ref": "agent-work/claims/2026-11-16-PF2-scope-audit-1794836736442.json",
+      "branch": "agent-operations",
+      "base_sha": "c8eb6a7ebfcab6c56e2e197a9eaf8c4cdea605f0",
+      "started_at": "2026-11-16T13:45:36.442Z",
+      "baseline_sha": "c8eb6a7ebfcab6c56e2e197a9eaf8c4cdea605f0",
+      "first_stage": "Audit existing PF2 scope, last22 then full132; no new source expansion",
+      "acquired_at": "2026-11-16T13:45:36.442Z",
+      "heartbeat_at": "2026-11-16T13:45:36.442Z",
+      "generation": 84,
+      "programmer_slot": false,
+      "status": "completed_bounded_scope_audit_released",
+      "scope": "Research PF2 scope audit, working docs/handoffs/state/README/latest research only",
+      "result_ref": "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json",
+      "result_commit": "cac8b574d3825f52b78cdc501178caaee1d15d96",
+      "released_at": "2026-11-16T13:58:45.381Z",
+      "no_writing_processes_running": true,
+      "diagnostics": {
+        "stage": "saved_matrix_readback",
+        "failed_operation": {
+          "tool": "functions.exec / JSON.parse",
+          "action": "Parse fetch_file content of saved PF2 matrix",
+          "safe_locator": "agent-work/research/requirements/PF2-Remaster-v2-entries.json"
+        },
+        "observed_error": "SyntaxError: Unexpected end of JSON input",
+        "cause_status": "confirmed",
+        "cause_note": "Local JSON.parse received empty content. Connector returned a blob SHA but an empty content string; reason for missing body is unknown. This is not evidence of failed write or GitHub unavailability.",
+        "recovery": "Read exact saved blob a8df33d187c53dfde363e5cc78b40b2c92d37538 through github.fetch git/blobs; body matches prepared matrix exactly,132rows/29currentL1.",
+        "error_recovered": true
+      }
     }
   ],
   "decision_ref": "agent-work/decisions/owner-decision-2026-11-15-single-executor.json",

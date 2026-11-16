@@ -12,17 +12,23 @@
   "heartbeat_at": "2026-11-16T13:45:36.442Z",
   "generation": 84,
   "programmer_slot": false,
-  "status": "completed_bounded_result",
+  "status": "completed_bounded_scope_audit_released",
   "scope": "Research PF2 scope audit, working docs/handoffs/state/README/latest research only",
   "result_ref": "agent-work/research/runs/2026-11-16-PF2-scope-audit-1794836736442.json",
-  "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
-  "finished_at": "2026-11-16T13:56:20.304Z",
-  "scope_counts": {
-    "keep_L1": 29,
-    "out_of_scope": 75,
-    "defer_L2": 22,
-    "needs_owner_decision": 5,
-    "integration_L3": 1
-  },
-  "no_writing_processes_running": true
+  "result_commit": "cac8b574d3825f52b78cdc501178caaee1d15d96",
+  "released_at": "2026-11-16T13:58:45.381Z",
+  "no_writing_processes_running": true,
+  "diagnostics": {
+    "stage": "saved_matrix_readback",
+    "failed_operation": {
+      "tool": "functions.exec / JSON.parse",
+      "action": "Parse fetch_file content of saved PF2 matrix",
+      "safe_locator": "agent-work/research/requirements/PF2-Remaster-v2-entries.json"
+    },
+    "observed_error": "SyntaxError: Unexpected end of JSON input",
+    "cause_status": "confirmed",
+    "cause_note": "Local JSON.parse received empty content. Connector returned a blob SHA but an empty content string; reason for missing body is unknown. This is not evidence of failed write or GitHub unavailability.",
+    "recovery": "Read exact saved blob a8df33d187c53dfde363e5cc78b40b2c92d37538 through github.fetch git/blobs; body matches prepared matrix exactly,132rows/29currentL1.",
+    "error_recovered": true
+  }
 }
