@@ -1,0 +1,77 @@
+{
+  "run_id": "2026-11-16-PF2-source-completeness-033130",
+  "status": "research_handoff_not_product_queue",
+  "role": "researcher_to_strategist",
+  "task_id": "HX-RSR-PF2-STANDARD-V2-ALIGNMENT",
+  "source_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-coverage.json",
+  "analysis_ref": "agent-work/research/requirements/PF2-Remaster-v2-entries.json",
+  "owner_overview_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-review.md",
+  "findings": [
+    {
+      "id": "PF2-ST-F01",
+      "finding": "Settlement level is an economic/NPC guideline, not map area. Typical walls for population>1000 remain advice with exceptions.",
+      "consequence": "Do not derive physical POI footprint from level or force walls at threshold. Distinguish city sketch from regional POI and place profile.",
+      "source_refs": [
+        "https://2e.aonprd.com/Rules.aspx?ID=2975",
+        "https://2e.aonprd.com/Rules.aspx?ID=3010"
+      ]
+    },
+    {
+      "id": "PF2-ST-F02",
+      "finding": "Market default common item limit follows level, but category-specific City of Artisans +4 and Otari town4 consumables10 are explicit exceptions.",
+      "consequence": "A universal place-profile operation must preserve scope and override conditions; a generic hard level cap loses rules. No rating/score change justified.",
+      "source_refs": [
+        "https://2e.aonprd.com/Rules.aspx?ID=3003",
+        "https://2e.aonprd.com/Rules.aspx?ID=3011",
+        "https://2e.aonprd.com/Rules.aspx?ID=3013"
+      ]
+    },
+    {
+      "id": "PF2-ST-F03",
+      "finding": "008 contains advance terrain-keyed encounter-list preparation distinct from L3 selection/resolution.029 includes all seven non-guaranteed terrain/resource/secret examples.",
+      "consequence": "Added an L1 preparation candidate using existing content roll-table component; canonical008-L3 not silently rewritten. Expanded029 source parameters and seven acceptance examples.",
+      "source_refs": [
+        "https://2e.aonprd.com/Rules.aspx?ID=3107",
+        "https://2e.aonprd.com/Rules.aspx?ID=3115"
+      ]
+    },
+    {
+      "id": "PF2-ST-F04",
+      "finding": "Exact current-main rename helper passes5 focused cases; statically inspected POI/notes/save model does not prove a complete settlement profile.",
+      "consequence": "Only general name component partial in two new rows;29 other new rows unverified. No absent/full claim from word-search or note storage.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json"
+    }
+  ],
+  "known_architecture": {
+    "sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "components": [
+      "POI naming",
+      "text GM notes at existing hex",
+      "geometry/routes"
+    ],
+    "not_proven": [
+      "typed settlement profile",
+      "nested settlement-map operations",
+      "game effects execution"
+    ]
+  },
+  "reuse_policy": "Use common place/landmark/site-link/route/faction components where semantics match. PF2 numbers and exceptions remain profiles. Candidate mappings have null binding_ref, pending registration; analysis is not another registry.",
+  "recommendation": "Finish source completeness and actual operation verification before selecting development. Evaluate manual place notes versus reusable typed place profile; detailed settlement editor would be separate scope and must not be inferred as approved.",
+  "open_product_choices": [
+    "Which fields need typed/general functionality versus sufficient existing manual description?",
+    "Is city sketch part of an approved map scope or separate optional capability?",
+    "L3 effect execution/integration only after higher-layer priorities and exact exchange definition."
+  ],
+  "queue_boundary": {
+    "current_tasks_preserved": [
+      "HX-BL-021",
+      "HX-BL-055"
+    ],
+    "new_backlog_items": 0,
+    "old_items_restored": 0,
+    "status_transitions": 0,
+    "implementation_started": false
+  },
+  "needs_owner_action": false,
+  "next_research_step": "Continue SAME PF2 alignment. Reuse combined94 entries (63 prior +30 settlement +1 preparation); do not rescan settlement138–139/168–171 or terrain/examples008/029 without new evidence. First close GMCore59 settlement stock quantities and PlayerCore228/290 dependencies. Then screen not-read chapter bodies and backmatter in the15-block inventory (index alone not acceptance), extract new map-applicable clauses, normalize candidate mappings into canonical registries through scoped claim, then verify actual UI/save/load/undo and different profiles on fresh mainSHA. Preserve DND full-source checkpoint; no identical failed search without new access."
+}
