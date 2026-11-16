@@ -1,0 +1,120 @@
+{
+  "task_id": "HX-BL-055",
+  "run_id": "2026-11-16T0600-analyst-river-width-D1",
+  "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "methods": "Static exact-SHA source read and deterministic SVG projection of saved fixture; no product changes/runtime acceptance.",
+  "files": [
+    {
+      "path": "src/App.tsx",
+      "sha": "39acbcd2252333a63498fd9437ea113b7b5f54d3"
+    },
+    {
+      "path": "src/oneMilePresentation.ts",
+      "sha": "21fb664504bd68fd4a9f464b02b6921094830929"
+    },
+    {
+      "path": "src/OneMileArtwork.tsx",
+      "sha": "5c5c1c709b14967d920a4996c0c991b43529a7a6"
+    },
+    {
+      "path": "src/RefinedGeographyArtwork.tsx",
+      "sha": "80ceda4509a8258ec81a46e023e6854d9699df77"
+    },
+    {
+      "path": "src/detailGrid.ts",
+      "sha": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067"
+    },
+    {
+      "path": "src/rendering/lakeGeometry.ts",
+      "sha": "de5ff44f756f3aa3061020120f947e2aba59e60b"
+    },
+    {
+      "path": "src/rendering/LakeWater.tsx",
+      "sha": "0e5ee4a575d18fcd36e922ae79fad2cfb4c3a56c"
+    },
+    {
+      "path": "docs/natural-lakes.md",
+      "sha": "2e3a7e5ac488d26c7cf5a0ebf0057738188bea16"
+    }
+  ],
+  "fixture": {
+    "path": "test/fixtures/classic-six-regions-seed42.json",
+    "blob_sha": "6b1aed51aedbe33a56771fb86f92b51424d6fb17",
+    "regions": 6,
+    "source_hexes": 52,
+    "rivers": 4,
+    "roads": 5,
+    "crossings": 2,
+    "fullnesses": [
+      1,
+      2,
+      3
+    ],
+    "lake_ids": [
+      1,
+      2
+    ],
+    "crossing_kinds": [
+      "bridge"
+    ],
+    "missing_fullnesses": [
+      4,
+      5
+    ],
+    "missing_crossing_kinds": [
+      "ford",
+      "ferry"
+    ]
+  },
+  "widths": {
+    "convention": "across_flats; full water thickness, perpendicular to straight segment",
+    "current_one_mile_percent": [
+      45,
+      66,
+      87,
+      108,
+      129
+    ],
+    "target_one_mile_percent": [
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "unchanged_six_mile_percent": [
+      7.5,
+      11,
+      14.5,
+      18,
+      21.5
+    ],
+    "source_formula": "W6*(.04+.035*F)",
+    "target_formula": "W1*.1*F",
+    "W1_SVG": 8.082903768654761
+  },
+  "integration_risks": [
+    "Refined artwork prioritizes persisted capsule radii over current fullness widths.",
+    "Native lake mouths use width from shared riverSegments; fine-only inputs/cache isolation required.",
+    "Stored refined road.paint and bankPath can retain former bank extents.",
+    "POI water contact and forest masking need regression checks; no automatic coordinates migration authorized."
+  ],
+  "existing_browser_environment": {
+    "run_id": 43745760981,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43745760981",
+    "limitation": "Accepted baseline only; not a new055 browser run."
+  },
+  "ui_preview": {
+    "version": "P1",
+    "desktop_ref": "agent-work/previews/HX-BL-055-D1/desktop.svg",
+    "narrow_ref": "agent-work/previews/HX-BL-055-D1/narrow.svg",
+    "presented_in_chat": true,
+    "presented_at": "2026-11-16T03:08:55.007Z",
+    "message_id": "unavailable",
+    "kind": "schematic_not_runtime",
+    "limitations": "Actual fixture world lines and simple lake-cell union; no new edge refinement or natural shoreline renderer execution. Fine-grid overlay is diagrammatic; not accepted runtime evidence."
+  }
+}
