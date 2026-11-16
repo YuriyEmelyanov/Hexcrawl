@@ -1,0 +1,41 @@
+{
+  "decision_id": "owner-decision-2026-11-16-research-hourly-creation-top10",
+  "version": 1,
+  "date": "2026-11-16",
+  "status": "applied_and_verified",
+  "owner_quotes": [
+    "Переходим на запуск каждый час.",
+    "После обработки топ 5 переходи к топ 10 по созданию карты игр."
+  ],
+  "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+  "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T113000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+  "is_enabled_verified": true,
+  "verified_at": "2026-11-16T07:39:58.335Z",
+  "next_run_time": "2026-11-16T11:30:00+03:00",
+  "interpretation": "Researcher hourly; current overall top5 first, then fresh creation-scenario top10. Only researcher cadence changed.",
+  "next_phase": {
+    "phase_id": "HX-RSR-CREATE-TOP10-ALIGNMENT",
+    "status": "pending_after_overall_top5_acceptance",
+    "priority": "next_after_current_top5",
+    "selection_axis": "create_map_scenario_only",
+    "cohort_policy": "Resolve current creation-scenario top10 from fresh active ranking when phase begins; retain exact version and ties. Do not substitute overall top10 or freeze current list.",
+    "entry_condition": "Complete current overall-top5 source/function/actual-support alignment against RA-Q01–15; justified exclusions documented. A routine checkpoint/recorded_completed is not completion.",
+    "reuse_policy": "Reuse accepted overlapping games and common-rules; verify edition/profile/source freshness and remaining gaps instead of repeating full scans.",
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-hourly-creation-top10.json",
+    "no_rating_method_score_or_product_queue_change": true
+  },
+  "supersedes_cadence": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
+  "retains": [
+    "explicit research resume",
+    "RA-Q01–15",
+    "claims/CAS",
+    "common-rules/game-bindings",
+    "active rating/method/score gates",
+    "no researcher product queue writes",
+    "no expenses"
+  ],
+  "main_team_schedule_changed": false,
+  "research_performed_by_this_policy_change": false,
+  "baseline_sha": "08d8f78228724332bc687dd73fc47cd26587ce2c"
+}
