@@ -1,0 +1,798 @@
+{
+  "run_id": "2026-11-16-PF2-market-dependencies-053047",
+  "status": "checkpoint",
+  "bounded_result": "GMCore48/59 and PlayerCore228 L1 settlement dependencies resolved; journal body still open",
+  "source_version": "PF2 Remaster English AoN, retrieved2026-11-16",
+  "sources": [
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=2617",
+      "locator": "GMCore48 Buying and Selling Items",
+      "access": "public_primary_full_section"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=2656",
+      "locator": "GMCore59 Table10-9,20rows, only relevant item columns extracted",
+      "access": "public_primary_full_section"
+    },
+    {
+      "url": "https://2e.aonprd.com/Actions.aspx?ID=2364",
+      "locator": "PlayerCore228 Earn Income",
+      "access": "public_primary_full_action; complete wage table not transcribed as L1"
+    },
+    {
+      "url": "https://2e.aonprd.com/Sources.aspx?ID=216",
+      "locator": "equipment79 list: Scholarly Journal",
+      "access": "index_only_not_item_body"
+    }
+  ],
+  "author_project_dedup_key": "paizo:pf2-remaster:core:settlement-dependencies",
+  "source_vs_product": "Original clauses separate from proposed place-profile operations; no approval of architecture/product queue. Currency and downtime calculations remain L3.",
+  "entries": [
+    {
+      "id": "PF2-RM-ST-017-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core, English AoN snapshot 2026-11-16; source page reports Spring 2026 errata",
+      "title": "Marketplaces: ограниченный запас верхнего уровня",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3003",
+        "locator": "GM Core printed p168–169; Marketplaces: ограниченный запас верхнего уровня",
+        "self_contained_rule": "Количественный ориентир ассортимента — только Permanent Items/Consumables из строки Party Treasure by Level на1 уровень ниже поселения. Доступны строки1–20; нет строк0/−1. Денежные колонки, прибавка на персонажа и период пополнения этим правилом магазину не назначаются.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "lookup": "R=S-1",
+          "rows": "1..20",
+          "row1": {
+            "permanent": {
+              "1": 2,
+              "2": 2
+            },
+            "consumables": {
+              "1": 3,
+              "2": 2
+            }
+          },
+          "rows2to19": {
+            "permanent": "R+1:2,R:2",
+            "consumables": "R+1:2,R:2,R-1:2"
+          },
+          "row20": {
+            "permanent": {
+              "20": 4
+            },
+            "consumables": {
+              "19": 2,
+              "20": 4
+            }
+          },
+          "missing": "S0/1/≥22: требуется решение мастера"
+        },
+        "conditions": [
+          "Создаётся или изменяется поселение в кампании PF2; советы не становятся обязательным автоматическим генератором."
+        ],
+        "exceptions": [
+          "Ориентир, не гарантия наличия; нет clamp/экстраполяции.",
+          "Ни бюджет магазина, ни период пополнения не заданы.",
+          "Особые +4/Trinket Trade меняют доступность, но не задают количество исключительных товаров."
+        ],
+        "cross_references": [
+          "https://2e.aonprd.com/Rules.aspx?ID=2656 GM Core59"
+        ],
+        "access_level": "public_primary_full_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+        "source_status": "primary_read_this_run"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-ST-017-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Записать выбранный ограниченный ассортимент и источник ориентиров количества",
+        "inputs_and_units": {
+          "lookup": "R=S-1",
+          "rows": "1..20",
+          "row1": {
+            "permanent": {
+              "1": 2,
+              "2": 2
+            },
+            "consumables": {
+              "1": 3,
+              "2": 2
+            }
+          },
+          "rows2to19": {
+            "permanent": "R+1:2,R:2",
+            "consumables": "R+1:2,R:2,R-1:2"
+          },
+          "row20": {
+            "permanent": {
+              "20": 4
+            },
+            "consumables": {
+              "19": 2,
+              "20": 4
+            }
+          },
+          "missing": "S0/1/≥22: требуется решение мастера"
+        },
+        "product_operation": "По запросу мастера предложить уровни/количества из строкиS−1 и показать её происхождение. Принятый мастером ассортимент сохранить у места; деньги/пополнение не добавлять.",
+        "expected_output": "Для поселения4: постоянные4×2,3×2; расходуемые4×2,3×2,2×2.",
+        "constraints_and_exceptions": [
+          "Ориентир, не гарантия наличия; нет clamp/экстраполяции.",
+          "Ни бюджет магазина, ни период пополнения не заданы.",
+          "Особые +4/Trinket Trade меняют доступность, но не задают количество исключительных товаров."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Поселение2",
+            "when": "Подготовить ассортимент",
+            "expected": "Строка1: постоянные2×2,1×2; расходуемые2×2,1×3"
+          },
+          {
+            "given": "Поселение4",
+            "when": "Подготовить ассортимент",
+            "expected": "Строка3: постоянные4×2,3×2; расходуемые4×2,3×2,2×2; бюджет не переносится"
+          },
+          {
+            "given": "Поселение21",
+            "when": "Подготовить ассортимент",
+            "expected": "Строка20: постоянные20×4; расходуемые20×4,19×2; не предметы21"
+          },
+          {
+            "given": "Поселение0/1/22",
+            "when": "Подготовить ассортимент",
+            "expected": "Нужной строки нет; решение мастера, не нулевой/ближайший запас"
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Особый ассортимент, его реальные запасы и срок поставки решает мастер."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse существующего общего действия: content.place_description. Новая source-строка не зарегистрирована как binding. Общий компонент не покрывает все специальные вычисления/геометрию; полного равенства не заявляем.",
+          "profile_differences": [
+            "Числа таблицы не извлечены в этом запуске; соответствующая ссылка остаётся открытой.",
+            "PF2-параметры этой строки; совпадение ID не доказывает реализацию."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Уточнён первичный смысл и конкретная операция; продукт не исполнялся. Проверка исследовательского расчёта не является реализацией.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "UI, профильные исключения, save/load/undo; L3 обмен при необходимости"
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_dependency_analysis",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false
+    },
+    {
+      "id": "PF2-RM-ST-016-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core, English AoN snapshot 2026-11-16; source page reports Spring 2026 errata",
+      "title": "Marketplaces: покупка и продажа",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3003",
+        "locator": "GM Core printed p168–169; Marketplaces: покупка и продажа",
+        "self_contained_rule": "Обычно доступны обычные предметы, формулы, алхимия и магические предметы уровнем не выше поселения; у местных аналогичный предел покупки добычи. Малая численность относительно уровня может ограничить оборот. GMCore48: обычно1 день на торговлю несколькими товарами; крупные/дорогие/невостребованные партии требуют больше. Обычно покупка100% Price, продажа50%. Допустимы свободный рынок, рынок с поиском продавца и редкие/отсутствующие магические рынки. При свободном доступе мастер может снять редкость либо дать надбавки uncommon10–100%, rare25–500%. При избытке товара выкуп может снизиться до25%/10% либо быть отклонён. Редкие магические рынки имеют малый ассортимент и избирательный выкуп; фундаментальные руны можно обеспечить покупкой/наградами.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "default_max_item_level": "уровень поселения",
+          "rarity": "common",
+          "directions": [
+            "купить",
+            "продать"
+          ],
+          "usual_days": 1,
+          "buy_fraction": 1,
+          "sell_fraction": 0.5,
+          "oversupply_sell": [
+            0.25,
+            0.1,
+            0
+          ],
+          "optional_surcharge_percent": {
+            "uncommon": [
+              10,
+              100
+            ],
+            "rare": [
+              25,
+              500
+            ]
+          },
+          "policies": [
+            "свободный доступ",
+            "дополнительный поиск",
+            "магических рынков мало/нет"
+          ]
+        },
+        "conditions": [
+          "Создаётся или изменяется поселение в кампании PF2; советы не становятся обязательным автоматическим генератором."
+        ],
+        "exceptions": [
+          "Это ориентиры мастеру; доступность не равна гарантированному количеству или бюджету."
+        ],
+        "cross_references": [
+          "https://2e.aonprd.com/Rules.aspx?ID=2617 GMCore48"
+        ],
+        "access_level": "public_primary_full_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+        "source_status": "primary_read_this_run"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-ST-016-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать базовую доступность рынка и ручные исключения",
+        "inputs_and_units": {
+          "default_max_item_level": "уровень поселения",
+          "rarity": "common",
+          "directions": [
+            "купить",
+            "продать"
+          ],
+          "usual_days": 1,
+          "buy_fraction": 1,
+          "sell_fraction": 0.5,
+          "oversupply_sell": [
+            0.25,
+            0.1,
+            0
+          ],
+          "optional_surcharge_percent": {
+            "uncommon": [
+              10,
+              100
+            ],
+            "rare": [
+              25,
+              500
+            ]
+          },
+          "policies": [
+            "свободный доступ",
+            "дополнительный поиск",
+            "магических рынков мало/нет"
+          ]
+        },
+        "product_operation": "Мастер задаёт торговую политику места, продавцов и явные исключения цен/доступа. Сохранить профиль; проведение сделки и её время — L3.",
+        "expected_output": "Наличие, количество, цена и срок различимы; варианты не включаются одновременно.",
+        "constraints_and_exceptions": [
+          "Это ориентиры мастеру; доступность не равна гарантированному количеству или бюджету.",
+          "Сохранение и отмена — предлагаемое поведение приложения, не правило книги. Интерфейс и новая разработка не утверждены."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Price100gp, обычный рынок",
+            "when": "Задать профиль",
+            "expected": "Покупка100gp, выкуп50gp; запас не гарантирован"
+          },
+          {
+            "given": "Избыток; мастер выбрал25%",
+            "when": "Задать исключение",
+            "expected": "Выкуп25gp; покупка100gp"
+          },
+          {
+            "given": "Свободный доступ без выбранной надбавки",
+            "when": "Открыть профиль",
+            "expected": "Автоматическая надбавка uncommon/rare не возникает"
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Точное структурированное представление/новая общая механика требуют проверки и решения; новый rule_id здесь не учреждается."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse существующего общего действия: content.place_description. Новая source-строка не зарегистрирована как binding. Общий компонент не покрывает все специальные вычисления/геометрию; полного равенства не заявляем.",
+          "profile_differences": [
+            "Это ориентиры мастеру; доступность не равна гарантированному количеству или бюджету.",
+            "PF2-параметры этой строки; совпадение ID не доказывает реализацию."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Уточнён первичный смысл и конкретная операция; продукт не исполнялся. Проверка исследовательского расчёта не является реализацией.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "UI, профильные исключения, save/load/undo; L3 обмен при необходимости"
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_dependency_analysis",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false
+    },
+    {
+      "id": "PF2-RM-ST-021-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core, English AoN snapshot 2026-11-16; source page reports Spring 2026 errata",
+      "title": "Sample Abilities: Artists' Haven",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3011",
+        "locator": "GM Core printed p170; Sample Abilities: Artists' Haven",
+        "self_contained_rule": "Опциональная особенность облегчает поиск высокоуровневой работы в искусстве/Performance и покупателей, готовых больше платить за произведения; точной надбавки нет.",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "ability": "Artists Haven",
+          "bonus_numeric": null
+        },
+        "conditions": [
+          "Создаётся или изменяется поселение в кампании PF2; советы не становятся обязательным автоматическим генератором."
+        ],
+        "exceptions": [
+          "Artists' Haven не задаёт численный бонус к доходу/уровню работы. Доступную задачу определяет мастер; +4 City of Artisans относится к товарам."
+        ],
+        "cross_references": [
+          "https://2e.aonprd.com/Actions.aspx?ID=2364 PlayerCore228"
+        ],
+        "access_level": "public_primary_full_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+        "source_status": "primary_read_this_run"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-ST-021-v2",
+        "normative_kind": "research_translation_of_optional_variant",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить художественную специализацию и описание её возможностей",
+        "inputs_and_units": {
+          "ability": "Artists Haven",
+          "bonus_numeric": null
+        },
+        "product_operation": "Добавить художественную специализацию и описание её возможностей; показать результат в контексте выбранного поселения. Изменение сохранить с картой, восстановить после загрузки и отмены.",
+        "expected_output": "В карточке есть особенность без выдуманного бонуса или фиксированного процента.",
+        "constraints_and_exceptions": [
+          "Сохранение и отмена — предлагаемое поведение приложения, не правило книги. Интерфейс и новая разработка не утверждены."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Мастер добавил Artists Haven.",
+            "when": "Добавить художественную специализацию и описание её возможностей",
+            "expected": "Указаны работа и покупатели искусства; +2 или наценка не создаются."
+          },
+          {
+            "given": "Получен указанный ожидаемый результат; затем карту сохраняют, загружают и отменяют последнее изменение.",
+            "when": "Повторно открыть то же поселение и выполнить отмену.",
+            "expected": "После загрузки тот же результат и привязка; отмена восстанавливает предыдущую запись/геометрию без изменения других поселений."
+          },
+          {
+            "given": "Artists Haven, поселение4",
+            "when": "Подготовить работу художнику",
+            "expected": "Нет автоматической задачи8=4+4; уровень назначает мастер"
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Точное структурированное представление/новая общая механика требуют проверки и решения; новый rule_id здесь не учреждается."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse существующего общего действия: content.place_description. Новая source-строка не зарегистрирована как binding. Общий компонент не покрывает все специальные вычисления/геометрию; полного равенства не заявляем.",
+          "profile_differences": [
+            "PF2-параметры этой строки; совпадение ID не доказывает реализацию."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Уточнён первичный смысл и конкретная операция; продукт не исполнялся. Проверка исследовательского расчёта не является реализацией.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "UI, профильные исключения, save/load/undo; L3 обмен при необходимости"
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_dependency_analysis",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false
+    },
+    {
+      "id": "PF2-RM-EI-PREP-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GM Core, English AoN snapshot 2026-11-16; source page reports Spring 2026 errata",
+      "title": "Earn Income: предложение работы в месте",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Actions.aspx?ID=2364",
+        "locator": "Player Core228 Earn Income; GMCore170 связь с поселением",
+        "self_contained_rule": "Мастер назначает уровень наиболее выгодной доступной работы; возможен поиск иных задач. Проверка после первого дня задаёт дневную оплату; следующие дни без нового броска до срока, заданного мастером. Обычно1–2 недели, иногда месяцы/годы. После окончания/прерывания обычно нужен поиск1+день. Подготовка может снижать DC по решению мастера. Уровень поселения — ориентир доступности, не гарантированная вакансия.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "usual_duration": "1–2 недели",
+          "new_search": "1+день",
+          "critical_success": "доход строки task_level+1 и ранга навыка",
+          "success": "строка task_level и ранга",
+          "failure": "колонка failure, мастер может сократить срок",
+          "critical_failure": "0, немедленное увольнение"
+        },
+        "conditions": [
+          "Downtime; L1 только подготовка предложения работы"
+        ],
+        "exceptions": [
+          "Полная таблица дохода/проверки — L3; Artists Haven не численный бонус."
+        ],
+        "cross_references": [
+          "GMCore170 Settlement Stat Block"
+        ],
+        "access_level": "public_primary_full_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+        "source_status": "primary_read_this_run"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-EI-PREP-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить предложение работы в поселение",
+        "inputs_and_units": {
+          "settlement_level": 4,
+          "task_level": 3,
+          "skill": "Crafting",
+          "duration_days": 10
+        },
+        "product_operation": "Записать у места уровень задачи, навык и срок. Для L3 передавать task_level, proficiency, outcome, worked_days, assigned_duration; принимать daily/total_income и job_status. Интеграция не проверена.",
+        "expected_output": "Задача3 на10 дней у поселения4; уровень города не заменяет уровень работы.",
+        "constraints_and_exceptions": [
+          "Полная таблица дохода/проверки — L3; Artists Haven не численный бонус."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Поселение4, задача3, срок10дней",
+            "when": "Добавить работу",
+            "expected": "Уровень задачи3 и срок10 сохранены; доход по уровню города не выдуман"
+          },
+          {
+            "given": "Задача не задана мастером",
+            "when": "Открыть место",
+            "expected": "Гарантированная вакансия4 не создаётся"
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "UI/save/load/undo и фактический L3 обмен не проверены"
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Общее содержание места для предложения работы; расчёт дохода этим компонентом не обеспечивается.",
+          "profile_differences": [
+            "Задача/навык/срок — PF2-параметры. Не равно циклу развития поселения."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Уточнён первичный смысл и конкретная операция; продукт не исполнялся. Проверка исследовательского расчёта не является реализацией.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "UI, профильные исключения, save/load/undo; L3 обмен при необходимости"
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_dependency_analysis",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false
+    }
+  ],
+  "research_data_checks": [
+    {
+      "settlement_level": 0,
+      "expected": null,
+      "observed": null,
+      "pass": true
+    },
+    {
+      "settlement_level": 1,
+      "expected": null,
+      "observed": null,
+      "pass": true
+    },
+    {
+      "settlement_level": 2,
+      "expected": {
+        "p": [
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "c": [
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      "observed": {
+        "p": [
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "c": [
+          [
+            2,
+            2
+          ],
+          [
+            1,
+            3
+          ]
+        ]
+      },
+      "pass": true
+    },
+    {
+      "settlement_level": 4,
+      "expected": {
+        "p": [
+          [
+            4,
+            2
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "c": [
+          [
+            4,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      "observed": {
+        "p": [
+          [
+            4,
+            2
+          ],
+          [
+            3,
+            2
+          ]
+        ],
+        "c": [
+          [
+            4,
+            2
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            2,
+            2
+          ]
+        ]
+      },
+      "pass": true
+    },
+    {
+      "settlement_level": 20,
+      "expected": {
+        "p": [
+          [
+            20,
+            2
+          ],
+          [
+            19,
+            2
+          ]
+        ],
+        "c": [
+          [
+            20,
+            2
+          ],
+          [
+            19,
+            2
+          ],
+          [
+            18,
+            2
+          ]
+        ]
+      },
+      "observed": {
+        "p": [
+          [
+            20,
+            2
+          ],
+          [
+            19,
+            2
+          ]
+        ],
+        "c": [
+          [
+            20,
+            2
+          ],
+          [
+            19,
+            2
+          ],
+          [
+            18,
+            2
+          ]
+        ]
+      },
+      "pass": true
+    },
+    {
+      "settlement_level": 21,
+      "expected": {
+        "p": [
+          [
+            20,
+            4
+          ]
+        ],
+        "c": [
+          [
+            20,
+            4
+          ],
+          [
+            19,
+            2
+          ]
+        ]
+      },
+      "observed": {
+        "p": [
+          [
+            20,
+            4
+          ]
+        ],
+        "c": [
+          [
+            20,
+            4
+          ],
+          [
+            19,
+            2
+          ]
+        ]
+      },
+      "pass": true
+    },
+    {
+      "settlement_level": 22,
+      "expected": null,
+      "observed": null,
+      "pass": true
+    }
+  ],
+  "implementation_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "implementation_status": "unverified; no product execution this run",
+  "remaining": [
+    "Player Core290 Scholarly Journal: retrieved official source index names item, but category/table outputs omit item body and source-index item has no traversable link. Do not infer price/bonus; resolve exact item through primary packet/item page before acceptance.",
+    "Whole GMCore/PlayerCore remaining chapter bodies, tables/backmatter and open references;15-block index is not completed screening.",
+    "Canonical binding normalization and actual UI/save/load/undo/profile checks on fresh mainSHA.",
+    "Prior Temperature/Environment Damage ambiguities; no guessed numerical policy."
+  ],
+  "diagnostics": [
+    {
+      "failed_operation": {
+        "tool": "functions.exec",
+        "action": "Clone source entry for research patch",
+        "safe_locator": "in-memory patch builder"
+      },
+      "observed_error": "ReferenceError: structuredClone is not defined",
+      "cause_status": "confirmed",
+      "recovered": true,
+      "recovery": "Used JSON.parse/JSON.stringify for plain JSON data; rebuilt and verified patches. No GitHub write failed."
+    }
+  ],
+  "new_product_tasks": 0,
+  "canonical_registries_changed": false
+}
