@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-16T11:40:46.605Z",
+  "updated_at": "2026-11-16T12:04:03.970Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -79,7 +79,7 @@
     {
       "task_id": "HX-BL-055",
       "title": "Корректировка ширины рек на 1-мильной карте",
-      "status": "спецификация",
+      "status": "разработана",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-15-one-mile-river-widths.json"
@@ -88,9 +88,9 @@
       "approved_at": "2026-11-15T21:29:57.540Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "замечания исправлены на f824da1; полный CI зелёный; ожидается независимая повторная приёмка",
-      "next_role": "reviewer",
-      "next_step": "Independently review exact f824da1 against F1 and both findings; validate connected finite wet intervals with known dry approaches and the final native6 screen/PNG artifact; record score_assessment1.2. Publication remains separately gated.",
+      "execution_state": "принята независимым проверяющим на f824da1; ожидает отдельного разрешения публикации",
+      "next_role": "owner",
+      "next_step": "Отдельное разрешение владельца на публикацию PR504, SHA f824da18803269dc00d1f6262b6db3b93a0a1bcd, tree3318e119bd28d3cbbe1ceed94071e5e3f9d39887; затем программист проверяет неизменность пакета и выпускает.",
       "requirements": [
         "Только на 1-мильной карте: F1=10%, F2=20%, F3=30%, F4=40%, F5=50% ширины гекса. Это визуальная шкала, не физическая ширина русла.",
         "6-мильная карта: существующая ширина рек и внешний вид без изменений.",
@@ -115,7 +115,7 @@
       "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
       "acceptance_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.acceptance.json",
       "published_ref": null,
-      "updated_at": "2026-11-16T11:40:46.605Z",
+      "updated_at": "2026-11-16T12:04:03.970Z",
       "draft_spec_version": "D1",
       "interview_status": "interview_completed",
       "interview_completed": true,
@@ -143,23 +143,17 @@
         "reason": "No controls or layout changes; owner answer only constrains display-only behavior."
       },
       "forecast": {
-        "completed_runs": 8,
+        "completed_runs": 9,
         "remaining_runs": {
-          "min": 2,
-          "max": 4
+          "min": 1,
+          "max": 2
         },
         "remaining_active_hours": {
-          "min": 1,
-          "max": 3
-        },
-        "remaining_calendar_hours_excluding_owner_wait": {
-          "min": 2,
-          "max": 5
+          "min": 0.5,
+          "max": 1.5
         },
         "owner_publication_wait": "unknown",
-        "confidence": "medium",
-        "history_reset": false,
-        "environment_outage": "recovered_same_run"
+        "history_reset": false
       },
       "implementation_ref": "agent-work/results/2026-11-16T1408-programmer-river-width-CI.json",
       "review_handoff_ref": "agent-work/handoffs/2026-11-16T1408-programmer-river-width-CI-reviewer.json",
@@ -215,18 +209,20 @@
           }
         }
       },
-      "review_status": "review_ready_new_sha",
-      "acceptance_status": "pending_independent_review",
-      "reviewed_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
-      "review_ref": "agent-work/evidence/HX-BL-055-review-47d0dfa/review.json",
-      "score_assessment_ref": "agent-work/evidence/HX-BL-055-review-47d0dfa/score-assessment1.2.json",
-      "review_result_ref": "agent-work/results/2026-11-16T1319-reviewer-river-width-F1.json",
-      "open_findings": [
+      "review_status": "accepted_exact_sha",
+      "acceptance_status": "accepted_exact_sha",
+      "reviewed_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+      "review_ref": "agent-work/evidence/HX-BL-055-review-f824da1/review.json",
+      "score_assessment_ref": "agent-work/evidence/HX-BL-055-review-f824da1/score-assessment1.2.json",
+      "review_result_ref": "agent-work/results/2026-11-16T1455-reviewer-river-width-f824da1.json",
+      "open_findings": [],
+      "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+      "finding_resolution_status": "both_closed_independently",
+      "user_walkthrough_ref": "agent-work/evidence/HX-BL-055-review-f824da1/user-walkthrough.json",
+      "closed_findings": [
         "HX-BL-055-REV-01",
         "HX-BL-055-REV-02"
-      ],
-      "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
-      "finding_resolution_status": "programmer_fixed_both_pending_independent_confirmation"
+      ]
     },
     {
       "task_id": "HX-BL-056",
