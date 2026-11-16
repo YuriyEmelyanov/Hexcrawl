@@ -8,20 +8,20 @@
     "frequency": "HOURLY",
     "minute": 30,
     "enabled": true,
-    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T173000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
     "default_timezone": "Europe/Moscow",
     "environment_selection": "inherited",
     "environments_observed": null,
-    "interval": 2,
-    "interval_hours": 2,
-    "cadence_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-16-research-hourly-creation-top10.json",
-    "verified_at": "2026-11-16T16:09:42.363Z",
+    "interval": 3,
+    "interval_hours": 3,
+    "cadence_owner_decision_ref": "agent-work/research/runs/2026-11-17-MB-scope-audit-1794871662233.json#automation_health",
+    "verified_at": "2026-11-16T23:32:36.163Z",
     "is_enabled": true,
     "desired_enabled": true,
     "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
     "verification_status": "verified_by_automations_peek",
-    "next_run_time": "2026-11-16T11:30:00+03:00",
-    "cadence_authority": "Latest explicit owner instruction in current prompt: Переходи на интервал 2 часа; supersedes historical hourly repository entries."
+    "next_run_time": "2026-11-17T02:30:00+03:00",
+    "cadence_authority": "Latest direct owner instruction: Период между запусками 3 часа. Supersedes1/2hour historical entries."
   },
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "contract_ref": "agent-work/research/contract.md",
@@ -66,7 +66,7 @@
   },
   "next_candidate": {
     "id": "HX-RSR-RETROSPECTIVE-PRODUCT-SCOPE-v1",
-    "status": "overall_top5_existing_scope_reviewed_MB_next",
+    "status": "existing_top5_and_MB_scope_reviewed_WWN_next",
     "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
     "priority": "before_new_source_expansion",
     "completion_condition": "Every previously collected row has reasoned scope disposition; working overviews/handoffs corrected; no unrelated subsystem proposals carried as app requirements.",
@@ -101,11 +101,9 @@
       "needs_owner_decision"
     ],
     "cursor": {
-      "game_id": "MB",
+      "game_id": "WWN",
       "artifacts": [
-        "agent-work/market/rules/MB-Realm-Sheets.json",
-        "agent-work/market/rules/MB-Quickstart.json",
-        "agent-work/market/rules/MB-author-FAQ-2025.json"
+        "agent-work/market/rules/WWN-Deluxe-RU.json"
       ],
       "next_entry": "first_existing_row_after_inventory"
     },
@@ -113,7 +111,7 @@
     "review_completed": false,
     "PF2_completed": true,
     "PF2_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
-    "exact_continuation": "MB: ревизия уже собранного MythicBastionland — agent-work/market/rules/MB-Realm-Sheets.json, MB-Quickstart.json, MB-author-FAQ-2025.json и связанные обзоры/передачи/evidence. Перечитать свежиеSHA/claims, дать каждой существующей строке предметное решение product-scope-filter. Сохранить первичный смысл/неизвестное; currentL1 только с действием/объектом/проверяемым результатом и связью с принятыми функциями. Не повторять полный скан и не отменять утверждённую функциональность. Затем WWN/OSE/PF1/ROOT/CAIRN2/DH/VAARN по свежей достижимости из сохранённого инвентаря. После всей ретроспективы — незавершённые источниковые/фактические проверки overalltop5 поRA-Q01–15, затем свежийcreate-top10; закрытые5срезов без нового основания не повторять.",
+    "exact_continuation": "Ретроспектива WWN: все существующие строки agent-work/market/rules/WWN-Deluxe-RU.json и связанные обзоры/передачи; сначала свежие SHA/claims/решения, затем reasoned disposition для каждой строки, конкретный объект карты и проверяемый результат. Не сканировать новую книгу/главы и не расширять корпус. Источники/статусы/evidence сохранить. Затем OSE/PF1/ROOT/CAIRN2/DH/VAARN по сохранённому инвентарю и свежей достижимости; закрытый MB и top5scope не повторять без нового основания. После ретроспективы — незакрытое полное выравнивание overalltop5, затем актуальный create-top10.",
     "DND5_completed": true,
     "DND5_audit_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
     "KNAVE2_completed": true,
@@ -125,14 +123,6 @@
     "overall_top5_scope_review_completed": true,
     "overall_top5_alignment_accepted": false,
     "remaining_existing_games": [
-      {
-        "game_id": "MB",
-        "paths": [
-          "agent-work/market/rules/MB-Realm-Sheets.json",
-          "agent-work/market/rules/MB-Quickstart.json",
-          "agent-work/market/rules/MB-author-FAQ-2025.json"
-        ]
-      },
       {
         "game_id": "WWN",
         "paths": [
@@ -176,7 +166,9 @@
           "agent-work/market/rules/Vaarn-Hexfill-2024.json"
         ]
       }
-    ]
+    ],
+    "MB_completed": true,
+    "MB_audit_ref": "agent-work/research/requirements/MB-scope-audit.json"
   },
   "active_task": null,
   "claim": null,
@@ -331,168 +323,67 @@
   "setup_commit": "88448b734a8e9a1a35fba9352c2a6845eff98ae5",
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
-    "start": [
-      {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+    "start": {
+      "Automation_7690c42b2a7881919aaca4103dcd338f": {
         "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T173000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "run_details": {
-          "last_run": {
-            "id": "609e9e4b-dfa8-8321-8c4e-6e988923d25c",
-            "recorded_status": "in_progress",
-            "scheduled_for": "2026-11-16T20:30:00Z",
-            "started_at": "2026-11-16T20:28:32.895421Z",
-            "completed_at": null,
-            "chat_ref": null
-          },
-          "latest_result": {
-            "run_id": "4bb9358e-aff0-8325-b3a1-99b6c56fe887",
-            "created_at": "2026-11-16T18:41:49.060092Z",
-            "scheduled_for": "2026-11-16T18:30:00Z",
-            "completed_at": "2026-11-16T18:41:49.578883Z",
-            "content_text": "Завершил [ревизию CROWS](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/market/rules/CROWS-PT3.md): для карты оставлены **13 из 35 операций**, обзоры и передача стратегу исправлены.\n\nВажные выводы:\n\n- Правила не задают частоту дорог и мостов.\n- Отдельный 5-мильный режим не требуется по принятому решению «5–6 миль».\n- Процветание остаётся открытым вопросом; экономику деревни не включал.\n- Хранение заметок о тентах, NPC и тактическом свете не подтверждает функции региональной карты.\n\nВсё сохранено; реализацию заново не проверял, очередь и рейтинг не менял. Далее — Shadowdark.",
-            "content_truncated": false,
-            "chat_ref": {
-              "type": "chatgpt",
-              "id": "6afa2457-6ffc-83ec-ab21-d513a1c0ede2"
-            },
-            "requires_user_action": false,
-            "is_failure_message": false
-          },
-          "delivery_status": "unknown"
-        },
-        "checked_at": "2026-11-16T20:29:37.098Z"
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "recorded_run": {
+          "id": "ebd68f02-3e44-8321-95f2-9bc48cd920b0",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-16T23:30:00Z",
+          "started_at": "2026-11-16T23:26:57.254929Z",
+          "completed_at": null,
+          "chat_ref": null
+        }
       },
-      {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "6ad9c2426c7481919bb9f3d2b289e9b9": {
         "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "run_details": {
-          "last_run": {
-            "id": "cdc1c374-3fa8-832a-bdc4-704220e9ec9f",
-            "recorded_status": "completed",
-            "scheduled_for": "2026-11-16T19:00:00Z",
-            "started_at": "2026-11-16T19:00:53.879949Z",
-            "completed_at": "2026-11-16T19:04:35.045344Z",
-            "chat_ref": {
-              "type": "chatgpt",
-              "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
-            }
-          },
-          "latest_result": {
-            "run_id": "cdc1c374-3fa8-832a-bdc4-704220e9ec9f",
-            "created_at": "2026-11-16T19:04:34.837019Z",
-            "scheduled_for": "2026-11-16T19:00:00Z",
-            "completed_at": "2026-11-16T19:04:35.045344Z",
-            "content_text": "Интервьюер проверил весь черновик. Осталось **одно решение — RE-Q01: применение к старым картам**.\n\n- **А — автоматически (рекомендую).** При переходе в 1 милю реки сразу идут по рёбрам, связанные объекты согласованно сдвигаются. Исходная шестимильная карта от просмотра не переписывается.\n- **Б — через «Уточнить геометрию».** Старый рисунок сохраняется до отдельного применения; изменение можно отменить одной операцией.\n- Допустим свой вариант.\n\nЗакреплённые объекты в обоих вариантах защищены: при конфликте данные сохраняются без изменений.\n\nТехническое уточнение стыков с берегами передано аналитику. Интервью пока открыто.",
-            "content_truncated": false,
-            "chat_ref": {
-              "type": "chatgpt",
-              "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
-            },
-            "requires_user_action": false,
-            "is_failure_message": false
-          },
-          "delivery_status": "unknown"
-        },
-        "checked_at": "2026-11-16T20:29:37.098Z"
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "recorded_run": {
+          "id": "9bd04ec8-9cd8-832e-ade9-c89cbd82b0db",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-16T21:00:00Z",
+          "started_at": "2026-11-16T21:03:28.543602Z",
+          "completed_at": "2026-11-16T21:08:48.905381Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
+          }
+        }
       }
-    ],
-    "end": [
-      {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+    },
+    "end": {
+      "Automation_7690c42b2a7881919aaca4103dcd338f": {
         "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T173000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "run_details": {
-          "last_run": {
-            "id": "609e9e4b-dfa8-8321-8c4e-6e988923d25c",
-            "recorded_status": "in_progress",
-            "scheduled_for": "2026-11-16T20:30:00Z",
-            "started_at": "2026-11-16T20:28:32.895421Z",
-            "completed_at": null,
-            "chat_ref": null
-          },
-          "latest_result": {
-            "run_id": "4bb9358e-aff0-8325-b3a1-99b6c56fe887",
-            "created_at": "2026-11-16T18:41:49.060092Z",
-            "scheduled_for": "2026-11-16T18:30:00Z",
-            "completed_at": "2026-11-16T18:41:49.578883Z",
-            "content_text": "Завершил [ревизию CROWS](https://github.com/YuriyEmelyanov/Hexcrawl/blob/agent-operations/agent-work/market/rules/CROWS-PT3.md): для карты оставлены **13 из 35 операций**, обзоры и передача стратегу исправлены.\n\nВажные выводы:\n\n- Правила не задают частоту дорог и мостов.\n- Отдельный 5-мильный режим не требуется по принятому решению «5–6 миль».\n- Процветание остаётся открытым вопросом; экономику деревни не включал.\n- Хранение заметок о тентах, NPC и тактическом свете не подтверждает функции региональной карты.\n\nВсё сохранено; реализацию заново не проверял, очередь и рейтинг не менял. Далее — Shadowdark.",
-            "content_truncated": false,
-            "chat_ref": {
-              "type": "chatgpt",
-              "id": "6afa2457-6ffc-83ec-ab21-d513a1c0ede2"
-            },
-            "requires_user_action": false,
-            "is_failure_message": false
-          },
-          "delivery_status": "unknown"
-        },
-        "checked_at": "2026-11-16T20:39:57.179Z"
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "recorded_run": {
+          "id": "ebd68f02-3e44-8321-95f2-9bc48cd920b0",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-16T23:30:00Z",
+          "started_at": "2026-11-16T23:26:57.254929Z",
+          "completed_at": null,
+          "chat_ref": null
+        }
       },
-      {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "6ad9c2426c7481919bb9f3d2b289e9b9": {
         "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "run_details": {
-          "last_run": {
-            "id": "cdc1c374-3fa8-832a-bdc4-704220e9ec9f",
-            "recorded_status": "completed",
-            "scheduled_for": "2026-11-16T19:00:00Z",
-            "started_at": "2026-11-16T19:00:53.879949Z",
-            "completed_at": "2026-11-16T19:04:35.045344Z",
-            "chat_ref": {
-              "type": "chatgpt",
-              "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
-            }
-          },
-          "latest_result": {
-            "run_id": "cdc1c374-3fa8-832a-bdc4-704220e9ec9f",
-            "created_at": "2026-11-16T19:04:34.837019Z",
-            "scheduled_for": "2026-11-16T19:00:00Z",
-            "completed_at": "2026-11-16T19:04:35.045344Z",
-            "content_text": "Интервьюер проверил весь черновик. Осталось **одно решение — RE-Q01: применение к старым картам**.\n\n- **А — автоматически (рекомендую).** При переходе в 1 милю реки сразу идут по рёбрам, связанные объекты согласованно сдвигаются. Исходная шестимильная карта от просмотра не переписывается.\n- **Б — через «Уточнить геометрию».** Старый рисунок сохраняется до отдельного применения; изменение можно отменить одной операцией.\n- Допустим свой вариант.\n\nЗакреплённые объекты в обоих вариантах защищены: при конфликте данные сохраняются без изменений.\n\nТехническое уточнение стыков с берегами передано аналитику. Интервью пока открыто.",
-            "content_truncated": false,
-            "chat_ref": {
-              "type": "chatgpt",
-              "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
-            },
-            "requires_user_action": false,
-            "is_failure_message": false
-          },
-          "delivery_status": "unknown"
-        },
-        "checked_at": "2026-11-16T20:39:57.179Z"
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "recorded_run": {
+          "id": "9bd04ec8-9cd8-832e-ade9-c89cbd82b0db",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-16T21:00:00Z",
+          "started_at": "2026-11-16T21:03:28.543602Z",
+          "completed_at": "2026-11-16T21:08:48.905381Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afb1f92-14d4-83ed-ae7f-41dad0d3a34b"
+          }
+        }
       }
-    ],
-    "modified": false,
-    "errors": [
-      {
-        "failed_operation": {
-          "tool": "automations.peek",
-          "action": "Read final status/result of main HexCrawl team",
-          "safe_locator": "6ad9c2426c7481919bb9f3d2b289e9b9"
-        },
-        "observed_error": "The task was found, but its run result could not be read. Do not infer that it has not run, succeeded, or failed.",
-        "cause_status": "unknown",
-        "recovered": true,
-        "retry_observation": "Found 1 automation."
-      },
-      {
-        "failed_operation": {
-          "tool": "functions.exec / Array.map",
-          "action": "Summarize final automation peeks assuming automations array exists",
-          "safe_locator": "Automation_7690c42b2a7881919aaca4103dcd338f / 6ad9c2426c7481919bb9f3d2b289e9b9"
-        },
-        "observed_error": "TypeError: Cannot read properties of undefined (reading 'map')",
-        "cause_status": "confirmed",
-        "cause_note": "Local summarizer assumed an automations array; inspect underlying response separately. This local error does not establish a service root cause.",
-        "recovered": true,
-        "recovery": "Summarizer now handles missing automations array explicitly; underlying team peek error stored separately."
-      }
-    ]
+    },
+    "schedules_changed": false
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-16-SD-scope-audit-1794860977098.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-17-MB-scope-audit-1794871662233.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
   "checkpoint_ref": "agent-work/research/runs/2026-11-16-SD-scope-audit-1794860977098.json",
@@ -1253,7 +1144,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-16T13:08:58.927Z",
+  "updated_at": "2026-11-16T23:32:36.163Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1425,7 +1316,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-16-SD-scope-audit-1794860977098",
+  "last_run_id": "2026-11-17-MB-scope-audit-1794871662233",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1483,67 +1374,40 @@
   },
   "last_run": "2026-11-16-PF2-preparation-074155",
   "checkpoint": {
-    "status": "completed_bounded_SD_scope_audit_remaining_games_pending",
-    "run_id": "2026-11-16-SD-scope-audit-1794860977098",
-    "stage": "SD98groups165requirements_scope_review_complete",
-    "last_successful_step": "98groups/165requirements reviewed;18currentL1ops/quality schema-valid; source/status preservation verified; team status recovered on reread.",
-    "failed_operation": {
-      "tool": "automations.peek",
-      "action": "Read final status/result of main HexCrawl team",
-      "safe_locator": "6ad9c2426c7481919bb9f3d2b289e9b9"
-    },
-    "observed_error": "The task was found, but its run result could not be read. Do not infer that it has not run, succeeded, or failed.",
+    "status": "completed_bounded_MB_scope_audit_remaining_games_pending",
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "stage": "MB_existing9requirements_and18working_views_reconciled",
+    "last_successful_step": "Все9строк/11компонентов рассмотрены;18обзоров/передач согласованы; исходныеsource/status/evidence сохранены.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Bounded MB retrospective scope audit complete; ongoing research program continues.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/MB-scope-audit.json",
+      "agent-work/research/requirements/MB-scope-review.md"
+    ],
+    "exact_continuation": "Ретроспектива WWN: все существующие строки agent-work/market/rules/WWN-Deluxe-RU.json и связанные обзоры/передачи; сначала свежие SHA/claims/решения, затем reasoned disposition для каждой строки, конкретный объект карты и проверяемый результат. Не сканировать новую книгу/главы и не расширять корпус. Источники/статусы/evidence сохранить. Затем OSE/PF1/ROOT/CAIRN2/DH/VAARN по сохранённому инвентарю и свежей достижимости; закрытый MB и top5scope не повторять без нового основания. После ретроспективы — незакрытое полное выравнивание overalltop5, затем актуальный create-top10.",
+    "needs_owner_action": false,
+    "owner_action": null,
+    "nonblocking_owner_decision_components": [
+      "MB-SCOPE-C02",
+      "MB-SCOPE-C04",
+      "MB-SCOPE-C07",
+      "MB-SCOPE-C09",
+      "MB-SCOPE-C11"
+    ],
     "errors": [
       {
         "failed_operation": {
-          "tool": "automations.peek",
-          "action": "Read final status/result of main HexCrawl team",
-          "safe_locator": "6ad9c2426c7481919bb9f3d2b289e9b9"
+          "tool": "exec_command/python jsonschema",
+          "action": "Validate MB research quality report",
+          "safe_locator": "agent-work/research/requirements/MB-scope-quality.json"
         },
-        "observed_error": "The task was found, but its run result could not be read. Do not infer that it has not run, succeeded, or failed.",
-        "cause_status": "unknown",
-        "recovered": true,
-        "retry_observation": "Found 1 automation."
-      },
-      {
-        "failed_operation": {
-          "tool": "functions.exec / Array.map",
-          "action": "Summarize final automation peeks assuming automations array exists",
-          "safe_locator": "Automation_7690c42b2a7881919aaca4103dcd338f / 6ad9c2426c7481919bb9f3d2b289e9b9"
-        },
-        "observed_error": "TypeError: Cannot read properties of undefined (reading 'map')",
+        "observed_error": "jsonschema.exceptions.ValidationError: 'standard_ref' is a required property",
         "cause_status": "confirmed",
-        "cause_note": "Local summarizer assumed an automations array; inspect underlying response separately. This local error does not establish a service root cause.",
-        "recovered": true,
-        "recovery": "Summarizer now handles missing automations array explicitly; underlying team peek error stored separately."
+        "cause_note": "Local draft omitted mandatory standard_ref; corrected before GitHub write.",
+        "recovered": true
       }
-    ],
-    "error_recovered": true,
-    "stop_reason": "Bounded Shadowdark scope audit complete; recovered diagnostic errors did not stop reachable research. Existingoveralltop5scope reviewed, full alignment not accepted; MB next.",
-    "cause_status": "unknown",
-    "cause_note": "Service error cause unknown. Separate local summarizer error confirmed and corrected. Neither is evidence of GitHub failure or missing consent.",
-    "saved_results": [
-      "agent-work/research/requirements/SD-CORE-scope-audit.json",
-      "agent-work/market/rules/Shadowdark-Core.json",
-      "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
-      "agent-work/research/requirements/SD-CORE.md",
-      "agent-work/research/requirements/SD-terrain-mapping-v1.json",
-      "agent-work/research/requirements/SD-CORE-scope-quality.json",
-      "agent-work/research/handoffs/2026-11-16-SD-scope-audit-1794860977098-strategist.json",
-      "agent-work/research/README.md",
-      "agent-work/research/state.json",
-      "agent-work/research/work-plan.json",
-      "agent-work/claims/2026-11-16-SD-scope-audit-1794860977098.json",
-      "agent-work/research/runs/2026-11-16-SD-scope-audit-1794860977098.json"
-    ],
-    "exact_continuation": "MB: ревизия уже собранного MythicBastionland — agent-work/market/rules/MB-Realm-Sheets.json, MB-Quickstart.json, MB-author-FAQ-2025.json и связанные обзоры/передачи/evidence. Перечитать свежиеSHA/claims, дать каждой существующей строке предметное решение product-scope-filter. Сохранить первичный смысл/неизвестное; currentL1 только с действием/объектом/проверяемым результатом и связью с принятыми функциями. Не повторять полный скан и не отменять утверждённую функциональность. Затем WWN/OSE/PF1/ROOT/CAIRN2/DH/VAARN по свежей достижимости из сохранённого инвентаря. После всей ретроспективы — незавершённые источниковые/фактические проверки overalltop5 поRA-Q01–15, затем свежийcreate-top10; закрытые5срезов без нового основания не повторять.",
-    "needs_owner_action": false,
-    "owner_action": null,
-    "nonblocking_owner_decision_rows": [
-      "SD-CORE-055-L1",
-      "SD-CORE-056-L1",
-      "SD-CORE-057-L1",
-      "SD-CORE-057-L3"
     ]
   },
   "latest_recent_survey_audit": {
@@ -2253,7 +2117,7 @@
   },
   "retrospective_scope_audit": {
     "id": "HX-RSR-RETROSPECTIVE-PRODUCT-SCOPE-v1",
-    "status": "overall_top5_existing_scope_reviewed_MB_next",
+    "status": "existing_top5_and_MB_scope_reviewed_WWN_next",
     "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
     "priority": "before_new_source_expansion",
     "completion_condition": "Every previously collected row has reasoned scope disposition; working overviews/handoffs corrected; no unrelated subsystem proposals carried as app requirements.",
@@ -2288,11 +2152,9 @@
       "needs_owner_decision"
     ],
     "cursor": {
-      "game_id": "MB",
+      "game_id": "WWN",
       "artifacts": [
-        "agent-work/market/rules/MB-Realm-Sheets.json",
-        "agent-work/market/rules/MB-Quickstart.json",
-        "agent-work/market/rules/MB-author-FAQ-2025.json"
+        "agent-work/market/rules/WWN-Deluxe-RU.json"
       ],
       "next_entry": "first_existing_row_after_inventory"
     },
@@ -2300,7 +2162,7 @@
     "review_completed": false,
     "PF2_completed": true,
     "PF2_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
-    "exact_continuation": "MB: ревизия уже собранного MythicBastionland — agent-work/market/rules/MB-Realm-Sheets.json, MB-Quickstart.json, MB-author-FAQ-2025.json и связанные обзоры/передачи/evidence. Перечитать свежиеSHA/claims, дать каждой существующей строке предметное решение product-scope-filter. Сохранить первичный смысл/неизвестное; currentL1 только с действием/объектом/проверяемым результатом и связью с принятыми функциями. Не повторять полный скан и не отменять утверждённую функциональность. Затем WWN/OSE/PF1/ROOT/CAIRN2/DH/VAARN по свежей достижимости из сохранённого инвентаря. После всей ретроспективы — незавершённые источниковые/фактические проверки overalltop5 поRA-Q01–15, затем свежийcreate-top10; закрытые5срезов без нового основания не повторять.",
+    "exact_continuation": "Ретроспектива WWN: все существующие строки agent-work/market/rules/WWN-Deluxe-RU.json и связанные обзоры/передачи; сначала свежие SHA/claims/решения, затем reasoned disposition для каждой строки, конкретный объект карты и проверяемый результат. Не сканировать новую книгу/главы и не расширять корпус. Источники/статусы/evidence сохранить. Затем OSE/PF1/ROOT/CAIRN2/DH/VAARN по сохранённому инвентарю и свежей достижимости; закрытый MB и top5scope не повторять без нового основания. После ретроспективы — незакрытое полное выравнивание overalltop5, затем актуальный create-top10.",
     "DND5_completed": true,
     "DND5_audit_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
     "KNAVE2_completed": true,
@@ -2312,14 +2174,6 @@
     "overall_top5_scope_review_completed": true,
     "overall_top5_alignment_accepted": false,
     "remaining_existing_games": [
-      {
-        "game_id": "MB",
-        "paths": [
-          "agent-work/market/rules/MB-Realm-Sheets.json",
-          "agent-work/market/rules/MB-Quickstart.json",
-          "agent-work/market/rules/MB-author-FAQ-2025.json"
-        ]
-      },
       {
         "game_id": "WWN",
         "paths": [
@@ -2363,7 +2217,9 @@
           "agent-work/market/rules/Vaarn-Hexfill-2024.json"
         ]
       }
-    ]
+    ],
+    "MB_completed": true,
+    "MB_audit_ref": "agent-work/research/requirements/MB-scope-audit.json"
   },
   "owner_scope_policy_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
   "last_scope_policy_update": {
@@ -2545,8 +2401,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-16T20:39:57.179Z",
-  "last_bounded_completed_run": "2026-11-16-PF2-scope-audit-1794836736442",
+  "last_run_at": "2026-11-16T23:32:36.163Z",
+  "last_bounded_completed_run": "2026-11-17-MB-scope-audit-1794871662233",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -2559,9 +2415,8 @@
       "needs_owner_decision": 5,
       "integration_L3": 1
     },
-    "next_game": "MB",
+    "next_game": "WWN",
     "remaining_games": [
-      "MB",
       "WWN",
       "OSE",
       "PF1",
@@ -2576,7 +2431,8 @@
       "DND5",
       "KNAVE2",
       "CROWS",
-      "SD"
+      "SD",
+      "MB"
     ],
     "DND5_counts": {
       "draft24": {
@@ -2609,14 +2465,6 @@
     },
     "CROWS_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json",
     "remaining_inventory": [
-      {
-        "game_id": "MB",
-        "paths": [
-          "agent-work/market/rules/MB-Realm-Sheets.json",
-          "agent-work/market/rules/MB-Quickstart.json",
-          "agent-work/market/rules/MB-author-FAQ-2025.json"
-        ]
-      },
       {
         "game_id": "WWN",
         "paths": [
@@ -2668,7 +2516,17 @@
       "out_of_scope": 106,
       "needs_owner_decision": 4
     },
-    "SD_audit_ref": "agent-work/research/requirements/SD-CORE-scope-audit.json"
+    "SD_audit_ref": "agent-work/research/requirements/SD-CORE-scope-audit.json",
+    "MB_counts": {
+      "source_groups": 9,
+      "requirements": 9,
+      "keep_L1": 8,
+      "defer_L2": 1,
+      "integration_L3": 0,
+      "out_of_scope": 0,
+      "needs_owner_decision": 0
+    },
+    "MB_audit_ref": "agent-work/research/requirements/MB-scope-audit.json"
   },
   "latest_PF2_scope_audit": {
     "status": "completed_bounded_scope_audit",
@@ -2902,5 +2760,91 @@
     "source_complete_rechecked": false,
     "product_retested": false,
     "full_game_accepted": false
+  },
+  "previous_checkpoint_before_MB_scope_audit": {
+    "status": "completed_bounded_SD_scope_audit_remaining_games_pending",
+    "run_id": "2026-11-16-SD-scope-audit-1794860977098",
+    "stage": "SD98groups165requirements_scope_review_complete",
+    "last_successful_step": "98groups/165requirements reviewed;18currentL1ops/quality schema-valid; source/status preservation verified; team status recovered on reread.",
+    "failed_operation": {
+      "tool": "automations.peek",
+      "action": "Read final status/result of main HexCrawl team",
+      "safe_locator": "6ad9c2426c7481919bb9f3d2b289e9b9"
+    },
+    "observed_error": "The task was found, but its run result could not be read. Do not infer that it has not run, succeeded, or failed.",
+    "errors": [
+      {
+        "failed_operation": {
+          "tool": "automations.peek",
+          "action": "Read final status/result of main HexCrawl team",
+          "safe_locator": "6ad9c2426c7481919bb9f3d2b289e9b9"
+        },
+        "observed_error": "The task was found, but its run result could not be read. Do not infer that it has not run, succeeded, or failed.",
+        "cause_status": "unknown",
+        "recovered": true,
+        "retry_observation": "Found 1 automation."
+      },
+      {
+        "failed_operation": {
+          "tool": "functions.exec / Array.map",
+          "action": "Summarize final automation peeks assuming automations array exists",
+          "safe_locator": "Automation_7690c42b2a7881919aaca4103dcd338f / 6ad9c2426c7481919bb9f3d2b289e9b9"
+        },
+        "observed_error": "TypeError: Cannot read properties of undefined (reading 'map')",
+        "cause_status": "confirmed",
+        "cause_note": "Local summarizer assumed an automations array; inspect underlying response separately. This local error does not establish a service root cause.",
+        "recovered": true,
+        "recovery": "Summarizer now handles missing automations array explicitly; underlying team peek error stored separately."
+      }
+    ],
+    "error_recovered": true,
+    "stop_reason": "Bounded Shadowdark scope audit complete; recovered diagnostic errors did not stop reachable research. Existingoveralltop5scope reviewed, full alignment not accepted; MB next.",
+    "cause_status": "unknown",
+    "cause_note": "Service error cause unknown. Separate local summarizer error confirmed and corrected. Neither is evidence of GitHub failure or missing consent.",
+    "saved_results": [
+      "agent-work/research/requirements/SD-CORE-scope-audit.json",
+      "agent-work/market/rules/Shadowdark-Core.json",
+      "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+      "agent-work/research/requirements/SD-CORE.md",
+      "agent-work/research/requirements/SD-terrain-mapping-v1.json",
+      "agent-work/research/requirements/SD-CORE-scope-quality.json",
+      "agent-work/research/handoffs/2026-11-16-SD-scope-audit-1794860977098-strategist.json",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/claims/2026-11-16-SD-scope-audit-1794860977098.json",
+      "agent-work/research/runs/2026-11-16-SD-scope-audit-1794860977098.json"
+    ],
+    "exact_continuation": "MB: ревизия уже собранного MythicBastionland — agent-work/market/rules/MB-Realm-Sheets.json, MB-Quickstart.json, MB-author-FAQ-2025.json и связанные обзоры/передачи/evidence. Перечитать свежиеSHA/claims, дать каждой существующей строке предметное решение product-scope-filter. Сохранить первичный смысл/неизвестное; currentL1 только с действием/объектом/проверяемым результатом и связью с принятыми функциями. Не повторять полный скан и не отменять утверждённую функциональность. Затем WWN/OSE/PF1/ROOT/CAIRN2/DH/VAARN по свежей достижимости из сохранённого инвентаря. После всей ретроспективы — незавершённые источниковые/фактические проверки overalltop5 поRA-Q01–15, затем свежийcreate-top10; закрытые5срезов без нового основания не повторять.",
+    "needs_owner_action": false,
+    "owner_action": null,
+    "nonblocking_owner_decision_rows": [
+      "SD-CORE-055-L1",
+      "SD-CORE-056-L1",
+      "SD-CORE-057-L1",
+      "SD-CORE-057-L3"
+    ]
+  },
+  "latest_MB_scope_audit": {
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "counts": {
+      "source_groups": 9,
+      "requirements": 9,
+      "keep_L1": 8,
+      "defer_L2": 1,
+      "integration_L3": 0,
+      "out_of_scope": 0,
+      "needs_owner_decision": 0
+    },
+    "distinct_L1_operations": 7,
+    "component_counts": {
+      "keep_L1": 0,
+      "defer_L2": 1,
+      "integration_L3": 0,
+      "out_of_scope": 5,
+      "needs_owner_decision": 5
+    },
+    "result_ref": "agent-work/research/runs/2026-11-17-MB-scope-audit-1794871662233.json",
+    "product_support_reverified": false
   }
 }

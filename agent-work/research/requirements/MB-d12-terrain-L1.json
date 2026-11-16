@@ -213,5 +213,77 @@
         "Source discovery is not implementation evidence, score or audience measurement."
       ]
     }
-  ]
+  ],
+  "current_scope_review": {
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "disposition": "keep_L1",
+    "reason": "Создание группы рельефа — принятая функция MB. Отдельный новый d12-режим из ложной предпосылки о d20 не нужен.",
+    "product_boundary": "Генерация области MB; расширение без потери карты",
+    "current_operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-001",
+      "normative_kind": "realm_sheet_creation_procedure",
+      "applicability": "Official free MB Realm Sheets snapshot,PDF1Wilderness first sentence; conscious product profile selection",
+      "layer": "L1",
+      "trigger_or_user_action": "тип местности; исход d12=1…12 гексов; доступная область",
+      "inputs_and_units": {
+        "accepted_profile": "В свободном обычном случае исходы1/7/12 дают1/7/12 гексов одного типа; повторное открытие не перебрасывает результат."
+      },
+      "product_operation": "тип местности; исход d12=1…12 гексов; доступная область",
+      "expected_output": "Первый регион11/12, заполнение замкнутых карманов и обработка края следуют принятому профилю; правило книги не отменяет их.",
+      "constraints_and_exceptions": [
+        null,
+        "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "MB-REALM-001-L1-SCOPE-AC01",
+          "given": "В свободном обычном случае исходы1/7/12 дают1/7/12 гексов одного типа; повторное открытие не перебрасывает результат.",
+          "when": "тип местности; исход d12=1…12 гексов; доступная область",
+          "expected": "Первый регион11/12, заполнение замкнутых карманов и обработка края следуют принятому профилю; правило книги не отменяет их."
+        }
+      ],
+      "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+      "canonical_rule_refs": [
+        "map.extend_preserving_content",
+        "map.terrain_zones"
+      ],
+      "unresolved_parameters": [
+        "Правило обработки края, тесной области, недостижения размера.",
+        "Точная связность/порядок роста/выбор типа и соседей.",
+        "Эквивалентность текущей финальной книге/Quickstart; фактическая поддержка HexCrawl."
+      ]
+    },
+    "implementation": {
+      "status": "not_reverified",
+      "comment": "В MB уже используется равномерная цель1–12. Проверенные свободные группы1/7/12 дают1/7/12. Первый регион11/12 и поглощение замкнутых карманов могут увеличить фактический размер; это ТЗ владельца, не пропущенная реализацияd12. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+      "historical_status": "partial",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-001-L1"
+    },
+    "components": [
+      {
+        "id": "MB-SCOPE-C01",
+        "requirement_id": "MB-REALM-001-L1",
+        "disposition": "out_of_scope",
+        "component": "Новый обязательный d12-режим вместо якобы d20 вMB",
+        "reason": "Существующий MB d12 подтверждён старым аудитом; ложная предпосылка не создаёт функцию.",
+        "product_boundary": "Генерация области MB; расширение без потери карты",
+        "accepted_working_scope": false
+      },
+      {
+        "id": "MB-SCOPE-C02",
+        "requirement_id": "MB-REALM-001-L1",
+        "disposition": "needs_owner_decision",
+        "component": "Принудительно точный размер вопреки первому региону/карманам",
+        "reason": "Предлагаемый альтернативный профиль не отменяет принятые исключения; вне принятого рабочего объёма.",
+        "product_boundary": "Генерация области MB; расширение без потери карты",
+        "accepted_working_scope": false
+      }
+    ],
+    "historical_proposals_are_not_active_queue": true,
+    "working_handoff": "Research reconciliation only. Reuse existing behavior; no task creation/restoration or implementation authorization.",
+    "implementation_authorized": false,
+    "release_authorized": false
+  }
 }

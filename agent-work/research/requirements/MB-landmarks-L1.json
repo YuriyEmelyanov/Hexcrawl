@@ -204,5 +204,69 @@
       "HX-BL-053"
     ],
     "reason": "053 already fixed-set placement and labels. This is another source-verified profile of the same capabilities; existing product reuse must be checked before development. No scope change to active/approved041/043."
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "disposition": "keep_L1",
+    "reason": "Шесть видов ориентиров — существующая пространственная генерация, а не повод вводить отдельный редактор вектора квот.",
+    "product_boundary": "Генератор ориентиров, значки, редакторPOI",
+    "current_operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005",
+      "normative_kind": "realm_sheet_creation_procedure",
+      "applicability": "Official MB Realm Sheet pinned snapshot, PDF1 LANDMARKS count/marking sentences plus six headings; one Realm preparation",
+      "layer": "L1",
+      "trigger_or_user_action": "Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins;количество3или4на вид",
+      "inputs_and_units": {
+        "accepted_profile": "Управляемый выбор всех3даёт18ориентиров, всех4 —24; сочетание3/4/3/4/3/4 —21; значки отражают виды."
+      },
+      "product_operation": "Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins;количество3или4на вид",
+      "expected_output": "Значки — допустимая альтернатива буквам. После ручных правок не навязывать восстановление квоты; отдельный UI заданного вектора не принят.",
+      "constraints_and_exceptions": [
+        null,
+        "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "MB-REALM-005-L1-SCOPE-AC01",
+          "given": "Управляемый выбор всех3даёт18ориентиров, всех4 —24; сочетание3/4/3/4/3/4 —21; значки отражают виды.",
+          "when": "Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins;количество3или4на вид",
+          "expected": "Значки — допустимая альтернатива буквам. После ручных правок не навязывать восстановление квоты; отдельный UI заданного вектора не принят."
+        }
+      ],
+      "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+      "canonical_rule_refs": [
+        "content.site_density",
+        "map.reference_labels"
+      ],
+      "unresolved_parameters": [
+        "Алгоритм выбора3или4 и размещения каждого вида.",
+        "Соответствие Realm единице текущего генератора, правила дополнения и нехватки допустимых мест.",
+        "Переводы/обозначения при совпадающих инициалах и допустимость ручных отступлений — продуктовые решения, не дополнительные параметры источника.",
+        "Описание/эффекты каждого вида и эквивалентность финальной книге не разобраны; фактическая поддержка на SHA unknown."
+      ]
+    },
+    "implementation": {
+      "status": "not_reverified",
+      "comment": "Квота3–4для каждого из6видов, различные значки и сохранение реализованы. Управляемые броски дали18,24и смешанный набор21ориентир. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+      "historical_status": "partial",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-005-L1"
+    },
+    "components": [
+      {
+        "id": "MB-SCOPE-C07",
+        "requirement_id": "MB-REALM-005-L1",
+        "disposition": "needs_owner_decision",
+        "component": "UI заданного вектора квот/автоперебалансировка ручных правок",
+        "reason": "Квота начальной генерации сохранена; новая панель/ограничение не приняты.",
+        "product_boundary": "Генератор ориентиров, значки, редакторPOI",
+        "accepted_working_scope": false
+      }
+    ],
+    "historical_proposals_are_not_active_queue": true,
+    "working_handoff": "Research reconciliation only. Reuse existing behavior; no task creation/restoration or implementation authorization.",
+    "implementation_authorized": false,
+    "release_authorized": false
   }
 }

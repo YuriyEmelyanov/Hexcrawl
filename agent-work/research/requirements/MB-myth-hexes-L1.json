@@ -205,5 +205,78 @@
       "HX-BL-053"
     ],
     "reason": "053 already concerns placing a prescribed set and assigning meaning to its members. Preserve holdings component; add myth-map labels. Active041 covers myth content, not evidence for this profile; no active scope expanded."
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "disposition": "keep_L1",
+    "reason": "Шесть пространственных мест мифов — принятое содержимое карты; это не управление сюжетом.",
+    "product_boundary": "Генерация шести мест мифов и их карточки",
+    "current_operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004",
+      "normative_kind": "realm_sheet_creation_procedure",
+      "applicability": "Official free MB Realm Sheets pinned snapshot, PDF1 MYTH HEXES paragraph only, one prepared Realm",
+      "layer": "L1",
+      "trigger_or_user_action": "один край;6мест;выбранные записи и пары кубов",
+      "inputs_and_units": {
+        "accepted_profile": "После исходной генерации6мест мифов с именами/бросками; сохранение и открытие не меняет выбранные записи."
+      },
+      "product_operation": "один край;6мест;выбранные записи и пары кубов",
+      "expected_output": "Нумерация1–6есть в источнике, но не в принятом интерфейсе по ТЗ владельца. Авто-нумерацию, уникальность каталожных записей и движок Omens не добавлять.",
+      "constraints_and_exceptions": [
+        null,
+        "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "MB-REALM-004-L1-SCOPE-AC01",
+          "given": "После исходной генерации6мест мифов с именами/бросками; сохранение и открытие не меняет выбранные записи.",
+          "when": "один край;6мест;выбранные записи и пары кубов",
+          "expected": "Нумерация1–6есть в источнике, но не в принятом интерфейсе по ТЗ владельца. Авто-нумерацию, уникальность каталожных записей и движок Omens не добавлять."
+        }
+      ],
+      "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+      "canonical_rule_refs": [
+        "content.site_density",
+        "map.reference_labels"
+      ],
+      "unresolved_parameters": [
+        "Численная мера удалённости и автоматическое размещение.",
+        "Соответствие Realm единице генератора и дополнение существующего края.",
+        "Выбор шести мифов, допустимость повторов и материал p27 не проверены.",
+        "Фактическое поведение текущего продукта и точное SHA evidence неизвестны."
+      ]
+    },
+    "implementation": {
+      "status": "not_reverified",
+      "comment": "Генерируются6мест мифов, по одному на дикий регион; есть имена, кубы и сохранённые записи. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+      "historical_status": "partial",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-004-L1"
+    },
+    "components": [
+      {
+        "id": "MB-SCOPE-C05",
+        "requirement_id": "MB-REALM-004-L1",
+        "disposition": "out_of_scope",
+        "component": "Обязательные номера мифов1–6впринятом интерфейсе",
+        "reason": "Источник сохраняется, но вариант продукта без номеров уже утверждён; не новый вопрос и не дефект.",
+        "product_boundary": "Генерация шести мест мифов и их карточки",
+        "accepted_working_scope": false
+      },
+      {
+        "id": "MB-SCOPE-C06",
+        "requirement_id": "MB-REALM-004-L1",
+        "disposition": "out_of_scope",
+        "component": "Движок Omens/сюжета мифов",
+        "reason": "Для пространственного размещения6мест не требуется; управление сюжетом исключено владельцем.",
+        "product_boundary": "Генерация шести мест мифов и их карточки",
+        "accepted_working_scope": false
+      }
+    ],
+    "historical_proposals_are_not_active_queue": true,
+    "working_handoff": "Research reconciliation only. Reuse existing behavior; no task creation/restoration or implementation authorization.",
+    "implementation_authorized": false,
+    "release_authorized": false
   }
 }

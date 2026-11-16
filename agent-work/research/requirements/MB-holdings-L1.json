@@ -208,5 +208,70 @@
     "decision": "New proposed research handoff for bounded set of holdings and Seat of Power; not a separate implementation mandate.",
     "reason": "013 is editor infrastructure; active043 table prompts/current Knave scope not expanded. 049/050 concern factions/territories, 052 campaign base plus linked dungeons. None currently specifies four holdings and one Seat of Power. Reuse common placement/description/roles before selecting development; consolidate later if appropriate.",
     "main_queue_changed": false
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "disposition": "keep_L1",
+    "reason": "Начальное размещение владений входит в наполнение края; персонажи-владельцы нужны только как сведения о месте.",
+    "product_boundary": "Генератор владений и карточка конкретного места",
+    "current_operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003",
+      "normative_kind": "realm_sheet_creation_procedure_with_typical_examples",
+      "applicability": "MB official free Realm Sheets hash-pinned snapshot; PDF1 HOLDINGS paragraph, for one realm being prepared",
+      "layer": "L1",
+      "trigger_or_user_action": "один подготовляемый край;4владения;1резиденция среди них",
+      "inputs_and_units": {
+        "accepted_profile": "Исходная генерация даёт1Престол+3Удела; открытие сохранённой карты восстанавливает эти места."
+      },
+      "product_operation": "один подготовляемый край;4владения;1резиденция среди них",
+      "expected_output": "Качественная удалённость не задаёт численного порога. Ручные изменения без перебалансировки разрешены; автоматическое переназначение единственной роли не принято.",
+      "constraints_and_exceptions": [
+        null,
+        "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "MB-REALM-003-L1-SCOPE-AC01",
+          "given": "Исходная генерация даёт1Престол+3Удела; открытие сохранённой карты восстанавливает эти места.",
+          "when": "один подготовляемый край;4владения;1резиденция среди них",
+          "expected": "Качественная удалённость не задаёт численного порога. Ручные изменения без перебалансировки разрешены; автоматическое переназначение единственной роли не принято."
+        }
+      ],
+      "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+      "canonical_rule_refs": [
+        "content.site_density",
+        "content.place_description"
+      ],
+      "unresolved_parameters": [
+        "Численная дистанция и способ разнесения владений; не подменять их самодельным порогом.",
+        "Соответствие одного Realm единице подготовки текущего генератора и дополнение уже заполненной карты.",
+        "Поведение при недостатке места и изменение целевого количества вне исходного профиля.",
+        "Связь с финальной книгой/Quickstart и другие правила держателей не сверены.",
+        "Фактическая поддержка размещения/роли/сохранения в HexCrawl на точном SHA unknown."
+      ]
+    },
+    "implementation": {
+      "status": "not_reverified",
+      "comment": "Генератор создаёт1Престол+3Удела, Престол получает те же теги владения. Квота и сохранение подтверждены. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+      "historical_status": "partial",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-003-L1"
+    },
+    "components": [
+      {
+        "id": "MB-SCOPE-C04",
+        "requirement_id": "MB-REALM-003-L1",
+        "disposition": "needs_owner_decision",
+        "component": "Автоматически переназначать единственный Престол после ручной правки",
+        "reason": "Отдельная операция не принята; текущие ручные изменения не обязаны сохранять квоты.",
+        "product_boundary": "Генератор владений и карточка конкретного места",
+        "accepted_working_scope": false
+      }
+    ],
+    "historical_proposals_are_not_active_queue": true,
+    "working_handoff": "Research reconciliation only. Reuse existing behavior; no task creation/restoration or implementation authorization.",
+    "implementation_authorized": false,
+    "release_authorized": false
   }
 }

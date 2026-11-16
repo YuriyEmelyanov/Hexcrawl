@@ -207,5 +207,67 @@
     }
   ],
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json",
-  "status": "deferred_future_L2_VTT"
+  "status": "deferred_future_L2_VTT",
+  "current_scope_review": {
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "disposition": "defer_L2",
+    "reason": "Профиль для игроков явно отложен владельцем на общий этап ведения гекскроула/VTT; это не пробел текущего генератора.",
+    "product_boundary": "Будущий общий player-view; owner-decision09.11",
+    "current_operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001",
+      "normative_kind": "optional_author_practice_not_mandatory_rule",
+      "applicability": "Mythic Bastionland authorFAQ17July2025 player-map answer only; conscious selected profile",
+      "layer": "L2",
+      "trigger_or_user_action": "GM-карта;показатьHoldings/terrain;скрытьMyths/Landmarks/Barriers",
+      "inputs_and_units": {
+        "accepted_profile": "В передаваемом представлении естьвладения/общийрельеф, нетмифов/ориентиров/барьеров иихсекретныхподписей;GM-картацелая."
+      },
+      "product_operation": "GM-карта;показатьHoldings/terrain;скрытьMyths/Landmarks/Barriers",
+      "expected_output": "Необязательная авторская практика. Динамическийreveal не задан; фактические каналы вывода требуют будущей проверки.",
+      "constraints_and_exceptions": [
+        null,
+        "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "MB-FAQ-2025-001-L1-SCOPE-AC01",
+          "given": "В передаваемом представлении естьвладения/общийрельеф, нетмифов/ориентиров/барьеров иихсекретныхподписей;GM-картацелая.",
+          "when": "GM-карта;показатьHoldings/terrain;скрытьMyths/Landmarks/Barriers",
+          "expected": "Необязательная авторская практика. Динамическийreveal не задан; фактические каналы вывода требуют будущей проверки."
+        }
+      ],
+      "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+      "canonical_rule_refs": [
+        "map.audience_views"
+      ],
+      "unresolved_parameters": [
+        "Какие каналы копирования/экспорта реально поддерживает HexCrawl и что доступно получателю.",
+        "Частное раскрытие отдельных объектов и дальнейшее исследование не заданы FAQ.",
+        "Правила основной книги/конкретной печати и полная карта L1 не разобраны."
+      ]
+    },
+    "implementation": {
+      "status": "not_reverified",
+      "comment": "Отдельный профиль игроков отсутствует в текущем продукте; относится к будущему этапуVTT. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+      "historical_status": "deferred_future_VTT_stage",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-FAQ-2025-001-L1"
+    },
+    "components": [
+      {
+        "id": "MB-SCOPE-C11",
+        "requirement_id": "MB-FAQ-2025-001-L1",
+        "disposition": "needs_owner_decision",
+        "component": "Автоматическое раскрытие по посещению",
+        "reason": "FAQ задаёт статическую авторскую практику, не протокол динамическогоreveal; нет принятой зависимости.",
+        "product_boundary": "Будущий общий player-view; owner-decision09.11",
+        "accepted_working_scope": false
+      }
+    ],
+    "historical_proposals_are_not_active_queue": true,
+    "working_handoff": "Research reconciliation only. Reuse existing behavior; no task creation/restoration or implementation authorization.",
+    "implementation_authorized": false,
+    "release_authorized": false
+  }
 }

@@ -172,6 +172,55 @@
             "actual_behavior": "В MB уже используется равномерная цель1–12. Проверенные свободные группы1/7/12 дают1/7/12. Первый регион11/12 и поглощение замкнутых карманов могут увеличить фактический размер; это ТЗ владельца, не пропущенная реализацияd12.",
             "remaining_or_product_choice": "Не создавать новый MB d12-режим из предположения о d20. Общая задача008 может остаться для других профилей; точный размер/выбор типа и принудительного броска — отдельный продуктовый выбор.",
             "formal_score_coverage_transfer": false
+          },
+          "scope_review": {
+            "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+            "disposition": "keep_L1",
+            "reason": "Создание группы рельефа — принятая функция MB. Отдельный новый d12-режим из ложной предпосылки о d20 не нужен.",
+            "product_boundary": "Генерация области MB; расширение без потери карты",
+            "audit_ref": "agent-work/research/requirements/MB-scope-audit.json#MB-REALM-001-L1",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-001",
+              "normative_kind": "realm_sheet_creation_procedure",
+              "applicability": "Official free MB Realm Sheets snapshot,PDF1Wilderness first sentence; conscious product profile selection",
+              "layer": "L1",
+              "trigger_or_user_action": "тип местности; исход d12=1…12 гексов; доступная область",
+              "inputs_and_units": {
+                "accepted_profile": "В свободном обычном случае исходы1/7/12 дают1/7/12 гексов одного типа; повторное открытие не перебрасывает результат."
+              },
+              "product_operation": "тип местности; исход d12=1…12 гексов; доступная область",
+              "expected_output": "Первый регион11/12, заполнение замкнутых карманов и обработка края следуют принятому профилю; правило книги не отменяет их.",
+              "constraints_and_exceptions": [
+                null,
+                "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "MB-REALM-001-L1-SCOPE-AC01",
+                  "given": "В свободном обычном случае исходы1/7/12 дают1/7/12 гексов одного типа; повторное открытие не перебрасывает результат.",
+                  "when": "тип местности; исход d12=1…12 гексов; доступная область",
+                  "expected": "Первый регион11/12, заполнение замкнутых карманов и обработка края следуют принятому профилю; правило книги не отменяет их."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+              "canonical_rule_refs": [
+                "map.extend_preserving_content",
+                "map.terrain_zones"
+              ],
+              "unresolved_parameters": [
+                "Правило обработки края, тесной области, недостижения размера.",
+                "Точная связность/порядок роста/выбор типа и соседей.",
+                "Эквивалентность текущей финальной книге/Quickstart; фактическая поддержка HexCrawl."
+              ]
+            },
+            "current_implementation": {
+              "status": "not_reverified",
+              "comment": "В MB уже используется равномерная цель1–12. Проверенные свободные группы1/7/12 дают1/7/12. Первый регион11/12 и поглощение замкнутых карманов могут увеличить фактический размер; это ТЗ владельца, не пропущенная реализацияd12. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+              "historical_status": "partial",
+              "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+              "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-001-L1"
+            },
+            "new_development_authorized": false
           }
         },
         {
@@ -324,6 +373,55 @@
             "actual_behavior": "Грани-препятствия создаются, редактируются, сохраняются; дороги не проходят сквозь них. Есть24стабильных уникальных объекта в144гексах.",
             "remaining_or_product_choice": "Игровая проходимость при движении партии —L2; отсутствие движка перемещения не дефектL1. Один объект на грань — текущая модель, источник не требует группировать несколько граней.",
             "formal_score_coverage_transfer": false
+          },
+          "scope_review": {
+            "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+            "disposition": "keep_L1",
+            "reason": "Барьер — редактируемая граница карты; это L1, а не симулятор пересечения.",
+            "product_boundary": "Грани-препятствия и ручной редактор карты",
+            "audit_ref": "agent-work/research/requirements/MB-scope-audit.json#MB-REALM-002-L1",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002",
+              "normative_kind": "realm_sheet_creation_procedure_with_unresolved_selection_parameters",
+              "applicability": "Official free MBRealmSheet hashpinned snapshot; PDF1Wilderness barrier paragraph only",
+              "layer": "L1",
+              "trigger_or_user_action": "соседние гексыA/B; общая граньE; наличие барьера",
+              "inputs_and_units": {
+                "accepted_profile": "После нанесенияE отмечена со стороныA иB; снятиеE не меняет рельеф иPOI; сохранение восстанавливает выбор."
+              },
+              "product_operation": "соседние гексыA/B; общая граньE; наличие барьера",
+              "expected_output": "Непроходимость — характеристика границы; движение/способы обхода относятся кL2. Не замыкать все6граней.",
+              "constraints_and_exceptions": [
+                null,
+                "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "MB-REALM-002-L1-SCOPE-AC01",
+                  "given": "После нанесенияE отмечена со стороныA иB; снятиеE не меняет рельеф иPOI; сохранение восстанавливает выбор.",
+                  "when": "соседние гексыA/B; общая граньE; наличие барьера",
+                  "expected": "Непроходимость — характеристика границы; движение/способы обхода относятся кL2. Не замыкать все6граней."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+              "canonical_rule_refs": [
+                "map.routes_and_barriers"
+              ],
+              "unresolved_parameters": [
+                "Случайный/ручной способ выбора1-in-6; квота/вероятность/округление и пограничные случаи.",
+                "Сколько сторон и какие стороны очерчивать; пересечения/стыки/край карты.",
+                "Какие необычные средства пересечения возможны; L2процедура не разобрана.",
+                "Текущая поддержка границ в HexCrawl и эквивалентность финальной книге."
+              ]
+            },
+            "current_implementation": {
+              "status": "not_reverified",
+              "comment": "Грани-препятствия создаются, редактируются, сохраняются; дороги не проходят сквозь них. Есть24стабильных уникальных объекта в144гексах. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+              "historical_status": "partial",
+              "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+              "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-002-L1"
+            },
+            "new_development_authorized": false
           }
         },
         {
@@ -486,6 +584,57 @@
             "actual_behavior": "Генератор создаёт1Престол+3Удела, Престол получает те же теги владения. Квота и сохранение подтверждены.",
             "remaining_or_product_choice": "После ручной смены типа можно получить2Престола; ТЗ разрешает ручные изменения без перебалансировки. Нет автоматической операции переназначения единственного Престола с сохранением формы. Не требовать её как исправления исходной генерации; численная дистанция источником не задана.",
             "formal_score_coverage_transfer": false
+          },
+          "scope_review": {
+            "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+            "disposition": "keep_L1",
+            "reason": "Начальное размещение владений входит в наполнение края; персонажи-владельцы нужны только как сведения о месте.",
+            "product_boundary": "Генератор владений и карточка конкретного места",
+            "audit_ref": "agent-work/research/requirements/MB-scope-audit.json#MB-REALM-003-L1",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003",
+              "normative_kind": "realm_sheet_creation_procedure_with_typical_examples",
+              "applicability": "MB official free Realm Sheets hash-pinned snapshot; PDF1 HOLDINGS paragraph, for one realm being prepared",
+              "layer": "L1",
+              "trigger_or_user_action": "один подготовляемый край;4владения;1резиденция среди них",
+              "inputs_and_units": {
+                "accepted_profile": "Исходная генерация даёт1Престол+3Удела; открытие сохранённой карты восстанавливает эти места."
+              },
+              "product_operation": "один подготовляемый край;4владения;1резиденция среди них",
+              "expected_output": "Качественная удалённость не задаёт численного порога. Ручные изменения без перебалансировки разрешены; автоматическое переназначение единственной роли не принято.",
+              "constraints_and_exceptions": [
+                null,
+                "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "MB-REALM-003-L1-SCOPE-AC01",
+                  "given": "Исходная генерация даёт1Престол+3Удела; открытие сохранённой карты восстанавливает эти места.",
+                  "when": "один подготовляемый край;4владения;1резиденция среди них",
+                  "expected": "Качественная удалённость не задаёт численного порога. Ручные изменения без перебалансировки разрешены; автоматическое переназначение единственной роли не принято."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+              "canonical_rule_refs": [
+                "content.site_density",
+                "content.place_description"
+              ],
+              "unresolved_parameters": [
+                "Численная дистанция и способ разнесения владений; не подменять их самодельным порогом.",
+                "Соответствие одного Realm единице подготовки текущего генератора и дополнение уже заполненной карты.",
+                "Поведение при недостатке места и изменение целевого количества вне исходного профиля.",
+                "Связь с финальной книгой/Quickstart и другие правила держателей не сверены.",
+                "Фактическая поддержка размещения/роли/сохранения в HexCrawl на точном SHA unknown."
+              ]
+            },
+            "current_implementation": {
+              "status": "not_reverified",
+              "comment": "Генератор создаёт1Престол+3Удела, Престол получает те же теги владения. Квота и сохранение подтверждены. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+              "historical_status": "partial",
+              "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+              "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-003-L1"
+            },
+            "new_development_authorized": false
           }
         },
         {
@@ -646,6 +795,56 @@
             "actual_behavior": "Генерируются6мест мифов, по одному на дикий регион; есть имена, кубы и сохранённые записи.",
             "remaining_or_product_choice": "Номеров1–6нет по явному ТЗ владельца. Не добавлять их молча. Численной нормы удалённости и обязательной уникальности6каталожных мифов источник не дал.",
             "formal_score_coverage_transfer": false
+          },
+          "scope_review": {
+            "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+            "disposition": "keep_L1",
+            "reason": "Шесть пространственных мест мифов — принятое содержимое карты; это не управление сюжетом.",
+            "product_boundary": "Генерация шести мест мифов и их карточки",
+            "audit_ref": "agent-work/research/requirements/MB-scope-audit.json#MB-REALM-004-L1",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004",
+              "normative_kind": "realm_sheet_creation_procedure",
+              "applicability": "Official free MB Realm Sheets pinned snapshot, PDF1 MYTH HEXES paragraph only, one prepared Realm",
+              "layer": "L1",
+              "trigger_or_user_action": "один край;6мест;выбранные записи и пары кубов",
+              "inputs_and_units": {
+                "accepted_profile": "После исходной генерации6мест мифов с именами/бросками; сохранение и открытие не меняет выбранные записи."
+              },
+              "product_operation": "один край;6мест;выбранные записи и пары кубов",
+              "expected_output": "Нумерация1–6есть в источнике, но не в принятом интерфейсе по ТЗ владельца. Авто-нумерацию, уникальность каталожных записей и движок Omens не добавлять.",
+              "constraints_and_exceptions": [
+                null,
+                "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "MB-REALM-004-L1-SCOPE-AC01",
+                  "given": "После исходной генерации6мест мифов с именами/бросками; сохранение и открытие не меняет выбранные записи.",
+                  "when": "один край;6мест;выбранные записи и пары кубов",
+                  "expected": "Нумерация1–6есть в источнике, но не в принятом интерфейсе по ТЗ владельца. Авто-нумерацию, уникальность каталожных записей и движок Omens не добавлять."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+              "canonical_rule_refs": [
+                "content.site_density",
+                "map.reference_labels"
+              ],
+              "unresolved_parameters": [
+                "Численная мера удалённости и автоматическое размещение.",
+                "Соответствие Realm единице генератора и дополнение существующего края.",
+                "Выбор шести мифов, допустимость повторов и материал p27 не проверены.",
+                "Фактическое поведение текущего продукта и точное SHA evidence неизвестны."
+              ]
+            },
+            "current_implementation": {
+              "status": "not_reverified",
+              "comment": "Генерируются6мест мифов, по одному на дикий регион; есть имена, кубы и сохранённые записи. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+              "historical_status": "partial",
+              "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+              "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-004-L1"
+            },
+            "new_development_authorized": false
           }
         },
         {
@@ -813,6 +1012,56 @@
             "actual_behavior": "Квота3–4для каждого из6видов, различные значки и сохранение реализованы. Управляемые броски дали18,24и смешанный набор21ориентир.",
             "remaining_or_product_choice": "В исследовательских примерах дополнительно предложены заданный вектор количеств/проверка комплектности после правок. Они не буквальное правило источника и не основание заново разрабатывать квоты/значки.",
             "formal_score_coverage_transfer": false
+          },
+          "scope_review": {
+            "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+            "disposition": "keep_L1",
+            "reason": "Шесть видов ориентиров — существующая пространственная генерация, а не повод вводить отдельный редактор вектора квот.",
+            "product_boundary": "Генератор ориентиров, значки, редакторPOI",
+            "audit_ref": "agent-work/research/requirements/MB-scope-audit.json#MB-REALM-005-L1",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005",
+              "normative_kind": "realm_sheet_creation_procedure",
+              "applicability": "Official MB Realm Sheet pinned snapshot, PDF1 LANDMARKS count/marking sentences plus six headings; one Realm preparation",
+              "layer": "L1",
+              "trigger_or_user_action": "Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins;количество3или4на вид",
+              "inputs_and_units": {
+                "accepted_profile": "Управляемый выбор всех3даёт18ориентиров, всех4 —24; сочетание3/4/3/4/3/4 —21; значки отражают виды."
+              },
+              "product_operation": "Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins;количество3или4на вид",
+              "expected_output": "Значки — допустимая альтернатива буквам. После ручных правок не навязывать восстановление квоты; отдельный UI заданного вектора не принят.",
+              "constraints_and_exceptions": [
+                null,
+                "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "MB-REALM-005-L1-SCOPE-AC01",
+                  "given": "Управляемый выбор всех3даёт18ориентиров, всех4 —24; сочетание3/4/3/4/3/4 —21; значки отражают виды.",
+                  "when": "Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins;количество3или4на вид",
+                  "expected": "Значки — допустимая альтернатива буквам. После ручных правок не навязывать восстановление квоты; отдельный UI заданного вектора не принят."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+              "canonical_rule_refs": [
+                "content.site_density",
+                "map.reference_labels"
+              ],
+              "unresolved_parameters": [
+                "Алгоритм выбора3или4 и размещения каждого вида.",
+                "Соответствие Realm единице текущего генератора, правила дополнения и нехватки допустимых мест.",
+                "Переводы/обозначения при совпадающих инициалах и допустимость ручных отступлений — продуктовые решения, не дополнительные параметры источника.",
+                "Описание/эффекты каждого вида и эквивалентность финальной книге не разобраны; фактическая поддержка на SHA unknown."
+              ]
+            },
+            "current_implementation": {
+              "status": "not_reverified",
+              "comment": "Квота3–4для каждого из6видов, различные значки и сохранение реализованы. Управляемые броски дали18,24и смешанный набор21ориентир. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+              "historical_status": "partial",
+              "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+              "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-005-L1"
+            },
+            "new_development_authorized": false
           }
         },
         {
@@ -1009,6 +1258,55 @@
             "actual_behavior": "Отдельный бросокd6+d12выбирает Провидца;1/1→The Rotted Seer,1/2→The Swollen Seer. В продукте72имени; кубы/имя сохраняются и перебрасываются независимо от описания святилища.",
             "remaining_or_product_choice": "Прямой lookup эквивалентен переходу через рыцаря для проверенных пар. Не создавать функцию лишь ради хранения промежуточного рыцаря/страницы. Полная первичная сверка остальных70карточек не проведена.",
             "formal_score_coverage_transfer": false
+          },
+          "scope_review": {
+            "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+            "disposition": "keep_L1",
+            "reason": "Провидец — простое необходимое содержимое конкретного святилища и прямо утверждённая функция; генератор личностей/персонажей из этого не следует.",
+            "product_boundary": "Карточка святилища: независимый бросок Провидца",
+            "audit_ref": "agent-work/research/requirements/MB-scope-audit.json#MB-REALM-006-L1",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-006",
+              "normative_kind": "realm_sheet_creation_procedure_with_bounded_quickstart_dependency",
+              "applicability": "Realm Sheet Sanctums clause, operationally resolved with official Quickstart snapshot p14/26/28/30; no whole-book equivalence",
+              "layer": "L1",
+              "trigger_or_user_action": "выбранное святилище;d6=1…6;d12=1…12;известная таблица связей",
+              "inputs_and_units": {
+                "accepted_profile": "Пара1/1даётThe Rotted Seer,1/2даётThe Swollen Seer; переброс Провидца не меняет описание святилища; открытие сохраняет имя/кубы."
+              },
+              "product_operation": "выбранное святилище;d6=1…6;d12=1…12;известная таблица связей",
+              "expected_output": "Прямой lookup допустим для проверенных цепочек; не нужен обязательный промежуточный объект рыцаря. Остальные70связей не подтверждены первоисточником.",
+              "constraints_and_exceptions": [
+                null,
+                "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "MB-REALM-006-L1-SCOPE-AC01",
+                  "given": "Пара1/1даётThe Rotted Seer,1/2даётThe Swollen Seer; переброс Провидца не меняет описание святилища; открытие сохраняет имя/кубы.",
+                  "when": "выбранное святилище;d6=1…6;d12=1…12;известная таблица связей",
+                  "expected": "Прямой lookup допустим для проверенных цепочек; не нужен обязательный промежуточный объект рыцаря. Остальные70связей не подтверждены первоисточником."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+              "canonical_rule_refs": [
+                "content.roll_table_resolution",
+                "content.place_description"
+              ],
+              "unresolved_parameters": [
+                "Остальные карточки Провидцев и другие редакции/полная книга не прочитаны.",
+                "Повторный выбор одинакового Провидца для разных святилищ/уникальность не установлены.",
+                "Фактическая поддержка в текущем MB генераторе, сохранение и точное SHA evidence unknown."
+              ]
+            },
+            "current_implementation": {
+              "status": "not_reverified",
+              "comment": "Отдельный бросокd6+d12выбирает Провидца;1/1→The Rotted Seer,1/2→The Swollen Seer. В продукте72имени; кубы/имя сохраняются и перебрасываются независимо от описания святилища. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+              "historical_status": "partial",
+              "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+              "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-006-L1"
+            },
+            "new_development_authorized": false
           }
         },
         {
@@ -1134,5 +1432,12 @@
         "No full-book equivalence, complete72seer catalogue, stats/art/table corpus redistribution or runtime verification."
       ]
     }
-  ]
+  ],
+  "scope_review": {
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "status": "all_existing_identified_requirements_reviewed_not_full_book",
+    "current_view_precedence": "requirements[].scope_review governs current research scope; original requirements/status/evidence remain historical inputs",
+    "product_queue_changed": false
+  }
 }

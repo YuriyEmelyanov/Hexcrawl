@@ -204,5 +204,68 @@
   "source_clarification_refs": [
     "agent-work/research/requirements/MB-barrier-clarification-L1.json"
   ],
-  "clarification_note": "Quickstart p14 explicitly gives target Barriers=N_hexes/6 and one/more edges, plus overridable typical guidelines. Use linked source profile when available; original sheet-only unknowns/AC preserved, not global equivalence."
+  "clarification_note": "Quickstart p14 explicitly gives target Barriers=N_hexes/6 and one/more edges, plus overridable typical guidelines. Use linked source profile when available; original sheet-only unknowns/AC preserved, not global equivalence.",
+  "current_scope_review": {
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "disposition": "keep_L1",
+    "reason": "Барьер — редактируемая граница карты; это L1, а не симулятор пересечения.",
+    "product_boundary": "Грани-препятствия и ручной редактор карты",
+    "current_operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002",
+      "normative_kind": "realm_sheet_creation_procedure_with_unresolved_selection_parameters",
+      "applicability": "Official free MBRealmSheet hashpinned snapshot; PDF1Wilderness barrier paragraph only",
+      "layer": "L1",
+      "trigger_or_user_action": "соседние гексыA/B; общая граньE; наличие барьера",
+      "inputs_and_units": {
+        "accepted_profile": "После нанесенияE отмечена со стороныA иB; снятиеE не меняет рельеф иPOI; сохранение восстанавливает выбор."
+      },
+      "product_operation": "соседние гексыA/B; общая граньE; наличие барьера",
+      "expected_output": "Непроходимость — характеристика границы; движение/способы обхода относятся кL2. Не замыкать все6граней.",
+      "constraints_and_exceptions": [
+        null,
+        "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "MB-REALM-002-L1-SCOPE-AC01",
+          "given": "После нанесенияE отмечена со стороныA иB; снятиеE не меняет рельеф иPOI; сохранение восстанавливает выбор.",
+          "when": "соседние гексыA/B; общая граньE; наличие барьера",
+          "expected": "Непроходимость — характеристика границы; движение/способы обхода относятся кL2. Не замыкать все6граней."
+        }
+      ],
+      "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+      "canonical_rule_refs": [
+        "map.routes_and_barriers"
+      ],
+      "unresolved_parameters": [
+        "Случайный/ручной способ выбора1-in-6; квота/вероятность/округление и пограничные случаи.",
+        "Сколько сторон и какие стороны очерчивать; пересечения/стыки/край карты.",
+        "Какие необычные средства пересечения возможны; L2процедура не разобрана.",
+        "Текущая поддержка границ в HexCrawl и эквивалентность финальной книге."
+      ]
+    },
+    "implementation": {
+      "status": "not_reverified",
+      "comment": "Грани-препятствия создаются, редактируются, сохраняются; дороги не проходят сквозь них. Есть24стабильных уникальных объекта в144гексах. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+      "historical_status": "partial",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-REALM-002-L1"
+    },
+    "components": [
+      {
+        "id": "MB-SCOPE-C03",
+        "requirement_id": "MB-REALM-002-L1",
+        "disposition": "defer_L2",
+        "component": "Пересечение/обход барьера партией",
+        "reason": "Сохранение границыL1 остаётся; вычисление движения/способов преодоления относится кL2.",
+        "product_boundary": "Грани-препятствия и ручной редактор карты",
+        "accepted_working_scope": false
+      }
+    ],
+    "historical_proposals_are_not_active_queue": true,
+    "working_handoff": "Research reconciliation only. Reuse existing behavior; no task creation/restoration or implementation authorization.",
+    "implementation_authorized": false,
+    "release_authorized": false
+  }
 }

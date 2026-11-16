@@ -195,5 +195,68 @@
     "decision": "New primary-source profile clarifies existing barrier proposal044; same canonical rule, no new product task.",
     "related_source_rule": "MB-REALM-002",
     "reason": "Keep original sheet parameters/conditioned AC as historical/source-specific; attach Quickstart clarification and unresolved grouping/rounding. No equivalence/runtime score inferred."
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-17-MB-scope-audit-1794871662233",
+    "audit_ref": "agent-work/research/requirements/MB-scope-audit.json",
+    "disposition": "keep_L1",
+    "reason": "Уточняет профиль тех же барьеров; не отдельная функция и не требование произвольного размера края.",
+    "product_boundary": "Тот же map.routes_and_barriers, фиксированный144-гексовый край",
+    "current_operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-001",
+      "normative_kind": "typical_realm_guideline_explicitly_overridable",
+      "applicability": "Official Quickstart pinned snapshot p14 barrier and Breaking the Rules clauses only; not automatic equivalence to all Realm Sheet rules",
+      "layer": "L1",
+      "trigger_or_user_action": "N=144гекса;ориентирN/6=24барьера;выбранныеграни",
+      "inputs_and_units": {
+        "accepted_profile": "Исходная подготовка144гексов даёт24объекта; ручная правка количества сохраняется без автоматического возвращения к24."
+      },
+      "product_operation": "N=144гекса;ориентирN/6=24барьера;выбранныеграни",
+      "expected_output": "N/6не вероятность на каждую грань. N=10даёт сырой ориентир5/3, округление/группировка не заданы; универсальныйN не входит в принятый профиль.",
+      "constraints_and_exceptions": [
+        null,
+        "Состояние реализации в этом запуске не перепроверялось; старое evidence относится только к исходному SHA."
+      ],
+      "acceptance_cases": [
+        {
+          "id": "MB-QS-001-L1-SCOPE-AC01",
+          "given": "Исходная подготовка144гексов даёт24объекта; ручная правка количества сохраняется без автоматического возвращения к24.",
+          "when": "N=144гекса;ориентирN/6=24барьера;выбранныеграни",
+          "expected": "N/6не вероятность на каждую грань. N=10даёт сырой ориентир5/3, округление/группировка не заданы; универсальныйN не входит в принятый профиль."
+        }
+      ],
+      "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+      "canonical_rule_refs": [
+        "map.routes_and_barriers"
+      ],
+      "unresolved_parameters": [
+        "Округление приNне кратном6.",
+        "Какие грани выбирать и как считать один связанный/многогранный Barrier.",
+        "Обработка пересечений/края и алгоритм распределения.",
+        "Фактическая поддержка/current implementation SHA и эквивалентность полной книге unknown."
+      ]
+    },
+    "implementation": {
+      "status": "not_reverified",
+      "comment": "Текущий144-гексовый край получает24барьера=144/6. Ручное изменение допускает другие количества без перебалансировки. Историческая проверка; применимость текущему продукту в этом запуске не проверялась.",
+      "historical_status": "partial",
+      "evidence_sha": "a246fdf292963fd534a8203f569b9ca48b6292c7",
+      "evidence_ref": "agent-work/research/audits/MB-implementation-2026-11-09.json#MB-AUDIT-MB-QS-001-L1"
+    },
+    "components": [
+      {
+        "id": "MB-SCOPE-C09",
+        "requirement_id": "MB-QS-001-L1",
+        "disposition": "needs_owner_decision",
+        "component": "Произвольный N, округление и группировка многогранных барьеров",
+        "reason": "Принятая карта фиксирована144гексами; расширение не дефект текущего режима, источник не задаёт часть параметров.",
+        "product_boundary": "Тот же map.routes_and_barriers, фиксированный144-гексовый край",
+        "accepted_working_scope": false
+      }
+    ],
+    "historical_proposals_are_not_active_queue": true,
+    "working_handoff": "Research reconciliation only. Reuse existing behavior; no task creation/restoration or implementation authorization.",
+    "implementation_authorized": false,
+    "release_authorized": false
   }
 }
