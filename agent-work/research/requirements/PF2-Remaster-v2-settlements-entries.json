@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "game_id": "PF2",
-  "status": "checkpoint_source_branch_translated_product_incomplete",
+  "status": "scope_filtered_research_not_product_acceptance",
   "candidate_not_registry": true,
   "entries": [
     {
@@ -94,7 +94,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Роль поселения в приключении и независимая мотивация — совет ведущему, не картографическая операция.",
+        "product_boundary": "Исключено управление сюжетом",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-002-v2",
@@ -228,7 +246,78 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Расположение поселения у воды и связь дорогой/водным путём непосредственно определяют региональную карту.",
+        "product_boundary": "Поселения, вода, дороги",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "PF2-RM-ST-002-v2",
+          "normative_kind": "research_translation_of_recommendation",
+          "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+          "layer": "L1",
+          "trigger_or_user_action": "Привязать поселение к источнику воды и пути сообщения либо явно записать исключение",
+          "inputs_and_units": {
+            "water_options": [
+              "река",
+              "колодец",
+              "источник"
+            ],
+            "connections": [
+              "дорога",
+              "водный путь"
+            ]
+          },
+          "product_operation": "Привязать поселение к источнику воды и пути сообщения либо явно записать исключение; показать результат в контексте выбранного поселения. Изменение сохранить с картой, восстановить после загрузки и отмены.",
+          "expected_output": "Различимы питьевая вода и транспортная связь; отсутствие нарисованной реки не делает колодец ошибкой.",
+          "constraints_and_exceptions": [
+            "Это обычное основание размещения, а не абсолютный запрет иных поселений; колодец не равен речной геометрии.",
+            "Сохранение и отмена — предлагаемое поведение приложения, не правило книги. Интерфейс и новая разработка не утверждены."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Поселение у колодца с дорогой, без реки.",
+              "when": "Привязать поселение к источнику воды и пути сообщения либо явно записать исключение",
+              "expected": "Вода=колодец, сообщение=дорога; принудительная река не возникает."
+            },
+            {
+              "given": "Получен указанный ожидаемый результат; затем карту сохраняют, загружают и отменяют последнее изменение.",
+              "when": "Повторно открыть то же поселение и выполнить отмену.",
+              "expected": "После загрузки тот же результат и привязка; отмена восстанавливает предыдущую запись/геометрию без изменения других поселений."
+            }
+          ],
+          "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.settlement_resources",
+            "agent-work/rules/common-rules.json#map.routes_and_barriers",
+            "agent-work/rules/common-rules.json#content.site_links"
+          ],
+          "unresolved_parameters": [
+            "Точное структурированное представление/новая общая механика требуют проверки и решения; новый rule_id здесь не учреждается."
+          ]
+        },
+        "user_action": "Привязать поселение к источнику воды и пути сообщения либо явно записать исключение",
+        "map_object_or_state": {
+          "water_options": [
+            "река",
+            "колодец",
+            "источник"
+          ],
+          "connections": [
+            "дорога",
+            "водный путь"
+          ]
+        },
+        "checkable_result": "Различимы питьевая вода и транспортная связь; отсутствие нарисованной реки не делает колодец ошибкой."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-ST-003-v2",
@@ -337,7 +426,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "needs_owner_decision",
+        "reason": "Схема строений, районы, стены и рыночная площадь требуют внутренней карты поселения. Региональный охват POI уже принят, но он не разрешает новый городской редактор.",
+        "product_boundary": "Непринятый уровень внутренней планировки поселения",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-004-v2",
@@ -454,7 +561,61 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Сохраняется только связь регионального охвата поселения с главным водным/сухопутным путём. Внутренняя сетка улиц не входит.",
+        "product_boundary": "Региональный охват POI и примыкание к путям",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "PF2-RM-ST-004-v2",
+          "normative_kind": "research_translation_of_recommendation",
+          "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+          "layer": "L1",
+          "trigger_or_user_action": "Разместить региональный охват поселения вдоль существующего пути",
+          "inputs_and_units": {
+            "settlement": "C",
+            "route": "D",
+            "axis": "east-west"
+          },
+          "product_operation": "Разместить региональный охват поселения вдоль существующего пути",
+          "expected_output": "C примыкает к D и вытянут восток–запад; при сохранении привязка и охват не изменяются.",
+          "constraints_and_exceptions": [
+            "Не создавать внутреннюю сетку улиц, районы или торговую симуляцию. Конкретный алгоритм охвата/его готовность не утверждены.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"settlement\":\"C\",\"route\":\"D\",\"axis\":\"east-west\"}",
+              "when": "Разместить региональный охват поселения вдоль существующего пути; сохранить и повторно открыть карту",
+              "expected": "C примыкает к D и вытянут восток–запад; при сохранении привязка и охват не изменяются."
+            }
+          ],
+          "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.routes_and_barriers",
+            "agent-work/rules/common-rules.json#content.site_links"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Разместить региональный охват поселения вдоль существующего пути",
+        "map_object_or_state": {
+          "settlement": "C",
+          "route": "D",
+          "axis": "east-west"
+        },
+        "checkable_result": "C примыкает к D и вытянут восток–запад; при сохранении привязка и охват не изменяются."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-ST-005-v2",
@@ -554,7 +715,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "needs_owner_decision",
+        "reason": "Схема строений, районы, стены и рыночная площадь требуют внутренней карты поселения. Региональный охват POI уже принят, но он не разрешает новый городской редактор.",
+        "product_boundary": "Непринятый уровень внутренней планировки поселения",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-006-v2",
@@ -663,7 +842,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "needs_owner_decision",
+        "reason": "Схема строений, районы, стены и рыночная площадь требуют внутренней карты поселения. Региональный охват POI уже принят, но он не разрешает новый городской редактор.",
+        "product_boundary": "Непринятый уровень внутренней планировки поселения",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-007-v2",
@@ -784,7 +981,67 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Постоялый двор — конкретное место отдыха/услуги на дороге; требуется размещение места, а не генерация слухов и заданий.",
+        "product_boundary": "Содержимое конкретного места и размещение у дороги",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "PF2-RM-ST-007-v2",
+          "normative_kind": "research_translation_of_recommendation",
+          "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+          "layer": "L1",
+          "trigger_or_user_action": "Разместить постоялый двор как место ночлега у дорожного узла",
+          "inputs_and_units": {
+            "place": "У моста",
+            "route": "D",
+            "services": [
+              "ночлег",
+              "еда"
+            ]
+          },
+          "product_operation": "Разместить постоялый двор как место ночлега у дорожного узла",
+          "expected_output": "У D одно место «У моста», предлагающее ночлег и еду; заданий, слухов и камеры хранения автоматически не добавлено.",
+          "constraints_and_exceptions": [
+            "Только необходимые сведения о конкретном месте. Не учреждать каталог/генератор услуг, слухов или заданий.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"place\":\"У моста\",\"route\":\"D\",\"services\":[\"ночлег\",\"еда\"]}",
+              "when": "Разместить постоялый двор как место ночлега у дорожного узла; сохранить и повторно открыть карту",
+              "expected": "У D одно место «У моста», предлагающее ночлег и еду; заданий, слухов и камеры хранения автоматически не добавлено."
+            }
+          ],
+          "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.place_description",
+            "agent-work/rules/common-rules.json#content.site_links"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Разместить постоялый двор как место ночлега у дорожного узла",
+        "map_object_or_state": {
+          "place": "У моста",
+          "route": "D",
+          "services": [
+            "ночлег",
+            "еда"
+          ]
+        },
+        "checkable_result": "У D одно место «У моста», предлагающее ночлег и еду; заданий, слухов и камеры хранения автоматически не добавлено."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-ST-008-v2",
@@ -893,7 +1150,61 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Именованный ориентир — конкретный объект карты; не требовать полного набора городских строений.",
+        "product_boundary": "Именование и размещение ориентиров",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "PF2-RM-ST-008-v2",
+          "normative_kind": "research_translation_of_recommendation",
+          "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+          "layer": "L1",
+          "trigger_or_user_action": "Назвать размещённый ориентир и связать его с поселением",
+          "inputs_and_units": {
+            "landmark_count": "несколько, точного числа нет",
+            "name": "собственное имя"
+          },
+          "product_operation": "Назвать размещённый ориентир и связать его с поселением; показать результат в контексте выбранного поселения. Изменение сохранить с картой, восстановить после загрузки и отмены.",
+          "expected_output": "Ориентир имеет собственное имя и пространственную привязку, а не только общий тип.",
+          "constraints_and_exceptions": [
+            "Точное число ориентиров не задано. Название не доказывает готовую геометрию или связи.",
+            "Сохранение и отмена — предлагаемое поведение приложения, не правило книги. Интерфейс и новая разработка не утверждены."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "POI «башня» переименован в Watchtower / Дозорная башня.",
+              "when": "Назвать размещённый ориентир и связать его с поселением",
+              "expected": "Оба имени относятся к той же POI; другой объект не переименован."
+            },
+            {
+              "given": "Получен указанный ожидаемый результат; затем карту сохраняют, загружают и отменяют последнее изменение.",
+              "when": "Повторно открыть то же поселение и выполнить отмену.",
+              "expected": "После загрузки тот же результат и привязка; отмена восстанавливает предыдущую запись/геометрию без изменения других поселений."
+            }
+          ],
+          "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.landmarks",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": []
+        },
+        "user_action": "Назвать размещённый ориентир и связать его с поселением",
+        "map_object_or_state": {
+          "landmark_count": "несколько, точного числа нет",
+          "name": "собственное имя"
+        },
+        "checkable_result": "Ориентир имеет собственное имя и пространственную привязку, а не только общий тип."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-ST-009-v2",
@@ -1045,7 +1356,60 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Сохраняется только тип/название конкретного поселения; уровень рынка и уровень обычных NPC не принимаются как новые подсистемы.",
+        "product_boundary": "Тип поселения на карте",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "PF2-RM-ST-009-v2",
+          "normative_kind": "research_translation_of_recommendation",
+          "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+          "layer": "L1",
+          "trigger_or_user_action": "Задать имя и тип существующего поселения",
+          "inputs_and_units": {
+            "place": "C",
+            "name": "Ольховка",
+            "type": "village"
+          },
+          "product_operation": "Задать имя и тип существующего поселения",
+          "expected_output": "На карте C — деревня «Ольховка»; после загрузки имя и тип те же.",
+          "constraints_and_exceptions": [
+            "Уровень PF2 не переводится в площадь/численность автоматически; не создавать рынок, NPC-уровни и новые поля ради полной карточки.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"place\":\"C\",\"name\":\"Ольховка\",\"type\":\"village\"}",
+              "when": "Задать имя и тип существующего поселения; сохранить и повторно открыть карту",
+              "expected": "На карте C — деревня «Ольховка»; после загрузки имя и тип те же."
+            }
+          ],
+          "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Задать имя и тип существующего поселения",
+        "map_object_or_state": {
+          "place": "C",
+          "name": "Ольховка",
+          "type": "village"
+        },
+        "checkable_result": "На карте C — деревня «Ольховка»; после загрузки имя и тип те же."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-ST-010-v2",
@@ -1143,7 +1507,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "needs_owner_decision",
+        "reason": "Обязательная структура численности/происхождений не требуется для принятого охвата POI; простая справка допустима, но это не основание новых полей и демографического редактора.",
+        "product_boundary": "Необязательное содержимое конкретного поселения; структурированная демография не принята",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-011-v2",
@@ -1256,7 +1638,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Полная карточка власти, языков, религий, угроз, лиц/фракций и их изменения превращена в требования лишь потому, что сведения можно хранить у POI. Простые сведения о конкретном жителе/месте допустимы в существующем содержимом, но новых подсистем/полей отсюда не следует.",
+        "product_boundary": "Исключены общий менеджер NPC/сюжета/социальных отношений и произвольные профильные поля",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-012-v2",
@@ -1348,7 +1748,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Полная карточка власти, языков, религий, угроз, лиц/фракций и их изменения превращена в требования лишь потому, что сведения можно хранить у POI. Простые сведения о конкретном жителе/месте допустимы в существующем содержимом, но новых подсистем/полей отсюда не следует.",
+        "product_boundary": "Исключены общий менеджер NPC/сюжета/социальных отношений и произвольные профильные поля",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-013-v2",
@@ -1442,7 +1860,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Полная карточка власти, языков, религий, угроз, лиц/фракций и их изменения превращена в требования лишь потому, что сведения можно хранить у POI. Простые сведения о конкретном жителе/месте допустимы в существующем содержимом, но новых подсистем/полей отсюда не следует.",
+        "product_boundary": "Исключены общий менеджер NPC/сюжета/социальных отношений и произвольные профильные поля",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-014-v2",
@@ -1534,7 +1970,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Полная карточка власти, языков, религий, угроз, лиц/фракций и их изменения превращена в требования лишь потому, что сведения можно хранить у POI. Простые сведения о конкретном жителе/месте допустимы в существующем содержимом, но новых подсистем/полей отсюда не следует.",
+        "product_boundary": "Исключены общий менеджер NPC/сюжета/социальных отношений и произвольные профильные поля",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-015-v2",
@@ -1630,7 +2084,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Полная карточка власти, языков, религий, угроз, лиц/фракций и их изменения превращена в требования лишь потому, что сведения можно хранить у POI. Простые сведения о конкретном жителе/месте допустимы в существующем содержимом, но новых подсистем/полей отсюда не следует.",
+        "product_boundary": "Исключены общий менеджер NPC/сюжета/социальных отношений и произвольные профильные поля",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-016-v2",
@@ -1788,7 +2260,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-017-v2",
@@ -1948,7 +2438,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-018-v2",
@@ -2048,7 +2556,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-019-v2",
@@ -2152,7 +2678,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-020-v2",
@@ -2250,7 +2794,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-021-v2",
@@ -2352,7 +2914,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-022-v2",
@@ -2452,7 +3032,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-023-v2",
@@ -2556,7 +3154,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-024-v2",
@@ -2666,7 +3282,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-025-v2",
@@ -2781,7 +3415,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-026-v2",
@@ -2887,7 +3539,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Полная карточка власти, языков, религий, угроз, лиц/фракций и их изменения превращена в требования лишь потому, что сведения можно хранить у POI. Простые сведения о конкретном жителе/месте допустимы в существующем содержимом, но новых подсистем/полей отсюда не следует.",
+        "product_boundary": "Исключены общий менеджер NPC/сюжета/социальных отношений и произвольные профильные поля",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-027-v2",
@@ -3010,7 +3680,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Полная карточка власти, языков, религий, угроз, лиц/фракций и их изменения превращена в требования лишь потому, что сведения можно хранить у POI. Простые сведения о конкретном жителе/месте допустимы в существующем содержимом, но новых подсистем/полей отсюда не следует.",
+        "product_boundary": "Исключены общий менеджер NPC/сюжета/социальных отношений и произвольные профильные поля",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-028-v2",
@@ -3116,7 +3804,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Полная карточка власти, языков, религий, угроз, лиц/фракций и их изменения превращена в требования лишь потому, что сведения можно хранить у POI. Простые сведения о конкретном жителе/месте допустимы в существующем содержимом, но новых подсистем/полей отсюда не следует.",
+        "product_boundary": "Исключены общий менеджер NPC/сюжета/социальных отношений и произвольные профильные поля",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-029-v2",
@@ -3220,7 +3926,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-ST-030-v2",
@@ -3322,7 +4046,25 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Ассортимент, выкуп, уровни товаров/заклинаний, доход, обучение и социальные бонусы — экономические/персонажные процедуры. Сведения об услуге конкретного места допустимы без реализации этих движков.",
+        "product_boundary": "Исключены торговая экономика, магия, развитие персонажа и социальные броски",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-008-PREP-v2",
@@ -3461,10 +4203,37 @@
         "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
       ],
       "backlog_refs": [],
-      "registry_changed": false
+      "registry_changed": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Таблицы встреч по местности нужны при путешествии; подготовка списка не доказывает картографический генератор/баланс встреч.",
+        "product_boundary": "Ведение гекскроула: события по местности; баланс боя исключён",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     }
   ],
   "bounded_source_scope": "GM Core138–139 Building/Mapping Settlements and168–171 Settlements; external references remain explicit",
   "not_claimed": "Complete PF2 book/corpus, full settlement example transcriptions or product profile acceptance",
-  "additional_known_reference": "PF2-RM-008 preparation boundary, not a new settlement rule"
+  "additional_known_reference": "PF2-RM-008 preparation boundary, not a new settlement rule",
+  "scope_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
+  "current_L1_entry_ids": [
+    "PF2-RM-ST-002-v2",
+    "PF2-RM-ST-004-v2",
+    "PF2-RM-ST-007-v2",
+    "PF2-RM-ST-008-v2",
+    "PF2-RM-ST-009-v2"
+  ],
+  "current_scope_policy": "Current operations only in scope_review; all previous goals, remaining chapter expansions and proposals are historical unless explicitly reconfirmed by audit."
 }

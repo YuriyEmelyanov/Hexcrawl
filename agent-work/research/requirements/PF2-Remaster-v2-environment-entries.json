@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "game_id": "PF2",
-  "status": "checkpoint",
+  "status": "scope_filtered_research_not_product_acceptance",
   "entries": [
     {
       "id": "PF2-RM-005-L1-v2",
@@ -113,7 +113,73 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Отдельный вид карты для мастера и игроков непосредственно задаёт доступность географического содержимого.",
+        "product_boundary": "Представление карты для игроков; без автоматического fog/VTT",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-005",
+          "normative_kind": "research_translation",
+          "applicability": "Preparation data only; execution/audience delivery remains L2/VTT per owner",
+          "layer": "L1",
+          "trigger_or_user_action": "Подготовить отдельное представление для игроков",
+          "inputs_and_units": {
+            "gm_sites": [
+              "A",
+              "Secret B"
+            ],
+            "revealed": [
+              "A"
+            ]
+          },
+          "product_operation": "Подготовить отдельное представление для игроков. В представлении игроков показана только A; B и её описание остаются у мастера.",
+          "expected_output": "В представлении игроков показана только A; B и её описание остаются у мастера.",
+          "constraints_and_exceptions": [
+            "Карта игроков относится к отложенному L2/VTT; не считать её отсутствие дефектом нынешнего L1-генератора.",
+            "Выбранные буквенные ID, числа примеров и интерфейс не являются дополнительными правилами НРИ. Исследование не даёт разрешения новой разработки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "На существующей карте {\"gm_sites\":[\"A\",\"Secret B\"],\"revealed\":[\"A\"]}",
+              "when": "Подготовить отдельное представление для игроков; сохранить и открыть карту",
+              "expected": "В представлении игроков показана только A; B и её описание остаются у мастера. Исходные соседние объекты и биом остаются."
+            },
+            {
+              "given": "Объект уже подготовлен; изменяется только одно его свойство",
+              "when": "Изменить указанное свойство и отменить действие",
+              "expected": "Изменение не перегенерирует соседнюю область; отмена возвращает прежнее состояние. Это предлагаемая приёмка приложения, а не тест книги."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.audience_views",
+            "agent-work/rules/common-rules.json#content.discovery_levels"
+          ],
+          "unresolved_parameters": [
+            "Фактический UI/save/profile результат этого поведения ещё не проверен."
+          ]
+        },
+        "user_action": "Подготовить отдельное представление для игроков",
+        "map_object_or_state": {
+          "gm_sites": [
+            "A",
+            "Secret B"
+          ],
+          "revealed": [
+            "A"
+          ]
+        },
+        "checkable_result": "В представлении игроков показана только A; B и её описание остаются у мастера."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-022-L1-v2",
@@ -219,7 +285,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Map the Area требует Reconnoiter и проверки и изменяет дальнейшую навигацию; не L1-сохранение файла карты.",
+        "product_boundary": "Ведение гекскроула: картографирование и точность сведений",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-044-L1-v2",
@@ -322,7 +406,60 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Заснеженная гора сохраняет рельеф и снежное состояние совместно; размеры существа исключены.",
+        "product_boundary": "Совместные свойства региональной местности",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-044",
+          "normative_kind": "research_translation",
+          "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+          "layer": "L1",
+          "trigger_or_user_action": "Отметить заснеженную горную местность",
+          "inputs_and_units": {
+            "area": "H",
+            "base": "mountain",
+            "environment": "arctic"
+          },
+          "product_operation": "Отметить заснеженную горную местность",
+          "expected_output": "У H сохранено сочетание горной и арктической местности; снег не заменяет гору равниной.",
+          "constraints_and_exceptions": [
+            "Новые поля глубины снега/размера существа и проверки движения не приняты.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"area\":\"H\",\"base\":\"mountain\",\"environment\":\"arctic\"}",
+              "when": "Отметить заснеженную горную местность; сохранить и повторно открыть карту",
+              "expected": "У H сохранено сочетание горной и арктической местности; снег не заменяет гору равниной."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.terrain_zones"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Отметить заснеженную горную местность",
+        "map_object_or_state": {
+          "area": "H",
+          "base": "mountain",
+          "environment": "arctic"
+        },
+        "checkable_result": "У H сохранено сочетание горной и арктической местности; снег не заменяет гору равниной."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-052-L1-v2",
@@ -430,7 +567,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Катастрофа изменяет среду во времени. Отложить региональное состояние опасности; скорость по раундам, урон и спасброски не входят в картографический профиль. Не учреждать поля симулятора ради сохранения строки.",
+        "product_boundary": "Ведение гекскроула: региональная опасность; без моделирования катастроф/боя",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-055-L1-v2",
@@ -534,7 +689,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-056-L1-v2",
@@ -646,7 +819,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Катастрофа изменяет среду во времени. Отложить региональное состояние опасности; скорость по раундам, урон и спасброски не входят в картографический профиль. Не учреждать поля симулятора ради сохранения строки.",
+        "product_boundary": "Ведение гекскроула: региональная опасность; без моделирования катастроф/боя",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-061-L1-v2",
@@ -759,7 +950,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Катастрофа изменяет среду во времени. Отложить региональное состояние опасности; скорость по раундам, урон и спасброски не входят в картографический профиль. Не учреждать поля симулятора ради сохранения строки.",
+        "product_boundary": "Ведение гекскроула: региональная опасность; без моделирования катастроф/боя",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-062-L1-v2",
@@ -875,7 +1084,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Катастрофа изменяет среду во времени. Отложить региональное состояние опасности; скорость по раундам, урон и спасброски не входят в картографический профиль. Не учреждать поля симулятора ради сохранения строки.",
+        "product_boundary": "Ведение гекскроула: региональная опасность; без моделирования катастроф/боя",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-063-L1-v2",
@@ -975,7 +1202,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Плавание и течение меняют прохождение водного участка. В L1 остаётся существующая география реки/воды, а не новый движок движения по ходам.",
+        "product_boundary": "Ведение гекскроула: прохождение воды; тактический снос/дыхание не приняты",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-064-L1-v2",
@@ -1079,7 +1324,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Плавание и течение меняют прохождение водного участка. В L1 остаётся существующая география реки/воды, а не новый движок движения по ходам.",
+        "product_boundary": "Ведение гекскроула: прохождение воды; тактический снос/дыхание не приняты",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-065-L1-v2",
@@ -1182,7 +1445,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-066-L1-v2",
@@ -1282,7 +1563,62 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Лёд влияет на принятую характеристику проходимости участка; балансирование персонажа исключено.",
+        "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-066",
+          "normative_kind": "research_translation",
+          "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+          "layer": "L1",
+          "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+          "inputs_and_units": {
+            "area": "H",
+            "condition": "лёд",
+            "passability": "труднопроходимая",
+            "hazardous": false
+          },
+          "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+          "expected_output": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+          "constraints_and_exceptions": [
+            "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"area\":\"H\",\"condition\":\"лёд\",\"passability\":\"труднопроходимая\",\"hazardous\":false}",
+              "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+              "expected": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.static_hazard"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "map_object_or_state": {
+          "area": "H",
+          "condition": "лёд",
+          "passability": "труднопроходимая",
+          "hazardous": false
+        },
+        "checkable_result": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-067-L1-v2",
@@ -1386,7 +1722,62 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Глубина/вид снега меняют проходимость местности; не выводить её из одного цвета биома.",
+        "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-067",
+          "normative_kind": "research_translation",
+          "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+          "layer": "L1",
+          "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+          "inputs_and_units": {
+            "area": "H",
+            "condition": "глубокий рыхлый снег",
+            "passability": "труднопроходимая",
+            "hazardous": false
+          },
+          "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+          "expected_output": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+          "constraints_and_exceptions": [
+            "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"area\":\"H\",\"condition\":\"глубокий рыхлый снег\",\"passability\":\"труднопроходимая\",\"hazardous\":false}",
+              "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+              "expected": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.terrain_zones"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "map_object_or_state": {
+          "area": "H",
+          "condition": "глубокий рыхлый снег",
+          "passability": "труднопроходимая",
+          "hazardous": false
+        },
+        "checkable_result": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-068-L1-v2",
@@ -1491,7 +1882,62 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Щебнистая поверхность влияет на проходимость участка; локальная проверка равновесия исключена.",
+        "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-068",
+          "normative_kind": "research_translation",
+          "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+          "layer": "L1",
+          "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+          "inputs_and_units": {
+            "area": "H",
+            "condition": "осыпь",
+            "passability": "труднопроходимая",
+            "hazardous": false
+          },
+          "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+          "expected_output": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+          "constraints_and_exceptions": [
+            "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"area\":\"H\",\"condition\":\"осыпь\",\"passability\":\"труднопроходимая\",\"hazardous\":false}",
+              "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+              "expected": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.static_hazard"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "map_object_or_state": {
+          "area": "H",
+          "condition": "осыпь",
+          "passability": "труднопроходимая",
+          "hazardous": false
+        },
+        "checkable_result": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-069-L1-v2",
@@ -1596,7 +2042,62 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Уплотнённый и рыхлый песок задают различную проходимость; стороны каждой боевой дюны не оцифровывать.",
+        "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-069",
+          "normative_kind": "research_translation",
+          "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+          "layer": "L1",
+          "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+          "inputs_and_units": {
+            "area": "H",
+            "condition": "неглубокий рыхлый песок",
+            "passability": "труднопроходимая",
+            "hazardous": false
+          },
+          "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+          "expected_output": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+          "constraints_and_exceptions": [
+            "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"area\":\"H\",\"condition\":\"неглубокий рыхлый песок\",\"passability\":\"труднопроходимая\",\"hazardous\":false}",
+              "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+              "expected": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.terrain_zones"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "map_object_or_state": {
+          "area": "H",
+          "condition": "неглубокий рыхлый песок",
+          "passability": "труднопроходимая",
+          "hazardous": false
+        },
+        "checkable_result": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-070-L1-v2",
@@ -1697,7 +2198,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-071-L1-v2",
@@ -1798,7 +2317,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-072-L1-v2",
@@ -1918,7 +2455,63 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Густота подлеска относится к проходимости местности, шипы — к опасности; Take Cover исключён.",
+        "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-072",
+          "normative_kind": "research_translation",
+          "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+          "layer": "L1",
+          "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+          "inputs_and_units": {
+            "area": "H",
+            "condition": "колючий густой подлесок",
+            "passability": "труднопроходимая",
+            "hazardous": true
+          },
+          "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+          "expected_output": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+          "constraints_and_exceptions": [
+            "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"area\":\"H\",\"condition\":\"колючий густой подлесок\",\"passability\":\"труднопроходимая\",\"hazardous\":true}",
+              "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+              "expected": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.terrain_zones",
+            "agent-work/rules/common-rules.json#content.static_hazard"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "map_object_or_state": {
+          "area": "H",
+          "condition": "колючий густой подлесок",
+          "passability": "труднопроходимая",
+          "hazardous": true
+        },
+        "checkable_result": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-073-L1-v2",
@@ -2019,7 +2612,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "needs_owner_decision",
+        "reason": "Расщелина от20футов — обычно локальное препятствие; источник не определяет региональный размер. Не превращать её автоматически в географический барьер.",
+        "product_boundary": "Спорная граница региональная география/локальная сцена",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-074-L1-v2",
@@ -2130,7 +2741,63 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Крутизна склонов относится к региональной проходимости; броски Climb не входят в L1.",
+        "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-074",
+          "normative_kind": "research_translation",
+          "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+          "layer": "L1",
+          "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+          "inputs_and_units": {
+            "area": "H",
+            "condition": "крутой склон",
+            "passability": "труднопроходимая",
+            "hazardous": true
+          },
+          "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+          "expected_output": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+          "constraints_and_exceptions": [
+            "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"area\":\"H\",\"condition\":\"крутой склон\",\"passability\":\"труднопроходимая\",\"hazardous\":true}",
+              "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+              "expected": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.routes_and_barriers",
+            "agent-work/rules/common-rules.json#map.physical_elevation"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "map_object_or_state": {
+          "area": "H",
+          "condition": "крутой склон",
+          "passability": "труднопроходимая",
+          "hazardous": true
+        },
+        "checkable_result": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-075-L1-v2",
@@ -2233,7 +2900,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-076-L1-v2",
@@ -2336,7 +3021,62 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "keep_L1",
+        "reason": "Глубина топи и опасный характер участка нужны для его проходимости; размер Medium и Swim не исполняются.",
+        "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": true,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-076",
+          "normative_kind": "research_translation",
+          "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+          "layer": "L1",
+          "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+          "inputs_and_units": {
+            "area": "H",
+            "condition": "кислая глубокая топь",
+            "passability": "труднопроходимая",
+            "hazardous": true
+          },
+          "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+          "expected_output": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+          "constraints_and_exceptions": [
+            "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+            "Исследовательская интерпретация, не утверждение разработки или поддержки."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"area\":\"H\",\"condition\":\"кислая глубокая топь\",\"passability\":\"труднопроходимая\",\"hazardous\":true}",
+              "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+              "expected": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+            }
+          ],
+          "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.static_hazard"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+            "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+          ]
+        },
+        "user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "map_object_or_state": {
+          "area": "H",
+          "condition": "кислая глубокая топь",
+          "passability": "труднопроходимая",
+          "hazardous": true
+        },
+        "checkable_result": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+      },
+      "operational_requirement_status": "historical_original_use_scope_review_current_operational_requirement"
     },
     {
       "id": "PF2-RM-077-L1-v2",
@@ -2479,7 +3219,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-078-L1-v2",
@@ -2589,7 +3347,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-079-L1-v2",
@@ -2693,7 +3469,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-080-L1-v2",
@@ -2797,7 +3591,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-081-L1-v2",
@@ -2899,7 +3711,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-082-L1-v2",
@@ -3008,7 +3838,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-083-L1-v2",
@@ -3125,7 +3973,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-084-L1-v2",
@@ -3232,7 +4098,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Расчёт гарнизона и смен стражи — не создание региональной карты. Простое указание стражника у места не требует численного планировщика.",
+        "product_boundary": "Исключена симуляция NPC/охраны",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-085-L1-v2",
@@ -3345,7 +4229,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Обнаружение, взведение и выполнение карточки опасности — состояние исследования. Наличие описания места не доказывает готовый механизм.",
+        "product_boundary": "Ведение гекскроула: обнаружение опасных мест; полный статблок/бой исключены",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-089-L1-v2",
@@ -3446,7 +4348,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Обнаружение, взведение и выполнение карточки опасности — состояние исследования. Наличие описания места не доказывает готовый механизм.",
+        "product_boundary": "Ведение гекскроула: обнаружение опасных мест; полный статблок/бой исключены",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-094-L1-v2",
@@ -3565,7 +4485,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "defer_L2",
+        "reason": "Обнаружение, взведение и выполнение карточки опасности — состояние исследования. Наличие описания места не доказывает готовый механизм.",
+        "product_boundary": "Ведение гекскроула: обнаружение опасных мест; полный статблок/бой исключены",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-095-L1-v2",
@@ -3678,7 +4616,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-096-L1-v2",
@@ -3791,7 +4747,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-097-L1-v2",
@@ -3907,7 +4881,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-098-L1-v2",
@@ -4030,7 +5022,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-099-L1-v2",
@@ -4166,7 +5176,25 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     },
     {
       "id": "PF2-RM-110-L1-v2",
@@ -4273,7 +5301,38 @@
       ],
       "backlog_refs": [],
       "previous_binding_status": "unverified",
-      "registry_mutation": false
+      "registry_mutation": false,
+      "scope_review": {
+        "disposition": "out_of_scope",
+        "reason": "Положение описывает локальное препятствие, опасность либо тактическое взаимодействие: футы/квадраты, Climb/Balance, укрытие, урон или статблок. Перенос этих параметров в POI не обосновывает функцию региональной карты.",
+        "product_boundary": "Исключены локальная боевая сцена, тактическая геометрия и движок действий/опасностей",
+        "run_id": "2026-11-16-PF2-scope-audit-1794836736442",
+        "reviewed_at": "2026-11-16T13:53:16.572Z",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "current_L1_eligible": false,
+        "implementation_status_changed": false,
+        "old_operational_requirement_is_historical": true,
+        "source_fact_preserved": true,
+        "current_operational_requirement": null,
+        "user_action": null,
+        "map_object_or_state": null,
+        "checkable_result": null,
+        "not_a_current_product_requirement": "Старое operational_requirement сохранено как история анализа; не передавать в разработку и не считать принятым L1."
+      },
+      "operational_requirement_status": "historical_not_current_product_requirement"
     }
-  ]
+  ],
+  "scope_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
+  "current_L1_entry_ids": [
+    "PF2-RM-005-L1-v2",
+    "PF2-RM-044-L1-v2",
+    "PF2-RM-066-L1-v2",
+    "PF2-RM-067-L1-v2",
+    "PF2-RM-068-L1-v2",
+    "PF2-RM-069-L1-v2",
+    "PF2-RM-072-L1-v2",
+    "PF2-RM-074-L1-v2",
+    "PF2-RM-076-L1-v2"
+  ],
+  "current_scope_policy": "Current operations only in scope_review; all previous goals, remaining chapter expansions and proposals are historical unless explicitly reconfirmed by audit."
 }
