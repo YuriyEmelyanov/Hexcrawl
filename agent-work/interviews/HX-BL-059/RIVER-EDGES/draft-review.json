@@ -1,0 +1,130 @@
+{
+  "task_id": "HX-BL-059",
+  "draft_spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-D1.md",
+  "draft_blob_sha": "5e1f19e34ed46bb13b64f51d91d81b5a2c044e17",
+  "role": "interviewer",
+  "whole_draft_read": true,
+  "reviewed_at": "2026-11-16T19:03:11.424Z",
+  "coverage": [
+    {
+      "section": "Цель, границы, исключённый объём",
+      "outcome": "clear: edge axis1mile and F1–5; no new biomes/streams/lakes"
+    },
+    {
+      "section": "База, preview, provenance",
+      "outcome": "P1 correctly schematic, not full plan or runtime; no new runtime claim"
+    },
+    {
+      "section": "R01/R04 geometry/coast",
+      "outcome": "technical findingF01; no invented owner question"
+    },
+    {
+      "section": "R02/R03 reproducibility/topology",
+      "outcome": "settled stable side/globalRNG/IDs/network; retain existing no-fit failure"
+    },
+    {
+      "section": "R05/R06 POI/roads/crossings",
+      "outcome": "prior same-parent/unlocked shift, shortest legal roads, preserve kinds/IDs; do not repeat"
+    },
+    {
+      "section": "R07–09 old maps/apply/persistence/Undo",
+      "outcome": "one material activation choiceRE-Q01; storage implementation not separate product question"
+    },
+    {
+      "section": "R08 failure/measured/locked/busy/stale",
+      "outcome": "GEO2-v2 already explicitly atomic refusal with map/redo preserved; no repeated question"
+    },
+    {
+      "section": "R10 map/PNG",
+      "outcome": "same accepted geometry, no new RNG or partial export"
+    },
+    {
+      "section": "AC01–06",
+      "outcome": "F01 precision fix, F02 operation-matrix clarification; exactSHA UI/map/export and independent acceptance retained"
+    },
+    {
+      "section": "Score1.2",
+      "outcome": "five criterion IDs weights match model; null/unverified preserved; no forecast awards"
+    },
+    {
+      "section": "Forecast",
+      "outcome": "original8–12 retained,2substantive runs now;6–10 remaining conditional, owner wait unknown; no deadline waiver"
+    }
+  ],
+  "known_material_question_count": 1,
+  "questions": [
+    {
+      "question_id": "RE-Q01",
+      "topic": "Первоначальное применение к существующим картам",
+      "requirement_refs": [
+        "R07",
+        "R08",
+        "R09",
+        "R10",
+        "AC05",
+        "AC06"
+      ],
+      "decision": "Автоматическое одномильное представление либо отдельное явное уточнение сохранённой геометрии.",
+      "why_material": "Прежний GEO2-v2 прямо запрещает auto-run при смене масштаба/импорте; D1 предлагает противоположное. Новое требование об рёбрах не определяет само первоначальный переход и запись геометрии. Это различимое поведение, не выбор внутреннего формата.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Автоматически при переходе в1милю",
+          "effect": "Обычные и импортированные карты сразу показывают согласованные реки по рёбрам; связанные незакреплённые объекты в fine-виде адаптируются вместе. Source6 не переписывается только от просмотра; нет лишнего клика/Undo-записи от масштаба.",
+          "limits": "Потребуется спецификация устойчивого fine-представления и save/load. При невозможной/locked привязке данные остаются без изменений и показывается понятная причина, без принудительного сдвига. Автоматически это не разрешает потерю authored данных или изменение6mile."
+        },
+        {
+          "id": "B",
+          "label": "Через «Уточнить геометрию»",
+          "effect": "Старые карты сохраняют нынешний вид до отдельного Apply. Уточнение с руслами и зависимостями принимается одной отменяемой операцией по существующему GEO2-порядку.",
+          "limits": "Простое переключение в1mile не гарантирует рёбра на старых картах; это явное ограничение нового требования, которое должен принять владелец."
+        }
+      ],
+      "recommendation": "A",
+      "recommendation_reason": "Соответствует ожидаемому результату «на1мильной карте реки по рёбрам» без обязательного дополнительного действия.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "interpretation": null,
+      "dependent_questions": "Если выбран иной ответ, затрагивающий source6 или принудительный перенос закреплённого, требуется дополнительный раунд. Рекомендация не ответ."
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "RE-D1-F01",
+      "status": "analyst_correction_required",
+      "refs": [
+        "R01",
+        "R04",
+        "AC01",
+        "AC03"
+      ],
+      "problem": "R01 требует каждую пару соседних вершин как целое легальное ребро; конечный порт у произвольного берега лежит внутри ребра.",
+      "resolution": "Проверять сухопутную ось как подмножество рёбер; конечные отрезки могут быть частью легального ребра до пересечения с фактическим берегом. Не добавлять диагональный соединитель по суше. Незакреплённый порт выбирается на допустимом ребре, locked несовместимость даёт atomic conflict по уже принятому GEO2. Это техническое уточнение без нового владельческого выбора.",
+      "evidence": [
+        "src/geometryRefinementTerminalRoutes.ts: prepared split edges, steps startFraction/endFraction",
+        "GEO2-v2 existing shore/terminal plan and atomic conflicts"
+      ]
+    },
+    {
+      "finding_id": "RE-D1-F02",
+      "status": "conditional_on_RE-Q01",
+      "refs": [
+        "R07",
+        "R08",
+        "R09",
+        "AC05",
+        "AC06"
+      ],
+      "problem": "D1 auto-предложение не согласовано с прежним explicit initial refine; AC06 native6 baseline должен отличать view-only переход от явно принятой операции.",
+      "resolution": "По ответу RE-Q01 задать отдельно scale/import/render vs Apply/source-edit; для view-only6mile literal/pixel invariant, для явно принятого плана — соответствующая действующему контракту проверка. Способ хранения/кэша решает аналитик технически после выбора поведения."
+    }
+  ],
+  "reused_decision_refs": [
+    "agent-work/decisions/owner-decision-2026-11-13-ONE-MILE1-GEO-D01-edge-detours.json",
+    "agent-work/interviews/HX-BL-051/ONE-MILE1-GEO2/decisions.json",
+    "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md"
+  ],
+  "independence": "Separate interviewer-role pass of whole draft; no claim of independent product code acceptance.",
+  "ready_for_development": false,
+  "interview_completed": false
+}
