@@ -1,0 +1,1067 @@
+{
+  "run_id": "2026-11-16-PF2-GMC1-104552",
+  "status": "checkpoint_source_preparation_branch_translated",
+  "game_id": "PF2",
+  "edition": "Remaster GMCore English primary AoN, snapshot2026-11-16",
+  "declared_scope": "PreparingAdventures/PlanningSession and preparation/revelation selected bodies inside RunningExploration; not wholeGMCore1",
+  "entries": [
+    {
+      "id": "PF2-RM-GMC1-001-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GMCore English AoN snapshot2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2474",
+        "locator": "GM Core printed8; Published Adventures: адаптация исходных мест",
+        "self_contained_rule": "Готовое приключение содержит места, карты, противников и фон; оно ускоряет подготовку, но допускает изменение окружения/связей под персонажей, замену противников и удаление неподходящих сцен.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "origin": "published adventure",
+          "changes": [
+            "место/окружение",
+            "связи",
+            "сцены"
+          ]
+        },
+        "conditions": [
+          "Подготовка применимого места/сцены; советы не превращаются в обязательный генератор."
+        ],
+        "exceptions": [
+          "Не означает обязанность импортировать книги или копировать защищённые карты. PFS-учёт/отчётность не относится кL1 и не отправлялся."
+        ],
+        "cross_references": [],
+        "access_level": "public_primary_full_selected_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-GMC1-001-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "L1 исходные данные места; L2 показ/ведение и L3 проверки отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "У существующего места записать происхождение и подготовленные изменения",
+        "inputs_and_units": {
+          "origin": "published adventure",
+          "changes": [
+            "место/окружение",
+            "связи",
+            "сцены"
+          ]
+        },
+        "product_operation": "У существующего места записать происхождение и подготовленные изменения. Сохранить описанные поля и связи у выбранного места; при загрузке/отмене не менять соседние места.",
+        "expected_output": "Сохраняются исходный контекст и адаптация, а не обязательное создание новой географии.",
+        "constraints_and_exceptions": [
+          "Не означает обязанность импортировать книги или копировать защищённые карты. PFS-учёт/отчётность не относится кL1 и не отправлялся.",
+          "Это предлагаемое поведение приложения, не одобрение разработки; конкретный UI ещё не выбран."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Готовое местоA; мастер меняет описание и связь с NPC",
+            "when": "У существующего места записать происхождение и подготовленные изменения",
+            "expected": "A сохраняет идентичность/привязку; меняются только выбранные данные."
+          },
+          {
+            "given": "Подготовлен указанный результат; затем запись изменяют, сохраняют, загружают и отменяют",
+            "when": "Открыть то же место и отменить изменение",
+            "expected": "Сохранённые поля и связи восстановлены; отмена возвращает предыдущую запись, другие места не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило/совет книги дан отдельно. Подготовка структуры сведений=L1; исполнение поиска, раскрытие игрокам/ведение=L2/L3. Выбранные UI, save/load/undo не приписываются книге.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Полное соответствие общего компонента, UI/save/load/undo и параметры внешнего обмена не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.place_description по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Не означает обязанность импортировать книги или копировать защищённые карты. PFS-учёт/отчётность не относится кL1 и не отправлялся."
+          ]
+        },
+        {
+          "rule_id": "content.site_links",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.site_links по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Не означает обязанность импортировать книги или копировать защищённые карты. PFS-учёт/отчётность не относится кL1 и не отправлялся."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан, точная операция и известный ожидаемый выход сформулированы. Продукт в этом срезе не исполнялся; заметки и совпадениеID не доказывают реализацию.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Точные поля/профиль/связи и фактический UI/save/load/undo. L3 разрешение отдельно."
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_translation_only",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Стратег оценивает общий компонент и существующие средства прежде, чем предлагать новую функциональность. Продуктовая очередь не изменена."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false,
+      "title": "Published Adventures: адаптация исходных мест"
+    },
+    {
+      "id": "PF2-RM-GMC1-002-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GMCore English AoN snapshot2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2476",
+        "locator": "GM Core printed9; Your Own Adventures: место как исходная точка",
+        "self_contained_rule": "Своё приключение можно строить от антагониста или от интересного места для исследования, затем населять его подходящими противниками и испытаниями; это альтернативы, не обязательная последовательность.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "starting_options": [
+            "антагонист",
+            "место"
+          ],
+          "fill": [
+            "противники",
+            "испытания"
+          ]
+        },
+        "conditions": [
+          "Подготовка применимого места/сцены; советы не превращаются в обязательный генератор."
+        ],
+        "exceptions": [
+          "Состав/число противников не задано этим советом; баланс/бой=L3."
+        ],
+        "cross_references": [
+          "GMCoreChapter2 Adventure Design"
+        ],
+        "access_level": "public_primary_full_selected_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-GMC1-002-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "L1 исходные данные места; L2 показ/ведение и L3 проверки отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать описание выбранного места, затем связать с подготовленными сценами/обитателями",
+        "inputs_and_units": {
+          "starting_options": [
+            "антагонист",
+            "место"
+          ],
+          "fill": [
+            "противники",
+            "испытания"
+          ]
+        },
+        "product_operation": "Создать описание выбранного места, затем связать с подготовленными сценами/обитателями. Сохранить описанные поля и связи у выбранного места; при загрузке/отмене не менять соседние места.",
+        "expected_output": "Место может существовать до заполнения обитателей; подходящий контент добавляет мастер.",
+        "constraints_and_exceptions": [
+          "Состав/число противников не задано этим советом; баланс/бой=L3.",
+          "Это предлагаемое поведение приложения, не одобрение разработки; конкретный UI ещё не выбран."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создано местоA без NPC, позже связан NPC-B",
+            "when": "Создать описание выбранного места, затем связать с подготовленными сценами/обитателями",
+            "expected": "A допустимо пустым; NPC-B не заменяет географическую запись A."
+          },
+          {
+            "given": "Подготовлен указанный результат; затем запись изменяют, сохраняют, загружают и отменяют",
+            "when": "Открыть то же место и отменить изменение",
+            "expected": "Сохранённые поля и связи восстановлены; отмена возвращает предыдущую запись, другие места не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило/совет книги дан отдельно. Подготовка структуры сведений=L1; исполнение поиска, раскрытие игрокам/ведение=L2/L3. Выбранные UI, save/load/undo не приписываются книге.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Полное соответствие общего компонента, UI/save/load/undo и параметры внешнего обмена не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.place_description по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Состав/число противников не задано этим советом; баланс/бой=L3."
+          ]
+        },
+        {
+          "rule_id": "content.site_links",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.site_links по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Состав/число противников не задано этим советом; баланс/бой=L3."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан, точная операция и известный ожидаемый выход сформулированы. Продукт в этом срезе не исполнялся; заметки и совпадениеID не доказывают реализацию.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Точные поля/профиль/связи и фактический UI/save/load/undo. L3 разрешение отдельно."
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_translation_only",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Стратег оценивает общий компонент и существующие средства прежде, чем предлагать новую функциональность. Продуктовая очередь не изменена."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false,
+      "title": "Your Own Adventures: место как исходная точка"
+    },
+    {
+      "id": "PF2-RM-GMC1-003-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GMCore English AoN snapshot2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2592",
+        "locator": "GM Core printed38; Evocative Environments: сенсорные заметки",
+        "self_contained_rule": "При подготовке полезно записать, что можно ощутить в месте, выделить знакомое и новое. Детали передают обстановку и предвосхищают открытия; подробность может направлять интерес игроков, но атмосфера не становится обязательной механикой.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "content": [
+            "ощущения",
+            "знакомое",
+            "новое"
+          ],
+          "generation": "свободный выбор мастера"
+        },
+        "conditions": [
+          "Подготовка применимого места/сцены; советы не превращаются в обязательный генератор."
+        ],
+        "exceptions": [
+          "Не задаёт обязательные поля всех чувств, бросок таблицы или частоты вариантов.",
+          "Quick Environmental Details в родительском разделе — отдельный открытый примерный каталог, не обязательный набор тегов."
+        ],
+        "cross_references": [],
+        "access_level": "public_primary_full_selected_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-GMC1-003-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "L1 исходные данные места; L2 показ/ведение и L3 проверки отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "У места добавить сенсорное описание и отметить необычные детали",
+        "inputs_and_units": {
+          "content": [
+            "ощущения",
+            "знакомое",
+            "новое"
+          ],
+          "generation": "свободный выбор мастера"
+        },
+        "product_operation": "У места добавить сенсорное описание и отметить необычные детали. Сохранить описанные поля и связи у выбранного места; при загрузке/отмене не менять соседние места.",
+        "expected_output": "Сенсорная заметка не изменяет биом/опасность/проходимость сама по себе.",
+        "constraints_and_exceptions": [
+          "Не задаёт обязательные поля всех чувств, бросок таблицы или частоты вариантов.",
+          "Quick Environmental Details в родительском разделе — отдельный открытый примерный каталог, не обязательный набор тегов.",
+          "Это предлагаемое поведение приложения, не одобрение разработки; конкретный UI ещё не выбран."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Мастер записал «пахнет серой; странное эхо»",
+            "when": "У места добавить сенсорное описание и отметить необычные детали",
+            "expected": "Запись сохранена как описание; вулкан, урон и встреча не создаются автоматически."
+          },
+          {
+            "given": "Подготовлен указанный результат; затем запись изменяют, сохраняют, загружают и отменяют",
+            "when": "Открыть то же место и отменить изменение",
+            "expected": "Сохранённые поля и связи восстановлены; отмена возвращает предыдущую запись, другие места не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило/совет книги дан отдельно. Подготовка структуры сведений=L1; исполнение поиска, раскрытие игрокам/ведение=L2/L3. Выбранные UI, save/load/undo не приписываются книге.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полное соответствие общего компонента, UI/save/load/undo и параметры внешнего обмена не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.place_description по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Не задаёт обязательные поля всех чувств, бросок таблицы или частоты вариантов.",
+            "Quick Environmental Details в родительском разделе — отдельный открытый примерный каталог, не обязательный набор тегов."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан, точная операция и известный ожидаемый выход сформулированы. Продукт в этом срезе не исполнялся; заметки и совпадениеID не доказывают реализацию.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Точные поля/профиль/связи и фактический UI/save/load/undo. L3 разрешение отдельно."
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_translation_only",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Стратег оценивает общий компонент и существующие средства прежде, чем предлагать новую функциональность. Продуктовая очередь не изменена."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false,
+      "title": "Evocative Environments: сенсорные заметки"
+    },
+    {
+      "id": "PF2-RM-GMC1-004-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GMCore English AoN snapshot2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2576",
+        "locator": "GM Core printed35; Hazards: место, предвестник, триггер и последствия",
+        "self_contained_rule": "Опасности обычно привязаны к конкретному объекту/участку; предвестники делают их осмысленными. Нужно ясно описать действие, запускающее опасность, её проявление и последствия. Сложная опасность переводит игру во встречу; простая обычно разрешается в исследовании; многоэтапное обезвреживание показывается постепенно.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "fields": [
+            "локатор",
+            "предвестник",
+            "триггер",
+            "проявление",
+            "последствия"
+          ],
+          "hazard_modes": {
+            "complex": "encounter",
+            "simple": "обычно exploration"
+          }
+        },
+        "conditions": [
+          "Подготовка применимого места/сцены; советы не превращаются в обязательный генератор."
+        ],
+        "exceptions": [
+          "Приведённый замок/царапины/шум — пример приёмки, не обязательный профиль любой ловушки.",
+          "Проверки отключения, урон/инициатива=L3; сигналы/состояния ведения=L2."
+        ],
+        "cross_references": [],
+        "access_level": "public_primary_full_selected_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information",
+        "normative_components": [
+          {
+            "kind": "recommendation",
+            "meaning": "осмысленная пространственная подготовка и предвестники"
+          },
+          {
+            "kind": "mandatory_rule",
+            "meaning": "при срабатывании сложной опасности переход во встречу; исполнениеL3"
+          }
+        ]
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-GMC1-004-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "L1 исходные данные места; L2 показ/ведение и L3 проверки отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "При подготовке опасности связать её с объектом и разнести признаки/условие срабатывания/последствия",
+        "inputs_and_units": {
+          "fields": [
+            "локатор",
+            "предвестник",
+            "триггер",
+            "проявление",
+            "последствия"
+          ],
+          "hazard_modes": {
+            "complex": "encounter",
+            "simple": "обычно exploration"
+          }
+        },
+        "product_operation": "При подготовке опасности связать её с объектом и разнести признаки/условие срабатывания/последствия. Сохранить описанные поля и связи у выбранного места; при загрузке/отмене не менять соседние места.",
+        "expected_output": "Предвестник можно описать без раскрытия всей механики; наличие опасности не равно её срабатыванию.",
+        "constraints_and_exceptions": [
+          "Приведённый замок/царапины/шум — пример приёмки, не обязательный профиль любой ловушки.",
+          "Проверки отключения, урон/инициатива=L3; сигналы/состояния ведения=L2.",
+          "Это предлагаемое поведение приложения, не одобрение разработки; конкретный UI ещё не выбран."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Ловушка на замке; царапины видны; триггер=открыть без отключения; последствие=шум",
+            "when": "При подготовке опасности связать её с объектом и разнести признаки/условие срабатывания/последствия",
+            "expected": "Признак связан с замком, но опасность не активируется от простого открытия карточки."
+          },
+          {
+            "given": "Подготовлен указанный результат; затем запись изменяют, сохраняют, загружают и отменяют",
+            "when": "Открыть то же место и отменить изменение",
+            "expected": "Сохранённые поля и связи восстановлены; отмена возвращает предыдущую запись, другие места не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило/совет книги дан отдельно. Подготовка структуры сведений=L1; исполнение поиска, раскрытие игрокам/ведение=L2/L3. Выбранные UI, save/load/undo не приписываются книге.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard",
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Полное соответствие общего компонента, UI/save/load/undo и параметры внешнего обмена не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.static_hazard",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.static_hazard по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Приведённый замок/царапины/шум — пример приёмки, не обязательный профиль любой ловушки.",
+            "Проверки отключения, урон/инициатива=L3; сигналы/состояния ведения=L2."
+          ]
+        },
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.discovery_levels по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Приведённый замок/царапины/шум — пример приёмки, не обязательный профиль любой ловушки.",
+            "Проверки отключения, урон/инициатива=L3; сигналы/состояния ведения=L2."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан, точная операция и известный ожидаемый выход сформулированы. Продукт в этом срезе не исполнялся; заметки и совпадениеID не доказывают реализацию.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Точные поля/профиль/связи и фактический UI/save/load/undo. L3 разрешение отдельно."
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_translation_only",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Стратег оценивает общий компонент и существующие средства прежде, чем предлагать новую функциональность. Продуктовая очередь не изменена."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false,
+      "title": "Hazards: место, предвестник, триггер и последствия"
+    },
+    {
+      "id": "PF2-RM-GMC1-005-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GMCore English AoN snapshot2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2578",
+        "locator": "GM Core printed36; Investigations: явная зацепка и последующее изучение",
+        "self_contained_rule": "Начинать сцену можно с конкретной неполной зацепки. Примеры: необычный вариант арканных рун; гипс на одной капители среди гранита; три витража аспектов божества вместо четырёх. Очевидную недостающую деталь не обязательно скрывать за новой проверкой. Сотрудничество/собственные выводы поощряются.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "examples": [
+            "вариант арканных рун",
+            "одна гипсовая капитель среди гранитных",
+            "3витража из4аспектов"
+          ],
+          "checks": "не требовать без необходимости"
+        },
+        "conditions": [
+          "Подготовка применимого места/сцены; советы не превращаются в обязательный генератор."
+        ],
+        "exceptions": [
+          "Это рекомендации/примеры, не универсальные обязательные загадки и не правило «всегда требовать2проверки»."
+        ],
+        "cross_references": [],
+        "access_level": "public_primary_full_selected_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-GMC1-005-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "L1 исходные данные места; L2 показ/ведение и L3 проверки отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Разнести в записи места исходную зацепку, дальнейшие сведения и объяснение для мастера",
+        "inputs_and_units": {
+          "examples": [
+            "вариант арканных рун",
+            "одна гипсовая капитель среди гранитных",
+            "3витража из4аспектов"
+          ],
+          "checks": "не требовать без необходимости"
+        },
+        "product_operation": "Разнести в записи места исходную зацепку, дальнейшие сведения и объяснение для мастера. Сохранить описанные поля и связи у выбранного места; при загрузке/отмене не менять соседние места.",
+        "expected_output": "Видимая аномалия доступна отдельно от ответа; мастер может раскрыть очевидное без броска.",
+        "constraints_and_exceptions": [
+          "Это рекомендации/примеры, не универсальные обязательные загадки и не правило «всегда требовать2проверки».",
+          "Это предлагаемое поведение приложения, не одобрение разработки; конкретный UI ещё не выбран."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "3витража при4аспектах; мастер считает недостающее очевидным",
+            "when": "Разнести в записи места исходную зацепку, дальнейшие сведения и объяснение для мастера",
+            "expected": "Видны3/4 и выбранное пояснение; дополнительная Religion не навязывается."
+          },
+          {
+            "given": "Подготовлен указанный результат; затем запись изменяют, сохраняют, загружают и отменяют",
+            "when": "Открыть то же место и отменить изменение",
+            "expected": "Сохранённые поля и связи восстановлены; отмена возвращает предыдущую запись, другие места не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило/совет книги дан отдельно. Подготовка структуры сведений=L1; исполнение поиска, раскрытие игрокам/ведение=L2/L3. Выбранные UI, save/load/undo не приписываются книге.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.discovery_levels",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полное соответствие общего компонента, UI/save/load/undo и параметры внешнего обмена не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.discovery_levels по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Это рекомендации/примеры, не универсальные обязательные загадки и не правило «всегда требовать2проверки»."
+          ]
+        },
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.place_description по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Это рекомендации/примеры, не универсальные обязательные загадки и не правило «всегда требовать2проверки»."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан, точная операция и известный ожидаемый выход сформулированы. Продукт в этом срезе не исполнялся; заметки и совпадениеID не доказывают реализацию.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Точные поля/профиль/связи и фактический UI/save/load/undo. L3 разрешение отдельно."
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_translation_only",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Стратег оценивает общий компонент и существующие средства прежде, чем предлагать новую функциональность. Продуктовая очередь не изменена."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false,
+      "title": "Investigations: явная зацепка и последующее изучение"
+    },
+    {
+      "id": "PF2-RM-GMC1-006-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GMCore English AoN snapshot2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2597",
+        "locator": "GM Core printed41; Investigate: первоначальный признак не вся информация",
+        "self_contained_rule": "Первичное Investigate, как Search/Detect Magic, обычно даёт зацепку к подробному осмотру, а не весь ответ. Пример: заметить хтоническую письменность на стене; для чтения текста и выяснения, что он написан кровью, нужно остановиться.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "initial": "письменность заметна",
+          "detail": [
+            "содержание текста",
+            "материал надписи"
+          ],
+          "requires": "остановиться для осмотра"
+        },
+        "conditions": [
+          "Подготовка применимого места/сцены; советы не превращаются в обязательный генератор."
+        ],
+        "exceptions": [
+          "Это пример сцены, а не обязательная кровавая надпись у всех руин."
+        ],
+        "cross_references": [],
+        "access_level": "public_primary_full_selected_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-GMC1-006-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "L1 исходные данные места; L2 показ/ведение и L3 проверки отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "В подготовленном месте отдельно записать заметный признак и детали осмотра",
+        "inputs_and_units": {
+          "initial": "письменность заметна",
+          "detail": [
+            "содержание текста",
+            "материал надписи"
+          ],
+          "requires": "остановиться для осмотра"
+        },
+        "product_operation": "В подготовленном месте отдельно записать заметный признак и детали осмотра. Сохранить описанные поля и связи у выбранного места; при загрузке/отмене не менять соседние места.",
+        "expected_output": "Раскрытие признака не автоматически раскрывает текст/материал.",
+        "constraints_and_exceptions": [
+          "Это пример сцены, а не обязательная кровавая надпись у всех руин.",
+          "Это предлагаемое поведение приложения, не одобрение разработки; конкретный UI ещё не выбран."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Открыта запись «хтоническая письменность», детали «текстX; кровь» не выбраны",
+            "when": "В подготовленном месте отдельно записать заметный признак и детали осмотра",
+            "expected": "Исходная зацепка раскрыта, детальные сведения остаются отдельно; мастер может раскрыть их после осмотра."
+          },
+          {
+            "given": "Подготовлен указанный результат; затем запись изменяют, сохраняют, загружают и отменяют",
+            "when": "Открыть то же место и отменить изменение",
+            "expected": "Сохранённые поля и связи восстановлены; отмена возвращает предыдущую запись, другие места не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило/совет книги дан отдельно. Подготовка структуры сведений=L1; исполнение поиска, раскрытие игрокам/ведение=L2/L3. Выбранные UI, save/load/undo не приписываются книге.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.discovery_levels",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полное соответствие общего компонента, UI/save/load/undo и параметры внешнего обмена не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.discovery_levels по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Это пример сцены, а не обязательная кровавая надпись у всех руин."
+          ]
+        },
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.place_description по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Это пример сцены, а не обязательная кровавая надпись у всех руин."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан, точная операция и известный ожидаемый выход сформулированы. Продукт в этом срезе не исполнялся; заметки и совпадениеID не доказывают реализацию.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Точные поля/профиль/связи и фактический UI/save/load/undo. L3 разрешение отдельно."
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_translation_only",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Стратег оценивает общий компонент и существующие средства прежде, чем предлагать новую функциональность. Продуктовая очередь не изменена."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false,
+      "title": "Investigate: первоначальный признак не вся информация"
+    },
+    {
+      "id": "PF2-RM-GMC1-007-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GMCore English AoN snapshot2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2598",
+        "locator": "GM Core printed41–42; Search: обнаружение и полная характеристика",
+        "self_contained_rule": "Успешный Search сообщает о необычном и примерном месте/характере, не полном каталоге. В примере при28 ловушка DC25 замечена, дверь DC30 нет; свойства ловушки требуют осмотра, дверь — нового поиска. Шкаф с бумагами обнаруживается отдельно от изучения бумаг. Тайный бросок при проходе применим к выделяющимся местам; неприметные требуют особо тщательного поиска.",
+        "normative_kind": "mandatory_rule",
+        "parameters_and_units": {
+          "source_example": {
+            "perception": 28,
+            "trap_dc": 25,
+            "door_dc": 30
+          },
+          "reveal": [
+            "наличие",
+            "примерное место/характер"
+          ],
+          "not_reveal": [
+            "все свойства",
+            "дверьDC30"
+          ],
+          "containers": "предмет и содержимое раздельно"
+        },
+        "conditions": [
+          "Подготовка применимого места/сцены; советы не превращаются в обязательный генератор."
+        ],
+        "exceptions": [
+          "L1 не вычисляет результат Perception; сам поиск/его тайный бросок=L3, показ игрокам=L2.",
+          "Числа25/28/30 — конкретный пример источника, не сложности всех объектов."
+        ],
+        "cross_references": [],
+        "access_level": "public_primary_full_selected_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-GMC1-007-v2",
+        "normative_kind": "research_translation_of_conditional_rule",
+        "applicability": "L1 исходные данные места; L2 показ/ведение и L3 проверки отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить у объектов условие обнаружения и отдельные поля первоначальных/полных сведений",
+        "inputs_and_units": {
+          "source_example": {
+            "perception": 28,
+            "trap_dc": 25,
+            "door_dc": 30
+          },
+          "reveal": [
+            "наличие",
+            "примерное место/характер"
+          ],
+          "not_reveal": [
+            "все свойства",
+            "дверьDC30"
+          ],
+          "containers": "предмет и содержимое раздельно"
+        },
+        "product_operation": "Подготовить у объектов условие обнаружения и отдельные поля первоначальных/полных сведений. Сохранить описанные поля и связи у выбранного места; при загрузке/отмене не менять соседние места.",
+        "expected_output": "Данные позволяют принять частичное раскрытие изL3, не превращая успех в показ всех полей.",
+        "constraints_and_exceptions": [
+          "L1 не вычисляет результат Perception; сам поиск/его тайный бросок=L3, показ игрокам=L2.",
+          "Числа25/28/30 — конкретный пример источника, не сложности всех объектов.",
+          "Это предлагаемое поведение приложения, не одобрение разработки; конкретный UI ещё не выбран."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "L3 вернул: ловушка найдена при28; дверьDC30 не найдена",
+            "when": "Подготовить у объектов условие обнаружения и отдельные поля первоначальных/полных сведений",
+            "expected": "При импорте результата доступны наличие/примерное место ловушки; дверь и полные свойства ловушки не раскрыты."
+          },
+          {
+            "given": "Подготовлен указанный результат; затем запись изменяют, сохраняют, загружают и отменяют",
+            "when": "Открыть то же место и отменить изменение",
+            "expected": "Сохранённые поля и связи восстановлены; отмена возвращает предыдущую запись, другие места не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило/совет книги дан отдельно. Подготовка структуры сведений=L1; исполнение поиска, раскрытие игрокам/ведение=L2/L3. Выбранные UI, save/load/undo не приписываются книге.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Полное соответствие общего компонента, UI/save/load/undo и параметры внешнего обмена не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.discovery_levels по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "L1 не вычисляет результат Perception; сам поиск/его тайный бросок=L3, показ игрокам=L2.",
+            "Числа25/28/30 — конкретный пример источника, не сложности всех объектов."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан, точная операция и известный ожидаемый выход сформулированы. Продукт в этом срезе не исполнялся; заметки и совпадениеID не доказывают реализацию.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Точные поля/профиль/связи и фактический UI/save/load/undo. L3 разрешение отдельно."
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_translation_only",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Стратег оценивает общий компонент и существующие средства прежде, чем предлагать новую функциональность. Продуктовая очередь не изменена."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false,
+      "title": "Search: обнаружение и полная характеристика"
+    },
+    {
+      "id": "PF2-RM-GMC1-008-v2",
+      "game_id": "PF2",
+      "edition": "Remaster GMCore English AoN snapshot2026-11-16",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2598",
+        "locator": "GM Core printed42; Search: время, автоматический успех и повтор",
+        "self_contained_rule": "Время поиска определяет мастер по обстоятельствам. Без опасности и при достаточном времени возможен автоматический успех либо бросок на длительность с неизбежной находкой. Тщательный поиск в подземелье может привлечь внимание. Повтор лучше связывать с другим способом/инструментом, а не простым повторением фразы; бесполезный поиск стоит обозначить рано.",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "duration": "решает мастер",
+          "safe_thorough": [
+            "автоуспех",
+            "определить длительность"
+          ],
+          "retry": "другой метод/инструмент"
+        },
+        "conditions": [
+          "Подготовка применимого места/сцены; советы не превращаются в обязательный генератор."
+        ],
+        "exceptions": [
+          "Правило не даёт единой вероятности привлечения внимания/фиксированного срока и не требует автоматизировать решение мастера."
+        ],
+        "cross_references": [],
+        "access_level": "public_primary_full_selected_section",
+        "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-GMC1-008-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "L1 исходные данные места; L2 показ/ведение и L3 проверки отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "В заметке поиска задать условия времени/безопасности и основание повторной попытки",
+        "inputs_and_units": {
+          "duration": "решает мастер",
+          "safe_thorough": [
+            "автоуспех",
+            "определить длительность"
+          ],
+          "retry": "другой метод/инструмент"
+        },
+        "product_operation": "В заметке поиска задать условия времени/безопасности и основание повторной попытки. Сохранить описанные поля и связи у выбранного места; при загрузке/отмене не менять соседние места.",
+        "expected_output": "Фиксированные10минут и бесконечный переброс не назначаются каждому объекту.",
+        "constraints_and_exceptions": [
+          "Правило не даёт единой вероятности привлечения внимания/фиксированного срока и не требует автоматизировать решение мастера.",
+          "Это предлагаемое поведение приложения, не одобрение разработки; конкретный UI ещё не выбран."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Безопасный архив; времени достаточно; мастер выбрал автоуспех",
+            "when": "В заметке поиска задать условия времени/безопасности и основание повторной попытки",
+            "expected": "Сохранён вариант автоуспеха без обязательного броска; время задаётся мастером."
+          },
+          {
+            "given": "Подготовлен указанный результат; затем запись изменяют, сохраняют, загружают и отменяют",
+            "when": "Открыть то же место и отменить изменение",
+            "expected": "Сохранённые поля и связи восстановлены; отмена возвращает предыдущую запись, другие места не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило/совет книги дан отдельно. Подготовка структуры сведений=L1; исполнение поиска, раскрытие игрокам/ведение=L2/L3. Выбранные UI, save/load/undo не приписываются книге.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Полное соответствие общего компонента, UI/save/load/undo и параметры внешнего обмена не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.place_description по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Правило не даёт единой вероятности привлечения внимания/фиксированного срока и не требует автоматизировать решение мастера."
+          ]
+        },
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Кандидат на reuse общего действия content.discovery_levels по содержанию/месту. Частный порядок раскрытия не считается реализованным по одному ID. Новой общей механики по названию PF2 не создано.",
+          "profile_differences": [
+            "Правило не даёт единой вероятности привлечения внимания/фиксированного срока и не требует автоматизировать решение мастера."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Источник прочитан, точная операция и известный ожидаемый выход сформулированы. Продукт в этом срезе не исполнялся; заметки и совпадениеID не доказывают реализацию.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "Точные поля/профиль/связи и фактический UI/save/load/undo. L3 разрешение отдельно."
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "primary_source_translation_only",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Стратег оценивает общий компонент и существующие средства прежде, чем предлагать новую функциональность. Продуктовая очередь не изменена."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false,
+      "title": "Search: время, автоматический успех и повтор"
+    }
+  ],
+  "coverage_ledger": [
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2473",
+      "range_or_section": "GMCore Preparing Adventures8",
+      "status": "applicable_extracted",
+      "source_rule_ids": [],
+      "reason": "Общий выбор готового/своего сценария; дочерние2474/2476извлечены.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2474",
+      "range_or_section": "GMCore Published Adventures8",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1-001-v2"
+      ],
+      "reason": "Адаптациямест; PFS-персистентность/отчётность внеL1.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2476",
+      "range_or_section": "GMCore Your Own Adventures9",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1-002-v2"
+      ],
+      "reason": "Альтернативы проектирования; нет нового генераторного алгоритма.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2479",
+      "range_or_section": "GMCore Planning a Session9",
+      "status": "reviewed_not_applicable",
+      "source_rule_ids": [],
+      "reason": "Расписание встречи, перерывы, sessionzero/персонажи; нет отдельного требования к подготовке карты.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2573",
+      "range_or_section": "GMCore Running Exploration34–42 parent",
+      "status": "partially_read",
+      "source_rule_ids": [],
+      "reason": "Прочитаны основной текст/дочерние темы доSearch; отдельные применимые нормы извлечены; полный каталогQuickEnvironmentalDetails и всеPC438–439ссылки пока не оцифрованы.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2576",
+      "range_or_section": "GMCore Hazards35",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1-004-v2"
+      ],
+      "reason": "Признак/триггер/последствия; разрешение и инициативаL3.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2578",
+      "range_or_section": "GMCore Investigations36",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1-005-v2"
+      ],
+      "reason": "Неполная зацепка/очевидная информация/три примера извлечены.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2582",
+      "range_or_section": "GMCore Navigating36",
+      "status": "applicable_extracted",
+      "source_rule_ids": [],
+      "reason": "Перепроверено существующее118:2–3предъявляемых ориентира, не предел числаPOI. Новая строка не дублирует118.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2592",
+      "range_or_section": "GMCore Evocative Environments38",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1-003-v2"
+      ],
+      "reason": "Сенсорная подготовка без превращения атмосферы в обязательные теги.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2597",
+      "range_or_section": "GMCore Investigate41",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1-006-v2"
+      ],
+      "reason": "Слойпризнака/осмотра, не раскрытьвсё.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2598",
+      "range_or_section": "GMCore Search41–42",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-GMC1-007-v2",
+        "PF2-RM-GMC1-008-v2"
+      ],
+      "reason": "Полное тело раздела, включая время/повтор/автоуспех и пример25/28/30.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC1-preparation.json"
+    }
+  ],
+  "remaining": [
+    "Finish exact Quick Environmental Details7terrain×5sensory-category examples, and remaining GMCoreChapter1 map-applicability sections; do not equate three reviewed sections with full chapter.",
+    "Remaining PlayerCore6 equipment and other chapter/body/appendix screening per15-block inventory.",
+    "Canonical-binding normalization and actual UI/save/load/undo/profile verification on fresh productSHA.",
+    "PlayerCore438–439 referenced activity mechanics: execution/L3 separately; no automatic scene disclosure from L1 descriptions."
+  ],
+  "source_inferences": [
+    "Source distinguishes object presence, initial clue and full properties; a single found boolean is insufficient to represent this content without losing meaning.",
+    "This does not mandate three fixed universal discovery levels or an automatic roll gate; GM can reveal obvious facts/allow success.",
+    "Existing1182–3landmarks is already correct; no new landmark rule/profile was duplicated."
+  ],
+  "author_project_dedup_key": "paizo:pf2-remaster:gm-core:preparation-information",
+  "source_access": "public_primary",
+  "active_rating_changed": false,
+  "product_tasks_added": 0,
+  "canonical_registry_changed": false,
+  "product_execution": false
+}
