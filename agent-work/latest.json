@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-11-16",
-  "branch": "agent/hx-bl-051-one-mile1",
+  "branch": "agent/hx-bl-055-one-mile-river-width",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
   "strategy_branch": "main",
@@ -17,16 +17,7 @@
   "score_model_path": "agent-work/strategy/score-model.md",
   "backlog_path": "agent-work/backlog.json",
   "approvals_path": "agent-work/approvals.json",
-  "execution_blocker": {
-    "task_id": "HX-BL-055",
-    "kind": "material_owner_choice",
-    "question_ids": [
-      "RW-Q01",
-      "RW-Q02"
-    ],
-    "whole_team": false,
-    "technical": false
-  },
+  "execution_blocker": null,
   "cleanup_status": "merged_pr470",
   "project_attachments_cleanup": {
     "status": "detached_by_owner",
@@ -50,67 +41,44 @@
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
     "status": "materials_verified_latest_written_last",
-    "materials_commit_sha": "5febcb27596d39f5deb91c35a1af26914c34c758",
-    "run_id": "2026-11-15-manual-programmer-PR503-ui"
+    "materials_commit_sha": "98d863b2ecd030ae085896ffd1c87ec41560f719",
+    "result_commit_sha": "440127e0a2394e540d242bd55a7c6bee996a3f0b",
+    "handoff_commit_sha": "72bdb2f79594498feb51f4a84081cbedb6a8235c",
+    "run_id": "2026-11-16T1107-programmer-river-width-F1"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
   "schedule_start_at": "2026-11-14T01:00:00+03:00",
-  "schedule_frequency": "every_two_hours",
+  "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
   "current_role": "programmer",
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-055",
-  "spec_path": "agent-work/specs/HX-BL-051-ONE-MILE1-GEO2.md",
-  "spec_version": null,
-  "result_path": "agent-work/results/2026-11-16T0800-interviewer-river-width-D1.json",
-  "handoff_commit_sha": "149db574b4e315f1e5627fdc31a1bedb9c4fd4ca",
-  "active_claim": {
-    "run_id": "2026-11-16T1107-programmer-river-width-F1",
-    "task_id": "HX-BL-055",
-    "role": "programmer",
-    "claim_ref": "agent-work/claims/2026-11-16T1107-programmer-river-width-F1.json",
-    "branch": "agent/hx-bl-055-one-mile-river-width",
-    "generation": 65,
-    "execution_running": true,
-    "scope": "Implement approved HX-BL-055 F1 display-only one-mile river widths, lake joins/crossings and exact-SHA evidence; no publication or HX-BL-056/057/058 scope."
-  },
-  "next_step": "HX-BL-055: реализовать реальный сквозной сценарий F1–F5 с озёрами/переправами, JSON/Undo/Redo/PNG и неизменным 6-мильным режимом.",
-  "owner_decisions_needed": [
-    {
-      "task_id": "HX-BL-055",
-      "question_id": "RW-Q01",
-      "round_ref": "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/round-001.json"
-    },
-    {
-      "task_id": "HX-BL-055",
-      "question_id": "RW-Q02",
-      "round_ref": "agent-work/interviews/HX-BL-055/ONE-MILE-WIDTH/round-001.json"
-    },
-    {
-      "task_id": "HX-BL-021",
-      "question_id": "BIO-Q02",
-      "owner_answers_ref": "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-01.json"
-    }
-  ],
+  "spec_path": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
+  "spec_version": "F1",
+  "result_path": "agent-work/results/2026-11-16T1107-programmer-river-width-F1.json",
+  "handoff_commit_sha": "72bdb2f79594498feb51f4a84081cbedb6a8235c",
+  "active_claim": null,
+  "next_step": "HX-BL-055: независимый проверяющий принимает или возвращает PR504 на точном SHA 47d0dfad85931e949be6e9a469de307cdf8f5582 по F1/AC, CI и фактическому до/после; сохраняет score_assessment1.2. Затем отдельное решение владельца о публикации.",
+  "owner_decisions_needed": [],
   "release_approval": {
-    "task_id": "HX-BL-051",
-    "pr": 503,
-    "head_sha": "afebeb085e0bc0059e317ff6a64d02a9f8e46393",
-    "tree_sha": "b6c451cea311fdef56bd8c784238898ffcf191ed",
-    "status": "owner_review_pending",
+    "task_id": "HX-BL-055",
+    "pr": 504,
+    "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+    "tree_sha": "cd18f3dc4423e6bad5c0da7709fc0bd22059b12d",
+    "status": "not_yet_eligible_pending_independent_acceptance",
     "release_authorized": false
   },
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/PR503-visible-integration-20261115-manual",
+  "evidence_path": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617/artifacts/14210508921",
   "branch_name": "agent/hx-bl-055-one-mile-river-width",
-  "pr": null,
-  "head_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
-  "tree_sha": "00006887cb0bc94481ef75960ca137ec2dd0ed5d",
-  "checks_status": "passed_exact_tree_node424_browser_rng",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43734521536",
-  "review_verdict": "ready_for_owner_review",
+  "pr": 504,
+  "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+  "tree_sha": "cd18f3dc4423e6bad5c0da7709fc0bd22059b12d",
+  "checks_status": "passed_exact_sha_check_browser_rng",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617",
+  "review_verdict": "review_ready_pending_independent_acceptance",
   "role_selection_mode": "readiness_and_current_owner_direction",
   "role_selection_source": "agent-work/process.md",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -130,7 +98,7 @@
   "score_update_release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/PR503-through-lake-fix-20261115/score-assessment1.2.json",
-  "role_selection_reason": "HX-BL-021 awaits10presented questions with no actual answers; approved independent HX-BL-055 has no draft. All342claims and three unfinished legacy-result refs reconciled; no ownership takeover.",
+  "role_selection_reason": "Approved HX-BL-055 F1 had a final interviewed specification and no conflicting programmer owner; generation65 implemented the display-only package and exact-SHA CI is green. Next required authority is independent reviewer.",
   "score_update_result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json",
   "score_update_completed_at": "2026-11-15T21:07:07.928Z",
   "score_update_delta": null,
@@ -159,13 +127,22 @@
       "is_enabled": true,
       "method": "automations.peek"
     },
-    "end": null,
+    "end": {
+      "checked_at": "2026-11-16T09:06:14.308Z",
+      "status": "checked_after_retry",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "schedule": "hourly_at_minute_00",
+      "timezone": "Europe/Moscow"
+    },
     "recovery_performed": false,
     "schedule_changed": false,
-    "errors": []
+    "errors": [
+      "First end peek returned task-found/run-result-unreadable; immediate retry returned the automation and confirmed enabled."
+    ]
   },
   "open_findings": [],
-  "current_review_score_assessment_status": "completed_partial_evidence_no_award",
+  "current_review_score_assessment_status": "pending_independent_reviewer",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -1724,7 +1701,7 @@
     }
   },
   "previous_result_path": "agent-work/results/2026-11-12T0204-programmer-ONE-MILE1.json",
-  "handoff_path": "agent-work/handoffs/2026-11-15T1701-interviewer-GEO2-visible-D2.json",
+  "handoff_path": "agent-work/handoffs/2026-11-16T1107-programmer-river-width-F1-reviewer.json",
   "ui_actual_preview": {
     "head_sha": "3aff650ca8a2c6c24989bcb97f0fefe346fabec7",
     "manifest_ref": "agent-work/evidence/PR496-owner-corrections-0838/ui/ui-manifest.json",
@@ -15243,5 +15220,29 @@
       "history_reset": false
     },
     "publication_authorized": false
+  },
+  "forecast": {
+    "task_id": "HX-BL-055",
+    "completed_runs": 6,
+    "remaining_runs": {
+      "min": 2,
+      "max": 5
+    },
+    "total_runs": {
+      "min": 8,
+      "max": 11
+    },
+    "remaining_active_hours": {
+      "min": 1,
+      "max": 4
+    },
+    "remaining_calendar_hours_excluding_owner_wait": {
+      "min": 2,
+      "max": 6
+    },
+    "owner_publication_wait": "unknown",
+    "next_user_visible_result": "Независимое заключение по точному SHA со score_assessment1.2; после принятия — пакет для отдельного решения владельца о публикации.",
+    "history_reset": false,
+    "confidence": "medium"
   }
 }
