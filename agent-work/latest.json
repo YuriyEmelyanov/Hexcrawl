@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-16T1107-programmer-river-width-F1",
+  "run_id": "2026-11-16T1319-reviewer-river-width-F1",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
   "status": "Согласована",
@@ -40,11 +40,9 @@
   "unverified_weight": 1000,
   "last_completed_task": "HX-BL-041",
   "operational_state_write": {
-    "status": "materials_verified_latest_written_last",
-    "materials_commit_sha": "98d863b2ecd030ae085896ffd1c87ec41560f719",
-    "result_commit_sha": "440127e0a2394e540d242bd55a7c6bee996a3f0b",
-    "handoff_commit_sha": "72bdb2f79594498feb51f4a84081cbedb6a8235c",
-    "run_id": "2026-11-16T1107-programmer-river-width-F1"
+    "status": "claim_acquired_latest_written_last",
+    "materials_commit_sha": "f72b1ae12a86971fe5d9d4470e8b1579cc1b4c2f",
+    "run_id": "2026-11-16T1319-reviewer-river-width-F1"
   },
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
@@ -52,15 +50,24 @@
   "schedule_start_at": "2026-11-14T01:00:00+03:00",
   "schedule_frequency": "hourly",
   "process_path": "agent-work/process.md",
-  "current_role": "programmer",
+  "current_role": "reviewer",
   "next_role": "reviewer",
   "current_task_id": "HX-BL-055",
   "spec_path": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
   "spec_version": "F1",
   "result_path": "agent-work/results/2026-11-16T1107-programmer-river-width-F1.json",
   "handoff_commit_sha": "72bdb2f79594498feb51f4a84081cbedb6a8235c",
-  "active_claim": null,
-  "next_step": "HX-BL-055: независимый проверяющий принимает или возвращает PR504 на точном SHA 47d0dfad85931e949be6e9a469de307cdf8f5582 по F1/AC, CI и фактическому до/после; сохраняет score_assessment1.2. Затем отдельное решение владельца о публикации.",
+  "active_claim": {
+    "run_id": "2026-11-16T1319-reviewer-river-width-F1",
+    "task_id": "HX-BL-055",
+    "role": "reviewer",
+    "claim_ref": "agent-work/claims/2026-11-16T1319-reviewer-river-width-F1.json",
+    "branch": "agent-operations",
+    "generation": 67,
+    "execution_running": true,
+    "scope": "Independent exact-SHA review of PR504/47d0dfa; no source changes, merge or publication."
+  },
+  "next_step": "HX-BL-055: независимая проверка PR504 на точном SHA 47d0dfad85931e949be6e9a469de307cdf8f5582 по F1/AC, фактическому артефакту, изменённым тестам и score1.2.",
   "owner_decisions_needed": [],
   "release_approval": {
     "task_id": "HX-BL-055",
@@ -98,7 +105,7 @@
   "score_update_release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
   "score_assessment_ref": "agent-work/evidence/PR503-through-lake-fix-20261115/score-assessment1.2.json",
-  "role_selection_reason": "Approved HX-BL-055 F1 had a final interviewed specification and no conflicting programmer owner; generation65 implemented the display-only package and exact-SHA CI is green. Next required authority is independent reviewer.",
+  "role_selection_reason": "PR504 review_ready at exact SHA with green required CI; registry free after completed programmer generation65, so priority4 selects independent reviewer.",
   "score_update_result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json",
   "score_update_completed_at": "2026-11-15T21:07:07.928Z",
   "score_update_delta": null,
@@ -122,24 +129,15 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-16T08:13:22.423Z",
+      "checked_at": "2026-11-16T10:21:24.157Z",
       "status": "checked",
       "is_enabled": true,
       "method": "automations.peek"
     },
-    "end": {
-      "checked_at": "2026-11-16T09:06:14.308Z",
-      "status": "checked_after_retry",
-      "is_enabled": true,
-      "method": "automations.peek",
-      "schedule": "hourly_at_minute_00",
-      "timezone": "Europe/Moscow"
-    },
+    "end": null,
     "recovery_performed": false,
     "schedule_changed": false,
-    "errors": [
-      "First end peek returned task-found/run-result-unreadable; immediate retry returned the automation and confirmed enabled."
-    ]
+    "errors": []
   },
   "open_findings": [],
   "current_review_score_assessment_status": "pending_independent_reviewer",
