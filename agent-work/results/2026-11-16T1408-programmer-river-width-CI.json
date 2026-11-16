@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-16T1408-programmer-river-width-CI",
+  "task_id": "HX-BL-055",
+  "role": "programmer",
+  "status": "review_ready",
+  "reason": "Priority3: reviewer requested bounded fixes within approved HX-BL-055.",
+  "base_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+  "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+  "pr": 504,
+  "implementation": {
+    "changed_files": [
+      ".github/workflows/check.yml",
+      "src/oneMilePresentation.ts",
+      "src/RefinedGeographyArtwork.tsx",
+      "test/oneMile.test.mjs",
+      "test/browser/one-mile.smoke.mjs"
+    ],
+    "change": "Reproject crossings against finite visible river capsules along every road segment; compute only the connected wet interval containing each crossing. Reuse exact existing finite-water geometry helper. Enable native6 baseline for PR504. Extend the same native6 baseline case to exported PNG raster comparison.",
+    "product_rendering_changed": true,
+    "geometry_documents_changed": false,
+    "finding_status": {
+      "HX-BL-055-REV-01": "implemented_pending_independent_review",
+      "HX-BL-055-REV-02": "final_sha_native6_screen_and_exported_PNG_passed_pending_independent_review"
+    }
+  },
+  "limitations": [
+    "Independent acceptance/score assessment pending on final SHA.",
+    "Checks cover bounded fixtures, not proof of every geometry combination.",
+    "Initial execution environment outage recovered in this run; no duplicate implementation started.",
+    "Only actual dry road approaches are asserted to remain: a wholly submerged synthetic path must not invent dry land."
+  ],
+  "test_change_summary": {
+    "base_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+    "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+    "added": 1,
+    "removed": 0,
+    "modified": 2,
+    "suite": "Node test/oneMile.test.mjs",
+    "scenario_risk": "R05/REV-01: infinite tangent at shallow crossing incorrectly masks dry road beyond finite river cap or road bend.",
+    "reuse_or_new_reason": "Existing refined-crossing case now receives actual visible water. One new logical case covers ordinary/refined near-parallel, near-end, short and multiple-close crossings; reuse finite-water oracle suite without duplicating capsule math.",
+    "source": "git diff47d0dfa..f824da1: one Node test declaration added, existing refined Node case modified and existing browser native6 baseline case extended to PNG.",
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 1,
+        "removed": 0,
+        "modified": 1
+      },
+      {
+        "suite": "Browser ONE-MILE1 native6 optional baseline",
+        "added": 0,
+        "removed": 0,
+        "modified": 1
+      }
+    ]
+  },
+  "publication_authorized": false,
+  "release_eligible": false,
+  "score_changed": false,
+  "score_assessment_status": "prior_review_applies_only_to_previous_sha_new_sha_not_accepted",
+  "next_role": "reviewer",
+  "next_step": "Independently review exact f824da1 against F1 and both findings; validate connected finite wet intervals with known dry approaches and the final native6 screen/PNG artifact; record score_assessment1.2. Publication remains separately gated.",
+  "forecast": {
+    "completed_runs": 8,
+    "remaining_runs": {
+      "min": 2,
+      "max": 4
+    },
+    "remaining_active_hours": {
+      "min": 1,
+      "max": 3
+    },
+    "remaining_calendar_hours_excluding_owner_wait": {
+      "min": 2,
+      "max": 5
+    },
+    "owner_publication_wait": "unknown",
+    "confidence": "medium",
+    "history_reset": false,
+    "environment_outage": "recovered_same_run"
+  },
+  "owner_decisions_needed": [],
+  "environment_recovered": true,
+  "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+  "checks": {
+    "affected": {
+      "executed": 17,
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0
+    },
+    "local_full": {
+      "command": "npm run check",
+      "status": "passed",
+      "executed": 427,
+      "passed": 427,
+      "failed": 0,
+      "skipped": 0,
+      "typescript": "passed",
+      "build": "passed",
+      "local_head_at_run": "9407202 with final product-source changes",
+      "content_verified_against_final_sha": true,
+      "note": "Final browser-only edit validated with node --check; npm run check excludes browser script."
+    },
+    "ci": {
+      "run_id": 43857967679,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679",
+      "status": "passed",
+      "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+      "typescript": "passed",
+      "node": {
+        "executed": 427,
+        "passed": 427,
+        "failed": 0,
+        "skipped": 0
+      },
+      "build": "passed",
+      "browser": "passed",
+      "world_random": "passed"
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S01-C02",
+      "S01-C04",
+      "S04-C03",
+      "S04-C04"
+    ],
+    "expected_transition": "unknown",
+    "confirmed_points_changed": false,
+    "evidence": {
+      "S01_C02": "River visible width helper and finite river inputs reused; no hydrology model mutation.",
+      "S01_C04": "R05 regressions for finite near-parallel/end/short/multiple crossings plus unchanged-input assertion.",
+      "S04_C03": "Final exact-SHA actual UI artifact required; native6 baseline screenshot comparison.",
+      "S04_C04": "Existing JSON/live-history/PNG suites and new exported native6 PNG baseline comparison."
+    },
+    "independent_assessment_required_on_final_sha": true
+  },
+  "completed_at": "2026-11-16T11:40:46.605Z",
+  "started_at": "2026-11-16T11:12:01.233Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-16T11:08:41.069Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-16T11:40:46.605Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "recovery_performed": false,
+    "schedule_changed": false,
+    "errors": []
+  },
+  "result_ref": "agent-work/results/2026-11-16T1408-programmer-river-width-CI.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-055-finite-crossings-f824da1/implementation.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-16T1408-programmer-river-width-CI-reviewer.json",
+  "actual_ui": {
+    "status": "actual_exact_sha_presented_in_chat",
+    "head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+    "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+    "artifact_id": 14222178027,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679/artifacts/14222178027",
+    "artifact_digest": "sha256:d181efcfee22ab68080382d10027c5e98cc20c5bf0a993742a8f5c72254846bb",
+    "digest_verified_after_download": true,
+    "shown": "geo2-tiles.png",
+    "desktop": "geo2-accepted-1500.jpg",
+    "narrow": "geo2-accepted-390.jpg",
+    "native6_baseline": {
+      "sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+      "fixture": "same explicitF2ford variant",
+      "profiles": [
+        {
+          "width": 1500,
+          "pixelIdentical": true,
+          "raster": {
+            "maxDelta": 0,
+            "changedFraction": 0
+          }
+        },
+        {
+          "width": 390,
+          "pixelIdentical": true,
+          "raster": {
+            "maxDelta": 0,
+            "changedFraction": 0
+          }
+        }
+      ],
+      "png": {
+        "pixelIdentical": true,
+        "raster": {
+          "maxDelta": 0,
+          "changedFraction": 0
+        }
+      }
+    }
+  }
+}
