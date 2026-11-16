@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-059",
+  "spec_version": "F1",
+  "spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-F1.md",
+  "interview_ref": "agent-work/interviews/HX-BL-059/RIVER-EDGES/decisions.json",
+  "owner_answer": "RE-Q01=A",
+  "baseline_sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+  "criteria": [
+    {
+      "id": "AC01",
+      "requirement_refs": [
+        "F-R01",
+        "F-R02"
+      ],
+      "requirement": "Every visible land-axis segment lies on canonical fine-edge or terminal edge subset; fractional shore endpoints valid, no diagonal or corner smoothing; negative coords and boundaries, both orientations.",
+      "method": "Exact world-coordinate edge containment ε1e-8 plus actual same-map image",
+      "required": true,
+      "status": "not_run"
+    },
+    {
+      "id": "AC02",
+      "requirement_refs": [
+        "F-R02",
+        "F-R03"
+      ],
+      "requirement": "Stable sides, sourceIDs/directions/topology/fullness and worldRNG across pan/zoom/style/rotation/export/reopen/permutation; no new cycles or independent shared edges.",
+      "method": "Serialized document/streams diff, edge-network audit, repeated presentation",
+      "required": true,
+      "status": "not_run"
+    },
+    {
+      "id": "AC03",
+      "requirement_refs": [
+        "F-R04"
+      ],
+      "requirement": "AllF1–5 widths10–50%, actual lake/sea entry/exit and through-lake contacts no gap; dry axis remains on edges even at fractional ports.",
+      "method": "Real lake fixtures and declaredF4/F5 variants; each current shore style",
+      "required": true,
+      "status": "not_run"
+    },
+    {
+      "id": "AC04",
+      "requirement_refs": [
+        "F-R05",
+        "F-R06"
+      ],
+      "requirement": "Required riverPOI same parent/bank, protected extents/IDs/content, attached roads reach entry; bridge/ford/ferry identity/order and dry approaches, legal shortest paths and wholecell masks.",
+      "method": "Full coupled scene, finite water intersection checks, real interaction and explicit variants",
+      "required": true,
+      "status": "not_run"
+    },
+    {
+      "id": "AC05",
+      "requirement_refs": [
+        "F-R07",
+        "F-R08"
+      ],
+      "requirement": "Ordinary/refined/mixed and imported maps automatically show complete fine geography without requiredApply; existing compatible acceptedpaths preserved; hover/pick follows shownPOI.",
+      "method": "Actual scale handlers, mixed scope and all current modes; desktop1500,narrow390",
+      "required": true,
+      "status": "not_run"
+    },
+    {
+      "id": "AC06",
+      "requirement_refs": [
+        "F-R08",
+        "F-R09"
+      ],
+      "requirement": "Legacy valid imports retain authored/fine data, measured/locked/no-fit/stale/cancel never force movement, lose data or change redo; state explains failure and shows previous complete view/source6.",
+      "method": "Real handlers and document/redo snapshots; malformed inputs atomically rejected",
+      "required": true,
+      "status": "not_run"
+    },
+    {
+      "id": "AC07",
+      "requirement_refs": [
+        "F-R07",
+        "F-R09"
+      ],
+      "requirement": "View-only source6/doc/RNG/undo unchanged; JSON reload gives same fine routes; sourceedit+acceptedclosure oneUndo/Redo; new generatedregions shown coherently without view-triggered generation.",
+      "method": "Same-map save/load, ordinaryedit,undo,redo,extension; native6 before/after comparison",
+      "required": true,
+      "status": "not_run"
+    },
+    {
+      "id": "AC08",
+      "requirement_refs": [
+        "F-R04",
+        "F-R10"
+      ],
+      "requirement": "Screen/PNG same revision and complete scene, styles/orientations/responsive; native6 pixel+export identical on view-only cycles; no busy partial PNG.",
+      "method": "Working existing CI exactSHA screenshots/export plus source/geometry invariant",
+      "required": true,
+      "status": "not_run"
+    },
+    {
+      "id": "AC09",
+      "requirement_refs": [
+        "Release"
+      ],
+      "requirement": "Independent accepted exactSHA and score_assessment1.2, actual same-map before/after shown, separate owner publication approval.",
+      "method": "Reviewer evidence and release gate; no main writes before approval",
+      "required": true,
+      "status": "not_run"
+    }
+  ],
+  "score_model_version": "1.2",
+  "ready_for_development": true,
+  "release_authorized": false
+}
