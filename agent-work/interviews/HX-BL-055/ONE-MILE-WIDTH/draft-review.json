@@ -1,0 +1,136 @@
+{
+  "task_id": "HX-BL-055",
+  "stage_id": "ONE-MILE-WIDTH",
+  "run_id": "2026-11-16T0800-interviewer-river-width-D1",
+  "draft_spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-D1.md",
+  "draft_spec_version": "D1",
+  "draft_blob_sha": "bafd314e77a8df170f191a007759ebe5edf693cc",
+  "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "whole_draft_read": true,
+  "independence": "Separate interviewer-role pass over entire saved draft and exact source; same assistant/conversation, not external/fresh-context reviewer.",
+  "source_evidence": [
+    "src/geometryRefinementWater.ts:24 radius=width/2",
+    "src/geometryRefinementBanks.ts:16,53–62 bank points lie on capsule radius",
+    "src/geometryRefinementPois.ts:46–51 marker newAnchor=contact.point",
+    "src/geometryRefinementRoads.ts:48 validates exact bank radius and entry contact",
+    "src/RefinedGeographyArtwork.tsx:51,73 saved radii prioritized"
+  ],
+  "coverage": [
+    {
+      "section": "Scope/baseline/R01–R02",
+      "result": "Accepted10/20/30/40/50% full across-flats width, same projection for normal/refined/mixed/Fsegments,6mile unchanged. No repeat question."
+    },
+    {
+      "section": "R03/06/10 and data compatibility",
+      "result": "RW-Q01/Q02: migration/placement authority and fallback outcome unresolved, not a question about helper implementation."
+    },
+    {
+      "section": "R04 lake joins",
+      "result": "All-mode actual shoreline,finite water band,correct component,island/through-lake constraints clear. No owner question needed."
+    },
+    {
+      "section": "R05 crossings and other dependent marks",
+      "result": "Type/ID/topology and visible-bank presentation mandatory; relocation/data authority governed byRW-Q01. No alternative to skipping correctness."
+    },
+    {
+      "section": "R07 native6",
+      "result": "Nativeappearance unchanged already explicit owner decision; scope limitsfine state updates as well as source data."
+    },
+    {
+      "section": "R08/R09 errors,history,JSON,PNG",
+      "result": "LiveUndoRedo separate fromreload; accepted export excludespreview;busy snapshots and old documents retained. F01 below for invalid-free guard."
+    },
+    {
+      "section": "UI/P1/AC01–AC07",
+      "result": "Displayed P1 is schematic,not runtime. All acceptance retained; F02 testing fixture lacksF4/5 andford/ferry, must clearly label variants."
+    },
+    {
+      "section": "Tests/score/forecast/handoff",
+      "result": "Targetedchecks beforefullpackage; model1.2 gradesunknown, no award;16–24h only original view-only baseline, needs update after selectedpolicy."
+    }
+  ],
+  "geometric_witness": {
+    "kind": "analytic_straight_capsule_case_not_browser_repro",
+    "units": "Nominal rendering world miles only; NOT physical channel widths or a measured real-world POI distance.",
+    "F": 1,
+    "axis": {
+      "from": {
+        "x": 0,
+        "y": 0
+      },
+      "to": {
+        "x": 1,
+        "y": 0
+      }
+    },
+    "old_visual_full_width": 0.45,
+    "new_visual_full_width": 0.1,
+    "old_contact": {
+      "x": 0.5,
+      "y": 0.225
+    },
+    "new_bank_y": 0.05,
+    "contact_separation": 0.175,
+    "proof": "Existing point-marker branch accepts bank contact on old capsule radius; if centerline and contact position are unchanged, new smaller radius cannot contain that same boundary point. Symbol/footprint extent may mask or expose visible gap; exact runtime appearance not claimed.",
+    "limitation": "Not proof of a particular published-map pixel defect or that everyPOI needs movement. Complete finite terrain/constraint migration must still be verified."
+  },
+  "findings": [
+    {
+      "finding_id": "RW-D1-F01",
+      "kind": "material_contract_conflict",
+      "refs": [
+        "R03",
+        "R06",
+        "AC03",
+        "AC05"
+      ],
+      "question_ids": [
+        "RW-Q01",
+        "RW-Q02"
+      ],
+      "status": "awaiting_owner_choice",
+      "fix": "Final analyst explicitly chooses supported old-map behavior and migration authority, preserves original fields/history; do not satisfycontact by hidingoldmap or movinglockeddata."
+    },
+    {
+      "finding_id": "RW-D1-F02",
+      "kind": "acceptance_clarification",
+      "owner_question_required": false,
+      "refs": [
+        "AC03",
+        "first scenario"
+      ],
+      "status": "for_final_spec",
+      "fix": "SourcefixturehasF1/2/3 andonly2bridges; name missingF4/F5,ford/ferry explicitly. Separate declared legalvariants from originalfixture and preserve crossingrules."
+    },
+    {
+      "finding_id": "RW-D1-F03",
+      "kind": "implementation_invariant",
+      "owner_question_required": false,
+      "refs": [
+        "R03",
+        "R04",
+        "R05",
+        "R10"
+      ],
+      "status": "for_final_spec",
+      "fix": "Do not feed narrower presentationcapsules into validators for unchanged savedmodel without explicit chosen adaptation. Currentroads validate contacts againstsavedradius. Backendgeometry/cache/visiblewater must have separate named ownership; derive all-mode mouth/crossingview consistently and keep6mileinputsisolated."
+    }
+  ],
+  "already_decided": [
+    "Widthtable and1mile-onlyscope;6mileunchanged.",
+    "Physicalmeterproposalnotadopted.",
+    "All styles,lake joins,crossings,JSON/PNG,exactSHA reviewandpublicationgate.",
+    "Nointerviewquestions about source functions, test counts, colors or previous approvedtable."
+  ],
+  "authority_boundary": {
+    "existing_GEO2_ID01_ref": "agent-work/decisions/owner-decision-2026-11-14-GEO2-interview-answers.json",
+    "bounds": "Automaticclosure authorized for ordinarysourceedits andunlockedgeometry; loading/viewchangeafternewcalibrationisnewtrigger. Do not silently broaden."
+  },
+  "question_count": 2,
+  "open_question_ids": [
+    "RW-Q01",
+    "RW-Q02"
+  ],
+  "interview_completed": false,
+  "ready_for_development": false
+}
