@@ -145,6 +145,37 @@
       ],
       "reason": "Семь полных строк ресурсов/секретов/проходимости перенесены; примеры не стали обязательным содержимым гексов.",
       "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2617",
+      "range_or_section": "GMCore48 Buying and Selling Items",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-ST-016-v2"
+      ],
+      "reason": "Закрыта указанная L1-зависимость; экономика/доход и другие разделы не объявлены полной реализацией.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2656",
+      "range_or_section": "GMCore59 Table10-9,20rows, only relevant item columns extracted",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-ST-017-v2"
+      ],
+      "reason": "Закрыта указанная L1-зависимость; экономика/доход и другие разделы не объявлены полной реализацией.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
+    },
+    {
+      "source_ref": "https://2e.aonprd.com/Actions.aspx?ID=2364",
+      "range_or_section": "PlayerCore228 Earn Income",
+      "status": "applicable_extracted",
+      "source_rule_ids": [
+        "PF2-RM-ST-021-v2",
+        "PF2-RM-EI-PREP-v2"
+      ],
+      "reason": "Закрыта указанная L1-зависимость; экономика/доход и другие разделы не объявлены полной реализацией.",
+      "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
     }
   ],
   "chapter_inventory": [
@@ -270,17 +301,13 @@
     }
   ],
   "unresolved_relevant_refs": [
-    "GM Core48 Buying and Selling Items; точные ограничения торговли, если понадобятся сверх описанного ориентира",
-    "GM Core59 Party Treasure by Level, Permanent Items/Consumables строки settlement_level-1; количественный запас не закрыт",
-    "Player Core228 Earn Income; уровень задачи и исключения не выдуманы",
-    "Player Core290 Scholarly Journal; свойства журнала не извлечены",
-    "GM Core68 Adventure Design; GM Core92 Urban; источник о сценах переиспользован, охват всей городской карты ещё открыт",
-    "GM Core187/190/192/196/200/204 Influence, Research, Chases, Infiltration, Reputation, Leadership: перечислены как L2/L3, не дефекты L1; полные обмены интеграций не разобраны",
-    "Целые GM Core/Player Core и возможный backmatter вне AoN Rules index: не заявлено, что индекс содержит каждую таблицу/приложение",
-    "PF2-RM-029: семь полных профилей перенесены в объединённую строку; PF2-RM-008-PREP-v2 отдельно описывает L1-подготовку списков; canonical binding008-L3 сохраняется до отдельной сверки/нормализации",
-    "Temperature/Environment Damage: прежние численные неоднозначности сохраняются без выбора по догадке"
+    "Player Core290 Scholarly Journal: retrieved official source index names item, but category/table outputs omit item body and source-index item has no traversable link. Do not infer price/bonus; resolve exact item through primary packet/item page before acceptance.",
+    "Whole GMCore/PlayerCore remaining chapter bodies, tables/backmatter and open references;15-block index is not completed screening.",
+    "Canonical binding normalization and actual UI/save/load/undo/profile checks on fresh mainSHA.",
+    "Prior Temperature/Environment Damage ambiguities; no guessed numerical policy."
   ],
   "completeness_status": "checkpoint",
   "branch_status": "Core settlement source branch translated with open dependencies; product review incomplete",
-  "layer_boundary": "Свойства места и подготовка данных=L1; выбор/отыгрыш/проверка действий и подсистемы=L2/L3; это не новые обязательные функции карты."
+  "layer_boundary": "Свойства места и подготовка данных=L1; выбор/отыгрыш/проверка действий и подсистемы=L2/L3; это не новые обязательные функции карты.",
+  "dependency_continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
 }
