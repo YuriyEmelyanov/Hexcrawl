@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-055",
+  "package_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+  "tree_sha": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887",
+  "before_release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "status": "shown_and_reviewer_verified",
+  "shown_in_chat": true,
+  "reviewer_verification": "Same classic42-accepted.json map and generation objects deep-equal in published/final CI artifacts; accepted centerlines/refinement/data unchanged. Before and after PNGs and final desktop/narrow interface inspected.",
+  "before_artifact": {
+    "id": 14174452800,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43745760981/artifacts/14174452800",
+    "source_head_sha": "adc96d8ed99347d0df722bbbd44f11d069ac7df4",
+    "published_merge_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "source_equals_published_tree": true,
+    "sha256": "fcb9a658b7deb19a2d5d334de32875d579deb3fbe4e48669dc853330c92d8f4a",
+    "digest_verified_locally": true
+  },
+  "after_artifact": {
+    "id": 14222178027,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43857967679/artifacts/14222178027",
+    "sha256": "d181efcfee22ab68080382d10027c5e98cc20c5bf0a993742a8f5c72254846bb",
+    "digest_verified_locally": true,
+    "source_head_sha": "f824da18803269dc00d1f6262b6db3b93a0a1bcd",
+    "checkout_tree": "3318e119bd28d3cbbe1ceed94071e5e3f9d39887"
+  },
+  "scenarios": [
+    {
+      "id": "width-before-after",
+      "fixture": "classic42-accepted.json",
+      "before": "classic42-accepted.png",
+      "after": "classic42-accepted.png",
+      "same_input_map_and_generation": true,
+      "same_camera_profiles": true,
+      "shown_in_chat": true,
+      "user_result": "Thin F1..F5 10%..50% river display on1mile; geography positions unchanged."
+    },
+    {
+      "id": "desktop-interface",
+      "after": "classic42-1mi-after.jpg",
+      "shown_in_chat": true
+    },
+    {
+      "id": "narrow-interface",
+      "width": 390,
+      "after": "classic42-1mi-after-390.jpg",
+      "shown_in_chat": true
+    }
+  ],
+  "actions": [
+    "Load existing map or generate as before.",
+    "Choose1mile in existing hex-size selector; there is no new width setting.",
+    "View rivers and unchanged object locations; optionally use existing geometry refinement.",
+    "Export PNG through existing export menu; width matches visible map.",
+    "Choose6mile to retain original published appearance."
+  ],
+  "native6": {
+    "screens1500_and390": "pixel_identical",
+    "exportedPNG": "pixel_identical",
+    "maxDelta": 0
+  },
+  "known_limitations": [
+    "Images cover actual fixed classic42 map and bounded CI scenarios, not every possible map/device.",
+    "F4/F5 retained/mixed SSR diagnostics are explicitly controlled presentation variants, not lawful saved-lifecycle evidence.",
+    "Width percentages are cartographic display, not physical river width in miles/meters."
+  ],
+  "publication_authorized": false,
+  "recorded_at": "2026-11-16T12:04:03.970Z"
+}
