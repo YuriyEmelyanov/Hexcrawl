@@ -1,0 +1,154 @@
+{
+  "run_id": "2026-11-16-PF2-source-completeness-033130",
+  "reviewed_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "checked_at": "2026-11-16T03:49:22.978535+00:00",
+  "sources": [
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=2974",
+      "locator": "GM Core138: Building Settlements",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=2975",
+      "locator": "GM Core138–139: Mapping a Settlement",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=2999",
+      "locator": "GM Core168–171: Settlements parent and references",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3000",
+      "locator": "GM Core168–169: Settlements in a Game",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3003",
+      "locator": "GM Core168–169: Marketplaces",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3004",
+      "locator": "GM Core169: Power Structures",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3010",
+      "locator": "GM Core170: Settlement Stat Block",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3011",
+      "locator": "GM Core170: Sample Settlement Abilities",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3012",
+      "locator": "GM Core171: Changing a Settlement",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3013",
+      "locator": "GM Core171: Settlements of Lost Omens examples",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3107",
+      "locator": "GM Core206 Random Encounters: preparation vs resolution",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    },
+    {
+      "url": "https://2e.aonprd.com/Rules.aspx?ID=3115",
+      "locator": "GM Core209: embedded Types of Terrain, all seven examples",
+      "access": "public_primary",
+      "dedup_key": "paizo:pf2-remaster:gm-core:settlements",
+      "read_status": "full_section_body_read"
+    }
+  ],
+  "version_evidence": {
+    "url": "https://2e.aonprd.com/Sources.aspx?ID=218",
+    "observed": "AoN lists Spring2026,1stPrinting,2/6/2026 errata; release11/15/2023. Errata package itself not independently audited."
+  },
+  "product_static": [
+    {
+      "path": "src/manualPois.ts",
+      "lines": [
+        30,
+        65
+      ],
+      "observed": "POI live locators and bilingual author names; no settlement entity is manufactured."
+    },
+    {
+      "path": "src/App.tsx",
+      "lines": [
+        216,
+        250
+      ],
+      "observed": "Region holds geometry/biome/POI kinds, not a typed PF2 settlement profile in the inspected definition."
+    },
+    {
+      "path": "src/App.tsx",
+      "lines": [
+        13643,
+        13670
+      ],
+      "observed": "GM text notes at existing hex, edit/history grouping. Not proof of executing game effects."
+    },
+    {
+      "path": "src/saveValidation.ts",
+      "lines": [
+        127,
+        134
+      ],
+      "observed": "gmNotesByHexKey string validation and existing hex reference; not a typed settlement stat block."
+    }
+  ],
+  "executed_probe": {
+    "method": "Node24 type-stripped exact source function + original helpers extracted from fetched SHA; no production edits",
+    "path": "src/manualPois.ts:55 renamePoiEditorName",
+    "passed": 5,
+    "failed": 0,
+    "cases": [
+      "trim en/ru",
+      "reject missing language",
+      "reject case-insensitive duplicate",
+      "remove authored name with two blank strings",
+      "reject stale locator"
+    ],
+    "observed_stdout": "{\"passed\":5,\"failed\":0,\"scope\":\"Compiled exact renamePoiEditorName and original error helpers; no UI, placement, save/load or settlement profile accepted\"}"
+  },
+  "limitations": [
+    "No browser/UI execution this run. Source/static/function evidence separated. No whole-program absence claim. No score/rating/queue/product or registry changes."
+  ],
+  "source_findings": [
+    "Population>1000 walls is typical advice, not invariant; no automatic physical-area relation to settlement level.",
+    "Otari4/consumables10 is explicit local exception; artisans+4 is category-specific, so generic level gating alone loses source meaning.",
+    "Same POI name helper is reusable; cannot accept full statblock or nested town map from its success.",
+    "PF2-RM-008 preparation lists are L1 data while triggers/combat are L3; category-only legacy binding loses preparation boundary. No canonical change in this run.",
+    "PF2-RM-029 URL3115 parent is Switching out of Hexploration, with Types of Terrain embedded below it; future locator must include subheading."
+  ],
+  "probe_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-name-probe.ts"
+}
