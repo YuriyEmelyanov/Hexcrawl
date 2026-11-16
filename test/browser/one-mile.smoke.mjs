@@ -62,18 +62,22 @@ try{
  const baselinePage=await browser.newPage({viewport:{width:1500,height:1000}});await baselinePage.route(/mc\.yandex/,r=>r.abort());await baselinePage.goto('http://127.0.0.1:4196/');await baselinePage.locator('input[type=file]').setInputFiles({name:'same-fine.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
  await baselinePage.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready'&&!document.querySelector('.controls--transfer > button').disabled);
  const baselineProfiles=[];
- for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>document.fonts.ready);await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
- const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});
- // Chromium can vary edge antialiasing between the two running builds.
- // Keep this opt-in diagnostic sensitive to actual changed objects/colors.
- const raster=await page.evaluate(async([a,b])=>{
+ const compareRaster=async(before,after)=>page.evaluate(async([a,b])=>{
   const decode=async s=>{const bytes=Uint8Array.from(atob(s),c=>c.charCodeAt(0)),image=await createImageBitmap(new Blob([bytes],{type:'image/png'})),canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const c=canvas.getContext('2d');c.drawImage(image,0,0);return {width:image.width,height:image.height,data:c.getImageData(0,0,image.width,image.height).data};};
   const x=await decode(a),y=await decode(b);if(x.width!==y.width||x.height!==y.height)return {maxDelta:255,changedFraction:1};let maxDelta=0,changed=0;
   for(let i=0;i<x.data.length;i+=4){let diff=0;for(let j=0;j<4;j++)diff=Math.max(diff,Math.abs(x.data[i+j]-y.data[i+j]));maxDelta=Math.max(maxDelta,diff);if(diff)changed++;}
   return {maxDelta,changedFraction:changed/(x.width*x.height)};
  },[before.toString('base64'),after.toString('base64')]);
+ for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>document.fonts.ready);await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
+ const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});
+ // Chromium can vary edge antialiasing between the two running builds.
+ // Keep this opt-in diagnostic sensitive to actual changed objects/colors.
+ const raster=await compareRaster(before,after);
  assert.ok(raster.maxDelta<=3&&raster.changedFraction<=.001,'P04 native6 unchanged except bounded edge antialiasing '+width+' '+JSON.stringify(raster));baselineProfiles.push({width,pixelIdentical:before.equals(after),raster});}
- manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
+ const exportNativePng=async(p,name)=>{const menu=p.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const [download]=await Promise.all([p.waitForEvent('download'),p.getByRole('button',{name:'PNG',exact:true}).click()]);const bytes=await fs.readFile(await download.path());await fs.writeFile(new URL(name,out),bytes);return bytes;};
+ const beforePng=await exportNativePng(baselinePage,'native6-export-before.png'),afterPng=await exportNativePng(page,'native6-export-after.png'),pngRaster=await compareRaster(beforePng,afterPng);
+ assert.ok(pngRaster.maxDelta<=3&&pngRaster.changedFraction<=.001,'AC05 native6 exported PNG unchanged '+JSON.stringify(pngRaster));
+ manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles,png:{pixelIdentical:beforePng.equals(afterPng),raster:pngRaster}};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
  await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
  const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(nodes=>nodes.map(n=>({geometry:['x1','y1','x2','y2'].map(k=>n.getAttribute(k)),width:Number(n.getAttribute('stroke-width')),fullness:Number(n.getAttribute('data-river-fullness'))})));
  const fineHexWidth=await page.locator('[data-fine-key] polygon').first().evaluate(n=>Math.max(...[...n.points].map(p=>p.x))-Math.min(...[...n.points].map(p=>p.x)));assert.ok(Math.abs(sourceHexWidth/fineHexWidth-6)<1e-9);
