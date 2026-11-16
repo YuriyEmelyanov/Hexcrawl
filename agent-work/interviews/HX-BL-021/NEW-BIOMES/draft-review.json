@@ -1,0 +1,140 @@
+{
+  "task_id": "HX-BL-021",
+  "stage_id": "NEW-BIOMES",
+  "run_id": "2026-11-16T0403-interviewer-new-biomes-D1",
+  "reviewed_draft_ref": "agent-work/specs/HX-BL-021-new-biomes-D1.md",
+  "draft_version": "D1",
+  "draft_blob_sha": "13418758c649a8a1dc5e3500e62f4bd7d1ebd6b3",
+  "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "whole_draft_read": true,
+  "review_method": "Separate interviewer-role pass over entire saved D1, owner reset decision, handoff, displayed P1 SVGs, exact main biome/height/compatibility/forest source and current contracts; no product execution.",
+  "independence_limit": "Role-separated review by current assistant in existing task conversation; not an external reviewer or fresh-context subagent.",
+  "coverage": [
+    {
+      "section": "Цель/до-после/каталог",
+      "requirements": [
+        "R01",
+        "R02"
+      ],
+      "result": "Q01/Q02 resolve count; Q03 availability; no inferred approval of8variants."
+    },
+    {
+      "section": "Автогенерация/веса/потребители/соседство",
+      "requirements": [
+        "R03",
+        "R04",
+        "R05"
+      ],
+      "result": "Q03–06,Q09; verify all consumers, not just select; source fallback can weaken adjacency."
+    },
+    {
+      "section": "UI/P1/стили/масштабы",
+      "requirements": [
+        "R06",
+        "R07"
+      ],
+      "result": "Q08 fungal concept; use existing3styles,6/1mile,RU/EN as invariant; no extra design gate. P1 not production art or map."
+    },
+    {
+      "section": "Сохранность/совместимость/ошибки/экспорт",
+      "requirements": [
+        "R08",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ],
+      "result": "Q07 seed continuation; F01 history wording correction; errors and PNG remain mandatory, no artificial question to weaken safety."
+    },
+    {
+      "section": "AC01–AC07",
+      "requirements": [
+        "AC01",
+        "AC02",
+        "AC03",
+        "AC04",
+        "AC05",
+        "AC06",
+        "AC07"
+      ],
+      "result": "All retained; exactSHA review and separate release approval required."
+    },
+    {
+      "section": "Tests/score/forecast/handoff",
+      "requirements": [
+        "S07-C01",
+        "S04-C03",
+        "S04-C04"
+      ],
+      "result": "Q09 bounds gameplay, Q10 release order; unknown score preserved; forecasts conditional, not new countdown."
+    }
+  ],
+  "findings": [
+    {
+      "finding_id": "BIO-D1-F01",
+      "severity": "contract_clarification",
+      "section": "AC01 / R11",
+      "owner_question_required": false,
+      "problem": "AC01 puts reload before UndoRedo, which can be read as requiring serialized undo stacks. Existing accepted history lesson says document roundtrip is separate from live undo and import action undo.",
+      "required_action": "Final analyst specification separates live create/edit→UndoRedo, accepted document save/load preserving biome/state/RNG, and existing load/import Undo where supported. Do not promise undo-stack persistence across reload.",
+      "status": "open_for_final_spec"
+    },
+    {
+      "finding_id": "BIO-D1-F02",
+      "severity": "implementation_risk",
+      "section": "R03 / AC03",
+      "owner_question_required": true,
+      "question_ids": [
+        "BIO-Q05",
+        "BIO-Q06"
+      ],
+      "problem": "A symmetric prohibited-pair matrix alone does not prove final placement: current chooseBiomeId has relaxation. A=climatic grouping and fallback behavior need explicit joint contract.",
+      "required_action": "Translate Q05/Q06 into actual ordinary/fallback/tract behavior with atomic failure; do not claim strict adjacency under legacy relaxation.",
+      "status": "awaiting_owner_choice"
+    },
+    {
+      "finding_id": "BIO-D1-F03",
+      "severity": "implementation_risk",
+      "section": "R04 / R06",
+      "owner_question_required": false,
+      "problem": "Current forestFamily derives family from forest/woodland substrings; proposed jungle IDs miss that branch and mushroom_forest would become ordinary deciduous.",
+      "required_action": "Analyst lists explicit semantic/renderer mappings for new IDs; candidate IDs must not silently dictate family. Mushroom visual uses Q08.",
+      "status": "open_for_final_spec"
+    }
+  ],
+  "already_decided_or_nonquestions": [
+    "Start/scope approved; no repeated start vote.",
+    "Existing semi_desert retained, no old map recoloring.",
+    "RU/EN,3modes,6/1mile,JSON,PNG,liveUndoRedo,atomic failures,stableIDs mandatory.",
+    "No automatic old PR reopening.",
+    "No newwidths here; HX-BL-055 separate.",
+    "Precise naming/IDs/errorcopy/assetimplementation/test selection are analyst/developer details inside chosen contract, no artificial user questionnaire.",
+    "P1 viewing is not an approval gate; final artwork shown before release.",
+    "No score award from catalogue count or model forecast."
+  ],
+  "open_question_ids": [
+    "BIO-Q01",
+    "BIO-Q02",
+    "BIO-Q03",
+    "BIO-Q04",
+    "BIO-Q05",
+    "BIO-Q06",
+    "BIO-Q07",
+    "BIO-Q08",
+    "BIO-Q09",
+    "BIO-Q10"
+  ],
+  "question_count": 10,
+  "interview_completed": false,
+  "ready_for_development": false,
+  "analyst_rewrite_before_owner_answers_required": false,
+  "next_step": "Present full known pool, retain replies verbatim in future rounds; analyst closes F01/F03 and chosen contracts in final spec after material answers.",
+  "automation_health": {
+    "start": {
+      "checked_at": "2026-11-16T01:05:32.717Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    }
+  }
+}
