@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-16T1107-programmer-river-width-F1",
+  "task_id": "HX-BL-055",
+  "feature_id": "ONE-MILE-RIVER-WIDTH-F1",
+  "role": "programmer",
+  "status": "review_ready",
+  "started_at": "2026-11-16T08:07:42.410Z",
+  "completed_at": "2026-11-16T09:06:14.308Z",
+  "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+  "tree_sha": "cd18f3dc4423e6bad5c0da7709fc0bd22059b12d",
+  "branch": "agent/hx-bl-055-one-mile-river-width",
+  "pr": {
+    "number": 504,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/504",
+    "state": "open",
+    "merged": false
+  },
+  "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
+  "acceptance_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.acceptance.json",
+  "owner_approved_scope": "Display-only one-mile river widths F1–F5, actual lake joins and crossing bank projection; preserve positions, topology, saved data and six-mile display.",
+  "user_visible_result": "На настоящей одномильной карте реки отображаются полной шириной 10/20/30/40/50% малого гекса для F1–F5; озёрные устья и мост/брод/паром согласованы с видимыми берегами, 6-мильный вид не изменён.",
+  "implementation": {
+    "width_fractions": {
+      "F1": 0.1,
+      "F2": 0.2,
+      "F3": 0.3,
+      "F4": 0.4,
+      "F5": 0.5
+    },
+    "display_only": true,
+    "river_centerlines_changed": false,
+    "topology_changed": false,
+    "persisted_schema_changed": false,
+    "object_positions_changed": false,
+    "six_mile_display_changed": false,
+    "supported_paths": [
+      "regular",
+      "refined",
+      "mixed",
+      "PNG"
+    ],
+    "crossings": [
+      "bridge",
+      "ford",
+      "ferry"
+    ],
+    "lake_mouths": true
+  },
+  "checks": {
+    "status": "passed_exact_sha",
+    "workflow_run_id": 43834943617,
+    "workflow_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617",
+    "jobs": {
+      "check": "success",
+      "browser": "success",
+      "world-random": "success"
+    },
+    "manifest": {
+      "status": "passed",
+      "source_head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+      "checkout_tree": "cd18f3dc4423e6bad5c0da7709fc0bd22059b12d",
+      "source_hex_width": 48.497406005859375,
+      "fine_hex_width": 8.082901000976562,
+      "fractions": [
+        0.1,
+        0.2,
+        0.3,
+        0.4,
+        0.5
+      ],
+      "source_six_unchanged": true,
+      "river_segments": 53,
+      "lifecycle_source_restored": true,
+      "png": {
+        "modes": 4,
+        "geometry_equal": true,
+        "parser_errors": 0,
+        "fine_cells": 3471,
+        "rivers": 53,
+        "lakes": 1
+      }
+    },
+    "local_limitations": [
+      "Playwright Chromium was absent locally; system Chromium hit the known socket EPERM. No repeated local socket attempt was counted as progress; GitHub Actions browser job is authoritative."
+    ]
+  },
+  "visible_evidence": {
+    "artifact_id": 14210508921,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617/artifacts/14210508921",
+    "artifact_digest": "sha256:b592687205737a42d8d2f660532b12785b70271d2993e5e0ebdd1e937f9fcf7e",
+    "exact_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+    "scenario": "Classic seed42 actual six-region map; six-mile control, one-mile F1–F5, lake passage, crossings, JSON, Undo/Redo and PNG.",
+    "desktop": true,
+    "narrow390": true,
+    "actual_runtime": true,
+    "presented_in_owner_chat": true,
+    "presented_at": "2026-11-16T09:06:14.308Z"
+  },
+  "test_change_summary": {
+    "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+    "added": 1,
+    "removed": 0,
+    "modified": 5,
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 1,
+        "removed": 0,
+        "modified": 4,
+        "executed": 426,
+        "passed": 426,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "suite": "browser ONE-MILE1",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "executed": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      }
+    ],
+    "scenario_risk": "Exact F1–F5 display ratios, lake mouths, refined crossing bank projection, unchanged source axes/six-mile display, lifecycle and PNG parity.",
+    "reuse_or_new_reason": "Existing one-mile, lake, geometry and browser cases were extended. One separate Node case was added because refined crossing reprojection is a distinct contract and regression risk.",
+    "source": "git diff base..head plus exact GitHub Actions run 43834943617 and artifact manifest"
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S01-C02",
+      "S01-C04",
+      "S04-C03",
+      "S04-C04"
+    ],
+    "status": "evidence_for_independent_assessment",
+    "confirmed_delta": null,
+    "note": "Programmer supplies exact-SHA evidence only; reviewer determines grades, delta, breadth, double-counting and limitations."
+  },
+  "forecast": {
+    "completed_runs": 6,
+    "remaining_runs": {
+      "min": 2,
+      "max": 5
+    },
+    "total_runs": {
+      "min": 8,
+      "max": 11
+    },
+    "remaining_active_hours": {
+      "min": 1,
+      "max": 4
+    },
+    "remaining_calendar_hours_excluding_owner_wait": {
+      "min": 2,
+      "max": 6
+    },
+    "owner_publication_wait": "unknown",
+    "next_user_visible_result": "Independent exact-SHA acceptance with score_assessment1.2, then owner sees the accepted package before deciding publication.",
+    "history_reset": false,
+    "confidence": "medium"
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-16T08:13:22.423Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-16T09:06:14.308Z",
+      "status": "checked_after_retry",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "schedule": "FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0",
+      "timezone": "Europe/Moscow"
+    },
+    "recovery_performed": false,
+    "schedule_changed": false,
+    "prompt_changed": false,
+    "errors": [
+      "First end peek returned task-found/run-result-unreadable; immediate retry returned the automation and confirmed is_enabled=true."
+    ],
+    "limitation": "Point-in-time observations only."
+  },
+  "next_role": "reviewer",
+  "next_step": "Independently verify PR504 at exact SHA 47d0dfad85931e949be6e9a469de307cdf8f5582 against F1 spec/acceptance, rerun or inspect exact-SHA checks and visual/PNG evidence, record findings or acceptance plus score_assessment1.2. Any changed SHA requires re-review.",
+  "owner_decisions_needed": [],
+  "release_authorized": false,
+  "published": false,
+  "main_changed": false,
+  "product_score_changed": false,
+  "no_writing_processes_running": true
+}
