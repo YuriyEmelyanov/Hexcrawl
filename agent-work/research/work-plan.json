@@ -1,7 +1,7 @@
 {
   "plan_id": "HX-RSR-PLAN-20261109-v1",
-  "version": 2,
-  "date": "2026-11-15",
+  "version": 3,
+  "date": "2026-11-16",
   "status": "operational_authorized_research_plan",
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-research-full-remit.json",
   "purpose": "Улучшать выбор игр и достоверность оценок потенциального спроса на HexCrawl; связывать выводы с полезными возможностями продукта.",
@@ -67,12 +67,12 @@
   ],
   "current_diagnosis": "В существующих материалах выявлены неполнота/неоднородность перевода, но массовый аудит не проводился. Исторические completed и числа строк не доказывают соответствие стандартуv2; действуют исходные evidence до адресной проверки.",
   "next_selected_task": {
-    "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
-    "game_id": "DND5",
+    "task_id": "HX-RSR-PF2-STANDARD-V2-ALIGNMENT",
+    "game_id": "PF2",
     "layer": "L1",
-    "status": "queued_authorized_after_activation",
-    "action": "Выровнять DND5/DMG2014 по новому стандарту: исчерпывающий самодостаточный перечень L1; конкретный перевод в функции; фактические статусы на свежемSHA; универсальные правила/профили; RA-Q01–15. Использовать существующие материалы и первичный текст, не объявлять старые28строк полным результатом.",
-    "completion_condition": "Полный заявленный тематический корпус и понятная матрица правило→функция→статус с проверкой качества; реальный source/платформенный блокер — точный checkpoint и независимая достижимая задача другой игры top5."
+    "status": "checkpoint_continuation",
+    "action": "Continue SAME PF2 alignment. Reuse combined94 entries (63 prior +30 settlement +1 preparation); do not rescan settlement138–139/168–171 or terrain/examples008/029 without new evidence. First close GMCore59 settlement stock quantities and PlayerCore228/290 dependencies. Then screen not-read chapter bodies and backmatter in the15-block inventory (index alone not acceptance), extract new map-applicable clauses, normalize candidate mappings into canonical registries through scoped claim, then verify actual UI/save/load/undo and different profiles on fresh mainSHA. Preserve DND full-source checkpoint; no identical failed search without new access.",
+    "completion_condition": "Full declared thematic corpus + self-contained rule/function/status matrix; RA-Q01–15 pass or justified applicable exclusion, no unresolved relevant source or unverified profile."
   },
   "other_open_tracks": [
     {
@@ -158,15 +158,19 @@
         "game_id": "DND5",
         "edition_basis": "DMG2014 existing corpus; do not mix DND2024",
         "reference_place": 1,
-        "alignment_status": "not_reviewed_against_standard_v2",
-        "execution_started": false
+        "alignment_status": "checkpoint_full_primary_source_blocked",
+        "execution_started": true,
+        "current_result_ref": "agent-work/research/runs/2026-11-16-DND5-L1-v2-213047.json",
+        "exact_continuation": "Resume when lawful full DMG2014 becomes resolvable; no identical failed searches without new access signal."
       },
       {
         "game_id": "PF2",
         "edition_basis": "Remaster GM/Player Core existing corpus; applicable cross-references",
         "reference_place": 2,
-        "alignment_status": "not_reviewed_against_standard_v2",
-        "execution_started": false
+        "alignment_status": "checkpoint_source_and_actual_support_incomplete",
+        "execution_started": true,
+        "current_result_ref": "agent-work/research/runs/2026-11-16-PF2-source-completeness-033130.json",
+        "exact_continuation": "Continue SAME PF2 alignment. Reuse combined94 entries (63 prior +30 settlement +1 preparation); do not rescan settlement138–139/168–171 or terrain/examples008/029 without new evidence. First close GMCore59 settlement stock quantities and PlayerCore228/290 dependencies. Then screen not-read chapter bodies and backmatter in the15-block inventory (index alone not acceptance), extract new map-applicable clauses, normalize candidate mappings into canonical registries through scoped claim, then verify actual UI/save/load/undo and different profiles on fresh mainSHA. Preserve DND full-source checkpoint; no identical failed search without new access."
       },
       {
         "game_id": "KNAVE2",
@@ -238,5 +242,37 @@
     "completion_condition": "For each of five: exhaustive declared thematic source coverage, self-contained source rules, application behaviors, universal rules/profiles and factually verified statuses; RA-Q01..15 pass or justified applicable exclusions; remaining work prevents accepted status."
   },
   "research_product_handoff_policy": "Research artifacts and strategist handoff only; strategist owns new productbacklog candidates. No deleted/retired tasks restored and no statuses promoted by researcher.",
-  "execution_resume_verified_at": "2026-11-15T20:55:14.806Z"
+  "execution_resume_verified_at": "2026-11-15T20:55:14.806Z",
+  "updated_at": "2026-11-16T03:56:54.061Z",
+  "previous_next_selected_task_before_PF2_source_checkpoint": {
+    "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "queued_authorized_after_activation",
+    "action": "Выровнять DND5/DMG2014 по новому стандарту: исчерпывающий самодостаточный перечень L1; конкретный перевод в функции; фактические статусы на свежемSHA; универсальные правила/профили; RA-Q01–15. Использовать существующие материалы и первичный текст, не объявлять старые28строк полным результатом.",
+    "completion_condition": "Полный заявленный тематический корпус и понятная матрица правило→функция→статус с проверкой качества; реальный source/платформенный блокер — точный checkpoint и независимая достижимая задача другой игры top5."
+  },
+  "latest_top5_checkpoint": {
+    "run_id": "2026-11-16-PF2-source-completeness-033130",
+    "result_ref": "agent-work/research/runs/2026-11-16-PF2-source-completeness-033130.json",
+    "status": "checkpoint",
+    "source_full": false,
+    "product_full": false,
+    "combined_entries": 94,
+    "new_settlement_entries": 30,
+    "additional_preparation_entries": 1,
+    "expanded_terrain_profiles": 7,
+    "remaining_untranslated_previously_known_L1": 0,
+    "remaining_known_L1": 0,
+    "candidate_common_mechanics_count": 29,
+    "analysis_ref": "agent-work/research/requirements/PF2-Remaster-v2-entries.json",
+    "overview_ref": "agent-work/research/requirements/PF2-Remaster-v2-review.md",
+    "quality_ref": "agent-work/research/requirements/PF2-Remaster-v2-quality.json",
+    "source_inventory_ref": "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+    "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json",
+    "continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-coverage.json",
+    "product_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "source_translation_not_acceptance": true,
+    "canonical_registries_changed": false
+  }
 }
