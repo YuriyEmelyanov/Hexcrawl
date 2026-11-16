@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-055",
+  "run_id": "2026-11-16T1319-reviewer-river-width-F1",
+  "role": "reviewer",
+  "reviewed_at": "2026-11-16T10:33:41.780Z",
+  "pr": 504,
+  "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+  "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+  "tree_sha": "cd18f3dc4423e6bad5c0da7709fc0bd22059b12d",
+  "spec_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.md",
+  "acceptance_ref": "agent-work/specs/HX-BL-055-one-mile-river-width-F1.acceptance.json",
+  "verdict": "changes_requested_exact_sha",
+  "release_eligible": false,
+  "publication_authorized": false,
+  "independent_review": {
+    "method": "fresh_context_subagent_plus_primary_reproduction",
+    "agent_ref": "/root/hx_bl_055_independent_review",
+    "limitations": [
+      "GitHub technical account is PR author and cannot submit formal REQUEST_CHANGES; verdict recorded as PR conversation comment 6913966409 and operational evidence."
+    ]
+  },
+  "findings": [
+    {
+      "id": "HX-BL-055-REV-01",
+      "severity": "blocker",
+      "kind": "confirmed_defect",
+      "requirement_refs": [
+        "R05",
+        "AC03",
+        "AC07"
+      ],
+      "title": "Почти параллельная ferry может скрыть всю дорогу",
+      "evidence": [
+        "src/oneMilePresentation.ts:34 and :67 divide visible half-width by max(sine,1e-6), then clamp the interval only to the whole road length.",
+        "Exact-SHA diagnostic with a legal shallow-angle F5 crossing returned pieces=[] for both fineRoadPresentation and fineRefinedRoadPresentation.",
+        "test/oneMile.test.mjs:128-160 covers perpendicular tangents, so the required oblique/near-end risk is not detected."
+      ],
+      "required_fix": "Within approved HX-BL-055, bound/reproject the visible bank interval so legal oblique, near-end, short-road and multiple close crossings remain finite and never consume the entire traversable road. Add sensitive ordinary and refined regression cases without changing accepted centerlines/IDs/history."
+    },
+    {
+      "id": "HX-BL-055-REV-02",
+      "severity": "medium",
+      "kind": "evidence_gap",
+      "requirement_refs": [
+        "R07",
+        "AC05"
+      ],
+      "title": "Base/head неизменность 6-мильного отображения не была запущена",
+      "evidence": [
+        "CI environment did not set ONE_MILE_NATIVE6_BASELINE.",
+        "Artifact manifest.native6_baseline is null/absent while sourceSixUnchanged:true is recorded independently of a base/head raster comparison.",
+        "classic42 before/after compares refinement states within the head build, not base b7d0a56 against head 47d0dfa."
+      ],
+      "required_fix": "On the corrected exact SHA, run the existing native6 baseline gate in working CI and store a non-null manifest.native6_baseline result for comparable map/camera/style/pixel ratio."
+    }
+  ],
+  "acceptance": {
+    "AC01": "bounded_pass",
+    "AC02": "bounded_pass",
+    "AC03": "fail_blocker",
+    "AC04": "bounded_pass",
+    "AC05": "inconclusive_evidence",
+    "AC06": "bounded_pass",
+    "AC07": "fail_no_exact_sha_acceptance"
+  },
+  "checks": [
+    {
+      "name": "required CI Check + Browser + RNG",
+      "status": "passed",
+      "run_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617",
+      "artifact_id": 14210508921,
+      "artifact_digest": "sha256:b592687205737a42d8d2f660532b12785b70271d2993e5e0ebdd1e937f9fcf7e"
+    },
+    {
+      "name": "targeted independent Node suites",
+      "status": "passed",
+      "executed": 27,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 0,
+      "suites": [
+        "test/oneMile.test.mjs",
+        "test/lakeGeometry.test.mjs",
+        "test/geometryPlan.test.mjs"
+      ]
+    },
+    {
+      "name": "npm run check",
+      "status": "passed",
+      "node_tests": {
+        "executed": 426,
+        "passed": 426,
+        "failed": 0,
+        "skipped": 0
+      },
+      "typescript": "passed",
+      "build": "passed",
+      "warning": "Vite chunk-size warning only."
+    },
+    {
+      "name": "reviewer near-parallel diagnostic",
+      "status": "failed_as_expected_reproduced_defect",
+      "permanent_test": false
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
+    "added": 1,
+    "removed": 0,
+    "modified": 5,
+    "changed_test_files": 4,
+    "suite": "Node unit/integration and browser smoke",
+    "scenario_risk": "Width ratios, lake joins, crossings, undo/redo, responsive and PNG; current crossing cases miss required shallow-angle/near-end/short/multiple combinations.",
+    "reuse_or_new_reason": "Existing crossing tests were extended for the changed presentation contract; one refined-crossing logical case was added, but sensitive R05 edge cases are still required.",
+    "source": "Programmer diff accounting cross-checked against exact-SHA diff; logical cases are counted separately from changed files.",
+    "executed": {
+      "node_local": 426,
+      "node_targeted": 27,
+      "browser_ci": "passed",
+      "rng_ci": "passed"
+    }
+  },
+  "next_role": "programmer",
+  "next_step": "Fix HX-BL-055-REV-01 on the same approved task, add sensitive ordinary/refined edge regressions, run native6 baseline evidence for AC05, then hand off a new exact SHA for independent re-review.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-16T10:21:24.157Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "schedule": "hourly_at_minute_00",
+      "timezone": "Europe/Moscow"
+    },
+    "end": {
+      "checked_at": "2026-11-16T10:33:41.780Z",
+      "status": "checked",
+      "is_enabled": true,
+      "method": "automations.peek",
+      "schedule": "hourly_at_minute_00",
+      "timezone": "Europe/Moscow"
+    },
+    "recovery_performed": false,
+    "schedule_changed": false,
+    "errors": []
+  }
+}
