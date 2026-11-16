@@ -9827,11 +9827,15 @@
           "Подробные свойства журнала — открытая ссылка Player Core290; выполнение действия L3."
         ],
         "cross_references": [
-          "Player Core290 Scholarly Journal"
+          "https://roll20.net/compendium/pf2/Items:Scholarly%20Journal%20Compendium?expansion=27463",
+          "https://roll20.net/compendium/pf2/Rules:Free%20Basic%20Rules?expansion=0",
+          "https://roll20.net/compendium/pf2/Credits?expansion=0",
+          "https://roll20.net/compendium/pf2/Items:Scholarly%20Journal?expansion=27463"
         ],
         "access_level": "public_primary_full_section",
         "author_project_dedup_key": "paizo:pf2-remaster:gm-core:settlements",
-        "source_status": "primary_read_this_run"
+        "source_status": "primary_read_this_run",
+        "source_dependency_resolved_ref": "PF2-RM-PC-JOURNAL-v2"
       },
       "layer": "L1",
       "operational_requirement": {
@@ -9850,7 +9854,8 @@
         "expected_output": "Показана услуга 1d4 часа; сам журнал и проверка знаний не подменены простым наличием POI.",
         "constraints_and_exceptions": [
           "Подробные свойства журнала — открытая ссылка Player Core290; выполнение действия L3.",
-          "Сохранение и отмена — предлагаемое поведение приложения, не правило книги. Интерфейс и новая разработка не утверждены."
+          "Сохранение и отмена — предлагаемое поведение приложения, не правило книги. Интерфейс и новая разработка не утверждены.",
+          "Журнал:1минута обращения,+1 item по подходящей теме. Доступ по Scholarly1d4часа — отдельный этап; тема common не превращает предмет uncommon в common."
         ],
         "acceptance_cases": [
           {
@@ -9862,6 +9867,11 @@
             "given": "Получен указанный ожидаемый результат; затем карту сохраняют, загружают и отменяют последнее изменение.",
             "when": "Повторно открыть то же поселение и выполнить отмену.",
             "expected": "После загрузки тот же результат и привязка; отмена восстанавливает предыдущую запись/геометрию без изменения других поселений."
+          },
+          {
+            "given": "Scholarly: d4=3; затем журнал о вампирах; Recall Knowledge о вампирах",
+            "when": "Подготовить услугу и материал",
+            "expected": "Доступ3часа; обращение1минута; +1 item к подходящей проверке. Это не3минуты и не бонус ко всем знаниям."
           }
         ],
         "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
@@ -9870,7 +9880,7 @@
           "agent-work/rules/common-rules.json#content.site_links"
         ],
         "unresolved_parameters": [
-          "Точное структурированное представление/новая общая механика требуют проверки и решения; новый rule_id здесь не учреждается."
+          "Фактический UI/profile/save/load/undo и L3 применение пока не проверены."
         ]
       },
       "canonical_mapping": [
@@ -9907,7 +9917,8 @@
         "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
         "method": "static_context_only_not_UI_acceptance",
         "evidence_refs": [
-          "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json"
+          "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json",
+          "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.json"
         ]
       },
       "owner_decision_refs": [
@@ -10701,9 +10712,298 @@
       ],
       "backlog_refs": [],
       "registry_changed": false
+    },
+    {
+      "id": "PF2-RM-PC-JOURNAL-v2",
+      "game_id": "PF2",
+      "edition": "Player Core2023 Remaster; publisher Free Basic Rules on Roll20, expansion27463, snapshot2026-11-16",
+      "title": "Научный журнал и сборник",
+      "source_rule": {
+        "source_ref": "https://roll20.net/compendium/pf2/Items:Scholarly%20Journal?expansion=27463",
+        "locator": "Player Core → Chapter6 Equipment → Adventuring Gear → Научный журнал и сборник; journal print290 cross-reference, map printed page not independently verified",
+        "self_contained_rule": "Необычный научный журнал посвящён узкой теме. Минута обращения к нему перед Recall Knowledge по теме даёт +1 item bonus. Доступные в месте журналы определяет мастер. Сборник охватывает более широкую тему, стоит в5раз дороже и требует двух рук.",
+        "normative_kind": "mandatory_rule",
+        "parameters_and_units": {
+          "level": 3,
+          "rarity": "uncommon",
+          "bulk": "L",
+          "single": {
+            "price_gp": 6,
+            "hands": 1,
+            "scope": "узкая тема"
+          },
+          "collection": {
+            "price_gp": 30,
+            "hands": 2,
+            "scope": "более широкая тема"
+          },
+          "reference_time_minutes": 1,
+          "check": "Recall Knowledge",
+          "bonus": {
+            "value": 1,
+            "type": "item",
+            "condition": "тема подходит"
+          }
+        },
+        "conditions": [
+          "Выбран данный предмет и выполнены условия темы/места"
+        ],
+        "exceptions": [
+          "Это свойства предмета, не обязательный алгоритм генератора карты.",
+          "Правила сложения item-бонусов не выведены здесь; не суммировать автоматически."
+        ],
+        "cross_references": [
+          "https://roll20.net/compendium/pf2/Items:Scholarly%20Journal%20Compendium?expansion=27463",
+          "https://roll20.net/compendium/pf2/Rules:Free%20Basic%20Rules?expansion=0",
+          "https://roll20.net/compendium/pf2/Credits?expansion=0"
+        ],
+        "access_level": "public_publisher_rules_full_entries",
+        "author_project_dedup_key": "paizo:pf2-remaster:player-core:journal"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-PC-JOURNAL-v2",
+        "normative_kind": "research_translation_of_item_rule",
+        "applicability": "L1 подготовка данных места/документа; L2 доставка игроку и L3 применение бонусов отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить в место доступный журнал/сборник, указать тему и условия доступа",
+        "inputs_and_units": {
+          "level": 3,
+          "rarity": "uncommon",
+          "bulk": "L",
+          "single": {
+            "price_gp": 6,
+            "hands": 1,
+            "scope": "узкая тема"
+          },
+          "collection": {
+            "price_gp": 30,
+            "hands": 2,
+            "scope": "более широкая тема"
+          },
+          "reference_time_minutes": 1,
+          "check": "Recall Knowledge",
+          "bonus": {
+            "value": 1,
+            "type": "item",
+            "condition": "тема подходит"
+          }
+        },
+        "product_operation": "Добавить в место доступный журнал/сборник, указать тему и условия доступа. Показать вариант, тему/охват, доступность и параметры. Сохранить эти связи при загрузке/отмене. Для L3 передавать document_id,subject_or_area,variant,check_kind,bonus_type,value,reference_duration; принимать applicability/reason, не результат броска от карты.",
+        "expected_output": "Журнал о вампирах относится к вампирам; сборник о нежити — к более широкой группе. Получение и обращение к предмету — отдельные этапы.",
+        "constraints_and_exceptions": [
+          "Это свойства предмета, не обязательный алгоритм генератора карты.",
+          "Правила сложения item-бонусов не выведены здесь; не суммировать автоматически."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Scholarly: d4=3; затем журнал о вампирах; Recall Knowledge о вампирах",
+            "when": "Подготовить услугу и материал",
+            "expected": "Доступ3часа; обращение1минута; +1 item к подходящей проверке. Это не3минуты и не бонус ко всем знаниям."
+          },
+          {
+            "given": "Тема проверки — другая страна",
+            "when": "Передать свойства журнала внешнему учёту",
+            "expected": "Бонус не объявляется подходящим; возвращается отсутствие соответствия теме."
+          },
+          {
+            "given": "Сборник",
+            "when": "Добавить вариант",
+            "expected": "Цена30gp, две руки, та же величина+1, более широкая тема; не+5."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило предмета дано отдельно; запись материала, связь с местом, UI/save/undo — предложение приложения. Книга не требует отдельного редактора на каждую игру. Интеграция не проверена.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Представление документа/охвата, совместимость общих компонентов и L3 интеграция не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Общее содержание места подходит для описания доступного документа. Сохранение точного охвата документа и условные бонусы не доказаны этим компонентом; не терять их при универсализации.",
+          "profile_differences": [
+            "Условия темы/места и item+1 сохраняются; сборник меняет охват/стоимость/руки, не величину бонуса."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Первичные тела прочитаны и редакция подтверждена цепочкой PlayerCore Free Basic Rules и credits. Приложение для этих операций не исполнялось.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "UI, документ/охват, save/load/undo, условное применение в L3"
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "source_resolution_not_product_execution",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false
+    },
+    {
+      "id": "PF2-RM-PC-SURVEY-v2",
+      "game_id": "PF2",
+      "edition": "Player Core2023 Remaster; publisher Free Basic Rules on Roll20, expansion27463, snapshot2026-11-16",
+      "title": "Геодезическая карта и атлас",
+      "source_rule": {
+        "source_ref": "https://roll20.net/compendium/pf2/Items:Survey%20Map?expansion=27463",
+        "locator": "Player Core → Chapter6 Equipment → Adventuring Gear → Геодезическая карта и атлас; journal print290 cross-reference, map printed page not independently verified",
+        "self_contained_rule": "Необычная геодезическая карта подробно описывает одно место и даёт +1 item bonus к Survival и Recall Knowledge лишь по этому месту. Атлас содержит несколько карт того же качества, нередко связанных темой; стоит в5раз дороже и требует двух рук. Доступность карт в месте определяет мастер.",
+        "normative_kind": "mandatory_rule",
+        "parameters_and_units": {
+          "level": 3,
+          "rarity": "uncommon",
+          "bulk": "L",
+          "single": {
+            "price_gp": 10,
+            "hands": 1,
+            "coverage": "одно место"
+          },
+          "collection": {
+            "price_gp": 50,
+            "hands": 2,
+            "coverage": "несколько карт",
+            "map_count": "не задано"
+          },
+          "bonus": {
+            "value": 1,
+            "type": "item",
+            "checks": [
+              "Survival",
+              "Recall Knowledge"
+            ],
+            "condition": "проверка относится к изображённому месту"
+          }
+        },
+        "conditions": [
+          "Выбран данный предмет и выполнены условия темы/места"
+        ],
+        "exceptions": [
+          "Это свойства предмета, не обязательный алгоритм генератора карты.",
+          "Правила сложения item-бонусов не выведены здесь; не суммировать автоматически."
+        ],
+        "cross_references": [
+          "https://roll20.net/compendium/pf2/Items:Survey%20Map%20Atlas?expansion=27463",
+          "https://roll20.net/compendium/pf2/Rules:Free%20Basic%20Rules?expansion=0",
+          "https://roll20.net/compendium/pf2/Credits?expansion=0"
+        ],
+        "access_level": "public_publisher_rules_full_entries",
+        "author_project_dedup_key": "paizo:pf2-remaster:player-core:survey"
+      },
+      "layer": "L1",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-PC-SURVEY-v2",
+        "normative_kind": "research_translation_of_item_rule",
+        "applicability": "L1 подготовка данных места/документа; L2 доставка игроку и L3 применение бонусов отдельно",
+        "layer": "L1",
+        "trigger_or_user_action": "При подготовке места добавить доступную карту/атлас и явно связать каждый лист с изображённым местом",
+        "inputs_and_units": {
+          "level": 3,
+          "rarity": "uncommon",
+          "bulk": "L",
+          "single": {
+            "price_gp": 10,
+            "hands": 1,
+            "coverage": "одно место"
+          },
+          "collection": {
+            "price_gp": 50,
+            "hands": 2,
+            "coverage": "несколько карт",
+            "map_count": "не задано"
+          },
+          "bonus": {
+            "value": 1,
+            "type": "item",
+            "checks": [
+              "Survival",
+              "Recall Knowledge"
+            ],
+            "condition": "проверка относится к изображённому месту"
+          }
+        },
+        "product_operation": "При подготовке места добавить доступную карту/атлас и явно связать каждый лист с изображённым местом. Показать вариант, тему/охват, доступность и параметры. Сохранить эти связи при загрузке/отмене. Для L3 передавать document_id,subject_or_area,variant,check_kind,bonus_type,value,reference_duration; принимать applicability/reason, не результат броска от карты.",
+        "expected_output": "Один лист показывает границы своего охвата; атлас — список листов с их охватами. Наличие карты не открывает все тайны мира и не задаёт гексы/масштаб генерации.",
+        "constraints_and_exceptions": [
+          "Это свойства предмета, не обязательный алгоритм генератора карты.",
+          "Правила сложения item-бонусов не выведены здесь; не суммировать автоматически."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Карта долины A; проверка Survival в долине A и в долине B",
+            "when": "Передать выбранную карту и место проверки",
+            "expected": "Для A есть условие+1 item; для B оно не выполнено."
+          },
+          {
+            "given": "Атлас с двумя выбранными листами A/B",
+            "when": "Подготовить атлас",
+            "expected": "Цена50gp, две руки, оба листа и их связи сохранены; количество листов не выдумывается кубом."
+          },
+          {
+            "given": "Обычная схема без выбранного свойства Survey Map",
+            "when": "Добавить схему",
+            "expected": "Бонус+1 автоматически не назначается каждому экспорту карты."
+          }
+        ],
+        "source_vs_product_interpretation": "Правило предмета дано отдельно; запись материала, связь с местом, UI/save/undo — предложение приложения. Книга не требует отдельного редактора на каждую игру. Интеграция не проверена.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Представление документа/охвата, совместимость общих компонентов и L3 интеграция не приняты."
+        ]
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": null,
+          "disposition": "pending",
+          "semantic_comparison": "Общее содержание места подходит для описания доступного документа. Сохранение точного охвата документа и условные бонусы не доказаны этим компонентом; не терять их при универсализации.",
+          "profile_differences": [
+            "Условия темы/места и item+1 сохраняются; сборник меняет охват/стоимость/руки, не величину бонуса."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Первичные тела прочитаны и редакция подтверждена цепочкой PlayerCore Free Basic Rules и credits. Приложение для этих операций не исполнялось.",
+        "verified_parts": [],
+        "missing_or_unverified_parts": [
+          "UI, документ/охват, save/load/undo, условное применение в L3"
+        ],
+        "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+        "method": "source_resolution_not_product_execution",
+        "evidence_refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-15-rules-analysis-standard.json"
+      ],
+      "open_decisions": [
+        "Сначала общая поддержка места/карточки или подробная карта поселения? Стратегу сопоставить с текущим scope; исследователь не добавляет задачи в backlog."
+      ],
+      "backlog_refs": [],
+      "registry_changed": false
     }
   ],
   "last_continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-environment-evidence.json",
   "settlement_continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-settlements-coverage.json",
-  "last_dependency_continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json"
+  "last_dependency_continuation_ref": "agent-work/research/requirements/PF2-Remaster-v2-market-dependencies.json",
+  "last_reference_document_continuation": "agent-work/research/requirements/PF2-Remaster-v2-reference-documents.json"
 }
