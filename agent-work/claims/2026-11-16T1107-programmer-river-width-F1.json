@@ -2,10 +2,10 @@
   "claim_id": "2026-11-16T1107-programmer-river-width-F1",
   "task_id": "HX-BL-055",
   "role": "programmer",
-  "status": "active",
-  "execution_running": true,
+  "status": "completed",
+  "execution_running": false,
   "claimed_at": "2026-11-16T08:11:44.929Z",
-  "heartbeat_at": "2026-11-16T08:44:42.821Z",
+  "heartbeat_at": "2026-11-16T09:06:14.308Z",
   "generation": 65,
   "branch": "agent/hx-bl-055-one-mile-river-width",
   "base_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
@@ -22,30 +22,63 @@
       "is_enabled": true,
       "method": "automations.peek"
     },
-    "end": null,
+    "end": {
+      "checked_at": "2026-11-16T09:06:14.308Z",
+      "status": "checked_after_retry",
+      "is_enabled": true,
+      "method": "automations.peek"
+    },
     "recovery_performed": false,
     "schedule_changed": false,
-    "errors": []
+    "errors": [
+      "First end peek returned task-found/run-result-unreadable; immediate retry confirmed is_enabled=true."
+    ]
   },
   "forecast": {
-    "completed_runs_before_this": 5,
-    "current_run_number": 6,
-    "remaining_after_claim": "3–6 запусков; 3–5 ч активной работы; 4–9 ч календарно при почасовом интервале, без внешнего ожидания разрешения публикации",
+    "completed_runs": 6,
+    "remaining_runs": {
+      "min": 2,
+      "max": 5
+    },
+    "remaining_active_hours": {
+      "min": 1,
+      "max": 4
+    },
+    "remaining_calendar_hours_excluding_owner_wait": {
+      "min": 2,
+      "max": 6
+    },
+    "owner_publication_wait": "unknown",
     "confidence": "medium"
   },
   "next_visible_result": "Фактическое до/после на настоящей карте: F1–F5, впадение в озёра, мост/брод/паром, JSON/Undo/Redo/PNG и 6-мильный контроль.",
-  "current_head_sha": "18c99988ceea1130dbf4ca574f83af170228f02a",
+  "current_head_sha": "47d0dfad85931e949be6e9a469de307cdf8f5582",
   "pull_request": {
     "number": 504,
     "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/504",
-    "state": "open"
+    "state": "open",
+    "merged": false
   },
-  "state": "ci_running",
+  "state": "review_ready",
   "local_evidence": {
     "typecheck": "passed",
     "targeted_node": "passed",
     "build": "passed",
     "full_node_before_final_assertion": "425/426; sole old-width expectation, exact target now passed",
     "browser": "runner_missing_chromium; PR CI is authoritative"
-  }
+  },
+  "completed_at": "2026-11-16T09:06:14.308Z",
+  "tree_sha": "cd18f3dc4423e6bad5c0da7709fc0bd22059b12d",
+  "result_ref": "agent-work/results/2026-11-16T1107-programmer-river-width-F1.json",
+  "review_handoff_ref": "agent-work/handoffs/2026-11-16T1107-programmer-river-width-F1-reviewer.json",
+  "checks": {
+    "status": "passed_exact_sha",
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43834943617",
+    "jobs": {
+      "check": "success",
+      "browser": "success",
+      "world-random": "success"
+    }
+  },
+  "no_writing_processes_running": true
 }
