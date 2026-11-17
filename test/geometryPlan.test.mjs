@@ -44,15 +44,19 @@ for(const locale of ['ru','en'])test(`HX059 ${locale} import keeps a visible pre
  const h=createGenerationHarness(42,'',locale);h.render();h.guardRandom();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
  const text=fs.readFileSync(new URL('fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8');
  const load=()=>h.render().handleImportJson({target:{files:[{text}],value:'map'}});
- await load();const source=JSON.stringify(h.render().captureDocument().map);
+ await load();const source=JSON.stringify(h.render().captureDocument().map),sourceScale=h.render().createSaveData().ui.mapScale;
  assert.equal(h.render().switchFineStep(1),true);
+ assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'automatic display zoom is saved in accepted source coordinates');
  const restore=h.injectFunction('prepareAutomaticOneMileScene',()=>{throw Error('fixture_no_fit');});
  await load();restore();
  assert.match(h.render().automaticFineError??h.render().editError??'',locale==='ru'?/Не удалось подготовить/:/Could not prepare/);
  assert.equal(h.render().fineDisplay?.viewStep??6,6);
+ assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'failed preparation restores source camera scale');
  assert.equal(JSON.stringify(h.render().captureDocument().map),source);
  assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
  assert.equal(h.render().switchFineStep(1),true);assert.equal(h.render().automaticFineError,null);
+ const saved=h.render().createSaveData();await h.render().handleImportJson({target:{files:[{text:JSON.stringify(saved)}],value:'map'}});
+ assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'repeat import does not accumulate a sixfold zoom');
 });
 // Owner preview exposed a through-lake topology absent from the terminal-lake
 // fixture above. One saved world protects the actual App transaction boundary.

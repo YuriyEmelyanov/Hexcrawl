@@ -13605,7 +13605,10 @@ export function App() {
   const captureMap = (): MapSnapshot => ({ physicalGrid:physicalGridRef.current,knave:knaveRef.current,...seaIdentityRef.current,editorNames:editorNamesRef.current,riverFeatures:riverFeatureOverrides,nextRiverId,tags:tagsRef.current, gmNotesByHexKey: notesMapRef.current, generation: cloneGenerationState(generationRef.current), kingdoms, obstacles, nextObstacleId, regions, candidateHexes, rivers, roads, crossings,
     hexTerrainByKey, waterPoiByKey, biomeOverrideByHexKey, toponyms, toponymSeed, nextLakeId, nextRoadId });
   const captureDocument = (): DocumentSnapshot => ({ requiresFineAdaptation:fineLegacyRef.current,map: captureMap(), generationHistory: history, selectedHex,
-    generationMode, knaveEnabled:knaveEnabledRef.current, isMapRotated, mapScale: pendingMapZoomRef.current?.scale ?? mapScaleRef.current });
+    // Camera coordinates belong to the accepted document, not its detached
+    // automatic display. Import/Undo convert them to the resulting view below.
+    generationMode, knaveEnabled:knaveEnabledRef.current, isMapRotated, mapScale: (pendingMapZoomRef.current?.scale ?? mapScaleRef.current)
+      *((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep??6)/(physicalGridRef.current?.viewStep??6) });
   const closeEditors = () => {
     updateKnaveDraft(null);
     updatePoiDraft(null);
@@ -13672,7 +13675,7 @@ export function App() {
     updateWaterDraft(null); updateRiverDraft(null); updateRoadDraft(null); setSelectedRoadPair(null); setSelectedRoadTarget(null); setConfirmRoadRemoval(null);
     applyExactMap(doc.map); setHistory(doc.generationHistory); setSelectedHex(doc.selectedHex);
     setGenerationMode(doc.generationMode); updateKnaveEnabled(doc.knaveEnabled??!!doc.map.knave); setIsMapRotated(doc.isMapRotated);
-    updateMapScale(doc.mapScale); setPendingRegen(null); closeEditors();
+    updateMapScale(doc.mapScale*(doc.map.physicalGrid?.viewStep??6)/((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep??6)); setPendingRegen(null); closeEditors();
     nameDraftRef.current = null; setNameDraft(null); setNameErrors({});
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
@@ -14233,7 +14236,7 @@ export function App() {
     setSelectedHex(backup.selectedHex);
     if (backup.document) {
       setGenerationMode(backup.document.generationMode); updateKnaveEnabled(backup.document.knaveEnabled??!!backup.document.map.knave); setIsMapRotated(backup.document.isMapRotated);
-      updateMapScale(backup.document.mapScale);
+      updateMapScale(backup.document.mapScale*(backup.document.map.physicalGrid?.viewStep??6)/((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep??6));
     }
     if (backup.undo) setUndoHistory(backup.undo);
     if (backup.redo) setRedoHistory(backup.redo);

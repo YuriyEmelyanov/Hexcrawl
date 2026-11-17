@@ -64,6 +64,7 @@ try{
  assert.equal(await page.locator('[data-fine-crossing]').count(),2);
  assert.ok(await page.locator('[data-refined-river]').count()>0);
  assert.deepEqual((await snap()).map,classicSource.map);
+ assert.equal((await snap()).ui.mapScale,classicSource.ui.mapScale,'detached fine zoom is not persisted as source camera zoom');
  const classicSignature=()=>page.locator('[data-fine-world]').evaluate(el=>({rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])}));
  const classicVisible=await classicSignature();await shot('classic42-1mi-after.jpg');
  await page.evaluate(()=>window.__oneSvg=null);const [classicPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await classicPng.path(),new URL('classic42-automatic.png',out));
@@ -74,7 +75,8 @@ try{
  await page.setViewportSize({width:390,height:1000});await shot('classic42-1mi-after-390.jpg');
  await page.locator('input[type=file]').setInputFiles({name:'classic42-source-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicSource))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await classicSignature(),classicVisible);assert.deepEqual((await snap()).map,classicSource.map);
- manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390],sourceWrites:false});
+ assert.equal((await snap()).ui.mapScale,classicSource.ui.mapScale,'source JSON reload restores the same normalized camera');
+ manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390],sourceWrites:false,cameraSourceScaleStable:true});
  await page.setViewportSize({width:1500,height:1000});
  await page.locator('input[type=file]').setInputFiles({name:'classic42-mixed-growth.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(mixedFixture))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
