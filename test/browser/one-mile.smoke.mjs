@@ -128,7 +128,7 @@ try{
  const requiredCell=requiredMove.footprint.cells[0],requiredKey=`${requiredCell.q},${requiredCell.r}`,requiredMarker=page.locator(`[data-fine-pois] [data-poi-id="${requiredMove.poiId}"] image`);
  assert.equal(await requiredMarker.count(),1);
  const markerPosition=await requiredMarker.evaluate(n=>({x:Number(n.getAttribute('x'))+Number(n.getAttribute('width'))/2,y:Number(n.getAttribute('y'))+Number(n.getAttribute('height'))/2}));
- const cellPosition=await page.locator(`[data-fine-key="${requiredKey}"] polygon`).evaluate(n=>{const p=[...n.points];return {x:p.reduce((s,p)=>s+p.x,0)/6,y:p.reduce((s,p)=>s+p.y,0)/6};});
+ const cellPosition=await page.locator(`[data-fine-key="${requiredKey}"] polygon`).first().evaluate(n=>{const p=[...n.points];return {x:p.reduce((s,p)=>s+p.x,0)/6,y:p.reduce((s,p)=>s+p.y,0)/6};});
  const requiredCellWorld=detailCellCenter(createDetailGrid(1),requiredCell),factor=Math.sqrt(3)*28/6;
  assert.ok(Math.abs(markerPosition.x-cellPosition.x-(requiredMove.newAnchor.x-requiredCellWorld.x)*factor)<1e-7);
  assert.ok(Math.abs(markerPosition.y-cellPosition.y-(requiredMove.newAnchor.y-requiredCellWorld.y)*factor)<1e-7,'actual marker follows the prepared bank anchor');
