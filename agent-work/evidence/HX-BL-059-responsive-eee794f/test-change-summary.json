@@ -3,7 +3,7 @@
   "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
   "added": 1,
   "removed": 0,
-  "modified": 7,
+  "modified": 6,
   "suites": [
     {
       "suite": "Node",
@@ -18,7 +18,7 @@
       "suite": "Browser",
       "added": 1,
       "removed": 0,
-      "modified": 7,
+      "modified": 6,
       "new_case": "HX059-worker-busy-cancel-late-reply",
       "scenario_or_risk": "Hold a REAL completed Worker reply; old scene and localized1500/390 UI stay responsive, PNG disabled; cancel terminates and rejects already-in-flight reply; retry through existing real-map case.",
       "modified_cases": [
@@ -26,11 +26,11 @@
         "HX059-mixed-growth-retained-paths-PNG",
         "UI-grid-local-read",
         "UI-pinned-editor-exit-and-undo",
-        "UI-ordinary-candidate-unit",
         "G209-AUTO-source-edit-error-busy-RU-EN",
         "GEO2-UI-preview-apply-history-roundtrip-PNG"
       ],
-      "reuse_or_new_reason": "Existing import/generation busy guards did not exercise the actual scale Worker or late reply. One new logical guard case; existing cases only await completion of the now asynchronous scale handler, preserving their assertions."
+      "reuse_or_new_reason": "Existing import/generation busy guards did not exercise the actual scale Worker or late reply. One new logical guard case; existing cases only await completion of the now asynchronous scale handler, preserving their assertions.",
+      "shared_cleanup": "The post-generation fixture restoration also awaits the new asynchronous preparation; cleanup is not counted as another logical test case."
     }
   ],
   "source": "git diff exact base198ce6a to treef2b8c33; explicit manifest case IDs; shared timing/locale profiles are not counted as new cases."
