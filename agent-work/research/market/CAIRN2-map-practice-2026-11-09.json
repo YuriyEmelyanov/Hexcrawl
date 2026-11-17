@@ -163,7 +163,82 @@
       "unresolved_parameters": [
         "Наличие точного режима pointcrawl в продукте не проверено.",
         "Масштаб и длительность перехода требуют отдельного чтения процедур путешествия."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-001",
+        "source_artifact": "agent-work/research/market/CAIRN2-map-practice-2026-11-09.json",
+        "source_pointer": "/product_connection/operational_requirement",
+        "source_blob_sha": "2b28dc80756ceebdb1e190b1ec6fbc35dc48feb1",
+        "original_layer": "L1",
+        "original_source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002",
+        "original_normative_kind": "map_conversion_procedure",
+        "disposition": "keep_L1",
+        "reason": "Выбранные места и реальные связи между ними образуют карту; точное переиспользование CAIRN2-PC-002-L1 без повторного источника.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.",
+        "map_object_or_state": {
+          "places": "выбранные места исходной карты",
+          "routes": "известные дороги, тропы и водные маршруты",
+          "unconnected_sites": "места без отмеченных соединений"
+        },
+        "checkable_result": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002",
+          "normative_kind": "map_conversion_procedure",
+          "applicability": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.",
+          "inputs_and_units": {
+            "places": "выбранные места исходной карты",
+            "routes": "известные дороги, тропы и водные маршруты",
+            "unconnected_sites": "места без отмеченных соединений"
+          },
+          "product_operation": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+          "expected_output": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+          "constraints_and_exceptions": [
+            "Близость или соседство гексов не является названной дорогой, тропой или водным маршрутом.",
+            "Отсутствие маршрута не означает непроходимость всей местности.",
+            "Направленность и доступность пути при разных условиях не определены этим ограниченным срезом.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-PC-002-L1-AC01",
+              "given": "A–B соединены тропой, B–C водным маршрутом; D без соединений.",
+              "when": "Подготовить сеть этих четырёх мест.",
+              "expected": "Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана."
+            },
+            {
+              "id": "CAIRN2-PC-002-L1-AC02",
+              "given": "E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено.",
+              "when": "Показать подготовленную сеть.",
+              "expected": "Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым."
+            },
+            {
+              "id": "CAIRN2-PC-002-L1-AC03",
+              "given": "Ведущий добавил к D известную дорогу от C.",
+              "when": "Обновить представление сети.",
+              "expected": "Показана дорога C–D; D больше не обозначен как не имеющий соединений."
+            }
+          ],
+          "source_vs_product_interpretation": "Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.routes_and_barriers"
+          ],
+          "unresolved_parameters": [
+            "Наличие точного режима pointcrawl в продукте не проверено.",
+            "Масштаб и длительность перехода требуют отдельного чтения процедур путешествия."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "reuse_audit_ref": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-002-L1",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     "criterion_ids": [
       "S01-C04",
@@ -191,5 +266,29 @@
     "selection_bias": "Purposive English web search; negative examples retained; no census or measured prevalence."
   },
   "active_ranking_changed": false,
-  "owner_decisions_needed": []
+  "owner_decisions_needed": [],
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-001"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-001",
+        "source_pointer": "/product_connection/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Выбранные места и реальные связи между ними образуют карту; точное переиспользование CAIRN2-PC-002-L1 без повторного источника."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-001"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

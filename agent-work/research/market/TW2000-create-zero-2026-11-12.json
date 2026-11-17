@@ -506,7 +506,76 @@
         "unresolved_parameters": [
           "Final4e scale/convention unverified.",
           "Current exactSHA save/import/undo support unverified."
-        ]
+        ],
+        "scope_review": {
+          "id": "SUP-SCOPE-017",
+          "source_artifact": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
+          "source_pointer": "/operational_requirements/0/operational_requirement",
+          "source_blob_sha": "10dc20eaf3dcd9b42551020330c9d36c81609fab",
+          "original_layer": "L1",
+          "original_source_rule_ref": "TW2000-ZERO-O02;TW2000-ZERO-O03",
+          "original_normative_kind": "non_normative_observed_workflow_product_interpretation_not_game_rule",
+          "disposition": "keep_L1",
+          "reason": "Калибровка собственной подложки известным расстоянием прямо относится к созданию/наполнению карты; никакой обязательной игровой длины гекса не выводится.",
+          "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+          "user_action": "Мастер готовит игровую карту реальной местности из собственной подложки.",
+          "map_object_or_state": {
+            "fixture": "Synthetic100×100px square; known pointsx0/x100 span100km; no game scale assumed",
+            "calibration": "100km"
+          },
+          "checkable_result": "Контрольные концы соответствуют100km, середина50km; подложка и отметки остаются на месте.",
+          "current_operational_requirement": {
+            "source_rule_ref": "TW2000-ZERO-O02;TW2000-ZERO-O03",
+            "normative_kind": "non_normative_observed_workflow_product_interpretation_not_game_rule",
+            "applicability": "Optional authoring workflow; not a mandatory TW2000 core rule",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер готовит игровую карту реальной местности из собственной подложки.",
+            "inputs_and_units": {
+              "fixture": "Synthetic100×100px square; known pointsx0/x100 span100km; no game scale assumed",
+              "calibration": "100km"
+            },
+            "product_operation": "Разместить подложку, задать известное расстояние между двумя точками и привязать игровые отметки без генерации вымышленной территории.",
+            "expected_output": "Контрольные концы соответствуют100km, середина50km; подложка и отметки остаются на месте.",
+            "constraints_and_exceptions": [
+              "Owned synthetic fixture only; no map rights inferred.",
+              "027 remainsdeferred_by_owner_prerequisites_missing; no spec/dev start.",
+              "No10km/across-flats convention imported from beta snippets or blockedPDF.",
+              "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+            ],
+            "acceptance_cases": [
+              {
+                "given": "Подложка100px; контрольные концы соответствуют100km",
+                "when": "Мастер задаёт расстояние100km",
+                "expected": "Половина отрезка50km; исходные места концов сохранены."
+              },
+              {
+                "given": "На той же карте отметка уx50",
+                "when": "Карту сохраняют и вновь открывают",
+                "expected": "Подложка, положение отметки и калибровка100km сохранены."
+              },
+              {
+                "given": "У подложки нет известного расстояния",
+                "when": "Её размещают как визуальную опору",
+                "expected": "Физический масштаб остаётсяunknown;6миль не присваивается автоматически."
+              }
+            ],
+            "source_vs_product_interpretation": "Source establishes workflow only. Synthetic calibration/safe-editing/persistence cases are analyst product interpretations, not quoted game parameters or implemented functionality.",
+            "canonical_rule_refs": [
+              "map.physical_hex_scale"
+            ],
+            "unresolved_parameters": [
+              "Final4e scale/convention unverified.",
+              "Current exactSHA save/import/undo support unverified."
+            ]
+          },
+          "current_L1_eligible": true,
+          "implementation_status": "unverified",
+          "implementation_retested": false,
+          "development_authorized": false,
+          "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+          "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+          "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+        }
       },
       "existing_backlog_refs": [
         "agent-work/backlog.json#HX-BL-027"
@@ -560,7 +629,32 @@
         "unresolved_parameters": [
           "Current exactSHA behavior not audited.",
           "Partial canonical reuse, not certified game-profile equivalence."
-        ]
+        ],
+        "scope_review": {
+          "id": "SUP-SCOPE-018",
+          "source_artifact": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
+          "source_pointer": "/operational_requirements/1/operational_requirement",
+          "source_blob_sha": "10dc20eaf3dcd9b42551020330c9d36c81609fab",
+          "original_layer": "L1",
+          "original_source_rule_ref": "TW2000-ZERO-O05",
+          "original_normative_kind": "non_normative_observed_workflow_product_interpretation_not_game_rule",
+          "disposition": "out_of_scope",
+          "reason": "Исходный пример требует только записать слух и сцену с беженцами. Нет самостоятельного принятого картографического результата; произвольная заметка не основание.",
+          "product_boundary": "Исключённые тактические/планетарные/сюжетные подсистемы",
+          "user_action": "Мастер наполняет выбранную местность слухом и встречей.",
+          "map_object_or_state": {
+            "fixture": "Two locationsA/B; texts'Мост закрыт' and'Колонна беженцев'; existing terrain/roads"
+          },
+          "checkable_result": "Обе заметки находятся у своих мест; изменение одной не меняет другую или местность.",
+          "current_operational_requirement": null,
+          "current_L1_eligible": false,
+          "implementation_status": "unverified",
+          "implementation_retested": false,
+          "development_authorized": false,
+          "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+          "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+          "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+        }
       },
       "existing_backlog_refs": [
         "agent-work/backlog.json#HX-BL-024"
@@ -603,5 +697,36 @@
     "action": "Проверить нулевой create-вход TheOneRing2e: по первичным материалам различить новые маршруты/локации Средиземья и собственную географию. Сначала использовать накопленноеevidence; не назначатьp по числу примеров.",
     "reason": "Другой unresolvedzero у игры с действующим общим местом22; закрытыйTW2000срез не пересканировать без нового основания.",
     "completion_condition": "Законченный source-to-input disposition с точной редакцией, картографическим артефактом/процедурой и конкретной продуктовой операцией; численные изменения только отдельным exact-versioncandidate."
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-017",
+      "SUP-SCOPE-018"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-017",
+        "source_pointer": "/operational_requirements/0/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Калибровка собственной подложки известным расстоянием прямо относится к созданию/наполнению карты; никакой обязательной игровой длины гекса не выводится."
+      },
+      {
+        "id": "SUP-SCOPE-018",
+        "source_pointer": "/operational_requirements/1/operational_requirement",
+        "disposition": "out_of_scope",
+        "reason": "Исходный пример требует только записать слух и сцену с беженцами. Нет самостоятельного принятого картографического результата; произвольная заметка не основание."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-017"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
   }
 }

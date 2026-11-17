@@ -126,6 +126,83 @@
       "HexCrawl": "unknown",
       "competitor": "static_code_inspected_only",
       "competitor_sha": "9e7202f7be9d5ab9c3cd2abce6d9bb199f9fea30"
+    },
+    "scope_review": {
+      "id": "SUP-SCOPE-039",
+      "source_artifact": "agent-work/research/market/WWN-builder-screen-2026-11-10.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "ec14313f4c01ac4004fb06b20f32aa026f029b71",
+      "original_layer": "L1",
+      "original_source_rule_ref": "obs-WWN-BUILDER-20261110 (competitor workflow, not a game rule)",
+      "original_normative_kind": "non-normative product workflow; research interpretation only",
+      "disposition": "keep_L1",
+      "reason": "Экспорт имени и простого содержания конкретного места вместе с картой относится к L1; нативный Obsidian-плагин/обратная синхронизация не следуют.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Мастер экспортирует текущую карту и сведения о выбранном месте.",
+      "map_object_or_state": {
+        "place": "New Port",
+        "previous_name": "Old Port",
+        "content": "Harbor closes at dusk",
+        "position": "unchanged P"
+      },
+      "checkable_result": "В экспортированном материале New Port уP с пометкой о работе гавани; Old Port не дублируется.",
+      "current_operational_requirement": {
+        "source_rule_ref": "obs-WWN-BUILDER-20261110 (competitor workflow, not a game rule)",
+        "normative_kind": "non-normative product workflow; research interpretation only",
+        "applicability": "Optional transfer of a prepared WWN regional map and edited place notes into an external notes tool",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер экспортирует текущую карту и сведения о выбранном месте.",
+        "inputs_and_units": {
+          "place": "New Port",
+          "previous_name": "Old Port",
+          "content": "Harbor closes at dusk",
+          "position": "unchanged P"
+        },
+        "product_operation": "Передать актуальные географию, имя и простое содержание места вместе, сохраняя исходную карту для продолжения.",
+        "expected_output": "В экспортированном материале New Port уP с пометкой о работе гавани; Old Port не дублируется.",
+        "constraints_and_exceptions": [
+          "Source is software behavior, not a mandatory WWN rule.",
+          "The existing HX-BL-029 is proposed; this research does not authorize it or dictate bundled plugins/technical format.",
+          "External edits flowing back into the generator are not established; the included world.json is a snapshot, not evidence of Markdown round-trip sync.",
+          "HexCrawl current runtime support is unknown; do not label export absent without checking.",
+          "Формат выгрузки выбирается отдельным разрешённым процессом. Obsidian-плагин, его API/лицензия и обратная Markdown-синхронизация не установлены и не включены.",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Old Port уP переименован вNew Port, указано Harbor closes at dusk.",
+            "when": "Экспортировать текущий материал.",
+            "expected": "New Port уP с актуальной пометкой; дубликатOld Port не создан."
+          }
+        ],
+        "source_vs_product_interpretation": "The competitor supplies an implemented transfer model. Cases express a user outcome for existing029; they are research examples, not a new WWN profile, detailed specification or release evidence. Текущий рабочий вариант сужен ревизией18.11.2026: источник/исторический fixture сохранён отдельно; ограничения продукта и примеры не являются новым текстом правил.",
+        "canonical_rule_refs": [],
+        "unresolved_parameters": [
+          "HexCrawl exact-SHA export support",
+          "Whether users need one-way export or bidirectional synchronization",
+          "Deploy/runtime verification of competitor output",
+          "Analyst-approved export format and scope",
+          "Точное исполнение этого суженного профиля на актуальном SHA не проверялось."
+        ],
+        "criterion_ids": [
+          "S08-C03"
+        ],
+        "existing_task_refs": [
+          "HX-BL-029"
+        ],
+        "runtime_evidence": {
+          "HexCrawl": "unknown",
+          "competitor": "static_code_inspected_only",
+          "competitor_sha": "9e7202f7be9d5ab9c3cd2abce6d9bb199f9fea30"
+        }
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
     }
   },
   "separated_conclusions": {
@@ -143,5 +220,29 @@
   "method": "Existing gm_materials/source_applicability contract; no new metric/experiment/weight",
   "product_effect": "Existing proposed029 annotated with research refs only; no new task, scope/status/dependency/queue change",
   "active_rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-039"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-039",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Экспорт имени и простого содержания конкретного места вместе с картой относится к L1; нативный Obsidian-плагин/обратная синхронизация не следуют."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-039"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

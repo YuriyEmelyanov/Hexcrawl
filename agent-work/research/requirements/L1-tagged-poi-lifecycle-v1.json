@@ -87,7 +87,109 @@
     ],
     "unresolved_parameters": [
       "Формат Knave provenance и occurrence IDs остаётся в reuse-handoff-v1; данный MB lifecycle не подтверждает его."
-    ]
+    ],
+    "scope_review": {
+      "id": "SUP-SCOPE-051",
+      "source_artifact": "agent-work/research/requirements/L1-tagged-poi-lifecycle-v1.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "cbc90c8cee99f14cf9d979bef8e7f04b89a645c6",
+      "original_layer": "L1",
+      "original_source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070",
+      "original_normative_kind": "product_acceptance_derived_from_source_result_provenance",
+      "disposition": "keep_L1",
+      "reason": "Перенос конкретного POI с уже принятым содержимым, точная отмена/повтор и сохранение относятся к существующему редактору карты. MB lifecycle evidence не доказывает Knave-таблицу или актуальную поддержку.",
+      "product_boundary": "Редактирование/сохранение конкретного места и происхождения выбранного результата",
+      "user_action": "Ведущий переносит нецентральный POI с уже сохранённым результатом таблицы и ручной интерпретацией, затем отменяет/повторяет перенос и сохраняет/загружает карту.",
+      "map_object_or_state": {
+        "source_owner": "poi:1:2,0",
+        "target_owner": "poi:2:3,0; free valid land hex in another region",
+        "tag": "valid mb.monument definition v1; values [[1],[1]]; entryIds ['mb.monument:0']; base text from exact production catalog",
+        "overrides": {
+          "ru": "Мастер-X",
+          "en": "GM-X"
+        },
+        "revision": 3,
+        "roll_counters": {
+          "group": 2,
+          "entry": 4
+        },
+        "world_rng": "snapshot C0",
+        "map_before": "full snapshot M0 with valid production tag text and no conflicting target identity"
+      },
+      "checkable_result": "Меняется принадлежность/адрес POI и связанного тега. Контент, происхождение, ручная интерпретация и случайные состояния сохраняются; история восстанавливает точные снимки.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070",
+        "normative_kind": "product_acceptance_derived_from_source_result_provenance",
+        "applicability": "L1 common storage/reuse prerequisite; MB fixture verifies the shared lifecycle, not Knave-specific resolver or source table correctness.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий переносит нецентральный POI с уже сохранённым результатом таблицы и ручной интерпретацией, затем отменяет/повторяет перенос и сохраняет/загружает карту.",
+        "inputs_and_units": {
+          "source_owner": "poi:1:2,0",
+          "target_owner": "poi:2:3,0; free valid land hex in another region",
+          "tag": "valid mb.monument definition v1; values [[1],[1]]; entryIds ['mb.monument:0']; base text from exact production catalog",
+          "overrides": {
+            "ru": "Мастер-X",
+            "en": "GM-X"
+          },
+          "revision": 3,
+          "roll_counters": {
+            "group": 2,
+            "entry": 4
+          },
+          "world_rng": "snapshot C0",
+          "map_before": "full snapshot M0 with valid production tag text and no conflicting target identity"
+        },
+        "product_operation": "Через существующий UI подтвердить перенос. Перенести owner и ключи counters; сохранить definition/version, values, entryIds, texts, overrides, revision без переброса. Применить существующую историю документа. Экспортировать и импортировать принятый результат.",
+        "expected_output": "Меняется принадлежность/адрес POI и связанного тега. Контент, происхождение, ручная интерпретация и случайные состояния сохраняются; история восстанавливает точные снимки.",
+        "constraints_and_exceptions": [
+          "Не переносить центральный POI; использовать свободный разрешённый гекс.",
+          "При конфликте личности/дороги/занятого адреса отказ должен быть атомарным.",
+          "Валидный base text берётся из текущего MB-каталога; этот случай не проверяет содержание Knave.",
+          "Импорт может начинать новую историю: Undo/Redo проверять до импорта; roundtrip проверять отдельным этапом.",
+          "Составной положительный desktop-сценарий и отказ для занятой цели выполнены на00190bb; другие отрицательные варианты остаются за границами этой проверки.",
+          "Исторический00190bb/идентичныйtree сохраняется как ограниченный факт; на текущийSHA и Knave-профиль не переносится. Никаких восстановлений043."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "M0: source owner poi:1:2,0; tag values [[1],[1]], entryId mb.monument:0, overrides ru=Мастер-X/en=GM-X, revision3, counters group2/entry4, worldRNG C0.",
+            "when": "Перенести POI через UI в poi:2:3,0.",
+            "expected": "Один тег с новым owner; старого owner/counter-prefix нет. Values/entryId/text/overrides/revision=3 неизменны, counters2/4 перенесены на новый prefix; worldRNG C0 неизменён."
+          },
+          {
+            "given": "Зафиксированы полные снимки M0 и M1 после предыдущего действия.",
+            "when": "Нажать Undo и затем Redo до импорта.",
+            "expected": "Экспорт после Undo равен M0, после Redo равен M1 без savedAt; значения тегов, overrides и counters совпадают точно."
+          },
+          {
+            "given": "Принятый снимок M1 с непустым тегом.",
+            "when": "Экспортировать JSON, импортировать его и экспортировать повторно.",
+            "expected": "Нормализованный документ равен M1 без savedAt; новый owner, обе интерпретации, values, entryIds, revision и counters сохранены; добавочных бросков нет."
+          },
+          {
+            "given": "Исходный M0 и target уже имеет конфликтующую identity.",
+            "when": "Попытаться подтвердить перенос.",
+            "expected": "Документ, source tag и обе истории не изменены; частично перенесённых counters/override нет."
+          }
+        ],
+        "source_vs_product_interpretation": "Knave070/071 требует сохранения результата и компонентов в аналитической интерпретации продукта. Move/history/roundtrip здесь — производная целостность общего редактора, не дословная механика книги и не доказанная поддержка Knave.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Формат Knave provenance и occurrence IDs остаётся в reuse-handoff-v1; данный MB lifecycle не подтверждает его."
+        ]
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified_on_current_SHA",
+      "implementation_retested": false,
+      "historical_evidence_preserved": true,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "closure_inventory_addition": true,
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+    }
   },
   "existing_evidence": {
     "kind": "existing_ci_same_tree_verified",
@@ -192,5 +294,29 @@
       "Occupied destination refusal was checked; other hidden-identity and road conflicts were not repeated.",
       "No Knave-specific row selection, occurrence/provenance adapter, full table correctness or complete game support established."
     ]
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-051"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-051",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Перенос конкретного POI с уже принятым содержимым, точная отмена/повтор и сохранение относятся к существующему редактору карты. MB lifecycle evidence не доказывает Knave-таблицу или актуальную поддержку."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-051"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
   }
 }

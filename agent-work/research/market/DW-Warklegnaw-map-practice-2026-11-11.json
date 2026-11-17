@@ -299,7 +299,69 @@
         ],
         "unresolved_parameters": [
           "Import asset access/format and exact alignment behavior require separate approved scope."
-        ]
+        ],
+        "scope_review": {
+          "id": "SUP-SCOPE-006",
+          "source_artifact": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json",
+          "source_pointer": "/operational_fixtures/0/operational_requirement",
+          "source_blob_sha": "fb2c468671b1ea2dce400911e019ccdd75a5419a",
+          "original_layer": "L1",
+          "original_source_rule_ref": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json#DW-WARK-OP01",
+          "original_normative_kind": "GM_workflow_observation_not_official_rule",
+          "disposition": "keep_L1",
+          "reason": "Одномильная правка конкретного объекта и сохранение физической позиции соответствуют принятой многоуровневой карте.",
+          "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+          "user_action": "Мастер выбирает исходный6мильный гекс для одномильных правок.",
+          "map_object_or_state": {
+            "parent_hex": "stable ID0702",
+            "base_unit": "1mile",
+            "parent_scale": "6miles",
+            "marker": "stable ID M"
+          },
+          "checkable_result": "Одна сущность M с прежним ID; обзор не клонирует её и не теряет редактирование.",
+          "current_operational_requirement": {
+            "source_rule_ref": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json#DW-WARK-OP01",
+            "normative_kind": "GM_workflow_observation_not_official_rule",
+            "applicability": "Optional manual L1 workflow; source2020 not standalone default",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер выбирает исходный6мильный гекс для одномильных правок.",
+            "inputs_and_units": {
+              "parent_hex": "stable ID0702",
+              "base_unit": "1mile",
+              "parent_scale": "6miles",
+              "marker": "stable ID M"
+            },
+            "product_operation": "Показать детальный слой, сохранить правку M и восстановить ту же физическую позицию после переключения масштаба и повторного импорта.",
+            "expected_output": "Одна сущность M с прежним ID; обзор не клонирует её и не теряет редактирование.",
+            "constraints_and_exceptions": [
+              "No source-derived automatic relocation, terrain rewrite or numerical profile.",
+              "Acceptance below is proposed and not executed; existing approvals remain exact scope.",
+              "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+            ],
+            "acceptance_cases": [
+              {
+                "given": "M в0702; выбран1mile слой; M перемещён в пределах0702",
+                "when": "Переключить6→1, сохранить и загрузить",
+                "expected": "M ровно1, та же детальная координата и ID; source fixture не задаёт число дочерних гексов"
+              }
+            ],
+            "source_vs_product_interpretation": "Source establishes a performed workflow. Fixture is analyst interpretation for assessing existing generic capabilities; no demand count, task approval or official rule inferred.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.physical_hex_scale",
+              "agent-work/rules/common-rules.json#map.nested_scales"
+            ],
+            "unresolved_parameters": [
+              "Import asset access/format and exact alignment behavior require separate approved scope."
+            ]
+          },
+          "current_L1_eligible": true,
+          "implementation_status": "unverified",
+          "implementation_retested": false,
+          "development_authorized": false,
+          "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+          "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+          "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+        }
       }
     },
     {
@@ -340,7 +402,65 @@
         ],
         "unresolved_parameters": [
           "Import asset access/format and exact alignment behavior require separate approved scope."
-        ]
+        ],
+        "scope_review": {
+          "id": "SUP-SCOPE-007",
+          "source_artifact": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json",
+          "source_pointer": "/operational_fixtures/1/operational_requirement",
+          "source_blob_sha": "fb2c468671b1ea2dce400911e019ccdd75a5419a",
+          "original_layer": "L1",
+          "original_source_rule_ref": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json#DW-WARK-OP02",
+          "original_normative_kind": "GM_workflow_observation_not_official_rule",
+          "disposition": "keep_L1",
+          "reason": "Расширение/правка вне принятого региона сохраняет географию и объекты; не включает скрытую переработку старой территории.",
+          "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+          "user_action": "Мастер согласует географию вокруг сохранённого региона.",
+          "map_object_or_state": {
+            "inside_region": "set of accepted IDs and geometry",
+            "outside": "explicit selected area"
+          },
+          "checkable_result": "Прежние внутренние ID/данные сохранены, внешние правки отделены.",
+          "current_operational_requirement": {
+            "source_rule_ref": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json#DW-WARK-OP02",
+            "normative_kind": "GM_workflow_observation_not_official_rule",
+            "applicability": "Optional manual L1 workflow; source2020 not standalone default",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер согласует географию вокруг сохранённого региона.",
+            "inputs_and_units": {
+              "inside_region": "set of accepted IDs and geometry",
+              "outside": "explicit selected area"
+            },
+            "product_operation": "Применять внешнюю правку только к выбранной области; показывать конфликт берега/стыка, не менять внутренние объекты молча.",
+            "expected_output": "Прежние внутренние ID/данные сохранены, внешние правки отделены.",
+            "constraints_and_exceptions": [
+              "No source-derived automatic relocation, terrain rewrite or numerical profile.",
+              "Acceptance below is proposed and not executed; existing approvals remain exact scope.",
+              "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+            ],
+            "acceptance_cases": [
+              {
+                "given": "A внутренний, B внешний; мастер изменяет B",
+                "when": "Сохранить карту с внешним изменением",
+                "expected": "A неизменён; B изменён; конфликт стыка отмечен, не исправлен автоматически"
+              }
+            ],
+            "source_vs_product_interpretation": "Source establishes a performed workflow. Fixture is analyst interpretation for assessing existing generic capabilities; no demand count, task approval or official rule inferred.",
+            "canonical_rule_refs": [
+              "agent-work/rules/common-rules.json#map.extend_preserving_content",
+              "agent-work/rules/common-rules.json#map.river_network"
+            ],
+            "unresolved_parameters": [
+              "Import asset access/format and exact alignment behavior require separate approved scope."
+            ]
+          },
+          "current_L1_eligible": true,
+          "implementation_status": "unverified",
+          "implementation_retested": false,
+          "development_authorized": false,
+          "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+          "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+          "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+        }
       }
     },
     {
@@ -381,7 +501,34 @@
         ],
         "unresolved_parameters": [
           "Import asset access/format and exact alignment behavior require separate approved scope."
-        ]
+        ],
+        "scope_review": {
+          "id": "SUP-SCOPE-008",
+          "source_artifact": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json",
+          "source_pointer": "/operational_fixtures/2/operational_requirement",
+          "source_blob_sha": "fb2c468671b1ea2dce400911e019ccdd75a5419a",
+          "original_layer": "L1",
+          "original_source_rule_ref": "agent-work/research/market/DW-Warklegnaw-map-practice-2026-11-11.json#DW-WARK-OP03",
+          "original_normative_kind": "GM_workflow_observation_not_official_rule",
+          "disposition": "needs_owner_decision",
+          "reason": "Индивидуальная калибровка17/18миль и совмещение внешней опорной карты не приняты как отдельный профиль. Не обязывать приложение новыми масштабами.",
+          "product_boundary": "Вне принятого профиля до отдельного решения",
+          "user_action": "Мастер сверяет масштаб опорной карты перед совмещением.",
+          "map_object_or_state": {
+            "two_source_legends": "17 and18miles center-to-center",
+            "reference_span": "3intervals",
+            "chosen_scale": "18miles"
+          },
+          "checkable_result": "Контрольный отрезок54мили; выбор17 дал бы51милю.",
+          "current_operational_requirement": null,
+          "current_L1_eligible": false,
+          "implementation_status": "unverified",
+          "implementation_retested": false,
+          "development_authorized": false,
+          "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+          "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+          "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+        }
       }
     }
   ],
@@ -399,5 +546,44 @@
     "Actual use of Emeraude map during play versus portal journey",
     "April/May end-date discrepancy",
     "Editor save format, import compatibility and switch intent"
-  ]
+  ],
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-006",
+      "SUP-SCOPE-007",
+      "SUP-SCOPE-008"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-006",
+        "source_pointer": "/operational_fixtures/0/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Одномильная правка конкретного объекта и сохранение физической позиции соответствуют принятой многоуровневой карте."
+      },
+      {
+        "id": "SUP-SCOPE-007",
+        "source_pointer": "/operational_fixtures/1/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Расширение/правка вне принятого региона сохраняет географию и объекты; не включает скрытую переработку старой территории."
+      },
+      {
+        "id": "SUP-SCOPE-008",
+        "source_pointer": "/operational_fixtures/2/operational_requirement",
+        "disposition": "needs_owner_decision",
+        "reason": "Индивидуальная калибровка17/18миль и совмещение внешней опорной карты не приняты как отдельный профиль. Не обязывать приложение новыми масштабами."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-006",
+      "SUP-SCOPE-007"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

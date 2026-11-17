@@ -129,7 +129,64 @@
       ],
       "unresolved_parameters": [
         "Сам отчёт не сообщает алгоритм, ограничения путей или формат сохранения."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-035",
+        "source_artifact": "agent-work/research/market/ROOT-GM-tool-choice-2026-11-09.json",
+        "source_pointer": "/development_handoff/operational_requirement",
+        "source_blob_sha": "31ed8b6bbd5b876b944767e9933cf8d0d7506e75",
+        "original_layer": "L1",
+        "original_source_rule_ref": "agent-work/research/market/ROOT-GM-tool-choice-2026-11-09.json#HX-OBS-ROOT-GM-INKARNATE-20261109",
+        "original_normative_kind": "observed_practice_not_game_rule; illustrative_product_interpretation",
+        "disposition": "keep_L1",
+        "reason": "Корректировка связей существующих полян - редактирование дорог/путей. Ручная правка не объявляется новым броском.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Ведущий корректирует пути после подготовки карты по броскам.",
+        "map_object_or_state": {
+          "clearings": "Три именованные поляны A/B/C, пример исследователя",
+          "paths": "Связи A–B и B–C; это связи полян, не мили и не число гексов"
+        },
+        "checkable_result": "После удаления B–C и добавления A–C итог содержит A–B и A–C; названия полян сохранены.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/research/market/ROOT-GM-tool-choice-2026-11-09.json#HX-OBS-ROOT-GM-INKARNATE-20261109",
+          "normative_kind": "observed_practice_not_game_rule; illustrative_product_interpretation",
+          "applicability": "Qualitative L1 preparation comparison only; no new mandatory feature",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий корректирует пути после подготовки карты по броскам.",
+          "inputs_and_units": {
+            "clearings": "Три именованные поляны A/B/C, пример исследователя",
+            "paths": "Связи A–B и B–C; это связи полян, не мили и не число гексов"
+          },
+          "product_operation": "Позволить сравнить полученную по броскам сеть с результатом намеренной ручной правки; не выдавать ручную правку за новый бросок.",
+          "expected_output": "После удаления B–C и добавления A–C итог содержит A–B и A–C; названия полян сохранены.",
+          "constraints_and_exceptions": [
+            "Это иллюстрация пользовательского процесса, а не прочитанное новое правило Root.",
+            "Фактическая поддержка HexCrawl и Inkarnate этим источником не проверена; реализация не запускается.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "A/B/C; пути A–B,B–C",
+              "when": "Убрать B–C, добавить A–C",
+              "expected": "Пути A–B,A–C; B–C отсутствует; A/B/C сохранены."
+            }
+          ],
+          "source_vs_product_interpretation": "Отчёт подтверждает добавление/удаление отдельных путей; имена A/B/C и ожидаемый выход придуманы как конкретный пример для сравнения. Нового source rule/binding не создано.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.routes_and_barriers"
+          ],
+          "unresolved_parameters": [
+            "Сам отчёт не сообщает алгоритм, ограничения путей или формат сохранения."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     }
   },
   "numeric_effect": {
@@ -142,5 +199,29 @@
   "search_budget": {
     "completed": "Two targeted search engines; bounded Root threads; no full rescan",
     "stop_condition": "Request and used alternative distinguished; explicit unsolved limitation not found in accessed text. Stop rather than infer a defect or continue indefinitely."
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-035"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-035",
+        "source_pointer": "/development_handoff/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Корректировка связей существующих полян - редактирование дорог/путей. Ручная правка не объявляется новым броском."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-035"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
   }
 }

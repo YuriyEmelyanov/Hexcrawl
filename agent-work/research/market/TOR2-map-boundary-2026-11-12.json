@@ -464,7 +464,75 @@
         "unresolved_parameters": [
           "Finalcore2eclassesandeffectsnotread",
           "Actual044currentSHAbehaviorunknown"
-        ]
+        ],
+        "scope_review": {
+          "id": "SUP-SCOPE-014",
+          "source_artifact": "agent-work/research/market/TOR2-map-boundary-2026-11-12.json",
+          "source_pointer": "/operational_requirements/0/operational_requirement",
+          "source_blob_sha": "42bcb47025367b26041c94feb01a971b49cd2cdc",
+          "original_layer": "L1",
+          "original_source_rule_ref": "TOR2-MB-O04;TOR2-MB-O05",
+          "original_normative_kind": "observed_workflow_not_normative_game_rule",
+          "disposition": "keep_L1",
+          "reason": "Свойства выбранного участка и конкретная статическая опасность относятся к подготовке местности; численные эффекты/походный движок не включены.",
+          "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+          "user_action": "Мастер добавляет собственную сложность и опасность к готовой карте.",
+          "map_object_or_state": {
+            "fixture": "A — лес, B — равнина; у A повышенная сложность и отдельная авторская опасность. Численные игровые эффекты неизвестны."
+          },
+          "checkable_result": "A остаётся лесом с авторскими свойствами; B остаётся прежним.",
+          "current_operational_requirement": {
+            "source_rule_ref": "TOR2-MB-O04;TOR2-MB-O05",
+            "normative_kind": "observed_workflow_not_normative_game_rule",
+            "applicability": "Optionalauthoring/integration interpretation; not mandatoryTOR2rule",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер добавляет собственную сложность и опасность к готовой карте.",
+            "inputs_and_units": {
+              "fixture": "A — лес, B — равнина; у A повышенная сложность и отдельная авторская опасность. Численные игровые эффекты неизвестны."
+            },
+            "product_operation": "Изменить свойства выбранного участка, сохранив рельеф и явно обозначив авторское происхождение.",
+            "expected_output": "A остаётся лесом с авторскими свойствами; B остаётся прежним.",
+            "constraints_and_exceptions": [
+              "Авторские цвета и классы не объявляются официальными правилами 2e.",
+              "Нет автоматического расчёта движения, событий или начисления score.",
+              "Неизвестный физический масштаб остаётся неизвестным.",
+              "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+            ],
+            "acceptance_cases": [
+              {
+                "given": "A — лес; B — равнина.",
+                "when": "Для A задают авторскую опасность.",
+                "expected": "A остаётся лесом, опасность помечена авторской; B не изменён."
+              },
+              {
+                "given": "У A повышенная сложность и авторская опасность.",
+                "when": "Удаляют только опасность.",
+                "expected": "Повышенная сложность и рельеф сохранены."
+              },
+              {
+                "given": "Карта с исправленными свойствами.",
+                "when": "Сохраняют и открывают карту.",
+                "expected": "Сложность, опасность, рельеф и происхождение свойств сохранены."
+              }
+            ],
+            "source_vs_product_interpretation": "Workflowisobserved; concretefixturesandpersistence areanalystacceptanceproposals, not publishedrules or currentimplementation.",
+            "canonical_rule_refs": [
+              "map.terrain_zones",
+              "content.static_hazard"
+            ],
+            "unresolved_parameters": [
+              "Finalcore2eclassesandeffectsnotread",
+              "Actual044currentSHAbehaviorunknown"
+            ]
+          },
+          "current_L1_eligible": true,
+          "implementation_status": "unverified",
+          "implementation_retested": false,
+          "development_authorized": false,
+          "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+          "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+          "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+        }
       },
       "existing_backlog_refs": [
         "agent-work/backlog.json#HX-BL-044"
@@ -518,7 +586,75 @@
         "unresolved_parameters": [
           "No20milegameparameterinferred",
           "027ownerdeferralunchanged; linkedoverlayfileunread"
-        ]
+        ],
+        "scope_review": {
+          "id": "SUP-SCOPE-015",
+          "source_artifact": "agent-work/research/market/TOR2-map-boundary-2026-11-12.json",
+          "source_pointer": "/operational_requirements/1/operational_requirement",
+          "source_blob_sha": "42bcb47025367b26041c94feb01a971b49cd2cdc",
+          "original_layer": "L1",
+          "original_source_rule_ref": "TOR2-MB-O03",
+          "original_normative_kind": "observed_workflow_not_normative_game_rule",
+          "disposition": "keep_L1",
+          "reason": "Подложка и отметки описывают подготовку карты; неизвестная поддержка/масштаб не считаются отсутствием. Это не разрешение восстановить027.",
+          "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+          "user_action": "Мастер совмещает собственный гексовый слой с готовым референсом.",
+          "map_object_or_state": {
+            "fixture": "Собственный квадрат 100×100 px; ориентиры A(10,20), B(80,60). Физический масштаб неизвестен."
+          },
+          "checkable_result": "A и B совпадают с исходными местами; визуальная сетка не присваивает физическую длину.",
+          "current_operational_requirement": {
+            "source_rule_ref": "TOR2-MB-O03",
+            "normative_kind": "observed_workflow_not_normative_game_rule",
+            "applicability": "Optionalauthoring/integration interpretation; not mandatoryTOR2rule",
+            "layer": "L1",
+            "trigger_or_user_action": "Мастер совмещает собственный гексовый слой с готовым референсом.",
+            "inputs_and_units": {
+              "fixture": "Собственный квадрат 100×100 px; ориентиры A(10,20), B(80,60). Физический масштаб неизвестен."
+            },
+            "product_operation": "Показать сетку и выбрать фрагмент, сохраняя взаимное положение ориентиров и подложки.",
+            "expected_output": "A и B совпадают с исходными местами; визуальная сетка не присваивает физическую длину.",
+            "constraints_and_exceptions": [
+              "Авторские цвета и классы не объявляются официальными правилами 2e.",
+              "Нет автоматического расчёта движения, событий или начисления score.",
+              "Неизвестный физический масштаб остаётся неизвестным.",
+              "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+            ],
+            "acceptance_cases": [
+              {
+                "given": "A(10,20), B(80,60) на подложке.",
+                "when": "Включают сетку.",
+                "expected": "A и B остаются над прежними местами подложки."
+              },
+              {
+                "given": "Сетка показана.",
+                "when": "Увеличивают масштаб просмотра вдвое.",
+                "expected": "Подложка и отметки увеличиваются совместно; физический масштаб остаётся неизвестным."
+              },
+              {
+                "given": "Выбран фрагмент карты.",
+                "when": "Сохраняют и открывают карту.",
+                "expected": "Привязка отметок и слоёв сохранена; 6 миль автоматически не присвоены."
+              }
+            ],
+            "source_vs_product_interpretation": "Workflowisobserved; concretefixturesandpersistence areanalystacceptanceproposals, not publishedrules or currentimplementation.",
+            "canonical_rule_refs": [
+              "map.physical_hex_scale",
+              "map.display_detail"
+            ],
+            "unresolved_parameters": [
+              "No20milegameparameterinferred",
+              "027ownerdeferralunchanged; linkedoverlayfileunread"
+            ]
+          },
+          "current_L1_eligible": true,
+          "implementation_status": "unverified",
+          "implementation_retested": false,
+          "development_authorized": false,
+          "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+          "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+          "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+        }
       },
       "existing_backlog_refs": [
         "agent-work/backlog.json#HX-BL-027"
@@ -571,7 +707,32 @@
         "unresolved_parameters": [
           "No actualeditablefileorimporttested",
           "NotaproductiondataschemaorUI specification"
-        ]
+        ],
+        "scope_review": {
+          "id": "SUP-SCOPE-016",
+          "source_artifact": "agent-work/research/market/TOR2-map-boundary-2026-11-12.json",
+          "source_pointer": "/operational_requirements/2/operational_requirement",
+          "source_blob_sha": "42bcb47025367b26041c94feb01a971b49cd2cdc",
+          "original_layer": "L1",
+          "original_source_rule_ref": "TOR2-MB-O06;TOR2-MB-O07;TOR2-MB-O08",
+          "original_normative_kind": "observed_workflow_not_normative_game_rule",
+          "disposition": "needs_owner_decision",
+          "reason": "Оценка переносимости неполученного Wonderdraft-файла и счётчиков товаров - исследовательская классификация, не готовая операция карты. Формат импорта требует отдельного выбора.",
+          "product_boundary": "Вне принятого профиля до отдельного решения",
+          "user_action": "Мастер выбирает файл для последующего редактирования карты.",
+          "map_object_or_state": {
+            "fixture": "PNG/JPEG и предложенный автором, но ещё не полученный файл Wonderdraft."
+          },
+          "checkable_result": "PNG считается изображением; совместимость редактируемого файла остаётся непроверенной до его проверки.",
+          "current_operational_requirement": null,
+          "current_L1_eligible": false,
+          "implementation_status": "unverified",
+          "implementation_retested": false,
+          "development_authorized": false,
+          "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+          "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+          "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+        }
       },
       "existing_backlog_refs": [
         "agent-work/backlog.json#HX-BL-027"
@@ -667,5 +828,44 @@
     "binding_registry": "agent-work/rules/game-bindings.json",
     "gate": "No newproductwork,specificationorpublication; currentONE-MILE1accepted_release_pendingpreserved"
   },
-  "owner_decisions_needed": []
+  "owner_decisions_needed": [],
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-014",
+      "SUP-SCOPE-015",
+      "SUP-SCOPE-016"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-014",
+        "source_pointer": "/operational_requirements/0/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Свойства выбранного участка и конкретная статическая опасность относятся к подготовке местности; численные эффекты/походный движок не включены."
+      },
+      {
+        "id": "SUP-SCOPE-015",
+        "source_pointer": "/operational_requirements/1/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Подложка и отметки описывают подготовку карты; неизвестная поддержка/масштаб не считаются отсутствием. Это не разрешение восстановить027."
+      },
+      {
+        "id": "SUP-SCOPE-016",
+        "source_pointer": "/operational_requirements/2/operational_requirement",
+        "disposition": "needs_owner_decision",
+        "reason": "Оценка переносимости неполученного Wonderdraft-файла и счётчиков товаров - исследовательская классификация, не готовая операция карты. Формат импорта требует отдельного выбора."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-014",
+      "SUP-SCOPE-015"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

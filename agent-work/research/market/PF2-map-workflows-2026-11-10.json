@@ -157,6 +157,90 @@
     "runtime_evidence": {
       "status": "unknown",
       "sha": null
+    },
+    "scope_review": {
+      "id": "SUP-SCOPE-034",
+      "source_artifact": "agent-work/research/market/PF2-map-workflows-2026-11-10.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "2d7c5b75191e237df7fd1c23f30ee09f9e3d7484",
+      "original_layer": "L1",
+      "original_source_rule_ref": "obs-PF2-EXPANDING-ART-20261110 (practice recipe, not a game rule)",
+      "original_normative_kind": "optional export workflow hypothesis; no PF2 mandate",
+      "disposition": "keep_L1",
+      "reason": "Добавление местности в пустоту и экспорт принятой карты - L1. Фиксированная рамка является ограниченным примером, не обязательным новым режимом всех экспортов.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Add prepared terrain in a blank area and export an updated image using an explicitly retained frame.",
+      "map_object_or_state": {
+        "frame": "synthetic2000×1000pixel export fixture",
+        "existing_landmark": "Port at pixel200,300 in that chosen frame",
+        "addition": "forest at pixel700,400 previously blank",
+        "mode": "explicit retained frame only, not arbitrary natural-bounds exports"
+      },
+      "checkable_result": "Updated image remains2000×1000; Port stays at200,300 and the new forest appears at700,400.",
+      "current_operational_requirement": {
+        "source_rule_ref": "obs-PF2-EXPANDING-ART-20261110 (practice recipe, not a game rule)",
+        "normative_kind": "optional export workflow hypothesis; no PF2 mandate",
+        "applicability": "L1 artwork handoff while filling an explicitly reserved image frame; external fog/play state belongs to laterL2",
+        "layer": "L1",
+        "trigger_or_user_action": "Add prepared terrain in a blank area and export an updated image using an explicitly retained frame.",
+        "inputs_and_units": {
+          "frame": "synthetic2000×1000pixel export fixture",
+          "existing_landmark": "Port at pixel200,300 in that chosen frame",
+          "addition": "forest at pixel700,400 previously blank",
+          "mode": "explicit retained frame only, not arbitrary natural-bounds exports"
+        },
+        "product_operation": "Preserve accepted old geography and existing landmark positions while adding new detail; for this optional handoff profile, export into the same chosen frame.",
+        "expected_output": "Updated image remains2000×1000; Port stays at200,300 and the new forest appears at700,400.",
+        "constraints_and_exceptions": [
+          "Pixel dimensions/coordinates are invented acceptance fixtures, not measured values in the source or PF2 rules.",
+          "Do not impose a fixed frame on all maps or prevent normal outward region expansion.",
+          "Existing map.extend_preserving_content is a reuse lead, not evidence of fixed-frame export support.",
+          "No VTT token movement, fog or live scene replacement implemented/tested; those are subsequent integration/L2.",
+          "Current051 scope and031 proposed status are unchanged; export profile is a research hypothesis requiring separate product disposition if selected.",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Retained2000×1000 export frame, Port at200,300 and blank area700,400",
+            "when": "Add forest in that blank area and export in the same selected frame",
+            "expected": "Image remains2000×1000; Port stays at200,300; forest appears at700,400; no prior landmark disappears"
+          },
+          {
+            "given": "The accepted map after adding forest; Port name/note remain unchanged",
+            "when": "Save and reopen the map before another export",
+            "expected": "Port and forest remain in their accepted map locations with existing content; no old region is regenerated"
+          }
+        ],
+        "source_vs_product_interpretation": "Indexed practitioner advice motivates a limited artifact-handoff example. It does not establish a book rule, a missing HexCrawl function, a universal export requirement or approved integration specification.",
+        "canonical_rule_refs": [
+          "map.extend_preserving_content"
+        ],
+        "criterion_ids": [
+          "S03-C01",
+          "S03-C03",
+          "S04-C04"
+        ],
+        "existing_task_refs": [
+          "HX-BL-031"
+        ],
+        "unresolved_parameters": [
+          "HexCrawl exact-SHA export-frame/expansion support",
+          "Actual source project identity and data",
+          "Whether retained-frame export merits product scope",
+          "2025 commenter rules edition"
+        ],
+        "runtime_evidence": {
+          "status": "unknown",
+          "sha": null
+        }
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
     }
   },
   "source_scope": {
@@ -189,5 +273,29 @@
     "Complete project packing and current compatibility"
   ],
   "active_rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-034"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-034",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Добавление местности в пустоту и экспорт принятой карты - L1. Фиксированная рамка является ограниченным примером, не обязательным новым режимом всех экспортов."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-034"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

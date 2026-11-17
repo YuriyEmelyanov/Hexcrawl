@@ -192,7 +192,135 @@
       "sha": null
     },
     "backlog_ref": "agent-work/backlog.json#HX-BL-051",
-    "new_tasks": 0
+    "new_tasks": 0,
+    "scope_review": {
+      "id": "SUP-SCOPE-040",
+      "source_artifact": "agent-work/research/resources/HexAtlas-footprint-fill-2026-11-12.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "08fe6de99a427aa4d7796e4f92bb95ca4e51f3cc",
+      "original_layer": "L1",
+      "original_source_rule_ref": "agent-work/backlog.json#HX-BL-051.current_approved_scope",
+      "original_normative_kind": "Owner product requirement compared with competitor controls; not game rule",
+      "disposition": "keep_L1",
+      "reason": "Физический охват места и заполнение свободной территории относятся к принятым масштабам/POI; размер значка не равен размеру места.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Set site dimensions or fill empty parts of an already mapped territory",
+      "map_object_or_state": {
+        "competitor_country_hex_miles": 6,
+        "fixture_occupied_hexes": 7,
+        "forest_cells": 6,
+        "water_cell": {
+          "q": 1,
+          "r": -1
+        },
+        "POI_anchor": {
+          "q": -1,
+          "r": 0
+        },
+        "art_size_before": 1,
+        "art_size_after": 6,
+        "art_size_units": "unitless UI value, not miles",
+        "owner_physical_footprint_example": {
+          "small_site_diameter_miles": 0.2,
+          "large_site_diameter_miles": 2,
+          "assumption": "explicit synthetic fixture inputs, not inferred real settlement dimensions"
+        }
+      },
+      "checkable_result": "A0.2mi site andA2mi site can have different1mi-cell coverage regardless of icon zoom. An empty-area extension appends known newcells while old7cells remain byte-equivalent by content.",
+      "current_operational_requirement": {
+        "id": "HX-ATLAS-FOOTPRINT-FILL-OR-v1",
+        "source_rule_ref": "agent-work/backlog.json#HX-BL-051.current_approved_scope",
+        "normative_kind": "Owner product requirement compared with competitor controls; not game rule",
+        "applicability": "Existing HX-BL-051; research-only annotation, no spec/backlog modification",
+        "layer": "L1",
+        "trigger_or_user_action": "Set site dimensions or fill empty parts of an already mapped territory",
+        "inputs_and_units": {
+          "competitor_country_hex_miles": 6,
+          "fixture_occupied_hexes": 7,
+          "forest_cells": 6,
+          "water_cell": {
+            "q": 1,
+            "r": -1
+          },
+          "POI_anchor": {
+            "q": -1,
+            "r": 0
+          },
+          "art_size_before": 1,
+          "art_size_after": 6,
+          "art_size_units": "unitless UI value, not miles",
+          "owner_physical_footprint_example": {
+            "small_site_diameter_miles": 0.2,
+            "large_site_diameter_miles": 2,
+            "assumption": "explicit synthetic fixture inputs, not inferred real settlement dimensions"
+          }
+        },
+        "product_operation": "Keep physical occupied area distinct from artwork scale. When adding geography only eligible empty territory changes; retain pre-existing cell content and object anchors.",
+        "expected_output": "A0.2mi site andA2mi site can have different1mi-cell coverage regardless of icon zoom. An empty-area extension appends known newcells while old7cells remain byte-equivalent by content.",
+        "constraints_and_exceptions": [
+          "Competitor Size6 is not6miles or6occupied cells.",
+          "Fill was tested in Country mode only, not every generation/settlement control.",
+          "No vendor defect or global feature absence inferred.",
+          "Setup replaced landmark_1 bylandmark_2; size comparison uses matched landmark_2 snapshots, notbaseline→large as isolated size edit.",
+          "No road/river or cross-browser import tested.",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Matched landmark_2 at(-1,0),size1; seven country hexes,6forest andwater(1,-1)",
+            "when": "Set Size6 (unitless art slider), compare large6.json to size-undo.json",
+            "expected": "Art-size alternative: only landmark.size changes; same anchor/terrain. A physical footprint would require separately evidenced dimensions and occupied cells.",
+            "actual": "Only size differs within landmark; same7terrain records and anchor; no occupied-cell set introduced",
+            "verdict": "art_scale_confirmed_physical_footprint_not_established",
+            "evidence_ref": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/large6.json"
+          },
+          {
+            "given": "Same seven occupied cells and empty neighboring location clicked at viewport(751,578),outside occupied7cell group",
+            "when": "Choose Desert and Fill;click empty location",
+            "expected": "For non-destructive generation: old7cells unchanged and new eligible cells appended; for no-op: no map-data change",
+            "actual": "Only exportMetadata changed; no added geography,settings,POI or revision change",
+            "verdict": "no_append_in_tested_empty_click",
+            "evidence_ref": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-empty.json"
+          },
+          {
+            "given": "Six connected forest cells pluswater(1,-1),landmark_2(-1,0)",
+            "when": "Fill Desert on existing forest center",
+            "expected": "Flood repaint: all6forest→desert,water andPOI unchanged; append-only generation would retain existingforest",
+            "actual": "Exactly6forest→desert; same7coordinate set; water record and completePOI equal",
+            "verdict": "bounded_repaint_confirmed_not_append_generation",
+            "evidence_ref": "agent-work/research/raw/2026-11-12T0833-HexAtlas-footprint-fill/fill-forest.json"
+          }
+        ],
+        "source_vs_product_interpretation": "Owner target invariants remain separate from actual competitor semantics. Findings do not prove current HexCrawl implementation or uniqueness.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale",
+          "agent-work/rules/common-rules.json#map.nested_scales",
+          "agent-work/rules/common-rules.json#map.extend_preserving_content"
+        ],
+        "criterion_ids": [
+          "S06-C04",
+          "S02-C02"
+        ],
+        "unresolved_parameters": [
+          "Equivalent physical multi-cell POI operation elsewhere in competitor",
+          "Equivalent append-only generation elsewhere in competitor",
+          "Successful import via working upload route"
+        ],
+        "implementation_evidence": {
+          "status": "unknown_not_reaudited",
+          "sha": null
+        },
+        "backlog_ref": "agent-work/backlog.json#HX-BL-051",
+        "new_tasks": 0
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+    }
   },
   "checks": {
     "status": "passed",
@@ -335,5 +463,29 @@
       "agent-work/research/resources/scale-competition-2026-11-11.json"
     ],
     "completion_condition": "Один проверенный ресурс с полным выбранным тематическим корпусом, конкретными операциями/ожидаемыми выходами, source/runtime distinction и последствиями для сравнения альтернатив; без установки/покупок."
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-040"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-040",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Физический охват места и заполнение свободной территории относятся к принятым масштабам/POI; размер значка не равен размеру места."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-040"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
   }
 }

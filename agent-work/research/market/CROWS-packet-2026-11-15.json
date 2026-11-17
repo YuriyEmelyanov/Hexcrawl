@@ -126,7 +126,73 @@
       ],
       "unresolved_parameters": [
         "Runtime evidence unknown; no score or approved implementation asserted."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-026",
+        "source_artifact": "agent-work/research/market/CROWS-packet-2026-11-15.json",
+        "source_pointer": "/operational_requirements/0",
+        "source_blob_sha": "16194771e35c8007ff7c69bf1234f2a8ba358d27",
+        "original_layer": "L1",
+        "original_source_rule_ref": "Rules PDFp24 Hexes",
+        "original_normative_kind": "playtest_rule_or_preparation_guidance",
+        "disposition": "keep_L1",
+        "reason": "Источник5across сохраняется, но владелец уже выбрал совместимый базовый режим5–6миль. Старый пакет не требует отдельной5-мильной сетки.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Выбрать совместимый базовый режим карты Crows",
+        "map_object_or_state": {
+          "source_hex_miles": 5,
+          "source_axis": null,
+          "project_baseline_miles": 6,
+          "display_label": "5–6 миль",
+          "zoom": 1.3
+        },
+        "checkable_result": "Используется действующая базовая геометрия; режим обозначается5–6миль по решению владельца. Новая5-мильная сетка не добавлена; исходное5across сохранено отдельно как правило книги.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-002",
+          "normative_kind": "mandatory_rule",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Выбрать совместимый базовый режим карты Crows",
+          "inputs_and_units": {
+            "source_hex_miles": 5,
+            "source_axis": null,
+            "project_baseline_miles": 6,
+            "display_label": "5–6 миль",
+            "zoom": 1.3
+          },
+          "product_operation": "Выбрать совместимый базовый режим карты Crows",
+          "expected_output": "Используется действующая базовая геометрия; режим обозначается5–6миль по решению владельца. Новая5-мильная сетка не добавлена; исходное5across сохранено отдельно как правило книги.",
+          "constraints_and_exceptions": [
+            "Не подменять физическую длину экранным zoom и не выдавать выбранную приложением геометрию за уточнённый источник.",
+            "across не уточняет способ измерения. Явный проектный выбор конвенции должен быть обозначен; неизвестность источника не означает запрета работать с согласованной конвенцией.",
+            "Это осознанная продуктовая совместимость по HX-BL-058, не точное равенство5и6 и не разрешение самостоятельного отдельного режима. Статус выполнения058 здесь не проверялся.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"source_hex_miles\":5,\"source_axis\":null,\"project_baseline_miles\":6,\"display_label\":\"5–6 миль\",\"zoom\":1.3}",
+              "when": "Выбрать совместимый базовый режим карты Crows; сохранить и повторно открыть карту",
+              "expected": "Используется действующая базовая геометрия; режим обозначается5–6миль по решению владельца. Новая5-мильная сетка не добавлена; исходное5across сохранено отдельно как правило книги."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "map.physical_hex_scale"
+          ],
+          "unresolved_parameters": [
+            "across не уточняет способ измерения. Явный проектный выбор конвенции должен быть обозначен; неизвестность источника не означает запрета работать с согласованной конвенцией."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "reuse_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-002",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "CROWS-PT3-02",
@@ -157,7 +223,65 @@
       ],
       "unresolved_parameters": [
         "Runtime evidence unknown; no score or approved implementation asserted."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-027",
+        "source_artifact": "agent-work/research/market/CROWS-packet-2026-11-15.json",
+        "source_pointer": "/operational_requirements/1",
+        "source_blob_sha": "16194771e35c8007ff7c69bf1234f2a8ba358d27",
+        "original_layer": "L1",
+        "original_source_rule_ref": "Rules PDFp24 Hexes",
+        "original_normative_kind": "playtest_rule_or_preparation_guidance",
+        "disposition": "keep_L1",
+        "reason": "Habitat выбранного гекса прямо задаёт местность, не меняя соседей; переиспользуется CROWS scope review.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Assign habitat to a selected hex",
+        "map_object_or_state": {
+          "hex": "A",
+          "habitat": "forest"
+        },
+        "checkable_result": "HexA storesforest; another hex staysunchanged.",
+        "current_operational_requirement": {
+          "id": "CROWS-PT3-02",
+          "source_rule_ref": "Rules PDFp24 Hexes",
+          "normative_kind": "playtest_rule_or_preparation_guidance",
+          "applicability": "Crows PublicPlaytest3 October2026 only",
+          "layer": "L1",
+          "trigger_or_user_action": "Assign habitat to a selected hex",
+          "inputs_and_units": {
+            "hex": "A",
+            "habitat": "forest"
+          },
+          "product_operation": "Keep a per-hex habitat classification for preparation.",
+          "expected_output": "HexA storesforest; another hex staysunchanged.",
+          "constraints_and_exceptions": [
+            "Habitat encounter selection belongsL3, not L1; source gives examples, not exhaustive biome taxonomy.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "HexAforest,HexBmountain.",
+              "when": "SetA to plains andsave/reopen.",
+              "expected": "Aplains,Bmountain; no encounter roll generated."
+            }
+          ],
+          "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+          "canonical_rule_refs": [
+            "map.terrain_zones"
+          ],
+          "unresolved_parameters": [
+            "Runtime evidence unknown; no score or approved implementation asserted."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "reuse_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-003",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "CROWS-PT3-03",
@@ -203,7 +327,79 @@
       ],
       "unresolved_parameters": [
         "Runtime evidence unknown; no score or approved implementation asserted."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-028",
+        "source_artifact": "agent-work/research/market/CROWS-packet-2026-11-15.json",
+        "source_pointer": "/operational_requirements/2",
+        "source_blob_sha": "16194771e35c8007ff7c69bf1234f2a8ba358d27",
+        "original_layer": "L1",
+        "original_source_rule_ref": "Characters PDFp48 StartingVillage;PDFp49 NPCConnection",
+        "original_normative_kind": "playtest_rule_or_preparation_guidance",
+        "disposition": "keep_L1",
+        "reason": "Одна домашняя деревня и простой список услуг допустимы; уровень1/улучшения/отношения персонажей не превращаются в управляющие подсистемы.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Разместить и назвать стартовую деревню с простым перечнем услуг",
+        "map_object_or_state": {
+          "village": "V",
+          "name": "GM choice",
+          "services": [
+            "blacksmith",
+            "crypt",
+            "general store",
+            "inn",
+            "temple"
+          ],
+          "extra": "beacon"
+        },
+        "checkable_result": "На карте одна V с выбранным именем; у неё указаны пять исходных и одна выбранная служба. Повторная загрузка не создаёт вторую V.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-011",
+          "normative_kind": "mandatory_rule",
+          "applicability": "Региональная карта Crows PT3; Cornath-specific и готовые приключения применяются только при их выборе.",
+          "layer": "L1",
+          "trigger_or_user_action": "Разместить и назвать стартовую деревню с простым перечнем услуг",
+          "inputs_and_units": {
+            "village": "V",
+            "name": "GM choice",
+            "services": [
+              "blacksmith",
+              "crypt",
+              "general store",
+              "inn",
+              "temple"
+            ],
+            "extra": "beacon"
+          },
+          "product_operation": "Разместить и назвать стартовую деревню с простым перечнем услуг",
+          "expected_output": "На карте одна V с выбранным именем; у неё указаны пять исходных и одна выбранная служба. Повторная загрузка не создаёт вторую V.",
+          "constraints_and_exceptions": [
+            "Уровень1 сохраняется в исходном правиле; автоматический контроллер учреждений/уровней/денег/NPC и отдельные внутренние POI не требуются этой операцией.",
+            "Применимость к продукту не равна согласованию разработки/публикации или фактической поддержке. Общая запись заметки не считается исполнением игрового правила.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "{\"village\":\"V\",\"name\":\"GM choice\",\"services\":[\"blacksmith\",\"crypt\",\"general store\",\"inn\",\"temple\"],\"extra\":\"beacon\"}",
+              "when": "Разместить и назвать стартовую деревню с простым перечнем услуг; сохранить и повторно открыть карту",
+              "expected": "На карте одна V с выбранным именем; у неё указаны пять исходных и одна выбранная служба. Повторная загрузка не создаёт вторую V."
+            }
+          ],
+          "source_vs_product_interpretation": "Первичный смысл и параметры приведены отдельно выше. Операция/интерфейс и способ представления - предложение приложения. Ручная запись отличена от автоматического исполнения; новая автоматизация не предписана книгой и не утверждена этим анализом.",
+          "canonical_rule_refs": [
+            "content.place_description"
+          ],
+          "unresolved_parameters": []
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "reuse_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-011",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "CROWS-PT3-04",
@@ -238,7 +434,71 @@
       ],
       "unresolved_parameters": [
         "Runtime evidence unknown; no score or approved implementation asserted."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-029",
+        "source_artifact": "agent-work/research/market/CROWS-packet-2026-11-15.json",
+        "source_pointer": "/operational_requirements/3",
+        "source_blob_sha": "16194771e35c8007ff7c69bf1234f2a8ba358d27",
+        "original_layer": "L1",
+        "original_source_rule_ref": "Dungeons PDFpp1–11;Cornath Map TEMP.png",
+        "original_normative_kind": "playtest_rule_or_preparation_guidance",
+        "disposition": "keep_L1",
+        "reason": "Лесопилка в принятом месте у реки - конкретное наполнение/привязка POI; не произвольная заметка и не бой внутри места.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Place an authored POI on an existing region",
+        "map_object_or_state": {
+          "poi_id": "test-sawmill",
+          "location": "selected riverbank",
+          "description": "Original synthetic description",
+          "source_ref": "Dungeons PDFp7"
+        },
+        "checkable_result": "One placedPOI retainsidentity and editeddescription.",
+        "current_operational_requirement": {
+          "id": "CROWS-PT3-04",
+          "source_rule_ref": "Dungeons PDFpp1–11;Cornath Map TEMP.png",
+          "normative_kind": "playtest_rule_or_preparation_guidance",
+          "applicability": "Crows PublicPlaytest3 October2026 only",
+          "layer": "L1",
+          "trigger_or_user_action": "Place an authored POI on an existing region",
+          "inputs_and_units": {
+            "poi_id": "test-sawmill",
+            "location": "selected riverbank",
+            "description": "Original synthetic description",
+            "source_ref": "Dungeons PDFp7"
+          },
+          "product_operation": "Store point type, place description and source locator without replacing accepted regional terrain.",
+          "expected_output": "One placedPOI retainsidentity and editeddescription.",
+          "constraints_and_exceptions": [
+            "Manual authored preparation is not automatic regional generation or permission to publish book text.",
+            "Source's map already provides an alternative; no unsatisfied adoption demand inferred.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Accepted region with river and test-sawmill record.",
+              "when": "Revise millnote,save/reopen.",
+              "expected": "River andPOIpositionunchanged; descriptionupdated."
+            }
+          ],
+          "source_vs_product_interpretation": "Source facts paraphrased; persistence/identity and test fixtures are product acceptance interpretations, not existing implementation proof.",
+          "canonical_rule_refs": [
+            "content.place_description",
+            "map.routes_and_barriers"
+          ],
+          "unresolved_parameters": [
+            "Runtime evidence unknown; no score or approved implementation asserted."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "reuse_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-007",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "CROWS-PT3-05",
@@ -275,7 +535,51 @@
       ],
       "unresolved_parameters": [
         "Runtime evidence unknown; no score or approved implementation asserted."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-030",
+        "source_artifact": "agent-work/research/market/CROWS-packet-2026-11-15.json",
+        "source_pointer": "/operational_requirements/4",
+        "source_blob_sha": "16194771e35c8007ff7c69bf1234f2a8ba358d27",
+        "original_layer": "L2",
+        "original_source_rule_ref": "Rules PDFp26 ScoutForPlaces",
+        "original_normative_kind": "playtest_rule_or_preparation_guidance",
+        "disposition": "integration_L3",
+        "reason": "Для Scout переиспользована закрытая граница CROWS-R26-SCOUT: только подтверждённый внешний результат раскрывает существующие места; собственный resolver не разработан.",
+        "product_boundary": "Подтверждённый внешний результат для ведения карты",
+        "user_action": "Resolve the safe scouting action in a traveled hex",
+        "map_object_or_state": {
+          "known": [],
+          "contents": [
+            "poi-A",
+            "dungeon-B",
+            "village-C"
+          ],
+          "scout_task": "Scout for Places"
+        },
+        "checkable_result": "A/B/C become known to the party.",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "reuse_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-R26-SCOUT",
+        "integration_boundary": {
+          "input": "Подтверждённый внешний результат Scout для текущего гекса с существующимиpoi-A/dungeon-B/village-C",
+          "output": "Список подлежащих раскрытию существующих мест; обновить known, не создавать новые места",
+          "case": {
+            "given": "Внешне подтверждено раскрытие A/B/C; все3уже существуют.",
+            "when": "Принять результат при ведении карты.",
+            "expected": "A/B/C известны; координаты/содержимое прежние."
+          },
+          "service_verified": false,
+          "implementation_authorized": false,
+          "formula_or_character_engine_inside_map": false
+        },
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "CROWS-PT3-06",
@@ -324,7 +628,41 @@
       ],
       "unresolved_parameters": [
         "Runtime evidence unknown; no score or approved implementation asserted."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-031",
+        "source_artifact": "agent-work/research/market/CROWS-packet-2026-11-15.json",
+        "source_pointer": "/operational_requirements/5",
+        "source_blob_sha": "16194771e35c8007ff7c69bf1234f2a8ba358d27",
+        "original_layer": "L2",
+        "original_source_rule_ref": "Rules PDFp27 Lost",
+        "original_normative_kind": "playtest_rule_or_preparation_guidance",
+        "disposition": "defer_L2",
+        "reason": "Фактический/намеренный маршрут заблудившейся партии относится к ведению L2, не к географии; CROWS-R27-LOST.",
+        "product_boundary": "Ведение гекскроула",
+        "user_action": "Move a lost party out of its current hex",
+        "map_object_or_state": {
+          "die": "d6",
+          "directions": [
+            "N",
+            "NE",
+            "SE",
+            "S",
+            "SW",
+            "NW"
+          ]
+        },
+        "checkable_result": "Direction follows clockwise order fromnorth; actualpath concealed as needed.",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "reuse_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-R27-LOST",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "CROWS-PT3-07",
@@ -379,7 +717,41 @@
       ],
       "unresolved_parameters": [
         "Runtime evidence unknown; no score or approved implementation asserted."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-032",
+        "source_artifact": "agent-work/research/market/CROWS-packet-2026-11-15.json",
+        "source_pointer": "/operational_requirements/6",
+        "source_blob_sha": "16194771e35c8007ff7c69bf1234f2a8ba358d27",
+        "original_layer": "L2",
+        "original_source_rule_ref": "Rules PDFp24 TravelPace/RiversAndRoads;PDFp29 POIs",
+        "original_normative_kind": "playtest_rule_or_preparation_guidance",
+        "disposition": "defer_L2",
+        "reason": "Дневная дистанция с дорогой/течением относится к ведению L2; CROWS-R24-PACE/SPEED. Проходимость не выводится из такого расчёта.",
+        "product_boundary": "Ведение гекскроула",
+        "user_action": "Resolve distance for one travel day",
+        "map_object_or_state": {
+          "pace_hexes": {
+            "slow": 1,
+            "normal": 2,
+            "fast": 3
+          },
+          "source_hex_miles": 5,
+          "road_all_day_bonus_hexes": 1,
+          "unbridged_crossing_or_upstream_penalty_hexes": 1,
+          "downstream_bonus_hexes": 1
+        },
+        "checkable_result": "Nominal distance and reason for each modifier recorded.",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "reuse_audit_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-R24-PACE",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     }
   ],
   "canonical_reuse": {
@@ -465,5 +837,74 @@
       "confirmed_cause": "Extra closingparenthesis inJS; correctedbefore anyoperationexecuted",
       "needs_owner_action": false
     }
-  ]
+  ],
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-026",
+      "SUP-SCOPE-027",
+      "SUP-SCOPE-028",
+      "SUP-SCOPE-029",
+      "SUP-SCOPE-030",
+      "SUP-SCOPE-031",
+      "SUP-SCOPE-032"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-026",
+        "source_pointer": "/operational_requirements/0",
+        "disposition": "keep_L1",
+        "reason": "Источник5across сохраняется, но владелец уже выбрал совместимый базовый режим5–6миль. Старый пакет не требует отдельной5-мильной сетки."
+      },
+      {
+        "id": "SUP-SCOPE-027",
+        "source_pointer": "/operational_requirements/1",
+        "disposition": "keep_L1",
+        "reason": "Habitat выбранного гекса прямо задаёт местность, не меняя соседей; переиспользуется CROWS scope review."
+      },
+      {
+        "id": "SUP-SCOPE-028",
+        "source_pointer": "/operational_requirements/2",
+        "disposition": "keep_L1",
+        "reason": "Одна домашняя деревня и простой список услуг допустимы; уровень1/улучшения/отношения персонажей не превращаются в управляющие подсистемы."
+      },
+      {
+        "id": "SUP-SCOPE-029",
+        "source_pointer": "/operational_requirements/3",
+        "disposition": "keep_L1",
+        "reason": "Лесопилка в принятом месте у реки - конкретное наполнение/привязка POI; не произвольная заметка и не бой внутри места."
+      },
+      {
+        "id": "SUP-SCOPE-030",
+        "source_pointer": "/operational_requirements/4",
+        "disposition": "integration_L3",
+        "reason": "Для Scout переиспользована закрытая граница CROWS-R26-SCOUT: только подтверждённый внешний результат раскрывает существующие места; собственный resolver не разработан."
+      },
+      {
+        "id": "SUP-SCOPE-031",
+        "source_pointer": "/operational_requirements/5",
+        "disposition": "defer_L2",
+        "reason": "Фактический/намеренный маршрут заблудившейся партии относится к ведению L2, не к географии; CROWS-R27-LOST."
+      },
+      {
+        "id": "SUP-SCOPE-032",
+        "source_pointer": "/operational_requirements/6",
+        "disposition": "defer_L2",
+        "reason": "Дневная дистанция с дорогой/течением относится к ведению L2; CROWS-R24-PACE/SPEED. Проходимость не выводится из такого расчёта."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-026",
+      "SUP-SCOPE-027",
+      "SUP-SCOPE-028",
+      "SUP-SCOPE-029"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

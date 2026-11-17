@@ -271,7 +271,73 @@
       "Runtime evidence at exact codeSHA",
       "Map-import scope separately gated",
       "No measured fraction using notes or creating new geography"
-    ]
+    ],
+    "scope_review": {
+      "id": "SUP-SCOPE-009",
+      "source_artifact": "agent-work/research/market/LandEem-screen-2026-11-14.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "70af9aba892b39eb2e3e2a93488f36f21336ca99",
+      "original_layer": "L1",
+      "original_source_rule_ref": "EEM-MAPS#Mucklands/Junktown visual artifact; candidate workflow",
+      "original_normative_kind": "research_workflow_candidate_not_game_rule",
+      "disposition": "keep_L1",
+      "reason": "Сохранить сведения о библиотеке как конкретной услуге существующего Junktown допустимо; «разыскать книгу» не становится сюжетной функцией.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Мастер указывает известную библиотеку как содержание конкретного Junktown.",
+      "map_object_or_state": {
+        "place": "Junktown",
+        "service": "Winifred's Library",
+        "local_key": "#13 - ссылка локального плана, не региональная координата"
+      },
+      "checkable_result": "Junktown содержит библиотеку с локальной ссылкой; новый регион, квест или NPC-движок не создаются.",
+      "current_operational_requirement": {
+        "source_rule_ref": "EEM-MAPS#Mucklands/Junktown visual artifact; candidate workflow",
+        "normative_kind": "research_workflow_candidate_not_game_rule",
+        "applicability": "Develop existing prepared map using own notes; not official requirement that all LandofEemGMs do this",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер указывает известную библиотеку как содержание конкретного Junktown.",
+        "inputs_and_units": {
+          "place": "Junktown",
+          "service": "Winifred's Library",
+          "local_key": "#13 - ссылка локального плана, не региональная координата"
+        },
+        "product_operation": "Сохранить простое сведение об услуге выбранного места, не меняя географию.",
+        "expected_output": "Junktown содержит библиотеку с локальной ссылкой; новый регион, квест или NPC-движок не создаются.",
+        "constraints_and_exceptions": [
+          "This is analyst acceptance interpretation, not measured adoption",
+          "Current full-map import/picture support is not verified; HX-BL-027 is deferred, not authorized by this research",
+          "No copiedsettingcontent, artwork, automatedintegration or publication authorized",
+          "Do not infer implementation from existence of HX-BL-024 task",
+          "Сюжетная часть прежнего текста про missing book не основание требований; новый импорт или автоматический linker не разрешены.",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Существующий Junktown и известная библиотека #13.",
+            "when": "Добавить сведения и сохранить/открыть карту.",
+            "expected": "Junktown и положение прежние; библиотека и #13 сохранены, квест поиска книги не создан."
+          }
+        ],
+        "source_vs_product_interpretation": "Publisher offers prepared geography/localmaps; annotations are a candidate HexCrawl use case, not an assertion that owners create new regions or that software supports map import. Текущий рабочий вариант сужен ревизией18.11.2026: источник/исторический fixture сохранён отдельно; ограничения продукта и примеры не являются новым текстом правил.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "existing_backlog_ref": "agent-work/backlog.json#HX-BL-024; HX-BL-027 dependency only",
+        "unresolved_parameters": [
+          "Runtime evidence at exact codeSHA",
+          "Map-import scope separately gated",
+          "No measured fraction using notes or creating new geography",
+          "Точное исполнение этого суженного профиля на актуальном SHA не проверялось."
+        ]
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+    }
   },
   "rules_registry_disposition": "No new canonicalrule or gamebinding; existing content.place_description used as researchcrossref. No coreprofile claimed from metadatapreview.",
   "product_backlog_changed": false,
@@ -362,5 +428,29 @@
       "owner_action": null,
       "recovered_by": "Same public URLs downloaded locally; both images visually inspected; SHA256 recorded."
     }
-  ]
+  ],
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-009"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-009",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Сохранить сведения о библиотеке как конкретной услуге существующего Junktown допустимо; «разыскать книгу» не становится сюжетной функцией."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-009"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

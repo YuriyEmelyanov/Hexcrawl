@@ -350,7 +350,183 @@
     ],
     "backlog_ref": "agent-work/backlog.json#HX-BL-051",
     "runtime_evidence": "unknown_for_corrected_HexCrawl; competitor retained transcript only",
-    "disposition": "No new task or foreign spec/backlog/registry change."
+    "disposition": "No new task or foreign spec/backlog/registry change.",
+    "scope_review": {
+      "id": "SUP-SCOPE-041",
+      "source_artifact": "agent-work/research/resources/HexAtlas-lifecycle-2026-11-11.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "89499f35fab4be95f06f1190fe56c142dfb1693f",
+      "original_layer": "L1",
+      "original_source_rule_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json#GRID-C09",
+      "original_normative_kind": "owner product contract; competitor test fixture",
+      "disposition": "keep_L1",
+      "reason": "Одна правка местности, отмена и переключение масштаба должны сохранять остальные объекты карты; общий жизненный цикл уже принят.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Change one terrain cell; Undo/Redo; switch level; save/reopen/import",
+      "map_object_or_state": {
+        "fixture_cells": [
+          {
+            "q": -1,
+            "r": 0,
+            "terrain": "forest"
+          },
+          {
+            "q": 1,
+            "r": -1,
+            "terrain": "plains"
+          },
+          {
+            "q": 0,
+            "r": 1,
+            "terrain": "coast"
+          }
+        ],
+        "POI": {
+          "id": "landmark_1",
+          "q": -1,
+          "r": 0,
+          "name": "P1 River Camp"
+        },
+        "road": {
+          "id": "path_1",
+          "points": [
+            [
+              -1,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              -1
+            ]
+          ]
+        },
+        "note": "Fixture note v1: preserve this text and anchor.",
+        "competitor_observed_miles": [
+          1.5,
+          6,
+          24
+        ],
+        "HexCrawl_target_miles": [
+          1,
+          6,
+          12,
+          24
+        ]
+      },
+      "checkable_result": "Edited cell(1,-1)mountain; Undo→plains;Redo→mountain. P1/road/note equal through view cycle/save/reopen/import. Explicit changed metadata allowlist, every added field reported.",
+      "current_operational_requirement": {
+        "id": "HEXATLAS-LIFECYCLE-OR-v1",
+        "source_rule_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json#GRID-C09",
+        "normative_kind": "owner product contract; competitor test fixture",
+        "applicability": "Existing HX-BL-051; read-only research annotation, not amended implementation scope",
+        "layer": "L1",
+        "trigger_or_user_action": "Change one terrain cell; Undo/Redo; switch level; save/reopen/import",
+        "inputs_and_units": {
+          "fixture_cells": [
+            {
+              "q": -1,
+              "r": 0,
+              "terrain": "forest"
+            },
+            {
+              "q": 1,
+              "r": -1,
+              "terrain": "plains"
+            },
+            {
+              "q": 0,
+              "r": 1,
+              "terrain": "coast"
+            }
+          ],
+          "POI": {
+            "id": "landmark_1",
+            "q": -1,
+            "r": 0,
+            "name": "P1 River Camp"
+          },
+          "road": {
+            "id": "path_1",
+            "points": [
+              [
+                -1,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                -1
+              ]
+            ]
+          },
+          "note": "Fixture note v1: preserve this text and anchor.",
+          "competitor_observed_miles": [
+            1.5,
+            6,
+            24
+          ],
+          "HexCrawl_target_miles": [
+            1,
+            6,
+            12,
+            24
+          ]
+        },
+        "product_operation": "Keep geography/content and view state distinct; explicitly diff exported arrays/IDs/anchors; apply exact reversible edit rather than relying on unchanged counts.",
+        "expected_output": "Edited cell(1,-1)mountain; Undo→plains;Redo→mountain. P1/road/note equal through view cycle/save/reopen/import. Explicit changed metadata allowlist, every added field reported.",
+        "constraints_and_exceptions": [
+          "Competitor1.5/6/24 is not exact1/6/12/24 equivalence",
+          "Counts and enabled Undo buttons do not prove content equality",
+          "No river feature confirmed in own fixture; water terrain is not a river",
+          "No score/support claim without retained evidence",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Three fixed cells,P1 and road with note committed; baseline serialized",
+            "when": "Paint(1,-1)mountain;Undo;Redo",
+            "expected": "Only target terrain changes and reverses; P1 IDs,coordinates,note and all road points equal"
+          },
+          {
+            "given": "Recorded edited payload and explicit view-metadata allowlist",
+            "when": "Switch levels;save/reload;import exported document",
+            "expected": "All content fields equal; differing view metadata listed; import success and exported result both retained"
+          }
+        ],
+        "source_vs_product_interpretation": "Owner supplies expected invariants. Competitor UI is evidence only; failure to complete tool workflow is not a product defect.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.nested_scales",
+          "agent-work/rules/common-rules.json#map.extend_preserving_content",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Exact four-scale competitor equivalence",
+          "Local-card/partial-cell-generation behavior",
+          "Payload results forLC03–07"
+        ],
+        "criterion_ids": [
+          "S06-C04",
+          "S05-C02"
+        ],
+        "backlog_ref": "agent-work/backlog.json#HX-BL-051",
+        "runtime_evidence": "unknown_for_corrected_HexCrawl; competitor retained transcript only",
+        "disposition": "No new task or foreign spec/backlog/registry change."
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+    }
   },
   "findings": {
     "new_knowledge": "At country6mi and largest offered region density37, measured Region is1.5mi; continent37 is24mi. This is a demonstrated nearby ladder, not exact four-scale1/6/12/24.",
@@ -373,5 +549,29 @@
     "partial_baseline_payload_source": "Printed exec output before reset, not reconstructed original export"
   },
   "rating_disposition": "No active1.4rating/input/method/cohort or score change; no audience conversion from competitor features",
-  "owner_decisions_needed": []
+  "owner_decisions_needed": [],
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-041"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-041",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Одна правка местности, отмена и переключение масштаба должны сохранять остальные объекты карты; общий жизненный цикл уже принят."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-041"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

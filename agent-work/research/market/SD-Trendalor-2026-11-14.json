@@ -374,7 +374,78 @@
         "Source measurement geometry",
         "Current runtime override compatibility"
       ],
-      "implementation_status": "unknown"
+      "implementation_status": "unknown",
+      "scope_review": {
+        "id": "SUP-SCOPE-036",
+        "source_artifact": "agent-work/research/market/SD-Trendalor-2026-11-14.json",
+        "source_pointer": "/operational_requirements/0",
+        "source_blob_sha": "8826443f6024d33b6384d47dd7497e1010ab9354",
+        "original_layer": "L1",
+        "original_source_rule_ref": "TR-GUIDE#PDF-p5-travel; existing SD-CORE-001-L1 contrast",
+        "original_normative_kind": "campaign_specific_parameter_not_core_rule",
+        "disposition": "keep_L1",
+        "reason": "Явный кампанийный12-мильный масштаб не переписывает исходный6-мильный профиль; работа с физическим масштабом карты, не скоростью.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "GM explicitly chooses a custom campaign scale",
+        "map_object_or_state": {
+          "core_length": 6,
+          "campaign_length": 12,
+          "unit": "mile",
+          "measurement_convention": "unspecified across; must not invent face/vertex convention"
+        },
+        "checkable_result": "Campaign document retains12mile; an independent core preset retains6mile; neither silently overwrites the other.",
+        "current_operational_requirement": {
+          "source_rule_ref": "TR-GUIDE#PDF-p5-travel; existing SD-CORE-001-L1 contrast",
+          "normative_kind": "campaign_specific_parameter_not_core_rule",
+          "applicability": "Trendalor house profile only, not defaultShadowdark",
+          "layer": "L1",
+          "trigger_or_user_action": "GM explicitly chooses a custom campaign scale",
+          "inputs_and_units": {
+            "core_length": 6,
+            "campaign_length": 12,
+            "unit": "mile",
+            "measurement_convention": "unspecified across; must not invent face/vertex convention"
+          },
+          "product_operation": "Represent campaign scale separately from core preset and retain explicit choice through save/reload; this is an acceptance candidate on existing scale task.",
+          "expected_output": "Campaign document retains12mile; an independent core preset retains6mile; neither silently overwrites the other.",
+          "constraints_and_exceptions": [
+            "Do not alter common Shadowdark profile from this campaign guide",
+            "Travel one day per hex is a separate L2 house parameter, not inferred universal speed",
+            "No claim current UI supports this; implementation unknown on d485d9a1ccc5a84c7417548196541a19a294c662",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Independent core6mile document and custom Trendalor12mile document, geometry unresolved",
+              "when": "Save/reload each selected profile",
+              "expected": "Core6 and campaign12 remain distinct; geometry remains unspecified unless separately chosen."
+            },
+            {
+              "given": "Custom12mile map",
+              "when": "Inspect physical scale",
+              "expected": "12miles retained; do not convert it to6 or label as official Shadowdark default."
+            }
+          ],
+          "source_vs_product_interpretation": "Source establishes campaign choice; separating saved override/preset is analyst product interpretation for future verification, not a new official rule.",
+          "canonical_rule_refs": [
+            "map.physical_hex_scale"
+          ],
+          "existing_binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-001-L1",
+          "backlog_ref": "agent-work/backlog.json#HX-BL-042 (dependency folded into051)",
+          "unresolved_parameters": [
+            "Source measurement geometry",
+            "Current runtime override compatibility"
+          ],
+          "implementation_status": "unknown"
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "source_rule_ref": "TR-BLOG#player-map and TR-GUIDE#PDF-p2",
@@ -427,7 +498,43 @@
         "Runtime support unknown; detection task044 does not itself prove player-output filtering"
       ],
       "backlog_disposition": "Research evidence only; no new game rule, binding or product task created. Do not treat HX-BL-044 detection or HX-BL-029 Obsidian export as implementing player projection.",
-      "implementation_status": "unknown"
+      "implementation_status": "unknown",
+      "scope_review": {
+        "id": "SUP-SCOPE-037",
+        "source_artifact": "agent-work/research/market/SD-Trendalor-2026-11-14.json",
+        "source_pointer": "/operational_requirements/1",
+        "source_blob_sha": "8826443f6024d33b6384d47dd7497e1010ab9354",
+        "original_layer": "L1",
+        "original_source_rule_ref": "TR-BLOG#player-map and TR-GUIDE#PDF-p2",
+        "original_normative_kind": "observed_GM_workflow_not_Shadowdark_core_rule",
+        "disposition": "defer_L2",
+        "reason": "Карта игроков и раскрытие найденных мест - L2 по решению владельца. Предыдущий ярлык L1 исправлен.",
+        "product_boundary": "Ведение гекскроула",
+        "user_action": "GM prepares or updates a player map after selected discoveries",
+        "map_object_or_state": {
+          "GM_key_entries": 15,
+          "initial_known_hexes": [
+            "F4",
+            "D4",
+            "G4",
+            "D2",
+            "C1",
+            "B6",
+            "D9"
+          ],
+          "reveal_example": "E7 Tyr",
+          "unit": "named keyed places, not people or explored area"
+        },
+        "checkable_result": "Initial legend lists7known coordinates and excludes8other GM-key coordinates; after explicitE7reveal it lists8 and Tyr appears. This is a research fixture, not a verified source update or launched feature.",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     }
   ],
   "rules_registry_disposition": "Reuse existing canonical concepts as research crossrefs only; no new rule_id, profile or binding. House rules are not Shadowdark core corrections.",
@@ -472,5 +579,36 @@
     "action": "Reassess LandofEem weak survey lead against primary published hex-map/region procedures and independent audience anchor; choose bounded source corpus before deciding candidate viability.",
     "trigger": "New primary rules/map resource available; compare against remaining high-rankL1gaps.",
     "no_active_pool_change": true
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-036",
+      "SUP-SCOPE-037"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-036",
+        "source_pointer": "/operational_requirements/0",
+        "disposition": "keep_L1",
+        "reason": "Явный кампанийный12-мильный масштаб не переписывает исходный6-мильный профиль; работа с физическим масштабом карты, не скоростью."
+      },
+      {
+        "id": "SUP-SCOPE-037",
+        "source_pointer": "/operational_requirements/1",
+        "disposition": "defer_L2",
+        "reason": "Карта игроков и раскрытие найденных мест - L2 по решению владельца. Предыдущий ярлык L1 исправлен."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-036"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
   }
 }

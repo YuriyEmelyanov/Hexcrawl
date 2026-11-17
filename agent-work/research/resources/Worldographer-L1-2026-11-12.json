@@ -317,7 +317,85 @@
         "status": "unknown",
         "sha": null
       },
-      "new_tasks": 0
+      "new_tasks": 0,
+      "scope_review": {
+        "id": "SUP-SCOPE-044",
+        "source_artifact": "agent-work/research/resources/Worldographer-L1-2026-11-12.json",
+        "source_pointer": "/operational_requirements/0",
+        "source_blob_sha": "a1cfa0ead25e5864f1dfc395bc1de067f33980b1",
+        "original_layer": "L1",
+        "original_source_rule_ref": "WOG-S01",
+        "original_normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+        "disposition": "keep_L1",
+        "reason": "Отличать физический размер от масштаба экрана - L1; документированные ratios3/6 и9/36тайлов не навязываются модели HexCrawl.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Мастер увеличивает изображение уже созданной карты, сохраняя её физический масштаб.",
+        "map_object_or_state": {
+          "physical_scale": "chosen existing map scale",
+          "screen_width_before": 40,
+          "screen_width_after": 80
+        },
+        "checkable_result": "Увеличилось изображение; физический масштаб, принятая местность и места прежние.",
+        "current_operational_requirement": {
+          "id": "WOG-L1-OR-LEVEL-v1",
+          "source_rule_ref": "WOG-S01",
+          "normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+          "applicability": "ExistingHX-BL-051researchannotation only;noapprovalforscopechange",
+          "layer": "L1",
+          "trigger_or_user_action": "Мастер увеличивает изображение уже созданной карты, сохраняя её физический масштаб.",
+          "inputs_and_units": {
+            "physical_scale": "chosen existing map scale",
+            "screen_width_before": 40,
+            "screen_width_after": 80
+          },
+          "product_operation": "Отделить экранный зум от физического размера гекса и от выбранного уровня карты.",
+          "expected_output": "Увеличилось изображение; физический масштаб, принятая местность и места прежние.",
+          "constraints_and_exceptions": [
+            "Documentation evidence only; no installed vendorbuildSHA or executed export comparison.",
+            "Ten pages are one Inkwell Ideas/Worldographer project,not ten independentusers.",
+            "No audience,marketshare,switchingintent or numerical competition effect measured.",
+            "Current manual mixesfour-level overview withthree-level control descriptions; Province synchronization remains unknown.",
+            "No proof of exact1/6/12/24 equivalent or automatic POI footprint.",
+            "9/36childtiles при ratios3/6 - документированный vendor-образец, не требование автоматически добавить такие уровни/числа HexCrawl.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Country6mi, рисунок шириной40px.",
+              "when": "Увеличить экранный зум до80px без переключения физического уровня.",
+              "expected": "Физические6mi прежние; принятая география не пересоздана."
+            }
+          ],
+          "source_vs_product_interpretation": "Documented behavior informs synthetic comparison fixture;expected outputs are not observed vendor or HexCrawl test passes. Текущий рабочий вариант сужен ревизией18.11.2026: источник/исторический fixture сохранён отдельно; ограничения продукта и примеры не являются новым текстом правил.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.nested_scales",
+            "agent-work/rules/common-rules.json#map.physical_hex_scale"
+          ],
+          "unresolved_parameters": [
+            "Exactvendorbuild/currentProvincebehavior",
+            "Runtimepayloadvalidation",
+            "CurrentHexCrawlimplementationnotreaudited",
+            "Точное исполнение этого суженного профиля на актуальном SHA не проверялось."
+          ],
+          "criterion_ids": [
+            "S06-C04",
+            "S02-C02"
+          ],
+          "existing_backlog_ref": "agent-work/backlog.json#HX-BL-051",
+          "runtime_evidence": {
+            "status": "unknown",
+            "sha": null
+          },
+          "new_tasks": 0
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "WOG-L1-OR-AREA-v1",
@@ -395,7 +473,128 @@
         "status": "unknown",
         "sha": null
       },
-      "new_tasks": 0
+      "new_tasks": 0,
+      "scope_review": {
+        "id": "SUP-SCOPE-045",
+        "source_artifact": "agent-work/research/resources/Worldographer-L1-2026-11-12.json",
+        "source_pointer": "/operational_requirements/1",
+        "source_blob_sha": "a1cfa0ead25e5864f1dfc395bc1de067f33980b1",
+        "original_layer": "L1",
+        "original_source_rule_ref": "WOG-S04",
+        "original_normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+        "disposition": "keep_L1",
+        "reason": "Географическая область из трёх смежных ячеек отличается от масштаба рисунка; соответствует принятому физическому охвату POI, не новой боевой зоне.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Resize art or draw geographical area",
+        "map_object_or_state": {
+          "tile_pixels": 40,
+          "art_percent": [
+            50,
+            200
+          ],
+          "polygon_cells": [
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              0
+            ],
+            [
+              2,
+              0
+            ]
+          ]
+        },
+        "checkable_result": "Art width20/80px does not change occupied area; explicit3cellarea has one external border.",
+        "current_operational_requirement": {
+          "id": "WOG-L1-OR-AREA-v1",
+          "source_rule_ref": "WOG-S04",
+          "normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+          "applicability": "ExistingHX-BL-051researchannotation only;noapprovalforscopechange",
+          "layer": "L1",
+          "trigger_or_user_action": "Resize art or draw geographical area",
+          "inputs_and_units": {
+            "tile_pixels": 40,
+            "art_percent": [
+              50,
+              200
+            ],
+            "polygon_cells": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                2,
+                0
+              ]
+            ]
+          },
+          "product_operation": "Keep artwork size separate from site extent; allow an explicit contiguous area annotation.",
+          "expected_output": "Art width20/80px does not change occupied area; explicit3cellarea has one external border.",
+          "constraints_and_exceptions": [
+            "Documentation evidence only; no installed vendorbuildSHA or executed export comparison.",
+            "Ten pages are one Inkwell Ideas/Worldographer project,not ten independentusers.",
+            "No audience,marketshare,switchingintent or numerical competition effect measured.",
+            "Current manual mixesfour-level overview withthree-level control descriptions; Province synchronization remains unknown.",
+            "No proof of exact1/6/12/24 equivalent or automatic POI footprint.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "40pxtile,50%feature",
+              "when": "Render art",
+              "expected": "20pxwidth;no mileage or occupied-cell count inferred",
+              "evidence_status": "document_derived_acceptance_not_executed"
+            },
+            {
+              "given": "40pxtile,200%feature",
+              "when": "Render art",
+              "expected": "80pxwidth;no automatic4cell area inferred",
+              "evidence_status": "document_derived_acceptance_not_executed"
+            },
+            {
+              "given": "Three edge-adjacent axialcells(0,0),(1,0),(2,0),nohole",
+              "when": "Trace their union as syntheticownerfixture",
+              "expected": "3occupiedcells,14external edges;Worldographer automaticPOIassignment not implied",
+              "evidence_status": "document_derived_acceptance_not_executed"
+            }
+          ],
+          "source_vs_product_interpretation": "Documented behavior informs synthetic comparison fixture;expected outputs are not observed vendor or HexCrawl test passes.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.physical_hex_scale",
+            "agent-work/rules/common-rules.json#map.display_detail"
+          ],
+          "unresolved_parameters": [
+            "Exactvendorbuild/currentProvincebehavior",
+            "Runtimepayloadvalidation",
+            "CurrentHexCrawlimplementationnotreaudited"
+          ],
+          "criterion_ids": [
+            "S06-C04",
+            "S02-C02"
+          ],
+          "existing_backlog_ref": "agent-work/backlog.json#HX-BL-051",
+          "runtime_evidence": {
+            "status": "unknown",
+            "sha": null
+          },
+          "new_tasks": 0
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "WOG-L1-OR-SYNC-v1",
@@ -460,7 +659,37 @@
         "status": "unknown",
         "sha": null
       },
-      "new_tasks": 0
+      "new_tasks": 0,
+      "scope_review": {
+        "id": "SUP-SCOPE-046",
+        "source_artifact": "agent-work/research/resources/Worldographer-L1-2026-11-12.json",
+        "source_pointer": "/operational_requirements/2",
+        "source_blob_sha": "a1cfa0ead25e5864f1dfc395bc1de067f33980b1",
+        "original_layer": "L1",
+        "original_source_rule_ref": "WOG-S02",
+        "original_normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+        "disposition": "needs_owner_decision",
+        "reason": "Независимые координаты по уровням и переключаемая синхронизация могут противоречить общей географии. До решения не включать этот vendor-профиль как требование.",
+        "product_boundary": "Вне принятого профиля до отдельного решения",
+        "user_action": "Edit existing content with cross-level update enabled or disabled",
+        "map_object_or_state": {
+          "existing_levels": [
+            "World",
+            "Continent",
+            "Kingdom"
+          ],
+          "province_status": "unknown"
+        },
+        "checkable_result": "Expected views depend on update/visibility choice;Province not inherited by analogy.",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "WOG-L1-OR-BLANK-v1",
@@ -525,7 +754,103 @@
         "status": "unknown",
         "sha": null
       },
-      "new_tasks": 0
+      "new_tasks": 0,
+      "scope_review": {
+        "id": "SUP-SCOPE-047",
+        "source_artifact": "agent-work/research/resources/Worldographer-L1-2026-11-12.json",
+        "source_pointer": "/operational_requirements/3",
+        "source_blob_sha": "a1cfa0ead25e5864f1dfc395bc1de067f33980b1",
+        "original_layer": "L1",
+        "original_source_rule_ref": "WOG-S02",
+        "original_normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+        "disposition": "keep_L1",
+        "reason": "Заполнение допустимых пустот рядом с принятой местностью - наполнение карты; не перерисовывать занятые ячейки и не выдумывать seed.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Complete unspecified terrain near existing terrain",
+        "map_object_or_state": {
+          "row": [
+            "Forest",
+            "blank",
+            "blank",
+            "Mountain"
+          ],
+          "randomness": "controlled or explicitlyunknown"
+        },
+        "checkable_result": "Assigned cells and fixed prior cells reported separately;ties have allowed set,not guessedseed.",
+        "current_operational_requirement": {
+          "id": "WOG-L1-OR-BLANK-v1",
+          "source_rule_ref": "WOG-S02",
+          "normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+          "applicability": "ExistingHX-BL-051researchannotation only;noapprovalforscopechange",
+          "layer": "L1",
+          "trigger_or_user_action": "Complete unspecified terrain near existing terrain",
+          "inputs_and_units": {
+            "row": [
+              "Forest",
+              "blank",
+              "blank",
+              "Mountain"
+            ],
+            "randomness": "controlled or explicitlyunknown"
+          },
+          "product_operation": "Fill eligible blanks without treating repaint as generation.",
+          "expected_output": "Assigned cells and fixed prior cells reported separately;ties have allowed set,not guessedseed.",
+          "constraints_and_exceptions": [
+            "Documentation evidence only; no installed vendorbuildSHA or executed export comparison.",
+            "Ten pages are one Inkwell Ideas/Worldographer project,not ten independentusers.",
+            "No audience,marketshare,switchingintent or numerical competition effect measured.",
+            "Current manual mixesfour-level overview withthree-level control descriptions; Province synchronization remains unknown.",
+            "No proof of exact1/6/12/24 equivalent or automatic POI footprint.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Four-celllineF,blank,blank,M;unique nearestneighbors;randomnessOFF",
+              "when": "Applydocumentedblankcompletion",
+              "expected": "ExpectedF,F,M,M;oldF/M unchanged;testnotexecuted",
+              "evidence_status": "document_derived_acceptance_not_executed"
+            },
+            {
+              "given": "Five-celllineF,blank,blank,blank,M",
+              "when": "Resolvecentraltie",
+              "expected": "CenterallowedF orM;do notdeclareone deterministic result",
+              "evidence_status": "document_derived_acceptance_not_executed"
+            },
+            {
+              "given": "Allcells already specified",
+              "when": "Requestblankcompletion",
+              "expected": "Noeligibleblankchanges expected;payload verification required",
+              "evidence_status": "document_derived_acceptance_not_executed"
+            }
+          ],
+          "source_vs_product_interpretation": "Documented behavior informs synthetic comparison fixture;expected outputs are not observed vendor or HexCrawl test passes.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.extend_preserving_content"
+          ],
+          "unresolved_parameters": [
+            "Exactvendorbuild/currentProvincebehavior",
+            "Runtimepayloadvalidation",
+            "CurrentHexCrawlimplementationnotreaudited"
+          ],
+          "criterion_ids": [
+            "S06-C04",
+            "S02-C02"
+          ],
+          "existing_backlog_ref": "agent-work/backlog.json#HX-BL-051",
+          "runtime_evidence": {
+            "status": "unknown",
+            "sha": null
+          },
+          "new_tasks": 0
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "WOG-L1-OR-EXTEND-v1",
@@ -596,7 +921,88 @@
         "status": "unknown",
         "sha": null
       },
-      "new_tasks": 0
+      "new_tasks": 0,
+      "scope_review": {
+        "id": "SUP-SCOPE-048",
+        "source_artifact": "agent-work/research/resources/Worldographer-L1-2026-11-12.json",
+        "source_pointer": "/operational_requirements/4",
+        "source_blob_sha": "a1cfa0ead25e5864f1dfc395bc1de067f33980b1",
+        "original_layer": "L1",
+        "original_source_rule_ref": "WOG-S02",
+        "original_normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+        "disposition": "keep_L1",
+        "reason": "Расширение пустой территории относится к L1; импорт и разрушительная замена перекрытия другой картой остаются непринятым отдельным компонентом.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Мастер добавляет пустую территорию справа от уже подготовленной карты.",
+        "map_object_or_state": {
+          "existing_logical_extent": [
+            20,
+            30
+          ],
+          "additional_columns": 20
+        },
+        "checkable_result": "Логический охват40×30;20новых столбцов пусты, прежняя левая часть не изменена.",
+        "current_operational_requirement": {
+          "id": "WOG-L1-OR-EXTEND-v1",
+          "source_rule_ref": "WOG-S02",
+          "normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+          "applicability": "ExistingHX-BL-051researchannotation only;noapprovalforscopechange",
+          "layer": "L1",
+          "trigger_or_user_action": "Мастер добавляет пустую территорию справа от уже подготовленной карты.",
+          "inputs_and_units": {
+            "existing_logical_extent": [
+              20,
+              30
+            ],
+            "additional_columns": 20
+          },
+          "product_operation": "Добавить доступное пространство для дальнейшего наполнения, сохранив принятую географию.",
+          "expected_output": "Логический охват40×30;20новых столбцов пусты, прежняя левая часть не изменена.",
+          "constraints_and_exceptions": [
+            "Documentation evidence only; no installed vendorbuildSHA or executed export comparison.",
+            "Ten pages are one Inkwell Ideas/Worldographer project,not ten independentusers.",
+            "No audience,marketshare,switchingintent or numerical competition effect measured.",
+            "Current manual mixesfour-level overview withthree-level control descriptions; Province synchronization remains unknown.",
+            "No proof of exact1/6/12/24 equivalent or automatic POI footprint.",
+            "Этот размер - синтетическая приёмка, не обязательный интерфейс canvas. Вставка чужой карты/формат и замена перекрытия до отдельного решения не входят.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Принятая область20×30.",
+              "when": "Добавить справа20столбцов пространства.",
+              "expected": "Охват40×30; прежние20×30содержат те же объекты, новые клетки пусты."
+            }
+          ],
+          "source_vs_product_interpretation": "Documented behavior informs synthetic comparison fixture;expected outputs are not observed vendor or HexCrawl test passes. Текущий рабочий вариант сужен ревизией18.11.2026: источник/исторический fixture сохранён отдельно; ограничения продукта и примеры не являются новым текстом правил.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.extend_preserving_content"
+          ],
+          "unresolved_parameters": [
+            "Exactvendorbuild/currentProvincebehavior",
+            "Runtimepayloadvalidation",
+            "CurrentHexCrawlimplementationnotreaudited",
+            "Точное исполнение этого суженного профиля на актуальном SHA не проверялось."
+          ],
+          "criterion_ids": [
+            "S06-C04",
+            "S02-C02"
+          ],
+          "existing_backlog_ref": "agent-work/backlog.json#HX-BL-051",
+          "runtime_evidence": {
+            "status": "unknown",
+            "sha": null
+          },
+          "new_tasks": 0
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "WOG-L1-OR-SAVE-v1",
@@ -651,7 +1057,85 @@
         "status": "unknown",
         "sha": null
       },
-      "new_tasks": 0
+      "new_tasks": 0,
+      "scope_review": {
+        "id": "SUP-SCOPE-049",
+        "source_artifact": "agent-work/research/resources/Worldographer-L1-2026-11-12.json",
+        "source_pointer": "/operational_requirements/5",
+        "source_blob_sha": "a1cfa0ead25e5864f1dfc395bc1de067f33980b1",
+        "original_layer": "L1",
+        "original_source_rule_ref": "WOG-S01",
+        "original_normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+        "disposition": "keep_L1",
+        "reason": "Сохранение редактируемой карты с местами/рекой/заметками и масштабами относится к L1; независимые географии четырёх vendor-уровней не предписываются.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Мастер сохраняет и повторно открывает принятую многоуровневую карту.",
+        "map_object_or_state": {
+          "map": "one accepted territory",
+          "fixtures": "placeP, noteN, riverR, accepted terrain",
+          "levels": "existing owner-selected scales"
+        },
+        "checkable_result": "P/N/R и принятая местность сохранены; разные представления относятся к той же территории.",
+        "current_operational_requirement": {
+          "id": "WOG-L1-OR-SAVE-v1",
+          "source_rule_ref": "WOG-S01",
+          "normative_kind": "Competitor documentation translated into research comparison;notgame rule/spec",
+          "applicability": "ExistingHX-BL-051researchannotation only;noapprovalforscopechange",
+          "layer": "L1",
+          "trigger_or_user_action": "Мастер сохраняет и повторно открывает принятую многоуровневую карту.",
+          "inputs_and_units": {
+            "map": "one accepted territory",
+            "fixtures": "placeP, noteN, riverR, accepted terrain",
+            "levels": "existing owner-selected scales"
+          },
+          "product_operation": "Восстановить редактируемую карту и её принятые объекты; отличать открытие документа от новой генерации по seed.",
+          "expected_output": "P/N/R и принятая местность сохранены; разные представления относятся к той же территории.",
+          "constraints_and_exceptions": [
+            "Documentation evidence only; no installed vendorbuildSHA or executed export comparison.",
+            "Ten pages are one Inkwell Ideas/Worldographer project,not ten independentusers.",
+            "No audience,marketshare,switchingintent or numerical competition effect measured.",
+            "Current manual mixesfour-level overview withthree-level control descriptions; Province synchronization remains unknown.",
+            "No proof of exact1/6/12/24 equivalent or automatic POI footprint.",
+            "Четыре vendor-уровня с независимой географией не обязательны; политику раздельных позиций/расхождения уровней не вводить.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Одна карта сP/N/R и принятыми масштабами.",
+              "when": "Сохранить и открыть документ.",
+              "expected": "Те жеP/N/R и география; новыйseed не пересоздаёт карту."
+            }
+          ],
+          "source_vs_product_interpretation": "Documented behavior informs synthetic comparison fixture;expected outputs are not observed vendor or HexCrawl test passes. Текущий рабочий вариант сужен ревизией18.11.2026: источник/исторический fixture сохранён отдельно; ограничения продукта и примеры не являются новым текстом правил.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.nested_scales",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Exactvendorbuild/currentProvincebehavior",
+            "Runtimepayloadvalidation",
+            "CurrentHexCrawlimplementationnotreaudited",
+            "Точное исполнение этого суженного профиля на актуальном SHA не проверялось."
+          ],
+          "criterion_ids": [
+            "S06-C04",
+            "S02-C02"
+          ],
+          "existing_backlog_ref": "agent-work/backlog.json#HX-BL-051",
+          "runtime_evidence": {
+            "status": "unknown",
+            "sha": null
+          },
+          "new_tasks": 0
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     }
   ],
   "decision": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified.",
@@ -689,5 +1173,68 @@
     "PhysicalPOIautocoverage",
     "Atomic safeappend/regenerationandrollback"
   ],
-  "owner_decisions_needed": []
+  "owner_decisions_needed": [],
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-044",
+      "SUP-SCOPE-045",
+      "SUP-SCOPE-046",
+      "SUP-SCOPE-047",
+      "SUP-SCOPE-048",
+      "SUP-SCOPE-049"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-044",
+        "source_pointer": "/operational_requirements/0",
+        "disposition": "keep_L1",
+        "reason": "Отличать физический размер от масштаба экрана - L1; документированные ratios3/6 и9/36тайлов не навязываются модели HexCrawl."
+      },
+      {
+        "id": "SUP-SCOPE-045",
+        "source_pointer": "/operational_requirements/1",
+        "disposition": "keep_L1",
+        "reason": "Географическая область из трёх смежных ячеек отличается от масштаба рисунка; соответствует принятому физическому охвату POI, не новой боевой зоне."
+      },
+      {
+        "id": "SUP-SCOPE-046",
+        "source_pointer": "/operational_requirements/2",
+        "disposition": "needs_owner_decision",
+        "reason": "Независимые координаты по уровням и переключаемая синхронизация могут противоречить общей географии. До решения не включать этот vendor-профиль как требование."
+      },
+      {
+        "id": "SUP-SCOPE-047",
+        "source_pointer": "/operational_requirements/3",
+        "disposition": "keep_L1",
+        "reason": "Заполнение допустимых пустот рядом с принятой местностью - наполнение карты; не перерисовывать занятые ячейки и не выдумывать seed."
+      },
+      {
+        "id": "SUP-SCOPE-048",
+        "source_pointer": "/operational_requirements/4",
+        "disposition": "keep_L1",
+        "reason": "Расширение пустой территории относится к L1; импорт и разрушительная замена перекрытия другой картой остаются непринятым отдельным компонентом."
+      },
+      {
+        "id": "SUP-SCOPE-049",
+        "source_pointer": "/operational_requirements/5",
+        "disposition": "keep_L1",
+        "reason": "Сохранение редактируемой карты с местами/рекой/заметками и масштабами относится к L1; независимые географии четырёх vendor-уровней не предписываются."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-044",
+      "SUP-SCOPE-045",
+      "SUP-SCOPE-047",
+      "SUP-SCOPE-048",
+      "SUP-SCOPE-049"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

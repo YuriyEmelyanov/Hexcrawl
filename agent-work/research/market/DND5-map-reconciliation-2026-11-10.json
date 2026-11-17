@@ -132,6 +132,95 @@
     "runtime_evidence": {
       "status": "unknown",
       "sha": null
+    },
+    "scope_review": {
+      "id": "SUP-SCOPE-005",
+      "source_artifact": "agent-work/research/market/DND5-map-reconciliation-2026-11-10.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "76638102670236e5853cd07d380b54df4c5aff59",
+      "original_layer": "L1",
+      "original_source_rule_ref": "obs-DND5-SCALES-MAP-20261110 (observed GM practice, not a rule)",
+      "original_normative_kind": "non-normative problem report; optional product interpretation",
+      "disposition": "keep_L1",
+      "reason": "Переносится уже подготовленная башня с именем и содержимым; конкретное действие редактирования карты, без повторной генерации.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Correct a previously prepared named tower from a chosen western hex to a chosen southern hex.",
+      "map_object_or_state": {
+        "object": "one prepared Tower with an existing name and note",
+        "source": "selected western hex",
+        "destination": "selected empty admissible southern hex",
+        "content": "retain current tower description and note; no random regeneration"
+      },
+      "checkable_result": "One Tower at the selected southern hex with the same name and note; the former western placement no longer appears.",
+      "current_operational_requirement": {
+        "source_rule_ref": "obs-DND5-SCALES-MAP-20261110 (observed GM practice, not a rule)",
+        "normative_kind": "non-normative problem report; optional product interpretation",
+        "applicability": "L1 correction and continued maintenance of a prepared regional map",
+        "layer": "L1",
+        "trigger_or_user_action": "Correct a previously prepared named tower from a chosen western hex to a chosen southern hex.",
+        "inputs_and_units": {
+          "object": "one prepared Tower with an existing name and note",
+          "source": "selected western hex",
+          "destination": "selected empty admissible southern hex",
+          "content": "retain current tower description and note; no random regeneration"
+        },
+        "product_operation": "Relocate existing prepared content consistently and retain the accepted correction when saving/reopening or exporting that map.",
+        "expected_output": "One Tower at the selected southern hex with the same name and note; the former western placement no longer appears.",
+        "constraints_and_exceptions": [
+          "Example is a synthetic acceptance fixture motivated by an actual location disagreement; not a mandatory DND5 rule.",
+          "No promise to detect or synchronize changes in an external paper map or bullet journal.",
+          "Do not infer coordinates/offset convention from a6-mile hex statement; those parameters remain source-specific unknowns.",
+          "Future underground layer is not a new deficiency or authorized extension of active051.",
+          "Current HexCrawl support for this exact move/persistence profile is unknown; presence of a canonical rule is not implementation evidence.",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "A named Tower with note N on selected western hex; chosen southern hex is empty and admissible",
+            "when": "Accept moving the Tower to the southern hex",
+            "expected": "Exactly one Tower appears on the southern hex; name and note N remain; no Tower remains on the former hex"
+          },
+          {
+            "given": "The map after the accepted Tower correction",
+            "when": "Save and reopen the same editable document without regeneration",
+            "expected": "Tower remains at the southern hex with the same name/note; other map content and placements remain unchanged"
+          },
+          {
+            "given": "The same corrected map with the Tower selected",
+            "when": "Export the current map view",
+            "expected": "Export places Tower in the accepted southern position rather than the original western position; exporting does not move content"
+          }
+        ],
+        "source_vs_product_interpretation": "The reports establish a reconciliation problem. The common relocation/persistence outcomes are research examples for the existing editing area; no command/API/specification, auto-import promise or new source-game binding is created.",
+        "canonical_rule_refs": [
+          "content.relocate"
+        ],
+        "criterion_ids": [
+          "S03-C01",
+          "S03-C04",
+          "S04-C04"
+        ],
+        "existing_task_refs": [
+          "HX-BL-013"
+        ],
+        "unresolved_parameters": [
+          "Current exact-SHA HexCrawl relocation/persistence evidence",
+          "Whether author wanted one authoritative digital map rather than paper reconciliation",
+          "Present-day unmet need and tool-switching intent",
+          "Paper/digital hex offset definitions"
+        ],
+        "runtime_evidence": {
+          "status": "unknown",
+          "sha": null
+        }
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
     }
   },
   "facts_vs_inferences": {
@@ -157,5 +246,29 @@
   "method": "Existing gm_materials type; no new metric/weight or method experiment",
   "product_disposition": "Reuse content.relocate and existing013 research lead; no missing function proven, no new task, no change to051/027 scope or queue.",
   "active_rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-005"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-005",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Переносится уже подготовленная башня с именем и содержимым; конкретное действие редактирования карты, без повторной генерации."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-005"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

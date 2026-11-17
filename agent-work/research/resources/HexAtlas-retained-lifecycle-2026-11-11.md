@@ -1,3 +1,19 @@
+# Актуальные границы продукта — ревизия 18 ноября 2026
+
+[Все решения и текущие операции](../requirements/supplementary-scope-review-2026-11-18.md). Текущая поддержка точного профиля не перепроверялась; исторические наблюдения внешнего инструмента и прежние product evidence не приравниваются к актуальной поддержке HexCrawl. Старые task refs и статус proposed не разрешают восстановить или расширить очередь.
+
+**SUP-SCOPE-043 — Для карты (L1)**. Повторный retained lifecycle - evidence той же операции редактирования/истории, не дополнительная функция или новая игра.
+
+Текущее действие: Paint one cell, Undo/Redo, change grid settings and traverse levels, reload browser, export each stage; import only through working documented path.
+
+Результат: Exact terrain change and reversal; complete P1 fields including note/anchor and road fields/points retained across6exports. Every top-level difference enumerated; reload differs only inexportMetadata. No import pass until retained re-export.
+
+---
+
+## Исторический материал
+
+Ниже исходный отчёт. Его исходные правила, observations, числа, ручные примеры и evidence сохранены. Рабочий объём определяется решением выше; при расхождении старый слой или product proposal не действует.
+
 # HexAtlas: правка, Undo/Redo, уровни и восстановление
 
 Запуск `2026-11-11T1633-HexAtlas-retained-lifecycle`. На собственной карте подтверждён цикл редактирования и сохранения: **шесть исходных JSON сохранены в GitHub**, затем сверены по полному содержимому. Это продолжение незавершённой проверки.

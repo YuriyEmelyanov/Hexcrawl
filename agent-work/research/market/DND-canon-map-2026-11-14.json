@@ -275,7 +275,71 @@
       ],
       "unresolved_parameters": [
         "Current HexCrawl runtime not executed; no support or score claimed."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-003",
+        "source_artifact": "agent-work/research/market/DND-canon-map-2026-11-14.json",
+        "source_pointer": "/operational_requirements/0",
+        "source_blob_sha": "8d88321e889b4abec003a2f720cd93b49e7b6773",
+        "original_layer": "L1",
+        "original_source_rule_ref": "https://my-realms.blogspot.com/2015/01/starter-set-sandbox-17-hexcrawling.html#coordinate-key",
+        "original_normative_kind": "observed_GM_preparation_workflow_not_normative_core_rule",
+        "disposition": "keep_L1",
+        "reason": "Редактируется подготовленное конкретное место при сохранении его координат и состояния карты; не генератор сюжета или посещений.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Мастер уточняет содержание уже отмеченной башни на своей карте.",
+        "map_object_or_state": {
+          "place": "site-A at source reference04.12",
+          "current_content": "сторожевой пост",
+          "chosen_content": "обсерватория; доступ через пристань",
+          "visit_status": "unknown"
+        },
+        "checkable_result": "Одна башня остаётся по прежней ссылке; обновлено только её содержание, посещение не произошло автоматически.",
+        "current_operational_requirement": {
+          "id": "TWILIT-OP-01",
+          "source_rule_ref": "https://my-realms.blogspot.com/2015/01/starter-set-sandbox-17-hexcrawling.html#coordinate-key",
+          "normative_kind": "observed_GM_preparation_workflow_not_normative_core_rule",
+          "applicability": "Optional generic L1 preparation interpretation for a published-world campaign; not a new DND5 core rule/profile",
+          "layer": "L1",
+          "trigger_or_user_action": "Мастер уточняет содержание уже отмеченной башни на своей карте.",
+          "inputs_and_units": {
+            "place": "site-A at source reference04.12",
+            "current_content": "сторожевой пост",
+            "chosen_content": "обсерватория; доступ через пристань",
+            "visit_status": "unknown"
+          },
+          "product_operation": "Изменить сведения о конкретном месте, сохранив его положение и прежнее состояние посещения.",
+          "expected_output": "Одна башня остаётся по прежней ссылке; обновлено только её содержание, посещение не произошло автоматически.",
+          "constraints_and_exceptions": [
+            "Map key entries are preparation, not mandatory encounters or automatic generation.",
+            "Manual note does not implement adventure rules.",
+            "Правило приключения, сочинение сюжета и перевод исходной координаты в геометрию HexCrawl не исполнены.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "site-A/04.12, сторожевой пост; посещение неизвестно.",
+              "when": "Заменить на обсерваторию и сохранить/открыть.",
+              "expected": "Та же site-A/04.12 с обсерваторией; статус посещения неизвестен."
+            }
+          ],
+          "source_vs_product_interpretation": "Source supports the preparation need; persistence, stable IDs and tests below are analyst product criteria, not assertions about Hexographer or current HexCrawl implementation. Текущий рабочий вариант сужен ревизией18.11.2026: источник/исторический fixture сохранён отдельно; ограничения продукта и примеры не являются новым текстом правил.",
+          "canonical_rule_refs": [
+            "content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Current HexCrawl runtime not executed; no support or score claimed.",
+            "Точное исполнение этого суженного профиля на актуальном SHA не проверялось."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     {
       "id": "TWILIT-OP-02",
@@ -314,7 +378,34 @@
       ],
       "unresolved_parameters": [
         "Current HexCrawl runtime not executed; no support or score claimed."
-      ]
+      ],
+      "scope_review": {
+        "id": "SUP-SCOPE-004",
+        "source_artifact": "agent-work/research/market/DND-canon-map-2026-11-14.json",
+        "source_pointer": "/operational_requirements/1",
+        "source_blob_sha": "8d88321e889b4abec003a2f720cd93b49e7b6773",
+        "original_layer": "L1",
+        "original_source_rule_ref": "https://my-realms.blogspot.com/2015/01/5e-twilit-land-rise-of-zhentarim-0.html#Hexcrawl",
+        "original_normative_kind": "observed_GM_preparation_workflow_not_normative_core_rule",
+        "disposition": "needs_owner_decision",
+        "reason": "Отдельный профиль0.5мили явно вне принятых размеров. Не добавлять режим/конверсию без решения; исходное наблюдение сохранить.",
+        "product_boundary": "Вне принятого профиля до отдельного решения",
+        "user_action": "Set physical scale when authoring a campaign map.",
+        "map_object_or_state": {
+          "hex_length_miles": 0.5,
+          "test_hex_steps": 2,
+          "geometric_convention": "explicitly selected in synthetic test; unknown in source"
+        },
+        "checkable_result": "Physical metadata remains0.5 miles; two adjacent centre steps under the declared centre-step convention represent1 mile.",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     }
   ],
   "canonical_reuse": {
@@ -385,6 +476,36 @@
     "completion_condition": "Complete disposition of the accessible official thematic corpus with source locators and operational requirements, or evidence-backed exclusion; no extrapolation from2014 matrix or community remixes.",
     "reason": "2026 discovery surfaced a current-edition regional remix lead; official source applicability is a new edition gap, separate from completed historical campaign case.",
     "priority_reassessment_required": true
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-003",
+      "SUP-SCOPE-004"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-003",
+        "source_pointer": "/operational_requirements/0",
+        "disposition": "keep_L1",
+        "reason": "Редактируется подготовленное конкретное место при сохранении его координат и состояния карты; не генератор сюжета или посещений."
+      },
+      {
+        "id": "SUP-SCOPE-004",
+        "source_pointer": "/operational_requirements/1",
+        "disposition": "needs_owner_decision",
+        "reason": "Отдельный профиль0.5мили явно вне принятых размеров. Не добавлять режим/конверсию без решения; исходное наблюдение сохранить."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-003"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
   }
 }
-

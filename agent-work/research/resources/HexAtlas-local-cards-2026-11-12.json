@@ -186,7 +186,125 @@
       "status": "unknown_not_reaudited",
       "sha": null
     },
-    "new_backlog_tasks": 0
+    "new_backlog_tasks": 0,
+    "scope_review": {
+      "id": "SUP-SCOPE-042",
+      "source_artifact": "agent-work/research/resources/HexAtlas-local-cards-2026-11-12.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "f7338df753246b5055196f70bf80f18ad8f53817",
+      "original_layer": "L1",
+      "original_source_rule_ref": "agent-work/feedback.json#HX-FB-021",
+      "original_normative_kind": "Owner product requirement and competitor comparison fixture; not game rule",
+      "disposition": "keep_L1",
+      "reason": "Карточка выбранного одномильного/крупного участка относится к принятому масштабу отображения; родительская карточка не заменяет локальные сведения.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Select a local cell or larger mixed cell while viewing the same map",
+      "map_object_or_state": {
+        "country_miles": 6,
+        "coarse_test_cells": {
+          "forest": 5,
+          "mountain": 1,
+          "water_coast": 1
+        },
+        "POI": {
+          "name": "P1 River Camp",
+          "q": -1,
+          "r": 0
+        },
+        "fine_probe": "Default Regiondensity7 during fine screenshot; later changed37 for final exported fixture",
+        "coarse_density": 7,
+        "road_count": 0
+      },
+      "checkable_result": "Fine Desert child→Desert local card; mixed7cellterritory→forest,mountain,water plusP1once; parent or center card is a different behavior.",
+      "current_operational_requirement": {
+        "id": "HX-ATLAS-LOCAL-CARD-OR-v1",
+        "source_rule_ref": "agent-work/feedback.json#HX-FB-021",
+        "normative_kind": "Owner product requirement and competitor comparison fixture; not game rule",
+        "applicability": "ExistingHX-BL-051 only; currentONE-MILE1priority and foreignclaim preserved",
+        "layer": "L1",
+        "trigger_or_user_action": "Select a local cell or larger mixed cell while viewing the same map",
+        "inputs_and_units": {
+          "country_miles": 6,
+          "coarse_test_cells": {
+            "forest": 5,
+            "mountain": 1,
+            "water_coast": 1
+          },
+          "POI": {
+            "name": "P1 River Camp",
+            "q": -1,
+            "r": 0
+          },
+          "fine_probe": "Default Regiondensity7 during fine screenshot; later changed37 for final exported fixture",
+          "coarse_density": 7,
+          "road_count": 0
+        },
+        "product_operation": "Show facts belonging to selected physical cell; distinguish local cell from parent; summarize categories and contained objects when selected territory spans multiple cells.",
+        "expected_output": "Fine Desert child→Desert local card; mixed7cellterritory→forest,mountain,water plusP1once; parent or center card is a different behavior.",
+        "constraints_and_exceptions": [
+          "Competitor Region scale not asserted equal1mile.",
+          "No claim of feature absence across all configurations or future versions.",
+          "No notes/name persistence test passed; attempted text edits absent in raw.",
+          "No roads or rivers included in this run.",
+          "Finalraw has no fine override after country repaint/settings; fine-stage claim supported by screenshot, not laterraw.",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Country forest(-1,0),mountain(1,-1),water(0,1),P1 atforest",
+            "when": "Select mountain atCountry",
+            "expected": "Selected country(1,-1),Mountain; no forest/water/POI neighbor summary",
+            "actual": "Hex(1,-1)·Mountain; ordinary hex form",
+            "verdict": "observed_country_card",
+            "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/dom-evidence.json#country_mountain"
+          },
+          {
+            "given": "Region child ofmountain(1,-1),paintedDesert in fine editing mode; screenshot shows yellow finecell within Mountain parent",
+            "when": "Select painted child",
+            "expected": "For owner-style local card: selected finecell Desert; local contents only",
+            "actual": "Hex(1,-1)·Mountain; parent outline and parent form remain. Desert visible in child.",
+            "verdict": "not_equivalent_to_owner_local_card_in_tested_flow",
+            "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/region-card.svg"
+          },
+          {
+            "given": "7 countrycells axialradius1 around(0,0):5forest,1mountain,1coast;P1(-1,0);continentdensity7",
+            "when": "Continent mode,Select central group",
+            "expected": "For owner-style aggregate: all3terrain categories and exactly1P1 in mixed-territory summary",
+            "actual": "Hex(0,0)·Forest; ordinary form, no mixed composition orPOI summary in observed card",
+            "verdict": "aggregate_not_demonstrated_in_tested_flow",
+            "evidence_ref": "agent-work/research/raw/2026-11-12T0634-HexAtlas-local-cards/continent-card.svg"
+          }
+        ],
+        "source_vs_product_interpretation": "Expected outputs express owner request. Actual outcomes describe competitor, not defects relative to competitor promises or current HexCrawl support. Research handoff is not amended spec.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.nested_scales",
+          "agent-work/rules/common-rules.json#map.display_detail",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "criterion_ids": [
+          "S06-C04",
+          "S02-C02"
+        ],
+        "unresolved_parameters": [
+          "Exact1mile competitor equivalence",
+          "Other competitor selection workflows",
+          "PhysicalPOIextent,partial-cellgeneration,import"
+        ],
+        "existing_task_ref": "agent-work/backlog.json#HX-BL-051",
+        "implementation_evidence": {
+          "status": "unknown_not_reaudited",
+          "sha": null
+        },
+        "new_backlog_tasks": 0
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+    }
   },
   "acceptance_results": [
     {
@@ -326,5 +444,29 @@
     "action": "Continue same benchmark with physicalPOIextent and preservation when filling partially occupied territory, using explicit expected old/new geography. Import remains blocked separately; do not repeat hung chooser without tool fix or different documented working route.",
     "completion_condition": "Bounded retained workflow comparison proving actual old/new footprint/content, or external-blocker checkpoint."
   },
-  "owner_decisions_needed": []
+  "owner_decisions_needed": [],
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-042"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-042",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Карточка выбранного одномильного/крупного участка относится к принятому масштабу отображения; родительская карточка не заменяет локальные сведения."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-042"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

@@ -152,7 +152,88 @@
       "status": "unknown",
       "sha": null
     },
-    "binding_decision": "No new game binding: no primary game rule read; no new canonical registry."
+    "binding_decision": "No new game binding: no primary game rule read; no new canonical registry.",
+    "scope_review": {
+      "id": "SUP-SCOPE-013",
+      "source_artifact": "agent-work/research/market/PIRATE-map-practice-2026-11-09.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "71a7c4c29a93281e70c6688e3ee8917f335457ab",
+      "original_layer": "L1",
+      "original_source_rule_ref": "obs-PIRATE-SHADOW-relocation-20261109 (practice report, not a game rule)",
+      "original_normative_kind": "non-normative observed practice; product interpretation only",
+      "disposition": "keep_L1",
+      "reason": "Перенос уже подготовленного места с сохранением имени/описания - общее редактирование карты; новая игра не требует отдельной механики.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Move an existing prepared site to a chosen different hex",
+      "map_object_or_state": {
+        "site_id": "stable site identifier A",
+        "source_hex": "q/r0/0",
+        "target_hex": "q/r1/0",
+        "payload": "name and description; no new random content"
+      },
+      "checkable_result": "Site A at1/0 with unchanged name/description; original placement at0/0 removed; other sites unchanged.",
+      "current_operational_requirement": {
+        "source_rule_ref": "obs-PIRATE-SHADOW-relocation-20261109 (practice report, not a game rule)",
+        "normative_kind": "non-normative observed practice; product interpretation only",
+        "applicability": "Optional preparation of an existing island; no claim that Pirate Borg requires it",
+        "layer": "L1",
+        "trigger_or_user_action": "Move an existing prepared site to a chosen different hex",
+        "inputs_and_units": {
+          "site_id": "stable site identifier A",
+          "source_hex": "q/r0/0",
+          "target_hex": "q/r1/0",
+          "payload": "name and description; no new random content"
+        },
+        "product_operation": "Reuse the common content.relocate concept: change the selected site location while retaining its prepared content. Check existing editing behavior before proposing implementation.",
+        "expected_output": "Site A at1/0 with unchanged name/description; original placement at0/0 removed; other sites unchanged.",
+        "constraints_and_exceptions": [
+          "Source uses mental relocation, so this is a product example, not a literal rules mandate.",
+          "Water/land restrictions and occupied-target handling are not supplied by the source; unknown and must not be invented.",
+          "JSON persistence below is a product acceptance hypothesis, not an observed author workflow.",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Site A at0/0 named Wreck with description D; target1/0 empty and admissible",
+            "when": "Move A to1/0",
+            "expected": "Exactly one A at1/0; no A at0/0; name Wreck and description D retained"
+          },
+          {
+            "given": "The accepted document after the move above",
+            "when": "Save and reload the same document without regeneration",
+            "expected": "A remains at1/0 with the same identity/name/description; no duplicate A at0/0"
+          }
+        ],
+        "source_vs_product_interpretation": "Observed report supplies the preparation goal only. Relocation/persistence examples are generator-language interpretation, neither new source rule nor approved specification.",
+        "canonical_rule_refs": [
+          "content.relocate"
+        ],
+        "unresolved_parameters": [
+          "Source-specific placement legality",
+          "Current exact-SHA support in HexCrawl",
+          "Whether author wants software persistence or a different tool"
+        ],
+        "criterion_ids": [
+          "S03-C01",
+          "S03-C04"
+        ],
+        "existing_task_refs": [
+          "HX-BL-013"
+        ],
+        "runtime_evidence": {
+          "status": "unknown",
+          "sha": null
+        },
+        "binding_decision": "No new game binding: no primary game rule read; no new canonical registry."
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+    }
   },
   "sources_vs_conclusions": {
     "sources": "Two full first-person reports and one indexed recheck; itch landing page separately screened, no PDF read.",
@@ -197,5 +278,29 @@
   "active_rating_changed": false,
   "score_changed": false,
   "method_experiment": "Not required: existing gm_materials collection type; no new metric or numerical weight",
-  "product_disposition": "Existing HX-BL-013/content.relocate only as a reuse lead; no new task, no scope/status/queue change. No missing function asserted."
+  "product_disposition": "Existing HX-BL-013/content.relocate only as a reuse lead; no new task, no scope/status/queue change. No missing function asserted.",
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-013"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-013",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Перенос уже подготовленного места с сохранением имени/описания - общее редактирование карты; новая игра не требует отдельной механики."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-013"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
+  }
 }

@@ -254,7 +254,139 @@
       },
       "task_id": "HX-BL-043",
       "handoff_kind": "research_annotation_only",
-      "binding_disposition": "No new game-rule binding: an observed GM editing workflow is not a normative Knave rule. Existing canonical description operation reused as design context."
+      "binding_disposition": "No new game-rule binding: an observed GM editing workflow is not a normative Knave rule. Existing canonical description operation reused as design context.",
+      "scope_review": {
+        "id": "SUP-SCOPE-033",
+        "source_artifact": "agent-work/research/market/KNAVE2-map-practice-2026-11-14.json",
+        "source_pointer": "/development/operational_requirement",
+        "source_blob_sha": "0dc561ec66eef20027e49be71873a421ac6929e9",
+        "original_layer": "L1",
+        "original_source_rule_ref": "agent-work/research/market/KNAVE2-map-practice-2026-11-14.json#KN2-HIS-F1",
+        "original_normative_kind": "observed_GM_workflow_product_interpretation_not_a_Knave_rule",
+        "disposition": "keep_L1",
+        "reason": "Изменяется описание конкретной башни с ручной ссылкой на причал при неизменной географии; это принятое редактирование места, не отдельный Knave-редактор.",
+        "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+        "user_action": "Мастер выбирает существующее местоA и заменяет его описание, сохраняя карту.",
+        "map_object_or_state": {
+          "fixture": "Synthetic fixture; not source hex coordinates or copied adventure text",
+          "places": [
+            {
+              "id": "A",
+              "coordinates": [
+                0,
+                0
+              ],
+              "name": "Башня",
+              "description": "Старая стража; см. B"
+            },
+            {
+              "id": "B",
+              "coordinates": [
+                1,
+                0
+              ],
+              "name": "Причал",
+              "description": "Паром"
+            }
+          ],
+          "new_description": "Обсерватория; ключ у лодочника; см. B",
+          "unchanged_data": [
+            "terrain",
+            "roads",
+            "rivers",
+            "coordinates",
+            "placeB"
+          ],
+          "units": "coordinates are fixture cell indices, descriptions plain text; no game-specific distances"
+        },
+        "checkable_result": "A.description равен новому тексту с ручной ссылкой «см. B»; A/B и география сохранены. Структурированная связь объектов не требуется.",
+        "current_operational_requirement": {
+          "id": "KN2-HIS-WF1",
+          "source_rule_ref": "agent-work/research/market/KNAVE2-map-practice-2026-11-14.json#KN2-HIS-F1",
+          "normative_kind": "observed_GM_workflow_product_interpretation_not_a_Knave_rule",
+          "applicability": "L1 manual place editing on an existing map; no procedural/regional table algorithm inferred",
+          "layer": "L1",
+          "trigger_or_user_action": "Мастер выбирает существующее местоA и заменяет его описание, сохраняя карту.",
+          "inputs_and_units": {
+            "fixture": "Synthetic fixture; not source hex coordinates or copied adventure text",
+            "places": [
+              {
+                "id": "A",
+                "coordinates": [
+                  0,
+                  0
+                ],
+                "name": "Башня",
+                "description": "Старая стража; см. B"
+              },
+              {
+                "id": "B",
+                "coordinates": [
+                  1,
+                  0
+                ],
+                "name": "Причал",
+                "description": "Паром"
+              }
+            ],
+            "new_description": "Обсерватория; ключ у лодочника; см. B",
+            "unchanged_data": [
+              "terrain",
+              "roads",
+              "rivers",
+              "coordinates",
+              "placeB"
+            ],
+            "units": "coordinates are fixture cell indices, descriptions plain text; no game-specific distances"
+          },
+          "product_operation": "Изменить только текстA; сохранить и повторно открыть карту. Использовать общий редактор/сохранение и существующую передачуHX-BL-043; отдельный редакторKnave не предлагать.",
+          "expected_output": "A.description равен новому тексту с ручной ссылкой «см. B»; A/B и география сохранены. Структурированная связь объектов не требуется.",
+          "constraints_and_exceptions": [
+            "No copyrighted module content distribution, image tracing/import or automatic map remake authorized.",
+            "No L2 travel-engine switch requested; mixed procedures are a future integration boundary.",
+            "No generation or new book rule/profile inferred from this case.",
+            "Acceptance below is a review target, not a claim that this exact fixture was executed.",
+            "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+          ],
+          "acceptance_cases": [
+            {
+              "given": "Synthetic fixtureA/B and terrain/routes as above; «см. B» is plain text.",
+              "when": "ReplaceA.description; save and reopen.",
+              "expected": "A.description is exactly «Обсерватория; ключ у лодочника; см. B»; bothcoordinates,names,terrain,roads,rivers and placeB stay identical."
+            },
+            {
+              "given": "Saved editedA/B fixture.",
+              "when": "EditA.description again, then cancel without saving.",
+              "expected": "SavedA.description remains «Обсерватория; ключ у лодочника; см. B»; B and geography remain unchanged."
+            }
+          ],
+          "source_vs_product_interpretation": "Source reports customization and mixing modules. Isolated edit/save/cancel fixture is researcher interpretation, not printedKnave instruction or measured demand. Prior audit documents manual hex-note workaround; no structured identity/link or this exact fixture is established.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "existing_binding_context_refs": [],
+          "unresolved_parameters": [
+            "Source does not disclose editor, editable file format, revision history or save/reload workflow; do not invent them."
+          ],
+          "implementation_evidence": {
+            "status": "unknown_for_this_fixture",
+            "sha": null,
+            "prior_independent_audit_ref": "agent-work/research/audits/KNAVE2-L1-runtime-2026-11-10.json",
+            "prior_audit_not_rerun": true,
+            "prior_evidence_limit": "Prior audit describes manual coordinate-owned hex notes only as a workaround, not structured linked POI support or this fixture. This run performs no new code/runtime check."
+          },
+          "task_id": "HX-BL-043",
+          "handoff_kind": "research_annotation_only",
+          "binding_disposition": "No new game-rule binding: an observed GM editing workflow is not a normative Knave rule. Existing canonical description operation reused as design context."
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "development_authorized": false,
+        "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+        "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+      }
     },
     "existing_task_annotation": "agent-work/backlog.json#HX-BL-043.research_source_notes",
     "L2_boundary": "Area-specific travel procedures may differ in one campaign; preserve as future integration note only. Not a new L1 defect or implicit product start."
@@ -317,5 +449,29 @@
     "goal": "Check the hand-drawn Sunday-campaign map and NSRRPG crosspost as one author/project; distinguish declared2ePDF/draft timing, authored geography vs module remix, and actual campaign practice.",
     "completion_condition": "Read full post and accessible map corpus plus author clarifications; dedup crosspost; decide source applicability and scenario evidence without prevalence conversion.",
     "selection_gate": "Candidate only; reassess current owner priorities, source access and claims next run. Do not inherit rank for another edition."
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-033"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-033",
+        "source_pointer": "/development/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Изменяется описание конкретной башни с ручной ссылкой на причал при неизменной географии; это принятое редактирование места, не отдельный Knave-редактор."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-033"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
   }
 }

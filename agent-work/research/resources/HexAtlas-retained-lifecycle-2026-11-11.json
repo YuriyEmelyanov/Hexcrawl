@@ -462,7 +462,273 @@
       "HexCrawl_status": "not_reaudited_in_competitor_run",
       "HexCrawl_sha": null
     },
-    "disposition": "ExistingHX-BL-051 read-only annotation; no duplicate task,foreign spec,acceptance or queue change."
+    "disposition": "ExistingHX-BL-051 read-only annotation; no duplicate task,foreign spec,acceptance or queue change.",
+    "scope_review": {
+      "id": "SUP-SCOPE-043",
+      "source_artifact": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11.json",
+      "source_pointer": "/operational_requirement",
+      "source_blob_sha": "08480fe81e324d477be3934adecb48a0a8eed2db",
+      "original_layer": "L1",
+      "original_source_rule_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json#GRID-C09",
+      "original_normative_kind": "owner product contract; competitor test fixture",
+      "disposition": "keep_L1",
+      "reason": "Повторный retained lifecycle - evidence той же операции редактирования/истории, не дополнительная функция или новая игра.",
+      "product_boundary": "Создание/наполнение/редактирование/сохранение региональной карты",
+      "user_action": "Paint one cell, Undo/Redo, change grid settings and traverse levels, reload browser, export each stage; import only through working documented path.",
+      "map_object_or_state": {
+        "fixture_cells": [
+          {
+            "q": -1,
+            "r": 0,
+            "terrain": "forest"
+          },
+          {
+            "q": 1,
+            "r": -1,
+            "terrain": "plains"
+          },
+          {
+            "q": 0,
+            "r": 1,
+            "terrain": "coast"
+          }
+        ],
+        "POI": {
+          "id": "landmark_1",
+          "q": -1,
+          "r": 0,
+          "name": "P1 River Camp"
+        },
+        "road": {
+          "id": "path_1",
+          "points": [
+            [
+              -1,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              1,
+              -1
+            ]
+          ]
+        },
+        "note": "Fixture note v1: preserve this text and anchor.",
+        "competitor_observed_miles": [
+          1.5,
+          6,
+          24
+        ],
+        "HexCrawl_target_miles": [
+          1,
+          6,
+          12,
+          24
+        ],
+        "map_instance_id": "5f2f80f0-7957-4b83-b3a0-3f5467653049",
+        "export_version": "1.4",
+        "terrain_edit": {
+          "q": 1,
+          "r": -1,
+          "before": "plains",
+          "after": "mountain"
+        },
+        "detail_continent_density_before": 7,
+        "detail_continent_density_after": 37
+      },
+      "checkable_result": "Exact terrain change and reversal; complete P1 fields including note/anchor and road fields/points retained across6exports. Every top-level difference enumerated; reload differs only inexportMetadata. No import pass until retained re-export.",
+      "current_operational_requirement": {
+        "id": "HEXATLAS-RETAINED-LIFECYCLE-OR-v1",
+        "source_rule_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json#GRID-C09",
+        "normative_kind": "owner product contract; competitor test fixture",
+        "applicability": "Existing HX-BL-051; read-only research annotation, not amended implementation scope",
+        "layer": "L1",
+        "trigger_or_user_action": "Paint one cell, Undo/Redo, change grid settings and traverse levels, reload browser, export each stage; import only through working documented path.",
+        "inputs_and_units": {
+          "fixture_cells": [
+            {
+              "q": -1,
+              "r": 0,
+              "terrain": "forest"
+            },
+            {
+              "q": 1,
+              "r": -1,
+              "terrain": "plains"
+            },
+            {
+              "q": 0,
+              "r": 1,
+              "terrain": "coast"
+            }
+          ],
+          "POI": {
+            "id": "landmark_1",
+            "q": -1,
+            "r": 0,
+            "name": "P1 River Camp"
+          },
+          "road": {
+            "id": "path_1",
+            "points": [
+              [
+                -1,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                -1
+              ]
+            ]
+          },
+          "note": "Fixture note v1: preserve this text and anchor.",
+          "competitor_observed_miles": [
+            1.5,
+            6,
+            24
+          ],
+          "HexCrawl_target_miles": [
+            1,
+            6,
+            12,
+            24
+          ],
+          "map_instance_id": "5f2f80f0-7957-4b83-b3a0-3f5467653049",
+          "export_version": "1.4",
+          "terrain_edit": {
+            "q": 1,
+            "r": -1,
+            "before": "plains",
+            "after": "mountain"
+          },
+          "detail_continent_density_before": 7,
+          "detail_continent_density_after": 37
+        },
+        "product_operation": "Keep geography/content and view state distinct; explicitly diff exported arrays/IDs/anchors; apply exact reversible edit rather than relying on unchanged counts.",
+        "expected_output": "Exact terrain change and reversal; complete P1 fields including note/anchor and road fields/points retained across6exports. Every top-level difference enumerated; reload differs only inexportMetadata. No import pass until retained re-export.",
+        "constraints_and_exceptions": [
+          "Competitor1.5/6/24 is not exact1/6/12/24 equivalence",
+          "Counts and enabled Undo buttons do not prove content equality",
+          "No river feature confirmed in own fixture; water terrain is not a river",
+          "No score/support claim without retained evidence",
+          "Это применимость к принятым границам карты, не разрешение новой разработки/публикации. Точный профиль реализации не проверен; произвольная заметка и общийrule_id не доказательство исполнения."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Baseline three cells forest(-1,0),plains(1,-1),coast(0,1);P1 at(-1,0) with exact fixture note;path_1[-1,0]→[0,0]→[1,-1], offsets0",
+            "when": "Paint(1,-1)mountain and export",
+            "expected": "Only hexes[1].terrain changes; complete landmarks/paths equal; changed top-level keys exactlyhexes,saveRevision,exportMetadata",
+            "actual_status": "passed",
+            "evidence_ref": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11-checks.json#comparisons/0"
+          },
+          {
+            "given": "Mountain export retained",
+            "when": "Undo and export",
+            "expected": "All hexes/landmarks/paths equal baseline; baseline→undo changed keys exactlysaveRevision,exportMetadata",
+            "actual_status": "passed",
+            "evidence_ref": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11-checks.json#comparisons/1"
+          },
+          {
+            "given": "Undo export retained",
+            "when": "Redo and export",
+            "expected": "All hexes/landmarks/paths equal mountain; mountain→redo changed keys exactlysaveRevision,exportMetadata",
+            "actual_status": "passed",
+            "evidence_ref": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11-checks.json#comparisons/2"
+          },
+          {
+            "given": "Redo payload;country6mi;detail/continent density7",
+            "when": "Set densities37, traverse observed Region/Country/Continent, return country, export",
+            "expected": "All hexes/landmarks/paths andIDs equal; densities37; UI1.5/6/24mi recorded separately. planetView/viewport/revision/export changes listed; no1/6/12/24 equivalence inferred",
+            "actual_status": "passed_bounded_content_retention",
+            "evidence_ref": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11-checks.json#comparisons/3"
+          },
+          {
+            "given": "Levels export revision35 retained",
+            "when": "Reload browser and export restored map",
+            "expected": "All parsed fields exceptexportMetadata identical; no added/removed key; mountain/P1/road exact",
+            "actual_status": "passed",
+            "evidence_ref": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11-checks.json#comparisons/4"
+          },
+          {
+            "given": "Retained reload.json and separate import destination",
+            "when": "Import via working documented route;observe success;export and retain imported.json",
+            "expected": "Three cells including mountain,P1 exact note/anchor,path_1 all points; compare all fields, report identity/format changes",
+            "actual_status": "blocked_external_tool_no_pass",
+            "evidence_ref": "agent-work/research/resources/HexAtlas-retained-lifecycle-2026-11-11.json#import_diagnostic"
+          }
+        ],
+        "source_vs_product_interpretation": "Owner contract supplies target invariants; fixture supplies known outputs; competitor exports supply actual evidence. No game-rule extraction,newbinding or HexCrawl support/score implied.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.nested_scales",
+          "agent-work/rules/common-rules.json#map.extend_preserving_content",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Successful import/re-export",
+          "Exact competitor1/6/12/24 ladder",
+          "Local-card/mixed aggregates",
+          "Physical POI footprint",
+          "Partial-cell generation",
+          "RNG preservation"
+        ],
+        "criterion_ids": [
+          "S06-C04",
+          "S02-C02"
+        ],
+        "backlog_ref": "agent-work/backlog.json#HX-BL-051",
+        "runtime_evidence": {
+          "competitor_export_refs": [
+            {
+              "path": "agent-work/research/raw/2026-11-11T1633-HexAtlas-retained-lifecycle/baseline.json",
+              "blob_sha": "6a820a9a6f017ee6f9f542d3ebddf9031b575ab3",
+              "commit_sha": "0efc4fa898d50c1f9ed73ffa7bbe67f1f49860ea"
+            },
+            {
+              "path": "agent-work/research/raw/2026-11-11T1633-HexAtlas-retained-lifecycle/mountain.json",
+              "blob_sha": "931e0a0977d6880d1402d249061562c736455f18",
+              "commit_sha": "a0d2be5898f2cf6bb7430c49ceabdc9a0359ff17"
+            },
+            {
+              "path": "agent-work/research/raw/2026-11-11T1633-HexAtlas-retained-lifecycle/undo.json",
+              "blob_sha": "618db1c439abd1821060bcc3c9c921ea1cb6e747",
+              "commit_sha": "3908b6d9c69c7b823f2807f77d7977095ea87456"
+            },
+            {
+              "path": "agent-work/research/raw/2026-11-11T1633-HexAtlas-retained-lifecycle/redo.json",
+              "blob_sha": "34ce14a4b48ab401874868bf5f82011d2a7b6eee",
+              "commit_sha": "7ac67b259126af0aec4bc3ea271d4a5795d299da"
+            },
+            {
+              "path": "agent-work/research/raw/2026-11-11T1633-HexAtlas-retained-lifecycle/levels.json",
+              "blob_sha": "8f05d1b3eb6d7166fdb2a5115fe9f39fc64d633c",
+              "commit_sha": "20534cb3d50aaa001ee21a3e93fdaf4599438f81"
+            },
+            {
+              "path": "agent-work/research/raw/2026-11-11T1633-HexAtlas-retained-lifecycle/reload.json",
+              "blob_sha": "1289de15623bd3e03150053587a2853ca1735117",
+              "commit_sha": "02f676b16faba0da98507cc8ff59cae360b623b5"
+            }
+          ],
+          "HexCrawl_status": "not_reaudited_in_competitor_run",
+          "HexCrawl_sha": null
+        },
+        "disposition": "ExistingHX-BL-051 read-only annotation; no duplicate task,foreign spec,acceptance or queue change."
+      },
+      "current_L1_eligible": true,
+      "implementation_status": "unverified",
+      "implementation_retested": false,
+      "development_authorized": false,
+      "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+      "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json"
+    }
   },
   "findings": {
     "confirmed": [
@@ -562,5 +828,29 @@
     "action": "Continue same benchmark with local-card membership and mixed-cell summaries on retained3cell/P1/road fixture; specify known expected membership before probing. Re-evaluate against fresh owner priority/claims. Import remains separately blocked; do not repeat hung chooser path.",
     "completion_condition": "Complete bounded local-card/aggregate comparison with explicit expected cell/object membership and retained evidence, or checkpoint only for actual external blocker.",
     "blocked_import_continuation": "After tool fix or a different working documented upload route: import retained reload.json into separate document; observe success, re-export, immediately commit imported.json; compare every field and enumerate all differences. No purchase/API."
+  },
+  "current_scope_review": {
+    "run_id": "2026-11-18-supplementary-scope-audit-1794958523461",
+    "audit_ref": "agent-work/research/requirements/supplementary-scope-audit-2026-11-18.json",
+    "status": "completed_existing_working_scope_reconciliation",
+    "row_ids": [
+      "SUP-SCOPE-043"
+    ],
+    "dispositions": [
+      {
+        "id": "SUP-SCOPE-043",
+        "source_pointer": "/operational_requirement",
+        "disposition": "keep_L1",
+        "reason": "Повторный retained lifecycle - evidence той же операции редактирования/истории, не дополнительная функция или новая игра."
+      }
+    ],
+    "current_L1_requirement_ids": [
+      "SUP-SCOPE-043"
+    ],
+    "current_operations": "Only nested operational_requirement.scope_review.current_operational_requirement for keep_L1; original operations/history retained as source material.",
+    "original_facts_statuses_evidence_preserved": true,
+    "current_runtime_retested": false,
+    "historical_backlog_refs_not_authorization": true,
+    "new_development_authorized": false
   }
 }

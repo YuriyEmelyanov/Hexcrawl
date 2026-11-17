@@ -1,3 +1,19 @@
+# Актуальные границы продукта — ревизия 18 ноября 2026
+
+[Все решения и текущие операции](../requirements/supplementary-scope-review-2026-11-18.md). Текущая поддержка точного профиля не перепроверялась; исторические наблюдения внешнего инструмента и прежние product evidence не приравниваются к актуальной поддержке HexCrawl. Старые task refs и статус proposed не разрешают восстановить или расширить очередь.
+
+**SUP-SCOPE-040 — Для карты (L1)**. Физический охват места и заполнение свободной территории относятся к принятым масштабам/POI; размер значка не равен размеру места.
+
+Текущее действие: Set site dimensions or fill empty parts of an already mapped territory
+
+Результат: A0.2mi site andA2mi site can have different1mi-cell coverage regardless of icon zoom. An empty-area extension appends known newcells while old7cells remain byte-equivalent by content.
+
+---
+
+## Исторический материал
+
+Ниже исходный отчёт. Его исходные правила, observations, числа, ручные примеры и evidence сохранены. Рабочий объём определяется решением выше; при расхождении старый слой или product proposal не действует.
+
 # HexAtlas: размер рисунка и заполнение территории
 
 Проверка 12 ноября 2026 закрывает выбранные операции оставшегося benchmark. Сохранены пять исходных экспортов, DOM и фактические снимки. Сравнение всех полей перечислено в JSON.
