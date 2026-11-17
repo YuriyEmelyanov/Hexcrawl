@@ -18,6 +18,8 @@ import {migrateSeas} from '../src/seaIdentity.ts';
 import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
 import {createDetailGrid,detailCellCenter,worldToDetailCell} from '../src/detailGrid.ts';
 import {fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
+import {prepareAutomaticSceneCandidate} from '../src/automaticOneMileScene.ts';
+import {prepareRefinementWater,refinementWaterContains} from '../src/geometryRefinementWater.ts';
 
 // Test governance: two logical cases for the new accepted boundary. Existing
 // river/mouth/road suites own routing algorithms; saveSafety owns old formats
@@ -38,11 +40,47 @@ async function accepted(){
  fixture={input,result};return fixture;
 }
 const copy=value=>JSON.parse(JSON.stringify(value));
+// F-R08/AC06: a valid imported source must remain accessible when its derived
+// scene fails. Existing success/Undo cases cannot detect a cleared error.
+for(const locale of ['ru','en'])test(`HX059 ${locale} import keeps a visible preparation error and source map`,async()=>{
+ const h=createGenerationHarness(42,'',locale);h.render();h.guardRandom();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
+ const text=fs.readFileSync(new URL('fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8');
+ const load=()=>h.render().handleImportJson({target:{files:[{text}],value:'map'}});
+ await load();const source=JSON.stringify(h.render().captureDocument().map),sourceScale=h.render().createSaveData().ui.mapScale;
+ assert.equal(h.render().switchFineStep(1),true);
+ assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'automatic display zoom is saved in accepted source coordinates');
+ const restore=h.injectFunction('prepareAutomaticOneMileScene',()=>{throw Error('fixture_no_fit detail-poi:7');});
+ await load();restore();
+ assert.match(h.render().automaticFineError??h.render().editError??'',locale==='ru'?/Не удалось подготовить/:/Could not prepare/);
+ assert.match(h.render().automaticFineError,/№7/);assert.match(h.render().automaticFineError,locale==='ru'?/не найдено допустимое/:/no legal route/);assert.doesNotMatch(h.render().automaticFineError,/fixture_no_fit|detail-poi/);
+ assert.equal(h.render().fineDisplay?.viewStep??6,6);
+ assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'failed preparation restores source camera scale');
+ assert.equal(JSON.stringify(h.render().captureDocument().map),source);
+ assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
+ assert.equal(h.render().switchFineStep(1),true);assert.equal(h.render().automaticFineError,null);
+ const saved=h.render().createSaveData();await h.render().handleImportJson({target:{files:[{text:JSON.stringify(saved)}],value:'map'}});
+ assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'repeat import does not accumulate a sixfold zoom');
+});
 // Owner preview exposed a through-lake topology absent from the terminal-lake
 // fixture above. One saved world protects the actual App transaction boundary.
 test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes atomically',async()=>{
  const h=createGenerationHarness(42);h.render();h.guardRandom();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
  await h.render().handleImportJson({target:{files:[{text:fs.readFileSync(new URL('fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8')}],value:'map'}});
+ // RE-Q01 A / AC05+07: the actual scale handler prepares all layers without
+ // accepting the plan. Extend this saved-world witness instead of duplicating
+ // the routing suites or counting another seed as functional coverage.
+ const source=JSON.stringify(h.render().captureDocument().map),generation=JSON.stringify(h.render().captureDocument().generationHistory),undo=h.render().undoHistory.length;
+ assert.equal(h.render().switchFineStep(1),true,h.render().editError);
+ const display=h.render().fineDisplay;
+ assert.equal(display.geometryRefinement.riverPlan.paths.length,34);
+ assert.equal(display.geometryRefinement.roads.crossings.length,2);
+ assert.equal(display.viewStep,1);assert.equal(h.render().physicalGrid,undefined);
+ assert.equal(JSON.stringify(h.render().captureDocument().map),source);assert.equal(JSON.stringify(h.render().captureDocument().generationHistory),generation);
+ assert.equal(h.render().undoHistory.length,undo);
+ assert.equal(h.render().switchFineStep(6),true);assert.equal(h.render().switchFineStep(1),true);
+ assert.deepEqual(h.render().fineDisplay.geometryRefinement,display.geometryRefinement);
+ assert.equal(JSON.stringify(h.render().captureDocument().map),source);assert.equal(h.render().undoHistory.length,undo);
+ assert.equal(h.render().switchFineStep(6),true);
  const before=JSON.stringify(h.render().captureDocument()),preview=h.render().previewGeometryRefinement();
  assert.ok(preview,h.render().editError);assert.equal(JSON.stringify(h.render().captureDocument()),before);
  assert.equal(h.render().applyGeometryRefinementPreview(preview),true);
@@ -57,6 +95,24 @@ test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes
  const bad=copy(g);bad.riverPlan.mouths[0].lakeId=999999;assert.throws(()=>parseGeometryRefinement(bad,parseDetail1StateV11));
  const missing=copy(g);missing.riverPlan.mouths=missing.riverPlan.mouths.filter(m=>m.sourceNodeKey!=='72.746,-70');assert.throws(()=>parseGeometryRefinement(missing,parseDetail1StateV11),/missing through-lake mouths/);
  const hidden=copy(missing);hidden.riverPlan.paintWater.capsules=hidden.riverPlan.paintWater.capsules.filter(c=>c.sourceEdgeKey!=='72.746,-70|72.746,-98');assert.throws(()=>parseGeometryRefinement(hidden,parseDetail1StateV11),/paint water source correspondence/);
+ // F-R02/07: continue that same real map after accepting refinement. One
+ // native generator action adds an ordinary river at a fractional old port.
+ // Extend this witness rather than duplicating its map/import/history setup.
+ assert.equal(h.render().switchFineStep(6),true);
+ h.render().generateAt(h.render().candidateHexes[0]);
+ assert.equal(h.render().regions.length,7);assert.equal(h.render().rivers.length,5);
+ const grown=h.render().captureDocument().map,retained=grown.physicalGrid.geometryRefinement,beforeView=JSON.stringify(grown),history=h.render().undoHistory.length;
+ const input=h.geometry.geometryPlanInput(grown),defaultPlan=prepareGeometryPlan(input);
+ assert.equal(defaultPlan.status,'error','ordinary accepted edit still cannot acquire a new scope');
+ assert.equal(h.render().switchFineStep(1),true,h.render().automaticFineError);
+ const full=h.render().fineDisplay.geometryRefinement;
+ assert.equal(full.riverPlan.paths.length,46);assert.equal(retained.riverPlan.paths.length,34);
+ for(const path of retained.riverPlan.paths)assert.deepEqual(full.riverPlan.paths.find(p=>p.riverId===path.riverId&&p.sourceEdgeKey===path.sourceEdgeKey),path);
+ for(const p of retained.riverPlan.ports){const n=full.riverPlan.ports.find(n=>n.sourceKey===p.sourceKey);assert.deepEqual([n.nodeKey,n.point,n.location],[p.nodeKey,p.point,p.location]);}
+ assert.equal(JSON.stringify(h.render().captureDocument().map),beforeView);assert.equal(h.render().undoHistory.length,history);
+ const mixedSave=h.render().createSaveData();await h.render().handleImportJson({target:{files:[{text:JSON.stringify(mixedSave)}],value:'x'}});
+ assert.deepEqual(h.render().fineDisplay.geometryRefinement.riverPlan.paths,full.riverPlan.paths,'same accepted mixed JSON derives identical full paths');
+ assert.deepEqual(h.render().captureDocument().map.physicalGrid.geometryRefinement,retained,'view/import never replace the stored scoped plan');
 });
 const reverseKeys=value=>Array.isArray(value)?value.map(reverseKeys):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).reverse().map(([k,v])=>[k,reverseKeys(v)])):value;
 let deltaFixture;
@@ -81,6 +137,20 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  const {input,result}=await accepted(),g=result.geometryRefinement;
  assert.equal(result.completeGeometryPlan,true);assert.equal(result.readyForApplication,true);assert.equal(result.candidateState.version,4);assert.equal(g.sourceState.version,3);
  assert.equal(g.riverPlan.paths.length,53);assert.equal(g.roads.crossings.length,7);assert.equal(g.unresolved.length,21);assert.equal(g.riverPlan.mouths.length,3);
+ // F-R05/AC04: a declared source-policy variant of this same cached map.
+ // The original fixture has no proven river-required POI; don't infer one
+ // from a name. Knave structures96 explicitly requires river contact.
+ const owner=g.sourceState.poiFootprints.find(f=>f.poiId==='detail-poi:7'),edge=g.riverPlan.source.segments.find(s=>s.riverId===3&&s.edgeKey==='-218.238,154|-242.487,140');
+ const knownMap={...input.map,physicalGrid:{...g.sourceState,poiFootprints:g.sourceState.poiFootprints.map(f=>f===owner?{...f,attachments:[...f.attachments,{kind:'water',waterKind:'river',waterId:'river:3',segmentId:edge.edgeKey,contact:edge.from.point}]}:f)},knave:{content:{byPoi:{[owner.legacyRef]:{site:{table:'structures',sourceRow:96}}}}}};
+ const knownInput={...input,map:knownMap,scopePolicy:'automatic_presentation'},beforeKnown=JSON.stringify(knownMap),display=prepareAutomaticSceneCandidate(knownInput),move=display.geometryRefinement.pois.pois.find(p=>p.poiId===owner.poiId);
+ assert.ok(move);const visible=prepareRefinementWater({paths:display.geometryRefinement.riverPlan.paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,f/10]))});
+ assert.ok(Math.abs(refinementWaterContains(visible,move.contact.point).clearance)<1e-7,'required POI contacts visible one-mile bank, not the wider physical source bank');
+ assert.deepEqual(move.footprint.extent,owner.extent);assert.equal(JSON.stringify(knownMap),beforeKnown,'display contact never rewrites source');
+ assert.ok(move.routeEntries.length,'real source road entry is retained in the declared policy variant');
+ for(const entry of move.routeEntries){const roads=display.geometryRefinement.roads.roads.filter(r=>`road:${r.roadId}`===entry.routeId);assert.ok(roads.some(r=>r.points.slice(1).some((b,i)=>{const a=r.points[i],p=entry.newEntry;return Math.abs(Math.hypot(p.x-a.x,p.y-a.y)+Math.hypot(p.x-b.x,p.y-b.y)-Math.hypot(b.x-a.x,b.y-a.y))<1e-8;})),'attached road reaches the relocated entry while preserving source graph endpoints');assert.ok(move.footprint.attachments.some(a=>a.kind==='route'&&a.routeId===entry.routeId&&a.accessNodeId===entry.accessNodeId&&Math.hypot(a.entry.x-entry.newEntry.x,a.entry.y-entry.newEntry.y)<1e-8));}
+ const knownTerrain=new Map(input.map.regions.flatMap(r=>r.hexes.map(c=>[`${c.q},${c.r}`,r.biomeId]))),knownSummary=summarizeDetailCell(display,worldToDetailCell(createDetailGrid(1,display.grid.origin),move.newAnchor),knownTerrain,{rivers:input.liveRivers,roads:input.map.roads});
+ assert.ok(knownSummary.pois.some(p=>p.poiId===owner.poiId),'fine read/pick cell follows the moved owner');
+ const initialKnown=prepareGeometryPlan(knownInput);assert.throws(()=>prepareAutomaticSceneCandidate({...knownInput,prepareWorkBudget:initialKnown.workBudget.used}),/prepare_incomplete_budget/,'visible contact closure shares the original total work limit');
  // Actual mounted component: retained paint/crossings come from physical4,
  // including lake masks and prepared POI road gaps. No source geometry writes.
  const props={state:result.candidateState,source:normalizeRefinementRiverSource(input.riverInput),offset:{x:20,y:30},mode:'color',widthByFullness:new Map([[1,1],[5,3]]),rivers:[],roads:[],crossings:[],rapids:[],waterfalls:[],rotated:false};

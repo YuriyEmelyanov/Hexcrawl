@@ -23,7 +23,7 @@ export type GeometryRefinement=Readonly<{
  riverPlan:Prepared['rivers'];pois:Prepared['pois'];roads:Prepared['roads'];
  unresolved:readonly string[];lockedPoiIds:readonly string[];sideChoices:readonly GeometrySideChoice[];
 }>;
-export type GeometryPlanInput=(SourceInput|PreviewInput&Readonly<{seed:number}>)&Readonly<{authoredState?:Detail1State;scopePolicy?:'explicit_preview'}>;
+export type GeometryPlanInput=(SourceInput|PreviewInput&Readonly<{seed:number}>)&Readonly<{authoredState?:Detail1State;scopePolicy?:'explicit_preview'|'automatic_presentation'}>;
 export type GeometryPlanChanges=Readonly<{riverIds:readonly number[];poiIds:readonly string[];roadIds:readonly number[];crossingKeys:readonly string[]}>;
 export type GeometryPlanError=Readonly<{status:'error';code:'geometry_conflict';stage:string;refs:readonly string[];completeGeometryPlan:false;readyForApplication:false}>;
 const EPS=1e-8;
@@ -127,7 +127,7 @@ function validateRivers(g:GeometryRefinement,inputs:Obj){
   same(point(p.point,p.sourceKey),nodeKey(p.nodeKey,origin,p.sourceKey),p.sourceKey);if(occupied.has(p.nodeKey))return fail(`${p.sourceKey} collapsed port`);occupied.set(p.nodeKey,p.sourceKey);
   if(p.sourceExitRef!==null)text(p.sourceExitRef,p.sourceKey);
   if(p.location.kind==='vertex'){object(p.location,p.sourceKey,['kind','vertex']);const v=vertex(p.location.vertex,p.sourceKey);if(p.nodeKey!==JSON.stringify(['vertex',v.x,v.y]))return fail(p.sourceKey);if(incidences.get(p.sourceKey)!.incoming+incidences.get(p.sourceKey)!.outgoing<1)return fail(p.sourceKey);}
-  else if(p.location.kind==='edge'){object(p.location,p.sourceKey,['kind','edgeKey','fraction']);if(incidences.get(p.sourceKey)!.incoming+incidences.get(p.sourceKey)!.outgoing!==1||p.nodeKey!==JSON.stringify(['edge',gridEdge(p.location.edgeKey,p.sourceKey).key,unit(p.location.fraction,p.sourceKey)]))return fail(p.sourceKey);}
+  else if(p.location.kind==='edge'){object(p.location,p.sourceKey,['kind','edgeKey','fraction']);const degree=incidences.get(p.sourceKey)!;if(degree.incoming+degree.outgoing>2||p.nodeKey!==JSON.stringify(['edge',gridEdge(p.location.edgeKey,p.sourceKey).key,unit(p.location.fraction,p.sourceKey)]))return fail(p.sourceKey);}
   else return fail(p.sourceKey);
  }
  const paths=unique(list<typeof r.paths[number]>(r.paths,'paths',4096),p=>pair(integer(p.riverId,'path river',1),text(p.sourceEdgeKey,'path source')),'paths');if(paths.size!==source.size)return fail('path count');
@@ -137,6 +137,13 @@ function validateRivers(g:GeometryRefinement,inputs:Obj){
   if(keys[0]!==ports.get(p.fromNode)!.nodeKey||keys[keys.length-1]!==ports.get(p.toNode)!.nodeKey)return fail(`${id} endpoint`);
   for(let i=0;i<keys.length;i++){same(point(points[i],id),nodeKey(keys[i],origin,id),id);const sourceNode=i===0?p.fromNode:i===keys.length-1?p.toNode:null;if(used.has(keys[i])&&(!sourceNode||used.get(keys[i])!==sourceNode))return fail(`${id} new join`);used.set(keys[i],sourceNode);}
   for(let i=0;i<steps.length;i++){const step=steps[i];object(step,id,['sourceEdgeKey','from','to','startFraction','endFraction']);const e=gridEdge(step.sourceEdgeKey,id),a=unit(step.startFraction,id),b=unit(step.endFraction,id);if(step.from!==keys[i]||step.to!==keys[i+1]||Math.abs(a-b)<1e-12)return fail(`${id} step`);same(points[i],onEdge(e.key,a,origin),id);same(points[i+1],onEdge(e.key,b,origin),id);const ranges=fineEdges.get(e.key)??[],lo=Math.min(a,b),hi=Math.max(a,b);if(ranges.some(v=>Math.min(v.b,hi)-Math.max(v.a,lo)>1e-12))return fail(`${id} overlap`);ranges.push({a:lo,b:hi});fineEdges.set(e.key,ranges);}
+ }
+ // A retained fractional terminal may become a straight continuation after
+ // growth. Both incidences must use opposite parts of that very same edge;
+ // it may never introduce a turn or a branching junction inside an edge.
+ for(const port of ports.values())if(port.location.kind==='edge'){
+  const at=port.location,incident=[...paths.values()].filter(p=>p.fromNode===port.sourceKey||p.toNode===port.sourceKey);
+  if(incident.length===2){const direction=incidences.get(port.sourceKey)!;if(direction.incoming!==1||direction.outgoing!==1)return fail('fractional continuation direction');const ends=incident.map(p=>{const first=p.fromNode===port.sourceKey,step=first?p.steps[0]:p.steps[p.steps.length-1];if(step.sourceEdgeKey!==at.edgeKey)return fail('fractional continuation edge');return (first?step.endFraction:step.startFraction)-at.fraction;});if(ends[0]*ends[1]>=0)return fail('fractional continuation overlap');}
  }
  const capsules=(value:typeof r.water,all:boolean)=>{prepared(value,'water',['capsules']);const entries=unique(list<typeof value.capsules[number]>(value.capsules,'capsules'),c=>JSON.stringify([c.riverId,c.sourceEdgeKey,c.stepIndex]),'capsules');let expected=0;for(const p of paths.values())expected+=p.steps.length;if(all&&entries.size!==expected)return fail('water step count');
   for(const c of entries.values()){object(c,'capsule',['riverId','sourceEdgeKey','stepIndex','from','to','radius','length','ux','uy']);const p=paths.get(pair(c.riverId,c.sourceEdgeKey)),i=integer(c.stepIndex,'capsule step');if(!p||!p.points[i+1]||!(scalar(c.radius,'radius')>0))return fail('capsule ref');same(point(c.from,'capsule'),p.points[i],'capsule');same(point(c.to,'capsule'),p.points[i+1],'capsule');const n=dist(c.from,c.to);if(Math.abs(n-c.length)>EPS||Math.abs(c.ux-(c.to.x-c.from.x)/n)>EPS||Math.abs(c.uy-(c.to.y-c.from.y)/n)>EPS)return fail('capsule metrics');if(!all){const original=r.water.capsules.find(w=>w.riverId===c.riverId&&w.sourceEdgeKey===c.sourceEdgeKey&&w.stepIndex===c.stepIndex);if(!original||!equality(original,c))return fail('paint water ref');}}
@@ -282,9 +289,10 @@ export function validateGeometryRefinementSource(input:GeometrySourceValidationI
 
 function equality(a:unknown,b:unknown):boolean{if(a===b)return true;if(!a||!b||typeof a!=='object'||typeof b!=='object'||Array.isArray(a)!==Array.isArray(b))return false;if(Array.isArray(a)&&Array.isArray(b))return a.length===b.length&&a.every((v,i)=>equality(v,b[i]));const ka=Object.keys(a).sort(),kb=Object.keys(b).sort();return ka.length===kb.length&&ka.every((k,i)=>k===kb[i]&&equality((a as Obj)[k],(b as Obj)[k]));}
 function inputPayload(g:GeometryRefinement):Obj{return JSON.parse(g.sourceFingerprint.slice('geo2-source-input-v1:'.length)) as Obj;}
-/** A generated domain stays unrefined during ordinary edits/generation.
- * Only the explicit preview/Apply entry point may acquire that domain. Even
- * there, all affected/unrelated geometry checks below remain mandatory. */
+/** A generated domain stays unrefined in the accepted document during normal
+ * edits/generation. Explicit preview may acquire it; automatic presentation
+ * may cover it only in a detached candidate with literal retained choices.
+ * All affected/unrelated geometry checks remain mandatory in either case. */
 function dependencyClosure(previous:GeometryRefinement,next:GeometryRefinement,explicitPreview=false){
  const before=inputPayload(previous),after=inputPayload(next),riverIds=new Set<number>(),roadIds=new Set<number>(),poiIds=new Set<string>();
  const diff=<T>(a:readonly T[],b:readonly T[],key:(v:T)=>string,changed:(v:T)=>void)=>{const old=new Map(a.map(v=>[key(v),v])),current=new Map(b.map(v=>[key(v),v]));for(const [k,v]of current)if(!equality(old.get(k),v))changed(v);for(const [k,v]of old)if(!current.has(k))changed(v);};
@@ -326,7 +334,7 @@ export function prepareGeometryPlan(input:GeometryPlanInput){
  try {
   const accepted=input.map.physicalGrid,previous=accepted?.version===4?accepted.geometryRefinement:undefined;
   if(input.cancelled?.())return error('source',['prepare_cancelled']);
-  if(input.scopePolicy!==undefined&&input.scopePolicy!=='explicit_preview')return error('source',['invalid_scope_policy']);
+  if(input.scopePolicy!==undefined&&!['explicit_preview','automatic_presentation'].includes(input.scopePolicy))return error('source',['invalid_scope_policy']);
   const authored=input.authoredState??accepted?.globalAuthoredState??previous?.sourceState??accepted;
   if(authored&&authored.version!==3)return error('source',['authored_physical3_required']);
   const sourceState=authored?parseDetail1StateV11(authored):undefined;
@@ -342,12 +350,22 @@ export function prepareGeometryPlan(input:GeometryPlanInput){
    if(current===previous.sourceFingerprint&&sameBoundary){if(input.expectedSourceFingerprint!==undefined&&input.expectedSourceFingerprint!==current)return error('fingerprint',['stale_source_fingerprint']);return Object.freeze({status:'unchanged' as const,candidateState:accepted!,geometryRefinement:previous,sourceFingerprint:current,completeGeometryPlan:true as const,readyForApplication:false as const});}
   }
   if(!input.map.rivers.length&&!previous)return Object.freeze({status:'unchanged' as const,...(accepted?{candidateState:accepted}:{}),completeGeometryPlan:true as const,readyForApplication:false as const});
-  const prepared='riverInput'in input?prepareRefinementGeographyFromSource({...input,map,lockedPoiIds:input.lockedPoiIds??(previous?new Set(previous.lockedPoiIds):undefined)}):prepareRefinementGeographyPreview({...input,map,lockedPoiIds:input.lockedPoiIds??(previous?new Set(previous.lockedPoiIds):undefined)});
+  const prepared='riverInput'in input?prepareRefinementGeographyFromSource({...input,map,prepareWorkBudget:input.prepareWorkBudget??(input.scopePolicy==='automatic_presentation'?24000000:undefined),retainedRivers:input.scopePolicy==='automatic_presentation'?previous?.riverPlan:undefined,lockedPoiIds:input.lockedPoiIds??(previous?new Set(previous.lockedPoiIds):undefined)}):prepareRefinementGeographyPreview({...input,map,lockedPoiIds:input.lockedPoiIds??(previous?new Set(previous.lockedPoiIds):undefined)});
   if(prepared.status!=='prepared')return Object.freeze({...prepared,code:'geometry_conflict' as const,completeGeometryPlan:false as const,readyForApplication:false as const});
   const source=prepared.candidateState,origin=source.grid.origin,sourceSegments=new Map(prepared.rivers.source.segments.map(s=>[pair(s.riverId,s.edgeKey),s]));
   const sideChoices=prepared.rivers.paths.flatMap(p=>p.steps.map((_,stepIndex)=>{const actual=chosenSide(sourceSegments.get(pair(p.riverId,p.sourceEdgeKey))!,p.points[stepIndex],p.points[stepIndex+1],origin),preferredSide=refinementPreferredSide(seed,p.riverId,p.sourceEdgeKey,actual.cell);return {riverId:p.riverId,sourceEdgeKey:p.sourceEdgeKey,stepIndex,cell:actual.cell,preferredSide,chosenSide:actual.side,constraintFallback:actual.side!==null&&actual.side!==preferredSide};}));
   const refinement=parseGeometryRefinement({version:1,algorithmVersion:'geo2-v1',sourceFingerprint:prepared.sourceFingerprint,sourceState:source,riverPlan:prepared.rivers,pois:prepared.pois,roads:prepared.roads,unresolved:prepared.unresolved,lockedPoiIds:[...(input.lockedPoiIds??previous?.lockedPoiIds??[])].sort(),sideChoices},parseDetail1StateV11);
-  if(previous)dependencyClosure(previous,refinement,input.scopePolicy==='explicit_preview');
+  if(previous){
+   dependencyClosure(previous,refinement,input.scopePolicy==='explicit_preview'||input.scopePolicy==='automatic_presentation');
+   // Read-only global presentation may cover the missing ordinary domain,
+   // but it has no authority to replace any accepted river choice. The full
+   // candidate has already passed cross-layer/topology validation above.
+   if(input.scopePolicy==='automatic_presentation'){
+    for(const path of previous.riverPlan.paths)if(!equality(path,refinement.riverPlan.paths.find(p=>p.riverId===path.riverId&&p.sourceEdgeKey===path.sourceEdgeKey)))return error('retained_choices',[`river:${path.riverId}:${path.sourceEdgeKey}`]);
+    for(const port of previous.riverPlan.ports){const next=refinement.riverPlan.ports.find(p=>p.sourceKey===port.sourceKey);if(!next||!equality([port.nodeKey,port.point,port.location],[next.nodeKey,next.point,next.location]))return error('retained_choices',[`port:${port.sourceKey}`]);}
+    for(const side of previous.sideChoices)if(!equality(side,refinement.sideChoices.find(s=>s.riverId===side.riverId&&s.sourceEdgeKey===side.sourceEdgeKey&&s.stepIndex===side.stepIndex)))return error('retained_choices',[`side:${side.riverId}:${side.sourceEdgeKey}:${side.stepIndex}`]);
+   }
+  }
   const candidateState=parseDetail1StateV11({...source,version:4,poiFootprints:prepared.footprints,geometryRefinement:refinement,...(accepted?{viewStep:accepted.viewStep,fineCellEdits:accepted.fineCellEdits,...(accepted.selectedCell?{selectedCell:accepted.selectedCell}:{}),...(accepted.selectedWorldPoint?{selectedWorldPoint:accepted.selectedWorldPoint}:{})}:{})});
   return Object.freeze({status:'prepared' as const,candidateState,geometryRefinement:candidateState.geometryRefinement!,changes:changes(previous,refinement),sourceFingerprint:prepared.sourceFingerprint,workBudget:prepared.workBudget,bootstrap:prepared.bootstrap,completeGeometryPlan:true as const,readyForApplication:true as const});
  }catch(e){return error('validation',[e instanceof Error?e.message:'invalid_geometry_plan']);}

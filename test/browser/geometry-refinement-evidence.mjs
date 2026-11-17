@@ -6,18 +6,18 @@ import assert from 'node:assert/strict';
 export async function checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture}){
  await lang('en');await page.setViewportSize({width:1500,height:1000});
  await page.locator('input[type=file]').setInputFiles({name:'geo2-source.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
- await step.selectOption('1');
+ await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});
  const before=await snap(),refine=page.locator('[data-refine-geography]'),preview=page.locator('[data-geometry-preview]');
  await refine.click();await preview.waitFor();
  assert.ok(await preview.locator('[data-refined-river]').count());
- assert.equal(await page.locator('svg[data-render-phase] [data-fine-world] [data-refined-geography]').count(),0,'candidate is separate from accepted scene');
+ assert.equal(await page.locator('svg[data-render-phase] [data-fine-world] [data-refined-geography]').count(),1,'the automatic base scene stays visible beneath the separate optional proposal');
  assert.deepEqual(await snap(),before,'Preview does not change document or RNG');
  for(const locale of ['ru','en'])for(const width of [1500,390,320]){await lang(locale);await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await preview.scrollIntoViewIfNeeded();await shot(`geo2-preview-${locale}-${width}.jpg`);}
  await lang('en');await page.setViewportSize({width:1500,height:1000});
  assert.equal(await page.locator('[data-geometry-preview-overlay] [data-refined-geography]').count(),1,'proposed geometry is visible over the main map');
  const exportMenu=page.locator('details.export-menu');if(await exportMenu.getAttribute('open')===null)await exportMenu.locator('summary').click();
  await page.evaluate(()=>window.__oneSvg=null);const [pendingPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await pendingPng.path(),new URL('geo2-preview-accepted-only.png',out));
- assert.doesNotMatch(await page.evaluate(()=>window.__oneSvg),/data-geometry-preview|data-refined-geography/,'PNG excludes the unaccepted overlay');
+ assert.doesNotMatch(await page.evaluate(()=>window.__oneSvg),/data-geometry-preview/,'PNG excludes the optional proposal overlay; the automatic base scene remains visible');
  await page.keyboard.press('Escape');await preview.waitFor({state:'detached'});assert.equal(await refine.evaluate(el=>el===document.activeElement),true);assert.deepEqual(await snap(),before);
  await refine.click();await preview.getByRole('button',{name:'Cancel',exact:true}).click();assert.deepEqual(await snap(),before);
  await refine.click();await preview.getByRole('button',{name:'Apply',exact:true}).click();
@@ -33,8 +33,8 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
  const expected=await signature();assert.ok(expected.rivers.length&&expected.roads.length);assert.deepEqual(expected.riverMasks,expected.visibleWater,'visible water and river masks share exact accepted contours');
  for(const width of [1500,390,320]){await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await shot(`geo2-accepted-${width}.jpg`);}
  await button('Undo').click();assert.deepEqual((await snap()).map,before.map);
- await button('Redo').click();await step.selectOption('1');assert.deepEqual((await snap()).map.physicalGrid.geometryRefinement,g);assert.deepEqual(await signature(),expected);
- await step.selectOption('6');assert.equal(await page.locator('svg[data-render-phase] [data-refined-geography]').count(),0);await step.selectOption('1');assert.deepEqual(await signature(),expected);
+ await button('Redo').click();await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual((await snap()).map.physicalGrid.geometryRefinement,g);assert.deepEqual(await signature(),expected);
+ await step.selectOption('6');assert.equal(await page.locator('svg[data-render-phase] [data-refined-geography]').count(),0);await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual(await signature(),expected);
  const pngs=[];const saveRefinedPng=async label=>{
   const visible=await signature();assert.deepEqual(visible.riverMasks,visible.visibleWater,'visible body and clipped river agree in this mode');
   const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();
@@ -77,7 +77,7 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
   assert.match(message,locale==='ru'?/Карта сохранена без изменений/:/Map unchanged/);assert.doesNotMatch(message,/GEO2|prepare_|river_mouth/);assert.match(message,/detail-poi:1/);
   await shot(`geo2-source-error-${locale}-${width}.jpg`);
   await button(locale==='ru'?'Повторить':'Redo').click();assert.deepEqual((await snap()).map,changed.map);
-  await button(locale==='ru'?'Отменить':'Undo').click();await step.selectOption('1');
+  await button(locale==='ru'?'Отменить':'Undo').click();await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});
   const importData=await snap();await page.evaluate(()=>{window.__releaseFineImport=null;window.__holdFineImport=true;});
   await page.locator('input[type=file]').setInputFiles({name:'geo2-busy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(importData))});
   await page.waitForFunction(()=>typeof window.__releaseFineImport==='function');
