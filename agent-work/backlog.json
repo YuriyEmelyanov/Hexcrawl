@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-17T06:35:37.736Z",
+  "updated_at": "2026-11-17T09:14:50.186Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -376,9 +376,9 @@
         "На карте и PNG маршрут реки совпадает; стыки, озёра, переправы и речные объекты проверены по чистовой спецификации.",
         "Правила перехода для существующих карт, обычной/уточнённой геометрии и связанных объектов закреплены в спецификации и интервью; прежние ответы владельца не спрашиваются повторно."
       ],
-      "execution_state": "смешанная карта: сохранены34 старых русла и подготовлены12 новых; UI/PNG/JSON и CI прошли, полная F1 ещё в разработке",
+      "execution_state": "исправлен масштаб камеры при сохранении, импорте и fallback; CI429/browser/RNG прошли; подготовка с отменой и полная F1 ещё не готовы",
       "next_role": "programmer",
-      "next_step": "HX059-NEXT-02: подготовка с отменой/защитой от устаревшего результата и восстановление камеры; затем полная F1 и независимое ревью.",
+      "next_step": "HX059-NEXT-02: busy/cancel/stale preparation; затем вся F1, независимое ревью и отдельное согласование выпуска.",
       "related_task_ids": [
         "HX-BL-055",
         "HX-BL-056",
@@ -397,14 +397,14 @@
       "score_forecast": "unknown; оценить критерии1.2 при спецификации без начисления",
       "forecast": {
         "task_id": "HX-BL-059",
-        "completed_recorded_runs": 7,
+        "completed_recorded_runs": 8,
         "remaining_runs": {
           "min": 2,
           "max": 5
         },
         "remaining_active_hours": {
           "min": 3,
-          "max": 8
+          "max": 7
         },
         "remaining_calendar_hours_excluding_owner_wait": {
           "min": 6,
@@ -412,7 +412,7 @@
         },
         "confidence": "low",
         "history_reset": false,
-        "basis": "Seventh recorded run closes the mixed retained/unrefined real-map scenario with old34+new12 paths and exact-tree UI/PNG/429-node CI. Remaining2–5 runs include lifecycle/camera implementation, complete final matrix, independent review/fixes and release after explicit approval; original D1 total8–12 runs preserved, updated total9–12. Forecast does not reduce acceptance scope.",
+        "basis": "Camera save/import/fallback defect is now reproduced and fixed without resetting history. Same full F1 remains: responsive preparation and full acceptance matrix, independent review/fixes, exact release approval. Keep2–5 remaining because this bounded camera fix does not complete the outstanding preparation lifecycle.",
         "history_refs": [
           "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
           "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
@@ -421,11 +421,11 @@
         ],
         "owner_publication_wait": "unknown; excluded"
       },
-      "updated_at": "2026-11-17T06:35:37.736Z",
+      "updated_at": "2026-11-17T09:14:50.186Z",
       "queue_priority": 1,
       "selection_ref": "agent-work/decisions/owner-decision-2026-11-16-pause-biomes-next-river-edges.json",
       "draft_spec_version": "D1",
-      "handoff_ref": "agent-work/handoffs/2026-11-17T0900-programmer-mixed-scene-continue.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-17T1200-programmer-camera-normalization-continue.json",
       "ui_preview": {
         "ref": "agent-work/previews/HX-BL-059-D1/proposal.svg",
         "version": "P1",
@@ -511,6 +511,33 @@
             "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
           ],
           "owner_publication_wait": "unknown; not included"
+        },
+        {
+          "source_run_id": "2026-11-17T0900-programmer-mixed-scene",
+          "task_id": "HX-BL-059",
+          "completed_recorded_runs": 7,
+          "remaining_runs": {
+            "min": 2,
+            "max": 5
+          },
+          "remaining_active_hours": {
+            "min": 3,
+            "max": 8
+          },
+          "remaining_calendar_hours_excluding_owner_wait": {
+            "min": 6,
+            "max": 15
+          },
+          "confidence": "low",
+          "history_reset": false,
+          "basis": "Seventh recorded run closes the mixed retained/unrefined real-map scenario with old34+new12 paths and exact-tree UI/PNG/429-node CI. Remaining2–5 runs include lifecycle/camera implementation, complete final matrix, independent review/fixes and release after explicit approval; original D1 total8–12 runs preserved, updated total9–12. Forecast does not reduce acceptance scope.",
+          "history_refs": [
+            "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
+            "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
+            "agent-work/results/2026-11-16-owner-RE-Q01-auto-1794857630007.json",
+            "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
+          ],
+          "owner_publication_wait": "unknown; excluded"
         }
       ],
       "implementation_complete": false,
@@ -518,45 +545,62 @@
       "branch": "agent/hx-bl-059-auto-river-edges",
       "pr": 505,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/505",
-      "head_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
-      "tree_sha": "a608f5d9783a40b2fa0a3be84de624cb7047add4",
-      "evidence_ref": "agent-work/evidence/HX-BL-059-mixed-861ce7d/implementation.json",
-      "test_change_summary_ref": "agent-work/evidence/HX-BL-059-mixed-861ce7d/test-change-summary.json",
+      "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+      "tree_sha": "acd106a4efdd123c4f2848566d2bc35ee08a0498",
+      "evidence_ref": "agent-work/evidence/HX-BL-059-camera-198ce6a/implementation.json",
+      "test_change_summary_ref": "agent-work/evidence/HX-BL-059-camera-198ce6a/test-change-summary.json",
       "actual_ui": {
         "kind": "runtime_exact_SHA",
-        "head_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
-        "tree_sha": "a608f5d9783a40b2fa0a3be84de624cb7047add4",
-        "artifact_id": 14304803763,
-        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44030550632/artifacts/14304803763",
-        "artifact_digest": "sha256:3c86fb9c02b83e5e416013dfe2227fd557fa2b1b3aebaa1e921c52a28d5561e0",
-        "files": [
-          "mixed42-6mi-before.jpg",
-          "mixed42-1mi-after.jpg",
-          "mixed42-1mi-after-390.jpg",
-          "mixed42-automatic.png"
+        "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+        "tree_sha": "acd106a4efdd123c4f2848566d2bc35ee08a0498",
+        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44051822640/artifacts/14314453121",
+        "artifact_digest": "sha256:02323d2e133a18147868dd2b59d39e873121abadcad31e3cf5b64d7963c51b80",
+        "cases": [
+          {
+            "id": "HX059-classic42-automatic-scene-save-PNG",
+            "status": "pass",
+            "sourcePaths": 34,
+            "crossings": 2,
+            "viewports": [
+              1500,
+              390
+            ],
+            "sourceWrites": false,
+            "cameraSourceScaleStable": true
+          },
+          {
+            "id": "HX059-mixed-growth-retained-paths-PNG",
+            "status": "pass",
+            "retainedPaths": 34,
+            "newPaths": 12,
+            "viewports": [
+              1500,
+              390
+            ],
+            "sourceWrites": false
+          }
         ],
         "visually_inspected": true,
         "presented_in_chat": true,
-        "full_F1_accepted": false,
-        "observation": "Actual mixed map renders old and newly generated edge-aligned rivers, no scene error; exported PNG has same complete river/road signatures as screen; narrow390 screenshot shows accessible controls."
+        "whole_F1_accepted": false
       },
       "checks": {
-        "head_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
-        "tree_sha": "a608f5d9783a40b2fa0a3be84de624cb7047add4",
-        "run_id": 44030550632,
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44030550632",
+        "run_id": 44051822640,
+        "status": "success",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44051822640",
         "check": "success",
-        "browser": "success",
         "world_random": "success",
+        "browser": "success",
         "Node": {
           "executed": 429,
           "passed": 429,
           "failed": 0,
           "skipped": 0
         },
-        "typecheck": "success",
-        "build": "success",
-        "independent_acceptance": false
+        "typecheck": "passed",
+        "build": "passed",
+        "source_head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+        "checkout_tree": "acd106a4efdd123c4f2848566d2bc35ee08a0498"
       }
     }
   ],
