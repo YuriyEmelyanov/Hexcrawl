@@ -1,0 +1,108 @@
+{
+  "run_id": "2026-11-17T1200-programmer-camera-normalization",
+  "task_id": "HX-BL-059",
+  "role": "programmer",
+  "base_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
+  "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+  "tree_sha": "acd106a4efdd123c4f2848566d2bc35ee08a0498",
+  "pr": 505,
+  "requirements": [
+    "F-R07",
+    "F-R08",
+    "AC06",
+    "AC07",
+    "AC08"
+  ],
+  "defect": {
+    "observed": "Existing automatic fine scale saved ui.mapScale=6 instead of source scale1. Import in active fine view then restored that saved value directly; preparation fallback could leave the source map at fine zoom.",
+    "red_cases": {
+      "suite": "Node",
+      "executed": 2,
+      "failed": 2,
+      "assertion": "6 !== 1; automatic display zoom is saved in accepted source coordinates"
+    }
+  },
+  "change": "Store camera scale in accepted physicalGrid coordinate space in captureDocument; convert once to the actual resulting view at applyPreparedDocument and generation backup rollback. Detached geometry is never persisted or accepted by this conversion.",
+  "schema_change": false,
+  "source_geography_changed": false,
+  "checks": {
+    "typecheck": "passed",
+    "targeted": {
+      "executed": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "affected_initial": {
+      "executed": 92,
+      "passed": 91,
+      "failed": 1,
+      "reason": "Old saveSafety test asserted obsolete raw display zoom in source save; corrected that same test to verify both runtime6 and persisted1."
+    },
+    "corrected_existing_camera_case": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0
+    },
+    "CI": {
+      "run_id": 44051822640,
+      "status": "in_progress",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44051822640"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
+    "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+    "added": 0,
+    "removed": 0,
+    "modified": 4,
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "cases": [
+          "HX059 ru import keeps a visible preparation error and source map",
+          "HX059 en import keeps a visible preparation error and source map",
+          "ONE-MILE1 view/hover/pinned form and stale callbacks preserve local address and camera scale"
+        ],
+        "scenario_or_risk": "Source-scale serialization, fallback scale, repeat JSON import and retained actual fine zoom",
+        "reuse_or_new_reason": "Extend existing locale/error and camera/history lifecycle cases; harness exposes runtime zoom to distinguish it from normalized save."
+      },
+      {
+        "suite": "Browser",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "case": "HX059-classic42-automatic-scene-save-PNG",
+        "scenario_or_risk": "Real UI save/reload camera uses source scale while automatic artwork remains on fine edges.",
+        "reuse_or_new_reason": "Extend the existing real map/UI/PNG smoke case, no duplicate fixture/scenario."
+      }
+    ],
+    "source": "git diff base505ef91 against exact treeacd106; count logical declarations/locale cases and explicit browser case ID; helper not counted."
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "partial_programmer_evidence_unverified",
+    "criteria": [
+      {
+        "criterion_id": "S03-C05",
+        "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+        "evidence": "Accepted-document camera persistence and repeat import regression",
+        "delta": null,
+        "grade_before": null,
+        "grade_after": null
+      }
+    ],
+    "awarded_points": false
+  },
+  "remaining": [
+    "Busy/cancel/stale preparation UI remains incomplete; sync preparation can block.",
+    "Cold fresh-page camera and complete F1 shore/bank/crossing/style/mode/orientation/native6 matrix still need final acceptance.",
+    "Fresh independent reviewer and score_assessment1.2, then separate exact-package publication approval."
+  ],
+  "implementation_complete": false,
+  "review_ready": false,
+  "release_authorized": false,
+  "main_changed": false
+}
