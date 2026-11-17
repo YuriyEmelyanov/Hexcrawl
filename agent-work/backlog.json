@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-17T12:21:00.040Z",
+  "updated_at": "2026-11-17T16:09:03.201Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -418,9 +418,9 @@
         "На карте и PNG маршрут реки совпадает; стыки, озёра, переправы и речные объекты проверены по чистовой спецификации.",
         "Правила перехода для существующих карт, обычной/уточнённой геометрии и связанных объектов закреплены в спецификации и интервью; прежние ответы владельца не спрашиваются повторно."
       ],
-      "execution_state": "переключение на1милю готовит карту в фоне с отменой и защитой от запоздавшего ответа; CI429/browser/RNG прошли; полная F1 ещё не принята",
-      "next_role": "programmer",
-      "next_step": "Завершить связный F1 пакет: вся AC01–09 матрица на настоящей карте/PNG, исправления и затем независимая приёмка.",
+      "execution_state": "Цельный PR505 готов к независимой приёмке на58b91df; полный CI429/browser/RNG прошёл, видимый берег и дорожные входы согласованы; не опубликован.",
+      "next_role": "reviewer",
+      "next_step": "Независимо проверить весь пакет PR505/58b91df по F1 AC01–09, сохранить score_assessment1.2 и заключение; публикация после отдельного решения владельца.",
       "related_task_ids": [
         "HX-BL-055",
         "HX-BL-056",
@@ -438,36 +438,31 @@
       "ui_preview_responsible": "business-analyst",
       "score_forecast": "unknown; оценить критерии1.2 при спецификации без начисления",
       "forecast": {
+        "source_run_id": "2026-11-17T1800-programmer-F1-acceptance",
         "task_id": "HX-BL-059",
-        "completed_recorded_runs": 9,
+        "completed_recorded_runs": 10,
         "remaining_runs": {
+          "min": 2,
+          "max": 4
+        },
+        "remaining_active_hours": {
           "min": 2,
           "max": 5
         },
-        "remaining_active_hours": {
-          "min": 3,
-          "max": 7
-        },
         "remaining_calendar_hours_excluding_owner_wait": {
           "min": 6,
-          "max": 15
+          "max": 12
         },
-        "confidence": "low",
+        "confidence": "low_medium",
         "history_reset": false,
-        "basis": "Ninth recorded run implements the first-scale responsive preparation/cancel/stale boundary and real UI witness. Do not mechanically subtract a run: complete bank/mouth/crossing/native6/cold-load matrix may still expose defects; remaining range includes coherent programmer package, independent review/fixes and separately approved release. Original D1 total8–12 recorded runs retained; updated total11–14, not a reset or reduced acceptance.",
-        "history_refs": [
-          "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
-          "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
-          "agent-work/results/2026-11-16-owner-RE-Q01-auto-1794857630007.json",
-          "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
-        ],
+        "basis": "Tenth recorded run completes coherent implementation evidence, required visible-bank reclosure and readable failures. Remaining independent acceptance, potential corrections/new-SHA review and separately authorized release. Original D1 total8–12 retained; observed updated total12–14. Tests/CI attempts are not counted as separate role runs. No acceptance scope removed.",
         "owner_publication_wait": "unknown; excluded"
       },
-      "updated_at": "2026-11-17T12:21:00.040Z",
+      "updated_at": "2026-11-17T16:09:03.201Z",
       "queue_priority": 1,
       "selection_ref": "agent-work/decisions/owner-decision-2026-11-16-pause-biomes-next-river-edges.json",
       "draft_spec_version": "D1",
-      "handoff_ref": "agent-work/handoffs/2026-11-17T1500-programmer-responsive-preparation-continue.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-17T1800-programmer-F1-acceptance-reviewer.json",
       "ui_preview": {
         "ref": "agent-work/previews/HX-BL-059-D1/proposal.svg",
         "version": "P1",
@@ -607,27 +602,63 @@
             "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
           ],
           "owner_publication_wait": "unknown; excluded"
+        },
+        {
+          "source_run_id": "2026-11-17T1500-programmer-responsive-preparation",
+          "task_id": "HX-BL-059",
+          "completed_recorded_runs": 9,
+          "remaining_runs": {
+            "min": 2,
+            "max": 5
+          },
+          "remaining_active_hours": {
+            "min": 3,
+            "max": 7
+          },
+          "remaining_calendar_hours_excluding_owner_wait": {
+            "min": 6,
+            "max": 15
+          },
+          "confidence": "low",
+          "history_reset": false,
+          "basis": "Ninth recorded run implements the first-scale responsive preparation/cancel/stale boundary and real UI witness. Do not mechanically subtract a run: complete bank/mouth/crossing/native6/cold-load matrix may still expose defects; remaining range includes coherent programmer package, independent review/fixes and separately approved release. Original D1 total8–12 recorded runs retained; updated total11–14, not a reset or reduced acceptance.",
+          "history_refs": [
+            "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
+            "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
+            "agent-work/results/2026-11-16-owner-RE-Q01-auto-1794857630007.json",
+            "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
+          ],
+          "owner_publication_wait": "unknown; excluded"
         }
       ],
-      "implementation_complete": false,
-      "review_ready": false,
+      "implementation_complete": true,
+      "review_ready": true,
       "branch": "agent/hx-bl-059-auto-river-edges",
       "pr": 505,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/505",
-      "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
-      "tree_sha": "f2b8c33edcb865ea0dc00c4b353c554911c1d972",
-      "evidence_ref": "agent-work/evidence/HX-BL-059-responsive-eee794f/implementation.json",
-      "test_change_summary_ref": "agent-work/evidence/HX-BL-059-responsive-eee794f/test-change-summary.json",
+      "head_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd",
+      "tree_sha": "b65e2de0c0d56f76c7838f8cf420a22f683ff739",
+      "evidence_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/implementation.json",
+      "test_change_summary_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/test-change-summary.json",
       "actual_ui": {
         "kind": "runtime_exact_SHA",
-        "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
-        "tree_sha": "f2b8c33edcb865ea0dc00c4b353c554911c1d972",
-        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44080148971/artifacts/14326339847",
-        "artifact_digest": "sha256:276591a2f798832a9a0df3cf498d5a2a84fbedb594c078cb105b332cc4707d04",
+        "head_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd",
+        "tree_sha": "b65e2de0c0d56f76c7838f8cf420a22f683ff739",
+        "artifact_id": 14344643335,
+        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44119549919/artifacts/14344643335",
+        "artifact_digest": "sha256:157f03aa21c3afb660823e97efa4059be85f4c2c89cfb102f2218ed3c94178c6",
+        "downloaded_digest_verified": true,
         "files": [
-          "automatic-preparing-1500.jpg",
-          "automatic-preparing-390-ru.jpg",
-          "classic42-1mi-after.jpg"
+          "classic42-6mi-before.jpg",
+          "classic42-1mi-after.jpg",
+          "classic42-cold-390.jpg",
+          "required-bank-1500.jpg",
+          "required-bank-390.jpg",
+          "required-bank.png",
+          "native6-map-before-1500.png",
+          "native6-map-after-1500.png",
+          "native6-export-before.png",
+          "native6-export-after.png"
         ],
         "cases": [
           {
@@ -653,7 +684,27 @@
               390
             ],
             "sourceWrites": false,
-            "cameraSourceScaleStable": true
+            "cameraSourceScaleStable": true,
+            "coldDOMReload": true
+          },
+          {
+            "id": "HX059-required-POI-pick-PNG",
+            "status": "pass",
+            "source": "declared legal Knave structures96 variant of road-entry-zigzags",
+            "poiId": "detail-poi:8",
+            "owner": "poi:2:-7,3",
+            "riverId": 3,
+            "anchor": {
+              "x": -35.4,
+              "y": 17.32050807568877
+            },
+            "pickCell": "-45,20",
+            "viewports": [
+              1500,
+              390
+            ],
+            "attachedRoads": 0,
+            "sourceWrites": false
           },
           {
             "id": "HX059-mixed-growth-retained-paths-PNG",
@@ -665,21 +716,125 @@
               390
             ],
             "sourceWrites": false
+          },
+          {
+            "id": "UI-grid-local-read",
+            "status": "pass",
+            "fineCells": 3471,
+            "candidates": 494
+          },
+          {
+            "id": "UI-pinned-editor-exit-and-undo",
+            "status": "pass"
+          },
+          {
+            "id": "UI-responsive-390-320-RU-EN",
+            "status": "pass"
+          },
+          {
+            "id": "UI-fine-export-local-features",
+            "status": "pass"
+          },
+          {
+            "id": "UI-ordinary-candidate-unit",
+            "status": "pass",
+            "outcome": "accepted_and_undo_exact"
+          },
+          {
+            "id": "G209-AUTO-source-edit-error-busy-RU-EN",
+            "status": "pass",
+            "viewports": [
+              1500,
+              390,
+              320
+            ],
+            "locales": [
+              "ru",
+              "en"
+            ],
+            "failure": "injected preparation failure",
+            "ordinarySuccess": "disable resolved rapid without additional geometry preview"
+          },
+          {
+            "id": "GEO2-UI-preview-apply-history-roundtrip-PNG",
+            "status": "pass",
+            "sourcePaths": 53,
+            "crossings": 7,
+            "viewports": [
+              1500,
+              390,
+              320
+            ]
           }
         ],
+        "native6_baseline": {
+          "sha": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+          "fixture": "same explicitF2ford variant",
+          "profiles": [
+            {
+              "width": 1500,
+              "mapPixelIdentical": true,
+              "raster": {
+                "maxDelta": 0,
+                "changedFraction": 0
+              },
+              "wholeUI": {
+                "pixelIdentical": true,
+                "raster": {
+                  "maxDelta": 0,
+                  "changedFraction": 0
+                },
+                "scope": "diagnostic including unrelated controls"
+              }
+            },
+            {
+              "width": 390,
+              "mapPixelIdentical": true,
+              "raster": {
+                "maxDelta": 0,
+                "changedFraction": 0
+              },
+              "wholeUI": {
+                "pixelIdentical": false,
+                "raster": {
+                  "maxDelta": 210,
+                  "changedFraction": 0.00007626561472715319
+                },
+                "scope": "diagnostic including unrelated controls"
+              }
+            }
+          ],
+          "png": {
+            "pixelIdentical": true,
+            "raster": {
+              "maxDelta": 0,
+              "changedFraction": 0
+            }
+          }
+        },
         "visually_inspected": true,
         "presented_in_chat": true,
-        "method": "Real module Worker reply held after computation only for deterministic cancel/late-callback and responsive captures, then released; successful retry uses the real worker.",
-        "performance_measurement": false,
-        "full_F1_accepted": false
+        "known_limitations": [
+          "Declared Knave source-policy mill variant, not original fixture rolls.",
+          "Public required site has no assigned road; coupled road entry checked in internal policy variant.",
+          "390 screenshot panel may read hovered cell while selected required site remains visibly highlighted.",
+          "Full UI390 chevron differs1px; actual map and entire PNG pixel-identical in this run. HTML overlay hidden only during isolated map diagnostic capture."
+        ],
+        "presented_files": [
+          "classic42-6mi-before.jpg",
+          "classic42-1mi-after.jpg",
+          "required-bank-1500.jpg",
+          "required-bank-390.jpg"
+        ],
+        "before_after_presented": true
       },
       "checks": {
-        "run_id": 44080148971,
+        "run_id": 44119549919,
         "status": "success",
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44080148971",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44119549919",
         "check": "success",
-        "world_random": "success",
         "browser": "success",
+        "world_random": "success",
         "Node": {
           "executed": 429,
           "passed": 429,
@@ -688,9 +843,15 @@
         },
         "typecheck": "passed",
         "build": "passed",
-        "source_head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
-        "checkout_tree": "f2b8c33edcb865ea0dc00c4b353c554911c1d972"
-      }
+        "source_head_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd",
+        "checkout_tree": "b65e2de0c0d56f76c7838f8cf420a22f683ff739",
+        "browser_scripts": 9,
+        "one_mile_named_cases": 11,
+        "artifact_id": 14344643335,
+        "artifact_digest": "sha256:157f03aa21c3afb660823e97efa4059be85f4c2c89cfb102f2218ed3c94178c6"
+      },
+      "acceptance_trace_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/acceptance-trace.json",
+      "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/programmer-score-evidence1.2.json"
     },
     {
       "task_id": "HX-BL-060",
