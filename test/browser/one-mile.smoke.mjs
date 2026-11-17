@@ -6,6 +6,8 @@ import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import os from 'node:os';
 import {createGenerationHarness} from '../helpers/generation-harness.mjs';
+import {withRequiredRiverSite,requiredRiverOwner} from '../helpers/river-required-variant.mjs';
+import {createDetailGrid,detailCellCenter} from '../../src/detailGrid.ts';
 import {checkGeometryRefinement} from './geometry-refinement-evidence.mjs';
 import {prepareFineEvidenceFixture,fineEvidenceSamples,checkFineCamera,checkFineObjectsAndPng,checkFineModeCandidates} from './one-mile-evidence.mjs';
 const root=new URL('../../',import.meta.url),out=new URL('../../reports/ONE-MILE1-UI/',import.meta.url);
@@ -33,6 +35,15 @@ const mixedPreview=mixedHarness.render().previewGeometryRefinement();assert.ok(m
 const mixedFixture=structuredClone(mixedHarness.render().createSaveData());assert.equal(mixedFixture.map.rivers.length,5);assert.equal(mixedFixture.map.physicalGrid.geometryRefinement.riverPlan.paths.length,34);
 const mixedOldEdges=new Set(mixedFixture.map.physicalGrid.geometryRefinement.riverPlan.paths.map(p=>JSON.stringify([p.riverId,p.sourceEdgeKey])));
 const mixedNewEdges=mixedFixture.map.rivers.flatMap(r=>r.sectors.flatMap(s=>s.edgeKeys.map(edge=>({id:r.id,edge})))).filter(p=>!mixedOldEdges.has(JSON.stringify([p.id,p.edge])));assert.equal(mixedNewEdges.length,12);
+// AC04/05: a declared, validator-accepted Knave riverside site on the existing
+// road-entry world. Its original unresolved POIs cannot witness this contract.
+const requiredHarness=createGenerationHarness(42);requiredHarness.render();requiredHarness.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});requiredHarness.injectFunction('readTextFile',async f=>f.text);
+await requiredHarness.render().handleImportJson({target:{files:[{text:await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url),'utf8')}],value:'x'}});
+const requiredDocument=requiredHarness.render().captureDocument();requiredDocument.map=withRequiredRiverSite(requiredDocument.map);
+requiredHarness.render().applyDocument(requiredDocument);
+const requiredFixture=structuredClone(requiredHarness.render().createSaveData());requiredHarness.geometry.assertHexcrawlSaveData(requiredFixture);
+assert.equal(requiredHarness.render().switchFineStep(1),true,requiredHarness.render().automaticFineError);
+const requiredMove=requiredHarness.render().fineDisplay.geometryRefinement.pois.pois.find(p=>p.footprint.legacyRef===requiredRiverOwner);assert.ok(requiredMove?.contact);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4195','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
 let browser,page,baselineServer,baselineDir;const errors=[],alerts=[];
 const manifest={source_head_sha:null,checkout_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),checkout_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),fixture:'road-entry-zigzags.json',screenshots:[],cases:[]};
@@ -107,6 +118,29 @@ try{
  await cold.screenshot({path:new URL('classic42-cold-390.jpg',out).pathname,type:'jpeg',quality:75,fullPage:true});await cold.close();
  manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390],sourceWrites:false,cameraSourceScaleStable:true,coldDOMReload:true});
  await page.setViewportSize({width:1500,height:1000});
+ // One distinct logical case: the original fixtures have no proven river
+ // requirement. Exercise this legal declared variant through public JSON,
+ // actual pick/renderer and PNG rather than accepting the pure planner alone.
+ await step.selectOption('6');await page.locator('input[type=file]').setInputFiles({name:'declared-riverside-mill.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(requiredFixture))});
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);const requiredSource=await snap();await shot('required-bank-6mi-before.jpg');
+ await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});await page.locator('[data-fine-world]').waitFor();
+ assert.equal(await page.locator('[data-fine-scene-error]').count(),0);
+ const requiredCell=requiredMove.footprint.cells[0],requiredKey=`${requiredCell.q},${requiredCell.r}`,requiredMarker=page.locator(`[data-fine-pois] [data-poi-id="${requiredMove.poiId}"] image`);
+ assert.equal(await requiredMarker.count(),1);
+ const markerPosition=await requiredMarker.evaluate(n=>({x:Number(n.getAttribute('x'))+Number(n.getAttribute('width'))/2,y:Number(n.getAttribute('y'))+Number(n.getAttribute('height'))/2}));
+ const cellPosition=await page.locator(`[data-fine-key="${requiredKey}"] polygon`).evaluate(n=>{const p=[...n.points];return {x:p.reduce((s,p)=>s+p.x,0)/6,y:p.reduce((s,p)=>s+p.y,0)/6};});
+ const requiredCellWorld=detailCellCenter(createDetailGrid(1),requiredCell),factor=Math.sqrt(3)*28/6;
+ assert.ok(Math.abs(markerPosition.x-cellPosition.x-(requiredMove.newAnchor.x-requiredCellWorld.x)*factor)<1e-7);
+ assert.ok(Math.abs(markerPosition.y-cellPosition.y-(requiredMove.newAnchor.y-requiredCellWorld.y)*factor)<1e-7,'actual marker follows the prepared bank anchor');
+ await page.locator(`[data-fine-key="${requiredKey}"]`).press('Enter');await page.locator('[data-fine-panel]').hover();
+ assert.equal(await page.locator('[data-fine-selected]').getAttribute('data-fine-selected'),requiredKey);assert.match(await page.locator('[data-fine-panel]').innerText(),/mill/i);
+ const requiredSignature=await classicSignature(),markerSignature=await requiredMarker.evaluate(n=>['x','y','width','height'].map(k=>n.getAttribute(k)));
+ await shot('required-bank-1500.jpg');await snap();await page.evaluate(()=>window.__oneSvg=null);
+ const [requiredPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await requiredPng.path(),new URL('required-bank.png',out));
+ const requiredExport=await page.evaluate(id=>{const el=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml').querySelector('[data-fine-world]'),marker=el.querySelector(`[data-poi-id="${id}"] image`);return {marker:['x','y','width','height'].map(k=>marker.getAttribute(k)),rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])};},requiredMove.poiId);
+ assert.deepEqual(requiredExport,{marker:markerSignature,...requiredSignature},'required site, rivers and roads share exact screen/PNG geometry');assert.deepEqual((await snap()).map,requiredSource.map);
+ await page.setViewportSize({width:390,height:1000});await shot('required-bank-390.jpg');await page.setViewportSize({width:1500,height:1000});
+ manifest.cases.push({id:'HX059-required-POI-pick-PNG',status:'pass',source:'declared legal Knave structures96 variant of road-entry-zigzags',poiId:requiredMove.poiId,owner:requiredRiverOwner,riverId:requiredMove.contact.riverId,anchor:requiredMove.newAnchor,pickCell:requiredKey,viewports:[1500,390],attachedRoads:requiredMove.routeEntries.length,sourceWrites:false});
  await page.locator('input[type=file]').setInputFiles({name:'classic42-mixed-growth.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(mixedFixture))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  await step.selectOption('6');const mixedSource=await snap();await shot('mixed42-6mi-before.jpg');
@@ -144,7 +178,7 @@ try{
   for(let i=0;i<x.data.length;i+=4){let diff=0;for(let j=0;j<4;j++)diff=Math.max(diff,Math.abs(x.data[i+j]-y.data[i+j]));maxDelta=Math.max(maxDelta,diff);if(diff)changed++;}
   return {maxDelta,changedFraction:changed/(x.width*x.height)};
  },[before.toString('base64'),after.toString('base64')]);
- for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>{document.querySelector('details.export-menu')?.removeAttribute('open');return document.fonts.ready;});await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
+ for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.mouse.move(0,0);await p.evaluate(()=>{document.activeElement?.blur();document.querySelector('details.export-menu')?.removeAttribute('open');return document.fonts.ready;});await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
  const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});
  // Chromium can vary edge antialiasing between the two running builds.
  // Keep this opt-in diagnostic sensitive to actual changed objects/colors.

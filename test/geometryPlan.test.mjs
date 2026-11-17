@@ -49,9 +49,10 @@ for(const locale of ['ru','en'])test(`HX059 ${locale} import keeps a visible pre
  await load();const source=JSON.stringify(h.render().captureDocument().map),sourceScale=h.render().createSaveData().ui.mapScale;
  assert.equal(h.render().switchFineStep(1),true);
  assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'automatic display zoom is saved in accepted source coordinates');
- const restore=h.injectFunction('prepareAutomaticOneMileScene',()=>{throw Error('fixture_no_fit');});
+ const restore=h.injectFunction('prepareAutomaticOneMileScene',()=>{throw Error('fixture_no_fit detail-poi:7');});
  await load();restore();
  assert.match(h.render().automaticFineError??h.render().editError??'',locale==='ru'?/Не удалось подготовить/:/Could not prepare/);
+ assert.match(h.render().automaticFineError,/№7/);assert.match(h.render().automaticFineError,locale==='ru'?/не найдено допустимое/:/no legal route/);assert.doesNotMatch(h.render().automaticFineError,/fixture_no_fit|detail-poi/);
  assert.equal(h.render().fineDisplay?.viewStep??6,6);
  assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'failed preparation restores source camera scale');
  assert.equal(JSON.stringify(h.render().captureDocument().map),source);
@@ -139,12 +140,16 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  // F-R05/AC04: a declared source-policy variant of this same cached map.
  // The original fixture has no proven river-required POI; don't infer one
  // from a name. Knave structures96 explicitly requires river contact.
- const owner=g.sourceState.poiFootprints.find(f=>f.poiId==='detail-poi:12'),edge=g.riverPlan.source.segments.find(s=>s.riverId===3&&s.edgeKey==='-290.985,28|-290.985,56');
- const knownMap={...input.map,physicalGrid:{...g.sourceState,poiFootprints:g.sourceState.poiFootprints.map(f=>f===owner?{...f,attachments:[{kind:'water',waterKind:'river',waterId:'river:3',segmentId:edge.edgeKey,contact:edge.from.point}]}:f)},knave:{content:{byPoi:{[owner.legacyRef]:{site:{table:'structures',sourceRow:96}}}}}};
+ const owner=g.sourceState.poiFootprints.find(f=>f.poiId==='detail-poi:7'),edge=g.riverPlan.source.segments.find(s=>s.riverId===3&&s.edgeKey==='-218.238,154|-242.487,140');
+ const knownMap={...input.map,physicalGrid:{...g.sourceState,poiFootprints:g.sourceState.poiFootprints.map(f=>f===owner?{...f,attachments:[...f.attachments,{kind:'water',waterKind:'river',waterId:'river:3',segmentId:edge.edgeKey,contact:edge.from.point}]}:f)},knave:{content:{byPoi:{[owner.legacyRef]:{site:{table:'structures',sourceRow:96}}}}}};
  const knownInput={...input,map:knownMap,scopePolicy:'automatic_presentation'},beforeKnown=JSON.stringify(knownMap),display=prepareAutomaticSceneCandidate(knownInput),move=display.geometryRefinement.pois.pois.find(p=>p.poiId===owner.poiId);
  assert.ok(move);const visible=prepareRefinementWater({paths:display.geometryRefinement.riverPlan.paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,f/10]))});
  assert.ok(Math.abs(refinementWaterContains(visible,move.contact.point).clearance)<1e-7,'required POI contacts visible one-mile bank, not the wider physical source bank');
  assert.deepEqual(move.footprint.extent,owner.extent);assert.equal(JSON.stringify(knownMap),beforeKnown,'display contact never rewrites source');
+ assert.ok(move.routeEntries.length,'real source road entry is retained in the declared policy variant');
+ for(const entry of move.routeEntries){const roads=display.geometryRefinement.roads.roads.filter(r=>`road:${r.roadId}`===entry.routeId);assert.ok(roads.some(r=>r.points.slice(1).some((b,i)=>{const a=r.points[i],p=entry.newEntry;return Math.abs(Math.hypot(p.x-a.x,p.y-a.y)+Math.hypot(p.x-b.x,p.y-b.y)-Math.hypot(b.x-a.x,b.y-a.y))<1e-8;})),'attached road reaches the relocated entry while preserving source graph endpoints');assert.ok(move.footprint.attachments.some(a=>a.kind==='route'&&a.routeId===entry.routeId&&a.accessNodeId===entry.accessNodeId&&Math.hypot(a.entry.x-entry.newEntry.x,a.entry.y-entry.newEntry.y)<1e-8));}
+ const knownTerrain=new Map(input.map.regions.flatMap(r=>r.hexes.map(c=>[`${c.q},${c.r}`,r.biomeId]))),knownSummary=summarizeDetailCell(display,worldToDetailCell(createDetailGrid(1,display.grid.origin),move.newAnchor),knownTerrain,{rivers:input.liveRivers,roads:input.map.roads});
+ assert.ok(knownSummary.pois.some(p=>p.poiId===owner.poiId),'fine read/pick cell follows the moved owner');
  const initialKnown=prepareGeometryPlan(knownInput);assert.throws(()=>prepareAutomaticSceneCandidate({...knownInput,prepareWorkBudget:initialKnown.workBudget.used}),/prepare_incomplete_budget/,'visible contact closure shares the original total work limit');
  // Actual mounted component: retained paint/crossings come from physical4,
  // including lake masks and prepared POI road gaps. No source geometry writes.

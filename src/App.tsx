@@ -1,5 +1,5 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
-import {prepareAutomaticSceneCandidate} from './automaticOneMileScene';
+import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork,RefinedLakeWater} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
@@ -13639,7 +13639,7 @@ export function App() {
     let nextScene:Detail1State|null=null;
     if(automaticFineSceneRef.current?.viewStep===1||map.physicalGrid?.viewStep===1){
       try{nextScene=preparedAutomaticSceneRef.current?.map===map?preparedAutomaticSceneRef.current.state:prepareAutomaticOneMileScene(map);}
-      catch(error){nextScene=map.physicalGrid?{...map.physicalGrid,viewStep:6}:null;setAutomaticFineError(language==='ru'?'Не удалось подготовить карту 1 миля: совместимая геометрия не найдена. Открыта исходная карта 6 миль.':'Could not prepare the one-mile map: compatible geometry is unavailable. Showing the six-mile source map.');console.error('One-mile scene preparation failed',error);}
+      catch(error){nextScene=map.physicalGrid?{...map.physicalGrid,viewStep:6}:null;setAutomaticFineError(automaticSceneFailureMessage(error,language,true));console.error('One-mile scene preparation failed',error);}
     }
     const selected=automaticFineSceneRef.current;
     if(nextScene?.viewStep===1&&selected?.selectedCell&&projectOneMile(oneMileSources(map),nextScene.grid.origin).some(row=>isSameHex(row.cell,selected.selectedCell!)))nextScene={...nextScene,selectedCell:selected.selectedCell,selectedWorldPoint:selected.selectedWorldPoint};
@@ -16394,7 +16394,7 @@ export function App() {
     if(step===6&&automaticFineJob.current){cancelAutomaticFinePreparation();return true;}
     if(mutationBlocked()||fineComposing.current)return false;
     if(automaticFineSceneRef.current?.viewStep===step)return true;
-    const fail=(error:unknown)=>{setAutomaticFineError(language==='ru'?'Не удалось подготовить карту 1 миля: совместимая геометрия не найдена. Исходная карта сохранена.':'Could not prepare the one-mile map: compatible geometry is unavailable. The source map is unchanged.');console.error('One-mile scene preparation failed',error);};
+    const fail=(error:unknown)=>{setAutomaticFineError(automaticSceneFailureMessage(error,language));console.error('One-mile scene preparation failed',error);};
     const state=automaticFineSceneRef.current??physicalGridRef.current;
     if(step===1&&rivers.length&&typeof Worker!=='undefined'){
       const map=captureMap(),job={revision:documentRevision.current,cancel:undefined as (()=>void)|undefined};
