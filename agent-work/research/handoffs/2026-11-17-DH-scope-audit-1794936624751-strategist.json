@@ -1,0 +1,205 @@
+{
+  "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+  "audit_ref": "agent-work/research/requirements/DH-scope-audit.json",
+  "status": "research_only_no_queue_change",
+  "current_L1_requirement_ids": [
+    "DH-SRD2-001-L1",
+    "DH-SRD2-002-L1",
+    "DH-SRD2-004-L1"
+  ],
+  "spatial_component": {
+    "id": "DH-C01",
+    "source_rule_id": "DH-SRD2-003",
+    "disposition": "keep_L1",
+    "title": "Выбранное место/препятствие/добыча",
+    "reason": "Мастер размещает уже выбранное конкретное место; связь с существующимPOI/привязкой к региону. Не частота/не генерация сюжета.",
+    "product_boundary": "Мастер размещает уже выбранное конкретное место; связь с существующимPOI/привязкой к региону. Не частота/не генерация сюжета.",
+    "current_operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-003",
+      "normative_kind": "optional_procedure_component",
+      "applicability": "Only already selected concrete site/obstacle/treasure in a chosen region, not the full encounter/rumor recipe",
+      "layer": "L1",
+      "trigger_or_user_action": "Мастер размещает выбранный форпост в регионе Forest из7гексов.",
+      "inputs_and_units": {
+        "region": "7existing Forest hexes",
+        "selected_place": "one abandoned outpost",
+        "position": "chosen P in region",
+        "optional_loot": "only GM-supplied simple content of this place"
+      },
+      "product_operation": "Разместить выбранное место/препятствие с типом, названием, положением и простым содержимым; сохранить вместе с картой.",
+      "expected_output": "Один форпост вP связан с регионом; семь гексов не превращены в семь поселений.",
+      "constraints_and_exceptions": [
+        "Результат встречи - возможная заготовка; мастер выбирает факт размещения, плотность не выведена.",
+        "Не запускать бой/NPC/оптимизациюнаграды/слухи. Не создавать событие из факта записи места.",
+        "Само правило не определяет цифровойалгоритм размещения/размеры."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "Forest:7гексов; мастер выбрал один форпост вP и название «Северная башня».",
+          "when": "Разместить и сохранить, затем открыть карту.",
+          "expected": "Один форпост «Северная башня» вP; размер/формаForest и соседи прежние, новых6форпостов нет."
+        },
+        {
+          "given": "Есть выбранная руина; мастер вписал известный тайник в этой руине.",
+          "when": "Сохранить содержание места.",
+          "expected": "Тайник относится к выбранной руине; общий бюджет наград/бой/персонажныйинвентарь не вычислены."
+        }
+      ],
+      "source_vs_product_interpretation": "Возможные типы11/13/14 и9даны таблицей. Конкретное размещение после выбора мастера и сохранение - суженная продуктовая интерпретация, не обязательныйгенераторвстреч.",
+      "canonical_rule_refs": [
+        "agent-work/rules/common-rules.json#content.place_description"
+      ],
+      "unresolved_parameters": [
+        "Плотность и геометрическое размещение не заданы; текущая реализация профиля не проверена."
+      ]
+    },
+    "implementation_status": "unverified"
+  },
+  "deferred_or_excluded": [
+    {
+      "id": "DH-C02",
+      "source_rule_id": "DH-SRD2-003",
+      "disposition": "defer_L2",
+      "title": "Optimal/Fair/Rough/Extreme и1–4дня",
+      "reason": "Расчёт длительности входит в ведение маршрута даже при предварительной записи. Это не утверждённая тройка проходимости.",
+      "product_boundary": "Расчёт длительности входит в ведение маршрута даже при предварительной записи. Это не утверждённая тройка проходимости.",
+      "current_operational_requirement": null,
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-C03",
+      "source_rule_id": "DH-SRD2-003",
+      "disposition": "out_of_scope",
+      "title": "Слухиd100/ложь/сочинение ситуации",
+      "reason": "Нет прямого принятого картографического действия; возможность заметки и общийrule_id не основание для генератора сюжета.",
+      "product_boundary": "Нет прямого принятого картографического действия; возможность заметки и общийrule_id не основание для генератора сюжета.",
+      "current_operational_requirement": null,
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-C04",
+      "source_rule_id": "DH-SRD2-003",
+      "disposition": "out_of_scope",
+      "title": "Полный генератор потенциальных противников/NPC/ситуаций",
+      "reason": "Контекст подготовки не делает это картографией; полный бой/NPC/сценарий не входят.",
+      "product_boundary": "Контекст подготовки не делает это картографией; полный бой/NPC/сценарий не входят.",
+      "current_operational_requirement": null,
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-C05",
+      "source_rule_id": "DH-SRD2-003",
+      "disposition": "defer_L2",
+      "title": "Погодные условия путешествия",
+      "reason": "Условия маршрута допустимы при ведении; не отдельный погодный генераторL1.",
+      "product_boundary": "Условия маршрута допустимы при ведении; не отдельный погодный генераторL1.",
+      "current_operational_requirement": null,
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-C06",
+      "source_rule_id": "DH-SRD2-002",
+      "disposition": "defer_L2",
+      "title": "Пересечение особо испорченной области",
+      "reason": "Только качественный факт; множитель/урон/проверка неизвестны, не выдумываются.",
+      "product_boundary": "Только качественный факт; множитель/урон/проверка неизвестны, не выдумываются.",
+      "current_operational_requirement": null,
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-C07",
+      "source_rule_id": "DH-SRD2-002",
+      "disposition": "needs_owner_decision",
+      "title": "Соответствие habitat/terrain биомам и проходимости приложения",
+      "reason": "Совпадение названия не доказывает профиль; не менять утверждённую классификацию.",
+      "product_boundary": "Совпадение названия не доказывает профиль; не менять утверждённую классификацию.",
+      "current_operational_requirement": null,
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-C08",
+      "source_rule_id": "DH-SRD2-003",
+      "disposition": "needs_owner_decision",
+      "title": "Автоматическое размещение/плотность мест из встречи",
+      "reason": "Источник не даёт плотность на гекс; выбранное место не разрешает новый генератор количества.",
+      "product_boundary": "Источник не даёт плотность на гекс; выбранное место не разрешает новый генератор количества.",
+      "current_operational_requirement": null,
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-CLASS-01",
+      "disposition": "defer_L2",
+      "title": "Карта игроков/раскрытие",
+      "reason": "Показ известныхмест и раскрытие относится к ведению, не текущемугенератору.",
+      "printed_page": 203,
+      "product_boundary": "Показ известныхмест и раскрытие относится к ведению, не текущемугенератору.",
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-CLASS-02",
+      "disposition": "keep_L1",
+      "title": "Выбранное поселение/убежище как конкретное место",
+      "reason": "Расположение выбранного места допустимо; плотность/число не заданы. Приёмка и операцияDH-C01.",
+      "printed_page": 203,
+      "product_boundary": "Расположение выбранного места допустимо; плотность/число не заданы. Приёмка и операцияDH-C01.",
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-CLASS-03",
+      "disposition": "out_of_scope",
+      "title": "Отдых/восстановление персонажей",
+      "reason": "Фактместа не включает персонажныеправила отдыха.",
+      "printed_page": 203,
+      "product_boundary": "Фактместа не включает персонажныеправила отдыха.",
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-CLASS-04",
+      "disposition": "defer_L2",
+      "title": "Позиция партии/дни/движение/условияводы",
+      "reason": "Ведение маршрута отделено от созданиякарты; численныеоперации этого корпуса не оцифровываются заново.",
+      "printed_page": 204,
+      "product_boundary": "Ведение маршрута отделено от созданиякарты; численныеоперации этого корпуса не оцифровываются заново.",
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-CLASS-05",
+      "disposition": "integration_L3",
+      "title": "Внешний подтверждённый результат для движения",
+      "reason": "Будущая граница: заданныйпуть/условия → внешнийитог прошёл/непрошёл/затраченные дни → обновлениепозиции/времениL2. Сервисневыбран/поддержканеизвестна; внутреннийбой/стресснестроить.",
+      "printed_page": 204,
+      "product_boundary": "Будущая граница: заданныйпуть/условия → внешнийитог прошёл/непрошёл/затраченные дни → обновлениепозиции/времениL2. Сервисневыбран/поддержканеизвестна; внутреннийбой/стресснестроить.",
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-CLASS-06",
+      "disposition": "out_of_scope",
+      "title": "Внутренний Endurance/rest/stress/Doom engine",
+      "reason": "Нет принятой прямойзависимости карты; общийигровойдвижок не включён.",
+      "printed_page": 204,
+      "product_boundary": "Нет принятой прямойзависимости карты; общийигровойдвижок не включён.",
+      "implementation_status": "unverified"
+    },
+    {
+      "id": "DH-CLASS-07",
+      "disposition": "out_of_scope",
+      "title": "Habitat-basedadversaryfeatures / Enviromancer",
+      "reason": "Боевая/персонажнаямеханика не порождает географическуюфункцию. ИсторическоеL3неразрешает её разработку.",
+      "printed_page": 205,
+      "product_boundary": "Боевая/персонажнаямеханика не порождает географическуюфункцию. ИсторическоеL3неразрешает её разработку.",
+      "implementation_status": "unverified"
+    }
+  ],
+  "historical_task_refs": [
+    "HX-BL-008",
+    "HX-BL-042",
+    "HX-BL-043",
+    "HX-BL-047",
+    "HX-BL-051",
+    "HX-BL-054"
+  ],
+  "queue_action": "No new/restored tasks or status transitions. Existing generic IDs are not scope authorization.",
+  "runtime_status": "unverified",
+  "needs_owner_action": false,
+  "product_development_authorized": false
+}

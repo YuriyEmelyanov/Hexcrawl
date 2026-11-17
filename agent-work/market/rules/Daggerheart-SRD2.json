@@ -148,7 +148,117 @@
           },
           "acceptance_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001-L1",
           "proposed_task_ref": "agent-work/backlog.json#HX-BL-008",
-          "finding": "README describes connected growth and wouldCreateEnclosedVoid; historical MB audit confirms d12 target. Neither verifies DH result/exception profile on current SHA."
+          "finding": "README describes connected growth and wouldCreateEnclosedVoid; historical MB audit confirms d12 target. Neither verifies DH result/exception profile on current SHA.",
+          "scope_review": {
+            "id": "DH-SRD2-001-L1",
+            "source_rule_id": "DH-SRD2-001",
+            "title": "Размер и форма одного региона",
+            "disposition": "keep_L1",
+            "reason": "Группа1–12связных гексов без окружённой пустоты - создание региональной географии; бумажный/игровой d12 не переносит исключенияMB.",
+            "product_boundary": "Создание/редактирование/сохранение географии карты",
+            "user_action": "Мастер добавляет регион выбранного habitat по d12-профилю.",
+            "map_object_or_state": {
+              "size_die": "d12",
+              "result_range": [
+                1,
+                12
+              ],
+              "size_unit": "contiguous hexes",
+              "habitat": "Выбранный habitat H; отдельный ранее извлечённый профиль DH-SRD2-002",
+              "shape": "GM choice subject to connectivity/no enclosed empty hexes"
+            },
+            "checkable_result": "При достаточном свободном месте размер равен исходу; заданные1/7/12 дают1/7/12 гексов.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001",
+              "normative_kind": "optional_procedure",
+              "applicability": "Only selected SRD2 supplemental hex-crawl preparation method; manual/mixed preparation also permitted.",
+              "layer": "L1",
+              "trigger_or_user_action": "Мастер добавляет регион выбранного habitat по d12-профилю.",
+              "inputs_and_units": {
+                "size_die": "d12",
+                "result_range": [
+                  1,
+                  12
+                ],
+                "size_unit": "contiguous hexes",
+                "habitat": "Выбранный habitat H; отдельный ранее извлечённый профиль DH-SRD2-002",
+                "shape": "GM choice subject to connectivity/no enclosed empty hexes"
+              },
+              "product_operation": "Создать группу заданного размера с общим habitat; принимать разные формы при соблюдении связности и отсутствии окружённых пустых гексов.",
+              "expected_output": "При достаточном свободном месте размер равен исходу; заданные1/7/12 дают1/7/12 гексов.",
+              "constraints_and_exceptions": [
+                "Не навязывать профиль картам других режимов; ручная/смешанная подготовка разрешена.",
+                "Не переносить утверждённые исключения MB (первая группа11/12 и поглощение карманов) как правила DH.",
+                "Сохранение/неизменность соседей и обработка недопустимого ввода — продуктовая приёмка, не дополнительные игровые правила.",
+                "Исход не доказывает равномерность текущего RNG; runtime не проверен.",
+                "Применимость к L1 не является согласованием разработки или проверенной поддержкой; фактический профиль unverified."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "DH-SRD2-001-L1-AC01",
+                  "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=1, habitat H.",
+                  "when": "Создать один регион.",
+                  "expected": "Ровно 1 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(0,0)."
+                },
+                {
+                  "id": "DH-SRD2-001-L1-AC02",
+                  "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=7, habitat H.",
+                  "when": "Создать один регион.",
+                  "expected": "Ровно 7 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(6,0)."
+                },
+                {
+                  "id": "DH-SRD2-001-L1-AC03",
+                  "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=12, habitat H.",
+                  "when": "Создать один регион.",
+                  "expected": "Ровно 12 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(11,0)."
+                },
+                {
+                  "id": "DH-SRD2-001-L1-AC04",
+                  "given": "Предложены шесть соседей пустого (0,0) и (2,0), размер7.",
+                  "when": "Применить форму.",
+                  "expected": "Форма не принята как допустимая: (0,0) окружён пустым. Допустимый альтернативный пример — ряд (0,0)…(6,0)."
+                },
+                {
+                  "id": "DH-SRD2-001-L1-AC05",
+                  "given": "Предложены (0,0),(1,0),(2,0),(4,0),(5,0),(6,0),(7,0).",
+                  "when": "Применить форму региона7.",
+                  "expected": "Набор не принят как связный; разрыв между (2,0) и (4,0)."
+                },
+                {
+                  "id": "DH-SRD2-001-L1-AC06",
+                  "given": "Вместо исхода d12 передано0,13 или7.5.",
+                  "when": "Создать регион.",
+                  "expected": "Недопустимый исход не создаёт успешный регион."
+                },
+                {
+                  "id": "DH-SRD2-001-L1-AC07",
+                  "given": "Исход7; осталось только5 доступных гексов.",
+                  "when": "Добавить регион.",
+                  "expected": "Занятая карта не перезаписана; цель7 не объявлена достигнутой. Усечение/перенос/отказ источником не определены."
+                },
+                {
+                  "id": "DH-SRD2-001-L1-AC08",
+                  "given": "Регион7 подготовлен в выбранном профиле; рядом существуют другие регионы.",
+                  "when": "Сохранить и снова открыть карту.",
+                  "expected": "Те же7 гексов, habitat и форма; соседи прежние, автоматического переброса нет."
+                }
+              ],
+              "source_vs_product_interpretation": "Размер/связность/запрет окружать пустые гексы — источник. Предлагаемый выбираемый профиль и приведённые координатные примеры — перевод в операцию генератора; UI/API/алгоритм не проектируются.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.extend_preserving_content",
+                "agent-work/rules/common-rules.json#map.terrain_zones"
+              ],
+              "unresolved_parameters": [
+                "Поведение при нехватке места не задано.",
+                "Дословное contiguous переведено как соседство сторон на обычной гекс-сетке; алгоритм формы не задан."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_status": "unverified",
+            "implementation_retested": false,
+            "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         },
         {
           "layer": "L2",
@@ -160,7 +270,117 @@
           "status": "not_applicable",
           "reason": "No external game-resolution mechanic in selected clause."
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "DH-SRD2-001-L1",
+        "source_rule_id": "DH-SRD2-001",
+        "title": "Размер и форма одного региона",
+        "disposition": "keep_L1",
+        "reason": "Группа1–12связных гексов без окружённой пустоты - создание региональной географии; бумажный/игровой d12 не переносит исключенияMB.",
+        "product_boundary": "Создание/редактирование/сохранение географии карты",
+        "user_action": "Мастер добавляет регион выбранного habitat по d12-профилю.",
+        "map_object_or_state": {
+          "size_die": "d12",
+          "result_range": [
+            1,
+            12
+          ],
+          "size_unit": "contiguous hexes",
+          "habitat": "Выбранный habitat H; отдельный ранее извлечённый профиль DH-SRD2-002",
+          "shape": "GM choice subject to connectivity/no enclosed empty hexes"
+        },
+        "checkable_result": "При достаточном свободном месте размер равен исходу; заданные1/7/12 дают1/7/12 гексов.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-001",
+          "normative_kind": "optional_procedure",
+          "applicability": "Only selected SRD2 supplemental hex-crawl preparation method; manual/mixed preparation also permitted.",
+          "layer": "L1",
+          "trigger_or_user_action": "Мастер добавляет регион выбранного habitat по d12-профилю.",
+          "inputs_and_units": {
+            "size_die": "d12",
+            "result_range": [
+              1,
+              12
+            ],
+            "size_unit": "contiguous hexes",
+            "habitat": "Выбранный habitat H; отдельный ранее извлечённый профиль DH-SRD2-002",
+            "shape": "GM choice subject to connectivity/no enclosed empty hexes"
+          },
+          "product_operation": "Создать группу заданного размера с общим habitat; принимать разные формы при соблюдении связности и отсутствии окружённых пустых гексов.",
+          "expected_output": "При достаточном свободном месте размер равен исходу; заданные1/7/12 дают1/7/12 гексов.",
+          "constraints_and_exceptions": [
+            "Не навязывать профиль картам других режимов; ручная/смешанная подготовка разрешена.",
+            "Не переносить утверждённые исключения MB (первая группа11/12 и поглощение карманов) как правила DH.",
+            "Сохранение/неизменность соседей и обработка недопустимого ввода — продуктовая приёмка, не дополнительные игровые правила.",
+            "Исход не доказывает равномерность текущего RNG; runtime не проверен.",
+            "Применимость к L1 не является согласованием разработки или проверенной поддержкой; фактический профиль unverified."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "DH-SRD2-001-L1-AC01",
+              "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=1, habitat H.",
+              "when": "Создать один регион.",
+              "expected": "Ровно 1 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(0,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC02",
+              "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=7, habitat H.",
+              "when": "Создать один регион.",
+              "expected": "Ровно 7 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(6,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC03",
+              "given": "Выбран необязательный профиль DH; свободная область достаточна; задан исход d12=12, habitat H.",
+              "when": "Создать один регион.",
+              "expected": "Ровно 12 связных гексов H без пустоты внутри; например axial(q,r)=(0,0)…(11,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC04",
+              "given": "Предложены шесть соседей пустого (0,0) и (2,0), размер7.",
+              "when": "Применить форму.",
+              "expected": "Форма не принята как допустимая: (0,0) окружён пустым. Допустимый альтернативный пример — ряд (0,0)…(6,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC05",
+              "given": "Предложены (0,0),(1,0),(2,0),(4,0),(5,0),(6,0),(7,0).",
+              "when": "Применить форму региона7.",
+              "expected": "Набор не принят как связный; разрыв между (2,0) и (4,0)."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC06",
+              "given": "Вместо исхода d12 передано0,13 или7.5.",
+              "when": "Создать регион.",
+              "expected": "Недопустимый исход не создаёт успешный регион."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC07",
+              "given": "Исход7; осталось только5 доступных гексов.",
+              "when": "Добавить регион.",
+              "expected": "Занятая карта не перезаписана; цель7 не объявлена достигнутой. Усечение/перенос/отказ источником не определены."
+            },
+            {
+              "id": "DH-SRD2-001-L1-AC08",
+              "given": "Регион7 подготовлен в выбранном профиле; рядом существуют другие регионы.",
+              "when": "Сохранить и снова открыть карту.",
+              "expected": "Те же7 гексов, habitat и форма; соседи прежние, автоматического переброса нет."
+            }
+          ],
+          "source_vs_product_interpretation": "Размер/связность/запрет окружать пустые гексы — источник. Предлагаемый выбираемый профиль и приведённые координатные примеры — перевод в операцию генератора; UI/API/алгоритм не проектируются.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.extend_preserving_content",
+            "agent-work/rules/common-rules.json#map.terrain_zones"
+          ],
+          "unresolved_parameters": [
+            "Поведение при нехватке места не задано.",
+            "Дословное contiguous переведено как соседство сторон на обычной гекс-сетке; алгоритм формы не задан."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "DH-SRD2-002",
@@ -401,7 +621,227 @@
             ]
           },
           "proposed_task_ref": "agent-work/backlog.json#HX-BL-047",
-          "finding": "Profile not executed on current productSHA; generic biome labels not evidence."
+          "finding": "Profile not executed on current productSHA; generic biome labels not evidence.",
+          "scope_review": {
+            "id": "DH-SRD2-002-L1",
+            "source_rule_id": "DH-SRD2-002",
+            "title": "Среда региона и порча на d20",
+            "disposition": "keep_L1",
+            "reason": "Habitat и признак порчи описывают конкретную область карты; повторная1 не задаёт неизвестную базовую среду/численный урон.",
+            "product_boundary": "Создание/редактирование/сохранение географии карты",
+            "user_action": "Мастер определяет habitat нового региона по выбранному d20-профилю.",
+            "map_object_or_state": {
+              "die": "d20",
+              "valid_integer_results": [
+                1,
+                20
+              ],
+              "ordinary_intervals": [
+                {
+                  "min": 2,
+                  "max": 2,
+                  "habitat": "Underground"
+                },
+                {
+                  "min": 3,
+                  "max": 4,
+                  "habitat": "Aquatic"
+                },
+                {
+                  "min": 5,
+                  "max": 6,
+                  "habitat": "Wetland"
+                },
+                {
+                  "min": 7,
+                  "max": 8,
+                  "habitat": "Grassland"
+                },
+                {
+                  "min": 9,
+                  "max": 10,
+                  "habitat": "Tropical"
+                },
+                {
+                  "min": 11,
+                  "max": 12,
+                  "habitat": "Forest"
+                },
+                {
+                  "min": 13,
+                  "max": 14,
+                  "habitat": "Drylands"
+                },
+                {
+                  "min": 15,
+                  "max": 16,
+                  "habitat": "Rolling"
+                },
+                {
+                  "min": 17,
+                  "max": 18,
+                  "habitat": "Mountain"
+                },
+                {
+                  "min": 19,
+                  "max": 19,
+                  "habitat": "Frozen"
+                },
+                {
+                  "min": 20,
+                  "max": 20,
+                  "habitat": "Badlands"
+                }
+              ],
+              "reroll_trigger": 1,
+              "max_consumed_results": 2
+            },
+            "checkable_result": "Обычный habitat либо habitat с порчей;1+1 — особо испорченный регион с качественным ограничением и неизвестной базовой средой.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-002",
+              "normative_kind": "optional_procedure",
+              "applicability": "Selected SRD2 supplemental hex-crawl preparation, not all Daggerheart games.",
+              "layer": "L1",
+              "trigger_or_user_action": "Мастер определяет habitat нового региона по выбранному d20-профилю.",
+              "inputs_and_units": {
+                "die": "d20",
+                "valid_integer_results": [
+                  1,
+                  20
+                ],
+                "ordinary_intervals": [
+                  {
+                    "min": 2,
+                    "max": 2,
+                    "habitat": "Underground"
+                  },
+                  {
+                    "min": 3,
+                    "max": 4,
+                    "habitat": "Aquatic"
+                  },
+                  {
+                    "min": 5,
+                    "max": 6,
+                    "habitat": "Wetland"
+                  },
+                  {
+                    "min": 7,
+                    "max": 8,
+                    "habitat": "Grassland"
+                  },
+                  {
+                    "min": 9,
+                    "max": 10,
+                    "habitat": "Tropical"
+                  },
+                  {
+                    "min": 11,
+                    "max": 12,
+                    "habitat": "Forest"
+                  },
+                  {
+                    "min": 13,
+                    "max": 14,
+                    "habitat": "Drylands"
+                  },
+                  {
+                    "min": 15,
+                    "max": 16,
+                    "habitat": "Rolling"
+                  },
+                  {
+                    "min": 17,
+                    "max": 18,
+                    "habitat": "Mountain"
+                  },
+                  {
+                    "min": 19,
+                    "max": 19,
+                    "habitat": "Frozen"
+                  },
+                  {
+                    "min": 20,
+                    "max": 20,
+                    "habitat": "Badlands"
+                  }
+                ],
+                "reroll_trigger": 1,
+                "max_consumed_results": 2
+              },
+              "product_operation": "Назначить среду по обычному исходу; при первом1 получить дополнительный исход и сохранить порчу отдельно от базовой среды; повторная1 завершает особый результат.",
+              "expected_output": "Обычный habitat либо habitat с порчей;1+1 — особо испорченный регион с качественным ограничением и неизвестной базовой средой.",
+              "constraints_and_exceptions": [
+                "Метод необязательный; ручная/смешанная подготовка остаётся допустимой.",
+                "Не отождествлять habitat и отдельно бросаемый terrain; d4 время пути не разобрано.",
+                "Почти невозможно не означает абсолютный запрет. Численного множителя, проверки или урона здесь нет.",
+                "Классификация владельца ordinary/difficult/dangerous и её реализация044 не меняются этим исследованием.",
+                "Полная таблица текстов/описаний не копируется; только короткие наименования и численные параметры.",
+                "Save/load и неразрушающее применение — продуктовые примеры, не дополнительные цитаты.",
+                "Применимость к L1 не является согласованием разработки или проверенной поддержкой; фактический профиль unverified.",
+                "Порча - признак конкретной области, не полный движок эффектов; исполнение почти невозможного переходаL2, adversaryfeatures исключены."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "DH-SRD2-002-L1-AC01",
+                  "given": "Последовательно заданы обычные исходы2…20; ожидаемое соответствие — intervals в parameters.",
+                  "when": "Определить habitat региона для каждого исхода.",
+                  "expected": "Каждый исход даёт habitat указанного интервала; второй бросок не требуется, признак blighted не добавляется."
+                },
+                {
+                  "id": "DH-SRD2-002-L1-AC02",
+                  "given": "Исходы1,11.",
+                  "when": "Определить habitat.",
+                  "expected": "Forest с признаком blighted; израсходованы два исхода, третий не требуется."
+                },
+                {
+                  "id": "DH-SRD2-002-L1-AC03",
+                  "given": "Исходы1,1.",
+                  "when": "Определить результат региона.",
+                  "expected": "Терминальный сильно испорченный регион: почти невозможно пересечь; базовый habitat неизвестен. Нет третьего переброса, абсолютного запрета или выдуманного численного времени/урона."
+                },
+                {
+                  "id": "DH-SRD2-002-L1-AC04",
+                  "given": "Первый исход1; повторный исход пока не задан.",
+                  "when": "Подготовить регион.",
+                  "expected": "Требуется повторный бросок; habitat не выдуман и завершённый обычный результат не показан."
+                },
+                {
+                  "id": "DH-SRD2-002-L1-AC05",
+                  "given": "Значения0,21,2.5 вместо исхода d20.",
+                  "when": "Применить значение.",
+                  "expected": "Ни одно не принято как корректный исход; готовая карта не изменена."
+                },
+                {
+                  "id": "DH-SRD2-002-L1-AC06",
+                  "given": "Сохранён регион Forest/blighted из исходов1,11; рядом другой регион.",
+                  "when": "Сохранить и открыть карту.",
+                  "expected": "Forest и blighted остаются, повторного броска нет; соседний регион прежний."
+                },
+                {
+                  "id": "DH-SRD2-002-L1-AC07",
+                  "given": "Обычный исход17.",
+                  "when": "Определить habitat.",
+                  "expected": "Mountain без добавления blighted/двойной коррупции. Категории CLASSIFY1 задаются отдельной политикой владельца; этот профиль не меняет их автоматически."
+                }
+              ],
+              "source_vs_product_interpretation": "Табличные интервалы/повтор1 и качественная тяжесть1+1 подтверждены источником. Отдельная передача базовой среды/порчи и неполного результата — продуктовая интерпретация. UI/API, текущие biome ID и алгоритм генератора не задаются.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.terrain_zones",
+                "agent-work/rules/common-rules.json#content.place_description"
+              ],
+              "unresolved_parameters": [
+                "Базовая среда при1+1 источником не названа.",
+                "Численное разрешение почти непроходимой области не задано.",
+                "Соответствие11 habitat текущим biome ID не проверено; не подменять похожими категориями."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_status": "unverified",
+            "implementation_retested": false,
+            "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         },
         {
           "layer": "L2",
@@ -413,7 +853,227 @@
           "status": "not_applicable",
           "reason": "No numeric check/damage rule in selected clause; not invented."
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "DH-SRD2-002-L1",
+        "source_rule_id": "DH-SRD2-002",
+        "title": "Среда региона и порча на d20",
+        "disposition": "keep_L1",
+        "reason": "Habitat и признак порчи описывают конкретную область карты; повторная1 не задаёт неизвестную базовую среду/численный урон.",
+        "product_boundary": "Создание/редактирование/сохранение географии карты",
+        "user_action": "Мастер определяет habitat нового региона по выбранному d20-профилю.",
+        "map_object_or_state": {
+          "die": "d20",
+          "valid_integer_results": [
+            1,
+            20
+          ],
+          "ordinary_intervals": [
+            {
+              "min": 2,
+              "max": 2,
+              "habitat": "Underground"
+            },
+            {
+              "min": 3,
+              "max": 4,
+              "habitat": "Aquatic"
+            },
+            {
+              "min": 5,
+              "max": 6,
+              "habitat": "Wetland"
+            },
+            {
+              "min": 7,
+              "max": 8,
+              "habitat": "Grassland"
+            },
+            {
+              "min": 9,
+              "max": 10,
+              "habitat": "Tropical"
+            },
+            {
+              "min": 11,
+              "max": 12,
+              "habitat": "Forest"
+            },
+            {
+              "min": 13,
+              "max": 14,
+              "habitat": "Drylands"
+            },
+            {
+              "min": 15,
+              "max": 16,
+              "habitat": "Rolling"
+            },
+            {
+              "min": 17,
+              "max": 18,
+              "habitat": "Mountain"
+            },
+            {
+              "min": 19,
+              "max": 19,
+              "habitat": "Frozen"
+            },
+            {
+              "min": 20,
+              "max": 20,
+              "habitat": "Badlands"
+            }
+          ],
+          "reroll_trigger": 1,
+          "max_consumed_results": 2
+        },
+        "checkable_result": "Обычный habitat либо habitat с порчей;1+1 — особо испорченный регион с качественным ограничением и неизвестной базовой средой.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-002",
+          "normative_kind": "optional_procedure",
+          "applicability": "Selected SRD2 supplemental hex-crawl preparation, not all Daggerheart games.",
+          "layer": "L1",
+          "trigger_or_user_action": "Мастер определяет habitat нового региона по выбранному d20-профилю.",
+          "inputs_and_units": {
+            "die": "d20",
+            "valid_integer_results": [
+              1,
+              20
+            ],
+            "ordinary_intervals": [
+              {
+                "min": 2,
+                "max": 2,
+                "habitat": "Underground"
+              },
+              {
+                "min": 3,
+                "max": 4,
+                "habitat": "Aquatic"
+              },
+              {
+                "min": 5,
+                "max": 6,
+                "habitat": "Wetland"
+              },
+              {
+                "min": 7,
+                "max": 8,
+                "habitat": "Grassland"
+              },
+              {
+                "min": 9,
+                "max": 10,
+                "habitat": "Tropical"
+              },
+              {
+                "min": 11,
+                "max": 12,
+                "habitat": "Forest"
+              },
+              {
+                "min": 13,
+                "max": 14,
+                "habitat": "Drylands"
+              },
+              {
+                "min": 15,
+                "max": 16,
+                "habitat": "Rolling"
+              },
+              {
+                "min": 17,
+                "max": 18,
+                "habitat": "Mountain"
+              },
+              {
+                "min": 19,
+                "max": 19,
+                "habitat": "Frozen"
+              },
+              {
+                "min": 20,
+                "max": 20,
+                "habitat": "Badlands"
+              }
+            ],
+            "reroll_trigger": 1,
+            "max_consumed_results": 2
+          },
+          "product_operation": "Назначить среду по обычному исходу; при первом1 получить дополнительный исход и сохранить порчу отдельно от базовой среды; повторная1 завершает особый результат.",
+          "expected_output": "Обычный habitat либо habitat с порчей;1+1 — особо испорченный регион с качественным ограничением и неизвестной базовой средой.",
+          "constraints_and_exceptions": [
+            "Метод необязательный; ручная/смешанная подготовка остаётся допустимой.",
+            "Не отождествлять habitat и отдельно бросаемый terrain; d4 время пути не разобрано.",
+            "Почти невозможно не означает абсолютный запрет. Численного множителя, проверки или урона здесь нет.",
+            "Классификация владельца ordinary/difficult/dangerous и её реализация044 не меняются этим исследованием.",
+            "Полная таблица текстов/описаний не копируется; только короткие наименования и численные параметры.",
+            "Save/load и неразрушающее применение — продуктовые примеры, не дополнительные цитаты.",
+            "Применимость к L1 не является согласованием разработки или проверенной поддержкой; фактический профиль unverified.",
+            "Порча - признак конкретной области, не полный движок эффектов; исполнение почти невозможного переходаL2, adversaryfeatures исключены."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "DH-SRD2-002-L1-AC01",
+              "given": "Последовательно заданы обычные исходы2…20; ожидаемое соответствие — intervals в parameters.",
+              "when": "Определить habitat региона для каждого исхода.",
+              "expected": "Каждый исход даёт habitat указанного интервала; второй бросок не требуется, признак blighted не добавляется."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC02",
+              "given": "Исходы1,11.",
+              "when": "Определить habitat.",
+              "expected": "Forest с признаком blighted; израсходованы два исхода, третий не требуется."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC03",
+              "given": "Исходы1,1.",
+              "when": "Определить результат региона.",
+              "expected": "Терминальный сильно испорченный регион: почти невозможно пересечь; базовый habitat неизвестен. Нет третьего переброса, абсолютного запрета или выдуманного численного времени/урона."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC04",
+              "given": "Первый исход1; повторный исход пока не задан.",
+              "when": "Подготовить регион.",
+              "expected": "Требуется повторный бросок; habitat не выдуман и завершённый обычный результат не показан."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC05",
+              "given": "Значения0,21,2.5 вместо исхода d20.",
+              "when": "Применить значение.",
+              "expected": "Ни одно не принято как корректный исход; готовая карта не изменена."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC06",
+              "given": "Сохранён регион Forest/blighted из исходов1,11; рядом другой регион.",
+              "when": "Сохранить и открыть карту.",
+              "expected": "Forest и blighted остаются, повторного броска нет; соседний регион прежний."
+            },
+            {
+              "id": "DH-SRD2-002-L1-AC07",
+              "given": "Обычный исход17.",
+              "when": "Определить habitat.",
+              "expected": "Mountain без добавления blighted/двойной коррупции. Категории CLASSIFY1 задаются отдельной политикой владельца; этот профиль не меняет их автоматически."
+            }
+          ],
+          "source_vs_product_interpretation": "Табличные интервалы/повтор1 и качественная тяжесть1+1 подтверждены источником. Отдельная передача базовой среды/порчи и неполного результата — продуктовая интерпретация. UI/API, текущие biome ID и алгоритм генератора не задаются.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.terrain_zones",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Базовая среда при1+1 источником не названа.",
+            "Численное разрешение почти непроходимой области не задано.",
+            "Соответствие11 habitat текущим biome ID не проверено; не подменять похожими категориями."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "DH-SRD2-003",
@@ -601,7 +1261,24 @@
           },
           "acceptance_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-003-L1",
           "proposed_task_ref": "agent-work/backlog.json#HX-BL-054",
-          "finding": "Source verified; exact profile output/save evidence unknown on current SHA. No score uplift."
+          "finding": "Source verified; exact profile output/save evidence unknown on current SHA. No score uplift.",
+          "scope_review": {
+            "id": "DH-SRD2-003-L1",
+            "source_rule_id": "DH-SRD2-003",
+            "title": "Завершить подготовку региона: встреча, terrain и слух",
+            "disposition": "out_of_scope",
+            "reason": "Составная операция создаёт встречи/слухи и считает время. Нет единого принятого картографического результата; запись всех данных не основание включать весь пакет вL1. Пространственные компоненты сохранены отдельно.",
+            "product_boundary": "Исключённый составной генератор: NPC/ситуации/слухи; времяL2",
+            "user_action": "Не включать составную заготовку встречи/дней/слуха как требование редактора",
+            "map_object_or_state": "Конкретный регион; география отделена от встречи, времени и слуха",
+            "checkable_result": "Регион можно сохранить без включения полного генератора встреч/слухов; компоненты рассмотрены отдельно",
+            "current_operational_requirement": null,
+            "current_L1_eligible": false,
+            "implementation_status": "unverified",
+            "implementation_retested": false,
+            "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         },
         {
           "layer": "L2",
@@ -613,7 +1290,24 @@
           "status": "separate_future_scope",
           "reason": "Combat, stress and adversary effects not part of map preparation."
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "DH-SRD2-003-L1",
+        "source_rule_id": "DH-SRD2-003",
+        "title": "Завершить подготовку региона: встреча, terrain и слух",
+        "disposition": "out_of_scope",
+        "reason": "Составная операция создаёт встречи/слухи и считает время. Нет единого принятого картографического результата; запись всех данных не основание включать весь пакет вL1. Пространственные компоненты сохранены отдельно.",
+        "product_boundary": "Исключённый составной генератор: NPC/ситуации/слухи; времяL2",
+        "user_action": "Не включать составную заготовку встречи/дней/слуха как требование редактора",
+        "map_object_or_state": "Конкретный регион; география отделена от встречи, времени и слуха",
+        "checkable_result": "Регион можно сохранить без включения полного генератора встреч/слухов; компоненты рассмотрены отдельно",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "DH-SRD2-004",
@@ -703,7 +1397,70 @@
           },
           "acceptance_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-004-L1",
           "proposed_task_ref": "agent-work/backlog.json#HX-BL-042",
-          "finding": "Source verified; exact profile output/save evidence unknown on current SHA. No score uplift."
+          "finding": "Source verified; exact profile output/save evidence unknown on current SHA. No score uplift.",
+          "scope_review": {
+            "id": "DH-SRD2-004-L1",
+            "source_rule_id": "DH-SRD2-004",
+            "title": "Задать примерный масштаб24 мили между сторонами",
+            "disposition": "keep_L1",
+            "reason": "Физический масштаб24мили между сторонами относится к карте; это примерная конвенция источника, не зум/не боевой размер.",
+            "product_boundary": "Создание/редактирование/сохранение географии карты",
+            "user_action": "Мастер подготавливает карту с физическим масштабом Daggerheart.",
+            "map_object_or_state": {
+              "length": 24,
+              "unit": "mile",
+              "geometry": "roughly side-to-opposite-side of hex",
+              "override": "narrative may supersede literal representation"
+            },
+            "checkable_result": "После сохранения карта остаётся в выбранном масштабе;24 мили не объявляются расстоянием между противоположными вершинами.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-004",
+              "normative_kind": "default_with_narrative_override",
+              "applicability": "SRD2 supplemental hex-crawl campaign map, not all DH combat maps",
+              "layer": "L1",
+              "trigger_or_user_action": "Мастер подготавливает карту с физическим масштабом Daggerheart.",
+              "inputs_and_units": {
+                "length": 24,
+                "unit": "mile",
+                "geometry": "roughly side-to-opposite-side of hex",
+                "override": "narrative may supersede literal representation"
+              },
+              "product_operation": "Показать/сохранить физический масштаб24 мили между противоположными сторонами, отдельно от экранного зума и иных игровых профилей.",
+              "expected_output": "После сохранения карта остаётся в выбранном масштабе;24 мили не объявляются расстоянием между противоположными вершинами.",
+              "constraints_and_exceptions": [
+                "Примерный масштаб с приоритетом повествования, а не жёсткий маршрутный симулятор.",
+                "Не менять PF2 профиль12миль между вершинами, Knave6миль или текущую051.",
+                "Проверка сохранения/геометрической подписи — продуктовая интерпретация.",
+                "Применимость к L1 не является согласованием разработки или проверенной поддержкой; фактический профиль unverified."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "DH-SRD2-004-L1-AC01",
+                  "given": "Мастер выбрал масштаб этого supplemental профиля.",
+                  "when": "Посмотреть и сохранить карту, затем открыть её.",
+                  "expected": "24 мили между противоположными сторонами остаются24; это не24 между вершинами и не увеличение зума."
+                },
+                {
+                  "id": "DH-SRD2-004-L1-AC02",
+                  "given": "Существует другая карта с профилемPF2:12миль между противоположными вершинами.",
+                  "when": "Подготовить отдельную картуDH в24миль side-to-side.",
+                  "expected": "ПрофильPF2 не изменён. Обе конвенции различимы; перевод в дни пути не выполняется на этапе задания масштаба."
+                }
+              ],
+              "source_vs_product_interpretation": "Число24, приблизительность, стороны и приоритет повествования — источник. Сохранение/отделение от зума и PF2 — критерии полезного поведения; существующие042/051 переиспользуются без расширения утверждённого этапа.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.physical_hex_scale"
+              ],
+              "unresolved_parameters": [
+                "No exact runtime evidence for this24-mile profile."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_status": "unverified",
+            "implementation_retested": false,
+            "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         },
         {
           "layer": "L2",
@@ -715,7 +1472,70 @@
           "status": "separate_future_scope",
           "reason": "Combat, stress and adversary effects not part of map preparation."
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "DH-SRD2-004-L1",
+        "source_rule_id": "DH-SRD2-004",
+        "title": "Задать примерный масштаб24 мили между сторонами",
+        "disposition": "keep_L1",
+        "reason": "Физический масштаб24мили между сторонами относится к карте; это примерная конвенция источника, не зум/не боевой размер.",
+        "product_boundary": "Создание/редактирование/сохранение географии карты",
+        "user_action": "Мастер подготавливает карту с физическим масштабом Daggerheart.",
+        "map_object_or_state": {
+          "length": 24,
+          "unit": "mile",
+          "geometry": "roughly side-to-opposite-side of hex",
+          "override": "narrative may supersede literal representation"
+        },
+        "checkable_result": "После сохранения карта остаётся в выбранном масштабе;24 мили не объявляются расстоянием между противоположными вершинами.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Daggerheart-SRD2.json#DH-SRD2-004",
+          "normative_kind": "default_with_narrative_override",
+          "applicability": "SRD2 supplemental hex-crawl campaign map, not all DH combat maps",
+          "layer": "L1",
+          "trigger_or_user_action": "Мастер подготавливает карту с физическим масштабом Daggerheart.",
+          "inputs_and_units": {
+            "length": 24,
+            "unit": "mile",
+            "geometry": "roughly side-to-opposite-side of hex",
+            "override": "narrative may supersede literal representation"
+          },
+          "product_operation": "Показать/сохранить физический масштаб24 мили между противоположными сторонами, отдельно от экранного зума и иных игровых профилей.",
+          "expected_output": "После сохранения карта остаётся в выбранном масштабе;24 мили не объявляются расстоянием между противоположными вершинами.",
+          "constraints_and_exceptions": [
+            "Примерный масштаб с приоритетом повествования, а не жёсткий маршрутный симулятор.",
+            "Не менять PF2 профиль12миль между вершинами, Knave6миль или текущую051.",
+            "Проверка сохранения/геометрической подписи — продуктовая интерпретация.",
+            "Применимость к L1 не является согласованием разработки или проверенной поддержкой; фактический профиль unverified."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "DH-SRD2-004-L1-AC01",
+              "given": "Мастер выбрал масштаб этого supplemental профиля.",
+              "when": "Посмотреть и сохранить карту, затем открыть её.",
+              "expected": "24 мили между противоположными сторонами остаются24; это не24 между вершинами и не увеличение зума."
+            },
+            {
+              "id": "DH-SRD2-004-L1-AC02",
+              "given": "Существует другая карта с профилемPF2:12миль между противоположными вершинами.",
+              "when": "Подготовить отдельную картуDH в24миль side-to-side.",
+              "expected": "ПрофильPF2 не изменён. Обе конвенции различимы; перевод в дни пути не выполняется на этапе задания масштаба."
+            }
+          ],
+          "source_vs_product_interpretation": "Число24, приблизительность, стороны и приоритет повествования — источник. Сохранение/отделение от зума и PF2 — критерии полезного поведения; существующие042/051 переиспользуются без расширения утверждённого этапа.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.physical_hex_scale"
+          ],
+          "unresolved_parameters": [
+            "No exact runtime evidence for this24-mile profile."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_status": "unverified",
+        "implementation_retested": false,
+        "run_id": "2026-11-17-DH-scope-audit-1794936624751",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     }
   ],
   "completeness": {
@@ -792,5 +1612,26 @@
     "evidence_sha": null,
     "status": "unknown",
     "reason": "Existing generic043 evidence does not certify these DH compound operations; no product execution in researcher run."
+  },
+  "current_scope_review": {
+    "audit_ref": "agent-work/research/requirements/DH-scope-audit.json",
+    "counts": {
+      "requirements": 4,
+      "keep_L1": 3,
+      "out_of_scope": 1,
+      "defer_L2": 0,
+      "integration_L3": 0,
+      "needs_owner_decision": 0
+    },
+    "current_L1_requirement_ids": [
+      "DH-SRD2-001-L1",
+      "DH-SRD2-002-L1",
+      "DH-SRD2-004-L1"
+    ],
+    "spatial_components": [
+      "DH-C01"
+    ],
+    "original_source_status_preserved": true,
+    "historical_task_refs_not_authorization": true
   }
 }
