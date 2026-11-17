@@ -12043,6 +12043,7 @@ export function App() {
   // The accepted physical layer remains the only input to captureMap/save.
   // Scale and picking can use a complete derived scene without accepting it.
   const [automaticFineScene,setAutomaticFineScene]=useState<Detail1State|null>(null);
+  const [automaticFineError,setAutomaticFineError]=useState<string|null>(null);
   const automaticFineSceneRef=useRef(automaticFineScene);automaticFineSceneRef.current=automaticFineScene;
   const updateAutomaticFineScene=(state:Detail1State|null)=>{automaticFineSceneRef.current=state;setAutomaticFineScene(state);};
   const preparedAutomaticSceneRef=useRef<{map:MapSnapshot;state:Detail1State}|null>(null);
@@ -13631,10 +13632,11 @@ export function App() {
   };
   const applyExactMap = (map: MapSnapshot) => {
     // A document replacement cannot keep artwork derived from another map.
+    setAutomaticFineError(null);
     let nextScene:Detail1State|null=null;
     if(automaticFineSceneRef.current?.viewStep===1||map.physicalGrid?.viewStep===1){
       try{nextScene=preparedAutomaticSceneRef.current?.map===map?preparedAutomaticSceneRef.current.state:prepareAutomaticOneMileScene(map);}
-      catch(error){nextScene=map.physicalGrid?{...map.physicalGrid,viewStep:6}:null;setEditError(language==='ru'?'Не удалось подготовить карту 1 миля. Открыта исходная карта 6 миль.':'Could not prepare the one-mile map. Showing the six-mile source map.');console.error('One-mile scene preparation failed',error);}
+      catch(error){nextScene=map.physicalGrid?{...map.physicalGrid,viewStep:6}:null;setAutomaticFineError(language==='ru'?'Не удалось подготовить карту 1 миля: совместимая геометрия не найдена. Открыта исходная карта 6 миль.':'Could not prepare the one-mile map: compatible geometry is unavailable. Showing the six-mile source map.');console.error('One-mile scene preparation failed',error);}
     }
     const selected=automaticFineSceneRef.current;
     if(nextScene?.viewStep===1&&selected?.selectedCell&&projectOneMile(oneMileSources(map),nextScene.grid.origin).some(row=>isSameHex(row.cell,selected.selectedCell!)))nextScene={...nextScene,selectedCell:selected.selectedCell,selectedWorldPoint:selected.selectedWorldPoint};
@@ -16378,7 +16380,8 @@ export function App() {
     const state=automaticFineSceneRef.current??physicalGridRef.current;
     let next:Detail1State;
     try{next=step===1?prepareAutomaticOneMileScene(captureMap()):{...(state??prepareAutomaticOneMileScene(captureMap())),viewStep:6};}
-    catch(error){setEditError(language==='ru'?'Не удалось подготовить карту 1 миля. Исходная карта сохранена.':'Could not prepare the one-mile map. The source map is unchanged.');console.error('One-mile scene preparation failed',error);return false;}
+    catch(error){setAutomaticFineError(language==='ru'?'Не удалось подготовить карту 1 миля: совместимая геометрия не найдена. Исходная карта сохранена.':'Could not prepare the one-mile map: compatible geometry is unavailable. The source map is unchanged.');console.error('One-mile scene preparation failed',error);return false;}
+    setAutomaticFineError(null);
     const svg=mapSvgRef.current,viewport=mapViewportRef.current,layer=svg?.querySelector<SVGGElement>('[data-fine-world],.map-rotation-layer'),matrix=layer?.getScreenCTM();
     if(svg&&viewport&&matrix){const rect=viewport.getBoundingClientRect(),p=svg.createSVGPoint(),factor=Math.sqrt(3)*HEX_SIZE/6;
       const world=state?.selectedWorldPoint??(state?.selectedCell?detailCellCenter(createDetailGrid(1,state.grid.origin),state.selectedCell):null);
@@ -17012,6 +17015,7 @@ export function App() {
               </button>
               {fineActive&&<button type="button" className="secondary" data-refine-geography disabled={documentBusy()||!rivers.length} onClick={()=>previewGeometryRefinement()}>{language==='ru'?'Уточнить геометрию':'Refine geometry'}</button>}
               <label className="fine-step">{language==='ru'?'Размер гекса':'Hex size'}<select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={fineDisplay?.viewStep??(busyFineView?1:6)} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
+              {automaticFineError&&<p className="direct-error" role="alert" data-fine-scene-error>{automaticFineError}</p>}
               <button
                 type="button"
                 className={`hex-coordinate-toggle${showHexCoordinates ? ' is-active' : ''}`}

@@ -38,6 +38,22 @@ async function accepted(){
  fixture={input,result};return fixture;
 }
 const copy=value=>JSON.parse(JSON.stringify(value));
+// F-R08/AC06: a valid imported source must remain accessible when its derived
+// scene fails. Existing success/Undo cases cannot detect a cleared error.
+for(const locale of ['ru','en'])test(`HX059 ${locale} import keeps a visible preparation error and source map`,async()=>{
+ const h=createGenerationHarness(42,'',locale);h.render();h.guardRandom();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
+ const text=fs.readFileSync(new URL('fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8');
+ const load=()=>h.render().handleImportJson({target:{files:[{text}],value:'map'}});
+ await load();const source=JSON.stringify(h.render().captureDocument().map);
+ assert.equal(h.render().switchFineStep(1),true);
+ const restore=h.injectFunction('prepareAutomaticOneMileScene',()=>{throw Error('fixture_no_fit');});
+ await load();restore();
+ assert.match(h.render().automaticFineError??h.render().editError??'',locale==='ru'?/Не удалось подготовить/:/Could not prepare/);
+ assert.equal(h.render().fineDisplay?.viewStep??6,6);
+ assert.equal(JSON.stringify(h.render().captureDocument().map),source);
+ assert.doesNotThrow(()=>h.geometry.assertHexcrawlSaveData(h.render().createSaveData()));
+ assert.equal(h.render().switchFineStep(1),true);assert.equal(h.render().automaticFineError,null);
+});
 // Owner preview exposed a through-lake topology absent from the terminal-lake
 // fixture above. One saved world protects the actual App transaction boundary.
 test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes atomically',async()=>{
