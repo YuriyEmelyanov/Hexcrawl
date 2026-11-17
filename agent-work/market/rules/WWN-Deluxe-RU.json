@@ -184,7 +184,63 @@
           "runtime_review_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-001",
           "runtime_review_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
           "runtime_review_scope": "Bounded supplied-RU source profile; generic reuse only, exact profile not implemented/verified; existing status/grades unchanged.",
-          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-01"
+          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-01",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-001-L1",
+            "disposition": "keep_L1",
+            "reason": "Генерация/наполнение региональной карты реками — существующий класс функций; число относится к объектам рек, не сегментам.",
+            "product_boundary": "Генерация и редактирование рек карты",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-001",
+              "normative_kind": "procedure_within_worldbuilding_guidance",
+              "applicability": "Opt-in WWN regional map preparation, step3; not automatic transfer to kingdom/local maps or every existing waterbody.",
+              "layer": "L1",
+              "trigger_or_user_action": "Подготовить на региональной карте d4+2 крупных рек, сохраняя остальные объекты.",
+              "inputs_and_units": {
+                "selected_map_inputs": "d4=1 либо4; выбранная область региона; независимые логические реки"
+              },
+              "product_operation": "Подготовить на региональной карте d4+2 крупных рек, сохраняя остальные объекты.",
+              "expected_output": "При1получены3реки, при4 —6; ветви/отрезки не подсчитаны как дополнительные крупные реки.",
+              "constraints_and_exceptions": [
+                "Применяется только к описанному региональному шагу.",
+                "Текст не задаёт алгоритм прокладки, расстояния между истоками, частоту запусков или правила подсчёта merged river identity.",
+                "План/сохранение являются продуктовым предложением; source не задаёт формат данных.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-REG-001-L1-SCOPE-AC01",
+                  "given": "d4=1 либо4; выбранная область региона; независимые логические реки",
+                  "when": "Подготовить на региональной карте d4+2 крупных рек, сохраняя остальные объекты.",
+                  "expected": "При1получены3реки, при4 —6; ветви/отрезки не подсчитаны как дополнительные крупные реки."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.river_network"
+              ],
+              "unresolved_parameters": [
+                "Mapping large source river identity to existing RiverSegment/riverId, especially after confluence.",
+                "Whether to offer batch routing after explicit confirmation is an analyst/product decision."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Generic river geometry and identities exist; no opt-in WWN d4+2 large-regional-river plan or persisted plan metadata found. Exact 3–6 logical plan records and validation of supplied die cannot be accepted by counting current segments.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-001"
+            },
+            "source_collation": {
+              "ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-01",
+              "status": "equivalent",
+              "observed_fact": "1d4+2 крупных рек на регион; единица не сегмент русла.",
+              "product_consequence": "Сохранить прежнюю операцию и известные d4=1→3,d4=4→6; правила подсчёта ветвей книга не задаёт."
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -354,7 +410,62 @@
           "runtime_review_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-002",
           "runtime_review_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
           "runtime_review_scope": "Bounded supplied-RU source profile; generic reuse only, exact profile not implemented/verified; existing status/grades unchanged.",
-          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-02"
+          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-02",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-002-L1",
+            "disposition": "keep_L1",
+            "reason": "Исток/устье — геометрия и семантика реки; объяснение необычного истока не требует движка магии.",
+            "product_boundary": "Истоки, устья, ручное редактирование реки",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-002",
+              "normative_kind": "guideline_with_explicit_exception",
+              "applicability": "Opt-in WWN regional map preparation, step3; not automatic transfer to kingdom/local maps or every existing waterbody.",
+              "layer": "L1",
+              "trigger_or_user_action": "Нанести или изменить реку с началом в горах/нагорье и стоком в заданный водоём; сохранить явное выбранное исключение.",
+              "inputs_and_units": {
+                "selected_map_inputs": "истокгора;устьеморе;отдельныйпримеристокравнинаспояснением«колдовскойисточник»"
+              },
+              "product_operation": "Нанести или изменить реку с началом в горах/нагорье и стоком в заданный водоём; сохранить явное выбранное исключение.",
+              "expected_output": "Обычная река соединяет заданные endpoints; выбранный необычный исток не меняет окружающий рельеф и не объявлен обычным случаем.",
+              "constraints_and_exceptions": [
+                "Магическое исключение явно относится к natural-origin/sink guidance; не переносить его молча на все остальные ограничения.",
+                "Mountain/highland и waterbody должны быть source semantic classes; конкретные product biome/lake/sea IDs требуют mapping.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-REG-002-L1-SCOPE-AC01",
+                  "given": "истокгора;устьеморе;отдельныйпримеристокравнинаспояснением«колдовскойисточник»",
+                  "when": "Нанести или изменить реку с началом в горах/нагорье и стоком в заданный водоём; сохранить явное выбранное исключение.",
+                  "expected": "Обычная река соединяет заданные endpoints; выбранный необычный исток не меняет окружающий рельеф и не объявлен обычным случаем."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.river_network"
+              ],
+              "unresolved_parameters": [
+                "Exact terrain/elevation mapping and meaning of disappearance in swamp/other waterbody.",
+                "No numeric minimum head elevation or downstream slope is supplied."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Core supports sources/seas and generic heights; App has source modes and water sinks. Height1 is valid in core and does not mean a mountain/highland class. WWN semantic endpoint mapping and persisted sorcery explanation absent.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-002"
+            },
+            "source_collation": {
+              "ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-02",
+              "status": "minor_semantic_difference",
+              "observed_fact": "EN other sink шире RU «другой водоём»; горы/нагорья и исключение колдовства совпадают.",
+              "product_consequence": "Не ограничивать будущий semantic mapping только lake/sea IDs; иной поглощающий сток требует отдельного GM description, не автоматического принятия любого dry_land."
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -506,7 +617,64 @@
           "runtime_review_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-003",
           "runtime_review_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
           "runtime_review_scope": "Bounded supplied-RU source profile; generic reuse only, exact profile not implemented/verified; existing status/grades unchanged.",
-          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-03"
+          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-03",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-003-L1",
+            "disposition": "keep_L1",
+            "reason": "Разветвление/слияние — свойства сети на карте. Совместимость конкретного профиля с RIV остаётся неподтверждённой, не повод менять ядро.",
+            "product_boundary": "Существующая речная сеть; source-specific topology profile pending",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-003",
+              "normative_kind": "topology_guideline_translation_qualified",
+              "applicability": "Opt-in WWN regional map preparation, step3; not automatic transfer to kingdom/local maps or every existing waterbody.",
+              "layer": "L1",
+              "trigger_or_user_action": "При подготовке сети различать разделение без обратного соединения дочерних ветвей и слияние независимых горных рек.",
+              "inputs_and_units": {
+                "selected_map_inputs": "A→F;F→B,F→C;B→Sea1,C→Sea2; отдельно H1→J,H2→J,J→Sea"
+              },
+              "product_operation": "При подготовке сети различать разделение без обратного соединения дочерних ветвей и слияние независимых горных рек.",
+              "expected_output": "Первый граф не содержит обратного соединения ветвей; второй — слияние независимых истоков. Добавление B→J,C→J послеF создаёт sibling rejoin, а не просто отсутствие циклов.",
+              "constraints_and_exceptions": [
+                "RU «притоки/рукава» передано как факт данного текста; английская редакция не сверена.",
+                "Не считать общий терминальный waterbody сам по себе channel rejoin; это продуктовая интерпретация, требующая дальнейшей нормализации.",
+                "Не отменять current RIV degrees/F rules и не обещать произвольный1→2 в продукте.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-REG-003-L1-SCOPE-AC01",
+                  "given": "A→F;F→B,F→C;B→Sea1,C→Sea2; отдельно H1→J,H2→J,J→Sea",
+                  "when": "При подготовке сети различать разделение без обратного соединения дочерних ветвей и слияние независимых горных рек.",
+                  "expected": "Первый граф не содержит обратного соединения ветвей; второй — слияние независимых истоков. Добавление B→J,C→J послеF создаёт sibling rejoin, а не просто отсутствие циклов."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.river_network"
+              ],
+              "unresolved_parameters": [
+                "English original/errata may resolve terminology.",
+                "How source river identities survive confluence and how multiple arms entering same lake are classified.",
+                "Compatibility of a general fork with existing numerical core and delta exception."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Independent confluence supported. An ordinary1→2 continuation is rejected by core degree rules; App delta arms use a separate representation excluded by its core adapter. Generic DAG cycle detection is not sibling-branch rejoin detection. RU fork semantics and delta mapping remain unverified; never change RIV globally based on this reading.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-003"
+            },
+            "source_collation": {
+              "ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-03",
+              "status": "same_topology_with_omitted_qualifier",
+              "observed_fact": "Разделение без обратного слияния есть в EN. RU опускает низкий путь при слиянии независимых горных рек.",
+              "product_consequence": "Не исправлять источник на merge-only и не менять глобальный RIV. Для будущего профиля добавить качественную проверку низкого пути; численный slope/порог отсутствует."
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -645,7 +813,61 @@
           "runtime_review_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-004",
           "runtime_review_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
           "runtime_review_scope": "Bounded supplied-RU source profile; generic reuse only, exact profile not implemented/verified; existing status/grades unchanged.",
-          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-04"
+          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-04",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-004-L1",
+            "disposition": "keep_L1",
+            "reason": "Форма русла — непосредственный объект карты. Самостоятельная система подсказок не обязательна.",
+            "product_boundary": "Отображение и ручное редактирование русла",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-004",
+              "normative_kind": "qualitative_guideline",
+              "applicability": "Opt-in WWN regional map preparation, step3; not automatic transfer to kingdom/local maps or every existing waterbody.",
+              "layer": "L1",
+              "trigger_or_user_action": "Придать выбранному равнинному участку извилистую форму, спускающемуся с высот — обычно более прямую, не меняя соединения.",
+              "inputs_and_units": {
+                "selected_map_inputs": "два заданных участка;контекстравнина/спуск;ихнеизменныеendpoints"
+              },
+              "product_operation": "Придать выбранному равнинному участку извилистую форму, спускающемуся с высот — обычно более прямую, не меняя соединения.",
+              "expected_output": "После выбранной правки endpoints и связи сохранены; равнинный участок извилистый, спускающийся может быть прямее. Численный pass/fail извилистости не выдуман.",
+              "constraints_and_exceptions": [
+                "Рекомендация не задаёт кривую, seed, угол, число поворотов или численную степень извилистости.",
+                "Обычно прямее не означает обязано быть идеально прямой линией.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-REG-004-L1-SCOPE-AC01",
+                  "given": "два заданных участка;контекстравнина/спуск;ихнеизменныеendpoints",
+                  "when": "Придать выбранному равнинному участку извилистую форму, спускающемуся с высот — обычно более прямую, не меняя соединения.",
+                  "expected": "После выбранной правки endpoints и связи сохранены; равнинный участок извилистый, спускающийся может быть прямее. Численный pass/fail извилистости не выдуман."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.river_network"
+              ],
+              "unresolved_parameters": [
+                "Quantitative shape metric and slope mapping for optional future automated routing."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Existing route geometry can be drawn/edited; numerical core contains no shape information. No WWN terrain-context qualitative form recommendation located; no source sinuosity threshold exists, so numeric pass/fail is unjustified.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-004"
+            },
+            "source_collation": {
+              "ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-04",
+              "status": "equivalent_qualitative",
+              "observed_fact": "Извилистость на равнине и обычно более прямой спуск совпадают.",
+              "product_consequence": "Никакого нового числового порога sinuosity; сохранить качественную диагностику."
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -797,7 +1019,30 @@
           "runtime_review_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-005",
           "runtime_review_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
           "runtime_review_scope": "Bounded supplied-RU source profile; generic reuse only, exact profile not implemented/verified; existing status/grades unchanged.",
-          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-05"
+          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-05",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-005-L1",
+            "disposition": "needs_owner_decision",
+            "reason": "Картографический совет применим по теме, но длина/максимальный размер и необходимость подсказки не определены; калькулятор не принят.",
+            "product_boundary": "Геометрия реки; отдельный advisory/metric вне принятого объёма",
+            "current_operational_requirement": null,
+            "candidate_only": true,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Existing routes retained by normal save/import. Source metric is unresolved. No WWN soft quarter-map advisory located; generic routing limits or zoom do not establish source-equivalent length.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-005"
+            },
+            "source_collation": {
+              "ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-05",
+              "status": "equivalent_ambiguous_metric",
+              "observed_fact": "Совет о четверти максимального размера карты есть в EN printed120 и RU printed121.",
+              "product_consequence": "Это не ошибка перевода. Длина по руслу/хорде/extent не выбрана; не обрезать реку и не объявлять проверку pass без объявленной метрики."
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -951,7 +1196,62 @@
           "runtime_review_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-006",
           "runtime_review_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
           "runtime_review_scope": "Bounded supplied-RU source profile; generic reuse only, exact profile not implemented/verified; existing status/grades unchanged.",
-          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-06"
+          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-06",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-006-L1",
+            "disposition": "keep_L1",
+            "reason": "Крупные озёра — наполнение карты водой; не все локальные озёрные гексы.",
+            "product_boundary": "Ручное создание/редактирование водоёмов",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-006",
+              "normative_kind": "optional_guidance",
+              "applicability": "Opt-in WWN regional map preparation, step3; not automatic transfer to kingdom/local maps or every existing waterbody.",
+              "layer": "L1",
+              "trigger_or_user_action": "По выбору ведущего добавить1–3крупных озера/внутренних моря либо пропустить их добавление.",
+              "inputs_and_units": {
+                "selected_map_inputs": "шагпропущен;либовыбраны3отдельныхкрупныхводоёма"
+              },
+              "product_operation": "По выбору ведущего добавить1–3крупных озера/внутренних моря либо пропустить их добавление.",
+              "expected_output": "При пропуске новых водоёмов0; при выбранном количестве3 —3водоёма, а не обязательно3водяныхгекса. Геометрия остальных объектов сохранена.",
+              "constraints_and_exceptions": [
+                "Optional step не делает озёра обязательными во всех картах.",
+                "Число относится к крупным озёрам/внутренним морям этого регионального шага, не ко всем локальным озёрным гексам.",
+                "Source не задаёт площадь, форму, солёность, distribution и mapping large to hexes.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-REG-006-L1-SCOPE-AC01",
+                  "given": "шагпропущен;либовыбраны3отдельныхкрупныхводоёма",
+                  "when": "По выбору ведущего добавить1–3крупных озера/внутренних моря либо пропустить их добавление.",
+                  "expected": "При пропуске новых водоёмов0; при выбранном количестве3 —3водоёма, а не обязательно3водяныхгекса. Геометрия остальных объектов сохранена."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.land_water_shapes"
+              ],
+              "unresolved_parameters": [
+                "Product area threshold for large waterbody; source supplies none."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Manual water geometry creates three independent lake IDs on an authored fixture without generating rivers. No WWN optional regional-body membership/count plan. Water hex count is not large-body identity count; source does not require randomized1d3.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-006"
+            },
+            "source_collation": {
+              "ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-06",
+              "status": "equivalent_optional",
+              "observed_fact": "Добавление 1–3 значимых озёр/внутренних морей опционально в обоих текстах.",
+              "product_consequence": "Не изобретать1d3; enabled=false→0, enabled=true+count3→3 логических объекта."
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -1126,7 +1426,63 @@
           "runtime_review_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-007",
           "runtime_review_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
           "runtime_review_scope": "Bounded supplied-RU source profile; generic reuse only, exact profile not implemented/verified; existing status/grades unchanged.",
-          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-07"
+          "source_collation_ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-07",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-007-L1",
+            "disposition": "keep_L1",
+            "reason": "Связи река–озеро — прямые свойства карты. Это не глобальный запрет для всех озёр приложения.",
+            "product_boundary": "Существующие речные связи и водоёмы",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-007",
+              "normative_kind": "constraint_within_optional_regional_step",
+              "applicability": "Opt-in WWN regional map preparation, step3; not automatic transfer to kingdom/local maps or every existing waterbody.",
+              "layer": "L1",
+              "trigger_or_user_action": "При подготовке выбранного регионального водоёма сохранить хотя бы одну впадающую и не больше одной вытекающей реки.",
+              "inputs_and_units": {
+                "selected_map_inputs": "выбранноеозероL:2входа/1выход;контрольныйпример2входа/2выхода;малоеозероXвнешага"
+              },
+              "product_operation": "При подготовке выбранного регионального водоёма сохранить хотя бы одну впадающую и не больше одной вытекающей реки.",
+              "expected_output": "Lс2/1соответствует этому условию, Lс2/2 —нет. Xвневыбранногошага не объявлено дефектом; новые связи не создаются и не удаляются молча.",
+              "constraints_and_exceptions": [
+                "Проверяется выбранный крупный водоём optional regional step,не любое существующее lakeId продукта.",
+                "Число входов/выходов не F,не площадь и не физический расход.",
+                "Source не устанавливает баланс, evaporation, автоматически создаваемые dams или lake extent.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-REG-007-L1-SCOPE-AC01",
+                  "given": "выбранноеозероL:2входа/1выход;контрольныйпример2входа/2выхода;малоеозероXвнешага",
+                  "when": "При подготовке выбранного регионального водоёма сохранить хотя бы одну впадающую и не больше одной вытекающей реки.",
+                  "expected": "Lс2/1соответствует этому условию, Lс2/2 —нет. Xвневыбранногошага не объявлено дефектом; новые связи не создаются и не удаляются молча."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.river_network"
+              ],
+              "unresolved_parameters": [
+                "Stable mapping of logical external river connections to product lake ports across regions and duplicated route segments.",
+                "Compatibility with current RIV multiple-outflow and source-lake rules needs exact-profile review."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Core accepts valid closed basins and flowing lakes; actual adapter aggregates waterbody identity and boundary connections. RIV-valid permits0in/1out or2in/2out lakes in fixtures that fail selected WWN degree constraints. A scoped selected-body diagnostic is missing; unselected existing lakes must not be declared defects.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/WWN-hydrology-L1-runtime-2026-11-11.json#WWN-RU-REG-007"
+            },
+            "source_collation": {
+              "ref": "agent-work/research/collations/WWN-regional-hydrology-EN-RU-v1.json#WWN-COLL-07",
+              "status": "equivalent_contextual_scope",
+              "observed_fact": "Оба текста задают минимум1 вход и максимум1 выход для водоёмов непосредственно предшествующего optional шага.",
+              "product_consequence": "0 выходов допустимо; это контекстная область применения, не глобальная валидация каждого озера и не модель расхода воды."
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -1302,7 +1658,67 @@
             "HX-BL-043"
           ],
           "delivery": "research_handoff_not_specification",
-          "binding_registration_status": "registered_profile_unverified"
+          "binding_registration_status": "registered_profile_unverified",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-008-L1",
+            "disposition": "keep_L1",
+            "reason": "Региональные географические объекты — создаваемый/редактируемый рельеф; решение климата принимает ведущий, не новый симулятор.",
+            "product_boundary": "Генерация/редактирование регионального рельефа",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008",
+              "normative_kind": "worldbuilding_guidance_with_explicit_exceptions",
+              "applicability": "WWN supplied RU Deluxe, regional step2 only; not every hex, kingdom map or automatic rewrite of existing geography",
+              "layer": "L1",
+              "trigger_or_user_action": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+              "inputs_and_units": {
+                "selected_map_inputs": "d20=1,5,8,14,18,20;размещениеподтвержденоведущим"
+              },
+              "product_operation": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+              "expected_output": "Шесть объектов: пашни, густой лес, горы, скалистые холмы, болото, старые горы. Это не6гексов/POI. Правка одного объекта не перебрасывает остальные5.",
+              "constraints_and_exceptions": [
+                "Полдюжины — шесть объектов в описанном шаге, не общая плотность всех POI.",
+                "Точные расстояния между несовместимыми объектами, размеры и универсальная климатическая матрица не даны; не выдумывать пороги.",
+                "Близость полюса/экватора — контекст, не предписанная автоматическая смена всех биомов.",
+                "Магия/Пришельцы могут объяснить необычное соседство; объяснение должно быть явным.",
+                "Функции редактирования/сохранения — продуктовая интерпретация; способ хранения/UI/API не предписывается.",
+                "Повторяющиеся результаты и политика автоматического переброса не определены.",
+                "Ранее извлечённый step3гидрологии сохранён и не изменяется этим профилем.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-REG-008-L1-SCOPE-AC01",
+                  "given": "d20=1,5,8,14,18,20;размещениеподтвержденоведущим",
+                  "when": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+                  "expected": "Шесть объектов: пашни, густой лес, горы, скалистые холмы, болото, старые горы. Это не6гексов/POI. Правка одного объекта не перебрасывает остальные5."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#content.roll_table_resolution",
+                "agent-work/rules/common-rules.json#map.terrain_zones",
+                "agent-work/rules/common-rules.json#map.terrain_compatibility",
+                "agent-work/rules/common-rules.json#content.place_description"
+              ],
+              "unresolved_parameters": [
+                "Полная английская сверка перевода и примечаний таблицы не проведена.",
+                "Нет универсальных численных порогов соседства, климатической совместимости или соразмерности.",
+                "Политика дубликатов и способ автоматического размещения остаются вопросами ведущего/аналитика.",
+                "Реализация выбранного профиля наSHAне проверена."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Фактическая поддержка этого профиля не установлена существующим набором.",
+              "evidence_sha": null,
+              "evidence_ref": null
+            },
+            "source_collation": null,
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -1462,7 +1878,25 @@
             "HX-BL-050"
           ],
           "delivery": "research_handoff_not_specification",
-          "binding_registration_status": "registered_profile_unverified"
+          "binding_registration_status": "registered_profile_unverified",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-009-L1",
+            "disposition": "needs_owner_decision",
+            "reason": "Политическая территория/фактический контроль не равны существующей границе генерируемого королевства. Принятая функция отдельного политического слоя не установлена; заметка её не доказывает.",
+            "product_boundary": "Принятые границы регионов сохраняются; новый политический/контрольный слой вне объёма",
+            "current_operational_requirement": null,
+            "candidate_only": true,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Фактическая поддержка этого профиля не установлена существующим набором.",
+              "evidence_sha": null,
+              "evidence_ref": null
+            },
+            "source_collation": null,
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -1611,7 +2045,64 @@
             "HX-BL-051"
           ],
           "delivery": "research_handoff_not_specification",
-          "binding_registration_status": "registered_profile_unverified"
+          "binding_registration_status": "registered_profile_unverified",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-KNG-001-L1",
+            "disposition": "keep_L1",
+            "reason": "Детализация одной территории и сохранность крупной географии — принятый класс масштабов карты.",
+            "product_boundary": "Вложенные масштабы карты и локальная детализация",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-001",
+              "normative_kind": "campaign_map_preparation_guidance",
+              "applicability": "WWN suppliedRU Deluxe selected kingdom-map paragraphs121–122; L1 regional-to-kingdom consistency, not full kingdom-generation workflow",
+              "layer": "L1",
+              "trigger_or_user_action": "Показать/детализировать выбранную часть региона с сохранением крупных рек/хребтов; добавить местную деталь без замены крупного объекта.",
+              "inputs_and_units": {
+                "selected_map_inputs": "региональнаярекаR;хребетB;выбраннаяобластьK;новоеместноеозероL"
+              },
+              "product_operation": "Показать/детализировать выбранную часть региона с сохранением крупных рек/хребтов; добавить местную деталь без замены крупного объекта.",
+              "expected_output": "В Kсохраняются относящиеся кнейR/B, добавленоL; региональныеR/B не перегенерированы. Не заданное книгой отношение масштабов не придумано.",
+              "constraints_and_exceptions": [
+                "Это переход уровня детализации, не увеличение размера всех уже существующих гексов или расширение в пустую область.",
+                "Точное преобразование координат, физический коэффициент масштаба и алгоритм пересечения границы не заданы; примеры используют известное ведущему соответствие.",
+                "Не всякий новый местный объект должен появиться на региональном обзоре; ручьи/озёра могут быть для него слишком малы.",
+                "Существующий крупный региональный объект не заменяется случайной мелкой деталью.",
+                "Автоматическая двусторонняя синхронизация редактирования крупных объектов из текста не следует.",
+                "Генерация государств/городов/путей по ссылке на124+ и прочие параграфы121–122 остаются вне этого среза.",
+                "Сохранение, явные связи и адресное редактирование — продуктовая интерпретация без технической спецификации/API/архитектуры.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-KNG-001-L1-SCOPE-AC01",
+                  "given": "региональнаярекаR;хребетB;выбраннаяобластьK;новоеместноеозероL",
+                  "when": "Показать/детализировать выбранную часть региона с сохранением крупных рек/хребтов; добавить местную деталь без замены крупного объекта.",
+                  "expected": "В Kсохраняются относящиеся кнейR/B, добавленоL; региональныеR/B не перегенерированы. Не заданное книгой отношение масштабов не придумано."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.nested_scales"
+              ],
+              "unresolved_parameters": [
+                "Как точно преобразуются координаты и задаётся физическое отношение масштабов — неизвестно.",
+                "Частично пересекающие выбранную область объекты и пограничные случаи требуют решения ведущего/аналитика, алгоритм не выведен из текста.",
+                "Правила двустороннего изменения унаследованных объектов и конфликтов версий не заданы.",
+                "Английская сверка и реализация профиля наSHAне подтверждены."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Фактическая поддержка этого профиля не установлена существующим набором.",
+              "evidence_sha": null,
+              "evidence_ref": null
+            },
+            "source_collation": null,
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -1761,7 +2252,64 @@
             "HX-BL-043"
           ],
           "delivery": "research_handoff_not_specification",
-          "binding_registration_status": "registered_profile_unverified"
+          "binding_registration_status": "registered_profile_unverified",
+          "scope_review": {
+            "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+            "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-KNG-002-L1",
+            "disposition": "keep_L1",
+            "reason": "Физический масштаб, основной рельеф и несколько мест — существующие функции карты. Рекомендация6миль не требует отдельного WWN-режима.",
+            "product_boundary": "Принятый базовый масштаб5–6миль, рельеф, POI, сохранение",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002",
+              "normative_kind": "optional_cartographic_recommendation",
+              "applicability": "WWN suppliedRU Deluxe Refine the Map122/PDF125; optional detailed hex-map preparation, not forced migration of all campaigns/maps",
+              "layer": "L1",
+              "trigger_or_user_action": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+              "inputs_and_units": {
+                "selected_map_inputs": "гексHлес;POIбашня,руины,родник;ведущийменяетосновнойтипнахолмы"
+              },
+              "product_operation": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+              "expected_output": "Hсталхолмами, все3POIи принятый масштаб сохранены. Книга рекомендует6миль, а не обязывает пересчитать карты/ввести отдельную6мильную геометрию.",
+              "constraints_and_exceptions": [
+                "Шесть миль — популярный выбор, не универсальная обязанность и не причина пересчёта всех существующих карт.",
+                "Источник не определяет сторону/диаметр/расстояние между центрами; точную геометрию не выводить из6миль.",
+                "Несколько POIне равно фиксированным2/3объектам или обязательному максимуму; локальные отличия местности не запрещены.",
+                "Основной тип — характеристика гекса, не утверждение отсутствия любых иных объектов/местностей внутри.",
+                "Расчёт времени пути/стоимости движенияL2из этого абзаца не следует.",
+                "Сохранение, разделение zoom/физического размера и адресная правка — продуктовый перевод; API/архитектура/интерфейс не проектируются.",
+                "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "WWN-RU-KNG-002-L1-SCOPE-AC01",
+                  "given": "гексHлес;POIбашня,руины,родник;ведущийменяетосновнойтипнахолмы",
+                  "when": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+                  "expected": "Hсталхолмами, все3POIи принятый масштаб сохранены. Книга рекомендует6миль, а не обязывает пересчитать карты/ввести отдельную6мильную геометрию."
+                }
+              ],
+              "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.physical_hex_scale",
+                "agent-work/rules/common-rules.json#map.terrain_zones",
+                "agent-work/rules/common-rules.json#content.place_description"
+              ],
+              "unresolved_parameters": [
+                "Геометрическая конвенция шестимильного гекса не определена этим источником.",
+                "Точный верхний предел/плотность POIи правила локальной неоднородности не заданы.",
+                "Полная английская сверка и фактическая поддержка профиля наSHAне выполнены."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_status": "unverified",
+              "comment": "Фактическая поддержка этого профиля не установлена существующим набором.",
+              "evidence_sha": null,
+              "evidence_ref": null
+            },
+            "source_collation": null,
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -1816,5 +2364,11 @@
   "source_inventory_result_ref": "agent-work/research/runs/2026-11-06T1530-WWN-regional-hydrology.json",
   "static_evidence_ref": "agent-work/research/requirements/WWN-regional-hydrology-static.json",
   "product_score_changed": false,
-  "binding_registration_status": "registered_profile_unverified"
+  "binding_registration_status": "registered_profile_unverified",
+  "scope_review": {
+    "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+    "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json",
+    "status": "all11existing_requirements_reviewed_not_full_book",
+    "precedence": "Current scope_review governs current research working set; original source/status/ops remain historical. Collation qualifiers preserved separately; canonical profiles unchanged."
+  }
 }

@@ -284,5 +284,155 @@
     "evidence_sha": null
   },
   "rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "current_scope_review": {
+    "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+    "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json",
+    "rows": [
+      {
+        "id": "WWN-RU-REG-008-L1",
+        "title": "Подготовить шесть значимых географических объектов с явными исключениями",
+        "source_rule": {
+          "source_id": "WWN-RU-DELUXE-SUPPLIED-20261106",
+          "printed_page": [
+            120,
+            121
+          ],
+          "pdf_page": [
+            123,
+            124
+          ],
+          "section": "Создание карты Региона / Шаг второй; Значимые особенности рельефа",
+          "locator": "printed120/PDF123 step2 three paragraphs; printed121/PDF124 table structure/selected type labels",
+          "paraphrase": "Второй региональный шаг предлагает полдюжины значимых объектов, размещение по примечаниям и масштабу региона. Климатически невозможный результат адаптируют к местному климату либо объясняют магией/географией явно.",
+          "normative_kind": "worldbuilding_guidance_with_explicit_exceptions",
+          "quotation": null,
+          "parameters": {
+            "feature_count": 6,
+            "count_unit": "significant_geographical_feature_not_hex",
+            "selection": "d20_features_table; full literary table not published",
+            "climate_conflict_options": [
+              "GM_selected_local_equivalent",
+              "retain_with_explicit_magical_or_geographical_explanation"
+            ],
+            "feature_scale": "proportional_to_region_no_numeric_formula",
+            "placement": "respect_source_feature_notes; no numeric_separation_given"
+          }
+        },
+        "canonical_rule_ids": [
+          "content.roll_table_resolution",
+          "map.terrain_zones",
+          "map.terrain_compatibility",
+          "content.place_description"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+        "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-REG-008-L1",
+        "disposition": "keep_L1",
+        "reason": "Региональные географические объекты — создаваемый/редактируемый рельеф; решение климата принимает ведущий, не новый симулятор.",
+        "product_boundary": "Генерация/редактирование регионального рельефа",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008",
+          "normative_kind": "worldbuilding_guidance_with_explicit_exceptions",
+          "applicability": "WWN supplied RU Deluxe, regional step2 only; not every hex, kingdom map or automatic rewrite of existing geography",
+          "layer": "L1",
+          "trigger_or_user_action": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+          "inputs_and_units": {
+            "selected_map_inputs": "d20=1,5,8,14,18,20;размещениеподтвержденоведущим"
+          },
+          "product_operation": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+          "expected_output": "Шесть объектов: пашни, густой лес, горы, скалистые холмы, болото, старые горы. Это не6гексов/POI. Правка одного объекта не перебрасывает остальные5.",
+          "constraints_and_exceptions": [
+            "Полдюжины — шесть объектов в описанном шаге, не общая плотность всех POI.",
+            "Точные расстояния между несовместимыми объектами, размеры и универсальная климатическая матрица не даны; не выдумывать пороги.",
+            "Близость полюса/экватора — контекст, не предписанная автоматическая смена всех биомов.",
+            "Магия/Пришельцы могут объяснить необычное соседство; объяснение должно быть явным.",
+            "Функции редактирования/сохранения — продуктовая интерпретация; способ хранения/UI/API не предписывается.",
+            "Повторяющиеся результаты и политика автоматического переброса не определены.",
+            "Ранее извлечённый step3гидрологии сохранён и не изменяется этим профилем.",
+            "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "WWN-RU-REG-008-L1-SCOPE-AC01",
+              "given": "d20=1,5,8,14,18,20;размещениеподтвержденоведущим",
+              "when": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+              "expected": "Шесть объектов: пашни, густой лес, горы, скалистые холмы, болото, старые горы. Это не6гексов/POI. Правка одного объекта не перебрасывает остальные5."
+            }
+          ],
+          "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#map.terrain_zones",
+            "agent-work/rules/common-rules.json#map.terrain_compatibility",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Полная английская сверка перевода и примечаний таблицы не проведена.",
+            "Нет универсальных численных порогов соседства, климатической совместимости или соразмерности.",
+            "Политика дубликатов и способ автоматического размещения остаются вопросами ведущего/аналитика.",
+            "Реализация выбранного профиля наSHAне проверена."
+          ]
+        },
+        "candidate_only": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_status": "unverified",
+          "comment": "Фактическая поддержка этого профиля не установлена существующим набором.",
+          "evidence_sha": null,
+          "evidence_ref": null
+        },
+        "source_collation": null,
+        "new_development_authorized": false
+      }
+    ],
+    "current_ops": [
+      {
+        "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-REG-008",
+        "normative_kind": "worldbuilding_guidance_with_explicit_exceptions",
+        "applicability": "WWN supplied RU Deluxe, regional step2 only; not every hex, kingdom map or automatic rewrite of existing geography",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+        "inputs_and_units": {
+          "selected_map_inputs": "d20=1,5,8,14,18,20;размещениеподтвержденоведущим"
+        },
+        "product_operation": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+        "expected_output": "Шесть объектов: пашни, густой лес, горы, скалистые холмы, болото, старые горы. Это не6гексов/POI. Правка одного объекта не перебрасывает остальные5.",
+        "constraints_and_exceptions": [
+          "Полдюжины — шесть объектов в описанном шаге, не общая плотность всех POI.",
+          "Точные расстояния между несовместимыми объектами, размеры и универсальная климатическая матрица не даны; не выдумывать пороги.",
+          "Близость полюса/экватора — контекст, не предписанная автоматическая смена всех биомов.",
+          "Магия/Пришельцы могут объяснить необычное соседство; объяснение должно быть явным.",
+          "Функции редактирования/сохранения — продуктовая интерпретация; способ хранения/UI/API не предписывается.",
+          "Повторяющиеся результаты и политика автоматического переброса не определены.",
+          "Ранее извлечённый step3гидрологии сохранён и не изменяется этим профилем.",
+          "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "WWN-RU-REG-008-L1-SCOPE-AC01",
+            "given": "d20=1,5,8,14,18,20;размещениеподтвержденоведущим",
+            "when": "Разместить шесть выбранных значимых географических объектов соразмерно региону; применить только явно выбранную ведущим замену или исключение.",
+            "expected": "Шесть объектов: пашни, густой лес, горы, скалистые холмы, болото, старые горы. Это не6гексов/POI. Правка одного объекта не перебрасывает остальные5."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.roll_table_resolution",
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#map.terrain_compatibility",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полная английская сверка перевода и примечаний таблицы не проведена.",
+          "Нет универсальных численных порогов соседства, климатической совместимости или соразмерности.",
+          "Политика дубликатов и способ автоматического размещения остаются вопросами ведущего/аналитика.",
+          "Реализация выбранного профиля наSHAне проверена."
+        ]
+      }
+    ],
+    "active_product_task": false,
+    "old_proposed_links": "Historical research handoff only; do not restore retired HX-BL-005/042/043/051 or queue statuses.",
+    "new_development_authorized": false
+  }
 }

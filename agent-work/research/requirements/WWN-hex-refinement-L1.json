@@ -327,5 +327,142 @@
     "evidence_sha": null
   },
   "rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "current_scope_review": {
+    "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+    "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json",
+    "rows": [
+      {
+        "id": "WWN-RU-KNG-002-L1",
+        "title": "Предлагать шестимильную гекс-карту с основным типом местности и несколькими POI",
+        "source_rule": {
+          "source_id": "WWN-RU-DELUXE-SUPPLIED-20261106",
+          "printed_page": 122,
+          "pdf_page": 125,
+          "section": "Уточните карту",
+          "locator": "printed122/PDF125 complete section Уточните карту, three paragraphs",
+          "paraphrase": "Уточнять карту можно по необходимости. Для гекскроула удобна точная гекс-карта;6миль названы популярным выбором с одним основным типом местности и несколькими точками интереса. Художественная детализация не обязательна.",
+          "normative_kind": "optional_cartographic_recommendation",
+          "quotation": null,
+          "parameters": {
+            "precision": "as_needed; schematic_map_sufficient_for_some_campaigns",
+            "recommended_hex_length": 6,
+            "unit": "miles",
+            "normative_force": "popular_choice_not_mandate",
+            "geometric_measurement_convention": "unknown",
+            "dominant_terrain_per_hex": 1,
+            "multiple_POI_per_hex": true,
+            "exact_POI_count_or_cap": "not_specified",
+            "physical_scale_vs_zoom": "distinct_product_interpretation"
+          }
+        },
+        "canonical_rule_ids": [
+          "map.physical_hex_scale",
+          "map.terrain_zones",
+          "content.place_description"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-WWN-scope-audit-1794882798022",
+        "audit_ref": "agent-work/research/requirements/WWN-scope-audit.json#WWN-RU-KNG-002-L1",
+        "disposition": "keep_L1",
+        "reason": "Физический масштаб, основной рельеф и несколько мест — существующие функции карты. Рекомендация6миль не требует отдельного WWN-режима.",
+        "product_boundary": "Принятый базовый масштаб5–6миль, рельеф, POI, сохранение",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002",
+          "normative_kind": "optional_cartographic_recommendation",
+          "applicability": "WWN suppliedRU Deluxe Refine the Map122/PDF125; optional detailed hex-map preparation, not forced migration of all campaigns/maps",
+          "layer": "L1",
+          "trigger_or_user_action": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+          "inputs_and_units": {
+            "selected_map_inputs": "гексHлес;POIбашня,руины,родник;ведущийменяетосновнойтипнахолмы"
+          },
+          "product_operation": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+          "expected_output": "Hсталхолмами, все3POIи принятый масштаб сохранены. Книга рекомендует6миль, а не обязывает пересчитать карты/ввести отдельную6мильную геометрию.",
+          "constraints_and_exceptions": [
+            "Шесть миль — популярный выбор, не универсальная обязанность и не причина пересчёта всех существующих карт.",
+            "Источник не определяет сторону/диаметр/расстояние между центрами; точную геометрию не выводить из6миль.",
+            "Несколько POIне равно фиксированным2/3объектам или обязательному максимуму; локальные отличия местности не запрещены.",
+            "Основной тип — характеристика гекса, не утверждение отсутствия любых иных объектов/местностей внутри.",
+            "Расчёт времени пути/стоимости движенияL2из этого абзаца не следует.",
+            "Сохранение, разделение zoom/физического размера и адресная правка — продуктовый перевод; API/архитектура/интерфейс не проектируются.",
+            "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "WWN-RU-KNG-002-L1-SCOPE-AC01",
+              "given": "гексHлес;POIбашня,руины,родник;ведущийменяетосновнойтипнахолмы",
+              "when": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+              "expected": "Hсталхолмами, все3POIи принятый масштаб сохранены. Книга рекомендует6миль, а не обязывает пересчитать карты/ввести отдельную6мильную геометрию."
+            }
+          ],
+          "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.physical_hex_scale",
+            "agent-work/rules/common-rules.json#map.terrain_zones",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Геометрическая конвенция шестимильного гекса не определена этим источником.",
+            "Точный верхний предел/плотность POIи правила локальной неоднородности не заданы.",
+            "Полная английская сверка и фактическая поддержка профиля наSHAне выполнены."
+          ]
+        },
+        "candidate_only": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_status": "unverified",
+          "comment": "Фактическая поддержка этого профиля не установлена существующим набором.",
+          "evidence_sha": null,
+          "evidence_ref": null
+        },
+        "source_collation": null,
+        "new_development_authorized": false
+      }
+    ],
+    "current_ops": [
+      {
+        "source_rule_ref": "agent-work/market/rules/WWN-Deluxe-RU.json#WWN-RU-KNG-002",
+        "normative_kind": "optional_cartographic_recommendation",
+        "applicability": "WWN suppliedRU Deluxe Refine the Map122/PDF125; optional detailed hex-map preparation, not forced migration of all campaigns/maps",
+        "layer": "L1",
+        "trigger_or_user_action": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+        "inputs_and_units": {
+          "selected_map_inputs": "гексHлес;POIбашня,руины,родник;ведущийменяетосновнойтипнахолмы"
+        },
+        "product_operation": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+        "expected_output": "Hсталхолмами, все3POIи принятый масштаб сохранены. Книга рекомендует6миль, а не обязывает пересчитать карты/ввести отдельную6мильную геометрию.",
+        "constraints_and_exceptions": [
+          "Шесть миль — популярный выбор, не универсальная обязанность и не причина пересчёта всех существующих карт.",
+          "Источник не определяет сторону/диаметр/расстояние между центрами; точную геометрию не выводить из6миль.",
+          "Несколько POIне равно фиксированным2/3объектам или обязательному максимуму; локальные отличия местности не запрещены.",
+          "Основной тип — характеристика гекса, не утверждение отсутствия любых иных объектов/местностей внутри.",
+          "Расчёт времени пути/стоимости движенияL2из этого абзаца не следует.",
+          "Сохранение, разделение zoom/физического размера и адресная правка — продуктовый перевод; API/архитектура/интерфейс не проектируются.",
+          "Эта текущая проекция не утверждает новый UI/мастер/схему хранения; реализация не проверялась в этом запуске."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "WWN-RU-KNG-002-L1-SCOPE-AC01",
+            "given": "гексHлес;POIбашня,руины,родник;ведущийменяетосновнойтипнахолмы",
+            "when": "Использовать выбранный базовый масштаб и основной тип гекса; сохранить несколько отдельных POI при смене рельефа.",
+            "expected": "Hсталхолмами, все3POIи принятый масштаб сохранены. Книга рекомендует6миль, а не обязывает пересчитать карты/ввести отдельную6мильную геометрию."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный смысл сохранён отдельно в rule; здесь исследовательский перевод в существующий класс операций карты, без утверждения нового интерфейса или существующей поддержки.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale",
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Геометрическая конвенция шестимильного гекса не определена этим источником.",
+          "Точный верхний предел/плотность POIи правила локальной неоднородности не заданы.",
+          "Полная английская сверка и фактическая поддержка профиля наSHAне выполнены."
+        ]
+      }
+    ],
+    "active_product_task": false,
+    "old_proposed_links": "Historical research handoff only; do not restore retired HX-BL-005/042/043/051 or queue statuses.",
+    "new_development_authorized": false
+  }
 }
