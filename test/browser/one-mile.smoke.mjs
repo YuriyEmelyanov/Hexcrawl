@@ -128,7 +128,9 @@ try{
  const requiredCell=requiredMove.footprint.cells[0],requiredKey=`${requiredCell.q},${requiredCell.r}`,requiredMarker=page.locator(`[data-fine-pois] [data-poi-id="${requiredMove.poiId}"] image`);
  assert.equal(await requiredMarker.count(),1);
  const markerPosition=await requiredMarker.evaluate(n=>({x:Number(n.getAttribute('x'))+Number(n.getAttribute('width'))/2,y:Number(n.getAttribute('y'))+Number(n.getAttribute('height'))/2}));
- const cellPosition=await page.locator(`[data-fine-key="${requiredKey}"] polygon`).first().evaluate(n=>{const p=[...n.points];return {x:p.reduce((s,p)=>s+p.x,0)/6,y:p.reduce((s,p)=>s+p.y,0)/6};});
+ // SVGPointList rounds to float32. Compare the rendered double attributes
+ // consistently, preserving the strict geometry tolerance at map coordinates.
+ const cellPosition=await page.locator(`[data-fine-key="${requiredKey}"] polygon`).first().evaluate(n=>{const p=n.getAttribute('points').trim().split(/\s+/).map(v=>v.split(',').map(Number));return {x:p.reduce((s,p)=>s+p[0],0)/6,y:p.reduce((s,p)=>s+p[1],0)/6};});
  const requiredCellWorld=detailCellCenter(createDetailGrid(1),requiredCell),factor=Math.sqrt(3)*28/6;
  const requiredPosition={markerPosition,cellPosition,requiredCellWorld,expected:requiredMove.newAnchor,factor,source:(await snap()).map.knave};console.log('HX059_REQUIRED_POSITION '+JSON.stringify(requiredPosition));
  assert.ok(Math.abs(markerPosition.x-cellPosition.x-(requiredMove.newAnchor.x-requiredCellWorld.x)*factor)<1e-7,JSON.stringify(requiredPosition));
