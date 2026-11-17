@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-059",
+  "run_id": "2026-11-17T1800-programmer-F1-acceptance",
+  "spec_version": "F1",
+  "spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-F1.md",
+  "head_sha": "cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc",
+  "tree_sha": "dce944a438be89c1e5efd217bf8f79bdc07932ab",
+  "base_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+  "role": "programmer",
+  "independent_acceptance": false,
+  "publication_authorized": false,
+  "criteria": [
+    {
+      "id": "AC01",
+      "requirement_refs": [
+        "F-R01",
+        "F-R02"
+      ],
+      "requirement": "Every visible land-axis segment lies on canonical fine-edge or terminal edge subset; fractional shore endpoints valid, no diagonal or corner smoothing; negative coords and boundaries, both orientations.",
+      "method": "Exact world-coordinate edge containment ε1e-8 plus actual same-map image",
+      "required": true,
+      "status": "implementation_evidence_for_independent_review",
+      "files": [
+        "test/geometryRefinementGrid.test.mjs",
+        "test/geometryRefinementRivers.test.mjs",
+        "test/geometryRefinementPorts.test.mjs",
+        "test/geometryPlan.test.mjs"
+      ],
+      "witness": "Canonical edge containment, source graph/ports and complete53-path validation; real classic42 automatic rendering and both orientations in existing browser.",
+      "source_links": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryRefinementGrid.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryRefinementRivers.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryRefinementPorts.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryPlan.test.mjs"
+      ]
+    },
+    {
+      "id": "AC02",
+      "requirement_refs": [
+        "F-R02",
+        "F-R03"
+      ],
+      "requirement": "Stable sides, sourceIDs/directions/topology/fullness and worldRNG across pan/zoom/style/rotation/export/reopen/permutation; no new cycles or independent shared edges.",
+      "method": "Serialized document/streams diff, edge-network audit, repeated presentation",
+      "required": true,
+      "status": "implementation_evidence_for_independent_review",
+      "files": [
+        "test/geometryRefinementGrid.test.mjs",
+        "test/geometryRefinementRivers.test.mjs",
+        "test/geometryPlan.test.mjs",
+        "test/mapTransactions.test.mjs"
+      ],
+      "witness": "FNV side key, order/RNG invariants; exact saved paths; actual mixed34retained+12ordinary scene, JSON replay and cold DOM.",
+      "source_links": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryRefinementGrid.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryRefinementRivers.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryPlan.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/mapTransactions.test.mjs"
+      ]
+    },
+    {
+      "id": "AC03",
+      "requirement_refs": [
+        "F-R04"
+      ],
+      "requirement": "AllF1–5 widths10–50%, actual lake/sea entry/exit and through-lake contacts no gap; dry axis remains on edges even at fractional ports.",
+      "method": "Real lake fixtures and declaredF4/F5 variants; each current shore style",
+      "required": true,
+      "status": "implementation_evidence_for_independent_review",
+      "files": [
+        "test/geometryRefinementShore.test.mjs",
+        "test/geometryPlan.test.mjs",
+        "test/oneMile.test.mjs",
+        "test/browser/one-mile.smoke.mjs"
+      ],
+      "witness": "Width F1..F5 world fraction; declared F5 and ford variants; through-lake real classic42 and exact shoreline/mouth/delta Node cases; browser all current paint styles.",
+      "source_links": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryRefinementShore.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryPlan.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/oneMile.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/browser/one-mile.smoke.mjs"
+      ]
+    },
+    {
+      "id": "AC04",
+      "requirement_refs": [
+        "F-R05",
+        "F-R06"
+      ],
+      "requirement": "Required riverPOI same parent/bank, protected extents/IDs/content, attached roads reach entry; bridge/ford/ferry identity/order and dry approaches, legal shortest paths and wholecell masks.",
+      "method": "Full coupled scene, finite water intersection checks, real interaction and explicit variants",
+      "required": true,
+      "status": "implementation_evidence_for_independent_review",
+      "files": [
+        "test/geometryRefinementPois.test.mjs",
+        "test/geometryRefinementRoads.test.mjs",
+        "test/oneMile.test.mjs",
+        "test/geometryPlan.test.mjs",
+        "test/browser/one-mile.smoke.mjs"
+      ],
+      "witness": "Independent visible-water clearance test detects the wider-source-bank defect; extent/source immutability, real road waypoint and summary. Public schema-valid declared Knave structures96 mill is rendered, selected and exported. Existing roads suite owns shortest paths/typed crossings/masks.",
+      "limitations": [
+        "Public DOM required site detail-poi:8 has no assigned road. Required contact plus attached road entry is checked separately by internal policy variant detail-poi:7, not by a public schema-valid coupled road fixture.",
+        "Do not claim every unresolved original fixture POI is river-required; known requirement derives from declared Knave structures96."
+      ],
+      "source_links": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryRefinementPois.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryRefinementRoads.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/oneMile.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryPlan.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/browser/one-mile.smoke.mjs"
+      ]
+    },
+    {
+      "id": "AC05",
+      "requirement_refs": [
+        "F-R07",
+        "F-R08"
+      ],
+      "requirement": "Ordinary/refined/mixed and imported maps automatically show complete fine geography without requiredApply; existing compatible acceptedpaths preserved; hover/pick follows shownPOI.",
+      "method": "Actual scale handlers, mixed scope and all current modes; desktop1500,narrow390",
+      "required": true,
+      "status": "implementation_evidence_for_independent_review",
+      "files": [
+        "src/automaticOneMileScene.ts",
+        "src/automaticOneMileJob.ts",
+        "src/App.tsx",
+        "test/browser/one-mile.smoke.mjs",
+        "test/browser/one-mile-evidence.mjs"
+      ],
+      "witness": "Real Worker automatic ordinary/refined/mixed preparation, no Apply, retained paths literal; actual required-site pick and panel; desktop1500/narrow390; existing generation mode interaction.",
+      "limitations": [
+        "DOM route/pick oracle uses the production planner; independent numeric bank check and source audit supply separate evidence."
+      ],
+      "source_links": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/src/automaticOneMileScene.ts",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/src/automaticOneMileJob.ts",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/src/App.tsx",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/browser/one-mile.smoke.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/browser/one-mile-evidence.mjs"
+      ]
+    },
+    {
+      "id": "AC06",
+      "requirement_refs": [
+        "F-R08",
+        "F-R09"
+      ],
+      "requirement": "Legacy valid imports retain authored/fine data, measured/locked/no-fit/stale/cancel never force movement, lose data or change redo; state explains failure and shows previous complete view/source6.",
+      "method": "Real handlers and document/redo snapshots; malformed inputs atomically rejected",
+      "required": true,
+      "status": "implementation_evidence_for_independent_review",
+      "files": [
+        "test/geometryPlan.test.mjs",
+        "test/mapTransactions.test.mjs",
+        "test/saveSafety.test.mjs",
+        "test/browser/one-mile.smoke.mjs"
+      ],
+      "witness": "RU/EN import-error cases show object/reason, accepted map/camera and retry preserved; measured/locked conflicts/old manifest imports/stale transaction tests; real busy cancel + late completed worker reply.",
+      "source_links": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryPlan.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/mapTransactions.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/saveSafety.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/browser/one-mile.smoke.mjs"
+      ]
+    },
+    {
+      "id": "AC07",
+      "requirement_refs": [
+        "F-R07",
+        "F-R09"
+      ],
+      "requirement": "View-only source6/doc/RNG/undo unchanged; JSON reload gives same fine routes; sourceedit+acceptedclosure oneUndo/Redo; new generatedregions shown coherently without view-triggered generation.",
+      "method": "Same-map save/load, ordinaryedit,undo,redo,extension; native6 before/after comparison",
+      "required": true,
+      "status": "implementation_evidence_for_independent_review",
+      "files": [
+        "test/geometryPlan.test.mjs",
+        "test/mapTransactions.test.mjs",
+        "test/browser/one-mile.smoke.mjs"
+      ],
+      "witness": "Source/mapScale unchanged, same saved JSON/cold DOM fine geometry; accepted sourceedit+closure one Undo/Redo, actual mixed extension and native6 comparison against published7c0eb9f.",
+      "source_links": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/geometryPlan.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/mapTransactions.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/browser/one-mile.smoke.mjs"
+      ]
+    },
+    {
+      "id": "AC08",
+      "requirement_refs": [
+        "F-R04",
+        "F-R10"
+      ],
+      "requirement": "Screen/PNG same revision and complete scene, styles/orientations/responsive; native6 pixel+export identical on view-only cycles; no busy partial PNG.",
+      "method": "Working existing CI exactSHA screenshots/export plus source/geometry invariant",
+      "required": true,
+      "status": "implementation_evidence_for_independent_review",
+      "files": [
+        "test/oneMile.test.mjs",
+        "test/browser/one-mile.smoke.mjs",
+        "test/browser/one-mile-evidence.mjs"
+      ],
+      "witness": "Exact screen/PNG river+road+required-marker geometry; styles/rotation/grid and busy PNG guards; native6 raster/export unchanged comparison. Wait final CI results.",
+      "limitations": [
+        "Raster diagnostic allows only pre-existing bounded edge antialiasing maxDelta<=3, changedFraction<=.001. Menu/focus/cursor normalized, thresholds unchanged."
+      ],
+      "source_links": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/oneMile.test.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/browser/one-mile.smoke.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc/test/browser/one-mile-evidence.mjs"
+      ]
+    },
+    {
+      "id": "AC09",
+      "requirement_refs": [
+        "Release"
+      ],
+      "requirement": "Independent accepted exactSHA and score_assessment1.2, actual same-map before/after shown, separate owner publication approval.",
+      "method": "Reviewer evidence and release gate; no main writes before approval",
+      "required": true,
+      "status": "pending_independent_review_and_owner_release_gate",
+      "files": [],
+      "witness": "Independent full acceptance, score_assessment1.2 and separate owner exact-package publication approval remain outstanding.",
+      "limitations": [
+        "Preflight source audit is not final independent acceptance.",
+        "No main changes, publication or product score increase authorized."
+      ],
+      "source_links": []
+    }
+  ],
+  "diagnostic_notes": [
+    "First native6 capture compared open export menu with closed baseline; normalize both. Second capture differed only a hovered/focused chevron (57 pixels outside map); normalize mouse/focus, same threshold.",
+    "New required-site positional probe initially used float32 SVGPointList against double marker attrs. f149 logged x residual -0.000002015727px, matching local Math.fround centroid reproduction. Use Number tokens from literal points attribute; keep1e-7 strict test tolerance."
+  ],
+  "validation_status": "in_progress",
+  "checks_run_id": 44117125070
+}
