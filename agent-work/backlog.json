@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-17T18:11:55.259Z",
+  "updated_at": "2026-11-17T18:55:38.859Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -400,7 +400,7 @@
     {
       "task_id": "HX-BL-059",
       "title": "Реки по рёбрам гексов на 1-мильной карте",
-      "status": "разработана",
+      "status": "опубликована",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-16-one-mile-rivers-on-edges.json"
@@ -408,7 +408,7 @@
       "approval_ref": "agent-work/decisions/owner-decision-2026-11-16-one-mile-rivers-on-edges.json",
       "approved_at": "2026-11-16T12:39:54.510Z",
       "implementation_authorized": true,
-      "release_authorized": false,
+      "release_authorized": true,
       "requirements": [
         "На 1-мильной карте реки должны проходить по рёбрам одномильных гексов, а не через их центры.",
         "Требование относится к итоговой карте и её PNG-экспорту; ширину F1–F5 из опубликованной HX-BL-055 сохранить."
@@ -418,9 +418,9 @@
         "На карте и PNG маршрут реки совпадает; стыки, озёра, переправы и речные объекты проверены по чистовой спецификации.",
         "Правила перехода для существующих карт, обычной/уточнённой геометрии и связанных объектов закреплены в спецификации и интервью; прежние ответы владельца не спрашиваются повторно."
       ],
-      "execution_state": "Независимо принят PR505/58b91df; ожидает отдельного разрешения публикации. Текущий UI1↔6; ограниченный корпус и непроверенные12/24 явно отмечены.",
-      "next_role": "programmer",
-      "next_step": "После явного разрешения владельца выпустить только принятый PR505/58b91df; до этого без merge/deploy. Готовый независимый этап очереди — аналитик HX-BL-060.",
+      "execution_state": "PR505 опубликован на app.hexcrawl.ru; Pages и байты JS/CSS/worker проверены; score_update_pending.",
+      "next_role": "strategist-manager",
+      "next_step": "Применить независимое score_assessment1.2 к release292428e без начисления неподтверждённых баллов; затем утверждённая HX-BL-060, аналитик.",
       "related_task_ids": [
         "HX-BL-055",
         "HX-BL-056",
@@ -430,7 +430,7 @@
       "draft_spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-D1.md",
       "spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-F1.md",
       "acceptance_ref": "agent-work/evidence/HX-BL-059-review-58b91df/acceptance.json",
-      "published_ref": null,
+      "published_ref": "agent-work/results/2026-11-17-owner-release-PR505-1794940619120.json",
       "ready_for_development": true,
       "interview_status": "interview_completed",
       "interview_completed": true,
@@ -458,7 +458,7 @@
         "basis": "Tenth recorded run completes coherent implementation evidence, required visible-bank reclosure and readable failures. Remaining independent acceptance, potential corrections/new-SHA review and separately authorized release. Original D1 total8–12 retained; observed updated total12–14. Tests/CI attempts are not counted as separate role runs. No acceptance scope removed.",
         "owner_publication_wait": "unknown; excluded"
       },
-      "updated_at": "2026-11-17T18:11:55.259Z",
+      "updated_at": "2026-11-17T18:55:38.859Z",
       "queue_priority": 1,
       "selection_ref": "agent-work/decisions/owner-decision-2026-11-16-pause-biomes-next-river-edges.json",
       "draft_spec_version": "D1",
@@ -855,7 +855,12 @@
       "independent_review_status": "accepted_bounded_F1",
       "review_ref": "agent-work/evidence/HX-BL-059-review-58b91df/review.json",
       "score_assessment_ref": "agent-work/evidence/HX-BL-059-review-58b91df/score-assessment1.2.json",
-      "accepted_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd"
+      "accepted_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd",
+      "release_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+      "publication_verified": true,
+      "deployment_run_id": 44149797233,
+      "score_update_status": "pending",
+      "score_update_responsible": "strategist-manager"
     },
     {
       "task_id": "HX-BL-060",
