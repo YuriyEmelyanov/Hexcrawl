@@ -3,8 +3,8 @@
   "task_id": "HX-BL-059",
   "role": "programmer",
   "base_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
-  "head_sha": "861ce7d4085ff10000a09bcc506f99c058c56a69",
-  "tree_sha": "d9960b3df6a71a4518e3c420c04ce9935b4f9a48",
+  "head_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
+  "tree_sha": "a608f5d9783a40b2fa0a3be84de624cb7047add4",
   "pr": 505,
   "requirements": [
     "F-R01",
@@ -60,14 +60,21 @@
       "at_tree": "d9960b3df6a71a4518e3c420c04ce9935b4f9a48"
     },
     "browser": {
-      "status": "pending",
+      "status": "pending_at_corrected_head",
       "run_id": 44030039629,
       "required_artifacts": [
         "mixed42-6mi-before.jpg",
         "mixed42-1mi-after.jpg",
         "mixed42-1mi-after-390.jpg",
         "mixed42-automatic.png"
-      ]
+      ],
+      "previous_failure": {
+        "head_sha": "861ce7d4085ff10000a09bcc506f99c058c56a69",
+        "run_id": 44030039629,
+        "kind": "incorrect_source_ID_assumption",
+        "observed": "Assertion counted12 paths under new river5; actual growth preserves10 new segments under existing river1 and2 under new river5.",
+        "fix": "Check each of12 ordinary source edges by riverID + sourceEdgeKey; no source graph changes."
+      }
     },
     "prior_exact_CI": {
       "head_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
@@ -79,7 +86,7 @@
   },
   "test_change_summary": {
     "base_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
-    "head_sha": "861ce7d4085ff10000a09bcc506f99c058c56a69",
+    "head_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
     "added": 1,
     "removed": 0,
     "modified": 1,
@@ -131,5 +138,6 @@
   "implementation_complete": false,
   "review_ready": false,
   "release_authorized": false,
-  "main_changed": false
+  "main_changed": false,
+  "previous_head_sha": "861ce7d4085ff10000a09bcc506f99c058c56a69"
 }
