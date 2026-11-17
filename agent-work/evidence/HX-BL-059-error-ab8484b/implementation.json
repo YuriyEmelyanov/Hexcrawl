@@ -1,0 +1,88 @@
+{
+  "run_id": "2026-11-17T0600-programmer-fine-error",
+  "task_id": "HX-BL-059",
+  "role": "programmer",
+  "head_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
+  "tree_sha": "19c4b092113ba940910c14523f263320db0a69da",
+  "base_sha": "9e5fce3078f60830fb71cfcd7ca8453e21278a1a",
+  "pr": 505,
+  "requirements": [
+    "F-R08",
+    "AC06"
+  ],
+  "defect": "applyExactMap set editError on derived-scene failure; applyPreparedDocument then closed editors and cleared the message. Coarse view also hid fine-only errors.",
+  "fix": "Separate automaticFineError from transient editor errors; show accessible alert beside scale in either view. Clear only on next document/valid preparation. Do not alter source geometry or JSON.",
+  "reproduction": {
+    "method": "Actual JSON importer on classic42, RU/EN, injected deterministic derived-scene no-fit.",
+    "before": "2/2 negative cases fail: missing error after import.",
+    "after": "Both languages retain error and source map; valid JSON remains exportable; successful retry clears error."
+  },
+  "prior_exact_CI": {
+    "head_sha": "9e5fce3078f60830fb71cfcd7ca8453e21278a1a",
+    "run_id": 43988749149,
+    "node": {
+      "executed": 427,
+      "passed": 427,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": "success",
+    "world_random": "success",
+    "independent_acceptance": false
+  },
+  "checks": {
+    "targeted_initial": {
+      "executed": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "typescript": "passed",
+    "affected_suites": "running",
+    "current_CI": {
+      "run_id": 44007593280,
+      "status": "in_progress"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "9e5fce3078f60830fb71cfcd7ca8453e21278a1a",
+    "head_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
+    "added": 2,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node",
+    "base_cases": 427,
+    "head_cases": 429,
+    "scenario_or_risk": "RU and EN valid import with no-fit automatic fine scene: persistent error, source retention, JSON export and successful retry.",
+    "reuse_or_new_reason": "Existing geometryPlan success/Undo and accepted-closure error cases do not cover editor cleanup erasing detached-scene import errors. Two locale parameter instances of one negative contract; extend same suite and actual fixture/harness.",
+    "source": "git diff base...head; two locale instances of named HX059 import case; helper exposure not a test.",
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    }
+  },
+  "remaining": [
+    "Mixed retained/unrefined scene preserving literal accepted routes remains unfinished.",
+    "Preparation busy/stale/cancel, fallback camera and full F1 error/operation matrix remain open.",
+    "Current exact head CI and UI error screenshot pending; independent review and score1.2 required before publication."
+  ],
+  "score_evidence": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S01-C02",
+      "S01-C04",
+      "S02-C02",
+      "S03-C05",
+      "S04-C04"
+    ],
+    "grades_before": null,
+    "grades_after": null,
+    "delta": null,
+    "status": "partial_programmer_evidence_unverified",
+    "focus": "S03-C05 error recovery; bounded injection is not whole criterion acceptance.",
+    "points_awarded": false
+  },
+  "implementation_complete": false,
+  "review_ready": false,
+  "release_authorized": false
+}
