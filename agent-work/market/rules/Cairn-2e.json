@@ -103,7 +103,65 @@
           "gap": "Exact-profile runtime behavior unknown; not evidence of a missing product function.",
           "gap_task_ids": [
             "HX-BL-043"
-          ]
+          ],
+          "scope_review": {
+            "id": "CAIRN2-PC-001-L1",
+            "source_rule_id": "CAIRN2-PC-001",
+            "title": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+            "disposition": "keep_L1",
+            "reason": "Номера выбранных мест дают ссылки на объекты карты, сохраняя положение и название.",
+            "product_boundary": "Нумерация мест",
+            "user_action": "Ведущий выбирает места исходной карты для представления pointcrawl.",
+            "map_object_or_state": {
+              "selected_places": "выбранные места; число не фиксировано книгой",
+              "labels": "номера для ссылки на места"
+            },
+            "checkable_result": "Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001",
+              "normative_kind": "map_conversion_procedure",
+              "applicability": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий выбирает места исходной карты для представления pointcrawl.",
+              "inputs_and_units": {
+                "selected_places": "выбранные места; число не фиксировано книгой",
+                "labels": "номера для ссылки на места"
+              },
+              "product_operation": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+              "expected_output": "Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.",
+              "constraints_and_exceptions": [
+                "Книга не задаёт фиксированного количества мест, стартового номера или порядка обхода.",
+                "Способ показа и сохранения определяет аналитик; отдельная копия мира не предписывается.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-PC-001-L1-AC01",
+                  "given": "Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3.",
+                  "when": "Подготовить обозначения мест.",
+                  "expected": "Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние."
+                },
+                {
+                  "id": "CAIRN2-PC-001-L1-AC02",
+                  "given": "На карте есть четвёртое место «Пещера», не выбранное ведущим.",
+                  "when": "Пронумеровать только выбранные три места.",
+                  "expected": "Пещере не придуман номер и она не удалена."
+                }
+              ],
+              "source_vs_product_interpretation": "Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.reference_labels"
+              ],
+              "unresolved_parameters": [
+                "Политика перенумерации и сочетания с существующими обозначениями источником не задана."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         },
         {
           "layer": "L2",
@@ -115,7 +173,65 @@
           "status": "not_applicable",
           "reason": "No character or other resolution procedure in this clause."
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-PC-001-L1",
+        "source_rule_id": "CAIRN2-PC-001",
+        "title": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+        "disposition": "keep_L1",
+        "reason": "Номера выбранных мест дают ссылки на объекты карты, сохраняя положение и название.",
+        "product_boundary": "Нумерация мест",
+        "user_action": "Ведущий выбирает места исходной карты для представления pointcrawl.",
+        "map_object_or_state": {
+          "selected_places": "выбранные места; число не фиксировано книгой",
+          "labels": "номера для ссылки на места"
+        },
+        "checkable_result": "Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-001",
+          "normative_kind": "map_conversion_procedure",
+          "applicability": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий выбирает места исходной карты для представления pointcrawl.",
+          "inputs_and_units": {
+            "selected_places": "выбранные места; число не фиксировано книгой",
+            "labels": "номера для ссылки на места"
+          },
+          "product_operation": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+          "expected_output": "Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.",
+          "constraints_and_exceptions": [
+            "Книга не задаёт фиксированного количества мест, стартового номера или порядка обхода.",
+            "Способ показа и сохранения определяет аналитик; отдельная копия мира не предписывается.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-PC-001-L1-AC01",
+              "given": "Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3.",
+              "when": "Подготовить обозначения мест.",
+              "expected": "Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние."
+            },
+            {
+              "id": "CAIRN2-PC-001-L1-AC02",
+              "given": "На карте есть четвёртое место «Пещера», не выбранное ведущим.",
+              "when": "Пронумеровать только выбранные три места.",
+              "expected": "Пещере не придуман номер и она не удалена."
+            }
+          ],
+          "source_vs_product_interpretation": "Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.reference_labels"
+          ],
+          "unresolved_parameters": [
+            "Политика перенумерации и сочетания с существующими обозначениями источником не задана."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-PC-002",
@@ -216,7 +332,75 @@
           "gap": "Exact-profile runtime behavior unknown; not evidence of a missing product function.",
           "gap_task_ids": [
             "HX-BL-018"
-          ]
+          ],
+          "scope_review": {
+            "id": "CAIRN2-PC-002-L1",
+            "source_rule_id": "CAIRN2-PC-002",
+            "title": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+            "disposition": "keep_L1",
+            "reason": "Дороги, тропы и водные пути между выбранными местами наполняют карту; отсутствие соединения не запрещает движение по местности.",
+            "product_boundary": "Дороги/тропы/реки",
+            "user_action": "Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.",
+            "map_object_or_state": {
+              "places": "выбранные места исходной карты",
+              "routes": "известные дороги, тропы и водные маршруты",
+              "unconnected_sites": "места без отмеченных соединений"
+            },
+            "checkable_result": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002",
+              "normative_kind": "map_conversion_procedure",
+              "applicability": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.",
+              "inputs_and_units": {
+                "places": "выбранные места исходной карты",
+                "routes": "известные дороги, тропы и водные маршруты",
+                "unconnected_sites": "места без отмеченных соединений"
+              },
+              "product_operation": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+              "expected_output": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+              "constraints_and_exceptions": [
+                "Близость или соседство гексов не является названной дорогой, тропой или водным маршрутом.",
+                "Отсутствие маршрута не означает непроходимость всей местности.",
+                "Направленность и доступность пути при разных условиях не определены этим ограниченным срезом.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-PC-002-L1-AC01",
+                  "given": "A–B соединены тропой, B–C водным маршрутом; D без соединений.",
+                  "when": "Подготовить сеть этих четырёх мест.",
+                  "expected": "Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана."
+                },
+                {
+                  "id": "CAIRN2-PC-002-L1-AC02",
+                  "given": "E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено.",
+                  "when": "Показать подготовленную сеть.",
+                  "expected": "Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым."
+                },
+                {
+                  "id": "CAIRN2-PC-002-L1-AC03",
+                  "given": "Ведущий добавил к D известную дорогу от C.",
+                  "when": "Обновить представление сети.",
+                  "expected": "Показана дорога C–D; D больше не обозначен как не имеющий соединений."
+                }
+              ],
+              "source_vs_product_interpretation": "Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.routes_and_barriers"
+              ],
+              "unresolved_parameters": [
+                "Наличие точного режима pointcrawl в продукте не проверено.",
+                "Масштаб и длительность перехода требуют отдельного чтения процедур путешествия."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         },
         {
           "layer": "L2",
@@ -228,7 +412,75 @@
           "status": "not_applicable",
           "reason": "No character or other resolution procedure in this clause."
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-PC-002-L1",
+        "source_rule_id": "CAIRN2-PC-002",
+        "title": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+        "disposition": "keep_L1",
+        "reason": "Дороги, тропы и водные пути между выбранными местами наполняют карту; отсутствие соединения не запрещает движение по местности.",
+        "product_boundary": "Дороги/тропы/реки",
+        "user_action": "Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.",
+        "map_object_or_state": {
+          "places": "выбранные места исходной карты",
+          "routes": "известные дороги, тропы и водные маршруты",
+          "unconnected_sites": "места без отмеченных соединений"
+        },
+        "checkable_result": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-PC-002",
+          "normative_kind": "map_conversion_procedure",
+          "applicability": "Preparing a pointcrawl representation from a chosen existing map; not a mandatory replacement for all hex movement",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий превращает отмеченные места исходной карты в сеть возможных переходов.",
+          "inputs_and_units": {
+            "places": "выбранные места исходной карты",
+            "routes": "известные дороги, тропы и водные маршруты",
+            "unconnected_sites": "места без отмеченных соединений"
+          },
+          "product_operation": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+          "expected_output": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+          "constraints_and_exceptions": [
+            "Близость или соседство гексов не является названной дорогой, тропой или водным маршрутом.",
+            "Отсутствие маршрута не означает непроходимость всей местности.",
+            "Направленность и доступность пути при разных условиях не определены этим ограниченным срезом.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-PC-002-L1-AC01",
+              "given": "A–B соединены тропой, B–C водным маршрутом; D без соединений.",
+              "when": "Подготовить сеть этих четырёх мест.",
+              "expected": "Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана."
+            },
+            {
+              "id": "CAIRN2-PC-002-L1-AC02",
+              "given": "E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено.",
+              "when": "Показать подготовленную сеть.",
+              "expected": "Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым."
+            },
+            {
+              "id": "CAIRN2-PC-002-L1-AC03",
+              "given": "Ведущий добавил к D известную дорогу от C.",
+              "when": "Обновить представление сети.",
+              "expected": "Показана дорога C–D; D больше не обозначен как не имеющий соединений."
+            }
+          ],
+          "source_vs_product_interpretation": "Numbering and identifying routes/unconnected sites come from the source. The proposed generator action and invented examples express a useful outcome for the GM, not a specification or proof of implementation.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.routes_and_barriers"
+          ],
+          "unresolved_parameters": [
+            "Наличие точного режима pointcrawl в продукте не проверено.",
+            "Масштаб и длительность перехода требуют отдельного чтения процедур путешествия."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-001",
@@ -314,9 +566,129 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-001-L1",
+            "source_rule_id": "CAIRN2-SS-001",
+            "title": "Подготавливать области по заданным броскам и положениям",
+            "disposition": "keep_L1",
+            "reason": "Принятые области местности и заполнение пустот относятся к редактированию карты. Бумажный бросок не задаёт цифровой алгоритм.",
+            "product_boundary": "Области местности",
+            "user_action": "Ведущий начинает пакетную подготовку местности региона.",
+            "map_object_or_state": {
+              "count_roll": "целое 1–6",
+              "positions": "принятые опорные точки внутри карты",
+              "off_map": "точки вне карты"
+            },
+            "checkable_result": "Исходные и дополнительные области различимы; принятые границы сохранены.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий начинает пакетную подготовку местности региона.",
+              "inputs_and_units": {
+                "count_roll": "целое 1–6",
+                "positions": "принятые опорные точки внутри карты",
+                "off_map": "точки вне карты"
+              },
+              "product_operation": "Сохранить опорные точки и принятые границы областей; заменить только точки вне карты и позволить дополнить пустоты без потери принятых областей.",
+              "expected_output": "Исходные и дополнительные области различимы; принятые границы сохранены.",
+              "constraints_and_exceptions": [
+                "Бумажный бросок не задаёт цифровой алгоритм координат или разбиения гексов.",
+                "Заполнение пустот может увеличить итоговое число областей.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-001-L1-AC01",
+                  "given": "Число = 3; точки A и B внутри карты, C вне карты.",
+                  "when": "Заменить C и принять границы вокруг трёх точек.",
+                  "expected": "Три исходные области; A и B не заменены, принятые границы сохранены."
+                },
+                {
+                  "id": "CAIRN2-SS-001-L1-AC02",
+                  "given": "Приняты три области; осталась пустота.",
+                  "when": "Добавить четвёртую область в пустоту.",
+                  "expected": "Четыре области; число начальных кубов не ограничивает итог."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.terrain_zones"
+              ],
+              "unresolved_parameters": [
+                "Цифровой перенос бумажных положений и кривых границ требует отдельного решения."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-001-L1",
+        "source_rule_id": "CAIRN2-SS-001",
+        "title": "Подготавливать области по заданным броскам и положениям",
+        "disposition": "keep_L1",
+        "reason": "Принятые области местности и заполнение пустот относятся к редактированию карты. Бумажный бросок не задаёт цифровой алгоритм.",
+        "product_boundary": "Области местности",
+        "user_action": "Ведущий начинает пакетную подготовку местности региона.",
+        "map_object_or_state": {
+          "count_roll": "целое 1–6",
+          "positions": "принятые опорные точки внутри карты",
+          "off_map": "точки вне карты"
+        },
+        "checkable_result": "Исходные и дополнительные области различимы; принятые границы сохранены.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-001",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий начинает пакетную подготовку местности региона.",
+          "inputs_and_units": {
+            "count_roll": "целое 1–6",
+            "positions": "принятые опорные точки внутри карты",
+            "off_map": "точки вне карты"
+          },
+          "product_operation": "Сохранить опорные точки и принятые границы областей; заменить только точки вне карты и позволить дополнить пустоты без потери принятых областей.",
+          "expected_output": "Исходные и дополнительные области различимы; принятые границы сохранены.",
+          "constraints_and_exceptions": [
+            "Бумажный бросок не задаёт цифровой алгоритм координат или разбиения гексов.",
+            "Заполнение пустот может увеличить итоговое число областей.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-001-L1-AC01",
+              "given": "Число = 3; точки A и B внутри карты, C вне карты.",
+              "when": "Заменить C и принять границы вокруг трёх точек.",
+              "expected": "Три исходные области; A и B не заменены, принятые границы сохранены."
+            },
+            {
+              "id": "CAIRN2-SS-001-L1-AC02",
+              "given": "Приняты три области; осталась пустота.",
+              "when": "Добавить четвёртую область в пустоту.",
+              "expected": "Четыре области; число начальных кубов не ограничивает итог."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.terrain_zones"
+          ],
+          "unresolved_parameters": [
+            "Цифровой перенос бумажных положений и кривых границ требует отдельного решения."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-002",
@@ -330,9 +702,9 @@
         "paraphrase": "Для каждой исходной области d6 = 1–3 даёт Easy, 4–5 — Tough, 6 — Perilous.",
         "parameters": {
           "d6_map": {
+            "6": "Perilous",
             "1-3": "Easy",
-            "4-5": "Tough",
-            "6": "Perilous"
+            "4-5": "Tough"
           },
           "unit": "one terrain seed"
         },
@@ -408,9 +780,123 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-002-L1",
+            "source_rule_id": "CAIRN2-SS-002",
+            "title": "Различать исходные категории Easy/Tough/Perilous",
+            "disposition": "keep_L1",
+            "reason": "Категория области выбирает таблицу местности; Easy/Tough/Perilous не равны автоматически утверждённой проходимости.",
+            "product_boundary": "Тип местности",
+            "user_action": "Ведущий определяет исходную категорию области.",
+            "map_object_or_state": {
+              "die": "один d6, целое 1–6"
+            },
+            "checkable_result": "У каждой опорной точки сохранена исходная категория.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий определяет исходную категорию области.",
+              "inputs_and_units": {
+                "die": "один d6, целое 1–6"
+              },
+              "product_operation": "Сопоставить бросок исходной категории и сохранить её до уточнения местности.",
+              "expected_output": "У каждой опорной точки сохранена исходная категория.",
+              "constraints_and_exceptions": [
+                "Это выбор категории области, а не вероятность на каждый гекс.",
+                "Соответствие категориям проходимости HX-BL-044 не установлено.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-002-L1-AC01",
+                  "given": "Заданы броски 1, 3, 4, 5, 6.",
+                  "when": "Определить категории.",
+                  "expected": "Easy, Easy, Tough, Tough, Perilous соответственно."
+                },
+                {
+                  "id": "CAIRN2-SS-002-L1-AC02",
+                  "given": "Получен Perilous, конкретная география ещё не выбрана.",
+                  "when": "Сохранить результат.",
+                  "expected": "Сохранён Perilous; урон и класс HX-BL-044 автоматически не назначены."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#content.roll_table_resolution",
+                "agent-work/rules/common-rules.json#map.terrain_zones"
+              ],
+              "unresolved_parameters": [
+                "Соответствие исходной категории универсальной проходимости требует отдельной проверки."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-002-L1",
+        "source_rule_id": "CAIRN2-SS-002",
+        "title": "Различать исходные категории Easy/Tough/Perilous",
+        "disposition": "keep_L1",
+        "reason": "Категория области выбирает таблицу местности; Easy/Tough/Perilous не равны автоматически утверждённой проходимости.",
+        "product_boundary": "Тип местности",
+        "user_action": "Ведущий определяет исходную категорию области.",
+        "map_object_or_state": {
+          "die": "один d6, целое 1–6"
+        },
+        "checkable_result": "У каждой опорной точки сохранена исходная категория.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-002",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий определяет исходную категорию области.",
+          "inputs_and_units": {
+            "die": "один d6, целое 1–6"
+          },
+          "product_operation": "Сопоставить бросок исходной категории и сохранить её до уточнения местности.",
+          "expected_output": "У каждой опорной точки сохранена исходная категория.",
+          "constraints_and_exceptions": [
+            "Это выбор категории области, а не вероятность на каждый гекс.",
+            "Соответствие категориям проходимости HX-BL-044 не установлено.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-002-L1-AC01",
+              "given": "Заданы броски 1, 3, 4, 5, 6.",
+              "when": "Определить категории.",
+              "expected": "Easy, Easy, Tough, Tough, Perilous соответственно."
+            },
+            {
+              "id": "CAIRN2-SS-002-L1-AC02",
+              "given": "Получен Perilous, конкретная география ещё не выбрана.",
+              "when": "Сохранить результат.",
+              "expected": "Сохранён Perilous; урон и класс HX-BL-044 автоматически не назначены."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#map.terrain_zones"
+          ],
+          "unresolved_parameters": [
+            "Соответствие исходной категории универсальной проходимости требует отдельной проверки."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-003",
@@ -504,9 +990,129 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-003-L1",
+            "source_rule_id": "CAIRN2-SS-003",
+            "title": "Получать независимые местность и ориентир по категории",
+            "disposition": "keep_L1",
+            "reason": "Независимые результаты задают местность и конкретный ориентир области.",
+            "product_boundary": "Местность/ориентиры",
+            "user_action": "Ведущий уточняет область и её ориентир.",
+            "map_object_or_state": {
+              "category": "Easy/Tough/Perilous",
+              "terrain_die": "d20, целое 1–20",
+              "landmark_die": "отдельный d20, целое 1–20"
+            },
+            "checkable_result": "Область содержит местность и ориентир с исходными индексами.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий уточняет область и её ориентир.",
+              "inputs_and_units": {
+                "category": "Easy/Tough/Perilous",
+                "terrain_die": "d20, целое 1–20",
+                "landmark_die": "отдельный d20, целое 1–20"
+              },
+              "product_operation": "Получить два результата из независимых колонок выбранной категории и сохранить их у области.",
+              "expected_output": "Область содержит местность и ориентир с исходными индексами.",
+              "constraints_and_exceptions": [
+                "Один общий бросок не заменяет два независимых.",
+                "Источник разрешает перебросить или истолковать результат; это не означает смену всей карты.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-003-L1-AC01",
+                  "given": "Easy; местность = 15, ориентир = 1.",
+                  "when": "Разрешить обе колонки.",
+                  "expected": "Plains + Broken Sundial; использованы разные строки."
+                },
+                {
+                  "id": "CAIRN2-SS-003-L1-AC02",
+                  "given": "Perilous; местность = 15, ориентир = 20.",
+                  "when": "Разрешить обе колонки.",
+                  "expected": "Mountains + Weeping Bubble; индексы не выравниваются автоматически."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#content.roll_table_resolution",
+                "agent-work/rules/common-rules.json#map.terrain_zones",
+                "agent-work/rules/common-rules.json#content.landmarks"
+              ],
+              "unresolved_parameters": []
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-003-L1",
+        "source_rule_id": "CAIRN2-SS-003",
+        "title": "Получать независимые местность и ориентир по категории",
+        "disposition": "keep_L1",
+        "reason": "Независимые результаты задают местность и конкретный ориентир области.",
+        "product_boundary": "Местность/ориентиры",
+        "user_action": "Ведущий уточняет область и её ориентир.",
+        "map_object_or_state": {
+          "category": "Easy/Tough/Perilous",
+          "terrain_die": "d20, целое 1–20",
+          "landmark_die": "отдельный d20, целое 1–20"
+        },
+        "checkable_result": "Область содержит местность и ориентир с исходными индексами.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-003",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий уточняет область и её ориентир.",
+          "inputs_and_units": {
+            "category": "Easy/Tough/Perilous",
+            "terrain_die": "d20, целое 1–20",
+            "landmark_die": "отдельный d20, целое 1–20"
+          },
+          "product_operation": "Получить два результата из независимых колонок выбранной категории и сохранить их у области.",
+          "expected_output": "Область содержит местность и ориентир с исходными индексами.",
+          "constraints_and_exceptions": [
+            "Один общий бросок не заменяет два независимых.",
+            "Источник разрешает перебросить или истолковать результат; это не означает смену всей карты.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-003-L1-AC01",
+              "given": "Easy; местность = 15, ориентир = 1.",
+              "when": "Разрешить обе колонки.",
+              "expected": "Plains + Broken Sundial; использованы разные строки."
+            },
+            {
+              "id": "CAIRN2-SS-003-L1-AC02",
+              "given": "Perilous; местность = 15, ориентир = 20.",
+              "when": "Разрешить обе колонки.",
+              "expected": "Mountains + Weeping Bubble; индексы не выравниваются автоматически."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#map.terrain_zones",
+            "agent-work/rules/common-rules.json#content.landmarks"
+          ],
+          "unresolved_parameters": []
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-004",
@@ -590,9 +1196,125 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-004-L1",
+            "source_rule_id": "CAIRN2-SS-004",
+            "title": "Размещать ориентир как географическую опору",
+            "disposition": "keep_L1",
+            "reason": "Ориентир имеет положение и связь с областью; радиус обзора и боевые LOS не включены.",
+            "product_boundary": "Ориентиры",
+            "user_action": "Ведущий наносит уже выбранный ориентир области.",
+            "map_object_or_state": {
+              "position": "принятая точка",
+              "description": "выбранный ориентир"
+            },
+            "checkable_result": "Ориентир, положение и исходная область связаны.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий наносит уже выбранный ориентир области.",
+              "inputs_and_units": {
+                "position": "принятая точка",
+                "description": "выбранный ориентир"
+              },
+              "product_operation": "Сохранить ориентир в принятой точке с привязкой к области и описанием его роли.",
+              "expected_output": "Ориентир, положение и исходная область связаны.",
+              "constraints_and_exceptions": [
+                "Бумажный треугольник не предписывает новый интерфейс или конкретный SVG.",
+                "Численный радиус и видимость из каждой точки не заданы.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-004-L1-AC01",
+                  "given": "У области A выбран Broken Sundial в точке P.",
+                  "when": "Разместить ориентир.",
+                  "expected": "Ориентир связан с A и P; соседние области не изменены."
+                },
+                {
+                  "id": "CAIRN2-SS-004-L1-AC02",
+                  "given": "Известно описание видимости, численный радиус неизвестен.",
+                  "when": "Сохранить описание.",
+                  "expected": "Описание сохранено; радиус в милях или гексах не добавлен."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#content.landmarks"
+              ],
+              "unresolved_parameters": [
+                "Дальность и препятствия обзора относятся к отдельным правилам L2."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-004-L1",
+        "source_rule_id": "CAIRN2-SS-004",
+        "title": "Размещать ориентир как географическую опору",
+        "disposition": "keep_L1",
+        "reason": "Ориентир имеет положение и связь с областью; радиус обзора и боевые LOS не включены.",
+        "product_boundary": "Ориентиры",
+        "user_action": "Ведущий наносит уже выбранный ориентир области.",
+        "map_object_or_state": {
+          "position": "принятая точка",
+          "description": "выбранный ориентир"
+        },
+        "checkable_result": "Ориентир, положение и исходная область связаны.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-004",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий наносит уже выбранный ориентир области.",
+          "inputs_and_units": {
+            "position": "принятая точка",
+            "description": "выбранный ориентир"
+          },
+          "product_operation": "Сохранить ориентир в принятой точке с привязкой к области и описанием его роли.",
+          "expected_output": "Ориентир, положение и исходная область связаны.",
+          "constraints_and_exceptions": [
+            "Бумажный треугольник не предписывает новый интерфейс или конкретный SVG.",
+            "Численный радиус и видимость из каждой точки не заданы.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-004-L1-AC01",
+              "given": "У области A выбран Broken Sundial в точке P.",
+              "when": "Разместить ориентир.",
+              "expected": "Ориентир связан с A и P; соседние области не изменены."
+            },
+            {
+              "id": "CAIRN2-SS-004-L1-AC02",
+              "given": "Известно описание видимости, численный радиус неизвестен.",
+              "when": "Сохранить описание.",
+              "expected": "Описание сохранено; радиус в милях или гексах не добавлен."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.landmarks"
+          ],
+          "unresolved_parameters": [
+            "Дальность и препятствия обзора относятся к отдельным правилам L2."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-005",
@@ -687,9 +1409,133 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-005-L1",
+            "source_rule_id": "CAIRN2-SS-005",
+            "title": "Подготавливать воду и осмысленное направление реки",
+            "disposition": "keep_L1",
+            "reason": "Вода и направление реки - география карты; озеро не требует новой реки.",
+            "product_boundary": "Вода/реки",
+            "user_action": "Ведущий подготавливает воду региона.",
+            "map_object_or_state": {
+              "water_sources": "имеющиеся или выбранные источники",
+              "elevation_context": "относительное выше/ниже",
+              "outlet": "принятое завершение"
+            },
+            "checkable_result": "Источник воды и выбранный путь или выход сохранены.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий подготавливает воду региона.",
+              "inputs_and_units": {
+                "water_sources": "имеющиеся или выбранные источники",
+                "elevation_context": "относительное выше/ниже",
+                "outlet": "принятое завершение"
+              },
+              "product_operation": "Проверить наличие источника воды и сохранить выбранное направление водотока к принятому завершению.",
+              "expected_output": "Источник воды и выбранный путь или выход сохранены.",
+              "constraints_and_exceptions": [
+                "При наличии воды новая река не обязательна.",
+                "Озеро при встрече с высокой местностью возможно, но не обязательно.",
+                "Численный гидрологический алгоритм не задан.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-005-L1-AC01",
+                  "given": "В регионе есть озеро; ведущий не добавляет реку.",
+                  "when": "Сохранить воду региона.",
+                  "expected": "Озеро осталось источником; новая река не навязана."
+                },
+                {
+                  "id": "CAIRN2-SS-005-L1-AC02",
+                  "given": "Высокая точка H, низкая L, море S.",
+                  "when": "Принять водоток H → L → S.",
+                  "expected": "Сохранены направление и выход в море; дополнительное озеро не создано."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.land_water_shapes",
+                "agent-work/rules/common-rules.json#map.river_network"
+              ],
+              "unresolved_parameters": [
+                "Стыковка с соседями и цифровая геометрия высот не специфицированы."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-005-L1",
+        "source_rule_id": "CAIRN2-SS-005",
+        "title": "Подготавливать воду и осмысленное направление реки",
+        "disposition": "keep_L1",
+        "reason": "Вода и направление реки - география карты; озеро не требует новой реки.",
+        "product_boundary": "Вода/реки",
+        "user_action": "Ведущий подготавливает воду региона.",
+        "map_object_or_state": {
+          "water_sources": "имеющиеся или выбранные источники",
+          "elevation_context": "относительное выше/ниже",
+          "outlet": "принятое завершение"
+        },
+        "checkable_result": "Источник воды и выбранный путь или выход сохранены.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-005",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий подготавливает воду региона.",
+          "inputs_and_units": {
+            "water_sources": "имеющиеся или выбранные источники",
+            "elevation_context": "относительное выше/ниже",
+            "outlet": "принятое завершение"
+          },
+          "product_operation": "Проверить наличие источника воды и сохранить выбранное направление водотока к принятому завершению.",
+          "expected_output": "Источник воды и выбранный путь или выход сохранены.",
+          "constraints_and_exceptions": [
+            "При наличии воды новая река не обязательна.",
+            "Озеро при встрече с высокой местностью возможно, но не обязательно.",
+            "Численный гидрологический алгоритм не задан.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-005-L1-AC01",
+              "given": "В регионе есть озеро; ведущий не добавляет реку.",
+              "when": "Сохранить воду региона.",
+              "expected": "Озеро осталось источником; новая река не навязана."
+            },
+            {
+              "id": "CAIRN2-SS-005-L1-AC02",
+              "given": "Высокая точка H, низкая L, море S.",
+              "when": "Принять водоток H → L → S.",
+              "expected": "Сохранены направление и выход в море; дополнительное озеро не создано."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.land_water_shapes",
+            "agent-work/rules/common-rules.json#map.river_network"
+          ],
+          "unresolved_parameters": [
+            "Стыковка с соседями и цифровая геометрия высот не специфицированы."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-006",
@@ -775,9 +1621,43 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-006-L1",
+            "source_rule_id": "CAIRN2-SS-006",
+            "title": "Хранить сезонный климат и отдельную необычную погоду",
+            "disposition": "defer_L2",
+            "reason": "Сезонная/необычная погода нужна при ведении региона. Отдельная функция подготовки погодных заметок не принята; заметка не основание L1.",
+            "product_boundary": "Ведение региона: погода",
+            "user_action": "Планировать/вести путешествие по региону",
+            "map_object_or_state": "Погодные условия региона",
+            "checkable_result": "Расчёт/условия отделены от географии и L1-требований",
+            "current_operational_requirement": null,
+            "current_L1_eligible": false,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-006-L1",
+        "source_rule_id": "CAIRN2-SS-006",
+        "title": "Хранить сезонный климат и отдельную необычную погоду",
+        "disposition": "defer_L2",
+        "reason": "Сезонная/необычная погода нужна при ведении региона. Отдельная функция подготовки погодных заметок не принята; заметка не основание L1.",
+        "product_boundary": "Ведение региона: погода",
+        "user_action": "Планировать/вести путешествие по региону",
+        "map_object_or_state": "Погодные условия региона",
+        "checkable_result": "Расчёт/условия отделены от географии и L1-требований",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-007",
@@ -867,9 +1747,133 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-007-L1",
+            "source_rule_id": "CAIRN2-SS-007",
+            "title": "Назначать Heart у воды и отдельное число мест",
+            "disposition": "keep_L1",
+            "reason": "Heart у воды и3–8 дополнительных мест - наполнение региона, не плотность на гекс.",
+            "product_boundary": "Наполнение/привязка к воде",
+            "user_action": "Ведущий задаёт опорное место и пакет остальных мест.",
+            "map_object_or_state": {
+              "Heart": "отдельное значимое место рядом с водой",
+              "N": "выбранное целое 3–8",
+              "points": "принятые положения дополнительных мест"
+            },
+            "checkable_result": "Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий задаёт опорное место и пакет остальных мест.",
+              "inputs_and_units": {
+                "Heart": "отдельное значимое место рядом с водой",
+                "N": "выбранное целое 3–8",
+                "points": "принятые положения дополнительных мест"
+              },
+              "product_operation": "Сохранить Heart у воды и N дополнительных мест; заменить только внеобластные положения.",
+              "expected_output": "Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.",
+              "constraints_and_exceptions": [
+                "Heart значим, но не обязательно крупнейший или важнейший город.",
+                "Это количество для региона, а не плотность на каждый гекс.",
+                "Распределение N и формула d6 + 2 источником не заданы.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-007-L1-AC01",
+                  "given": "Heart H у воды, N = 3.",
+                  "when": "Создать выбранный набор.",
+                  "expected": "Четыре места: H и три дополнительных."
+                },
+                {
+                  "id": "CAIRN2-SS-007-L1-AC02",
+                  "given": "Heart H, N = 8; одна дополнительная точка вне карты.",
+                  "when": "Повторить положение этой точки.",
+                  "expected": "Девять мест: H и восемь дополнительных; прочие положения сохранены."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#content.site_density",
+                "agent-work/rules/common-rules.json#content.site_links"
+              ],
+              "unresolved_parameters": [
+                "Численная дистанция до воды и способ выбора N не нормированы."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-007-L1",
+        "source_rule_id": "CAIRN2-SS-007",
+        "title": "Назначать Heart у воды и отдельное число мест",
+        "disposition": "keep_L1",
+        "reason": "Heart у воды и3–8 дополнительных мест - наполнение региона, не плотность на гекс.",
+        "product_boundary": "Наполнение/привязка к воде",
+        "user_action": "Ведущий задаёт опорное место и пакет остальных мест.",
+        "map_object_or_state": {
+          "Heart": "отдельное значимое место рядом с водой",
+          "N": "выбранное целое 3–8",
+          "points": "принятые положения дополнительных мест"
+        },
+        "checkable_result": "Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-007",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий задаёт опорное место и пакет остальных мест.",
+          "inputs_and_units": {
+            "Heart": "отдельное значимое место рядом с водой",
+            "N": "выбранное целое 3–8",
+            "points": "принятые положения дополнительных мест"
+          },
+          "product_operation": "Сохранить Heart у воды и N дополнительных мест; заменить только внеобластные положения.",
+          "expected_output": "Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.",
+          "constraints_and_exceptions": [
+            "Heart значим, но не обязательно крупнейший или важнейший город.",
+            "Это количество для региона, а не плотность на каждый гекс.",
+            "Распределение N и формула d6 + 2 источником не заданы.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-007-L1-AC01",
+              "given": "Heart H у воды, N = 3.",
+              "when": "Создать выбранный набор.",
+              "expected": "Четыре места: H и три дополнительных."
+            },
+            {
+              "id": "CAIRN2-SS-007-L1-AC02",
+              "given": "Heart H, N = 8; одна дополнительная точка вне карты.",
+              "when": "Повторить положение этой точки.",
+              "expected": "Девять мест: H и восемь дополнительных; прочие положения сохранены."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.site_density",
+            "agent-work/rules/common-rules.json#content.site_links"
+          ],
+          "unresolved_parameters": [
+            "Численная дистанция до воды и способ выбора N не нормированы."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-008",
@@ -884,8 +1888,8 @@
         "parameters": {
           "d6_map": {
             "1": "Waypoint OR Settlement",
-            "2-3": "Curiosity",
             "4": "Lair",
+            "2-3": "Curiosity",
             "5-6": "Dungeon"
           }
         },
@@ -959,9 +1963,127 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-008-L1",
+            "source_rule_id": "CAIRN2-SS-008",
+            "title": "Назначать категории только выбранным дополнительным местам",
+            "disposition": "keep_L1",
+            "reason": "Категории назначаются выбранным местам. Грань1 сохраняет выбор Waypoint/Settlement.",
+            "product_boundary": "Категории мест",
+            "user_action": "Ведущий определяет категории дополнительных мест.",
+            "map_object_or_state": {
+              "dice": "по одному d6 для дополнительного места",
+              "one_choice": "явный выбор Waypoint или Settlement при 1"
+            },
+            "checkable_result": "Категории соответствуют броскам; Heart сохранён отдельно.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий определяет категории дополнительных мест.",
+              "inputs_and_units": {
+                "dice": "по одному d6 для дополнительного места",
+                "one_choice": "явный выбор Waypoint или Settlement при 1"
+              },
+              "product_operation": "Назначить категории выбранным точкам по броскам; ветку результата 1 оставить явным выбором.",
+              "expected_output": "Категории соответствуют броскам; Heart сохранён отдельно.",
+              "constraints_and_exceptions": [
+                "Вес граней не задаёт точную квоту итоговой карты.",
+                "Опасность Curiosity при взаимодействии не означает автоматический бой.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-008-L1-AC01",
+                  "given": "Шесть точек, броски 1, 2, 3, 4, 5, 6; на 1 выбран Waypoint.",
+                  "when": "Назначить категории.",
+                  "expected": "Waypoint, Curiosity, Curiosity, Lair, Dungeon, Dungeon."
+                },
+                {
+                  "id": "CAIRN2-SS-008-L1-AC02",
+                  "given": "Heart уже есть; для нового места получен 1.",
+                  "when": "Выбрать Settlement.",
+                  "expected": "Новое место — Settlement; Heart не переименован."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#content.roll_table_resolution",
+                "agent-work/rules/common-rules.json#content.site_density"
+              ],
+              "unresolved_parameters": [
+                "Политика выбора между Waypoint и Settlement не задана."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-008-L1",
+        "source_rule_id": "CAIRN2-SS-008",
+        "title": "Назначать категории только выбранным дополнительным местам",
+        "disposition": "keep_L1",
+        "reason": "Категории назначаются выбранным местам. Грань1 сохраняет выбор Waypoint/Settlement.",
+        "product_boundary": "Категории мест",
+        "user_action": "Ведущий определяет категории дополнительных мест.",
+        "map_object_or_state": {
+          "dice": "по одному d6 для дополнительного места",
+          "one_choice": "явный выбор Waypoint или Settlement при 1"
+        },
+        "checkable_result": "Категории соответствуют броскам; Heart сохранён отдельно.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-008",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий определяет категории дополнительных мест.",
+          "inputs_and_units": {
+            "dice": "по одному d6 для дополнительного места",
+            "one_choice": "явный выбор Waypoint или Settlement при 1"
+          },
+          "product_operation": "Назначить категории выбранным точкам по броскам; ветку результата 1 оставить явным выбором.",
+          "expected_output": "Категории соответствуют броскам; Heart сохранён отдельно.",
+          "constraints_and_exceptions": [
+            "Вес граней не задаёт точную квоту итоговой карты.",
+            "Опасность Curiosity при взаимодействии не означает автоматический бой.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-008-L1-AC01",
+              "given": "Шесть точек, броски 1, 2, 3, 4, 5, 6; на 1 выбран Waypoint.",
+              "when": "Назначить категории.",
+              "expected": "Waypoint, Curiosity, Curiosity, Lair, Dungeon, Dungeon."
+            },
+            {
+              "id": "CAIRN2-SS-008-L1-AC02",
+              "given": "Heart уже есть; для нового места получен 1.",
+              "when": "Выбрать Settlement.",
+              "expected": "Новое место — Settlement; Heart не переименован."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#content.site_density"
+          ],
+          "unresolved_parameters": [
+            "Политика выбора между Waypoint и Settlement не задана."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-009",
@@ -1042,9 +2164,125 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-009-L1",
+            "source_rule_id": "CAIRN2-SS-009",
+            "title": "Нумеровать места начиная с Heart",
+            "disposition": "keep_L1",
+            "reason": "Номера связывают существующие места, начиная с Heart; координата гекса не заменяет номер места.",
+            "product_boundary": "Нумерация мест",
+            "user_action": "Ведущий назначает обозначения подготовленным местам.",
+            "map_object_or_state": {
+              "places": "Heart и дополнительные места",
+              "numbers": "выбранные ведущим обозначения"
+            },
+            "checkable_result": "Номера пригодны для ссылок между местами.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий назначает обозначения подготовленным местам.",
+              "inputs_and_units": {
+                "places": "Heart и дополнительные места",
+                "numbers": "выбранные ведущим обозначения"
+              },
+              "product_operation": "Связать обозначения с существующими местами, начиная порядок с Heart; имена и положения сохранить.",
+              "expected_output": "Номера пригодны для ссылок между местами.",
+              "constraints_and_exceptions": [
+                "Начальное целое и порядок прочих мест не фиксированы источником.",
+                "Номер гекса не заменяет обозначение места.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-009-L1-AC01",
+                  "given": "Ведущий выбрал 1, 2, 3, 4 для H, A, B, C.",
+                  "when": "Назначить обозначения.",
+                  "expected": "H = 1, A = 2, B = 3, C = 4; имена и положения прежние."
+                },
+                {
+                  "id": "CAIRN2-SS-009-L1-AC02",
+                  "given": "Место A остаётся в точке P; новое обозначение — 7.",
+                  "when": "Сохранить обозначение.",
+                  "expected": "A имеет номер 7 в P; описание прежнее. Старые ссылки требуют отдельной проверки согласованности."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.reference_labels"
+              ],
+              "unresolved_parameters": [
+                "Политика перенумерации и обновления старых ссылок не задана источником."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-009-L1",
+        "source_rule_id": "CAIRN2-SS-009",
+        "title": "Нумеровать места начиная с Heart",
+        "disposition": "keep_L1",
+        "reason": "Номера связывают существующие места, начиная с Heart; координата гекса не заменяет номер места.",
+        "product_boundary": "Нумерация мест",
+        "user_action": "Ведущий назначает обозначения подготовленным местам.",
+        "map_object_or_state": {
+          "places": "Heart и дополнительные места",
+          "numbers": "выбранные ведущим обозначения"
+        },
+        "checkable_result": "Номера пригодны для ссылок между местами.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-009",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий назначает обозначения подготовленным местам.",
+          "inputs_and_units": {
+            "places": "Heart и дополнительные места",
+            "numbers": "выбранные ведущим обозначения"
+          },
+          "product_operation": "Связать обозначения с существующими местами, начиная порядок с Heart; имена и положения сохранить.",
+          "expected_output": "Номера пригодны для ссылок между местами.",
+          "constraints_and_exceptions": [
+            "Начальное целое и порядок прочих мест не фиксированы источником.",
+            "Номер гекса не заменяет обозначение места.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-009-L1-AC01",
+              "given": "Ведущий выбрал 1, 2, 3, 4 для H, A, B, C.",
+              "when": "Назначить обозначения.",
+              "expected": "H = 1, A = 2, B = 3, C = 4; имена и положения прежние."
+            },
+            {
+              "id": "CAIRN2-SS-009-L1-AC02",
+              "given": "Место A остаётся в точке P; новое обозначение — 7.",
+              "when": "Сохранить обозначение.",
+              "expected": "A имеет номер 7 в P; описание прежнее. Старые ссылки требуют отдельной проверки согласованности."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.reference_labels"
+          ],
+          "unresolved_parameters": [
+            "Политика перенумерации и обновления старых ссылок не задана источником."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-010",
@@ -1132,9 +2370,127 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-010-L1",
+            "source_rule_id": "CAIRN2-SS-010",
+            "title": "Наполнять каждое место двумя независимыми подсказками",
+            "disposition": "keep_L1",
+            "reason": "Таблица наполняет конкретное выбранное место типом и свойством; без генератора личностей NPC, политики, сюжета или магии.",
+            "product_boundary": "Наполнение конкретного места",
+            "user_action": "Ведущий наполняет выбранное место.",
+            "map_object_or_state": {
+              "category": "одна из пяти категорий",
+              "dice": "два отдельных d20, значения 1–20",
+              "Heart_choice": "выбранная категория Heart при необходимости"
+            },
+            "checkable_result": "Место содержит обе исходные подсказки и их принятый смысл.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий наполняет выбранное место.",
+              "inputs_and_units": {
+                "category": "одна из пяти категорий",
+                "dice": "два отдельных d20, значения 1–20",
+                "Heart_choice": "выбранная категория Heart при необходимости"
+              },
+              "product_operation": "Сохранить две подсказки у места и принятое толкование; не создавать автоматически внутреннюю карту или механические эффекты.",
+              "expected_output": "Место содержит обе исходные подсказки и их принятый смысл.",
+              "constraints_and_exceptions": [
+                "Слово «обычно» не является запретом другой категории Heart.",
+                "Ссылка на Dungeon Seeds не означает, что внутренности уже прочитаны или созданы.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-010-L1-AC01",
+                  "given": "Settlement; тип = 4, свойство = 20.",
+                  "when": "Разрешить обе колонки.",
+                  "expected": "City + Trading Hub."
+                },
+                {
+                  "id": "CAIRN2-SS-010-L1-AC02",
+                  "given": "Dungeon; тип = 2, свойство = 18.",
+                  "when": "Разрешить обе колонки.",
+                  "expected": "Cave + Sealed; комнаты и монстры автоматически не созданы."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#content.roll_table_resolution",
+                "agent-work/rules/common-rules.json#content.place_description"
+              ],
+              "unresolved_parameters": []
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-010-L1",
+        "source_rule_id": "CAIRN2-SS-010",
+        "title": "Наполнять каждое место двумя независимыми подсказками",
+        "disposition": "keep_L1",
+        "reason": "Таблица наполняет конкретное выбранное место типом и свойством; без генератора личностей NPC, политики, сюжета или магии.",
+        "product_boundary": "Наполнение конкретного места",
+        "user_action": "Ведущий наполняет выбранное место.",
+        "map_object_or_state": {
+          "category": "одна из пяти категорий",
+          "dice": "два отдельных d20, значения 1–20",
+          "Heart_choice": "выбранная категория Heart при необходимости"
+        },
+        "checkable_result": "Место содержит обе исходные подсказки и их принятый смысл.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-010",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий наполняет выбранное место.",
+          "inputs_and_units": {
+            "category": "одна из пяти категорий",
+            "dice": "два отдельных d20, значения 1–20",
+            "Heart_choice": "выбранная категория Heart при необходимости"
+          },
+          "product_operation": "Сохранить две подсказки у места и принятое толкование; не создавать автоматически внутреннюю карту или механические эффекты.",
+          "expected_output": "Место содержит обе исходные подсказки и их принятый смысл.",
+          "constraints_and_exceptions": [
+            "Слово «обычно» не является запретом другой категории Heart.",
+            "Ссылка на Dungeon Seeds не означает, что внутренности уже прочитаны или созданы.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-010-L1-AC01",
+              "given": "Settlement; тип = 4, свойство = 20.",
+              "when": "Разрешить обе колонки.",
+              "expected": "City + Trading Hub."
+            },
+            {
+              "id": "CAIRN2-SS-010-L1-AC02",
+              "given": "Dungeon; тип = 2, свойство = 18.",
+              "when": "Разрешить обе колонки.",
+              "expected": "Cave + Sealed; комнаты и монстры автоматически не созданы."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": []
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-011",
@@ -1235,9 +2591,133 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-011-L1",
+            "source_rule_id": "CAIRN2-SS-011",
+            "title": "Различать доступность пути и его физический вид",
+            "disposition": "keep_L1",
+            "reason": "При подготовке конкретного пути отмечаются скрытость/условие отдельно от физического вида. Проверки, цена поиска и исполнение условий отложены.",
+            "product_boundary": "Подготовка путей/обнаружимость",
+            "user_action": "Ведущий задаёт свойства известного соединения.",
+            "map_object_or_state": {
+              "ends": "два выбранных места",
+              "access": "Standard/Hidden/Conditional",
+              "condition": "известное ведущему условие текстом"
+            },
+            "checkable_result": "Смена физического вида не стирает условие пути.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий задаёт свойства известного соединения.",
+              "inputs_and_units": {
+                "ends": "два выбранных места",
+                "access": "Standard/Hidden/Conditional",
+                "condition": "известное ведущему условие текстом"
+              },
+              "product_operation": "Хранить доступность и условие отдельно от физического вида: дорога, тропа или дикий маршрут.",
+              "expected_output": "Смена физического вида не стирает условие пути.",
+              "constraints_and_exceptions": [
+                "Скрытость пути не равна непроходимости местности.",
+                "Численная цена поиска, проверка и урон неизвестны.",
+                "Бумажная нотация линий не задаёт новый интерфейс.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-011-L1-AC01",
+                  "given": "A–B — условный водный путь; нужна лодка.",
+                  "when": "Сохранить соединение.",
+                  "expected": "Условие «лодка» сохранено; проходимость без лодки не заявлена."
+                },
+                {
+                  "id": "CAIRN2-SS-011-L1-AC02",
+                  "given": "A–C — скрытая дорога; цена поиска неизвестна.",
+                  "when": "Сохранить тип.",
+                  "expected": "Hidden и неизвестная цена сохранены; деньги и вахты не придуманы."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.routes_and_barriers",
+                "agent-work/rules/common-rules.json#content.discovery_levels"
+              ],
+              "unresolved_parameters": [
+                "Исполнение условий и обнаружения требует отдельного корпуса L2/L3."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-011-L1",
+        "source_rule_id": "CAIRN2-SS-011",
+        "title": "Различать доступность пути и его физический вид",
+        "disposition": "keep_L1",
+        "reason": "При подготовке конкретного пути отмечаются скрытость/условие отдельно от физического вида. Проверки, цена поиска и исполнение условий отложены.",
+        "product_boundary": "Подготовка путей/обнаружимость",
+        "user_action": "Ведущий задаёт свойства известного соединения.",
+        "map_object_or_state": {
+          "ends": "два выбранных места",
+          "access": "Standard/Hidden/Conditional",
+          "condition": "известное ведущему условие текстом"
+        },
+        "checkable_result": "Смена физического вида не стирает условие пути.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-011",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий задаёт свойства известного соединения.",
+          "inputs_and_units": {
+            "ends": "два выбранных места",
+            "access": "Standard/Hidden/Conditional",
+            "condition": "известное ведущему условие текстом"
+          },
+          "product_operation": "Хранить доступность и условие отдельно от физического вида: дорога, тропа или дикий маршрут.",
+          "expected_output": "Смена физического вида не стирает условие пути.",
+          "constraints_and_exceptions": [
+            "Скрытость пути не равна непроходимости местности.",
+            "Численная цена поиска, проверка и урон неизвестны.",
+            "Бумажная нотация линий не задаёт новый интерфейс.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-011-L1-AC01",
+              "given": "A–B — условный водный путь; нужна лодка.",
+              "when": "Сохранить соединение.",
+              "expected": "Условие «лодка» сохранено; проходимость без лодки не заявлена."
+            },
+            {
+              "id": "CAIRN2-SS-011-L1-AC02",
+              "given": "A–C — скрытая дорога; цена поиска неизвестна.",
+              "when": "Сохранить тип.",
+              "expected": "Hidden и неизвестная цена сохранены; деньги и вахты не придуманы."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.routes_and_barriers",
+            "agent-work/rules/common-rules.json#content.discovery_levels"
+          ],
+          "unresolved_parameters": [
+            "Исполнение условий и обнаружения требует отдельного корпуса L2/L3."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-012",
@@ -1332,9 +2812,131 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-012-L1",
+            "source_rule_id": "CAIRN2-SS-012",
+            "title": "Связывать места сетью с осмысленными развилками",
+            "disposition": "keep_L1",
+            "reason": "Пары мест и виды путей задают географию. Неясная трактовка1–4 не оправдывает автоматическую связность.",
+            "product_boundary": "Пути между местами",
+            "user_action": "Ведущий связывает подготовленные места.",
+            "map_object_or_state": {
+              "Heart": "исходное место",
+              "connections": "принятые пары мест",
+              "path_count_choice": "1–4 на рассматриваемом шаге, точная трактовка требует решения"
+            },
+            "checkable_result": "У каждого пути сохранены концы и принятый физический вид.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий связывает подготовленные места.",
+              "inputs_and_units": {
+                "Heart": "исходное место",
+                "connections": "принятые пары мест",
+                "path_count_choice": "1–4 на рассматриваемом шаге, точная трактовка требует решения"
+              },
+              "product_operation": "Сохранить принятые пары, развилки и физический вид; не заменять сеть соседством гексов или полным графом.",
+              "expected_output": "У каждого пути сохранены концы и принятый физический вид.",
+              "constraints_and_exceptions": [
+                "Трактовка 1–4 как степени вершины или числа новых путей остаётся открытой.",
+                "Конечное место может оставаться тупиком.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-012-L1-AC01",
+                  "given": "H–A — дорога, H–B — тропа, A–B — сокращение.",
+                  "when": "Сохранить набор.",
+                  "expected": "Три пары и петля H–A–B–H; соседство гексов не добавляет рёбер."
+                },
+                {
+                  "id": "CAIRN2-SS-012-L1-AC02",
+                  "given": "B — конечное место единственного пути.",
+                  "when": "Принять тупик.",
+                  "expected": "Автоматическая дорога из B ради соединения со всеми местами не добавлена."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.routes_and_barriers",
+                "agent-work/rules/common-rules.json#content.site_links"
+              ],
+              "unresolved_parameters": [
+                "Алгоритм раскладки, ограничения степени и пересечений не предписаны."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-012-L1",
+        "source_rule_id": "CAIRN2-SS-012",
+        "title": "Связывать места сетью с осмысленными развилками",
+        "disposition": "keep_L1",
+        "reason": "Пары мест и виды путей задают географию. Неясная трактовка1–4 не оправдывает автоматическую связность.",
+        "product_boundary": "Пути между местами",
+        "user_action": "Ведущий связывает подготовленные места.",
+        "map_object_or_state": {
+          "Heart": "исходное место",
+          "connections": "принятые пары мест",
+          "path_count_choice": "1–4 на рассматриваемом шаге, точная трактовка требует решения"
+        },
+        "checkable_result": "У каждого пути сохранены концы и принятый физический вид.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-012",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий связывает подготовленные места.",
+          "inputs_and_units": {
+            "Heart": "исходное место",
+            "connections": "принятые пары мест",
+            "path_count_choice": "1–4 на рассматриваемом шаге, точная трактовка требует решения"
+          },
+          "product_operation": "Сохранить принятые пары, развилки и физический вид; не заменять сеть соседством гексов или полным графом.",
+          "expected_output": "У каждого пути сохранены концы и принятый физический вид.",
+          "constraints_and_exceptions": [
+            "Трактовка 1–4 как степени вершины или числа новых путей остаётся открытой.",
+            "Конечное место может оставаться тупиком.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-012-L1-AC01",
+              "given": "H–A — дорога, H–B — тропа, A–B — сокращение.",
+              "when": "Сохранить набор.",
+              "expected": "Три пары и петля H–A–B–H; соседство гексов не добавляет рёбер."
+            },
+            {
+              "id": "CAIRN2-SS-012-L1-AC02",
+              "given": "B — конечное место единственного пути.",
+              "when": "Принять тупик.",
+              "expected": "Автоматическая дорога из B ради соединения со всеми местами не добавлена."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#map.routes_and_barriers",
+            "agent-work/rules/common-rules.json#content.site_links"
+          ],
+          "unresolved_parameters": [
+            "Алгоритм раскладки, ограничения степени и пересечений не предписаны."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-013",
@@ -1420,9 +3022,131 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-013-L1",
+            "source_rule_id": "CAIRN2-SS-013",
+            "title": "Описывать путь парой независимых результатов",
+            "disposition": "keep_L1",
+            "reason": "Признаки конкретного пути нужны для подготовки маршрута; угроза остаётся сведением о месте, без боевого/событийного движка.",
+            "product_boundary": "Описание конкретного пути",
+            "user_action": "Ведущий описывает конкретный путь.",
+            "map_object_or_state": {
+              "route": "принятая пара мест",
+              "feature_die": "d20, значение 1–20",
+              "condition_die": "другой d20, значение 1–20"
+            },
+            "checkable_result": "Путь содержит обе исходные подсказки.",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013",
+              "normative_kind": "optional_setting_creation_procedure",
+              "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+              "layer": "L1",
+              "trigger_or_user_action": "Ведущий описывает конкретный путь.",
+              "inputs_and_units": {
+                "route": "принятая пара мест",
+                "feature_die": "d20, значение 1–20",
+                "condition_die": "другой d20, значение 1–20"
+              },
+              "product_operation": "Сохранить обе подсказки у пути как описание; не исполнять событие или урон из текста.",
+              "expected_output": "Путь содержит обе исходные подсказки.",
+              "constraints_and_exceptions": [
+                "Колонка Condition не равна типу Conditional path.",
+                "Упоминание засады не требует автоматически запускать бой.",
+                "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "CAIRN2-SS-013-L1-AC01",
+                  "given": "A–B; Feature = 12, Condition = 20.",
+                  "when": "Разрешить подсказки.",
+                  "expected": "Mile Markers + Uneven, Soggy Ground; физический вид пути прежний."
+                },
+                {
+                  "id": "CAIRN2-SS-013-L1-AC02",
+                  "given": "Condition = 1.",
+                  "when": "Сохранить подсказку.",
+                  "expected": "Bandit Ambushes записано как угроза; бой и характеристики противников не созданы."
+                }
+              ],
+              "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#content.roll_table_resolution",
+                "agent-work/rules/common-rules.json#content.place_description"
+              ],
+              "unresolved_parameters": [
+                "Полный каталог и механические последствия не импортируются автоматически."
+              ]
+            },
+            "current_L1_eligible": true,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-013-L1",
+        "source_rule_id": "CAIRN2-SS-013",
+        "title": "Описывать путь парой независимых результатов",
+        "disposition": "keep_L1",
+        "reason": "Признаки конкретного пути нужны для подготовки маршрута; угроза остаётся сведением о месте, без боевого/событийного движка.",
+        "product_boundary": "Описание конкретного пути",
+        "user_action": "Ведущий описывает конкретный путь.",
+        "map_object_or_state": {
+          "route": "принятая пара мест",
+          "feature_die": "d20, значение 1–20",
+          "condition_die": "другой d20, значение 1–20"
+        },
+        "checkable_result": "Путь содержит обе исходные подсказки.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/Cairn-2e.json#CAIRN2-SS-013",
+          "normative_kind": "optional_setting_creation_procedure",
+          "applicability": "Selected Cairn2 SettingSeeds geographic workflow; not mandatory for all maps or hex-by-hex runtime generation",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий описывает конкретный путь.",
+          "inputs_and_units": {
+            "route": "принятая пара мест",
+            "feature_die": "d20, значение 1–20",
+            "condition_die": "другой d20, значение 1–20"
+          },
+          "product_operation": "Сохранить обе подсказки у пути как описание; не исполнять событие или урон из текста.",
+          "expected_output": "Путь содержит обе исходные подсказки.",
+          "constraints_and_exceptions": [
+            "Колонка Condition не равна типу Conditional path.",
+            "Упоминание засады не требует автоматически запускать бой.",
+            "Применимость не разрешает разработку. Текущая реализация не проверена; заметка не исполнение правила."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "CAIRN2-SS-013-L1-AC01",
+              "given": "A–B; Feature = 12, Condition = 20.",
+              "when": "Разрешить подсказки.",
+              "expected": "Mile Markers + Uneven, Soggy Ground; физический вид пути прежний."
+            },
+            {
+              "id": "CAIRN2-SS-013-L1-AC02",
+              "given": "Condition = 1.",
+              "when": "Сохранить подсказку.",
+              "expected": "Bandit Ambushes записано как угроза; бой и характеристики противников не созданы."
+            }
+          ],
+          "source_vs_product_interpretation": "Source parameters paraphrased; digital action/persistence and examples are researcher translation, not prescribed interface, architecture or authorized implementation. Paper dice positions do not specify digital coordinate RNG.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Полный каталог и механические последствия не импортируются автоматически."
+          ]
+        },
+        "current_L1_eligible": true,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     },
     {
       "id": "CAIRN2-SS-014",
@@ -1521,9 +3245,43 @@
           "gap_task_ids": [
             "HX-BL-055"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "id": "CAIRN2-SS-014-L1",
+            "source_rule_id": "CAIRN2-SS-014",
+            "title": "Сохранять плановую длительность как пометку пути",
+            "disposition": "defer_L2",
+            "reason": "Длительность пути с модификаторами - расчёт путешествия L2, даже до перехода. Запись результата не делает его L1.",
+            "product_boundary": "Ведение гекскроула: время",
+            "user_action": "Планировать/вести путешествие по региону",
+            "map_object_or_state": "Путь и длительность в вахтах",
+            "checkable_result": "Расчёт/условия отделены от географии и L1-требований",
+            "current_operational_requirement": null,
+            "current_L1_eligible": false,
+            "implementation_retested": false,
+            "implementation_status": "unverified",
+            "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+            "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+          }
         }
-      ]
+      ],
+      "scope_review": {
+        "id": "CAIRN2-SS-014-L1",
+        "source_rule_id": "CAIRN2-SS-014",
+        "title": "Сохранять плановую длительность как пометку пути",
+        "disposition": "defer_L2",
+        "reason": "Длительность пути с модификаторами - расчёт путешествия L2, даже до перехода. Запись результата не делает его L1.",
+        "product_boundary": "Ведение гекскроула: время",
+        "user_action": "Планировать/вести путешествие по региону",
+        "map_object_or_state": "Путь и длительность в вахтах",
+        "checkable_result": "Расчёт/условия отделены от географии и L1-требований",
+        "current_operational_requirement": null,
+        "current_L1_eligible": false,
+        "implementation_retested": false,
+        "implementation_status": "unverified",
+        "run_id": "2026-11-17-CAIRN2-scope-audit-1794926109703",
+        "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      }
     }
   ],
   "completeness": {
@@ -1630,5 +3388,41 @@
     }
   ],
   "rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "scope_review": {
+    "audit_ref": "agent-work/research/requirements/CAIRN2-scope-audit.json",
+    "counts": {
+      "requirements": 16,
+      "keep_L1": 14,
+      "defer_L2": 2,
+      "integration_L3": 0,
+      "out_of_scope": 0,
+      "needs_owner_decision": 0
+    },
+    "source_facts_preserved": true,
+    "working_requirements": "Only rules[].requirements[].scope_review.current_operational_requirement",
+    "historical_backlog_warning": "All original backlog refs historical; current HX-BL-055 is river-width task, not Cairn. No restoration or expansion."
+  },
+  "current_scope_review": {
+    "audit_ref": "agent-work/research/requirements/CAIRN2-scope-audit.json",
+    "status": "existing_scope_review_only",
+    "current_L1_requirement_ids": [
+      "CAIRN2-PC-001-L1",
+      "CAIRN2-PC-002-L1",
+      "CAIRN2-SS-001-L1",
+      "CAIRN2-SS-002-L1",
+      "CAIRN2-SS-003-L1",
+      "CAIRN2-SS-004-L1",
+      "CAIRN2-SS-005-L1",
+      "CAIRN2-SS-007-L1",
+      "CAIRN2-SS-008-L1",
+      "CAIRN2-SS-009-L1",
+      "CAIRN2-SS-010-L1",
+      "CAIRN2-SS-011-L1",
+      "CAIRN2-SS-012-L1",
+      "CAIRN2-SS-013-L1"
+    ],
+    "full_game_accepted": false,
+    "source_facts_preserved": true
+  }
 }
