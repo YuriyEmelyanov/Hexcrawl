@@ -130,8 +130,9 @@ try{
  const markerPosition=await requiredMarker.evaluate(n=>({x:Number(n.getAttribute('x'))+Number(n.getAttribute('width'))/2,y:Number(n.getAttribute('y'))+Number(n.getAttribute('height'))/2}));
  const cellPosition=await page.locator(`[data-fine-key="${requiredKey}"] polygon`).first().evaluate(n=>{const p=[...n.points];return {x:p.reduce((s,p)=>s+p.x,0)/6,y:p.reduce((s,p)=>s+p.y,0)/6};});
  const requiredCellWorld=detailCellCenter(createDetailGrid(1),requiredCell),factor=Math.sqrt(3)*28/6;
- assert.ok(Math.abs(markerPosition.x-cellPosition.x-(requiredMove.newAnchor.x-requiredCellWorld.x)*factor)<1e-7);
- assert.ok(Math.abs(markerPosition.y-cellPosition.y-(requiredMove.newAnchor.y-requiredCellWorld.y)*factor)<1e-7,'actual marker follows the prepared bank anchor');
+ const requiredPosition={markerPosition,cellPosition,requiredCellWorld,expected:requiredMove.newAnchor,factor,source:(await snap()).map.knave};console.log('HX059_REQUIRED_POSITION '+JSON.stringify(requiredPosition));
+ assert.ok(Math.abs(markerPosition.x-cellPosition.x-(requiredMove.newAnchor.x-requiredCellWorld.x)*factor)<1e-7,JSON.stringify(requiredPosition));
+ assert.ok(Math.abs(markerPosition.y-cellPosition.y-(requiredMove.newAnchor.y-requiredCellWorld.y)*factor)<1e-7,'actual marker follows the prepared bank anchor '+JSON.stringify(requiredPosition));
  await page.locator(`[data-fine-key="${requiredKey}"]`).press('Enter');await page.locator('[data-fine-panel]').hover();
  assert.equal(await page.locator('[data-fine-selected]').getAttribute('data-fine-selected'),requiredKey);assert.match(await page.locator('[data-fine-panel]').innerText(),/mill/i);
  const requiredSignature=await classicSignature(),markerSignature=await requiredMarker.evaluate(n=>['x','y','width','height'].map(k=>n.getAttribute(k)));
