@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-17T1200-programmer-camera-normalization",
+  "role": "programmer",
+  "task_id": "HX-BL-059",
+  "generation": 118,
+  "status": "implementation_checkpoint",
+  "completed_at": "2026-11-17T09:15:39.716Z",
+  "role_selection_reason": "Approved F1 and prior concrete NEXT02 handoff; full382 claims read, three legacy research active records reconciled against saved completed/integrated results and registry history; no active product owner. CAS acquired sole task/programmer slot.",
+  "approval_ref": "agent-work/decisions/owner-decision-2026-11-16-one-mile-rivers-on-edges.json",
+  "spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-F1.md",
+  "branch": "agent/hx-bl-059-auto-river-edges",
+  "pr": 505,
+  "base_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
+  "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+  "tree_sha": "acd106a4efdd123c4f2848566d2bc35ee08a0498",
+  "visible_progress": {
+    "before": "Automatic fine view incorrectly saved display zoom6 as source scale1; load/fallback could multiply or leak zoom.",
+    "after": "Camera saved in accepted coordinates and restored once into actual view. Locale error/success/repeat-import, fresh harness load and runtime zoom passed; browser confirms normalized source scale and full scene/PNG.",
+    "actual_ui": {
+      "kind": "runtime_exact_SHA",
+      "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+      "tree_sha": "acd106a4efdd123c4f2848566d2bc35ee08a0498",
+      "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44051822640/artifacts/14314453121",
+      "artifact_digest": "sha256:02323d2e133a18147868dd2b59d39e873121abadcad31e3cf5b64d7963c51b80",
+      "cases": [
+        {
+          "id": "HX059-classic42-automatic-scene-save-PNG",
+          "status": "pass",
+          "sourcePaths": 34,
+          "crossings": 2,
+          "viewports": [
+            1500,
+            390
+          ],
+          "sourceWrites": false,
+          "cameraSourceScaleStable": true
+        },
+        {
+          "id": "HX059-mixed-growth-retained-paths-PNG",
+          "status": "pass",
+          "retainedPaths": 34,
+          "newPaths": 12,
+          "viewports": [
+            1500,
+            390
+          ],
+          "sourceWrites": false
+        }
+      ],
+      "visually_inspected": true,
+      "presented_in_chat": true,
+      "whole_F1_accepted": false
+    },
+    "next": "Responsive busy/cancel/stale preparation and complete F1 visual acceptance."
+  },
+  "evidence_ref": "agent-work/evidence/HX-BL-059-camera-198ce6a/implementation.json",
+  "manifest_ref": "agent-work/evidence/HX-BL-059-camera-198ce6a/manifest.json",
+  "test_change_summary": {
+    "base_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
+    "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+    "added": 0,
+    "removed": 0,
+    "modified": 4,
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "cases": [
+          "HX059 ru import keeps a visible preparation error and source map",
+          "HX059 en import keeps a visible preparation error and source map",
+          "ONE-MILE1 view/hover/pinned form and stale callbacks preserve local address and camera scale"
+        ],
+        "scenario_or_risk": "Source-scale serialization, fallback scale, repeat JSON import and retained actual fine zoom",
+        "reuse_or_new_reason": "Extend existing locale/error and camera/history lifecycle cases; harness exposes runtime zoom to distinguish it from normalized save."
+      },
+      {
+        "suite": "Browser",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "case": "HX059-classic42-automatic-scene-save-PNG",
+        "scenario_or_risk": "Real UI save/reload camera uses source scale while automatic artwork remains on fine edges.",
+        "reuse_or_new_reason": "Extend the existing real map/UI/PNG smoke case, no duplicate fixture/scenario."
+      }
+    ],
+    "source": "git diff base505ef91 against exact treeacd106; count logical declarations/locale cases and explicit browser case ID; helper not counted."
+  },
+  "checks": {
+    "typecheck": "passed",
+    "targeted": {
+      "executed": 3,
+      "passed": 3,
+      "failed": 0
+    },
+    "affected_initial": {
+      "executed": 92,
+      "passed": 91,
+      "failed": 1,
+      "reason": "Old saveSafety test asserted obsolete raw display zoom in source save; corrected that same test to verify both runtime6 and persisted1."
+    },
+    "corrected_existing_camera_case": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0
+    },
+    "CI": {
+      "run_id": 44051822640,
+      "status": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44051822640",
+      "check": "success",
+      "world_random": "success",
+      "browser": "success",
+      "Node": {
+        "executed": 429,
+        "passed": 429,
+        "failed": 0,
+        "skipped": 0
+      },
+      "typecheck": "passed",
+      "build": "passed",
+      "source_head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+      "checkout_tree": "acd106a4efdd123c4f2848566d2bc35ee08a0498"
+    },
+    "fresh_harness_reload": {
+      "status": "passed",
+      "source_scale": 1,
+      "saved_scale": 1,
+      "cold_fine_screen_scale": 6,
+      "source_map_identical": true,
+      "method": "New App harness instance; actual classic42 JSON, not DOM",
+      "diagnostic_note": "Initial diagnostic used cross-realm deepStrictEqual; repeat compares serialized source data and passes. No production code changed for the diagnostic."
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "partial_programmer_evidence_unverified",
+    "criteria": [
+      {
+        "criterion_id": "S03-C05",
+        "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
+        "evidence": "Accepted-document camera persistence and repeat import regression",
+        "delta": null,
+        "grade_before": null,
+        "grade_after": null
+      }
+    ],
+    "awarded_points": false
+  },
+  "remaining": [
+    "Busy/cancel/stale preparation UI remains incomplete; sync preparation can block.",
+    "Cold fresh-page camera and complete F1 shore/bank/crossing/style/mode/orientation/native6 matrix still need final acceptance.",
+    "Fresh independent reviewer and score_assessment1.2, then separate exact-package publication approval.",
+    "No heuristic reinterpretation of old files with ambiguous prior camera zoom; their saved value keeps accepted-coordinate meaning."
+  ],
+  "forecast": {
+    "task_id": "HX-BL-059",
+    "completed_recorded_runs": 8,
+    "remaining_runs": {
+      "min": 2,
+      "max": 5
+    },
+    "remaining_active_hours": {
+      "min": 3,
+      "max": 7
+    },
+    "remaining_calendar_hours_excluding_owner_wait": {
+      "min": 6,
+      "max": 15
+    },
+    "confidence": "low",
+    "history_reset": false,
+    "basis": "Camera save/import/fallback defect is now reproduced and fixed without resetting history. Same full F1 remains: responsive preparation and full acceptance matrix, independent review/fixes, exact release approval. Keep2–5 remaining because this bounded camera fix does not complete the outstanding preparation lifecycle.",
+    "history_refs": [
+      "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
+      "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
+      "agent-work/results/2026-11-16-owner-RE-Q01-auto-1794857630007.json",
+      "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
+    ],
+    "owner_publication_wait": "unknown; excluded"
+  },
+  "handoff_ref": "agent-work/handoffs/2026-11-17T1200-programmer-camera-normalization-continue.json",
+  "next_role": "programmer",
+  "next_step": "HX059-NEXT-02: responsive preparation with busy/cancel/stale guards. Synchronous preparation is still incomplete; preserve source/history and keep fallback error visible.",
+  "owner_decisions_needed": [],
+  "authorization_status": "Existing approved F1 continuation; release requires later separate approval.",
+  "implementation_complete": false,
+  "review_ready": false,
+  "accepted": false,
+  "published": false,
+  "release_authorized": false,
+  "main_changed": false,
+  "single_executor": {
+    "generation": 118,
+    "claims_read": 382,
+    "legacy_unfinished_claims": [
+      {
+        "path": "agent-work/claims/2026-11-06T1530-WWN-regional-hydrology.json",
+        "sha": "d89f884ece2e5b8bd0f23ec142048b2be529d842"
+      },
+      {
+        "path": "agent-work/claims/2026-11-07T1330-WWN-binding-registration.json",
+        "sha": "38e76651a31b04cbef98446e3602303d9d89f607"
+      },
+      {
+        "path": "agent-work/claims/2026-11-07T2338-KNAVE2-adapter-contract.json",
+        "sha": "e0d592aa28e95e61150b5cfa6da5510ced625f27"
+      }
+    ],
+    "legacy_result_refs": [
+      "agent-work/research/runs/2026-11-06T1530-WWN-regional-hydrology.json",
+      "agent-work/research/runs/2026-11-07T1435-WWN-binding-finalization.json",
+      "agent-work/research/runs/2026-11-07T2338-KNAVE2-adapter-contract.json"
+    ],
+    "legacy_claims_preserved": true,
+    "no_source_writing_processes_running": true,
+    "no_validation_processes_running": true,
+    "own_superseded_CI": 44051734511,
+    "own_superseded_CI_status": "cancelled",
+    "exact_CI": 44051822640,
+    "exact_CI_status": "success"
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-17T08:56:40.588Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "end": {
+      "checked_at": "2026-11-17T09:15:09.724Z",
+      "is_enabled": true,
+      "status": "checked",
+      "method": "automations.peek"
+    },
+    "restoration_performed": false,
+    "errors": [],
+    "schedule_changed": false,
+    "prompt_changed": false,
+    "limitation": "Point-in-time start/end checks only."
+  }
+}
