@@ -270,5 +270,158 @@
     "evidence_sha": null
   },
   "rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "current_scope_review": {
+    "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+    "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json",
+    "rows": [
+      {
+        "id": "ROOT-CORE-014-L1",
+        "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+        "source_group_id": "ROOT-CORE-014",
+        "title": "Наполнить поляну двумя жителями, постройками и проблемами по запросу",
+        "source_rule": {
+          "source_id": "ROOT-CORE-2021-EN",
+          "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+          "printed_page": [
+            235
+          ],
+          "pdf_page": null,
+          "section": "Fleshing Out Your Clearings",
+          "locator": "HTML9147–9315; procedure9148–9151; selected cells9161/9202,9212/9252,9262/9312–9313",
+          "paraphrase": "Когда нужно определить содержание поляны, предлагается случайно получить по два результата жителей, построек и проблем. Таблицы6×6; весь литературный корпус здесь не извлекается.",
+          "parameters": {
+            "per_clearing": {
+              "inhabitants": 2,
+              "buildings": 2,
+              "problems": 2
+            },
+            "total_results": 6,
+            "trigger": "when_GM_needs_clearing_fiction",
+            "table_shape": "three6x6tables_labeled2D6",
+            "addressing": "two_coordinates_not_sum; axis_order_unverified",
+            "duplicates": "source_not_specified"
+          },
+          "normative_kind": "optional_random_fiction_preparation_procedure"
+        },
+        "source_parameters": {
+          "per_clearing": {
+            "inhabitants": 2,
+            "buildings": 2,
+            "problems": 2
+          },
+          "total_results": 6,
+          "trigger": "when_GM_needs_clearing_fiction",
+          "table_shape": "three6x6tables_labeled2D6",
+          "addressing": "two_coordinates_not_sum; axis_order_unverified",
+          "duplicates": "source_not_specified"
+        },
+        "canonical_rule_ids": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+        "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-014-L1",
+        "disposition": "out_of_scope",
+        "reason": "Полный генератор2жителей/2построек/2проблем смешивает места с произвольным NPC/сюжетным наполнением; необходимости всей процедуры для карты не установлено. Простые постройки/сведения отделены компонентами.",
+        "product_boundary": "Простые сведения и постройки конкретного места разрешены; общий NPC/сюжетный генератор исключён.",
+        "current_operational_requirement": null,
+        "new_development_authorized": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_verdict": "partial_manual_content",
+          "comment": "Six chosen residents/buildings/problems can be written in a note; published table workflow does not produce six independent retained Root results. Generic dice can be reused.",
+          "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "evidence_refs": [
+            "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+          ],
+          "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+        }
+      }
+    ],
+    "component_decisions": [
+      {
+        "id": "ROOT-SCOPE-M03",
+        "parent_requirement_id": "ROOT-CORE-014-L1",
+        "title": "Выбранные постройки поляны",
+        "disposition": "keep_L1",
+        "reason": "Пространственный объект или простое необходимое сведение конкретного места сохраняется независимо от исключённого составного workflow.",
+        "product_boundary": "Существующая подготовка/редактирование конкретных мест карты.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014",
+          "normative_kind": "selected_geographic_or_place_component_of_existing_source",
+          "applicability": "Only already selected place component; not full faction/NPC/story procedure",
+          "layer": "L1",
+          "trigger_or_user_action": "Добавить или заменить конкретную постройку у выбранной поляны, сохранив остальную географию.",
+          "inputs_and_units": {
+            "selected_map_state": "ПолянаA; выбраныMill иAqueduct по сохранённым(1,1)/(6,6) примерам таблицы."
+          },
+          "product_operation": "Добавить или заменить конкретную постройку у выбранной поляны, сохранив остальную географию.",
+          "expected_output": "ВAсохраненывыбранныепостройки; не созданы2NPC/2проблемы и не обещана полная108ячейковаятаблица.",
+          "constraints_and_exceptions": [
+            "Пространственный компонент существующего правила, не новая задача/реестр/политическая функция.",
+            "Не выполнять остальную непринятую фракционную/NPC/сюжетную процедуру.",
+            "Реализация на текущемSHAне проверена; тип/иконка/способ хранения не придуманы."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "ROOT-SCOPE-M03-AC01",
+              "given": "ПолянаA; выбраныMill иAqueduct по сохранённым(1,1)/(6,6) примерам таблицы.",
+              "when": "Добавить или заменить конкретную постройку у выбранной поляны, сохранив остальную географию.",
+              "expected": "ВAсохраненывыбранныепостройки; не созданы2NPC/2проблемы и не обещана полная108ячейковаятаблица."
+            }
+          ],
+          "source_vs_product_interpretation": "Сохраняется конкретный объект/сведение источника. Его адресное размещение — продуктовая проекция в принятый редактор; отдельная фракционная/социальная подсистема не разрешена.",
+          "canonical_rule_refs": [
+            "content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Фактическая поддержка выбранного объекта/профиля на текущей версии."
+          ]
+        },
+        "new_feature_authorized": false
+      },
+      {
+        "id": "ROOT-SCOPE-C01",
+        "disposition": "needs_owner_decision",
+        "component": "Фракционный слой initialsetup с контролем/присутствием/симпатиями/contested",
+        "reason": "Ни canonicalID, ни текстовое описание не доказывают принятие такой функции. Источниковые значения нельзя смешивать; наличие объекта не назначает контроль.",
+        "product_boundary": "Принятые границы/места карты не равны политическому workflow."
+      },
+      {
+        "id": "ROOT-SCOPE-C02",
+        "disposition": "out_of_scope",
+        "component": "Генератор конфликтов, мотивов NPC, угроз/эскалаций и кастомных ходов",
+        "reason": "Исключённые владельцем сюжетные/социальные/персонажные подсистемы.",
+        "product_boundary": "Простые сведения о конкретном жителе допустимы, общая личность/сюжет — нет."
+      },
+      {
+        "id": "ROOT-SCOPE-C03",
+        "disposition": "needs_owner_decision",
+        "component": "Обязательная новая модель clearing/12-clearing setupUI",
+        "reason": "Сфера размещения12мест применима, но отдельный экран/формат не вытекает из исходного правила автоматически.",
+        "product_boundary": "Переиспользовать местa/пути/броски; новую архитектуру не утверждать."
+      },
+      {
+        "id": "ROOT-SCOPE-C04",
+        "disposition": "out_of_scope",
+        "component": "Бумажные кубики/6дюймов как физический размер мира или цифровой алгоритм",
+        "reason": "Это иллюстративный способ рисования изгибов; нельзя превратить в расстояние/жёсткую геометрию.",
+        "product_boundary": "Цифровая река сохраняет выбранный маршрут; бумажный приём не спецификация."
+      },
+      {
+        "id": "ROOT-SCOPE-C05",
+        "disposition": "needs_owner_decision",
+        "component": "Самовольное исправление lake-direction/subtract–1/nearestmetric",
+        "reason": "Источник неоднозначен; сохранитьточныйостаток и ручнойвыбор, не выдумыватьзнак/радиус/направление.",
+        "product_boundary": "Вода/озероL1применимы; спорный автоматический профиль исключён до решения/источника."
+      }
+    ],
+    "current_proposed_task_refs_are_historical": true,
+    "retired_backlog_restoration_allowed": false,
+    "new_product_tasks": [],
+    "implementation_authorized": false,
+    "publication_authorized": false
+  }
 }

@@ -533,5 +533,252 @@
     "evidence_sha": null
   },
   "rating_changed": false,
-  "score_changed": false
+  "score_changed": false,
+  "current_scope_review": {
+    "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+    "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json",
+    "rows": [
+      {
+        "id": "ROOT-CORE-011-L1",
+        "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+        "source_group_id": "ROOT-CORE-011",
+        "title": "Подготовить симпатию Alliance отдельно от контроля",
+        "source_rule": {
+          "source_id": "ROOT-CORE-2021-EN",
+          "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+          "printed_page": [
+            232,
+            233
+          ],
+          "pdf_page": null,
+          "section": "Third: The Woodland Alliance / Sympathy and Uprising",
+          "locator": "HTML9053–9075,9113–9114",
+          "paraphrase": "Для каждой поляны бросают2d6 на симпатию Alliance: uncontrolled9+, controlled11+, contested8+. Симпатия означает подпольные ячейки/потенциальную поддержку, не открытый контроль или базу; contested связано с прежней передачей между неденизенскими фракциями.",
+          "parameters": {
+            "roll": "sum_2d6",
+            "sympathy_minimum": {
+              "uncontrolled": 9,
+              "controlled": 11,
+              "contested": 8
+            },
+            "sympathy_implies_base": false,
+            "sympathy_implies_control": false
+          },
+          "normative_kind": "conditional_Woodland_setup_procedure"
+        },
+        "source_parameters": {
+          "roll": "sum_2d6",
+          "sympathy_minimum": {
+            "uncontrolled": 9,
+            "controlled": 11,
+            "contested": 8
+          },
+          "sympathy_implies_base": false,
+          "sympathy_implies_control": false
+        },
+        "canonical_rule_ids": [
+          "map.faction_presence",
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+        "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-011-L1",
+        "disposition": "needs_owner_decision",
+        "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+        "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+        "current_operational_requirement": null,
+        "new_development_authorized": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_verdict": "profile_absent",
+          "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+          "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "evidence_refs": [
+            "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+          ],
+          "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+        }
+      },
+      {
+        "id": "ROOT-CORE-012-L1",
+        "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+        "source_group_id": "ROOT-CORE-012",
+        "title": "Разрешить первое восстание Alliance и разместить базу",
+        "source_rule": {
+          "source_id": "ROOT-CORE-2021-EN",
+          "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+          "printed_page": [
+            232,
+            233
+          ],
+          "pdf_page": null,
+          "section": "Third: The Woodland Alliance / Sympathy and Uprising",
+          "locator": "HTML9053–9056,9077–9119",
+          "paraphrase": "После симпатии проверяют восстания только в сочувствующих полянах:2d6=1–9без восстания;10–11снимает прежний контроль и размещает базу Alliance;12 дополнительно даёт симпатию во всех connected-полянах. База означает открытый контроль Alliance. После первого восстания дальнейшие броски прекращают.",
+          "parameters": {
+            "roll": "sum_2d6",
+            "uprising_minimum": 10,
+            "base_on": [
+              10,
+              11,
+              12
+            ],
+            "spread_sympathy_on": 12,
+            "stop_after_first_uprising": true,
+            "eligible": "clearings_with_sympathy",
+            "prior_control": "removed_on_success",
+            "new_control": "Woodland Alliance"
+          },
+          "normative_kind": "conditional_Woodland_setup_procedure"
+        },
+        "source_parameters": {
+          "roll": "sum_2d6",
+          "uprising_minimum": 10,
+          "base_on": [
+            10,
+            11,
+            12
+          ],
+          "spread_sympathy_on": 12,
+          "stop_after_first_uprising": true,
+          "eligible": "clearings_with_sympathy",
+          "prior_control": "removed_on_success",
+          "new_control": "Woodland Alliance"
+        },
+        "canonical_rule_ids": [
+          "map.faction_control",
+          "map.faction_presence",
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+        "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-012-L1",
+        "disposition": "needs_owner_decision",
+        "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+        "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+        "current_operational_requirement": null,
+        "new_development_authorized": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_verdict": "profile_absent",
+          "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+          "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "evidence_refs": [
+            "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+          ],
+          "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+        }
+      },
+      {
+        "id": "ROOT-CORE-013-L1",
+        "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+        "source_group_id": "ROOT-CORE-013",
+        "title": "Завершить карту снятием контроля по шагу Denizens",
+        "source_rule": {
+          "source_id": "ROOT-CORE-2021-EN",
+          "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+          "printed_page": [
+            234
+          ],
+          "pdf_page": null,
+          "section": "Last: The Denizens",
+          "locator": "HTML9122–9144",
+          "paraphrase": "Последний шаг подготовки проверяет контролируемые поляны кроме крепости Marquisate, любых Eyrie Roost и базы Alliance. Uncontrolled пропускают.2d6=1–10сохраняет контроль,11–12делает поляну uncontrolled; это не восстание Alliance.",
+          "parameters": {
+            "roll": "sum_2d6",
+            "keep_control": "1–10",
+            "remove_control": "11–12",
+            "skip": [
+              "Marquisate stronghold",
+              "Eyrie Roost",
+              "Woodland Alliance base",
+              "uncontrolled"
+            ],
+            "phase": "last_Woodland_setup_step",
+            "result": "uncontrolled_not_Denizens_faction_control"
+          },
+          "normative_kind": "conditional_Woodland_setup_procedure"
+        },
+        "source_parameters": {
+          "roll": "sum_2d6",
+          "keep_control": "1–10",
+          "remove_control": "11–12",
+          "skip": [
+            "Marquisate stronghold",
+            "Eyrie Roost",
+            "Woodland Alliance base",
+            "uncontrolled"
+          ],
+          "phase": "last_Woodland_setup_step",
+          "result": "uncontrolled_not_Denizens_faction_control"
+        },
+        "canonical_rule_ids": [
+          "map.faction_control",
+          "content.roll_table_resolution"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+        "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-013-L1",
+        "disposition": "needs_owner_decision",
+        "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+        "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+        "current_operational_requirement": null,
+        "new_development_authorized": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_verdict": "profile_absent",
+          "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+          "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "evidence_refs": [
+            "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+          ],
+          "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+        }
+      }
+    ],
+    "component_decisions": [
+      {
+        "id": "ROOT-SCOPE-C01",
+        "disposition": "needs_owner_decision",
+        "component": "Фракционный слой initialsetup с контролем/присутствием/симпатиями/contested",
+        "reason": "Ни canonicalID, ни текстовое описание не доказывают принятие такой функции. Источниковые значения нельзя смешивать; наличие объекта не назначает контроль.",
+        "product_boundary": "Принятые границы/места карты не равны политическому workflow."
+      },
+      {
+        "id": "ROOT-SCOPE-C02",
+        "disposition": "out_of_scope",
+        "component": "Генератор конфликтов, мотивов NPC, угроз/эскалаций и кастомных ходов",
+        "reason": "Исключённые владельцем сюжетные/социальные/персонажные подсистемы.",
+        "product_boundary": "Простые сведения о конкретном жителе допустимы, общая личность/сюжет — нет."
+      },
+      {
+        "id": "ROOT-SCOPE-C03",
+        "disposition": "needs_owner_decision",
+        "component": "Обязательная новая модель clearing/12-clearing setupUI",
+        "reason": "Сфера размещения12мест применима, но отдельный экран/формат не вытекает из исходного правила автоматически.",
+        "product_boundary": "Переиспользовать местa/пути/броски; новую архитектуру не утверждать."
+      },
+      {
+        "id": "ROOT-SCOPE-C04",
+        "disposition": "out_of_scope",
+        "component": "Бумажные кубики/6дюймов как физический размер мира или цифровой алгоритм",
+        "reason": "Это иллюстративный способ рисования изгибов; нельзя превратить в расстояние/жёсткую геометрию.",
+        "product_boundary": "Цифровая река сохраняет выбранный маршрут; бумажный приём не спецификация."
+      },
+      {
+        "id": "ROOT-SCOPE-C05",
+        "disposition": "needs_owner_decision",
+        "component": "Самовольное исправление lake-direction/subtract–1/nearestmetric",
+        "reason": "Источник неоднозначен; сохранитьточныйостаток и ручнойвыбор, не выдумыватьзнак/радиус/направление.",
+        "product_boundary": "Вода/озероL1применимы; спорный автоматический профиль исключён до решения/источника."
+      }
+    ],
+    "current_proposed_task_refs_are_historical": true,
+    "retired_backlog_restoration_allowed": false,
+    "new_product_tasks": [],
+    "implementation_authorized": false,
+    "publication_authorized": false
+  }
 }

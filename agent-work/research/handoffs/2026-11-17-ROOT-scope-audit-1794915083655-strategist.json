@@ -1,0 +1,2453 @@
+{
+  "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+  "delivery": "research_scope_reconciliation_not_product_queue",
+  "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json",
+  "rows": [
+    {
+      "id": "ROOT-CORE-001-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-001",
+      "title": "Подготовить 12 полян или использовать готовую карту",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          225,
+          226
+        ],
+        "pdf_page": null,
+        "section": "Map of the Woodland",
+        "paraphrase": "Стандартная карта содержит12полян; готовая карта используется без нового построения. Добавление полян останавливается на12.",
+        "parameters": {
+          "clearings_total": 12,
+          "unit": "clearings_not_hexes",
+          "existing_map_option": true
+        },
+        "normative_kind": "procedure_within_Woodland_setup"
+      },
+      "source_parameters": {
+        "clearings_total": 12,
+        "unit": "clearings_not_hexes",
+        "existing_map_option": true
+      },
+      "canonical_rule_ids": [
+        "content.site_density"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-001-L1",
+      "disposition": "keep_L1",
+      "reason": "Двенадцать пространственных мест и использование готовой карты относятся к созданию/наполнению карты; поляны не равны гексам.",
+      "product_boundary": "Создание/редактирование конкретных полян, путей и подписей.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-001",
+        "normative_kind": "procedure_within_Woodland_setup",
+        "applicability": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий выбирает подготовку нового Леса или уже готовую карту.",
+        "inputs_and_units": {
+          "map_choice": "новая/готовая",
+          "clearings": "поляны; число, не количество гексов",
+          "source_parameters": {
+            "clearings_total": 12,
+            "unit": "clearings_not_hexes",
+            "existing_map_option": true
+          }
+        },
+        "product_operation": "Предложить подготовить Лес из12полян; при выборе готового Леса оставить его расположение и содержимое, не запускать заново построение.",
+        "expected_output": "У новой карты12полян; готовая карта не перегенерирована.",
+        "constraints_and_exceptions": [
+          "Не означает12гексов,12регионов или запрет иных POI.",
+          "Поведение для готовой карты, не соответствующей12полянам, этим срезом не определено; не добавлять и не удалять молча.",
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-CORE-001-L1-AC01",
+            "given": "Выбрана новая карта стандартного Леса.",
+            "when": "Завершить добавление полян.",
+            "expected": "Всего12полян; число гексов не выведено из этого правила."
+          },
+          {
+            "id": "ROOT-CORE-001-L1-AC02",
+            "given": "Готовая карта содержит12названных полян и подготовленные связи.",
+            "when": "Выбрать её для кампании.",
+            "expected": "Названия, положения и связи сохранены; новые броски карты не выполнены."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_density"
+        ],
+        "unresolved_parameters": [
+          "Автоматическая укладка полян на существующие гексы и нестандартные карты — вопрос аналитика."
+        ]
+      },
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "partial_manual_map",
+        "comment": "Hex regions and POIs exist; there is no Root12-clearing construction profile. Existing import preserves an accepted map, not allRoot invariants.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-002-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-002",
+      "title": "Выбирать преобладающее сообщество с ограничением количества",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          225,
+          226
+        ],
+        "pdf_page": null,
+        "section": "Map of the Woodland",
+        "paraphrase": "d6задаёт кроликов/мышей/лис; не больше4полян каждого преобладающего сообщества. Переполненный результат перебрасывается; прочие жители не исключаются.",
+        "parameters": {
+          "die": "1d6",
+          "dominant_community_bands": [
+            {
+              "range": [
+                1,
+                2
+              ],
+              "community": "rabbit"
+            },
+            {
+              "range": [
+                3,
+                4
+              ],
+              "community": "mouse"
+            },
+            {
+              "range": [
+                5,
+                6
+              ],
+              "community": "fox"
+            }
+          ],
+          "maximum_per_dominant_community": 4,
+          "birds_dominant": false,
+          "non_dominant_species_still_present": true
+        },
+        "normative_kind": "procedure_within_Woodland_setup"
+      },
+      "source_parameters": {
+        "die": "1d6",
+        "dominant_community_bands": [
+          {
+            "range": [
+              1,
+              2
+            ],
+            "community": "rabbit"
+          },
+          {
+            "range": [
+              3,
+              4
+            ],
+            "community": "mouse"
+          },
+          {
+            "range": [
+              5,
+              6
+            ],
+            "community": "fox"
+          }
+        ],
+        "maximum_per_dominant_community": 4,
+        "birds_dominant": false,
+        "non_dominant_species_still_present": true
+      },
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-002-L1",
+      "disposition": "keep_L1",
+      "reason": "Преобладающее сообщество — простое содержание конкретных полян при подготовке карты; это не генератор личностей/NPC.",
+      "product_boundary": "Создание/редактирование конкретных полян, путей и подписей.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-002",
+        "normative_kind": "procedure_within_Woodland_setup",
+        "applicability": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий определяет преобладающее сообщество очередной поляны.",
+        "inputs_and_units": {
+          "d6": "целое1–6",
+          "existing_counts": "число полян с преобладанием каждого сообщества",
+          "source_parameters": {
+            "die": "1d6",
+            "dominant_community_bands": [
+              {
+                "range": [
+                  1,
+                  2
+                ],
+                "community": "rabbit"
+              },
+              {
+                "range": [
+                  3,
+                  4
+                ],
+                "community": "mouse"
+              },
+              {
+                "range": [
+                  5,
+                  6
+                ],
+                "community": "fox"
+              }
+            ],
+            "maximum_per_dominant_community": 4,
+            "birds_dominant": false,
+            "non_dominant_species_still_present": true
+          }
+        },
+        "product_operation": "Выбрать сообщество по броску; если уже подготовлены четыре такие поляны, перебросить этот результат. Сохранять речь о большинстве населения, не о единственном виде жителей.",
+        "expected_output": "На каждой поляне одно преобладающее сообщество; одинаковое преобладание встречается не больше четырёх раз.",
+        "constraints_and_exceptions": [
+          "Равные четыре из каждого вида на завершённых12полянах — вывод из общего количества и лимитов, а не дополнительная таблица.",
+          "Политический контроль и присутствие фракций из вида большинства не выводятся.",
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-CORE-002-L1-AC01",
+            "given": "Кроличьих полян ещё нет; заданd6=2.",
+            "when": "Выбрать сообщество.",
+            "expected": "Преобладают кролики; существование мышей/лис на поляне не отрицается."
+          },
+          {
+            "id": "ROOT-CORE-002-L1-AC02",
+            "given": "Есть4кроличьи поляны; последовательностьd6=1,5; лисьих меньше4.",
+            "when": "Выбрать сообщество новой поляны.",
+            "expected": "Первый результат переброшен; в новой поляне преобладают лисы, пятая кроличья не добавлена."
+          },
+          {
+            "id": "ROOT-CORE-002-L1-AC03",
+            "given": "Завершены12полян с тремя допустимыми сообществами и лимитом4.",
+            "when": "Проверить итоговую подготовку.",
+            "expected": "У каждого сообщества4поляны; это проверка следствия ограничений."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.roll_table_resolution",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Подробная численность населения не задана."
+        ]
+      },
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No majority-community field or four-per-community policy in published map/setup model; a descriptive note is not an enforced cap.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-003-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-003",
+      "title": "Развивать пути, учитывая существующий вход и предел12полян",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          225,
+          226
+        ],
+        "pdf_page": null,
+        "section": "Map of the Woodland",
+        "paraphrase": "Число путей выбирается по2d6; существующий путь входит в общее число. Связи соединяют где возможно. После12полян незавершённые линии можно убрать или оставить как отметки.",
+        "parameters": {
+          "path_count_by_2d6": [
+            {
+              "range": [
+                2,
+                2
+              ],
+              "count": 1
+            },
+            {
+              "range": [
+                3,
+                4
+              ],
+              "count": 2
+            },
+            {
+              "range": [
+                5,
+                9
+              ],
+              "count": 3
+            },
+            {
+              "range": [
+                10,
+                11
+              ],
+              "count": 4
+            },
+            {
+              "range": [
+                12,
+                12
+              ],
+              "count": 5
+            }
+          ],
+          "count_incoming_existing_path": true,
+          "stop_new_clearings_at": 12,
+          "unfinished_path_options": [
+            "erase",
+            "retain_as_unfinished_or_lost_route"
+          ],
+          "transcription": "text-only; last12/5row displaced in HTML but returned explicitly at8845–8846; visual PDF collation unknown"
+        },
+        "normative_kind": "procedure_within_Woodland_setup"
+      },
+      "source_parameters": {
+        "path_count_by_2d6": [
+          {
+            "range": [
+              2,
+              2
+            ],
+            "count": 1
+          },
+          {
+            "range": [
+              3,
+              4
+            ],
+            "count": 2
+          },
+          {
+            "range": [
+              5,
+              9
+            ],
+            "count": 3
+          },
+          {
+            "range": [
+              10,
+              11
+            ],
+            "count": 4
+          },
+          {
+            "range": [
+              12,
+              12
+            ],
+            "count": 5
+          }
+        ],
+        "count_incoming_existing_path": true,
+        "stop_new_clearings_at": 12,
+        "unfinished_path_options": [
+          "erase",
+          "retain_as_unfinished_or_lost_route"
+        ],
+        "transcription": "text-only; last12/5row displaced in HTML but returned explicitly at8845–8846; visual PDF collation unknown"
+      },
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "map.routes_and_barriers"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-003-L1",
+      "disposition": "keep_L1",
+      "reason": "Пути соединяют конкретные места карты; бюджет связей не означает движение партии.",
+      "product_boundary": "Создание/редактирование конкретных полян, путей и подписей.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003",
+        "normative_kind": "procedure_within_Woodland_setup",
+        "applicability": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий подготавливает пути новой поляны и соединяет её с Лесом.",
+        "inputs_and_units": {
+          "dice": "дваd6, сумма2–12",
+          "existing_paths": "уже подходящие к поляне пути",
+          "clearings_count": "число подготовленных полян",
+          "source_parameters": {
+            "path_count_by_2d6": [
+              {
+                "range": [
+                  2,
+                  2
+                ],
+                "count": 1
+              },
+              {
+                "range": [
+                  3,
+                  4
+                ],
+                "count": 2
+              },
+              {
+                "range": [
+                  5,
+                  9
+                ],
+                "count": 3
+              },
+              {
+                "range": [
+                  10,
+                  11
+                ],
+                "count": 4
+              },
+              {
+                "range": [
+                  12,
+                  12
+                ],
+                "count": 5
+              }
+            ],
+            "count_incoming_existing_path": true,
+            "stop_new_clearings_at": 12,
+            "unfinished_path_options": [
+              "erase",
+              "retain_as_unfinished_or_lost_route"
+            ],
+            "transcription": "text-only; last12/5row displaced in HTML but returned explicitly at8845–8846; visual PDF collation unknown"
+          }
+        },
+        "product_operation": "Определить общее число путей; учесть уже подведённые пути и добавить только оставшиеся. По достижении12полян дать ведущему убрать незавершённые линии либо оставить их отметками, без новой поляны ради каждой линии.",
+        "expected_output": "У поляны планируется общее число путей по броску; существующий вход не посчитан дополнительно. Число полян не превышает12.",
+        "constraints_and_exceptions": [
+          "Путь здесь — доступная поддерживаемая дорога к соседней поляне; не всякая линия движения по гексам.",
+          "Связность предлагается поддерживать где возможно; численный алгоритм укладки не задан.",
+          "После удаления незавершённых линий итоговое число реально соединённых дорог может быть меньше выпавшего плана.",
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-CORE-003-L1-AC01",
+            "given": "К новой поляне уже подходит1путь; сумма2d6=7.",
+            "when": "Наметить остальные пути.",
+            "expected": "Общий план3; добавляются2линии, не3."
+          },
+          {
+            "id": "ROOT-CORE-003-L1-AC02",
+            "given": "К новой поляне подходит1путь; сумма2d6=2.",
+            "when": "Наметить остальные пути.",
+            "expected": "Общий план1; дополнительных линий0."
+          },
+          {
+            "id": "ROOT-CORE-003-L1-AC03",
+            "given": "На карте12полян и2незавершённые линии; ведущий выбирает оставить отметки.",
+            "when": "Завершить построение.",
+            "expected": "Полян остаётся12; линии отмечены незавершёнными, не выданы за доступные дороги к новым полянам."
+          },
+          {
+            "id": "ROOT-CORE-003-L1-AC04",
+            "given": "Тот же Лес, ведущий выбирает убрать незавершённые линии.",
+            "when": "Завершить подготовку.",
+            "expected": "Линии убраны; число и содержимое12полян сохранены."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.roll_table_resolution",
+          "agent-work/rules/common-rules.json#map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Случаи, когда существующих путей уже больше выпавшего числа, отдельно не определены.",
+          "Физическая длина и время перехода этим разделом не заданы."
+        ]
+      },
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "partial_geometric_roads",
+        "comment": "Manual roads use adjacent axial segments and protect a geometric network; no Root named-clearing path budget/incoming-count/unfinished-line procedure.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-004-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-004",
+      "title": "Выбирать неповторяющееся имя поляны",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          225,
+          226,
+          227
+        ],
+        "pdf_page": null,
+        "section": "Map of the Woodland",
+        "paraphrase": "Имя берётся по двум упорядоченнымd6; использованное имя повторно не применяется. При совпадении кубы читаются в обратном порядке или перебрасываются.",
+        "parameters": {
+          "dice": "ordered2d6_not_sum",
+          "unique_clearing_names": true,
+          "duplicate_options": [
+            "reverse_dice_order",
+            "reroll"
+          ],
+          "full_name_table": "not republished; source table and worked examples referenced"
+        },
+        "normative_kind": "procedure_within_Woodland_setup"
+      },
+      "source_parameters": {
+        "dice": "ordered2d6_not_sum",
+        "unique_clearing_names": true,
+        "duplicate_options": [
+          "reverse_dice_order",
+          "reroll"
+        ],
+        "full_name_table": "not republished; source table and worked examples referenced"
+      },
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-004-L1",
+      "disposition": "keep_L1",
+      "reason": "Имя конкретного места — существующий класс функций карты; уникальность/бросок относятся к профилю, не NPC.",
+      "product_boundary": "Создание/редактирование конкретных полян, путей и подписей.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-004",
+        "normative_kind": "procedure_within_Woodland_setup",
+        "applicability": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий подбирает имя очередной поляне.",
+        "inputs_and_units": {
+          "dice": "дваd6 с порядком чтения",
+          "used_names": "имена уже подготовленных полян",
+          "source_parameters": {
+            "dice": "ordered2d6_not_sum",
+            "unique_clearing_names": true,
+            "duplicate_options": [
+              "reverse_dice_order",
+              "reroll"
+            ],
+            "full_name_table": "not republished; source table and worked examples referenced"
+          }
+        },
+        "product_operation": "Получить имя по выбранному порядку кубов; при повторе предложить обратное чтение или новый бросок, не принимая уже занятое имя.",
+        "expected_output": "У подготовленных полян разные имена; имена существующей карты не переписаны.",
+        "constraints_and_exceptions": [
+          "В отличие от числа путей кубики имени не складываются.",
+          "Полная литературная таблица здесь не копируется; известные клетки проверены по примеру книги.",
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-CORE-004-L1-AC01",
+            "given": "ИмяSundell уже занято; задана пара2,6; обратное имяOpensky Haven свободно.",
+            "when": "Ведущий выбирает обратное чтение.",
+            "expected": "ВыбраноOpensky Haven по6,2; занятоеSundell не повторено."
+          },
+          {
+            "id": "ROOT-CORE-004-L1-AC02",
+            "given": "Оба имени для исходного и обратного порядка уже заняты.",
+            "when": "Ведущий выбирает переброс и получает свободное имя.",
+            "expected": "Используется новый свободный результат; старые названия не изменены."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.roll_table_resolution",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Транслитерация/перевод и сравнение вариантов написания — вопрос дальнейшей работы."
+        ]
+      },
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "partial_manual_name",
+        "comment": "POI names are editable and saved; no Root ordered-name catalog, reverse-pair collision policy or Woodland uniqueness enforcement.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-005-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-005",
+      "title": "Применять расстановку выбранных фракций в порядке книги",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          224,
+          228
+        ],
+        "pdf_page": null,
+        "section": "Making the Woodland; Control of Clearings",
+        "locator": "HTML8782–8794,8933–8946",
+        "paraphrase": "Включены Denizens и две или три другие выбранные фракции. Базовую расстановку проходят Marquisate → Eyrie → Alliance, пропуская невыбранные фракции. Смена контроля между неденизенскими фракциями отмечает contested-поляну.",
+        "parameters": {
+          "always_selected": "Denizens",
+          "other_factions_count": [
+            2,
+            3
+          ],
+          "core_order": [
+            "Marquisate",
+            "Eyrie Dynasties",
+            "Woodland Alliance"
+          ],
+          "skip_unselected": true,
+          "contested_trigger": "control_changes_between_non_denizen_factions"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "always_selected": "Denizens",
+        "other_factions_count": [
+          2,
+          3
+        ],
+        "core_order": [
+          "Marquisate",
+          "Eyrie Dynasties",
+          "Woodland Alliance"
+        ],
+        "skip_unselected": true,
+        "contested_trigger": "control_changes_between_non_denizen_factions"
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence",
+        "content.place_description"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-005-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-006-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-006",
+      "title": "Выбрать крайнюю поляну крепости Marquisate",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          228,
+          229
+        ],
+        "pdf_page": null,
+        "section": "First: The Marquisate; Woodland Corner",
+        "locator": "HTML8947–8965,8969–8970,8974–8979,8996–8998",
+        "paraphrase": "При включённой Marquisate ведущий выбирает дальний край карты для stronghold или бросает d6: NW/NE/SW/SE для1/2/3/4,5–6переброс. Отмечает крепость и контроль Marquisate над поляной.",
+        "parameters": {
+          "corner_d6": {
+            "1": "NW",
+            "2": "NE",
+            "3": "SW",
+            "4": "SE",
+            "5": "reroll",
+            "6": "reroll"
+          },
+          "manual_corner_allowed": true,
+          "starting_control": "Marquisate",
+          "landmark": "Marquisate stronghold"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "corner_d6": {
+          "1": "NW",
+          "2": "NE",
+          "3": "SW",
+          "4": "SE",
+          "5": "reroll",
+          "6": "reroll"
+        },
+        "manual_corner_allowed": true,
+        "starting_control": "Marquisate",
+        "landmark": "Marquisate stronghold"
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-006-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-007-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-007",
+      "title": "Назначить исходный контроль Marquisate по числу путей",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          228,
+          229
+        ],
+        "pdf_page": null,
+        "section": "Marquisate Control",
+        "locator": "HTML8966–8973,8983–8998",
+        "paraphrase": "Начиная с соседних крепости полян, проверяют остальные поляны таблицей2d6: на1пути контроль5+, на2 —7+, на3 —10+, на4 —12, на5 контроля нет. Расстояние считается пересечёнными путями, не гексами.",
+        "parameters": {
+          "unit": "paths_crossed_from_stronghold_not_hexes",
+          "roll": "sum_of_2d6",
+          "control_minimum_by_paths": {
+            "1": 5,
+            "2": 7,
+            "3": 10,
+            "4": 12
+          },
+          "five_paths_control": false,
+          "over_five_paths": "unknown_not_extrapolated",
+          "stronghold": "already_controlled_no_threshold_roll"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "unit": "paths_crossed_from_stronghold_not_hexes",
+        "roll": "sum_of_2d6",
+        "control_minimum_by_paths": {
+          "1": 5,
+          "2": 7,
+          "3": 10,
+          "4": 12
+        },
+        "five_paths_control": false,
+        "over_five_paths": "unknown_not_extrapolated",
+        "stronghold": "already_controlled_no_threshold_roll"
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-007-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-008-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-008",
+      "title": "Разместить исходный Roost и контроль Eyrie",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          230,
+          231
+        ],
+        "pdf_page": null,
+        "section": "Second: The Eyrie Dynasties / Eyrie Control",
+        "locator": "HTML9002–9007,9040–9048",
+        "paraphrase": "При выбранной Eyrie исходный Roost размещают в крайней поляне, противоположной крепости Marquisate, если Marquisate включена. Без Marquisate край выбирает ведущий либо d6 с перебросом5–6. Исходная поляна получает Roost, присутствие и контроль Eyrie; Roost означает укреплённую позицию и местное правительство.",
+        "parameters": {
+          "marquisate_present": "opposite_corner_of_stronghold",
+          "without_marquisate": "GM_choice_or_corner_d6",
+          "corner_d6": {
+            "1": "NW",
+            "2": "NE",
+            "3": "SW",
+            "4": "SE",
+            "5": "reroll",
+            "6": "reroll"
+          },
+          "initial_roosts": 1,
+          "initial_controlled_clearings": 1
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "marquisate_present": "opposite_corner_of_stronghold",
+        "without_marquisate": "GM_choice_or_corner_d6",
+        "corner_d6": {
+          "1": "NW",
+          "2": "NE",
+          "3": "SW",
+          "4": "SE",
+          "5": "reroll",
+          "6": "reroll"
+        },
+        "initial_roosts": 1,
+        "initial_controlled_clearings": 1
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-008-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-009-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-009",
+      "title": "Разрешать контроль Eyrie и появление Roost по путям",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          230,
+          231
+        ],
+        "pdf_page": null,
+        "section": "Second: The Eyrie Dynasties / Eyrie Control",
+        "locator": "HTML9008–9014,9024–9037",
+        "paraphrase": "Для очередной поляны используется2d6 и число путей от имеющегося Roost:1путь — контроль6–8, контроль с Roost9+;2пути — контроль9–10, с Roost11+;3пути — контроль11, с Roost12; ниже порогов и на4+путях контроля Eyrie нет. Проверки начинают с соседей исходного Roost.",
+        "parameters": {
+          "distance_unit": "paths_crossed_from_existing_Roost_not_hexes",
+          "roll": "sum_2d6",
+          "outcomes": {
+            "1": {
+              "no_control": "2–5",
+              "control_only": "6–8",
+              "control_and_roost": "9–12"
+            },
+            "2": {
+              "no_control": "2–8",
+              "control_only": "9–10",
+              "control_and_roost": "11–12"
+            },
+            "3": {
+              "no_control": "2–10",
+              "control_only": "11",
+              "control_and_roost": "12"
+            },
+            "4+": "no_Eyrie_control"
+          },
+          "caps_ref": "ROOT-CORE-010"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "distance_unit": "paths_crossed_from_existing_Roost_not_hexes",
+        "roll": "sum_2d6",
+        "outcomes": {
+          "1": {
+            "no_control": "2–5",
+            "control_only": "6–8",
+            "control_and_roost": "9–12"
+          },
+          "2": {
+            "no_control": "2–8",
+            "control_only": "9–10",
+            "control_and_roost": "11–12"
+          },
+          "3": {
+            "no_control": "2–10",
+            "control_only": "11",
+            "control_and_roost": "12"
+          },
+          "4+": "no_Eyrie_control"
+        },
+        "caps_ref": "ROOT-CORE-010"
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-009-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-010-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-010",
+      "title": "Соблюдать пределы и историю последовательной расстановки Eyrie",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          230,
+          231
+        ],
+        "pdf_page": null,
+        "section": "Second: The Eyrie Dynasties / Eyrie Control",
+        "locator": "HTML9012–9022",
+        "paraphrase": "После появления нового Roost ранее разрешённые результаты не меняются. Максимум4Roost; дальнейшее размещение Roost игнорируется. На6контролируемых полянах, считая исходный Roost, броски прекращают. Крепость Marquisate исключена; прочие её поляны могут перейти Eyrie.",
+        "parameters": {
+          "maximum_roosts": 4,
+          "maximum_controlled_clearings": 6,
+          "initial_roost_counts_toward_limits": true,
+          "ignore_excess_roost_only": true,
+          "stop_rolls_at_control_cap": true,
+          "skip_marquisate_stronghold": true,
+          "recompute_prior_results": false
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "maximum_roosts": 4,
+        "maximum_controlled_clearings": 6,
+        "initial_roost_counts_toward_limits": true,
+        "ignore_excess_roost_only": true,
+        "stop_rolls_at_control_cap": true,
+        "skip_marquisate_stronghold": true,
+        "recompute_prior_results": false
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-010-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-011-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-011",
+      "title": "Подготовить симпатию Alliance отдельно от контроля",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          232,
+          233
+        ],
+        "pdf_page": null,
+        "section": "Third: The Woodland Alliance / Sympathy and Uprising",
+        "locator": "HTML9053–9075,9113–9114",
+        "paraphrase": "Для каждой поляны бросают2d6 на симпатию Alliance: uncontrolled9+, controlled11+, contested8+. Симпатия означает подпольные ячейки/потенциальную поддержку, не открытый контроль или базу; contested связано с прежней передачей между неденизенскими фракциями.",
+        "parameters": {
+          "roll": "sum_2d6",
+          "sympathy_minimum": {
+            "uncontrolled": 9,
+            "controlled": 11,
+            "contested": 8
+          },
+          "sympathy_implies_base": false,
+          "sympathy_implies_control": false
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "roll": "sum_2d6",
+        "sympathy_minimum": {
+          "uncontrolled": 9,
+          "controlled": 11,
+          "contested": 8
+        },
+        "sympathy_implies_base": false,
+        "sympathy_implies_control": false
+      },
+      "canonical_rule_ids": [
+        "map.faction_presence",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-011-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-012-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-012",
+      "title": "Разрешить первое восстание Alliance и разместить базу",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          232,
+          233
+        ],
+        "pdf_page": null,
+        "section": "Third: The Woodland Alliance / Sympathy and Uprising",
+        "locator": "HTML9053–9056,9077–9119",
+        "paraphrase": "После симпатии проверяют восстания только в сочувствующих полянах:2d6=1–9без восстания;10–11снимает прежний контроль и размещает базу Alliance;12 дополнительно даёт симпатию во всех connected-полянах. База означает открытый контроль Alliance. После первого восстания дальнейшие броски прекращают.",
+        "parameters": {
+          "roll": "sum_2d6",
+          "uprising_minimum": 10,
+          "base_on": [
+            10,
+            11,
+            12
+          ],
+          "spread_sympathy_on": 12,
+          "stop_after_first_uprising": true,
+          "eligible": "clearings_with_sympathy",
+          "prior_control": "removed_on_success",
+          "new_control": "Woodland Alliance"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "roll": "sum_2d6",
+        "uprising_minimum": 10,
+        "base_on": [
+          10,
+          11,
+          12
+        ],
+        "spread_sympathy_on": 12,
+        "stop_after_first_uprising": true,
+        "eligible": "clearings_with_sympathy",
+        "prior_control": "removed_on_success",
+        "new_control": "Woodland Alliance"
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-012-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-013-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-013",
+      "title": "Завершить карту снятием контроля по шагу Denizens",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          234
+        ],
+        "pdf_page": null,
+        "section": "Last: The Denizens",
+        "locator": "HTML9122–9144",
+        "paraphrase": "Последний шаг подготовки проверяет контролируемые поляны кроме крепости Marquisate, любых Eyrie Roost и базы Alliance. Uncontrolled пропускают.2d6=1–10сохраняет контроль,11–12делает поляну uncontrolled; это не восстание Alliance.",
+        "parameters": {
+          "roll": "sum_2d6",
+          "keep_control": "1–10",
+          "remove_control": "11–12",
+          "skip": [
+            "Marquisate stronghold",
+            "Eyrie Roost",
+            "Woodland Alliance base",
+            "uncontrolled"
+          ],
+          "phase": "last_Woodland_setup_step",
+          "result": "uncontrolled_not_Denizens_faction_control"
+        },
+        "normative_kind": "conditional_Woodland_setup_procedure"
+      },
+      "source_parameters": {
+        "roll": "sum_2d6",
+        "keep_control": "1–10",
+        "remove_control": "11–12",
+        "skip": [
+          "Marquisate stronghold",
+          "Eyrie Roost",
+          "Woodland Alliance base",
+          "uncontrolled"
+        ],
+        "phase": "last_Woodland_setup_step",
+        "result": "uncontrolled_not_Denizens_faction_control"
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-013-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Начальная фракционная расстановка не является последующей симуляцией хода, но требует отдельного слоя контроля/присутствия/симпатий. Его принятие не установлено; заметки/canonicalIDне являются основанием.",
+      "product_boundary": "Политический/factionlayer вне принятого объёма до решения; географические объекты отделены.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-CORE-014-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+      "source_group_id": "ROOT-CORE-014",
+      "title": "Наполнить поляну двумя жителями, постройками и проблемами по запросу",
+      "source_rule": {
+        "source_id": "ROOT-CORE-2021-EN",
+        "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+        "printed_page": [
+          235
+        ],
+        "pdf_page": null,
+        "section": "Fleshing Out Your Clearings",
+        "locator": "HTML9147–9315; procedure9148–9151; selected cells9161/9202,9212/9252,9262/9312–9313",
+        "paraphrase": "Когда нужно определить содержание поляны, предлагается случайно получить по два результата жителей, построек и проблем. Таблицы6×6; весь литературный корпус здесь не извлекается.",
+        "parameters": {
+          "per_clearing": {
+            "inhabitants": 2,
+            "buildings": 2,
+            "problems": 2
+          },
+          "total_results": 6,
+          "trigger": "when_GM_needs_clearing_fiction",
+          "table_shape": "three6x6tables_labeled2D6",
+          "addressing": "two_coordinates_not_sum; axis_order_unverified",
+          "duplicates": "source_not_specified"
+        },
+        "normative_kind": "optional_random_fiction_preparation_procedure"
+      },
+      "source_parameters": {
+        "per_clearing": {
+          "inhabitants": 2,
+          "buildings": 2,
+          "problems": 2
+        },
+        "total_results": 6,
+        "trigger": "when_GM_needs_clearing_fiction",
+        "table_shape": "three6x6tables_labeled2D6",
+        "addressing": "two_coordinates_not_sum; axis_order_unverified",
+        "duplicates": "source_not_specified"
+      },
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-014-L1",
+      "disposition": "out_of_scope",
+      "reason": "Полный генератор2жителей/2построек/2проблем смешивает места с произвольным NPC/сюжетным наполнением; необходимости всей процедуры для карты не установлено. Простые постройки/сведения отделены компонентами.",
+      "product_boundary": "Простые сведения и постройки конкретного места разрешены; общий NPC/сюжетный генератор исключён.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "partial_manual_content",
+        "comment": "Six chosen residents/buildings/problems can be written in a note; published table workflow does not produce six independent retained Root results. Generic dice can be reused.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-001-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-001",
+      "title": "Название, описание и первое впечатление поляны",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 219,
+        "pdf_page": 220,
+        "section": "Name and Description",
+        "paraphrase": "Подготовить имя поляны, краткое описание важных конфликтов и впечатление прибывающих персонажей.",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "source_parameters": {
+        "name": "GM-defined",
+        "description": "brief, no specified length",
+        "first_sight": "GM-defined arrival description",
+        "random_generation_procedure": null
+      },
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-001-L1",
+      "disposition": "keep_L1",
+      "reason": "Название и видимые географические/местные признаки относятся к конкретной поляне. Сценарные конфликты/особая модель первого впечатления не требуются.",
+      "product_boundary": "Название/содержимое конкретного места, вода и редактор географии.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-001",
+        "normative_kind": "recommendation",
+        "applicability": "L1: подготовка содержимого одной поляны Root по дополнению Travelers & Outsiders2021; не полный базовый движок.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий подготавливает название и видимые признаки конкретной поляны.",
+        "inputs_and_units": {
+          "clearing": "Ольховый брод",
+          "visible_description": "деревянный мост у ворот",
+          "position": "заданное место карты"
+        },
+        "product_operation": "Назвать выбранную поляну и задать её географическое/местное описание, сохранив положение. Сюжетные конфликты и особую систему сцен прибытия не генерировать.",
+        "expected_output": "Поляна сохранила название, мост/ворота как описание места и исходную позицию; конфликт/угроза/NPCне сгенерированы.",
+        "constraints_and_exceptions": [
+          "Источник не задаёт длину текста, число деталей или таблицу случайных названий.",
+          "Текст первого впечатления не означает, что все скрытые конфликты стали известны персонажам.",
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "ПолянаA, выбранное название«Ольховый брод», описание«деревянный мост у ворот».",
+            "when": "Сохранить подготовленное место и снова открыть карту.",
+            "expected": "Поляна сохранила название, мост/ворота как описание места и исходную позицию; конфликт/угроза/NPCне сгенерированы."
+          }
+        ],
+        "source_vs_product_interpretation": "Источник даёт советы подготовки поляны. Возможности сохранить и связать материал на карте, различать доступность сведений и редактировать подготовку — продуктовый перевод для решения стратега и аналитика. Способ хранения, команды, UI и архитектура не определены исследователем. Все примеры с Ольховым бродом, Рином и Эшем придуманы и не являются материалом книги.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Никакой процедуры создания географии или числа полян этот раздел не даёт."
+        ]
+      },
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "manual_workflow_supported",
+        "comment": "Name and accepted situation/first impression fit existing POI name plus GM note and survive actual import/history. No dedicated clearing model/UI is claimed.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-002-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-002",
+      "title": "Основной и дополнительные конфликты с открытыми исходами",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 219,
+        "pdf_page": 220,
+        "section": "Conflicts; Additional Tips: Create Messy Situations (printed220/PDF221)",
+        "paraphrase": "Рекомендован как минимум основной конфликт; затем — один очевидный основной и два-три менее заметных дополнительных. Связать конфликты с жителями и местами, оставляя исходы игры открытыми; не сводить фракции к простому делению на добро и зло.",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "source_parameters": {
+        "minimum_core_in_advice": 1,
+        "recommended_core_conflicts": 1,
+        "recommended_additional_conflicts": [
+          2,
+          3
+        ],
+        "mandatory_generator_count_limit": false,
+        "outcomes": "open",
+        "additional_visibility": "less apparent, may require investigation",
+        "discovery_roll_or_threshold": null
+      },
+      "canonical_rule_ids": [
+        "content.local_conflicts",
+        "content.discovery_levels"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-002-L1",
+      "disposition": "out_of_scope",
+      "reason": "Основной/дополнительные конфликты, скрытая драматургия и открытые исходы — подготовка сюжета, а не действие над картой.",
+      "product_boundary": "Вне продукта: общий сюжет/NPC/персонажные механики.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "manual_text_only",
+        "comment": "A note can state obvious/hidden conflicts and leave outcomes open; no structured conflict/actor/place links or Root visibility workflow.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-003-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-003",
+      "title": "Важные жители, мотивы и связанные места",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 219,
+        "pdf_page": 220,
+        "section": "Important Residents; Important Locations; Tie In Your Players (printed220/PDF221)",
+        "paraphrase": "Подготовить наброски интересных жителей с мотивами и треками вреда, связать их с конфликтами. Выбрать оживлённые и тихие места, где могут быть секреты; учитывать интересы и уже названные связи персонажей.",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "source_parameters": {
+        "npc_count": null,
+        "location_count": null,
+        "harm_track_values": null,
+        "motives": "GM-defined",
+        "links": "residents/locations/conflicts",
+        "locations": "mix of striking and quiet",
+        "player_connections": "use known player interests/allies/rivals when relevant"
+      },
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.local_conflicts",
+        "content.discovery_levels"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-003-L1",
+      "disposition": "out_of_scope",
+      "reason": "Наброски характеров/мотивов/треков вреда и связи персонажей — исключённые NPC/персонажные/сюжетные системы. Конкретные места/простые жители допустимы отдельно.",
+      "product_boundary": "Вне продукта: общий сюжет/NPC/персонажные механики.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "manual_text_only",
+        "comment": "Residents, motives and related places can be prose; named references and mechanical source links are not a verified relational Root workflow.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-004-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-004",
+      "title": "Введение поляны, возможные эскалации и необязательные особые правила",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 220,
+        "pdf_page": 221,
+        "section": "Special Rules; Introducing the Clearing",
+        "paraphrase": "Продумать, кто предложит героям работу или предъявит угрозу, что будет очевидно при прибытии и какими конкретными событиями можно усилить давление. Особые правила подготавливают при необходимости; они не обязательны для каждой поляны.",
+        "normative_kind": "recommendation",
+        "quotation": null
+      },
+      "source_parameters": {
+        "entry_offers_or_threats": "specific NPC and situation",
+        "escalation": "specific possible event, GM discretion",
+        "automatic_timer": null,
+        "custom_rules_required": false,
+        "custom_move_design_ref": "printed77/PDF78, unread"
+      },
+      "canonical_rule_ids": [
+        "content.adventure_hooks",
+        "content.local_conflicts",
+        "content.place_description"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-004-L1",
+      "disposition": "out_of_scope",
+      "reason": "Предложения работы, угрозы, эскалации и custommoves не требуются для создания/редактирования карты; сохранение текста не оправдывает систему.",
+      "product_boundary": "Вне продукта: общий сюжет/NPC/персонажные механики.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "manual_text_only",
+        "comment": "Possible pressure events and special-rule prose can be retained; no scenario event engine implied or required by this preparation advice.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-005-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-005",
+      "title": "Порядок начальной расстановки и выбор поляны",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 178,
+        "pdf_page": 179,
+        "section": "Control of Clearings; Random Clearing",
+        "paraphrase": "На уже созданных полянах и путях выполнять расстановку включённых фракций в заданном порядке, пропуская отсутствующие. Таблица случайной поляны использует два отдельных d6.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "order": [
+          "Marquisate",
+          "Eyrie",
+          "Woodland Alliance",
+          "Lizard Cult",
+          "Riverfolk",
+          "Grand Duchy",
+          "Corvid",
+          "Denizens"
+        ],
+        "excluded_factions": "skip",
+        "random_clearing": "first d6 selects row1–6; second1–3 selects odd clearing,4–6 even",
+        "addressed_clearings": 12,
+        "core_refs": [
+          224,
+          228
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-005-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Фракционный порядок/контроль/бинарное присутствие — самостоятельный политический слой, не установленная функция карты. Это initialsetup, не последующаяFactionPhase; исходная норма сохранена.",
+      "product_boundary": "Фракционный слой вне принятого объёма до решения; отдельные постройки/входы допустимы как места.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-006-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-006",
+      "title": "Контроль и бинарное присутствие различаются",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 180,
+        "pdf_page": 181,
+        "section": "Control vs Presence",
+        "paraphrase": "Присутствие означает значимые силы/агентов в поляне и является бинарным. Само по себе оно не даёт контроля; для контроля есть отдельный способ. Не отслеживать такое присутствие для всех иных фракций автоматически.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "presence": "binary",
+        "presence_implies_control": false,
+        "presence_for_all_factions": false,
+        "agent_or_army_count": null
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "map.faction_presence"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-006-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Фракционный порядок/контроль/бинарное присутствие — самостоятельный политический слой, не установленная функция карты. Это initialsetup, не последующаяFactionPhase; исходная норма сохранена.",
+      "product_boundary": "Фракционный слой вне принятого объёма до решения; отдельные постройки/входы допустимы как места.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-007-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-007",
+      "title": "Начальные поляны Культа Ящериц и один сад",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 179,
+        "pdf_page": 180,
+        "section": "Fourth: The Lizard Cult; Outcast Table; Random Corner Table",
+        "paraphrase": "По d6 определить угнетённый вид:1–2 лисы,3–4 кролики,5–6 мыши. Из полян с его доминированием выбрать две для присутствия Культа. Отдельно поставить один сад и назначить контроль угловой поляне с учётом Marquisate/Eyrie.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "outcast_die": "1d6",
+        "bands": {
+          "1–2": "fox",
+          "3–4": "rabbit",
+          "5–6": "mouse"
+        },
+        "presence_clearings": 2,
+        "gardens": 1,
+        "corner": "opposite single Marquisate/Eyrie; remaining2 if both; random if neither",
+        "corner_die": "1NW,2NE,3SW,4SE;5–6 reroll"
+      },
+      "canonical_rule_ids": [
+        "map.faction_presence",
+        "map.faction_control",
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-007-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Фракционный порядок/контроль/бинарное присутствие — самостоятельный политический слой, не установленная функция карты. Это initialsetup, не последующаяFactionPhase; исходная норма сохранена.",
+      "product_boundary": "Фракционный слой вне принятого объёма до решения; отдельные постройки/входы допустимы как места.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-008-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-008",
+      "title": "Riverfolk: добавить водные объекты и провести реку",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 179,
+        "pdf_page": 180,
+        "section": "Fifth: The Riverfolk Company; Map Edge Table",
+        "paraphrase": "Если реки и озера ещё нет, d6 определяет добавление:1–3 река,4–5 озеро,6 оба. Река входит со случайного края через ближайшую к нему поляну; без озера выходной край выбирается снова. При совместном добавлении явное предложение направляет реку в озеро, далее есть опечатка. Извилистость предлагается рисовать вокруг примерно5–6 кубиков, брошенных с высоты около6дюймов.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "water_when_none": {
+          "6": "both",
+          "1–3": "river",
+          "4–5": "lake"
+        },
+        "edge_die": {
+          "1": "top",
+          "2": "bottom",
+          "3": "left",
+          "4": "right",
+          "5–6": "reroll"
+        },
+        "paper_sketch_dice_about": [
+          5,
+          6
+        ],
+        "paper_drop_inches_about": 6,
+        "world_distance_from_drop": null,
+        "nearest_metric": null,
+        "close_radius": null,
+        "lake_river_direction": "source anomaly unresolved"
+      },
+      "canonical_rule_ids": [
+        "map.land_water_shapes",
+        "map.river_network",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-008-L1",
+      "disposition": "keep_L1",
+      "reason": "Река/озеро и выбранное русло — непосредственная география карты. Не требуется весь политическийsetupRiverfolk; бумажный приём не становится цифровым алгоритмом.",
+      "product_boundary": "Название/содержимое конкретного места, вода и редактор географии.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-008",
+        "normative_kind": "conditional_setup_procedure",
+        "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий подготавливает водные объекты для Riverfolk на карте без реки и озера.",
+        "inputs_and_units": {
+          "существующая вода": "Есть ли уже река или озеро",
+          "вид добавления": "d6",
+          "края карты": "Броски таблицы края",
+          "поляны": "Заранее известные ближайшие к выбранным краям",
+          "русло": "Намеченные ведущим изгибы и близкие поляны",
+          "source_parameters": {
+            "water_when_none": {
+              "6": "both",
+              "1–3": "river",
+              "4–5": "lake"
+            },
+            "edge_die": {
+              "1": "top",
+              "2": "bottom",
+              "3": "left",
+              "4": "right",
+              "5–6": "reroll"
+            },
+            "paper_sketch_dice_about": [
+              5,
+              6
+            ],
+            "paper_drop_inches_about": 6,
+            "world_distance_from_drop": null,
+            "nearest_metric": null,
+            "close_radius": null,
+            "lake_river_direction": "source anomaly unresolved"
+          }
+        },
+        "product_operation": "Предложить требуемый вид воды и помочь провести реку через ближайшие к краям поляны и заданные ведущим изгибы; для ветки с озером сохранить неясность противоречивого направления.",
+        "expected_output": "На карте подготовлен выбранный водный объект; известные соединения с полянами сохранены, неподтверждённые размеры и направление не придуманы.",
+        "constraints_and_exceptions": [
+          "Если вода уже есть, этот условный шаг не требует обязательного нового водного объекта.",
+          "5–6 кубиков и6дюймов — приблизительный приём рисования на бумаге, а не масштаб мира или готовый цифровой алгоритм.",
+          "Метрика близости, равные расстояния и расстояние «particularly close» не определены.",
+          "Повторный край не обязан отличаться от первого по явному тексту.",
+          "Опечатка про озеро, соединяемое с озером, не исправлена молча.",
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-TO-008-L1-AC01",
+            "given": "На карте нет воды; в отдельных выборах d6=1,4,6.",
+            "when": "Определить вид добавляемой воды.",
+            "expected": "Соответственно предлагаются река, озеро, река вместе с озером."
+          },
+          {
+            "id": "ROOT-TO-008-L1-AC02",
+            "given": "Выбрана только река; входной край:5, затем1; выходной край:4. Ближайшие поляны к верху и правому краю однозначноA/B.",
+            "when": "Ведущий намечает русло между краями.",
+            "expected": "5 переброшено; река входит сверху черезA и выходит справа черезB. Промежуточное русло определяется намеченными изгибами."
+          },
+          {
+            "id": "ROOT-TO-008-L1-AC03",
+            "given": "Озеро уже есть, дополнительная вода ведущим не запрошена.",
+            "when": "Начинается подготовка Riverfolk.",
+            "expected": "Условный выбор нового водного объекта не добавляет второе озеро или реку только из-за включения фракции."
+          }
+        ],
+        "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; hit может быть только переданным подтверждённым исходом, пока core не проверен.",
+        "canonical_rule_refs": [
+          "map.land_water_shapes",
+          "map.river_network",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "ROOT-TO-Q04: ошибочное подлежащее и направление связи река/озеро.",
+          "ROOT-TO-Q07: геометрическая метрика, близость и равенства расстояний."
+        ]
+      },
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "partial_geometric_water",
+        "comment": "Manual water/river editing is reusable geometry, but does not select Root edge clearings or execute its conditional Riverfolk setup. Source lake-direction question remains open.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-009-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-009",
+      "title": "Расширять озеро с пределом четырёх полян и двух путей",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 180,
+        "pdf_page": 181,
+        "section": "To add a lake",
+        "paraphrase": "Начать озеро в большом свободном месте рядом с одной поляной. Для близких полян использовать2d6, запись «subtract –1» за каждую подключённую после первой, и условие hit. Не стирать более двух путей; остановиться при четырёх подключённых полянах.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "initial_clearings": 1,
+        "max_connected_clearings": 4,
+        "max_erased_paths": 2,
+        "expansion_die": "2d6",
+        "modifier_literal": "subtract –1 for each clearing past the first connected",
+        "modifier_direction": null,
+        "hit_threshold": 7,
+        "nearby_radius": null,
+        "candidate_order": null
+      },
+      "canonical_rule_ids": [
+        "map.land_water_shapes",
+        "map.routes_and_barriers",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-009-L1",
+      "disposition": "keep_L1",
+      "reason": "Геометрия озера и его связи с местами/путями относятся к карте. Подтверждённый исход можно принять, но знак модификатора/близость не выдумываются.",
+      "product_boundary": "Название/содержимое конкретного места, вода и редактор географии.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-009",
+        "normative_kind": "conditional_setup_procedure",
+        "applicability": "L1: начальная подготовка Леса по Travelers & Outsiders2021, при включении соответствующих фракций; базовая карта и её исходные данные должны быть известны.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий расширяет озеро от выбранной начальной поляны.",
+        "inputs_and_units": {
+          "начало": "Свободное место рядом с поляной",
+          "кандидаты": "Близкие поляны в явно выбранном ведущим порядке",
+          "исход проверки": "Подтверждённый hit/не-hit либо уже скорректированный итог; hit при7+ по core32. Знак модификатора озера ещё не установлен.",
+          "ограничения": "Число уже подключённых полян и стёртых путей",
+          "source_parameters": {
+            "initial_clearings": 1,
+            "max_connected_clearings": 4,
+            "max_erased_paths": 2,
+            "expansion_die": "2d6",
+            "modifier_literal": "subtract –1 for each clearing past the first connected",
+            "modifier_direction": null,
+            "hit_threshold": 7,
+            "nearby_radius": null,
+            "candidate_order": null
+          }
+        },
+        "product_operation": "Помогать подключать допустимые поляны по подтверждённым исходам, ограничивая озеро четырьмя полянами и потерю путей двумя. При известном уже скорректированном итоге распознавать hit на7+. Спорный знак модификатора не вычислять как установленное правило.",
+        "expected_output": "Сохранены допустимые расширения озера и ограничения; неясные численные условия остаются видимыми.",
+        "constraints_and_exceptions": [
+          "Hit означает итог7+ по основному тексту Root, с.32; исход из сырых кубиков всё ещё зависит от неуточнённого модификатора озера.",
+          "Буквальная запись subtract –1 двусмысленна; знак не нормализован молча.",
+          "Метрика nearby и порядок проверки полян не заданы.",
+          "Ограничение относится к путям; оно не означает разрешения удалить любое другое содержимое карты.",
+          "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-TO-009-L1-AC01",
+            "given": "Озеро связано сA/B/C; ведущий передал подтверждённый hit дляD. Удаление путей укладывается в предел2.",
+            "when": "Расширить озеро кD, затем рассмотретьE.",
+            "expected": "ПодключеныA/B/C/D; на четырёх расширение остановлено, E не добавлена."
+          },
+          {
+            "id": "ROOT-TO-009-L1-AC02",
+            "given": "При подготовке озера уже стёрты два пути; подключениеE требует стереть третий.",
+            "when": "Рассмотреть это расширение.",
+            "expected": "Третий путь не стёрт; такой вариант не выдан за соответствующий пределу источника."
+          },
+          {
+            "id": "ROOT-TO-009-L1-AC03",
+            "given": "Есть сырые2d6 и буквальное subtract–1; знак модификатора не уточнён. Порог hit уже известен:7+.",
+            "when": "Ведущий хочет вычислить исход расширения.",
+            "expected": "Нужное уточнение знака остаётся явным; порог больше не помечен неизвестным. Итог из сырых кубиков не выдуман."
+          },
+          {
+            "id": "ROOT-TO-009-L1-AC04",
+            "given": "Для допустимого кандидата озера уже переданы скорректированные итоги6,7,10; знак модификатора в этом примере не вычисляется.",
+            "when": "Определить только условие hit.",
+            "expected": "6 — не-hit;7 и10 — hit. Остальные условия расширения проверяются отдельно."
+          }
+        ],
+        "source_vs_product_interpretation": "Процедуры и ограничения пересказаны из указанного среза. Сохранение и показ подготовленной карты — перевод на язык генератора; способ хранения, команды, интерфейс и архитектуру определяет аналитик. Все A/B/C, заданные броски и исходные состояния примеров — синтетические проверки смысла, не готовые поляны книги. Двусмысленности источника не исправлены; Порог hit уточнён дополнительным источником; для сырого броска всё ещё нужен однозначный модификатор. Уточнение: определение hit сверено с core32 по первичному тексту на стороннем хостинге; это дополнительный источник, не молчаливое исправление T&O.",
+        "canonical_rule_refs": [
+          "map.land_water_shapes",
+          "map.routes_and_barriers",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "ROOT-TO-Q05: знак модификатора.",
+          "ROOT-TO-Q07: nearby и порядок кандидатов."
+        ]
+      },
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "partial_geometric_water",
+        "comment": "Geometric lake editing is not the Root rule limiting four clearings and two lost named paths. Modifier sign remains source-uncertain and is not invented.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-010-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-010",
+      "title": "Riverfolk: четыре места присутствия и один торговый пост",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 180,
+        "pdf_page": 181,
+        "section": "Then, add the Riverfolk Company",
+        "paraphrase": "Выбрать четыре разные поляны по числу четырёх отдельных «да»: вода, не менее3путей, не менее4путей, ценные ресурсы. Для лучшей допустимой поляны назначить контроль и торговый пост; ничью при выборе контролируемой поляны решить случайно, недопустимую лучшую пропустить.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "presence_clearings": 4,
+        "distinct": true,
+        "yes_conditions": [
+          "on lake or river",
+          "paths>=3",
+          "paths>=4",
+          "valuable resources in/near"
+        ],
+        "control_clearings": 1,
+        "trading_posts": 1,
+        "control_tie": "random",
+        "presence_cutoff_tie": null,
+        "ineligible_control": "skip to next; stronghold/Roost are examples, not exhaustive list"
+      },
+      "canonical_rule_ids": [
+        "map.faction_presence",
+        "map.faction_control",
+        "map.routes_and_barriers",
+        "map.settlement_resources",
+        "content.place_description"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-010-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Фракционный порядок/контроль/бинарное присутствие — самостоятельный политический слой, не установленная функция карты. Это initialsetup, не последующаяFactionPhase; исходная норма сохранена.",
+      "product_boundary": "Фракционный слой вне принятого объёма до решения; отдельные постройки/входы допустимы как места.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-011-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-011",
+      "title": "Начальное вторжение Герцогства и отдельный туннель",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 181,
+        "pdf_page": 182,
+        "section": "Sixth: The Grand Duchy; Duchy Invasion Table",
+        "paraphrase": "Выбрать стартовый угол по участию Marquisate/Eyrie/Lizard Cult; дать стартовой поляне туннель и контроль. Для непосредственно связанных с ней полян2d6:10+ даёт контроль. Дополнительный случайный туннель ставится вне контролируемых Герцогством полян, с перебросом контролируемых результатов.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "start_tunnel": 1,
+        "start_control": true,
+        "corner_rule": {
+          "3_factions": "unused corner",
+          "2_factions": "random remaining2",
+          "1_faction": "opposite",
+          "0_factions": "random corner"
+        },
+        "expansion_die": "2d6",
+        "expansion_control_threshold": 10,
+        "expansion_scope": "direct connections of initial clearing only",
+        "additional_tunnels": 1,
+        "controlled_tunnel_roll": "reroll",
+        "tunnel_implies_additional_control": false
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-011-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Фракционный порядок/контроль/бинарное присутствие — самостоятельный политический слой, не установленная функция карты. Это initialsetup, не последующаяFactionPhase; исходная норма сохранена.",
+      "product_boundary": "Фракционный слой вне принятого объёма до решения; отдельные постройки/входы допустимы как места.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-012-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-012",
+      "title": "Начальное присутствие Corvid без контроля",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 181,
+        "pdf_page": 182,
+        "section": "Seventh: The Corvid Conspiracy",
+        "paraphrase": "Случайно выбрать поляны четыре раза и добавить присутствие Corvid; начальный контроль не назначается. Слово «разные» и политика повторов здесь не приведены.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "random_clearing_draws": 4,
+        "initial_control": false,
+        "duplicate_policy": null,
+        "presence": "binary"
+      },
+      "canonical_rule_ids": [
+        "map.faction_presence",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-012-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Фракционный порядок/контроль/бинарное присутствие — самостоятельный политический слой, не установленная функция карты. Это initialsetup, не последующаяFactionPhase; исходная норма сохранена.",
+      "product_boundary": "Фракционный слой вне принятого объёма до решения; отдельные постройки/входы допустимы как места.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    },
+    {
+      "id": "ROOT-TO-013-L1",
+      "source_matrix": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json",
+      "source_group_id": "ROOT-TO-013",
+      "title": "Заключительная потеря контроля в допустимых полянах",
+      "source_rule": {
+        "source_id": "ROOT-TO-2021-EN",
+        "printed_page": 181,
+        "pdf_page": 182,
+        "section": "Last: The Denizens; Denizen Control",
+        "paraphrase": "Последним шагом проверять2d6 контролируемые поляны, кроме stronghold, любыхEyrieRoost и базыWoodlandAlliance. На11–12 поляна становится неконтролируемой; до10 контроль сохраняется. Уже неконтролируемые не проверяют.",
+        "normative_kind": "conditional_setup_procedure",
+        "quotation": null
+      },
+      "source_parameters": {
+        "die": "2d6",
+        "printed_bands": {
+          "1–10": "remains in control",
+          "11–12": "uncontrolled"
+        },
+        "excluded": [
+          "Marquisate stronghold",
+          "any Eyrie Roost",
+          "Woodland Alliance base",
+          "already uncontrolled"
+        ],
+        "phase": "initial setup only",
+        "not_alliance_uprising": true
+      },
+      "canonical_rule_ids": [
+        "map.faction_control",
+        "content.roll_table_resolution"
+      ],
+      "original_layer": "L1",
+      "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+      "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-013-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Фракционный порядок/контроль/бинарное присутствие — самостоятельный политический слой, не установленная функция карты. Это initialsetup, не последующаяFactionPhase; исходная норма сохранена.",
+      "product_boundary": "Фракционный слой вне принятого объёма до решения; отдельные постройки/входы допустимы как места.",
+      "current_operational_requirement": null,
+      "new_development_authorized": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "profile_absent",
+        "comment": "No published Root setup state machine or fields for this faction-specific initial placement; notes can describe an accepted outcome but do not execute conditional selection, thresholds, exclusions, caps or order.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_refs": [
+          "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+        ],
+        "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+      }
+    }
+  ],
+  "component_decisions": [
+    {
+      "id": "ROOT-SCOPE-M01",
+      "parent_requirement_id": "ROOT-CORE-006-L1",
+      "title": "Крепость как конкретное место",
+      "disposition": "keep_L1",
+      "reason": "Пространственный объект или простое необходимое сведение конкретного места сохраняется независимо от исключённого составного workflow.",
+      "product_boundary": "Существующая подготовка/редактирование конкретных мест карты.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-006",
+        "normative_kind": "selected_geographic_or_place_component_of_existing_source",
+        "applicability": "Only already selected place component; not full faction/NPC/story procedure",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить выбранную крепость в указанной существующей крайней поляне, сохранив остальные места.",
+        "inputs_and_units": {
+          "selected_map_state": "ПолянаAвNW; крепостьK выбрана ведущим."
+        },
+        "product_operation": "Разместить выбранную крепость в указанной существующей крайней поляне, сохранив остальные места.",
+        "expected_output": "KнаходитсявA; новых полян и фракционного контроля не создано.",
+        "constraints_and_exceptions": [
+          "Пространственный компонент существующего правила, не новая задача/реестр/политическая функция.",
+          "Не выполнять остальную непринятую фракционную/NPC/сюжетную процедуру.",
+          "Реализация на текущемSHAне проверена; тип/иконка/способ хранения не придуманы."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-SCOPE-M01-AC01",
+            "given": "ПолянаAвNW; крепостьK выбрана ведущим.",
+            "when": "Разместить выбранную крепость в указанной существующей крайней поляне, сохранив остальные места.",
+            "expected": "KнаходитсявA; новых полян и фракционного контроля не создано."
+          }
+        ],
+        "source_vs_product_interpretation": "Сохраняется конкретный объект/сведение источника. Его адресное размещение — продуктовая проекция в принятый редактор; отдельная фракционная/социальная подсистема не разрешена.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка выбранного объекта/профиля на текущей версии."
+        ]
+      },
+      "new_feature_authorized": false
+    },
+    {
+      "id": "ROOT-SCOPE-M02",
+      "parent_requirement_id": "ROOT-CORE-008-L1",
+      "title": "Roost как укреплённая постройка",
+      "disposition": "keep_L1",
+      "reason": "Пространственный объект или простое необходимое сведение конкретного места сохраняется независимо от исключённого составного workflow.",
+      "product_boundary": "Существующая подготовка/редактирование конкретных мест карты.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-008",
+        "normative_kind": "selected_geographic_or_place_component_of_existing_source",
+        "applicability": "Only already selected place component; not full faction/NPC/story procedure",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить выбранную укреплённую постройку в заданной поляне без расчёта политического контроля.",
+        "inputs_and_units": {
+          "selected_map_state": "ПолянаB; выбранная постройкаRoost."
+        },
+        "product_operation": "Разместить выбранную укреплённую постройку в заданной поляне без расчёта политического контроля.",
+        "expected_output": "BсодержитвыбранныйRoost; присутствие/контроль соседей не назначены.",
+        "constraints_and_exceptions": [
+          "Пространственный компонент существующего правила, не новая задача/реестр/политическая функция.",
+          "Не выполнять остальную непринятую фракционную/NPC/сюжетную процедуру.",
+          "Реализация на текущемSHAне проверена; тип/иконка/способ хранения не придуманы."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-SCOPE-M02-AC01",
+            "given": "ПолянаB; выбранная постройкаRoost.",
+            "when": "Разместить выбранную укреплённую постройку в заданной поляне без расчёта политического контроля.",
+            "expected": "BсодержитвыбранныйRoost; присутствие/контроль соседей не назначены."
+          }
+        ],
+        "source_vs_product_interpretation": "Сохраняется конкретный объект/сведение источника. Его адресное размещение — продуктовая проекция в принятый редактор; отдельная фракционная/социальная подсистема не разрешена.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка выбранного объекта/профиля на текущей версии."
+        ]
+      },
+      "new_feature_authorized": false
+    },
+    {
+      "id": "ROOT-SCOPE-M03",
+      "parent_requirement_id": "ROOT-CORE-014-L1",
+      "title": "Выбранные постройки поляны",
+      "disposition": "keep_L1",
+      "reason": "Пространственный объект или простое необходимое сведение конкретного места сохраняется независимо от исключённого составного workflow.",
+      "product_boundary": "Существующая подготовка/редактирование конкретных мест карты.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-014",
+        "normative_kind": "selected_geographic_or_place_component_of_existing_source",
+        "applicability": "Only already selected place component; not full faction/NPC/story procedure",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить или заменить конкретную постройку у выбранной поляны, сохранив остальную географию.",
+        "inputs_and_units": {
+          "selected_map_state": "ПолянаA; выбраныMill иAqueduct по сохранённым(1,1)/(6,6) примерам таблицы."
+        },
+        "product_operation": "Добавить или заменить конкретную постройку у выбранной поляны, сохранив остальную географию.",
+        "expected_output": "ВAсохраненывыбранныепостройки; не созданы2NPC/2проблемы и не обещана полная108ячейковаятаблица.",
+        "constraints_and_exceptions": [
+          "Пространственный компонент существующего правила, не новая задача/реестр/политическая функция.",
+          "Не выполнять остальную непринятую фракционную/NPC/сюжетную процедуру.",
+          "Реализация на текущемSHAне проверена; тип/иконка/способ хранения не придуманы."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-SCOPE-M03-AC01",
+            "given": "ПолянаA; выбраныMill иAqueduct по сохранённым(1,1)/(6,6) примерам таблицы.",
+            "when": "Добавить или заменить конкретную постройку у выбранной поляны, сохранив остальную географию.",
+            "expected": "ВAсохраненывыбранныепостройки; не созданы2NPC/2проблемы и не обещана полная108ячейковаятаблица."
+          }
+        ],
+        "source_vs_product_interpretation": "Сохраняется конкретный объект/сведение источника. Его адресное размещение — продуктовая проекция в принятый редактор; отдельная фракционная/социальная подсистема не разрешена.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка выбранного объекта/профиля на текущей версии."
+        ]
+      },
+      "new_feature_authorized": false
+    },
+    {
+      "id": "ROOT-SCOPE-M04",
+      "parent_requirement_id": "ROOT-TO-003-L1",
+      "title": "Конкретное место и простое сведение о жителе",
+      "disposition": "keep_L1",
+      "reason": "Пространственный объект или простое необходимое сведение конкретного места сохраняется независимо от исключённого составного workflow.",
+      "product_boundary": "Существующая подготовка/редактирование конкретных мест карты.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-003",
+        "normative_kind": "selected_geographic_or_place_component_of_existing_source",
+        "applicability": "Only already selected place component; not full faction/NPC/story procedure",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить выбранный склад как место поляны и добавить известное простое сведение о связанном жителе, без личности/мотивов/треков вреда.",
+        "inputs_and_units": {
+          "selected_map_state": "ПолянаA; складS; известныйжительРинработаетвS."
+        },
+        "product_operation": "Разместить выбранный склад как место поляны и добавить известное простое сведение о связанном жителе, без личности/мотивов/треков вреда.",
+        "expected_output": "SсохранёнвA; фактработыРинасохранён; мотивы/характер/конфликт/трекивреданесозданы.",
+        "constraints_and_exceptions": [
+          "Пространственный компонент существующего правила, не новая задача/реестр/политическая функция.",
+          "Не выполнять остальную непринятую фракционную/NPC/сюжетную процедуру.",
+          "Реализация на текущемSHAне проверена; тип/иконка/способ хранения не придуманы."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-SCOPE-M04-AC01",
+            "given": "ПолянаA; складS; известныйжительРинработаетвS.",
+            "when": "Разместить выбранный склад как место поляны и добавить известное простое сведение о связанном жителе, без личности/мотивов/треков вреда.",
+            "expected": "SсохранёнвA; фактработыРинасохранён; мотивы/характер/конфликт/трекивреданесозданы."
+          }
+        ],
+        "source_vs_product_interpretation": "Сохраняется конкретный объект/сведение источника. Его адресное размещение — продуктовая проекция в принятый редактор; отдельная фракционная/социальная подсистема не разрешена.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка выбранного объекта/профиля на текущей версии."
+        ]
+      },
+      "new_feature_authorized": false
+    },
+    {
+      "id": "ROOT-SCOPE-M05",
+      "parent_requirement_id": "ROOT-TO-007-L1",
+      "title": "Сад как конкретный объект",
+      "disposition": "keep_L1",
+      "reason": "Пространственный объект или простое необходимое сведение конкретного места сохраняется независимо от исключённого составного workflow.",
+      "product_boundary": "Существующая подготовка/редактирование конкретных мест карты.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-007",
+        "normative_kind": "selected_geographic_or_place_component_of_existing_source",
+        "applicability": "Only already selected place component; not full faction/NPC/story procedure",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить выбранный сад в заданной поляне без начальной расстановки Культа.",
+        "inputs_and_units": {
+          "selected_map_state": "ПолянаC; одинсадG."
+        },
+        "product_operation": "Разместить выбранный сад в заданной поляне без начальной расстановки Культа.",
+        "expected_output": "ВCрасположенG; Outcast/присутствие/контрольневычислены.",
+        "constraints_and_exceptions": [
+          "Пространственный компонент существующего правила, не новая задача/реестр/политическая функция.",
+          "Не выполнять остальную непринятую фракционную/NPC/сюжетную процедуру.",
+          "Реализация на текущемSHAне проверена; тип/иконка/способ хранения не придуманы."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-SCOPE-M05-AC01",
+            "given": "ПолянаC; одинсадG.",
+            "when": "Разместить выбранный сад в заданной поляне без начальной расстановки Культа.",
+            "expected": "ВCрасположенG; Outcast/присутствие/контрольневычислены."
+          }
+        ],
+        "source_vs_product_interpretation": "Сохраняется конкретный объект/сведение источника. Его адресное размещение — продуктовая проекция в принятый редактор; отдельная фракционная/социальная подсистема не разрешена.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка выбранного объекта/профиля на текущей версии."
+        ]
+      },
+      "new_feature_authorized": false
+    },
+    {
+      "id": "ROOT-SCOPE-M06",
+      "parent_requirement_id": "ROOT-TO-010-L1",
+      "title": "Торговый пост как место снабжения",
+      "disposition": "keep_L1",
+      "reason": "Пространственный объект или простое необходимое сведение конкретного места сохраняется независимо от исключённого составного workflow.",
+      "product_boundary": "Существующая подготовка/редактирование конкретных мест карты.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-010",
+        "normative_kind": "selected_geographic_or_place_component_of_existing_source",
+        "applicability": "Only already selected place component; not full faction/NPC/story procedure",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить выбранный торговый пост и его простое описание услуги в указанной поляне.",
+        "inputs_and_units": {
+          "selected_map_state": "ПолянаD; постP; услугаторговляприпасами."
+        },
+        "product_operation": "Разместить выбранный торговый пост и его простое описание услуги в указанной поляне.",
+        "expected_output": "PсохранёнвD; экономика/цены/численностьфракциинепридуманы.",
+        "constraints_and_exceptions": [
+          "Пространственный компонент существующего правила, не новая задача/реестр/политическая функция.",
+          "Не выполнять остальную непринятую фракционную/NPC/сюжетную процедуру.",
+          "Реализация на текущемSHAне проверена; тип/иконка/способ хранения не придуманы."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-SCOPE-M06-AC01",
+            "given": "ПолянаD; постP; услугаторговляприпасами.",
+            "when": "Разместить выбранный торговый пост и его простое описание услуги в указанной поляне.",
+            "expected": "PсохранёнвD; экономика/цены/численностьфракциинепридуманы."
+          }
+        ],
+        "source_vs_product_interpretation": "Сохраняется конкретный объект/сведение источника. Его адресное размещение — продуктовая проекция в принятый редактор; отдельная фракционная/социальная подсистема не разрешена.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка выбранного объекта/профиля на текущей версии."
+        ]
+      },
+      "new_feature_authorized": false
+    },
+    {
+      "id": "ROOT-SCOPE-M07",
+      "parent_requirement_id": "ROOT-TO-011-L1",
+      "title": "Вход туннеля как место/проход",
+      "disposition": "keep_L1",
+      "reason": "Пространственный объект или простое необходимое сведение конкретного места сохраняется независимо от исключённого составного workflow.",
+      "product_boundary": "Существующая подготовка/редактирование конкретных мест карты.",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/ROOT-Travelers-Outsiders-2021.json#ROOT-TO-011",
+        "normative_kind": "selected_geographic_or_place_component_of_existing_source",
+        "applicability": "Only already selected place component; not full faction/NPC/story procedure",
+        "layer": "L1",
+        "trigger_or_user_action": "Отметить выбранный туннельный вход в указанной поляне без назначения контроля или выдуманного подземного маршрута.",
+        "inputs_and_units": {
+          "selected_map_state": "ПолянаE; входT; конечныймаршрутнеизвестен."
+        },
+        "product_operation": "Отметить выбранный туннельный вход в указанной поляне без назначения контроля или выдуманного подземного маршрута.",
+        "expected_output": "ВходTотмеченвE; контроль/время/вместимость/конечнаятрассанепридуманы.",
+        "constraints_and_exceptions": [
+          "Пространственный компонент существующего правила, не новая задача/реестр/политическая функция.",
+          "Не выполнять остальную непринятую фракционную/NPC/сюжетную процедуру.",
+          "Реализация на текущемSHAне проверена; тип/иконка/способ хранения не придуманы."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "ROOT-SCOPE-M07-AC01",
+            "given": "ПолянаE; входT; конечныймаршрутнеизвестен.",
+            "when": "Отметить выбранный туннельный вход в указанной поляне без назначения контроля или выдуманного подземного маршрута.",
+            "expected": "ВходTотмеченвE; контроль/время/вместимость/конечнаятрассанепридуманы."
+          }
+        ],
+        "source_vs_product_interpretation": "Сохраняется конкретный объект/сведение источника. Его адресное размещение — продуктовая проекция в принятый редактор; отдельная фракционная/социальная подсистема не разрешена.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка выбранного объекта/профиля на текущей версии."
+        ]
+      },
+      "new_feature_authorized": false
+    },
+    {
+      "id": "ROOT-SCOPE-C01",
+      "disposition": "needs_owner_decision",
+      "component": "Фракционный слой initialsetup с контролем/присутствием/симпатиями/contested",
+      "reason": "Ни canonicalID, ни текстовое описание не доказывают принятие такой функции. Источниковые значения нельзя смешивать; наличие объекта не назначает контроль.",
+      "product_boundary": "Принятые границы/места карты не равны политическому workflow."
+    },
+    {
+      "id": "ROOT-SCOPE-C02",
+      "disposition": "out_of_scope",
+      "component": "Генератор конфликтов, мотивов NPC, угроз/эскалаций и кастомных ходов",
+      "reason": "Исключённые владельцем сюжетные/социальные/персонажные подсистемы.",
+      "product_boundary": "Простые сведения о конкретном жителе допустимы, общая личность/сюжет — нет."
+    },
+    {
+      "id": "ROOT-SCOPE-C03",
+      "disposition": "needs_owner_decision",
+      "component": "Обязательная новая модель clearing/12-clearing setupUI",
+      "reason": "Сфера размещения12мест применима, но отдельный экран/формат не вытекает из исходного правила автоматически.",
+      "product_boundary": "Переиспользовать местa/пути/броски; новую архитектуру не утверждать."
+    },
+    {
+      "id": "ROOT-SCOPE-C04",
+      "disposition": "out_of_scope",
+      "component": "Бумажные кубики/6дюймов как физический размер мира или цифровой алгоритм",
+      "reason": "Это иллюстративный способ рисования изгибов; нельзя превратить в расстояние/жёсткую геометрию.",
+      "product_boundary": "Цифровая река сохраняет выбранный маршрут; бумажный приём не спецификация."
+    },
+    {
+      "id": "ROOT-SCOPE-C05",
+      "disposition": "needs_owner_decision",
+      "component": "Самовольное исправление lake-direction/subtract–1/nearestmetric",
+      "reason": "Источник неоднозначен; сохранитьточныйостаток и ручнойвыбор, не выдумыватьзнак/радиус/направление.",
+      "product_boundary": "Вода/озероL1применимы; спорный автоматический профиль исключён до решения/источника."
+    }
+  ],
+  "new_product_tasks": [],
+  "retired_task_restoration_allowed": false,
+  "implementation_authorized": false,
+  "publication_authorized": false,
+  "rating_score_change": false,
+  "decision": "Reuse clearings/paths/names/water/place operations. Composite geography retained without executing unaccepted faction setup; story/NPC engines excluded. Control/presence/sympathy are distinct, not inferred from POI/biome/prose.",
+  "owner_action_required": false,
+  "exact_continuation": "CAIRN2: ретроспективно проверить весь существующий набор agent-work/market/rules/Cairn-2e.json, связанные обзоры/передачи/evidence, начав со свежих SHA/claims/решений. Каждой строке disposition/предметная связь с картой/конкретный результат; не включать персонажей, бой, магию, сюжет или новые контроллеры через заметку. Новые главы не добавлять. Затем DH/VAARN по сохранённому инвентарю и актуальной достижимости; перед объявлением всей ретроспективы закрытой сверить полный свежий реестр уже разобранных игр. Закрытые scope-срезы PF2/DND5/KNAVE2/CROWS/SD/MB/WWN/OSE/PF1/ROOT без нового основания не повторять. После ревизии — прежнее незакрытое полное выравнивание overalltop5, затем свежий create-top10. ROOT: отдельно остаются источниковая полнота/таблицы/неясности озера и текущая фактическая поддержка."
+}

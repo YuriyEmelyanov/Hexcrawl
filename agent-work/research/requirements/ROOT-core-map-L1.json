@@ -140,5 +140,656 @@
   "ranking_version": "three-scenario-ranks-1.4-create-evidence",
   "cohort_version": "2026-11-06-ranking1.4-create-evidence",
   "scenario_rank_reference": 7,
-  "overall_rank_reference": 5
+  "overall_rank_reference": 5,
+  "current_scope_review": {
+    "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+    "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json",
+    "rows": [
+      {
+        "id": "ROOT-CORE-001-L1",
+        "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+        "source_group_id": "ROOT-CORE-001",
+        "title": "Подготовить 12 полян или использовать готовую карту",
+        "source_rule": {
+          "source_id": "ROOT-CORE-2021-EN",
+          "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+          "printed_page": [
+            225,
+            226
+          ],
+          "pdf_page": null,
+          "section": "Map of the Woodland",
+          "paraphrase": "Стандартная карта содержит12полян; готовая карта используется без нового построения. Добавление полян останавливается на12.",
+          "parameters": {
+            "clearings_total": 12,
+            "unit": "clearings_not_hexes",
+            "existing_map_option": true
+          },
+          "normative_kind": "procedure_within_Woodland_setup"
+        },
+        "source_parameters": {
+          "clearings_total": 12,
+          "unit": "clearings_not_hexes",
+          "existing_map_option": true
+        },
+        "canonical_rule_ids": [
+          "content.site_density"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+        "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-001-L1",
+        "disposition": "keep_L1",
+        "reason": "Двенадцать пространственных мест и использование готовой карты относятся к созданию/наполнению карты; поляны не равны гексам.",
+        "product_boundary": "Создание/редактирование конкретных полян, путей и подписей.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-001",
+          "normative_kind": "procedure_within_Woodland_setup",
+          "applicability": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий выбирает подготовку нового Леса или уже готовую карту.",
+          "inputs_and_units": {
+            "map_choice": "новая/готовая",
+            "clearings": "поляны; число, не количество гексов",
+            "source_parameters": {
+              "clearings_total": 12,
+              "unit": "clearings_not_hexes",
+              "existing_map_option": true
+            }
+          },
+          "product_operation": "Предложить подготовить Лес из12полян; при выборе готового Леса оставить его расположение и содержимое, не запускать заново построение.",
+          "expected_output": "У новой карты12полян; готовая карта не перегенерирована.",
+          "constraints_and_exceptions": [
+            "Не означает12гексов,12регионов или запрет иных POI.",
+            "Поведение для готовой карты, не соответствующей12полянам, этим срезом не определено; не добавлять и не удалять молча.",
+            "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "ROOT-CORE-001-L1-AC01",
+              "given": "Выбрана новая карта стандартного Леса.",
+              "when": "Завершить добавление полян.",
+              "expected": "Всего12полян; число гексов не выведено из этого правила."
+            },
+            {
+              "id": "ROOT-CORE-001-L1-AC02",
+              "given": "Готовая карта содержит12названных полян и подготовленные связи.",
+              "when": "Выбрать её для кампании.",
+              "expected": "Названия, положения и связи сохранены; новые броски карты не выполнены."
+            }
+          ],
+          "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.site_density"
+          ],
+          "unresolved_parameters": [
+            "Автоматическая укладка полян на существующие гексы и нестандартные карты — вопрос аналитика."
+          ]
+        },
+        "new_development_authorized": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_verdict": "partial_manual_map",
+          "comment": "Hex regions and POIs exist; there is no Root12-clearing construction profile. Existing import preserves an accepted map, not allRoot invariants.",
+          "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "evidence_refs": [
+            "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+          ],
+          "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+        }
+      },
+      {
+        "id": "ROOT-CORE-002-L1",
+        "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+        "source_group_id": "ROOT-CORE-002",
+        "title": "Выбирать преобладающее сообщество с ограничением количества",
+        "source_rule": {
+          "source_id": "ROOT-CORE-2021-EN",
+          "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+          "printed_page": [
+            225,
+            226
+          ],
+          "pdf_page": null,
+          "section": "Map of the Woodland",
+          "paraphrase": "d6задаёт кроликов/мышей/лис; не больше4полян каждого преобладающего сообщества. Переполненный результат перебрасывается; прочие жители не исключаются.",
+          "parameters": {
+            "die": "1d6",
+            "dominant_community_bands": [
+              {
+                "range": [
+                  1,
+                  2
+                ],
+                "community": "rabbit"
+              },
+              {
+                "range": [
+                  3,
+                  4
+                ],
+                "community": "mouse"
+              },
+              {
+                "range": [
+                  5,
+                  6
+                ],
+                "community": "fox"
+              }
+            ],
+            "maximum_per_dominant_community": 4,
+            "birds_dominant": false,
+            "non_dominant_species_still_present": true
+          },
+          "normative_kind": "procedure_within_Woodland_setup"
+        },
+        "source_parameters": {
+          "die": "1d6",
+          "dominant_community_bands": [
+            {
+              "range": [
+                1,
+                2
+              ],
+              "community": "rabbit"
+            },
+            {
+              "range": [
+                3,
+                4
+              ],
+              "community": "mouse"
+            },
+            {
+              "range": [
+                5,
+                6
+              ],
+              "community": "fox"
+            }
+          ],
+          "maximum_per_dominant_community": 4,
+          "birds_dominant": false,
+          "non_dominant_species_still_present": true
+        },
+        "canonical_rule_ids": [
+          "content.roll_table_resolution",
+          "content.place_description"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+        "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-002-L1",
+        "disposition": "keep_L1",
+        "reason": "Преобладающее сообщество — простое содержание конкретных полян при подготовке карты; это не генератор личностей/NPC.",
+        "product_boundary": "Создание/редактирование конкретных полян, путей и подписей.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-002",
+          "normative_kind": "procedure_within_Woodland_setup",
+          "applicability": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий определяет преобладающее сообщество очередной поляны.",
+          "inputs_and_units": {
+            "d6": "целое1–6",
+            "existing_counts": "число полян с преобладанием каждого сообщества",
+            "source_parameters": {
+              "die": "1d6",
+              "dominant_community_bands": [
+                {
+                  "range": [
+                    1,
+                    2
+                  ],
+                  "community": "rabbit"
+                },
+                {
+                  "range": [
+                    3,
+                    4
+                  ],
+                  "community": "mouse"
+                },
+                {
+                  "range": [
+                    5,
+                    6
+                  ],
+                  "community": "fox"
+                }
+              ],
+              "maximum_per_dominant_community": 4,
+              "birds_dominant": false,
+              "non_dominant_species_still_present": true
+            }
+          },
+          "product_operation": "Выбрать сообщество по броску; если уже подготовлены четыре такие поляны, перебросить этот результат. Сохранять речь о большинстве населения, не о единственном виде жителей.",
+          "expected_output": "На каждой поляне одно преобладающее сообщество; одинаковое преобладание встречается не больше четырёх раз.",
+          "constraints_and_exceptions": [
+            "Равные четыре из каждого вида на завершённых12полянах — вывод из общего количества и лимитов, а не дополнительная таблица.",
+            "Политический контроль и присутствие фракций из вида большинства не выводятся.",
+            "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "ROOT-CORE-002-L1-AC01",
+              "given": "Кроличьих полян ещё нет; заданd6=2.",
+              "when": "Выбрать сообщество.",
+              "expected": "Преобладают кролики; существование мышей/лис на поляне не отрицается."
+            },
+            {
+              "id": "ROOT-CORE-002-L1-AC02",
+              "given": "Есть4кроличьи поляны; последовательностьd6=1,5; лисьих меньше4.",
+              "when": "Выбрать сообщество новой поляны.",
+              "expected": "Первый результат переброшен; в новой поляне преобладают лисы, пятая кроличья не добавлена."
+            },
+            {
+              "id": "ROOT-CORE-002-L1-AC03",
+              "given": "Завершены12полян с тремя допустимыми сообществами и лимитом4.",
+              "when": "Проверить итоговую подготовку.",
+              "expected": "У каждого сообщества4поляны; это проверка следствия ограничений."
+            }
+          ],
+          "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Подробная численность населения не задана."
+          ]
+        },
+        "new_development_authorized": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_verdict": "profile_absent",
+          "comment": "No majority-community field or four-per-community policy in published map/setup model; a descriptive note is not an enforced cap.",
+          "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "evidence_refs": [
+            "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+          ],
+          "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+        }
+      },
+      {
+        "id": "ROOT-CORE-003-L1",
+        "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+        "source_group_id": "ROOT-CORE-003",
+        "title": "Развивать пути, учитывая существующий вход и предел12полян",
+        "source_rule": {
+          "source_id": "ROOT-CORE-2021-EN",
+          "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+          "printed_page": [
+            225,
+            226
+          ],
+          "pdf_page": null,
+          "section": "Map of the Woodland",
+          "paraphrase": "Число путей выбирается по2d6; существующий путь входит в общее число. Связи соединяют где возможно. После12полян незавершённые линии можно убрать или оставить как отметки.",
+          "parameters": {
+            "path_count_by_2d6": [
+              {
+                "range": [
+                  2,
+                  2
+                ],
+                "count": 1
+              },
+              {
+                "range": [
+                  3,
+                  4
+                ],
+                "count": 2
+              },
+              {
+                "range": [
+                  5,
+                  9
+                ],
+                "count": 3
+              },
+              {
+                "range": [
+                  10,
+                  11
+                ],
+                "count": 4
+              },
+              {
+                "range": [
+                  12,
+                  12
+                ],
+                "count": 5
+              }
+            ],
+            "count_incoming_existing_path": true,
+            "stop_new_clearings_at": 12,
+            "unfinished_path_options": [
+              "erase",
+              "retain_as_unfinished_or_lost_route"
+            ],
+            "transcription": "text-only; last12/5row displaced in HTML but returned explicitly at8845–8846; visual PDF collation unknown"
+          },
+          "normative_kind": "procedure_within_Woodland_setup"
+        },
+        "source_parameters": {
+          "path_count_by_2d6": [
+            {
+              "range": [
+                2,
+                2
+              ],
+              "count": 1
+            },
+            {
+              "range": [
+                3,
+                4
+              ],
+              "count": 2
+            },
+            {
+              "range": [
+                5,
+                9
+              ],
+              "count": 3
+            },
+            {
+              "range": [
+                10,
+                11
+              ],
+              "count": 4
+            },
+            {
+              "range": [
+                12,
+                12
+              ],
+              "count": 5
+            }
+          ],
+          "count_incoming_existing_path": true,
+          "stop_new_clearings_at": 12,
+          "unfinished_path_options": [
+            "erase",
+            "retain_as_unfinished_or_lost_route"
+          ],
+          "transcription": "text-only; last12/5row displaced in HTML but returned explicitly at8845–8846; visual PDF collation unknown"
+        },
+        "canonical_rule_ids": [
+          "content.roll_table_resolution",
+          "map.routes_and_barriers"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+        "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-003-L1",
+        "disposition": "keep_L1",
+        "reason": "Пути соединяют конкретные места карты; бюджет связей не означает движение партии.",
+        "product_boundary": "Создание/редактирование конкретных полян, путей и подписей.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-003",
+          "normative_kind": "procedure_within_Woodland_setup",
+          "applicability": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий подготавливает пути новой поляны и соединяет её с Лесом.",
+          "inputs_and_units": {
+            "dice": "дваd6, сумма2–12",
+            "existing_paths": "уже подходящие к поляне пути",
+            "clearings_count": "число подготовленных полян",
+            "source_parameters": {
+              "path_count_by_2d6": [
+                {
+                  "range": [
+                    2,
+                    2
+                  ],
+                  "count": 1
+                },
+                {
+                  "range": [
+                    3,
+                    4
+                  ],
+                  "count": 2
+                },
+                {
+                  "range": [
+                    5,
+                    9
+                  ],
+                  "count": 3
+                },
+                {
+                  "range": [
+                    10,
+                    11
+                  ],
+                  "count": 4
+                },
+                {
+                  "range": [
+                    12,
+                    12
+                  ],
+                  "count": 5
+                }
+              ],
+              "count_incoming_existing_path": true,
+              "stop_new_clearings_at": 12,
+              "unfinished_path_options": [
+                "erase",
+                "retain_as_unfinished_or_lost_route"
+              ],
+              "transcription": "text-only; last12/5row displaced in HTML but returned explicitly at8845–8846; visual PDF collation unknown"
+            }
+          },
+          "product_operation": "Определить общее число путей; учесть уже подведённые пути и добавить только оставшиеся. По достижении12полян дать ведущему убрать незавершённые линии либо оставить их отметками, без новой поляны ради каждой линии.",
+          "expected_output": "У поляны планируется общее число путей по броску; существующий вход не посчитан дополнительно. Число полян не превышает12.",
+          "constraints_and_exceptions": [
+            "Путь здесь — доступная поддерживаемая дорога к соседней поляне; не всякая линия движения по гексам.",
+            "Связность предлагается поддерживать где возможно; численный алгоритм укладки не задан.",
+            "После удаления незавершённых линий итоговое число реально соединённых дорог может быть меньше выпавшего плана.",
+            "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "ROOT-CORE-003-L1-AC01",
+              "given": "К новой поляне уже подходит1путь; сумма2d6=7.",
+              "when": "Наметить остальные пути.",
+              "expected": "Общий план3; добавляются2линии, не3."
+            },
+            {
+              "id": "ROOT-CORE-003-L1-AC02",
+              "given": "К новой поляне подходит1путь; сумма2d6=2.",
+              "when": "Наметить остальные пути.",
+              "expected": "Общий план1; дополнительных линий0."
+            },
+            {
+              "id": "ROOT-CORE-003-L1-AC03",
+              "given": "На карте12полян и2незавершённые линии; ведущий выбирает оставить отметки.",
+              "when": "Завершить построение.",
+              "expected": "Полян остаётся12; линии отмечены незавершёнными, не выданы за доступные дороги к новым полянам."
+            },
+            {
+              "id": "ROOT-CORE-003-L1-AC04",
+              "given": "Тот же Лес, ведущий выбирает убрать незавершённые линии.",
+              "when": "Завершить подготовку.",
+              "expected": "Линии убраны; число и содержимое12полян сохранены."
+            }
+          ],
+          "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#map.routes_and_barriers"
+          ],
+          "unresolved_parameters": [
+            "Случаи, когда существующих путей уже больше выпавшего числа, отдельно не определены.",
+            "Физическая длина и время перехода этим разделом не заданы."
+          ]
+        },
+        "new_development_authorized": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_verdict": "partial_geometric_roads",
+          "comment": "Manual roads use adjacent axial segments and protect a geometric network; no Root named-clearing path budget/incoming-count/unfinished-line procedure.",
+          "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "evidence_refs": [
+            "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+          ],
+          "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+        }
+      },
+      {
+        "id": "ROOT-CORE-004-L1",
+        "source_matrix": "agent-work/market/rules/ROOT-Core-2021.json",
+        "source_group_id": "ROOT-CORE-004",
+        "title": "Выбирать неповторяющееся имя поляны",
+        "source_rule": {
+          "source_id": "ROOT-CORE-2021-EN",
+          "url": "https://studylib.net/doc/26230689/rootttprg-corebook-100721",
+          "printed_page": [
+            225,
+            226,
+            227
+          ],
+          "pdf_page": null,
+          "section": "Map of the Woodland",
+          "paraphrase": "Имя берётся по двум упорядоченнымd6; использованное имя повторно не применяется. При совпадении кубы читаются в обратном порядке или перебрасываются.",
+          "parameters": {
+            "dice": "ordered2d6_not_sum",
+            "unique_clearing_names": true,
+            "duplicate_options": [
+              "reverse_dice_order",
+              "reroll"
+            ],
+            "full_name_table": "not republished; source table and worked examples referenced"
+          },
+          "normative_kind": "procedure_within_Woodland_setup"
+        },
+        "source_parameters": {
+          "dice": "ordered2d6_not_sum",
+          "unique_clearing_names": true,
+          "duplicate_options": [
+            "reverse_dice_order",
+            "reroll"
+          ],
+          "full_name_table": "not republished; source table and worked examples referenced"
+        },
+        "canonical_rule_ids": [
+          "content.roll_table_resolution",
+          "content.place_description"
+        ],
+        "original_layer": "L1",
+        "run_id": "2026-11-17-ROOT-scope-audit-1794915083655",
+        "audit_ref": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-004-L1",
+        "disposition": "keep_L1",
+        "reason": "Имя конкретного места — существующий класс функций карты; уникальность/бросок относятся к профилю, не NPC.",
+        "product_boundary": "Создание/редактирование конкретных полян, путей и подписей.",
+        "current_operational_requirement": {
+          "source_rule_ref": "agent-work/market/rules/ROOT-Core-2021.json#ROOT-CORE-004",
+          "normative_kind": "procedure_within_Woodland_setup",
+          "applicability": "Root default Woodland preparation; scope is clearings and their named paths, not all hexes/POIs or all games",
+          "layer": "L1",
+          "trigger_or_user_action": "Ведущий подбирает имя очередной поляне.",
+          "inputs_and_units": {
+            "dice": "дваd6 с порядком чтения",
+            "used_names": "имена уже подготовленных полян",
+            "source_parameters": {
+              "dice": "ordered2d6_not_sum",
+              "unique_clearing_names": true,
+              "duplicate_options": [
+                "reverse_dice_order",
+                "reroll"
+              ],
+              "full_name_table": "not republished; source table and worked examples referenced"
+            }
+          },
+          "product_operation": "Получить имя по выбранному порядку кубов; при повторе предложить обратное чтение или новый бросок, не принимая уже занятое имя.",
+          "expected_output": "У подготовленных полян разные имена; имена существующей карты не переписаны.",
+          "constraints_and_exceptions": [
+            "В отличие от числа путей кубики имени не складываются.",
+            "Полная литературная таблица здесь не копируется; известные клетки проверены по примеру книги.",
+            "Не утверждать новые сущности/панели/профили или фракционный слой этой ревизией; текущая поддержка не проверялась."
+          ],
+          "acceptance_cases": [
+            {
+              "id": "ROOT-CORE-004-L1-AC01",
+              "given": "ИмяSundell уже занято; задана пара2,6; обратное имяOpensky Haven свободно.",
+              "when": "Ведущий выбирает обратное чтение.",
+              "expected": "ВыбраноOpensky Haven по6,2; занятоеSundell не повторено."
+            },
+            {
+              "id": "ROOT-CORE-004-L1-AC02",
+              "given": "Оба имени для исходного и обратного порядка уже заняты.",
+              "when": "Ведущий выбирает переброс и получает свободное имя.",
+              "expected": "Используется новый свободный результат; старые названия не изменены."
+            }
+          ],
+          "source_vs_product_interpretation": "Числа/условия — прочитанный текст core. Возможность генератора и придуманные примеры объясняют результат для ведущего, без технической схемы, подробного интерфейса или разрешения реализации.",
+          "canonical_rule_refs": [
+            "agent-work/rules/common-rules.json#content.roll_table_resolution",
+            "agent-work/rules/common-rules.json#content.place_description"
+          ],
+          "unresolved_parameters": [
+            "Транслитерация/перевод и сравнение вариантов написания — вопрос дальнейшей работы."
+          ]
+        },
+        "new_development_authorized": false,
+        "current_implementation": {
+          "status": "not_reverified",
+          "historical_verdict": "partial_manual_name",
+          "comment": "POI names are editable and saved; no Root ordered-name catalog, reverse-pair collision policy or Woodland uniqueness enforcement.",
+          "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+          "evidence_refs": [
+            "agent-work/research/audits/ROOT-L1-runtime-2026-11-10-probes.json"
+          ],
+          "current_applicability": "No automatic transfer of10Nov evidence to current productSHA; unknown not absent."
+        }
+      }
+    ],
+    "component_decisions": [
+      {
+        "id": "ROOT-SCOPE-C01",
+        "disposition": "needs_owner_decision",
+        "component": "Фракционный слой initialsetup с контролем/присутствием/симпатиями/contested",
+        "reason": "Ни canonicalID, ни текстовое описание не доказывают принятие такой функции. Источниковые значения нельзя смешивать; наличие объекта не назначает контроль.",
+        "product_boundary": "Принятые границы/места карты не равны политическому workflow."
+      },
+      {
+        "id": "ROOT-SCOPE-C02",
+        "disposition": "out_of_scope",
+        "component": "Генератор конфликтов, мотивов NPC, угроз/эскалаций и кастомных ходов",
+        "reason": "Исключённые владельцем сюжетные/социальные/персонажные подсистемы.",
+        "product_boundary": "Простые сведения о конкретном жителе допустимы, общая личность/сюжет — нет."
+      },
+      {
+        "id": "ROOT-SCOPE-C03",
+        "disposition": "needs_owner_decision",
+        "component": "Обязательная новая модель clearing/12-clearing setupUI",
+        "reason": "Сфера размещения12мест применима, но отдельный экран/формат не вытекает из исходного правила автоматически.",
+        "product_boundary": "Переиспользовать местa/пути/броски; новую архитектуру не утверждать."
+      },
+      {
+        "id": "ROOT-SCOPE-C04",
+        "disposition": "out_of_scope",
+        "component": "Бумажные кубики/6дюймов как физический размер мира или цифровой алгоритм",
+        "reason": "Это иллюстративный способ рисования изгибов; нельзя превратить в расстояние/жёсткую геометрию.",
+        "product_boundary": "Цифровая река сохраняет выбранный маршрут; бумажный приём не спецификация."
+      },
+      {
+        "id": "ROOT-SCOPE-C05",
+        "disposition": "needs_owner_decision",
+        "component": "Самовольное исправление lake-direction/subtract–1/nearestmetric",
+        "reason": "Источник неоднозначен; сохранитьточныйостаток и ручнойвыбор, не выдумыватьзнак/радиус/направление.",
+        "product_boundary": "Вода/озероL1применимы; спорный автоматический профиль исключён до решения/источника."
+      }
+    ],
+    "current_proposed_task_refs_are_historical": true,
+    "retired_backlog_restoration_allowed": false,
+    "new_product_tasks": [],
+    "implementation_authorized": false,
+    "publication_authorized": false
+  }
 }
