@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 export async function checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture}){
  await lang('en');await page.setViewportSize({width:1500,height:1000});
  await page.locator('input[type=file]').setInputFiles({name:'geo2-source.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
- await step.selectOption('1');
+ await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});
  const before=await snap(),refine=page.locator('[data-refine-geography]'),preview=page.locator('[data-geometry-preview]');
  await refine.click();await preview.waitFor();
  assert.ok(await preview.locator('[data-refined-river]').count());
@@ -33,8 +33,8 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
  const expected=await signature();assert.ok(expected.rivers.length&&expected.roads.length);assert.deepEqual(expected.riverMasks,expected.visibleWater,'visible water and river masks share exact accepted contours');
  for(const width of [1500,390,320]){await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await shot(`geo2-accepted-${width}.jpg`);}
  await button('Undo').click();assert.deepEqual((await snap()).map,before.map);
- await button('Redo').click();await step.selectOption('1');assert.deepEqual((await snap()).map.physicalGrid.geometryRefinement,g);assert.deepEqual(await signature(),expected);
- await step.selectOption('6');assert.equal(await page.locator('svg[data-render-phase] [data-refined-geography]').count(),0);await step.selectOption('1');assert.deepEqual(await signature(),expected);
+ await button('Redo').click();await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual((await snap()).map.physicalGrid.geometryRefinement,g);assert.deepEqual(await signature(),expected);
+ await step.selectOption('6');assert.equal(await page.locator('svg[data-render-phase] [data-refined-geography]').count(),0);await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual(await signature(),expected);
  const pngs=[];const saveRefinedPng=async label=>{
   const visible=await signature();assert.deepEqual(visible.riverMasks,visible.visibleWater,'visible body and clipped river agree in this mode');
   const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();
@@ -77,7 +77,7 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
   assert.match(message,locale==='ru'?/Карта сохранена без изменений/:/Map unchanged/);assert.doesNotMatch(message,/GEO2|prepare_|river_mouth/);assert.match(message,/detail-poi:1/);
   await shot(`geo2-source-error-${locale}-${width}.jpg`);
   await button(locale==='ru'?'Повторить':'Redo').click();assert.deepEqual((await snap()).map,changed.map);
-  await button(locale==='ru'?'Отменить':'Undo').click();await step.selectOption('1');
+  await button(locale==='ru'?'Отменить':'Undo').click();await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});
   const importData=await snap();await page.evaluate(()=>{window.__releaseFineImport=null;window.__holdFineImport=true;});
   await page.locator('input[type=file]').setInputFiles({name:'geo2-busy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(importData))});
   await page.waitForFunction(()=>typeof window.__releaseFineImport==='function');

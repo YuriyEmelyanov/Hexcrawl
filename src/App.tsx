@@ -1,4 +1,5 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
+import {prepareAutomaticSceneCandidate} from './automaticOneMileScene';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork,RefinedLakeWater} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
@@ -1231,13 +1232,7 @@ function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuation
  * Every dependent layer is prepared before the controller replaces the scene. */
 function prepareAutomaticOneMileScene(map:MapSnapshot):Detail1State {
  checkedRiverMap(map);
- const plan=prepareGeometryPlan({...geometryPlanInput(map),scopePolicy:'automatic_presentation'});
- if(plan.status==='error')throw Error(`${plan.stage}: ${plan.refs.join(', ')}`);
- let state=plan.candidateState;
- if(!state){
-  const preview=buildDetailGeographyPreview(map,detailMapRiverGeometry(map,{x:0,y:0}),{x:0,y:0});
-  state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:3,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints,fineCellEdits:{}});
- }
+ const state=prepareAutomaticSceneCandidate({...geometryPlanInput(map),scopePolicy:'automatic_presentation'});
  validateOneMileMap(map,state);
  return {...state,viewStep:1};
 }
@@ -12044,6 +12039,10 @@ export function App() {
   // Scale and picking can use a complete derived scene without accepting it.
   const [automaticFineScene,setAutomaticFineScene]=useState<Detail1State|null>(null);
   const [automaticFineError,setAutomaticFineError]=useState<string|null>(null);
+  const [automaticFinePreparing,setAutomaticFinePreparing]=useState(false);
+  const automaticFineJob=useRef<{revision:number;cancel?:()=>void}|null>(null);
+  const cancelAutomaticFinePreparation=()=>{automaticFineJob.current?.cancel?.();automaticFineJob.current=null;setAutomaticFinePreparing(false);};
+  useEffect(()=>()=>{automaticFineJob.current?.cancel?.();automaticFineJob.current=null;},[]);
   const automaticFineSceneRef=useRef(automaticFineScene);automaticFineSceneRef.current=automaticFineScene;
   const updateAutomaticFineScene=(state:Detail1State|null)=>{automaticFineSceneRef.current=state;setAutomaticFineScene(state);};
   const preparedAutomaticSceneRef=useRef<{map:MapSnapshot;state:Detail1State}|null>(null);
@@ -13634,6 +13633,7 @@ export function App() {
     setRedoHistory([]);
   };
   const applyExactMap = (map: MapSnapshot) => {
+    cancelAutomaticFinePreparation();
     // A document replacement cannot keep artwork derived from another map.
     setAutomaticFineError(null);
     let nextScene:Detail1State|null=null;
@@ -13680,7 +13680,7 @@ export function App() {
   };
   const applyDocument = (value: DocumentSnapshot) => applyPreparedDocument(copyDocument(value));
   const documentBusy = () => documentRevision.current !== renderedDocumentRevision
-    || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
+    || !!automaticFineJob.current || importInFlight.current || kingdomInFlight.current || !!kingdomJob || !!pendingRegen;
   const mutationBlocked = (finishGroup = true) => {
     if (fineDraftRef.current || knaveDraftRef.current || poiDraftRef.current || regionDraftRef.current || waterDraftRef.current || roadFeatureResolutionRef.current || riverCommandPreviewRef.current || riverDraftRef.current || roadDraftRef.current || documentBusy() || dirtyNameDraft()) return true;
     if (finishGroup) finishNotesGroup();
@@ -16377,13 +16377,8 @@ export function App() {
     if(choice==='finish'){if(!saveFineDraft(request.draft))return;}else{fineDraftRef.current=null;setFineDraft(null);}
     setFineExit(null);const revision=documentRevision.current;setTimeout(()=>{if(documentRevision.current===revision)request.action();},0);
   };
-  const switchFineStep=(step:1|6)=>{
-    if(mutationBlocked()||fineComposing.current)return false;
-    if(automaticFineSceneRef.current?.viewStep===step)return true;
+  const showFineScene=(step:1|6,next:Detail1State)=>{
     const state=automaticFineSceneRef.current??physicalGridRef.current;
-    let next:Detail1State;
-    try{next=step===1?prepareAutomaticOneMileScene(captureMap()):{...(state??prepareAutomaticOneMileScene(captureMap())),viewStep:6};}
-    catch(error){setAutomaticFineError(language==='ru'?'Не удалось подготовить карту 1 миля: совместимая геометрия не найдена. Исходная карта сохранена.':'Could not prepare the one-mile map: compatible geometry is unavailable. The source map is unchanged.');console.error('One-mile scene preparation failed',error);return false;}
     setAutomaticFineError(null);
     const svg=mapSvgRef.current,viewport=mapViewportRef.current,layer=svg?.querySelector<SVGGElement>('[data-fine-world],.map-rotation-layer'),matrix=layer?.getScreenCTM();
     if(svg&&viewport&&matrix){const rect=viewport.getBoundingClientRect(),p=svg.createSVGPoint(),factor=Math.sqrt(3)*HEX_SIZE/6;
@@ -16394,6 +16389,31 @@ export function App() {
     }
     const scale=mapScaleRef.current*(state?.viewStep??6)/step;
     documentRevision.current++;updateAutomaticFineScene({...next,...(state?.selectedCell?{selectedCell:state.selectedCell}:{}),...(state?.selectedWorldPoint?{selectedWorldPoint:state.selectedWorldPoint}:{})});setFineHover(null);setEditMode(false);closeEditors();updateMapScale(scale);return true;
+  };
+  const switchFineStep=(step:1|6)=>{
+    if(step===6&&automaticFineJob.current){cancelAutomaticFinePreparation();return true;}
+    if(mutationBlocked()||fineComposing.current)return false;
+    if(automaticFineSceneRef.current?.viewStep===step)return true;
+    const fail=(error:unknown)=>{setAutomaticFineError(language==='ru'?'Не удалось подготовить карту 1 миля: совместимая геометрия не найдена. Исходная карта сохранена.':'Could not prepare the one-mile map: compatible geometry is unavailable. The source map is unchanged.');console.error('One-mile scene preparation failed',error);};
+    const state=automaticFineSceneRef.current??physicalGridRef.current;
+    if(step===1&&rivers.length&&typeof Worker!=='undefined'){
+      const map=captureMap(),job={revision:documentRevision.current,cancel:undefined as (()=>void)|undefined};
+      automaticFineJob.current=job;setAutomaticFinePreparing(true);setAutomaticFineError(null);
+      import('./automaticOneMileJob').then(({startAutomaticSceneJob})=>{
+        if(automaticFineJob.current!==job)return;
+        if(documentRevision.current!==job.revision){cancelAutomaticFinePreparation();return;}
+        checkedRiverMap(map);
+        job.cancel=startAutomaticSceneJob({...geometryPlanInput(map),scopePolicy:'automatic_presentation'},next=>{
+          if(automaticFineJob.current!==job)return;
+          if(documentRevision.current!==job.revision){cancelAutomaticFinePreparation();return;}
+          cancelAutomaticFinePreparation();
+          try{validateOneMileMap(map,next);showFineScene(1,next);}catch(error){fail(error);}
+        },error=>{if(automaticFineJob.current!==job||documentRevision.current!==job.revision)return;cancelAutomaticFinePreparation();fail(error);});
+      }).catch(error=>{if(automaticFineJob.current!==job)return;cancelAutomaticFinePreparation();fail(error);});
+      return true;
+    }
+    try{return showFineScene(step,step===1?prepareAutomaticOneMileScene(captureMap()):{...(state??prepareAutomaticOneMileScene(captureMap())),viewStep:6});}
+    catch(error){fail(error);return false;}
   };
   useEffect(()=>{if(fineRequestedStep&&physicalGrid){setFineRequestedStep(null);switchFineStep(fineRequestedStep);}},[fineRequestedStep,physicalGrid]);
   useEffect(()=>{const focus=fineFocusRef.current;if(!focus)return;fineFocusRef.current=null;requestAnimationFrame(()=>{const svg=mapSvgRef.current,viewport=mapViewportRef.current,layer=svg?.querySelector<SVGGElement>('[data-fine-world],.map-rotation-layer'),matrix=layer?.getScreenCTM();if(!svg||!viewport||!matrix)return;const p=svg.createSVGPoint();p.x=focus.x;p.y=focus.y;const at=p.matrixTransform(matrix);viewport.scrollLeft+=at.x-focus.clientX;viewport.scrollTop+=at.y-focus.clientY;});},[fineDisplay?.viewStep]);
@@ -17017,7 +17037,8 @@ export function App() {
                 </svg>
               </button>
               {fineActive&&<button type="button" className="secondary" data-refine-geography disabled={documentBusy()||!rivers.length} onClick={()=>previewGeometryRefinement()}>{language==='ru'?'Уточнить геометрию':'Refine geometry'}</button>}
-              <label className="fine-step">{language==='ru'?'Размер гекса':'Hex size'}<select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={fineDisplay?.viewStep??(busyFineView?1:6)} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
+              <label className="fine-step">{language==='ru'?'Размер гекса':'Hex size'}<select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={automaticFinePreparing?1:fineDisplay?.viewStep??(busyFineView?1:6)} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
+              {automaticFinePreparing&&<p role="status" data-fine-scene-preparing>{language==='ru'?'Подготовка одномильной карты…':'Preparing one-mile map…'} <button type="button" onClick={cancelAutomaticFinePreparation}>{language==='ru'?'Отмена':'Cancel'}</button></p>}
               {automaticFineError&&<p className="direct-error" role="alert" data-fine-scene-error>{automaticFineError}</p>}
               <button
                 type="button"
@@ -17039,7 +17060,7 @@ export function App() {
               <details className="export-menu">
                   <summary className="secondary">{t.export}</summary>
                   <div className="export-menu__items">
-                    <button type="button" data-poi-export disabled={!renderDetails} onClick={() => void handleExportPng()} className="secondary">PNG</button>
+                    <button type="button" data-poi-export disabled={!renderDetails||automaticFinePreparing} onClick={() => void handleExportPng()} className="secondary">PNG</button>
                     <button type="button" data-poi-export onClick={handleExportJson} className="secondary">JSON</button>
                     <small>{language==='ru'?`JSON v${physicalGrid?.geometryRefinement?16:physicalGrid?15:10}: старые версии приложения не откроют этот файл.`:`JSON v${physicalGrid?.geometryRefinement?16:physicalGrid?15:10}: older app versions cannot open this file.`}</small>
                   </div>
