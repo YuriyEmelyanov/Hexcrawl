@@ -5,7 +5,7 @@
   "agent": "/root/hx059_f1_preflight",
   "reviewed_head_sha": "98a533808146c7ff8e48870d8026c2377a947914",
   "production_blob_sha": "befa34afe618ccfdbea50a3ac31450ca752ace88",
-  "current_head_sha": "cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc",
+  "current_head_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd",
   "status": "no_new_source_blocker_identified_not_final_acceptance",
   "independent_tests_run": false,
   "findings": [
@@ -75,5 +75,36 @@
     },
     "resolution_head_sha": "cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc"
   },
-  "full_acceptance": false
+  "full_acceptance": false,
+  "additional_scope_audit": {
+    "head_sha": "a2481119a315eded514604d2a51c7ebf763382a2",
+    "production_blob_unchanged": true,
+    "method": "Read actual native6 SVG at1500/390 + whole PNG; no masks/threshold relaxation; unmasked UI diagnostic retained",
+    "conclusion": "Appropriate native6 geography/export evidence for bounded AC07/08, not all AC operations/corpus or final acceptance",
+    "limitation": "Full UI non-identical; raster matching within tolerance is not literal pixel/byte identity",
+    "automation_health": {
+      "start": {
+        "checked_at": "2026-11-17T15:50:34Z",
+        "is_enabled": true
+      },
+      "end": {
+        "checked_at": "2026-11-17T15:51:02Z",
+        "is_enabled": true
+      }
+    },
+    "followup_capture_correction": {
+      "head_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd",
+      "verified_artifact": 14343049301,
+      "diagnosis": "SVG element screenshot includes overlapping HTML chevron;57 high-delta pixels all in glyph, not map.",
+      "capture": "hide only HTML side-panel-toggle for map screenshot; keep wholeUI unmodified; entire exportPNG independent",
+      "final_observation": {
+        "head_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd",
+        "browser": "success",
+        "map1500": "pixelIdentical",
+        "map390": "pixelIdentical",
+        "wholeNativePNG": "pixelIdentical",
+        "wholeUI390": "glyph1px difference only"
+      }
+    }
+  }
 }
