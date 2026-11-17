@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-17T11:35:50.107Z",
+  "updated_at": "2026-11-17T12:21:00.040Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -418,9 +418,9 @@
         "На карте и PNG маршрут реки совпадает; стыки, озёра, переправы и речные объекты проверены по чистовой спецификации.",
         "Правила перехода для существующих карт, обычной/уточнённой геометрии и связанных объектов закреплены в спецификации и интервью; прежние ответы владельца не спрашиваются повторно."
       ],
-      "execution_state": "исправлен масштаб камеры при сохранении, импорте и fallback; CI429/browser/RNG прошли; подготовка с отменой и полная F1 ещё не готовы",
+      "execution_state": "переключение на1милю готовит карту в фоне с отменой и защитой от запоздавшего ответа; CI429/browser/RNG прошли; полная F1 ещё не принята",
       "next_role": "programmer",
-      "next_step": "HX059-NEXT-02: busy/cancel/stale preparation; затем вся F1, независимое ревью и отдельное согласование выпуска.",
+      "next_step": "Завершить связный F1 пакет: вся AC01–09 матрица на настоящей карте/PNG, исправления и затем независимая приёмка.",
       "related_task_ids": [
         "HX-BL-055",
         "HX-BL-056",
@@ -439,7 +439,7 @@
       "score_forecast": "unknown; оценить критерии1.2 при спецификации без начисления",
       "forecast": {
         "task_id": "HX-BL-059",
-        "completed_recorded_runs": 8,
+        "completed_recorded_runs": 9,
         "remaining_runs": {
           "min": 2,
           "max": 5
@@ -454,7 +454,7 @@
         },
         "confidence": "low",
         "history_reset": false,
-        "basis": "Camera save/import/fallback defect is now reproduced and fixed without resetting history. Same full F1 remains: responsive preparation and full acceptance matrix, independent review/fixes, exact release approval. Keep2–5 remaining because this bounded camera fix does not complete the outstanding preparation lifecycle.",
+        "basis": "Ninth recorded run implements the first-scale responsive preparation/cancel/stale boundary and real UI witness. Do not mechanically subtract a run: complete bank/mouth/crossing/native6/cold-load matrix may still expose defects; remaining range includes coherent programmer package, independent review/fixes and separately approved release. Original D1 total8–12 recorded runs retained; updated total11–14, not a reset or reduced acceptance.",
         "history_refs": [
           "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
           "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
@@ -463,11 +463,11 @@
         ],
         "owner_publication_wait": "unknown; excluded"
       },
-      "updated_at": "2026-11-17T09:14:50.186Z",
+      "updated_at": "2026-11-17T12:21:00.040Z",
       "queue_priority": 1,
       "selection_ref": "agent-work/decisions/owner-decision-2026-11-16-pause-biomes-next-river-edges.json",
       "draft_spec_version": "D1",
-      "handoff_ref": "agent-work/handoffs/2026-11-17T1200-programmer-camera-normalization-continue.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-17T1500-programmer-responsive-preparation-continue.json",
       "ui_preview": {
         "ref": "agent-work/previews/HX-BL-059-D1/proposal.svg",
         "version": "P1",
@@ -580,6 +580,33 @@
             "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
           ],
           "owner_publication_wait": "unknown; excluded"
+        },
+        {
+          "source_run_id": "2026-11-17T1200-programmer-camera-normalization",
+          "task_id": "HX-BL-059",
+          "completed_recorded_runs": 8,
+          "remaining_runs": {
+            "min": 2,
+            "max": 5
+          },
+          "remaining_active_hours": {
+            "min": 3,
+            "max": 7
+          },
+          "remaining_calendar_hours_excluding_owner_wait": {
+            "min": 6,
+            "max": 15
+          },
+          "confidence": "low",
+          "history_reset": false,
+          "basis": "Camera save/import/fallback defect is now reproduced and fixed without resetting history. Same full F1 remains: responsive preparation and full acceptance matrix, independent review/fixes, exact release approval. Keep2–5 remaining because this bounded camera fix does not complete the outstanding preparation lifecycle.",
+          "history_refs": [
+            "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
+            "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
+            "agent-work/results/2026-11-16-owner-RE-Q01-auto-1794857630007.json",
+            "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
+          ],
+          "owner_publication_wait": "unknown; excluded"
         }
       ],
       "implementation_complete": false,
@@ -587,17 +614,35 @@
       "branch": "agent/hx-bl-059-auto-river-edges",
       "pr": 505,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/505",
-      "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
-      "tree_sha": "acd106a4efdd123c4f2848566d2bc35ee08a0498",
-      "evidence_ref": "agent-work/evidence/HX-BL-059-camera-198ce6a/implementation.json",
-      "test_change_summary_ref": "agent-work/evidence/HX-BL-059-camera-198ce6a/test-change-summary.json",
+      "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+      "tree_sha": "f2b8c33edcb865ea0dc00c4b353c554911c1d972",
+      "evidence_ref": "agent-work/evidence/HX-BL-059-responsive-eee794f/implementation.json",
+      "test_change_summary_ref": "agent-work/evidence/HX-BL-059-responsive-eee794f/test-change-summary.json",
       "actual_ui": {
         "kind": "runtime_exact_SHA",
-        "head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
-        "tree_sha": "acd106a4efdd123c4f2848566d2bc35ee08a0498",
-        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44051822640/artifacts/14314453121",
-        "artifact_digest": "sha256:02323d2e133a18147868dd2b59d39e873121abadcad31e3cf5b64d7963c51b80",
+        "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+        "tree_sha": "f2b8c33edcb865ea0dc00c4b353c554911c1d972",
+        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44080148971/artifacts/14326339847",
+        "artifact_digest": "sha256:276591a2f798832a9a0df3cf498d5a2a84fbedb594c078cb105b332cc4707d04",
+        "files": [
+          "automatic-preparing-1500.jpg",
+          "automatic-preparing-390-ru.jpg",
+          "classic42-1mi-after.jpg"
+        ],
         "cases": [
+          {
+            "id": "HX059-worker-busy-cancel-late-reply",
+            "status": "pass",
+            "viewports": [
+              1500,
+              390
+            ],
+            "locales": [
+              "en",
+              "ru"
+            ],
+            "sourceWrites": false
+          },
           {
             "id": "HX059-classic42-automatic-scene-save-PNG",
             "status": "pass",
@@ -624,12 +669,14 @@
         ],
         "visually_inspected": true,
         "presented_in_chat": true,
-        "whole_F1_accepted": false
+        "method": "Real module Worker reply held after computation only for deterministic cancel/late-callback and responsive captures, then released; successful retry uses the real worker.",
+        "performance_measurement": false,
+        "full_F1_accepted": false
       },
       "checks": {
-        "run_id": 44051822640,
+        "run_id": 44080148971,
         "status": "success",
-        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44051822640",
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44080148971",
         "check": "success",
         "world_random": "success",
         "browser": "success",
@@ -641,8 +688,8 @@
         },
         "typecheck": "passed",
         "build": "passed",
-        "source_head_sha": "198ce6ab4b5fdee1040fdea41fc907811b6d0e25",
-        "checkout_tree": "acd106a4efdd123c4f2848566d2bc35ee08a0498"
+        "source_head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+        "checkout_tree": "f2b8c33edcb865ea0dc00c4b353c554911c1d972"
       }
     },
     {
