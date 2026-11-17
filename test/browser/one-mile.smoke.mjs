@@ -31,6 +31,8 @@ const mixedHarness=createGenerationHarness(42);mixedHarness.render();mixedHarnes
 await mixedHarness.render().handleImportJson({target:{files:[{text:await fs.readFile(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8')}],value:'x'}});
 const mixedPreview=mixedHarness.render().previewGeometryRefinement();assert.ok(mixedPreview);assert.equal(mixedHarness.render().applyGeometryRefinementPreview(mixedPreview),true);mixedHarness.render();mixedHarness.render().generateAt(mixedHarness.render().candidateHexes[0]);
 const mixedFixture=structuredClone(mixedHarness.render().createSaveData());assert.equal(mixedFixture.map.rivers.length,5);assert.equal(mixedFixture.map.physicalGrid.geometryRefinement.riverPlan.paths.length,34);
+const mixedOldEdges=new Set(mixedFixture.map.physicalGrid.geometryRefinement.riverPlan.paths.map(p=>JSON.stringify([p.riverId,p.sourceEdgeKey])));
+const mixedNewEdges=mixedFixture.map.rivers.flatMap(r=>r.sectors.flatMap(s=>s.edgeKeys.map(edge=>({id:r.id,edge})))).filter(p=>!mixedOldEdges.has(JSON.stringify([p.id,p.edge])));assert.equal(mixedNewEdges.length,12);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4195','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
 let browser,page,baselineServer,baselineDir;const errors=[],alerts=[];
 const manifest={source_head_sha:null,checkout_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),checkout_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),fixture:'road-entry-zigzags.json',screenshots:[],cases:[]};
@@ -78,7 +80,7 @@ try{
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  await step.selectOption('6');const mixedSource=await snap();await shot('mixed42-6mi-before.jpg');
  await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();assert.equal(await page.locator('[data-fine-scene-error]').count(),0);
- assert.equal(await page.locator('[data-refined-river="5"]').count(),12,'new ordinary reach is in the complete edge scene');
+ for(const edge of mixedNewEdges)assert.equal(await page.locator(`[data-refined-river="${edge.id}"][data-source-edge=${JSON.stringify(edge.edge)}]`).count(),1,'every new ordinary source edge is in the complete scene');
  const mixedVisible=await classicSignature();await shot('mixed42-1mi-after.jpg');assert.deepEqual((await snap()).map,mixedSource.map);
  await page.evaluate(()=>window.__oneSvg=null);const [mixedPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await mixedPng.path(),new URL('mixed42-automatic.png',out));
  const mixedExport=await page.evaluate(()=>{const el=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml').querySelector('[data-fine-world]');return {rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])};});
