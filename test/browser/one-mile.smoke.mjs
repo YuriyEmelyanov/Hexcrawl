@@ -20,11 +20,11 @@ geometryFixture.map.crossings.find(c=>c.riverId===3).kind='ford';
 // the real-map browser check covers the complete F1..F5 width scale.
 const f5Sector=fixture.map.rivers.flatMap(r=>r.sectors).find(s=>s.fullness===3);assert.ok(f5Sector);f5Sector.fullness=5;
 delete fixture.map.physicalGrid.selectedCell;delete fixture.map.physicalGrid.selectedWorldPoint;
-const oracle=fineEvidenceSamples(h);
 for(const road of fixture.map.roads)fixture.map.editorNames[`road:${road.id}`]={ru:`OM дорога ${road.id}`,en:`OM route ${road.id}`};
 for(const river of fixture.map.rivers){const name=fixture.map.toponyms.names[`river:${river.id}`];assert.ok(name);name.ru=`OM река ${river.id}`;name.en=`OM river ${river.id}`;}
 // Validate fixture edits before launching a browser; rivers are toponyms, not editorNames.
 await h.render().handleImportJson({target:{files:[{text:JSON.stringify(fixture)}],value:'x'}});assert.equal(h.render().createSaveData().version,15);
+assert.equal(h.render().switchFineStep(1),true,h.render().editError);const oracle=fineEvidenceSamples(h,h.render().fineDisplay);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4195','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
 let browser,page,baselineServer,baselineDir;const errors=[],alerts=[];
 const manifest={source_head_sha:null,checkout_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),checkout_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),fixture:'road-entry-zigzags.json',screenshots:[],cases:[]};
@@ -119,7 +119,7 @@ try{
  await page.locator('[data-fine-key="1,0"]').hover();assert.match(await panel.innerText(),/1\/0/);await panel.hover();assert.match(await panel.innerText(),/0\/0/);
  assert.match(await panel.innerText(),/Town Eichenheim/,'P01 named POI retains actual type');
  for(const kind of ['bridge','ferry','ford']){const target=page.locator(`[data-crossing-kind="${kind}"]`).first();assert.ok(await target.count(),kind+' actual renderer branch');const group=target.locator('..');await group.evaluate(el=>{const b=el.getBBox(),p=el.ownerSVGElement.createSVGPoint();p.x=b.x+b.width/2;p.y=b.y+b.height/2;const c=p.matrixTransform(el.getScreenCTM()),v=document.querySelector('.map-viewport'),r=v.getBoundingClientRect();v.scrollLeft+=c.x-r.left-v.clientWidth/2;v.scrollTop+=c.y-r.top-v.clientHeight/2;});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const rect=await group.boundingBox();assert.ok(rect);const clip={x:Math.max(0,rect.x-16),y:Math.max(0,rect.y-16),width:Math.max(32,rect.width+32),height:Math.max(32,rect.height+32)};clip.width=Math.min(clip.width,1500-clip.x);clip.height=Math.min(clip.height,1000-clip.y);await page.screenshot({path:new URL(`crossing-${kind}.png`,out).pathname,clip});}
- assert.ok(await page.locator('[data-fine-road] line[opacity="0.42"]').count(),'P02 real ford transparency');
+ assert.ok(await page.locator('[data-fine-road] line[opacity="0.42"],[data-refined-road] line[opacity="0.42"]').count(),'P02 real ford transparency');
  await shot('desktop-1.jpg');
  const style=page.locator('button.biome-display-toggle');await style.click();assert.equal(await style.getAttribute('data-mode'),'emoji');assert.equal(await page.locator('image[data-fine-biome]').count(),0);assert.ok(await page.locator('[data-fine-cells] .biome-marker').count()>100);await style.click();assert.equal(await style.getAttribute('data-mode'),'color');await style.click();assert.equal(await style.getAttribute('data-mode'),'tiles');
  await page.getByRole('button',{name:/^Rotate map/}).click();assert.match(await page.locator('[data-fine-world]').getAttribute('transform'),/rotate/);assert.match(await page.locator('image[data-fine-biome]').first().getAttribute('transform'),/rotate\(-90/);await page.getByRole('button',{name:'Restore original map rotation'}).click();

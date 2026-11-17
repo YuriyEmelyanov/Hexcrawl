@@ -17,7 +17,7 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
  assert.equal(await page.locator('[data-geometry-preview-overlay] [data-refined-geography]').count(),1,'proposed geometry is visible over the main map');
  const exportMenu=page.locator('details.export-menu');if(await exportMenu.getAttribute('open')===null)await exportMenu.locator('summary').click();
  await page.evaluate(()=>window.__oneSvg=null);const [pendingPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await pendingPng.path(),new URL('geo2-preview-accepted-only.png',out));
- assert.doesNotMatch(await page.evaluate(()=>window.__oneSvg),/data-geometry-preview|data-refined-geography/,'PNG excludes the unaccepted overlay');
+ assert.doesNotMatch(await page.evaluate(()=>window.__oneSvg),/data-geometry-preview/,'PNG excludes the optional proposal overlay; the automatic base scene remains visible');
  await page.keyboard.press('Escape');await preview.waitFor({state:'detached'});assert.equal(await refine.evaluate(el=>el===document.activeElement),true);assert.deepEqual(await snap(),before);
  await refine.click();await preview.getByRole('button',{name:'Cancel',exact:true}).click();assert.deepEqual(await snap(),before);
  await refine.click();await preview.getByRole('button',{name:'Apply',exact:true}).click();

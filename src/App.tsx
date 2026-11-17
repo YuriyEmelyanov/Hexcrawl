@@ -14922,8 +14922,8 @@ export function App() {
   const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
   const [isHeaderLinksCollapsed, setIsHeaderLinksCollapsed] = useState(false);
   const headerLinksAutoCollapseTimerRef = useRef<number | null>(null);
-  const displayMapWidth = busyFineView?.width ?? (isMapRotated ? positionedHexes.height : positionedHexes.width)+(physicalGrid?.viewStep===1?16:0);
-  const displayMapHeight = busyFineView?.height ?? (isMapRotated ? positionedHexes.width : positionedHexes.height)+(physicalGrid?.viewStep===1?16:0);
+  const displayMapWidth = busyFineView?.width ?? (isMapRotated ? positionedHexes.height : positionedHexes.width)+(fineDisplay?.viewStep===1?16:0);
+  const displayMapHeight = busyFineView?.height ?? (isMapRotated ? positionedHexes.width : positionedHexes.height)+(fineDisplay?.viewStep===1?16:0);
   const mapRotationTransform = isMapRotated ? `translate(${positionedHexes.height} 0) rotate(90)` : undefined;
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
   const sidePanelToggleLabel = isSidePanelCollapsed ? t.showPanel : t.hidePanel;
@@ -14953,7 +14953,7 @@ export function App() {
       .filter(hex => forestFamily(hex.biome));
   }, [renderBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
   const lakeGeometryCache = useRef(createLakeGeometryCache());
-  const lakeShapes = useMemo(()=>renderBiomeColor||physicalGrid?.viewStep===1 ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[renderBiomeColor,physicalGrid?.viewStep,lakeCells,toponymSeed,riverSegments]);
+  const lakeShapes = useMemo(()=>renderBiomeColor||fineDisplay?.viewStep===1 ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[renderBiomeColor,fineDisplay?.viewStep,lakeCells,toponymSeed,riverSegments]);
   const fineRiverSegments=useMemo(()=>riverSegments.map(segment=>({...segment,width:fineRiverStrokeWidth(segment.fullness)})),[riverSegments]);
   const fineLakeGeometryCache=useRef(createLakeGeometryCache()),fineLakeActive=!!fineDisplay||!!geometryPreview;
   const fineLakeShapes=useMemo(()=>fineLakeActive?buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,fineRiverSegments,fineLakeGeometryCache.current):[],[fineLakeActive,lakeCells,toponymSeed,fineRiverSegments]);
@@ -15018,7 +15018,7 @@ export function App() {
     return () => mobileLayout.removeEventListener('change', syncMobileLayout);
   }, []);
 
-  const clampMapScale = (scale: number) => Math.min(MAX_MAP_SCALE*(physicalGridRef.current?.viewStep===1?6:1), Math.max(MIN_MAP_SCALE*(physicalGridRef.current?.viewStep===1?6:1), scale));
+  const clampMapScale = (scale: number) => Math.min(MAX_MAP_SCALE*((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep===1?6:1), Math.max(MIN_MAP_SCALE*((automaticFineSceneRef.current??physicalGridRef.current)?.viewStep===1?6:1), scale));
 
   const beginMapNavigation = () => {
     mapViewportRef.current?.classList.add('is-navigating');

@@ -20,8 +20,8 @@ export function prepareFineEvidenceFixture(h){
  h.render().applyDocument(doc);
 }
 
-export function fineEvidenceSamples(h){
- const map=h.render().captureDocument().map,state=map.physicalGrid,grid=createDetailGrid(1,state.grid.origin),coarse=createDetailGrid(6,state.grid.origin);
+export function fineEvidenceSamples(h,display){
+ const map=h.render().captureDocument().map,state=display??map.physicalGrid,grid=createDetailGrid(1,state.grid.origin),coarse=createDetailGrid(6,state.grid.origin);
  // Read the real App bridge; do not replace its algorithm in the tested page.
  const bridge=h.geometry.detailMapRiverGeometry;
  const rivers=bridge(map,state.grid.origin),accepted=new Set(h.render().fineCells.map(r=>key(r.cell))),pending=new Map();
@@ -124,7 +124,7 @@ export async function checkFineModeCandidates({page,snap,shot,button,manifest}){
   if(accepted){
    if(mode==='knave'){assert.equal(after.map.regions.length,before.map.regions.length+1);assert.ok(Object.keys(after.map.knave?.content?.byPoi??{}).length>0);}
    else assert.equal(after.map.kingdoms.length,before.map.kingdoms.length+1,'one ordinary complete kingdom');
-   assert.equal(after.map.physicalGrid.viewStep,1);assert.equal(key(after.map.physicalGrid.selectedCell),target);
+   assert.equal(await page.locator('[data-fine-step]').inputValue(),'1');assert.equal(await page.locator('[data-fine-selected]').getAttribute('data-fine-selected'),target);
    if(mode==='mythic')for(const width of [1500,390,320]){await page.setViewportSize({width,height:1000});await page.locator('.map-viewport').scrollIntoViewIfNeeded();await page.locator('[data-fine-selected]').scrollIntoViewIfNeeded();assert.ok((await frame()).visible>0);await shot(width===1500?'desktop-after-kingdom.jpg':`narrow-${width}-after-kingdom.jpg`);}
    await button('Отменить').click();assert.deepEqual(await snap(),before,'one native Undo restores fine map and entire mode unit');
    await button('Повторить').click();assert.deepEqual(await snap(),after);await button('Отменить').click();
