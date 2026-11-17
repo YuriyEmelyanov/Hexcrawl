@@ -1,0 +1,135 @@
+{
+  "run_id": "2026-11-17T0900-programmer-mixed-scene",
+  "task_id": "HX-BL-059",
+  "role": "programmer",
+  "base_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
+  "head_sha": "861ce7d4085ff10000a09bcc506f99c058c56a69",
+  "tree_sha": "d9960b3df6a71a4518e3c420c04ce9935b4f9a48",
+  "pr": 505,
+  "requirements": [
+    "F-R01",
+    "F-R02",
+    "F-R03",
+    "F-R07",
+    "AC01",
+    "AC02",
+    "AC05",
+    "AC07",
+    "AC08"
+  ],
+  "visible_scenario": "Actual classic42 six-region map is explicitly refined, then continued once via native generation to7regions/5rivers. Automatic display retains34 accepted river paths and adds12 ordinary paths, including a fractional continuation, with joint POI/road/shore preparation and source-only JSON.",
+  "implementation": [
+    "Separate automatic_presentation policy covers missing scope only in detached scene. Ordinary accepted source/edit scope guard remains unchanged.",
+    "Reuse old paths literally; preserve exact port node/point/location and side choices. New paths use the same fixed ports, split canonical edges and bounded seeded routing avoiding old/new occupied ranges/nodes.",
+    "Fractional degree2 seam allowed only with1incoming/1outgoing and opposite, nonoverlapping parts of the same canonical edge. No fractional turn or branch.",
+    "Rebuild water, rapids, waterfalls and dependent POI/road/crossing layers; reuse unchanged accepted mouth records only when matching retained path and identical shore signature. Full GeometryPlan validator remains mandatory.",
+    "Endpoint node aliases retain exact stored fractional values after floating projection; no origin/grid/source rewrite."
+  ],
+  "diagnostics": [
+    {
+      "stage": "before",
+      "observed": "Native growth7regions/5rivers remains valid, but automatic global preparation refuses refinement_domain_expansion."
+    },
+    {
+      "stage": "strict_recompute",
+      "observed": "Simply allowing display scope expansion would change accepted river1 path. Strict old-choice guard correctly rejects it."
+    },
+    {
+      "stage": "stitch",
+      "observed": "Naive connection back to recomputed vertex overlaps the incoming old half-edge; final validator rejects new join. New route now reserves old ranges and leaves along the free half."
+    },
+    {
+      "stage": "budget",
+      "observed": "Explicit full preparation measured19,737,982 work units; retained mixed preparation21,341,561. Only automatic display default raised20m→24m; explicit budgets and source/edit defaults untouched. Units are deterministic algorithm work, not tokens/time/cost."
+    }
+  ],
+  "checks": {
+    "typescript": "passed",
+    "affected_Node": {
+      "executed": 56,
+      "passed": 56,
+      "failed": 0,
+      "skipped": 0,
+      "at_tree": "257bb03e89e31f50f140bef1dbc481826708885c"
+    },
+    "final_direction_guard": {
+      "executed": 1,
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "at_tree": "d9960b3df6a71a4518e3c420c04ce9935b4f9a48"
+    },
+    "browser": {
+      "status": "pending",
+      "run_id": 44030039629,
+      "required_artifacts": [
+        "mixed42-6mi-before.jpg",
+        "mixed42-1mi-after.jpg",
+        "mixed42-1mi-after-390.jpg",
+        "mixed42-automatic.png"
+      ]
+    },
+    "prior_exact_CI": {
+      "head_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
+      "run_id": 44007593280,
+      "check": "success",
+      "browser": "success",
+      "world_random": "success"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
+    "head_sha": "861ce7d4085ff10000a09bcc506f99c058c56a69",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "base_cases": 429,
+        "head_cases": 429,
+        "case": "GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes atomically",
+        "scenario_or_risk": "Extend existing real-map lifecycle through native growth, preservation of34 stored paths/ports, full46-path display, unchanged accepted source/Undo and repeat JSON import.",
+        "reuse_or_new_reason": "Reuse expensive actual-world setup and existing validator/history witness; no duplicate generated-world test or new seed sweep."
+      },
+      {
+        "suite": "Browser",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "case": "HX059-mixed-growth-retained-paths-PNG",
+        "scenario_or_risk": "Native-generated mixed fixture in actual UI, new river12parts, source-only JSON,1500/390 screenshots and screen/PNG complete river+road signature equality.",
+        "reuse_or_new_reason": "Distinct mixed automatic-scope requirement, extending the same smoke runner/actual saved map; needed because prior ordinary/refined success did not exercise retained fractional seam."
+      }
+    ],
+    "source": "git diff ab8484b...861ce7d4085ff10000a09bcc506f99c058c56a69; logical Node declaration and explicit Browser scenario ID; helpers/files/commits are not test cases."
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "criterion_ids": [
+      "S01-C02",
+      "S01-C04",
+      "S02-C02",
+      "S03-C05",
+      "S04-C04"
+    ],
+    "before_grade": null,
+    "after_grade": null,
+    "delta": null,
+    "status": "partial_programmer_evidence_unverified",
+    "awarded_points": false
+  },
+  "remaining": [
+    "Busy/cancel/stale display preparation and fallback camera remain incomplete.",
+    "Full F1 shore/visible-width bank contact, ford/ferry/F4F5, all mode/style/orientation and native6 invariants still need complete exact-SHA acceptance evidence.",
+    "The bounded routing may refuse no-fit/capacity/conflicting saved ports. It must not silently replace old choices.",
+    "Independent fresh reviewer and score_assessment1.2 then specific owner publication approval."
+  ],
+  "implementation_complete": false,
+  "review_ready": false,
+  "release_authorized": false,
+  "main_changed": false
+}
