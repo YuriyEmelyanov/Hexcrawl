@@ -12,6 +12,7 @@ import {prepareRefinementMouths} from './geometryRefinementMouths.ts';
 import {prepareRefinementPoiRequests} from './geometryRefinementPoiSource.ts';
 import {prepareRefinementPois} from './geometryRefinementPois.ts';
 import {prepareRefinementRoads} from './geometryRefinementRoads.ts';
+import {retainRefinementRivers} from './geometryRefinementRetention.ts';
 type SourceMap=DetailGeographyMap&Readonly<{rivers:readonly EditableRiver[];roads:readonly EditableRoad[];crossings:readonly EditableCrossing[]}>;
 type RiverPlan=Extract<ReturnType<typeof prepareRefinementMouths>,{status:'prepared'}>;
 export function prepareRefinementGeographyPreview(input:Readonly<{map:SourceMap;liveRivers:readonly DetailLiveRiver[];riverPlan:RiverPlan;marks:Parameters<typeof normalizeRefinementRiverSource>[0]['marks'];origin:WorldPoint;landCells:readonly DetailCell[];lockedPoiIds?:ReadonlySet<string>;searchWorkBudget?:number;prepareWorkBudget?:number;expectedSourceFingerprint?:string;cancelled?:()=>boolean}>,sharedBudget?:ReturnType<typeof createRefinementWorkBudget>){
@@ -55,13 +56,16 @@ export function prepareRefinementGeographyPreview(input:Readonly<{map:SourceMap;
 
 /** One bounded unmounted preparation from supplied accepted hydrology to roads.
  * Hydrology construction and renderer-owned lake contour creation are inputs. */
-export function prepareRefinementGeographyFromSource(input:Omit<Parameters<typeof prepareRefinementGeographyPreview>[0],'riverPlan'>&Readonly<{riverInput:Parameters<typeof prepareRefinementMouths>[0];riverContext:Parameters<typeof prepareRefinementMouths>[1];widths:Parameters<typeof prepareRefinementMouths>[2];lakeInputs:Parameters<typeof prepareRefinementMouths>[3]}>){
+export function prepareRefinementGeographyFromSource(input:Omit<Parameters<typeof prepareRefinementGeographyPreview>[0],'riverPlan'>&Readonly<{riverInput:Parameters<typeof prepareRefinementMouths>[0];riverContext:Parameters<typeof prepareRefinementMouths>[1];widths:Parameters<typeof prepareRefinementMouths>[2];lakeInputs:Parameters<typeof prepareRefinementMouths>[3];retainedRivers?:RiverPlan}>){
  let budget:ReturnType<typeof createRefinementWorkBudget>|undefined;
  try{
   budget=createRefinementWorkBudget(input.prepareWorkBudget??20000000,input.cancelled);budget.enter('river_mouth');
   budget.reserve({rivers:input.riverInput.rivers,cells:input.riverInput.cells,marks:{rapids:[...input.riverInput.marks.rapids],waterfalls:[...input.riverInput.marks.waterfalls]},candidates:input.riverContext.candidates,hydrology:input.riverContext.hydrology.network,lakes:input.lakeInputs,widths:[...input.widths]});
   const plan=prepareRefinementMouths({...input.riverInput,consumeWork:budget.charge},input.riverContext,input.widths,input.lakeInputs);
   if(plan.status==='error')return Object.freeze({...plan,stage:'river_mouth',workBudget:budget.snapshot(),readyForApplication:false as const});
-  return prepareRefinementGeographyPreview({...input,riverPlan:plan},budget);
+  if(input.retainedRivers)budget.enter('retained_rivers');
+  const retained=input.retainedRivers?retainRefinementRivers(input.retainedRivers,plan,input.widths,input.riverInput,budget.charge):plan;
+  if(retained.status==='error')return Object.freeze({...retained,stage:'retained_rivers',readyForApplication:false as const});
+  return prepareRefinementGeographyPreview({...input,riverPlan:retained},budget);
  }catch(error){return Object.freeze({status:'error' as const,code:'geography_conflict' as const,stage:'river_mouth',refs:Object.freeze([error instanceof Error?error.message:'invalid_geography_input']),...(budget?{workBudget:budget.snapshot()}:{}),completeGeometryPlan:false as const,readyForApplication:false as const});}
 }

@@ -1231,7 +1231,7 @@ function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuation
  * Every dependent layer is prepared before the controller replaces the scene. */
 function prepareAutomaticOneMileScene(map:MapSnapshot):Detail1State {
  checkedRiverMap(map);
- const plan=prepareGeometryPlan(geometryPlanInput(map));
+ const plan=prepareGeometryPlan({...geometryPlanInput(map),scopePolicy:'automatic_presentation'});
  if(plan.status==='error')throw Error(`${plan.stage}: ${plan.refs.join(', ')}`);
  let state=plan.candidateState;
  if(!state){

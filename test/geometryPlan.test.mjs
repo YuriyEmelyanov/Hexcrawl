@@ -88,6 +88,24 @@ test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes
  const bad=copy(g);bad.riverPlan.mouths[0].lakeId=999999;assert.throws(()=>parseGeometryRefinement(bad,parseDetail1StateV11));
  const missing=copy(g);missing.riverPlan.mouths=missing.riverPlan.mouths.filter(m=>m.sourceNodeKey!=='72.746,-70');assert.throws(()=>parseGeometryRefinement(missing,parseDetail1StateV11),/missing through-lake mouths/);
  const hidden=copy(missing);hidden.riverPlan.paintWater.capsules=hidden.riverPlan.paintWater.capsules.filter(c=>c.sourceEdgeKey!=='72.746,-70|72.746,-98');assert.throws(()=>parseGeometryRefinement(hidden,parseDetail1StateV11),/paint water source correspondence/);
+ // F-R02/07: continue that same real map after accepting refinement. One
+ // native generator action adds an ordinary river at a fractional old port.
+ // Extend this witness rather than duplicating its map/import/history setup.
+ assert.equal(h.render().switchFineStep(6),true);
+ h.render().generateAt(h.render().candidateHexes[0]);
+ assert.equal(h.render().regions.length,7);assert.equal(h.render().rivers.length,5);
+ const grown=h.render().captureDocument().map,retained=grown.physicalGrid.geometryRefinement,beforeView=JSON.stringify(grown),history=h.render().undoHistory.length;
+ const input=h.geometry.geometryPlanInput(grown),defaultPlan=prepareGeometryPlan(input);
+ assert.equal(defaultPlan.status,'error','ordinary accepted edit still cannot acquire a new scope');
+ assert.equal(h.render().switchFineStep(1),true,h.render().automaticFineError);
+ const full=h.render().fineDisplay.geometryRefinement;
+ assert.equal(full.riverPlan.paths.length,46);assert.equal(retained.riverPlan.paths.length,34);
+ for(const path of retained.riverPlan.paths)assert.deepEqual(full.riverPlan.paths.find(p=>p.riverId===path.riverId&&p.sourceEdgeKey===path.sourceEdgeKey),path);
+ for(const p of retained.riverPlan.ports){const n=full.riverPlan.ports.find(n=>n.sourceKey===p.sourceKey);assert.deepEqual([n.nodeKey,n.point,n.location],[p.nodeKey,p.point,p.location]);}
+ assert.equal(JSON.stringify(h.render().captureDocument().map),beforeView);assert.equal(h.render().undoHistory.length,history);
+ const mixedSave=h.render().createSaveData();await h.render().handleImportJson({target:{files:[{text:JSON.stringify(mixedSave)}],value:'x'}});
+ assert.deepEqual(h.render().fineDisplay.geometryRefinement.riverPlan.paths,full.riverPlan.paths,'same accepted mixed JSON derives identical full paths');
+ assert.deepEqual(h.render().captureDocument().map.physicalGrid.geometryRefinement,retained,'view/import never replace the stored scoped plan');
 });
 const reverseKeys=value=>Array.isArray(value)?value.map(reverseKeys):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).reverse().map(([k,v])=>[k,reverseKeys(v)])):value;
 let deltaFixture;

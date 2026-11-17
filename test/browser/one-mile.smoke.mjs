@@ -25,6 +25,12 @@ for(const river of fixture.map.rivers){const name=fixture.map.toponyms.names[`ri
 // Validate fixture edits before launching a browser; rivers are toponyms, not editorNames.
 await h.render().handleImportJson({target:{files:[{text:JSON.stringify(fixture)}],value:'x'}});assert.equal(h.render().createSaveData().version,15);
 assert.equal(h.render().switchFineStep(1),true,h.render().editError);const oracle=fineEvidenceSamples(h,h.render().fineDisplay);
+// Same real world continued once through the production generator, not a
+// hand-drawn outside river. Its saved scoped plan still owns the old34 paths.
+const mixedHarness=createGenerationHarness(42);mixedHarness.render();mixedHarness.guardRandom();mixedHarness.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});mixedHarness.injectFunction('readTextFile',async f=>f.text);
+await mixedHarness.render().handleImportJson({target:{files:[{text:await fs.readFile(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8')}],value:'x'}});
+const mixedPreview=mixedHarness.render().previewGeometryRefinement();assert.ok(mixedPreview);assert.equal(mixedHarness.render().applyGeometryRefinementPreview(mixedPreview),true);mixedHarness.render();mixedHarness.render().generateAt(mixedHarness.render().candidateHexes[0]);
+const mixedFixture=structuredClone(mixedHarness.render().createSaveData());assert.equal(mixedFixture.map.rivers.length,5);assert.equal(mixedFixture.map.physicalGrid.geometryRefinement.riverPlan.paths.length,34);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4195','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
 let browser,page,baselineServer,baselineDir;const errors=[],alerts=[];
 const manifest={source_head_sha:null,checkout_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),checkout_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),fixture:'road-entry-zigzags.json',screenshots:[],cases:[]};
@@ -67,6 +73,20 @@ try{
  await page.locator('input[type=file]').setInputFiles({name:'classic42-source-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicSource))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await classicSignature(),classicVisible);assert.deepEqual((await snap()).map,classicSource.map);
  manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390],sourceWrites:false});
+ await page.setViewportSize({width:1500,height:1000});
+ await page.locator('input[type=file]').setInputFiles({name:'classic42-mixed-growth.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(mixedFixture))});
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ await step.selectOption('6');const mixedSource=await snap();await shot('mixed42-6mi-before.jpg');
+ await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();assert.equal(await page.locator('[data-fine-scene-error]').count(),0);
+ assert.equal(await page.locator('[data-refined-river="5"]').count(),12,'new ordinary reach is in the complete edge scene');
+ const mixedVisible=await classicSignature();await shot('mixed42-1mi-after.jpg');assert.deepEqual((await snap()).map,mixedSource.map);
+ await page.evaluate(()=>window.__oneSvg=null);const [mixedPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await mixedPng.path(),new URL('mixed42-automatic.png',out));
+ const mixedExport=await page.evaluate(()=>{const el=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml').querySelector('[data-fine-world]');return {rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])};});
+ assert.deepEqual(mixedExport,mixedVisible,'mixed rivers and roads in PNG match the displayed scene');
+ await page.setViewportSize({width:390,height:1000});await shot('mixed42-1mi-after-390.jpg');
+ await page.locator('input[type=file]').setInputFiles({name:'mixed-source-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(mixedSource))});await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ assert.deepEqual(await classicSignature(),mixedVisible);assert.deepEqual((await snap()).map,mixedSource.map);
+ manifest.cases.push({id:'HX059-mixed-growth-retained-paths-PNG',status:'pass',retainedPaths:34,newPaths:12,viewports:[1500,390],sourceWrites:false});
  await step.selectOption('6');await page.setViewportSize({width:1500,height:1000});
  await page.locator('input[type=file]').setInputFiles({name:'one-mile.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});await step.waitFor();await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  assert.match(await page.locator('details.export-menu small').textContent(),/JSON v15/);await shot('desktop-6.jpg');
