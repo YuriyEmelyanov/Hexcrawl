@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-17T03:06:45.378Z",
+  "updated_at": "2026-11-17T06:35:37.736Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -376,9 +376,9 @@
         "На карте и PNG маршрут реки совпадает; стыки, озёра, переправы и речные объекты проверены по чистовой спецификации.",
         "Правила перехода для существующих карт, обычной/уточнённой геометрии и связанных объектов закреплены в спецификации и интервью; прежние ответы владельца не спрашиваются повторно."
       ],
-      "execution_state": "исправлено исчезающее сообщение ошибки подготовки; смешанные карты и полная F1 ещё в разработке",
+      "execution_state": "смешанная карта: сохранены34 старых русла и подготовлены12 новых; UI/PNG/JSON и CI прошли, полная F1 ещё в разработке",
       "next_role": "programmer",
-      "next_step": "Проверить Check44007593280; продолжить смешанную карту с сохранёнными маршрутами, затем оставшуюся F1 приёмку.",
+      "next_step": "HX059-NEXT-02: подготовка с отменой/защитой от устаревшего результата и восстановление камеры; затем полная F1 и независимое ревью.",
       "related_task_ids": [
         "HX-BL-055",
         "HX-BL-056",
@@ -397,35 +397,35 @@
       "score_forecast": "unknown; оценить критерии1.2 при спецификации без начисления",
       "forecast": {
         "task_id": "HX-BL-059",
-        "completed_recorded_runs": 6,
+        "completed_recorded_runs": 7,
         "remaining_runs": {
-          "min": 3,
-          "max": 6
+          "min": 2,
+          "max": 5
         },
         "remaining_active_hours": {
-          "min": 4,
-          "max": 9.5
+          "min": 3,
+          "max": 8
         },
         "remaining_calendar_hours_excluding_owner_wait": {
-          "min": 9,
-          "max": 18
+          "min": 6,
+          "max": 15
         },
         "confidence": "low",
         "history_reset": false,
-        "basis": "This additional run closes a confirmed import-error defect and observes prior exact CI success; mixed-scene implementation remains the main unresolved work. Do not reduce remaining role runs merely for a small fix.",
+        "basis": "Seventh recorded run closes the mixed retained/unrefined real-map scenario with old34+new12 paths and exact-tree UI/PNG/429-node CI. Remaining2–5 runs include lifecycle/camera implementation, complete final matrix, independent review/fixes and release after explicit approval; original D1 total8–12 runs preserved, updated total9–12. Forecast does not reduce acceptance scope.",
         "history_refs": [
           "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
           "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
           "agent-work/results/2026-11-16-owner-RE-Q01-auto-1794857630007.json",
           "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
         ],
-        "owner_publication_wait": "unknown; not included"
+        "owner_publication_wait": "unknown; excluded"
       },
-      "updated_at": "2026-11-17T03:06:45.378Z",
+      "updated_at": "2026-11-17T06:35:37.736Z",
       "queue_priority": 1,
       "selection_ref": "agent-work/decisions/owner-decision-2026-11-16-pause-biomes-next-river-edges.json",
       "draft_spec_version": "D1",
-      "handoff_ref": "agent-work/handoffs/2026-11-17T0600-programmer-fine-error-continue.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-17T0900-programmer-mixed-scene-continue.json",
       "ui_preview": {
         "ref": "agent-work/previews/HX-BL-059-D1/proposal.svg",
         "version": "P1",
@@ -484,6 +484,33 @@
             "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
           ],
           "owner_publication_wait": "unknown; not included"
+        },
+        {
+          "source_run_id": "2026-11-17T0600-programmer-fine-error",
+          "task_id": "HX-BL-059",
+          "completed_recorded_runs": 6,
+          "remaining_runs": {
+            "min": 3,
+            "max": 6
+          },
+          "remaining_active_hours": {
+            "min": 4,
+            "max": 9.5
+          },
+          "remaining_calendar_hours_excluding_owner_wait": {
+            "min": 9,
+            "max": 18
+          },
+          "confidence": "low",
+          "history_reset": false,
+          "basis": "This additional run closes a confirmed import-error defect and observes prior exact CI success; mixed-scene implementation remains the main unresolved work. Do not reduce remaining role runs merely for a small fix.",
+          "history_refs": [
+            "agent-work/results/2026-11-16T2000-analyst-river-edges-D1.json",
+            "agent-work/results/2026-11-16T2201-interviewer-river-edges-D1.json",
+            "agent-work/results/2026-11-16-owner-RE-Q01-auto-1794857630007.json",
+            "agent-work/results/2026-11-17T0004-analyst-river-edges-F1.json"
+          ],
+          "owner_publication_wait": "unknown; not included"
         }
       ],
       "implementation_complete": false,
@@ -491,17 +518,45 @@
       "branch": "agent/hx-bl-059-auto-river-edges",
       "pr": 505,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/505",
-      "head_sha": "ab8484bee3f2b78d304ded3a17b4e915f2dcd103",
-      "tree_sha": "19c4b092113ba940910c14523f263320db0a69da",
-      "evidence_ref": "agent-work/evidence/HX-BL-059-error-ab8484b/implementation.json",
-      "test_change_summary_ref": "agent-work/evidence/HX-BL-059-automatic-scene-9e5fce3/test-change-summary.json",
+      "head_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
+      "tree_sha": "a608f5d9783a40b2fa0a3be84de624cb7047add4",
+      "evidence_ref": "agent-work/evidence/HX-BL-059-mixed-861ce7d/implementation.json",
+      "test_change_summary_ref": "agent-work/evidence/HX-BL-059-mixed-861ce7d/test-change-summary.json",
       "actual_ui": {
         "kind": "runtime_exact_SHA",
-        "first_shown_head_sha": "f7b47fe554b36f507439aad3ff8c0b781e88efc1",
-        "source_blob_at_current_head": "ad8919677fedffe1d09da01df5d979c6bbf7d561",
-        "evidence_ref": "agent-work/evidence/HX-BL-059-automatic-scene-9e5fce3/implementation.json",
-        "first_scenario_passed": true,
-        "whole_task_accepted": false
+        "head_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
+        "tree_sha": "a608f5d9783a40b2fa0a3be84de624cb7047add4",
+        "artifact_id": 14304803763,
+        "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44030550632/artifacts/14304803763",
+        "artifact_digest": "sha256:3c86fb9c02b83e5e416013dfe2227fd557fa2b1b3aebaa1e921c52a28d5561e0",
+        "files": [
+          "mixed42-6mi-before.jpg",
+          "mixed42-1mi-after.jpg",
+          "mixed42-1mi-after-390.jpg",
+          "mixed42-automatic.png"
+        ],
+        "visually_inspected": true,
+        "presented_in_chat": true,
+        "full_F1_accepted": false,
+        "observation": "Actual mixed map renders old and newly generated edge-aligned rivers, no scene error; exported PNG has same complete river/road signatures as screen; narrow390 screenshot shows accessible controls."
+      },
+      "checks": {
+        "head_sha": "505ef916906f41d937e1f01a9ff3bcfe0592e800",
+        "tree_sha": "a608f5d9783a40b2fa0a3be84de624cb7047add4",
+        "run_id": 44030550632,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44030550632",
+        "check": "success",
+        "browser": "success",
+        "world_random": "success",
+        "Node": {
+          "executed": 429,
+          "passed": 429,
+          "failed": 0,
+          "skipped": 0
+        },
+        "typecheck": "success",
+        "build": "success",
+        "independent_acceptance": false
       }
     }
   ],
