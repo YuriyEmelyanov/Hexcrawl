@@ -16408,8 +16408,8 @@ export function App() {
           if(documentRevision.current!==job.revision){cancelAutomaticFinePreparation();return;}
           cancelAutomaticFinePreparation();
           try{validateOneMileMap(map,next);showFineScene(1,next);}catch(error){fail(error);}
-        },error=>{if(automaticFineJob.current!==job||documentRevision.current!==job.revision)return;cancelAutomaticFinePreparation();fail(error);});
-      }).catch(error=>{if(automaticFineJob.current!==job)return;cancelAutomaticFinePreparation();fail(error);});
+        },error=>{if(automaticFineJob.current!==job)return;cancelAutomaticFinePreparation();if(documentRevision.current===job.revision)fail(error);});
+      }).catch(error=>{if(automaticFineJob.current!==job)return;cancelAutomaticFinePreparation();if(documentRevision.current===job.revision)fail(error);});
       return true;
     }
     try{return showFineScene(step,step===1?prepareAutomaticOneMileScene(captureMap()):{...(state??prepareAutomaticOneMileScene(captureMap())),viewStep:6});}
