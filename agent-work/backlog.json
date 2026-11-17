@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-17T11:24:24.659Z",
+  "updated_at": "2026-11-17T11:35:50.107Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -39,14 +39,14 @@
       "criterion_id": "S07-C01",
       "implementation_authorized": false,
       "release_authorized": false,
-      "execution_state": "на паузе по решению владельца: сначала дизайн, затем дополнительные биомы",
-      "next_role": null,
-      "next_step": "Ожидать явного возобновления владельцем после решения по дизайну. Сохранить интервью/ответы и достигнутый статус.",
+      "execution_state": "ожидает завершения и независимой приёмки HX-BL-060 по подтверждённому владельцем порядку60→21",
+      "next_role": "business-analyst",
+      "next_step": "После завершённой и независимо принятой HX-BL-060 актуализировать чистовую спецификацию021 и выполнить семь ручных биомов в новом едином рендерере. Дополнительное разрешение на возобновление не требуется; прежние ответы интервью сохраняются. Выпуск — отдельно.",
       "draft_spec_ref": "agent-work/specs/HX-BL-021-new-biomes-D1.md",
       "spec_ref": null,
       "acceptance_ref": null,
       "published_ref": null,
-      "updated_at": "2026-11-17T11:24:24.659Z",
+      "updated_at": "2026-11-17T11:35:50.107Z",
       "handoff_ref": "agent-work/handoffs/2026-11-16-manual-interviewer-biomes-Q02-closure-1794807826291-analyst.json",
       "draft_spec_version": "D1",
       "interview_status": "interview_completed",
@@ -75,8 +75,7 @@
         "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-01.json",
         "agent-work/interviews/HX-BL-021/NEW-BIOMES/owner-answers-2026-11-16-02.json"
       ],
-      "paused": true,
-      "pause_ref": "agent-work/decisions/owner-decision-2026-11-16-pause-biomes-next-river-edges.json",
+      "paused": false,
       "owner_design_amendment_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
       "rendering_task_id": "HX-BL-060",
       "related_task_ids": [
@@ -96,7 +95,30 @@
         "На одной карте показаны повторяющиеся соседние гексы каждого нового биома, POI и межбиомные стыки в двух ориентациях и поддерживаемых масштабах.",
         "Существующие ответы интервью о ручном выборе/исключённых биомах/одном PR сохранены; новые автоматические правила и игровые механики не внесены."
       ],
-      "relationship_note": "HX-BL-060 внедряет общий дизайн для существующих биомов и удаляет три переключаемых представления в пользу одного. HX-BL-021 добавляет семь ручных биомов в тот же каталог/рендерер. Не создавать круговую зависимость: базовый выпуск060 не требует включения новых biomeId;021 использует готовый контракт060. Прежняя пауза021 и приоритет активной059 этим пополнением бэклога не снимаются."
+      "relationship_note": "Порядок подтверждён владельцем17.11.2026: сначала HX-BL-060, затем HX-BL-021. Прежняя неопределённая пауза заменена ожиданием завершённой и независимо принятой060.021 добавляет семь ручных биомов в единый новый рендерер.060 не зависит от021. Приоритет активной059/чужие claims и отдельное разрешение публикации сохранены.",
+      "depends_on": [
+        "HX-BL-060"
+      ],
+      "predecessor_acceptance": {
+        "task_id": "HX-BL-060",
+        "accepted_statuses": [
+          "разработана",
+          "опубликована"
+        ],
+        "reason": "Сначала завершённый и независимо принятый единый вид060, затем новые биомы021 в этом же рендерере."
+      },
+      "previous_pause_ref": "agent-work/decisions/owner-decision-2026-11-16-pause-biomes-next-river-edges.json",
+      "pause_superseded_by": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
+      "owner_execution_order": {
+        "owner_quote": "Ок, сначала60потом21.",
+        "recorded_at": "2026-11-17T11:35:50.107Z",
+        "task_sequence": [
+          "HX-BL-060",
+          "HX-BL-021"
+        ],
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
+        "publication_authorized": false
+      }
     },
     {
       "task_id": "HX-BL-055",
@@ -661,7 +683,7 @@
       "related_task_ids": [
         "HX-BL-021"
       ],
-      "relationship_note": "060 — общий внешний вид существующих биомов;021 — семь новых ручных биомов. Общий контракт и каталог используются повторно, без двух систем отрисовки и круговой зависимости.",
+      "relationship_note": "Владелец подтвердил сначала060, затем021.060 заменяет отображение всех существующих биомов; после её завершения и независимой приёмки021 добавляет семь ручных биомов в тот же новый вид.060 не зависит от021.",
       "draft_spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-D1.md",
       "spec_ref": null,
       "acceptance_ref": null,
@@ -686,7 +708,20 @@
         "poi_circle_radius_fraction": 0.425,
         "source_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json"
       },
-      "updated_at": "2026-11-17T11:24:24.659Z"
+      "updated_at": "2026-11-17T11:35:50.107Z",
+      "precedes_task_ids": [
+        "HX-BL-021"
+      ],
+      "owner_execution_order": {
+        "owner_quote": "Ок, сначала60потом21.",
+        "recorded_at": "2026-11-17T11:35:50.107Z",
+        "task_sequence": [
+          "HX-BL-060",
+          "HX-BL-021"
+        ],
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
+        "publication_authorized": false
+      }
     }
   ],
   "retired_pr_packages": {
