@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "base_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
-  "head_sha": "cc6e7d6ec8ad2ad839da6fc66b0e8d262d913edc",
+  "head_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd",
   "scope": "This run incremental diff, not cumulative PR growth.",
   "source": "git diff eee794fd..exact final source tree; logical node:test registrations (locale loop expanded) and named browser manifest cases, not lines/files/assertions.",
   "suites": [
@@ -38,7 +38,8 @@
       "id": "P04 native6",
       "modified": 1,
       "permanent_case_growth": 0,
-      "purpose": "Current PR opt-in baseline on published main7c0eb9f; normalize export-menu/cursor/focus; no threshold relaxation or historic UI contract."
+      "purpose": "Current PR baseline on published main7c0eb9f. Compare actual native6 SVG map and whole exported PNG at unchanged raster thresholds. Keep unmasked wholeUI raster separately; responsive chevron can shift1px. Literal double attrs avoid SVGPointList rounding.",
+      "HTML_overlay_exclusion": "Only .side-panel-toggle is hidden during isolated map element screenshots; no SVG map object/pixel masked. WholeUI captures unchanged."
     }
   ],
   "local_runs": [
@@ -54,5 +55,25 @@
       "skipped": 0
     }
   ],
-  "CI_pending": true
+  "CI_pending": false,
+  "CI_execution": {
+    "Node": {
+      "executed": 429,
+      "passed": 429,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "scripts": 9,
+      "status": "passed",
+      "one_mile_named_cases": 11,
+      "not_summed_with_node": true
+    },
+    "world_random": {
+      "suite": "existing browser RNG regression",
+      "status": "passed",
+      "new_seed_sweep": false
+    },
+    "run_id": 44119549919
+  }
 }
