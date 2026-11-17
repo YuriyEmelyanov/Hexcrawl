@@ -144,7 +144,7 @@ try{
   for(let i=0;i<x.data.length;i+=4){let diff=0;for(let j=0;j<4;j++)diff=Math.max(diff,Math.abs(x.data[i+j]-y.data[i+j]));maxDelta=Math.max(maxDelta,diff);if(diff)changed++;}
   return {maxDelta,changedFraction:changed/(x.width*x.height)};
  },[before.toString('base64'),after.toString('base64')]);
- for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>document.fonts.ready);await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
+ for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.evaluate(()=>{document.querySelector('details.export-menu')?.removeAttribute('open');return document.fonts.ready;});await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
  const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});
  // Chromium can vary edge antialiasing between the two running builds.
  // Keep this opt-in diagnostic sensitive to actual changed objects/colors.
