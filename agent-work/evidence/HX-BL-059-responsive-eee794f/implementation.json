@@ -31,8 +31,21 @@
     },
     "CI": {
       "run_id": 44080148971,
-      "status": "in_progress",
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44080148971"
+      "status": "success",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44080148971",
+      "check": "success",
+      "world_random": "success",
+      "browser": "success",
+      "Node": {
+        "executed": 429,
+        "passed": 429,
+        "failed": 0,
+        "skipped": 0
+      },
+      "typecheck": "passed",
+      "build": "passed",
+      "source_head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+      "checkout_tree": "f2b8c33edcb865ea0dc00c4b353c554911c1d972"
     }
   },
   "test_change_summary": {
@@ -40,7 +53,7 @@
     "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
     "added": 1,
     "removed": 0,
-    "modified": 7,
+    "modified": 6,
     "suites": [
       {
         "suite": "Node",
@@ -55,7 +68,7 @@
         "suite": "Browser",
         "added": 1,
         "removed": 0,
-        "modified": 7,
+        "modified": 6,
         "new_case": "HX059-worker-busy-cancel-late-reply",
         "scenario_or_risk": "Hold a REAL completed Worker reply; old scene and localized1500/390 UI stay responsive, PNG disabled; cancel terminates and rejects already-in-flight reply; retry through existing real-map case.",
         "modified_cases": [
@@ -63,11 +76,11 @@
           "HX059-mixed-growth-retained-paths-PNG",
           "UI-grid-local-read",
           "UI-pinned-editor-exit-and-undo",
-          "UI-ordinary-candidate-unit",
           "G209-AUTO-source-edit-error-busy-RU-EN",
           "GEO2-UI-preview-apply-history-roundtrip-PNG"
         ],
-        "reuse_or_new_reason": "Existing import/generation busy guards did not exercise the actual scale Worker or late reply. One new logical guard case; existing cases only await completion of the now asynchronous scale handler, preserving their assertions."
+        "reuse_or_new_reason": "Existing import/generation busy guards did not exercise the actual scale Worker or late reply. One new logical guard case; existing cases only await completion of the now asynchronous scale handler, preserving their assertions.",
+        "shared_cleanup": "The post-generation fixture restoration also awaits the new asynchronous preparation; cleanup is not counted as another logical test case."
       }
     ],
     "source": "git diff exact base198ce6a to treef2b8c33; explicit manifest case IDs; shared timing/locale profiles are not counted as new cases."
@@ -77,12 +90,49 @@
     "status": "programmer_partial_unverified",
     "criteria": [
       {
-        "criterion_id": "S03-C05",
+        "criterion_id": "S01-C02",
+        "evidence": "Same pure river topology/shore/fullness preparation is reused; actual ordinary/mixed regressions and final browser matrix retained; full width/shore acceptance pending.",
         "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
         "before_grade": null,
         "after_grade": null,
         "delta": null,
-        "evidence": "Detached preparation lifecycle, source/history preservation and error/cancel/stale guards."
+        "status": "partial_unverified_no_points"
+      },
+      {
+        "criterion_id": "S01-C04",
+        "evidence": "Coupled road/crossing preparation remains identical; all crossing-kind final matrix pending.",
+        "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+        "before_grade": null,
+        "after_grade": null,
+        "delta": null,
+        "status": "partial_unverified_no_points"
+      },
+      {
+        "criterion_id": "S02-C02",
+        "evidence": "Worker receives detached input; cancel/stale guards prevent replacing accepted source/IDs/authored layer.",
+        "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+        "before_grade": null,
+        "after_grade": null,
+        "delta": null,
+        "status": "partial_unverified_no_points"
+      },
+      {
+        "criterion_id": "S03-C05",
+        "evidence": "Cancel terminates computation; no document transaction is accepted by scale selection; source/import/Undo regressions pass.",
+        "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+        "before_grade": null,
+        "after_grade": null,
+        "delta": null,
+        "status": "partial_unverified_no_points"
+      },
+      {
+        "criterion_id": "S04-C04",
+        "evidence": "Exact-source-head/checkout-tree manifest verified; real desktop/narrow RU/EN cancel/late-reply and ordinary/mixed UI/PNG/JSON cases passed. Full F1 matrix still pending.",
+        "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+        "before_grade": null,
+        "after_grade": null,
+        "delta": null,
+        "status": "partial_unverified_no_points"
       }
     ],
     "awarded_points": false
@@ -95,5 +145,60 @@
   "implementation_complete": false,
   "review_ready": false,
   "release_authorized": false,
-  "main_changed": false
+  "main_changed": false,
+  "actual_ui": {
+    "kind": "runtime_exact_SHA",
+    "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
+    "tree_sha": "f2b8c33edcb865ea0dc00c4b353c554911c1d972",
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44080148971/artifacts/14326339847",
+    "artifact_digest": "sha256:276591a2f798832a9a0df3cf498d5a2a84fbedb594c078cb105b332cc4707d04",
+    "files": [
+      "automatic-preparing-1500.jpg",
+      "automatic-preparing-390-ru.jpg",
+      "classic42-1mi-after.jpg"
+    ],
+    "cases": [
+      {
+        "id": "HX059-worker-busy-cancel-late-reply",
+        "status": "pass",
+        "viewports": [
+          1500,
+          390
+        ],
+        "locales": [
+          "en",
+          "ru"
+        ],
+        "sourceWrites": false
+      },
+      {
+        "id": "HX059-classic42-automatic-scene-save-PNG",
+        "status": "pass",
+        "sourcePaths": 34,
+        "crossings": 2,
+        "viewports": [
+          1500,
+          390
+        ],
+        "sourceWrites": false,
+        "cameraSourceScaleStable": true
+      },
+      {
+        "id": "HX059-mixed-growth-retained-paths-PNG",
+        "status": "pass",
+        "retainedPaths": 34,
+        "newPaths": 12,
+        "viewports": [
+          1500,
+          390
+        ],
+        "sourceWrites": false
+      }
+    ],
+    "visually_inspected": true,
+    "presented_in_chat": true,
+    "method": "Real module Worker reply held after computation only for deterministic cancel/late-callback and responsive captures, then released; successful retry uses the real worker.",
+    "performance_measurement": false,
+    "full_F1_accepted": false
+  }
 }
