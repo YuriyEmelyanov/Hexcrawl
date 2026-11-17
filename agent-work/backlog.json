@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-17T16:09:03.201Z",
+  "updated_at": "2026-11-17T18:11:55.259Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -400,7 +400,7 @@
     {
       "task_id": "HX-BL-059",
       "title": "Реки по рёбрам гексов на 1-мильной карте",
-      "status": "спецификация",
+      "status": "разработана",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-16-one-mile-rivers-on-edges.json"
@@ -418,9 +418,9 @@
         "На карте и PNG маршрут реки совпадает; стыки, озёра, переправы и речные объекты проверены по чистовой спецификации.",
         "Правила перехода для существующих карт, обычной/уточнённой геометрии и связанных объектов закреплены в спецификации и интервью; прежние ответы владельца не спрашиваются повторно."
       ],
-      "execution_state": "Цельный PR505 готов к независимой приёмке на58b91df; полный CI429/browser/RNG прошёл, видимый берег и дорожные входы согласованы; не опубликован.",
-      "next_role": "reviewer",
-      "next_step": "Независимо проверить весь пакет PR505/58b91df по F1 AC01–09, сохранить score_assessment1.2 и заключение; публикация после отдельного решения владельца.",
+      "execution_state": "Независимо принят PR505/58b91df; ожидает отдельного разрешения публикации. Текущий UI1↔6; ограниченный корпус и непроверенные12/24 явно отмечены.",
+      "next_role": "programmer",
+      "next_step": "После явного разрешения владельца выпустить только принятый PR505/58b91df; до этого без merge/deploy. Готовый независимый этап очереди — аналитик HX-BL-060.",
       "related_task_ids": [
         "HX-BL-055",
         "HX-BL-056",
@@ -429,7 +429,7 @@
       "relationship_note": "HX-BL-055 уже опубликована и касалась только толщины.059 отдельно закрепляет прохождение русла по рёбрам1mile; не переоткрывать старые PR автоматически и не менять действующие claims.",
       "draft_spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-D1.md",
       "spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-F1.md",
-      "acceptance_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-F1.acceptance.json",
+      "acceptance_ref": "agent-work/evidence/HX-BL-059-review-58b91df/acceptance.json",
       "published_ref": null,
       "ready_for_development": true,
       "interview_status": "interview_completed",
@@ -458,11 +458,11 @@
         "basis": "Tenth recorded run completes coherent implementation evidence, required visible-bank reclosure and readable failures. Remaining independent acceptance, potential corrections/new-SHA review and separately authorized release. Original D1 total8–12 retained; observed updated total12–14. Tests/CI attempts are not counted as separate role runs. No acceptance scope removed.",
         "owner_publication_wait": "unknown; excluded"
       },
-      "updated_at": "2026-11-17T16:09:03.201Z",
+      "updated_at": "2026-11-17T18:11:55.259Z",
       "queue_priority": 1,
       "selection_ref": "agent-work/decisions/owner-decision-2026-11-16-pause-biomes-next-river-edges.json",
       "draft_spec_version": "D1",
-      "handoff_ref": "agent-work/handoffs/2026-11-17T1800-programmer-F1-acceptance-reviewer.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-17T2103-reviewer-PR505-release-gate-and-next.json",
       "ui_preview": {
         "ref": "agent-work/previews/HX-BL-059-D1/proposal.svg",
         "version": "P1",
@@ -632,7 +632,7 @@
         }
       ],
       "implementation_complete": true,
-      "review_ready": true,
+      "review_ready": false,
       "branch": "agent/hx-bl-059-auto-river-edges",
       "pr": 505,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/505",
@@ -851,7 +851,11 @@
         "artifact_digest": "sha256:157f03aa21c3afb660823e97efa4059be85f4c2c89cfb102f2218ed3c94178c6"
       },
       "acceptance_trace_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/acceptance-trace.json",
-      "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/programmer-score-evidence1.2.json"
+      "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/programmer-score-evidence1.2.json",
+      "independent_review_status": "accepted_bounded_F1",
+      "review_ref": "agent-work/evidence/HX-BL-059-review-58b91df/review.json",
+      "score_assessment_ref": "agent-work/evidence/HX-BL-059-review-58b91df/score-assessment1.2.json",
+      "accepted_sha": "58b91dfcae3420c95ebda9ab9b54c7c4575531bd"
     },
     {
       "task_id": "HX-BL-060",
@@ -865,9 +869,9 @@
       "approved_at": "2026-11-17T11:24:24.659Z",
       "implementation_authorized": false,
       "release_authorized": false,
-      "execution_state": "добавлена владельцем в бэклог; требования дизайна зафиксированы; нужна чистовая спецификация по действующему процессу",
+      "execution_state": "Готова к аналитическому этапу после независимой приёмки HX-BL-059; утверждён порядок060→021.",
       "next_role": "business-analyst",
-      "next_step": "После текущей занятой очереди: восстановить исходники, закрепить manifest всех существующих биомов, перенести D1 в чистовую спецификацию; интервью только по действительно незакрытым развилкам. Принятые ответы и стиль не спрашивать повторно. Этот запуск ограничен пополнением бэклога.",
+      "next_step": "Подготовить черновик единого тайлового отображения по утверждённым материалам владельца, показать desktop/narrow предложение и передать интервьюеру.",
       "requirements": [
         "Оставить одно представление биомов: согласованный цвет + прозрачный PNG + смещённый межбиомный градиент160% со сглаженными углами. Удалить режимы биомов Эмоджи/Цвет и переключатель трёх режимов из RU/EN интерфейса.",
         "Заменить старые рисунки всех существующих биомов, включая озеро/море, выбранными гравюрами; новые семь biomeId добавляются в HX-BL-021 через тот же реестр. Отдельные настройки значков POI не удалять этим поручением.",
