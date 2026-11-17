@@ -45,6 +45,29 @@ try{
  let locale='en';
  const lang=async next=>{if(locale===next)return;const show=button(locale==='en'?'Show language and social buttons':'Показать кнопки языка и соцсетей');if(await show.count())await show.click();await button(locale==='en'?'Переключить на русский':'Switch to English').click();locale=next;};
  const step=page.locator('[data-fine-step]');
+ // HX-BL-059 AC05/07/08: replace the old classic42 manual-activation witness
+ // with the owner's automatic path, on that same saved map and real renderer.
+ await page.locator('input[type=file]').setInputFiles(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url).pathname);
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ const classicSource=await snap();assert.equal(classicSource.map.physicalGrid,undefined);await shot('classic42-6mi-before.jpg');
+ await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
+ assert.equal(await page.getByText('Подробная сетка: предпросмотр готов.',{exact:true}).count(),0);
+ assert.equal(await page.locator('[data-geometry-preview]').count(),0);
+ assert.equal(await page.locator('[data-fine-crossing]').count(),2);
+ assert.ok(await page.locator('[data-refined-river]').count()>0);
+ assert.deepEqual((await snap()).map,classicSource.map);
+ const classicSignature=()=>page.locator('[data-fine-world]').evaluate(el=>({rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])}));
+ const classicVisible=await classicSignature();await shot('classic42-1mi-after.jpg');
+ await page.evaluate(()=>window.__oneSvg=null);const [classicPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await classicPng.path(),new URL('classic42-automatic.png',out));
+ const classicExport=await page.evaluate(()=>{const el=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml').querySelector('[data-fine-world]');return {rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])};});
+ assert.deepEqual(classicExport,classicVisible,'screen and PNG use one complete scene');
+ await step.selectOption('6');await shot('classic42-6mi-after.jpg');assert.deepEqual((await snap()).map,classicSource.map);
+ await step.selectOption('1');assert.deepEqual(await classicSignature(),classicVisible);
+ await page.setViewportSize({width:390,height:1000});await shot('classic42-1mi-after-390.jpg');
+ await page.locator('input[type=file]').setInputFiles({name:'classic42-source-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicSource))});
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await classicSignature(),classicVisible);assert.deepEqual((await snap()).map,classicSource.map);
+ manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390],sourceWrites:false});
+ await step.selectOption('6');await page.setViewportSize({width:1500,height:1000});
  await page.locator('input[type=file]').setInputFiles({name:'one-mile.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});await step.waitFor();await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  assert.match(await page.locator('details.export-menu small').textContent(),/JSON v15/);await shot('desktop-6.jpg');
  const riverPaint=nodes=>nodes.map(n=>['x1','y1','x2','y2','stroke-width'].map(k=>n.getAttribute(k)));
@@ -79,9 +102,9 @@ try{
  assert.ok(pngRaster.maxDelta<=3&&pngRaster.changedFraction<=.001,'AC05 native6 exported PNG unchanged '+JSON.stringify(pngRaster));
  manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles,png:{pixelIdentical:beforePng.equals(afterPng),raster:pngRaster}};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
  await step.selectOption('1');await page.locator('[data-fine-world]').waitFor();
- const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(nodes=>nodes.map(n=>({geometry:['x1','y1','x2','y2'].map(k=>n.getAttribute(k)),width:Number(n.getAttribute('stroke-width')),fullness:Number(n.getAttribute('data-river-fullness'))})));
+ const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(nodes=>nodes.map(n=>({geometry:n.getAttribute('points'),width:Number(n.getAttribute('stroke-width')),fullness:Number(n.getAttribute('data-river-fullness'))})));
  const fineHexWidth=await page.locator('[data-fine-key] polygon').first().evaluate(n=>Math.max(...[...n.points].map(p=>p.x))-Math.min(...[...n.points].map(p=>p.x)));assert.ok(Math.abs(sourceHexWidth/fineHexWidth-6)<1e-9);
- assert.equal(fineRiverPaint.length,sourceRiverPaint.length);for(let i=0;i<fineRiverPaint.length;i++){assert.deepEqual(fineRiverPaint[i].geometry,sourceRiverPaint[i].slice(0,4),'WR01 centerline unchanged');const actual=fineRiverPaint[i].width/fineHexWidth,expected=fineRiverPaint[i].fullness/10;assert.ok(Math.abs(actual-expected)<1e-6,JSON.stringify({message:`F${fineRiverPaint[i].fullness} visible fraction`,actual,expected,width:fineRiverPaint[i].width,fineHexWidth,index:i}));}
+ assert.ok(fineRiverPaint.length);for(let i=0;i<fineRiverPaint.length;i++){assert.ok(fineRiverPaint[i].geometry?.length,'automatic fine river is a prepared edge chain');const actual=fineRiverPaint[i].width/fineHexWidth,expected=fineRiverPaint[i].fullness/10;assert.ok(Math.abs(actual-expected)<1e-6,JSON.stringify({message:`F${fineRiverPaint[i].fullness} visible fraction`,actual,expected,width:fineRiverPaint[i].width,fineHexWidth,index:i}));}
  assert.deepEqual([...new Set(fineRiverPaint.map(r=>r.fullness))].sort(),[1,2,3,4,5],'real map renders every legal fullness');
  manifest.width_projection={sourceHexWidth,fineHexWidth,fractions:[.1,.2,.3,.4,.5],sourceSixUnchanged:true,riverSegments:sourceRiverPaint.length};
  assert.equal(await page.locator('polygon.hex[data-hex-key]').count(),0,'no source-six grid under the fine grid');
@@ -135,29 +158,6 @@ try{
  else {assert.deepEqual(afterGen,beforeGen,'failed ordinary generation is atomic');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'bounded_refusal_no_success_claim'});}
  await checkFineModeCandidates({page,snap,shot,button,manifest});
  await checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture:geometryFixture});
- // Owner's real six-region classic world exposed a through-lake river,
- // unlike the terminal-lake fixture above. Keep it as one bounded scenario.
- await lang('ru');await page.setViewportSize({width:1500,height:1000});
- await page.locator('input[type=file]').setInputFiles(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url).pathname);
- await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
- await step.selectOption('6');await shot('classic42-6mi-before.jpg');
- await step.selectOption('1');
- const fineSetup=page.getByText('Подробная сетка: предпросмотр готов.',{exact:true});await fineSetup.waitFor();
- await fineSetup.locator('..').getByRole('button',{name:'Применить',exact:true}).click();
- await page.waitForFunction(()=>document.querySelector('[data-fine-step]')?.value==='1'&&document.querySelector('[data-fine-world]'));
- const classicBefore=await snap();await shot('classic42-1mi-before.jpg');
- await page.locator('[data-refine-geography]').click();const classicPreview=page.locator('[data-geometry-preview]');await classicPreview.waitFor();
- await classicPreview.getByRole('button',{name:'Применить',exact:true}).click();await classicPreview.waitFor({state:'detached'});
- const classicAccepted=await snap();assert.equal(classicAccepted.map.physicalGrid.geometryRefinement.riverPlan.mouths.length,9);
- assert.deepEqual(classicAccepted.generation,classicBefore.generation);await shot('classic42-1mi-after.jpg');
- await button('Отменить').click();assert.deepEqual((await snap()).map,classicBefore.map);await button('Повторить').click();assert.deepEqual((await snap()).map,classicAccepted.map);
- await page.locator('input[type=file]').setInputFiles({name:'classic42-v16.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicAccepted))});
- await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual((await snap()).map,classicAccepted.map);
- await fs.writeFile(new URL('classic42-accepted.json',out),JSON.stringify(classicAccepted));
- const [classicPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await classicPng.path(),new URL('classic42-accepted.png',out));
- await step.selectOption('6');await shot('classic42-6mi-after.jpg');await step.selectOption('1');
- await page.setViewportSize({width:390,height:1000});await shot('classic42-1mi-after-390.jpg');
- manifest.cases.push({id:'GEO2-classic42-through-lake-save-history-PNG',status:'pass'});
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated

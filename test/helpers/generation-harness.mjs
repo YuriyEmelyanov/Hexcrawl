@@ -18,7 +18,7 @@ for(const artwork of artworks.sort((a,b)=>b.initializer.getStart(ast)-a.initiali
 const instrumented = prefix + `return {
   fineDraft, startFineDraft, changeFineDraft, saveFineDraft, cancelFineDraft, fineHover, setFineHover, switchFineStep, pickFine, fineCells, fineCandidates, fineReadCell, fineSummary, finePreview, resolveFineExit,
   previewGeometryRefinement, applyGeometryRefinementPreview, cancelGeometryRefinementPreview,
-  physicalGrid, previewOneMile, applyOneMilePreview, cancelOneMilePreview, editOneMileCell, getDocumentRevision:()=>documentRevision.current,
+  physicalGrid, fineDisplay, previewOneMile, applyOneMilePreview, cancelOneMilePreview, editOneMileCell, getDocumentRevision:()=>documentRevision.current,
   chooseKnaveProfile, changeGenerationMode, mutateKnaveContent, knaveDraft, knaveError, changeKnaveDraft, finishKnaveDraft, resetKnaveDraft, requestKnaveExit, resolveKnaveExit, knaveExitRequest, knavePanel,
   poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
   regionDraft, startRegionDraft, changeRegionDraft, finishRegionDraft, resetRegionDraft, selectRegionTarget, regionPreview, editError,

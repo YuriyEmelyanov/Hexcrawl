@@ -43,6 +43,21 @@ const copy=value=>JSON.parse(JSON.stringify(value));
 test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes atomically',async()=>{
  const h=createGenerationHarness(42);h.render();h.guardRandom();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
  await h.render().handleImportJson({target:{files:[{text:fs.readFileSync(new URL('fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8')}],value:'map'}});
+ // RE-Q01 A / AC05+07: the actual scale handler prepares all layers without
+ // accepting the plan. Extend this saved-world witness instead of duplicating
+ // the routing suites or counting another seed as functional coverage.
+ const source=JSON.stringify(h.render().captureDocument().map),generation=JSON.stringify(h.render().captureDocument().generationHistory),undo=h.render().undoHistory.length;
+ assert.equal(h.render().switchFineStep(1),true,h.render().editError);
+ const display=h.render().fineDisplay;
+ assert.equal(display.geometryRefinement.riverPlan.paths.length,34);
+ assert.equal(display.geometryRefinement.roads.crossings.length,2);
+ assert.equal(display.viewStep,1);assert.equal(h.render().physicalGrid,undefined);
+ assert.equal(JSON.stringify(h.render().captureDocument().map),source);assert.equal(JSON.stringify(h.render().captureDocument().generationHistory),generation);
+ assert.equal(h.render().undoHistory.length,undo);
+ assert.equal(h.render().switchFineStep(6),true);assert.equal(h.render().switchFineStep(1),true);
+ assert.deepEqual(h.render().fineDisplay.geometryRefinement,display.geometryRefinement);
+ assert.equal(JSON.stringify(h.render().captureDocument().map),source);assert.equal(h.render().undoHistory.length,undo);
+ assert.equal(h.render().switchFineStep(6),true);
  const before=JSON.stringify(h.render().captureDocument()),preview=h.render().previewGeometryRefinement();
  assert.ok(preview,h.render().editError);assert.equal(JSON.stringify(h.render().captureDocument()),before);
  assert.equal(h.render().applyGeometryRefinementPreview(preview),true);
