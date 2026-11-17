@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-17T18:55:38.859Z",
+  "updated_at": "2026-11-17T21:08:13.921Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -418,9 +418,9 @@
         "На карте и PNG маршрут реки совпадает; стыки, озёра, переправы и речные объекты проверены по чистовой спецификации.",
         "Правила перехода для существующих карт, обычной/уточнённой геометрии и связанных объектов закреплены в спецификации и интервью; прежние ответы владельца не спрашиваются повторно."
       ],
-      "execution_state": "PR505 опубликован на app.hexcrawl.ru; Pages и байты JS/CSS/worker проверены; score_update_pending.",
-      "next_role": "strategist-manager",
-      "next_step": "Применить независимое score_assessment1.2 к release292428e без начисления неподтверждённых баллов; затем утверждённая HX-BL-060, аналитик.",
+      "execution_state": "PR505 опубликован и проверен. Оценка выпуска 1.2 внесена в историю по пяти критериям без начисления баллов.",
+      "next_role": "business-analyst",
+      "next_step": "Актуализировать черновик HX-BL-060, показать предлагаемый вид карты на широком и узком экранах и передать черновик интервьюеру.",
       "related_task_ids": [
         "HX-BL-055",
         "HX-BL-056",
@@ -798,7 +798,7 @@
                 "pixelIdentical": false,
                 "raster": {
                   "maxDelta": 210,
-                  "changedFraction": 0.00007626561472715319
+                  "changedFraction": 7.626561472715319e-05
                 },
                 "scope": "diagnostic including unrelated controls"
               }
@@ -859,8 +859,13 @@
       "release_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
       "publication_verified": true,
       "deployment_run_id": 44149797233,
-      "score_update_status": "pending",
-      "score_update_responsible": "strategist-manager"
+      "score_update_status": "completed",
+      "score_update_responsible": "strategist-manager",
+      "score_update_result_ref": "agent-work/results/2026-11-18T0005-strategist-score-PR505.json",
+      "score_update_completed_at": "2026-11-17T21:08:13.921Z",
+      "score_update_awarded_points": 0,
+      "score_update_delta": null,
+      "next_task_id": "HX-BL-060"
     },
     {
       "task_id": "HX-BL-060",
@@ -874,9 +879,9 @@
       "approved_at": "2026-11-17T11:24:24.659Z",
       "implementation_authorized": false,
       "release_authorized": false,
-      "execution_state": "Готова к аналитическому этапу после независимой приёмки HX-BL-059; утверждён порядок060→021.",
+      "execution_state": "Готова к аналитическому этапу. HX-BL-059 опубликована и её оценка обработана.",
       "next_role": "business-analyst",
-      "next_step": "Подготовить черновик единого тайлового отображения по утверждённым материалам владельца, показать desktop/narrow предложение и передать интервьюеру.",
+      "next_step": "Актуализировать черновик HX-BL-060, показать предлагаемый вид карты на широком и узком экранах и передать черновик интервьюеру.",
       "requirements": [
         "Оставить одно представление биомов: согласованный цвет + прозрачный PNG + смещённый межбиомный градиент160% со сглаженными углами. Удалить режимы биомов Эмоджи/Цвет и переключатель трёх режимов из RU/EN интерфейса.",
         "Заменить старые рисунки всех существующих биомов, включая озеро/море, выбранными гравюрами; новые семь biomeId добавляются в HX-BL-021 через тот же реестр. Отдельные настройки значков POI не удалять этим поручением.",
@@ -938,7 +943,8 @@
         ],
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
         "publication_authorized": false
-      }
+      },
+      "next_handoff_ref": "agent-work/handoffs/2026-11-18T0005-strategist-score-PR505-analyst.json"
     }
   ],
   "retired_pr_packages": {
