@@ -378,7 +378,7 @@ test('ONE-MILE1 older generation checkpoints cannot silently discard later local
 
 test('ONE-MILE1 view/hover/pinned form and stale callbacks preserve local address and camera scale',()=>{
  const {g}=fineSetup();fineActivate(g);const initial=fineSave(g),undo=g.render().undoHistory.length,scale=initial.ui.mapScale;
- assert.equal(g.render().switchFineStep(1),true);assert.equal(fineSave(g).ui.mapScale,scale*6);
+ assert.equal(g.render().switchFineStep(1),true);assert.equal(g.render().getMapScale(),scale*6,'fine artwork keeps its physical screen size');assert.equal(fineSave(g).ui.mapScale,scale,'saved camera stays in accepted source coordinates');
  assert.equal(g.render().pickFine({q:0,r:0},false,g.render().getDocumentRevision()),true);
  g.render().setFineHover({q:1,r:0});assert.deepEqual(structuredClone(g.render().fineReadCell),{q:1,r:0});assert.deepEqual(g.render().fineDisplay.selectedCell,{q:0,r:0});assert.deepEqual(fineSave(g).map.physicalGrid,initial.map.physicalGrid,'view and picking do not rewrite accepted geography');assert.equal(g.render().undoHistory.length,undo);
  g.render().setFineHover(null);g.render().startFineDraft();const old=g.render().fineDraft;
