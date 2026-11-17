@@ -83,7 +83,7 @@ try{
  assert.ok(await page.locator('[data-refined-river]').count()>0);
  assert.deepEqual((await snap()).map,classicSource.map);
  assert.equal((await snap()).ui.mapScale,classicSource.ui.mapScale,'detached fine zoom is not persisted as source camera zoom');
- const classicSignature=()=>page.locator('[data-fine-world]').evaluate(el=>({rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])}));
+ const classicSignature=(target=page)=>target.locator('[data-fine-world]').evaluate(el=>({rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])}));
  const classicVisible=await classicSignature();await shot('classic42-1mi-after.jpg');
  await page.evaluate(()=>window.__oneSvg=null);const [classicPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await classicPng.path(),new URL('classic42-automatic.png',out));
  const classicExport=await page.evaluate(()=>{const el=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml').querySelector('[data-fine-world]');return {rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])};});
@@ -94,7 +94,18 @@ try{
  await page.locator('input[type=file]').setInputFiles({name:'classic42-source-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicSource))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await classicSignature(),classicVisible);assert.deepEqual((await snap()).map,classicSource.map);
  assert.equal((await snap()).ui.mapScale,classicSource.ui.mapScale,'source JSON reload restores the same normalized camera');
- manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390],sourceWrites:false,cameraSourceScaleStable:true});
+ // Extend this same real-map witness with a fresh page: retained component
+ // state must not be responsible for stable JSON routes or camera scale.
+ const cold=await browser.newPage({viewport:{width:390,height:1000}});await cold.route(/mc\.yandex/,r=>r.abort());await cold.goto('http://127.0.0.1:4195/');
+ await cold.locator('input[type=file]').setInputFiles({name:'cold-classic42.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicSource))});
+ await cold.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ const zoom=target=>target.locator('svg[data-render-phase]').evaluate(n=>new DOMMatrix(getComputedStyle(n).transform).a);
+ assert.equal(await zoom(cold),classicSource.ui.mapScale,'cold source view uses source camera scale');
+ await cold.locator('[data-fine-step]').selectOption('1');await cold.locator('[data-fine-world]').waitFor();
+ assert.equal(await zoom(cold),classicSource.ui.mapScale*6,'cold automatic view applies exactly one camera conversion');
+ assert.deepEqual(await classicSignature(cold),classicVisible,'cold load reconstructs the same complete river and road scene');
+ await cold.screenshot({path:new URL('classic42-cold-390.jpg',out).pathname,type:'jpeg',quality:75,fullPage:true});await cold.close();
+ manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390],sourceWrites:false,cameraSourceScaleStable:true,coldDOMReload:true});
  await page.setViewportSize({width:1500,height:1000});
  await page.locator('input[type=file]').setInputFiles({name:'classic42-mixed-growth.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(mixedFixture))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);

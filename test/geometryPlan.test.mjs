@@ -18,6 +18,8 @@ import {migrateSeas} from '../src/seaIdentity.ts';
 import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
 import {createDetailGrid,detailCellCenter,worldToDetailCell} from '../src/detailGrid.ts';
 import {fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
+import {prepareAutomaticSceneCandidate} from '../src/automaticOneMileScene.ts';
+import {prepareRefinementWater,refinementWaterContains} from '../src/geometryRefinementWater.ts';
 
 // Test governance: two logical cases for the new accepted boundary. Existing
 // river/mouth/road suites own routing algorithms; saveSafety owns old formats
@@ -134,6 +136,16 @@ test('GEO2 complete immutable physical4 plan preserves authored source and exact
  const {input,result}=await accepted(),g=result.geometryRefinement;
  assert.equal(result.completeGeometryPlan,true);assert.equal(result.readyForApplication,true);assert.equal(result.candidateState.version,4);assert.equal(g.sourceState.version,3);
  assert.equal(g.riverPlan.paths.length,53);assert.equal(g.roads.crossings.length,7);assert.equal(g.unresolved.length,21);assert.equal(g.riverPlan.mouths.length,3);
+ // F-R05/AC04: a declared source-policy variant of this same cached map.
+ // The original fixture has no proven river-required POI; don't infer one
+ // from a name. Knave structures96 explicitly requires river contact.
+ const owner=g.sourceState.poiFootprints.find(f=>f.poiId==='detail-poi:12'),edge=g.riverPlan.source.segments.find(s=>s.riverId===3&&s.edgeKey==='-290.985,28|-290.985,56');
+ const knownMap={...input.map,physicalGrid:{...g.sourceState,poiFootprints:g.sourceState.poiFootprints.map(f=>f===owner?{...f,attachments:[{kind:'water',waterKind:'river',waterId:'river:3',segmentId:edge.edgeKey,contact:edge.from.point}]}:f)},knave:{content:{byPoi:{[owner.legacyRef]:{site:{table:'structures',sourceRow:96}}}}}};
+ const knownInput={...input,map:knownMap,scopePolicy:'automatic_presentation'},beforeKnown=JSON.stringify(knownMap),display=prepareAutomaticSceneCandidate(knownInput),move=display.geometryRefinement.pois.pois.find(p=>p.poiId===owner.poiId);
+ assert.ok(move);const visible=prepareRefinementWater({paths:display.geometryRefinement.riverPlan.paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,f/10]))});
+ assert.ok(Math.abs(refinementWaterContains(visible,move.contact.point).clearance)<1e-7,'required POI contacts visible one-mile bank, not the wider physical source bank');
+ assert.deepEqual(move.footprint.extent,owner.extent);assert.equal(JSON.stringify(knownMap),beforeKnown,'display contact never rewrites source');
+ const initialKnown=prepareGeometryPlan(knownInput);assert.throws(()=>prepareAutomaticSceneCandidate({...knownInput,prepareWorkBudget:initialKnown.workBudget.used}),/prepare_incomplete_budget/,'visible contact closure shares the original total work limit');
  // Actual mounted component: retained paint/crossings come from physical4,
  // including lake masks and prepared POI road gaps. No source geometry writes.
  const props={state:result.candidateState,source:normalizeRefinementRiverSource(input.riverInput),offset:{x:20,y:30},mode:'color',widthByFullness:new Map([[1,1],[5,3]]),rivers:[],roads:[],crossings:[],rapids:[],waterfalls:[],rotated:false};
