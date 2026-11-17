@@ -163,7 +163,65 @@
             "HX-BL-042",
             "HX-BL-051"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+            "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-001-L1",
+            "disposition": "keep_L1",
+            "reason": "Создание и детализация одной карты на нескольких физических масштабах относятся к принятому назначению HexCrawl.",
+            "product_boundary": "Существующие масштабы24/базовый5–6миль и детализация, без нового OSE-режима",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001",
+              "normative_kind": "typical_workflow_recommendation",
+              "applicability": "OSE official2026 online basic/BX-derived reference, Designing a Wilderness step2 scale clause only; earlier/full-edition equivalence unknown",
+              "layer": "L1",
+              "trigger_or_user_action": "Выбрать обзорный масштаб24мили и детализировать выбранную область в принятом базовом масштабе, сохранив крупные объекты и прежние правки.",
+              "inputs_and_units": {
+                "selected_map_state": "Обзорная карта24мили; областьK; крупная рекаR и городT; добавленная локальная детальD."
+              },
+              "product_operation": "Выбрать обзорный масштаб24мили и детализировать выбранную область в принятом базовом масштабе, сохранив крупные объекты и прежние правки.",
+              "expected_output": "При детализацииK объектыR/T остаются в соответствующих местах; D не заменяет крупную географию. Изменение zoom не меняет физический масштаб; повторное открытие не перебрасывает содержимое.",
+              "constraints_and_exceptions": [
+                "Typically — описание обычного подхода, не обязательное правило всех кампаний/карт.",
+                "Числа24/6не устанавливают физическую конвенцию длины гекса или схему дочерних ячеек.",
+                "Не предполагать квадратное16клеток-вложение из одного отношения чисел.",
+                "Координатный алгоритм, миграция существующих документов и live-sync не заданы этой строкой.",
+                "Сохранение/адресные правки и явные соответствия — продуктовый перевод; техническая спецификация/API/архитектура не создаются.",
+                "Новая версия онлайн-справочника не меняет автоматически состав/числа активного рейтинга OSE.",
+                "Текущая проекция не утверждает отдельные поля/профиль/панель или поддержку на текущемSHA.",
+                "Исторический текстовый путь не доказывает entity-aware связи или перенос сведений вместе с POI."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "OSE-ORR-2026-001-L1-SCOPE-AC01",
+                  "given": "Обзорная карта24мили; областьK; крупная рекаR и городT; добавленная локальная детальD.",
+                  "when": "Выбрать обзорный масштаб24мили и детализировать выбранную область в принятом базовом масштабе, сохранив крупные объекты и прежние правки.",
+                  "expected": "При детализацииK объектыR/T остаются в соответствующих местах; D не заменяет крупную географию. Изменение zoom не меняет физический масштаб; повторное открытие не перебрасывает содержимое."
+                }
+              ],
+              "source_vs_product_interpretation": "Смысл/параметры источника сохранены отдельно. Это текущая исследовательская проекция на принятые операции карты; новые функции и геометрия не утверждены.",
+              "canonical_rule_refs": [
+                "agent-work/rules/common-rules.json#map.nested_scales",
+                "agent-work/rules/common-rules.json#map.physical_hex_scale"
+              ],
+              "unresolved_parameters": [
+                "Как именно измеряются24/6миль гекса, неизвестно.",
+                "Схема вложения, частично пересекающие границу объекты и синхронизация редактирования не заданы.",
+                "Сверка старого OSE SRD/Classic/AdvancedPDFи всей редакции2026не выполнялась.",
+                "Runtime/evidenceSHAпо этому профилюunknown."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_verdict": "published_scale_workflow_absent_051_accepted_unpublished",
+              "comment": "Published document has displayzoom and the strict Knave6mile profile, not OSE24→6 nested maps. Existing051 at9aa is independently accepted but unpublished; source gives no tessellation or measurement convention. Do not duplicate042/051 or infer16childhexes.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+              "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -302,7 +360,25 @@
           "gap_task_ids": [
             "HX-BL-050"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+            "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-002-L1",
+            "disposition": "needs_owner_decision",
+            "reason": "Отдельная политическая область и правящая сторона не равны биому или прямоугольнику генерируемого королевства; одной возможности написать текст недостаточно.",
+            "product_boundary": "Текущие границы генерации сохраняются; независимый политический слой не принят",
+            "current_operational_requirement": null,
+            "candidate_only": true,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_verdict": "partial_manual_prose_no_political_overlay",
+              "comment": "Accepted area/ruler/context can be recorded and ruler edited in prose without changing geography. No independent political-area layer is established; a biome region or Mythic144hex kingdom is not automatically a human realm.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+              "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -439,7 +515,25 @@
           "gap_task_ids": [
             "HX-BL-050"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+            "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-003-L1",
+            "disposition": "needs_owner_decision",
+            "reason": "Нечёткий ареал народа — отдельная пространственная функция. Её принятие не установлено, а заметка не доказывает отображение ареала.",
+            "product_boundary": "Вне принятого рабочего объёма до решения о политических/приблизительных областях",
+            "current_operational_requirement": null,
+            "candidate_only": true,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_verdict": "partial_manual_prose_no_approximate_overlay",
+              "comment": "Nomad/habitat/approximate-area language and unknown local control persist literally. No separate fuzzy-extent overlay or distinction rendered as an area type is verified. No movement/raid engine is required by this source.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+              "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -561,7 +655,62 @@
           "gap_task_ids": [
             "HX-BL-052"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+            "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-004-L1",
+            "disposition": "keep_L1",
+            "reason": "Выбор и размещение базового населённого пункта — подготовка конкретного места карты; текущее положение партии из этого не следует.",
+            "product_boundary": "Город/поселение как место карты, его положение и простое описание назначения",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-004",
+              "normative_kind": "preparation_instruction_with_typical_location",
+              "applicability": "OSE official2026 online basic/BX-derived source only; not all print editions",
+              "layer": "L1",
+              "trigger_or_user_action": "Разместить выбранный базовый город и сохранить его название/положение/назначение. Рекомендовать реку или дорогу около центра, сохраняя выбор ведущего.",
+              "inputs_and_units": {
+                "selected_map_state": "ГородT уже размещён в выбранной позиции; ведущий использует его как базу, сознательно вне центра."
+              },
+              "product_operation": "Разместить выбранный базовый город и сохранить его название/положение/назначение. Рекомендовать реку или дорогу около центра, сохраняя выбор ведущего.",
+              "expected_output": "При сохранении и открытии название и выбранная позицияT сохранены; город не перемещён в центр и вокруг него не создана дорога/река. Маркер партии и дата начала игры не добавлены.",
+              "constraints_and_exceptions": [
+                "Типичное размещение не означает обязательное условие или запрет иного места.",
+                "Река ИЛИ дорога: не требовать оба объекта одновременно.",
+                "Источник не задаёт порог близости и алгоритм поиска центра.",
+                "Начальное место при подготовке L1 не является автоматически маркером партии или начатой сессией L2.",
+                "Раздел Designing a Base Town содержит отдельную зависимость; состав служб/населения не разобран.",
+                "Текущая проекция не утверждает отдельные поля/профиль/панель или поддержку на текущемSHA.",
+                "Исторический текстовый путь не доказывает entity-aware связи или перенос сведений вместе с POI."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "OSE-ORR-2026-004-L1-SCOPE-AC01",
+                  "given": "ГородT уже размещён в выбранной позиции; ведущий использует его как базу, сознательно вне центра.",
+                  "when": "Разместить выбранный базовый город и сохранить его название/положение/назначение. Рекомендовать реку или дорогу около центра, сохраняя выбор ведущего.",
+                  "expected": "При сохранении и открытии название и выбранная позицияT сохранены; город не перемещён в центр и вокруг него не создана дорога/река. Маркер партии и дата начала игры не добавлены."
+                }
+              ],
+              "source_vs_product_interpretation": "Смысл/параметры источника сохранены отдельно. Это текущая исследовательская проекция на принятые операции карты; новые функции и геометрия не утверждены.",
+              "canonical_rule_refs": [
+                "content.place_description"
+              ],
+              "unresolved_parameters": [
+                "Численные расстояния до реки/дороги и граница центральной области.",
+                "Содержимое базового города из отдельной страницы.",
+                "Несколько альтернативных стартов и перенос активной партии этим срезом не определены."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_verdict": "manual_preparation_supported",
+              "comment": "Generic POI town/name plus hex note can record the chosen base role and deliberate placement. Saving does not force road/river/center relocation. Role is prose, not a typed entity link or party marker; services text stays at the hex on POI movement.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+              "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -690,7 +839,64 @@
           "gap_task_ids": [
             "HX-BL-052"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+            "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-005-L1",
+            "disposition": "keep_L1",
+            "reason": "Подземелья как места карты и их размещение относительно базы входят в подготовку карты; расчёт пути/дня — отдельныйL2.",
+            "product_boundary": "Генерация/ручное размещение мест и их пространственный контекст",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-005",
+              "normative_kind": "preparation_instruction_with_normal_distance_guidance",
+              "applicability": "OSE official2026 online basic/BX-derived source only; not all print editions",
+              "layer": "L1",
+              "trigger_or_user_action": "Разместить одно или несколько выбранных подземелий в окрестностях базы, сохранив позиции и осознанный выбор ведущего без автоматического радиуса в милях.",
+              "inputs_and_units": {
+                "selected_map_state": "БазаT; выбранные подземельяD1/D2; позиции выбраны ведущим; рекомендация«около дня пути» без скорости."
+              },
+              "product_operation": "Разместить одно или несколько выбранных подземелий в окрестностях базы, сохранив позиции и осознанный выбор ведущего без автоматического радиуса в милях.",
+              "expected_output": "ОбаD1/D2 иT восстановлены в своих позициях. Не назначены автоматически24мили/4гекса, не создана дорога и не рассчитаны нападения на город.",
+              "constraints_and_exceptions": [
+                "Норма около дня пути не равна жёсткому условию ровно один день.",
+                "Не выводить 24 мили или 4 гекса из слова day либо ранее найденного масштаба6миль/гекс.",
+                "Не создавать дорогу из самой смысловой связи с базовым городом.",
+                "Цель не слишком близко к городу — качественный замысел, а не автоматическое доказательство отсутствия нападений.",
+                "Бой, патрули, ежедневное движение и расчёт времени не входят в этот L1-срез.",
+                "Правки и сохранение связи — продуктовый перевод, технический способ не задан.",
+                "Текущая проекция не утверждает отдельные поля/профиль/панель или поддержку на текущемSHA.",
+                "Исторический текстовый путь не доказывает entity-aware связи или перенос сведений вместе с POI."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "OSE-ORR-2026-005-L1-SCOPE-AC01",
+                  "given": "БазаT; выбранные подземельяD1/D2; позиции выбраны ведущим; рекомендация«около дня пути» без скорости.",
+                  "when": "Разместить одно или несколько выбранных подземелий в окрестностях базы, сохранив позиции и осознанный выбор ведущего без автоматического радиуса в милях.",
+                  "expected": "ОбаD1/D2 иT восстановлены в своих позициях. Не назначены автоматически24мили/4гекса, не создана дорога и не рассчитаны нападения на город."
+                }
+              ],
+              "source_vs_product_interpretation": "Смысл/параметры источника сохранены отдельно. Это текущая исследовательская проекция на принятые операции карты; новые функции и геометрия не утверждены.",
+              "canonical_rule_refs": [
+                "content.place_description",
+                "content.site_links"
+              ],
+              "unresolved_parameters": [
+                "Условия движения/скорость/длительность дня и численный допуск around.",
+                "Пространственный порог слишком близко и критерий угрозы городу.",
+                "Геометрия пути, проходимость и необходимость дорог для каждого подземелья."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_verdict": "manual_preparation_supported",
+              "comment": "Two actual placed dungeons retain textual references to the base and qualitative travel descriptions, with no inferred day-radius/road or simulation. References are human-maintained text and do not automatically track renamed/moved base.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+              "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -835,7 +1041,65 @@
           "gap_task_ids": [
             "HX-BL-052"
           ],
-          "delivery": "research_handoff_not_specification"
+          "delivery": "research_handoff_not_specification",
+          "scope_review": {
+            "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+            "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-006-L1",
+            "disposition": "keep_L1",
+            "reason": "Простые сведения о ночлеге/помощи относятся к необходимому содержимому конкретной базы для подготовки карты; это явное разрешённое исключение владельца, а не основание из произвольной заметки.",
+            "product_boundary": "Описание услуг выбранного населённого пункта; существующий редактор содержимого места",
+            "current_operational_requirement": {
+              "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-006",
+              "normative_kind": "referee_preparation_notes_with_optional_details",
+              "applicability": "OSE official2026 online basic/BX-derived Designing a Base Town step2 only",
+              "layer": "L1",
+              "trigger_or_user_action": "При подготовке выбранного города указать известные местные услуги, исправить одно сведение и сохранить его без выдумывания неизвестных услуг.",
+              "inputs_and_units": {
+                "selected_map_state": "ГородT; известен ночлег«комнаты у мельника»; лечение болезней неизвестно; ведущий меняет ночлег на«ночлега нет»."
+              },
+              "product_operation": "При подготовке выбранного города указать известные местные услуги, исправить одно сведение и сохранить его без выдумывания неизвестных услуг.",
+              "expected_output": "УT сохранено«ночлега нет», лечение болезней остаётся неизвестным. Не сгенерированы гостиница, гильдия, цены, расписание патрулей или слухи. После открытия сведения не переброшены.",
+              "constraints_and_exceptions": [
+                "Источник предлагает заметки о наличии, а не гарантию всех пяти служб в каждом городе.",
+                "Гильдия воров может существовать; чёрный рынок сам по себе не доказывает её наличие.",
+                "Отношение стражи к взяткам и патрули — заметки для подготовки, не численный симулятор поведения.",
+                "Перечисление видов религиозного лечения не гарантирует все виды помощи в каждом святилище; цены/уровни/заклинания не извлечены.",
+                "Место распространения слухов не равно тексту слуха или его истинности.",
+                "Сохранение/редактирование и трёхзначное состояние наличия — продуктовый перевод, не предписание интерфейса/хранения.",
+                "L2-потребление/отдых и L3-лечение/торговые проверки здесь не рассчитываются.",
+                "Текущая проекция не утверждает отдельные поля/профиль/панель или поддержку на текущемSHA.",
+                "Исторический текстовый путь не доказывает entity-aware связи или перенос сведений вместе с POI."
+              ],
+              "acceptance_cases": [
+                {
+                  "id": "OSE-ORR-2026-006-L1-SCOPE-AC01",
+                  "given": "ГородT; известен ночлег«комнаты у мельника»; лечение болезней неизвестно; ведущий меняет ночлег на«ночлега нет».",
+                  "when": "При подготовке выбранного города указать известные местные услуги, исправить одно сведение и сохранить его без выдумывания неизвестных услуг.",
+                  "expected": "УT сохранено«ночлега нет», лечение болезней остаётся неизвестным. Не сгенерированы гостиница, гильдия, цены, расписание патрулей или слухи. После открытия сведения не переброшены."
+                }
+              ],
+              "source_vs_product_interpretation": "Смысл/параметры источника сохранены отдельно. Это текущая исследовательская проекция на принятые операции карты; новые функции и геометрия не утверждены.",
+              "canonical_rule_refs": [
+                "content.place_description"
+              ],
+              "unresolved_parameters": [
+                "Полнота услуг, цены, запас товаров и уровни доступного лечения.",
+                "Численные патрули и механика взяток.",
+                "Городские NPC/правитель и тексты слухов из других пунктов страницы.",
+                "Переданный владельцем Basic Rules v1-4 PDF ещё не сверён с этим online-корпусом."
+              ]
+            },
+            "candidate_only": false,
+            "current_implementation": {
+              "status": "not_reverified",
+              "historical_verdict": "manual_preparation_supported",
+              "comment": "Allfive service categories, yes/no/unknown and notes can be kept in existing free text; one category can be changed without changing others, map or RNG. No separate panel/storage needed merely to satisfy note-taking guidance; text is attached to a hex.",
+              "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+              "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+              "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+            },
+            "new_development_authorized": false
+          }
         },
         {
           "layer": "L2",
@@ -973,5 +1237,11 @@
       "scope_record_ref": "agent-work/research/sources/OSE-Basic-v1.4-scope.json"
     }
   ],
-  "supplied_basic_source_scope_ref": "agent-work/research/sources/OSE-Basic-v1.4-scope.json"
+  "supplied_basic_source_scope_ref": "agent-work/research/sources/OSE-Basic-v1.4-scope.json",
+  "scope_review": {
+    "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+    "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json",
+    "status": "all6existing_requirements_reviewed_not_full_book",
+    "precedence": "requirements[].scope_review governs current scope; original source/ops/status/evidence preserved as inputs; current support not inferred."
+  }
 }

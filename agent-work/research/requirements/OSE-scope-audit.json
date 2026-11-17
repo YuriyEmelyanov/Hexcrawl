@@ -1,0 +1,683 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+  "game_id": "OSE",
+  "status": "completed_bounded_existing_scope_audit",
+  "baseline_sha": "386d29ffb84c97984a39f5a3d937c0f1366243c9",
+  "scope": "All6existing requirements inOSE2026online matrix;4JSONhandoffs/4MDworkingviews. Not fullgame/source/runtime repeat.",
+  "completion_condition": "Every existing nonempty requirement reasoned; source/fulloperation/status/evidence preserved; current working views/handoffs agree and do not restore retired tasks.",
+  "counts": {
+    "source_groups": 6,
+    "requirements": 6,
+    "keep_L1": 4,
+    "defer_L2": 0,
+    "integration_L3": 0,
+    "out_of_scope": 0,
+    "needs_owner_decision": 2
+  },
+  "rows": [
+    {
+      "id": "OSE-ORR-2026-001-L1",
+      "title": "Готовить обзорную и подробную карты с типичными масштабами24и6миль",
+      "source_rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "2. Map the Region / Scale",
+        "locator": "HTML256; page lastmodified2026/08/02",
+        "paraphrase": "Обычная последовательность подготовки — обзорная карта24миль на гекс, затем более подробные карты выбранных областей6миль на гекс.",
+        "parameters": {
+          "recommended_overview_hex_miles": 24,
+          "recommended_detail_hex_miles": 6,
+          "normative_force": "typically_not_mandatory",
+          "geometric_measurement_convention": "unknown",
+          "child_hex_tessellation": "unknown",
+          "scope": "selected_areas_finer_detail_not_all_maps"
+        },
+        "normative_kind": "typical_workflow_recommendation"
+      },
+      "original_layer": "L1",
+      "canonical_rule_ids": [
+        "map.nested_scales",
+        "map.physical_hex_scale"
+      ],
+      "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+      "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-001-L1",
+      "disposition": "keep_L1",
+      "reason": "Создание и детализация одной карты на нескольких физических масштабах относятся к принятому назначению HexCrawl.",
+      "product_boundary": "Существующие масштабы24/базовый5–6миль и детализация, без нового OSE-режима",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-001",
+        "normative_kind": "typical_workflow_recommendation",
+        "applicability": "OSE official2026 online basic/BX-derived reference, Designing a Wilderness step2 scale clause only; earlier/full-edition equivalence unknown",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать обзорный масштаб24мили и детализировать выбранную область в принятом базовом масштабе, сохранив крупные объекты и прежние правки.",
+        "inputs_and_units": {
+          "selected_map_state": "Обзорная карта24мили; областьK; крупная рекаR и городT; добавленная локальная детальD."
+        },
+        "product_operation": "Выбрать обзорный масштаб24мили и детализировать выбранную область в принятом базовом масштабе, сохранив крупные объекты и прежние правки.",
+        "expected_output": "При детализацииK объектыR/T остаются в соответствующих местах; D не заменяет крупную географию. Изменение zoom не меняет физический масштаб; повторное открытие не перебрасывает содержимое.",
+        "constraints_and_exceptions": [
+          "Typically — описание обычного подхода, не обязательное правило всех кампаний/карт.",
+          "Числа24/6не устанавливают физическую конвенцию длины гекса или схему дочерних ячеек.",
+          "Не предполагать квадратное16клеток-вложение из одного отношения чисел.",
+          "Координатный алгоритм, миграция существующих документов и live-sync не заданы этой строкой.",
+          "Сохранение/адресные правки и явные соответствия — продуктовый перевод; техническая спецификация/API/архитектура не создаются.",
+          "Новая версия онлайн-справочника не меняет автоматически состав/числа активного рейтинга OSE.",
+          "Текущая проекция не утверждает отдельные поля/профиль/панель или поддержку на текущемSHA.",
+          "Исторический текстовый путь не доказывает entity-aware связи или перенос сведений вместе с POI."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "OSE-ORR-2026-001-L1-SCOPE-AC01",
+            "given": "Обзорная карта24мили; областьK; крупная рекаR и городT; добавленная локальная детальD.",
+            "when": "Выбрать обзорный масштаб24мили и детализировать выбранную область в принятом базовом масштабе, сохранив крупные объекты и прежние правки.",
+            "expected": "При детализацииK объектыR/T остаются в соответствующих местах; D не заменяет крупную географию. Изменение zoom не меняет физический масштаб; повторное открытие не перебрасывает содержимое."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл/параметры источника сохранены отдельно. Это текущая исследовательская проекция на принятые операции карты; новые функции и геометрия не утверждены.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.nested_scales",
+          "agent-work/rules/common-rules.json#map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "Как именно измеряются24/6миль гекса, неизвестно.",
+          "Схема вложения, частично пересекающие границу объекты и синхронизация редактирования не заданы.",
+          "Сверка старого OSE SRD/Classic/AdvancedPDFи всей редакции2026не выполнялась.",
+          "Runtime/evidenceSHAпо этому профилюunknown."
+        ]
+      },
+      "candidate_only": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "published_scale_workflow_absent_051_accepted_unpublished",
+        "comment": "Published document has displayzoom and the strict Knave6mile profile, not OSE24→6 nested maps. Existing051 at9aa is independently accepted but unpublished; source gives no tessellation or measurement convention. Do not duplicate042/051 or infer16childhexes.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+        "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+      },
+      "new_development_authorized": false
+    },
+    {
+      "id": "OSE-ORR-2026-002-L1",
+      "title": "Владения людей и их правители",
+      "source_rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "3. Locate Human Realms",
+        "locator": "HTML257–261; paragraphs controlled areas / Government / Base town",
+        "paraphrase": "Нанести владения людей с учётом потребностей цивилизации, указать правящую сторону; базовый город обычно находится в одном из них.",
+        "parameters": {
+          "realm_kind": "human_controlled",
+          "civilisation_context": [
+            "rivers",
+            "farmland"
+          ],
+          "ruler_examples": [
+            "lord",
+            "king",
+            "league_of_merchants"
+          ],
+          "base_town_location": "typically_in_human_realm_not_mandatory",
+          "numeric_thresholds": "unspecified"
+        },
+        "normative_kind": "referee_preparation_guidance_with_typical_location"
+      },
+      "original_layer": "L1",
+      "canonical_rule_ids": [
+        "map.political_territories",
+        "content.place_description"
+      ],
+      "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+      "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-002-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Отдельная политическая область и правящая сторона не равны биому или прямоугольнику генерируемого королевства; одной возможности написать текст недостаточно.",
+      "product_boundary": "Текущие границы генерации сохраняются; независимый политический слой не принят",
+      "current_operational_requirement": null,
+      "candidate_only": true,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "partial_manual_prose_no_political_overlay",
+        "comment": "Accepted area/ruler/context can be recorded and ruler edited in prose without changing geography. No independent political-area layer is established; a biome region or Mythic144hex kingdom is not automatically a human realm.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+        "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+      },
+      "new_development_authorized": false
+    },
+    {
+      "id": "OSE-ORR-2026-003-L1",
+      "title": "Владения разумных нечеловеческих видов: чёткие и приблизительные области",
+      "source_rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "4. Locate Non-Human Realms",
+        "locator": "HTML262–265; intelligent species and Nomads paragraphs only; monster clause266 excluded",
+        "paraphrase": "Нанести владения разумных нечеловеческих видов с учётом среды и образа жизни; различать определённые границы и приблизительные области кочевников.",
+        "parameters": {
+          "realm_kind": "intelligent_nonhuman",
+          "environment_and_way_of_life": "GM supplied setting context",
+          "extent_variants": [
+            "well_defined_domain",
+            "vague_nomadic_hunting_or_raiding_area"
+          ],
+          "movement_procedure": "not_given",
+          "nonintelligent_monster_territories": "separate_optional_clause_not_extracted"
+        },
+        "normative_kind": "referee_preparation_guidance_conditional_variants"
+      },
+      "original_layer": "L1",
+      "canonical_rule_ids": [
+        "map.political_territories",
+        "content.place_description"
+      ],
+      "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+      "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-003-L1",
+      "disposition": "needs_owner_decision",
+      "reason": "Нечёткий ареал народа — отдельная пространственная функция. Её принятие не установлено, а заметка не доказывает отображение ареала.",
+      "product_boundary": "Вне принятого рабочего объёма до решения о политических/приблизительных областях",
+      "current_operational_requirement": null,
+      "candidate_only": true,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "partial_manual_prose_no_approximate_overlay",
+        "comment": "Nomad/habitat/approximate-area language and unknown local control persist literally. No separate fuzzy-extent overlay or distinction rendered as an area type is verified. No movement/raid engine is required by this source.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+        "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+      },
+      "new_development_authorized": false
+    },
+    {
+      "id": "OSE-ORR-2026-004-L1",
+      "title": "Базовый город как начальное место кампании",
+      "source_rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "5. Place the Base Town",
+        "locator": "HTML267–269; reference to Designing a Base Town not followed",
+        "paraphrase": "Разместить базовый город, откуда начинается игра; обычное место — близ реки или дороги около центра карты.",
+        "parameters": {
+          "role": "base_town_where_play_begins",
+          "typical_location": "near_river_or_road_near_map_centre",
+          "hard_distance": null
+        },
+        "normative_kind": "preparation_instruction_with_typical_location"
+      },
+      "original_layer": "L1",
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+      "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-004-L1",
+      "disposition": "keep_L1",
+      "reason": "Выбор и размещение базового населённого пункта — подготовка конкретного места карты; текущее положение партии из этого не следует.",
+      "product_boundary": "Город/поселение как место карты, его положение и простое описание назначения",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-004",
+        "normative_kind": "preparation_instruction_with_typical_location",
+        "applicability": "OSE official2026 online basic/BX-derived source only; not all print editions",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить выбранный базовый город и сохранить его название/положение/назначение. Рекомендовать реку или дорогу около центра, сохраняя выбор ведущего.",
+        "inputs_and_units": {
+          "selected_map_state": "ГородT уже размещён в выбранной позиции; ведущий использует его как базу, сознательно вне центра."
+        },
+        "product_operation": "Разместить выбранный базовый город и сохранить его название/положение/назначение. Рекомендовать реку или дорогу около центра, сохраняя выбор ведущего.",
+        "expected_output": "При сохранении и открытии название и выбранная позицияT сохранены; город не перемещён в центр и вокруг него не создана дорога/река. Маркер партии и дата начала игры не добавлены.",
+        "constraints_and_exceptions": [
+          "Типичное размещение не означает обязательное условие или запрет иного места.",
+          "Река ИЛИ дорога: не требовать оба объекта одновременно.",
+          "Источник не задаёт порог близости и алгоритм поиска центра.",
+          "Начальное место при подготовке L1 не является автоматически маркером партии или начатой сессией L2.",
+          "Раздел Designing a Base Town содержит отдельную зависимость; состав служб/населения не разобран.",
+          "Текущая проекция не утверждает отдельные поля/профиль/панель или поддержку на текущемSHA.",
+          "Исторический текстовый путь не доказывает entity-aware связи или перенос сведений вместе с POI."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "OSE-ORR-2026-004-L1-SCOPE-AC01",
+            "given": "ГородT уже размещён в выбранной позиции; ведущий использует его как базу, сознательно вне центра.",
+            "when": "Разместить выбранный базовый город и сохранить его название/положение/назначение. Рекомендовать реку или дорогу около центра, сохраняя выбор ведущего.",
+            "expected": "При сохранении и открытии название и выбранная позицияT сохранены; город не перемещён в центр и вокруг него не создана дорога/река. Маркер партии и дата начала игры не добавлены."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл/параметры источника сохранены отдельно. Это текущая исследовательская проекция на принятые операции карты; новые функции и геометрия не утверждены.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Численные расстояния до реки/дороги и граница центральной области.",
+          "Содержимое базового города из отдельной страницы.",
+          "Несколько альтернативных стартов и перенос активной партии этим срезом не определены."
+        ]
+      },
+      "candidate_only": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "manual_preparation_supported",
+        "comment": "Generic POI town/name plus hex note can record the chosen base role and deliberate placement. Saving does not force road/river/center relocation. Role is prose, not a typed entity link or party marker; services text stays at the hex on POI movement.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+        "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+      },
+      "new_development_authorized": false
+    },
+    {
+      "id": "OSE-ORR-2026-005-L1",
+      "title": "Подземелья, связанные с базовым городом",
+      "source_rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "6. Place Dungeons",
+        "locator": "HTML270–273; vicinity and Distance recommendation",
+        "paraphrase": "Разместить одно или несколько подземелий около базы, обычно примерно в дне пути; замысел — удобный доступ без чрезмерной близости к городу.",
+        "parameters": {
+          "minimum_sites": 1,
+          "typical_distance": "around_a_days_journey",
+          "distance_miles": null,
+          "distance_hexes": null,
+          "intent": "convenient_access_without_monsters_plaguing_town"
+        },
+        "normative_kind": "preparation_instruction_with_normal_distance_guidance"
+      },
+      "original_layer": "L1",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links"
+      ],
+      "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+      "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-005-L1",
+      "disposition": "keep_L1",
+      "reason": "Подземелья как места карты и их размещение относительно базы входят в подготовку карты; расчёт пути/дня — отдельныйL2.",
+      "product_boundary": "Генерация/ручное размещение мест и их пространственный контекст",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-005",
+        "normative_kind": "preparation_instruction_with_normal_distance_guidance",
+        "applicability": "OSE official2026 online basic/BX-derived source only; not all print editions",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить одно или несколько выбранных подземелий в окрестностях базы, сохранив позиции и осознанный выбор ведущего без автоматического радиуса в милях.",
+        "inputs_and_units": {
+          "selected_map_state": "БазаT; выбранные подземельяD1/D2; позиции выбраны ведущим; рекомендация«около дня пути» без скорости."
+        },
+        "product_operation": "Разместить одно или несколько выбранных подземелий в окрестностях базы, сохранив позиции и осознанный выбор ведущего без автоматического радиуса в милях.",
+        "expected_output": "ОбаD1/D2 иT восстановлены в своих позициях. Не назначены автоматически24мили/4гекса, не создана дорога и не рассчитаны нападения на город.",
+        "constraints_and_exceptions": [
+          "Норма около дня пути не равна жёсткому условию ровно один день.",
+          "Не выводить 24 мили или 4 гекса из слова day либо ранее найденного масштаба6миль/гекс.",
+          "Не создавать дорогу из самой смысловой связи с базовым городом.",
+          "Цель не слишком близко к городу — качественный замысел, а не автоматическое доказательство отсутствия нападений.",
+          "Бой, патрули, ежедневное движение и расчёт времени не входят в этот L1-срез.",
+          "Правки и сохранение связи — продуктовый перевод, технический способ не задан.",
+          "Текущая проекция не утверждает отдельные поля/профиль/панель или поддержку на текущемSHA.",
+          "Исторический текстовый путь не доказывает entity-aware связи или перенос сведений вместе с POI."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "OSE-ORR-2026-005-L1-SCOPE-AC01",
+            "given": "БазаT; выбранные подземельяD1/D2; позиции выбраны ведущим; рекомендация«около дня пути» без скорости.",
+            "when": "Разместить одно или несколько выбранных подземелий в окрестностях базы, сохранив позиции и осознанный выбор ведущего без автоматического радиуса в милях.",
+            "expected": "ОбаD1/D2 иT восстановлены в своих позициях. Не назначены автоматически24мили/4гекса, не создана дорога и не рассчитаны нападения на город."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл/параметры источника сохранены отдельно. Это текущая исследовательская проекция на принятые операции карты; новые функции и геометрия не утверждены.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Условия движения/скорость/длительность дня и численный допуск around.",
+          "Пространственный порог слишком близко и критерий угрозы городу.",
+          "Геометрия пути, проходимость и необходимость дорог для каждого подземелья."
+        ]
+      },
+      "candidate_only": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "manual_preparation_supported",
+        "comment": "Two actual placed dungeons retain textual references to the base and qualitative travel descriptions, with no inferred day-radius/road or simulation. References are human-maintained text and do not automatically track renamed/moved base.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+        "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+      },
+      "new_development_authorized": false
+    },
+    {
+      "id": "OSE-ORR-2026-006-L1",
+      "title": "Наличие и примечания служб базового города",
+      "source_rule": {
+        "source_id": "OSE-OFFICIAL-ORR-2026-BASE-TOWN-EN",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_base_town",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "2. Note Services",
+        "locator": "2. Note Services, HTML259–270",
+        "paraphrase": "Отметить наличие служб, полезных приключенцам, и возможные подробности; не делать необоснованный вывод о доступности каждой услуги.",
+        "parameters": {
+          "service_categories": [
+            "black_market",
+            "guard",
+            "healing",
+            "lodgings",
+            "rumour_locations"
+          ],
+          "organised_thieves_guild": "may_exist",
+          "bribery_and_patrol_notes": "useful_to_note",
+          "numerical_rules": "not_given"
+        },
+        "normative_kind": "referee_preparation_notes_with_optional_details"
+      },
+      "original_layer": "L1",
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "run_id": "2026-11-17-OSE-scope-audit-1794893353149",
+      "audit_ref": "agent-work/research/requirements/OSE-scope-audit.json#OSE-ORR-2026-006-L1",
+      "disposition": "keep_L1",
+      "reason": "Простые сведения о ночлеге/помощи относятся к необходимому содержимому конкретной базы для подготовки карты; это явное разрешённое исключение владельца, а не основание из произвольной заметки.",
+      "product_boundary": "Описание услуг выбранного населённого пункта; существующий редактор содержимого места",
+      "current_operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/OSE-ORR-2026.json#OSE-ORR-2026-006",
+        "normative_kind": "referee_preparation_notes_with_optional_details",
+        "applicability": "OSE official2026 online basic/BX-derived Designing a Base Town step2 only",
+        "layer": "L1",
+        "trigger_or_user_action": "При подготовке выбранного города указать известные местные услуги, исправить одно сведение и сохранить его без выдумывания неизвестных услуг.",
+        "inputs_and_units": {
+          "selected_map_state": "ГородT; известен ночлег«комнаты у мельника»; лечение болезней неизвестно; ведущий меняет ночлег на«ночлега нет»."
+        },
+        "product_operation": "При подготовке выбранного города указать известные местные услуги, исправить одно сведение и сохранить его без выдумывания неизвестных услуг.",
+        "expected_output": "УT сохранено«ночлега нет», лечение болезней остаётся неизвестным. Не сгенерированы гостиница, гильдия, цены, расписание патрулей или слухи. После открытия сведения не переброшены.",
+        "constraints_and_exceptions": [
+          "Источник предлагает заметки о наличии, а не гарантию всех пяти служб в каждом городе.",
+          "Гильдия воров может существовать; чёрный рынок сам по себе не доказывает её наличие.",
+          "Отношение стражи к взяткам и патрули — заметки для подготовки, не численный симулятор поведения.",
+          "Перечисление видов религиозного лечения не гарантирует все виды помощи в каждом святилище; цены/уровни/заклинания не извлечены.",
+          "Место распространения слухов не равно тексту слуха или его истинности.",
+          "Сохранение/редактирование и трёхзначное состояние наличия — продуктовый перевод, не предписание интерфейса/хранения.",
+          "L2-потребление/отдых и L3-лечение/торговые проверки здесь не рассчитываются.",
+          "Текущая проекция не утверждает отдельные поля/профиль/панель или поддержку на текущемSHA.",
+          "Исторический текстовый путь не доказывает entity-aware связи или перенос сведений вместе с POI."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "OSE-ORR-2026-006-L1-SCOPE-AC01",
+            "given": "ГородT; известен ночлег«комнаты у мельника»; лечение болезней неизвестно; ведущий меняет ночлег на«ночлега нет».",
+            "when": "При подготовке выбранного города указать известные местные услуги, исправить одно сведение и сохранить его без выдумывания неизвестных услуг.",
+            "expected": "УT сохранено«ночлега нет», лечение болезней остаётся неизвестным. Не сгенерированы гостиница, гильдия, цены, расписание патрулей или слухи. После открытия сведения не переброшены."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл/параметры источника сохранены отдельно. Это текущая исследовательская проекция на принятые операции карты; новые функции и геометрия не утверждены.",
+        "canonical_rule_refs": [
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полнота услуг, цены, запас товаров и уровни доступного лечения.",
+          "Численные патрули и механика взяток.",
+          "Городские NPC/правитель и тексты слухов из других пунктов страницы.",
+          "Переданный владельцем Basic Rules v1-4 PDF ещё не сверён с этим online-корпусом."
+        ]
+      },
+      "candidate_only": false,
+      "current_implementation": {
+        "status": "not_reverified",
+        "historical_verdict": "manual_preparation_supported",
+        "comment": "Allfive service categories, yes/no/unknown and notes can be kept in existing free text; one category can be changed without changing others, map or RNG. No separate panel/storage needed merely to satisfy note-taking guidance; text is attached to a hex.",
+        "evidence_sha": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+        "evidence_ref": "agent-work/research/audits/OSE-L1-runtime-2026-11-10-probes.json",
+        "current_sha_applicability": "unknown; no automatic transfer from10Novemberaudit"
+      },
+      "new_development_authorized": false
+    }
+  ],
+  "component_decisions": [
+    {
+      "id": "OSE-SCOPE-C01",
+      "disposition": "needs_owner_decision",
+      "component": "Политический слой владений, правителей и фактического контроля",
+      "reason": "Источник тематически применим, но отдельная пространственная функция не принята; не выводить её из биома/заметки.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C02",
+      "disposition": "needs_owner_decision",
+      "component": "Нечёткие ареалы охоты/набегов как самостоятельные области",
+      "reason": "Нужно решение о картографической функции; кочевой контекст не даёт протокол движения.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C03",
+      "disposition": "needs_owner_decision",
+      "component": "Типизированная роль базы и автоматически обновляемые связи подземелье→база",
+      "reason": "Размещение места принято; полноценный entity-aware relationship не следует из текстовой пометки.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C04",
+      "disposition": "needs_owner_decision",
+      "component": "Пять отдельных полей услуг со статусами есть/нет/неизвестно",
+      "reason": "Книга просит сведения о конкретном городе; новая панель/схема не требуется лишь ради хранения текста.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C05",
+      "disposition": "needs_owner_decision",
+      "component": "Автоматический перенос сведений/услуг при перемещении POI",
+      "reason": "Исторический редактор держит текст у гекса. Это ограничение, не доказанный дефект и не согласование новой entity-модели.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C06",
+      "disposition": "defer_L2",
+      "component": "Текущее положение партии/активная база и старт сессии",
+      "reason": "Роль места при подготовкеL1 не создаёт состояние партии; ведение гекскроулаL2 позже.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C07",
+      "disposition": "defer_L2",
+      "component": "Численный расчёт дня пути, радиуса доступности и маршрута",
+      "reason": "Ориентир около дня пути не задаёт скорость/дороги; не считать отсутствующую L2функцию дефектом L1.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C08",
+      "disposition": "out_of_scope",
+      "component": "Лечение, торговля, запасы, цены и взятки как игровые движки",
+      "reason": "Простые сведения о месте допустимы; механика услуг/экономика/полная магия вне назначения текущего исследования.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C09",
+      "disposition": "out_of_scope",
+      "component": "Генерация слухов/NPC/патрулей, набегов и нападений на город",
+      "reason": "Контекст базового места не требует сюжетного/социального/боевого симулятора.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    },
+    {
+      "id": "OSE-SCOPE-C10",
+      "disposition": "needs_owner_decision",
+      "component": "Новый OSEрежим/геометрия/автосинхронизация24→6",
+      "reason": "Рекомендация источника не задаёт вложение/конвенцию и не отменяет действующие5–6миль/24мили; существующие масштабы переиспользовать.",
+      "accepted_new_feature": false,
+      "product_boundary": "Map generation/editor and concrete-place content only; travelL2deferred; character/economy/story controllers excluded."
+    }
+  ],
+  "source": {
+    "online": {
+      "id": "OSE-OFFICIAL-ORR-2026-EN",
+      "title": "OSE Online Rules Reference — Designing a Wilderness",
+      "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+      "author": "Gavin Norman / Necrotic Gnome",
+      "publisher": "Necrotic Gnome",
+      "language": "en",
+      "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+      "locator": "HTML256–265 and267–273; Scale, human/intelligent realms, base town and dungeons",
+      "printed_pages": null,
+      "pdf_pages": null,
+      "page_last_modified": "2026/08/02 18:03",
+      "accessed_at": "2026-11-08T13:29:16.086Z",
+      "access_level": "public_official_primary_text",
+      "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026",
+      "raw_file_hash": null,
+      "edition_verification": {
+        "official_entry": "https://necroticgnome.com/blogs/news/ose-2026-update-timeline",
+        "official_home": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=start",
+        "basis": "Publisher links current reference; home says moved from2019platform to re-edited2026text; reference basic/BX-derived, examples/full books excluded."
+      },
+      "limitations": [
+        "Extracted Scale, intelligent realms and base town/dungeon placement only; major terrain, optional monster266, regional encounters and crossreferences not extracted.",
+        "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
+        "No full source/book/literary tables copied; primary source paraphrase only.",
+        "Geometric hex measurement convention and coordinate subdivision not specified in selected clause."
+      ],
+      "deduplication": "One official OSE work/page; mirrors/search duplicates not independent popularity/audience evidence."
+    },
+    "additional_sources": [
+      {
+        "id": "OSE-OFFICIAL-ORR-2026-EN",
+        "title": "OSE Online Rules Reference — Designing a Wilderness",
+        "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+        "author": "Gavin Norman / Necrotic Gnome",
+        "publisher": "Necrotic Gnome",
+        "language": "en",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_wilderness",
+        "locator": "HTML256–265 and267–273; Scale, human/intelligent realms, base town and dungeons",
+        "printed_pages": null,
+        "pdf_pages": null,
+        "page_last_modified": "2026/08/02 18:03",
+        "accessed_at": "2026-11-08T13:29:16.086Z",
+        "access_level": "public_official_primary_text",
+        "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026",
+        "raw_file_hash": null,
+        "edition_verification": {
+          "official_entry": "https://necroticgnome.com/blogs/news/ose-2026-update-timeline",
+          "official_home": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=start",
+          "basis": "Publisher links current reference; home says moved from2019platform to re-edited2026text; reference basic/BX-derived, examples/full books excluded."
+        },
+        "limitations": [
+          "Extracted Scale, intelligent realms and base town/dungeon placement only; major terrain, optional monster266, regional encounters and crossreferences not extracted.",
+          "No equivalence with all previous Classic/Advanced printings or full2026Referee's Book inferred.",
+          "No full source/book/literary tables copied; primary source paraphrase only.",
+          "Geometric hex measurement convention and coordinate subdivision not specified in selected clause."
+        ],
+        "deduplication": "One official OSE work/page; mirrors/search duplicates not independent popularity/audience evidence."
+      },
+      {
+        "id": "OSE-OFFICIAL-ORR-2026-BASE-TOWN-EN",
+        "title": "OSE Online Rules Reference — Designing a Base Town",
+        "edition": "Official2026 re-edited online basic/BX-derived rules reference; snapshot2026-11-08, not full Referee's Book or legacy Classic/Advanced PDF",
+        "author": "Gavin Norman / Necrotic Gnome",
+        "publisher": "Necrotic Gnome",
+        "language": "en",
+        "url": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=running_adventures:designing_a_base_town",
+        "locator": "2. Note Services, HTML259–270",
+        "printed_pages": null,
+        "pdf_pages": null,
+        "page_last_modified": "2026/10/08 02:27",
+        "accessed_at": "2026-11-08T14:36:17.603Z",
+        "access_level": "public_official_primary_text",
+        "author_project_key": "necrotic-gnome:gavin-norman:ose:online-reference2026",
+        "raw_file_hash": null,
+        "edition_verification": {
+          "official_entry": "https://necroticgnome.com/blogs/news/ose-2026-update-timeline",
+          "official_home": "https://www.oldschoolessentials.necroticgnome.com/rules/doku.php?id=start",
+          "basis": "Publisher links current reference; home says moved from2019platform to re-edited2026text; reference basic/BX-derived, examples/full books excluded."
+        },
+        "limitations": [
+          "Only Services259–270 extracted; other paragraphs returned/read as context, not extracted.",
+          "Online2026 basic/BX-derived reference; no comparison to supplied Basic Rules v1-4 PDF or full Classic/Advanced/Referee books.",
+          "No source service fee, stock, spell availability, NPC stats or numerical patrol schedule extracted.",
+          "Full book/art/tables not reproduced."
+        ],
+        "deduplication": "One official OSE work/page; mirrors/search duplicates not independent popularity/audience evidence."
+      },
+      {
+        "source_id": "OSE-BASIC-1.4-EN",
+        "title": "Old-School Essentials Classic Fantasy — Basic Rules",
+        "edition": "v1.4 verified on internal title PDF3; text/design copyright2020; metadata2021-11-17 not asserted publication date",
+        "author": "Gavin Norman",
+        "publisher": "Necrotic Gnome",
+        "language": "en",
+        "access_level": "full_text",
+        "access_origin": "owner_supplied_pdf",
+        "library_file_id": "libfile_fde3_f-184ae9069a7c819190fa7c1a4ca3f7f6_3c7ce53bef508191bc31de4d3dfa12cc",
+        "file_id": "file_0000000069a88211a241c372f2c70540",
+        "version_id": "0",
+        "size_bytes": 4905326,
+        "pdf_pages": 60,
+        "sha256": "a4d9608ea98bc7f148b23e03549c19e60c0b3d173aa1a1096687861de9cd42ae",
+        "author_project_key": "necrotic-gnome:gavin-norman:ose:basic-rules-v1.4",
+        "parent_work_dedup_key": "necrotic-gnome:gavin-norman:ose",
+        "accessed_at": "2026-11-08T15:31:54.949Z",
+        "source_locator": "PDF3 title/edition; PDF4 printed2TOC; PDF5 printed3sample/complete distinction; PDF58 printed56; PDF60backcover",
+        "raw_file_published": false,
+        "limitations": [
+          "Full thematic applicability of every spell/class/adventuring clause not audited.",
+          "Exact rule-by-rule compatibility between Basicv1.4 and2026online reference not established.",
+          "Metadata timestamp is not publication date; later errata/other printings not compared."
+        ],
+        "scope_record_ref": "agent-work/research/sources/OSE-Basic-v1.4-scope.json"
+      }
+    ],
+    "declared_completeness": {
+      "status": "partial_checkpoint",
+      "full_game_read": false,
+      "reviewed": "Designing a Wilderness page read; Scale256, human/intelligent realms257–265, base town/dungeons267–273 extracted; Designing a Base Town page read, only Services259–270 extracted",
+      "context_only": "Step1, major terrain255, optional monsters266 and encounter tables274–277 not extracted; no crossreferences followed; BaseTown size248–258/ruler271–273/NPC275–277/rumours278–280 context only",
+      "unreviewed": "Full reference/full books and other dependencies",
+      "ledger_ref": "agent-work/market/rules/OSE-ORR-2026-coverage-ledger.json",
+      "supplied_basic_pdf": "Identity/TOC/selectedpages checked only; distinct v1.4sample, not full thematic audit or2026profile equivalence"
+    },
+    "basic_sample": {
+      "source_id": "OSE-BASIC-1.4-EN",
+      "title": "Old-School Essentials Classic Fantasy — Basic Rules",
+      "edition": "v1.4 verified on internal title PDF3; text/design copyright2020; metadata2021-11-17 not asserted publication date",
+      "author": "Gavin Norman",
+      "publisher": "Necrotic Gnome",
+      "language": "en",
+      "access_level": "full_text",
+      "access_origin": "owner_supplied_pdf",
+      "library_file_id": "libfile_fde3_f-184ae9069a7c819190fa7c1a4ca3f7f6_3c7ce53bef508191bc31de4d3dfa12cc",
+      "file_id": "file_0000000069a88211a241c372f2c70540",
+      "version_id": "0",
+      "size_bytes": 4905326,
+      "pdf_pages": 60,
+      "sha256": "a4d9608ea98bc7f148b23e03549c19e60c0b3d173aa1a1096687861de9cd42ae",
+      "author_project_key": "necrotic-gnome:gavin-norman:ose:basic-rules-v1.4",
+      "parent_work_dedup_key": "necrotic-gnome:gavin-norman:ose",
+      "accessed_at": "2026-11-08T15:31:54.949Z",
+      "source_locator": "PDF3 title/edition; PDF4 printed2TOC; PDF5 printed3sample/complete distinction; PDF58 printed56; PDF60backcover",
+      "raw_file_published": false
+    }
+  },
+  "source_meaning_preservation": "Original rules/parameters/requirements/operationalrequirements/status/evidence not modified; only scope annotations. Primary-source/immutable audit records unchanged.",
+  "runtime_policy": "Current runtime not reverified. Historical6-profileaudit1962fb9a retained; old absent/pending scale conclusion not a current release status. Generic notes not native entity/profile support.",
+  "remaining_work": [
+    "Full OSE thematic scope and online2026/Basicv1.4/fullbook equivalence not audited.",
+    "Current scale/map/detail and4in-scope profiles not reverified on latest exact productSHA.",
+    "Political areas/nomad extents outside current accepted scope pending decision.",
+    "No promise of entity-aware base/site/service retention on move or rename; historical notes were coordinate-bound."
+  ],
+  "canonical_registries_changed": false,
+  "product_queue_changed": false,
+  "rating_method_score_changed": false,
+  "full_game_alignment_completed": false,
+  "product_support_reverified": false
+}
