@@ -91,7 +91,10 @@ try {
   // Sample clear water inside the broad lake and beside its island, avoiding grid strokes.
   const points=await page.locator('.map-viewport .map-stage > svg[data-render-phase]').evaluate(svg=>{
     const c=(key,dx=0)=>{const b=svg.querySelector(`[data-hex-key="${key}"]`).getBBox();return{x:b.x+b.width/2+dx,y:b.y+b.height/2-17};};
-    return [c('12,9'),c('1,2'),c('10,9')];
+    const lake=svg.querySelector('[data-hex-key="1,2"]').getBBox();
+    const land=svg.querySelector('[data-hex-key="2,2"]').getBBox();
+    const edge=lake.x+lake.width;
+    return [c('12,9'),c('1,2'),c('10,9'),...[-7,-2,2,7].map(dx=>({x:edge+dx,y:land.y+land.height/2}))];
   });
   const pixels=await page.evaluate(async({data,points})=>{
     const im=new Image();im.src=`data:image/png;base64,${data}`;await im.decode();
@@ -100,6 +103,8 @@ try {
   },{data:atlas.toString('base64'),points});
   for(const pixel of pixels.slice(0,2))assert.ok(pixel.every((v,i)=>Math.abs(v-[93,145,156][i])<3),`Full-cell lake palette: ${pixels}`);
   assert.ok(pixels[2][0]>100,`Island stays land coloured: ${pixels}`);
+  const redRamp=pixels.slice(3).map(pixel=>pixel[0]);
+  assert.ok(redRamp.every((red,i)=>!i||red>redRamp[i-1]),`Lake and land blend progressively in PNG: ${redRamp}`);
   const stable=await overlays();
   // Expanding a map does not shuffle old cells. Also check a manual biome override.
   sample.map.regions[0].hexes.push({q:-1,r:0});sample.map.biomeOverrideByHexKey['0,0']='mountains';

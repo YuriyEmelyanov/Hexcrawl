@@ -19,6 +19,7 @@ export async function runWaterLifecycle({page,load,snapshot,ensureEdit,button,se
    assert.equal(await sea.count(),1);
    assert.equal(await sea.evaluate(el=>el.style.fill),'rgb(66, 110, 133)');
    assert.equal(await sea.locator('..').locator('image[data-engraving="sea"]').count(),1);
+   assert.ok(await page.locator('polygon.hex.sea ~ image.terrain-blend').count(), 'The sea shore has a blended fill');
   }
  };
 

@@ -14957,7 +14957,7 @@ export function App() {
   const coarseTextures = useMemo(() => !renderDetails || fineDisplay ? new Map<string, string>() : terrainTextures(
     positionedHexes.hexes.flatMap(hex => {
       const id = coarseTerrain.get(hex.key);
-      return !id || id === 'lake' || id === 'sea' ? [] : [{q:hex.q, r:hex.r, color:engravingFor(id)!.color}];
+      return id ? [{q:hex.q, r:hex.r, color:engravingFor(id)!.color}] : [];
     }),
   ), [renderDetails, fineDisplay, positionedHexes, coarseTerrain]);
 

@@ -81,6 +81,7 @@ try {
   assert.equal(await page.locator('.biome-display-toggle,.poi-display-toggle').count(), 0);
   assert.ok(await map.locator('image.terrain-blend').count());
   assert.equal(await map.locator('polygon[data-hex-key="-2,2"]').evaluate(node => getComputedStyle(node).fill), 'rgb(93, 145, 156)');
+  assert.equal(await map.locator('polygon[data-hex-key="-2,2"]').locator('..').locator('image.terrain-blend').count(), 1);
   assert.equal(await map.locator('[data-engraved-poi="-2,2"] circle').count(), 1);
   assert.ok(await map.locator('.river-polyline').count());
   assert.ok(await map.locator('.roads-layer line,.roads-layer polyline').count());
@@ -153,6 +154,7 @@ try {
   const n=await fine.locator('[data-fine-key]').count();
   assert.ok(n>93);
   assert.ok(await fine.locator('image[data-engraving="lake"]').count());
+  assert.ok(await fine.locator('[data-fine-terrain="lake"] > image.terrain-blend').count());
   assert.ok(await fine.locator('image.terrain-blend').count());
   assert.ok(await fine.locator('.river-polyline').count());
   assert.ok(await fine.locator('[data-fine-outline]').count());

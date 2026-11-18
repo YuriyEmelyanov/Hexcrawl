@@ -166,25 +166,26 @@ function summarize(rows) {
 async function junctions(page, step) {
   return page.evaluate(step => {
     const nodes = step === 1
-      ? document.querySelectorAll('[data-fine-cells] > g:not([data-fine-terrain="lake"]):not([data-fine-terrain="sea"]) > polygon')
-      : document.querySelectorAll('.map-rotation-layer > g > polygon:is(.hex.region,.hex.center)');
+      ? document.querySelectorAll('[data-fine-cells] > g > polygon')
+      : document.querySelectorAll('.map-rotation-layer > g > polygon:is(.hex.region,.hex.center,.hex.sea)');
     const corners = new Map(), edges = new Map();
     for (const node of nodes) {
       const key = node.getAttribute('data-hex-key') ?? node.parentElement.dataset.fineKey;
       const color = node.style.fill || node.getAttribute('fill');
-      if (['#5D919C', '#426E85'].includes(color?.toUpperCase()) || [ 'rgb(93, 145, 156)', 'rgb(66, 110, 133)' ].includes(color)) continue;
+      const water = ['#5D919C', '#426E85'].includes(color?.toUpperCase())
+        || ['rgb(93, 145, 156)', 'rgb(66, 110, 133)'].includes(color);
       const points = node.getAttribute('points').trim().split(/\s+/).map(pair => pair.split(',').map(Number));
       const tokens = points.map(([x,y]) => [x,y].map(n => n.toFixed(3)).join(','));
       for (let index = 0; index < tokens.length; index++) {
         const token = tokens[index], next = (index + 1) % points.length;
         const adjacent = corners.get(token) ?? { point: points[index], cells: [] };
-        adjacent.cells.push({ key, color });
+        adjacent.cells.push({ key, color, water });
         corners.set(token, adjacent);
         const edgeToken = [token, tokens[next]].sort().join('/');
         const edge = edges.get(edgeToken) ?? {
           point: points[index].map((n, axis) => (n + points[next][axis]) / 2), cells: [],
         };
-        edge.cells.push({ key, color });
+        edge.cells.push({ key, color, water });
         edges.set(edgeToken, edge);
       }
     }
@@ -192,11 +193,17 @@ async function junctions(page, step) {
     const [w,h] = document.querySelector('.map-stage > svg').getAttribute('viewBox').split(/\s+/).slice(2).map(Number);
     const closest = entries => entries.sort((a,b) =>
       Math.hypot(a.point[0] - w / 2, a.point[1] - h / 2) - Math.hypot(b.point[0] - w / 2, b.point[1] - h / 2))[0];
-    const triple = [...corners.values()].filter(entry => entry.cells.length === 3);
+    const dry = entry => entry.cells.every(cell => !cell.water);
+    const triple = [...corners.values()].filter(entry => entry.cells.length === 3 && dry(entry));
+    const borders = [...edges.values()].filter(entry => entry.cells.length === 2 && distinct(entry) === 2);
+    const shore = borders.filter(entry => entry.cells.some(cell => cell.water) && !entry.cells.every(cell => cell.water));
     return {
       '2-plus-1': closest(triple.filter(entry => distinct(entry) === 2)),
       '3-colors': closest(triple.filter(entry => distinct(entry) === 3)),
-      '2-neighbors': closest([...edges.values()].filter(entry => entry.cells.length === 2 && distinct(entry) === 2)),
+      '2-neighbors': closest(borders.filter(dry)),
+      'shore': closest(shore),
+      'shore-2-plus-1': closest([...corners.values()].filter(entry => entry.cells.length === 3
+        && distinct(entry) === 2 && entry.cells.some(cell => cell.water) && !entry.cells.every(cell => cell.water))),
     };
   }, step);
 }

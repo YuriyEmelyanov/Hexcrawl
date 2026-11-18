@@ -30,10 +30,9 @@ export function OneMileArtwork(p:Props){
    if (!id || !engravingFor(id)) throw new Error(`Unknown projected map terrain at ${key}: ${id}`);
    return [key,id as TerrainKind];
  })),[p.cells,edits]);
- const textures=useMemo(()=>terrainTextures(p.cells.flatMap(row=>{
-   const id=terrain.get(fineCellKey(row.cell))!;
-   return id==='lake'||id==='sea' ? [] : [{...row.cell,color:engravingFor(id)!.color}];
- })),[p.cells,terrain]);
+ const textures=useMemo(()=>terrainTextures(p.cells.map(({cell})=>({
+   ...cell,color:engravingFor(terrain.get(fineCellKey(cell))!)!.color,
+ }))),[p.cells,terrain]);
  const occupied=new Set<string>();
  const pointsOfInterest=p.state.poiFootprints.map(fp=>{
    const extent=detailFootprintExtentMiles(fp,grid),large=extent!==null&&extent>=1;
