@@ -229,6 +229,8 @@ try {
   assert.match(await message.getByRole('alert').innerText(), /mountains/i);
   await restoredCell.scrollIntoViewIfNeeded();
   assert.equal(await restoredCell.locator('polygon').first().getAttribute('fill'), '#99907B');
+  const restoredEngraving = restoredCell.locator('image[data-engraving="mountains"]');
+  assert.equal(await restoredEngraving.getAttribute('visibility'), 'hidden');
   await recovery.screenshot({path:fileURLToPath(new URL('terrain-v2-hx060-engraving-unavailable.png',output))});
   const recoveryMenu = recovery.locator('details.export-menu');
   await recoveryMenu.locator('summary').click();
@@ -256,6 +258,7 @@ try {
   ]);
   assert.ok(new URL(retryResponse.url()).searchParams.has('retry'));
   await message.waitFor({state:'hidden'});
+  await restoredEngraving.waitFor({state:'visible'});
   assert.equal(await recovery.getByRole('button',{name:'Undo',exact:true}).isEnabled(), beforeRetryHistory);
   await recovery.screenshot({path:fileURLToPath(new URL('terrain-v2-hx060-engraving-recovered.png',output))});
   await recoveryMenu.locator('summary').click();

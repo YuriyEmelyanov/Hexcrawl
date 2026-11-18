@@ -36,7 +36,7 @@ import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from '
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
 import {assignWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
 import {buildNaturalLakes} from './rendering/lakeGeometry';
-import { Engraving, EngravingAttempts } from './rendering/EngravedTerrain';
+import { Engraving, EngravingLoading } from './rendering/EngravedTerrain';
 import { engravingFor, engravingUrl, type TerrainKind } from './rendering/engravingAssets';
 import { terrainTextures } from './rendering/terrainBlend';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
@@ -16779,8 +16779,10 @@ export function App() {
     });
   }
 
+  const engravingLoading = useMemo(() => ({attempts:engravingAttempts, failed:visibleEngravingFailures}),
+    [engravingAttempts, visibleEngravingFailures]);
   return (
-    <EngravingAttempts.Provider value={engravingAttempts}>
+    <EngravingLoading.Provider value={engravingLoading}>
     <div className="app" onClickCapture={e=>{if(fineGate(e))poiClickGate(e);}} onChangeCapture={e=>{if(fineGate(e))poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
       if(geometryRefinementPreviewRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();closeGeometryRefinementPreview();return;}
       if(fineDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelFineDraft();return;}
@@ -17470,6 +17472,6 @@ export function App() {
       </section>
 
     </div>
-    </EngravingAttempts.Provider>
+    </EngravingLoading.Provider>
   );
 }
