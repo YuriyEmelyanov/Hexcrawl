@@ -1,0 +1,366 @@
+{
+  "run_id": "2026-11-18T2100-reviewer-HX-BL-060-F4",
+  "task_id": "HX-BL-060",
+  "role": "reviewer",
+  "pr": 506,
+  "branch": "agent/hx-bl-060-unified-biome-map",
+  "status": "changes_requested",
+  "head_sha": "1175b43bb3a84dff34e3bf1b05847c54103f0564",
+  "tree_sha": "da97fd6d01aafea826339362858cd10f6d3fa6a0",
+  "release_base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "role_selection_reason": "F4 review_ready on an exact SHA with finished CI and no active product owner before the independent reviewer claim.",
+  "spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F4.md",
+  "spec_blob_sha": "9e1ba76e4978ed07e7d37fbe17e3277e5dd979d7",
+  "prior_implementation_ref": "agent-work/evidence/HX-BL-060-recovery-performance-1175b43/implementation.json",
+  "review_ref": "agent-work/evidence/HX-BL-060-review-1175b43/review.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-060-review-1175b43/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-060-review-1175b43/score-assessment1.2.json",
+  "visible_evidence_ref": "agent-work/evidence/HX-BL-060-review-1175b43/classic42-shore-round-trip.png",
+  "claim_ref": "agent-work/claims/2026-11-18T2100-reviewer-HX-BL-060-F4.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-18T2100-reviewer-HX-BL-060-F4-next.json",
+  "review_ready": false,
+  "next_role": "programmer",
+  "next_step": "Исправить сохранение плавных переходов при 6 → 1 → 6 и согласовать цвет общей грани при перекрытии двух соседних скруглений. Проверить слегка неровную кромку общего градиента.",
+  "remaining_acceptance": [
+    "Исправить сохранение плавных переходов при 6 → 1 → 6 и согласовать цвет общей грани при перекрытии двух соседних скруглений. Проверить слегка неровную кромку общего градиента.",
+    "Показать на том же сохранении плавные границы озера и моря на обоих масштабах и в PNG, в том числе после возврата. Изменить существующую сквозную проверку, добавить недостающие случаи в текущую сравнительную сцену.",
+    "Повторить сравнительный замер первого рисунка и размера ресурсов на исправленном SHA. Передать зелёный полный CI и материалы на независимую приёмку точного SHA."
+  ],
+  "forecast": "Ориентир — два следующих запуска команды: исправление с CI и новая независимая приёмка. Календарный ориентир около 6 часов после текущего запуска при одном проходе, решение владельца о публикации отдельно.",
+  "approval_status": "approved_scope_fixes_only_release_not_authorized",
+  "publication_authorized": false,
+  "owner_decisions_needed": [],
+  "started_at": "2026-11-18T17:56:20.652Z",
+  "completed_at": "2026-11-18T18:03:01.781Z",
+  "review_method": "Independent exact source and CI/PNG audit, witnessed Classic scale round trip in CI artifact, pixel sample probe by a fresh read-only agent.",
+  "independent_reviewer": "Fresh context source/raster subagent plus direct reviewer CI and catalog verification, both read-only against candidate.",
+  "findings": [
+    {
+      "id": "F4-R04-01",
+      "severity": "blocking",
+      "status": "confirmed",
+      "requirements": [
+        "R04",
+        "AC02",
+        "AC05"
+      ],
+      "summary": "После 6 → 1 → 6 плавная полоса пропадает у всех разноцветных гексов, в том числе на берегу озера.",
+      "root_cause": "App.tsx:12068,14957,16318,16372–16407,16480–16490. The prepared fine state remains present with viewStep=6; the coarse layer is active but coarseTextures is empty. The PNG path clones the current SVG (App.tsx:1658), so the omitted images are also absent from the export; this PNG path inference was not separately replayed.",
+      "proof": {
+        "workflow_artifact": 14442851062,
+        "files": [
+          "classic42-6mi-before.jpg",
+          "classic42-6mi-after.jpg"
+        ],
+        "scenario": "test/browser/one-mile.smoke.mjs:74,102 (Classic seed 42), exact source 1175b43. Pictures are immediate CI screenshots; use the stable lake crop for comparison."
+      }
+    },
+    {
+      "id": "F4-R04-02",
+      "severity": "blocking",
+      "status": "confirmed",
+      "requirements": [
+        "R04",
+        "AC02",
+        "AC05"
+      ],
+      "summary": "Две соседние вершины 2+1 могут давать разные цвета для одной физической точки. На обычном стыке мягкая внешняя кромка остаётся строго прямой.",
+      "root_cause": "terrainBlend.ts:44–56,65–71,91–100. Vertex discs with radius .64 R overlap; the first eligible vertex is chosen in cell-local order. The ripple is evaluated only in the 2+1 branch, leaving ordinary and three-color edges without the specified subtle fringe.",
+      "proof": {
+        "shared_point": "x=√3/2 R, y=.139999 R",
+        "west_rgb": [
+          122,
+          146.5,
+          120
+        ],
+        "east_rgb": [
+          115.807,
+          142.4635,
+          121.4377
+        ],
+        "raw_raster_row_40_west_last_rgb": [
+          128,
+          150,
+          119
+        ],
+        "raw_raster_row_40_east_first_rgb": [
+          112,
+          140,
+          122
+        ],
+        "two_color_edge_red_columns": [
+          173,
+          167,
+          159,
+          149,
+          139,
+          128
+        ],
+        "two_color_identical_rows": 20,
+        "palettes": [
+          "#B2B76B",
+          "#426E85"
+        ],
+        "reproduction": "Node 24 + the attached terrainBlend-review-probe.mjs with exact checkout as argument; both rendering scales use the same sampler."
+      }
+    }
+  ],
+  "positive_evidence": [
+    {
+      "requirement": "R01–R03, R05/AC01",
+      "result": "26/26 exact 768px catalog PNG checksums and source manifest records, agreed map/POI colors, alpha≈128 bounds. Fresh-agent minimum clearance 0.064097 R for alpha>=32 across orientations. A few alpha=1 filter pixels outside hex are below this explicit threshold.",
+      "method": "Independent local hash/catalog/PNG comparison."
+    },
+    {
+      "requirement": "R08–R09/AC05",
+      "result": "Existing real edited map (road-entry fixture), mountain engraving HTTP 503, complete PNG blocked, JSON persists, retry restores byte-identical full PNG and Undo/Redo history. Production decode handles invalid image bytes by inspection; the HTTP 200 malformed case was not executed.",
+      "method": "Exact CI logs, test checks and downloaded before/after recovery files.",
+      "artifact_id": 14442576350
+    },
+    {
+      "requirement": "AC04/AC05/AC07",
+      "result": "CI success for Check, RNG, browser and paired visual comparison. Normal direct-open views and export show water gradients in provided fixtures. Results are scoped to exact candidate; these passes do not cover a 6→1→6 render assertion.",
+      "artifact_id": 14442485532
+    }
+  ],
+  "remaining_proof": [
+    {
+      "requirement": "AC02/AC05",
+      "status": "additional_evidence",
+      "detail": "A shore example is selected by proximity in scripts/profile-engraved-map.mjs:194–206. Both exact visual shore samples exercise lake, so add a labelled open sea coast and verify both scales and PNG from the same state, including free ends and overlapping 2+1 vertices. Sea behavior was also covered in the independent raster diagnostic."
+    },
+    {
+      "requirement": "AC06",
+      "status": "repeat_after_correction",
+      "detail": "Both native-scale first drawing regressions exceed the observed sample ranges. Runtime rasterization of mixed cells and 26 local assets are additional work. Re-run the same bounded A/B on the fixed SHA and account for persistent first-draw cost and cold transfer separately from cache warm runs. No absolute performance threshold imposed."
+    }
+  ],
+  "benchmark": {
+    "run_id": 44336202574,
+    "artifact_id": 14442485532,
+    "source_checkout_sha": "4a0fc361045dd4e93149465f6d9026d5da07cc55",
+    "browser": "151.0.7922.34",
+    "method": "Same runner, sample n=5 after separate warmup, comparable seeds/camera.",
+    "first_drawing_ms": [
+      {
+        "cells": 93,
+        "base_median": 172.5,
+        "head_median": 249.4,
+        "base_range": [
+          166.4,
+          195.4
+        ],
+        "head_range": [
+          239.6,
+          258.3
+        ]
+      },
+      {
+        "cells": 416,
+        "base_median": 335.1,
+        "head_median": 557.4,
+        "base_range": [
+          327.4,
+          341
+        ],
+        "head_range": [
+          547.6,
+          589.3
+        ]
+      }
+    ],
+    "fine_3471": {
+      "base_preparation_and_drawing_ms": 1977.9,
+      "head_preparation_and_drawing_ms": 2035.5,
+      "base_zoom_frame_median_ms": 66.65,
+      "head_zoom_frame_median_ms": 33.3
+    },
+    "cold_93_asset_transfer_bytes": {
+      "base": 45389,
+      "head": 1038279
+    }
+  },
+  "ci": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44336202574",
+    "run_id": 44336202574,
+    "exact_source_head": "1175b43bb3a84dff34e3bf1b05847c54103f0564",
+    "rendering_comparison": {
+      "artifact_id": 14442485532,
+      "checkout_sha": "4a0fc361045dd4e93149465f6d9026d5da07cc55",
+      "browser": "151.0.7922.34"
+    },
+    "jobs": [
+      {
+        "name": "world-random",
+        "id": 134913768036,
+        "conclusion": "success"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "id": 134913768486,
+        "conclusion": "success"
+      },
+      {
+        "name": "browser",
+        "id": 134913768498,
+        "conclusion": "success"
+      },
+      {
+        "name": "check",
+        "id": 134913768600,
+        "conclusion": "success"
+      }
+    ],
+    "node": {
+      "executed": 429,
+      "passed": 429,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "runner_suites_executed": 10,
+      "runner_suites_passed": 10,
+      "log_extract": [
+        "2026-11-18T15:30:46.5521756Z HX-BL-060 Classic 1-mile · road-entry-zigzags · 3471 cells · 0,6 deciduous_woodland → mountains · PNG 700628 bytes · undo/redo/JSON",
+        "2026-11-18T15:30:46.5523984Z HX-BL-060 Classic 6-mile · 0,1 deciduous_woodland → open_plains · PNG 491847 bytes · undo/redo/JSON",
+        "2026-11-18T15:30:53.9197182Z HX-BL-060 engraving recovery · mountains · retained JSON and history · restored exact PNG",
+        "2026-11-18T15:35:12.8677831Z Terrain v2: engraved catalogue, stable artwork, old/Mythic saves, water colours, lake/island pixels, rotation, map expansion, PNG exports passed.",
+        "2026-11-18T15:37:42.3019620Z E6 water lifecycle: Classic/Mythic, draft/whole-body/preview/error, notes+biome+RNG, exact history/JSON, PNG mask exclusion, wheel+pan+rotation, 1500/390/320 passed.",
+        "2026-11-18T15:38:19.3152269Z Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+      ],
+      "exact_recovery": true,
+      "artifact_id": 14442576350
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "1175b43bb3a84dff34e3bf1b05847c54103f0564",
+    "head_sha": "1175b43bb3a84dff34e3bf1b05847c54103f0564",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "reviewer working diff",
+    "scenario": "Read-only acceptance; existing workflow artifacts and temporary pixel diagnostics",
+    "reuse_or_new_reason": "No permanent reviewer tests or product edits.",
+    "count_source": "Same immutable SHA on both sides; programmer candidate delta attached separately.",
+    "node": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "browser_rng": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "candidate_test_change_summary": {
+      "base_sha": "7f844e40daa94e96cecca57a7bee0fc49d2fcfb6",
+      "head_sha": "1175b43bb3a84dff34e3bf1b05847c54103f0564",
+      "browser": {
+        "suites": [
+          "engraved-map",
+          "terrain-color",
+          "save-history/water-lifecycle"
+        ],
+        "added": 1,
+        "removed": 0,
+        "modified": 3,
+        "scenario": [
+          "Actual edited one-mile save and one unavailable mountain PNG: colored hex, explicit alert, blocked PNG, available JSON, successful retry, complete PNG and Undo/Redo unaffected.",
+          "Existing real Classic journey on both scales, terrain atlas PNG color ramp, and established sea lifecycle now also witness shoreline blends."
+        ],
+        "reuse_or_new_reason": "Add one separate asset failure flow with the existing complete normal export as reference. Use the existing import and water editing flows for lake and sea assertions."
+      },
+      "node": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "browser_rng": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "count_source": "Exact checkpoint-to-head diff and the new independent recovery context in test/browser/engraved-map.smoke.mjs. The temporary pixel oracle is diagnostic only."
+    },
+    "candidate_test_governance": "Independent audit found the new asset-failure case distinct and meaningful; reusing existing shore/atlas and sea-edit flows avoids duplicate permanent coverage. Extend the existing scale journey to assert ground and water geometry visibility after return and in PNG. Use existing comparison slots for free-end and sea evidence."
+  },
+  "score_assessment": {
+    "task_id": "HX-BL-060",
+    "pr": 506,
+    "head_sha": "1175b43bb3a84dff34e3bf1b05847c54103f0564",
+    "tree_sha": "da97fd6d01aafea826339362858cd10f6d3fa6a0",
+    "release_base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "model_version": "1.2",
+    "model_ref": "agent-work/strategy/score-model.md",
+    "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+    "score_baseline_ref": "agent-work/score/current-score.json",
+    "score_baseline_blob_sha": "c93c6e841052e80d50cc1f9eb6963b4739d045f5",
+    "status": "insufficient_evidence",
+    "awarded_points": 0,
+    "delta_points": null,
+    "double_count": false,
+    "assessed_at": "2026-11-18T18:03:01.781Z",
+    "criteria": [
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Independent exact source and CI/PNG audit, witnessed Classic scale round trip in CI artifact, pixel sample probe by a fresh read-only agent.",
+        "quality": "The selected current look and normal open-flow are visible in both scales. Two confirmed terrain-rendering regressions prevent quality grade confirmation.",
+        "breadth": "Desktop/390, published-base comparison and selected current map fixtures; no breadth count at top 5/10/20.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-060-review-1175b43/review.json",
+          "agent-work/evidence/HX-BL-060-review-1175b43/classic42-shore-round-trip.png",
+          "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44336202574"
+        ],
+        "limitations": [
+          "Visibility roles and fog unrelated to this package; 6-mile return loses gradients; overlap seam and general fringe fail R04."
+        ]
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Independent exact source and CI/PNG audit, witnessed Classic scale round trip in CI artifact, pixel sample probe by a fresh read-only agent.",
+        "quality": "Exact recovery, a complete PNG and JSON history retention observed. Coarse export can omit the gradient layer after a scale return.",
+        "breadth": "Current and older bounded fixture scenarios; no full breadth or new format claims.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-060-review-1175b43/review.json",
+          "agent-work/evidence/HX-BL-060-review-1175b43/classic42-shore-round-trip.png",
+          "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44336202574"
+        ],
+        "limitations": [
+          "PNG after the round trip still needs execution, all formats and roles are not covered, full approved corpus not certified."
+        ]
+      }
+    ],
+    "carry_forward": "Require refreshed independent assessment on any changed SHA; update public score only after separately authorized publication."
+  }
+}

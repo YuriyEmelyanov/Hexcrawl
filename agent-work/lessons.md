@@ -1131,3 +1131,7 @@ The old large-map probe waited for the retired display selector. Running it thro
 
 ### 2026-11-18T1800-programmer-HX-BL-060-F4 — reuse fixed blend geometry and verify asset bytes
 Hex sample weights and rounded corner fields are fixed for each texture pixel. Prepare them once and reuse a single temporary canvas. Keep color-mix order and world phase unchanged, then verify against prior pixel output. Track resource readiness per distinct URL because a map cannot depend on SVG image load/error events alone. A recoverable failure should preserve the map and reject the incomplete export. Evidence: agent-work/evidence/HX-BL-060-recovery-performance-1175b43/implementation.json.
+
+### 2026-11-18T2100-reviewer-HX-BL-060-F4 — проверять фактический масштаб и общую кромку
+
+Состояние подготовленной 1-мильной сцены сохраняется при возврате на 6 миль. Проверяйте фон после 6 → 1 → 6 на том же сохранении и в PNG. Для двух перекрывающихся скруглений проверяйте одинаковые мировые точки с обеих сторон ребра, в том числе сразу за границей зоны влияния. Зелёный CI без этих утверждений пропустил оба дефекта.
