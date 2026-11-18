@@ -209,13 +209,21 @@ try {
     });
   });
   await recovery.goto(url);
-  await Promise.all([
-    recovery.waitForResponse(response => mountainAsset.test(response.url()) && response.status() === 503),
-    recovery.locator('input[type=file]').setInputFiles({
-      name:'recovery.json', mimeType:'application/json', buffer:Buffer.from(JSON.stringify(fineSave)),
-    }),
-  ]);
+  await recovery.locator('input[type=file]').setInputFiles({
+    name:'recovery.json', mimeType:'application/json', buffer:Buffer.from(JSON.stringify(fineSave)),
+  });
+  const recoveryScale = recovery.locator('[data-fine-step]:enabled');
   const restoredCell = recovery.locator('[data-fine-key="0,6"]');
+  async function openRecoveredFine() {
+    await recoveryScale.waitFor();
+    if (await recoveryScale.inputValue() !== '1') await recoveryScale.selectOption('1');
+    await restoredCell.waitFor({timeout:120000});
+  }
+  // The save preserves the edit. A new tab starts in the source presentation.
+  await Promise.all([
+    recovery.waitForResponse(response => mountainAsset.test(response.url()) && response.status() === 503,{timeout:120000}),
+    openRecoveredFine(),
+  ]);
   const message = recovery.locator('[data-engraving-failure]');
   await message.waitFor();
   assert.match(await message.getByRole('alert').innerText(), /mountains/i);
@@ -260,8 +268,9 @@ try {
   await recoveryMenu.locator('summary').click();
   await recovery.getByRole('button',{name:'Undo',exact:true}).click();
   await restoredCell.waitFor({state:'detached'});
+  assert.equal(await recovery.locator('polygon.hex.region[data-hex-key], polygon.hex.center[data-hex-key]').count(),0);
   await recovery.getByRole('button',{name:'Redo',exact:true}).click();
-  await restoredCell.waitFor();
+  await openRecoveredFine();
   assert.equal(await message.count(), 0, 'Retry does not add an undo step, and redo retains the restored engraving');
   assert.deepEqual(recoveryErrors, []);
   await recovery.close();
