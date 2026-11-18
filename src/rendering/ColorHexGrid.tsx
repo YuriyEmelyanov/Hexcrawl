@@ -9,6 +9,6 @@ function ColorHexGridImpl({cells,radius}:{cells:Cell[];radius:number}){
    }
   }return [...edges.values()].join('');
  },[cells,radius]);
- return <path className="color-hex-grid" d={path} fill="none" stroke="#575242" strokeOpacity={.42} strokeWidth={.6} pointerEvents="none"/>;
+ return <path className="color-hex-grid" d={path} fill="none" stroke="#575242" strokeOpacity={.22} strokeWidth={.55} vectorEffect="non-scaling-stroke" pointerEvents="none"/>;
 }
 export const ColorHexGrid=memo(ColorHexGridImpl);
