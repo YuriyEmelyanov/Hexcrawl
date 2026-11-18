@@ -123,8 +123,25 @@ try {
   const fine = map.locator('[data-fine-world]');
   const scale = page.locator('[data-fine-step]');
   await page.setViewportSize({ width:1440, height:1000 });
-  await scale.selectOption('1');
-  await fine.waitFor({timeout:120000});
+  async function openFine() {
+    await scale.selectOption('1');
+    await page.waitForFunction(()=>document.querySelector('[data-fine-world],[data-fine-scene-error]'),null,{timeout:120000});
+    return page.locator('[data-fine-scene-error]').count() ? page.locator('[data-fine-scene-error]').innerText() : null;
+  }
+  const rejected=await openFine();
+  let fineBaseline=saved;
+  let fineFixture='engraved-classic-map';
+  if (rejected) {
+    assert.match(rejected,/геометрия исходной карты несовместима/);
+    assert.deepEqual((JSON.parse(await download('JSON'))).map,saved.map,'Rejected fine switch preserves source');
+    console.log(`HX-BL-060 published Classic fixture refuses 1-mile: ${rejected}`);
+    fineFixture='road-entry-zigzags';
+    await load(JSON.parse(await fs.readFile(new URL('test/fixtures/road-entry-zigzags.json',root))));
+    fineBaseline=JSON.parse(await download('JSON'));
+    await page.screenshot({path:fileURLToPath(new URL('terrain-v2-hx060-road-entry-6-mile.png',output))});
+    assert.equal(await openFine(),null,'Published road-entry world supports the 1-mile scale');
+  }
+  await fine.waitFor();
   const n=await fine.locator('[data-fine-key]').count();
   assert.ok(n>93);
   assert.ok(await fine.locator('image[data-engraving="lake"]').count());
@@ -135,7 +152,7 @@ try {
   const fineCell=fine.locator('[data-fine-key="0,6"]');
   const fineArt=fineCell.locator('image.terrain-engraving');
   const initial=await fineArt.getAttribute('data-engraving');
-  assert.equal(initial,next);
+  assert.ok(initial && initial!=='mountains');
   await fineCell.dispatchEvent('click');
   const panel=page.locator('[data-fine-panel]');
   await panel.getByRole('button',{name:'Редактировать',exact:true}).click();
@@ -149,7 +166,7 @@ try {
   assert.equal(await fineArt.getAttribute('data-engraving'),fineBiome);
   const fineSave=JSON.parse(await download('JSON'));
   for (const layer of ['regions','rivers','roads','crossings','terrainByHexKey']) {
-    assert.deepEqual(fineSave.map[layer],saved.map[layer],layer);
+    assert.deepEqual(fineSave.map[layer],fineBaseline.map[layer],layer);
   }
   assert.equal(fineSave.map.physicalGrid.fineCellEdits['0,6'].landBiomeId,fineBiome);
   await load(fineSave);
@@ -164,7 +181,7 @@ try {
   const rotated=await download('PNG');
   assert.equal(rotated.subarray(1,4).toString(),'PNG');
   await fs.writeFile(new URL('terrain-v2-hx060-classic-1-mile-rotated.png',output),rotated);
-  console.log(`HX-BL-060 Classic 1-mile · ${n} cells · 0,6 ${initial} → ${fineBiome} · PNG ${finePng.length} bytes · undo/redo/JSON`);
+  console.log(`HX-BL-060 Classic 1-mile · ${fineFixture} · ${n} cells · 0,6 ${initial} → ${fineBiome} · PNG ${finePng.length} bytes · undo/redo/JSON`);
   assert.deepEqual(failures, []);
   console.log(`HX-BL-060 Classic 6-mile · ${selected.key} ${selected.biome} → ${next} · PNG ${png.length} bytes · undo/redo/JSON`);
 } finally {

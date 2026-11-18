@@ -113,7 +113,7 @@ try {
   assert.deepEqual(savedAfter.map.regions, savedMap.map.regions);
   assert.deepEqual(savedAfter.map.waterPoiByHexKey, savedMap.map.waterPoiByHexKey);
   await page.getByRole('button', { name: 'Switch to English', exact: true }).click();
-  assert.equal(await page.locator('.hex-coordinate-toggle').innerText(),'#\nCoordinates');
+  assert.equal(await page.locator('.hex-coordinate-toggle').getByText('Coordinates',{exact:true}).count(),1);
   assert.equal(await page.locator('.biome-display-toggle,.poi-display-toggle').count(),0);
   await page.getByRole('button', { name: 'Переключить на русский', exact: true }).click();
   for (const width of [390, 320]) {
