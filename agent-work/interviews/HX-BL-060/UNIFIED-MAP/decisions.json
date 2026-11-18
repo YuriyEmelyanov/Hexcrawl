@@ -3,9 +3,10 @@
   "stage_id": "UNIFIED-MAP",
   "draft_spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-D2.md",
   "draft_spec_version": "D2",
-  "status": "awaiting_owner_answers",
+  "status": "interview_completed",
   "round_refs": [
-    "agent-work/interviews/HX-BL-060/UNIFIED-MAP/round-001.json"
+    "agent-work/interviews/HX-BL-060/UNIFIED-MAP/round-001.json",
+    "agent-work/interviews/HX-BL-060/UNIFIED-MAP/round-002.json"
   ],
   "settled_requirements": [
     {
@@ -21,7 +22,7 @@
     },
     {
       "scope": "Числа и элементы",
-      "rule": "Прозрачные PNG, 55% видимой высоты, 0.04R, градиент 160%, отдельный вид значков POI, круг 0.425R с цветом своего биома, гравюра под видимым POI скрыта.",
+      "rule": "Прозрачные PNG, 50% видимой высоты с центром в центре гекса, 0.04R, градиент 160%, отдельный вид значков POI, круг 0.425R с цветом своего биома, гравюра под видимым POI скрыта.",
       "requirements": [
         "R01",
         "R04",
@@ -30,7 +31,8 @@
         "AC02",
         "AC03"
       ],
-      "source_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json"
+      "source_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
+      "size_superseding_owner_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json"
     },
     {
       "scope": "Данные и выпуск",
@@ -48,18 +50,155 @@
       "source_ref": "agent-work/specs/HX-BL-060-unified-biome-map-D2.md"
     }
   ],
-  "decisions": [],
-  "open_question_ids": [
-    "MAP-Q01",
-    "MAP-Q02",
-    "MAP-Q03",
-    "MAP-Q04"
+  "decisions": [
+    {
+      "question_id": "MAP-Q01",
+      "status": "resolved",
+      "choice": "A",
+      "owner_answer": "01 - гравюры на море и озерах делаем",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-1",
+      "interpretation": "Показывать гравюры и на озере, и на море. Для спецификации использовать показанные кандидаты, озёрную рябь и морские волны из реестра D2. Ответ подтверждает наличие рисунков, выбор показанных PNG является рабочей трактовкой ответа без указания замены.",
+      "requirement_refs": [
+        "R01",
+        "R02",
+        "AC01",
+        "AC03"
+      ]
+    },
+    {
+      "question_id": "MAP-Q02",
+      "status": "resolved",
+      "choice": "B",
+      "owner_answer": "02 - целые гексы",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-1",
+      "interpretation": "Озёрная вода заполняет целые озёрные гексы. Не менять состав водных клеток, IDs и геометрию реки. Цвета и направление соединений остаются различимыми.",
+      "requirement_refs": [
+        "R04",
+        "R07",
+        "AC02",
+        "AC03",
+        "AC05"
+      ]
+    },
+    {
+      "question_id": "MAP-Q03",
+      "status": "resolved",
+      "choice": "custom",
+      "owner_answer": "03 - размер гравюр не менять. Гравюры всегда в центрируются по центру гекса.",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-1",
+      "interpretation": "Отказ от сдвига и подгонки по отдельным гексам. Центр видимой гравюры совпадает с центром гекса. Число 55% заменено последующим решением MAP-Q06 на 50% для всех гравюр.",
+      "requirement_refs": [
+        "R05",
+        "R07",
+        "R09",
+        "AC02",
+        "AC03",
+        "AC05"
+      ]
+    },
+    {
+      "question_id": "MAP-Q04",
+      "status": "resolved",
+      "choice": "custom",
+      "owner_answer": "04 - у нас нет несколько точек интереса в одном гексе. Поэтому один гекс - один круг (если есть), одна точка интереса.",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-1",
+      "interpretation": "На одном гексе с точкой интереса один круг и одна точка. Без POI круга нет. Сохранить якоря, текущие данные и контуры объектов на несколько гексов. Не добавлять групповые маркеры и не менять исторические данные. Нештатные противоречивые записи обрабатывать по существующему контракту импорта без потерь данных.",
+      "requirement_refs": [
+        "R06",
+        "R07",
+        "AC03",
+        "AC05"
+      ]
+    },
+    {
+      "question_id": "MAP-Q05",
+      "status": "resolved",
+      "choice": "A",
+      "owner_answer": "05 - выпускаем оба масштаба.",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-1",
+      "interpretation": "Оба масштаба, 6 и 1 миля, идут в одном пакете. Сценарий на 6 милях показывается первым как промежуточная проверка. Публикация одного проверенного пакета требует отдельного разрешения.",
+      "requirement_refs": [
+        "R07",
+        "AC05",
+        "AC07"
+      ]
+    },
+    {
+      "question_id": "MAP-Q06",
+      "status": "resolved",
+      "choice": "custom",
+      "owner_answer": "Сделай все гравюры 50%",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-2",
+      "interpretation": "Все гравюры имеют 50% видимой высоты своего ориентированного гекса. Центр видимой части совпадает с центром гекса, единый размер без индивидуальных сдвигов и подгонки. 52 PNG удовлетворяют безопасному отступу в обеих ориентациях.",
+      "requirement_refs": [
+        "R05",
+        "R07",
+        "AC01",
+        "AC02",
+        "AC03",
+        "AC05"
+      ]
+    },
+    {
+      "decision_id": "MAP-UI-01",
+      "status": "resolved",
+      "choice": "direct_owner_instruction",
+      "owner_answer": "Убрать переключение режима из интерфейса, оставшиеся переключатели в блоке скомпоновать, чтоб меньше занимали места.",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-1",
+      "interpretation": "Удалить переключатель режима биомов из RU/EN. Компактно сгруппировать оставшиеся элементы блока отображения и сохранить их функции, подписи и доступность. Сверить широкую и узкую панели.",
+      "requirement_refs": [
+        "R08",
+        "AC04",
+        "AC05"
+      ]
+    },
+    {
+      "decision_id": "MAP-UI-02",
+      "status": "resolved",
+      "choice": "direct_owner_instruction",
+      "owner_answer": "Между гексами плавный переход фона должен быть на вершинах со сдвигом, чтобы плавнее переход был.",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-1",
+      "interpretation": "Сместить плавный переход фона на вершинах, сохраняя принятый принцип градиента 160%. Проверить стык двух и трёх биомов, обе ориентации, читаемость цвета каждого гекса и совпадение с PNG.",
+      "requirement_refs": [
+        "R04",
+        "AC02",
+        "AC03",
+        "AC05"
+      ]
+    },
+    {
+      "decision_id": "MAP-UI-03",
+      "status": "resolved",
+      "choice": "direct_owner_instruction",
+      "owner_answer": "Границу гекса сделать менее выраженной, но видимой.",
+      "answer_source_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+      "source_id": "owner-message-1",
+      "interpretation": "Ослабить обычную границу гекса при сохранении видимости в крупном и уменьшенном масштабе. Сетка, подсветка выбранного гекса и контуры POI проверяются раздельно.",
+      "requirement_refs": [
+        "R04",
+        "R07",
+        "AC02",
+        "AC03",
+        "AC05"
+      ]
+    }
   ],
-  "conditional_question_ids": [
-    "MAP-Q05"
-  ],
-  "interview_completed": false,
+  "open_question_ids": [],
+  "conditional_question_ids": [],
+  "interview_completed": true,
   "publication_authorized": false,
-  "revision_id": "001",
-  "updated_at": "2026-11-18T03:08:09.501+00:00"
+  "revision_id": "002",
+  "updated_at": "2026-11-18T05:36:39.730+00:00",
+  "owner_answers_refs": [
+    "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json"
+  ],
+  "closure_note": "MAP-Q01–05 закрыты прямыми ответами. Новый конфликт центрирования MAP-Q06 закрыт решением 50% для всех. Три прямых уточнения интерфейса трассированы."
 }

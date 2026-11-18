@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-18T03:08:09.501+00:00",
+  "updated_at": "2026-11-18T05:36:39.730+00:00",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -879,15 +879,18 @@
       "approved_at": "2026-11-17T11:24:24.659Z",
       "implementation_authorized": false,
       "release_authorized": false,
-      "execution_state": "Раунд 001 предъявлен. Ожидаются ответы по четырём основным вопросам. Порядок публикации уточняется условно.",
-      "next_role": "interviewer",
-      "next_step": "После ответов по MAP-Q01–04 сверить их с контрактом, при необходимости учесть условный MAP-Q05 и передать решения аналитику.",
+      "execution_state": "Интервью завершено. Следующий этап — чистовая спецификация.",
+      "next_role": "business-analyst",
+      "next_step": "Аналитик готовит чистовую спецификацию HX-BL-060 с 50% видимой высоты всех гравюр, обоими масштабами и обновлёнными критериями приёмки.",
       "requirements": [
         "Оставить одно представление биомов: согласованный цвет + прозрачный PNG + смещённый межбиомный градиент160% со сглаженными углами. Удалить режимы биомов Эмоджи/Цвет и переключатель трёх режимов из RU/EN интерфейса.",
         "Заменить старые рисунки всех существующих биомов, включая озеро/море, выбранными гравюрами; новые семь biomeId добавляются в HX-BL-021 через тот же реестр. Отдельные настройки значков POI не удалять этим поручением.",
-        "Размер PNG —55% высоты гекса по видимой графике, не прозрачному холсту; полный рисунок без обрезания, деформации или поворота в обеих ориентациях, безопасный отступ0.04R.",
+        "Видимая графика PNG — 50% высоты гекса, центр рисунка совпадает с центром гекса; полный рисунок без обрезания, деформации или поворота в обеих ориентациях, безопасный отступ0.04R.",
         "При POI гравюра биома не рисуется; POI в крупном круге радиусом0.425R, внутри приглушён собственный цвет биома. Цвет гекса сохраняет принадлежность даже у границы соседнего биома.",
-        "Совместимость старых карт и настроек, слои/реки/дороги, поддерживаемые масштабы, ручное редактирование, PNG/JSON и Undo/Redo; измерения производительности до/после без изменения географии и расхода её RNG."
+        "Совместимость старых карт и настроек, слои/реки/дороги, поддерживаемые масштабы, ручное редактирование, PNG/JSON и Undo/Redo; измерения производительности до/после без изменения географии и расхода её RNG.",
+        "Озёрная вода заполняет целые гексы. Озёра и море имеют свои гравюры. В одном гексе с точкой интереса один круг и одна точка.",
+        "Компактно скомпоновать оставшиеся переключатели блока. На вершинах сместить плавный переход фона. Обычную границу гекса ослабить, сохранив видимость.",
+        "Выпуск единого оформления на 6 и 1 миле одним проверенным пакетом."
       ],
       "acceptance_outline": [
         "Реальная карта и PNG показывают единый принятый дизайн для каждого существующего биома в обеих ориентациях, включая повторяющиеся соседние клетки и тройные стыки.",
@@ -911,9 +914,9 @@
       "acceptance_ref": null,
       "published_ref": null,
       "ready_for_development": false,
-      "interview_status": "awaiting_owner_answers",
-      "interview_completed": false,
-      "ui_preview_pending": false,
+      "interview_status": "interview_completed",
+      "interview_completed": true,
+      "ui_preview_pending": true,
       "ui_preview_responsible": "business-analyst",
       "owner_scope_amendment": {
         "replace_all_existing_biome_art": true,
@@ -924,13 +927,20 @@
         ],
         "new_biome_generation_rules": false,
         "png": true,
-        "ink_height_fraction": 0.55,
+        "ink_height_fraction": 0.5,
         "gradient_width_multiplier": 1.6,
         "hex_inset_radius_fraction": 0.04,
         "poi_circle_radius_fraction": 0.425,
-        "source_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json"
+        "source_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
+        "ink_centered_on_hex": true,
+        "whole_hex_lakes": true,
+        "scales_miles": [
+          1,
+          6
+        ],
+        "owner_answers_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json"
       },
-      "updated_at": "2026-11-18T03:08:09.501+00:00",
+      "updated_at": "2026-11-18T05:36:39.730+00:00",
       "precedes_task_ids": [
         "HX-BL-021"
       ],
@@ -944,23 +954,17 @@
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
         "publication_authorized": false
       },
-      "next_handoff_ref": "agent-work/handoffs/2026-11-18T0603-interviewer-HX-BL-060-R1-answers.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-18-owner-answers-HX-BL-060-analyst.json",
       "draft_spec_version": "D2",
       "ui_preview_ref": "agent-work/previews/HX-BL-060-D2/README.md",
       "ui_preview_version": "D2",
       "draft_previous_ref": "agent-work/specs/HX-BL-060-unified-biome-map-D1.md",
       "asset_manifest_ref": "agent-work/evidence/HX-BL-060-D2/asset-manifest.json",
       "interview_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/decisions.json",
-      "interview_round_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/round-001.json",
-      "open_question_ids": [
-        "MAP-Q01",
-        "MAP-Q02",
-        "MAP-Q03",
-        "MAP-Q04"
-      ],
-      "conditional_question_ids": [
-        "MAP-Q05"
-      ]
+      "interview_round_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/round-002.json",
+      "open_question_ids": [],
+      "conditional_question_ids": [],
+      "owner_answers_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json"
     }
   ],
   "retired_pr_packages": {
