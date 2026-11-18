@@ -1,0 +1,186 @@
+{
+  "task_id": "HX-BL-060",
+  "feature_id": "HX-BL-060",
+  "spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F4.md",
+  "spec_blob_sha": "b0515d7bd115391ab4c5f5d532c2ef935b14681d",
+  "spec_version": "F4",
+  "head_sha": "8f76727905596ce3db3ba6aedeb5faed3fcf482e",
+  "tree_sha": "744a2beb076849c41c6162cbcb8b652d5c3934fb",
+  "base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "branch": "agent/hx-bl-060-unified-biome-map",
+  "pr": 506,
+  "release_scales_miles": [
+    1,
+    6
+  ],
+  "publication_authorized": false,
+  "fixture_ref": "agent-work/evidence/HX-BL-060-D2/classic-pr505.json",
+  "fixture_seed": 423493684,
+  "first_scenario": {
+    "status": "passed_on_exact_capture_head",
+    "capture_head_sha": "06f8200c8e810109ca4a588b12c88cab3de8fa1a",
+    "runner_log": "HX-BL-060 Classic 6-mile · 0,1 deciduous_woodland → open_plains · PNG 484355 bytes · undo/redo/JSON",
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44273257548/artifacts/14413692140",
+    "images": [
+      {
+        "file": "terrain-v2-hx060-classic-6-mile-desktop.png",
+        "sha256": "5e548f21ef7758abf4bfbe7643c7f282b29eec6788d275541395f0ef32fd73e3",
+        "size_px": [
+          1440,
+          1000
+        ]
+      },
+      {
+        "file": "terrain-v2-hx060-classic-6-mile-export.png",
+        "sha256": "0ec8b9f7d521f4760f2d0aec6a18681890c7e5c235e6eb8c28cc42bfdd9814c8",
+        "size_px": [
+          1455,
+          1288
+        ]
+      },
+      {
+        "file": "terrain-v2-hx060-classic-6-mile-narrow.png",
+        "sha256": "44dfe01414d5a17761d07697947f00fbe4885a0e3be908c3371622ee8c6bc8c3",
+        "size_px": [
+          390,
+          844
+        ]
+      }
+    ],
+    "observed": [
+      "26 pinned assets packaged",
+      "same Classic import",
+      "lake POI and whole fill",
+      "roads and rivers visible",
+      "manual biome edit",
+      "Undo/Redo",
+      "PNG",
+      "JSON reopening"
+    ],
+    "remaining": [
+      "pixel comparison with same-camera published baseline",
+      "1-mile scene",
+      "both rotations and performance calibration"
+    ]
+  },
+  "assets": {
+    "count": 26,
+    "sha256_verified_against_approved_manifest": true,
+    "catalogue_on_branch": "src/rendering/engravingCatalog.json",
+    "pinned_source_manifest": "agent-work/evidence/HX-BL-060-D2/asset-manifest.json"
+  },
+  "checks": {
+    "node_full": {
+      "sha": "06f8200c8e810109ca4a588b12c88cab3de8fa1a",
+      "passed": 429,
+      "failed": 0,
+      "typescript": "passed",
+      "build": "passed"
+    },
+    "head_local": {
+      "sha": "8f76727905596ce3db3ba6aedeb5faed3fcf482e",
+      "typescript": "passed",
+      "build": "passed",
+      "diff_check": "passed"
+    },
+    "texture_probe": {
+      "passed": true,
+      "samples": [
+        90,
+        121,
+        76
+      ],
+      "method": "Direct terrainTextures function in Node with in-memory Canvas; centre colors, traversal independence and sampled agreement at the 2+1 apex."
+    },
+    "initial_ci": {
+      "run_id": 44273257548,
+      "sha": "06f8200c8e810109ca4a588b12c88cab3de8fa1a",
+      "first_scenario": "passed",
+      "browser_full": "failed_on_removed_biome_toggle_in_one_mile_smoke",
+      "failure_location": "test/browser/one-mile.smoke.mjs:221"
+    },
+    "head_ci": {
+      "run_id": 44273948319,
+      "sha": "8f76727905596ce3db3ba6aedeb5faed3fcf482e",
+      "jobs": [
+        {
+          "name": "check",
+          "id": 134697345215,
+          "status": "in_progress",
+          "conclusion": null,
+          "current_or_failed_steps": [
+            "Run npm run check"
+          ]
+        },
+        {
+          "name": "browser",
+          "id": 134697345526,
+          "status": "in_progress",
+          "conclusion": null,
+          "current_or_failed_steps": [
+            "Run npx playwright install --with-deps chromium"
+          ]
+        },
+        {
+          "name": "world-random",
+          "id": 134697345574,
+          "status": "in_progress",
+          "conclusion": null,
+          "current_or_failed_steps": [
+            "Run npm run test:browser:rng"
+          ]
+        }
+      ],
+      "checkpoint": "awaiting exact-head browser confirmation"
+    },
+    "browser_local": {
+      "status": "unavailable",
+      "cause": "Chromium socket EPERM; moved to existing Actions Check workflow."
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "head_sha": "8f76727905596ce3db3ba6aedeb5faed3fcf482e",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Playwright browser",
+    "scenario_or_risk": "end-to-end drill from a real previously published map, verifying content and exports after replacing the terrain renderer",
+    "reuse_or_new_reason": "Existing terrain/forest mode-specific smoke cases did not cover the real unified Classic map, live terrain edit and export round-trip together. Reused the current Check workflow and App edit/storage controls. Generation harness change only excludes the new DOM texture memo.",
+    "count_source": "test/browser/engraved-map.smoke.mjs is one sequential scenario; git diff from base plus generation harness wiring."
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "criteria": [
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "baseline_grade": null,
+        "baseline_points": null,
+        "expected_grade": null,
+        "delta": null,
+        "evidence_refs": [
+          "AC02",
+          "AC03",
+          "AC04"
+        ]
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "baseline_grade": null,
+        "baseline_points": null,
+        "expected_grade": null,
+        "delta": null,
+        "evidence_refs": [
+          "AC05"
+        ]
+      }
+    ],
+    "assessment": "pending_developer_and_independent_reviewer",
+    "limitations": [
+      "S04-C03 six-mile RU media and compact control; full RU/EN and both scales pending",
+      "S04-C04 a real PNG and JSON roundtrip at 6 miles; full historical corpus and pixel parity pending"
+    ]
+  }
+}
