@@ -94,7 +94,7 @@ function fillTexture(samples:[Sample, ...(Sample|undefined)[]], phaseX:number, p
   for(let i=0;i<pixels.length;i++){
     const {rippleA,rippleB,weights,corners}=pixels[i];
     const idx=i*4;
-    if(weights.length===1 && corners.length===0){
+    if(weights.length===1 && weights[0].slot===0 && corners.length===0){
       data.data[idx]=centre.color[0];data.data[idx+1]=centre.color[1];data.data[idx+2]=centre.color[2];data.data[idx+3]=255;
       continue;
     }

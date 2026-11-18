@@ -157,7 +157,7 @@ function summarize(rows) {
         distinctSourceAssets: stats(group.map(row => (row.fineAssets ?? row.sourceAssets).assetUrls)),
         assetReadyMs: stats(group.map(row => (row.fineAssets ?? row.sourceAssets).assetsReadyMs)),
         imageTransferBytes: stats(group.map(row => (row.fineAssets ?? row.sourceAssets).transferBytes)),
-        coldAssetTransfer: rows.filter(row => row.scenario === scenario && row.edition === edition.name && row.warmup)
+        coldAssetTransfer: rows.filter(row => row.scenario === name && row.edition === edition.name && row.warmup)
           .map(row => ({ sourceBytes: row.sourceAssets.transferBytes, fineBytes: row.fineAssets?.transferBytes })),
       });
     }
