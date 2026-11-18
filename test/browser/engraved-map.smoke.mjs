@@ -56,7 +56,19 @@ try {
     return fs.readFile(await file.path());
   }
 
+  async function assertSizeField() {
+    const field = page.locator('.fine-step');
+    await field.scrollIntoViewIfNeeded();
+    const layout = await field.evaluate(node => {
+      const label = node.querySelector('span').getBoundingClientRect();
+      const value = node.querySelector('select').getBoundingClientRect();
+      return { gap:value.left-label.right, overlap:Math.min(label.bottom,value.bottom)-Math.max(label.top,value.top),
+        fits:node.getBoundingClientRect().right <= window.innerWidth };
+    });
+    assert.ok(layout.gap >= 0 && layout.gap <= 12 && layout.overlap > 0 && layout.fits, JSON.stringify(layout));
+  }
   await load(fixture);
+  await assertSizeField();
   assert.equal(await map.getAttribute('data-biome-display'), 'engraved');
   assert.equal(await page.locator('.biome-display-toggle,.poi-display-toggle').count(), 0);
   assert.ok(await map.locator('image.terrain-blend').count());
@@ -103,7 +115,10 @@ try {
   }
   await load(saved);
   assert.equal(await cellArt.getAttribute('data-engraving'), next);
+  await page.setViewportSize({ width:320, height:844 });
+  await assertSizeField();
   await page.setViewportSize({ width:390, height:844 });
+  await assertSizeField();
   await page.screenshot({ path:fileURLToPath(new URL('terrain-v2-hx060-classic-6-mile-narrow.png', output)) });
   assert.deepEqual(failures, []);
   console.log(`HX-BL-060 Classic 6-mile · ${selected.key} ${selected.biome} → ${next} · PNG ${png.length} bytes · undo/redo/JSON`);
