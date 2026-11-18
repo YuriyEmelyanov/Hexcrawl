@@ -1128,3 +1128,6 @@ The real Classic fixture projects 93 source cells to 3471 fine cells. Keep the f
 
 ### 2026-11-18T1530-programmer-HX-BL-060-F4 — keep screen-only candidates in the navigation snapshot
 The old large-map probe waited for the retired display selector. Running it through normal import exposed missing frontier cells during the vector-to-raster switch. PNG intentionally filters those candidates, while the in-app snapshot must retain them. Compare the actual 1,200-cell viewport without relaxing the established pixel tolerances. Count only keyed interactive polygons in A/B metrics; older edge layers can otherwise double the count. Evidence: agent-work/evidence/HX-BL-060-navigation-comparison-7f844e4/implementation.json.
+
+### 2026-11-18T1800-programmer-HX-BL-060-F4 — reuse fixed blend geometry and verify asset bytes
+Hex sample weights and rounded corner fields are fixed for each texture pixel. Prepare them once and reuse a single temporary canvas. Keep color-mix order and world phase unchanged, then verify against prior pixel output. Track resource readiness per distinct URL because a map cannot depend on SVG image load/error events alone. A recoverable failure should preserve the map and reject the incomplete export. Evidence: agent-work/evidence/HX-BL-060-recovery-performance-1175b43/implementation.json.
