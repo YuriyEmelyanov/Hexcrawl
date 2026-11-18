@@ -113,7 +113,9 @@ try{
    if(process.env.LARGE_VALIDATE){
      await p.getByRole('button',{name:'Редактировать',exact:true}).click();
      const river=p.locator('[data-river-map-edge]').first();await river.scrollIntoViewIfNeeded();
-     // The scroll schedules a capture if the edge is outside the cached window.
+     // An earlier ready cache can cover a different window. Rebuild it at
+     // the selected edge using a normal artwork change.
+     await p.locator('.hex-coordinate-toggle').click();
      await p.waitForFunction(()=>!document.querySelector('.map-viewport').classList.contains('is-navigating'));await p.waitForFunction(()=>document.querySelector('.map-motion-buffer')?.dataset.cache==='ready');
      const point=await river.evaluate(n=>new DOMPoint((n.x1.baseVal.value+n.x2.baseVal.value)/2,(n.y1.baseVal.value+n.y2.baseVal.value)/2).matrixTransform(n.getScreenCTM()).toJSON());
      await p.evaluate(()=>document.querySelector('.map-viewport').classList.add('is-navigating'));

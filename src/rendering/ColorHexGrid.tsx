@@ -1,6 +1,6 @@
 import {memo,useMemo} from 'react';
 type Cell={x:number;y:number};
-function ColorHexGridImpl({cells,radius}:{cells:Cell[];radius:number}){
+function ColorHexGridImpl({cells,radius,viewMagnification=1}:{cells:Cell[];radius:number;viewMagnification?:number}){
  const path=useMemo(()=>{
   const edges=new Map<string,string>();
   for(const c of cells){const ps=Array.from({length:6},(_,i)=>{const a=(i*60-30)*Math.PI/180;return{x:c.x+radius*Math.cos(a),y:c.y+radius*Math.sin(a)};});
@@ -9,6 +9,6 @@ function ColorHexGridImpl({cells,radius}:{cells:Cell[];radius:number}){
    }
   }return [...edges.values()].join('');
  },[cells,radius]);
- return <path className="color-hex-grid" d={path} fill="none" stroke="#575242" strokeOpacity={.22} strokeWidth={.55} vectorEffect="non-scaling-stroke" pointerEvents="none"/>;
+ return <path className="color-hex-grid" d={path} fill="none" stroke="#575242" strokeOpacity={.22} strokeWidth={.55/viewMagnification} vectorEffect="non-scaling-stroke" pointerEvents="none"/>;
 }
 export const ColorHexGrid=memo(ColorHexGridImpl);

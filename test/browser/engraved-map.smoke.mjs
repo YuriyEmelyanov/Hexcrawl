@@ -67,8 +67,16 @@ try {
     });
     assert.ok(layout.gap >= 0 && layout.gap <= 12 && layout.overlap > 0 && layout.fits, JSON.stringify(layout));
   }
+  function visibleGridWeight() {
+    return map.locator('.color-hex-grid').evaluate(node => {
+      const style = getComputedStyle(node.ownerSVGElement);
+      // SVG vector-effect does not cancel the outer CSS transform.
+      return Number(node.getAttribute('stroke-width')) * new DOMMatrix(style.transform).a;
+    });
+  }
   await load(fixture);
   await assertSizeField();
+  const coarseGridWeight = await visibleGridWeight();
   assert.equal(await map.getAttribute('data-biome-display'), 'engraved');
   assert.equal(await page.locator('.biome-display-toggle,.poi-display-toggle').count(), 0);
   assert.ok(await map.locator('image.terrain-blend').count());
@@ -149,6 +157,9 @@ try {
   assert.ok(await fine.locator('.river-polyline').count());
   assert.ok(await fine.locator('[data-fine-outline]').count());
   assert.ok(await fine.locator('[data-engraved-poi] circle').count());
+  const fineGridWeight = await visibleGridWeight();
+  assert.ok(Math.abs(fineGridWeight-coarseGridWeight)<.05,
+    `Grid opacity should not be dominated by a thicker line at an equivalent cell zoom: ${coarseGridWeight} vs ${fineGridWeight}`);
   const fineCell=fine.locator('[data-fine-key="0,6"]');
   const fineArt=fineCell.locator('image.terrain-engraving');
   const initial=await fineArt.getAttribute('data-engraving');

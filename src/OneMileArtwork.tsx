@@ -68,7 +68,7 @@ export function OneMileArtwork(p:Props){
   <g pointerEvents="none">{p.rapids.map(m=><line key={m.key} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} className="river-rapid-mark" style={{strokeWidth:.2}}/>)}{p.waterfalls.map(w=><image transform={p.rotated?`rotate(-90 ${w.x} ${w.y})`:undefined} key={w.key} href="/waterfall-color.svg" x={w.x-1.3} y={w.y-1.3} width={2.6} height={2.6}/>)}</g>
 
   </>}
-  <g data-fine-grid pointerEvents="none"><ColorHexGrid cells={p.cells.map(row=>center(row.cell))} radius={radius}/></g>
+  <g data-fine-grid pointerEvents="none"><ColorHexGrid cells={p.cells.map(row=>center(row.cell))} radius={radius} viewMagnification={6}/></g>
   {p.coordinates&&<g className="hex-coordinate-layer" pointerEvents="none">{p.cells.map(row=>{const c=center(row.cell);return <text transform={p.rotated?`rotate(-90 ${c.x} ${c.y})`:undefined} key={`${row.cell.q},${row.cell.r}`} x={c.x} y={c.y+3.4} fontSize={1.5} textAnchor="middle" fill="#152238">{row.cell.q}/{row.cell.r}</text>;})}</g>}
   <g data-fine-pois pointerEvents="none">{pointsOfInterest.map(({fp,outline,markers})=>{
    const v=p.poi(fp),size=radius*.62;
