@@ -1,0 +1,340 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-18-PF2-L1-implementation-1795033764746",
+  "program_id": "HX-RSR-001",
+  "status": "completed_bounded_implementation_audit_PF2_parked",
+  "started_at": "2026-11-18T20:29:24.746Z",
+  "completed_at": "2026-11-18T20:40:19.135Z",
+  "selected_task": {
+    "id": "HX-RSR-PF2-FINAL-BOUNDED-L1-EVIDENCE",
+    "game_id": "PF2",
+    "layer": "L1",
+    "completion_condition": "29 ранее отобранных строк получили проверенные пределы реализации на точном SHA, JSON/обзор/передачу. Сохраняются неизвестные, старые доказательства и продолжение на Knave 2e."
+  },
+  "selection_reason": "Последний ограниченный проход PF2 по уже выделенным операциям L1. Он отвечает на конкретный вопрос о том, что можно использовать на карте сейчас, и проверяет ошибки переноса общих возможностей на PF2. Высокая позиция игры и готовая матрица позволяют сопоставить источник с кодом без новых глав.",
+  "alternatives": [
+    {
+      "id": "HX-RSR-PF2-PC34-APPLICABILITY",
+      "decision": "parked",
+      "reason": "Новые главы с классами и навыками не отвечают на текущий вопрос о фактически доступной карте; остаток сохранён для прямой зависимости."
+    },
+    {
+      "id": "HX-RSR-KNAVE2-RETAINED-L1-EVIDENCE",
+      "decision": "next",
+      "reason": "Третья игра общего рейтинга с известным корпусом и уже применённым фильтром. В этом запуске сначала закрывается последний короткий цикл проверки PF2."
+    }
+  ],
+  "inputs_and_versions": {
+    "agent_operations": "f663b25918c05814c2f274e25fec9bb46d9186bb",
+    "product_main": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "scope_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
+    "coverage_ref": "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+    "canonical_refs": [
+      "agent-work/rules/common-rules.json",
+      "agent-work/rules/game-bindings.json"
+    ],
+    "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "ranking_version": "three-scenario-ranks-1.4-CROWS-addition",
+    "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+    "overall_top5": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ]
+  },
+  "findings": [
+    {
+      "id": "PF2-L1-current-scale",
+      "result": "Точная геометрия PF2 не представлена. Шаг 12 миль между сторонами даёт 13,8564 мили между вершинами и 124,71 mi². PF2 требует 12 миль между вершинами, 10,3923 между сторонами и 93,53 mi².",
+      "impact": "Existing scale cannot substantiate exact PF2 12-mile support. Product scale decision remains with owner/strategist."
+    },
+    {
+      "id": "PF2-L1-current-generic",
+      "result": "Рост соседнего участка с сохранением POI, смена лесного биома и ручные имя + тип поселения подтверждены на текущем main. Охваты и речная сеть имеют отдельно подтверждённые компоненты.",
+      "impact": "Подтверждённые общие операции можно переиспользовать. Точные опциональные таблицы PF2 для рельефа и особенностей требуют собственных критериев."
+    },
+    {
+      "id": "PF2-L1-current-limits",
+      "result": "Опциональные PF2 d20 профили не представлены в проверенных entrypoints; неизвестны выборочный обзор и разграничение карты мастера и игроков. Пять точных ST binding отсутствуют в проверенном реестре.",
+      "impact": "Общий редактор и отдельные частичные сценарии не утверждают полную поддержку. Источник PF2 закрыт для последовательных запусков до нового предметного основания."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json",
+    "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.md",
+    "agent-work/research/requirements/PF2-Remaster-v2-review.md",
+    "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation-probe.mjs",
+    "agent-work/research/handoffs/2026-11-18-PF2-L1-implementation-1795033764746-strategist.json",
+    "agent-work/research/runs/2026-11-18-PF2-L1-implementation-1795033764746.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "matrix_ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json",
+    "checks": {
+      "implementation_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+      "method": "Verified Git blobs from pinned main, Node v24.22.3, npm ci with lockfile, no rendered browser. App callback harness executes production handlers and uses stubbed React state per checked-in design.",
+      "tests": [
+        {
+          "command": "node --test --test-name-pattern='E7 App|E8 real POI|adjacent|real map expansion|sector directions at a junction|seas?|manual path|manual water|poi label|production document exports RNG|region biome respects|GEO2 actual mixed|direct names change|knave.*(difficult|discovery)|retains old refinement' test/manualWater.test.mjs test/manualRoads.test.mjs test/regionEditing.test.mjs test/riverIntegration.test.mjs test/oneMile.test.mjs test/worldContinuation.test.mjs test/mapTransactions.test.mjs",
+          "result": "✔ manual path allocates one ID and deterministic crossings without mutating input (4.15077ms)\n✔ E6 external sea reclamation requires one explicitly adjacent existing region (4.843204ms)\n✔ E6 enclosed sea is an explicit lake choice; open sea needs at least two cells (5.169985ms)\n✔ E6 lake-to-sea joining lists the whole affected body before deleting old identities (2.420685ms)\n✔ SEA01 legacy metadata is numeric-order deterministic and v9 exactly covers sea-only edge components (3.569515ms)\n✔ direct names change only the captured locale; exact history, validation, legacy other locale and stale fault guards (27360.090445ms)\n✔ region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history (1522.458823ms)\n✔ GEO2 actual connected land-only generation retains old refinement and leaves new domain unrefined in one history action (1370.724923ms)\n✔ GEO2 actual mixed river continuation retains scoped crossings, identities and one undo redo (728.636793ms)\n✔ GEO2 actual mixed dry road approach preserves existing typed crossing and history (550.144151ms)\n✔ test/oneMile.test.mjs (591.091197ms)\n✔ E7 App transfer keeps full POI identity/history and real reload continuation classic (1045.608622ms)\n✔ E7 App transfer keeps full POI identity/history and real reload continuation mythic (8183.038295ms)\n✔ E7 App height is one atomic explicit biome pair and retains local/underwater overrides (67.343333ms)\n✔ E7 v7 import retains only an exact unique frontier order; legacy/mismatch/duplicate/empty/sea retain prior normalization (208.222315ms)\n✔ E8 real POI move is one exact transaction with full payload and literal hex notes classic (316.050049ms)\n✔ E8 real POI move is one exact transaction with full payload and literal hex notes mythic (7740.579208ms)\n✔ RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes (7066.515162ms)\n✔ RIV-EX-03/19 adapter solves real sector directions at a junction and preserves region ownership (21.921301ms)\n✔ production document exports RNG and undo restores continuation (1145.977683ms)\nℹ tests 20\nℹ suites 0\nℹ pass 20\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 35356.881901\n"
+        },
+        {
+          "command": "node --test --test-name-pattern='GEO2 (POI|accepted POI)|Knave (profile permits|difficulty is|interaction requires)|fine POI label' test/geometryRefinementPois.test.mjs test/tags.test.mjs test/oneMile.test.mjs",
+          "result": [
+            "GEO2 POI candidates retain source requirements",
+            "GEO2 accepted POI source adapter",
+            "fine POI label retains localized type",
+            "Knave profile permits mixed generation modes",
+            "Knave difficulty is sparse and detached",
+            "Knave interaction requires a bounded separate clue"
+          ],
+          "passed": 6,
+          "failed": 0
+        }
+      ],
+      "probe": {
+        "ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation-probe.mjs",
+        "reproduce": "Copy probe to root of exact product checkout, run npm ci and node <copied probe>.",
+        "passed_cases": [
+          {
+            "check": "exact_grid",
+            "axes": [
+              12,
+              13.85640646055102
+            ],
+            "appArea": 124.70765814495917,
+            "pf2Area": 93.53074360871936,
+            "pf2AcrossFlats": 10.392304845413264,
+            "ratio": 1.3333333333333335
+          },
+          {
+            "check": "village_type_and_name",
+            "location": {
+              "q": 0,
+              "r": 0
+            },
+            "name": "Ольховка",
+            "type": "village",
+            "undoRedo": true,
+            "reload": true
+          },
+          {
+            "check": "poi_display_names",
+            "names": [
+              "A",
+              "7"
+            ],
+            "retainedTerrain": "deciduous_woodland",
+            "rivers": 2,
+            "roads": 2,
+            "reload": true
+          },
+          {
+            "check": "sole_poi_removal_and_rename",
+            "caveRemoved": true,
+            "authorNameGuard": true,
+            "castleName": "B",
+            "roadsAndRiversUnchanged": true,
+            "undoRedo": true,
+            "reload": true
+          },
+          {
+            "check": "local_expansion_preserves_poi",
+            "addedRegions": 1,
+            "retainedPointType": "castle",
+            "retainedName": "B",
+            "undoRedo": true,
+            "reload": true
+          },
+          {
+            "check": "conifer_biome_variant",
+            "next": "plain_coniferous_forest",
+            "retainedCells": 12,
+            "undoRedo": true,
+            "reload": true
+          }
+        ]
+      },
+      "acceptance_limit": "No end-to-end browser, public deployment or gameplay support acceptance. Known incompatibilities include confirmed negative geometry and static profile entrypoints."
+    },
+    "quality": {
+      "RA-Q01": [
+        "met_bounded",
+        "Fixed PF2 Remaster and existing p90–209 ledger, with code SHA separate."
+      ],
+      "RA-Q02": [
+        "open",
+        "Full printed books and remaining applicable references still open; no rescan this run."
+      ],
+      "RA-Q03": [
+        "reused_pending_full_game",
+        "Prior facts and controlled references preserved; no new source extraction."
+      ],
+      "RA-Q04": [
+        "met_bounded",
+        "Distances and axes, d20 inputs, missing first-hex default and relevant exceptions preserved in operation records."
+      ],
+      "RA-Q05": [
+        "met_bounded",
+        "Normativity preserved from inherited records, diagnostic scenarios distinguished from book rules."
+      ],
+      "RA-Q06": [
+        "met_bounded",
+        "One trace per scope row, with action, map object and expected output."
+      ],
+      "RA-Q07": [
+        "met_bounded",
+        "Context, realistic affordances and status limits recorded. Player delivery refers to L2."
+      ],
+      "RA-Q08": [
+        "open",
+        "24 corresponding binding IDs were located, 5 were not. Functional equivalence is not inherited from shared IDs."
+      ],
+      "RA-Q09": [
+        "met_bounded",
+        "Acceptance input/expected pair preserved in each row; executed checks state output and exact limitations."
+      ],
+      "RA-Q10": [
+        "open_full_game",
+        "29 rows assessed; two unknown and partial rows explicitly retain pending end-to-end criteria."
+      ],
+      "RA-Q11": [
+        "met_bounded",
+        "Exact blobs, command output, independent probes, static/product boundaries and current scope are traceable."
+      ],
+      "RA-Q12": [
+        "met_bounded",
+        "Research handoff references existing registries and historical PF2 work; no duplicate developer task."
+      ],
+      "RA-Q13": [
+        "met_bounded",
+        "Shared machine-readable row decisions generate the readable overview."
+      ],
+      "RA-Q14": [
+        "open_full_game",
+        "Local audit completed; source and product outcomes for full PF2 remain open with exact references."
+      ],
+      "RA-Q15": [
+        "met_bounded",
+        "No full PF2/top5 acceptance, rating, methodology, score, backlog, source code or publication changes."
+      ]
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-19T00:00:00+03:00",
+        "last_run_time": "2026-11-18T18:05:28.122909+00:00"
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-18T23:30:00+03:00",
+        "last_run_time": "2026-11-18T17:35:47.988409+00:00"
+      }
+    ],
+    "pre_completion": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-19T00:00:00+03:00",
+        "last_run_time": "2026-11-18T18:05:28.122909+00:00",
+        "last_run_status": null
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-18T23:30:00+03:00",
+        "last_run_time": "2026-11-18T17:35:47.988409+00:00",
+        "last_run_status": null
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "completed_bounded_implementation_audit_PF2_parked",
+    "run_id": "2026-11-18-PF2-L1-implementation-1795033764746",
+    "stage": "retained_L1_implementation_evidence",
+    "last_successful_step": "Матрица 29 строк на main 292428e970dbe66e2146d8f9528dd6f97f32666d, проверены сценарии App и доменные проверки; сохранены пределы доказательств и точный остаток PF2.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Условие одного ограниченного прохода выполнено; оставшиеся исследования PF2 отложены для перехода к Knave 2e.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-18-PF2-L1-implementation-1795033764746.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.md",
+      "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation-probe.mjs",
+      "agent-work/research/handoffs/2026-11-18-PF2-L1-implementation-1795033764746-strategist.json"
+    ],
+    "exact_continuation": "Использовать уже сверенную финальную редакцию Knave 2e и 12 строк keep_L1. Проверить текущий профиль карты, труднопроходимость, наполнение и сохранение точек на свежем SHA. Начать с сопоставления старых проверок с действующим scope и актуальным App. Для мастера показать, что реально работает, что зависит от профиля либо остаётся открытым.",
+    "parked_PF2": [
+      {
+        "scope": "source",
+        "action": "Возобновить PF2 при прямой зависимости принятой функции или новом существенном источнике. GM Core 3, печатные стр. 146–165, карта и отдельные описания планов; сверка оглавления, приложений и релевантных ссылок GM Core 1; редакционные расхождения Travel / Reconnoiter / Map the Area из GM Core 4.",
+        "refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
+          "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json"
+        ]
+      },
+      {
+        "scope": "source",
+        "action": "Player Core 1, печатные стр. 32–34 и карта/подписи при наличии. Player Core 2, печатное оглавление и конкретные зависимости движения. Player Core 3–8 и Conditions Appendix, релевантные ссылки 323/405/438–440. На стр. 438 доступная таблица Travel Speed и связь Vehicles уже сверены.",
+        "refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-PC12-applicability.json",
+          "agent-work/research/requirements/PF2-Remaster-v2-coverage.json"
+        ]
+      },
+      {
+        "scope": "product",
+        "action": "Точные сценарии в remaining каждой строки; отдельно неизвестные обзор C/P/H и выдача карты A/B игрокам. Две PF2-таблицы и точный масштаб не подтверждены имеющимися общими функциями. Нет автоматического вывода о поддержке из тестов Knave.",
+        "refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json"
+        ]
+      },
+      {
+        "scope": "canonical",
+        "action": "Перепроверить соответствие 24 имеющихся binding и 5 отсутствующих точных ST-строк при принятой потребности. Поиск по полному телу реестра выполнен; новый ID или дубликат не регистрировались.",
+        "refs": [
+          "agent-work/rules/common-rules.json",
+          "agent-work/rules/game-bindings.json"
+        ]
+      },
+      {
+        "scope": "top5",
+        "action": "Сохранить доступный DND5/DMG2014 checkpoint до нового доступа к полному первичному корпусу. Create-top10 определяется свежим рейтингом после полного принятия overall-top5.",
+        "refs": [
+          "agent-work/score/cohorts-2026-11-15.json"
+        ]
+      }
+    ],
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-KNAVE2-RETAINED-L1-EVIDENCE",
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "status": "selected_after_PF2_bounded_implementation",
+    "action": "Использовать уже сверенную финальную редакцию Knave 2e и 12 строк keep_L1. Проверить текущий профиль карты, труднопроходимость, наполнение и сохранение точек на свежем SHA. Начать с сопоставления старых проверок с действующим scope и актуальным App. Для мастера показать, что реально работает, что зависит от профиля либо остаётся открытым.",
+    "completion_condition": "Один законченный срез 12 строк с действиями, критериями, подтверждёнными общими и профильными операциями, точными unknown и актуальной передачей стратегу. Отдельно вынести условия раскрытия игрокам в L2.",
+    "scope_ref": "agent-work/research/requirements/KNAVE2-scope-audit.json",
+    "prior_product_audit_ref": "agent-work/research/audits/KNAVE2-L1-runtime-2026-11-10.json",
+    "source_already_accessible": true,
+    "overall_top5_complete": false
+  },
+  "needs_owner_action": false
+}

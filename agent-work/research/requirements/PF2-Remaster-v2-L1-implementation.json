@@ -1,0 +1,2844 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-18-PF2-L1-implementation-1795033764746",
+  "game_id": "PF2",
+  "edition": "Pathfinder 2e Remaster / GM Core",
+  "status": "completed_bounded_implementation_audit_PF2_parked",
+  "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "research_baseline_sha": "f663b25918c05814c2f274e25fec9bb46d9186bb",
+  "product_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "product_branch": "main",
+  "reviewed_at": "2026-11-18T20:40:19.135Z",
+  "scope": "Previously retained 29 L1 rows from the 132-row product-scope audit; source facts and acceptance criteria are reused.",
+  "scope_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json",
+  "source_coverage_ref": "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+  "counts": {
+    "not_implemented": 4,
+    "partial": 20,
+    "implemented": 3,
+    "unverified": 2
+  },
+  "rows": [
+    {
+      "id": "PF2-RM-002-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p206; Designing the Map",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-002-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Физический размер регионального гекса определяет географию и измерение расстояний; сохраняется различие угол–угол/сторона–сторона.",
+      "product_boundary": "Масштаб карты",
+      "action": "Выбрать карту PF2 с гексом 12 миль угол–угол",
+      "map_object_or_state": {
+        "length_miles": 12,
+        "axis": "opposite_vertices"
+      },
+      "expected_result": "Ширина сторона–сторона 6√3≈10.3923048454 мили; площадь 54√3≈93.5307436087 миль². Зум географию не меняет.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-002",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать карту PF2 с гексом 12 миль угол–угол",
+        "inputs_and_units": {
+          "length_miles": 12,
+          "axis": "opposite_vertices"
+        },
+        "product_operation": "Выбрать карту PF2 с гексом 12 миль угол–угол. Ширина сторона–сторона 6√3≈10.3923048454 мили; площадь 54√3≈93.5307436087 миль². Зум географию не меняет.",
+        "expected_output": "Ширина сторона–сторона 6√3≈10.3923048454 мили; площадь 54√3≈93.5307436087 миль². Зум географию не меняет.",
+        "constraints_and_exceptions": [
+          "Не подменять 12 угол–угол проектным 12 сторона–сторона; не принуждать все PF2 карты к этой подсистеме.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Назначить 12 угол–угол и сменить приближение",
+            "when": "Выбрать карту PF2 с гексом 12 миль угол–угол",
+            "expected": "Физическая площадь 93.5307436087 и положение POI прежние"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale"
+        ],
+        "binding_ids": [
+          "PF2-RM-002-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "not_implemented",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "scale"
+      ],
+      "comment": "Точная геометрия PF2 не представлена. Шаг 12 миль между сторонами даёт 13,8564 мили между вершинами и 124,71 mi². PF2 требует 12 миль между вершинами, 10,3923 между сторонами и 93,53 mi².",
+      "remaining": "createDetailGrid отклоняет шаг 6√3; проверка базовой сетки не оценивает согласование продуктового способа задания масштаба."
+    },
+    {
+      "id": "PF2-RM-003-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p206; Designing the Map",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-003-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Преобладающая местность не удаляет совместные реку, дорогу и место.",
+      "product_boundary": "Местность и совместные слои карты",
+      "action": "Задать основной биом и дополнительные объекты",
+      "map_object_or_state": {
+        "biome": "forest",
+        "overlays": [
+          "river R",
+          "road D",
+          "castle C",
+          "cave V"
+        ]
+      },
+      "expected_result": "Лес остаётся основным; R, D, C, V существуют независимо.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-003",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать основной биом и дополнительные объекты",
+        "inputs_and_units": {
+          "biome": "forest",
+          "overlays": [
+            "river R",
+            "road D",
+            "castle C",
+            "cave V"
+          ]
+        },
+        "product_operation": "Задать основной биом и дополнительные объекты. Лес остаётся основным; R, D, C, V существуют независимо.",
+        "expected_output": "Лес остаётся основным; R, D, C, V существуют независимо.",
+        "constraints_and_exceptions": [
+          "Источник не задаёт долю преобладания, лимит POI и маршрутизацию.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создать лесной гекс с R, D, C, V; удалить V",
+            "when": "Задать основной биом и дополнительные объекты",
+            "expected": "Лес, R, D, C сохранены; удалена только V"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#map.routes_and_barriers",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#map.routes_and_barriers",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "binding_ids": [
+          "PF2-RM-003-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "pois",
+        "region",
+        "route"
+      ],
+      "comment": "На одной лесной карте сосуществуют замок, пещера, независимые дороги и реки. После очистки авторского имени пещеру можно удалить отдельно и отменить удаление.",
+      "remaining": "Сценарий проверен для разных мест внутри одной области. Четыре независимые сущности, включая два POI, в одном выбранном гексе этим опытом не подтверждены."
+    },
+    {
+      "id": "PF2-RM-004-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p206; Designing the Map",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-004-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Цвета и значки делают подготовленную региональную карту читаемой; буквенные ссылки — необязательный вариант.",
+      "product_boundary": "Отображение и идентификация объектов карты",
+      "action": "Пометить выбранные места",
+      "map_object_or_state": {
+        "labels": [
+          "A",
+          "7"
+        ],
+        "sites": [
+          "castle",
+          "cave"
+        ]
+      },
+      "expected_result": "Замок имеет ссылку A, пещера 7; подпись связана с местом.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-004",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Пометить выбранные места",
+        "inputs_and_units": {
+          "labels": [
+            "A",
+            "7"
+          ],
+          "sites": [
+            "castle",
+            "cave"
+          ]
+        },
+        "product_operation": "Пометить выбранные места. Замок имеет ссылку A, пещера 7; подпись связана с местом.",
+        "expected_output": "Замок имеет ссылку A, пещера 7; подпись связана с местом.",
+        "constraints_and_exceptions": [
+          "Рекомендация, не обязательная нумерация всех объектов; формат и уникальность не заданы.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Переименовать ссылку A в B; сохранить/загрузить",
+            "when": "Пометить выбранные места",
+            "expected": "У замка B, у пещеры 7; география прежняя"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.reference_labels"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.reference_labels"
+        ],
+        "binding_ids": [
+          "PF2-RM-004-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "pois"
+      ],
+      "comment": "Замку и пещере можно дать отображаемые имена A и 7. Смена A на B сохраняет ту же POI и географию.",
+      "remaining": "Проверен существующий механизм имён. Отдельная независимая от имени метка ссылки и использование этой метки как ключа экспорта не подтверждены."
+    },
+    {
+      "id": "PF2-RM-010-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p207; Generating Random Hex Maps",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3109",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-010-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Выбор стартового и генерация соседнего гекса непосредственно создают региональную карту.",
+      "product_boundary": "Генерация и расширение карты",
+      "action": "Создать новый гекс рядом с готовым",
+      "map_object_or_state": {
+        "previous": "forest",
+        "terrain_roll": 14,
+        "feature_roll": 7
+      },
+      "expected_result": "Новый гекс лесной с ресурсом; исходный гекс сохранён.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-010",
+        "normative_kind": "research_interpretation_of_optional_procedure",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать новый гекс рядом с готовым",
+        "inputs_and_units": {
+          "previous": "forest",
+          "terrain_roll": 14,
+          "feature_roll": 7
+        },
+        "product_operation": "Создать новый гекс рядом с готовым. Новый гекс лесной с ресурсом; исходный гекс сохранён.",
+        "expected_output": "Новый гекс лесной с ресурсом; исходный гекс сохранён.",
+        "constraints_and_exceptions": [
+          "Событие движения L2; сама подготовка новой области L1. Для стартового 14–20 без предыдущего источник не даёт решения.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Задать броски 14 и 7 при выходе в соседний гекс",
+            "when": "Создать новый гекс рядом с готовым",
+            "expected": "Лес+ресурс, старые POI не перегенерированы"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.extend_preserving_content",
+          "agent-work/rules/common-rules.json#map.generate_on_discovery"
+        ],
+        "unresolved_parameters": [
+          "При стартовом броске14–20 без предыдущего гекса первоисточник не задаёт отдельного результата; не изобретать скрытый переброс."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.extend_preserving_content",
+          "agent-work/rules/common-rules.json#map.generate_on_discovery"
+        ],
+        "binding_ids": [
+          "PF2-RM-010-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "extension",
+        "generation"
+      ],
+      "comment": "Доступно наращивание карты с границы с сохранением подготовленных объектов.",
+      "remaining": "Точного ввода бросков 14/7 и результата «предыдущий лес + ресурс» у текущего генератора PF2 нет. Классический рост не воспроизводит этот алгоритм."
+    },
+    {
+      "id": "PF2-RM-011-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p207; Generating Random Hex Maps",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3109",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-011-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Ручная правка неожиданного сочетания местности относится к редактированию результата генерации; без обязательного объяснения сюжета.",
+      "product_boundary": "Ручное редактирование местности",
+      "action": "Сохранить явное решение мастера об исключении",
+      "map_object_or_state": {
+        "adjacent": [
+          "desert",
+          "arctic"
+        ],
+        "reason_optional": "magic"
+      },
+      "expected_result": "Арктический участок может остаться рядом с пустыней по решению мастера.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-011",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Сохранить явное решение мастера об исключении",
+        "inputs_and_units": {
+          "adjacent": [
+            "desert",
+            "arctic"
+          ],
+          "reason_optional": "magic"
+        },
+        "product_operation": "Сохранить явное решение мастера об исключении. Арктический участок может остаться рядом с пустыней по решению мастера.",
+        "expected_output": "Арктический участок может остаться рядом с пустыней по решению мастера.",
+        "constraints_and_exceptions": [
+          "Нет обязательной матрицы совместимости, автозапрета или принудительного объяснения.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Принять необычное сочетание и открыть карту повторно",
+            "when": "Сохранить явное решение мастера об исключении",
+            "expected": "Принятое сочетание сохранено без скрытого переброса"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_compatibility"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_compatibility"
+        ],
+        "binding_ids": [
+          "PF2-RM-011-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "region",
+        "terrain"
+      ],
+      "comment": "Локальный биом редактируется отдельно и сохраняется. Канонический редактор региона проверяет совместимость соседей.",
+      "remaining": "Пара PF2 «пустыня–арктика» и явное исключение для канонического региона не подтверждены. Локальная замена биома сохраняет географию, но не создаёт правило исключения."
+    },
+    {
+      "id": "PF2-RM-012-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p208; Table 3–4",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3110",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-012-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Таблица прямо выбирает местность нового регионального гекса.",
+      "product_boundary": "Генерация местности",
+      "action": "Определить основной биом заданным броском",
+      "map_object_or_state": {
+        "rolls": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          20
+        ],
+        "previous": "forest"
+      },
+      "expected_result": "Результаты точно соответствуют диапазонам;14–20 наследуют лес.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-012",
+        "normative_kind": "research_interpretation_of_optional_procedure",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Определить основной биом заданным броском",
+        "inputs_and_units": {
+          "rolls": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            20
+          ],
+          "previous": "forest"
+        },
+        "product_operation": "Определить основной биом заданным броском. Результаты точно соответствуют диапазонам;14–20 наследуют лес.",
+        "expected_output": "Результаты точно соответствуют диапазонам;14–20 наследуют лес.",
+        "constraints_and_exceptions": [
+          "Таблица выбирает тип, а не детальный биом/геометрию озера. Начальныйгекс с 14–20 не определён.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Подать все 20 значений с предыдущим лесом",
+            "when": "Определить основной биом заданным броском",
+            "expected": "3 равнины,2 пустыни,2 воды,2 горы,9 леса,1 болото,1 арктика"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_distribution",
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "При стартовом броске14–20 без предыдущего гекса первоисточник не задаёт отдельного результата; не изобретать скрытый переброс."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_distribution",
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "binding_ids": [
+          "PF2-RM-012-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "not_implemented",
+      "evidence_level": "static_entrypoint_and_schema_review",
+      "evidence_ids": [
+        "generation"
+      ],
+      "comment": "Прослежены классический, Mythic и подключаемый Knave пути. Ни один из входов генерации не предоставляет PF2-профиль таблицы 3–4 с фиксированным d20.",
+      "remaining": "Сценарий 14–20 на старте без предыдущего гекса открыт в источнике; для уже созданного леса ожидается наследование."
+    },
+    {
+      "id": "PF2-RM-013-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p208; Table 3–5",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3110",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-013-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Таблица прямо определяет категорию наполнения регионального гекса, включая отсутствие особого места.",
+      "product_boundary": "Наполнение карты",
+      "action": "Определить категорию особенности",
+      "map_object_or_state": {
+        "rolls": [
+          1,
+          3,
+          4,
+          6,
+          7,
+          9,
+          10,
+          20
+        ]
+      },
+      "expected_result": "Соответственно ориентир, секрет, ресурс либо обычный гекс.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-013",
+        "normative_kind": "research_interpretation_of_optional_procedure",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Определить категорию особенности",
+        "inputs_and_units": {
+          "rolls": [
+            1,
+            3,
+            4,
+            6,
+            7,
+            9,
+            10,
+            20
+          ]
+        },
+        "product_operation": "Определить категорию особенности. Соответственно ориентир, секрет, ресурс либо обычный гекс.",
+        "expected_output": "Соответственно ориентир, секрет, ресурс либо обычный гекс.",
+        "constraints_and_exceptions": [
+          "Категория не задаёт конкретную POI или обязательный перевод ресурса в деньги.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Подать все 20 значений",
+            "when": "Определить категорию особенности",
+            "expected": "Распределение 3/3/3/11; результат секрета не раскрыт игрокам автоматически"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.feature_distribution",
+          "agent-work/rules/common-rules.json#content.discovery_levels",
+          "agent-work/rules/common-rules.json#map.resource_availability"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#content.feature_distribution",
+          "agent-work/rules/common-rules.json#content.discovery_levels",
+          "agent-work/rules/common-rules.json#map.resource_availability"
+        ],
+        "binding_ids": [
+          "PF2-RM-013-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "not_implemented",
+      "evidence_level": "static_entrypoint_and_schema_review",
+      "evidence_ids": [
+        "generation",
+        "terrain"
+      ],
+      "comment": "Точный PF2-профиль d20 для «ориентир / секрет / ресурс / обычный» и его распределение 3/3/3/11 в проверенных входах генерации отсутствует.",
+      "remaining": "Таблицы Knave и ручные категории POI сами по себе этот результат не реализуют. Выдача игрокам относится к отдельному L2."
+    },
+    {
+      "id": "PF2-RM-029-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "GM Core printed209; Switching out of Hexploration → embedded Types of Terrain",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3115",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-029-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Типичные ресурсы и секреты служат примерами наполнения конкретной местности; обязательность и добычная экономика исключены.",
+      "product_boundary": "Местность, проходимость и содержимое конкретного места",
+      "action": "Подготовить особенность подходящего окружения",
+      "map_object_or_state": {
+        "selected_terrain": "один из семи",
+        "terrain_profiles": {
+          "aquatic": {
+            "terrain": "лодка/скорость плавания; зависит от течения и погоды",
+            "resources": [
+              "морская пища",
+              "кораллы",
+              "жемчуг",
+              "кораблекрушения"
+            ],
+            "secrets": [
+              "удалённые острова с чудовищами",
+              "изолированные общины",
+              "пираты",
+              "затопленные/подводные города"
+            ]
+          },
+          "arctic": {
+            "terrain": "обычно difficult/greater difficult",
+            "resources": [
+              "редкая пища: рыбалка у разрывов льда, места размножения тюленей/китов"
+            ],
+            "secrets": [
+              "оттаявшие судоходные проходы",
+              "скрытые пещеры",
+              "изолированные арктические общины"
+            ]
+          },
+          "desert": {
+            "terrain": "обычно difficult/greater difficult",
+            "resources": [
+              "подземные источники",
+              "оазисы",
+              "ручьи",
+              "минеральные богатства"
+            ],
+            "secrets": [
+              "забытые цивилизации под дюнами"
+            ]
+          },
+          "forest": {
+            "terrain": "обычно difficult; густые джунгли greater difficult",
+            "resources": [
+              "разнообразная флора/фауна",
+              "природные лекарства",
+              "обильная дичь"
+            ],
+            "secrets": [
+              "лагерь разбойников",
+              "круг друидов",
+              "фейская поляна/грибной круг"
+            ]
+          },
+          "mountain": {
+            "terrain": "обычно greater difficult; холмы difficult",
+            "resources": [
+              "золото",
+              "серебро",
+              "самоцветы"
+            ],
+            "secrets": [
+              "скрытый перевал",
+              "имперская башня/путевая станция",
+              "логово дракона",
+              "убежище разбойников"
+            ]
+          },
+          "plains": {
+            "terrain": "open",
+            "resources": [
+              "полезные растения: лён/хлопок"
+            ],
+            "secrets": [
+              "артефакты исторического сражения",
+              "ценности, спрятанные преступниками"
+            ]
+          },
+          "swamp": {
+            "terrain": "обычно greater difficult",
+            "resources": [
+              "материалы для лекарств/ядов"
+            ],
+            "secrets": [
+              "лагерь речных налётчиков",
+              "останки/снаряжение несчастливых путников",
+              "мистически значимые места"
+            ]
+          }
+        },
+        "roll_weights": null
+      },
+      "expected_result": "Выбранный пример доступен как варианты наполнения; мастер явно выбирает ресурсы/секреты, а типичная проходимость не вытесняет исключения.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-029",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить особенность подходящего окружения",
+        "inputs_and_units": {
+          "selected_terrain": "один из семи",
+          "terrain_profiles": {
+            "aquatic": {
+              "terrain": "лодка/скорость плавания; зависит от течения и погоды",
+              "resources": [
+                "морская пища",
+                "кораллы",
+                "жемчуг",
+                "кораблекрушения"
+              ],
+              "secrets": [
+                "удалённые острова с чудовищами",
+                "изолированные общины",
+                "пираты",
+                "затопленные/подводные города"
+              ]
+            },
+            "arctic": {
+              "terrain": "обычно difficult/greater difficult",
+              "resources": [
+                "редкая пища: рыбалка у разрывов льда, места размножения тюленей/китов"
+              ],
+              "secrets": [
+                "оттаявшие судоходные проходы",
+                "скрытые пещеры",
+                "изолированные арктические общины"
+              ]
+            },
+            "desert": {
+              "terrain": "обычно difficult/greater difficult",
+              "resources": [
+                "подземные источники",
+                "оазисы",
+                "ручьи",
+                "минеральные богатства"
+              ],
+              "secrets": [
+                "забытые цивилизации под дюнами"
+              ]
+            },
+            "forest": {
+              "terrain": "обычно difficult; густые джунгли greater difficult",
+              "resources": [
+                "разнообразная флора/фауна",
+                "природные лекарства",
+                "обильная дичь"
+              ],
+              "secrets": [
+                "лагерь разбойников",
+                "круг друидов",
+                "фейская поляна/грибной круг"
+              ]
+            },
+            "mountain": {
+              "terrain": "обычно greater difficult; холмы difficult",
+              "resources": [
+                "золото",
+                "серебро",
+                "самоцветы"
+              ],
+              "secrets": [
+                "скрытый перевал",
+                "имперская башня/путевая станция",
+                "логово дракона",
+                "убежище разбойников"
+              ]
+            },
+            "plains": {
+              "terrain": "open",
+              "resources": [
+                "полезные растения: лён/хлопок"
+              ],
+              "secrets": [
+                "артефакты исторического сражения",
+                "ценности, спрятанные преступниками"
+              ]
+            },
+            "swamp": {
+              "terrain": "обычно greater difficult",
+              "resources": [
+                "материалы для лекарств/ядов"
+              ],
+              "secrets": [
+                "лагерь речных налётчиков",
+                "останки/снаряжение несчастливых путников",
+                "мистически значимые места"
+              ]
+            }
+          },
+          "roll_weights": null
+        },
+        "product_operation": "Подготовить особенность подходящего окружения. На пустынной карте можно задать оазис и скрытые руины, не размещая их в каждом гексе.",
+        "expected_output": "Выбранный пример доступен как варианты наполнения; мастер явно выбирает ресурсы/секреты, а типичная проходимость не вытесняет исключения.",
+        "constraints_and_exceptions": [
+          "Вода: дары моря; арктика: редкаяеда; пустыня: вода/минералы; лес: флора/фауна; горы: минералы; равнина: растения; болото: лекарства/яды. Полные примеры сохраняются в прежнемкорпусе, не новыйконтенткаталог.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "aquatic; мастер выбирает первый ресурс и первый секрет из профиля.",
+            "when": "Добавить выбранные варианты к гексу.",
+            "expected": "морская пища и удалённые острова с чудовищами сохранены; остальные варианты не создаются автоматически."
+          },
+          {
+            "given": "arctic; мастер выбирает первый ресурс и первый секрет из профиля.",
+            "when": "Добавить выбранные варианты к гексу.",
+            "expected": "редкая пища: рыбалка у разрывов льда, места размножения тюленей/китов и оттаявшие судоходные проходы сохранены; остальные варианты не создаются автоматически."
+          },
+          {
+            "given": "desert; мастер выбирает первый ресурс и первый секрет из профиля.",
+            "when": "Добавить выбранные варианты к гексу.",
+            "expected": "подземные источники и забытые цивилизации под дюнами сохранены; остальные варианты не создаются автоматически."
+          },
+          {
+            "given": "forest; мастер выбирает первый ресурс и первый секрет из профиля.",
+            "when": "Добавить выбранные варианты к гексу.",
+            "expected": "разнообразная флора/фауна и лагерь разбойников сохранены; остальные варианты не создаются автоматически."
+          },
+          {
+            "given": "mountain; мастер выбирает первый ресурс и первый секрет из профиля.",
+            "when": "Добавить выбранные варианты к гексу.",
+            "expected": "золото и скрытый перевал сохранены; остальные варианты не создаются автоматически."
+          },
+          {
+            "given": "plains; мастер выбирает первый ресурс и первый секрет из профиля.",
+            "when": "Добавить выбранные варианты к гексу.",
+            "expected": "полезные растения: лён/хлопок и артефакты исторического сражения сохранены; остальные варианты не создаются автоматически."
+          },
+          {
+            "given": "swamp; мастер выбирает первый ресурс и первый секрет из профиля.",
+            "when": "Добавить выбранные варианты к гексу.",
+            "expected": "материалы для лекарств/ядов и лагерь речных налётчиков сохранены; остальные варианты не создаются автоматически."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#map.resource_availability",
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#map.resource_availability",
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "binding_ids": [
+          "PF2-RM-029-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "pois",
+        "terrain"
+      ],
+      "comment": "Подтверждено ручное наполнение общими POI по биомам и существующие специфичные списки типов.",
+      "remaining": "Приёмка семи PF2 окружений с отдельным выбором ресурсов и секретов не выполнена. Нет доказательства соответствующего каталога пресетов; из примеров книги единый генератор не следует."
+    },
+    {
+      "id": "PF2-RM-121-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p134; Проектирование сверху/снизу",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2953",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-121-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Подготовка нужной области и переход между масштабами — работа с региональной географией.",
+      "product_boundary": "Расширение и масштаб карты",
+      "action": "Расширить локальную карту",
+      "map_object_or_state": {
+        "existing": "A",
+        "new": "B"
+      },
+      "expected_result": "A сохраняется при добавлении B; мир не требуется заполнить заранее.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-121",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Расширить локальную карту",
+        "inputs_and_units": {
+          "existing": "A",
+          "new": "B"
+        },
+        "product_operation": "Расширить локальную карту. A сохраняется при добавлении B; мир не требуется заполнить заранее.",
+        "expected_output": "A сохраняется при добавлении B; мир не требуется заполнить заранее.",
+        "constraints_and_exceptions": [
+          "Вклад игроков и цели кампании — рекомендации; не новый автоматический алгоритм.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создать A с POI X; добавить B",
+            "when": "Расширить локальную карту",
+            "expected": "A/X неизменны, B добавлена"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.extend_preserving_content"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.extend_preserving_content"
+        ],
+        "binding_ids": [
+          "PF2-RM-121-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "implemented",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "extension"
+      ],
+      "comment": "При наращивании смежного участка сохраняются ранее подготовленные объекты и их имена. Проверены восстановление и продолжение из JSON.",
+      "remaining": "Подтверждён общий редактор. Использование PF2-таблиц при наращивании оценивается отдельно в 010/012/013."
+    },
+    {
+      "id": "PF2-RM-122-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p135; Отбор деталей региональной карты",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2963",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-122-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Карта выделяет значимые места, не обязана воспроизводить каждый дом.",
+      "product_boundary": "Региональный уровень детализации",
+      "action": "Выбрать важные для обзора объекты",
+      "map_object_or_state": {
+        "important": [
+          "city C",
+          "pass P"
+        ],
+        "minor": [
+          "hamlet H"
+        ]
+      },
+      "expected_result": "C/P отмечены; H может быть опущен в обзоре без потери подготовленных данных.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-122",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать важные для обзора объекты",
+        "inputs_and_units": {
+          "important": [
+            "city C",
+            "pass P"
+          ],
+          "minor": [
+            "hamlet H"
+          ]
+        },
+        "product_operation": "Выбрать важные для обзора объекты. C/P отмечены; H может быть опущен в обзоре без потери подготовленных данных.",
+        "expected_output": "C/P отмечены; H может быть опущен в обзоре без потери подготовленных данных.",
+        "constraints_and_exceptions": [
+          "Источник не задаёт численные пороги скрытия.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Скрыть мелкие объекты и вернуть отображение",
+            "when": "Выбрать важные для обзора объекты",
+            "expected": "H возвращён на прежнее место, C/P сохраняются"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.display_detail",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.display_detail",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "binding_ids": [
+          "PF2-RM-122-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "unverified",
+      "evidence_level": "static_only",
+      "evidence_ids": [
+        "audience"
+      ],
+      "comment": "Код рисует значки и координаты; текущий PNG использует уже построенный SVG. Это позволяет проверять обзор, но не доказывает выборочное скрытие отдельных мест с последующим возвратом.",
+      "remaining": "Полный цикл C/P/H в браузере не запускался. Отсутствие механизма не выводится из значения флага значков."
+    },
+    {
+      "id": "PF2-RM-123-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p135; Берега и острова",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2963",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-123-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Суша, море и берег непосредственно определяют региональную карту.",
+      "product_boundary": "Берег и водные области",
+      "action": "Задать берег и остров",
+      "map_object_or_state": {
+        "land": "mainland",
+        "island": "I",
+        "water": "sea"
+      },
+      "expected_result": "I окружёнморем, материкотдельно.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-123",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать берег и остров",
+        "inputs_and_units": {
+          "land": "mainland",
+          "island": "I",
+          "water": "sea"
+        },
+        "product_operation": "Задать берег и остров. I окружёнморем, материкотдельно.",
+        "expected_output": "I окружёнморем, материкотдельно.",
+        "constraints_and_exceptions": [
+          "Это географические советы, не обязанность побережья на каждой карте.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Нарисовать I и проверить соединения",
+            "when": "Задать берег и остров",
+            "expected": "Суша I не соединена с материком случайнойперемычкой"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.land_water_shapes"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.land_water_shapes"
+        ],
+        "binding_ids": [
+          "PF2-RM-123-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "water",
+        "river"
+      ],
+      "comment": "Общие инструменты умеют работать с морскими клетками, разделением суши и воды и побережьем. Проверены явные границы морских компонентов и отдельные правки.",
+      "remaining": "Сценарий создания отдельно заданного острова в море без связи с материком не прогнан как единая операция."
+    },
+    {
+      "id": "PF2-RM-124-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p135; Хребты,холмы и равнины",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2963",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-124-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Хребты, холмы и островные цепи — региональная география.",
+      "product_boundary": "Рельеф региональной карты",
+      "action": "Задать хребет и предгорья",
+      "map_object_or_state": {
+        "ridge": "R",
+        "hills": "H",
+        "plain": "P"
+      },
+      "expected_result": "Хребет R соседствует с H; невыбранные низменности P остаются равниной.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-124",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать хребет и предгорья",
+        "inputs_and_units": {
+          "ridge": "R",
+          "hills": "H",
+          "plain": "P"
+        },
+        "product_operation": "Задать хребет и предгорья. Хребет R соседствует с H; невыбранные низменности P остаются равниной.",
+        "expected_output": "Хребет R соседствует с H; невыбранные низменности P остаются равниной.",
+        "constraints_and_exceptions": [
+          "Не превращать «обычно» в запрет исключений.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создать R/H и локально изменить один участок H",
+            "when": "Задать хребет и предгорья",
+            "expected": "Изменился только участок; остальнойхребет сохранён"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.relief_transitions"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.relief_transitions"
+        ],
+        "binding_ids": [
+          "PF2-RM-124-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "region",
+        "terrain"
+      ],
+      "comment": "Редактирование высоты и биома действует атомарно, сохраняя отдельные слои; совместимость по соседям проверяется.",
+      "remaining": "Ручная операция на участке пригодна. Вариант «создать хребет с заданными предгорьями, затем локально изменить H и сравнить R/P» целиком не запускался."
+    },
+    {
+      "id": "PF2-RM-125-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p135; Водотоки",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2963",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-125-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Направление русла и слияние притоков определяют геометрию речной сети.",
+      "product_boundary": "Реки",
+      "action": "Подготовить реку с притоком",
+      "map_object_or_state": {
+        "source": "high S",
+        "junction": "J",
+        "outlet": "sea O",
+        "tributary": "T"
+      },
+      "expected_result": "S→J→O и T→J, без обратного разветвления.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-125",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить реку с притоком",
+        "inputs_and_units": {
+          "source": "high S",
+          "junction": "J",
+          "outlet": "sea O",
+          "tributary": "T"
+        },
+        "product_operation": "Подготовить реку с притоком. S→J→O и T→J, без обратного разветвления.",
+        "expected_output": "S→J→O и T→J, без обратного разветвления.",
+        "constraints_and_exceptions": [
+          "Совет книги не отменяет утверждённые RIV правила; не объявлятьуниверсальнымзакономдлядельт/магии.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Задать S/J/O/T и проверитьнаправления",
+            "when": "Подготовить реку с притоком",
+            "expected": "Два входа в J, один выходк O"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.river_network"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.river_network"
+        ],
+        "binding_ids": [
+          "PF2-RM-125-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "river"
+      ],
+      "comment": "Проверен движок направленной речной сети с двумя входами в узел, одним выходом и защитой от цикла. Рост по побережью проходил отдельно.",
+      "remaining": "Цепочка S/J/T до конкретного морского устья O не проверена одним ручным сценарием до экспорта; свидетельства для отдельных операций сохранены."
+    },
+    {
+      "id": "PF2-RM-126-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p135; Биомы,климат и высота",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2960",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-126-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Сочетание климата/высоты относится к биомам; численная высота не превращается в боевую 3D-сцену.",
+      "product_boundary": "Биомы и региональный рельеф",
+      "action": "Выбрать климатический вариант существующего лесного биома",
+      "map_object_or_state": {
+        "area": "H",
+        "before": "forest",
+        "variant": "coniferous"
+      },
+      "expected_result": "У H хвойный лес; соседние области и геометрия H прежние. Повторное открытие карты сохраняет вариант.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-126",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать климатический вариант существующего лесного биома",
+        "inputs_and_units": {
+          "area": "H",
+          "before": "forest",
+          "variant": "coniferous"
+        },
+        "product_operation": "Выбрать климатический вариант существующего лесного биома",
+        "expected_output": "У H хвойный лес; соседние области и геометрия H прежние. Повторное открытие карты сохраняет вариант.",
+        "constraints_and_exceptions": [
+          "Не вводить обязательный численный редактор высот и боевую 3D-модель.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"before\":\"forest\",\"variant\":\"coniferous\"}",
+            "when": "Выбрать климатический вариант существующего лесного биома; сохранить и повторно открыть карту",
+            "expected": "У H хвойный лес; соседние области и геометрия H прежние. Повторное открытие карты сохраняет вариант."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#map.terrain_compatibility"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#map.terrain_compatibility"
+        ],
+        "binding_ids": [
+          "PF2-RM-126-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "implemented",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "conifer",
+        "region"
+      ],
+      "comment": "Хвойный вариант выбирается для уже существующей лесной области. Рельеф, клетки и вода сохраняются, Undo/Redo и повторное открытие возвращают принятую карту.",
+      "remaining": "Проверено ручное назначение; оно не доказывает автоматический расчёт климата PF2."
+    },
+    {
+      "id": "PF2-RM-127-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p135; Поселения,дороги и границы",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2963",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-127-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Поселение у воды, соединение дорогами и границы — прямые операции карты.",
+      "product_boundary": "Размещение поселений, дороги и границы",
+      "action": "Разместить поселения и связывающий путь",
+      "map_object_or_state": {
+        "city": "C",
+        "freshwater": "R",
+        "town": "T",
+        "pass": "P"
+      },
+      "expected_result": "C у R; дорога C–T учитывает P; политическаяграница отдельна.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-127",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить поселения и связывающий путь",
+        "inputs_and_units": {
+          "city": "C",
+          "freshwater": "R",
+          "town": "T",
+          "pass": "P"
+        },
+        "product_operation": "Разместить поселения и связывающий путь. C у R; дорога C–T учитывает P; политическаяграница отдельна.",
+        "expected_output": "C у R; дорога C–T учитывает P; политическаяграница отдельна.",
+        "constraints_and_exceptions": [
+          "Нет заданныхрадиусов/стоимостногофункционала; конкретныймаршрутизатористочникомне предписан.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Переместить C вдоль R и скорректироватьдорогу",
+            "when": "Разместить поселения и связывающий путь",
+            "expected": "Город остаётся у R, путь заканчиваетсяу C/T; граница не потеряна"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources",
+          "agent-work/rules/common-rules.json#map.routes_and_barriers"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources",
+          "agent-work/rules/common-rules.json#map.routes_and_barriers"
+        ],
+        "binding_ids": [
+          "PF2-RM-127-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "route",
+        "pois",
+        "footprint"
+      ],
+      "comment": "Работают раздельные объекты поселения, дороги, реки и маски охвата. Проверены правки дорог/переправ, пространственные ограничения POI и сохранение устойчивой географии.",
+      "remaining": "Связанный сценарий «переместить C вдоль R, довести дорогу до C и T, сохранить отдельную политическую границу» одним прогоном не доказан."
+    },
+    {
+      "id": "PF2-RM-005-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p206 / Designing the Map",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3104",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-005-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "defer_L2",
+      "disposition_reason": "Сквозной критерий выдачи отдельной карты и разграничения видимости относится к L2. Подготовка объектов мастером остаётся общей картографической операцией.",
+      "product_boundary": "Представление карты для игроков; без автоматического fog/VTT",
+      "action": "Подготовить отдельное представление для игроков",
+      "map_object_or_state": {
+        "gm_sites": [
+          "A",
+          "Secret B"
+        ],
+        "revealed": [
+          "A"
+        ]
+      },
+      "expected_result": "В представлении игроков показана только A; B и её описание остаются у мастера.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-005",
+        "normative_kind": "research_translation",
+        "applicability": "Preparation data only; execution/audience delivery remains L2/VTT per owner",
+        "layer": "L1",
+        "trigger_or_user_action": "Подготовить отдельное представление для игроков",
+        "inputs_and_units": {
+          "gm_sites": [
+            "A",
+            "Secret B"
+          ],
+          "revealed": [
+            "A"
+          ]
+        },
+        "product_operation": "Подготовить отдельное представление для игроков. В представлении игроков показана только A; B и её описание остаются у мастера.",
+        "expected_output": "В представлении игроков показана только A; B и её описание остаются у мастера.",
+        "constraints_and_exceptions": [
+          "Карта игроков относится к отложенному L2/VTT; не считать её отсутствие дефектом нынешнего L1-генератора.",
+          "Выбранные буквенные ID, числа примеров и интерфейс не являются дополнительными правилами НРИ. Исследование не даёт разрешения новой разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "На существующей карте {\"gm_sites\":[\"A\",\"Secret B\"],\"revealed\":[\"A\"]}",
+            "when": "Подготовить отдельное представление для игроков; сохранить и открыть карту",
+            "expected": "В представлении игроков показана только A; B и её описание остаются у мастера. Исходные соседние объекты и биом остаются."
+          },
+          {
+            "given": "Объект уже подготовлен; изменяется только одно его свойство",
+            "when": "Изменить указанное свойство и отменить действие",
+            "expected": "Изменение не перегенерирует соседнюю область; отмена возвращает прежнее состояние. Это предлагаемая приёмка приложения, а не тест книги."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.audience_views",
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Фактический UI/save/profile результат этого поведения ещё не проверен."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.audience_views",
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "binding_ids": [
+          "PF2-RM-005-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "unverified",
+      "evidence_level": "static_only",
+      "evidence_ids": [
+        "audience"
+      ],
+      "comment": "Подтверждены мастерские POI и обычный JSON карты. Исторический критерий A видна / B скрыта включает выдачу карты игрокам.",
+      "remaining": "Публикация отдельной карты, разграничение доступа и раскрытие проверяются в L2. Обычный PNG или свойства Knave не подтверждают секретность."
+    },
+    {
+      "id": "PF2-RM-044-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p90 / Сочетание сред и размер существа",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2768",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-044-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Заснеженная гора сохраняет рельеф и снежное состояние совместно; размеры существа исключены.",
+      "product_boundary": "Совместные свойства региональной местности",
+      "action": "Отметить заснеженную горную местность",
+      "map_object_or_state": {
+        "area": "H",
+        "base": "mountain",
+        "environment": "arctic"
+      },
+      "expected_result": "У H сохранено сочетание горной и арктической местности; снег не заменяет гору равниной.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-044",
+        "normative_kind": "research_translation",
+        "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+        "layer": "L1",
+        "trigger_or_user_action": "Отметить заснеженную горную местность",
+        "inputs_and_units": {
+          "area": "H",
+          "base": "mountain",
+          "environment": "arctic"
+        },
+        "product_operation": "Отметить заснеженную горную местность",
+        "expected_output": "У H сохранено сочетание горной и арктической местности; снег не заменяет гору равниной.",
+        "constraints_and_exceptions": [
+          "Новые поля глубины снега/размера существа и проверки движения не приняты.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"base\":\"mountain\",\"environment\":\"arctic\"}",
+            "when": "Отметить заснеженную горную местность; сохранить и повторно открыть карту",
+            "expected": "У H сохранено сочетание горной и арктической местности; снег не заменяет гору равниной."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "binding_ids": [
+          "PF2-RM-044-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "not_implemented",
+      "evidence_level": "static_entrypoint_and_schema_review",
+      "evidence_ids": [
+        "terrain"
+      ],
+      "comment": "В проверенной модели крупной карты на гекс задаётся один эффективный биом. В каталоге текущего main нет комбинации «арктический слой поверх горного гекса».",
+      "remaining": "Цветовое представление или произвольное описание не подтверждают сохранение двух факторов местности."
+    },
+    {
+      "id": "PF2-RM-066-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p91 / Лёд",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2773",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-066-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Лёд влияет на принятую характеристику проходимости участка; балансирование персонажа исключено.",
+      "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+      "action": "Назначить участку принятую характеристику проходимости/опасности",
+      "map_object_or_state": {
+        "area": "H",
+        "condition": "лёд",
+        "passability": "труднопроходимая",
+        "hazardous": false
+      },
+      "expected_result": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-066",
+        "normative_kind": "research_translation",
+        "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "inputs_and_units": {
+          "area": "H",
+          "condition": "лёд",
+          "passability": "труднопроходимая",
+          "hazardous": false
+        },
+        "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+        "expected_output": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+        "constraints_and_exceptions": [
+          "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"condition\":\"лёд\",\"passability\":\"труднопроходимая\",\"hazardous\":false}",
+            "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+            "expected": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "binding_ids": [
+          "PF2-RM-066-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "terrain"
+      ],
+      "comment": "В Knave проверена записываемая отметка difficult, отдельная от биома. Это переиспользуемая часть хранения.",
+      "remaining": "Лёд как структурированное условие PF2 с назначением этой характеристики вне Knave не проверен."
+    },
+    {
+      "id": "PF2-RM-067-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p91 / Снег",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2773",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-067-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Глубина/вид снега меняют проходимость местности; не выводить её из одного цвета биома.",
+      "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+      "action": "Назначить участку принятую характеристику проходимости/опасности",
+      "map_object_or_state": {
+        "area": "H",
+        "condition": "глубокий рыхлый снег",
+        "passability": "труднопроходимая",
+        "hazardous": false
+      },
+      "expected_result": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-067",
+        "normative_kind": "research_translation",
+        "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "inputs_and_units": {
+          "area": "H",
+          "condition": "глубокий рыхлый снег",
+          "passability": "труднопроходимая",
+          "hazardous": false
+        },
+        "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+        "expected_output": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+        "constraints_and_exceptions": [
+          "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"condition\":\"глубокий рыхлый снег\",\"passability\":\"труднопроходимая\",\"hazardous\":false}",
+            "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+            "expected": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "binding_ids": [
+          "PF2-RM-067-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "terrain"
+      ],
+      "comment": "В Knave проверена записываемая отметка difficult, отдельная от биома.",
+      "remaining": "Снег как условие PF2, сочетание с грунтом и исключения по толщине не подтверждены."
+    },
+    {
+      "id": "PF2-RM-068-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p91 / Щебень и осыпь",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2776",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-068-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Щебнистая поверхность влияет на проходимость участка; локальная проверка равновесия исключена.",
+      "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+      "action": "Назначить участку принятую характеристику проходимости/опасности",
+      "map_object_or_state": {
+        "area": "H",
+        "condition": "осыпь",
+        "passability": "труднопроходимая",
+        "hazardous": false
+      },
+      "expected_result": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-068",
+        "normative_kind": "research_translation",
+        "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "inputs_and_units": {
+          "area": "H",
+          "condition": "осыпь",
+          "passability": "труднопроходимая",
+          "hazardous": false
+        },
+        "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+        "expected_output": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+        "constraints_and_exceptions": [
+          "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"condition\":\"осыпь\",\"passability\":\"труднопроходимая\",\"hazardous\":false}",
+            "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+            "expected": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "binding_ids": [
+          "PF2-RM-068-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "terrain"
+      ],
+      "comment": "В Knave проверена записываемая отметка difficult, отдельная от биома.",
+      "remaining": "Щебень/осыпь как собственное условие PF2 и зависящие от участка исключения не подтверждены."
+    },
+    {
+      "id": "PF2-RM-069-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p91 / Песок и дюны",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2776",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-069-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Уплотнённый и рыхлый песок задают различную проходимость; стороны каждой боевой дюны не оцифровывать.",
+      "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+      "action": "Назначить участку принятую характеристику проходимости/опасности",
+      "map_object_or_state": {
+        "area": "H",
+        "condition": "неглубокий рыхлый песок",
+        "passability": "труднопроходимая",
+        "hazardous": false
+      },
+      "expected_result": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-069",
+        "normative_kind": "research_translation",
+        "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "inputs_and_units": {
+          "area": "H",
+          "condition": "неглубокий рыхлый песок",
+          "passability": "труднопроходимая",
+          "hazardous": false
+        },
+        "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+        "expected_output": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+        "constraints_and_exceptions": [
+          "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"condition\":\"неглубокий рыхлый песок\",\"passability\":\"труднопроходимая\",\"hazardous\":false}",
+            "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+            "expected": "У H характеристика «труднопроходимая»; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "binding_ids": [
+          "PF2-RM-069-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "terrain"
+      ],
+      "comment": "В Knave проверена записываемая отметка difficult; каталог содержит общий пустынный биом.",
+      "remaining": "Песок и дюны с отдельной проходимостью по правилам PF2 не проверены."
+    },
+    {
+      "id": "PF2-RM-072-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p91 / Подлесок",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2779",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-072-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Густота подлеска относится к проходимости местности, шипы — к опасности; Take Cover исключён.",
+      "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+      "action": "Назначить участку принятую характеристику проходимости/опасности",
+      "map_object_or_state": {
+        "area": "H",
+        "condition": "колючий густой подлесок",
+        "passability": "труднопроходимая",
+        "hazardous": true
+      },
+      "expected_result": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-072",
+        "normative_kind": "research_translation",
+        "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "inputs_and_units": {
+          "area": "H",
+          "condition": "колючий густой подлесок",
+          "passability": "труднопроходимая",
+          "hazardous": true
+        },
+        "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+        "expected_output": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+        "constraints_and_exceptions": [
+          "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"condition\":\"колючий густой подлесок\",\"passability\":\"труднопроходимая\",\"hazardous\":true}",
+            "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+            "expected": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "binding_ids": [
+          "PF2-RM-072-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "terrain"
+      ],
+      "comment": "Подтверждено изменение отдельной отметки difficult в Knave.",
+      "remaining": "Независимая одновременная опасность от колючего подлеска не представлена в проверенной модели проходимости. Разрешение последствий относится к L2."
+    },
+    {
+      "id": "PF2-RM-074-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p91 / Утёсы и склоны",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2783",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-074-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Крутизна склонов относится к региональной проходимости; броски Climb не входят в L1.",
+      "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+      "action": "Назначить участку принятую характеристику проходимости/опасности",
+      "map_object_or_state": {
+        "area": "H",
+        "condition": "крутой склон",
+        "passability": "труднопроходимая",
+        "hazardous": true
+      },
+      "expected_result": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-074",
+        "normative_kind": "research_translation",
+        "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "inputs_and_units": {
+          "area": "H",
+          "condition": "крутой склон",
+          "passability": "труднопроходимая",
+          "hazardous": true
+        },
+        "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+        "expected_output": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+        "constraints_and_exceptions": [
+          "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"condition\":\"крутой склон\",\"passability\":\"труднопроходимая\",\"hazardous\":true}",
+            "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+            "expected": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.routes_and_barriers",
+          "agent-work/rules/common-rules.json#map.physical_elevation"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.routes_and_barriers",
+          "agent-work/rules/common-rules.json#map.physical_elevation"
+        ],
+        "binding_ids": [
+          "PF2-RM-074-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "terrain",
+        "region"
+      ],
+      "comment": "Есть редактор рельефа, отдельные препятствия и отметка difficult в Knave.",
+      "remaining": "Совместное сохранение «труднопроходимо + опасно» для конкретного склона и зависящие от направления исключения PF2 остаются открыты."
+    },
+    {
+      "id": "PF2-RM-076-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p92 / Топи",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2792",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-076-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Глубина топи и опасный характер участка нужны для его проходимости; размер Medium и Swim не исполняются.",
+      "product_boundary": "Принятая функция: классификация проходимости/опасности местности",
+      "action": "Назначить участку принятую характеристику проходимости/опасности",
+      "map_object_or_state": {
+        "area": "H",
+        "condition": "кислая глубокая топь",
+        "passability": "труднопроходимая",
+        "hazardous": true
+      },
+      "expected_result": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-076",
+        "normative_kind": "research_translation",
+        "applicability": "Map preparation/placed scene data; mechanical execution remains L2/L3",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить участку принятую характеристику проходимости/опасности",
+        "inputs_and_units": {
+          "area": "H",
+          "condition": "кислая глубокая топь",
+          "passability": "труднопроходимая",
+          "hazardous": true
+        },
+        "product_operation": "Назначить участку принятую характеристику проходимости/опасности",
+        "expected_output": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние.",
+        "constraints_and_exceptions": [
+          "Это укрупнённое представление HexCrawl, не точное равенство PF2 difficult/greater difficult/uneven. Степени PF2 и проверки сохраняются в исходном правиле. Не вводить новые поля под каждый материал, направление склона/дюны, размер существа, Swim/Climb/Balance или укрытие. Связь «крутой склон→опасность» — выбор мастера в примере, не обязательная норма PF2.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"condition\":\"кислая глубокая топь\",\"passability\":\"труднопроходимая\",\"hazardous\":true}",
+            "when": "Назначить участку принятую характеристику проходимости/опасности; сохранить и повторно открыть карту",
+            "expected": "У H характеристика «труднопроходимая» и опасность; исходный биом и соседние гексы сохранены. После загрузки характеристики прежние."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева игровой исходный смысл и параметры; справа данные/действие мастера при подготовке. Заметка может хранить справку, но не считается автоматическим исполнением процедуры.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "binding_ids": [
+          "PF2-RM-076-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "terrain"
+      ],
+      "comment": "Существуют биом болота и отдельная проходимость difficult в Knave.",
+      "remaining": "Для топи PF2 отдельные опасность и состояние проходимости не принимаются по одной метке. Изменение состояния ловушки относится к L2."
+    },
+    {
+      "id": "PF2-RM-ST-002-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "GM Core printed p138; Building Settlements: вода и сообщение",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2974",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-ST-002-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Расположение поселения у воды и связь дорогой/водным путём непосредственно определяют региональную карту.",
+      "product_boundary": "Поселения, вода, дороги",
+      "action": "Привязать поселение к источнику воды и пути сообщения либо явно записать исключение",
+      "map_object_or_state": {
+        "water_options": [
+          "река",
+          "колодец",
+          "источник"
+        ],
+        "connections": [
+          "дорога",
+          "водный путь"
+        ]
+      },
+      "expected_result": "Различимы питьевая вода и транспортная связь; отсутствие нарисованной реки не делает колодец ошибкой.",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-ST-002-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Привязать поселение к источнику воды и пути сообщения либо явно записать исключение",
+        "inputs_and_units": {
+          "water_options": [
+            "река",
+            "колодец",
+            "источник"
+          ],
+          "connections": [
+            "дорога",
+            "водный путь"
+          ]
+        },
+        "product_operation": "Привязать поселение к источнику воды и пути сообщения либо явно записать исключение; показать результат в контексте выбранного поселения. Изменение сохранить с картой, восстановить после загрузки и отмены.",
+        "expected_output": "Различимы питьевая вода и транспортная связь; отсутствие нарисованной реки не делает колодец ошибкой.",
+        "constraints_and_exceptions": [
+          "Это обычное основание размещения, а не абсолютный запрет иных поселений; колодец не равен речной геометрии.",
+          "Сохранение и отмена — предлагаемое поведение приложения, не правило книги. Интерфейс и новая разработка не утверждены."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Поселение у колодца с дорогой, без реки.",
+            "when": "Привязать поселение к источнику воды и пути сообщения либо явно записать исключение",
+            "expected": "Вода=колодец, сообщение=дорога; принудительная река не возникает."
+          },
+          {
+            "given": "Получен указанный ожидаемый результат; затем карту сохраняют, загружают и отменяют последнее изменение.",
+            "when": "Повторно открыть то же поселение и выполнить отмену.",
+            "expected": "После загрузки тот же результат и привязка; отмена восстанавливает предыдущую запись/геометрию без изменения других поселений."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources",
+          "agent-work/rules/common-rules.json#map.routes_and_barriers",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Точное структурированное представление/новая общая механика требуют проверки и решения; новый rule_id здесь не учреждается."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources",
+          "agent-work/rules/common-rules.json#map.routes_and_barriers",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "binding_ids": [],
+        "status": "no_exact_PF2_binding_found"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "route",
+        "footprint"
+      ],
+      "comment": "Дороги, речная геометрия и пространственные привязки мест сохраняются; инструменты полезны при размещении поселения.",
+      "remaining": "Самостоятельная связь «питьевой колодец + дорога без реки» не проверена и не следует из геометрической близости. Binding для этой строки не найден."
+    },
+    {
+      "id": "PF2-RM-ST-004-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "GM Core printed p138; Mapping a Settlement: основной торговый путь",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2975",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-ST-004-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Сохраняется только связь регионального охвата поселения с главным водным/сухопутным путём. Внутренняя сетка улиц не входит.",
+      "product_boundary": "Региональный охват POI и примыкание к путям",
+      "action": "Разместить региональный охват поселения вдоль существующего пути",
+      "map_object_or_state": {
+        "settlement": "C",
+        "route": "D",
+        "axis": "east-west"
+      },
+      "expected_result": "C примыкает к D и вытянут восток–запад; при сохранении привязка и охват не изменяются.",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-ST-004-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить региональный охват поселения вдоль существующего пути",
+        "inputs_and_units": {
+          "settlement": "C",
+          "route": "D",
+          "axis": "east-west"
+        },
+        "product_operation": "Разместить региональный охват поселения вдоль существующего пути",
+        "expected_output": "C примыкает к D и вытянут восток–запад; при сохранении привязка и охват не изменяются.",
+        "constraints_and_exceptions": [
+          "Не создавать внутреннюю сетку улиц, районы или торговую симуляцию. Конкретный алгоритм охвата/его готовность не утверждены.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"settlement\":\"C\",\"route\":\"D\",\"axis\":\"east-west\"}",
+            "when": "Разместить региональный охват поселения вдоль существующего пути; сохранить и повторно открыть карту",
+            "expected": "C примыкает к D и вытянут восток–запад; при сохранении привязка и охват не изменяются."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.routes_and_barriers",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.routes_and_barriers",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "binding_ids": [],
+        "status": "no_exact_PF2_binding_found"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "footprint"
+      ],
+      "comment": "Работает расчёт и удержание охватов POI с пространственными ограничениями и подходами путей.",
+      "remaining": "Мастерский сценарий вытянуть C вдоль D в заданном направлении и восстановить ту же зависимость из JSON не прогнан. Binding строки не найден."
+    },
+    {
+      "id": "PF2-RM-ST-007-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "GM Core printed p138; Mapping a Settlement: постоялый двор",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2975",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-ST-007-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Постоялый двор — конкретное место отдыха/услуги на дороге; требуется размещение места, а не генерация слухов и заданий.",
+      "product_boundary": "Содержимое конкретного места и размещение у дороги",
+      "action": "Разместить постоялый двор как место ночлега у дорожного узла",
+      "map_object_or_state": {
+        "place": "У моста",
+        "route": "D",
+        "services": [
+          "ночлег",
+          "еда"
+        ]
+      },
+      "expected_result": "У D одно место «У моста», предлагающее ночлег и еду; заданий, слухов и камеры хранения автоматически не добавлено.",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-ST-007-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить постоялый двор как место ночлега у дорожного узла",
+        "inputs_and_units": {
+          "place": "У моста",
+          "route": "D",
+          "services": [
+            "ночлег",
+            "еда"
+          ]
+        },
+        "product_operation": "Разместить постоялый двор как место ночлега у дорожного узла",
+        "expected_output": "У D одно место «У моста», предлагающее ночлег и еду; заданий, слухов и камеры хранения автоматически не добавлено.",
+        "constraints_and_exceptions": [
+          "Только необходимые сведения о конкретном месте. Не учреждать каталог/генератор услуг, слухов или заданий.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"place\":\"У моста\",\"route\":\"D\",\"services\":[\"ночлег\",\"еда\"]}",
+            "when": "Разместить постоялый двор как место ночлега у дорожного узла; сохранить и повторно открыть карту",
+            "expected": "У D одно место «У моста», предлагающее ночлег и еду; заданий, слухов и камеры хранения автоматически не добавлено."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#content.site_links"
+        ],
+        "binding_ids": [],
+        "status": "no_exact_PF2_binding_found"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "pois",
+        "route"
+      ],
+      "comment": "Общие типы точек включают таверну, а дороги и POI доступны для редактирования. Независимые места и их имена сохраняются.",
+      "remaining": "Узкий состав «ночлег + еда» для конкретного места у дорожного узла ещё не проверен. Свободный текст не доказывает структуру или автозаполнение. Binding строки не найден."
+    },
+    {
+      "id": "PF2-RM-ST-008-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "GM Core printed p138; Mapping a Settlement: именованные ориентиры",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2975",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-ST-008-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Именованный ориентир — конкретный объект карты; не требовать полного набора городских строений.",
+      "product_boundary": "Именование и размещение ориентиров",
+      "action": "Назвать размещённый ориентир и связать его с поселением",
+      "map_object_or_state": {
+        "landmark_count": "несколько, точного числа нет",
+        "name": "собственное имя"
+      },
+      "expected_result": "Ориентир имеет собственное имя и пространственную привязку, а не только общий тип.",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-ST-008-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Назвать размещённый ориентир и связать его с поселением",
+        "inputs_and_units": {
+          "landmark_count": "несколько, точного числа нет",
+          "name": "собственное имя"
+        },
+        "product_operation": "Назвать размещённый ориентир и связать его с поселением; показать результат в контексте выбранного поселения. Изменение сохранить с картой, восстановить после загрузки и отмены.",
+        "expected_output": "Ориентир имеет собственное имя и пространственную привязку, а не только общий тип.",
+        "constraints_and_exceptions": [
+          "Точное число ориентиров не задано. Название не доказывает готовую геометрию или связи.",
+          "Сохранение и отмена — предлагаемое поведение приложения, не правило книги. Интерфейс и новая разработка не утверждены."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "POI «башня» переименован в Watchtower / Дозорная башня.",
+            "when": "Назвать размещённый ориентир и связать его с поселением",
+            "expected": "Оба имени относятся к той же POI; другой объект не переименован."
+          },
+          {
+            "given": "Получен указанный ожидаемый результат; затем карту сохраняют, загружают и отменяют последнее изменение.",
+            "when": "Повторно открыть то же поселение и выполнить отмену.",
+            "expected": "После загрузки тот же результат и привязка; отмена восстанавливает предыдущую запись/геометрию без изменения других поселений."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.landmarks",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#content.landmarks",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "binding_ids": [],
+        "status": "no_exact_PF2_binding_found"
+      },
+      "implementation_status": "partial",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "pois",
+        "footprint"
+      ],
+      "comment": "У конкретной POI проверена запись имени и сохранение адреса. Пространственная привязка к своему гексу сохраняется.",
+      "remaining": "Отдельная связь «ориентир принадлежит выбранному поселению» сверх адреса POI не проверена. Binding строки не найден."
+    },
+    {
+      "id": "PF2-RM-ST-009-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "GM Core printed p170; Settlement Stat Block: заголовок, уровень, тип, черты и описание",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=3010",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-ST-009-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Сохраняется только тип/название конкретного поселения; уровень рынка и уровень обычных NPC не принимаются как новые подсистемы.",
+      "product_boundary": "Тип поселения на карте",
+      "action": "Задать имя и тип существующего поселения",
+      "map_object_or_state": {
+        "place": "C",
+        "name": "Ольховка",
+        "type": "village"
+      },
+      "expected_result": "На карте C — деревня «Ольховка»; после загрузки имя и тип те же.",
+      "operational_requirement": {
+        "source_rule_ref": "PF2-RM-ST-009-v2",
+        "normative_kind": "research_translation_of_recommendation",
+        "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать имя и тип существующего поселения",
+        "inputs_and_units": {
+          "place": "C",
+          "name": "Ольховка",
+          "type": "village"
+        },
+        "product_operation": "Задать имя и тип существующего поселения",
+        "expected_output": "На карте C — деревня «Ольховка»; после загрузки имя и тип те же.",
+        "constraints_and_exceptions": [
+          "Уровень PF2 не переводится в площадь/численность автоматически; не создавать рынок, NPC-уровни и новые поля ради полной карточки.",
+          "Исследовательская интерпретация, не утверждение разработки или поддержки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"place\":\"C\",\"name\":\"Ольховка\",\"type\":\"village\"}",
+            "when": "Задать имя и тип существующего поселения; сохранить и повторно открыть карту",
+            "expected": "На карте C — деревня «Ольховка»; после загрузки имя и тип те же."
+          }
+        ],
+        "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Фактическая поддержка узкого поведения на свежем SHA не перепроверена.",
+          "Точные степени PF2 не считаются реализованными общей меткой проходимости."
+        ]
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "binding_ids": [],
+        "status": "no_exact_PF2_binding_found"
+      },
+      "implementation_status": "implemented",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "village"
+      ],
+      "comment": "Проверена смена Town на Village в том же гексе, отдельное имя «Ольховка», Undo/Redo и загрузка JSON с теми же именем, типом и географией.",
+      "remaining": "Это общая работа с поселением. PF2-специфичный binding в реестре не найден; уровень, черты и размер в проверку имени/типа не входят."
+    }
+  ],
+  "evidence": {
+    "scale": {
+      "method": "unchanged_domain_module_execution",
+      "files": [
+        "src/detailGrid.ts",
+        "src/App.tsx"
+      ],
+      "locators": [
+        "createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles",
+        "switchFineStep"
+      ],
+      "probe_checks": [
+        "exact_grid"
+      ],
+      "blob_shas": {
+        "src/detailGrid.ts": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef"
+      }
+    },
+    "pois": {
+      "method": "actual_App_callbacks_in_repository_VM_harness",
+      "files": [
+        "src/App.tsx",
+        "src/manualPois.ts",
+        "test/regionEditing.test.mjs",
+        "test/oneMile.test.mjs"
+      ],
+      "locators": [
+        "setSelectedPoiKind, deleteSelectedPoi, showNameTarget, saveNameDraft, commitManualMap, handleImportJson",
+        "E8 real POI move; fine POI label retains localized type and explicit name"
+      ],
+      "probe_checks": [
+        "poi_display_names",
+        "sole_poi_removal_and_rename"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "src/manualPois.ts": "41a7d1b6b24bbdab42971deecb404f43efa9d40c",
+        "test/regionEditing.test.mjs": "5cfeb350e84aa776a6a3e10b67626e0283a451a9",
+        "test/oneMile.test.mjs": "affdac2923ea199dcad74d63ab787a2f4004a377"
+      }
+    },
+    "extension": {
+      "method": "actual_App_callbacks_in_repository_VM_harness",
+      "files": [
+        "src/App.tsx",
+        "test/worldContinuation.test.mjs",
+        "test/mapTransactions.test.mjs"
+      ],
+      "locators": [
+        "safelyAddRegionToMap, createSaveData, handleImportJson, undoMap",
+        "production document exports RNG; GEO2 actual connected land-only generation retains old refinement"
+      ],
+      "probe_checks": [
+        "local_expansion_preserves_poi"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "test/worldContinuation.test.mjs": "1f2972d3c798ea968abb7aaf92249048d1095174",
+        "test/mapTransactions.test.mjs": "20ed2057fb1e5b68ca6efb33accabd82561b7e31"
+      }
+    },
+    "village": {
+      "method": "actual_App_callbacks_in_repository_VM_harness",
+      "files": [
+        "src/App.tsx",
+        "src/toponyms.ts",
+        "test/mapTransactions.test.mjs"
+      ],
+      "locators": [
+        "setSelectedCentralPoiKind, showNameTarget, saveNameDraft, createSaveData, handleImportJson",
+        "direct names change only the captured locale"
+      ],
+      "probe_checks": [
+        "village_type_and_name"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "src/toponyms.ts": "d748053073e663d10589d1279e6027e9a9982a07",
+        "test/mapTransactions.test.mjs": "20ed2057fb1e5b68ca6efb33accabd82561b7e31"
+      }
+    },
+    "conifer": {
+      "method": "actual_App_callbacks_in_repository_VM_harness",
+      "files": [
+        "src/App.tsx",
+        "test/mapTransactions.test.mjs"
+      ],
+      "locators": [
+        "regionBiomeReason, setSelectedRegionBiome",
+        "region biome respects stored height and canonical neighbors"
+      ],
+      "probe_checks": [
+        "conifer_biome_variant"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "test/mapTransactions.test.mjs": "20ed2057fb1e5b68ca6efb33accabd82561b7e31"
+      }
+    },
+    "region": {
+      "method": "actual_App_callbacks_and_domain_tests",
+      "files": [
+        "src/App.tsx",
+        "src/manualRegions.ts",
+        "test/regionEditing.test.mjs",
+        "test/mapTransactions.test.mjs"
+      ],
+      "locators": [
+        "E7 App transfer keeps full POI identity; E7 App height; region biome respects stored height and canonical neighbors",
+        "regionBiomeReason, setSelectedHexBiomeOverride"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "src/manualRegions.ts": "97c413e41eba79f2342b12d6e8d28e22741c7d45",
+        "test/regionEditing.test.mjs": "5cfeb350e84aa776a6a3e10b67626e0283a451a9",
+        "test/mapTransactions.test.mjs": "20ed2057fb1e5b68ca6efb33accabd82561b7e31"
+      }
+    },
+    "route": {
+      "method": "domain_and_actual_App_callbacks_tests",
+      "files": [
+        "src/App.tsx",
+        "src/manualRoads.ts",
+        "test/manualRoads.test.mjs",
+        "test/mapTransactions.test.mjs"
+      ],
+      "locators": [
+        "manual path allocates one ID and deterministic crossings; GEO2 actual mixed dry road approach preserves existing typed crossing and history"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "src/manualRoads.ts": "f9e405a66ecef935c74075d41d34e26d9c96c320",
+        "test/manualRoads.test.mjs": "68866a0c051e7b197d1b5c5a94ff58c3134a2a92",
+        "test/mapTransactions.test.mjs": "20ed2057fb1e5b68ca6efb33accabd82561b7e31"
+      }
+    },
+    "river": {
+      "method": "actual_App_callbacks_and_solver_tests",
+      "files": [
+        "src/App.tsx",
+        "src/manualRivers.ts",
+        "test/riverIntegration.test.mjs",
+        "test/mapTransactions.test.mjs"
+      ],
+      "locators": [
+        "RIV-EX-01/12/13/15 real map expansion; RIV-EX-03/19 adapter solves real sector directions at a junction; GEO2 actual mixed river continuation"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "src/manualRivers.ts": "d59120f80daa7022eec451411207af9e4ac4c6c1",
+        "test/riverIntegration.test.mjs": "7a04123434004287cc1a491864a0b04151a30f6d",
+        "test/mapTransactions.test.mjs": "20ed2057fb1e5b68ca6efb33accabd82561b7e31"
+      }
+    },
+    "water": {
+      "method": "domain_test_and_actual_growth",
+      "files": [
+        "src/manualWater.ts",
+        "src/seaIdentity.ts",
+        "test/manualWater.test.mjs",
+        "test/riverIntegration.test.mjs"
+      ],
+      "locators": [
+        "E6 external sea reclamation; E6 enclosed sea is an explicit lake choice; SEA01 legacy metadata; RIV-EX-01/12/13/15"
+      ],
+      "blob_shas": {
+        "src/manualWater.ts": "40ff56988bad6c7e9a5e94551e1d8ce197f699e0",
+        "src/seaIdentity.ts": "4e65f346cfcd741e2256c514296e9af2d749ef57",
+        "test/manualWater.test.mjs": "033ee828e8cd11320a5c3f7dfa8fac07008f4724",
+        "test/riverIntegration.test.mjs": "7a04123434004287cc1a491864a0b04151a30f6d"
+      }
+    },
+    "footprint": {
+      "method": "geometry_domain_tests_only",
+      "files": [
+        "src/geometryRefinementPois.ts",
+        "src/geometryRefinementPoiSource.ts",
+        "test/geometryRefinementPois.test.mjs"
+      ],
+      "locators": [
+        "GEO2 POI candidates retain source requirements, same-parent rigid footprints and both route entries; GEO2 accepted POI source adapter uses actual owner"
+      ],
+      "blob_shas": {
+        "src/geometryRefinementPois.ts": "788d8e03fab50361ca33da474fc84f164085ba1f",
+        "src/geometryRefinementPoiSource.ts": "68e767507835db52cc33d713048d2f370017fada",
+        "test/geometryRefinementPois.test.mjs": "6a9936754ae232d5cec05eae66495dabd685045f"
+      }
+    },
+    "generation": {
+      "method": "reviewed_entry_points_and_negative_profile_inspection",
+      "files": [
+        "src/App.tsx",
+        "src/modes/kingdoms.ts",
+        "src/knaveClassic.ts",
+        "src/tags/knave.ts"
+      ],
+      "locators": [
+        "GenerationMode = 'classic' | 'mythic'; changeGenerationMode; chooseKnaveProfile; prepareKnaveGeneratedMap; safelyAddRegionToMap; UI generation controls"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "src/modes/kingdoms.ts": "a33b80de2f5de74785a90432f2736c907eddcf71",
+        "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+        "src/tags/knave.ts": "b56e7fd3a5c9ea3943b7c3e35a525f17f40cd01a"
+      }
+    },
+    "audience": {
+      "method": "static_only",
+      "files": [
+        "src/App.tsx",
+        "src/knaveClassic.ts",
+        "src/OneMileArtwork.tsx"
+      ],
+      "locators": [
+        "createSaveData, handleExportPng, showHexCoordinates, usePoiSvg, mapArtwork"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+        "src/OneMileArtwork.tsx": "5d5891b73d6d99f931b362e5db4d9ce4fd0e5e75"
+      }
+    },
+    "terrain": {
+      "method": "domain_test_for_Knave_only_and_static_PF2_review",
+      "files": [
+        "src/App.tsx",
+        "src/knaveClassic.ts",
+        "src/manualObstacles.ts",
+        "test/tags.test.mjs"
+      ],
+      "locators": [
+        "BiomeId, BIOMES, selectedEffectiveBiomeId, BIOME_COMPATIBILITY_MATRIX; Difficulty and Discovery; Knave difficulty is sparse and detached; Knave interaction requires a bounded separate clue"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "0a9a20ee61e5c96874b02a94bf8f100b29cd6bef",
+        "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+        "src/manualObstacles.ts": "3669ec7829ebc6fdf99d321d483ed9b853c41227",
+        "test/tags.test.mjs": "daf193a46859bdb224787235d63f5ac75b2996bd"
+      }
+    }
+  },
+  "verification": {
+    "implementation_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "method": "Verified Git blobs from pinned main, Node v24.22.3, npm ci with lockfile, no rendered browser. App callback harness executes production handlers and uses stubbed React state per checked-in design.",
+    "tests": [
+      {
+        "command": "node --test --test-name-pattern='E7 App|E8 real POI|adjacent|real map expansion|sector directions at a junction|seas?|manual path|manual water|poi label|production document exports RNG|region biome respects|GEO2 actual mixed|direct names change|knave.*(difficult|discovery)|retains old refinement' test/manualWater.test.mjs test/manualRoads.test.mjs test/regionEditing.test.mjs test/riverIntegration.test.mjs test/oneMile.test.mjs test/worldContinuation.test.mjs test/mapTransactions.test.mjs",
+        "result": "✔ manual path allocates one ID and deterministic crossings without mutating input (4.15077ms)\n✔ E6 external sea reclamation requires one explicitly adjacent existing region (4.843204ms)\n✔ E6 enclosed sea is an explicit lake choice; open sea needs at least two cells (5.169985ms)\n✔ E6 lake-to-sea joining lists the whole affected body before deleting old identities (2.420685ms)\n✔ SEA01 legacy metadata is numeric-order deterministic and v9 exactly covers sea-only edge components (3.569515ms)\n✔ direct names change only the captured locale; exact history, validation, legacy other locale and stale fault guards (27360.090445ms)\n✔ region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history (1522.458823ms)\n✔ GEO2 actual connected land-only generation retains old refinement and leaves new domain unrefined in one history action (1370.724923ms)\n✔ GEO2 actual mixed river continuation retains scoped crossings, identities and one undo redo (728.636793ms)\n✔ GEO2 actual mixed dry road approach preserves existing typed crossing and history (550.144151ms)\n✔ test/oneMile.test.mjs (591.091197ms)\n✔ E7 App transfer keeps full POI identity/history and real reload continuation classic (1045.608622ms)\n✔ E7 App transfer keeps full POI identity/history and real reload continuation mythic (8183.038295ms)\n✔ E7 App height is one atomic explicit biome pair and retains local/underwater overrides (67.343333ms)\n✔ E7 v7 import retains only an exact unique frontier order; legacy/mismatch/duplicate/empty/sea retain prior normalization (208.222315ms)\n✔ E8 real POI move is one exact transaction with full payload and literal hex notes classic (316.050049ms)\n✔ E8 real POI move is one exact transaction with full payload and literal hex notes mythic (7740.579208ms)\n✔ RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes (7066.515162ms)\n✔ RIV-EX-03/19 adapter solves real sector directions at a junction and preserves region ownership (21.921301ms)\n✔ production document exports RNG and undo restores continuation (1145.977683ms)\nℹ tests 20\nℹ suites 0\nℹ pass 20\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 35356.881901\n"
+      },
+      {
+        "command": "node --test --test-name-pattern='GEO2 (POI|accepted POI)|Knave (profile permits|difficulty is|interaction requires)|fine POI label' test/geometryRefinementPois.test.mjs test/tags.test.mjs test/oneMile.test.mjs",
+        "result": [
+          "GEO2 POI candidates retain source requirements",
+          "GEO2 accepted POI source adapter",
+          "fine POI label retains localized type",
+          "Knave profile permits mixed generation modes",
+          "Knave difficulty is sparse and detached",
+          "Knave interaction requires a bounded separate clue"
+        ],
+        "passed": 6,
+        "failed": 0
+      }
+    ],
+    "probe": {
+      "ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation-probe.mjs",
+      "reproduce": "Copy probe to root of exact product checkout, run npm ci and node <copied probe>.",
+      "passed_cases": [
+        {
+          "check": "exact_grid",
+          "axes": [
+            12,
+            13.85640646055102
+          ],
+          "appArea": 124.70765814495917,
+          "pf2Area": 93.53074360871936,
+          "pf2AcrossFlats": 10.392304845413264,
+          "ratio": 1.3333333333333335
+        },
+        {
+          "check": "village_type_and_name",
+          "location": {
+            "q": 0,
+            "r": 0
+          },
+          "name": "Ольховка",
+          "type": "village",
+          "undoRedo": true,
+          "reload": true
+        },
+        {
+          "check": "poi_display_names",
+          "names": [
+            "A",
+            "7"
+          ],
+          "retainedTerrain": "deciduous_woodland",
+          "rivers": 2,
+          "roads": 2,
+          "reload": true
+        },
+        {
+          "check": "sole_poi_removal_and_rename",
+          "caveRemoved": true,
+          "authorNameGuard": true,
+          "castleName": "B",
+          "roadsAndRiversUnchanged": true,
+          "undoRedo": true,
+          "reload": true
+        },
+        {
+          "check": "local_expansion_preserves_poi",
+          "addedRegions": 1,
+          "retainedPointType": "castle",
+          "retainedName": "B",
+          "undoRedo": true,
+          "reload": true
+        },
+        {
+          "check": "conifer_biome_variant",
+          "next": "plain_coniferous_forest",
+          "retainedCells": 12,
+          "undoRedo": true,
+          "reload": true
+        }
+      ]
+    },
+    "acceptance_limit": "No end-to-end browser, public deployment or gameplay support acceptance. Known incompatibilities include confirmed negative geometry and static profile entrypoints."
+  },
+  "quality": {
+    "RA-Q01": [
+      "met_bounded",
+      "Fixed PF2 Remaster and existing p90–209 ledger, with code SHA separate."
+    ],
+    "RA-Q02": [
+      "open",
+      "Full printed books and remaining applicable references still open; no rescan this run."
+    ],
+    "RA-Q03": [
+      "reused_pending_full_game",
+      "Prior facts and controlled references preserved; no new source extraction."
+    ],
+    "RA-Q04": [
+      "met_bounded",
+      "Distances and axes, d20 inputs, missing first-hex default and relevant exceptions preserved in operation records."
+    ],
+    "RA-Q05": [
+      "met_bounded",
+      "Normativity preserved from inherited records, diagnostic scenarios distinguished from book rules."
+    ],
+    "RA-Q06": [
+      "met_bounded",
+      "One trace per scope row, with action, map object and expected output."
+    ],
+    "RA-Q07": [
+      "met_bounded",
+      "Context, realistic affordances and status limits recorded. Player delivery refers to L2."
+    ],
+    "RA-Q08": [
+      "open",
+      "24 corresponding binding IDs were located, 5 were not. Functional equivalence is not inherited from shared IDs."
+    ],
+    "RA-Q09": [
+      "met_bounded",
+      "Acceptance input/expected pair preserved in each row; executed checks state output and exact limitations."
+    ],
+    "RA-Q10": [
+      "open_full_game",
+      "29 rows assessed; two unknown and partial rows explicitly retain pending end-to-end criteria."
+    ],
+    "RA-Q11": [
+      "met_bounded",
+      "Exact blobs, command output, independent probes, static/product boundaries and current scope are traceable."
+    ],
+    "RA-Q12": [
+      "met_bounded",
+      "Research handoff references existing registries and historical PF2 work; no duplicate developer task."
+    ],
+    "RA-Q13": [
+      "met_bounded",
+      "Shared machine-readable row decisions generate the readable overview."
+    ],
+    "RA-Q14": [
+      "open_full_game",
+      "Local audit completed; source and product outcomes for full PF2 remain open with exact references."
+    ],
+    "RA-Q15": [
+      "met_bounded",
+      "No full PF2/top5 acceptance, rating, methodology, score, backlog, source code or publication changes."
+    ]
+  },
+  "remaining": [
+    {
+      "scope": "source",
+      "action": "Возобновить PF2 при прямой зависимости принятой функции или новом существенном источнике. GM Core 3, печатные стр. 146–165, карта и отдельные описания планов; сверка оглавления, приложений и релевантных ссылок GM Core 1; редакционные расхождения Travel / Reconnoiter / Map the Area из GM Core 4.",
+      "refs": [
+        "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+        "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
+        "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json"
+      ]
+    },
+    {
+      "scope": "source",
+      "action": "Player Core 1, печатные стр. 32–34 и карта/подписи при наличии. Player Core 2, печатное оглавление и конкретные зависимости движения. Player Core 3–8 и Conditions Appendix, релевантные ссылки 323/405/438–440. На стр. 438 доступная таблица Travel Speed и связь Vehicles уже сверены.",
+      "refs": [
+        "agent-work/research/requirements/PF2-Remaster-v2-PC12-applicability.json",
+        "agent-work/research/requirements/PF2-Remaster-v2-coverage.json"
+      ]
+    },
+    {
+      "scope": "product",
+      "action": "Точные сценарии в remaining каждой строки; отдельно неизвестные обзор C/P/H и выдача карты A/B игрокам. Две PF2-таблицы и точный масштаб не подтверждены имеющимися общими функциями. Нет автоматического вывода о поддержке из тестов Knave.",
+      "refs": [
+        "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json"
+      ]
+    },
+    {
+      "scope": "canonical",
+      "action": "Перепроверить соответствие 24 имеющихся binding и 5 отсутствующих точных ST-строк при принятой потребности. Поиск по полному телу реестра выполнен; новый ID или дубликат не регистрировались.",
+      "refs": [
+        "agent-work/rules/common-rules.json",
+        "agent-work/rules/game-bindings.json"
+      ]
+    },
+    {
+      "scope": "top5",
+      "action": "Сохранить доступный DND5/DMG2014 checkpoint до нового доступа к полному первичному корпусу. Create-top10 определяется свежим рейтингом после полного принятия overall-top5.",
+      "refs": [
+        "agent-work/score/cohorts-2026-11-15.json"
+      ]
+    }
+  ],
+  "full_game_accepted": false
+}
