@@ -1,0 +1,340 @@
+{
+  "task_id": "HX-BL-060",
+  "pr": 506,
+  "branch": "agent/hx-bl-060-unified-biome-map",
+  "role": "reviewer",
+  "run_id": "2026-11-19T0200-reviewer-HX-BL-060-F4",
+  "head_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+  "reviewed_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+  "base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "tree_sha": "73c6302baba54d92bf99464342a1aacb5b3584b5",
+  "spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F4.md",
+  "spec_blob_sha": "9e1ba76e4978ed07e7d37fbe17e3277e5dd979d7",
+  "prior_implementation_ref": "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/implementation.json",
+  "prior_review_ref": "agent-work/evidence/HX-BL-060-review-1175b43/review.json",
+  "status": "changes_requested",
+  "review_ready": false,
+  "release_ready": false,
+  "next_role": "programmer",
+  "next_step": "В HX-BL-060 добавить обязательную сверку 26 PNG с утверждёнными SHA-256 при сборке каталога. Подтвердить, что подменённый файл блокирует сборку, и передать новый точный SHA на приёмку.",
+  "remaining_acceptance": [
+    "Подключить сверку файлов с уже существующим каталогом к пути сборки, включая штатную сборку релиза.",
+    "На точном новом SHA показать успешную штатную сборку и отказ сборки для подменённого или пропавшего PNG с указанием файла. Сохранить ранее принятый вид и обновить CI/evidence на новом SHA.",
+    "Независимо сверить новый SHA, закрыть R03 и затем отдельно запросить разрешение публикации."
+  ],
+  "forecast": "Один короткий этап исправления и следующая независимая приёмка. Выпуск отдельно после решения владельца.",
+  "approval_status": "approved_scope_R03_correction_only_release_not_authorized",
+  "owner_decisions_needed": [],
+  "publication_authorized": false,
+  "visible_evidence_ref": "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png",
+  "review_ref": "agent-work/evidence/HX-BL-060-review-4561f29/review.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-060-review-4561f29/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-060-review-4561f29/score-assessment1.2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-19T0200-reviewer-HX-BL-060-F4-next.json",
+  "claim_ref": "agent-work/claims/2026-11-19T0200-reviewer-HX-BL-060-F4.json",
+  "role_selection_reason": "Review-ready F4 correction at an exact SHA with finished CI and a free task slot.",
+  "started_at": "2026-11-18T23:00:22.207Z",
+  "completed_at": "2026-11-18T23:04:01.671Z",
+  "method": "Independent source and exact CI merge-tree bridge, visual and PNG artifact review, same-world-point RGB diagnostics, SHA-256/alpha checks against the approved manifest, isolated shipping-build negative case.",
+  "independent_review": {
+    "fresh_context": true,
+    "sample_edges": 150,
+    "same_world_samples": 15150,
+    "orientations": 6,
+    "approved_palette_colors": 5,
+    "invalid_samples": 0,
+    "max_per_channel_difference": 7.958078640513122e-13,
+    "diagnostic": "agent-work/evidence/HX-BL-060-review-4561f29/terrain-continuity-probe.mjs",
+    "verdict": "Prior R04 blockers closed; request changes on R03."
+  },
+  "findings": [
+    {
+      "id": "F4-R03-01",
+      "requirement": [
+        "R03"
+      ],
+      "acceptance_context": [
+        "AC01"
+      ],
+      "severity": "blocking",
+      "status": "confirmed",
+      "summary": "Сборка пропускает файл с неверной гравюрой, хотя R03 требует остановить сборку каталога при несовпадении байтов.",
+      "expected": "A wrong engraving SHA-256 stops the packaged catalogue build with the affected asset named.",
+      "actual": "Isolated git archive of 4561f29, replace only sea.png with the valid lake.png, npm run build exits 0 and packages the lake bytes under the sea name. Repository SHA and correct inputs were not changed.",
+      "reproduction": {
+        "tested_source_head": "4561f299b09c5b5ac954c279904059a5a38a9354",
+        "steps": [
+          "Extract a disposable git archive of exact SHA and install/reuse its dependencies.",
+          "In that copy only, cp public/terrain/engravings/lake.png public/terrain/engravings/sea.png",
+          "Run npm run build and sha256sum dist/terrain/engravings/sea.png"
+        ],
+        "build_exit_code": 0,
+        "expected_sea_sha256": "407dfa74e8641bb9756607256c3ef34903095d157b940b1ebf41142c02978068",
+        "actual_dist_sha256": "ca8937952efd6d272427025d12ed5888844caf343582b6be31a5282224435007"
+      },
+      "sources": [
+        "agent-work/specs/HX-BL-060-unified-biome-map-F4.md:15",
+        "package.json:10–12",
+        "vite.config.ts",
+        "src/rendering/engravingCatalog.json",
+        "src/rendering/engravingAssets.ts",
+        ".github/workflows/deploy.yml:33–35"
+      ],
+      "qualification": "Positive AC01 asset match is proven for all tracked bytes. The release-gate issue is the negative behavior required by R03, not a currently corrupt file."
+    }
+  ],
+  "positive_evidence": [
+    {
+      "id": "F4-R04-01",
+      "status": "closed",
+      "detail": "Classic42 retains the same lake blend after 6 → 1 → 6, verified from exact screenshot, PNG and SVG source check in the existing browser case. JSON map unchanged, both scales remain functional.",
+      "artifact_id": 14472324694,
+      "file": "classic42-6mi-return.png"
+    },
+    {
+      "id": "F4-R04-02",
+      "status": "closed",
+      "detail": "Rounded, ordinary and three-color controls inspected. All six directions and mixed neighborhoods agree on shared-world RGB on the expanded diagnostic. Real ocean coast and PNG seen at 6 and 1 miles.",
+      "artifact_id": 14471968583
+    },
+    {
+      "requirement": [
+        "AC01",
+        "R05"
+      ],
+      "status": "positive_check_passed",
+      "detail": "Recomputed 26/26 approved selected PNG hashes, matching catalog and canonical manifest, terrain/POI palette and alpha≥128 boxes."
+    },
+    {
+      "requirement": [
+        "R08",
+        "R09",
+        "AC05"
+      ],
+      "status": "covered_by_exact_CI_and_artifacts",
+      "detail": "Prior valid and current saves, camera and paths, medium fixture history/JSON, asset HTTP 503 rejects partial PNG then recovers a byte-identical complete file. Does not certify all conceivable corrupt inputs."
+    }
+  ],
+  "limitations": [
+    "No numerical first-draw acceptance ceiling in F4. Repeat same-host A/B reproduces a persistent first-draw overhead. Cold graphics transfer and per-cell raster work are distinct. This is disclosed in addition to the R03 defect.",
+    "Timing fixture pairs are exact base/head within each scenario. The two 93-cell inputs share map geometry; some save metadata and one POI-kind field differ, so do not use them as a pure cross-scale timing delta.",
+    "No player-view/visibility-role or new SVG format verification."
+  ],
+  "first_drawing": {
+    "normal_93_ms": {
+      "before": 169.7,
+      "after": 251.4,
+      "base_range": [
+        165.7,
+        180.5
+      ],
+      "head_range": [
+        236.1,
+        271.2
+      ]
+    },
+    "normal_416_ms": {
+      "before": 333.1,
+      "after": 581.4,
+      "base_range": [
+        310.4,
+        344.3
+      ],
+      "head_range": [
+        571,
+        593.6
+      ]
+    },
+    "cold_416_assets_bytes": {
+      "before": 126294,
+      "after": 3266247
+    },
+    "fine_zoom_frame_ms": {
+      "before": 66.65,
+      "after": 33.3
+    },
+    "n": 5,
+    "artifact_id": 14471968583,
+    "disposition": "AC06 data and investigation present; retained user-facing cost. No invented numerical threshold."
+  },
+  "checks": {
+    "status": "full_ci_green",
+    "run_id": 44399726523,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44399726523",
+    "head_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+    "checkout_sha": "3b3f5662a1f5fc4283f6decfdd0e8635d098baeb",
+    "tree_sha": "73c6302baba54d92bf99464342a1aacb5b3584b5",
+    "jobs": [
+      {
+        "id": 135139355908,
+        "name": "check",
+        "conclusion": "success"
+      },
+      {
+        "id": 135139356491,
+        "name": "engraved-map-comparison",
+        "conclusion": "success"
+      },
+      {
+        "id": 135139356582,
+        "name": "browser",
+        "conclusion": "success"
+      },
+      {
+        "id": 135139356600,
+        "name": "world-random",
+        "conclusion": "success"
+      }
+    ],
+    "node": {
+      "executed": 429,
+      "passed": 429,
+      "skipped": 0
+    },
+    "browser": {
+      "runner_suites": 10,
+      "all_passed": true
+    },
+    "rng": {
+      "all_passed": true
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+    "head_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "read-only independent review",
+    "scenario": "Production artifacts, source provenance, diagnostic sampler and isolated build-catalog negative check",
+    "reuse_or_new_reason": "Existing browser round trip makes the user-visible regression reproducible; negative build probe is temporary reviewer evidence.",
+    "count_source": "Same immutable review SHA on both sides for reviewer work; candidate delta is separately attached.",
+    "candidate_test_change_summary": {
+      "base_sha": "1175b43bb3a84dff34e3bf1b05847c54103f0564",
+      "head_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "suite": "ONE-MILE1 real Classic round trip",
+        "scenario": "With the same save and lake, wait for the existing coarse blend, enter the fine scale, return and compare the same texture on the map and in the PNG source. A new PNG is saved from that same case.",
+        "reuse_or_new_reason": "Extend the existing real 6 → 1 → 6 case that reproduced the regression. Keep shared-edge oracle a temporary diagnostic. The profiler changes evidence lanes rather than logical test cases."
+      },
+      "node": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "browser_rng": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "count_source": "Exact branch diff, unchanged ONE-MILE1 case ID HX059-classic42-automatic-scene-save-PNG; existing browser case extended. A/B recorder remains separate."
+    },
+    "candidate_test_governance": "Retain the one extended existing scale round-trip scenario. Its same-map return and single exact PNG-image comparison reproduce the specific reported regression. The temporary sampler and negative build check add no runtime suite obligations."
+  },
+  "score_assessment": {
+    "task_id": "HX-BL-060",
+    "pr": 506,
+    "head_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+    "tree_sha": "73c6302baba54d92bf99464342a1aacb5b3584b5",
+    "release_base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "model_version": "1.2",
+    "model_ref": "agent-work/strategy/score-model.md",
+    "score_baseline_ref": "agent-work/score/current-score.json",
+    "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+    "score_baseline_blob_sha": "c93c6e841052e80d50cc1f9eb6963b4739d045f5",
+    "assessed_at": "2026-11-18T23:04:01.671Z",
+    "status": "insufficient_evidence",
+    "awarded_points": 0,
+    "delta_points": null,
+    "double_count": false,
+    "criteria": [
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Independent source and exact CI merge-tree bridge, visual and PNG artifact review, same-world-point RGB diagnostics, SHA-256/alpha checks against the approved manifest, isolated shipping-build negative case.",
+        "quality": "Visual quality for the tested master map and both scales independently verified; R03 catalog acceptance still open.",
+        "breadth": "Classic scenarios and existing browser corpus; no top 5/10/20 coverage certification.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-060-review-4561f29/review.json",
+          "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png",
+          "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44399726523/artifacts/14472324694"
+        ],
+        "limitations": [
+          "Player fog, visibility and layer authority out of scope.",
+          "Catalog mismatch path fails R03."
+        ]
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Independent source and exact CI merge-tree bridge, visual and PNG artifact review, same-world-point RGB diagnostics, SHA-256/alpha checks against the approved manifest, isolated shipping-build negative case.",
+        "quality": "PNG parity for the scale round trip and restoration, plus bounded JSON roundtrip verified.",
+        "breadth": "Limited exact fixtures rather than all supported formats and cases.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-060-review-4561f29/review.json",
+          "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png",
+          "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44399726523/artifacts/14472324694"
+        ],
+        "limitations": [
+          "No whole corpus, arbitrary input or different viewing roles verified."
+        ]
+      }
+    ]
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-18T22:59:40.209Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-11-18T23:04:01.671Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "recovery_performed": false,
+    "errors": []
+  },
+  "claim_inventory": {
+    "claim_records": 414,
+    "result_records": 526,
+    "research_records": 173,
+    "legacy_open_reconciled": 3,
+    "unresolved": 0
+  },
+  "no_writing_processes_running": true,
+  "no_validation_processes_running": true
+}
