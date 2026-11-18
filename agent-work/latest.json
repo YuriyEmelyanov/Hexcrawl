@@ -10,7 +10,7 @@
   "schedule_status": "enabled",
   "schedule_timezone": "Europe/Moscow",
   "schedule_time": null,
-  "schedule_start_date": "2026-11-14",
+  "schedule_start_date": "2026-11-19",
   "strategy_version": "1.0",
   "strategy_sha": "f89530abe1e237493dddb533502bb772ae1ab4e5",
   "score_model_version": "1.2",
@@ -48,8 +48,8 @@
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
-  "schedule_start_at": "2026-11-14T01:00:00+03:00",
-  "schedule_frequency": "every_three_hours",
+  "schedule_start_at": "2026-11-19T00:00:00+03:00",
+  "schedule_frequency": "every_two_hours",
   "process_path": "agent-work/process.md",
   "current_role": "programmer",
   "next_role": "reviewer",
@@ -1721,31 +1721,19 @@
   },
   "schedule_hours": [
     0,
-    1,
     2,
-    3,
     4,
-    5,
     6,
-    7,
     8,
-    9,
     10,
-    11,
     12,
-    13,
     14,
-    15,
     16,
-    17,
     18,
-    19,
     20,
-    21,
-    22,
-    23
+    22
   ],
-  "schedule_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
+  "schedule_decision_ref": "agent-work/decisions/owner-decision-2026-11-19-team-every-two-hours.json",
   "accepted_release_pending": {
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
@@ -2255,7 +2243,7 @@
     "superseded_by": "owner-decision-2026-10-31-team-resume-hourly",
     "historical_is_enabled": false
   },
-  "schedule_actual": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+  "schedule_actual": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
   "owner_resume": {
     "decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
     "result_ref": "agent-work/results/2026-10-31-owner-resume-hourly.json",
@@ -11057,7 +11045,7 @@
     }
   },
   "schedule_interval_hours": 2,
-  "schedule_rrule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+  "schedule_rrule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
   "latest_schedule_change": {
     "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
     "result_ref": "agent-work/results/2026-11-14-manual-agents-resume-hourly.json",
@@ -15237,18 +15225,36 @@
     ]
   },
   "latest_owner_schedule_decision": {
-    "decision_ref": "agent-work/decisions/owner-decision-2026-11-16-team-every-three-hours.json",
-    "owner_quote": "Период между запусками 3 часа",
+    "date": "2026-11-19",
+    "owner_quote": "Запуск раз в два часа",
+    "recorded_at": "2026-11-18T22:02:52.384Z",
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "checked_at": "2026-11-16T20:50:55.556Z",
-    "is_enabled": true,
-    "interval_hours": 3,
+    "interval_hours": 2,
+    "hours": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      12,
+      14,
+      16,
+      18,
+      20,
+      22
+    ],
     "minute": 0,
     "timezone": "Europe/Moscow",
-    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-    "result_ref": "agent-work/results/2026-11-16-owner-team-three-hours-1794862260838.json",
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+    "is_enabled": true,
+    "verified_next_run_at": "2026-11-19T02:00:00+03:00",
+    "supersedes": "agent-work/decisions/owner-decision-2026-11-16-team-every-three-hours.json",
     "research_schedule_changed": false,
-    "claims_changed": false
+    "claims_changed": false,
+    "checked_at": "2026-11-18T22:02:52.384Z",
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-19-team-every-two-hours.json",
+    "result_ref": "agent-work/results/2026-11-19-owner-team-two-hours.json"
   },
   "latest_owner_base_hex_ui_intake": {
     "task_id": "HX-BL-058",
@@ -15481,7 +15487,7 @@
             "pixelIdentical": false,
             "raster": {
               "maxDelta": 210,
-              "changedFraction": 7.626561472715319e-05
+              "changedFraction": 0.00007626561472715319
             },
             "scope": "diagnostic including unrelated controls"
           }
