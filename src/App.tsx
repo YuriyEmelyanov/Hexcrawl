@@ -1653,9 +1653,10 @@ function getTimestampForFilename(date = new Date()): string {
   return date.toISOString().replace(/[:.]/g, '-');
 }
 
-async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> {
+async function createExportSvgClone(svg: SVGSVGElement, includeScreenCandidates = false): Promise<SVGSVGElement> {
   const clone = svg.cloneNode(true) as SVGSVGElement;
-  clone.querySelectorAll('[data-editor-only]').forEach(node => node.remove());
+  clone.querySelectorAll(includeScreenCandidates ? '[data-editor-only]:not([data-editor-only="candidate"])' : '[data-editor-only]')
+    .forEach(node => node.remove());
   const viewBox = clone.viewBox.baseVal;
   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   clone.setAttribute('width', String(viewBox.width));
@@ -16732,7 +16733,7 @@ export function App() {
   useEffect(() => {
     const viewport = mapViewportRef.current, svg = mapSvgRef.current, canvas = mapMotionCanvasRef.current;
     if (fineActive || !viewport || !svg || !canvas || !renderDetails || positionedHexes.hexes.length < 600) return;
-    return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: createExportSvgClone, onNavigate: beginMapNavigation });
+    return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: source => createExportSvgClone(source, true), onNavigate: beginMapNavigation });
   }, [fineActive, mapArtwork, renderDetails, positionedHexes, isMapRotated]);
 
   return (

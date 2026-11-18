@@ -64,7 +64,13 @@ try{
    const vector=await p.locator('.map-viewport').screenshot();
    await p.evaluate(()=>document.querySelector('.map-viewport').classList.add('is-navigating'));
    await p.waitForFunction(()=>document.querySelector('.map-viewport').classList.contains('has-motion-buffer'));
-   const buffered=await p.locator('.map-viewport').screenshot();const difference=pixelDifference(vector,buffered);console.log('MOTION_BUFFER_PIXELS '+JSON.stringify({hexes:count*400,...difference}));assert.ok(difference.meanChannelDifference<4&&difference.changedPixelFraction<.025,'Motion buffer must preserve artwork');
+   const buffered=await p.locator('.map-viewport').screenshot();const difference=pixelDifference(vector,buffered);console.log('MOTION_BUFFER_PIXELS '+JSON.stringify({hexes:count*400,...difference}));
+   if(process.env.LARGE_VALIDATE){
+    await fs.mkdir(root+'reports',{recursive:true});
+    await fs.writeFile(root+'reports/terrain-v2-hx060-motion-vector.png',vector);
+    await fs.writeFile(root+'reports/terrain-v2-hx060-motion-raster.png',buffered);
+   }
+   assert.ok(difference.meanChannelDifference<4&&difference.changedPixelFraction<.025,'Motion buffer must preserve artwork');
    await p.evaluate(()=>document.querySelector('.map-viewport').classList.remove('is-navigating'));
   }
   if(process.env.LARGE_VALIDATE){
