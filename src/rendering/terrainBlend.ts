@@ -1,5 +1,6 @@
 // All distances use the hex circumradius. This layer never reads the world RNG.
 const halfWidth = .208;
+const rippleAmplitude = .011;
 const apothem = Math.sqrt(3) / 2;
 const neighbours = [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
 const normals = neighbours.map((_, i) => [Math.cos(i * Math.PI / 3), Math.sin(i * Math.PI / 3)]);
@@ -36,14 +37,24 @@ type Sample = {hex:string; color:Color};
 type Junction = {soleIndex:number;sole:Color;pair:Color};
 const sampleCentres = [[0,0], ...centres];
 
+function transition(value:number, ripple:number) {
+  return smooth(.5 + value / (2 * halfWidth) + ripple);
+}
+
+function fringe(value:number) {
+  return Math.sign(value) * smooth((Math.abs(value) / halfWidth - .22) / .6) / (2 * halfWidth);
+}
+
 // The weights and rounded fields depend only on the pixel's position within
 // the cell. Only the colours, available neighbours and ripple phase vary.
 function preparePixels() {
   return Array.from({length:width*height}, (_, index) => {
     const x=((index%width+.5)/width*2-1)*apothem, y=(Math.floor(index/width)+.5)/height*2-1;
-    const weights = sampleCentres.map(([cx,cy], slot) => ({
-      slot, weight: smooth(.5+hexDistance(x-cx,y-cy)/(2*halfWidth)),
-    })).filter(({weight}) => weight > 0);
+    const weights = sampleCentres.flatMap(([cx,cy], slot) => {
+      const value = hexDistance(x-cx,y-cy);
+      if (value <= -halfWidth-rippleAmplitude) return [];
+      return [{slot, value, edge:fringe(value), nominal:transition(value, 0)}];
+    });
     const corners = vertices.flatMap(([vx,vy], vertex) => {
       const dx=x-vx, dy=y-vy, distance=Math.hypot(dx,dy);
       if (distance >= .64) return [];
@@ -51,11 +62,11 @@ function preparePixels() {
         const [cx,cy] = sampleCentres[slot];
         const ax=cx-vx, ay=cy-vy;
         const value=roundedDistance(dx*ay-dy*ax,dx*ax+dy*ay,.94);
-        return {value, fringe:smooth((Math.abs(value)/halfWidth-.22)/.6)};
+        return {value, edge:fringe(value)};
       });
       return [{vertex, local:1-smooth((distance-.28)/.36), fields}];
     });
-    return {x,y,weights,corners};
+    return {rippleA:6*x+3*y, rippleB:11*x-4*y, weights, corners};
   });
 }
 let pixels: ReturnType<typeof preparePixels> | undefined;
@@ -79,28 +90,40 @@ function fillTexture(samples:[Sample, ...(Sample|undefined)[]], phaseX:number, p
   }
   const {context,data} = surface;
   pixels ??= preparePixels();
+  const phaseA = 6*phaseX+3*phaseY, phaseB = 11*phaseX-4*phaseY;
   for(let i=0;i<pixels.length;i++){
-    const {x,y,weights,corners}=pixels[i];
+    const {rippleA,rippleB,weights,corners}=pixels[i];
+    const idx=i*4;
+    if(weights.length===1 && corners.length===0){
+      data.data[idx]=centre.color[0];data.data[idx+1]=centre.color[1];data.data[idx+2]=centre.color[2];data.data[idx+3]=255;
+      continue;
+    }
+    const ripple=.007*Math.sin(phaseA+rippleA)+.004*Math.sin(phaseB+rippleB);
     let red=0,green=0,blue=0,total=0;
-    for(const {slot,weight} of weights){
+    for(const {slot,value,edge,nominal} of weights){
       const cell = samples[slot];
       if (!cell) continue;
+      const weight = edge && ripple ? transition(value,edge*ripple) : nominal;
       red+=weight*cell.color[0];green+=weight*cell.color[1];blue+=weight*cell.color[2];total+=weight;
     }
-    red/=total;green/=total;blue/=total;
+    let localTotal=0, roundedRed=0, roundedGreen=0, roundedBlue=0;
+    // Accumulate every contribution against the same base color. Selecting the
+    // first corner gives opposite sides of a shared edge different priorities.
     for (const {vertex,local,fields} of corners) {
       const v = junctions[vertex];
       if (!v) continue;
-      const {value,fringe} = fields[v.soleIndex];
-      const ripple=.007*Math.sin(6*(phaseX+x)+3*(phaseY+y))+.004*Math.sin(11*(phaseX+x)-4*(phaseY+y));
-      const sole=smooth(.5+(value+fringe*ripple)/(2*halfWidth));
-      red+=(v.pair[0]+sole*(v.sole[0]-v.pair[0])-red)*local;
-      green+=(v.pair[1]+sole*(v.sole[1]-v.pair[1])-green)*local;
-      blue+=(v.pair[2]+sole*(v.sole[2]-v.pair[2])-blue)*local;
-      break;
+      const {value,edge} = fields[v.soleIndex];
+      const sole=transition(value,edge*ripple);
+      localTotal+=local;
+      roundedRed+=(v.pair[0]+sole*(v.sole[0]-v.pair[0]))*local;
+      roundedGreen+=(v.pair[1]+sole*(v.sole[1]-v.pair[1]))*local;
+      roundedBlue+=(v.pair[2]+sole*(v.sole[2]-v.pair[2]))*local;
     }
-    const idx=i*4;
-    data.data[idx]=red;data.data[idx+1]=green;data.data[idx+2]=blue;data.data[idx+3]=255;
+    const baseWeight=Math.max(0,1-localTotal)/total, cornerWeight=1/Math.max(1,localTotal);
+    data.data[idx]=red*baseWeight+roundedRed*cornerWeight;
+    data.data[idx+1]=green*baseWeight+roundedGreen*cornerWeight;
+    data.data[idx+2]=blue*baseWeight+roundedBlue*cornerWeight;
+    data.data[idx+3]=255;
   }
   context.putImageData(data,0,0);
   return context.canvas.toDataURL();

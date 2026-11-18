@@ -14954,12 +14954,13 @@ export function App() {
       return [hex.key, id];
     }));
   }, [positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
-  const coarseTextures = useMemo(() => !renderDetails || fineDisplay ? new Map<string, string>() : terrainTextures(
+  const fineActive = !!busyFineView || fineDisplay?.viewStep === 1;
+  const coarseTextures = useMemo(() => !renderDetails || fineActive ? new Map<string, string>() : terrainTextures(
     positionedHexes.hexes.flatMap(hex => {
       const id = coarseTerrain.get(hex.key);
       return id ? [{q:hex.q, r:hex.r, color:engravingFor(id)!.color}] : [];
     }),
-  ), [renderDetails, fineDisplay, positionedHexes, coarseTerrain]);
+  ), [renderDetails, fineActive, positionedHexes, coarseTerrain]);
 
   useEffect(() => {
     headerLinksAutoCollapseTimerRef.current = window.setTimeout(() => {
@@ -16315,7 +16316,6 @@ export function App() {
       <button type="button" onClick={()=>setConfirmRoadRemoval(null)}>{language==='ru'?'Отмена':'Cancel'}</button>
     </div>}
   </div>:null;
-  const fineActive=!!busyFineView||fineDisplay?.viewStep===1;
   const fineCells=useMemo(()=>fineDisplay?projectOneMile(oneMileSources(captureMap()),fineDisplay.grid.origin):[],[fineDisplay?.grid.origin,regions,hexTerrainByKey,biomeOverrideByHexKey]);
   const fineCandidates=useMemo(()=>fineDisplay?oneMileCandidates(fineCells,candidateHexes,fineDisplay.grid.origin):[],[fineCells,candidateHexes,fineDisplay?.grid.origin]);
   const fineReadCell=fineDraft?.target??fineHover??fineDisplay?.selectedCell??null;

@@ -72,6 +72,10 @@ try{
  await page.locator('input[type=file]').setInputFiles(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url).pathname);
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  const classicSource=await snap();assert.equal(classicSource.map.physicalGrid,undefined);await shot('classic42-6mi-before.jpg');
+ const lakeKey=Object.entries(classicSource.map.terrainByHexKey).find(([,terrain])=>terrain.terrainOverride==='lake')[0];
+ const coastTexture=(svg,key)=>svg.querySelector(`[data-hex-key="${key}"]`).parentElement.querySelector('image.terrain-blend')?.getAttribute('href');
+ await page.waitForFunction(key=>document.querySelector(`[data-hex-key="${key}"] + image.terrain-blend`),lakeKey);
+ const coarseCoast=await page.locator('svg[data-render-phase]').evaluate(coastTexture,lakeKey);
  // F-R08: the real worker leaves the old whole scene intact. Cancel must
  // also reject a reply already in flight, and a fresh retry must succeed.
  await page.evaluate(()=>{window.__holdFineScene=true;window.__releaseFineScene=null;});
@@ -99,7 +103,19 @@ try{
  await page.evaluate(()=>window.__oneSvg=null);const [classicPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await classicPng.path(),new URL('classic42-automatic.png',out));
  const classicExport=await page.evaluate(()=>{const el=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml').querySelector('[data-fine-world]');return {rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])};});
  assert.deepEqual(classicExport,classicVisible,'screen and PNG use one complete scene');
- await step.selectOption('6');await shot('classic42-6mi-after.jpg');assert.deepEqual((await snap()).map,classicSource.map);
+ await step.selectOption('6');
+ const roundTripSvg=page.locator('svg[data-render-phase]');
+ assert.equal(await roundTripSvg.evaluate(coastTexture,lakeKey),coarseCoast,'Returning to 6 miles keeps the original visible lake blend');
+ await shot('classic42-6mi-after.jpg');assert.deepEqual((await snap()).map,classicSource.map);
+ await page.waitForFunction(()=>!document.querySelector('details.export-menu button:disabled'));
+ await page.evaluate(()=>window.__oneSvg=null);
+ const [coarsePng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);
+ await coarsePng.saveAs(new URL('classic42-6mi-return.png',out).pathname);
+ const coarseExport=await page.evaluate(key=>{
+   const svg=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml');
+   return svg.querySelector(`[data-hex-key="${key}"]`).parentElement.querySelector('image.terrain-blend')?.getAttribute('href');
+ },lakeKey);
+ assert.equal(coarseExport,coarseCoast,'PNG after the 6 → 1 → 6 round trip keeps the same lake blend');
  await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual(await classicSignature(),classicVisible);
  await page.setViewportSize({width:390,height:1000});await shot('classic42-1mi-after-390.jpg');
  await page.locator('input[type=file]').setInputFiles({name:'classic42-source-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicSource))});

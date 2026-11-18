@@ -86,7 +86,7 @@ async function openMap(page, scenario, input, warmup) {
   }
   const selector = scenario.step === 1 ? '[data-fine-cells] > [data-fine-key]' : sourceCells;
   const cells = await page.locator(selector).count();
-  assert.equal(cells, scenario.cells, scenario.name);
+  if (scenario.cells !== undefined) assert.equal(cells, scenario.cells, scenario.name);
   const motion = await page.evaluate(async () => {
     const view = document.querySelector('.map-viewport'), box = view.getBoundingClientRect();
     const frame = () => new Promise(resolve => requestAnimationFrame(resolve));
@@ -157,6 +157,8 @@ function summarize(rows) {
         distinctSourceAssets: stats(group.map(row => (row.fineAssets ?? row.sourceAssets).assetUrls)),
         assetReadyMs: stats(group.map(row => (row.fineAssets ?? row.sourceAssets).assetsReadyMs)),
         imageTransferBytes: stats(group.map(row => (row.fineAssets ?? row.sourceAssets).transferBytes)),
+        coldAssetTransfer: rows.filter(row => row.scenario === scenario && row.edition === edition.name && row.warmup)
+          .map(row => ({ sourceBytes: row.sourceAssets.transferBytes, fineBytes: row.fineAssets?.transferBytes })),
       });
     }
   }
@@ -171,9 +173,9 @@ async function junctions(page, step) {
     const corners = new Map(), edges = new Map();
     for (const node of nodes) {
       const key = node.getAttribute('data-hex-key') ?? node.parentElement.dataset.fineKey;
-      const color = node.style.fill || node.getAttribute('fill');
-      const water = ['#5D919C', '#426E85'].includes(color?.toUpperCase())
-        || ['rgb(93, 145, 156)', 'rgb(66, 110, 133)'].includes(color);
+      const fill = node.style.fill || node.getAttribute('fill');
+      const color = ({ 'rgb(93, 145, 156)': '#5D919C', 'rgb(66, 110, 133)': '#426E85' })[fill] ?? fill?.toUpperCase();
+      const water = ['#5D919C', '#426E85'].includes(color);
       const points = node.getAttribute('points').trim().split(/\s+/).map(pair => pair.split(',').map(Number));
       const tokens = points.map(([x,y]) => [x,y].map(n => n.toFixed(3)).join(','));
       for (let index = 0; index < tokens.length; index++) {
@@ -183,7 +185,8 @@ async function junctions(page, step) {
         corners.set(token, adjacent);
         const edgeToken = [token, tokens[next]].sort().join('/');
         const edge = edges.get(edgeToken) ?? {
-          point: points[index].map((n, axis) => (n + points[next][axis]) / 2), cells: [],
+          point: points[index].map((n, axis) => (n + points[next][axis]) / 2),
+          endpoints: [token, tokens[next]], cells: [],
         };
         edge.cells.push({ key, color, water });
         edges.set(edgeToken, edge);
@@ -197,11 +200,14 @@ async function junctions(page, step) {
     const triple = [...corners.values()].filter(entry => entry.cells.length === 3 && dry(entry));
     const borders = [...edges.values()].filter(entry => entry.cells.length === 2 && distinct(entry) === 2);
     const shore = borders.filter(entry => entry.cells.some(cell => cell.water) && !entry.cells.every(cell => cell.water));
+    const freeEnd = borders.filter(entry => dry(entry) && entry.endpoints.some(token => corners.get(token).cells.length === 2));
     return {
       '2-plus-1': closest(triple.filter(entry => distinct(entry) === 2)),
       '3-colors': closest(triple.filter(entry => distinct(entry) === 3)),
       '2-neighbors': closest(borders.filter(dry)),
+      'free-end': closest(freeEnd),
       'shore': closest(shore),
+      'sea-coast': closest(shore.filter(entry => entry.cells.some(cell => cell.color === '#426E85'))),
       'shore-2-plus-1': closest([...corners.values()].filter(entry => entry.cells.length === 3
         && distinct(entry) === 2 && entry.cells.some(cell => cell.water) && !entry.cells.every(cell => cell.water))),
     };
@@ -293,6 +299,37 @@ try {
     }, null, 2));
     console.log('HX060_COMPARISON ' + scenario.name + ' ' + rows.filter(row => row.scenario === scenario.name).length + ' paired observations');
   }
+  // Use the existing Classic round-trip save with declared sea cells in open
+  // coastal positions. This keeps the same authored land and rivers.
+  const seaFixture = 'classic-six-regions-seed42';
+  const sea = JSON.parse(await readFile(new URL('test/fixtures/' + seaFixture + '.json', root)));
+  const seaKeys = ['-1,0', '-2,1'];
+  for (const key of seaKeys) sea.map.terrainByHexKey[key] = { terrainOverride: 'sea' };
+  sea.map.seas = [{ id: 1, hexKeys: seaKeys }];
+  sea.map.nextSeaId = 2;
+  sea.ui = { ...sea.ui, selectedHex: null, mapScale: 2, isMapRotated: false };
+  for (const step of [6, 1]) {
+    const scenario = { name: 'sea-coast-' + step, fixture: seaFixture, step };
+    const pages = await Promise.all(editions.map(async edition => {
+      const page = await browser.newPage({ viewport });
+      await page.goto('http://127.0.0.1:' + edition.port + '/');
+      return page;
+    }));
+    for (const page of pages) {
+      await page.bringToFront();
+      await openMap(page, scenario, sea, true);
+    }
+    const coast = (await junctions(pages[1], step))['sea-coast'];
+    assert.ok(coast, 'Expected a sea-to-land edge on the Classic coastal save');
+    const cases = { 'sea-coast': coast };
+    examples[scenario.name] = cases;
+    for (const [index, edition] of editions.entries()) {
+      await pages[index].bringToFront();
+      await capture(pages[index], scenario, edition, cases, false);
+      await pages[index].close();
+    }
+  }
+  await writeFile(new URL('coast-examples.json', reports), JSON.stringify(examples, null, 2));
 } finally {
   await browser?.close();
   for (const server of servers) server.kill();
