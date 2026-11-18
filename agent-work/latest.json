@@ -5076,18 +5076,22 @@
     "state_ref": "agent-work/research/state.json",
     "method_ref": "agent-work/research/method.json",
     "proposals_ref": "agent-work/research/proposals.json",
-    "last_completed_run": "2026-11-18-PF2-PC12-1795022967628",
+    "last_completed_run": "2026-11-18-PF2-L1-implementation-1795033764746",
     "result_ref": "agent-work/research/runs/2026-11-18-PF2-PC12-1795022967628.json",
     "previous_result_ref": "agent-work/research/runs/2026-11-18-PF2-GMC5-1795012143510.json",
-    "checkpoint_ref": "agent-work/research/runs/2026-11-18-PF2-PC12-1795022967628.json",
+    "checkpoint_ref": "agent-work/research/runs/2026-11-18-PF2-L1-implementation-1795033764746.json",
     "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-PC12-applicability.json",
     "next_candidate": {
-      "id": "HX-RSR-PF2-PC34-APPLICABILITY",
-      "game_id": "PF2",
+      "id": "HX-RSR-KNAVE2-RETAINED-L1-EVIDENCE",
+      "game_id": "KNAVE2",
       "layer": "L1",
-      "status": "selected_reachable_after_PC12",
-      "action": "Проверить Player Core, главы Classes и Skills. Сначала определить прямые зависимости подготовленных участков и маршрутов от движения и способов переправы, поиска и навигации. Уточнить применимые действия по первоисточнику, не переводить классы и навыки целиком в приложение. Сохранить печатный остаток PC1–2, GM Core 3, сверку редакций действий Hexploration, нормализацию привязок и проверку реализации.",
-      "completion_condition": "Закончить тематическую проверку доступных разделов глав 3–4 и применимых ссылок. Для каждой строки указать решение и основание, для принятой операции — проверяемый результат. Назвать точный остаток печатного корпуса."
+      "status": "selected_after_PF2_bounded_implementation",
+      "action": "Использовать уже сверенную финальную редакцию Knave 2e и 12 строк keep_L1. Проверить текущий профиль карты, труднопроходимость, наполнение и сохранение точек на свежем SHA. Начать с сопоставления старых проверок с действующим scope и актуальным App. Для мастера показать, что реально работает, что зависит от профиля либо остаётся открытым.",
+      "completion_condition": "Один законченный срез 12 строк с действиями, критериями, подтверждёнными общими и профильными операциями, точными unknown и актуальной передачей стратегу. Отдельно вынести условия раскрытия игрокам в L2.",
+      "scope_ref": "agent-work/research/requirements/KNAVE2-scope-audit.json",
+      "prior_product_audit_ref": "agent-work/research/audits/KNAVE2-L1-runtime-2026-11-10.json",
+      "source_already_accessible": true,
+      "overall_top5_complete": false
     },
     "active_ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
     "active_ranking_changed": false,
@@ -5097,33 +5101,36 @@
       "start": [
         {
           "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-          "enabled": true,
+          "is_enabled": true,
           "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-          "last_run": null
+          "next_run_time": "2026-11-19T00:00:00+03:00",
+          "last_run_time": "2026-11-18T18:05:28.122909+00:00"
         },
         {
           "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-          "enabled": true,
+          "is_enabled": true,
           "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-          "last_run": null
+          "next_run_time": "2026-11-18T23:30:00+03:00",
+          "last_run_time": "2026-11-18T17:35:47.988409+00:00"
         }
       ],
       "end": [
         {
           "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-          "enabled": true,
+          "is_enabled": true,
           "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-          "last_run": null
+          "next_run_time": "2026-11-19T00:00:00+03:00",
+          "last_run_time": "2026-11-18T18:05:28.122909+00:00"
         },
         {
           "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-          "enabled": true,
+          "is_enabled": true,
           "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-          "last_run": null
+          "next_run_time": "2026-11-18T23:30:00+03:00",
+          "last_run_time": "2026-11-18T17:35:47.988409+00:00"
         }
       ],
-      "checked_at": "2026-11-18T17:35:25.076Z",
-      "schedules_changed": false
+      "schedule_changes": []
     },
     "latest_research_storage_verification": {
       "data_commit": "5d3a065b5139d15a5f00e583e2cff5c6811e1cbe",
@@ -5179,13 +5186,13 @@
     "authority_status": "owner_authorized_research",
     "finalized_at": "2026-11-18T17:35:25.976Z",
     "program_id": "HX-RSR-001",
-    "run_id": "2026-11-18-PF2-PC12-1795022967628",
-    "last_result_ref": "agent-work/research/runs/2026-11-18-PF2-PC12-1795022967628.json",
+    "run_id": "2026-11-18-PF2-L1-implementation-1795033764746",
+    "last_result_ref": "agent-work/research/runs/2026-11-18-PF2-L1-implementation-1795033764746.json",
     "updated_at": "2026-11-18T17:35:25.976Z",
     "active_rating_changed": false,
-    "last_run_id": "2026-11-18-PF2-PC12-1795022967628",
+    "last_run_id": "2026-11-18-PF2-L1-implementation-1795033764746",
     "result_commit_sha": "5d3a065b5139d15a5f00e583e2cff5c6811e1cbe",
-    "last_run": "2026-11-18-PF2-PC12-1795022967628",
+    "last_run": "2026-11-18-PF2-L1-implementation-1795033764746",
     "new_owner_decisions_needed": [],
     "pending_product_proposal_refs": [
       "agent-work/proposals/2026-11-10-HX-BL-054-PF2-FILL1.json",
@@ -5542,21 +5549,63 @@
     "claim": null,
     "active_task": null,
     "checkpoint": {
-      "status": "bounded_source_result_with_printed_remainder",
-      "run_id": "2026-11-18-PF2-PC12-1795022967628",
-      "stage": "PC1_2_indexed_topics_and_travel_speed_cross_reference_completed",
-      "last_successful_step": "Проверены доступные разделы первых двух глав. Страница 438 и ссылка Vehicles сверены с существующей привязкой, вычислены критерии для открытого, трудного и особо трудного сегментов.",
+      "status": "completed_bounded_implementation_audit_PF2_parked",
+      "run_id": "2026-11-18-PF2-L1-implementation-1795033764746",
+      "stage": "retained_L1_implementation_evidence",
+      "last_successful_step": "Матрица 29 строк на main 292428e970dbe66e2146d8f9528dd6f97f32666d, проверены сценарии App и доменные проверки; сохранены пределы доказательств и точный остаток PF2.",
       "failed_operation": null,
       "observed_error": null,
-      "stop_reason": "Условие тематической проверки доступного среза выполнено. Полное печатное покрытие RA-Q02 и фактическая реализация остаются открытыми.",
+      "stop_reason": "Условие одного ограниченного прохода выполнено; оставшиеся исследования PF2 отложены для перехода к Knave 2e.",
       "cause_status": "confirmed",
       "saved_results": [
-        "agent-work/research/requirements/PF2-Remaster-v2-PC12-applicability.json",
-        "agent-work/research/requirements/PF2-Remaster-v2-PC12-applicability.md",
-        "agent-work/research/requirements/PF2-Remaster-v2-PC12-applicability-quality.json",
-        "agent-work/research/handoffs/2026-11-18-PF2-PC12-1795022967628-strategist.json"
+        "agent-work/research/runs/2026-11-18-PF2-L1-implementation-1795033764746.json",
+        "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json",
+        "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.md",
+        "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation-probe.mjs",
+        "agent-work/research/handoffs/2026-11-18-PF2-L1-implementation-1795033764746-strategist.json"
       ],
-      "exact_continuation": "Проверить Player Core, главы Classes и Skills. Сначала определить прямые зависимости подготовленных участков и маршрутов от движения и способов переправы, поиска и навигации. Уточнить применимые действия по первоисточнику, не переводить классы и навыки целиком в приложение. Сохранить печатный остаток PC1–2, GM Core 3, сверку редакций действий Hexploration, нормализацию привязок и проверку реализации.",
+      "exact_continuation": "Использовать уже сверенную финальную редакцию Knave 2e и 12 строк keep_L1. Проверить текущий профиль карты, труднопроходимость, наполнение и сохранение точек на свежем SHA. Начать с сопоставления старых проверок с действующим scope и актуальным App. Для мастера показать, что реально работает, что зависит от профиля либо остаётся открытым.",
+      "parked_PF2": [
+        {
+          "scope": "source",
+          "action": "Возобновить PF2 при прямой зависимости принятой функции или новом существенном источнике. GM Core 3, печатные стр. 146–165, карта и отдельные описания планов; сверка оглавления, приложений и релевантных ссылок GM Core 1; редакционные расхождения Travel / Reconnoiter / Map the Area из GM Core 4.",
+          "refs": [
+            "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+            "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
+            "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json"
+          ]
+        },
+        {
+          "scope": "source",
+          "action": "Player Core 1, печатные стр. 32–34 и карта/подписи при наличии. Player Core 2, печатное оглавление и конкретные зависимости движения. Player Core 3–8 и Conditions Appendix, релевантные ссылки 323/405/438–440. На стр. 438 доступная таблица Travel Speed и связь Vehicles уже сверены.",
+          "refs": [
+            "agent-work/research/requirements/PF2-Remaster-v2-PC12-applicability.json",
+            "agent-work/research/requirements/PF2-Remaster-v2-coverage.json"
+          ]
+        },
+        {
+          "scope": "product",
+          "action": "Точные сценарии в remaining каждой строки; отдельно неизвестные обзор C/P/H и выдача карты A/B игрокам. Две PF2-таблицы и точный масштаб не подтверждены имеющимися общими функциями. Нет автоматического вывода о поддержке из тестов Knave.",
+          "refs": [
+            "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json"
+          ]
+        },
+        {
+          "scope": "canonical",
+          "action": "Перепроверить соответствие 24 имеющихся binding и 5 отсутствующих точных ST-строк при принятой потребности. Поиск по полному телу реестра выполнен; новый ID или дубликат не регистрировались.",
+          "refs": [
+            "agent-work/rules/common-rules.json",
+            "agent-work/rules/game-bindings.json"
+          ]
+        },
+        {
+          "scope": "top5",
+          "action": "Сохранить доступный DND5/DMG2014 checkpoint до нового доступа к полному первичному корпусу. Create-top10 определяется свежим рейтингом после полного принятия overall-top5.",
+          "refs": [
+            "agent-work/score/cohorts-2026-11-15.json"
+          ]
+        }
+      ],
       "needs_owner_action": false,
       "owner_action": null
     },
@@ -6233,7 +6282,7 @@
       "full_alignment_completed": false,
       "current_readable_overview_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.md"
     },
-    "handoff_ref": "agent-work/research/handoffs/2026-11-18-PF2-PC12-1795022967628-strategist.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-18-PF2-L1-implementation-1795033764746-strategist.json",
     "needs_owner_action": false,
     "owner_action": null,
     "latest_written_last": true,
@@ -6394,24 +6443,25 @@
     "scope_audit_completed": true,
     "previous_checkpoint_retained": true,
     "scope_policy_prompt_verified": true,
-    "last_result_commit_sha": "5d3a065b5139d15a5f00e583e2cff5c6811e1cbe",
-    "last_checkpoint_commit_sha": "5d3a065b5139d15a5f00e583e2cff5c6811e1cbe",
-    "last_run_status": "bounded_source_result_with_printed_remainder",
-    "stage": "PC12_and_travel_speed_review_PC34_next",
-    "current_scope_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-PC12-applicability.json",
+    "last_result_commit_sha": "2c3358c3c5f3c49f65d91758d7d741a56ba3f0f0",
+    "last_checkpoint_commit_sha": "2c3358c3c5f3c49f65d91758d7d741a56ba3f0f0",
+    "last_run_status": "completed_bounded_implementation_audit_PF2_parked",
+    "stage": "retained_L1_implementation_evidence",
+    "current_scope_audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json",
     "current_scope_counts": {
-      "out_of_scope": 26,
-      "defer_L2": 1,
-      "new_L1_functions": 0
+      "not_implemented": 4,
+      "partial": 20,
+      "implemented": 3,
+      "unverified": 2
     },
     "full_game_alignment_completed": false,
-    "product_support_reverified": false,
-    "last_update_at": "2026-11-18T17:35:25.976Z",
+    "product_support_reverified": true,
+    "last_update_at": "2026-11-18T20:41:48.940Z",
     "verification_readback": {
       "status": "exact",
-      "data_commit": "5d3a065b5139d15a5f00e583e2cff5c6811e1cbe",
-      "files": 10,
-      "release_commit": "fea4ba7bb1858eba695a9770c1d981333cce5143",
+      "data_commit": "2c3358c3c5f3c49f65d91758d7d741a56ba3f0f0",
+      "files": 9,
+      "release_commit": "fe57d3175b4d9a401756f06aad546240323ec8ad",
       "release_files": 3
     },
     "current_catalog_scope_counts": null,
@@ -6502,6 +6552,23 @@
       "printed_remainder_open": true,
       "verified_source_dependency": "Player Core p438 Travel Speed ↔ GM Core p210 Vehicles",
       "runtime_reverified": false
+    },
+    "latest_PF2_L1_implementation": {
+      "status": "completed_bounded_implementation_audit_PF2_parked",
+      "result_ref": "agent-work/research/runs/2026-11-18-PF2-L1-implementation-1795033764746.json",
+      "matrix_ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json",
+      "overview_ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.md",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-18-PF2-L1-implementation-1795033764746-strategist.json",
+      "product_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+      "counts": {
+        "not_implemented": 4,
+        "partial": 20,
+        "implemented": 3,
+        "unverified": 2
+      },
+      "full_PF2_accepted": false,
+      "next_game": "KNAVE2",
+      "updated_at": "2026-11-18T20:40:19.135Z"
     }
   },
   "latest_ranking_activation": {
