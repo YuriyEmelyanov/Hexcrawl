@@ -1,0 +1,366 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-KNAVE2-L1-implementation-1795044846589",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_Knave2_L1_implementation_review_completed",
+  "selected_task": {
+    "id": "HX-RSR-KNAVE2-RETAINED-L1-EVIDENCE",
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "completion_condition": "Все 12 предварительно отобранных строк имеют актуальный статус на точном SHA, воспроизводимые свидетельства для ключевых операций и точный остаток."
+  },
+  "selection_reason": "Knave 2e занимает третье место в действующей общей когорте. Уже есть проверенный источник, выделенные требования и актуальная реализация. Можно закрыть важную неопределённость, какие функции редактирования и наполнения доступны ведущему.",
+  "alternatives": [
+    {
+      "candidate": "DND5/DMG2014",
+      "reason": "Полный тематический первоисточник остаётся открытым. Нового основания повторять поиск нет."
+    },
+    {
+      "candidate": "CROWS PT3",
+      "reason": "Следующий доступный срез общего рейтинга с готовыми 50 положениями и 35 операциями. Сверка назначена после ожидаемого Knave 2e."
+    }
+  ],
+  "inputs_and_versions": {
+    "agent_operations": "dd596ba9c91a6ca824df611ade04193628c6660c",
+    "product_main": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "source_ref": "agent-work/market/rules/Knave-2e.json",
+    "coverage_ref": "agent-work/market/rules/Knave-2e-coverage-ledger.json",
+    "source_sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+    "scope_ref": "agent-work/research/requirements/KNAVE2-scope-audit.json",
+    "bindings": [
+      "agent-work/rules/common-rules.json",
+      "agent-work/rules/game-bindings.json"
+    ],
+    "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+    "top5": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ],
+    "ranking_version": "three-scenario-ranks-1.4-CROWS-addition"
+  },
+  "findings": [
+    {
+      "id": "KNAVE2-L1-actual-map",
+      "result": "В профиле сохраняются 6 миль отдельно от приближения. Труднопроходимость конкретного гекса, режим секрета и введённая улика хранятся с картой. Дорога и альтернативная тропа между теми же точками сохраняются раздельно.",
+      "impact": "Экспорт, загрузку и операции карты можно переиспользовать для мастера. Для карты игроков нужно самостоятельное доказательство."
+    },
+    {
+      "id": "KNAVE2-L1-table-behavior",
+      "result": "Текущий встроенный каталог работает на seed 41. Место выбирается из подходящих записей, свойство действительно бросается d100 и перебрасывается отдельно. Каталог хранит 16 ссылок с отметкой «не разрешена».",
+      "impact": "Переиспользовать штатные результаты и переброс. Ручной выбор любой строки, переход по ссылкам и произвольное сочетание нескольких результатов учитывать отдельно."
+    },
+    {
+      "id": "KNAVE2-L1-named-sites",
+      "result": "Обычные именованные святилище и таверна сохраняются вместе с картой.",
+      "impact": "Готовые поля имени и типа дают узкую картографическую опору. Сведения о покровителе, растении или меню не получают поддержку автоматически."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/KNAVE2-L1-implementation.json",
+    "agent-work/research/requirements/KNAVE2-L1-implementation.md",
+    "agent-work/research/requirements/KNAVE2-L1-implementation-probe.mjs",
+    "agent-work/research/handoffs/2026-11-19-KNAVE2-L1-implementation-1795044846589-strategist.json",
+    "agent-work/research/runs/2026-11-19-KNAVE2-L1-implementation-1795044846589.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "matrix_ref": "agent-work/research/requirements/KNAVE2-L1-implementation.json",
+    "checks": {
+      "product_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+      "product_tree_source": "GitHub pinned main",
+      "verified_blob_count": 132,
+      "commands": [
+        {
+          "command": "npm run build",
+          "status": "passed",
+          "output": "\n> hexcrawl-mvp@0.1.0 build\n> vite build\n\nvite v5.4.21 building for production...\ntransforming...\n✓ 122 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                                      1.35 kB │ gzip:   0.78 kB\ndist/assets/automaticOneMile.worker-B6l3ZA44.js    226.76 kB\ndist/assets/index-DN11dL2N.css                      31.73 kB │ gzip:   6.77 kB\ndist/assets/automaticOneMileJob-um2KpBeV.js          0.37 kB │ gzip:   0.26 kB\ndist/assets/mythMaterialData-CYKefgRu.js           279.70 kB │ gzip: 109.54 kB\ndist/assets/index-DzV9UpmQ.js                    1,641.23 kB │ gzip: 499.20 kB\n\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.\n✓ built in 10.79s\nnpm notice\nnpm notice New major version of npm available! 11.9.0 -> 12.2.3\nnpm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.3\nnpm notice To update run: npm install -g npm@12.2.3\nnpm notice\n"
+        },
+        {
+          "command": "node --test --test-name-pattern='Knave (content|granular|catalog|real generation|profile|difficulty|interaction|POI remapping|actual reroll)' test/tags.test.mjs",
+          "status": "passed",
+          "passed": 9,
+          "output": "✔ Knave content snapshots use filtered source rows and separate real d100, remain immutable and replay after JSON (11.268467ms)\n✔ Knave granular rerolls preserve categories and siblings, consume only targeted counters and replay after JSON (7.00375ms)\n✔ Knave catalog and snapshot refusals are atomic; context predicates use existing features and never infer climate (509.493327ms)\n✔ Knave real generation commits content with its map, preserves world RNG and replays exact accepted snapshots (545.398804ms)\n✔ Knave profile permits mixed generation modes and refuses unknown scales, legacy injection and dangling annotations without mutation (1.785082ms)\n✔ Knave difficulty is sparse and detached; accepted submerged flags survive without enabling water edits (0.464318ms)\n✔ Knave interaction requires a bounded separate clue and mode changes preserve authored text (0.543376ms)\n✔ Knave POI remapping preserves coordinate flags, refuses collisions and previews losses before pruning (1.410749ms)\n✔ Knave actual reroll command is one reversible transaction preserving authored context and continuation (91.389965ms)\nℹ tests 9\nℹ suites 0\nℹ pass 9\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3172.119936\n"
+        }
+      ],
+      "application_probe": {
+        "ref": "agent-work/research/requirements/KNAVE2-L1-implementation-probe.mjs",
+        "invocation": "Copy script to root of pinned product checkout. With npm ci complete, run node on the copied script.",
+        "checks": [
+          {
+            "check": "catalog_source_row_metadata",
+            "tableSizes": {
+              "locations": 100,
+              "structures": 100,
+              "place_traits": 100,
+              "dungeons": 100
+            },
+            "manifest": [
+              {
+                "table": "locations",
+                "row": 1,
+                "page": 10,
+                "mark": "1",
+                "eligibleAtDryPlain": false,
+                "unresolvedReferences": 0
+              },
+              {
+                "table": "locations",
+                "row": 76,
+                "page": 10,
+                "mark": "76",
+                "eligibleAtDryPlain": false,
+                "unresolvedReferences": 0
+              },
+              {
+                "table": "locations",
+                "row": 100,
+                "page": 10,
+                "mark": "00",
+                "eligibleAtDryPlain": false,
+                "unresolvedReferences": 0
+              },
+              {
+                "table": "structures",
+                "row": 1,
+                "page": 11,
+                "mark": "1",
+                "eligibleAtDryPlain": true,
+                "unresolvedReferences": 0
+              },
+              {
+                "table": "place_traits",
+                "row": 1,
+                "page": 11,
+                "mark": "1",
+                "eligibleAtDryPlain": null,
+                "unresolvedReferences": 0
+              },
+              {
+                "table": "dungeons",
+                "row": 1,
+                "page": 16,
+                "mark": "1",
+                "eligibleAtDryPlain": true,
+                "unresolvedReferences": 0
+              }
+            ],
+            "unresolvedReferences": 16
+          },
+          {
+            "check": "two_routes_save_reload_history",
+            "roads": [
+              {
+                "id": 1,
+                "edges": [
+                  [
+                    "0,0",
+                    "1,0",
+                    "road"
+                  ]
+                ]
+              },
+              {
+                "id": 2,
+                "edges": [
+                  [
+                    "0,0",
+                    "0,1",
+                    "trail"
+                  ],
+                  [
+                    "0,1",
+                    "1,0",
+                    "trail"
+                  ]
+                ]
+              }
+            ],
+            "poiAddressesUnchanged": true,
+            "importedBoth": true,
+            "undoRedo": true
+          },
+          {
+            "check": "separate_scale_and_camera_values",
+            "profile": {
+              "length": 6,
+              "unit": "mile",
+              "measurementConvention": null
+            },
+            "cameraValues": [
+              1,
+              2
+            ],
+            "mapIdentical": true
+          },
+          {
+            "check": "difficulty_and_clue_App_lifecycle",
+            "difficulty": "difficult",
+            "sourceHexBiome": "plain_coniferous_forest",
+            "poiType": "castle",
+            "clueRequired": true,
+            "clueRetainedWhenDifficultyCleared": true,
+            "reload": true,
+            "undoRedo": true
+          },
+          {
+            "check": "plain_named_holy_place_and_tavern",
+            "types": [
+              "holy_place",
+              "tavern"
+            ],
+            "roadGeometryPreserved": true,
+            "reload": true
+          },
+          {
+            "check": "production_catalog_generation_and_trait_reroll",
+            "seed": 41,
+            "owners": 4,
+            "selectedOwner": "poi:1:-1,0",
+            "siteTable": "locations",
+            "siteRow": 1,
+            "traitBefore": 25,
+            "traitAfter": 14,
+            "exactSourceMatch": true,
+            "reload": true,
+            "undo": true
+          }
+        ]
+      },
+      "browser": {
+        "status": "environment_blocked",
+        "run_id": "2026-11-19-KNAVE2-L1-implementation-1795044846589",
+        "stage": "browser_runtime",
+        "last_successful_step": "Production bundle successfully built from verified Git blobs.",
+        "failed_operation": {
+          "tool": "Playwright chromium.launch via exec_command",
+          "action": "Open the local Web UI for the existing Knave properties lifecycle",
+          "locator": "/usr/bin/chromium, test/browser/knave-properties-lifecycle.mjs"
+        },
+        "observed_error": "Check failed: . socket() failed: Operation not permitted (1)",
+        "stop_reason": "Local Chromium exited before a browser session was created. Continue using the repository App handler harness and static UI trace.",
+        "cause_status": "confirmed",
+        "needs_owner_action": false,
+        "exact_continuation": "Repeat browser lifecycle only with available Chromium execution. Verify profile/zoom, difficulty rendering and route visibility. Player-view release and selective reveal remain a separate L2 validation."
+      }
+    },
+    "quality": {
+      "RA-Q01": "Редакция и идентификатор проверенного перевода сохранены с SHA корпуса и локаторами.",
+      "RA-Q02": "Переиспользован сохранённый тематический скрининг 45 PDF-страниц. Независимая сверка с английской редакцией и errata в этот срез не входит. Полное принятие не заявлено.",
+      "RA-Q03": "Исходный пересказ и параметры сохранены отдельно от операционного требования.",
+      "RA-Q04": "Сохранены единицы, неизвестная ось измерения, 00 как печатная метка и открытые случаи повторной ссылки.",
+      "RA-Q05": "Опциональный выбор и рекомендации отделены от обязательных правил источника и решений о продукте.",
+      "RA-Q06": "Каждая исходная строка имеет действие, объект и критерий результата.",
+      "RA-Q07": "Запись общего текста не приравнена к реализации. Видимость игрокам проверяется в L2.",
+      "RA-Q08": "Точные 12 L1 bindings найдены. Совпадение ID не использовано для переноса runtime-поддержки.",
+      "RA-Q09": "Критерии с входом и выходом сохранены, выполненные сценарии и их пределы отмечены.",
+      "RA-Q10": "Транзакции фактически исполнены на закреплённом SHA. Недоказанная часть цикла и неисследованные случаи указаны по строкам.",
+      "RA-Q11": "Сборка, обработчики приложения, доменные тесты, анализ схемы и непройденный Chromium разведены в свидетельствах.",
+      "RA-Q12": "Передача связывает пробелы с общими механиками без изменения очереди или добавления дублирующей задачи.",
+      "RA-Q13": "Человеческий обзор генерируется из той же матрицы и не объявляет полной поддержки.",
+      "RA-Q14": "Закрыт срез классификации реализации. Полное выравнивание игры и общего топ-5 остаётся открытым.",
+      "RA-Q15": "Рейтинг, score, правила продукта, код и публикация не изменены."
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-18T23:06:51.071589+00:00",
+        "next": "2026-11-19T04:00:00+03:00",
+        "run": null
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-18T20:42:30.096501+00:00",
+        "next": "2026-11-19T02:30:00+03:00",
+        "run": null
+      }
+    ],
+    "end": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-18T23:06:51.071589+00:00",
+        "next": "2026-11-19T04:00:00+03:00",
+        "run": null
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-18T20:42:30.096501+00:00",
+        "next": "2026-11-19T02:30:00+03:00",
+        "run": null
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_Knave2_L1_implementation_review_completed",
+    "run_id": "2026-11-19-KNAVE2-L1-implementation-1795044846589",
+    "stage": "retained_L1_implementation",
+    "last_successful_step": "Проверены шесть сценариев через модели и обработчики приложения, девять существующих тестов, production build и 12 строк по актуальному SHA.",
+    "failed_operation": {
+      "tool": "Playwright chromium.launch via exec_command",
+      "action": "Open the local Web UI for the existing Knave properties lifecycle",
+      "locator": "/usr/bin/chromium, test/browser/knave-properties-lifecycle.mjs"
+    },
+    "observed_error": "Check failed: . socket() failed: Operation not permitted (1)",
+    "stop_reason": "Ограниченный срез доведён до результата. Браузерная проверка сохранена в остатке после отказа запуска Chromium.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-19-KNAVE2-L1-implementation-1795044846589.json",
+      "agent-work/research/requirements/KNAVE2-L1-implementation.json",
+      "agent-work/research/requirements/KNAVE2-L1-implementation.md",
+      "agent-work/research/requirements/KNAVE2-L1-implementation-probe.mjs",
+      "agent-work/research/handoffs/2026-11-19-KNAVE2-L1-implementation-1795044846589-strategist.json"
+    ],
+    "exact_continuation": "Сверить с текущей реализацией узкие операции создания карты Crows PT3, используя уже проверенные 50 положений и 35 операций и выделенные 13 L1 строк. Начать с согласованного базового масштаба 5–6 миль, дорог/переправ, известных мест, данных мастера и подготовленных деревень. Полный скан пакета не повторять.",
+    "remaining": [
+      {
+        "item": "browser_and_player_visibility",
+        "detail": "Repeat browser lifecycle only with available Chromium execution. Verify profile/zoom, difficulty rendering and route visibility. Player-view release and selective reveal remain a separate L2 validation.",
+        "ref": "agent-work/research/requirements/KNAVE2-scope-audit.json"
+      },
+      {
+        "item": "unknown_typed_plant_and_dedication",
+        "detail": "Закрывать адресное растительное содержимое и посвящение при прямой принятой необходимости. По текущей проверке имя точки, табличная подсказка и улика имеют разные контракты."
+      },
+      {
+        "item": "optional_table_workflow",
+        "detail": "Ручной выбор исходной строки, обработка ссылок и накопление нескольких подсказок остаются отдельными пробелами. Для последней строки и следующей строки-ссылки правила не задают исход."
+      },
+      {
+        "item": "source_status_and_cohort",
+        "detail": "Сохранён предыдущий тематический coverage Knave. DND5/DMG2014 зависит от нового доступа к полному тематическому источнику. PF2 остаётся на точном checkpoint. Общий топ-5 не принят, сценарный топ-10 не открыт."
+      }
+    ],
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-CROWS-RETAINED-L1-EVIDENCE",
+    "game_id": "CROWS",
+    "layer": "L1",
+    "status": "selected_after_KNAVE2_bounded_implementation",
+    "action": "Сверить с текущей реализацией узкие операции создания карты Crows PT3, используя уже проверенные 50 положений и 35 операций и выделенные 13 L1 строк. Начать с согласованного базового масштаба 5–6 миль, дорог/переправ, известных мест, данных мастера и подготовленных деревень. Полный скан пакета не повторять.",
+    "completion_condition": "По отобранным строкам указать статус на свежем SHA, отдельно подтвердить общую операцию и особый параметр Crows, сохранить точные неизвестные и передачу стратегу.",
+    "scope_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json",
+    "source_matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+    "overall_top5_complete": false
+  },
+  "started_at": "2026-11-18T23:34:06.589Z",
+  "completed_at": "2026-11-18T23:41:08.253Z"
+}

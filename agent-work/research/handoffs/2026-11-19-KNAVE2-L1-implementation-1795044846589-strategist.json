@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-KNAVE2-L1-implementation-1795044846589",
+  "from": "researcher",
+  "to": "strategist-manager",
+  "game_id": "KNAVE2",
+  "status": "research_evidence_only",
+  "layer": "L1",
+  "product_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "matrix_ref": "agent-work/research/requirements/KNAVE2-L1-implementation.json",
+  "overview_ref": "agent-work/research/requirements/KNAVE2-L1-implementation.md",
+  "existing_gate_ref": "agent-work/research/requirements/KNAVE2-scope-audit.json",
+  "findings": [
+    {
+      "id": "KNAVE2-L1-actual-map",
+      "result": "В профиле сохраняются 6 миль отдельно от приближения. Труднопроходимость конкретного гекса, режим секрета и введённая улика хранятся с картой. Дорога и альтернативная тропа между теми же точками сохраняются раздельно.",
+      "impact": "Экспорт, загрузку и операции карты можно переиспользовать для мастера. Для карты игроков нужно самостоятельное доказательство."
+    },
+    {
+      "id": "KNAVE2-L1-table-behavior",
+      "result": "Текущий встроенный каталог работает на seed 41. Место выбирается из подходящих записей, свойство действительно бросается d100 и перебрасывается отдельно. Каталог хранит 16 ссылок с отметкой «не разрешена».",
+      "impact": "Переиспользовать штатные результаты и переброс. Ручной выбор любой строки, переход по ссылкам и произвольное сочетание нескольких результатов учитывать отдельно."
+    },
+    {
+      "id": "KNAVE2-L1-named-sites",
+      "result": "Обычные именованные святилище и таверна сохраняются вместе с картой.",
+      "impact": "Готовые поля имени и типа дают узкую картографическую опору. Сведения о покровителе, растении или меню не получают поддержку автоматически."
+    }
+  ],
+  "pending": [
+    {
+      "item": "browser_and_player_visibility",
+      "detail": "Repeat browser lifecycle only with available Chromium execution. Verify profile/zoom, difficulty rendering and route visibility. Player-view release and selective reveal remain a separate L2 validation.",
+      "ref": "agent-work/research/requirements/KNAVE2-scope-audit.json"
+    },
+    {
+      "item": "unknown_typed_plant_and_dedication",
+      "detail": "Закрывать адресное растительное содержимое и посвящение при прямой принятой необходимости. По текущей проверке имя точки, табличная подсказка и улика имеют разные контракты."
+    },
+    {
+      "item": "optional_table_workflow",
+      "detail": "Ручной выбор исходной строки, обработка ссылок и накопление нескольких подсказок остаются отдельными пробелами. Для последней строки и следующей строки-ссылки правила не задают исход."
+    },
+    {
+      "item": "source_status_and_cohort",
+      "detail": "Сохранён предыдущий тематический coverage Knave. DND5/DMG2014 зависит от нового доступа к полному тематическому источнику. PF2 остаётся на точном checkpoint. Общий топ-5 не принят, сценарный топ-10 не открыт."
+    }
+  ],
+  "decision_requests": [],
+  "product_task_refs": [],
+  "queue_edited": false,
+  "score_delta": "not_assessed",
+  "next_candidate": {
+    "id": "HX-RSR-CROWS-RETAINED-L1-EVIDENCE",
+    "game_id": "CROWS",
+    "layer": "L1",
+    "status": "selected_after_KNAVE2_bounded_implementation",
+    "action": "Сверить с текущей реализацией узкие операции создания карты Crows PT3, используя уже проверенные 50 положений и 35 операций и выделенные 13 L1 строк. Начать с согласованного базового масштаба 5–6 миль, дорог/переправ, известных мест, данных мастера и подготовленных деревень. Полный скан пакета не повторять.",
+    "completion_condition": "По отобранным строкам указать статус на свежем SHA, отдельно подтвердить общую операцию и особый параметр Crows, сохранить точные неизвестные и передачу стратегу.",
+    "scope_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json",
+    "source_matrix_ref": "agent-work/market/rules/CROWS-PT3.json",
+    "overall_top5_complete": false
+  }
+}
