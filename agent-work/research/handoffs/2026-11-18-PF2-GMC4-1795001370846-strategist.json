@@ -1,0 +1,129 @@
+{
+  "run_id": "2026-11-18-PF2-GMC4-1795001370846",
+  "recipient_role": "strategist",
+  "status": "research_only_not_product_queue",
+  "game_id": "PF2",
+  "edition": "Remaster GM Core, English AoN; embedded legacy metadata explicitly unaccepted",
+  "layer": "L1",
+  "scenario": "create",
+  "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+  "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+  "source_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json",
+  "quality_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability-quality.json",
+  "reused_operational_refs": [
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-002-L1-v2",
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-003-L1-v2",
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-004-L1-v2",
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-010-L1-v2",
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-011-L1-v2",
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-012-L1-v2",
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-013-L1-v2",
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-029-L1-v2",
+    "agent-work/research/requirements/PF2-Remaster-v2-GMC4-applicability.json#PF2-RM-005-L1-v2"
+  ],
+  "deferred_checks": [
+    {
+      "disposition": "defer_L2",
+      "id": "PF2-GMC4-TRAVEL-VS-RECON-CHECK",
+      "reuses": [
+        "PF2-RM-018-L1-v2",
+        "PF2-RM-021-L1-v2"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=3103#Travel-Reconnoiter",
+        "normative_kind": "research_translation_not_approved_development",
+        "applicability": "Отложенное ведение гекскроула; не текущий L1-генератор",
+        "layer": "L2",
+        "trigger_or_user_action": "Рассчитать отдельно переход по дороге и разведку того же гекса",
+        "inputs_and_units": {
+          "terrain": "greater_difficult",
+          "road": true
+        },
+        "product_operation": "Рассчитать отдельно переход по дороге и разведку того же гекса",
+        "expected_output": "Переход:2активности; разведка:3активности. Дорога не сокращает разведку.",
+        "constraints_and_exceptions": [
+          "Игра использует выбранный optional Hexploration; не считать общей нормой всехPF2карт.",
+          "Source body расположен в GMCore parent, но встроенные action metadata называют legacyGamemasteryGuide; требуется первичная редакционная сверка."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"terrain\":\"greater_difficult\",\"road\":true}",
+            "when": "Рассчитать отдельно переход по дороге и разведку того же гекса",
+            "expected": "Переход:2активности; разведка:3активности. Дорога не сокращает разведку."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа примера — исследовательская приёмка; source отдельно. Не утверждение поддержки, новой разработки или равенства редакций.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Фактический UI/runtime/profile на свежем SHA не проверен.",
+          "Точная нормализация игрового профиля в действующем game-bindings ещё не принята."
+        ]
+      }
+    },
+    {
+      "disposition": "defer_L2",
+      "id": "PF2-GMC4-VEHICLE-TRAVEL-BOUNDARY",
+      "new_product_task": false,
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=3116#Movement-and-Heading",
+        "normative_kind": "research_translation_not_approved_development",
+        "applicability": "Отложенное ведение гекскроула; не текущий L1-генератор",
+        "layer": "L2",
+        "trigger_or_user_action": "Рассчитать время подготовленного маршрута по уже заданной скорости транспорта",
+        "inputs_and_units": {
+          "route_miles": 6,
+          "travel_miles_per_hour": 3,
+          "mode": "exploration",
+          "combat": false
+        },
+        "product_operation": "Рассчитать время подготовленного маршрута по уже заданной скорости транспорта",
+        "expected_output": "2часа; не запрашиваются Drive или piloting checks.",
+        "constraints_and_exceptions": [
+          "3мили/ч — заданный пример, не заявленная конверсия30футов; конверсия/terrain ссылаются на PlayerCore438 и остаются открыты.",
+          "Манёвры, бой, поломки, движитель/экипаж не моделируются; новый редактор транспорта не принимается."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"route_miles\":6,\"travel_miles_per_hour\":3,\"mode\":\"exploration\",\"combat\":false}",
+            "when": "Рассчитать время подготовленного маршрута по уже заданной скорости транспорта",
+            "expected": "2часа; не запрашиваются Drive или piloting checks."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа примера — исследовательская приёмка; source отдельно. Не утверждение поддержки, новой разработки или равенства редакций.",
+        "canonical_rule_refs": [],
+        "unresolved_parameters": [
+          "Фактический UI/runtime/profile на свежем SHA не проверен.",
+          "Точная нормализация игрового профиля в действующем game-bindings ещё не принята."
+        ]
+      }
+    }
+  ],
+  "criterion_ids": [
+    "RA-Q02",
+    "RA-Q08",
+    "RA-Q10",
+    "RA-Q14"
+  ],
+  "implementation_status": "unverified_on_current_SHA",
+  "evidence_sha": null,
+  "historical_evidence_policy": "Retain old entries/SHAs; no transfer to current profile.",
+  "queue_instruction": "No new product tasks or status transitions. Reuse acceptedfunctions; futureL2candidate checks are not development approval.",
+  "new_product_tasks": [],
+  "new_rating_proposals": [],
+  "remaining_work": [
+    "GMCore3 primary146–165/map/individualplanar applicability.",
+    "Remaining GMCoreIntroduction/5 andPlayerCore blocks/relevantcrossrefs incl438.",
+    "Embeddedlegacy editorial check, five STbindings and actualfreshSHAprofile acceptance."
+  ],
+  "next_candidate": {
+    "id": "HX-RSR-PF2-GMC-INTRO-TREASURE-APPLICABILITY",
+    "game_id": "PF2",
+    "layer": "L1",
+    "status": "selected_reachable",
+    "action": "Тематически проверить оставшиеся GMCore Introduction и Chapter5 TreasureTrove: назначение/формат каждого parent раздела, прямые зависимости карты и исключение предметного/магического/экономического движка. Не оцифровывать исключённые каталоги эффектов. После них PlayerCore; сохранить GMC3 sourcegap и embedded-legacy editorial mismatch до нового первичного evidence. Canonical/runtime приёмка затем на свежемSHA; DND5источник остаётсяблокером, create-top10послевсегоoveralltop5.",
+    "completion_condition": "Законченный ledger применимости указанных оставшихся GMCore parent sections; exact relevant remainder, no fullPF2 claim."
+  },
+  "needs_owner_action": false
+}
