@@ -195,6 +195,74 @@ try {
   console.log(`HX-BL-060 Classic 1-mile · ${fineFixture} · ${n} cells · 0,6 ${initial} → ${fineBiome} · PNG ${finePng.length} bytes · undo/redo/JSON`);
   assert.deepEqual(failures, []);
   console.log(`HX-BL-060 Classic 6-mile · ${selected.key} ${selected.biome} → ${next} · PNG ${png.length} bytes · undo/redo/JSON`);
+
+  // Use the actual edited one-mile save with an uncached, failing engraving.
+  const recovery = await browser.newPage({ viewport: { width:1440, height:1000 } });
+  const recoveryErrors = [];
+  recovery.on('pageerror', error => recoveryErrors.push(error.message));
+  await recovery.route(/mc\.yandex/, route => route.abort());
+  const mountainAsset = /\/terrain\/engravings\/mountains\.png(?:\?.*)?$/;
+  await recovery.route(mountainAsset, route => {
+    const retry = new URL(route.request().url()).searchParams.has('retry');
+    return retry ? route.continue() : route.fulfill({
+      status:503, headers:{'cache-control':'no-store'}, body:'Unavailable',
+    });
+  });
+  await recovery.goto(url);
+  await recovery.locator('input[type=file]').setInputFiles({
+    name:'recovery.json', mimeType:'application/json', buffer:Buffer.from(JSON.stringify(fineSave)),
+  });
+  const restoredCell = recovery.locator('[data-fine-key="0,6"]');
+  const message = recovery.locator('[data-engraving-failure]');
+  await message.waitFor();
+  assert.match(await message.getByRole('alert').innerText(), /mountains/i);
+  await restoredCell.scrollIntoViewIfNeeded();
+  assert.equal(await restoredCell.locator('polygon').first().getAttribute('fill'), '#99907B');
+  await recovery.screenshot({path:fileURLToPath(new URL('terrain-v2-hx060-engraving-unavailable.png',output))});
+  const recoveryMenu = recovery.locator('details.export-menu');
+  await recoveryMenu.locator('summary').click();
+  let attemptedDownloads = 0;
+  recovery.on('download', () => { attemptedDownloads++; });
+  await Promise.all([
+    recovery.waitForEvent('dialog').then(async dialog => {
+      const error = dialog.message();
+      await dialog.dismiss();
+      assert.match(error, /mountains\.png/);
+    }),
+    recoveryMenu.getByRole('button',{name:'PNG',exact:true}).click(),
+  ]);
+  assert.equal(attemptedDownloads, 0, 'A missing engraving prevents a partial PNG download');
+  const [json] = await Promise.all([
+    recovery.waitForEvent('download'),
+    recoveryMenu.getByRole('button',{name:'JSON',exact:true}).click(),
+  ]);
+  assert.deepEqual(JSON.parse(await fs.readFile(await json.path(),'utf8')).map, fineSave.map);
+  await recoveryMenu.locator('summary').click();
+  const beforeRetryHistory = await recovery.getByRole('button',{name:'Undo',exact:true}).isEnabled();
+  const [retryResponse] = await Promise.all([
+    recovery.waitForResponse(response => mountainAsset.test(response.url()) && response.ok()),
+    message.getByRole('button',{name:'Retry loading engravings'}).click(),
+  ]);
+  assert.ok(new URL(retryResponse.url()).searchParams.has('retry'));
+  await message.waitFor({state:'hidden'});
+  assert.equal(await recovery.getByRole('button',{name:'Undo',exact:true}).isEnabled(), beforeRetryHistory);
+  await recovery.screenshot({path:fileURLToPath(new URL('terrain-v2-hx060-engraving-recovered.png',output))});
+  await recoveryMenu.locator('summary').click();
+  const [recovered] = await Promise.all([
+    recovery.waitForEvent('download'),
+    recoveryMenu.getByRole('button',{name:'PNG',exact:true}).click(),
+  ]);
+  assert.ok((await fs.readFile(await recovered.path())).equals(finePng),
+    'Recovered PNG matches the original complete export of this save');
+  await recoveryMenu.locator('summary').click();
+  await recovery.getByRole('button',{name:'Undo',exact:true}).click();
+  await restoredCell.waitFor({state:'detached'});
+  await recovery.getByRole('button',{name:'Redo',exact:true}).click();
+  await restoredCell.waitFor();
+  assert.equal(await message.count(), 0, 'Retry does not add an undo step, and redo retains the restored engraving');
+  assert.deepEqual(recoveryErrors, []);
+  await recovery.close();
+  console.log('HX-BL-060 engraving recovery · mountains · retained JSON and history · restored exact PNG');
 } finally {
   await browser?.close();
   server.kill();

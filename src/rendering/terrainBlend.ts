@@ -5,9 +5,12 @@ const neighbours = [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]];
 const normals = neighbours.map((_, i) => [Math.cos(i * Math.PI / 3), Math.sin(i * Math.PI / 3)]);
 const vertices = normals.map((_, i) => [Math.cos((i - .5) * Math.PI / 3), Math.sin((i - .5) * Math.PI / 3)]);
 const centres = normals.map(([x,y]) => [x * 2 * apothem, y * 2 * apothem]);
+const width = 62;
+const height = 72;
 type Color = readonly [number, number, number];
 type Cell = {q:number; r:number; color:string};
 const cache = new Map<string, string>();
+let surface: { context: CanvasRenderingContext2D; data: ImageData } | undefined;
 
 function smooth(t:number) {
   const u = Math.max(0, Math.min(1, t));
@@ -29,49 +32,78 @@ function roundedDistance(x:number,y:number, radius:number) {
   return radius + (side*apothem+v/2 >= 0 ? apothem*v-side/2 : -Math.hypot(x,v));
 }
 
-type Sample = {x:number; y:number; hex:string; color:Color};
-type Junction = {x:number;y:number;axisX:number;axisY:number;sole:Color;pair:Color};
+type Sample = {hex:string; color:Color};
+type Junction = {soleIndex:number;sole:Color;pair:Color};
+const sampleCentres = [[0,0], ...centres];
+
+// The weights and rounded fields depend only on the pixel's position within
+// the cell. Only the colours, available neighbours and ripple phase vary.
+function preparePixels() {
+  return Array.from({length:width*height}, (_, index) => {
+    const x=((index%width+.5)/width*2-1)*apothem, y=(Math.floor(index/width)+.5)/height*2-1;
+    const weights = sampleCentres.map(([cx,cy], slot) => ({
+      slot, weight: smooth(.5+hexDistance(x-cx,y-cy)/(2*halfWidth)),
+    })).filter(({weight}) => weight > 0);
+    const corners = vertices.flatMap(([vx,vy], vertex) => {
+      const dx=x-vx, dy=y-vy, distance=Math.hypot(dx,dy);
+      if (distance >= .64) return [];
+      const fields = [0,vertex+1,(vertex+5)%6+1].map(slot => {
+        const [cx,cy] = sampleCentres[slot];
+        const ax=cx-vx, ay=cy-vy;
+        const value=roundedDistance(dx*ay-dy*ax,dx*ax+dy*ay,.94);
+        return {value, fringe:smooth((Math.abs(value)/halfWidth-.22)/.6)};
+      });
+      return [{vertex, local:1-smooth((distance-.28)/.36), fields}];
+    });
+    return {x,y,weights,corners};
+  });
+}
+let pixels: ReturnType<typeof preparePixels> | undefined;
+
 function fillTexture(samples:[Sample, ...(Sample|undefined)[]], phaseX:number, phaseY:number) {
   const [centre, ...rest] = samples;
-  const junctions = vertices.map(([x,y], i): Junction|undefined => {
+  const junctions = vertices.map((_, i): Junction|undefined => {
     const adjacent = [centre, rest[i], rest[(i+5)%6]];
     if (adjacent.some(v=>!v)) return;
     const lone = adjacent.find(v=>adjacent.filter(w=>w?.hex===v?.hex).length===1);
     const pair = adjacent.find(v=>v?.hex!==lone?.hex);
     if (!lone || !pair || adjacent.filter(v=>v?.hex===pair.hex).length!==2) return;
-    return {x,y,axisX:lone.x-x,axisY:lone.y-y,sole:lone.color,pair:pair.color};
+    return {soleIndex:adjacent.indexOf(lone),sole:lone.color,pair:pair.color};
   });
-  const visible = samples.filter((cell): cell is Sample => cell !== undefined);
-  const canvas = document.createElement('canvas');
-  canvas.width=62;canvas.height=72;
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-  const data = ctx.createImageData(canvas.width,canvas.height);
-  for(let iy=0;iy<canvas.height;iy++)for(let ix=0;ix<canvas.width;ix++){
-    const x=((ix+.5)/canvas.width*2-1)*apothem, y=(iy+.5)/canvas.height*2-1;
-    const nearVertex=junctions.find(v=>v&&Math.hypot(x-v.x,y-v.y)<.64);
+  if (!surface) {
+    const canvas = document.createElement('canvas');
+    canvas.width=width;canvas.height=height;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    surface = {context,data:context.createImageData(width,height)};
+  }
+  const {context,data} = surface;
+  pixels ??= preparePixels();
+  for(let i=0;i<pixels.length;i++){
+    const {x,y,weights,corners}=pixels[i];
     let red=0,green=0,blue=0,total=0;
-    for(const cell of visible){
-      const w=smooth(.5+hexDistance(x-cell.x,y-cell.y)/(2*halfWidth));
-      red+=w*cell.color[0];green+=w*cell.color[1];blue+=w*cell.color[2];total+=w;
+    for(const {slot,weight} of weights){
+      const cell = samples[slot];
+      if (!cell) continue;
+      red+=weight*cell.color[0];green+=weight*cell.color[1];blue+=weight*cell.color[2];total+=weight;
     }
     red/=total;green/=total;blue/=total;
-    if(nearVertex){
-      const v=nearVertex, dx=x-v.x,dy=y-v.y;
-      const field=roundedDistance(dx*v.axisY-dy*v.axisX,dx*v.axisX+dy*v.axisY,.94);
-      const fringe=smooth((Math.abs(field)/halfWidth-.22)/.6);
+    for (const {vertex,local,fields} of corners) {
+      const v = junctions[vertex];
+      if (!v) continue;
+      const {value,fringe} = fields[v.soleIndex];
       const ripple=.007*Math.sin(6*(phaseX+x)+3*(phaseY+y))+.004*Math.sin(11*(phaseX+x)-4*(phaseY+y));
-      const sole=smooth(.5+(field+fringe*ripple)/(2*halfWidth));
-      const local=1-smooth((Math.hypot(dx,dy)-.28)/.36);
+      const sole=smooth(.5+(value+fringe*ripple)/(2*halfWidth));
       red+=(v.pair[0]+sole*(v.sole[0]-v.pair[0])-red)*local;
       green+=(v.pair[1]+sole*(v.sole[1]-v.pair[1])-green)*local;
       blue+=(v.pair[2]+sole*(v.sole[2]-v.pair[2])-blue)*local;
+      break;
     }
-    const idx=(iy*canvas.width+ix)*4;
+    const idx=i*4;
     data.data[idx]=red;data.data[idx+1]=green;data.data[idx+2]=blue;data.data[idx+3]=255;
   }
-  ctx.putImageData(data,0,0);
-  return canvas.toDataURL();
+  context.putImageData(data,0,0);
+  return context.canvas.toDataURL();
 }
 
 export function terrainTextures(cells:Cell[]) {
@@ -84,10 +116,8 @@ export function terrainTextures(cells:Cell[]) {
     const signature=[key,cell.color,...nearby].join(':');
     let texture=cache.get(signature);
     if(!texture){
-      const samples: [Sample, ...(Sample|undefined)[]]=[{x:0,y:0,hex:cell.color,color:rgb(cell.color)},...nearby.map((hex,i)=>{
-        if(!hex)return;
-        const [x,y]=centres[i];return {x,y,hex,color:rgb(hex)};
-      })];
+      const samples: [Sample, ...(Sample|undefined)[]]=[{hex:cell.color,color:rgb(cell.color)},
+        ...nearby.map(hex => hex ? {hex,color:rgb(hex)} : undefined)];
       texture=fillTexture(samples,2*apothem*(cell.q+cell.r/2),1.5*cell.r);
       if(texture){
         if(cache.size>=1024){const oldest=cache.keys().next().value;if(oldest)cache.delete(oldest);}

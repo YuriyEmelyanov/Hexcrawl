@@ -36,7 +36,7 @@ import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from '
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
 import {assignWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
 import {buildNaturalLakes} from './rendering/lakeGeometry';
-import { Engraving, engravingFor, type TerrainKind } from './rendering/EngravedTerrain';
+import { Engraving, engravingFor, engravingUrl, EngravingAttempts, type TerrainKind } from './rendering/EngravedTerrain';
 import { terrainTextures } from './rendering/terrainBlend';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 import {forestFamily} from './rendering/forestStyle';
@@ -12024,6 +12024,9 @@ export function App() {
   const restoreGeneration = (state: GenerationState) => { generationRef.current = cloneGenerationState(state); setSeedInput(String(state.masterSeed)); setSeedError(false); };
 
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
+  const [engravingAttempts, setEngravingAttempts] = useState<ReadonlyMap<TerrainKind, number>>(() => new Map());
+  const [failedEngravings, setFailedEngravings] = useState<ReadonlySet<TerrainKind>>(() => new Set());
+  const [visibleEngravingFailures, setVisibleEngravingFailures] = useState<TerrainKind[]>([]);
   const selectedHexOverlayRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
   // Native wheel/touch listeners are installed once; consult the latest editor closure.
@@ -16734,9 +16737,39 @@ export function App() {
     const viewport = mapViewportRef.current, svg = mapSvgRef.current, canvas = mapMotionCanvasRef.current;
     if (fineActive || !viewport || !svg || !canvas || !renderDetails || positionedHexes.hexes.length < 600) return;
     return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: source => createExportSvgClone(source, true), onNavigate: beginMapNavigation });
-  }, [fineActive, mapArtwork, renderDetails, positionedHexes, isMapRotated]);
+  }, [fineActive, mapArtwork, renderDetails, positionedHexes, isMapRotated, engravingAttempts]);
+
+  useEffect(() => {
+    const svg = mapSvgRef.current;
+    const failures = [...failedEngravings].filter(id =>
+      svg?.querySelector(`image[data-engraving="${id}"]:not([data-editor-only] *)`));
+    setVisibleEngravingFailures(previous => previous.length === failures.length
+      && previous.every((id, index) => id === failures[index]) ? previous : failures);
+  }, [failedEngravings, fineActive, fineArtwork, busyFineView, mapArtwork]);
+
+  function recordEngravingResult(target: EventTarget, failed: boolean) {
+    if ((!failed && !failedEngravings.size) || !(target instanceof SVGImageElement)) return;
+    const id = target.dataset.engraving as TerrainKind;
+    if (!id || target.closest('[data-editor-only]') || target.getAttribute('href') !== engravingUrl(id, engravingAttempts.get(id))) return;
+    setFailedEngravings(previous => {
+      if (previous.has(id) === failed) return previous;
+      const next = new Set(previous);
+      if (failed) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }
+
+  function retryEngravings() {
+    setEngravingAttempts(previous => {
+      const next = new Map(previous);
+      for (const id of visibleEngravingFailures) next.set(id, (next.get(id) ?? 0) + 1);
+      return next;
+    });
+  }
 
   return (
+    <EngravingAttempts.Provider value={engravingAttempts}>
     <div className="app" onClickCapture={e=>{if(fineGate(e))poiClickGate(e);}} onChangeCapture={e=>{if(fineGate(e))poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
       if(geometryRefinementPreviewRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();closeGeometryRefinementPreview();return;}
       if(fineDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelFineDraft();return;}
@@ -16929,6 +16962,15 @@ export function App() {
               </button>
               <label className="fine-step"><span>{language==='ru'?'Размер гекса':'Hex size'}</span><select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={automaticFinePreparing?1:fineDisplay?.viewStep??(busyFineView?1:6)} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
             </div>
+            {visibleEngravingFailures.length > 0 && <div className="control-block" data-engraving-failure>
+              <span role="alert" className="direct-error">
+                {language === 'ru' ? 'Не загрузились гравюры' : 'Engravings failed to load'}{' · '}
+                {visibleEngravingFailures.map(id => id === 'lake' ? t.lake : id === 'sea' ? t.sea : getBiomeLabel(id, language)).join(', ')}
+              </span>
+              <button type="button" className="secondary" onClick={retryEngravings}>
+                {language === 'ru' ? 'Повторить загрузку гравюр' : 'Retry loading engravings'}
+              </button>
+            </div>}
             <div className="control-block controls controls--history">
               <button type="button" className="secondary" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
               <button type="button" className="secondary" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
@@ -17306,6 +17348,8 @@ export function App() {
             <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
             <svg
               ref={mapSvgRef}
+              onErrorCapture={event => recordEngravingResult(event.target, true)}
+              onLoadCapture={event => recordEngravingResult(event.target, false)}
               data-biome-display="engraved"
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
@@ -17417,5 +17461,6 @@ export function App() {
       </section>
 
     </div>
+    </EngravingAttempts.Provider>
   );
 }
