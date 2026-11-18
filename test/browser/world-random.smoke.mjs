@@ -73,8 +73,7 @@ try{
   const a=await open(0,mode),b=await open(0,mode);
   try{
    const before=await a.unit();assert.deepEqual(await b.unit(),before);
-   for(let i=0;i<3;i++)await a.page.locator('.biome-display-toggle').click();
-   for(let i=0;i<2;i++)await a.page.locator('.poi-display-toggle').click();
+   await a.page.locator('.hex-coordinate-toggle').click();await a.page.locator('.hex-coordinate-toggle').click();
    await a.button('Switch to English').click();await a.button('Переключить на русский').click();
    await a.page.locator('.rotate-map-button').click();await a.page.locator('.rotate-map-button').click();
    await a.page.evaluate(async()=>{

@@ -38,71 +38,38 @@ try {
     await page.locator('input[type=file]').setInputFiles({name:'terrain.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
     await page.waitForTimeout(150);
   };
-  const toggle=page.locator('.biome-display-toggle');
   async function download(format) {
     const menu=page.locator('details.export-menu');
     if(await menu.getAttribute('open')===null) await menu.locator('summary').click();
     const [file]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:format,exact:true}).click()]);
     return fs.readFile(await file.path());
   }
-  const overlays=()=>page.locator('image.terrain-overlay').evaluateAll(nodes=>Object.fromEntries(nodes.map(n=>[n.dataset.terrainKey,n.getAttribute('href')])));
+  const overlays=()=>page.locator('image.terrain-engraving').evaluateAll(nodes=>Object.fromEntries(
+    nodes.map(n=>[n.parentElement.querySelector('[data-hex-key]').dataset.hexKey,n.getAttribute('href')])
+  ));
   await importMap(fixture);
-  // Schematic modes use whole lake hexes; all modes retain the same water palette.
-  for (const mode of ['tiles','emoji']) {
-    const features=await page.locator('.map-viewport .map-stage > svg[data-render-phase]').evaluate(svg=>({
-      river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
-      marks:getComputedStyle(svg.querySelector('.river-direction-arrow')).stroke,
-      paths:[...svg.querySelectorAll('[data-lake-shape] clipPath[id$="-shape"] > path')].map(n=>n.getAttribute('d')),
-      waterfall:[...svg.querySelectorAll('.river-waterfall')].map(n=>n.getAttribute('href'))
-    }));
-    assert.equal(features.river,'rgb(21, 157, 172)',`${mode} river colour`);
-    assert.equal(features.marks,'rgb(139, 219, 221)',`${mode} flow colour`);
-    assert.equal(features.paths.length,0,`${mode} uses schematic lake hexes`);
-    const lakeKeys=Object.entries(fixture.map.terrainByHexKey).filter(([,v])=>v.terrainOverride==='lake').map(([k])=>k);
-    assert.ok(lakeKeys.length>0);
-    for(const key of lakeKeys){
-      const hex=page.locator(`[data-hex-key="${key}"]`);
-      assert.equal(await hex.evaluate(n=>getComputedStyle(n).fill),'rgb(17, 127, 140)',`${mode} lake hex keeps the deep water palette`);
-      assert.equal(await hex.locator('..').locator('image.biome-tile').count(),0);
-    }
-    assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
-    const png=await download('PNG');assert.ok(png.length>10000,`${mode} PNG export`);
-    await toggle.click();
-  }
-  await page.waitForFunction(()=>document.querySelectorAll('image.terrain-overlay').length>0);
+  assert.equal(await page.locator('.biome-display-toggle').count(),0);
   const before=await overlays();
-  const expectedOverlayCount = fixture.map.regions.flatMap(region => region.hexes.map(hex => ({region,hex}))).filter(({region,hex}) => {
-    const key = `${hex.q},${hex.r}`;
-    return !fixture.map.terrainByHexKey?.[key]?.terrainOverride && ['open_plains','open_hills','mountains','swamp','swamp_forest','semi_desert'].includes(fixture.map.biomeOverrideByHexKey?.[key] ?? region.biomeId);
-  }).length;
-  assert.equal(Object.keys(before).length, expectedOverlayCount);
-  assert.ok(!Object.values(before).includes('/terrain/v2/tree.svg'));
-  assert.ok(await page.locator('.forest-canopy-layer').count());
+  assert.ok(Object.keys(before).length>0);
   const features=await page.locator('.map-viewport .map-stage > svg[data-render-phase]').evaluate(svg=>({
     river:getComputedStyle(svg.querySelector('.river-polyline')).stroke,
     marks:getComputedStyle(svg.querySelector('.river-direction-arrow')).stroke,
-    lake:svg.querySelectorAll('.lake-water-layer path').length,
     waterfall:[...svg.querySelectorAll('.river-waterfall')].map(n=>n.getAttribute('href'))
   }));
-  assert.equal(features.river,'rgb(21, 157, 172)');assert.equal(features.marks,'rgb(139, 219, 221)');
-  assert.ok(features.lake>1);
-  const lakePaths=await page.locator('[data-lake-shape] clipPath[id$="-shape"] > path').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('d')));assert.ok(lakePaths.length>0);assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
+  assert.equal(features.river,'rgb(21, 157, 172)');
+  assert.equal(features.marks,'rgb(139, 219, 221)');
+  assert.ok(features.waterfall.every(h=>h==='/waterfall-color.svg'));
   const png=await download('PNG');
   await fs.mkdir(new URL('../../reports/',import.meta.url),{recursive:true});
   await fs.writeFile(new URL('../../reports/terrain-v2-map.png',import.meta.url),png);
   const saved=JSON.parse((await download('JSON')).toString());
-  assert.deepEqual(saved.map.regions,fixture.map.regions);
-  assert.deepEqual(saved.map.rivers,fixture.map.rivers);
-  assert.deepEqual(saved.map.roads,fixture.map.roads);
-  await importMap(saved);assert.deepEqual(await overlays(),before,'JSON reload preserves variants');
-  await toggle.click();await toggle.click();await toggle.click();assert.deepEqual(await overlays(),before,'Mode changes preserve variants');
-  assert.deepEqual(await page.locator('[data-lake-shape] clipPath[id$="-shape"] > path').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('d'))),lakePaths,'Returning to Color restores the same lake geometry');
+  for(const layer of ['regions','rivers','roads','terrainByHexKey'])assert.deepEqual(saved.map[layer],fixture.map[layer],layer);
+  await importMap(saved);assert.deepEqual(await overlays(),before,'JSON reload preserves engravings');
   await page.locator('.rotate-map-button').click();
   assert.deepEqual(await overlays(),before);
-  assert.ok(await page.locator('image.terrain-overlay').first().evaluate(n=>Math.abs(n.getCTM().b)<.001),'Artwork remains upright');
+  assert.ok(await page.locator('image.terrain-engraving').first().evaluate(n=>Math.abs(n.getCTM().b)<.001),'Artwork remains upright');
   await download('PNG');
 
-  // A broad lake with an island, a one-hex lake, a narrow lake, and all 20 overlays.
   const sample=structuredClone(saved);
   sample.map.kingdoms=[];sample.map.obstacles=[];sample.map.rivers=[];sample.map.roads=[];sample.map.crossings=[];
   sample.map.waterPoiByHexKey={};sample.map.biomeOverrideByHexKey={};sample.map.terrainByHexKey={};
@@ -118,33 +85,27 @@ try {
   sample.ui={...sample.ui,generationMode:'classic',isMapRotated:false,selectedHex:null,mapScale:1};
   await importMap(sample);
   const variants=new Set(Object.values(await overlays()));
-  for(const b of biomes.slice(0,5))for(let i=1;i<=4;i++)assert.ok(variants.has(`/terrain/v2/${b}-${i}.svg`),`${b}-${i} rendered`);
+  for(const b of [...biomes,'lake'])assert.ok(variants.has(`/terrain/engravings/${b}.png`),`${b} rendered`);
   const atlas=await download('PNG');
   await fs.writeFile(new URL('../../reports/terrain-v2-atlas.png',import.meta.url),atlas);
   // Sample clear water inside the broad lake and beside its island, avoiding grid strokes.
   const points=await page.locator('.map-viewport .map-stage > svg[data-render-phase]').evaluate(svg=>{
-    const c=(key,dx=0)=>{const b=svg.querySelector(`[data-hex-key="${key}"]`).getBBox();return{x:b.x+b.width/2+dx,y:b.y+b.height/2+3};};
+    const c=(key,dx=0)=>{const b=svg.querySelector(`[data-hex-key="${key}"]`).getBBox();return{x:b.x+b.width/2+dx,y:b.y+b.height/2-17};};
     return [c('12,9'),c('1,2'),c('10,9')];
   });
-  const {pixels,shallow}=await page.evaluate(async({data,points})=>{
+  const pixels=await page.evaluate(async({data,points})=>{
     const im=new Image();im.src=`data:image/png;base64,${data}`;await im.decode();
     const c=document.createElement('canvas');c.width=im.width;c.height=im.height;const x=c.getContext('2d');x.drawImage(im,0,0);
-    const rgb=p=>[...x.getImageData(Math.round(p.x*2),Math.round(p.y*2),1,1).data].slice(0,3);
-    const pixels=points.map(rgb);
-    // Find actual water beside the island rather than assuming the hex edge is shoreline.
-    const shallow=[];
-    for(let t=0;t<=1;t+=.005){const p={x:points[2].x+(points[0].x-points[2].x)*t,y:points[2].y+(points[0].y-points[2].y)*t};const v=rgb(p);if(v[0]>=17&&v[0]<=22&&v[1]>=127&&v[1]<=158&&v[2]>=140&&v[2]<=173)shallow.push(v);}
-    return {pixels,shallow};
+    return points.map(p=>[...x.getImageData(Math.round(p.x*2),Math.round(p.y*2),1,1).data].slice(0,3));
   },{data:atlas.toString('base64'),points});
-  assert.ok(shallow.some(v=>v[1]>pixels[0][1]+15),`Island shore has a lighter water band: ${JSON.stringify({pixels,shallow})}`);
-  assert.ok(Math.abs(pixels[1][0]-17)<3 && Math.abs(pixels[1][1]-127)<3 && Math.abs(pixels[1][2]-140)<3,`Single lake reaches the same deep plateau: ${pixels}`);
+  for(const pixel of pixels.slice(0,2))assert.ok(pixel.every((v,i)=>Math.abs(v-[93,145,156][i])<3),`Full-cell lake palette: ${pixels}`);
   assert.ok(pixels[2][0]>100,`Island stays land coloured: ${pixels}`);
   const stable=await overlays();
   // Expanding a map does not shuffle old cells. Also check a manual biome override.
   sample.map.regions[0].hexes.push({q:-1,r:0});sample.map.biomeOverrideByHexKey['0,0']='mountains';
   await importMap(sample);const grown=await overlays();
   for(const [key,href]of Object.entries(stable))if(key!=='0,0')assert.equal(grown[key],href);
-  assert.match(grown['0,0'],/mountains-/);
+  assert.match(grown['0,0'],/mountains[.]png/);
   assert.deepEqual(errors,[]);
-  console.log('Terrain v2: all 20 assets, stable variants, old/Mythic saves, water colours, lake/island pixels, rotation, map expansion, PNG exports passed.');
+  console.log('Terrain v2: engraved catalogue, stable artwork, old/Mythic saves, water colours, lake/island pixels, rotation, map expansion, PNG exports passed.');
 } finally {if(browser)await browser.close();server.kill();}

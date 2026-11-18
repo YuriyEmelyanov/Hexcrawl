@@ -1,7 +1,7 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
 import {OneMileArtwork} from './OneMileArtwork';
-import {RefinedGeographyArtwork,RefinedLakeWater} from './RefinedGeographyArtwork';
+import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {OneMilePanel,type FineDraft} from './OneMilePanel';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIntersections,worldToDetailCell,type DetailCell} from './detailGrid';
@@ -35,13 +35,12 @@ import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRan
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
 import {assignWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
-import {buildNaturalLakes,createLakeGeometryCache} from './rendering/lakeGeometry';
+import {buildNaturalLakes} from './rendering/lakeGeometry';
 import { Engraving, engravingFor, type TerrainKind } from './rendering/EngravedTerrain';
 import { terrainTextures } from './rendering/terrainBlend';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 import {forestFamily} from './rendering/forestStyle';
-import { BIOME_GROUND_COLORS, WATER_PALETTE } from './rendering/terrainStyle';
-import { LakeWater } from './rendering/LakeWater';
+import { WATER_PALETTE } from './rendering/terrainStyle';
 import { validateKingdomLayers } from './modes/persistence';
 import { findKingdomOrigin, kingdomHexes, kingdomKeys, connectionPath, distance, type Kingdom, type GenerationMode } from './modes/kingdoms';
 import { modeRegionSize } from './modes/regionSize';
@@ -542,32 +541,7 @@ const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
 const HEXCRAWL_SAVE_VERSION = 10;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
-const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
-  open_plains: '/Open_plains.png',
-  plain_deciduous_forest: '/Lowland_deciduous_forest.png',
-  plain_coniferous_forest: '/Lowland_coniferous_forest.png',
-  plain_mixed_forest: '/Lowland_mixed_forest.png',
-  deciduous_forested_hills: '/Deciduous_forested_hills.png',
-  mixed_forested_hills: '/Mixed_forested_hills.png',
-  coniferous_forested_hills: '/Coniferous_forested_hills.png',
-  open_hills: '/Open_hills.png',
-  coniferous_mountain_forest: '/Coniferous_mountain_forest.png',
-  mixed_mountain_forest: '/Mixed_mountain_forest.png',
-  deciduous_mountain_forest: '/Deciduous_mountain_forest.png',
-  mountains: '/Mountains.png',
-  swamp_forest: '/Swamp_forest.png',
-  swamp: '/Swamp.png',
-  hilly_woodland: '/Hilly_woodland.png',
-  mountain_woodland: '/Mountain_woodland.png',
-  deciduous_woodland: '/Deciduous_woodland.png',
-  mixed_woodland: '/Mixed_woodland.png',
-  coniferous_woodland: '/Coniferous%20woodland.png',
-  semi_desert: '/Semi-desert.png',
-  dead_forest: '/dead_forest_heavy.png',
-  dead_woodland: '/dead_forest_wetlands.png',
-  dead_forested_hills: '/dead_forest_hills.png',
-  dead_mountain_forest: '/dead_forest_mountain.png'
-};
+
 const SVG_EXPORT_STYLES = `
   svg { --water-color: #3ea2ff; background: #0c1423; }
   .hex { stroke:#617187; stroke-width:1; }
@@ -641,10 +615,6 @@ function getBiomeLabel(biomeId: BiomeId, language: Language): string {
   return language === 'en' ? BIOME_LABELS_EN[biomeId] : BIOMES[biomeId].label;
 }
 
-function getBiomeTileHref(biomeId?: BiomeId): string | undefined {
-  return biomeId ? BIOME_TILE_HREFS[biomeId] : undefined;
-}
-
 function getPoiSvgHref(kind?: CentralPoiKind | PoiKind | WaterPoiKind, water = false): string {
   if (kind && kind in MYTHIC_POI) kind = MYTHIC_POI[kind as MythicPoi].icon as PoiKind;
   return kind ? `/poi/v2/${water ? 'water' : 'land'}/${kind}.svg` : '/poi/v2/unknown.svg';
@@ -681,8 +651,6 @@ const BIOMES: Record<BiomeId, Biome> = {
   dead_mountain_forest: { id: 'dead_mountain_forest', label: 'Мёртвый горный лес', color: '#828282', primaryEmoji: '⛰', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 3 }
 };
 // Compile-time coverage of every biome in the drawing palette.
-const GROUND_COLORS: Record<BiomeId, string> = BIOME_GROUND_COLORS;
-const GROUND_WATER_COLOR = WATER_PALETTE.sea;
 
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
@@ -1709,14 +1677,50 @@ async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> 
   background.setAttribute('fill', '#0c1423');
   clone.insertBefore(background, style.nextSibling);
 
+  shareExportEngravings(clone);
   await inlineExportImageHrefs(clone);
 
   return clone;
 }
 
+// The fine grid repeats full-size source PNGs thousands of times. Embed each
+// distinct engraving once and preserve its original position and transform.
+function shareExportEngravings(svg: SVGSVGElement): void {
+  const engravings = [...svg.querySelectorAll<SVGImageElement>('image.terrain-engraving')];
+  if (!engravings.length) return;
+  const namespace = 'http://www.w3.org/2000/svg';
+  const defs = document.createElementNS(namespace, 'defs');
+  svg.prepend(defs);
+  const references = new Map<string,string>();
+  for (const image of engravings) {
+    const href = image.getAttribute('href');
+    if (!href) continue;
+    let reference = references.get(href);
+    if (!reference) {
+      reference = `export-engraving-${references.size}`;
+      references.set(href,reference);
+      const source = document.createElementNS(namespace,'image');
+      source.setAttribute('id',reference);
+      source.setAttribute('href',href);
+      source.setAttribute('width','1');
+      source.setAttribute('height','1');
+      source.setAttribute('preserveAspectRatio','none');
+      defs.append(source);
+    }
+    const use = document.createElementNS(namespace,'use');
+    const x = image.getAttribute('x'), y = image.getAttribute('y');
+    const width = image.getAttribute('width'), height = image.getAttribute('height');
+    const placement = `translate(${x} ${y}) scale(${width} ${height})`;
+    const rotation = image.getAttribute('transform');
+    use.setAttribute('transform',rotation ? `${rotation} ${placement}` : placement);
+    use.setAttribute('href',`#${reference}`);
+    image.replaceWith(use);
+  }
+}
+
 type PngExportFailure = 'read-image' | 'load-image' | 'prepare-svg' | 'canvas' | 'create-png';
 class PngExportError extends Error {
-  constructor(readonly code: PngExportFailure) { super(`PNG export: ${code}`); }
+  constructor(readonly code: PngExportFailure, readonly asset?: string) { super(`PNG export: ${code}`); }
 }
 function pngExportErrorText(error: unknown, language: Language): string {
   const messages: Record<PngExportFailure, [string, string]> = {
@@ -1726,7 +1730,9 @@ function pngExportErrorText(error: unknown, language: Language): string {
     canvas: ['Canvas 2D недоступен в этом браузере.', 'Canvas 2D is unavailable in this browser.'],
     'create-png': ['Не удалось создать PNG-файл.', 'Could not create the PNG file.']
   };
-  return error instanceof PngExportError ? messages[error.code][language === 'ru' ? 0 : 1] : UI_TEXT[language].pngExportError;
+  if (!(error instanceof PngExportError)) return UI_TEXT[language].pngExportError;
+  const message = messages[error.code][language === 'ru' ? 0 : 1];
+  return error.asset ? `${message} ${error.asset}. ${language === 'ru' ? 'Повторите выгрузку PNG.' : 'Retry the PNG export.'}` : message;
 }
 
 function blobToDataUrl(blob: Blob): Promise<string> {
@@ -1750,8 +1756,15 @@ async function inlineExportImageHrefs(svg: SVGSVGElement): Promise<void> {
     let pendingDataUrl = cache.get(absoluteHref);
     if (!pendingDataUrl) {
       pendingDataUrl = fetch(absoluteHref).then(async (response) => {
-        if (!response.ok) throw new PngExportError('load-image');
-        return blobToDataUrl(await response.blob());
+        if (!response.ok) throw new Error('Image request failed');
+        const blob = await response.blob();
+        if (href.startsWith('/terrain/engravings/')) {
+          const decoded = await createImageBitmap(blob);
+          decoded.close();
+        }
+        return blobToDataUrl(blob);
+      }).catch(() => {
+        throw new PngExportError('load-image',new URL(absoluteHref).pathname.split('/').pop());
       });
       cache.set(absoluteHref, pendingDataUrl);
     }
@@ -14916,7 +14929,6 @@ export function App() {
   const [isMobileLayout, setIsMobileLayout] = useState(() => (typeof window === 'undefined' ? false : window.matchMedia(MOBILE_LAYOUT_QUERY).matches));
   const [isMapRotated, setIsMapRotated] = useState(false);
   const renderDetails = !kingdomJob && detailedRenderReady;
-  const usePoiSvg = true;
   const [showHexCoordinates, setShowHexCoordinates] = useState(false);
   const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
   const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
@@ -14943,10 +14955,7 @@ export function App() {
       return !id || id === 'lake' || id === 'sea' ? [] : [{q:hex.q, r:hex.r, color:engravingFor(id)!.color}];
     }),
   ), [renderDetails, fineDisplay, positionedHexes, coarseTerrain]);
-  const lakeCells = useMemo(() => positionedHexes.hexes.filter(hex => hexTerrainByKey.get(hex.key)?.terrainOverride === 'lake').map(hex=>({...hex,lakeId:hexTerrainByKey.get(hex.key)?.lakeId})), [positionedHexes, hexTerrainByKey]);
-  const fineRiverSegments=useMemo(()=>riverSegments.map(segment=>({...segment,width:fineRiverStrokeWidth(segment.fullness)})),[riverSegments]);
-  const fineLakeGeometryCache=useRef(createLakeGeometryCache()),fineLakeActive=!!fineDisplay||!!geometryPreview;
-  const fineLakeShapes=useMemo(()=>fineLakeActive?buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,fineRiverSegments,fineLakeGeometryCache.current):[],[fineLakeActive,lakeCells,toponymSeed,fineRiverSegments]);
+
   useEffect(() => {
     headerLinksAutoCollapseTimerRef.current = window.setTimeout(() => {
       setIsHeaderLinksCollapsed(true);
@@ -16303,10 +16312,6 @@ export function App() {
   </div>:null;
   const fineActive=!!busyFineView||fineDisplay?.viewStep===1;
   const fineCells=useMemo(()=>fineDisplay?projectOneMile(oneMileSources(captureMap()),fineDisplay.grid.origin):[],[fineDisplay?.grid.origin,regions,hexTerrainByKey,biomeOverrideByHexKey]);
-  // Lake shores/islands are the accepted native water artwork over ground,
-  // not a second fine water model. Render its underlying biome per fine cell
-  // so a water-coloured hex cannot paint over an island/shore cutout.
-  const fineLakeGround=useMemo(()=>fineDisplay?new Map(projectOneMile(regions.flatMap(region=>region.hexes.filter(cell=>hexTerrainByKey.get(hexKey(cell))?.terrainOverride==='lake').map(cell=>({cell,landBiomeId:biomeOverrideByHexKey.get(hexKey(cell))??region.biomeId}))),fineDisplay.grid.origin).map(row=>[hexKey(row.cell),row.landBiomeId])):new Map<string,string|undefined>(),[fineDisplay?.grid.origin,regions,hexTerrainByKey,biomeOverrideByHexKey]);
   const fineCandidates=useMemo(()=>fineDisplay?oneMileCandidates(fineCells,candidateHexes,fineDisplay.grid.origin):[],[fineCells,candidateHexes,fineDisplay?.grid.origin]);
   const fineReadCell=fineDraft?.target??fineHover??fineDisplay?.selectedCell??null;
   const fineRow=fineReadCell?fineCells.find(row=>isSameHex(row.cell,fineReadCell)):undefined;
@@ -16321,7 +16326,7 @@ export function App() {
     const named=nameTargets.find(t=>t.poiLocator===alias||t.key===alias);
     const typeLabel=waterKind?getWaterPoiLabel(waterKind,language):region?central?getCentralPoiLabel(region,language):getPoiLabelForHex(region,hex,language):t.poi;
     const label=finePoiLabel(typeLabel,named?.[language]);
-    return {label,image:usePoiSvg?getPoiSvgHref(kind,water):undefined,emoji:waterKind?getWaterPoiEmoji(waterKind):region?central?getCentralPoiEmoji(region):getPoiEmojiForHex(region,hex):'📍'};
+    return {label,image:getPoiSvgHref(kind,water)};
   };
   const focusFine=()=>{const key=(automaticFineSceneRef.current??physicalGridRef.current)?.selectedCell;setTimeout(()=>{if(key)mapSvgRef.current?.querySelector<SVGGElement>(`[data-fine-key="${hexKey(key)}"]`)?.focus();},0);};
   const cancelFineDraft=(expected=fineDraft)=>{if(expected&&fineDraftRef.current!==expected)return false;fineDraftRef.current=null;setFineDraft(null);setFineExit(null);fineComposing.current=false;setEditError(null);focusFine();};
@@ -16425,12 +16430,10 @@ export function App() {
   };
   const refinedSource=useMemo(()=>(fineDisplay?.geometryRefinement||geometryPreview)?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:(geometryPreview?.state??fineDisplay!).grid.origin}):null,[fineDisplay,geometryPreview,rivers,regions,crossings,riverFeatureOverrides]);
   const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
-  const fineWaterArtwork=(state:Detail1State)=><>{positionedHexes.hexes.filter(h=>h.kind==='sea').map(h=><polygon key={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill={GROUND_WATER_COLOR}/>)}{state.geometryRefinement?<RefinedLakeWater state={state} mode='tiles' offset={riverOffset} shapes={fineLakeShapes} cells={lakeCells} seed={toponymSeed}/>:<LakeWater shapes={fineLakeShapes} cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={fineRiverSegments}/>}</>;
   const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
-    visual={(id,cell)=>{const ground=id??fineLakeGround.get(hexKey(cell)),biome=(ground??FALLBACK_BIOME_ID) as BiomeId;return {color:ground?GROUND_COLORS[biome]:GROUND_WATER_COLOR,image:ground?getBiomeTileHref(biome):undefined};}}
-    geography={refinedArtwork(fineDisplay)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments} water={fineWaterArtwork(fineDisplay)}
+    geography={refinedArtwork(fineDisplay)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [fineDisplay,fineCells,fineLakeGround,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,usePoiSvg,language,roadSegments,riverSegments,fineRiverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,fineLakeShapes,lakeCells,positionedHexes,toponymSeed]);
+    [fineDisplay,fineCells,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}
@@ -16662,7 +16665,7 @@ export function App() {
                 const central = region && meta?.isCenter && hasCentralPoi(region);
                 const other = region?.pointsOfInterest.some(poi => hexKey(poi) === hex.key);
                 const kind = waterKind ?? (central ? region.centralPoiKind : other && region ? getPoiKindForHex(region, hex) : undefined);
-                if (!kind) return null;
+                if (!waterKind && !central && !other) return null;
                 const title = waterKind ? getWaterPoiLabel(waterKind, language) : central ?
                   getCentralPoiLabel(region, language) : region ? getPoiLabelForHex(region, hex, language) : undefined;
                 const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
@@ -16984,7 +16987,7 @@ export function App() {
                 <p>{language==='ru'?`Реки: ${geometryPreview.plan.changes.riverIds.length}; места: ${geometryPreview.plan.changes.poiIds.length}; дороги: ${geometryPreview.plan.changes.roadIds.length}. Пунктир — до уточнения.`:`Rivers: ${geometryPreview.plan.changes.riverIds.length}; places: ${geometryPreview.plan.changes.poiIds.length}; roads: ${geometryPreview.plan.changes.roadIds.length}. Dashed: before refinement.`}</p>
                 <svg data-geometry-preview-artwork role="img" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:'100%',maxHeight:240,background:'#d9e3d2'}} aria-label={language==='ru'?'Предпросмотр уточнённой карты':'Refined map preview'}>
                   <OneMileArtwork interactive={false} state={geometryPreview.state} cells={projectOneMile(oneMileSources(captureMap()),geometryPreview.state.grid.origin)} candidates={[]} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={geometryPreview.revision} coordinates={false} busy={true}
-                    visual={fineArtwork?.props.visual??((id,cell)=>({color:id?GROUND_COLORS[id as BiomeId]:GROUND_WATER_COLOR}))} poi={finePoi} rapids={[]} waterfalls={[]} crossings={[]} roads={[]} rivers={[]} water={fineWaterArtwork(geometryPreview.state)} geography={refinedArtwork(geometryPreview.state)} onHover={()=>{}} onPick={()=>{}}/>
+                    poi={finePoi} rapids={[]} waterfalls={[]} crossings={[]} roads={[]} rivers={[]} geography={refinedArtwork(geometryPreview.state)} onHover={()=>{}} onPick={()=>{}}/>
                   <g data-geometry-before transform={mapRotationTransform} opacity={.45} pointerEvents="none" stroke="#8b1a1a" strokeDasharray="2 1">
                     {riverSegments.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} strokeWidth={.5}/>)}
                     {roadSegments.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} strokeWidth={.3}/>)}
@@ -17302,7 +17305,7 @@ export function App() {
             <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
             <svg
               ref={mapSvgRef}
-              data-biome-display={fineActive ? 'tiles' : 'engraved'}
+              data-biome-display="engraved"
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"

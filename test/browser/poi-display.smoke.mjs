@@ -61,16 +61,13 @@ try {
   await page.locator('input[type=file]').setInputFiles({ name: 'poi-display.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(savedMap)) });
   await page.waitForFunction(() => document.querySelectorAll('image.poi-marker').length === 39);
   const svgPois = page.locator('image.poi-marker');
-  const emojiPois = page.locator('text.poi-marker');
-  const biomeEmoji = page.locator('text.biome-marker');
-  const tiles = page.locator('image[href="/Lowland_deciduous_forest.png"]');
-  const hexToggle = page.locator('.biome-display-toggle');
-  const poiToggle = page.locator('.poi-display-toggle');
-  assert.equal(await hexToggle.getAttribute('aria-label'), 'Гексы: Тайлы');
-  assert.equal(await poiToggle.getAttribute('aria-label'), 'Точки интереса: Значки');
-  assert.ok(await tiles.count() > 0);
-  for(const hex of waterHexes.slice(0,5))assert.equal(await page.locator(`[data-hex-key="${key(hex)}"]`).locator("..").locator("image.biome-tile").count(),0,'Lake cell has colour only');
-  assert.equal(await biomeEmoji.count(), 0);
+  assert.equal(await page.locator('.biome-display-toggle,.poi-display-toggle').count(),0);
+  assert.ok(await page.locator('image[data-engraving="plain_deciduous_forest"]').count());
+  for (const hex of waterHexes.slice(0,5)) {
+    assert.equal(await page.locator(`[data-hex-key="${key(hex)}"]`).locator('..').locator('image.terrain-engraving').count(),0);
+  }
+  assert.equal(await page.locator('text.poi-marker,text.biome-marker').count(),0);
+  assert.equal(await page.locator('[data-engraved-poi] > circle').count(),39);
   const expectedHrefs = [...landKinds.map(kind => `/poi/v2/land/${kind}.svg`), ...waterKinds.map(kind => `/poi/v2/water/${kind}.svg`), '/poi/v2/unknown.svg'].sort();
   assert.deepEqual((await svgPois.evaluateAll(nodes => nodes.map(node => node.getAttribute('href')))).sort(), expectedHrefs);
   const assetResults = await page.evaluate(async hrefs => Promise.all(hrefs.map(async href => {
@@ -79,38 +76,6 @@ try {
   })), expectedHrefs);
   assert.ok(assetResults.every(Boolean), 'Every rendered marker must load a real SVG asset');
 
-  async function checkPoiOutlines() {
-    assert.ok(await page.locator('.poi-marker').evaluateAll(nodes => nodes.every(n => n.getAttribute('filter') === 'url(#poi-white-outline)')));
-    assert.equal(await page.locator('#poi-white-outline feMorphology').getAttribute('radius'), '0.65');
-  }
-  await checkPoiOutlines();
-  // All six independent combinations, with the existing emoji mode retained.
-  await checkPoiOutlines();
-  await hexToggle.click();
-  assert.equal(await tiles.count(), 0);
-  assert.equal(await svgPois.count(), 39);
-  assert.ok(await biomeEmoji.count() > 0);
-  await poiToggle.click();
-  assert.equal(await svgPois.count(), 0);
-  assert.equal(await emojiPois.count(), 39);
-  assert.ok(await biomeEmoji.count() > 0);
-  await checkPoiOutlines();
-  await hexToggle.click();
-  assert.equal(await hexToggle.getAttribute('aria-label'), 'Гексы: Цвет');
-  assert.equal(await tiles.count(), 0);
-  assert.equal(await emojiPois.count(), 39);
-  assert.equal(await biomeEmoji.count(), 0);
-  assert.equal(await page.locator('.biome-color-layer').count(), 1);
-  assert.equal(await page.locator('#biome-color-land-clip polygon').count(), 42, 'Land underlays include dry margins around natural lakes');
-  await poiToggle.click();
-  assert.equal(await svgPois.count(), 39);
-  const colorPng = await download('PNG');
-  assert.ok(colorPng.length > 1000, 'Color mode exports a PNG with POIs');
-  await checkPoiOutlines();
-  await hexToggle.click();
-  assert.ok(await tiles.count() > 0);
-  assert.equal(await page.locator('.biome-color-layer').count(), 0);
-
   async function download(format) {
     const menu = page.locator('details.export-menu');
     if (await menu.getAttribute('open') === null) await menu.locator('summary').click();
@@ -118,7 +83,7 @@ try {
     return fs.readFile(await file.path());
   }
   const capital = page.locator('image.poi-marker[href$="/land/capital.svg"]');
-  assert.equal(await capital.getAttribute('width'), '20');
+  assert.equal(Number(await capital.getAttribute('width')),28*.62);
   const markerPosition = () => capital.evaluate(node => ({ x: +node.getAttribute('x') + +node.getAttribute('width') / 2, y: +node.getAttribute('y') + +node.getAttribute('height') / 2 }));
   const before = await markerPosition();
   const mapHeight = await page.locator('.map-viewport .map-stage > svg[data-render-phase]').evaluate(node => node.viewBox.baseVal.height);
@@ -144,23 +109,18 @@ try {
     });
   }, { data: png.toString('base64'), boxes: markerBoxes });
   assert.ok(darkPixelCounts.length === 2 && darkPixelCounts.every(count => count > 20), `Land and sea SVGs must appear in exported pixels: ${darkPixelCounts}`);
-  await poiToggle.click();
-  const emojiPng = await download('PNG');
-  assert.ok(!png.equals(emojiPng), 'PNG follows the selected POI display mode');
   const savedAfter = JSON.parse((await download('JSON')).toString());
-  assert.deepEqual(savedAfter.map.regions, savedMap.map.regions, 'Display controls must not change regions or POIs');
+  assert.deepEqual(savedAfter.map.regions, savedMap.map.regions);
   assert.deepEqual(savedAfter.map.waterPoiByHexKey, savedMap.map.waterPoiByHexKey);
-  await poiToggle.click();
-
   await page.getByRole('button', { name: 'Switch to English', exact: true }).click();
-  assert.equal(await hexToggle.getAttribute('aria-label'), 'Hexes: Tiles');
-  assert.equal(await poiToggle.getAttribute('aria-label'), 'Points of interest: Icons');
+  assert.equal(await page.locator('.hex-coordinate-toggle').innerText(),'#\nCoordinates');
+  assert.equal(await page.locator('.biome-display-toggle,.poi-display-toggle').count(),0);
   await page.getByRole('button', { name: 'Переключить на русский', exact: true }).click();
   for (const width of [390, 320]) {
     await page.setViewportSize({ width, height: 844 });
     await page.locator('.controls--display').scrollIntoViewIfNeeded();
     assert.ok(await page.locator('.controls--display').evaluate(node => node.scrollWidth <= node.clientWidth), `Controls overflow at ${width}px`);
-    for (const toggle of [hexToggle, poiToggle]) {
+    for (const toggle of [page.locator('.hex-coordinate-toggle'),page.locator('.fine-step')]) {
       const box = await toggle.boundingBox();
       assert.ok(box.x >= 0 && box.x + box.width <= width, `Toggle outside viewport at ${width}px`);
     }
@@ -174,11 +134,7 @@ try {
   colorMap.map.regions[0].pointOfInterestKinds = {};
   colorMap.map.biomeOverrideByHexKey = Object.fromEntries(hexes.filter(hex => hex.q >= 4).map(hex => [key(hex), 'semi_desert']));
   await page.locator('input[type=file]').setInputFiles({ name: 'color-map.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(colorMap)) });
-  await checkPoiOutlines();
-  await hexToggle.click();
-  await checkPoiOutlines();
-  await hexToggle.click();
-  assert.equal(await hexToggle.getAttribute('data-mode'), 'color');
+  await page.locator('image[data-engraving="open_plains"]').first().waitFor({state:'attached'});
   const samples = await page.locator('.map-viewport .map-stage > svg[data-render-phase]').evaluate(svg => {
     const center = key => {
       const box = svg.querySelector(`[data-hex-key="${key}"]`).getBBox();
@@ -186,7 +142,7 @@ try {
     };
     const a = center('3,2'), b = center('4,2');
     const mid = (a.x + b.x) / 2;
-    return [center('1,2'), {x: mid - 5, y: a.y}, {x: mid + 5, y: a.y}, center('5,2'), center('6,4')];
+    return [{...center('1,2'),y:a.y-17}, {x:mid-3,y:a.y}, {x:mid+3,y:a.y}, {...center('5,2'),y:a.y-17}, {...center('6,4'),y:center('6,4').y-17}];
   });
   const terrainPng = await download('PNG');
   const rgb = await page.evaluate(async ({ data, samples }) => {
@@ -195,15 +151,15 @@ try {
     const ctx = canvas.getContext('2d'); ctx.drawImage(image, 0, 0);
     return samples.map(p => [...ctx.getImageData(Math.round(p.x * 2), Math.round(p.y * 2), 1, 1).data].slice(0, 3));
   }, {data: terrainPng.toString('base64'), samples});
-  assert.ok(Math.abs(rgb[0][0] - 180) <= 2, `Plains center keeps palette colour: ${rgb}`);
+  assert.ok(Math.abs(rgb[0][0] - 178) <= 2, `Plains center keeps palette colour: ${rgb}`);
   assert.ok(rgb[1][0] > rgb[0][0] && rgb[1][0] < rgb[2][0] && rgb[2][0] < rgb[3][0], `Both sides of the boundary blend gradually: ${rgb}`);
-  assert.ok(Math.abs(rgb[3][0] - 205) <= 2, `Dry center keeps palette colour: ${rgb}`);
-  assert.ok(rgb[4].every((v,i)=>Math.abs(v-[17,127,140][i])<=2), `Lake center reaches the deep water plateau: ${rgb[4]}`);
+  assert.ok(Math.abs(rgb[3][0] - 198) <= 2, `Dry center keeps palette colour: ${rgb}`);
+  assert.ok(rgb[4].every((v,i)=>Math.abs(v-[93,145,156][i])<=2), `Lake center reaches the deep water plateau: ${rgb[4]}`);
   await page.getByRole('button', { name: 'Switch to English', exact: true }).click();
-  assert.equal(await hexToggle.getAttribute('aria-label'), 'Hexes: Color');
+  assert.equal(await page.locator('.biome-display-toggle,.poi-display-toggle').count(),0);
   if (process.env.POI_QA_SCREENSHOT) await page.locator('.controls--display').screenshot({ path: process.env.POI_QA_SCREENSHOT });
   assert.deepEqual(errors, []);
-  console.log('POI display passed: 39 SVGs, six mode combinations, old save, upright rotation, PNG pixels, JSON preservation, RU/EN, 320/390px controls.');
+  console.log('POI display passed: 39 SVGs, one SVG presentation, old save, upright rotation, PNG pixels, JSON preservation, RU/EN, 320/390px controls.');
 } finally {
   if (browser) await browser.close();
   server.kill();

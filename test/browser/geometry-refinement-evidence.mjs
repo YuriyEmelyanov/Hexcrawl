@@ -46,7 +46,7 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
  assert.deepEqual(exported,visible,'PNG uses actual accepted paths, water masks and crossings');
   pngs.push(label);
  };
- for(let i=0;i<3;i++){const mode=await page.locator('svg[data-render-phase]').getAttribute('data-biome-display');await saveRefinedPng(`geo2-${mode}`);await shot(`geo2-${mode}.jpg`);await page.locator('button.biome-display-toggle').click();}
+ await saveRefinedPng('geo2-engraved');await shot('geo2-engraved.jpg');
  await page.locator('.rotate-map-button').click();await saveRefinedPng('geo2-rotated');await page.locator('.rotate-map-button').click();
  assert.deepEqual(await signature(),expected,'style and rotation preserve accepted choices');manifest.geo2_png=pngs;
  await page.locator('input[type=file]').setInputFiles({name:'geo2-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(await snap()))});
