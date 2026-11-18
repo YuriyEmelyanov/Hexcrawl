@@ -126,7 +126,7 @@ try {
   async function openFine() {
     await scale.selectOption('1');
     await page.waitForFunction(()=>document.querySelector('[data-fine-world],[data-fine-scene-error]'),null,{timeout:120000});
-    return page.locator('[data-fine-scene-error]').count() ? page.locator('[data-fine-scene-error]').innerText() : null;
+    return await page.locator('[data-fine-scene-error]').count() ? page.locator('[data-fine-scene-error]').innerText() : null;
   }
   const rejected=await openFine();
   let fineBaseline=saved;
