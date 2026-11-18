@@ -1,0 +1,254 @@
+{
+  "task_id": "HX-BL-060",
+  "head_sha": "7fcb51e50372653da27d94880948f72acb4466ac",
+  "tree_sha": "4d256195bf3462b788a1d35e0cdd77aa48a8ca01",
+  "base_sha": "8f76727905596ce3db3ba6aedeb5faed3fcf482e",
+  "release_base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "pr": 506,
+  "spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F4.md",
+  "spec_blob_sha": "b0515d7bd115391ab4c5f5d532c2ef935b14681d",
+  "first_scenario_evidence": "agent-work/evidence/HX-BL-060-first-classic-8f76727/implementation.json",
+  "fixture_ref": "agent-work/evidence/HX-BL-060-D2/classic-pr505.json",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44302563978/artifacts/14426597821",
+  "ci": {
+    "run_id": 44303403202,
+    "head_sha": "7fcb51e50372653da27d94880948f72acb4466ac",
+    "jobs": [
+      {
+        "id": 134798779248,
+        "name": "browser",
+        "status": "in_progress",
+        "conclusion": null,
+        "step": "Run npm run test:browser"
+      },
+      {
+        "id": 134798779859,
+        "name": "world-random",
+        "status": "in_progress",
+        "conclusion": null,
+        "step": "Run npm run test:browser:rng"
+      },
+      {
+        "id": 134798779906,
+        "name": "check",
+        "status": "in_progress",
+        "conclusion": null,
+        "step": "Run npm run check"
+      }
+    ],
+    "product_capture": {
+      "sha": "466b959e42602278fc219b1646e5d0706689e957",
+      "checked_out_tree": "847ccf1f1d8b51e1e9bf620e867dc2b83a157a2a",
+      "run_id": 44302563978,
+      "job_id": 134795924839,
+      "artifact_id": 14426597821,
+      "product_code_unchanged_since_capture": true,
+      "one_mile": {
+        "result": "passed",
+        "fixture": "road-entry-zigzags.json",
+        "fine_cells": 3471,
+        "cell": "0,6",
+        "change": "deciduous_woodland → mountains",
+        "png_bytes": 727855,
+        "checks": [
+          "edit",
+          "undo",
+          "redo",
+          "source geography unchanged",
+          "reopened JSON",
+          "normal/exported/rotated art"
+        ]
+      },
+      "six_mile": {
+        "passed": true,
+        "fixture": "engraved-classic-map.json",
+        "png_bytes": 485056
+      },
+      "files": [
+        {
+          "file": "terrain-v2-hx060-classic-1-mile-desktop.png",
+          "size_px": [
+            1440,
+            1000
+          ],
+          "sha256": "f7a5095def3797a046ebc562352cf604e30acbd476c468ea436f500adaef0178"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-1-mile-export.png",
+          "size_px": [
+            1487,
+            1320
+          ],
+          "sha256": "7c03875bbaf2e5fbfa09473a2a41a38b957f25be134ed6b13065765e7ae2f52b"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-1-mile-rotated.png",
+          "size_px": [
+            1320,
+            1487
+          ],
+          "sha256": "c81b828daae2376e56e8bd4252201e9cfce867dfd663fdbd055c0e66aa460ddb"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-6-mile-desktop.png",
+          "size_px": [
+            1440,
+            1000
+          ],
+          "sha256": "7b4aa87d7c5812c95162d5be349824b87f821c8910d97da09e58e10ac32b816d"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-6-mile-export.png",
+          "size_px": [
+            1455,
+            1288
+          ],
+          "sha256": "46e84e7235a0c21345f659dab49b3decb7cdd1cf1c13f0e9453abc9a2e2866ef"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-6-mile-narrow.png",
+          "size_px": [
+            390,
+            844
+          ],
+          "sha256": "f87daa9769837afaea6a81c5903ae064c98d34dd4d0e98ec2e4c04b54f5edda0"
+        },
+        {
+          "file": "terrain-v2-hx060-road-entry-6-mile.png",
+          "size_px": [
+            1440,
+            1000
+          ],
+          "sha256": "11df8068b555d270432a4ead49b9528eaa261ef71f8f455c0fff11dcdb43055f"
+        }
+      ],
+      "browser_full": {
+        "result": "failed",
+        "cause": "Legacy one-mile export smoke still counted removed water shapes; final test-only head checks actual lake polygons and full-cell paints",
+        "location": "test/browser/one-mile-evidence.mjs:92"
+      },
+      "rng": "passed"
+    }
+  },
+  "local": {
+    "node": {
+      "passed": 429,
+      "failed": 0,
+      "command": "npm run check",
+      "note": "Functional source tested locally. Later commits only adjust Playwright scenario."
+    },
+    "exact_typecheck": "passed",
+    "asset_integrity": "26 approved PNG SHA-256",
+    "published_baseline": {
+      "sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+      "original_classic_seed_423493684": "Rejected 1-mile switch with incompatible source geometry; unchanged on candidate",
+      "existing_road_entry": "Accepted 1-mile switch, 3471 cells",
+      "native_failure": "footprints: DETAIL1 no_single_cell_satisfies_access"
+    },
+    "real_controller_probe": {
+      "fixture": "road-entry-zigzags.json",
+      "cell": "0,6",
+      "accepted_version_before": 10,
+      "version_after": 15,
+      "biome": "mountains",
+      "stable_layers": [
+        "regions",
+        "rivers",
+        "roads",
+        "crossings",
+        "terrainByHexKey"
+      ]
+    },
+    "texture_projection_diagnostic": {
+      "source_cells": 93,
+      "fine_cells": 3471,
+      "lakes": 31,
+      "textures": 302,
+      "units": "single Node in-memory Canvas observation, excludes browser and release comparison",
+      "projection_ms": 105.89,
+      "uncached_texture_ms": 339.96,
+      "cached_texture_ms": 2.35
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "8f76727905596ce3db3ba6aedeb5faed3fcf482e",
+    "head_sha": "7fcb51e50372653da27d94880948f72acb4466ac",
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 13,
+      "cases": {
+        "engraved-map": 1,
+        "one-mile local grid and read editor": 1,
+        "POI catalogue and boundary pixels": 2,
+        "terrain imported map and atlas": 2,
+        "forest": 1,
+        "navigation": 1,
+        "water lifecycle Classic/Mythic and owned sea check": 3,
+        "one-mile feature PNG and refinement PNG cases": 2
+      }
+    },
+    "browser_rng": {
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "cases": [
+        "Classic display isolation",
+        "Mythic display isolation"
+      ]
+    },
+    "node": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "reuse_or_new_reason": "Existing browser cases retain map, geography, export and RNG coverage while replacing assertions for the retired switches. The existing real Classic scenario now traverses both scales and verifies one-mile terrain edit, Undo/Redo and JSON. No new runner or general-purpose tests.",
+    "count_source": "Logical flows from git diff of exact base/head. Different fixtures, parameterized world modes, and auxiliary capture scripts identified separately."
+  },
+  "scope": [
+    "shared land textures and the same engraving catalogue at both scales",
+    "full fine water cells projected from accepted terrain",
+    "existing POI anchors and footprints, with clockwise map transform and upright imagery",
+    "single export embed per engraving URL and named retryable asset error"
+  ],
+  "decisions": [
+    "Water is shown on a mixed fine cell when it covers a majority of accepted area; land wins exact wet/dry ties. Among water, the greater area picks lake or sea; exact lake/sea ties pick lake. All geometry and JSON source layers remain unchanged."
+  ],
+  "score_evidence": {
+    "model_version": "1.2",
+    "criteria": [
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "baseline_grade": null,
+        "baseline_points": null,
+        "expected_grade": null,
+        "delta": null,
+        "evidence_refs": [
+          "AC02",
+          "AC03",
+          "AC04"
+        ]
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "baseline_grade": null,
+        "baseline_points": null,
+        "expected_grade": null,
+        "delta": null,
+        "evidence_refs": [
+          "AC05"
+        ]
+      }
+    ],
+    "assessment": "independent_review_pending",
+    "limitations": [
+      "Full Check workflow on the exact final test-only head",
+      "Same-camera published base/head and measured five-run performance comparison",
+      "Sea and land/water edges, enlarged F4 junction, both rotations and asset-error recovery proof",
+      "Independent review and score_assessment on final SHA"
+    ]
+  },
+  "publication_authorized": false
+}

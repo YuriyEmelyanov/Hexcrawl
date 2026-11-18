@@ -1,0 +1,335 @@
+{
+  "run_id": "2026-11-18T1500-programmer-HX-BL-060-F4",
+  "task_id": "HX-BL-060",
+  "status": "in_progress",
+  "next_role": "programmer",
+  "next_step": "Дождаться полного CI, устранить оставшиеся замечания по визуальным проверкам, сопоставить обе ориентации, PNG и производительность с опубликованной версией, затем передать один пакет на независимую приёмку.",
+  "spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F4.md",
+  "spec_version": "F4",
+  "final_spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F4.md",
+  "final_spec_version": "F4",
+  "ui_preview_ref": "agent-work/previews/HX-BL-060-F4/README.md",
+  "ui_preview_version": "F4",
+  "ui_preview_pending": false,
+  "app_base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "spec_blob_sha": "b0515d7bd115391ab4c5f5d532c2ef935b14681d",
+  "interview_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/decisions.json",
+  "owner_answers_ref": "agent-work/interviews/HX-BL-060/UNIFIED-MAP/owner-answers-2026-11-18.json",
+  "fixture_ref": "agent-work/evidence/HX-BL-060-D2/classic-pr505.json",
+  "asset_manifest_ref": "agent-work/evidence/HX-BL-060-D2/asset-manifest.json",
+  "capture_ref": "agent-work/previews/HX-BL-060-F4/capture.json",
+  "asset_geometry_evidence_ref": "agent-work/evidence/HX-BL-060-center-check/alpha-clearances.json",
+  "forecast": {
+    "previous": {
+      "basis": {
+        "remaining_run_range": [
+          5,
+          8
+        ],
+        "active_hours_range": [
+          6,
+          12
+        ],
+        "calendar_hours_without_external_wait": [
+          12,
+          21
+        ],
+        "confidence": "low",
+        "recheck_at": "First working 6-mile scenario"
+      },
+      "remaining_runs": [
+        4,
+        7
+      ],
+      "active_hours": [
+        5,
+        10
+      ],
+      "calendar_hours_without_owner_wait": [
+        9,
+        21
+      ],
+      "confidence": "low",
+      "next_estimate_update": "After the 1-mile Classic screenshot and PNG."
+    },
+    "remaining_runs": [
+      3,
+      6
+    ],
+    "active_hours": [
+      4,
+      8
+    ],
+    "calendar_hours_without_owner_wait": [
+      6,
+      18
+    ],
+    "confidence": "low"
+  },
+  "score": {
+    "model_version": "1.2",
+    "forecast": "unknown",
+    "criteria": [
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "baseline_grade": null,
+        "baseline_points": null,
+        "expected_grade": null,
+        "delta": null,
+        "evidence_refs": [
+          "AC02",
+          "AC03",
+          "AC04"
+        ]
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "baseline_grade": null,
+        "baseline_points": null,
+        "expected_grade": null,
+        "delta": null,
+        "evidence_refs": [
+          "AC05"
+        ]
+      }
+    ],
+    "baseline_ref": "agent-work/score/current-score.json"
+  },
+  "release_scales_miles": [
+    1,
+    6
+  ],
+  "publication_authorized": false,
+  "authority_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
+  "suggested_branch": "agent/hx-bl-060-unified-biome-map",
+  "asset_selection": "Use pinned 768px hashes. Lake and sea are the presented files per MAP-Q01. Compute centered bounds at 50% for each file.",
+  "completion_for_first_checkpoint": "Exact SHA, before/after on the same camera, terrain edit and Undo/Redo, reopened save and working PNG at 6 miles with lake, river, roads and POI.",
+  "completion_for_review": "Both scales with one POI presentation, no POI switch, full Coordinates label and single hex-size row on RU/EN and 320/390/desktop, plus three-cell two-color rounded junction with a smooth center arc and subtle variation only at the outer fringe, plus ordinary two-cell and three-color controls, PNG, legacy JSON, exact-head CI, regression, performance evidence and score inputs.",
+  "browser_plan": "Existing Check workflow on PR head, Node.js 24. Prior local Chromium failed at socket creation.",
+  "implementation_readiness": "Final spec and interview complete. Acquire task and common programmer slot with fresh CAS before product changes.",
+  "owner_refinement_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-060-smooth-color-junction.json",
+  "previous_final_spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F3.md",
+  "closeup_refs": {
+    "two_colors_three_hexes": "agent-work/previews/HX-BL-060-F4/smooth-junction.jpg"
+  },
+  "previous_handoff_ref": "agent-work/handoffs/2026-11-18-owner-refinement-HX-BL-060-F3-programmer.json",
+  "panel_preview_ref": "agent-work/previews/HX-BL-060-F2/README.md",
+  "branch": "agent/hx-bl-060-unified-biome-map",
+  "pr": 506,
+  "head_sha": "7fcb51e50372653da27d94880948f72acb4466ac",
+  "tree_sha": "4d256195bf3462b788a1d35e0cdd77aa48a8ca01",
+  "evidence_ref": "agent-work/evidence/HX-BL-060-one-mile-7fcb51e/implementation.json",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44302563978/artifacts/14426597821",
+  "checkpoint_scales_miles": [
+    6,
+    1
+  ],
+  "remaining_acceptance": [
+    "Full Check workflow on the exact final test-only head",
+    "Same-camera published base/head and measured five-run performance comparison",
+    "Sea and land/water edges, enlarged F4 junction, both rotations and asset-error recovery proof",
+    "Independent review and score_assessment on final SHA"
+  ],
+  "role": "programmer",
+  "role_selection_reason": "F4 approved and in progress after successful six-mile flow; no reviewer corrections or pending score update.",
+  "handoff_ref": "agent-work/handoffs/2026-11-18T1500-programmer-HX-BL-060-F4-continue.json",
+  "claim_ref": "agent-work/claims/2026-11-18T1500-programmer-HX-BL-060-F4.json",
+  "started_at": "2026-11-18T11:59:51.863Z",
+  "completed_at": "2026-11-18T12:27:51.874Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-18T11:58:44.776Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-11-18T12:27:51.874Z",
+      "is_enabled": true,
+      "status": "checked",
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "claim_inventory": {
+    "claims": 406,
+    "results": 690,
+    "active": [],
+    "reconciled": [
+      [
+        "2026-11-07T1330-WWN-binding-registration",
+        "HX-RSR-001"
+      ],
+      [
+        "2026-11-07T2338-KNAVE2-adapter-contract",
+        "HX-RSR-001"
+      ],
+      [
+        "2026-11-06T1530-WWN-regional-hydrology",
+        "HX-RSR-001"
+      ]
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "8f76727905596ce3db3ba6aedeb5faed3fcf482e",
+    "head_sha": "7fcb51e50372653da27d94880948f72acb4466ac",
+    "browser": {
+      "added": 0,
+      "removed": 0,
+      "modified": 13,
+      "cases": {
+        "engraved-map": 1,
+        "one-mile local grid and read editor": 1,
+        "POI catalogue and boundary pixels": 2,
+        "terrain imported map and atlas": 2,
+        "forest": 1,
+        "navigation": 1,
+        "water lifecycle Classic/Mythic and owned sea check": 3,
+        "one-mile feature PNG and refinement PNG cases": 2
+      }
+    },
+    "browser_rng": {
+      "added": 0,
+      "removed": 0,
+      "modified": 2,
+      "cases": [
+        "Classic display isolation",
+        "Mythic display isolation"
+      ]
+    },
+    "node": {
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "reuse_or_new_reason": "Existing browser cases retain map, geography, export and RNG coverage while replacing assertions for the retired switches. The existing real Classic scenario now traverses both scales and verifies one-mile terrain edit, Undo/Redo and JSON. No new runner or general-purpose tests.",
+    "count_source": "Logical flows from git diff of exact base/head. Different fixtures, parameterized world modes, and auxiliary capture scripts identified separately."
+  },
+  "checks": {
+    "run_id": 44303403202,
+    "head_sha": "7fcb51e50372653da27d94880948f72acb4466ac",
+    "jobs": [
+      {
+        "id": 134798779248,
+        "name": "browser",
+        "status": "in_progress",
+        "conclusion": null,
+        "step": "Run npm run test:browser"
+      },
+      {
+        "id": 134798779859,
+        "name": "world-random",
+        "status": "in_progress",
+        "conclusion": null,
+        "step": "Run npm run test:browser:rng"
+      },
+      {
+        "id": 134798779906,
+        "name": "check",
+        "status": "in_progress",
+        "conclusion": null,
+        "step": "Run npm run check"
+      }
+    ],
+    "product_capture": {
+      "sha": "466b959e42602278fc219b1646e5d0706689e957",
+      "checked_out_tree": "847ccf1f1d8b51e1e9bf620e867dc2b83a157a2a",
+      "run_id": 44302563978,
+      "job_id": 134795924839,
+      "artifact_id": 14426597821,
+      "product_code_unchanged_since_capture": true,
+      "one_mile": {
+        "result": "passed",
+        "fixture": "road-entry-zigzags.json",
+        "fine_cells": 3471,
+        "cell": "0,6",
+        "change": "deciduous_woodland → mountains",
+        "png_bytes": 727855,
+        "checks": [
+          "edit",
+          "undo",
+          "redo",
+          "source geography unchanged",
+          "reopened JSON",
+          "normal/exported/rotated art"
+        ]
+      },
+      "six_mile": {
+        "passed": true,
+        "fixture": "engraved-classic-map.json",
+        "png_bytes": 485056
+      },
+      "files": [
+        {
+          "file": "terrain-v2-hx060-classic-1-mile-desktop.png",
+          "size_px": [
+            1440,
+            1000
+          ],
+          "sha256": "f7a5095def3797a046ebc562352cf604e30acbd476c468ea436f500adaef0178"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-1-mile-export.png",
+          "size_px": [
+            1487,
+            1320
+          ],
+          "sha256": "7c03875bbaf2e5fbfa09473a2a41a38b957f25be134ed6b13065765e7ae2f52b"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-1-mile-rotated.png",
+          "size_px": [
+            1320,
+            1487
+          ],
+          "sha256": "c81b828daae2376e56e8bd4252201e9cfce867dfd663fdbd055c0e66aa460ddb"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-6-mile-desktop.png",
+          "size_px": [
+            1440,
+            1000
+          ],
+          "sha256": "7b4aa87d7c5812c95162d5be349824b87f821c8910d97da09e58e10ac32b816d"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-6-mile-export.png",
+          "size_px": [
+            1455,
+            1288
+          ],
+          "sha256": "46e84e7235a0c21345f659dab49b3decb7cdd1cf1c13f0e9453abc9a2e2866ef"
+        },
+        {
+          "file": "terrain-v2-hx060-classic-6-mile-narrow.png",
+          "size_px": [
+            390,
+            844
+          ],
+          "sha256": "f87daa9769837afaea6a81c5903ae064c98d34dd4d0e98ec2e4c04b54f5edda0"
+        },
+        {
+          "file": "terrain-v2-hx060-road-entry-6-mile.png",
+          "size_px": [
+            1440,
+            1000
+          ],
+          "sha256": "11df8068b555d270432a4ead49b9528eaa261ef71f8f455c0fff11dcdb43055f"
+        }
+      ],
+      "browser_full": {
+        "result": "failed",
+        "cause": "Legacy one-mile export smoke still counted removed water shapes; final test-only head checks actual lake polygons and full-cell paints",
+        "location": "test/browser/one-mile-evidence.mjs:92"
+      },
+      "rng": "passed"
+    }
+  },
+  "owner_decisions_needed": [],
+  "no_writing_processes_running": true,
+  "validation_processes_remaining": []
+}
