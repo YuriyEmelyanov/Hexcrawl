@@ -67,14 +67,12 @@
   ],
   "current_diagnosis": "В существующих материалах выявлены неполнота/неоднородность перевода, но массовый аудит не проводился. Исторические completed и числа строк не доказывают соответствие стандартуv2; действуют исходные evidence до адресной проверки.",
   "next_selected_task": {
-    "id": "HX-RSR-PF2-STANDARD-V2-ALIGNMENT-RESUME",
+    "id": "HX-RSR-PF2-GMC4-APPLICABILITY",
     "game_id": "PF2",
     "layer": "L1",
-    "status": "selected_after_completed_existing_scope_revision",
-    "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
-    "action": "Возобновить прежнее незавершённое выравнивание overalltop5 по RA-Q01–15. Свежая действующая когорта проверена: DND5,PF2,KNAVE2,CROWS,SD; рейтинг не менять. DND5/DMG2014: полный источник остаётся блокером, повторять тот же поиск без нового access signal не нужно. Достижимый выбранный следующий этап PF2: по agent-work/research/requirements/PF2-Remaster-v2-coverage.json восстановить оставшиеся15блоков; первым GMCore Chapter2 Building Games. Завершить тематическую проверку главы в пределах создания/наполнения/редактирования карты, с локаторами/disposition по разделам; не оцифровывать всю игровую/сюжетную/боевую механику. Перед новым требованием назвать действие, объект карты и результат. Существующие29keep_L1 и исходные132строки переиспользовать, GMC1 и закрытые source-срезы без основания не сканировать снова; исторические решения/неизвестное сохранить. Цель полного PF2 source/function/runtime alignment остаётся общей: после источников проверять каждый принятый профиль на точном свежемSHA, unknown не считать отсутствием. Game-bindings при пустом fetch_file читать черезgit/blob того жеSHA, не создавать второйреестр. Новых задач/разработки/рейтинга не запускать. CROWS339страниц не пересканировать. После принятия всегоoveralltop5 определить свежийcreate-top10; не начинать его по одному checkpoint.",
-    "completion_condition": "Complete source applicability screening of selected GMCore2 thematic corpus with locator/operational or reasoned exclusion; preserve exact wider RA-Q02/03/10 remainder. Full PF2/top5 not accepted by bounded source checkpoint.",
-    "priority_reason": "Highest-ranked reachable unfinished alignment; DND full source blocked. New survey/create-top10 comes later under existing owner priority."
+    "status": "selected_reachable_while_GMC3_primary_gap_open",
+    "action": "Проверить всю GMCore Chapter4 Subsystems на тематическую применимость; прежде всего полный Hexploration и прямые ссылки на карту. Переиспользовать текущие PF2 операции/границы и не сканировать GMC1/2 или Crows заново. Не включать victory points, социальные/боевые подсистемы ради заметки. GMCore3: получить проверенный первичный текст/карту pp146–155 и сверить pp156–165 с первичным оглавлением;24отдельныхописанияпланов не объявлены прочитанными. Не повторять тот же поиск без нового access signal. Затем GMCoreIntroduction/5 и оставшиеся PlayerCore блоки, применимые crossrefs и фактические профили на свежем SHA.",
+    "completion_condition": "Полный ledger применимости Chapter4 с конкретными операциями/исключениями и точным остатком; весь PF2/top5 не принят."
   },
   "other_open_tracks": [
     {
@@ -333,7 +331,7 @@
   },
   "research_product_handoff_policy": "Research artifacts and strategist handoff only; strategist owns new productbacklog candidates. No deleted/retired tasks restored and no statuses promoted by researcher.",
   "execution_resume_verified_at": "2026-11-15T20:55:14.806Z",
-  "updated_at": "2026-11-17T23:47:54.866Z",
+  "updated_at": "2026-11-18T08:43:35.871Z",
   "previous_next_selected_task_before_PF2_source_checkpoint": {
     "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
     "game_id": "DND5",
@@ -504,19 +502,30 @@
     "product_reverified": false
   },
   "current_research_checkpoint": {
-    "status": "completed_GMC2_thematic_screen_full_PF2_checkpoint",
-    "run_id": "2026-11-18-PF2-GMC2-remainder-1794979912226",
-    "stage": "chapter2_all_parent_sections_reconciled",
-    "last_successful_step": "Закрыта применимость всехразделовGMCore2; 19существующихL1операций переиспользованы; генерирование персонажей/предметов/полныхопасностей исключено.",
-    "failed_operation": null,
-    "observed_error": null,
-    "stop_reason": "Закончена глава на тематическую применимость; более широкийPF2корпус и runtime остаются незавершены.",
-    "cause_status": "confirmed",
+    "status": "checkpoint_GMC3_primary_source_gap",
+    "run_id": "2026-11-18-PF2-GMC3-1794990744201",
+    "stage": "chapter3_available_primary_sections_screened",
+    "last_successful_step": "Проверены доступные AoN parent sections; ST009 переиспользован узко; установлено различие тематических/политических границ.",
+    "failed_operation": {
+      "tool": "search_service_web_run",
+      "action": "open optional official Primer lead",
+      "locator": "https://paizo.com/pathfinder/getstarted",
+      "observed_error": "Failed to fetch https://paizo.com/pathfinder/getstarted: (403) Forbidden",
+      "error_code": "403",
+      "cause_status": "unknown",
+      "limitation": "Error on one lead does not establish cause of the full source gap."
+    },
+    "observed_error": "Failed to fetch https://paizo.com/pathfinder/getstarted: (403) Forbidden",
+    "error_code": "403",
+    "stop_reason": "Полный охват Chapter3 не выполнен: pp146–165 и отдельные planar bodies не закрыты первичным просмотром. Остальная программа достижима.",
+    "cause_status": "unknown",
+    "source_gap_status": "confirmed_missing_embedded_atlas_and_unreconciled_extent_not_global_unavailability",
     "saved_results": [
-      "agent-work/research/requirements/PF2-Remaster-v2-GMC2-remainder.json",
-      "agent-work/research/requirements/PF2-Remaster-v2-GMC2-remainder.md"
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
+      "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.md"
     ],
-    "exact_continuation": "Продолжить общую цель полногоPF2 source/function/runtime alignment: тематически проверить GMCore Chapter3 AgeOfLostOmens по всей главе, переиспользовать существующие Settlements168–171 и crossrefs, не перепроверять закрытые GMCore2/GMC1/339Crows без нового основания. Начать с индекса главы и всех географических/settlement/nation/plane разделов; простые сведения конкретного места отделить от истории/религии/магии/общих NPC. Не принимать подсистемы ради заметки. Затем оставшиеся GMCoreIntroduction/4/5 и9блоковPlayerCore по текущему15блочномуинвентарю, финальная сверка применимых crossrefs и реализации каждого принятого профиля на свежем SHA. DND5DMG2014блокер сохранить; свежийcreate-top10 только после принятияoveralltop5.",
+    "exact_continuation": "Проверить всю GMCore Chapter4 Subsystems на тематическую применимость; прежде всего полный Hexploration и прямые ссылки на карту. Переиспользовать текущие PF2 операции/границы и не сканировать GMC1/2 или Crows заново. Не включать victory points, социальные/боевые подсистемы ради заметки. GMCore3: получить проверенный первичный текст/карту pp146–155 и сверить pp156–165 с первичным оглавлением;24отдельныхописанияпланов не объявлены прочитанными. Не повторять тот же поиск без нового access signal. Затем GMCoreIntroduction/5 и оставшиеся PlayerCore блоки, применимые crossrefs и фактические профили на свежем SHA.",
+    "conditional_resume": "GMCore3: получить проверенный первичный текст/карту pp146–155 и сверить pp156–165 с первичным оглавлением;24отдельныхописанияпланов не объявлены прочитанными. Не повторять тот же поиск без нового access signal.",
     "needs_owner_action": false,
     "owner_action": null
   },
@@ -528,5 +537,38 @@
     "chapter2_thematic_completed": true,
     "product_reverified": false,
     "full_alignment_completed": false
+  },
+  "previous_next_selected_task_before_GMC3": {
+    "id": "HX-RSR-PF2-STANDARD-V2-ALIGNMENT-RESUME",
+    "game_id": "PF2",
+    "layer": "L1",
+    "status": "selected_after_completed_existing_scope_revision",
+    "authority_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+    "action": "Возобновить прежнее незавершённое выравнивание overalltop5 по RA-Q01–15. Свежая действующая когорта проверена: DND5,PF2,KNAVE2,CROWS,SD; рейтинг не менять. DND5/DMG2014: полный источник остаётся блокером, повторять тот же поиск без нового access signal не нужно. Достижимый выбранный следующий этап PF2: по agent-work/research/requirements/PF2-Remaster-v2-coverage.json восстановить оставшиеся15блоков; первым GMCore Chapter2 Building Games. Завершить тематическую проверку главы в пределах создания/наполнения/редактирования карты, с локаторами/disposition по разделам; не оцифровывать всю игровую/сюжетную/боевую механику. Перед новым требованием назвать действие, объект карты и результат. Существующие29keep_L1 и исходные132строки переиспользовать, GMC1 и закрытые source-срезы без основания не сканировать снова; исторические решения/неизвестное сохранить. Цель полного PF2 source/function/runtime alignment остаётся общей: после источников проверять каждый принятый профиль на точном свежемSHA, unknown не считать отсутствием. Game-bindings при пустом fetch_file читать черезgit/blob того жеSHA, не создавать второйреестр. Новых задач/разработки/рейтинга не запускать. CROWS339страниц не пересканировать. После принятия всегоoveralltop5 определить свежийcreate-top10; не начинать его по одному checkpoint.",
+    "completion_condition": "Complete source applicability screening of selected GMCore2 thematic corpus with locator/operational or reasoned exclusion; preserve exact wider RA-Q02/03/10 remainder. Full PF2/top5 not accepted by bounded source checkpoint.",
+    "priority_reason": "Highest-ranked reachable unfinished alignment; DND full source blocked. New survey/create-top10 comes later under existing owner priority."
+  },
+  "latest_PF2_GMC3_applicability": {
+    "status": "checkpoint_available_sections_screened_printed_chapter_incomplete",
+    "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
+    "overview_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.md",
+    "quality_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability-quality.json",
+    "chapter3_thematic_completed": false,
+    "available_parent_bodies_completed": true,
+    "source_gap_ids": [
+      "PF2-GMC3-ATLAS-146-155",
+      "PF2-GMC3-INTERVENING-156-165",
+      "PF2-GMC3-PLANES-CATALOGUE"
+    ],
+    "product_reverified": false,
+    "full_alignment_completed": false,
+    "new_functions": 0,
+    "pending_binding_requirement_ids": [
+      "PF2-RM-ST-002-v2",
+      "PF2-RM-ST-004-v2",
+      "PF2-RM-ST-007-v2",
+      "PF2-RM-ST-008-v2",
+      "PF2-RM-ST-009-v2"
+    ]
   }
 }

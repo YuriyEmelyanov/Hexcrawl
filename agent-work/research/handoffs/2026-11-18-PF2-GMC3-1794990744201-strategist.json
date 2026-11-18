@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "run_id": "2026-11-18-PF2-GMC3-1794990744201",
+  "role": "researcher",
+  "recipient_role": "strategist",
+  "status": "research_checkpoint_not_product_queue",
+  "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+  "ranking_blob_sha": "aca91a7d487a31427cf5230867f66ac6e04b857d",
+  "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+  "cohort_blob_sha": "5b961833b1c7c004a189aa8ee4d080ec2fe48760",
+  "overall_top5": [
+    "DND5",
+    "PF2",
+    "KNAVE2",
+    "CROWS",
+    "SD"
+  ],
+  "scenario": "create",
+  "game_id": "PF2",
+  "edition": "Pathfinder2e Remaster GM Core, English AoN; no legacy CRB substitution",
+  "layer": "L1",
+  "source_result_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
+  "readable_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.md",
+  "quality_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability-quality.json",
+  "rule_id": "content.place_description",
+  "profile_requirement_id": "PF2-RM-ST-009-v2",
+  "criterion_ids": [
+    "RA-Q02",
+    "RA-Q06",
+    "RA-Q08",
+    "RA-Q09",
+    "RA-Q10",
+    "RA-Q14"
+  ],
+  "operational_requirement": {
+    "source_rule_ref": "PF2-RM-ST-009-v2",
+    "normative_kind": "research_translation_of_recommendation",
+    "applicability": "Подготовка карты и карточки поселения PF2; расчёт игровых действий отделён от L1.",
+    "layer": "L1",
+    "trigger_or_user_action": "Задать имя и тип существующего поселения",
+    "inputs_and_units": {
+      "place": "C",
+      "name": "Ольховка",
+      "type": "village"
+    },
+    "product_operation": "Задать имя и тип существующего поселения",
+    "expected_output": "На карте C — деревня «Ольховка»; после загрузки имя и тип те же.",
+    "constraints_and_exceptions": [
+      "Уровень PF2 не переводится в площадь/численность автоматически; не создавать рынок, NPC-уровни и новые поля ради полной карточки.",
+      "Исследовательская интерпретация, не утверждение разработки или поддержки."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "{\"place\":\"C\",\"name\":\"Ольховка\",\"type\":\"village\"}",
+        "when": "Задать имя и тип существующего поселения; сохранить и повторно открыть карту",
+        "expected": "На карте C — деревня «Ольховка»; после загрузки имя и тип те же."
+      }
+    ],
+    "source_vs_product_interpretation": "Смысл книги дан отдельно. Карточка/аннотация/редактирование/проверка — исследовательское предложение. Один общий механизм мест с PF2-профилем предпочтительнее отдельного редактора на игру; существенный выбор остаётся стратегу и интервьюеру.",
+    "canonical_rule_refs": [
+      "agent-work/rules/common-rules.json#content.place_description"
+    ],
+    "unresolved_parameters": [
+      "Имя+тип, save/load/undo и отличие PF2-профиля на свежем SHA не перепроверены.",
+      "Отдельная точная привязка ST009 в game-bindings не найдена; общая ссылка не доказывает эквивалентность/поддержку."
+    ]
+  },
+  "implementation_status": "unknown_for_current_narrow_operation_on_fresh_SHA",
+  "historical_evidence": {
+    "sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "refs": [
+      "agent-work/research/requirements/PF2-Remaster-v2-settlements-evidence.json"
+    ],
+    "scope": "POI naming only; not present full profile acceptance"
+  },
+  "findings": [
+    "Тематические регионы Внутреннего моря не являются политическими территориями; их границы не доказывают государственную принадлежность гексов.",
+    "AoN parent не весь печатный Chapter3: pp146–155 только упомянуты, pp156–165 также требуют сверки.",
+    "ST009 переиспользован в узком смысле; точный bindingID не найден. Вместе с четырьмя прежними ST-положениями известно пять пробелов нормализации."
+  ],
+  "pending_binding_requirement_ids": [
+    "PF2-RM-ST-002-v2",
+    "PF2-RM-ST-004-v2",
+    "PF2-RM-ST-007-v2",
+    "PF2-RM-ST-008-v2",
+    "PF2-RM-ST-009-v2"
+  ],
+  "scope_disposition_counts": {
+    "keep_L1": 1,
+    "defer_L2": 0,
+    "integration_L3": 0,
+    "out_of_scope": 19,
+    "needs_owner_decision": 1
+  },
+  "source_gaps": [
+    {
+      "id": "PF2-GMC3-ATLAS-146-155",
+      "locator": "Printed pp146–155, ten regional overviews and referenced map figure",
+      "status": "not_read",
+      "evidence": "Rules2991 explicitly refers to pages; parent2989 does not embed their regional bodies/map geometry.",
+      "required_next_step": "Verified primary full page body/figure; screen geographic rules/locators/crossrefs without default atlas import.",
+      "disposition": null,
+      "reason": "Unknown thematic content is not excluded from headings."
+    },
+    {
+      "id": "PF2-GMC3-INTERVENING-156-165",
+      "locator": "Printed pp156–165 between atlas and Nations166",
+      "status": "not_reconciled_against_primary_printed_TOC",
+      "evidence": "AoN parent moves from GreatBeyond145 to Nations166. Publisher also names culture/religion/factions. Exact omitted section/page inventory unverified.",
+      "required_next_step": "Reconcile primary printed TOC/pages; read thematic introductions and applicable geographic content, do not exclude entire range by titles.",
+      "disposition": null
+    },
+    {
+      "id": "PF2-GMC3-PLANES-CATALOGUE",
+      "locator": "Planar catalogue; Sources218 lists24",
+      "status": "index_only_individual_bodies_not_read",
+      "evidence": "Planar engine screened out; individual geographic/location content not accepted as exhaustively screened.",
+      "required_next_step": "At final reconciliation classify applicability from verified bodies/category scope; no full magic/combat digitization.",
+      "disposition": null
+    }
+  ],
+  "queue_instruction": "Do not create/restore product tasks or change statuses from this handoff. No newly approved requirement; exact current backlog/owner gates apply.",
+  "product_task_refs": [],
+  "rating_proposal_refs": [],
+  "rating_changed": false,
+  "score_changed": false,
+  "new_function_count": 0,
+  "next_research_step": {
+    "id": "HX-RSR-PF2-GMC4-APPLICABILITY",
+    "game_id": "PF2",
+    "layer": "L1",
+    "status": "selected_reachable_while_GMC3_primary_gap_open",
+    "action": "Проверить всю GMCore Chapter4 Subsystems на тематическую применимость; прежде всего полный Hexploration и прямые ссылки на карту. Переиспользовать текущие PF2 операции/границы и не сканировать GMC1/2 или Crows заново. Не включать victory points, социальные/боевые подсистемы ради заметки. GMCore3: получить проверенный первичный текст/карту pp146–155 и сверить pp156–165 с первичным оглавлением;24отдельныхописанияпланов не объявлены прочитанными. Не повторять тот же поиск без нового access signal. Затем GMCoreIntroduction/5 и оставшиеся PlayerCore блоки, применимые crossrefs и фактические профили на свежем SHA.",
+    "completion_condition": "Полный ledger применимости Chapter4 с конкретными операциями/исключениями и точным остатком; весь PF2/top5 не принят."
+  },
+  "needs_owner_action": false
+}
