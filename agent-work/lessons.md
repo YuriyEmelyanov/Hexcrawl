@@ -1125,3 +1125,6 @@ A delayed setTimeout alone cannot keep a CPU-heavy route search responsive or ca
 
 ### 2026-11-18T1500-programmer-HX-BL-060-F4 — share fine-map files by source URL
 The real Classic fixture projects 93 source cells to 3471 fine cells. Keep the full per-cell placement in SVG, and embed each engraving URL once in the export clone to avoid duplicating 768px source bytes across thousands of cells. The protected footprints and local edits remain in the accepted document rather than being inferred from the picture. Evidence: agent-work/evidence/HX-BL-060-one-mile-7fcb51e/implementation.json.
+
+### 2026-11-18T1530-programmer-HX-BL-060-F4 — keep screen-only candidates in the navigation snapshot
+The old large-map probe waited for the retired display selector. Running it through normal import exposed missing frontier cells during the vector-to-raster switch. PNG intentionally filters those candidates, while the in-app snapshot must retain them. Compare the actual 1,200-cell viewport without relaxing the established pixel tolerances. Count only keyed interactive polygons in A/B metrics; older edge layers can otherwise double the count. Evidence: agent-work/evidence/HX-BL-060-navigation-comparison-7f844e4/implementation.json.
