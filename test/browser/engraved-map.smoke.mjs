@@ -209,9 +209,12 @@ try {
     });
   });
   await recovery.goto(url);
-  await recovery.locator('input[type=file]').setInputFiles({
-    name:'recovery.json', mimeType:'application/json', buffer:Buffer.from(JSON.stringify(fineSave)),
-  });
+  await Promise.all([
+    recovery.waitForResponse(response => mountainAsset.test(response.url()) && response.status() === 503),
+    recovery.locator('input[type=file]').setInputFiles({
+      name:'recovery.json', mimeType:'application/json', buffer:Buffer.from(JSON.stringify(fineSave)),
+    }),
+  ]);
   const restoredCell = recovery.locator('[data-fine-key="0,6"]');
   const message = recovery.locator('[data-engraving-failure]');
   await message.waitFor();

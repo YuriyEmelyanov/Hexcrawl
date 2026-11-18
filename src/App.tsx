@@ -36,7 +36,8 @@ import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from '
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
 import {assignWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
 import {buildNaturalLakes} from './rendering/lakeGeometry';
-import { Engraving, engravingFor, engravingUrl, EngravingAttempts, type TerrainKind } from './rendering/EngravedTerrain';
+import { Engraving, EngravingAttempts } from './rendering/EngravedTerrain';
+import { engravingFor, engravingUrl, type TerrainKind } from './rendering/engravingAssets';
 import { terrainTextures } from './rendering/terrainBlend';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 import {forestFamily} from './rendering/forestStyle';
@@ -12025,8 +12026,8 @@ export function App() {
 
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
   const [engravingAttempts, setEngravingAttempts] = useState<ReadonlyMap<TerrainKind, number>>(() => new Map());
-  const [failedEngravings, setFailedEngravings] = useState<ReadonlySet<TerrainKind>>(() => new Set());
   const [visibleEngravingFailures, setVisibleEngravingFailures] = useState<TerrainKind[]>([]);
+  const engravingChecks = useRef(new Map<TerrainKind, {href:string; loaded:Promise<boolean>}>());
   const selectedHexOverlayRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
   // Native wheel/touch listeners are installed once; consult the latest editor closure.
@@ -16741,24 +16742,34 @@ export function App() {
 
   useEffect(() => {
     const svg = mapSvgRef.current;
-    const failures = [...failedEngravings].filter(id =>
-      svg?.querySelector(`image[data-engraving="${id}"]:not([data-editor-only] *)`));
-    setVisibleEngravingFailures(previous => previous.length === failures.length
-      && previous.every((id, index) => id === failures[index]) ? previous : failures);
-  }, [failedEngravings, fineActive, fineArtwork, busyFineView, mapArtwork]);
-
-  function recordEngravingResult(target: EventTarget, failed: boolean) {
-    if ((!failed && !failedEngravings.size) || !(target instanceof SVGImageElement)) return;
-    const id = target.dataset.engraving as TerrainKind;
-    if (!id || target.closest('[data-editor-only]') || target.getAttribute('href') !== engravingUrl(id, engravingAttempts.get(id))) return;
-    setFailedEngravings(previous => {
-      if (previous.has(id) === failed) return previous;
-      const next = new Set(previous);
-      if (failed) next.add(id);
-      else next.delete(id);
-      return next;
-    });
-  }
+    if (!svg) return;
+    let current = true;
+    const ids = new Set([...svg.querySelectorAll<SVGImageElement>('image[data-engraving]:not([data-editor-only] *)')]
+      .map(node => node.dataset.engraving as TerrainKind));
+    setVisibleEngravingFailures(previous => previous.every(id => ids.has(id))
+      ? previous : previous.filter(id => ids.has(id)));
+    for (const id of ids) {
+      const href = engravingUrl(id, engravingAttempts.get(id));
+      let check = engravingChecks.current.get(id);
+      if (check?.href !== href) {
+        // SVG image error events are not reliable across browsers. Decode the
+        // same URL once per engraving and retry, using the browser image cache.
+        const image = new Image();
+        image.src = href;
+        check = {href, loaded:image.decode().then(() => true, () => false)};
+        engravingChecks.current.set(id,check);
+      }
+      void check.loaded.then(loaded => {
+        if (!current) return;
+        const failed = !loaded;
+        setVisibleEngravingFailures(previous => {
+          if (previous.includes(id) === failed) return previous;
+          return failed ? [...previous,id] : previous.filter(candidate => candidate !== id);
+        });
+      });
+    }
+    return () => { current = false; };
+  }, [fineActive, fineArtwork, busyFineView, mapArtwork, engravingAttempts]);
 
   function retryEngravings() {
     setEngravingAttempts(previous => {
@@ -17348,8 +17359,6 @@ export function App() {
             <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
             <svg
               ref={mapSvgRef}
-              onErrorCapture={event => recordEngravingResult(event.target, true)}
-              onLoadCapture={event => recordEngravingResult(event.target, false)}
               data-biome-display="engraved"
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}

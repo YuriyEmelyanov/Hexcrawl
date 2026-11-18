@@ -1,16 +1,8 @@
 import { createContext, useContext } from 'react';
 import catalog from './engravingCatalog.json';
-
-export type TerrainKind = keyof typeof catalog;
-export function engravingFor(id: string) {
-  return Object.prototype.hasOwnProperty.call(catalog, id) ? catalog[id as TerrainKind] : undefined;
-}
+import { engravingUrl, type TerrainKind } from './engravingAssets';
 
 export const EngravingAttempts = createContext<ReadonlyMap<TerrainKind, number>>(new Map());
-
-export function engravingUrl(id: TerrainKind, attempt?: number) {
-  return `/terrain/engravings/${id}.png${attempt ? `?retry=${attempt}` : ''}`;
-}
 
 export function Engraving({ id, x, y, radius, rotated }: {
   id: TerrainKind; x: number; y: number; radius: number; rotated: boolean;

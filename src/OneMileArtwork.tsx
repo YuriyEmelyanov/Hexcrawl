@@ -4,7 +4,8 @@ import {createDetailGrid,detailCellCenter,detailCellPolygon,detailFootprintBound
 import {detailFootprintExtentMiles,detailFootprintWorldAnchor} from './detailSizes';
 import type {Detail1State,DetailPoiFootprint} from './detailModel';
 import {fineCellKey,type OneMileCell,type FineCandidate} from './oneMile';
-import {Engraving, engravingFor, type TerrainKind} from './rendering/EngravedTerrain';
+import {Engraving} from './rendering/EngravedTerrain';
+import {engravingFor, type TerrainKind} from './rendering/engravingAssets';
 import {terrainTextures} from './rendering/terrainBlend';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 type Props={rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
