@@ -1,3 +1,7 @@
+## Текущее продолжение: Introduction / Treasure Trove — 18 ноября 2026
+
+[Проверка применимости введения и Chapter5](PF2-Remaster-v2-GMC5-applicability.md). Новыхтребованийкарты нет. MaterialStatistics/Structure/Expandable — объектнаяпрочность/активацияпредмета, не региональныегеография/размещение. Простаянаходкамоглабытьсодержимымместа, но не доказываетнеобходимостьподсистем. Исключённыекаталогинеоцифровывались; весьPF2/runtimeнепринят. ДалееPlayerCoreIntroduction/Ancestries&Backgrounds. Sourcegap/backmatter/legacy/bindingsсохранены.
+
 ## Текущее продолжение: Subsystems — 18 ноября 2026
 
 [Chapter4: границы карты и путешествия](PF2-Remaster-v2-GMC4-applicability.md). Все11parentтемтематическисверены,9L1операцийreuse; исключённыеeffectsнеоцифровывались. Дорога неускоряетReconnoiter; обычныйvehicletravelне требуетDrive. ЭтиL2проверки не новаяразработка. Legacyactionmetadata вGMCoreостаютсяредакционнымпробелом. ПолноеPF2/runtimeнепринято. ДалееIntroduction/TreasureTrove.
