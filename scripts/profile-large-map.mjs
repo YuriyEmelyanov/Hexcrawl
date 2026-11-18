@@ -32,8 +32,26 @@ try{
  for(const count of process.env.LARGE_VALIDATE?[3]:[1,3,6])for(const config of configs){
   const p=await browser.newPage({viewport:{width:1500,height:1000}});await p.route(/mc\.yandex/,r=>r.abort());const errors=[];p.on('pageerror',e=>errors.push(e.message));p.on('dialog',async d=>{errors.push(d.message());await d.dismiss();});
   const input=fixture(base,count);if(process.env.LARGE_VALIDATE)input.map.rivers=JSON.parse(await fs.readFile(root+'test/fixtures/e5-river-editor.json','utf8')).map.rivers;
-  await p.goto(`http://127.0.0.1:${config.port}/`);await p.locator('input[type=file]').waitFor({state:'attached'});const russianToggle=p.getByRole('button',{name:'Переключить на русский',exact:true});if(await russianToggle.count())await russianToggle.click();await p.locator('input[type=file]').setInputFiles({name:'large-map.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(input))});try{await p.waitForFunction(n=>document.querySelectorAll('polygon.hex.region[data-hex-key],polygon.hex.center[data-hex-key]').length===n,count*400);}catch(e){throw Error('Import failed: '+JSON.stringify(errors)+' '+await p.locator('.map-viewport').innerText());}
-  const toggle=p.locator('.biome-display-toggle');while(await toggle.getAttribute('data-mode')!=='color')await toggle.click();await p.locator('.forest-canopy-layer').first().waitFor({state:'attached'});await p.waitForTimeout(500);
+  const fileInput=p.locator('input[type=file]');
+  async function importMap(save, expectedCells) {
+   await fileInput.setInputFiles({name:'large-map.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
+   try {
+    await p.waitForFunction(n=>document.querySelectorAll('polygon.hex.region[data-hex-key],polygon.hex.center[data-hex-key]').length===n,expectedCells);
+   } catch {
+    throw Error('Import failed: '+JSON.stringify(errors)+' '+await p.locator('.map-viewport').innerText());
+   }
+  }
+  await p.goto(`http://127.0.0.1:${config.port}/`);await fileInput.waitFor({state:'attached'});const russianToggle=p.getByRole('button',{name:'Переключить на русский',exact:true});if(await russianToggle.count())await russianToggle.click();
+  await importMap(input,count*400);
+  const toggle=p.locator('.biome-display-toggle');
+  const legacy=await toggle.count()>0;
+  if(legacy){
+   while(await toggle.getAttribute('data-mode')!=='color')await toggle.click();
+   await p.locator('.forest-canopy-layer').first().waitFor({state:'attached'});
+   await p.waitForTimeout(500);
+  }else{
+   await p.locator('svg[data-render-phase="ready"] image.terrain-engraving').first().waitFor({state:'attached'});
+  }
   const artwork=await p.locator('.map-stage > svg').first().evaluate(s=>s.innerHTML);
   if(config.label==='baseline')artworks.set(count,artwork);else if(artworks.has(count))assert.equal(artwork,artworks.get(count),'Vector artwork is identical');
   if(config.label==='optimized'&&count>1){
@@ -89,9 +107,7 @@ try{
    if(process.env.LARGE_VALIDATE){
      await p.getByRole('button',{name:'Редактировать',exact:true}).click();
      const river=p.locator('[data-river-map-edge]').first();await river.scrollIntoViewIfNeeded();
-     // Rebuild the bounded cache at the selected edge after the preceding pan.
-     await p.locator('.biome-display-toggle').click();await p.waitForFunction(()=>document.querySelector('.map-motion-buffer')?.dataset.cache==='off');
-     while(await p.locator('.biome-display-toggle').getAttribute('data-mode')!=='color')await p.locator('.biome-display-toggle').click();
+     // The scroll schedules a capture if the edge is outside the cached window.
      await p.waitForFunction(()=>!document.querySelector('.map-viewport').classList.contains('is-navigating'));await p.waitForFunction(()=>document.querySelector('.map-motion-buffer')?.dataset.cache==='ready');
      const point=await river.evaluate(n=>new DOMPoint((n.x1.baseVal.value+n.x2.baseVal.value)/2,(n.y1.baseVal.value+n.y2.baseVal.value)/2).matrixTransform(n.getScreenCTM()).toJSON());
      await p.evaluate(()=>document.querySelector('.map-viewport').classList.add('is-navigating'));
@@ -101,7 +117,9 @@ try{
      console.log('E5_ACTIVE_RASTER_POINTER '+JSON.stringify({hexes:count*400,rotated:true,actualPointer:true,riverId:1}));
      await p.getByRole('button',{name:'Готово',exact:true}).click();await p.evaluate(()=>document.querySelector('.map-viewport').classList.remove('is-navigating'));
    }
-   await p.locator('.biome-display-toggle').click();await p.waitForFunction(()=>document.querySelector('.map-motion-buffer')?.dataset.cache==='off');assert.equal(await p.locator('.map-viewport').evaluate(v=>v.classList.contains('has-motion-buffer')),false);}
+   if(legacy)await toggle.click();
+   else await importMap(fixture(base,1),400);
+   await p.waitForFunction(()=>document.querySelector('.map-motion-buffer')?.dataset.cache==='off');assert.equal(await p.locator('.map-viewport').evaluate(v=>v.classList.contains('has-motion-buffer')),false);}
   assert.deepEqual(errors,[]);await p.close();
  }
  await fs.mkdir(root+'reports',{recursive:true});await fs.writeFile(root+'reports/large-map-profile.json',JSON.stringify({browser:browser.version(),viewport:'1500x1000',headless:true,rows},null,2));console.log('LARGE_MAP_REPORT '+JSON.stringify({browser:browser.version(),rows}));
