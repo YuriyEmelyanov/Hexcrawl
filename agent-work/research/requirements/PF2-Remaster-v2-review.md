@@ -1,3 +1,7 @@
+## Текущий источниковый срез — 18 ноября 2026
+
+[GMCore2 design: решения и операции](PF2-Remaster-v2-GMC2-design.md). Начальный блок до конца EncounterDesign проверен целиком. Тройной резерв встреч не квота POI; MapsAndTerrain относится к бою. Два узких reuse-примера принятого объёма, новых функций нет. RA-Q02/10 по всей игре открыты. Далее VariantRules и остаток главы; исходные132строки не пересканировались.
+
 # PF2: что относится к HexCrawl
 
 Актуальный рабочий срез после решения владельца 16.11.2026. [Полная ревизия](PF2-Remaster-v2-scope-audit.json). Предыдущий текст сохранён [в истории GitHub](https://github.com/YuriyEmelyanov/Hexcrawl/blob/c8eb6a7ebfcab6c56e2e197a9eaf8c4cdea605f0/agent-work/research/requirements/PF2-Remaster-v2-review.md).

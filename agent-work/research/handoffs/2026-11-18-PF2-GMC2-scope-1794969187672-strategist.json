@@ -1,0 +1,224 @@
+{
+  "run_id": "2026-11-18-PF2-GMC2-scope-1794969187672",
+  "role": "researcher",
+  "status": "research_only_no_queue_mutation",
+  "evidence_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC2-design.json",
+  "overview_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC2-design.md",
+  "findings": [
+    "Тройной резерв встреч не плотность POI.",
+    "MapsAndTerrain в EncounterDesign вне региональной карты.",
+    "2повторных операции используют текущие профили, новых функций0.",
+    "game-bindings прочитан черезgitblob, реестр не пуст."
+  ],
+  "operations": [
+    {
+      "id": "PF2-GMC2-MAP-01",
+      "screen_refs": [
+        "PF2-GMC2-SCREEN-15"
+      ],
+      "disposition": "keep_L1",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2688",
+        "locator": "Building a Sandbox sidebar",
+        "normative_kind": "recommendation",
+        "self_contained_rule": "Песочница даёт игрокам исследуемую территорию с самостоятельными местами; когда и как посещать их, выбирают игроки. Для подготовки предлагается примерно тройной резерв встреч, распределённых между местами или фракциями; сложная область может потребовать больше. Подобласти сначала намечают кратко, детализируют по планам группы.",
+        "parameters_and_units": {
+          "reserve": "about triple encounters, not sites per hex",
+          "maximum": "not specified",
+          "spatial_algorithm": "not specified"
+        },
+        "exceptions": [
+          "Не обязательная плотность POI; нет формулы числа мест, броска и квоты на гекс.",
+          "Фракции, мотивации, запланированные сцены и детализация сюжета не включаются."
+        ]
+      },
+      "reuse_existing_requirement_ids": [
+        "PF2-RM-003-L1-v2",
+        "PF2-RM-122-L1-v2"
+      ],
+      "binding_status": "source_supplement_only_no_new_registry_entry",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2688#Building-a-Sandbox",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "Только пространственно размещённые места региональной карты; свободный выбор мастера",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер размещает выбранные независимые места в разных гексах территории",
+        "inputs_and_units": {
+          "hexes": [
+            "H1",
+            "H2",
+            "H3"
+          ],
+          "places": [
+            {
+              "id": "D",
+              "type": "dungeon",
+              "hex": "H1"
+            },
+            {
+              "id": "V",
+              "type": "village",
+              "hex": "H3"
+            }
+          ],
+          "existing": {
+            "id": "R",
+            "type": "river"
+          }
+        },
+        "product_operation": "Создать D в H1 и V в H3, сохранив существующую реку R и не заполняя H2 автоматически.",
+        "expected_output": "На карте D в H1, V в H3; H2 без дополнительного POI; R прежняя.",
+        "constraints_and_exceptions": [
+          "Число мест задаёт мастер; не умножать его на3 по совету о резерве встреч.",
+          "Источник не задаёт новый режим или требование отдельного sandbox UI.",
+          "Не создавать сцены, NPC, фракционные часы или маршрут партии."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Река R и пустые H1/H2/H3; мастер выбрал D@H1,V@H3",
+            "when": "Разместить оба места и сохранить/загрузить карту",
+            "expected": "D@H1,V@H3,R сохранены, H2 пуст."
+          },
+          {
+            "given": "Сохранённая карта с D,V,R",
+            "when": "Мастер не запрашивает новых мест",
+            "expected": "Карта не получает ещё4места и не заполняет H2 ради тройного резерва."
+          }
+        ],
+        "source_vs_product_interpretation": "Размещение и проверка сохранения — продуктовая интерпретация существующего редактора; источник не устанавливает формат данных/Undo/режим и не подтверждает реализацию.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "unresolved_parameters": []
+      },
+      "user_action": "Мастер размещает выбранные независимые места в разных гексах территории",
+      "map_object_or_state": {
+        "hexes": [
+          "H1",
+          "H2",
+          "H3"
+        ],
+        "places": [
+          {
+            "id": "D",
+            "type": "dungeon",
+            "hex": "H1"
+          },
+          {
+            "id": "V",
+            "type": "village",
+            "hex": "H3"
+          }
+        ],
+        "existing": {
+          "id": "R",
+          "type": "river"
+        }
+      },
+      "checkable_result": "На карте D в H1, V в H3; H2 без дополнительного POI; R прежняя.",
+      "implementation": {
+        "status": "not_reviewed",
+        "comment": "Точный PF2-профиль на свежем SHA в этом источниковом срезе не проверялся; не считать отсутствием или поддержкой.",
+        "evidence": []
+      }
+    },
+    {
+      "id": "PF2-GMC2-MAP-02",
+      "screen_refs": [
+        "PF2-GMC2-SCREEN-20"
+      ],
+      "disposition": "keep_L1",
+      "source_rule": {
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2712",
+        "locator": "GM Core74 Locations",
+        "normative_kind": "recommendation_with_examples",
+        "self_contained_rule": "Физическое содержимое и опасности подбирают к месту: например, заросшие руины с колючими растениями, кислотные участки болот или магическая ловушка в гробнице. Это примеры уместного наполнения, не обязательные сочетания. Чувственные описания — отдельный совет, не механика.",
+        "parameters_and_units": {
+          "distribution": "not specified",
+          "radius": "not specified",
+          "hazard_damage": "not specified"
+        },
+        "exceptions": [
+          "Статблок ловушки, урон и магия не исполняются картой.",
+          "Размер локального препятствия не становится размером регионального гекса.",
+          "Не требуется отдельное поле для каждого запаха/температуры."
+        ]
+      },
+      "reuse_existing_requirement_ids": [
+        "PF2-RM-003-L1-v2",
+        "PF2-RM-072-L1-v2"
+      ],
+      "binding_status": "source_supplement_only_no_new_registry_entry",
+      "operational_requirement": {
+        "source_rule_ref": "https://2e.aonprd.com/Rules.aspx?ID=2712",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "Мастер уже определил региональный заросший участок с колючками, а не локальные боевые клетки",
+        "layer": "L1",
+        "trigger_or_user_action": "Мастер размещает руины в выбранном заросшем опасном участке карты",
+        "inputs_and_units": {
+          "hex": "H7",
+          "terrain": "dense_underbrush",
+          "danger": "thorns",
+          "place": {
+            "id": "C",
+            "type": "ruins"
+          }
+        },
+        "product_operation": "Оставить рельеф/заросли и характеристику опасного участка, разместить C в H7 без замены местности значком.",
+        "expected_output": "C находится в H7 совместно с зарослями/опасностью участка.",
+        "constraints_and_exceptions": [
+          "Только уже принятая местность/проходимость и место; без нового движка ловушек.",
+          "Не рассчитывать клеточную площадь, урон, противодействие или магию.",
+          "Нет автоматического заселения всех руин колючками."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "H7 — заданный мастером участок густого подлеска с колючками",
+            "when": "Разместить C и повторно открыть карту",
+            "expected": "C@H7 и прежняя местность/опасность сохранены."
+          },
+          {
+            "given": "Руины V на обычной равнине без выбранной опасности",
+            "when": "Создать V",
+            "expected": "Пример из книги не добавляет колючки автоматически."
+          }
+        ],
+        "source_vs_product_interpretation": "Узкое переиспользование существующих мест/слоёв. Не возвращает исключённые атмосферные GMC1строки и не требует новых полей.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description",
+          "agent-work/rules/common-rules.json#map.terrain_zones",
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "unresolved_parameters": []
+      },
+      "user_action": "Мастер размещает руины в выбранном заросшем опасном участке карты",
+      "map_object_or_state": {
+        "hex": "H7",
+        "terrain": "dense_underbrush",
+        "danger": "thorns",
+        "place": {
+          "id": "C",
+          "type": "ruins"
+        }
+      },
+      "checkable_result": "C находится в H7 совместно с зарослями/опасностью участка.",
+      "implementation": {
+        "status": "not_reviewed",
+        "comment": "Точный PF2-профиль на свежем SHA в этом источниковом срезе не проверялся; не считать отсутствием или поддержкой.",
+        "evidence": []
+      }
+    }
+  ],
+  "product_tasks": [],
+  "owner_decisions_required": [],
+  "next_candidate": {
+    "id": "HX-RSR-PF2-GMC2-REMAINDER",
+    "game_id": "PF2",
+    "layer": "L1",
+    "status": "selected_continuation",
+    "action": "Продолжить ту же цель полного тематического скрининга GMCoreChapter2: Variant Rules (переход Next из EncounterDesign Rules.aspx?ID=2715), далее, Afflictions, Environment, Hazards, Building Hazards, Building Creatures, Building Items, Building Worlds. Для ранее разобранных Environment/BuildingWorlds переиспользовать сохранённые источники/29keep_L1 и132исходных строк; закрытые главы/63–74 не перечитывать без нового основания. Все15блоков полного корпуса остаются на учёте, chapter2 пока partially_read. Затем остальные GMCore/PlayerCore блоки, сверка применимых crossrefs и runtime каждого принятого профиля на свежем SHA. DND5блокер сохраняется; create-top10 только после принятия overalltop5.",
+    "completion_condition": "Завершить тематическую применимость оставшейся Chapter2 по всем parent/дочерним разделам с reuse закрытых source-срезов; полная игра не принимается до RA-Q01–15."
+  },
+  "full_game_alignment_accepted": false
+}

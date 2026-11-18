@@ -1,5 +1,17 @@
 # Исследователь HexCrawl
 
+## PF2: начальный блок Building Games проверен — 18 ноября 2026
+
+[Читаемый результат](requirements/PF2-Remaster-v2-GMC2-design.md) · [JSON](requirements/PF2-Remaster-v2-GMC2-design.json).
+
+Проверены полные вводные разделы Chapter2, Campaign Structure, Adventure Design и Encounter Design. Тройной резерв встреч не означает плотность POI. Maps and Terrain внутри Encounter Design — боевая сцена. Сюжетные/NPC/наградные подсистемы не приняты.
+
+Для карты переиспользуются размещение выбранных мест и совместное сохранение места/местности/опасности участка. Новых функций, задач, режима песочницы или подтверждения реализации нет. Единственный game-bindings прочитан через точный git/blob; пустой fetch_file не означал пустой реестр.
+
+Ретроспектива существующего корпуса закрыта ранее. Полное выравнивание overalltop5 незавершено: далее Variant Rules и остаток GMCore2, остальные блоки PF2 и проверка принятых профилей на свежем SHA. DND5блокер полного DMG2014 сохраняется. Create-top10 после принятия всегоtop5. Рейтинг, методика, score, main и очередь команды не менялись. Решений владельца сейчас не требуется.
+
+### Предыдущий итог ревизии
+
 ## Ретроспектива объёма завершена — 18 ноября 2026
 
 [Понятный перечень решений](requirements/supplementary-scope-review-2026-11-18.md) · [JSON](requirements/supplementary-scope-audit-2026-11-18.json) · [Инвентарь](requirements/retrospective-artifact-inventory-2026-11-17.json).
