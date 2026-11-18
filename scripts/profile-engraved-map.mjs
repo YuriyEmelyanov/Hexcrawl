@@ -8,6 +8,7 @@ import { chromium } from 'playwright';
 const root = new URL('../', import.meta.url);
 const reports = new URL('reports/HX-BL-060/', root);
 const viewport = { width: 1500, height: 1000 };
+const sourceCells = 'polygon.hex.region[data-hex-key],polygon.hex.center[data-hex-key]';
 const baselineDir = process.env.HX060_BASELINE_DIR;
 assert.ok(baselineDir, 'Provide a Vite build of the published baseline');
 const editions = [
@@ -83,7 +84,7 @@ async function openMap(page, scenario, input, warmup) {
     fine = await ready(page);
     fine.elapsedMs = fine.readyAt - switchAt;
   }
-  const selector = scenario.step === 1 ? '[data-fine-cells] > [data-fine-key]' : 'polygon.hex.region,polygon.hex.center';
+  const selector = scenario.step === 1 ? '[data-fine-cells] > [data-fine-key]' : sourceCells;
   const cells = await page.locator(selector).count();
   assert.equal(cells, scenario.cells, scenario.name);
   const motion = await page.evaluate(async () => {
@@ -124,11 +125,11 @@ async function measureGeneration(page, seed) {
   await page.locator('.gen-params select').first().selectOption('region');
   const start = await page.evaluate(() => performance.now());
   await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
-  await page.locator('polygon.hex.region,polygon.hex.center').first().waitFor({ state: 'attached' });
+  await page.locator(sourceCells).first().waitFor({ state: 'attached' });
   const generatedAt = await page.evaluate(() => performance.now());
   const result = await ready(page);
   return {
-    seed, cells: await page.locator('polygon.hex.region,polygon.hex.center').count(),
+    seed, cells: await page.locator(sourceCells).count(),
     generationToFirstCellsMs: generatedAt - start, fullDrawingMs: result.readyAt - generatedAt,
   };
 }
