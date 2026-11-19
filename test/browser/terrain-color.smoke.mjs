@@ -37,12 +37,17 @@ try {
   fixture.ui.mapScale=1;
   const importMap=async save=>{
     await page.locator('input[type=file]').setInputFiles({name:'terrain.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(save))});
-    await page.waitForTimeout(150);
+    await page.waitForFunction(()=>document.querySelector('input[type=file]').value==='');
+    await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
   };
+  let lastDownloadAt = 0;
   async function download(format) {
+    const pause = 200 - (Date.now() - lastDownloadAt);
+    if (pause > 0) await new Promise(resolve=>setTimeout(resolve, pause));
     const menu=page.locator('details.export-menu');
     if(await menu.getAttribute('open')===null) await menu.locator('summary').click();
     const [file]=await Promise.all([page.waitForEvent('download'),page.getByRole('button',{name:format,exact:true}).click()]);
+    lastDownloadAt = Date.now();
     return fs.readFile(await file.path());
   }
   const overlays=()=>page.locator('image.terrain-engraving').evaluateAll(nodes=>Object.fromEntries(
@@ -137,6 +142,19 @@ try {
   assert.deepEqual(JSON.parse(await download('JSON')).map, dunes.map);
   await page.screenshot({path:fileURLToPath(evidence('dunes-desktop.png'))});
   await fs.writeFile(evidence('dunes-export.png'), await download('PNG'));
+  const dryHex = dunes.map.regions[0].hexes.find(({q,r})=>!dunes.map.terrainByHexKey[q + ',' + r]?.terrainOverride);
+  const key = dryHex.q + ',' + dryHex.r;
+  await page.locator('polygon.hex[data-hex-key="' + key + '"]').dispatchEvent('click');
+  await page.getByRole('button', {name:'Редактировать', exact:true}).click();
+  await page.getByRole('button', {name:'Изменить биом гекса', exact:true}).click();
+  await page.getByRole('combobox', {name:'Изменить биом гекса', exact:true}).selectOption('savanna');
+  const edited = JSON.parse(await download('JSON'));
+  assert.deepEqual(edited.map, {...dunes.map, biomeOverrideByHexKey:{[key]:'savanna'}});
+  assert.deepEqual(edited.generation, dunes.generation);
+  await page.getByRole('button', {name:'Отменить', exact:true}).click();
+  assert.deepEqual(JSON.parse(await download('JSON')).map, dunes.map);
+  await page.getByRole('button', {name:'Повторить', exact:true}).click();
+  assert.deepEqual(JSON.parse(await download('JSON')).map, edited.map);
   for (const width of [390, 320]) {
     await page.setViewportSize({width, height:950});
     await choices.selectOption('snow_plains');
@@ -145,7 +163,11 @@ try {
     const bounds = await row.boundingBox();
     const field = await choices.boundingBox();
     assert.ok(field && bounds && field.x >= bounds.x && field.x + field.width <= bounds.x + bounds.width + 1);
-    assert.ok(field.width >= (bounds.width - 24));
+    const innerWidth = await row.evaluate(element=>{
+      const style = getComputedStyle(element);
+      return element.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    });
+    assert.ok(Math.abs(field.width - innerWidth) <= 1);
     await page.screenshot({path:fileURLToPath(evidence('dunes-narrow-' + width + '.png'))});
   }
   await page.setViewportSize({width:1440, height:1000});
