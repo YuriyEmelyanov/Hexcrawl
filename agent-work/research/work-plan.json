@@ -67,19 +67,15 @@
   ],
   "current_diagnosis": "В существующих материалах выявлены неполнота/неоднородность перевода, но массовый аудит не проводился. Исторические completed и числа строк не доказывают соответствие стандартуv2; действуют исходные evidence до адресной проверки.",
   "next_selected_task": {
-    "id": "HX-RSR-CLASSIC-POI-DISCOVERY-BOUNDARY",
+    "id": "HX-RSR-DND5-L1-LAND-WATER-SHAPES",
+    "game_id": "DND5",
     "layer": "L1",
-    "game_ids": [
-      "DND5",
-      "KNAVE2",
-      "CROWS"
-    ],
-    "status": "selected_new_owner_dependency",
-    "action": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
-    "completion_condition": "Дать стратегу проверенные входы/выходы для столицы, портала и прежнего сохранения, границу между признаком карты и действиями раскрытия в L2. Точные вероятности не назначать. Для Crows использовать уже извлечённые материалы.",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
+    "completion_condition": "Для каждого входного сценария проверить связность суши и воды по графу соседства, координаты и повторную загрузку. Разграничить существующие данные и географические формы, требующие иных принятых операций. Малые озёра на 1 миле относятся к отдельной задаче команды HX-BL-056; использовать готовое доказательство, когда появится.",
     "source_refs": [
-      "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
-      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
     ]
   },
   "other_open_tracks": [
@@ -364,7 +360,7 @@
   },
   "research_product_handoff_policy": "Research artifacts and strategist handoff only; strategist owns new productbacklog candidates. No deleted/retired tasks restored and no statuses promoted by researcher.",
   "execution_resume_verified_at": "2026-11-15T20:55:14.806Z",
-  "updated_at": "2026-11-19T22:34:46.143Z",
+  "updated_at": "2026-11-19T23:35:04.197Z",
   "previous_next_selected_task_before_PF2_source_checkpoint": {
     "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
     "game_id": "DND5",
@@ -536,22 +532,22 @@
     "product_reverified": false
   },
   "current_research_checkpoint": {
-    "status": "bounded_surface_hazard_audit_completed",
-    "run_id": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
-    "stage": "verify_snow_biome_and_thin_ice",
-    "last_successful_step": "Проверены редактирование, отказ на воде, сохранение/загрузка, Undo/Redo озера и снежного биома, контроль трудности Knave и формат обоих масштабов.",
+    "status": "classic_poi_discovery_baseline_verified",
+    "run_id": "2026-11-20-classic-poi-discovery-498562e0",
+    "stage": "classic_discovery_contract_and_runtime",
+    "last_successful_step": "На точном SHA проверены ручные POI, автоматическая генерация, старая карта, Knave и разница между подписью и записью.",
     "failed_operation": null,
     "observed_error": null,
-    "stop_reason": "Ограниченная операция проверена на точном SHA. Первичный текст DMG 2014 и полная приёмка игры открыты.",
+    "stop_reason": "Ограниченная сверка завершена. Будущий контракт Classic и игровое раскрытие остаются в своих производственных этапах.",
     "cause_status": "confirmed",
     "saved_results": [
-      "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
-      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
-      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md",
-      "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
-      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20-probe.mjs"
+      "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.md",
+      "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20-probe.mjs"
     ],
-    "exact_continuation": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
+    "exact_continuation": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
     "needs_owner_action": false,
     "owner_action": null
   },
@@ -892,6 +888,31 @@
     "overview_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md",
     "result_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
     "handoff_ref": "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "full_game_accepted": false
+  },
+  "previous_next_selected_task_before_classic_poi_discovery": {
+    "id": "HX-RSR-CLASSIC-POI-DISCOVERY-BOUNDARY",
+    "layer": "L1",
+    "game_ids": [
+      "DND5",
+      "KNAVE2",
+      "CROWS"
+    ],
+    "status": "selected_new_owner_dependency",
+    "action": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
+    "completion_condition": "Дать стратегу проверенные входы/выходы для столицы, портала и прежнего сохранения, границу между признаком карты и действиями раскрытия в L2. Точные вероятности не назначать. Для Crows использовать уже извлечённые материалы.",
+    "source_refs": [
+      "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    ]
+  },
+  "latest_classic_poi_discovery": {
+    "status": "classic_poi_discovery_baseline_verified",
+    "matrix_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json",
+    "overview_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.md",
+    "result_ref": "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json",
     "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "full_game_accepted": false
   }

@@ -1,0 +1,241 @@
+{
+  "run_id": "2026-11-20-classic-poi-discovery-498562e0",
+  "program_id": "HX-RSR-001",
+  "status": "classic_poi_discovery_baseline_verified",
+  "started_at": "2026-11-19T23:31:51.343Z",
+  "completed_at": "2026-11-19T23:35:04.197Z",
+  "selected_task": {
+    "id": "HX-RSR-CLASSIC-POI-DISCOVERY-BOUNDARY",
+    "layer": "L1",
+    "game_ids": [
+      "DND5",
+      "KNAVE2",
+      "CROWS"
+    ],
+    "status": "selected_new_owner_dependency",
+    "action": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
+    "completion_condition": "Дать стратегу проверенные входы/выходы для столицы, портала и прежнего сохранения, границу между признаком карты и действиями раскрытия в L2. Точные вероятности не назначать. Для Crows использовать уже извлечённые материалы.",
+    "source_refs": [
+      "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    ]
+  },
+  "selection_reason": "Принятая задача HX-BL-062 напрямую использует данные L1. Исполняемая исходная версия позволяет закрыть неопределённость о Classic и Knave и сократить риск ложного подтверждения по подписи.",
+  "alternatives": [
+    {
+      "id": "DND5-full-primary",
+      "reason": "Нет нового первичного экземпляра."
+    },
+    {
+      "id": "DND5-water-shapes",
+      "reason": "Самостоятельный L1 остаток выбран следующим; свежая принятая HX-BL-062 имеет ближайшую зависимость."
+    }
+  ],
+  "inputs_and_versions": {
+    "ops": "6cc4a66b33337b43ad529237d396d9d46e319c01",
+    "product": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+    "context_refs": [
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json"
+    ]
+  },
+  "findings": [
+    "Обычный Classic сохраняет вручную созданную столицу, портал и четыре сгенерированные POI без записи обнаружения.",
+    "Старая деревня загрузилась из v7. После сохранения v10 запись обнаружения остаётся отсутствующей.",
+    "Существующий Knave показывает «При прохождении» при отсутствии записи. Генерация Knave создала содержимое четырёх POI и ноль записей обнаружения.",
+    "Секрет Knave требует непустую улику. Сохранённая запись восстанавливается при выключенной генерации Knave.",
+    "Политика типов и три режима определены решением владельца. Открытые вероятности и правила миграции не назначались."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json",
+    "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.md",
+    "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20-probe.mjs",
+    "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json",
+    "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/claims/2026-11-20-classic-poi-discovery-498562e0.json",
+    "agent-work/latest.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_tree_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matched_git_blobs": 105,
+    "blob_shas": {
+      "src/App.tsx": "5c7468956842770ec6654d920e14793171275b29",
+      "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+      "test/fixtures/e6-water-editor.json": "f70ae14b3663122d09e29ad7ce95b886de1c010c",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+    },
+    "locators": {
+      "src/App.tsx": [
+        "1111–1132 prepareKnaveGeneratedMap",
+        "14110–14113 Knave generation gate",
+        "14494–14502 chooseKnaveProfile",
+        "14814–14825 manual POI",
+        "15328–15386 import",
+        "15429–15449 clue draft",
+        "15661–15676 display fallback"
+      ],
+      "src/knaveClassic.ts": [
+        "8–17 shape",
+        "36–64 validation",
+        "78–86 assignment"
+      ]
+    },
+    "probe_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20-probe.mjs",
+    "command": "Copy the probe to root as research-classic-discovery.mjs and run node --experimental-strip-types --experimental-specifier-resolution=node research-classic-discovery.mjs",
+    "observations": {
+      "legacy": {
+        "inputVersion": 7,
+        "outputVersion": 10,
+        "villageRetained": true,
+        "discoveryPanel": false,
+        "discoveryRecord": false
+      },
+      "manualClassic": {
+        "kinds": [
+          "capital",
+          "portal"
+        ],
+        "discoveryPanel": false,
+        "discoveryRecord": false,
+        "roundtrip": true
+      },
+      "generatedClassic": {
+        "poiKinds": [
+          "town",
+          "village",
+          "holy_place",
+          "hut"
+        ],
+        "discoveryRecord": false,
+        "roundtrip": true
+      },
+      "knave": {
+        "displayFallback": "On passage",
+        "recordInitiallyAbsent": true,
+        "blankSecretRejected": true,
+        "portalRecord": {
+          "mode": "interaction",
+          "clueText": "The arch catches blue light."
+        },
+        "capitalRecord": false,
+        "generatedContentOwners": 4,
+        "generatedDiscoveryRecords": 0,
+        "annotationRoundtripWithGenerationOff": true
+      },
+      "method": "real App handlers, save/import and static rendering of existing Knave panel"
+    },
+    "limitations": [
+      "Выполнены обработчики реального App и статическая отрисовка панели без браузера.",
+      "Для книг использованы закреплённые выписки и coverage из предыдущих запусков. Основной текст DMG 2014 ожидает доступ.",
+      "Тест единичной генерации подтверждает обработчик и сохранение состояния, а не вероятность назначения.",
+      "Показ игрокам и изменение их знаний за пределами опыта."
+    ]
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "498562e0-acac-8331-9857-5cbbeff667a6",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T23:30:00Z",
+          "started_at": "2026-11-19T23:31:07.793701Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T02:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "8bcb00d9-19d8-832e-9087-8fa27fc8bae1",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T23:00:00Z",
+          "started_at": "2026-11-19T23:04:31.159652Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T02:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "498562e0-acac-8331-9857-5cbbeff667a6",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T23:30:00Z",
+          "started_at": "2026-11-19T23:31:07.793701Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T02:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "8bcb00d9-19d8-832e-9087-8fa27fc8bae1",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T23:00:00Z",
+          "started_at": "2026-11-19T23:04:31.159652Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T02:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "classic_poi_discovery_baseline_verified",
+    "run_id": "2026-11-20-classic-poi-discovery-498562e0",
+    "stage": "classic_discovery_contract_and_runtime",
+    "last_successful_step": "На точном SHA проверены ручные POI, автоматическая генерация, старая карта, Knave и разница между подписью и записью.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченная сверка завершена. Будущий контракт Classic и игровое раскрытие остаются в своих производственных этапах.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.md",
+      "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20-probe.mjs"
+    ],
+    "exact_continuation": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-LAND-WATER-SHAPES",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
+    "completion_condition": "Для каждого входного сценария проверить связность суши и воды по графу соседства, координаты и повторную загрузку. Разграничить существующие данные и географические формы, требующие иных принятых операций. Малые озёра на 1 миле относятся к отдельной задаче команды HX-BL-056; использовать готовое доказательство, когда появится.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  }
+}

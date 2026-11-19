@@ -1,0 +1,435 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-20-classic-poi-discovery-498562e0",
+  "game_ids": [
+    "DND5",
+    "KNAVE2",
+    "CROWS"
+  ],
+  "status": "classic_poi_discovery_baseline_verified",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "product_task_ref": "HX-BL-062",
+  "sources": {
+    "authority": {
+      "path": "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+      "game_rule": false,
+      "reference": "HX-BL-062",
+      "date": "2026-11-20 MSK",
+      "access_level": "repository_owner_decision",
+      "dedup_key": "HexCrawl:Classic-POI-discovery:HX-BL-062"
+    },
+    "dnd": {
+      "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-013",
+      "locator": "historical printed p108 Перемещение по карте",
+      "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В новом гексе видны признаки примечательного места, если оно не скрыто",
+      "normative_kind": "optional_variant",
+      "parameters_and_units": {
+        "historical_only": true,
+        "primary_text_reverification_required": true
+      },
+      "conditions": [
+        "Точная применимость и нормативность ожидают первичного текста."
+      ],
+      "exceptions": [
+        "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+      ],
+      "cross_references": [],
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "access_level": "retained_historical_extract_only_not_primary_reverified",
+      "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+      "source_verification_status": "historical_paraphrase_not_primary_reverified",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+      "interpretation": "Наблюдаемый признак может быть описан отдельно от скрытого. Не следует универсальный выбор режима по типу POI."
+    },
+    "knave": {
+      "source_id": "KNAVE2-RU-1.0",
+      "printed_page": 8,
+      "section": "Секретные объекты",
+      "pdf_page": 8,
+      "paraphrase": "Секретный объект должен иметь соответствующие подсказки, доступные при исследовании гекса; сам объект находится только взаимодействием с игровым миром.",
+      "normative_kind": "procedure",
+      "quotation": null,
+      "also": [],
+      "edition": "Knave Second Edition 2024, declared first printing; Russian translation Torbin v1.0 11.06.2024",
+      "author_project_key": "ben-milton/questing-beast/knave2/core2024",
+      "access_level": "previously_screened_full_text",
+      "source_fact_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010",
+      "related_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-009",
+      "interpretation": "Обычное прохождение и исследование различаются. На стр. 7–8 исследование открывает неочевидные места и улики, а секрет требует взаимодействия. Карточка POI готовит эти данные. В краткой памятке PDF44 есть неоднозначность; паспорт сохраняет приоритет основного текста в прежней сверке."
+    },
+    "crows": {
+      "id": "CROWS-PT3-L1-005",
+      "edition": "October2026PublicPlaytest3",
+      "ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-005",
+      "locator": "01 Crows Rules Booklet for Playtest 3.pdf: PDF26, Scout for Places; 04 Crows Dungeons for Playtest 3.pdf: PDF1",
+      "clause_ids": [
+        "CROWS-R26-EXISTING-PLACES",
+        "CROWS-DUN-002",
+        "CROWS-DUN-003"
+      ],
+      "access_level": "owner_supplied_primary_packet_previously_screened",
+      "author_project_dedup_key": "MCDM:Crows:PublicPlaytest3:2026-10",
+      "interpretation": "Разведка открывает существующие неизвестные места. Видимые при входе детали отделены от секретов. Текущее знание группы и класс обнаружения POI — разные данные, из правила не следует автоматически присваивать категории Classic."
+    }
+  },
+  "rows": [
+    {
+      "id": "HX-BL-062",
+      "source_ref": "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+      "disposition": "keep_L1",
+      "reason": "У объекта карты сохраняется свойство для работы ведущего.",
+      "product_boundary": "Создание и отображение подготовленной POI",
+      "implementation_status": "not_implemented",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+        "normative_kind": "owner_product_decision",
+        "applicability": "HX-BL-062. Обычная карточка и создание POI в Classic, уровень L1.",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать точку интереса в обычном Classic или загрузить прежнее сохранение и открыть её карточку.",
+        "inputs_and_units": {
+          "point_type": "capital, portal or other configured POI type",
+          "discovery_values": [
+            "При прохождении",
+            "При исследовании",
+            "Секретное место"
+          ],
+          "type_policy": "fixed or choice from permitted values",
+          "save_input_version": 7
+        },
+        "product_operation": "Один раз присвоить режим обнаружения по принятой политике типа и сохранить его с объектом. При загрузке прочитать прежде сохранённое значение.",
+        "expected_output": "Столица имеет «При прохождении», у портала достижимы три указанных режима. После чтения карточки и повторной загрузки остаётся ранее назначенный режим.",
+        "constraints_and_exceptions": [
+          "Условия секрета описываются для ведущего. Выдача игрокам и выполнение действий относятся к L2.",
+          "Нет утверждённого численного распределения, политики миграции и обязательной улики для обычного Classic в этой сверке.",
+          "Сохранённый профиль Knave и его собственные проверки отделяются от общих данных Classic."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создана или вручную установлена центральная POI типа «Столица» в обычном Classic.",
+            "when": "Открыть карточку, сохранить и загрузить JSON, повторно открыть карточку.",
+            "expected": "По принятому HX-BL-062 всегда видна запись «При прохождении», и чтение карточки не меняет значение."
+          },
+          {
+            "given": "В свободном сухом гексе обычного Classic создаётся портал.",
+            "when": "После утверждения таблицы выбора воспроизвести три допустимых исхода на контролируемых входах генерации. Для каждого сохранить, повторно открыть JSON и прочитать карточку дважды.",
+            "expected": "Достижимы все три значения из решения владельца. У каждой созданной точки одно устойчивое значение. Формулировка о магии остаётся условием для ведущего."
+          },
+          {
+            "given": "Загрузить исходное сохранение v7 с деревней без записи обнаружения.",
+            "when": "Открыть карточку и сохранить текущий документ, затем повторно загрузить.",
+            "expected": "Деревня и её тип сохраняются. Присвоение данных при миграции остаётся решением спецификации. Отдельно проверять, что показанное значение имеет сохраняемую запись или явный статус отсутствия."
+          },
+          {
+            "given": "Включить Knave для той же карты с порталом и столицей. Сохранённых записей нет.",
+            "when": "Просмотреть обе карточки. Попытаться записать секрет без улики, затем записать с уликой. Выключить генерацию Knave и открыть новый JSON.",
+            "expected": "Показ по умолчанию отличим от сохранённой записи. После валидного редактирования улика и способ восстанавливаются. Ограничение пустой улики относится к Knave."
+          }
+        ],
+        "source_vs_product_interpretation": "Типы и политика автоприсвоения происходят из решения владельца. Книги подтверждают различие свойств места и событий раскрытия, но не задают правила автоприсвоения Classic.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Политика типов без примера владельца и численные вероятности.",
+          "Вид карточки и правила прежних сохранений без записи.",
+          "Ручное изменение и условие секрета в Classic."
+        ]
+      }
+    },
+    {
+      "id": "DND5-2014-013-L1-v2-draft",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-013",
+        "locator": "historical printed p108 Перемещение по карте",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В новом гексе видны признаки примечательного места, если оно не скрыто",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified",
+        "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+        "interpretation": "Наблюдаемый признак может быть описан отдельно от скрытого. Не следует универсальный выбор режима по типу POI."
+      },
+      "disposition": "keep_L1",
+      "reason": "Наблюдаемый признак и отдельные сведения ведущего относятся к одному месту.",
+      "product_boundary": "Подготовка записи у POI. Раскрытие после движения отложено в L2.",
+      "implementation_status": "partial_from_previous_pinned_trace"
+    },
+    {
+      "id": "KNAVE2-010-L1",
+      "source": {
+        "source_id": "KNAVE2-RU-1.0",
+        "printed_page": 8,
+        "section": "Секретные объекты",
+        "pdf_page": 8,
+        "paraphrase": "Секретный объект должен иметь соответствующие подсказки, доступные при исследовании гекса; сам объект находится только взаимодействием с игровым миром.",
+        "normative_kind": "procedure",
+        "quotation": null,
+        "also": [],
+        "edition": "Knave Second Edition 2024, declared first printing; Russian translation Torbin v1.0 11.06.2024",
+        "author_project_key": "ben-milton/questing-beast/knave2/core2024",
+        "access_level": "previously_screened_full_text",
+        "source_fact_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-010",
+        "related_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-009",
+        "interpretation": "Обычное прохождение и исследование различаются. На стр. 7–8 исследование открывает неочевидные места и улики, а секрет требует взаимодействия. Карточка POI готовит эти данные. В краткой памятке PDF44 есть неоднозначность; паспорт сохраняет приоритет основного текста в прежней сверке."
+      },
+      "disposition": "keep_L1",
+      "reason": "Улика сохраняется вместе с конкретным секретным местом.",
+      "product_boundary": "Подготовка записи у POI. Исследование/взаимодействие относятся к L2.",
+      "implementation_status": "manual_per_profile_verified"
+    },
+    {
+      "id": "CROWS-PT3-L1-005",
+      "source": {
+        "id": "CROWS-PT3-L1-005",
+        "edition": "October2026PublicPlaytest3",
+        "ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-005",
+        "locator": "01 Crows Rules Booklet for Playtest 3.pdf: PDF26, Scout for Places; 04 Crows Dungeons for Playtest 3.pdf: PDF1",
+        "clause_ids": [
+          "CROWS-R26-EXISTING-PLACES",
+          "CROWS-DUN-002",
+          "CROWS-DUN-003"
+        ],
+        "access_level": "owner_supplied_primary_packet_previously_screened",
+        "author_project_dedup_key": "MCDM:Crows:PublicPlaytest3:2026-10",
+        "interpretation": "Разведка открывает существующие неизвестные места. Видимые при входе детали отделены от секретов. Текущее знание группы и класс обнаружения POI — разные данные, из правила не следует автоматически присваивать категории Classic."
+      },
+      "disposition": "keep_L1",
+      "reason": "Известный материал для ведущего и наблюдаемые при входе сведения подготавливаются с привязкой к месту.",
+      "product_boundary": "Подготовка исходных данных места. Игровое раскрытие вынесено в CROWS-R26-EXISTING-PLACES.",
+      "implementation_status": "unverified_for_Crows_player_view_preserved"
+    },
+    {
+      "id": "CROWS-R26-EXISTING-PLACES",
+      "source_ref": "agent-work/market/rules/CROWS-PT3.json#CROWS-PT3-L1-005",
+      "disposition": "defer_L2",
+      "reason": "Событие меняет текущее знание группы о уже существующем месте.",
+      "product_boundary": "Ведение гекскроула. Отдельная процедура игры, которую карточка Classic не выполняет.",
+      "implementation_status": "not_assessed_in_L1"
+    },
+    {
+      "id": "KNAVE2-009",
+      "source_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-009",
+      "disposition": "defer_L2",
+      "reason": "Вахта исследования обновляет сведения группы. Это отдельное действие после сохранения карты.",
+      "product_boundary": "Ведение гекскроула. Применимость к Knave, без универсальной цены времени.",
+      "implementation_status": "not_assessed_in_L1"
+    }
+  ],
+  "cases": [
+    {
+      "id": "DISC-CAPITAL",
+      "given": "Создана или вручную установлена центральная POI типа «Столица» в обычном Classic.",
+      "when": "Открыть карточку, сохранить и загрузить JSON, повторно открыть карточку.",
+      "expected": "По принятому HX-BL-062 всегда видна запись «При прохождении», и чтение карточки не меняет значение.",
+      "actual": "При ручном присвоении типа столица сохранилась. Записи и поля обнаружения Classic нет.",
+      "status": "not_implemented_at_pinned_main"
+    },
+    {
+      "id": "DISC-PORTAL",
+      "given": "В свободном сухом гексе обычного Classic создаётся портал.",
+      "when": "После утверждения таблицы выбора воспроизвести три допустимых исхода на контролируемых входах генерации. Для каждого сохранить, повторно открыть JSON и прочитать карточку дважды.",
+      "expected": "Достижимы все три значения из решения владельца. У каждой созданной точки одно устойчивое значение. Формулировка о магии остаётся условием для ведущего.",
+      "actual": "Портал сохранён штатным ручным созданием. Запись отсутствует. Генератор обычного Classic с seed 42 сохранил четыре POI четырёх типов без записи. Вероятности для портала не утверждены этой сверкой.",
+      "status": "not_implemented_at_pinned_main"
+    },
+    {
+      "id": "DISC-LEGACY",
+      "given": "Загрузить исходное сохранение v7 с деревней без записи обнаружения.",
+      "when": "Открыть карточку и сохранить текущий документ, затем повторно загрузить.",
+      "expected": "Деревня и её тип сохраняются. Присвоение данных при миграции остаётся решением спецификации. Отдельно проверять, что показанное значение имеет сохраняемую запись или явный статус отсутствия.",
+      "actual": "Произошла загрузка v7 и запись v10. Деревня сохранилась, запись и поле обнаружения отсутствуют.",
+      "status": "observed_legacy_behavior"
+    },
+    {
+      "id": "DISC-KNAVE",
+      "given": "Включить Knave для той же карты с порталом и столицей. Сохранённых записей нет.",
+      "when": "Просмотреть обе карточки. Попытаться записать секрет без улики, затем записать с уликой. Выключить генерацию Knave и открыть новый JSON.",
+      "expected": "Показ по умолчанию отличим от сохранённой записи. После валидного редактирования улика и способ восстанавливаются. Ограничение пустой улики относится к Knave.",
+      "actual": "Панель показала «При прохождении» на пустых записях. Пустая улика отклонена. Записанный секрет портала сохранился при выключенной генерации Knave. Автогенерация Knave заполнила содержимое четырёх POI и сохранила ноль записей обнаружения.",
+      "status": "implemented_for_existing_knave_contract"
+    }
+  ],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_tree_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matched_git_blobs": 105,
+    "blob_shas": {
+      "src/App.tsx": "5c7468956842770ec6654d920e14793171275b29",
+      "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+      "test/fixtures/e6-water-editor.json": "f70ae14b3663122d09e29ad7ce95b886de1c010c",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+    },
+    "locators": {
+      "src/App.tsx": [
+        "1111–1132 prepareKnaveGeneratedMap",
+        "14110–14113 Knave generation gate",
+        "14494–14502 chooseKnaveProfile",
+        "14814–14825 manual POI",
+        "15328–15386 import",
+        "15429–15449 clue draft",
+        "15661–15676 display fallback"
+      ],
+      "src/knaveClassic.ts": [
+        "8–17 shape",
+        "36–64 validation",
+        "78–86 assignment"
+      ]
+    },
+    "probe_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20-probe.mjs",
+    "command": "Copy the probe to root as research-classic-discovery.mjs and run node --experimental-strip-types --experimental-specifier-resolution=node research-classic-discovery.mjs",
+    "observations": {
+      "legacy": {
+        "inputVersion": 7,
+        "outputVersion": 10,
+        "villageRetained": true,
+        "discoveryPanel": false,
+        "discoveryRecord": false
+      },
+      "manualClassic": {
+        "kinds": [
+          "capital",
+          "portal"
+        ],
+        "discoveryPanel": false,
+        "discoveryRecord": false,
+        "roundtrip": true
+      },
+      "generatedClassic": {
+        "poiKinds": [
+          "town",
+          "village",
+          "holy_place",
+          "hut"
+        ],
+        "discoveryRecord": false,
+        "roundtrip": true
+      },
+      "knave": {
+        "displayFallback": "On passage",
+        "recordInitiallyAbsent": true,
+        "blankSecretRejected": true,
+        "portalRecord": {
+          "mode": "interaction",
+          "clueText": "The arch catches blue light."
+        },
+        "capitalRecord": false,
+        "generatedContentOwners": 4,
+        "generatedDiscoveryRecords": 0,
+        "annotationRoundtripWithGenerationOff": true
+      },
+      "method": "real App handlers, save/import and static rendering of existing Knave panel"
+    },
+    "limitations": [
+      "Выполнены обработчики реального App и статическая отрисовка панели без браузера.",
+      "Для книг использованы закреплённые выписки и coverage из предыдущих запусков. Основной текст DMG 2014 ожидает доступ.",
+      "Тест единичной генерации подтверждает обработчик и сохранение состояния, а не вероятность назначения.",
+      "Показ игрокам и изменение их знаний за пределами опыта."
+    ]
+  },
+  "ra_q01_15": {
+    "RA-Q01": {
+      "status": "pass",
+      "detail": "Редакции и происхождение параметров разделены.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json#sources"
+    },
+    "RA-Q02": {
+      "status": "blocked",
+      "detail": "Полный корпус DMG2014 ожидает первичного экземпляра. Проработан только ограниченный срез источников.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json#sources"
+    },
+    "RA-Q03": {
+      "status": "pass",
+      "detail": "Смысл ранее проверенных фрагментов сохранён; для DND явно обозначена историческая выписка.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json#sources"
+    },
+    "RA-Q04": {
+      "status": "pass",
+      "detail": "Режимы, условия и неутверждённые параметры перечислены отдельно.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json#sources"
+    },
+    "RA-Q05": {
+      "status": "pass",
+      "detail": "Решение владельца, книжное правило и фактическое состояние различаются.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json#sources"
+    },
+    "RA-Q06": {
+      "status": "pass",
+      "detail": "Действия, типы, выходы и правила записи конкретизированы.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json"
+    },
+    "RA-Q07": {
+      "status": "pass",
+      "detail": "Граница L1 и L2 учтена.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json"
+    },
+    "RA-Q08": {
+      "status": "pass",
+      "detail": "Каноническое правило и имеющиеся игровые привязки сохранены.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json"
+    },
+    "RA-Q09": {
+      "status": "pass",
+      "detail": "Есть ожидаемые результаты для столицы, портала, старой карты и Knave.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json"
+    },
+    "RA-Q10": {
+      "status": "pass",
+      "detail": "Предъявлены фактические обработчики на точном SHA.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json"
+    },
+    "RA-Q11": {
+      "status": "pass",
+      "detail": "Браузер, вероятности и полнота источника отдельно оговорены.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json"
+    },
+    "RA-Q12": {
+      "status": "pass",
+      "detail": "Есть передача для действующей HX-BL-062.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json"
+    },
+    "RA-Q13": {
+      "status": "pass",
+      "detail": "Читаемый обзор и JSON используют одни результаты.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.md"
+    },
+    "RA-Q14": {
+      "status": "fail",
+      "detail": "Срез завершён, первичный корпус и допуск игр остаются открыты.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json"
+    },
+    "RA-Q15": {
+      "status": "pass",
+      "detail": "Готовность продукта и рейтинг не пересчитаны.",
+      "scope": "Classic POI discovery research",
+      "evidence_ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json"
+    }
+  },
+  "full_game_accepted": false
+}
