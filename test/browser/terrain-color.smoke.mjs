@@ -232,7 +232,9 @@ try {
   const history = () => Promise.all(['Undo', 'Redo'].map(name=>page.getByRole('button',{name,exact:true}).isEnabled()));
   const originalHistory = await history();
   const svg = page.locator('.map-viewport .map-stage > svg[data-render-phase]');
-  const readScene = (liveSvg, exported) => {
+  const sourceLakeKeys = Object.entries(mixed.map.terrainByHexKey)
+    .filter(([, terrain]) => terrain.terrainOverride === 'lake').map(([key]) => key);
+  const readScene = (liveSvg, {exported, sourceLakeKeys}) => {
     const root = exported ? new DOMParser().parseFromString(window.terrainPngSource, 'image/svg+xml').documentElement : liveSvg;
     const rows = (selector, attrs) => [...root.querySelectorAll(selector)]
       .filter(node => !node.closest('[data-editor-only]'))
@@ -248,7 +250,9 @@ try {
       });
     const layers = {
       placements,
-      lake: rows('[data-lake-shape], [data-fine-terrain="lake"]', ['data-lake-shape', 'data-fine-key']),
+      lake: root.querySelector('[data-fine-world]')
+        ? rows('[data-fine-terrain="lake"] polygon', ['points', 'fill'])
+        : sourceLakeKeys.flatMap(key => rows(`polygon[data-hex-key="${key}"]`, ['points', 'fill'])),
       rivers: rows('.rivers-layer .river-polyline', ['x1', 'x2', 'y1', 'y2', 'points', 'stroke-width']),
       roads: rows('.roads-layer line, .roads-layer polyline', ['x1', 'x2', 'y1', 'y2', 'points']),
       crossings: rows('.river-crossing, [data-fine-crossing]', ['class', 'data-fine-crossing', 'data-crossing-kind']),
@@ -263,7 +267,8 @@ try {
     for (const orientation of ['initial', 'rotated']) {
       if (orientation === 'rotated') await page.locator('.rotate-map-button').click();
       await page.waitForFunction(() => document.querySelector('svg[data-render-phase="ready"] image.terrain-engraving'));
-      const {biomeIds, layers: scene} = await svg.evaluate(readScene, false);
+      const {biomeIds, layers: scene} = await svg.evaluate(readScene, {exported:false, sourceLakeKeys});
+      assert.ok(biomeIds.includes('lake'), `${miles} mi ${orientation}: lake engraving rendered`);
       for (const biome of Object.keys(MANUAL_BIOMES)) {
         assert.ok(biomeIds.filter(id => id === biome).length >= 2, `${miles} mi ${orientation}: repeat ${biome}`);
       }
@@ -275,7 +280,7 @@ try {
       const exportPng = await download('PNG');
       assert.equal(exportPng.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
       await page.waitForFunction(() => !!window.terrainPngSource);
-      const {layers: rasterSource} = await svg.evaluate(readScene, true);
+      const {layers: rasterSource} = await svg.evaluate(readScene, {exported:true, sourceLakeKeys});
       assert.deepEqual(rasterSource, scene, `${miles} mi ${orientation}: PNG source matches the visible layers`);
       await fs.writeFile(evidence(`mixed-${miles}mi-${orientation}-export.png`), exportPng);
       const afterExport = JSON.parse(await download('JSON'));
