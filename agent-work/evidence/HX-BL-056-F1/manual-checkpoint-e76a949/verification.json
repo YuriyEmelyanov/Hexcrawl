@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-056",
+  "stage": "F1_manual_checkpoint",
+  "checked_at": "2026-11-19T23:34:09.371Z",
+  "head_sha": "e76a94969b3dee1cfd69885dcf31d2083dbfd789",
+  "head_tree_sha": "6ce37f1badb6648cc66641c8cb47f45f2a6f382e",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+  "node": {
+    "typecheck": "passed",
+    "diagnostic": {
+      "fixture": {
+        "path": "test/fixtures/classic-six-regions-seed42.json",
+        "cells": [
+          {
+            "q": 4,
+            "r": 0
+          },
+          {
+            "q": 5,
+            "r": 0
+          }
+        ],
+        "lake_id": 1
+      },
+      "method": "Изолированная диагностика существующего генераторного harness через штатные обработчики App",
+      "runtime": "Node.js 24.22.3",
+      "create_manual": true,
+      "json_round_trip": true,
+      "undo_redo": true,
+      "remove_and_undo": true,
+      "reset_confirm_and_undo": true,
+      "source_rng_unchanged": true,
+      "scope": "Данные, транзакции и валидация. Не заменяет браузерную проверку."
+    },
+    "targeted_regression": {
+      "head_sha": "94d8962ec63b0df8d63ba5a10173858176b1f062",
+      "suites": [
+        "oneMile",
+        "saveSafety",
+        "mapTransactions"
+      ],
+      "executed": 99,
+      "passed": 99,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "browser": {
+    "local": "Chromium process_singleton socket() EPERM before opening a page",
+    "workflow": {
+      "run_id": 44638057430,
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44638057430",
+      "jobs": [
+        {
+          "id": 135961761217,
+          "name": "world-random",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 135961761310,
+          "name": "check",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 135961761318,
+          "name": "browser",
+          "status": "in_progress",
+          "conclusion": null
+        },
+        {
+          "id": 135961763370,
+          "name": "engraved-map-comparison",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "last_completed_attempt": {
+      "head_sha": "51964b4992e1a0b926f37c949cafaa8ddde3885a",
+      "checkout_tree": "2f7265f6d1ca66128446d96383c4761125930e90",
+      "run_id": 44637169434,
+      "job_id": 135958660845,
+      "status": "failed",
+      "failure": "В браузере появился контур черновика, после нажатия Save lake принятый контур не появился. JSON и PNG этого сценария в браузере ещё не подтверждены.",
+      "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44637169434/artifacts/14584578929",
+      "screenshots": [
+        "small-lake-before.jpg",
+        "small-lake-draft.jpg"
+      ]
+    },
+    "changes_after_failure": "Перенесены действия выше деталей гекса. Новый прогон проверяет, получает ли кнопка нативный клик."
+  },
+  "test_change_summary": {
+    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "head_sha": "e76a94969b3dee1cfd69885dcf31d2083dbfd789",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Browser / one-mile.smoke.mjs",
+    "scenario": "HX056-manual-small-lake-roundtrip-and-png",
+    "risk": "Настоящий редактор может терять слой при переключении масштаба или при сериализации и сохранять черновик вместо принятой линии в PNG.",
+    "reuse_or_new_reason": "Расширен существующий браузерный сценарный файл и повторно использована карта Classic seed 42, потому что прежние случаи не создают и не экспортируют новый объект.",
+    "count_source": "git diff d6daa2cdbc1c17b942d51fe050fac51752cf9fee e76a94969b3dee1cfd69885dcf31d2083dbfd789 -- test/browser/one-mile.smoke.mjs"
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "incomplete",
+    "criteria": [
+      "S01-C03",
+      "S02-C01",
+      "S02-C03",
+      "S03-C01",
+      "S04-C04"
+    ]
+  }
+}
