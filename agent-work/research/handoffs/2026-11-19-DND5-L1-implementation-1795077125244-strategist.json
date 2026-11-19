@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-DND5-L1-implementation-1795077125244",
+  "from": "researcher",
+  "to": "strategist-manager",
+  "game_id": "DND5",
+  "layer": "L1",
+  "status": "research_evidence_only",
+  "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+  "matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+  "scope_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
+  "overview_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.md",
+  "findings": [
+    {
+      "id": "DND5-current-placement",
+      "result": "Рост карты сохраняет двенадцать подготовленных мест, включая шесть именованных логовищ. Один гекс лесной области можно сменить на холмы и сохранить остальную карту.",
+      "impact": "Ручные инструменты карты подтверждены. 12 — заданное число в опыте, его нельзя ввести как обязательную квоту."
+    },
+    {
+      "id": "DND5-current-scale",
+      "result": "Реальный модуль поддерживает геометрию с 1, 6, 12 и 24 милями. В интерфейсе масштабные варианты 1 и 6. Значение 60 модуль отклоняет. Зум меняет камеру отдельно от географии.",
+      "impact": "Детализацию 6→1 можно переиспользовать. Цепочка с 60 милями и ось DMG остаются отдельными вопросами."
+    },
+    {
+      "id": "DND5-scope-dedup",
+      "result": "16 оставленных строк старой матрицы имеют те же ID операций, что 16 современных черновиков.",
+      "impact": "Для разработки используется один набор операций. Первичный текст не восстанавливается из совпадения ID."
+    }
+  ],
+  "remaining": [
+    {
+      "scope": "primary_source",
+      "ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "detail": "Полный тематический скрининг 322-страничного экземпляра PHantom 2016 ещё открыт. Сохранены печатные локаторы прежней выписки, версии и точные ограничения доступа. Повтор того же поиска уместен только при новом основании.",
+      "ranges": [
+        "Full chapter1 incl settlements, factions, initial region",
+        "Full chapter2 planar geography applicability",
+        "Ch3 adventure types/encounters and ch4 site-NPC applicability",
+        "Ch5 all environments incl settlements112–115, unusual116–119, traps120–123 and dungeon applicability",
+        "Ch6 campaign tracking and ch7 placed-treasure applicability",
+        "Ch8 exploration242–244/objects246 applicability; ch9 variants",
+        "Appendices A–D/maps310–315/index317–320 EN; map to supplied RU pagination before extracting"
+      ]
+    },
+    {
+      "scope": "product",
+      "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "detail": "Открыты точный масштаб и связанная детализация с 60 милями, избирательный обзор, привязки поселения к конкретным ресурсам, слои признаков/видимости, тонкий лёд и отдельные расширенные случаи географии. Отрисовку браузера не проверяли."
+    },
+    {
+      "scope": "cohort",
+      "detail": "Пять ограниченных проверок не означают принятие всей общей когорты. Точный gate сохраняется, числовой рейтинг, скоринг и очередь не изменяются."
+    }
+  ],
+  "decision_requests": [],
+  "product_task_refs": [],
+  "queue_edited": false,
+  "score_delta": "not_assessed",
+  "next_candidate": {
+    "id": "HX-RSR-OVERALL-TOP5-L1-EVIDENCE-ACCEPTANCE",
+    "game_id": null,
+    "layer": "L1",
+    "status": "selected_after_five_bounded_implementation_passes",
+    "action": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
+    "completion_condition": "Одна таблица допуска пяти игр со ссылками, закрытыми и открытыми критериями и условиями входа в create-top10. Подтверждённые исторические результаты не повторять.",
+    "full_overall_top5_complete": false
+  }
+}

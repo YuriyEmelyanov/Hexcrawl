@@ -1,0 +1,265 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-DND5-L1-implementation-1795077125244",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_DMG2014_L1_implementation_review_completed",
+  "selected_task": {
+    "id": "HX-RSR-DND5-2014-RETAINED-L1-EVIDENCE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "completion_condition": "Провести и закрыть проверку реализации всех 16 ранее сохранённых операций карты на закреплённом SHA. Доказательства и ограничения сохранить отдельно от источниковых выводов."
+  },
+  "selection_reason": "D&D 5e занимает первое место в текущем общем топ-5. Для 16 сохранённых операций существует достижимая проверка продукта независимо от недостающего полного первоисточника.",
+  "alternatives": [
+    {
+      "candidate": "Новый поиск полного DMG2014",
+      "reason": "Для прежних путей сохранён точный блокер, нового доступа в этом запуске не обнаружено."
+    },
+    {
+      "candidate": "Перейти к create-top10",
+      "reason": "Требуется полное выравнивание действующей общей когорты. Оно не следует из локальных запусков."
+    }
+  ],
+  "inputs_and_versions": {
+    "agent_operations": "73f2b1a5bf6677164b8718ffec5d13625622eb76",
+    "product_main": "172155071ca1408abf6960dbc876ba030fc61613",
+    "source_ref": "agent-work/research/requirements/DND5-2014-v2-entries.json",
+    "coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+    "scope_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
+    "canonical_refs": [
+      "agent-work/rules/common-rules.json",
+      "agent-work/rules/game-bindings.json"
+    ],
+    "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+    "ranking_version": "three-scenario-ranks-1.4-CROWS-addition",
+    "top5": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ]
+  },
+  "findings": [
+    {
+      "id": "DND5-current-placement",
+      "result": "Рост карты сохраняет двенадцать подготовленных мест, включая шесть именованных логовищ. Один гекс лесной области можно сменить на холмы и сохранить остальную карту.",
+      "impact": "Ручные инструменты карты подтверждены. 12 — заданное число в опыте, его нельзя ввести как обязательную квоту."
+    },
+    {
+      "id": "DND5-current-scale",
+      "result": "Реальный модуль поддерживает геометрию с 1, 6, 12 и 24 милями. В интерфейсе масштабные варианты 1 и 6. Значение 60 модуль отклоняет. Зум меняет камеру отдельно от географии.",
+      "impact": "Детализацию 6→1 можно переиспользовать. Цепочка с 60 милями и ось DMG остаются отдельными вопросами."
+    },
+    {
+      "id": "DND5-scope-dedup",
+      "result": "16 оставленных строк старой матрицы имеют те же ID операций, что 16 современных черновиков.",
+      "impact": "Для разработки используется один набор операций. Первичный текст не восстанавливается из совпадения ID."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+    "agent-work/research/requirements/DND5-2014-v2-L1-implementation.md",
+    "agent-work/research/requirements/DND5-2014-v2-review.md",
+    "agent-work/research/requirements/DND5-2014-v2-L1-implementation-probe.mjs",
+    "agent-work/research/handoffs/2026-11-19-DND5-L1-implementation-1795077125244-strategist.json",
+    "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+    "checks": {
+      "code_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "git_blobs_verified": 140,
+      "probe": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation-probe.mjs",
+        "reproduce": "Copy the probe into the root of the checkout at code_sha, npm ci, node <probe>.",
+        "output": [
+          {
+            "check": "physical_scale_and_camera_not_conflated",
+            "steps": [
+              {
+                "step": 1,
+                "area": 0.8660254037844386
+              },
+              {
+                "step": 6,
+                "area": 31.176914536239792
+              },
+              {
+                "step": 12,
+                "area": 124.70765814495917
+              },
+              {
+                "step": 24,
+                "area": 498.8306325798367
+              }
+            ],
+            "savedCamera": [
+              1,
+              2
+            ],
+            "samePhysicalMap": true,
+            "step60Accepted": false
+          },
+          {
+            "check": "manual_hill_inside_woodland",
+            "address": "1,0",
+            "base": "deciduous_woodland",
+            "override": "open_hills",
+            "otherMapStateUnchanged": true,
+            "reload": true,
+            "undoRedo": true
+          },
+          {
+            "check": "twelve_manual_sites_and_six_distinct_lairs",
+            "placed": 12,
+            "lairs": 6,
+            "ruin": "Old Gate",
+            "reload": true,
+            "automaticQuotaSet": false
+          },
+          {
+            "check": "adjacent_growth_keeps_existing_sites",
+            "addedRegions": 1,
+            "retainedNamedSites": 12,
+            "reload": true,
+            "undoRedo": true
+          },
+          {
+            "check": "manual_route_domain_through_explicit_pass",
+            "directBlocked": true,
+            "segments": 2,
+            "autoPassSelectionExercised": false,
+            "context": "synthetic boundary and pass"
+          }
+        ]
+      },
+      "test": {
+        "command": "node --test --test-name-pattern='E6 external sea|E6 enclosed sea|sector directions at a junction|unknown tributary|actual mixed river continuation|E7 App height|creation refuses invalid geometry|GEO2 POI candidates|ONE-MILE1 preview|keeps full POI identity.*classic|E6 real water transaction' test/manualWater.test.mjs test/riverIntegration.test.mjs test/mapTransactions.test.mjs test/regionEditing.test.mjs test/manualRoads.test.mjs test/geometryRefinementPois.test.mjs test/saveSafety.test.mjs",
+        "initial": "✔ GEO2 POI candidates retain source requirements, same-parent rigid footprints and both route entries; conflicts are atomic (73.802639ms)\n✔ creation refuses invalid geometry, endpoints, obstacles, duplicate and overflow (2.377893ms)\n✔ E6 external sea reclamation requires one explicitly adjacent existing region (5.431944ms)\n✔ E6 enclosed sea is an explicit lake choice; open sea needs at least two cells (5.035687ms)\n",
+        "output": "✔ E6 real water transaction preserves dormant biome, notes, RNG, exact history and v7 roundtrip (583.801463ms)\n✔ GEO2 actual mixed river continuation retains scoped crossings, identities and one undo redo (716.563992ms)\n✔ E7 App transfer keeps full POI identity/history and real reload continuation classic (581.781745ms)\n✔ E7 App height is one atomic explicit biome pair and retains local/underwater overrides (51.027608ms)\n✔ RIV-EX-03/19 adapter solves real sector directions at a junction and preserves region ownership (459.720696ms)\n✔ E5 unknown tributary preserves fixed neighbouring legacy source and owner heights (76.433571ms)\n✔ ONE-MILE1 preview/cancel/apply and public15 roundtrip use real import and exact undo (190.622369ms)\nℹ tests 11\nℹ suites 0\nℹ pass 11\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3324.892635\n",
+        "exit_code": 0
+      },
+      "limitations": "App handlers execute through the repository non-browser React harness. UI details and audience display are not browser-verified. Product statuses apply to the explicit research criteria only; the historical source is not reverified."
+    },
+    "quality": {
+      "RA-Q01": "Редакция DMG 2014 / исторический PHantom 2016 отделена от иных изданий; источник и локаторы открыты для реверификации.",
+      "RA-Q02": "Открыто. Прежняя выписка не покрывает весь заявленный корпус; точный остаток сохранён.",
+      "RA-Q03": "Пересказы сохранены в прежних записях. Источниковая самодостаточность всех строк не заявлена.",
+      "RA-Q04": "Неизвестная ось 60-мильного профиля, условность численных примеров и ограничения хранены.",
+      "RA-Q05": "Смысл источника, операционный перевод и текущие факты продукта различены.",
+      "RA-Q06": "Действие, вход, конкретный объект и критерий выхода сохранены в каждой строке.",
+      "RA-Q07": "Функция карты сопоставлена с текущей реализацией; заметки не засчитаны как особая поддержка.",
+      "RA-Q08": "Совпадение всех 16 старых и новых ID проверено. Реестры не менялись.",
+      "RA-Q09": "Критерии источника сохранены, исполненные варианты выделены.",
+      "RA-Q10": "Статусы на точном SHA и остаток записаны по строкам.",
+      "RA-Q11": "Обработчики, модель, анализ схемы и браузер чётко разграничены.",
+      "RA-Q12": "Передача стратегу без повторного создания строк очереди.",
+      "RA-Q13": "Человеческий обзор и JSON согласованы.",
+      "RA-Q14": "Проверка текущего L1 среза завершена, допуск всей игры открыт.",
+      "RA-Q15": "Объявленная поддержка, рейтинг, методика, score, очередь, main и публикация не менялись."
+    },
+    "main_head_observed_at_save": "172155071ca1408abf6960dbc876ba030fc61613"
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T07:04:08.947459+00:00",
+        "next": "2026-11-19T12:00:00+03:00",
+        "run": null
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T05:43:41.874788+00:00",
+        "next": "2026-11-19T11:30:00+03:00",
+        "run": null
+      }
+    ],
+    "end": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T07:04:08.947459+00:00",
+        "next": "2026-11-19T12:00:00+03:00",
+        "run": null
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T05:43:41.874788+00:00",
+        "next": "2026-11-19T11:30:00+03:00",
+        "run": null
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_DMG2014_L1_implementation_review_completed",
+    "run_id": "2026-11-19-DND5-L1-implementation-1795077125244",
+    "stage": "retained_L1_implementation_and_source_gap",
+    "last_successful_step": "Выполнены ручные сценарии POI, расширения, биома, физической сетки и обхода определённого барьера. Сверены ранее отобранные 16 операций.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченный срез завершён. Первичный тематический охват и отдельные профильные проверки открыты.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.md",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation-probe.mjs",
+      "agent-work/research/requirements/DND5-2014-v2-review.md",
+      "agent-work/research/handoffs/2026-11-19-DND5-L1-implementation-1795077125244-strategist.json"
+    ],
+    "exact_continuation": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
+    "remaining": [
+      {
+        "scope": "primary_source",
+        "ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+        "detail": "Полный тематический скрининг 322-страничного экземпляра PHantom 2016 ещё открыт. Сохранены печатные локаторы прежней выписки, версии и точные ограничения доступа. Повтор того же поиска уместен только при новом основании.",
+        "ranges": [
+          "Full chapter1 incl settlements, factions, initial region",
+          "Full chapter2 planar geography applicability",
+          "Ch3 adventure types/encounters and ch4 site-NPC applicability",
+          "Ch5 all environments incl settlements112–115, unusual116–119, traps120–123 and dungeon applicability",
+          "Ch6 campaign tracking and ch7 placed-treasure applicability",
+          "Ch8 exploration242–244/objects246 applicability; ch9 variants",
+          "Appendices A–D/maps310–315/index317–320 EN; map to supplied RU pagination before extracting"
+        ]
+      },
+      {
+        "scope": "product",
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+        "detail": "Открыты точный масштаб и связанная детализация с 60 милями, избирательный обзор, привязки поселения к конкретным ресурсам, слои признаков/видимости, тонкий лёд и отдельные расширенные случаи географии. Отрисовку браузера не проверяли."
+      },
+      {
+        "scope": "cohort",
+        "detail": "Пять ограниченных проверок не означают принятие всей общей когорты. Точный gate сохраняется, числовой рейтинг, скоринг и очередь не изменяются."
+      }
+    ],
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-OVERALL-TOP5-L1-EVIDENCE-ACCEPTANCE",
+    "game_id": null,
+    "layer": "L1",
+    "status": "selected_after_five_bounded_implementation_passes",
+    "action": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
+    "completion_condition": "Одна таблица допуска пяти игр со ссылками, закрытыми и открытыми критериями и условиями входа в create-top10. Подтверждённые исторические результаты не повторять.",
+    "full_overall_top5_complete": false
+  },
+  "started_at": "2026-11-19T08:32:05.244Z",
+  "completed_at": "2026-11-19T08:38:31.417Z"
+}

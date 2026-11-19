@@ -67,15 +67,13 @@
   ],
   "current_diagnosis": "В существующих материалах выявлены неполнота/неоднородность перевода, но массовый аудит не проводился. Исторические completed и числа строк не доказывают соответствие стандартуv2; действуют исходные evidence до адресной проверки.",
   "next_selected_task": {
-    "id": "HX-RSR-DND5-2014-RETAINED-L1-EVIDENCE",
-    "game_id": "DND5",
+    "id": "HX-RSR-OVERALL-TOP5-L1-EVIDENCE-ACCEPTANCE",
+    "game_id": null,
     "layer": "L1",
-    "status": "selected_after_SD_bounded_implementation",
-    "action": "Проверить текущую реализацию 16 сохранённых L1 строк DND5/DMG2014 на свежем SHA с существующими входами и локаторами. Начать с буквального масштаба карты и общего картографического редактора, сверить с работающими профильными критериями. Печатный остаток DMG2014 сохранить до появления нового доступа к первоисточнику.",
-    "completion_condition": "Записать статус и evidence по отобранным строкам DND5. Сохранить раздельно проверенное, пробел источника и условия выравнивания top5 перед определением свежего create-top10.",
-    "scope_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
-    "full_source_access_still_open": true,
-    "overall_top5_complete": false
+    "status": "selected_after_five_bounded_implementation_passes",
+    "action": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
+    "completion_condition": "Одна таблица допуска пяти игр со ссылками, закрытыми и открытыми критериями и условиями входа в create-top10. Подтверждённые исторические результаты не повторять.",
+    "full_overall_top5_complete": false
   },
   "other_open_tracks": [
     {
@@ -217,19 +215,20 @@
   },
   "execution_policy_ref": "agent-work/decisions/owner-decision-2026-11-10-research-outcomes.json",
   "last_completed_implementation_audit": {
-    "status": "bounded_Shadowdark_L1_implementation_review_completed",
+    "status": "bounded_DMG2014_L1_implementation_review_completed",
     "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
     "counts": {
-      "partial": 7,
-      "unverified": 5,
-      "implemented": 1,
-      "not_implemented": 5
+      "implemented": 2,
+      "partial": 10,
+      "unverified": 3,
+      "not_implemented": 1
     },
-    "ref": "agent-work/research/requirements/SD-CORE-L1-implementation.json",
-    "overview_ref": "agent-work/research/requirements/SD-CORE-L1-implementation.md",
-    "result_ref": "agent-work/research/runs/2026-11-19-SD-L1-implementation-1795066537187.json",
-    "handoff_ref": "agent-work/research/handoffs/2026-11-19-SD-L1-implementation-1795066537187-strategist.json",
+    "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+    "overview_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.md",
+    "result_ref": "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-implementation-1795077125244-strategist.json",
     "full_game_accepted": false,
+    "source_complete": false,
     "browser_reverified": false
   },
   "source_expansion_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-research-surveys.json",
@@ -343,7 +342,7 @@
   },
   "research_product_handoff_policy": "Research artifacts and strategist handoff only; strategist owns new productbacklog candidates. No deleted/retired tasks restored and no statuses promoted by researcher.",
   "execution_resume_verified_at": "2026-11-15T20:55:14.806Z",
-  "updated_at": "2026-11-19T05:42:05.251Z",
+  "updated_at": "2026-11-19T08:38:31.417Z",
   "previous_next_selected_task_before_PF2_source_checkpoint": {
     "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
     "game_id": "DND5",
@@ -514,40 +513,46 @@
     "product_reverified": false
   },
   "current_research_checkpoint": {
-    "status": "bounded_Shadowdark_L1_implementation_review_completed",
-    "run_id": "2026-11-19-SD-L1-implementation-1795066537187",
-    "stage": "retained_L1_implementation",
-    "last_successful_step": "Проверены сохранение масштаба и имён, расширение карты без потери POI, контроль отдельной проходимости в Knave и критерии двух таблиц Shadowdark 2d6.",
+    "status": "bounded_DMG2014_L1_implementation_review_completed",
+    "run_id": "2026-11-19-DND5-L1-implementation-1795077125244",
+    "stage": "retained_L1_implementation_and_source_gap",
+    "last_successful_step": "Выполнены ручные сценарии POI, расширения, биома, физической сетки и обхода определённого барьера. Сверены ранее отобранные 16 операций.",
     "failed_operation": null,
     "observed_error": null,
-    "stop_reason": "Заявленная проверка оставшихся рабочих строк L1 завершена. Непроверенные случаи и источниковые различия записаны.",
+    "stop_reason": "Ограниченный срез завершён. Первичный тематический охват и отдельные профильные проверки открыты.",
     "cause_status": "confirmed",
     "saved_results": [
-      "agent-work/research/runs/2026-11-19-SD-L1-implementation-1795066537187.json",
-      "agent-work/research/requirements/SD-CORE-L1-implementation.json",
-      "agent-work/research/requirements/SD-CORE-L1-implementation.md",
-      "agent-work/research/requirements/SD-CORE-L1-implementation-probe.mjs",
-      "agent-work/research/requirements/SD-CORE.md",
-      "agent-work/research/handoffs/2026-11-19-SD-L1-implementation-1795066537187-strategist.json"
+      "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.md",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation-probe.mjs",
+      "agent-work/research/requirements/DND5-2014-v2-review.md",
+      "agent-work/research/handoffs/2026-11-19-DND5-L1-implementation-1795077125244-strategist.json"
     ],
-    "exact_continuation": "Проверить текущую реализацию 16 сохранённых L1 строк DND5/DMG2014 на свежем SHA с существующими входами и локаторами. Начать с буквального масштаба карты и общего картографического редактора, сверить с работающими профильными критериями. Печатный остаток DMG2014 сохранить до появления нового доступа к первоисточнику.",
+    "exact_continuation": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
     "remaining": [
       {
-        "scope": "Shadowdark input",
-        "detail": "Тематический скрининг ранее выполнен по 332-страничному предоставленному Core ©2023. Название файла v4.6 не подтверждает внутреннюю ревизию; независимая сверка errata и соседних выпусков открыта.",
-        "ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json"
+        "scope": "primary_source",
+        "ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+        "detail": "Полный тематический скрининг 322-страничного экземпляра PHantom 2016 ещё открыт. Сохранены печатные локаторы прежней выписки, версии и точные ограничения доступа. Повтор того же поиска уместен только при новом основании.",
+        "ranges": [
+          "Full chapter1 incl settlements, factions, initial region",
+          "Full chapter2 planar geography applicability",
+          "Ch3 adventure types/encounters and ch4 site-NPC applicability",
+          "Ch5 all environments incl settlements112–115, unusual116–119, traps120–123 and dungeon applicability",
+          "Ch6 campaign tracking and ch7 placed-treasure applicability",
+          "Ch8 exploration242–244/objects246 applicability; ch9 variants",
+          "Appendices A–D/maps310–315/index317–320 EN; map to supplied RU pagination before extracting"
+        ]
       },
       {
-        "scope": "Shadowdark map profile",
-        "detail": "Печатная с. 132 задаёт 2d6 и один слот при d6=1. Уровень угрозы встреч хранить отдельно от проходимости. Частота назначения Danger и safe cadence не заданы."
+        "scope": "product",
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+        "detail": "Открыты точный масштаб и связанная детализация с 60 милями, избирательный обзор, привязки поселения к конкретным ресурсам, слои признаков/видимости, тонкий лёд и отдельные расширенные случаи географии. Отрисовку браузера не проверяли."
       },
       {
-        "scope": "Shadowdark POI policy",
-        "detail": "Печатная с. 133 даёт колонки location и development. Общий или независимый бросок открыты; сами таблицы не разрешают автоматически выбрать рецепт. Связанные документы, услуги и предупреждения остаются узкими проверяемыми пробелами."
-      },
-      {
-        "scope": "Cohort gate",
-        "detail": "DND5 остаётся первым в overall top5, поэтому следующая достижимая задача — испытание уже извлечённых L1 строк на новой версии. Зафиксировать остатки DND5/PF2/Knave/Crows/SD. До выполнения общего условия не открывать create-top10."
+        "scope": "cohort",
+        "detail": "Пять ограниченных проверок не означают принятие всей общей когорты. Точный gate сохраняется, числовой рейтинг, скоринг и очередь не изменяются."
       }
     ],
     "needs_owner_action": false,
@@ -756,6 +761,34 @@
     "result_ref": "agent-work/research/runs/2026-11-19-SD-L1-implementation-1795066537187.json",
     "handoff_ref": "agent-work/research/handoffs/2026-11-19-SD-L1-implementation-1795066537187-strategist.json",
     "full_game_accepted": false,
+    "browser_reverified": false
+  },
+  "previous_next_selected_task_before_DND5_L1_implementation": {
+    "id": "HX-RSR-DND5-2014-RETAINED-L1-EVIDENCE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_after_SD_bounded_implementation",
+    "action": "Проверить текущую реализацию 16 сохранённых L1 строк DND5/DMG2014 на свежем SHA с существующими входами и локаторами. Начать с буквального масштаба карты и общего картографического редактора, сверить с работающими профильными критериями. Печатный остаток DMG2014 сохранить до появления нового доступа к первоисточнику.",
+    "completion_condition": "Записать статус и evidence по отобранным строкам DND5. Сохранить раздельно проверенное, пробел источника и условия выравнивания top5 перед определением свежего create-top10.",
+    "scope_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
+    "full_source_access_still_open": true,
+    "overall_top5_complete": false
+  },
+  "latest_DND5_L1_implementation": {
+    "status": "bounded_DMG2014_L1_implementation_review_completed",
+    "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+    "counts": {
+      "implemented": 2,
+      "partial": 10,
+      "unverified": 3,
+      "not_implemented": 1
+    },
+    "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+    "overview_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.md",
+    "result_ref": "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-implementation-1795077125244-strategist.json",
+    "full_game_accepted": false,
+    "source_complete": false,
     "browser_reverified": false
   }
 }
