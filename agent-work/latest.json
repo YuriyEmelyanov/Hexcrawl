@@ -48,8 +48,8 @@
   "budget_status": "owner_waived_usage_gate",
   "plan_file_shas": null,
   "process_change_status": "dynamic_roles_approved_and_recorded",
-  "schedule_start_at": "2026-11-19T00:00:00+03:00",
-  "schedule_frequency": "every_two_hours",
+  "schedule_start_at": "2026-11-19T19:00:00+03:00",
+  "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
   "current_role": "strategist-manager",
   "next_role": "programmer",
@@ -1723,19 +1723,31 @@
   },
   "schedule_hours": [
     0,
+    1,
     2,
+    3,
     4,
+    5,
     6,
+    7,
     8,
+    9,
     10,
+    11,
     12,
+    13,
     14,
+    15,
     16,
+    17,
     18,
+    19,
     20,
-    22
+    21,
+    22,
+    23
   ],
-  "schedule_decision_ref": "agent-work/decisions/owner-decision-2026-11-19-team-every-two-hours.json",
+  "schedule_decision_ref": "agent-work/decisions/owner-decision-2026-11-19-team-hourly.json",
   "accepted_release_pending": {
     "task_id": "HX-BL-051",
     "stage_id": "ONE-MILE1",
@@ -2255,7 +2267,7 @@
     "superseded_by": "owner-decision-2026-10-31-team-resume-hourly",
     "historical_is_enabled": false
   },
-  "schedule_actual": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+  "schedule_actual": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
   "owner_resume": {
     "decision_ref": "owner-decision-2026-10-31-team-resume-hourly",
     "result_ref": "agent-work/results/2026-10-31-owner-resume-hourly.json",
@@ -2938,16 +2950,34 @@
     "note": "Newest exact-SHA independent review supersedes older R1-pending/changes_requested queue pointers; original negative and developer results retained. Next approved analyst task010 can proceed while separate PR481 release permission remains pending. GitHub self-APPROVE422 prevented formal approval; substantive fresh-agent verdict persisted COMMENT."
   },
   "latest_owner_schedule_update": {
-    "decision_id": "owner-decision-2026-11-02-team-every-two-hours",
-    "recorded_at": "2026-11-02T13:09:55.262Z",
+    "decision_id": "owner-decision-2026-11-19-team-hourly",
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-19-team-hourly.json",
+    "recorded_at": "2026-11-19T15:39:09.810Z",
     "status": "executed_and_verified",
-    "result_ref": "agent-work/results/2026-11-02-owner-team-every-two-hours.json",
+    "result_ref": "agent-work/results/2026-11-19-owner-team-hourly.json",
     "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "frequency": "every_two_hours",
+    "frequency": "every_hour",
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
     "is_enabled": true,
-    "prompt_unchanged": true,
-    "timezone_unchanged": true,
-    "note": "Explicit owner instruction during review changed only existing cadence; supersedes historical hourly/four-hourly schedule fields."
+    "verified_next_run_at": "2026-11-19T19:00:00+03:00",
+    "automation_health": {
+      "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "checked_at": "2026-11-19T15:38:29.406Z",
+        "status": "checked",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      },
+      "end": {
+        "checked_at": "2026-11-19T15:39:09.810Z",
+        "status": "checked",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-19T19:00:00+03:00"
+      },
+      "restoration_performed": false,
+      "errors": []
+    }
   },
   "latest_PR481_release": {
     "run_id": "2026-11-02-developer-release-PR481",
@@ -11103,119 +11133,46 @@
       }
     }
   },
-  "schedule_interval_hours": 2,
-  "schedule_rrule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+  "schedule_interval_hours": 1,
+  "schedule_rrule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
   "latest_schedule_change": {
-    "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
-    "result_ref": "agent-work/results/2026-11-14-manual-agents-resume-hourly.json",
-    "run_id": "2026-11-14-manual-agents-resume-hourly",
-    "recorded_at": "2026-11-13T21:19:18.627Z",
-    "both_interval_hours": 1,
-    "automations": [
-      {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "title": "Команда HexCrawl",
-        "checked_at": "2026-11-13T21:19:17.672Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "default_timezone": "Europe/Moscow",
-        "next_run_time": "2026-11-14T01:00:00+03:00",
-        "prompt_unchanged": true,
-        "environments_unchanged": true
-      },
-      {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "title": "Исследователь HexCrawl",
-        "checked_at": "2026-11-13T21:19:18.627Z",
-        "method": "automations.peek",
-        "status": "checked",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "default_timezone": "Europe/Moscow",
-        "next_run_time": "2026-11-14T00:30:00+03:00",
-        "prompt_unchanged": true,
-        "environments_unchanged": true
-      }
-    ],
+    "decision_id": "owner-decision-2026-11-19-team-hourly",
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-19-team-hourly.json",
+    "recorded_at": "2026-11-19T15:39:09.810Z",
+    "status": "executed_and_verified",
+    "result_ref": "agent-work/results/2026-11-19-owner-team-hourly.json",
+    "automation_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "frequency": "every_hour",
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+    "is_enabled": true,
+    "verified_next_run_at": "2026-11-19T19:00:00+03:00",
     "automation_health": {
       "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "title": "Команда HexCrawl",
-        "checked_at": "2026-11-13T21:17:06.239Z",
-        "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261103T090000\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "timezone": "Europe/Moscow",
-        "next_run_time": "2026-11-14T01:00:00+03:00"
-      },
-      "end": {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "title": "Команда HexCrawl",
-        "checked_at": "2026-11-13T21:19:17.672Z",
-        "method": "automations.peek",
+        "checked_at": "2026-11-19T15:38:29.406Z",
         "status": "checked",
         "is_enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T010000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "default_timezone": "Europe/Moscow",
-        "next_run_time": "2026-11-14T01:00:00+03:00",
-        "prompt_unchanged": true,
-        "environments_unchanged": true
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
       },
-      "restoration": {
-        "performed": false,
-        "reason": "Team already enabled; hourly schedule applied by explicit current owner decision"
+      "end": {
+        "checked_at": "2026-11-19T15:39:09.810Z",
+        "status": "checked",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "next_run_time": "2026-11-19T19:00:00+03:00"
       },
-      "errors": [],
-      "research_agent": {
-        "jawbone_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "start": {
-          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-          "title": "Исследователь HexCrawl",
-          "checked_at": "2026-11-13T21:17:06.242Z",
-          "is_enabled": false,
-          "schedule": "BEGIN:VEVENT\nDTSTART:20261106T025759Z\nRRULE:FREQ=HOURLY;INTERVAL=2;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-          "timezone": "Asia/Shanghai",
-          "next_run_time": "2026-11-14T06:30:00+08:00"
-        },
-        "end": {
-          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-          "title": "Исследователь HexCrawl",
-          "checked_at": "2026-11-13T21:19:18.627Z",
-          "method": "automations.peek",
-          "status": "checked",
-          "is_enabled": true,
-          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261114T003000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-          "default_timezone": "Europe/Moscow",
-          "next_run_time": "2026-11-14T00:30:00+03:00",
-          "prompt_unchanged": true,
-          "environments_unchanged": true
-        },
-        "restoration": {
-          "performed": true,
-          "authority": "Current owner explicitly resumes both agents, superseding research tokenpause"
-        }
-      },
-      "scope": "Actual point-in-time peeks, not a guarantee against later service disable. Both existing tasks updated, prompts and environments unchanged."
-    },
-    "primary_product_routing_unchanged": true,
-    "source_code_unchanged": true
+      "restoration_performed": false,
+      "errors": []
+    }
   },
   "schedule_change_storage_verification": {
-    "data_commit_sha": "391b36348212a669c53c88aa7b9abfa8c84e944f",
+    "data_commit_sha": "142feedc6634d40ad9e1ad9dbce2c77f70ac53d8",
     "latest_written_last": true,
+    "primary_product_routing_preserved": true,
     "verified_files": [
-      "agent-work/decisions/owner-decision-2026-11-14-team-research-resume-hourly.json",
-      "agent-work/results/2026-11-14-manual-agents-resume-hourly.json",
-      "agent-work/research/state.json",
-      "agent-work/research/contract.md",
-      "agent-work/research/README.md",
-      "agent-work/process.md",
-      "agent-work/approvals.json"
-    ],
-    "foreign_claims_and_results_preserved": true,
-    "primary_product_routing_preserved": true
+      "agent-work/decisions/owner-decision-2026-11-19-team-hourly.json",
+      "agent-work/results/2026-11-19-owner-team-hourly.json"
+    ]
   },
   "readiness_state_write": {
     "data_commit_sha": "1683a040c3c6b8d10276483798512bc2a86b1b9c",
@@ -15285,35 +15242,46 @@
   },
   "latest_owner_schedule_decision": {
     "date": "2026-11-19",
-    "owner_quote": "Запуск раз в два часа",
-    "recorded_at": "2026-11-18T22:02:52.384Z",
+    "owner_quote": "перейди на запуск каждый час",
+    "recorded_at": "2026-11-19T15:39:09.810Z",
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "interval_hours": 2,
+    "interval_hours": 1,
     "hours": [
       0,
+      1,
       2,
+      3,
       4,
+      5,
       6,
+      7,
       8,
+      9,
       10,
+      11,
       12,
+      13,
       14,
+      15,
       16,
+      17,
       18,
+      19,
       20,
-      22
+      21,
+      22,
+      23
     ],
     "minute": 0,
     "timezone": "Europe/Moscow",
-    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
     "is_enabled": true,
-    "verified_next_run_at": "2026-11-19T02:00:00+03:00",
-    "supersedes": "agent-work/decisions/owner-decision-2026-11-16-team-every-three-hours.json",
+    "verified_next_run_at": "2026-11-19T19:00:00+03:00",
+    "supersedes": "agent-work/decisions/owner-decision-2026-11-19-team-every-two-hours.json",
     "research_schedule_changed": false,
     "claims_changed": false,
-    "checked_at": "2026-11-18T22:02:52.384Z",
-    "decision_ref": "agent-work/decisions/owner-decision-2026-11-19-team-every-two-hours.json",
-    "result_ref": "agent-work/results/2026-11-19-owner-team-two-hours.json"
+    "decision_ref": "agent-work/decisions/owner-decision-2026-11-19-team-hourly.json",
+    "result_ref": "agent-work/results/2026-11-19-owner-team-hourly.json"
   },
   "latest_owner_base_hex_ui_intake": {
     "task_id": "HX-BL-058",
