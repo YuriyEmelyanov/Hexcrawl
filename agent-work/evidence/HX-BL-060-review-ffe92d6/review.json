@@ -1,0 +1,539 @@
+{
+  "task_id": "HX-BL-060",
+  "pr": 506,
+  "branch": "agent/hx-bl-060-unified-biome-map",
+  "role": "reviewer",
+  "run_id": "2026-11-19T0600-reviewer-HX-BL-060-F4",
+  "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+  "reviewed_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+  "base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "release_base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+  "tree_sha": "68d2d70c6847719398089a1fcc8952b8463daa9a",
+  "accepted_tree_sha": "68d2d70c6847719398089a1fcc8952b8463daa9a",
+  "spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F4.md",
+  "spec_blob_sha": "9e1ba76e4978ed07e7d37fbe17e3277e5dd979d7",
+  "prior_implementation_ref": "agent-work/evidence/HX-BL-060-catalog-build-ffe92d6/implementation.json",
+  "prior_review_ref": "agent-work/evidence/HX-BL-060-review-4561f29/review.json",
+  "status": "accepted_awaiting_owner_publication",
+  "accepted": true,
+  "review_ready": false,
+  "release_ready": true,
+  "next_role": "business-analyst",
+  "next_task_id": "HX-BL-021",
+  "next_step": "Ожидается отдельное разрешение владельца на выпуск PR #506 ffe92d6. Самостоятельный следующий этап в согласованной очереди — бизнес-аналитик актуализирует чистовую спецификацию HX-BL-021 для десяти биомов с ручным выбором.",
+  "publication_gate": {
+    "status": "awaiting_owner_publication",
+    "task_id": "HX-BL-060",
+    "pr": 506,
+    "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+    "tree_sha": "68d2d70c6847719398089a1fcc8952b8463daa9a",
+    "base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "required_action": "explicit_publication_authorization_for_this_exact_package",
+    "next_role": "programmer",
+    "next_step": "После отдельного разрешения владельца опубликовать только PR #506 на ffe92d6. Перед merge сверить head, base, tree и результаты CI, после выпуска проверить сайт и передать score_update_pending."
+  },
+  "remaining_acceptance": [
+    "Получить отдельное разрешение владельца на выпуск точного PR #506 ffe92d6.",
+    "После разрешения проверить точное соответствие пакета, выполнить выпуск и проверить сайт. Передать score_update_pending стратегу."
+  ],
+  "forecast": "Техническая приёмка завершена. Один этап выпуска после согласования точного пакета, затем стадия пересчёта оценки. Следующая независимая готовая работа — чистовая спецификация HX-BL-021.",
+  "approval_status": "awaiting_explicit_owner_publication_permission",
+  "owner_decisions_needed": [
+    "Разрешение владельца на публикацию PR #506 на точном SHA ffe92d6b4c425e6d5c2683c6ac9287611f8734b0."
+  ],
+  "publication_authorized": false,
+  "visible_evidence_ref": "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png",
+  "review_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/score-assessment1.2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-19T0600-reviewer-HX-BL-060-F4-next.json",
+  "claim_ref": "agent-work/claims/2026-11-19T0600-reviewer-HX-BL-060-F4.json",
+  "role_selection_reason": "Review-ready F4 correction at an exact SHA with finished CI and a free task slot.",
+  "started_at": "2026-11-19T03:05:58.440Z",
+  "completed_at": "2026-11-19T03:09:45.858Z",
+  "method": "Read-only independent acceptance on the exact source SHA; rerun production build and isolated negative build, verify source/dist PNG bytes against approved manifest, exact CI checkout/tree, paired PNG/artifact digests and samples, and inspect visual examples.",
+  "independent_review": {
+    "fresh_context": true,
+    "verdict": "Technical acceptance; no remaining blocker. Publication pending exact owner authorization.",
+    "independent_negative_deploy_alias": {
+      "changed_file": "open_plains.png",
+      "operation": "truncate selected source PNG in isolated archive",
+      "command": "npm run deploy",
+      "exit": 1,
+      "before_vite": true,
+      "output_directory_created": false
+    },
+    "artifact_transfer_checks": {
+      "comparison_pngs_byte_identical_to_prior": 64,
+      "browser_pngs_byte_identical_to_prior": 13,
+      "coast_examples_json_byte_identical": true,
+      "whole_browser_zip_byte_identical": false,
+      "limitation": "JPEG screenshot pixels may differ slightly across runs."
+    }
+  },
+  "findings": [
+    {
+      "id": "F4-R03-01",
+      "status": "closed",
+      "requirement": [
+        "R03",
+        "AC01"
+      ],
+      "detail": "Positive exact build verifies 26 approved files. Substituted valid lake PNG under the sea name and missing sea.png each exit 1 before Vite, report exact file and produce no dist.",
+      "diagnostic_output": [
+        "Error: Engraving sea.png: SHA-256 mismatch (expected 407dfa74e8641bb9756607256c3ef34903095d157b940b1ebf41142c02978068, got ca8937952efd6d272427025d12ed5888844caf343582b6be31a5282224435007)",
+        "Error: Cannot read engraving sea.png: ENOENT"
+      ],
+      "source": [
+        "package.json:10–12",
+        "scripts/verify-engraving-catalog.mjs",
+        ".github/workflows/deploy.yml:34"
+      ]
+    },
+    {
+      "id": "F4-R04-01",
+      "status": "closed",
+      "requirement": [
+        "R04",
+        "AC02",
+        "AC05"
+      ],
+      "detail": "Exact Classic return to 6 miles keeps the correct lake blend and the actual exported PNG matches the previously independently accepted visual output."
+    },
+    {
+      "id": "F4-R04-02",
+      "status": "closed",
+      "requirement": [
+        "R04",
+        "AC02",
+        "AC05"
+      ],
+      "detail": "Exact shared-edge probe matched all 150 edges and 15,150 points. Inspected exact-source lake and maritime shores and rotated snapshots.",
+      "evidence": {
+        "edges": 150,
+        "comparisons": 15150,
+        "invalid": 0,
+        "max": 7.958078640513122e-13,
+        "worst": {
+          "d": 0,
+          "p": [
+            15,
+            -9
+          ],
+          "z": [
+            16,
+            -9
+          ],
+          "t": 0.06999999999999995,
+          "l": [
+            134.21308797564757,
+            163.42467462440715,
+            132.24186693168554
+          ],
+          "rr": [
+            134.21308797564677,
+            163.4246746244068,
+            132.241866931686
+          ]
+        }
+      }
+    }
+  ],
+  "positive_evidence": [
+    {
+      "requirements": [
+        "R01",
+        "R02",
+        "R03",
+        "R05",
+        "AC01",
+        "AC02"
+      ],
+      "status": "pass",
+      "detail": "Recomputed all 26 tracked and packaged SHA-256, matched approved PNG manifest and colors, dimensions and alpha bounding boxes. Complete dist of clean build byte-identical to 4561f29 reference.",
+      "evidence": {
+        "approved_assets": 26,
+        "built_files": 183,
+        "build_sha256": "4372a303f0cfce23b07085577686adb6664ca4dd177e50ea67a6474106fa4ffa",
+        "artifact_source_head": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+        "artifact_checkout": "79b949ddb5c3c59f2326d0b954047a96a6630aee",
+        "artifact_checkout_tree": "68d2d70c6847719398089a1fcc8952b8463daa9a",
+        "return_png": "174d96b75252c79060063923834e91cd2935202a6e06ed9d4aea20f2dc5694e6",
+        "classic_case": "pass"
+      }
+    },
+    {
+      "requirements": [
+        "R04",
+        "R06",
+        "R07",
+        "R08",
+        "R09",
+        "AC02",
+        "AC03",
+        "AC04",
+        "AC05"
+      ],
+      "status": "pass",
+      "detail": "Exact browser and comparison artifacts show same screen/PNG topography, scale journey, manual biome, lake/sea, POI, path and rotation behavior. Responsive Russian and English cases, JSON and recovery after failed engraving covered by existing exact CI. Prior targeted shape and sample diagnostics rerun on the same runtime inputs.",
+      "urls": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44433858323/artifacts/14487767352",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44433858323/artifacts/14488546308"
+      ]
+    },
+    {
+      "requirements": [
+        "R10",
+        "AC06"
+      ],
+      "status": "pass_with_measured_cost",
+      "detail": "Paired n=5 first-draw timings, ranges, assets, memory and interactions available. Prior diagnosis distinguishes per-tile raster cost and cold transfer. F4 contains a measured-investigation requirement and provides no numeric ceiling.",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44433858323/artifacts/14488546308"
+    },
+    {
+      "requirements": [
+        "AC07"
+      ],
+      "status": "pass",
+      "detail": "Fresh independent agent and parent reproduced critical results. All 4 exact-tree CI checks passed, evidence and independent score assessment attached. Owner publication permission required separately."
+    }
+  ],
+  "limitations": [
+    "A 416-cell 6-mile saved map is slower to first full drawing by about 169 ms in the exact-run warm median. Each scenario is same-run base/head, not comparable as a speed claim across different runners.",
+    "Cold payload for the 416-cell artwork case is 3,266,247 bytes versus 126,294; the measured 6-mile warm pan/zoom frame medians remained about 16.7 ms.",
+    "R03 guard is on the repository's production, Check and GitHub Pages build entrypoints. An ad-hoc invocation bypassing package scripts is outside the verified deployment path.",
+    "PNG/JSON current fixtures and two map scales are covered. Separate player visibility, separate SVG export format and full cross-system corpus breadth are outside current score evidence."
+  ],
+  "first_drawing": {
+    "source_head": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+    "checkout": "79b949ddb5c3c59f2326d0b954047a96a6630aee",
+    "published_base": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "rows": 36,
+    "performance": [
+      {
+        "scenario": "classic-6",
+        "edition": "before",
+        "firstDrawingMs": {
+          "n": 5,
+          "min": 111.70000000001164,
+          "median": 120.90000000002328,
+          "max": 122.30000000004657
+        },
+        "finePreparationAndDrawingMs": null,
+        "zoomFrameMedianMs": {
+          "n": 5,
+          "min": 16.699999999999932,
+          "median": 16.699999999999932,
+          "max": 16.69999999999999
+        },
+        "coldAssetTransfer": [
+          {
+            "sourceBytes": 45389
+          }
+        ]
+      },
+      {
+        "scenario": "classic-6",
+        "edition": "after",
+        "firstDrawingMs": {
+          "n": 5,
+          "min": 170.5,
+          "median": 180,
+          "max": 186.10000000003492
+        },
+        "finePreparationAndDrawingMs": null,
+        "zoomFrameMedianMs": {
+          "n": 5,
+          "min": 16.649999999999977,
+          "median": 16.699999999999932,
+          "max": 16.69999999999996
+        },
+        "coldAssetTransfer": [
+          {
+            "sourceBytes": 1038279
+          }
+        ]
+      },
+      {
+        "scenario": "classic-1",
+        "edition": "before",
+        "firstDrawingMs": {
+          "n": 5,
+          "min": 110.39999999996508,
+          "median": 122.39999999996508,
+          "max": 138.79999999998836
+        },
+        "finePreparationAndDrawingMs": {
+          "n": 5,
+          "min": 1234.600000000035,
+          "median": 1299,
+          "max": 1427
+        },
+        "zoomFrameMedianMs": {
+          "n": 5,
+          "min": 33.30000000000007,
+          "median": 33.30000000000007,
+          "max": 33.399999999999864
+        },
+        "coldAssetTransfer": [
+          {
+            "sourceBytes": 44777,
+            "fineBytes": 44777
+          }
+        ]
+      },
+      {
+        "scenario": "classic-1",
+        "edition": "after",
+        "firstDrawingMs": {
+          "n": 5,
+          "min": 157.90000000002328,
+          "median": 175.40000000002328,
+          "max": 208.79999999998836
+        },
+        "finePreparationAndDrawingMs": {
+          "n": 5,
+          "min": 1300.5,
+          "median": 1328.8000000000466,
+          "max": 1471.9000000000233
+        },
+        "zoomFrameMedianMs": {
+          "n": 5,
+          "min": 16.65000000000009,
+          "median": 16.700000000000045,
+          "max": 16.700000000000045
+        },
+        "coldAssetTransfer": [
+          {
+            "sourceBytes": 1037667,
+            "fineBytes": 1105082
+          }
+        ]
+      },
+      {
+        "scenario": "lake-6",
+        "edition": "before",
+        "firstDrawingMs": {
+          "n": 5,
+          "min": 226.19999999995343,
+          "median": 234.70000000001164,
+          "max": 243.29999999998836
+        },
+        "finePreparationAndDrawingMs": null,
+        "zoomFrameMedianMs": {
+          "n": 5,
+          "min": 16.649999999999977,
+          "median": 16.699999999999932,
+          "max": 16.699999999999932
+        },
+        "coldAssetTransfer": [
+          {
+            "sourceBytes": 126294
+          }
+        ]
+      },
+      {
+        "scenario": "lake-6",
+        "edition": "after",
+        "firstDrawingMs": {
+          "n": 5,
+          "min": 378.5,
+          "median": 403.29999999998836,
+          "max": 418.9000000000233
+        },
+        "finePreparationAndDrawingMs": null,
+        "zoomFrameMedianMs": {
+          "n": 5,
+          "min": 16.649999999999977,
+          "median": 16.699999999999932,
+          "max": 16.700000000000045
+        },
+        "coldAssetTransfer": [
+          {
+            "sourceBytes": 3266247
+          }
+        ]
+      }
+    ],
+    "source_manifest": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44433858323/artifacts/14488546308",
+    "n_per_edition": 5,
+    "summary_416_median_ms": {
+      "before": 234.7,
+      "after": 403.3
+    },
+    "cold_416_bytes": {
+      "before": 126294,
+      "after": 3266247
+    }
+  },
+  "checks": {
+    "status": "full_ci_green",
+    "run_id": 44433858323,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44433858323",
+    "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+    "checkout_sha": "79b949ddb5c3c59f2326d0b954047a96a6630aee",
+    "tree_sha": "68d2d70c6847719398089a1fcc8952b8463daa9a",
+    "jobs": [
+      {
+        "id": 135257688762,
+        "name": "world-random",
+        "conclusion": "success"
+      },
+      {
+        "id": 135257689087,
+        "name": "engraved-map-comparison",
+        "conclusion": "success"
+      },
+      {
+        "id": 135257689116,
+        "name": "check",
+        "conclusion": "success"
+      },
+      {
+        "id": 135257689211,
+        "name": "browser",
+        "conclusion": "success"
+      }
+    ],
+    "node": {
+      "executed": 429,
+      "passed": 429,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "runner_suites": 10,
+      "all_passed": true,
+      "round_trip_png_sha256": "174d96b75252c79060063923834e91cd2935202a6e06ed9d4aea20f2dc5694e6"
+    },
+    "rng": {
+      "all_passed": true
+    },
+    "artifacts": [
+      {
+        "id": 14488546308,
+        "name": "HX-BL-060-comparison",
+        "digest": "sha256:fc40d18aa04d9fcd2ed3badb104e001dc92d12f3f7576c5e89f95a96eaccc8c1",
+        "source_head": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0"
+      },
+      {
+        "id": 14487767352,
+        "name": "ONE-MILE1-UI",
+        "digest": "sha256:f8d306413b1abcb76497ae1e305834d197de3a65ca41cbe836d3ea86fbdb8099",
+        "source_head": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0"
+      }
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+    "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "read-only independent review",
+    "scenario": "Normal build verifies all 26 files and isolated changed/missing-input production builds fail before Vite.",
+    "reuse_or_new_reason": "The normal Check runs the build guard and the existing browser cases; use isolated negative diagnostics as acceptance evidence without adding a redundant permanent runner case.",
+    "count_source": "Same immutable review SHA on both sides for reviewer work; candidate delta is separately attached.",
+    "candidate_test_change_summary": {
+      "base_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+      "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+      "added": 0,
+      "removed": 0,
+      "modified": 0,
+      "suite": "unchanged existing runner suites",
+      "scenario": "Check build validation on valid, replaced and missing PNGs in isolated production builds.",
+      "reuse_or_new_reason": "The verifier runs in the existing production build/check path; the substitution and missing-file probes were temporary and do not add runner cases.",
+      "count_source": "Exact two-file Git diff, no test files or runner cases changed.",
+      "browser": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "node": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      },
+      "browser_rng": {
+        "added": 0,
+        "removed": 0,
+        "modified": 0
+      }
+    },
+    "candidate_test_governance": "No persisted test delta in the reviewed last change; existing CI invokes the same production build and verifies same browser cases. Isolated valid-PNG replacement/truncation and missing-file diagnostics directly verify the required release failure path."
+  },
+  "score_assessment": {
+    "task_id": "HX-BL-060",
+    "pr": 506,
+    "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+    "tree_sha": "68d2d70c6847719398089a1fcc8952b8463daa9a",
+    "release_base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "model_version": "1.2",
+    "model_ref": "agent-work/strategy/score-model.md",
+    "score_baseline_ref": "agent-work/score/current-score.json",
+    "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+    "score_baseline_blob_sha": "c93c6e841052e80d50cc1f9eb6963b4739d045f5",
+    "assessed_at": "2026-11-19T03:09:45.858Z",
+    "status": "insufficient_evidence",
+    "awarded_points": 0,
+    "delta_points": null,
+    "double_count": false,
+    "criteria": [
+      {
+        "criterion_id": "S04-C03",
+        "weight": 20,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Read-only independent acceptance on the exact source SHA; rerun production build and isolated negative build, verify source/dist PNG bytes against approved manifest, exact CI checkout/tree, paired PNG/artifact digests and samples, and inspect visual examples.",
+        "quality": "Visually consistent master map and bounded render/scale samples. Catalog build fails closed and integrity verified.",
+        "breadth": "Both map scales and bounded Classic fixtures plus regression suites; no top 5/10/20 breadth certification.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json",
+          "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png",
+          "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44433858323/artifacts/14487767352"
+        ],
+        "limitations": [
+          "Separate player map, fog, permissions and complete configurable layer breadth not verified.",
+          "F4 removes alternate presentation switches by owner direction."
+        ]
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "after": {
+          "grade": null,
+          "points": null,
+          "status": "unverified"
+        },
+        "delta": null,
+        "status": "insufficient_evidence",
+        "method": "Read-only independent acceptance on the exact source SHA; rerun production build and isolated negative build, verify source/dist PNG bytes against approved manifest, exact CI checkout/tree, paired PNG/artifact digests and samples, and inspect visual examples.",
+        "quality": "Actual exact-head PNG equality in linked scenarios, recovery after failed asset, and bounded JSON round trips.",
+        "breadth": "Representative accepted fixtures, not the whole map/format/role corpus.",
+        "evidence": [
+          "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json",
+          "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png",
+          "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44433858323/artifacts/14487767352"
+        ],
+        "limitations": [
+          "Independent role-specific export and complete SVG/JSON corpus unverified."
+        ]
+      }
+    ]
+  }
+}

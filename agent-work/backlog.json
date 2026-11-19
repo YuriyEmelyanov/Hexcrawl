@@ -39,14 +39,14 @@
       "criterion_id": "S07-C01",
       "implementation_authorized": false,
       "release_authorized": false,
-      "execution_state": "ожидает завершения и независимой приёмки HX-BL-060 по подтверждённому владельцем порядку60→21",
+      "execution_state": "HX-BL-060 независимо принята. Готов следующий согласованный этап бизнес-аналитика для десяти биомов.",
       "next_role": "business-analyst",
-      "next_step": "После завершённой и независимо принятой HX-BL-060 актуализировать чистовую спецификацию021 и выполнить десять биомов с ручным выбором в новом едином рендерере. Дополнительное разрешение на возобновление не требуется; прежние ответы интервью сохраняются. Выпуск — отдельно.",
+      "next_step": "Актуализировать чистовую спецификацию десяти биомов по закрытому интервью и текущим выбранным PNG. Привязать к принятому рендереру HX-BL-060 и сохранить ручной выбор.",
       "draft_spec_ref": "agent-work/specs/HX-BL-021-new-biomes-D1.md",
       "spec_ref": null,
       "acceptance_ref": null,
       "published_ref": null,
-      "updated_at": "2026-11-18T10:44:51.514Z",
+      "updated_at": "2026-11-19T03:09:45.858Z",
       "handoff_ref": "agent-work/handoffs/2026-11-16-manual-interviewer-biomes-Q02-closure-1794807826291-analyst.json",
       "draft_spec_version": "D1",
       "interview_status": "interview_completed",
@@ -121,7 +121,8 @@
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
         "publication_authorized": false
       },
-      "snow_biomes_scope_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-021-snow-biomes.json"
+      "snow_biomes_scope_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-021-snow-biomes.json",
+      "rendering_dependency_acceptance_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json"
     },
     {
       "task_id": "HX-BL-055",
@@ -873,7 +874,7 @@
     {
       "task_id": "HX-BL-060",
       "title": "Единый вид карты: цвет биома + PNG-гравюра; удалить режимы «Эмоджи» и «Цвет»",
-      "status": "спецификация",
+      "status": "разработана",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json"
@@ -882,9 +883,9 @@
       "approved_at": "2026-11-17T11:24:24.659Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "Проверка 26 утверждённых гравюр обязательна перед штатной сборкой. Оба негативных случая подтверждены, полный CI зелёный. Передано на независимую приёмку.",
-      "next_role": "reviewer",
-      "next_step": "Независимо принять точный SHA ffe92d6. Воспроизвести отказ сборки при подменённой и отсутствующей гравюре, сверить успешный пакет и актуализировать score_assessment 1.2.",
+      "execution_state": "Независимая приёмка точного SHA закрыта. Ожидается отдельное разрешение владельца на публикацию PR #506.",
+      "next_role": "programmer",
+      "next_step": "После отдельного разрешения владельца опубликовать только PR #506 на ffe92d6. Перед merge сверить head, base, tree и результаты CI, после выпуска проверить сайт и передать score_update_pending.",
       "requirements": [
         "Оставить одно представление биомов: согласованный цвет + прозрачный PNG + смещённый межбиомный градиент160% со сглаженными углами. Удалить режимы биомов Эмоджи/Цвет и переключатель трёх режимов из RU/EN интерфейса.",
         "Заменить старые рисунки всех существующих биомов, включая озеро/море, выбранными гравюрами; новые биомы добавляются в HX-BL-021 через тот же реестр. Отображать POI единственным видом со штатными значками. Убрать выбор вида POI.",
@@ -915,7 +916,7 @@
       "relationship_note": "Владелец подтвердил сначала060, затем021.060 заменяет отображение всех существующих биомов; после её завершения и независимой приёмки021 добавляет биомы с ручным выбором в тот же новый вид.060 не зависит от021.",
       "draft_spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-D2.md",
       "spec_ref": "agent-work/specs/HX-BL-060-unified-biome-map-F4.md",
-      "acceptance_ref": null,
+      "acceptance_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json",
       "published_ref": null,
       "ready_for_development": true,
       "interview_status": "interview_completed",
@@ -947,7 +948,7 @@
         "remove_poi_presentation_control": true,
         "latest_ui_refinement_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-060-smooth-color-junction.json"
       },
-      "updated_at": "2026-11-19T01:14:10.452Z",
+      "updated_at": "2026-11-19T03:09:45.858Z",
       "precedes_task_ids": [
         "HX-BL-021"
       ],
@@ -961,7 +962,7 @@
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
         "publication_authorized": false
       },
-      "next_handoff_ref": "agent-work/handoffs/2026-11-19T0400-programmer-HX-BL-060-F4-next.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-19T0600-reviewer-HX-BL-060-F4-next.json",
       "draft_spec_version": "D2",
       "ui_preview_ref": "agent-work/previews/HX-BL-060-F4/README.md",
       "ui_preview_version": "F4",
@@ -978,12 +979,23 @@
       "latest_owner_refinement_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-060-smooth-water-boundaries.json",
       "implementation_checkpoint": {
         "stage": "fail_closed_engraving_catalog",
-        "status": "review_ready",
+        "status": "accepted_awaiting_owner_publication",
         "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
         "pr": 506,
-        "next_role": "reviewer",
+        "next_role": "programmer",
         "evidence_ref": "agent-work/evidence/HX-BL-060-catalog-build-ffe92d6/implementation.json",
-        "visible_evidence_ref": "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png"
+        "visible_evidence_ref": "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png",
+        "review_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json",
+        "score_assessment_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/score-assessment1.2.json"
+      },
+      "release_package": {
+        "pr": 506,
+        "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
+        "tree_sha": "68d2d70c6847719398089a1fcc8952b8463daa9a",
+        "base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+        "review_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json",
+        "score_assessment_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/score-assessment1.2.json",
+        "status": "awaiting_owner_publication"
       }
     }
   ],
