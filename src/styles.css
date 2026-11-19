@@ -139,7 +139,7 @@ svg { display:block; border:0; background:#0c1423; border-radius:0; transform-or
 .biome-display-toggle, .poi-display-toggle, .hex-coordinate-toggle { gap:.4rem; padding:.2rem .75rem; font-weight:800; }
 .biome-display-toggle, .poi-display-toggle { flex-direction:column; gap:.2rem; padding:.4rem .5rem; font-size:.875rem; line-height:1.2; }
 .display-toggle__label { color:#aebbd4; font-weight:500; }
-.hex-coordinate-toggle { gap:.3rem; padding:.2rem .35rem; }
+.hex-coordinate-toggle { gap:.3rem; padding:.2rem .35rem; white-space:nowrap; }
 .hex-coordinate-toggle.is-active { border-color:#617187; color:#eef4ff; box-shadow:0 0 0 1px rgba(97,113,135,.45), 0 10px 30px rgba(0,0,0,.25); }
 .rotate-map-button__icon { width:100%; height:100%; min-width:0; min-height:0; border:0; background:transparent; border-radius:0; }
 .rotate-map-button__hex { fill:#365792; stroke:#8fb4ef; stroke-width:2; }
@@ -385,10 +385,13 @@ button:disabled,select:disabled { opacity:.55; cursor:wait; }
 
 .road-crossing-control { display:flex; align-items:center; flex-wrap:wrap; gap:8px; max-width:100%; }
 
-.fine-step {grid-column:1/-1;display:flex;flex-direction:column;gap:4px;flex-basis:100%;width:100%;min-width:0}.fine-step select{width:100%;min-height:44px}
+.fine-step { grid-column:1/-1; display:flex; align-items:center; gap:.5rem; width:fit-content; max-width:100%; white-space:nowrap; padding:0 .5rem; border:1px solid rgba(42,59,92,.9); border-radius:10px; background:rgba(20,31,50,.92); }
+.fine-step select { flex:0 1 auto; min-height:40px; }
 [data-fine-editor]{display:flex;flex-direction:column;gap:10px;min-width:0}[data-fine-editor] label{display:flex;flex-direction:column;gap:4px}[data-fine-editor] input,[data-fine-editor] select,[data-fine-editor] textarea{box-sizing:border-box;width:100%;max-width:100%;min-height:44px}[data-fine-panel] p{overflow-wrap:anywhere}.fine-actions{display:flex;gap:8px;flex-wrap:wrap}.fine-actions button,[data-fine-exit] button,[data-fine-preview] button{min-height:44px}
 [data-fine-key]:focus{outline:none}[data-fine-key]:focus>polygon:first-child{stroke:#7dd3fc;stroke-width:1px;vector-effect:non-scaling-stroke}
 
 [data-fine-panel]{min-width:0;overflow-wrap:anywhere}[data-fine-panel] .direct-mode{min-width:44px;min-height:44px}
 
 .fine-step select,[data-fine-editor] input,[data-fine-editor] select,[data-fine-editor] textarea{min-width:0;background:#0c1423;color:#eef4ff;border:1px solid #375386;border-radius:8px;padding:.45rem .5rem;font:inherit}[data-fine-editor] textarea{resize:vertical}
+
+.fine-step select { border:0; background:transparent; }

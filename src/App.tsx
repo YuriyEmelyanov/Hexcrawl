@@ -1,7 +1,7 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
 import {OneMileArtwork} from './OneMileArtwork';
-import {RefinedGeographyArtwork,RefinedLakeWater} from './RefinedGeographyArtwork';
+import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {OneMilePanel,type FineDraft} from './OneMilePanel';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIntersections,worldToDetailCell,type DetailCell} from './detailGrid';
@@ -34,13 +34,14 @@ import {prepareRoadEdit, type RoadEdit} from './manualRoads';
 import { type RandomStreams, type GenerationState, fallbackRandomStreams, poiRandomStreams, createGenerationState, cloneGenerationState, draw, toponymSeedFor, newWorldSeed, isUint32 } from './worldRandom';
 import { validateSaveStructure, SaveValidationError, assertGeneratedIds } from './saveValidation';
 import { installViewportRasterCache } from './rendering/viewportRasterCache';
-import {assignWoodlandStyle,chooseWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
-import {buildNaturalLakes,createLakeGeometryCache} from './rendering/lakeGeometry';
-import {ForestCanopy,ForestWaterEdge} from './rendering/ForestCanopy';
+import {assignWoodlandStyle,type WoodlandStyle} from './modes/woodlandStyle';
+import {buildNaturalLakes} from './rendering/lakeGeometry';
+import { Engraving, EngravingLoading } from './rendering/EngravedTerrain';
+import { engravingFor, engravingUrl, type TerrainKind } from './rendering/engravingAssets';
+import { terrainTextures } from './rendering/terrainBlend';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 import {forestFamily} from './rendering/forestStyle';
-import { BIOME_GROUND_COLORS, WATER_PALETTE, terrainAsset } from './rendering/terrainStyle';
-import { LakeWater } from './rendering/LakeWater';
+import { WATER_PALETTE } from './rendering/terrainStyle';
 import { validateKingdomLayers } from './modes/persistence';
 import { findKingdomOrigin, kingdomHexes, kingdomKeys, connectionPath, distance, type Kingdom, type GenerationMode } from './modes/kingdoms';
 import { modeRegionSize } from './modes/regionSize';
@@ -541,32 +542,7 @@ const HEXCRAWL_SAVE_SCHEMA = 'hexcrawl-map';
 const HEXCRAWL_SAVE_VERSION = 10;
 const PNG_EXPORT_SCALE = 2;
 const EXPORT_FILE_PREFIX = 'hexcrawl-map';
-const BIOME_TILE_HREFS: Partial<Record<BiomeId, string>> = {
-  open_plains: '/Open_plains.png',
-  plain_deciduous_forest: '/Lowland_deciduous_forest.png',
-  plain_coniferous_forest: '/Lowland_coniferous_forest.png',
-  plain_mixed_forest: '/Lowland_mixed_forest.png',
-  deciduous_forested_hills: '/Deciduous_forested_hills.png',
-  mixed_forested_hills: '/Mixed_forested_hills.png',
-  coniferous_forested_hills: '/Coniferous_forested_hills.png',
-  open_hills: '/Open_hills.png',
-  coniferous_mountain_forest: '/Coniferous_mountain_forest.png',
-  mixed_mountain_forest: '/Mixed_mountain_forest.png',
-  deciduous_mountain_forest: '/Deciduous_mountain_forest.png',
-  mountains: '/Mountains.png',
-  swamp_forest: '/Swamp_forest.png',
-  swamp: '/Swamp.png',
-  hilly_woodland: '/Hilly_woodland.png',
-  mountain_woodland: '/Mountain_woodland.png',
-  deciduous_woodland: '/Deciduous_woodland.png',
-  mixed_woodland: '/Mixed_woodland.png',
-  coniferous_woodland: '/Coniferous%20woodland.png',
-  semi_desert: '/Semi-desert.png',
-  dead_forest: '/dead_forest_heavy.png',
-  dead_woodland: '/dead_forest_wetlands.png',
-  dead_forested_hills: '/dead_forest_hills.png',
-  dead_mountain_forest: '/dead_forest_mountain.png'
-};
+
 const SVG_EXPORT_STYLES = `
   svg { --water-color: #3ea2ff; background: #0c1423; }
   .hex { stroke:#617187; stroke-width:1; }
@@ -640,10 +616,6 @@ function getBiomeLabel(biomeId: BiomeId, language: Language): string {
   return language === 'en' ? BIOME_LABELS_EN[biomeId] : BIOMES[biomeId].label;
 }
 
-function getBiomeTileHref(biomeId?: BiomeId): string | undefined {
-  return biomeId ? BIOME_TILE_HREFS[biomeId] : undefined;
-}
-
 function getPoiSvgHref(kind?: CentralPoiKind | PoiKind | WaterPoiKind, water = false): string {
   if (kind && kind in MYTHIC_POI) kind = MYTHIC_POI[kind as MythicPoi].icon as PoiKind;
   return kind ? `/poi/v2/${water ? 'water' : 'land'}/${kind}.svg` : '/poi/v2/unknown.svg';
@@ -680,8 +652,6 @@ const BIOMES: Record<BiomeId, Biome> = {
   dead_mountain_forest: { id: 'dead_mountain_forest', label: 'Мёртвый горный лес', color: '#828282', primaryEmoji: '⛰', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 3 }
 };
 // Compile-time coverage of every biome in the drawing palette.
-const GROUND_COLORS: Record<BiomeId, string> = BIOME_GROUND_COLORS;
-const GROUND_WATER_COLOR = WATER_PALETTE.sea;
 
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
@@ -1684,9 +1654,10 @@ function getTimestampForFilename(date = new Date()): string {
   return date.toISOString().replace(/[:.]/g, '-');
 }
 
-async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> {
+async function createExportSvgClone(svg: SVGSVGElement, includeScreenCandidates = false): Promise<SVGSVGElement> {
   const clone = svg.cloneNode(true) as SVGSVGElement;
-  clone.querySelectorAll('[data-editor-only]').forEach(node => node.remove());
+  clone.querySelectorAll(includeScreenCandidates ? '[data-editor-only]:not([data-editor-only="candidate"])' : '[data-editor-only]')
+    .forEach(node => node.remove());
   const viewBox = clone.viewBox.baseVal;
   clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   clone.setAttribute('width', String(viewBox.width));
@@ -1708,14 +1679,50 @@ async function createExportSvgClone(svg: SVGSVGElement): Promise<SVGSVGElement> 
   background.setAttribute('fill', '#0c1423');
   clone.insertBefore(background, style.nextSibling);
 
+  shareExportEngravings(clone);
   await inlineExportImageHrefs(clone);
 
   return clone;
 }
 
+// The fine grid repeats full-size source PNGs thousands of times. Embed each
+// distinct engraving once and preserve its original position and transform.
+function shareExportEngravings(svg: SVGSVGElement): void {
+  const engravings = [...svg.querySelectorAll<SVGImageElement>('image.terrain-engraving')];
+  if (!engravings.length) return;
+  const namespace = 'http://www.w3.org/2000/svg';
+  const defs = document.createElementNS(namespace, 'defs');
+  svg.prepend(defs);
+  const references = new Map<string,string>();
+  for (const image of engravings) {
+    const href = image.getAttribute('href');
+    if (!href) continue;
+    let reference = references.get(href);
+    if (!reference) {
+      reference = `export-engraving-${references.size}`;
+      references.set(href,reference);
+      const source = document.createElementNS(namespace,'image');
+      source.setAttribute('id',reference);
+      source.setAttribute('href',href);
+      source.setAttribute('width','1');
+      source.setAttribute('height','1');
+      source.setAttribute('preserveAspectRatio','none');
+      defs.append(source);
+    }
+    const use = document.createElementNS(namespace,'use');
+    const x = image.getAttribute('x'), y = image.getAttribute('y');
+    const width = image.getAttribute('width'), height = image.getAttribute('height');
+    const placement = `translate(${x} ${y}) scale(${width} ${height})`;
+    const rotation = image.getAttribute('transform');
+    use.setAttribute('transform',rotation ? `${rotation} ${placement}` : placement);
+    use.setAttribute('href',`#${reference}`);
+    image.replaceWith(use);
+  }
+}
+
 type PngExportFailure = 'read-image' | 'load-image' | 'prepare-svg' | 'canvas' | 'create-png';
 class PngExportError extends Error {
-  constructor(readonly code: PngExportFailure) { super(`PNG export: ${code}`); }
+  constructor(readonly code: PngExportFailure, readonly asset?: string) { super(`PNG export: ${code}`); }
 }
 function pngExportErrorText(error: unknown, language: Language): string {
   const messages: Record<PngExportFailure, [string, string]> = {
@@ -1725,7 +1732,9 @@ function pngExportErrorText(error: unknown, language: Language): string {
     canvas: ['Canvas 2D недоступен в этом браузере.', 'Canvas 2D is unavailable in this browser.'],
     'create-png': ['Не удалось создать PNG-файл.', 'Could not create the PNG file.']
   };
-  return error instanceof PngExportError ? messages[error.code][language === 'ru' ? 0 : 1] : UI_TEXT[language].pngExportError;
+  if (!(error instanceof PngExportError)) return UI_TEXT[language].pngExportError;
+  const message = messages[error.code][language === 'ru' ? 0 : 1];
+  return error.asset ? `${message} ${error.asset}. ${language === 'ru' ? 'Повторите выгрузку PNG.' : 'Retry the PNG export.'}` : message;
 }
 
 function blobToDataUrl(blob: Blob): Promise<string> {
@@ -1749,8 +1758,15 @@ async function inlineExportImageHrefs(svg: SVGSVGElement): Promise<void> {
     let pendingDataUrl = cache.get(absoluteHref);
     if (!pendingDataUrl) {
       pendingDataUrl = fetch(absoluteHref).then(async (response) => {
-        if (!response.ok) throw new PngExportError('load-image');
-        return blobToDataUrl(await response.blob());
+        if (!response.ok) throw new Error('Image request failed');
+        const blob = await response.blob();
+        if (href.startsWith('/terrain/engravings/')) {
+          const decoded = await createImageBitmap(blob);
+          decoded.close();
+        }
+        return blobToDataUrl(blob);
+      }).catch(() => {
+        throw new PngExportError('load-image',new URL(absoluteHref).pathname.split('/').pop());
       });
       cache.set(absoluteHref, pendingDataUrl);
     }
@@ -12009,6 +12025,9 @@ export function App() {
   const restoreGeneration = (state: GenerationState) => { generationRef.current = cloneGenerationState(state); setSeedInput(String(state.masterSeed)); setSeedError(false); };
 
   const mapSvgRef = useRef<SVGSVGElement | null>(null);
+  const [engravingAttempts, setEngravingAttempts] = useState<ReadonlyMap<TerrainKind, number>>(() => new Map());
+  const [visibleEngravingFailures, setVisibleEngravingFailures] = useState<TerrainKind[]>([]);
+  const engravingChecks = useRef(new Map<TerrainKind, {href:string; loaded:Promise<boolean>}>());
   const selectedHexOverlayRef = useRef<SVGSVGElement | null>(null);
   const mapViewportRef = useRef<HTMLDivElement | null>(null);
   // Native wheel/touch listeners are installed once; consult the latest editor closure.
@@ -14914,14 +14933,7 @@ export function App() {
   const selectedCandidateBoundaryDebug = selectedRegion ? candidateBoundaryDebugByRegion.get(selectedRegion.id) : undefined;
   const [isMobileLayout, setIsMobileLayout] = useState(() => (typeof window === 'undefined' ? false : window.matchMedia(MOBILE_LAYOUT_QUERY).matches));
   const [isMapRotated, setIsMapRotated] = useState(false);
-  const [biomeDisplayMode, setBiomeDisplayMode] = useState<'tiles' | 'emoji' | 'color'>('tiles');
-  const useBiomeTiles = biomeDisplayMode === 'tiles';
-  const useBiomeColor = biomeDisplayMode === 'color';
   const renderDetails = !kingdomJob && detailedRenderReady;
-  const renderBiomeColor = useBiomeColor && renderDetails;
-  const colorModeLabel = language === 'ru' ? 'Цвет' : 'Color';
-  const biomeModeLabel = useBiomeTiles ? t.tilesMode : useBiomeColor ? colorModeLabel : t.emojiMode;
-  const [usePoiSvg, setUsePoiSvg] = useState(true);
   const [showHexCoordinates, setShowHexCoordinates] = useState(false);
   const [mapToolbarHeight, setMapToolbarHeight] = useState(0);
   const [isSidePanelCollapsed, setIsSidePanelCollapsed] = useState(false);
@@ -14933,37 +14945,22 @@ export function App() {
   const mapCardStyle = { '--map-toolbar-height': `${mapToolbarHeight}px` } as CSSProperties;
   const sidePanelToggleLabel = isSidePanelCollapsed ? t.showPanel : t.hidePanel;
   const headerLinksToggleLabel = isHeaderLinksCollapsed ? t.showHeaderLinks : t.hideHeaderLinks;
-  const biomeDisplayToggleLabel = `${t.hexesDisplay}: ${biomeModeLabel}`;
-  const biomeDisplayToggleTitle = useBiomeTiles ? t.showEmojiTitle : useBiomeColor ? t.showTilesTitle : (language === 'ru' ? 'Показывать гексы цветом' : 'Show hexes as colors');
-  const colorLandHexes = useMemo(() => {
-    if (!renderBiomeColor) return [];
+  const coarseTerrain = useMemo(() => {
     const regionBiomes = new Map(regions.map(region => [region.id, region.biomeId]));
-    return positionedHexes.hexes
-      .filter(hex => hex.kind === 'region')
-      .map(hex => ({
-        key: hex.key,
-        points: hexPoints(hex.x, hex.y, HEX_SIZE),
-        color: GROUND_COLORS[biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID]
-      }));
-  }, [renderBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
-  const lakeCells = useMemo(() => positionedHexes.hexes.filter(hex => hexTerrainByKey.get(hex.key)?.terrainOverride === 'lake').map(hex=>({...hex,lakeId:hexTerrainByKey.get(hex.key)?.lakeId})), [positionedHexes, hexTerrainByKey]);
-  const forestCells = useMemo(() => {
-    if (!renderBiomeColor) return [];
-    const biomes = new Map(regions.map(region => [region.id, region.biomeId]));
-    const candidates = new Set(positionedHexes.hexes.filter(hex=>hex.kind==='candidate').map(hex=>hex.key));
-    const openLand = new Set(positionedHexes.hexes.filter(hex=>hex.kind==='region'&&!hexTerrainByKey.get(hex.key)?.terrainOverride&&!forestFamily(biomeOverrideByHexKey.get(hex.key)??biomes.get(hex.regionId??-1)??FALLBACK_BIOME_ID)).map(hex=>hex.key));
-    const styles = new Map(regions.filter(r=>r.biomeId.includes('woodland')).map(r=>[r.id,chooseWoodlandStyle(r,regions.slice(0,regions.indexOf(r)),biomeOverrideByHexKey)]));
-    return positionedHexes.hexes.filter(hex => hex.kind === 'region' && hexTerrainByKey.get(hex.key)?.terrainOverride !== 'sea')
-      .map(hex => ({...hex, lake:hexTerrainByKey.get(hex.key)?.terrainOverride==='lake', openSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>openLand.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), straightSides:[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].flatMap(([q,r],side)=>candidates.has(`${hex.q+q},${hex.r+r}`)?[side]:[]), woodlandStyle:styles.get(hex.regionId ?? -1), biome: biomeOverrideByHexKey.get(hex.key) ?? biomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID}))
-      .filter(hex => forestFamily(hex.biome));
-  }, [renderBiomeColor, positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
-  const lakeGeometryCache = useRef(createLakeGeometryCache());
-  const lakeShapes = useMemo(()=>renderBiomeColor||fineDisplay?.viewStep===1 ? buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,riverSegments,lakeGeometryCache.current) : [],[renderBiomeColor,fineDisplay?.viewStep,lakeCells,toponymSeed,riverSegments]);
-  const fineRiverSegments=useMemo(()=>riverSegments.map(segment=>({...segment,width:fineRiverStrokeWidth(segment.fullness)})),[riverSegments]);
-  const fineLakeGeometryCache=useRef(createLakeGeometryCache()),fineLakeActive=!!fineDisplay||!!geometryPreview;
-  const fineLakeShapes=useMemo(()=>fineLakeActive?buildNaturalLakes(lakeCells,HEX_SIZE,toponymSeed,fineRiverSegments,fineLakeGeometryCache.current):[],[fineLakeActive,lakeCells,toponymSeed,fineRiverSegments]);
-  const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;
-  const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;
+    return new Map(positionedHexes.hexes.filter(hex => hex.kind !== 'candidate').map(hex => {
+      const terrain = hexTerrainByKey.get(hex.key)?.terrainOverride;
+      const id: TerrainKind = hex.kind === 'sea' || terrain === 'sea' ? 'sea' : terrain === 'lake' ? 'lake' :
+        biomeOverrideByHexKey.get(hex.key) ?? regionBiomes.get(hex.regionId ?? -1) ?? FALLBACK_BIOME_ID;
+      return [hex.key, id];
+    }));
+  }, [positionedHexes, regions, hexTerrainByKey, biomeOverrideByHexKey]);
+  const fineActive = !!busyFineView || fineDisplay?.viewStep === 1;
+  const coarseTextures = useMemo(() => !renderDetails || fineActive ? new Map<string, string>() : terrainTextures(
+    positionedHexes.hexes.flatMap(hex => {
+      const id = coarseTerrain.get(hex.key);
+      return id ? [{q:hex.q, r:hex.r, color:engravingFor(id)!.color}] : [];
+    }),
+  ), [renderDetails, fineActive, positionedHexes, coarseTerrain]);
 
   useEffect(() => {
     headerLinksAutoCollapseTimerRef.current = window.setTimeout(() => {
@@ -16319,12 +16316,7 @@ export function App() {
       <button type="button" onClick={()=>setConfirmRoadRemoval(null)}>{language==='ru'?'Отмена':'Cancel'}</button>
     </div>}
   </div>:null;
-  const fineActive=!!busyFineView||fineDisplay?.viewStep===1;
   const fineCells=useMemo(()=>fineDisplay?projectOneMile(oneMileSources(captureMap()),fineDisplay.grid.origin):[],[fineDisplay?.grid.origin,regions,hexTerrainByKey,biomeOverrideByHexKey]);
-  // Lake shores/islands are the accepted native water artwork over ground,
-  // not a second fine water model. Render its underlying biome per fine cell
-  // so a water-coloured hex cannot paint over an island/shore cutout.
-  const fineLakeGround=useMemo(()=>fineDisplay?new Map(projectOneMile(regions.flatMap(region=>region.hexes.filter(cell=>hexTerrainByKey.get(hexKey(cell))?.terrainOverride==='lake').map(cell=>({cell,landBiomeId:biomeOverrideByHexKey.get(hexKey(cell))??region.biomeId}))),fineDisplay.grid.origin).map(row=>[hexKey(row.cell),row.landBiomeId])):new Map<string,string|undefined>(),[fineDisplay?.grid.origin,regions,hexTerrainByKey,biomeOverrideByHexKey]);
   const fineCandidates=useMemo(()=>fineDisplay?oneMileCandidates(fineCells,candidateHexes,fineDisplay.grid.origin):[],[fineCells,candidateHexes,fineDisplay?.grid.origin]);
   const fineReadCell=fineDraft?.target??fineHover??fineDisplay?.selectedCell??null;
   const fineRow=fineReadCell?fineCells.find(row=>isSameHex(row.cell,fineReadCell)):undefined;
@@ -16339,7 +16331,7 @@ export function App() {
     const named=nameTargets.find(t=>t.poiLocator===alias||t.key===alias);
     const typeLabel=waterKind?getWaterPoiLabel(waterKind,language):region?central?getCentralPoiLabel(region,language):getPoiLabelForHex(region,hex,language):t.poi;
     const label=finePoiLabel(typeLabel,named?.[language]);
-    return {label,image:usePoiSvg?getPoiSvgHref(kind,water):undefined,emoji:waterKind?getWaterPoiEmoji(waterKind):region?central?getCentralPoiEmoji(region):getPoiEmojiForHex(region,hex):'📍'};
+    return {label,image:getPoiSvgHref(kind,water)};
   };
   const focusFine=()=>{const key=(automaticFineSceneRef.current??physicalGridRef.current)?.selectedCell;setTimeout(()=>{if(key)mapSvgRef.current?.querySelector<SVGGElement>(`[data-fine-key="${hexKey(key)}"]`)?.focus();},0);};
   const cancelFineDraft=(expected=fineDraft)=>{if(expected&&fineDraftRef.current!==expected)return false;fineDraftRef.current=null;setFineDraft(null);setFineExit(null);fineComposing.current=false;setEditError(null);focusFine();};
@@ -16442,13 +16434,11 @@ export function App() {
     const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
   const refinedSource=useMemo(()=>(fineDisplay?.geometryRefinement||geometryPreview)?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:(geometryPreview?.state??fineDisplay!).grid.origin}):null,[fineDisplay,geometryPreview,rivers,regions,crossings,riverFeatureOverrides]);
-  const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode={useBiomeColor?'color':useBiomeTiles?'tiles':'emoji'} rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
-  const fineWaterArtwork=(state:Detail1State)=><>{positionedHexes.hexes.filter(h=>h.kind==='sea').map(h=><polygon key={h.key} points={hexPoints(h.x,h.y,HEX_SIZE)} fill={GROUND_WATER_COLOR}/>)}{state.geometryRefinement?<RefinedLakeWater state={state} mode={useBiomeColor?'color':useBiomeTiles?'tiles':'emoji'} offset={riverOffset} shapes={fineLakeShapes} cells={lakeCells} seed={toponymSeed}/>:<LakeWater shapes={fineLakeShapes} cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={fineRiverSegments}/>}</>;
+  const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
   const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
-    visual={(id,cell)=>{const ground=id??fineLakeGround.get(hexKey(cell)),biome=(ground??FALLBACK_BIOME_ID) as BiomeId;return {color:ground?GROUND_COLORS[biome]:GROUND_WATER_COLOR,image:ground?(useBiomeTiles?getBiomeTileHref(biome):useBiomeColor?terrainAsset(biome,cell.q,cell.r,toponymSeed):undefined):undefined,emoji:ground&&!useBiomeColor&&!useBiomeTiles?BIOMES[biome]?.primaryEmoji:undefined};}}
-    geography={refinedArtwork(fineDisplay)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments} water={fineWaterArtwork(fineDisplay)}
+    geography={refinedArtwork(fineDisplay)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [fineDisplay,fineCells,fineLakeGround,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,useBiomeTiles,useBiomeColor,usePoiSvg,language,roadSegments,riverSegments,fineRiverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,fineLakeShapes,lakeCells,positionedHexes,toponymSeed]);
+    [fineDisplay,fineCells,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}
@@ -16479,92 +16469,28 @@ export function App() {
               ))}
             </defs>
             <g className="map-rotation-layer" transform={mapRotationTransform}>
-            {renderBiomeColor && colorLandHexes.length > 0 ? (
-              <g className="biome-color-layer" pointerEvents="none">
-                <defs>
-                  <clipPath id="biome-color-land-clip">
-                    {colorLandHexes.map(hex => <polygon key={hex.key} points={hex.points} />)}
-                  </clipPath>
-                  <filter id="biome-color-blend" filterUnits="userSpaceOnUse" x={-HEX_SIZE} y={-HEX_SIZE} width={positionedHexes.width + HEX_SIZE * 2} height={positionedHexes.height + HEX_SIZE * 2} colorInterpolationFilters="sRGB">
-                    {/* A broad land transition, twice the initial blend width. */}
-                    <feGaussianBlur stdDeviation={HEX_SIZE * 0.34} />
-                    {/* Normalize opacity at coasts; the outer clip keeps water sharp. */}
-                    <feComponentTransfer><feFuncA type="linear" slope={0} intercept={1} /></feComponentTransfer>
-                  </filter>
-                </defs>
-                <g clipPath="url(#biome-color-land-clip)">
-                  <g filter="url(#biome-color-blend)">
-                    {colorLandHexes.map(hex => <polygon key={hex.key} points={hex.points} fill={hex.color} stroke={hex.color} strokeWidth={0.4} />)}
-                  </g>
-                </g>
-              </g>
-            ) : null}
             {positionedHexes.hexes.map((hex) => {
               const meta = metadataMap.get(hex.key);
-              const isStartClickPrompt = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
-              const isCandidateClickPrompt = regions.length >= 1 && regions.length <= 2 && hex.kind === 'candidate' && hex.key === clickPromptCandidateKey;
-              const cls = `${hex.kind === 'sea' ? 'hex sea' : hex.kind === 'candidate' ? 'hex candidate' : meta?.isCenter ? 'hex center' : 'hex region'}${isStartClickPrompt || isCandidateClickPrompt ? ' click-prompt' : ''}`;
-              const hexRenderSize = isStartClickPrompt ? HEX_SIZE * START_PROMPT_HEX_SCALE : HEX_SIZE;
-              const terrain = hexTerrainByKey.get(hex.key);
-              const isLakeHex = terrain?.terrainOverride === 'lake';
-              const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
-              const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
-              const fill = hex.kind === 'candidate' ? undefined : !renderDetails ? (hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : GROUND_COLORS[effectiveBiomeId]) : useBiomeColor ? (hex.kind === 'sea' ? GROUND_WATER_COLOR : 'transparent') : hex.kind === 'sea' ? SEA_HEX_COLOR : isLakeHex ? WATER_PALETTE.deep : getBiomeColor(effectiveBiomeId);
-              const gridStyle = renderBiomeColor && hex.kind !== 'candidate' ? { stroke: 'none' } : {};
-              const biomeTileHref = renderDetails && useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
-              const tileImageSize = getHexWidth(hexRenderSize);
-              const tileImageHeight = hexRenderSize * 2;
-              const effectiveBiome = BIOMES[effectiveBiomeId] ?? BIOMES[FALLBACK_BIOME_ID];
-              const biomePrimaryEmoji = effectiveBiome.primaryEmoji;
-              const biomeSecondaryEmojis = effectiveBiome.secondaryEmojis;
-              const biomeEmojis = [
-                biomePrimaryEmoji,
-                ...biomeSecondaryEmojis.slice(0, 2)
-              ];
-              const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
-              const hexEmojis = [
-                ...(meta?.isCenter && region ? [getCentralPoiEmoji(region)] : meta?.isCenter ? [REGION_CENTER_EMOJI] : []),
-                ...(isPointOfInterest ? [getPoiEmojiForHex(region, { q: hex.q, r: hex.r })] : []),
-                ...biomeEmojis
-              ];
-              const hexEmojiLayout = getHexEmojiLayout(hexEmojis, hex.x, hex.y, HEX_SIZE);
-              return (
-                <g
-                  key={`${hex.kind}-${hex.key}`}
-                  onClick={event => mapHexClickRef.current(hex,event)}
-                >
-                  <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill, ...(renderBiomeColor ? { stroke: 'none' } : {}) }} />
-                  {biomeTileHref ? (
-                    <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
-                      <image className="biome-tile"
-                        href={biomeTileHref}
-                        x={hex.x - tileImageSize / 2}
-                        y={hex.y - tileImageHeight / 2}
-                        width={tileImageSize}
-                        height={tileImageHeight}
-                        preserveAspectRatio="xMidYMid slice"
-                        transform={isMapRotated ? `rotate(-90 ${hex.x} ${hex.y})` : undefined}
-                      />
-                    </g>
-                  ) : null}
-                  {renderBiomeColor && hex.kind === 'region' && !isLakeHex && terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed) ? (
-                    <g clipPath={`url(#hex-clip-${hex.key})`} pointerEvents="none">
-                      <image className="terrain-overlay" data-terrain-key={hex.key}
-                        href={terrainAsset(effectiveBiomeId, hex.q, hex.r, toponymSeed)}
-                        x={hex.x - tileImageSize / 2} y={hex.y - tileImageHeight / 2}
-                        width={tileImageSize} height={tileImageHeight}
-                        preserveAspectRatio="xMidYMid meet"
-                        transform={isMapRotated ? `rotate(-90 ${hex.x} ${hex.y})` : undefined} />
-                    </g>
-                  ) : null}
-                  <polygon points={hexPoints(hex.x, hex.y, hexRenderSize)} className={cls} style={{ fill: 'none', ...gridStyle }} />
-                </g>
-              );
+              const isStart = regions.length === 0 && hex.kind === 'candidate' && hex.key === hexKey(START_HEX);
+              const isPrompt = regions.length >= 1 && regions.length <= 2 && hex.kind === 'candidate' && hex.key === clickPromptCandidateKey;
+              const cls = `hex ${hex.kind === 'sea' ? 'sea' : hex.kind === 'candidate' ? 'candidate' : meta?.isCenter ? 'center' : 'region'}${isStart || isPrompt ? ' click-prompt' : ''}`;
+              const radius = isStart ? HEX_SIZE * START_PROMPT_HEX_SCALE : HEX_SIZE;
+              const id = coarseTerrain.get(hex.key);
+              const art = id && engravingFor(id);
+              const texture = coarseTextures.get(hex.key);
+              const region = meta?.regionId ? regions.find(item => item.id === meta.regionId) : undefined;
+              const occupied = waterPoiByKey.has(hex.key) || !!region &&
+                ((meta?.isCenter && hasCentralPoi(region)) || region.pointsOfInterest.some(poi => hexKey(poi) === hex.key));
+              const width = getHexWidth(radius);
+              return <g key={`${hex.kind}-${hex.key}`} data-editor-only={id ? undefined : 'candidate'}
+                onClick={event => mapHexClickRef.current(hex,event)}>
+                <polygon data-hex-key={hex.key} points={hexPoints(hex.x, hex.y, radius)} className={cls}
+                  style={art ? {fill:art.color, stroke:'none'} : undefined}/>
+                {texture && <image className="terrain-blend" href={texture} clipPath={`url(#hex-clip-${hex.key})`}
+                  x={hex.x-width/2} y={hex.y-radius} width={width} height={radius*2} preserveAspectRatio="none" pointerEvents="none" />}
+                {renderDetails && id && !occupied && <Engraving id={id} x={hex.x} y={hex.y} radius={radius} rotated={isMapRotated}/>}
+              </g>;
             })}
-            {renderBiomeColor ? <>
-              <ForestCanopy waterSegments={riverSegments} lakes={lakeShapes} cells={forestCells} radius={HEX_SIZE} seed={toponymSeed} width={positionedHexes.width} height={positionedHexes.height} />
-              <LakeWater shapes={lakeShapes} cells={lakeCells} radius={HEX_SIZE} seed={toponymSeed} segments={riverSegments} />
-            </> : null}
             <g className="rivers-layer">
               {renderDetails && riverSegments.map((segment) => (
                 <line
@@ -16577,7 +16503,6 @@ export function App() {
                   strokeWidth={segment.width}
                 />
               ))}
-              {renderBiomeColor && forestCells.length ? <ForestWaterEdge/> : null}
               {renderDetails && riverDirectionArrows.map((arrow) => (
                 <line
                   key={arrow.key}
@@ -16738,48 +16663,25 @@ export function App() {
               })}
               {positionedHexes.hexes.map((hex) => {
                 const meta = metadataMap.get(hex.key);
-                const terrain = hexTerrainByKey.get(hex.key);
-                const isLakeHex = terrain?.terrainOverride === 'lake';
-                const waterPoiKind = waterPoiByKey.get(hex.key);
-                const region = meta?.regionId ? regions.find((item) => item.id === meta.regionId) : undefined;
-                const effectiveBiomeId = biomeOverrideByHexKey.get(hex.key) ?? region?.biomeId ?? FALLBACK_BIOME_ID;
-                const effectiveBiome = BIOMES[effectiveBiomeId] ?? BIOMES[FALLBACK_BIOME_ID];
-                const biomePrimaryEmoji = effectiveBiome.primaryEmoji;
-                const biomeSecondaryEmojis = effectiveBiome.secondaryEmojis;
-                const biomeTileHref = renderDetails && useBiomeTiles && hex.kind === 'region' && !isLakeHex ? getBiomeTileHref(effectiveBiomeId) : undefined;
-                const biomeEmojis = biomeTileHref || useBiomeColor ? [] : [biomePrimaryEmoji, ...biomeSecondaryEmojis.slice(0, 2)];
-                const isPointOfInterest = region?.pointsOfInterest.some((poi) => hexKey(poi) === hex.key) ?? false;
-                if (waterPoiKind) {
-                  const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
-                  return usePoiSvg ? (
-                    <image key={`water-poi-svg-${hex.key}`} className="poi-marker" filter="url(#poi-white-outline)" href={getPoiSvgHref(waterPoiKind, true)} x={position.x - 10} y={position.y - 10} width={20} height={20} pointerEvents="none" role="img" aria-label={getWaterPoiLabel(waterPoiKind, language)} />
-                  ) : (
-                    <text key={`water-poi-emoji-${hex.key}`} className="poi-marker" filter="url(#poi-white-outline)" x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={18.5} pointerEvents="none">{getWaterPoiEmoji(waterPoiKind)}</text>
-                  );
-                }
-                if (!SHOW_BIOME_EMOJI || hex.kind !== 'region' || !hex.regionId || !region || isLakeHex) return null;
-                const hexMarkers: Array<{ emoji: string; svgHref?: string; label?: string }> = [];
-                if (meta?.isCenter && hasCentralPoi(region)) {
-                  hexMarkers.push({ emoji: getCentralPoiEmoji(region), svgHref: getPoiSvgHref(region.centralPoiKind), label: getCentralPoiLabel(region, language) });
-                }
-                if (isPointOfInterest) {
-                  hexMarkers.push({ emoji: getPoiEmojiForHex(region, hex), svgHref: getPoiSvgHref(getPoiKindForHex(region, hex)), label: getPoiLabelForHex(region, hex, language) });
-                }
-                hexMarkers.push(...biomeEmojis.map((emoji) => ({ emoji })));
-                // SVG silhouettes need more room when sharing a hex with biome emoji or another POI.
-                const spacing = usePoiSvg && hexMarkers.some((marker) => marker.svgHref) ? 1.8 : 1;
-                const hexEmojiLayout = getHexEmojiLayout(hexMarkers.map((marker) => marker.emoji), hex.x, hex.y, HEX_SIZE, spacing);
-                return hexEmojiLayout.map((item, index) => {
-                  const position = isMapRotated ? rotateMapPoint(item.x, item.y, positionedHexes.height) : item;
-                  const marker = hexMarkers[index];
-                  if (usePoiSvg && marker.svgHref) {
-                    const size = item.fontSize * 1.25;
-                    return <image key={`poi-svg-${hex.key}-${index}`} className="poi-marker" filter="url(#poi-white-outline)" href={marker.svgHref} x={position.x - size / 2} y={position.y - size / 2} width={size} height={size} pointerEvents="none" role="img" aria-label={marker.label} />;
-                  }
-                  return (
-                    <text key={`biome-emoji-${hex.key}-${index}`} className={marker.svgHref ? 'poi-marker' : 'biome-marker'} filter={marker.svgHref ? 'url(#poi-white-outline)' : undefined} x={position.x} y={position.y} textAnchor="middle" dominantBaseline="central" fontSize={marker.svgHref ? item.fontSize * .84 : item.fontSize} pointerEvents="none">{item.emoji}</text>
-                  );
-                });
+                const id = coarseTerrain.get(hex.key);
+                if (!id) return null;
+                const waterKind = waterPoiByKey.get(hex.key);
+                const region = meta?.regionId ? regions.find(item => item.id === meta.regionId) : undefined;
+                const central = region && meta?.isCenter && hasCentralPoi(region);
+                const other = region?.pointsOfInterest.some(poi => hexKey(poi) === hex.key);
+                const kind = waterKind ?? (central ? region.centralPoiKind : other && region ? getPoiKindForHex(region, hex) : undefined);
+                if (!waterKind && !central && !other) return null;
+                const title = waterKind ? getWaterPoiLabel(waterKind, language) : central ?
+                  getCentralPoiLabel(region, language) : region ? getPoiLabelForHex(region, hex, language) : undefined;
+                const position = isMapRotated ? rotateMapPoint(hex.x, hex.y, positionedHexes.height) : hex;
+                const size = HEX_SIZE * .62;
+                return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none">
+                  <circle cx={position.x} cy={position.y} r={HEX_SIZE*.425} fill={engravingFor(id)!.poiColor}
+                    stroke="#f4ecd5" strokeWidth={1}/>
+                  <image className="poi-marker" href={getPoiSvgHref(kind, !!waterKind)}
+                    x={position.x-size/2} y={position.y-size/2} width={size} height={size}
+                    role="img" aria-label={title}/>
+                </g>;
               })}
               </>}
             </g>
@@ -16827,18 +16729,60 @@ export function App() {
                 ))}
               </g>
             ) : null}
-            {renderBiomeColor ? <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g> : null}
+            <g className="top-hex-grid" transform={mapRotationTransform}><ColorHexGrid cells={positionedHexes.hexes.filter(hex => hex.kind !== 'candidate')} radius={HEX_SIZE} /></g>
   </>), [
-    biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, colorLandHexes, debugRivers, debugVerticesByRegion, forestCells, hexTerrainByKey, isMapRotated, kingdoms, lakeCells, lakeShapes, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderBiomeColor, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, toponymSeed, useBiomeColor, useBiomeTiles, usePoiSvg, waterPoiByKey
+    biomeOverrideByHexKey, candidateBoundaryDebugByRegion, clickPromptCandidateKey, coarseTerrain, coarseTextures, debugRivers, debugVerticesByRegion, hexTerrainByKey, isMapRotated, kingdoms, lakeVerticesDebug, language, mapHexClickRef, mapRotationTransform, metadataMap, obstacles, positionedHexes, regions, renderDetails, renderedCrossings, riverDirectionArrows, riverGraphsByRegion, riverOffset, riverRapidMarks, riverSegments, riverWaterfalls, rivers, roadSegments, debugRivers ? selectedRegion : undefined, showHexCoordinates, waterPoiByKey
   ]);
 
   useEffect(() => {
     const viewport = mapViewportRef.current, svg = mapSvgRef.current, canvas = mapMotionCanvasRef.current;
-    if (fineActive || !viewport || !svg || !canvas || !renderBiomeColor || !renderDetails || positionedHexes.hexes.length < 600) return;
-    return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: createExportSvgClone, onNavigate: beginMapNavigation });
-  }, [fineActive, mapArtwork, renderBiomeColor, renderDetails, positionedHexes, isMapRotated]);
+    if (fineActive || !viewport || !svg || !canvas || !renderDetails || positionedHexes.hexes.length < 600) return;
+    return installViewportRasterCache({ viewport, svg, canvas, scale: () => mapScaleRef.current, rotated: isMapRotated, originalHeight: positionedHexes.height, snapshot: source => createExportSvgClone(source, true), onNavigate: beginMapNavigation });
+  }, [fineActive, mapArtwork, renderDetails, positionedHexes, isMapRotated, engravingAttempts]);
 
+  useEffect(() => {
+    const svg = mapSvgRef.current;
+    if (!svg) return;
+    let current = true;
+    const ids = new Set([...svg.querySelectorAll<SVGImageElement>('image[data-engraving]:not([data-editor-only] *)')]
+      .map(node => node.dataset.engraving as TerrainKind));
+    setVisibleEngravingFailures(previous => previous.every(id => ids.has(id))
+      ? previous : previous.filter(id => ids.has(id)));
+    for (const id of ids) {
+      const href = engravingUrl(id, engravingAttempts.get(id));
+      let check = engravingChecks.current.get(id);
+      if (check?.href !== href) {
+        // SVG image error events are not reliable across browsers. Decode the
+        // same URL once per engraving and retry, using the browser image cache.
+        const image = new Image();
+        image.src = href;
+        check = {href, loaded:image.decode().then(() => true, () => false)};
+        engravingChecks.current.set(id,check);
+      }
+      void check.loaded.then(loaded => {
+        if (!current) return;
+        const failed = !loaded;
+        setVisibleEngravingFailures(previous => {
+          if (previous.includes(id) === failed) return previous;
+          return failed ? [...previous,id] : previous.filter(candidate => candidate !== id);
+        });
+      });
+    }
+    return () => { current = false; };
+  }, [fineActive, fineArtwork, busyFineView, mapArtwork, engravingAttempts]);
+
+  function retryEngravings() {
+    setEngravingAttempts(previous => {
+      const next = new Map(previous);
+      for (const id of visibleEngravingFailures) next.set(id, (next.get(id) ?? 0) + 1);
+      return next;
+    });
+  }
+
+  const engravingLoading = useMemo(() => ({attempts:engravingAttempts, failed:visibleEngravingFailures}),
+    [engravingAttempts, visibleEngravingFailures]);
   return (
+    <EngravingLoading.Provider value={engravingLoading}>
     <div className="app" onClickCapture={e=>{if(fineGate(e))poiClickGate(e);}} onChangeCapture={e=>{if(fineGate(e))poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
       if(geometryRefinementPreviewRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();closeGeometryRefinementPreview();return;}
       if(fineDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelFineDraft();return;}
@@ -17001,28 +16945,6 @@ export function App() {
             <div className="control-block controls controls--display">
               <button
                 type="button"
-                className="biome-display-toggle"
-                onClick={() => setBiomeDisplayMode(mode => mode === 'tiles' ? 'emoji' : mode === 'emoji' ? 'color' : 'tiles')}
-                data-mode={biomeDisplayMode}
-                aria-label={biomeDisplayToggleLabel}
-                title={biomeDisplayToggleTitle}
-              >
-                <span className="display-toggle__label">{t.hexesDisplay}</span>
-                <span>{biomeModeLabel}</span>
-              </button>
-              <button
-                type="button"
-                className="poi-display-toggle"
-                onClick={() => setUsePoiSvg((value) => !value)}
-                aria-pressed={usePoiSvg}
-                aria-label={poiDisplayToggleLabel}
-                title={poiDisplayToggleTitle}
-              >
-                <span className="display-toggle__label">{t.pointsDisplay}</span>
-                <span>{usePoiSvg ? t.iconsMode : t.emojiMode}</span>
-              </button>
-              <button
-                type="button"
                 className="rotate-map-button" data-poi-navigation
                 disabled={isImporting} onClick={() => { if (!importInFlight.current) setIsMapRotated(value => !value); }}
                 aria-label={isMapRotated ? t.unrotateMap : t.rotateMap}
@@ -17037,7 +16959,7 @@ export function App() {
                 </svg>
               </button>
               {fineActive&&<button type="button" className="secondary" data-refine-geography disabled={documentBusy()||!rivers.length} onClick={()=>previewGeometryRefinement()}>{language==='ru'?'Уточнить геометрию':'Refine geometry'}</button>}
-              <label className="fine-step">{language==='ru'?'Размер гекса':'Hex size'}<select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={automaticFinePreparing?1:fineDisplay?.viewStep??(busyFineView?1:6)} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
+
               {automaticFinePreparing&&<p role="status" data-fine-scene-preparing>{language==='ru'?'Подготовка одномильной карты…':'Preparing one-mile map…'} <button type="button" onClick={cancelAutomaticFinePreparation}>{language==='ru'?'Отмена':'Cancel'}</button></p>}
               {automaticFineError&&<p className="direct-error" role="alert" data-fine-scene-error>{automaticFineError}</p>}
               <button
@@ -17051,7 +16973,17 @@ export function App() {
                 <span aria-hidden="true">#</span>
                 <span>{t.hexCoordinatesMode}</span>
               </button>
+              <label className="fine-step"><span>{language==='ru'?'Размер гекса':'Hex size'}</span><select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={automaticFinePreparing?1:fineDisplay?.viewStep??(busyFineView?1:6)} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
             </div>
+            {visibleEngravingFailures.length > 0 && <div className="control-block" data-engraving-failure>
+              <span role="alert" className="direct-error">
+                {language === 'ru' ? 'Не загрузились гравюры' : 'Engravings failed to load'}{' · '}
+                {visibleEngravingFailures.map(id => id === 'lake' ? t.lake : id === 'sea' ? t.sea : getBiomeLabel(id, language)).join(', ')}
+              </span>
+              <button type="button" className="secondary" onClick={retryEngravings}>
+                {language === 'ru' ? 'Повторить загрузку гравюр' : 'Retry loading engravings'}
+              </button>
+            </div>}
             <div className="control-block controls controls--history">
               <button type="button" className="secondary" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !undoHistory.length} onClick={undoMap}>{language==='ru'?'Отменить':'Undo'}</button>
               <button type="button" className="secondary" disabled={!!regionDraft || !!waterDraft || !!roadFeatureResolution || !!riverCommandPreview || !!riverDraft || !!roadDraft || isImporting || !!pendingRegen || !!kingdomJob || !redoHistory.length} onClick={redoMap}>{language==='ru'?'Повторить':'Redo'}</button>
@@ -17111,7 +17043,7 @@ export function App() {
                 <p>{language==='ru'?`Реки: ${geometryPreview.plan.changes.riverIds.length}; места: ${geometryPreview.plan.changes.poiIds.length}; дороги: ${geometryPreview.plan.changes.roadIds.length}. Пунктир — до уточнения.`:`Rivers: ${geometryPreview.plan.changes.riverIds.length}; places: ${geometryPreview.plan.changes.poiIds.length}; roads: ${geometryPreview.plan.changes.roadIds.length}. Dashed: before refinement.`}</p>
                 <svg data-geometry-preview-artwork role="img" viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`} style={{width:'100%',maxHeight:240,background:'#d9e3d2'}} aria-label={language==='ru'?'Предпросмотр уточнённой карты':'Refined map preview'}>
                   <OneMileArtwork interactive={false} state={geometryPreview.state} cells={projectOneMile(oneMileSources(captureMap()),geometryPreview.state.grid.origin)} candidates={[]} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={geometryPreview.revision} coordinates={false} busy={true}
-                    visual={fineArtwork?.props.visual??((id,cell)=>({color:id?GROUND_COLORS[id as BiomeId]:GROUND_WATER_COLOR}))} poi={finePoi} rapids={[]} waterfalls={[]} crossings={[]} roads={[]} rivers={[]} water={fineWaterArtwork(geometryPreview.state)} geography={refinedArtwork(geometryPreview.state)} onHover={()=>{}} onPick={()=>{}}/>
+                    poi={finePoi} rapids={[]} waterfalls={[]} crossings={[]} roads={[]} rivers={[]} geography={refinedArtwork(geometryPreview.state)} onHover={()=>{}} onPick={()=>{}}/>
                   <g data-geometry-before transform={mapRotationTransform} opacity={.45} pointerEvents="none" stroke="#8b1a1a" strokeDasharray="2 1">
                     {riverSegments.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} strokeWidth={.5}/>)}
                     {roadSegments.map(r=><line key={r.key} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} strokeWidth={.3}/>)}
@@ -17429,7 +17361,7 @@ export function App() {
             <div ref={mapStageRef} className="map-stage" style={{ width: `${displayMapWidth * mapScaleRef.current}px`, height: `${displayMapHeight * mapScaleRef.current}px` }}>
             <svg
               ref={mapSvgRef}
-              data-biome-display={biomeDisplayMode}
+              data-biome-display="engraved"
               data-render-phase={kingdomJob ? 'generation' : renderDetails ? 'ready' : 'render-pending'}
               viewBox={`0 0 ${displayMapWidth} ${displayMapHeight}`}
               preserveAspectRatio="xMinYMin meet"
@@ -17540,5 +17472,6 @@ export function App() {
       </section>
 
     </div>
+    </EngravingLoading.Provider>
   );
 }

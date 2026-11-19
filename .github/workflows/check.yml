@@ -74,3 +74,33 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:browser:rng
+
+  engraved-map-comparison:
+    if: github.event.pull_request.number == 506
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      HX060_BASE_SHA: 292428e970dbe66e2146d8f9528dd6f97f32666d
+      HX060_SOURCE_HEAD: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - name: Build published baseline
+        run: |
+          git fetch --depth=1 origin "$HX060_BASE_SHA"
+          git worktree add --detach "$RUNNER_TEMP/hx060-base" "$HX060_BASE_SHA"
+          ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/hx060-base/node_modules"
+          npm --prefix "$RUNNER_TEMP/hx060-base" run build
+          echo "HX060_BASELINE_DIR=$RUNNER_TEMP/hx060-base/dist" >> "$GITHUB_ENV"
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/profile-engraved-map.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: HX-BL-060-comparison
+          path: reports/HX-BL-060/
+          if-no-files-found: ignore

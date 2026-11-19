@@ -11,11 +11,15 @@ export async function runWaterLifecycle({page,load,snapshot,ensureEdit,button,se
  const png=async()=>{const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const got=page.waitForEvent('download');await button('PNG').click();return fs.readFile(await(await got).path());};
  const closeMenu=async()=>{const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')!==null)await menu.locator('summary').click();};
  const checkWaterViews=async(lakes,seaKey)=>{
-  for(let i=0;i<3;i++){
-   const toggle=page.locator('.biome-display-toggle'),mode=await toggle.getAttribute('data-mode');
-   assert.equal(await page.locator('[data-lake-shape]').count(),mode==='color'?lakes:0,'edited lake contours belong only to Color');
-   if(seaKey){assert.equal(await page.locator(`polygon.hex.sea[data-hex-key="${seaKey}"]`).count(),1);assert.equal(await page.locator(`.terrain-overlay[data-terrain-key="${seaKey}"]`).count(),0);}
-   await toggle.click();
+  const water=page.locator('polygon.hex[data-hex-key]');
+  const lakeCount=await water.evaluateAll(nodes=>nodes.filter(n=>n.style.fill==='rgb(93, 145, 156)').length);
+  assert.equal(lakeCount,lakes===1?2:0,'edited lake fills its complete cells');
+  if(seaKey){
+   const sea=page.locator(`polygon.hex.sea[data-hex-key="${seaKey}"]`);
+   assert.equal(await sea.count(),1);
+   assert.equal(await sea.evaluate(el=>el.style.fill),'rgb(66, 110, 133)');
+   assert.equal(await sea.locator('..').locator('image[data-engraving="sea"]').count(),1);
+   assert.ok(await page.locator('polygon.hex.sea ~ image.terrain-blend').count(), 'The sea shore has a blended fill');
   }
  };
 

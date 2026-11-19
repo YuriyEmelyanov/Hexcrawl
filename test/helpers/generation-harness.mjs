@@ -12,7 +12,7 @@ const app = ast.statements.find(node => ts.isFunctionDeclaration(node) && node.n
 const lastReturn = app.body.statements.at(-1);
 if (!ts.isReturnStatement(lastReturn)) throw new Error('App must end with its JSX return');
 // The retained artwork belongs to the DOM renderer, not the generation harness.
-const artworks = app.body.statements.flatMap(node => ts.isVariableStatement(node) ? [...node.declarationList.declarations] : []).filter(node => ['mapArtwork','fineArtwork'].includes(node.name.getText(ast)));
+const artworks = app.body.statements.flatMap(node => ts.isVariableStatement(node) ? [...node.declarationList.declarations] : []).filter(node => ['mapArtwork','fineArtwork','coarseTextures'].includes(node.name.getText(ast)));
 let prefix = source.slice(0, lastReturn.getStart(ast));
 for(const artwork of artworks.sort((a,b)=>b.initializer.getStart(ast)-a.initializer.getStart(ast)))if(artwork.initializer)prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {

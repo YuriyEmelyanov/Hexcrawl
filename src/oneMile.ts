@@ -23,6 +23,7 @@ export type OneMileCell = Readonly<{
   acceptedArea: number;
   landBiomeId?: string;
   waterArea: number;
+  waterKind?: OneMileSource['water'];
 }>;
 const offsets = [[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]] as const;
 export const fineCellKey = (cell: DetailCell): string => `${cell.q},${cell.r}`;
@@ -53,7 +54,7 @@ export function dominantFineBiome(parts: readonly Readonly<{biomeId: string; are
 export function projectOneMile(sources: readonly OneMileSource[], origin: WorldPoint = {x:0,y:0}): readonly OneMileCell[] {
   const fine = createDetailGrid(1,origin), source = createDetailGrid(6,origin);
   const seen = new Set<string>();
-  const pending = new Map<string,{cell: DetailCell; area: number; water: number; parts: {biomeId:string;area:number}[]}>();
+  const pending = new Map<string,{cell: DetailCell; area: number; water: number; lake: number; parts: {biomeId:string;area:number}[]}>();
   for (const item of [...sources].sort((a,b)=>compare(a.cell,b.cell))) {
     const polygon = detailCellPolygon(source,item.cell), id = fineCellKey(item.cell);
     if (seen.has(id)) throw Error('Duplicate accepted source cell');
@@ -61,16 +62,19 @@ export function projectOneMile(sources: readonly OneMileSource[], origin: WorldP
     if (item.water !== undefined && item.water !== 'sea' && item.water !== 'lake') throw Error('Invalid water kind');
     if (!item.water && !item.landBiomeId) throw Error('Accepted land needs a biome');
     for (const hit of detailPositiveAreaIntersections(fine,polygon)) {
-      const key = fineCellKey(hit.cell), row = pending.get(key) ?? {cell:hit.cell,area:0,water:0,parts:[]};
+      const key = fineCellKey(hit.cell), row = pending.get(key) ?? {cell:hit.cell,area:0,water:0,lake:0,parts:[]};
       row.area += hit.areaSquareMiles;
-      if (item.water) row.water += hit.areaSquareMiles;
+      if (item.water) {
+        row.water += hit.areaSquareMiles;
+        if (item.water === 'lake') row.lake += hit.areaSquareMiles;
+      }
       else row.parts.push({biomeId:item.landBiomeId!,area:hit.areaSquareMiles});
       pending.set(key,row);
     }
   }
   return Object.freeze([...pending.values()].sort((a,b)=>compare(a.cell,b.cell)).map(row=>Object.freeze({
     cell:row.cell, polygon:Object.freeze(detailCellPolygon(fine,row.cell).map(p=>Object.freeze(p))),
-    acceptedArea:row.area, waterArea:row.water, landBiomeId:dominantFineBiome(row.parts),
+    acceptedArea:row.area, waterArea:row.water, waterKind:row.water ? row.lake >= row.water/2 ? 'lake' : 'sea' : undefined, landBiomeId:dominantFineBiome(row.parts),
   })));
 }
 

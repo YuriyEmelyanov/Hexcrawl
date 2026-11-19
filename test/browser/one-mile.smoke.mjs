@@ -72,6 +72,10 @@ try{
  await page.locator('input[type=file]').setInputFiles(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url).pathname);
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  const classicSource=await snap();assert.equal(classicSource.map.physicalGrid,undefined);await shot('classic42-6mi-before.jpg');
+ const lakeKey=Object.entries(classicSource.map.terrainByHexKey).find(([,terrain])=>terrain.terrainOverride==='lake')[0];
+ const coastTexture=(svg,key)=>svg.querySelector(`[data-hex-key="${key}"]`).parentElement.querySelector('image.terrain-blend')?.getAttribute('href');
+ await page.waitForFunction(key=>document.querySelector(`[data-hex-key="${key}"] + image.terrain-blend`),lakeKey);
+ const coarseCoast=await page.locator('svg[data-render-phase]').evaluate(coastTexture,lakeKey);
  // F-R08: the real worker leaves the old whole scene intact. Cancel must
  // also reject a reply already in flight, and a fresh retry must succeed.
  await page.evaluate(()=>{window.__holdFineScene=true;window.__releaseFineScene=null;});
@@ -99,7 +103,19 @@ try{
  await page.evaluate(()=>window.__oneSvg=null);const [classicPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await classicPng.path(),new URL('classic42-automatic.png',out));
  const classicExport=await page.evaluate(()=>{const el=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml').querySelector('[data-fine-world]');return {rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])};});
  assert.deepEqual(classicExport,classicVisible,'screen and PNG use one complete scene');
- await step.selectOption('6');await shot('classic42-6mi-after.jpg');assert.deepEqual((await snap()).map,classicSource.map);
+ await step.selectOption('6');
+ const roundTripSvg=page.locator('svg[data-render-phase]');
+ assert.equal(await roundTripSvg.evaluate(coastTexture,lakeKey),coarseCoast,'Returning to 6 miles keeps the original visible lake blend');
+ await shot('classic42-6mi-after.jpg');assert.deepEqual((await snap()).map,classicSource.map);
+ await page.waitForFunction(()=>!document.querySelector('details.export-menu button:disabled'));
+ await page.evaluate(()=>window.__oneSvg=null);
+ const [coarsePng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);
+ await coarsePng.saveAs(new URL('classic42-6mi-return.png',out).pathname);
+ const coarseExport=await page.evaluate(key=>{
+   const svg=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml');
+   return svg.querySelector(`[data-hex-key="${key}"]`).parentElement.querySelector('image.terrain-blend')?.getAttribute('href');
+ },lakeKey);
+ assert.equal(coarseExport,coarseCoast,'PNG after the 6 → 1 → 6 round trip keeps the same lake blend');
  await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual(await classicSignature(),classicVisible);
  await page.setViewportSize({width:390,height:1000});await shot('classic42-1mi-after-390.jpg');
  await page.locator('input[type=file]').setInputFiles({name:'classic42-source-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicSource))});
@@ -208,7 +224,7 @@ try{
  const keys=await page.locator('[data-fine-key]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-key'))),occupied=new Set(keys);
  assert.ok(keys.length>100);const candidates=await page.locator('[data-fine-candidate]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-candidate')));assert.ok(candidates.length);
  for(const key of candidates){const [q,r]=key.split(',').map(Number);assert.ok(!occupied.has(key));assert.ok([[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].some(([dq,dr])=>occupied.has(`${q+dq},${r+dr}`)),'one edge row only');}
- assert.ok(await page.locator('image[data-fine-biome]').count()>100,'per-cell biome assets');
+ assert.ok(await page.locator('[data-fine-cells] image[data-engraving]').count()>100,'per-cell biome assets');
  assert.match(await page.locator('[data-fine-panel]').innerText(),/No hex selected/);await shot('desktop-fine-empty.jpg');
 
  const pick=async key=>{const target=page.locator(`[data-fine-key="${key}"]`);await target.click();await page.waitForFunction(key=>document.querySelector('[data-fine-selected]')?.getAttribute('data-fine-selected')===key,key);};
@@ -218,8 +234,9 @@ try{
  for(const kind of ['bridge','ferry','ford']){const target=page.locator(`[data-crossing-kind="${kind}"]`).first();assert.ok(await target.count(),kind+' actual renderer branch');const group=target.locator('..');await group.evaluate(el=>{const b=el.getBBox(),p=el.ownerSVGElement.createSVGPoint();p.x=b.x+b.width/2;p.y=b.y+b.height/2;const c=p.matrixTransform(el.getScreenCTM()),v=document.querySelector('.map-viewport'),r=v.getBoundingClientRect();v.scrollLeft+=c.x-r.left-v.clientWidth/2;v.scrollTop+=c.y-r.top-v.clientHeight/2;});await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));const rect=await group.boundingBox();assert.ok(rect);const clip={x:Math.max(0,rect.x-16),y:Math.max(0,rect.y-16),width:Math.max(32,rect.width+32),height:Math.max(32,rect.height+32)};clip.width=Math.min(clip.width,1500-clip.x);clip.height=Math.min(clip.height,1000-clip.y);await page.screenshot({path:new URL(`crossing-${kind}.png`,out).pathname,clip});}
  assert.ok(await page.locator('[data-fine-road] line[opacity="0.42"],[data-refined-road] line[opacity="0.42"]').count(),'P02 real ford transparency');
  await shot('desktop-1.jpg');
- const style=page.locator('button.biome-display-toggle');await style.click();assert.equal(await style.getAttribute('data-mode'),'emoji');assert.equal(await page.locator('image[data-fine-biome]').count(),0);assert.ok(await page.locator('[data-fine-cells] .biome-marker').count()>100);await style.click();assert.equal(await style.getAttribute('data-mode'),'color');await style.click();assert.equal(await style.getAttribute('data-mode'),'tiles');
- await page.getByRole('button',{name:/^Rotate map/}).click();assert.match(await page.locator('[data-fine-world]').getAttribute('transform'),/rotate/);assert.match(await page.locator('image[data-fine-biome]').first().getAttribute('transform'),/rotate\(-90/);await page.getByRole('button',{name:'Restore original map rotation'}).click();
+ assert.equal(await page.locator('button.biome-display-toggle,button.poi-display-toggle').count(),0);
+ assert.ok(await page.locator('[data-fine-pois] [data-engraved-poi] circle').count());
+ await page.getByRole('button',{name:/^Rotate map/}).click();assert.match(await page.locator('[data-fine-world]').getAttribute('transform'),/rotate/);assert.match(await page.locator('[data-fine-cells] image[data-engraving]').first().getAttribute('transform'),/rotate\(-90/);await page.getByRole('button',{name:'Restore original map rotation'}).click();
  await checkFineCamera({page,step,snap,manifest});await pick('0,0');await panel.hover();
  manifest.cases.push({id:'UI-grid-local-read',status:'pass',fineCells:keys.length,candidates:candidates.length});
  await panel.getByRole('button',{name:'Edit',exact:true}).click();await page.getByLabel('Hex name',{exact:true}).dispatchEvent('compositionstart');await page.getByLabel('Hex name',{exact:true}).fill('Fine cell');await page.getByLabel('Hex name',{exact:true}).press('Enter');assert.equal(await page.locator('[data-fine-editor]').count(),1,'IME Enter does not save');await page.getByLabel('Hex name',{exact:true}).dispatchEvent('compositionend');await page.getByLabel('Hex note',{exact:true}).fill('One-mile note');
