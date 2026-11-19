@@ -1,3 +1,5 @@
+import { manualBiome } from './manualBiomes.ts';
+
 // Canopy colours sampled from the Dolmenwood map's olive deciduous forest.
 // Woodland shares the canopy palette and uses a light ground beneath islands.
 export const FOREST_PALETTE = {
@@ -6,6 +8,8 @@ export const FOREST_PALETTE = {
 } as const;
 export type ForestFamily = keyof typeof FOREST_PALETTE;
 export function forestFamily(biome:string):ForestFamily|null {
+  const manual = manualBiome(biome);
+  if (manual) return manual.terrain === 'forest' ? 'deciduous' : null;
   if(biome.startsWith('dead_'))return 'dead';
   if(biome==='swamp_forest')return 'swamp';
   if(!biome.includes('forest')&&!biome.includes('woodland'))return null;

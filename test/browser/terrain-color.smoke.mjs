@@ -4,6 +4,7 @@ import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { stripVTControlCharacters } from 'node:util';
+import { MANUAL_BIOMES } from '../../src/rendering/manualBiomes.ts';
 const server = spawn(process.execPath, [fileURLToPath(new URL('../../node_modules/vite/bin/vite.js', import.meta.url)), 'preview', '--host', '127.0.0.1', '--port', '4175', '--strictPort'], {
   cwd: new URL('../../', import.meta.url), stdio: ['ignore', 'pipe', 'inherit']
 });
@@ -111,6 +112,81 @@ try {
   await importMap(sample);const grown=await overlays();
   for(const [key,href]of Object.entries(stable))if(key!=='0,0')assert.equal(grown[key],href);
   assert.match(grown['0,0'],/mountains[.]png/);
+
+  // HX-BL-021: use the actual selector and generator, then export and re-open
+  // the new biome. The existing atlas only covers the old map variants.
+  const evidence = (name) => new URL('../../reports/terrain-v2-f1-' + name, import.meta.url);
+  await page.getByRole('button', {name:'Сбросить', exact:true}).click();
+  await page.getByRole('textbox', {name:'Seed мира', exact:true}).fill('42');
+  await page.getByRole('textbox', {name:'Seed мира', exact:true}).press('Tab');
+  const choices = page.locator('.gen-biome-field select');
+  assert.equal(await choices.inputValue(), 'auto');
+  for (const [id, biome] of Object.entries(MANUAL_BIOMES)) {
+    assert.equal(await choices.locator('option[value="' + id + '"]').textContent(), biome.ru);
+  }
+  await page.screenshot({path:fileURLToPath(evidence('before.png'))});
+  await page.locator('.gen-params select').first().selectOption('locality');
+  await page.locator('.gen-coast-field select').selectOption('mainland');
+  await choices.selectOption('dunes');
+  await page.locator('polygon.hex.candidate').first().dispatchEvent('click');
+  await page.locator('image.terrain-engraving[href="/terrain/engravings/dunes.png"]').first().waitFor();
+  const dunes = JSON.parse(await download('JSON'));
+  assert.equal(dunes.map.regions[0].biomeId, 'dunes');
+  assert.equal(dunes.generation.masterSeed, 42);
+  await importMap(dunes);
+  assert.deepEqual(JSON.parse(await download('JSON')).map, dunes.map);
+  await page.screenshot({path:fileURLToPath(evidence('dunes-desktop.png'))});
+  await fs.writeFile(evidence('dunes-export.png'), await download('PNG'));
+  for (const width of [390, 320]) {
+    await page.setViewportSize({width, height:950});
+    await choices.selectOption('snow_plains');
+    const row = page.locator('.gen-params');
+    assert.equal(await choices.locator('option:checked').textContent(), 'Снежно-ледяная равнина');
+    const bounds = await row.boundingBox();
+    const field = await choices.boundingBox();
+    assert.ok(field && bounds && field.x >= bounds.x && field.x + field.width <= bounds.x + bounds.width + 1);
+    assert.ok(field.width >= (bounds.width - 24));
+    await page.screenshot({path:fileURLToPath(evidence('dunes-narrow-' + width + '.png'))});
+  }
+  await page.setViewportSize({width:1440, height:1000});
+  const langToggle = page.getByRole('button', {name:'Switch to English', exact:true});
+  const expandHeader = page.getByRole('button', {name:'Показать кнопки языка и соцсетей', exact:true});
+  if (await expandHeader.isVisible()) await expandHeader.click();
+  await langToggle.click();
+  for (const [id, biome] of Object.entries(MANUAL_BIOMES)) {
+    assert.equal(await choices.locator('option[value="' + id + '"]').textContent(), biome.en);
+  }
+
+  // Ten small adjacent regions share the same map and pass the ordinary
+  // import and rendering pipeline at both display scales and orientations.
+  const manualAtlas = structuredClone(sample);
+  manualAtlas.map.terrainByHexKey = {};
+  manualAtlas.map.biomeOverrideByHexKey = {};
+  manualAtlas.map.regions = Object.entries(MANUAL_BIOMES).map(([id, biome], index) => {
+    const q = index % 5 * 3, r = Math.floor(index / 5) * 3;
+    const centerHex = {q:q+1, r:r+1};
+    return {...sample.map.regions[0], id:index+1, heightLevel:biome.height, biomeId:id,
+      anchorHex:centerHex, centerHex, suppressCentralPoi:true,
+      hexes:Array.from({length:9}, (_, i)=>({q:q+i%3, r:r+Math.floor(i/3)}))};
+  });
+  manualAtlas.map.terrainByHexKey['0,0'] = {terrainOverride:'lake', lakeId:1};
+  await importMap(manualAtlas);
+  const scale = page.locator('[data-fine-step]');
+  for (const miles of ['6', '1']) {
+    if (await scale.inputValue() !== miles) await scale.selectOption(miles);
+    if (miles === '1') await page.locator('[data-fine-world]').waitFor({timeout:60000});
+    const rendered = miles === '1'
+      ? await page.locator('[data-fine-terrain]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-fine-terrain')))
+      : Object.values(await overlays()).map(url=>url.split('/').at(-1).replace('.png',''));
+    for (const id of Object.keys(MANUAL_BIOMES)) assert.ok(rendered.includes(id), id + ' at ' + miles + ' miles');
+    for (const orientation of ['initial', 'rotated']) {
+      if (orientation === 'rotated') await page.locator('.rotate-map-button').click();
+      const exportPng = await download('PNG');
+      assert.equal(exportPng.subarray(0, 8).toString('hex'), '89504e470d0a1a0a');
+      await fs.writeFile(evidence('atlas-' + miles + 'mi-' + orientation + '.png'), exportPng);
+    }
+    await page.locator('.rotate-map-button').click();
+  }
   assert.deepEqual(errors,[]);
   console.log('Terrain v2: engraved catalogue, stable artwork, old/Mythic saves, water colours, lake/island pixels, rotation, map expansion, PNG exports passed.');
 } finally {if(browser)await browser.close();server.kill();}
