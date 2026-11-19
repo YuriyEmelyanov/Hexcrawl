@@ -58,13 +58,20 @@ export function hasFullDrySupport(row: OneMileCell | undefined): boolean {
   return !!row && !!row.landBiomeId && row.acceptedArea >= fineArea - tolerance && row.waterArea <= tolerance;
 }
 
-export function validateSmallLakeSupport(layer: SmallLakeLayer, accepted: readonly OneMileCell[]): void {
+export function prepareSmallLakeSupport(layer: SmallLakeLayer, accepted: readonly OneMileCell[]) {
   const coverage = new Map(accepted.map(row => [fineCellKey(row.cell), row]));
-  for (const lake of layer.lakes) {
-    if (lake.cells.some(cell => !hasFullDrySupport(coverage.get(fineCellKey(cell))))) {
-      throw new Error(`Small lake ${lake.id} has no full dry support`);
-    }
-  }
+  const losses: SmallLake[] = [];
+  const supported = layer.lakes.filter(lake => {
+    const valid = lake.cells.every(cell => hasFullDrySupport(coverage.get(fineCellKey(cell))));
+    if (!valid) losses.push(lake);
+    return valid;
+  });
+  return {layer: losses.length ? {...layer, lakes: supported} : layer, losses};
+}
+
+export function validateSmallLakeSupport(layer: SmallLakeLayer, accepted: readonly OneMileCell[]): void {
+  const {losses} = prepareSmallLakeSupport(layer, accepted);
+  if (losses.length) throw new Error(`Small lake ${losses[0].id} has no full dry support`);
 }
 
 export function addManualSmallLake(layer: SmallLakeLayer | undefined, cells: readonly DetailCell[], accepted: readonly OneMileCell[]): SmallLakeLayer {

@@ -14,6 +14,7 @@ import {prepareGeometryRefinementBoundary,geometryMixedRiverPaths} from '../src/
 import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
 import {projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
 import {reconcileDetailGeography} from '../src/detailGeography.ts';
+import {hasFullDrySupport} from '../src/smallLakes.ts';
 import {synchronizeToponyms} from '../src/toponyms.ts';
 const serial=v=>JSON.parse(JSON.stringify(v));
 const stable=app=>{const d=serial(app.createSaveData());delete d.savedAt;return d;};
@@ -359,6 +360,42 @@ test('import replaces notes exactly and legacy imports clear them; malformed not
   const data=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
   b.map.gmNotesByHexKey[key]=null;await load(h,b);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),data);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
   await load(h,fixture);assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{});h.render().undoMap();assert.deepEqual(stable(h.render()),data);
+});
+test('deleting a real region lists the unsupported small lakes and undo restores all of them',()=>{
+  const {h}=setup();
+  h.render().addFallbackTractToMap({q:0,r:0});
+  assert.equal(h.render().switchFineStep(1),true);
+  const dryRows=()=>h.render().fineCells.filter(hasFullDrySupport);
+  const key=({q,r})=>`${q},${r}`;
+  const first=dryRows(), firstKeys=new Set(first.map(row=>key(row.cell)));
+  h.render().switchFineStep(6);
+  h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+  assert.equal(h.render().regions.length,2);
+  assert.equal(h.render().switchFineStep(1),true);
+  const added=dryRows().filter(row=>!firstKeys.has(key(row.cell)));
+  assert.ok(first.length&&added.length>=2);
+  for(const {cell} of [added[0],added[1],first[0]]){
+    const app=h.render();
+    assert.equal(app.pickFine(cell,false,app.getDocumentRevision()),true);
+    h.render().startSmallLake();
+    h.render().commitSmallLake();
+    assert.equal(h.render().editError,null);
+  }
+  assert.equal(h.render().switchFineStep(6),true);
+  const before=stable(h.render()), count=h.render().undoHistory.length, prompts=[];
+  h.setWindow({confirm:prompt=>{prompts.push(prompt);return false;}});
+  h.render().deleteLastRegion();
+  assert.deepEqual(stable(h.render()),before);
+  assert.equal(h.render().undoHistory.length,count);
+  assert.match(prompts.at(-1),/малые озёра №1, №2/);
+  assert.doesNotMatch(prompts.at(-1),/№3/);
+  h.setWindow({confirm:()=>true});
+  h.render().deleteLastRegion();
+  const after=stable(h.render());
+  assert.equal(after.map.regions.length,1);
+  assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:4,lakes:[before.map.physicalGrid.smallLakes.lakes[2]]});
+  assert.equal(h.render().undoHistory.length,count+1);
+  assertUndoRedo(h,before,after);
 });
 test('delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit',async()=>{
   const {h}=setup();h.setWindow({alert(){},confirm:()=>false,matchMedia:()=>({matches:false})});

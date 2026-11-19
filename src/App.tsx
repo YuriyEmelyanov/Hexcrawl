@@ -1,6 +1,6 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
-import {addManualSmallLake,hasFullDrySupport,validateSmallLakeSupport} from './smallLakes';
+import {addManualSmallLake,hasFullDrySupport,prepareSmallLakeSupport,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
@@ -14553,24 +14553,23 @@ export function App() {
   // Удаление последнего региона = восстановление снимка состояния, сделанного
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
   // числе изменения, которые новый регион внёс в соседние регионы.
-  const retainFineCheckpoint=(snapshot:MapSnapshot,allowLoss=false):MapSnapshot=>{
+  const retainFineCheckpoint=(snapshot:MapSnapshot,allowFineLoss=false,confirmedSmallLakes?:SmallLakeLayer):MapSnapshot=>{
     const current=physicalGridRef.current,edits=current?.fineCellEdits??{};
-    if(!current)return snapshot;
-    if(current.geometryRefinement){
-      const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
-      const fineCellEdits=prepareFineCellLoss(edits,accepted,allowLoss).edits;
-      const layer={...current,fineCellEdits};
-      if(layer.selectedCell&&!accepted.some(row=>isSameHex(row.cell,layer.selectedCell!))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
-      return prepareSourceTransition(captureMap(),{...snapshot,physicalGrid:layer});
-    }
-    if(!Object.keys(edits).length)return snapshot;
+    if(!current||(!current.geometryRefinement&&!current.smallLakes&&!Object.keys(edits).length))return snapshot;
     const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
-    const retained=prepareFineCellLoss(edits,accepted,allowLoss).edits;
-    if(!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
-    // A generation checkpoint can predate explicit fine adaptation. Carry its
-    // surviving local addresses into that candidate map, retaining accepted
-    // identities/footprints; reconcile live owners before any setters/history.
-    const layer={...(snapshot.physicalGrid??current),fineCellEdits:retained};
+    const smallLakes=confirmedSmallLakes??current.smallLakes;
+    if(smallLakes)validateSmallLakeSupport(smallLakes,accepted);
+    const retained=prepareFineCellLoss(edits,accepted,allowFineLoss).edits;
+    if(current.geometryRefinement){
+      const layer={...current,fineCellEdits:retained,...(smallLakes?{smallLakes}:{})};
+      if(layer.selectedCell&&!accepted.some(row=>isSameHex(row.cell,layer.selectedCell!))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
+      const retainedMap=prepareSourceTransition(captureMap(),{...snapshot,physicalGrid:layer});
+      return smallLakes&&retainedMap.physicalGrid?{...retainedMap,physicalGrid:{...retainedMap.physicalGrid,smallLakes}}:retainedMap;
+    }
+    if(!smallLakes&&!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
+    // Preserve accepted local data even when the checkpoint predates the
+    // detailed layer. Reconcile its POIs before committing the replacement.
+    const layer={...(snapshot.physicalGrid??current),fineCellEdits:retained,...(smallLakes?{smallLakes}:{})};
     const acceptedKeys=new Set(accepted.map(row=>hexKey(row.cell)));
     if(layer.selectedCell&&!acceptedKeys.has(hexKey(layer.selectedCell))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
     const candidate={...snapshot,physicalGrid:layer};
@@ -14653,10 +14652,19 @@ export function App() {
     let checkpoint = history[history.length-1];
     try{
       const state=physicalGridRef.current;
-      const support=state?new Set(projectOneMile(oneMileSources(checkpoint),state.grid.origin).map(row=>hexKey(row.cell))):new Set<string>();
+      const accepted=state?projectOneMile(oneMileSources(checkpoint),state.grid.origin):[];
+      const support=new Set(accepted.map(row=>hexKey(row.cell)));
       const losses=Object.keys(state?.fineCellEdits??{}).filter(key=>!support.has(key));
       if(losses.length&&!window.confirm(language==='ru'?`Удалить локальные правки одномильных гексов (${losses.length}): ${losses.join('; ')}? Отмена вернёт их.`:`Remove local one-mile edits (${losses.length}): ${losses.join('; ')}? Undo restores them.`))return;
-      checkpoint=retainFineCheckpoint(checkpoint,losses.length>0);
+      const smallLakes=state?.smallLakes?prepareSmallLakeSupport(state.smallLakes,accepted):undefined;
+      if(smallLakes?.losses.length){
+        const ids=smallLakes.losses.map(lake=>`№${lake.id}`).join(', ');
+        const prompt=language==='ru'
+          ?`При удалении последнего региона будут также удалены малые озёра ${ids}. «Отменить» восстановит регион и озёра. Удалить регион?`
+          :`Deleting the last region also removes small lakes ${ids}. Undo restores the region and its lakes. Delete the region?`;
+        if(!window.confirm(prompt))return;
+      }
+      checkpoint=retainFineCheckpoint(checkpoint,losses.length>0,smallLakes?.layer);
     }catch(error){setEditError(error instanceof Error?error.message:'Local edits cannot be retained');return;}
     if(!checkPoiNameCheckpoint(checkpoint)||!confirmRiverCheckpointLoss(checkpoint))return;
     const entities = getToponymEntities(checkpoint.regions, checkpoint.rivers, checkpoint.hexTerrainByKey);

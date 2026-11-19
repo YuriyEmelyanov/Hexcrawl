@@ -18,7 +18,7 @@ const artworks = app.body.statements.flatMap(node => ts.isVariableStatement(node
 let prefix = source.slice(0, lastReturn.getStart(ast));
 for(const artwork of artworks.sort((a,b)=>b.initializer.getStart(ast)-a.initializer.getStart(ast)))if(artwork.initializer)prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
 const instrumented = prefix + `return {
-  fineDraft, startFineDraft, changeFineDraft, saveFineDraft, cancelFineDraft, fineHover, setFineHover, switchFineStep, pickFine, fineCells, fineCandidates, fineReadCell, fineSummary, resolveFineExit,
+  startSmallLake, commitSmallLake, fineDraft, startFineDraft, changeFineDraft, saveFineDraft, cancelFineDraft, fineHover, setFineHover, switchFineStep, pickFine, fineCells, fineCandidates, fineReadCell, fineSummary, resolveFineExit,
   physicalGrid, fineDisplay, automaticFineError, previewOneMile, applyOneMilePreview, cancelOneMilePreview, editOneMileCell, getDocumentRevision:()=>documentRevision.current, getMapScale:()=>mapScaleRef.current,
   chooseKnaveProfile, changeGenerationMode, mutateKnaveContent, knaveDraft, knaveError, changeKnaveDraft, finishKnaveDraft, resetKnaveDraft, requestKnaveExit, resolveKnaveExit, knaveExitRequest, knavePanel,
   poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
