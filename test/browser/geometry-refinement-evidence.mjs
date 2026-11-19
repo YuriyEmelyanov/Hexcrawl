@@ -1,28 +1,28 @@
 import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 
-// Reuse the existing 53-edge/7-crossing world. This is the new UI boundary,
-// rather than another routing or random-generation corpus.
+export async function assertScaleOnly(page,locale) {
+ const selector=page.getByRole('combobox',{name:locale==='ru'?'Размер гекса':'Hex size',exact:true});
+ assert.equal(await selector.inputValue(),'1');
+ assert.equal(await selector.isVisible(),true);
+ assert.equal(await page.getByRole('button',{name:/^(Уточнить геометрию|Refine geometry|Apply|Применить)$/}).count(),0);
+ assert.equal(await page.locator('[data-fine-preview],[data-geometry-preview],[data-geometry-preview-overlay]').count(),0);
+}
+
+// Enter the already saved 53-path/7-crossing world through the regular file input.
 export async function checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture}){
  await lang('en');await page.setViewportSize({width:1500,height:1000});
- await page.locator('input[type=file]').setInputFiles({name:'geo2-source.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
- await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});
- const before=await snap(),refine=page.locator('[data-refine-geography]'),preview=page.locator('[data-geometry-preview]');
- await refine.click();await preview.waitFor();
- assert.ok(await preview.locator('[data-refined-river]').count());
- assert.equal(await page.locator('svg[data-render-phase] [data-fine-world] [data-refined-geography]').count(),1,'the automatic base scene stays visible beneath the separate optional proposal');
- assert.deepEqual(await snap(),before,'Preview does not change document or RNG');
- for(const locale of ['ru','en'])for(const width of [1500,390,320]){await lang(locale);await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await preview.scrollIntoViewIfNeeded();await shot(`geo2-preview-${locale}-${width}.jpg`);}
- await lang('en');await page.setViewportSize({width:1500,height:1000});
- assert.equal(await page.locator('[data-geometry-preview-overlay] [data-refined-geography]').count(),1,'proposed geometry is visible over the main map');
- const exportMenu=page.locator('details.export-menu');if(await exportMenu.getAttribute('open')===null)await exportMenu.locator('summary').click();
- await page.evaluate(()=>window.__oneSvg=null);const [pendingPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await pendingPng.path(),new URL('geo2-preview-accepted-only.png',out));
- assert.doesNotMatch(await page.evaluate(()=>window.__oneSvg),/data-geometry-preview/,'PNG excludes the optional proposal overlay; the automatic base scene remains visible');
- await page.keyboard.press('Escape');await preview.waitFor({state:'detached'});assert.equal(await refine.evaluate(el=>el===document.activeElement),true);assert.deepEqual(await snap(),before);
- await refine.click();await preview.getByRole('button',{name:'Cancel',exact:true}).click();assert.deepEqual(await snap(),before);
- await refine.click();await preview.getByRole('button',{name:'Apply',exact:true}).click();
- await page.waitForFunction(()=>document.querySelector('[data-fine-step]')?.value==='1'&&!document.querySelector('[data-geometry-preview]'));
+ await page.locator('input[type=file]').setInputFiles({name:'geo2-legacy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ await step.selectOption('6');const before=await snap();
+ const history=()=>Promise.all(['Undo','Redo'].map(name=>button(name).isEnabled()));
+ const beforeHistory=await history();
+ await step.selectOption('1');await page.locator('[data-fine-world] [data-refined-geography]').waitFor();
+ await assertScaleOnly(page,'en');
  const accepted=await snap(),g=accepted.map.physicalGrid.geometryRefinement;
+ assert.deepEqual(g,fixture.map.physicalGrid.geometryRefinement);
+ assert.deepEqual(accepted,before,'the selector does not rewrite a legacy document');
+ assert.deepEqual(await history(),beforeHistory);
  assert.match(await page.locator('details.export-menu small').textContent(),/JSON v16/);
  assert.equal(g.riverPlan.paths.length,53);assert.equal(g.roads.crossings.length,7);
  assert.deepEqual(accepted.generation,before.generation);
@@ -31,10 +31,14 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
  assert.ok(g.roads.crossings.some(c=>c.kind==='ford'&&c.fullness===2),'explicit legal F2 ford survives refinement');assert.ok(await artwork.locator('[data-refined-road] line[opacity="0.42"]').count(),'refined ford has visible weakened road paint');
  const signature=()=>artwork.evaluate(el=>({riverMasks:[...el.querySelector('mask').querySelectorAll('path')].map(n=>n.getAttribute('d')),visibleWater:[...el.closest('[data-fine-world]').querySelectorAll('[data-fine-terrain=lake] > polygon')].map(n=>[n.getAttribute('points'),n.getAttribute('fill')]),rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('.roads-layer line')].map(n=>['x1','y1','x2','y2','opacity','stroke-dasharray'].map(k=>n.getAttribute(k))),rails:[...el.querySelectorAll('.roads-layer polyline')].map(n=>n.getAttribute('points'))}));
  const expected=await signature();assert.ok(expected.rivers.length&&expected.roads.length);assert.ok(expected.riverMasks.length&&expected.visibleWater.length,'accepted river masks and whole lake cells are present');
- for(const width of [1500,390,320]){await page.setViewportSize({width,height:1000});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);await shot(`geo2-accepted-${width}.jpg`);}
- await button('Undo').click();assert.deepEqual((await snap()).map,before.map);
- await button('Redo').click();await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual((await snap()).map.physicalGrid.geometryRefinement,g);assert.deepEqual(await signature(),expected);
- await step.selectOption('6');assert.equal(await page.locator('svg[data-render-phase] [data-refined-geography]').count(),0);await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual(await signature(),expected);
+ for(const width of [1500,390,320]){
+  await page.setViewportSize({width,height:1000});await assertScaleOnly(page,'en');
+  assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),true);
+  await shot(`geo2-accepted-${width}.jpg`);
+ }
+ await step.selectOption('6');assert.equal(await page.locator('svg[data-render-phase] [data-refined-geography]').count(),0);
+ assert.deepEqual(await snap(),before);assert.deepEqual(await history(),beforeHistory);
+ await step.selectOption('1');await artwork.waitFor();assert.deepEqual(await signature(),expected);
  const pngs=[];const saveRefinedPng=async label=>{
   const visible=await signature();assert.deepEqual(visible,expected,'existing river masks and lake cells stay stable');
   const menu=page.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();
@@ -65,7 +69,7 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
   await chooseRapid();
   const control=page.locator('.river-feature-control select'),base=await snap();
   await control.selectOption('off');const changed=await snap();
-  assert.equal(await preview.count(),0,'ordinary edit adds no geometry proposal');
+  assert.equal(await page.locator('[data-geometry-preview]').count(),0,'ordinary edit adds no geometry proposal');
   assert.ok(!changed.map.physicalGrid.geometryRefinement.riverPlan.rapids.some(r=>r.riverId===rapid.riverId&&r.sourceEdgeKey===rapid.sourceEdgeKey));
   assert.deepEqual(changed.generation,base.generation);
   await button(locale==='ru'?'Отменить':'Undo').click();assert.deepEqual((await snap()).map,base.map);
@@ -81,11 +85,11 @@ export async function checkGeometryRefinement({page,step,snap,button,lang,shot,m
   const importData=await snap();await page.evaluate(()=>{window.__releaseFineImport=null;window.__holdFineImport=true;});
   await page.locator('input[type=file]').setInputFiles({name:'geo2-busy.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(importData))});
   await page.waitForFunction(()=>typeof window.__releaseFineImport==='function');
-  assert.equal(await refine.isEnabled(),false,'existing import busy guard blocks refinement');assert.equal(await preview.count(),0);
+  assert.equal(await step.isEnabled(),false,'existing import busy guard blocks scale changes');
   await shot(`geo2-source-busy-${locale}-${width}.jpg`);await page.evaluate(()=>window.__releaseFineImport());
   await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
-  assert.deepEqual((await snap()).map,importData.map);assert.equal(await preview.count(),0,'import never auto-refines');
+  assert.deepEqual((await snap()).map,importData.map);await assertScaleOnly(page,locale);
  }
  manifest.cases.push({id:'G209-AUTO-source-edit-error-busy-RU-EN',status:'pass',viewports:[1500,390,320],locales:['ru','en'],failure:'injected preparation failure',ordinarySuccess:'disable resolved rapid without additional geometry preview'});
- manifest.cases.push({id:'GEO2-UI-preview-apply-history-roundtrip-PNG',status:'pass',sourcePaths:53,crossings:7,viewports:[1500,390,320]});
+ manifest.cases.push({id:'GEO2-UI-legacy-import-scale-history-roundtrip-PNG',status:'pass',sourcePaths:53,crossings:7,viewports:[1500,390,320]});
 }

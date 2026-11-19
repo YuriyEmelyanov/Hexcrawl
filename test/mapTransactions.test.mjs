@@ -3,7 +3,7 @@ import {seaFixture} from './helpers/sea-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createGenerationHarness} from './helpers/generation-harness.mjs';
+import {createGenerationHarness,prepareLegacyRefinedSave} from './helpers/generation-harness.mjs';
 import {detailAuthoredState} from '../src/detailModel.ts';
 import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
 import {prepareGeometryPlan} from '../src/geometryPlan.ts';
@@ -806,13 +806,12 @@ function geometryPoiRiverBackendFixture(extraRoadPart=false){
 }
 async function acceptGeometryRefinement(h){
  const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
- const preview=await h.render().previewGeometryRefinement();
- assert.ok(preview,h.render().editError??'a real source map must prepare a complete geometry preview');
- assert.deepEqual(stable(h.render()),before,'preview exports accepted state only');
- assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history,'preview has no history write');
- assert.equal(h.render().applyGeometryRefinementPreview(preview),true,h.render().editError??'apply prepared geometry');
+ const legacy=prepareLegacyRefinedSave(h);
+ assert.deepEqual(stable(h.render()),before);
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
+ await load(h,legacy);
  const after=stable(h.render());assert.equal(after.version,16);assert.equal(after.map.physicalGrid.version,4);
- assert.equal(h.render().undoHistory.length,history[0].length+1,'explicit apply is one existing transaction');
+ assert.equal(h.render().undoHistory.length,history[0].length+1,'legacy import is one existing transaction');
  assertUndoRedo(h,before,after);
  return after;
 }
@@ -824,29 +823,27 @@ function scopedOutsideDocument(h){
  const global={...authored,fineCellEdits:{...authored.fineCellEdits,[fineKey]:{name:{ru:'Новое место',en:'New site'},note:'keep unrefined authored data'}}},scoped=composeScopedDetailState(global,doc.map.physicalGrid.geometryRefinement),incoming=serial(h.render().createSaveData({...doc,map:{...sourceMap,physicalGrid:scoped}}));delete incoming.savedAt;
  return {doc,cell,key,region,sourceMap,global,outside,incoming};
 }
-test('G208-AUTO real refinement preview cancel, stale revision and failed prepare preserve accepted state and redo',async()=>{
+test('G208-AUTO failed scale preparation is localized and preserves the document and redo',()=>{
  const {h,a}=geometryRiverBackendFixture();h.render().setSelectedHex(a);
  h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
  const before=stable(h.render()),history=serial([h.render().undoHistory,h.render().redoHistory]);
  assert.ok(history[1].length,'start with an available redo branch');
- assert.equal(await h.render().previewGeometryRefinement({prepareWorkBudget:1}),null);
- assert.match(h.render().editError,/Карта сохранена без изменений/);assert.doesNotMatch(h.render().editError,/GEO2|prepare_|river_mouth/);
- h.render().setLanguage('en');assert.equal(await h.render().previewGeometryRefinement({prepareWorkBudget:1}),null);assert.match(h.render().editError,/Map unchanged/);h.render().setLanguage('ru');
- const restoreInput=h.injectFunction('geometryPlanInput',()=>{throw 'GEO2 poi: detail-poi:1; river:3';});
- for(const locale of ['ru','en']){h.render().setLanguage(locale);assert.equal(await h.render().previewGeometryRefinement(),null);assert.match(h.render().editError,/detail-poi:1/);assert.match(h.render().editError,locale==='ru'?/Карта сохранена без изменений/:/Map unchanged/);}
- restoreInput();h.render().setLanguage('ru');
- assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
- const cancelled=await h.render().previewGeometryRefinement();assert.ok(cancelled,h.render().editError??'valid preview');
- h.render().cancelGeometryRefinementPreview();
- assert.equal(h.render().applyGeometryRefinementPreview(cancelled),false,'a cancelled preview is never an accepted map');
- assert.deepEqual(stable(h.render()),before);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
- const stale=await h.render().previewGeometryRefinement();assert.ok(stale);
- // An explicit document replacement changes revision while retaining the same
- // source geometry. The captured callback must still refuse the old preview.
- h.render().applyDocument(h.render().captureDocument());
- const replacement=stable(h.render()),replacementHistory=serial([h.render().undoHistory,h.render().redoHistory]);
- assert.equal(h.render().applyGeometryRefinementPreview(stale),false);
- assert.deepEqual(stable(h.render()),replacement);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),replacementHistory);
+ const restore=h.injectFunction('geometryPlanInput',()=>{throw Error('GEO2 locked_geometry: detail-poi:1');});
+ try{
+  for(const locale of ['ru','en']){
+   h.render().setLanguage(locale);
+   assert.equal(h.render().switchFineStep(1),false);
+   const message=h.render().automaticFineError;
+   assert.match(message,locale==='ru'?/объект №1.*Исходная карта сохранена/:/site №1.*The source map is unchanged/);
+   assert.doesNotMatch(message,/GEO2|locked_geometry/);
+  }
+ }finally{restore();h.render().setLanguage('ru');}
+ assert.deepEqual(stable(h.render()),before);
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
+ assert.equal(h.render().switchFineStep(1),true,h.render().automaticFineError);
+ assert.equal(h.render().switchFineStep(6),true);
+ assert.deepEqual(stable(h.render()),before);
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);
 });
 test('G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo',async()=>{
  const {h,edge,a,owner}=geometryPoiRiverBackendFixture(),dialogs=[];
@@ -952,24 +949,23 @@ test('GEO2 actual connected land-only generation retains old refinement and leav
  const liveMap=h.render().captureDocument().map,liveLayer=liveMap.physicalGrid;
  const {selectedCell:ignoredCell,selectedWorldPoint:ignoredPoint,...clearedLayer}=liveLayer;
  h.render().restoreSnapshot({...liveMap,physicalGrid:{...clearedLayer,globalAuthoredState:{...liveLayer.globalAuthoredState,selectedCell:{q:0,r:0}},fineCellEdits:{...liveLayer.fineCellEdits,'0,0':{name:{ru:'После расширения',en:'After expansion'},note:'Latest live local note'}}}});
- // New land remains unrefined until a fresh explicit preview/Apply.
+ // The persisted scope stays stable until a separately saved legacy plan is loaded.
  const scopeInput=h.geometry.geometryPlanInput(h.render().captureDocument().map),ordinary=prepareGeometryPlan(scopeInput);
- assert.equal(ordinary.status,'error');assert.ok(ordinary.refs.some(r=>r.includes('refinement_domain_expansion')),'automatic plan still cannot acquire a new domain');
+ assert.equal(ordinary.status,'error');assert.ok(ordinary.refs.some(r=>r.includes('refinement_domain_expansion')),'ordinary edit cannot acquire a new domain');
  h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();
- const beforeExplicit=stable(h.render()),explicitStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(explicitStacks[1].length,'explicit preview starts with an available redo branch');
- const cancelled=await h.render().previewGeometryRefinement();assert.ok(cancelled,h.render().editError??'explicit preview must include the new domain');
- assert.deepEqual(stable(h.render()),beforeExplicit);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),explicitStacks);
- h.render().cancelGeometryRefinementPreview();assert.equal(h.render().applyGeometryRefinementPreview(cancelled),false);assert.deepEqual(stable(h.render()),beforeExplicit);
- const stale=await h.render().previewGeometryRefinement();assert.ok(stale);h.render().applyDocument(h.render().captureDocument());
- assert.equal(h.render().applyGeometryRefinementPreview(stale),false,'explicit expanded-scope preview obeys the same revision guard');assert.deepEqual(stable(h.render()),beforeExplicit);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),explicitStacks);
- const preview=await h.render().previewGeometryRefinement();assert.ok(preview,h.render().editError??'fresh explicit scope preview');
- assert.equal(h.render().applyGeometryRefinementPreview(preview),true,h.render().editError??'apply expanded explicit scope');
+ const beforeExplicit=stable(h.render()),explicitStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(explicitStacks[1].length);
+ const expandedLegacy=prepareLegacyRefinedSave(h);
+ assert.deepEqual(stable(h.render()),beforeExplicit);
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),explicitStacks);
+ await load(h,expandedLegacy);
  const expanded=stable(h.render());assert.equal(h.render().undoHistory.length,explicitStacks[0].length+1);
  assert.equal(JSON.parse(expanded.map.physicalGrid.geometryRefinement.sourceFingerprint.slice('geo2-source-input-v1:'.length)).regions.some(r=>r.id===newRegion.id),true);
  assert.deepEqual(expanded.map.physicalGrid.geometryRefinement.riverPlan.paths,after.map.physicalGrid.geometryRefinement.riverPlan.paths,'unrelated old river paths remain literal');
  assert.equal(expanded.map.physicalGrid.selectedCell,undefined,'cleared live focus must not return from historical global source');assert.deepEqual(expanded.map.physicalGrid.fineCellEdits,beforeExplicit.map.physicalGrid.fineCellEdits);assert.deepEqual(expanded.generation,beforeExplicit.generation);assert.deepEqual(expanded.counters,beforeExplicit.counters);
- assertUndoRedo(h,beforeExplicit,expanded);assert.equal(h.render().applyGeometryRefinementPreview(preview),false,'applied callback cannot apply twice');
- const expandedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.equal(await h.render().previewGeometryRefinement(),null,'already current full scope is unchanged');assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),expandedStacks);
+ assertUndoRedo(h,beforeExplicit,expanded);
+ const expandedStacks=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().switchFineStep(1),true,h.render().automaticFineError);assert.equal(h.render().switchFineStep(6),true);
+ assert.deepEqual(stable(h.render()),expanded);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),expandedStacks);
  await load(h,expanded);assert.deepEqual(stable(h.render()),expanded,'expanded refinement16 reopens stored choices without rerouting');
  h.render().undoMap();const protectedSave=stable(h.render()),protectedStacks=serial([h.render().undoHistory,h.render().redoHistory]);assert.ok(protectedStacks[1].length);
  // Nonempty terminal continuation and failed closure history are covered by
@@ -1014,7 +1010,7 @@ test('G208-AUTO actual closure failure and invalid16 import preserve source, ref
  assert.equal(h.render().isImporting,false);
  let finish;h.injectFunction('readTextFile',()=>new Promise(resolve=>{finish=resolve;}));
  const importing=load(h,before);assert.equal(h.render().isImporting,true);
- assert.equal(await h.render().previewGeometryRefinement(),null,'busy import cannot start another refinement');
+ assert.equal(h.render().switchFineStep(1),false,'busy import blocks scale changes');
  assert.equal(h.render().editRiverDocument({type:'fullness',riverId:1,edgeKey:edge,fullness:3}),false);
  h.render().resetMap();
  assert.deepEqual(stable(h.render()),before,'export during import still uses the accepted physical4');

@@ -7,7 +7,7 @@ import {renderRefinedArtwork,renderRefinedLakeWater,refinementLakeShapes} from '
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createGenerationHarness} from './helpers/generation-harness.mjs';
+import {createGenerationHarness,prepareLegacyRefinedSave} from './helpers/generation-harness.mjs';
 import {prepareGeometryPlan,parseGeometryRefinement,validateGeometryRefinementSource} from '../src/geometryPlan.ts';
 import {parseDetail1StateV11,detailAuthoredState,validateDetail1Document} from '../src/detailModel.ts';
 import {composeScopedDetailState} from '../src/geometryRefinementState.ts';
@@ -63,7 +63,7 @@ for(const locale of ['ru','en'])test(`HX059 ${locale} import keeps a visible pre
 });
 // Owner preview exposed a through-lake topology absent from the terminal-lake
 // fixture above. One saved world protects the actual App transaction boundary.
-test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes atomically',async()=>{
+test('GEO2 classic seed42 through-lake legacy refinement imports, roundtrips and undoes atomically',async()=>{
  const h=createGenerationHarness(42);h.render();h.guardRandom();h.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});h.injectFunction('readTextFile',async f=>f.text);
  await h.render().handleImportJson({target:{files:[{text:fs.readFileSync(new URL('fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8')}],value:'map'}});
  // RE-Q01 A / AC05+07: the actual scale handler prepares all layers without
@@ -81,9 +81,10 @@ test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes
  assert.deepEqual(h.render().fineDisplay.geometryRefinement,display.geometryRefinement);
  assert.equal(JSON.stringify(h.render().captureDocument().map),source);assert.equal(h.render().undoHistory.length,undo);
  assert.equal(h.render().switchFineStep(6),true);
- const before=JSON.stringify(h.render().captureDocument()),preview=h.render().previewGeometryRefinement();
- assert.ok(preview,h.render().editError);assert.equal(JSON.stringify(h.render().captureDocument()),before);
- assert.equal(h.render().applyGeometryRefinementPreview(preview),true);
+ const before=JSON.stringify(h.render().captureDocument());
+ const legacy=prepareLegacyRefinedSave(h);
+ assert.equal(JSON.stringify(h.render().captureDocument()),before);
+ await h.render().handleImportJson({target:{files:[{text:JSON.stringify(legacy)}],value:'map'}});
  const accepted=h.render().captureDocument(),g=accepted.map.physicalGrid.geometryRefinement;
  assert.equal(g.riverPlan.mouths.length,9);assert.deepEqual(accepted.generation,JSON.parse(before).generation);
  for(const key of ['72.746,-70','24.249,-14']){
