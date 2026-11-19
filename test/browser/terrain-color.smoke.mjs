@@ -168,6 +168,7 @@ try {
       return element.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
     });
     assert.ok(Math.abs(field.width - innerWidth) <= 1);
+    await choices.scrollIntoViewIfNeeded();
     await page.screenshot({path:fileURLToPath(evidence('dunes-narrow-' + width + '.png'))});
   }
   await page.setViewportSize({width:1440, height:1000});
