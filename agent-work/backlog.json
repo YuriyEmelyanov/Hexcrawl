@@ -915,7 +915,7 @@
     {
       "task_id": "HX-BL-060",
       "title": "Единый вид карты: цвет биома + PNG-гравюра; удалить режимы «Эмоджи» и «Цвет»",
-      "status": "разработана",
+      "status": "опубликована",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json"
@@ -923,10 +923,10 @@
       "approval_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
       "approved_at": "2026-11-17T11:24:24.659Z",
       "implementation_authorized": true,
-      "release_authorized": false,
-      "execution_state": "Независимая приёмка точного SHA закрыта. Ожидается отдельное разрешение владельца на публикацию PR #506.",
-      "next_role": "programmer",
-      "next_step": "После отдельного разрешения владельца опубликовать только PR #506 на ffe92d6. Перед merge сверить head, base, tree и результаты CI, после выпуска проверить сайт и передать score_update_pending.",
+      "release_authorized": true,
+      "execution_state": "Публикация на работающем сайте проверена. Стратегу передан учёт оценки на точном merge SHA.",
+      "next_role": "strategist-manager",
+      "next_step": "Сверить выпущенный PR #506 с независимым score_assessment1.2, завершить учёт оценки. Затем программисту готова согласованная правка HX-BL-059 F2.",
       "requirements": [
         "Оставить одно представление биомов: согласованный цвет + прозрачный PNG + смещённый межбиомный градиент160% со сглаженными углами. Удалить режимы биомов Эмоджи/Цвет и переключатель трёх режимов из RU/EN интерфейса.",
         "Заменить старые рисунки всех существующих биомов, включая озеро/море, выбранными гравюрами; новые биомы добавляются в HX-BL-021 через тот же реестр. Отображать POI единственным видом со штатными значками. Убрать выбор вида POI.",
@@ -989,7 +989,7 @@
         "remove_poi_presentation_control": true,
         "latest_ui_refinement_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-060-smooth-color-junction.json"
       },
-      "updated_at": "2026-11-19T03:09:45.858Z",
+      "updated_at": "2026-11-19T05:48:10.231Z",
       "precedes_task_ids": [
         "HX-BL-021"
       ],
@@ -1003,7 +1003,7 @@
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
         "publication_authorized": false
       },
-      "next_handoff_ref": "agent-work/handoffs/2026-11-19T0600-reviewer-HX-BL-060-F4-next.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-19T0827-programmer-HX-BL-060-release-PR506-score.json",
       "draft_spec_version": "D2",
       "ui_preview_ref": "agent-work/previews/HX-BL-060-F4/README.md",
       "ui_preview_version": "F4",
@@ -1036,8 +1036,18 @@
         "base_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
         "review_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/review.json",
         "score_assessment_ref": "agent-work/evidence/HX-BL-060-review-ffe92d6/score-assessment1.2.json",
-        "status": "awaiting_owner_publication"
-      }
+        "status": "published_verified",
+        "release_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+        "approval_ref": "agent-work/decisions/owner-decision-2026-11-19-publish-PR506.json",
+        "deployment_run_id": 44465653059
+      },
+      "release_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "merge_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "release_ref": "agent-work/results/2026-11-19T0827-programmer-HX-BL-060-release-PR506.json",
+      "release_result_ref": "agent-work/results/2026-11-19T0827-programmer-HX-BL-060-release-PR506.json",
+      "deployment_url": "https://app.hexcrawl.ru/",
+      "score_update_status": "pending",
+      "score_update_responsible": "strategist-manager"
     }
   ],
   "retired_pr_packages": {
