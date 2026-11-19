@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-SD-L1-implementation-1795066537187",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_Shadowdark_L1_implementation_review_completed",
+  "selected_task": {
+    "id": "HX-RSR-SD-RETAINED-L1-EVIDENCE",
+    "game_id": "SD",
+    "layer": "L1",
+    "completion_condition": "Сверить все 18 оставленных требований создания карты с текущей версией, исполнимые случаи проверить на исходном коде, остальные классифицировать и предъявить точный остаток."
+  },
+  "selection_reason": "Shadowdark входит в действующий общий top5, и для игры уже сохранён корпус с применимыми L1 строками. Свежая публикация PR #506 даёт проверяемый точный продуктовый SHA для различения редактора и игрового алгоритма.",
+  "alternatives": [
+    {
+      "candidate": "DND5/DMG2014",
+      "reason": "Допустима ограниченная проверка существующей L1 матрицы. Она выбрана следующей; полный первичный корпус пока открытый."
+    },
+    {
+      "candidate": "Повторная проверка Crows",
+      "reason": "Уже закрытая проверка сохраняется с привязкой к своей версии. Для её повтора нет основания в пересмотренных правилах игры."
+    }
+  ],
+  "inputs_and_versions": {
+    "agent_operations": "e2c74e98b48295ebea1b5c7065cef382eee0ee0e",
+    "product_main": "172155071ca1408abf6960dbc876ba030fc61613",
+    "source_ref": "agent-work/market/rules/Shadowdark-Core.json",
+    "coverage_ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+    "source_sha256": "22db5db3cb9869b2867f689504256f69903db81c5059b1e8932436a65343f104",
+    "scope_ref": "agent-work/research/requirements/SD-CORE-scope-audit.json",
+    "canonical_refs": [
+      "agent-work/rules/common-rules.json",
+      "agent-work/rules/game-bindings.json"
+    ],
+    "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+    "ranking_version": "three-scenario-ranks-1.4-CROWS-addition",
+    "top5": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ]
+  },
+  "findings": [
+    {
+      "id": "SD-current-map-editor",
+      "result": "На main после PR #506 подтвердились шестимильная база, независимое приближение, сохранение типа и имени городка, таверны, входа и лесного логова. Наращивание карты сохранило прежние места.",
+      "impact": "Указанные операции общего редактора уже переиспользуются. Поведение не распространяется на специальные способы наполнения Shadowdark."
+    },
+    {
+      "id": "SD-current-generator",
+      "result": "Два сценария 2d6 и правило d6=1 сверены до точных результатов. Такой профиль в проверенных входах актуального генератора не найден.",
+      "impact": "Критерии оставлены стратегу с отдельными исходными вероятностями и условием не смешивать семь строк и суммы двух костей."
+    },
+    {
+      "id": "SD-danger-and-POI-policy",
+      "result": "Danger означает давление встреч, а не трудность движения. Для двух колонок POI не подтверждён способ сочетания бросков.",
+      "impact": "Совместить ретроспективные данные без выдуманного частотного значения safe или неявного выбора способа броска."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/SD-CORE-L1-implementation.json",
+    "agent-work/research/requirements/SD-CORE-L1-implementation.md",
+    "agent-work/research/requirements/SD-CORE-L1-implementation-probe.mjs",
+    "agent-work/research/requirements/SD-CORE.md",
+    "agent-work/research/handoffs/2026-11-19-SD-L1-implementation-1795066537187-strategist.json",
+    "agent-work/research/runs/2026-11-19-SD-L1-implementation-1795066537187.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "matrix_ref": "agent-work/research/requirements/SD-CORE-L1-implementation.json",
+    "checks": {
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "main_change": "PR #506 / published-product branch snapshot",
+      "verified_blobs": 142,
+      "node_tests": [
+        {
+          "command": "node --test --test-name-pattern='ONE-MILE1 preview|Knave difficulty is|E8 real POI move.*classic|production document exports RNG' test/saveSafety.test.mjs test/tags.test.mjs test/regionEditing.test.mjs test/worldContinuation.test.mjs",
+          "output": "✔ E8 real POI move is one exact transaction with full payload and literal hex notes classic (797.71165ms)\n✔ ONE-MILE1 preview/cancel/apply and public15 roundtrip use real import and exact undo (207.391579ms)\n✔ Knave difficulty is sparse and detached; accepted submerged flags survive without enabling water edits (2.210462ms)\n✔ production document exports RNG and undo restores continuation (605.130199ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3064.168457\n"
+        },
+        {
+          "command": "node --test test/oneMile.test.mjs",
+          "output": "✔ partial fine display is full while accepted geography area stays exact (17.286878ms)\n✔ dominant biome aggregates duplicate IDs then uses a canonical maximum tie (0.282525ms)\n✔ source permutation and fixed origin preserve biome assignments and water coverage (23.512399ms)\n✔ candidates form one legal fine row, never the whole source candidate projection (33.181538ms)\n✔ enclosed holes get only legal accessible edge neighbours (1.386579ms)\n✔ pointer and keyboard select ordinary anchors with stable q/r ties (0.435446ms)\n✔ local command edits one fine target and current language without source-six writes (2.387547ms)\n✔ stale, malformed, unsafe and unsupported local fields fail without partial writes (2.784025ms)\n✔ mixed and water cells retain local name/notes but refuse land overrides (2.725387ms)\n✔ destructive support loss requires consent and leaves an exact undo snapshot (1.282071ms)\n✔ fine POI label retains localized type and explicit name without fallback duplication (0.186992ms)\n✔ fine crossing paint distinguishes bridge, translucent ford and a real ferry road gap (2.020434ms)\n✔ fine crossing splits all ordered unique crossings and clamps endpoint or degenerate input (10.659522ms)\n✔ refined crossing paint follows display width without moving accepted paths or POI masks (1.423375ms)\n✔ finite visible water preserves dry approaches at shallow and endpoint crossings (1.394301ms)\nℹ tests 15\nℹ suites 0\nℹ pass 15\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 462.878794\n"
+        }
+      ],
+      "probe": {
+        "ref": "agent-work/research/requirements/SD-CORE-L1-implementation-probe.mjs",
+        "reproduce": "Copy to root of pinned product checkout, install dependencies with npm ci, run node on the copied probe.",
+        "checks": [
+          {
+            "check": "general_grid_and_saved_camera",
+            "coarseMiles": 6,
+            "projectAxis": "across_flats",
+            "areaSquareMiles": 31.176914536239792,
+            "cameraValues": [
+              1,
+              2
+            ],
+            "mapUnchanged": true
+          },
+          {
+            "check": "typed_named_settlement",
+            "address": "0,0",
+            "type": "town",
+            "name": "Медный Холм",
+            "roundtrip": true
+          },
+          {
+            "check": "manual_regional_sites",
+            "sites": [
+              [
+                "0,1",
+                "tower",
+                "Чёрная Башня"
+              ],
+              [
+                "-1,1",
+                "tavern",
+                "У моста"
+              ],
+              [
+                "-1,2",
+                "dungeon",
+                "Каменный вход"
+              ],
+              [
+                "0,-1",
+                "lair",
+                "Лесное логово"
+              ]
+            ],
+            "siblingsAndGeometryPreserved": true,
+            "mapRoundtrip": true
+          },
+          {
+            "check": "classic_extension_preserves_manual_lair_and_other_sites",
+            "addedRegions": 1,
+            "lairAddress": "0,-1",
+            "biome": "plain_coniferous_forest",
+            "reload": true,
+            "undoRedo": true
+          },
+          {
+            "check": "passability_Knave_only_control",
+            "profile": "classic.knave2",
+            "address": "0,-1",
+            "difficulty": "difficult",
+            "reload": true,
+            "undoRedo": true,
+            "ShadowdarkDangerProfileExercised": false
+          },
+          {
+            "check": "Shadowdark_source_reference_only",
+            "orderedPairs": 36,
+            "initialTerrainCounts": [
+              1,
+              2,
+              12,
+              11,
+              7,
+              2,
+              1
+            ],
+            "nextActions": {
+              "plus1": 3,
+              "same": 23,
+              "plus2": 9,
+              "reroll": 1
+            },
+            "mountainPlusOne": 0,
+            "oceanPlusTwo": 0,
+            "mountainPlusTwo": 1,
+            "rerollTwelve": 6,
+            "poiPresence": [
+              1,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "productShadowdarkProfileExercised": false
+          }
+        ]
+      },
+      "verification_limit": "App callbacks and real save/import run without rendering a real browser; the reference dice calculation is not a product implementation. Source is the already screened supplied Core, not an independent quickstart/current-errata collation."
+    },
+    "quality": {
+      "RA-Q01": "Фиксированы входной Core ©2023, SHA256, язык, доступ и отдельно неопределённая внутренняя редакция.",
+      "RA-Q02": "Переиспользован тематический скрининг всех 332 PDF-страниц предоставленного экземпляра. Новое чтение всего корпуса и сверка errata не заявлены.",
+      "RA-Q03": "Смысл, локатор и исходные параметры сохранены отдельно от действий продукта.",
+      "RA-Q04": "Сохранены 6 miles across с открытой осью, веса 2d6, циклический переход, отдельный переброс, d6=1 и неопределённость двух колонок.",
+      "RA-Q05": "Исходные правила, советы, числовые результаты проверки и продуктовые ограничения различены.",
+      "RA-Q06": "Для каждой строки сохранены действие, входы, объект, результат и критерии с известным выходом.",
+      "RA-Q07": "Заметки не засчитаны как функции. Выдача игрокам отложена в L2.",
+      "RA-Q08": "Все 18 точных привязок найдены. Результаты Knave и общего редактора не перенесены на профиль Shadowdark.",
+      "RA-Q09": "Граничные случаи 2d6 и сохранение карты воспроизведены. Исследовательская проверка распределения отделена от фактического генератора.",
+      "RA-Q10": "Подтверждены отдельные операции на 1721550, по другим записаны конкретные пробелы и неизвестное.",
+      "RA-Q11": "Отдельно записаны исполнение обработчиков, модульные тесты, проверка схемы и эталонный арифметический расчёт.",
+      "RA-Q12": "Передача стратегу без создания задач и дублирования общих реестров.",
+      "RA-Q13": "Человекочитаемый обзор и JSON согласованы по строкам и ограничениям.",
+      "RA-Q14": "Завершён ограниченный L1 проход. Полная игра и overall top5 остаются открытыми.",
+      "RA-Q15": "Рейтинг, методика, score, объявленная поддержка, очередь, код и публикация не менялись."
+    },
+    "main_head_observed_at_save": "172155071ca1408abf6960dbc876ba030fc61613"
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T05:13:42.264119+00:00",
+        "next": "2026-11-19T10:00:00+03:00",
+        "run": null
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T02:41:57.218902+00:00",
+        "next": "2026-11-19T08:30:00+03:00",
+        "run": null
+      }
+    ],
+    "end": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T05:13:42.264119+00:00",
+        "next": "2026-11-19T10:00:00+03:00",
+        "run": null
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T02:41:57.218902+00:00",
+        "next": "2026-11-19T08:30:00+03:00",
+        "run": null
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_Shadowdark_L1_implementation_review_completed",
+    "run_id": "2026-11-19-SD-L1-implementation-1795066537187",
+    "stage": "retained_L1_implementation",
+    "last_successful_step": "Проверены сохранение масштаба и имён, расширение карты без потери POI, контроль отдельной проходимости в Knave и критерии двух таблиц Shadowdark 2d6.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Заявленная проверка оставшихся рабочих строк L1 завершена. Непроверенные случаи и источниковые различия записаны.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-19-SD-L1-implementation-1795066537187.json",
+      "agent-work/research/requirements/SD-CORE-L1-implementation.json",
+      "agent-work/research/requirements/SD-CORE-L1-implementation.md",
+      "agent-work/research/requirements/SD-CORE-L1-implementation-probe.mjs",
+      "agent-work/research/requirements/SD-CORE.md",
+      "agent-work/research/handoffs/2026-11-19-SD-L1-implementation-1795066537187-strategist.json"
+    ],
+    "exact_continuation": "Проверить текущую реализацию 16 сохранённых L1 строк DND5/DMG2014 на свежем SHA с существующими входами и локаторами. Начать с буквального масштаба карты и общего картографического редактора, сверить с работающими профильными критериями. Печатный остаток DMG2014 сохранить до появления нового доступа к первоисточнику.",
+    "remaining": [
+      {
+        "scope": "Shadowdark input",
+        "detail": "Тематический скрининг ранее выполнен по 332-страничному предоставленному Core ©2023. Название файла v4.6 не подтверждает внутреннюю ревизию; независимая сверка errata и соседних выпусков открыта.",
+        "ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json"
+      },
+      {
+        "scope": "Shadowdark map profile",
+        "detail": "Печатная с. 132 задаёт 2d6 и один слот при d6=1. Уровень угрозы встреч хранить отдельно от проходимости. Частота назначения Danger и safe cadence не заданы."
+      },
+      {
+        "scope": "Shadowdark POI policy",
+        "detail": "Печатная с. 133 даёт колонки location и development. Общий или независимый бросок открыты; сами таблицы не разрешают автоматически выбрать рецепт. Связанные документы, услуги и предупреждения остаются узкими проверяемыми пробелами."
+      },
+      {
+        "scope": "Cohort gate",
+        "detail": "DND5 остаётся первым в overall top5, поэтому следующая достижимая задача — испытание уже извлечённых L1 строк на новой версии. Зафиксировать остатки DND5/PF2/Knave/Crows/SD. До выполнения общего условия не открывать create-top10."
+      }
+    ],
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-2014-RETAINED-L1-EVIDENCE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_after_SD_bounded_implementation",
+    "action": "Проверить текущую реализацию 16 сохранённых L1 строк DND5/DMG2014 на свежем SHA с существующими входами и локаторами. Начать с буквального масштаба карты и общего картографического редактора, сверить с работающими профильными критериями. Печатный остаток DMG2014 сохранить до появления нового доступа к первоисточнику.",
+    "completion_condition": "Записать статус и evidence по отобранным строкам DND5. Сохранить раздельно проверенное, пробел источника и условия выравнивания top5 перед определением свежего create-top10.",
+    "scope_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
+    "full_source_access_still_open": true,
+    "overall_top5_complete": false
+  },
+  "started_at": "2026-11-19T05:35:37.187Z",
+  "completed_at": "2026-11-19T05:42:05.251Z"
+}

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-SD-L1-implementation-1795066537187",
+  "from": "researcher",
+  "to": "strategist-manager",
+  "game_id": "SD",
+  "layer": "L1",
+  "status": "research_evidence_only",
+  "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+  "matrix_ref": "agent-work/research/requirements/SD-CORE-L1-implementation.json",
+  "scope_ref": "agent-work/research/requirements/SD-CORE-scope-audit.json",
+  "overview_ref": "agent-work/research/requirements/SD-CORE-L1-implementation.md",
+  "findings": [
+    {
+      "id": "SD-current-map-editor",
+      "result": "На main после PR #506 подтвердились шестимильная база, независимое приближение, сохранение типа и имени городка, таверны, входа и лесного логова. Наращивание карты сохранило прежние места.",
+      "impact": "Указанные операции общего редактора уже переиспользуются. Поведение не распространяется на специальные способы наполнения Shadowdark."
+    },
+    {
+      "id": "SD-current-generator",
+      "result": "Два сценария 2d6 и правило d6=1 сверены до точных результатов. Такой профиль в проверенных входах актуального генератора не найден.",
+      "impact": "Критерии оставлены стратегу с отдельными исходными вероятностями и условием не смешивать семь строк и суммы двух костей."
+    },
+    {
+      "id": "SD-danger-and-POI-policy",
+      "result": "Danger означает давление встреч, а не трудность движения. Для двух колонок POI не подтверждён способ сочетания бросков.",
+      "impact": "Совместить ретроспективные данные без выдуманного частотного значения safe или неявного выбора способа броска."
+    }
+  ],
+  "remaining": [
+    {
+      "scope": "Shadowdark input",
+      "detail": "Тематический скрининг ранее выполнен по 332-страничному предоставленному Core ©2023. Название файла v4.6 не подтверждает внутреннюю ревизию; независимая сверка errata и соседних выпусков открыта.",
+      "ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json"
+    },
+    {
+      "scope": "Shadowdark map profile",
+      "detail": "Печатная с. 132 задаёт 2d6 и один слот при d6=1. Уровень угрозы встреч хранить отдельно от проходимости. Частота назначения Danger и safe cadence не заданы."
+    },
+    {
+      "scope": "Shadowdark POI policy",
+      "detail": "Печатная с. 133 даёт колонки location и development. Общий или независимый бросок открыты; сами таблицы не разрешают автоматически выбрать рецепт. Связанные документы, услуги и предупреждения остаются узкими проверяемыми пробелами."
+    },
+    {
+      "scope": "Cohort gate",
+      "detail": "DND5 остаётся первым в overall top5, поэтому следующая достижимая задача — испытание уже извлечённых L1 строк на новой версии. Зафиксировать остатки DND5/PF2/Knave/Crows/SD. До выполнения общего условия не открывать create-top10."
+    }
+  ],
+  "decision_requests": [],
+  "product_task_refs": [],
+  "queue_edited": false,
+  "score_delta": "not_assessed",
+  "next_candidate": {
+    "id": "HX-RSR-DND5-2014-RETAINED-L1-EVIDENCE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_after_SD_bounded_implementation",
+    "action": "Проверить текущую реализацию 16 сохранённых L1 строк DND5/DMG2014 на свежем SHA с существующими входами и локаторами. Начать с буквального масштаба карты и общего картографического редактора, сверить с работающими профильными критериями. Печатный остаток DMG2014 сохранить до появления нового доступа к первоисточнику.",
+    "completion_condition": "Записать статус и evidence по отобранным строкам DND5. Сохранить раздельно проверенное, пробел источника и условия выравнивания top5 перед определением свежего create-top10.",
+    "scope_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
+    "full_source_access_still_open": true,
+    "overall_top5_complete": false
+  }
+}

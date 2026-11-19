@@ -1,0 +1,3096 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-SD-L1-implementation-1795066537187",
+  "game_id": "SD",
+  "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+  "source_as_loaded": {
+    "filename": "pdfcoffee.com_shadowdark-rpg-v4-6-pdf-free(1).pdf",
+    "library_file_id": "libfile_500dbefb62b081919a9791f60c818b4f9",
+    "sha256": "22db5db3cb9869b2867f689504256f69903db81c5059b1e8932436a65343f104",
+    "size_bytes": 51569398,
+    "pdf_pages": 332,
+    "metadata": {
+      "format": "PDF 1.4",
+      "title": "",
+      "author": "",
+      "subject": "",
+      "keywords": "",
+      "creator": "Adobe InDesign 17.4 (Macintosh)",
+      "producer": "Adobe PDF Library 16.0.7",
+      "creationDate": "D:20230704163852-07'00'",
+      "modDate": "D:20230704164109-07'00'",
+      "trapped": "",
+      "encryption": null
+    },
+    "id": "SD-CORE-SUPPLIED-20261106",
+    "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+    "language": "English",
+    "access_level": "full_text",
+    "author_project_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023",
+    "page_numbering": "Body printed page n is PDF n+4; printed2 begins PDF6. PDF5 is unnumbered credits corresponding to frontmatter1. PDF1–4,330–332 are unnumbered covers/quickrefs/blank. Actual332-file-page count is not a correction to publisher marketing or active ranking edition.",
+    "limitations": [
+      "Full thematic relevance screen of supplied Core only; not full combat/character/magic engine.",
+      "Filename v4.6 is not an internally verified printing/revision; later errata and supplements not collated.",
+      "Source reading and analogous canonical IDs do not verify product support, numerical profile equivalence or score.",
+      "Rule/requirement counts are editorial groups, not system complexity, audience or a ranking metric.",
+      "Derived paraphrases, parameters and locators only; complete book, art and full literary content tables are not published in this result."
+    ]
+  },
+  "status": "bounded_Shadowdark_L1_implementation_review_completed",
+  "research_baseline_sha": "e2c74e98b48295ebea1b5c7065cef382eee0ee0e",
+  "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+  "reviewed_at": "2026-11-19T05:41:42.523Z",
+  "scope_ref": "agent-work/research/requirements/SD-CORE-scope-audit.json",
+  "coverage_ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+  "prior_ref": "agent-work/research/audits/SD-regional-L1-runtime-2026-11-10.json",
+  "counts": {
+    "partial": 7,
+    "unverified": 5,
+    "implemented": 1,
+    "not_implemented": 5
+  },
+  "rows": [
+    {
+      "id": "SD-CORE-001-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 90,
+        "pdf_page": 94,
+        "printed_pages": [
+          90
+        ],
+        "pdf_pages": [
+          94
+        ],
+        "section": "Overland Travel / Travel per Day",
+        "paraphrase": "В наземном путешествии гекс имеет поперечный размер шесть миль. Точная геометрическая конвенция слова across в этом положении не определена.",
+        "normative_kind": "fixed_parameter",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-001",
+        "locator": {
+          "printed": [
+            90
+          ],
+          "pdf": [
+            94
+          ],
+          "section": "Overland Travel / Travel per Day"
+        },
+        "parameters": {
+          "hex_across_miles": 6,
+          "mile_kind": "unspecified",
+          "across_geometry": "unspecified"
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-001",
+        "normative_kind": "fixed_parameter",
+        "applicability": "Shadowdark supplied English core PDF; только карта, исследование и ограниченные внешние игровые адаптеры.",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать карту или применить профиль масштаба Shadowdark",
+        "inputs_and_units": {
+          "hex_across": 6,
+          "unit": "mile",
+          "geometry_convention": "explicit user/GM selection or unresolved"
+        },
+        "product_operation": "Сохранить значение 6 и единицу mile; хранить выбранную геометрическую конвенцию отдельно от исходного факта. При повторном открытии восстановить значение.",
+        "expected_output": "Карта с устойчивым масштабом и явно указанной неопределённостью геометрии.",
+        "constraints_and_exceptions": [
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Новая карта, профиль Shadowdark, геометрия не выбрана",
+            "when": "Задать масштаб и сохранить/открыть",
+            "expected": "hex_across=6 mile восстановлен; face-to-face/vertex-to-vertex не назначен без решения.",
+            "id": "SD-CORE-001-L1-AC01"
+          }
+        ],
+        "source_vs_product_interpretation": "Шесть миль — источник; сохранение настроек в файле/БД — продуктовая операция. В этой странице нет самостоятельного требования автора к экспорту/формату сохранения.",
+        "canonical_rule_refs": [
+          "map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "Across не определяет flat-to-flat или vertex-to-vertex; тип мили и округления не оговорены."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Физический размер гекса: Физический масштаб региональной карты независим от зума; книжное across не задаёт ось измерения.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Создать карту или применить профиль масштаба Shadowdark",
+      "map_object_or_state": {
+        "hex_across": 6,
+        "unit": "mile",
+        "geometry_convention": "explicit user/GM selection or unresolved"
+      },
+      "expected_result": "Карта с устойчивым масштабом и явно указанной неопределённостью геометрии.",
+      "canonical_rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "binding_ids": [
+        "SD-CORE-001-L1"
+      ],
+      "previous_product_verdict": "reusable_numeric_component",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "scale"
+      ],
+      "result": "Базовая сетка использует 6 миль между сторонами. Повторное открытие той же карты с приближением 1× и 2× меняет только состояние камеры. Отдельным тестом прошла одномильная проекция и загрузка.",
+      "remaining": "Книга задаёт 6 миль поперёк без оси. В текущем коде есть общая геометрия, отдельный профиль Shadowdark с явно неустановленной осью не подтверждён."
+    },
+    {
+      "id": "SD-CORE-002-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 90,
+        "pdf_page": 94,
+        "printed_pages": [
+          90
+        ],
+        "pdf_pages": [
+          94
+        ],
+        "section": "Overland Travel / Crossing Hexes",
+        "paraphrase": "Нормальное пересечение гекса занимает четыре часа пешком, два верхом, один при плавании под парусом; трудная местность удваивает нормальное время. Для arduous terrain указано восемь часов, но сочетание с разными способами и другими модификаторами не объяснено.",
+        "normative_kind": "procedure",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-002",
+        "locator": {
+          "printed": [
+            90
+          ],
+          "pdf": [
+            94
+          ],
+          "section": "Overland Travel / Crossing Hexes"
+        },
+        "parameters": {
+          "walking_hours_per_hex": 4,
+          "mounted_hours_per_hex": 2,
+          "sailing_hours_per_hex": 1,
+          "difficult_multiplier": 2,
+          "arduous_hours_per_hex": 8,
+          "arduous_method_interaction": "unresolved"
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-002",
+        "normative_kind": "procedure",
+        "applicability": "Shadowdark supplied English core PDF; только карта, исследование и ограниченные внешние игровые адаптеры.",
+        "layer": "L1",
+        "trigger_or_user_action": "Назначить участку принятую характеристику проходимости",
+        "inputs_and_units": {
+          "area": "H",
+          "terrain": "forest",
+          "passability": "difficult"
+        },
+        "product_operation": "Назначить участку принятую характеристику проходимости",
+        "expected_output": "H отмечен труднопроходимым; исходный лес и соседние гексы сохраняются после загрузки.",
+        "constraints_and_exceptions": [
+          "Укрупнённая категория HexCrawl не доказывает точную поддержку difficult/arduous Shadowdark и не рассчитывает часы/скорость.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"area\":\"H\",\"terrain\":\"forest\",\"passability\":\"difficult\"}",
+            "when": "Назначить участку принятую характеристику проходимости; сохранить и открыть карту",
+            "expected": "H отмечен труднопроходимым; исходный лес и соседние гексы сохраняются после загрузки."
+          }
+        ],
+        "source_vs_product_interpretation": "Условия и числа — парафраз указанного источника. Хранение, интерфейс, события и автоматизация — предлагаемая продуктовая интерпретация; книга не специфицирует ПО. Это требование, а не свидетельство реализации.",
+        "canonical_rule_refs": [
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Страница не классифицирует конкретные биомы по difficult/arduous."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Стоимость пересечения гекса по способу и местности: Для карты оставить только принятую проходимость местности; часы пересечения и точные difficult/arduous профили — L2, не новые обязательные поля.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Назначить участку принятую характеристику проходимости",
+      "map_object_or_state": {
+        "area": "H",
+        "terrain": "forest",
+        "passability": "difficult"
+      },
+      "expected_result": "H отмечен труднопроходимым; исходный лес и соседние гексы сохраняются после загрузки.",
+      "canonical_rule_ids": [
+        "map.terrain_zones"
+      ],
+      "binding_ids": [
+        "SD-CORE-002-L1"
+      ],
+      "previous_product_verdict": "partial",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "biome",
+        "difficulty"
+      ],
+      "result": "Хвойный биом и логово сохранились вместе. Контроль на карте Knave показывает отдельный difficult без изменения биома и точки.",
+      "remaining": "Контроль выполнялся в classic.knave2. Для Shadowdark не подтверждён собственный параметр проходимости. Назначенная опасность встреч из 049 относится к другому свойству."
+    },
+    {
+      "id": "SD-CORE-031-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 104,
+        "printed_pages": [
+          104,
+          105
+        ],
+        "pdf_page": 108,
+        "pdf_pages": [
+          108,
+          109
+        ],
+        "section": "Core Ethos; On Balance",
+        "paraphrase": "Источник советует свободно сообщать информацию, давать признаки опасности и сведения для осмысленного выбора. Пример логова включает останки и запах; совет не является универсальным автоматическим раскрытием всех скрытых угроз. Конкретный поиск ловушки рассмотрен отдельно в SD-CORE-040.",
+        "normative_kind": "advice",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-031",
+        "locator": {
+          "printed": [
+            104,
+            105
+          ],
+          "pdf": [
+            108,
+            109
+          ],
+          "section": "Core Ethos; On Balance"
+        },
+        "parameters": {
+          "tells": "descriptive, not automatic detection",
+          "universal_auto_reveal": false
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-031",
+        "normative_kind": "advice",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий готовит признаки опасного места и доступное игрокам описание",
+        "inputs_and_units": {
+          "site_id": "stable ID",
+          "observable_tell": "text",
+          "secret": "GM-only text",
+          "audience": "GM|player"
+        },
+        "product_operation": "Дать ведущему отдельно сохранить доступные признаки и скрытые сведения и выбрать, что показывать игрокам. Не выводить правила радиуса/автораскрытия из совета.",
+        "expected_output": "Два представления одного места с явно выбранной доступностью.",
+        "constraints_and_exceptions": [
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "GM записал у пещеры tell «сломанные кости у входа» и secret «внутри мантикора»; tell разрешён игрокам",
+            "when": "Открыть player view",
+            "expected": "Показаны сломанные кости; секрет об обитателе не показан.",
+            "id": "SD-CORE-031-L1-AC01"
+          },
+          {
+            "given": "GM не задал tell для места",
+            "when": "Сохранить место",
+            "expected": "Место сохраняется; совет о большинстве угроз не принуждает создать признак.",
+            "id": "SD-CORE-031-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.discovery_levels",
+          "map.audience_views"
+        ],
+        "unresolved_parameters": []
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Наблюдаемые признаки, сведения и телеграфирование угроз: Наблюдаемые признаки конкретного опасного места нужны принятой обнаружимости; не генератор общих советов ведущему.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [
+        {
+          "disposition": "defer_L2",
+          "reason": "Выдача игрокам и открытие после действий относятся к ведению гекскроула."
+        }
+      ],
+      "action": "Ведущий готовит признаки опасного места и доступное игрокам описание",
+      "map_object_or_state": {
+        "site_id": "stable ID",
+        "observable_tell": "text",
+        "secret": "GM-only text",
+        "audience": "GM|player"
+      },
+      "expected_result": "Два представления одного места с явно выбранной доступностью.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.discovery_levels",
+        "map.audience_views"
+      ],
+      "binding_ids": [
+        "SD-CORE-031-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "audience"
+      ],
+      "result": "Источник описывает подготовку наблюдаемых признаков для конкретной угрозы. Обычное имя или текст заметки не подтверждают раздельные данные мастера и игроков.",
+      "remaining": "В L1 открыта проверка двух независимо сохраняемых полей конкретного места. Их разграниченная выдача игрокам относится к L2."
+    },
+    {
+      "id": "SD-CORE-041-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 115,
+        "printed_pages": [
+          115
+        ],
+        "pdf_page": 119,
+        "pdf_pages": [
+          119
+        ],
+        "section": "Hazards",
+        "paraphrase": "Hazards — пассивные угрозы окружения; большинство заметно, часто их нельзя победить или навсегда отключить. Они могут ограничивать движение, наносить вред, ослаблять либо сочетать категории. Таблицаd12 служит материалом описания и не задаёт численные DC, damage/tick или способ соединения колонок.",
+        "normative_kind": "taxonomy_and_generator",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-041",
+        "locator": {
+          "printed": [
+            115
+          ],
+          "pdf": [
+            119
+          ],
+          "section": "Hazards"
+        },
+        "parameters": {
+          "categories": [
+            "movement_restriction",
+            "damage",
+            "weakening"
+          ],
+          "combined_allowed": true,
+          "table_locator": "printed115/PDF119 Hazards",
+          "column_policy": null,
+          "DC_damage_tick": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-041",
+        "normative_kind": "taxonomy_and_generator",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Отметить выбранную пассивную опасность участка",
+        "inputs_and_units": {
+          "site": "H",
+          "hazard": "GM selected environmental danger",
+          "visible_cue": "GM supplied cue"
+        },
+        "product_operation": "Отметить выбранную пассивную опасность участка",
+        "expected_output": "У H есть выбранная опасность и её наблюдаемый признак; соседняя география не перегенерирована.",
+        "constraints_and_exceptions": [
+          "Совет majority obvious не раскрывает автоматически все опасности.",
+          "Не вводить полный редактор статблока угрозы, DC, damage/tick или автоматический рецепт соединения колонок. Пример — данные мастера, не новая норма книги.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"H\",\"hazard\":\"GM selected environmental danger\",\"visible_cue\":\"GM supplied cue\"}",
+            "when": "Отметить выбранную пассивную опасность участка; сохранить и открыть карту",
+            "expected": "У H есть выбранная опасность и её наблюдаемый признак; соседняя география не перегенерирована."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.static_hazard",
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Колонки/кубики сочетания не предписаны; численные эффекты отсутствуют."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Пассивные опасности и сочетание категорий: Пассивная географическая опасность относится к наполнению/опасности участка. Урон, проверки и отдельный эффект-триггер не разрабатываются.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Отметить выбранную пассивную опасность участка",
+      "map_object_or_state": {
+        "site": "H",
+        "hazard": "GM selected environmental danger",
+        "visible_cue": "GM supplied cue"
+      },
+      "expected_result": "У H есть выбранная опасность и её наблюдаемый признак; соседняя география не перегенерирована.",
+      "canonical_rule_ids": [
+        "content.static_hazard",
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ids": [
+        "SD-CORE-041-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "schema",
+        "biome"
+      ],
+      "result": "Физическое окружение и POI редактируются без перегенерации соседнего участка.",
+      "remaining": "Хранение выбранной неподвижной опасности и её наблюдаемого признака одним картографическим сценарием не доказано. Разрешение урона и проверок вне среза."
+    },
+    {
+      "id": "SD-CORE-043-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 122,
+        "printed_pages": [
+          122,
+          123
+        ],
+        "pdf_page": 126,
+        "pdf_pages": [
+          126,
+          127
+        ],
+        "section": "Adventures; Adventuring Site Name",
+        "paraphrase": "Генераторы предлагают детали приключения и названия сайта изd20 колонок. Проза разрешает использовать часть результатов и менять соединительные слова; ни согласованность фразы, ни реальность места не должны считаться автоматически установленными.",
+        "normative_kind": "optional_generator",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-043",
+        "locator": {
+          "printed": [
+            122,
+            123
+          ],
+          "pdf": [
+            126,
+            127
+          ],
+          "section": "Adventures; Adventuring Site Name"
+        },
+        "parameters": {
+          "dice": "d20 per chosen column, explicit recipe",
+          "use_some_or_all": true,
+          "connecting_words_editable": true,
+          "locators": [
+            "printed122/PDF126 Adventure Generator",
+            "printed123/PDF127 Adventuring Site Name"
+          ]
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-043",
+        "normative_kind": "optional_generator",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Дать имя выбранному месту из выбранных деталей",
+        "inputs_and_units": {
+          "site": "P",
+          "synthetic_name_parts": [
+            "Чёрная",
+            "Башня"
+          ]
+        },
+        "product_operation": "Дать имя выбранному месту из выбранных деталей",
+        "expected_output": "У P имя «Чёрная Башня» с выбранными деталями; второй объект не переименован.",
+        "constraints_and_exceptions": [
+          "Пример синтетический. Генерация сюжета, мотиваций, NPC и приключенческих крючков исключена. Порядок/соединительные слова редактирует мастер.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"P\",\"synthetic_name_parts\":[\"Чёрная\",\"Башня\"]}",
+            "when": "Дать имя выбранному месту из выбранных деталей; сохранить и открыть карту",
+            "expected": "У P имя «Чёрная Башня» с выбранными деталями; второй объект не переименован."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Источник не предписывает единый correlated-vs-independent roll для всех колонок; product recipe должен быть явно выбран."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Приключение и название linked site из выбранных деталей: Оставить только название конкретного места; приключенческие крючки, сюжет и связка мотиваций исключены.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Дать имя выбранному месту из выбранных деталей",
+      "map_object_or_state": {
+        "site": "P",
+        "synthetic_name_parts": [
+          "Чёрная",
+          "Башня"
+        ]
+      },
+      "expected_result": "У P имя «Чёрная Башня» с выбранными деталями; второй объект не переименован.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.adventure_hooks",
+        "content.place_description"
+      ],
+      "binding_ids": [
+        "SD-CORE-043-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "implemented",
+      "evidence_ids": [
+        "names"
+      ],
+      "result": "Одной башне задано составленное мастером имя «Чёрная Башня». Сравнение карты до и после показало изменение только имени выбранного объекта. После импорта имя осталось.",
+      "remaining": "Подтверждено ручное имя в суженном L1. Отдельная процедура генерации сюжета или хранения ингредиентов имени из этого теста не следует."
+    },
+    {
+      "id": "SD-CORE-046-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 130,
+        "printed_pages": [
+          130,
+          131
+        ],
+        "pdf_page": 134,
+        "pdf_pages": [
+          134,
+          135
+        ],
+        "section": "Shadowdark Maps",
+        "paraphrase": "Физический рецепт раскладывает5/8/12d10 для small/medium/large dungeon, обводит границу, комнаты и проходы и определяет room types/contents по значениям костей; objective/boss помещается в комнату с максимальным result. Тип, размер, опасность и тематические descriptors можно сохранить у linked site. Генерация геометрии комнат и внутренний combat/crawl не входят в текущую региональную карту.",
+        "normative_kind": "spatial_generator_out_of_scope_linked_content_retained",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-046",
+        "locator": {
+          "printed": [
+            130,
+            131
+          ],
+          "pdf": [
+            134,
+            135
+          ],
+          "section": "Shadowdark Maps"
+        },
+        "parameters": {
+          "size_room_dice": {
+            "small": "5d10",
+            "medium": "8d10",
+            "large": "12d10"
+          },
+          "site_type_die": "d6",
+          "danger_die": "d6",
+          "danger_safe_not_in_dungeon_table": true,
+          "highest_roll_tie_rule": null,
+          "room_content_locators": "printed131/PDF135",
+          "interior_spatial_engine": "excluded"
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-046",
+        "normative_kind": "spatial_generator_out_of_scope_linked_content_retained",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить региональный вход и справочную ссылку на подземелье",
+        "inputs_and_units": {
+          "regional_site": "D",
+          "name": "GM named cave",
+          "interior_reference": "external dungeon document"
+        },
+        "product_operation": "Добавить региональный вход и справочную ссылку на подземелье",
+        "expected_output": "На карте один вход D с именем и справочной ссылкой; комнаты не создаются как региональные гексы.",
+        "constraints_and_exceptions": [
+          "Рецепт комнат/стен и objective highest room не является требованием регионального L1.",
+          "p131 content tables сохраняются только как ссылки или вручную выбранные descriptors.",
+          "Внутренний данжен-генератор, тактическая сетка/фигуры и прохождение комнат не входят в текущую операцию.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"regional_site\":\"D\",\"name\":\"GM named cave\",\"interior_reference\":\"external dungeon document\"}",
+            "when": "Добавить региональный вход и справочную ссылку на подземелье; сохранить и открыть карту",
+            "expected": "На карте один вход D с именем и справочной ссылкой; комнаты не создаются как региональные гексы."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Тай-брейк нескольких максимальных room rolls не задан; same-vs-independent columns p131 не предписаны."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Данж как linked site; внутренняя раскладка вне регионального движка: Региональный вход/тип подземелья допустим как место карты. Бросание костей для комнат/планов не становится отдельной функцией.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Добавить региональный вход и справочную ссылку на подземелье",
+      "map_object_or_state": {
+        "regional_site": "D",
+        "name": "GM named cave",
+        "interior_reference": "external dungeon document"
+      },
+      "expected_result": "На карте один вход D с именем и справочной ссылкой; комнаты не создаются как региональные гексы.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.site_links"
+      ],
+      "binding_ids": [
+        "SD-CORE-046-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "names",
+        "schema"
+      ],
+      "result": "Проверен один именованный региональный вход типа dungeon. После импорта сохранились его координаты, имя, тип и остальная география.",
+      "remaining": "Прикреплённый к этой POI внешний документ с планом подземелья не проверен. Ссылка в тексте не считается связанным объектом карты."
+    },
+    {
+      "id": "SD-CORE-047-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps; Hex Terrain",
+        "paraphrase": "Начало overland hex map: бросить или выбрать стартовую категорию Hex Terrain. Таблица2d6 содержит семь категориальных строк, некоторые объединяют альтернативы: desert/arctic и forest/jungle. Это распределение2d6, а не равномерныйd12; выбор внутри объединённой категории не уточняется.",
+        "normative_kind": "procedure",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+        "locator": {
+          "printed": [
+            132
+          ],
+          "pdf": [
+            136
+          ],
+          "section": "Overland Hex Maps; Hex Terrain"
+        },
+        "parameters": {
+          "die": "2d6",
+          "ordered_category_keys": [
+            "desert_or_arctic",
+            "swamp",
+            "grassland",
+            "forest_or_jungle",
+            "river_or_coast",
+            "ocean",
+            "mountain"
+          ],
+          "roll_intervals": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              4,
+              6
+            ],
+            [
+              7,
+              8
+            ],
+            [
+              9,
+              10
+            ],
+            [
+              11,
+              11
+            ],
+            [
+              12,
+              12
+            ]
+          ],
+          "derived_weights_out_of_36": [
+            1,
+            2,
+            12,
+            11,
+            7,
+            2,
+            1
+          ],
+          "within_category_choice": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+        "normative_kind": "procedure",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать начальный гекс overland карты",
+        "inputs_and_units": {
+          "selection_mode": "roll|choose",
+          "dice": "two integers1..6 when roll",
+          "category_choice": "one of7rows when choose",
+          "within_category": "optional explicit GM choice"
+        },
+        "product_operation": "При roll суммировать двеd6 и получить категориальную строку; при choose сохранить выбранную строку. Внутренний desert/arctic, forest/jungle и river/coast выбор сохранить отдельно и не придумывать климат.",
+        "expected_output": "Гекс с категорией, исходными костями/выбором и необязательным уточнением.",
+        "constraints_and_exceptions": [
+          "Суммы имеют2d6 weights; count step относится к категориям, не ко всем числовым значениям.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Начальный hex; dice1+1",
+            "when": "Сгенерировать terrain",
+            "expected": "category=desert_or_arctic; subtype=null до выбораGM.",
+            "id": "SD-CORE-047-L1-AC01"
+          },
+          {
+            "given": "Начальный hex; dice3+4",
+            "when": "Сгенерировать terrain",
+            "expected": "category=forest_or_jungle; никакой автоматический forest/jungle tie-break не выполняется.",
+            "id": "SD-CORE-047-L1-AC02"
+          },
+          {
+            "given": "GM вручную выбрал mountain",
+            "when": "Создать стартовый гекс",
+            "expected": "category=mountain; random dice не требуются.",
+            "id": "SD-CORE-047-L1-AC03"
+          },
+          {
+            "id": "SD-CORE-047-L1-AC04",
+            "given": "Фиксированные 36 упорядоченных пар (a,b), a,b ∈ {1,2,3,4,5,6}; каждый исход используется ровно один раз.",
+            "when": "Разрешить Hex Terrain для всех 36 пар.",
+            "expected": "Числа по семи упорядоченным категориям: [1,2,12,11,7,2,1]. Uniform d12 не проходит этот тест."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "map.terrain_zones",
+          "map.terrain_distribution"
+        ],
+        "unresolved_parameters": [
+          "Выбор внутри трёх объединённых категорий источником не определён.",
+          "Наличие non-lossy mapping этих source categories в существующий Classic terrain vocabulary не проверено; наличие похожего имени не доказывает эквивалентность."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Начальная местность overland и взвешенный выбор: Таблица2d6 выбирает исходную категорию местности создаваемой карты. Внутри desert/arctic и forest/jungle выбор не выдумывать.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Создать начальный гекс overland карты",
+      "map_object_or_state": {
+        "selection_mode": "roll|choose",
+        "dice": "two integers1..6 when roll",
+        "category_choice": "one of7rows when choose",
+        "within_category": "optional explicit GM choice"
+      },
+      "expected_result": "Гекс с категорией, исходными костями/выбором и необязательным уточнением.",
+      "canonical_rule_ids": [
+        "map.terrain_zones",
+        "map.terrain_distribution"
+      ],
+      "binding_ids": [
+        "SD-CORE-047-L1"
+      ],
+      "previous_product_verdict": "arithmetic_reuse_profile_absent",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "not_implemented",
+      "evidence_ids": [
+        "generation",
+        "dice"
+      ],
+      "result": "Проверены входы Classic, Mythic и Knave. В точках входа нет стартового профиля Shadowdark. Контроль всех 36 пар подтвердил распределение семи категорий 1/2/12/11/7/2/1.",
+      "remaining": "Текущий ручной выбор биома не является этой таблицей. Источник оставляет выбор внутри парных категорий ведущему."
+    },
+    {
+      "id": "SD-CORE-048-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps; New Hex",
+        "paraphrase": "При входе персонажей в пустой гекс применяется New Hex:2–3 сдвигают текущую terrain на одну строку,4–8 сохраняют её,9–11 сдвигают на две строки,12 требует новый бросок Hex Terrain. Шаги идут по семи строкам категорий по кругу, с возвратом к началу после mountain; это не арифметика над2d6 итогом.",
+        "normative_kind": "procedure",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048",
+        "locator": {
+          "printed": [
+            132
+          ],
+          "pdf": [
+            136
+          ],
+          "section": "Overland Hex Maps; New Hex"
+        },
+        "parameters": {
+          "new_hex_die": "2d6",
+          "actions_by_total": {
+            "12": "reroll Hex Terrain with2d6",
+            "2-3": "+1 row",
+            "4-8": "same row",
+            "9-11": "+2 rows"
+          },
+          "derived_action_weights_out_of_36": {
+            "plus1": 3,
+            "same": 23,
+            "plus2": 9,
+            "reroll": 1
+          },
+          "row_count": 7,
+          "wrap_formula": "(current_row_index+step)%7",
+          "terrain_order_ref": "SD-CORE-047",
+          "step_unit": "category row",
+          "batch_generation_algorithm": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048",
+        "normative_kind": "procedure",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Партия входит в empty hex и GM применяет overland generator",
+        "inputs_and_units": {
+          "current_terrain": "one of7categories",
+          "new_hex_dice": "two d6",
+          "reroll_dice": "two d6 only if initial sum12",
+          "destination_state": "empty|already_populated"
+        },
+        "product_operation": "Если destination empty, разрешить2d6 New Hex по индексам семи строк; +1/+2 вычислить по модулю7. При12 отдельно бросить2d6 Hex Terrain. Сохранить trace. Защиту уже созданного содержания от перезаписи использовать как продуктовое условие, а не новый закон книги.",
+        "expected_output": "Назначенная категория нового гекса с точным происхождением и без перезаписи готового гекса.",
+        "constraints_and_exceptions": [
+          "Source empty не приравнивается автоматически к любому visited/unvisited; продукт должен явно хранить отсутствие terrain.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "current=mountain; empty destination; dice1+1 =>2",
+            "when": "Создать новый hex",
+            "expected": "+1 category row с wrap даёт desert_or_arctic.",
+            "id": "SD-CORE-048-L1-AC01"
+          },
+          {
+            "given": "current=ocean; dice4+5 =>9",
+            "when": "Создать новый hex",
+            "expected": "+2 category rows: ocean→mountain→desert_or_arctic.",
+            "id": "SD-CORE-048-L1-AC02"
+          },
+          {
+            "given": "current=mountain; dice5+5 =>10",
+            "when": "Создать новый hex",
+            "expected": "+2 rows даёт swamp; не арифметический total14.",
+            "id": "SD-CORE-048-L1-AC03"
+          },
+          {
+            "given": "NewHex dice6+6; отдельный terrain dice6+6",
+            "when": "Создать новый hex",
+            "expected": "Сработал reroll; итогmountain; записаны две пары костей.",
+            "id": "SD-CORE-048-L1-AC04"
+          },
+          {
+            "given": "Гекс уже имеет grassland и linked POI; поступила команда генерации",
+            "when": "Применить защиту продукта",
+            "expected": "Содержимое сохранено; требуется явное GM overwrite, если оно вообще поддерживается.",
+            "id": "SD-CORE-048-L1-AC05"
+          },
+          {
+            "id": "SD-CORE-048-L1-AC06",
+            "given": "Фиксированные 36 упорядоченных пар двух d6; current terrain произвольна; повторный terrain roll при 12 фиксирован отдельно.",
+            "when": "Разрешить New Hex для всех 36 пар.",
+            "expected": "Числа действий: +1 строка=3, same=23, +2 строки=9, новый terrain roll=1. Uniform d12 неэквивалентен."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "map.generate_on_discovery",
+          "map.terrain_distribution",
+          "map.extend_preserving_content"
+        ],
+        "unresolved_parameters": [
+          "Источник не задаёт обработку смены current hex при маршруте, split party и повторной генерации; данные требуют явного выбора.",
+          "Source trigger — enter empty hex. Batch-генерация всей карты, порядок обхода, опорный сосед и обработка границ не заданы; такой режим требует явных origin/next и продуктового рецепта."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Генерация пустого гекса и циклические шаги по строкам terrain: Новый пустой гекс продолжает существующую карту по семи строкам terrain с циклическим переходом; не перегенерировать заполненный.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Партия входит в empty hex и GM применяет overland generator",
+      "map_object_or_state": {
+        "current_terrain": "one of7categories",
+        "new_hex_dice": "two d6",
+        "reroll_dice": "two d6 only if initial sum12",
+        "destination_state": "empty|already_populated"
+      },
+      "expected_result": "Назначенная категория нового гекса с точным происхождением и без перезаписи готового гекса.",
+      "canonical_rule_ids": [
+        "map.generate_on_discovery",
+        "map.terrain_distribution",
+        "map.extend_preserving_content"
+      ],
+      "binding_ids": [
+        "SD-CORE-048-L1"
+      ],
+      "previous_product_verdict": "profile_absent",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "not_implemented",
+      "evidence_ids": [
+        "generation",
+        "dice"
+      ],
+      "result": "Рост Classic сохраняет подготовленную карту, но использует свою географию. У Shadowdark по 36 парам получаются 3 сдвига на строку, 23 сохранения, 9 сдвигов на две, 1 отдельный переброс.",
+      "remaining": "Круговой переход между строками и второй бросок при 12 отсутствуют в проверенном генераторе. Сценарий с 12 не заменяется вычислением суммы нового числа."
+    },
+    {
+      "id": "SD-CORE-049-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps; Danger Level",
+        "paraphrase": "На странице overland данаd6 таблица danger с safe, unsafe, risky, deadly. Проза не формулирует отдельно, когда и для каждого ли гекса бросать именно эту таблицу: фраза оd6 для каждого гекса явно относится к POI. Назначенный danger может параметризовать частоту встреч112; safe cadence остаётся неизвестной.",
+        "normative_kind": "table_profile",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-049",
+        "locator": {
+          "printed": [
+            132
+          ],
+          "pdf": [
+            136
+          ],
+          "section": "Overland Hex Maps; Danger Level"
+        },
+        "parameters": {
+          "die": "d6",
+          "danger_weights_out_of_6": {
+            "safe": 1,
+            "unsafe": 2,
+            "risky": 2,
+            "deadly": 1
+          },
+          "danger_intervals": {
+            "safe": [
+              1,
+              1
+            ],
+            "unsafe": [
+              2,
+              3
+            ],
+            "risky": [
+              4,
+              5
+            ],
+            "deadly": [
+              6,
+              6
+            ]
+          },
+          "assignment_scope_frequency": null,
+          "safe_encounter_cadence": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-049",
+        "normative_kind": "table_profile",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "GM явно назначает danger либо выбирает таблицу132",
+        "inputs_and_units": {
+          "hex_id": "ID",
+          "mode": "choose|roll",
+          "die": "1..6 when roll",
+          "danger": "chosen enum when choose"
+        },
+        "product_operation": "По явному действию разрешить таблицу и сохранить danger и provenance; не бросать автоматически для всех гексов без выбранного product recipe.",
+        "expected_output": "Назначенный danger profile без выдуманной частоты назначения.",
+        "constraints_and_exceptions": [
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "GM вызвал Danger Level; die1",
+            "when": "Назначить гексуA",
+            "expected": "A.danger=safe; encounter_cadence не подставляется.",
+            "id": "SD-CORE-049-L1-AC01"
+          },
+          {
+            "given": "GM вызвал Danger Level; die5",
+            "when": "Назначить гексуB",
+            "expected": "B.danger=risky.",
+            "id": "SD-CORE-049-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Текст не определяет scope/frequency назначения Danger Level; нужна явная конфигурация."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Назначаемый danger profile гекса и источник таблицы: Назначенная опасность гекса — данные карты; частота встреч исполняется позже. Не выдавать наличие danger за автоматический рандом для каждого гекса.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "GM явно назначает danger либо выбирает таблицу132",
+      "map_object_or_state": {
+        "hex_id": "ID",
+        "mode": "choose|roll",
+        "die": "1..6 when roll",
+        "danger": "chosen enum when choose"
+      },
+      "expected_result": "Назначенный danger profile без выдуманной частоты назначения.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ids": [
+        "SD-CORE-049-L1"
+      ],
+      "previous_product_verdict": "manual_text_only",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "not_implemented",
+      "evidence_ids": [
+        "schema",
+        "difficulty"
+      ],
+      "result": "В проверенной схеме общего редактора и активных режимах нет отдельной сохраняемой оценки safe/unsafe/risky/deadly для гекса.",
+      "remaining": "Это параметр давления встреч, отличный от difficult. Правила не задают обязательный бросок для каждого гекса и не задают интервал встреч safe."
+    },
+    {
+      "id": "SD-CORE-050-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps",
+        "paraphrase": "Для каждого гекса бросаетсяd6; на1 в гексе есть одна point of interest. Это вероятность1/6 одного POI, а не числоPOI=d6 и не обязательный объект в каждом гексе. Прямой процедуры многократной проверки уже обработанного гекса источник не задаёт.",
+        "normative_kind": "procedure",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050",
+        "locator": {
+          "printed": [
+            132
+          ],
+          "pdf": [
+            136
+          ],
+          "section": "Overland Hex Maps"
+        },
+        "parameters": {
+          "die": "1d6",
+          "POI_on": 1,
+          "POI_count_on_success": 1,
+          "probability": {
+            "numerator": 1,
+            "denominator": 6
+          },
+          "retry_policy": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050",
+        "normative_kind": "procedure",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "GM генерирует POI presence для ещё не обработанного гекса",
+        "inputs_and_units": {
+          "hex_id": "ID",
+          "roll": "1..6",
+          "POI_check_state": "not_done|done"
+        },
+        "product_operation": "На1 создать одну POI slot и передать заполнение SD-CORE-051; на2–6 не создавать POI из этой процедуры. Сохранить check_state; повторный запуск не должен молча повышать вероятность или дублировать объект.",
+        "expected_output": "Ноль или одна POI slot с исходом броска.",
+        "constraints_and_exceptions": [
+          "Idempotence/check_state — предложенная защита продукта, а не отдельное правило книги.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Новый гексA; die1",
+            "when": "Проверить POI presence",
+            "expected": "Создана ровно1POI slot.",
+            "id": "SD-CORE-050-L1-AC01"
+          },
+          {
+            "given": "Новый гексB; die6",
+            "when": "Проверить POI presence",
+            "expected": "По этому рецепту создано0POI, не6.",
+            "id": "SD-CORE-050-L1-AC02"
+          },
+          {
+            "given": "ГексA уже содержит результатcheck1",
+            "when": "Повторно открыть генератор",
+            "expected": "Нет скрытого повторного броска и новогоPOI; повторная генерация возможна только явно по решениюGM.",
+            "id": "SD-CORE-050-L1-AC03"
+          },
+          {
+            "id": "SD-CORE-050-L1-AC04",
+            "given": "Шесть новых гексов и фиксированные POI presence outcomes [1,2,3,4,5,6].",
+            "when": "Разрешить по одной presence check на гекс.",
+            "expected": "Числа созданных POI slots [1,0,0,0,0,0], всего один POI; повторная обработка не скрыто перебрасывается."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "content.feature_distribution"
+        ],
+        "unresolved_parameters": [
+          "Повторная проверка уже подготовленного гекса не описана."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Плотность POI: один объект на успешномd6: Проверкаd6на1 определяет наличие одного POI при подготовке гекса, а не числоPOI. Не повторять проверку ради нужной плотности.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "GM генерирует POI presence для ещё не обработанного гекса",
+      "map_object_or_state": {
+        "hex_id": "ID",
+        "roll": "1..6",
+        "POI_check_state": "not_done|done"
+      },
+      "expected_result": "Ноль или одна POI slot с исходом броска.",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.feature_distribution"
+      ],
+      "binding_ids": [
+        "SD-CORE-050-L1"
+      ],
+      "previous_product_verdict": "profile_absent",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "not_implemented",
+      "evidence_ids": [
+        "generation",
+        "dice"
+      ],
+      "result": "Классическое наполнение работает по своим правилам. В текущих входах нет проверяемой отдельной процедуры «ровно один слот POI только при d6=1».",
+      "remaining": "Контроль шести исходов даёт [1,0,0,0,0,0]. Состояние «гекс уже обработан» и явный повтор относятся к этому профилю."
+    },
+    {
+      "id": "SD-CORE-051-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 133,
+        "printed_pages": [
+          133
+        ],
+        "pdf_page": 137,
+        "pdf_pages": [
+          137
+        ],
+        "section": "Points of Interest",
+        "paraphrase": "Таблицаd20 содержит location и development, включая поселения, святилища, естественные/искусственные sites и связи с подземными/иными местами. Наличие общего индексного столбца не доказывает ни независимый, ни один общий бросок двух колонок. Рецепт соединения нужно явно выбрать и сохранить как продуктовое решение.",
+        "normative_kind": "table_generator",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+        "locator": {
+          "printed": [
+            133
+          ],
+          "pdf": [
+            137
+          ],
+          "section": "Points of Interest"
+        },
+        "parameters": {
+          "die": "d20",
+          "columns": [
+            "location",
+            "development"
+          ],
+          "table_locator": "printed133/PDF137 Points of Interest",
+          "column_roll_policy": null,
+          "followup_cataclysm_if_development1": true
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+        "normative_kind": "table_generator",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Заполняется POI slot либо GM вручную добавляет POI",
+        "inputs_and_units": {
+          "column_policy": "explicit same_roll|independent_rolls|manual",
+          "location_roll": "1..20",
+          "development_roll": "1..20, explicit",
+          "hex_id": "ID",
+          "linked_site_refs": "optional"
+        },
+        "product_operation": "Разрешить каждую выбранную колонку по сохранённому рецепту. Создать editable POI descriptor; при development2 сохранить смысловую связь с tomb как описание/link, а при development1 вызвать bounded Cataclysm choice. Не выдавать выбранный recipe за однозначный текст источника.",
+        "expected_output": "POI с независимыми source coordinates, рецептом и linked content.",
+        "constraints_and_exceptions": [
+          "Словесная таблица целиком не переносится.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Product profile явно same_roll; roll2",
+            "when": "Создать POI",
+            "expected": "Location=укреплённый keep; development=связь с большим tomb; recipe=same_roll recorded, source certainty=unresolved.",
+            "id": "SD-CORE-051-L1-AC01"
+          },
+          {
+            "given": "Product profile явно independent; location roll7,development20",
+            "when": "Создать POI",
+            "expected": "Location=деревня; development=дверь в иной plane; оба результата сохранены отдельно.",
+            "id": "SD-CORE-051-L1-AC02"
+          },
+          {
+            "given": "Рецепт не выбран",
+            "when": "Попросить полностью автоматическую генерацию",
+            "expected": "Возвращён unresolved_column_policy; same/independent не назначены молча.",
+            "id": "SD-CORE-051-L1-AC03"
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.place_description",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Same-vs-independent rolls двух колонок p133 явно не определены."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "POI location/development и смысловые связи: Location/development прямо наполняют выбранный POI; рецепт соединения колонок не выдумывать.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Заполняется POI slot либо GM вручную добавляет POI",
+      "map_object_or_state": {
+        "column_policy": "explicit same_roll|independent_rolls|manual",
+        "location_roll": "1..20",
+        "development_roll": "1..20, explicit",
+        "hex_id": "ID",
+        "linked_site_refs": "optional"
+      },
+      "expected_result": "POI с независимыми source coordinates, рецептом и linked content.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description",
+        "content.site_links"
+      ],
+      "binding_ids": [
+        "SD-CORE-051-L1"
+      ],
+      "previous_product_verdict": "partial_manual_pipeline",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "names",
+        "generation"
+      ],
+      "result": "Ручное создание POI и повторное открытие подтверждены. Точный профиль d20 для двух колонок отсутствует в текущих путях генерации.",
+      "remaining": "Источник не определяет один или два броска. Сохранение независимых исходных строк location/development и явно выбранного рецепта не подтверждено."
+    },
+    {
+      "id": "SD-CORE-052-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132,
+          133
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136,
+          137
+        ],
+        "section": "Cataclysm; Points of Interest",
+        "paraphrase": "При результате cataclysm применяется отдельнаяd8 таблица типов катастроф. Результат даёт тему опасного места/события, но не задаёт площадь, скорость распространения, длительность, урон или погоду. Не следует генерировать движущуюся катастрофу с физическими последствиями без дополнительных данных.",
+        "normative_kind": "bounded_generator",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-052",
+        "locator": {
+          "printed": [
+            132,
+            133
+          ],
+          "pdf": [
+            136,
+            137
+          ],
+          "section": "Cataclysm; Points of Interest"
+        },
+        "parameters": {
+          "die": "d8",
+          "table_locator": "printed132/PDF136 Cataclysm",
+          "trigger": "selected cataclysm, including POI Development1",
+          "spatial_extent": null,
+          "duration_speed_damage": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-052",
+        "normative_kind": "bounded_generator",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Уточнить выбранный POI темой неподвижной опасности",
+        "inputs_and_units": {
+          "site": "P",
+          "source": "Cataclysm p133",
+          "selection": "GM selected row",
+          "interpretation": "GM confirmed static dangerous place"
+        },
+        "product_operation": "Уточнить выбранный POI темой неподвижной опасности",
+        "expected_output": "Тема относится только к P; её источник сохранён, неизвестные радиус/урон/длительность не выдуманы.",
+        "constraints_and_exceptions": [
+          "Без создания движущейся катастрофы, изменения соседних рек/поселений, таймеров и симуляции последствий. Если мастер не выбрал картографически применимое статическое место — результат остаётся вне L1.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"P\",\"source\":\"Cataclysm p133\",\"selection\":\"GM selected row\",\"interpretation\":\"GM confirmed static dangerous place\"}",
+            "when": "Уточнить выбранный POI темой неподвижной опасности; сохранить и открыть карту",
+            "expected": "Тема относится только к P; её источник сохранён, неизвестные радиус/урон/длительность не выдуманы."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.static_hazard"
+        ],
+        "unresolved_parameters": [
+          "Масштаб, продолжительность, поражение и динамика не определены таблицей."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Катаклизм как результат POI development: Оставить только тему неподвижного опасного места из POI development, без распространения катастрофы, урона или изменения всей географии.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Уточнить выбранный POI темой неподвижной опасности",
+      "map_object_or_state": {
+        "site": "P",
+        "source": "Cataclysm p133",
+        "selection": "GM selected row",
+        "interpretation": "GM confirmed static dangerous place"
+      },
+      "expected_result": "Тема относится только к P; её источник сохранён, неизвестные радиус/урон/длительность не выдуманы.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.static_hazard",
+        "content.adventure_hooks"
+      ],
+      "binding_ids": [
+        "SD-CORE-052-L1"
+      ],
+      "previous_product_verdict": "manual_text_only",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "not_implemented",
+      "evidence_ids": [
+        "schema",
+        "generation"
+      ],
+      "result": "В проверенной модели POI нет операции выбрать результат Cataclysm и сохранить его исходную строку как тему конкретного места.",
+      "remaining": "Эффекты, радиус и время из темы не выводятся. Отсутствие источника нельзя заменять обычным названием или заметкой."
+    },
+    {
+      "id": "SD-CORE-053-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 133,
+        "printed_pages": [
+          133
+        ],
+        "pdf_page": 137,
+        "pdf_pages": [
+          137
+        ],
+        "section": "Settlement Name",
+        "paraphrase": "Имена поселений выбираются поd8 в колонке village, town либо city/metropolis. Масштаб выбранного поселения определяет колонку; таблица не разрешает автоматически демографию или population count.",
+        "normative_kind": "table_generator",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-053",
+        "locator": {
+          "printed": [
+            133
+          ],
+          "pdf": [
+            137
+          ],
+          "section": "Settlement Name"
+        },
+        "parameters": {
+          "die": "d8",
+          "columns": [
+            "village",
+            "town",
+            "city_or_metropolis"
+          ],
+          "table_locator": "printed133/PDF137 Settlement Name",
+          "population": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-053",
+        "normative_kind": "table_generator",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "У POI уже выбран settlement type и GM вызывает генератор имени",
+        "inputs_and_units": {
+          "settlement_type": "village|town|city|metropolis",
+          "roll": "1..8"
+        },
+        "product_operation": "Выбрать соответствующую колонку, сохранить имя и source coordinate. Результат не должен изменять тип поселения или создавать population.",
+        "expected_output": "Поселение с именем и сохранённым типом.",
+        "constraints_and_exceptions": [
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "type=village; roll1",
+            "when": "Назвать",
+            "expected": "Имя=Bruga’s Hold; type остаётсяvillage.",
+            "id": "SD-CORE-053-L1-AC01"
+          },
+          {
+            "given": "type=metropolis; roll8",
+            "when": "Назвать",
+            "expected": "Имя=Rahgbat изcity/metropolis колонки; численность жителей неизвестна.",
+            "id": "SD-CORE-053-L1-AC02"
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": []
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Имя поселения по его выбранному масштабу: Имя определяется для уже выбранного типа поселения; население/демографию не рассчитывать.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "У POI уже выбран settlement type и GM вызывает генератор имени",
+      "map_object_or_state": {
+        "settlement_type": "village|town|city|metropolis",
+        "roll": "1..8"
+      },
+      "expected_result": "Поселение с именем и сохранённым типом.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ids": [
+        "SD-CORE-053-L1"
+      ],
+      "previous_product_verdict": "partial_manual_name",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "names",
+        "generation"
+      ],
+      "result": "Проверено, что изменение имени городка сохраняет тип town и тот же адрес после загрузки.",
+      "remaining": "Имена из d8 Shadowdark и выбор подходящей колонки village/town/city-metropolis отсутствуют в проверенном генераторе. Тип capital из приложения сам по себе не доказывает соответствие metropolis."
+    },
+    {
+      "id": "SD-CORE-058-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 136,
+        "printed_pages": [
+          136,
+          137
+        ],
+        "pdf_page": 140,
+        "pdf_pages": [
+          140,
+          141
+        ],
+        "section": "Taverns; Food; Drinks",
+        "paraphrase": "Таверна имеет quality, название/особенность и меню. Poor:2drinks, каждыйd6, и3poorfood; standard:3drinks, каждый2d6, и1poor+2standardfood; wealthy:4drinks, каждыйd12, и2standard+2wealthyfood. Food выбираетсяd12 вquality колонке, цены заданы1d4cp/1d6sp/1d8gp. Drinks могут иметь персональные эффекты; они не превращаются в обязательную regional map/economy simulation.",
+        "normative_kind": "generator_linked_content",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-058",
+        "locator": {
+          "printed": [
+            136,
+            137
+          ],
+          "pdf": [
+            140,
+            141
+          ],
+          "section": "Taverns; Food; Drinks"
+        },
+        "parameters": {
+          "quality_recipes": {
+            "poor": {
+              "drinks": 2,
+              "drink_die": "d6",
+              "food": {
+                "poor": 3
+              }
+            },
+            "standard": {
+              "drinks": 3,
+              "drink_die": "2d6",
+              "food": {
+                "poor": 1,
+                "standard": 2
+              }
+            },
+            "wealthy": {
+              "drinks": 4,
+              "drink_die": "d12",
+              "food": {
+                "standard": 2,
+                "wealthy": 2
+              }
+            }
+          },
+          "food_die": "d12",
+          "food_price_dice": {
+            "poor": "1d4cp",
+            "standard": "1d6sp",
+            "wealthy": "1d8gp"
+          },
+          "name_feature_die": "d20 columns; explicit recipe",
+          "locators": [
+            "printed136/PDF140 Tavern Generator",
+            "printed137/PDF141 Food; Drinks"
+          ],
+          "drinks_effect_integration": "external_optional_character_adapter"
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-058",
+        "normative_kind": "generator_linked_content",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Назвать выбранную таверну и указать простые еду/напитки",
+        "inputs_and_units": {
+          "place": "T",
+          "synthetic_name": "У моста",
+          "food": "хлеб",
+          "drink": "пиво"
+        },
+        "product_operation": "Назвать выбранную таверну и указать простые еду/напитки",
+        "expected_output": "T названа «У моста», предлагаются хлеб и пиво; никаких цен/рационов/персонажных эффектов не рассчитано.",
+        "constraints_and_exceptions": [
+          "Food/drink tables и имена целиком не копируются.",
+          "Character buffs, XP drink, HP healing, продажи, налоги и валютообмен не включаются в map engine как следствие generator.",
+          "Пример мастера, не цитата строки книги. Таблицы могут дать подсказки для того же места; полный quality-price/menu/effect движок не требуется.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"place\":\"T\",\"synthetic_name\":\"У моста\",\"food\":\"хлеб\",\"drink\":\"пиво\"}",
+            "when": "Назвать выбранную таверну и указать простые еду/напитки; сохранить и открыть карту",
+            "expected": "T названа «У моста», предлагаются хлеб и пиво; никаких цен/рационов/персонажных эффектов не рассчитано."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Частота изменения меню, повторные позиции и единица price sample(per dish/per serving) не уточнены; многостолбцовый name recipe требует явного выбора."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Таверна: название, меню и разные кости drinks: Название и простая еда относятся к конкретной таверне; цены, эффекты напитков, снабжение и полный ресторанный генератор исключены.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Назвать выбранную таверну и указать простые еду/напитки",
+      "map_object_or_state": {
+        "place": "T",
+        "synthetic_name": "У моста",
+        "food": "хлеб",
+        "drink": "пиво"
+      },
+      "expected_result": "T названа «У моста», предлагаются хлеб и пиво; никаких цен/рационов/персонажных эффектов не рассчитано.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ids": [
+        "SD-CORE-058-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "names",
+        "schema"
+      ],
+      "result": "Именованная таверна «У моста» сохраняет тип и координаты после импорта.",
+      "remaining": "Прикреплённые поля еды и напитка для этой таверны не подтверждены. Генерация рационов, цены и эффекты вне среза."
+    },
+    {
+      "id": "SD-CORE-059-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 138,
+        "printed_pages": [
+          138,
+          139
+        ],
+        "pdf_page": 142,
+        "pdf_pages": [
+          142,
+          143
+        ],
+        "section": "Shops; Shop Generator; Interesting Customer",
+        "paraphrase": "Качество магазина определяет таблицу специализации: poord12,standardd10,wealthyd10. Название/особенность строятся изd20 колонок; Interesting Customer используетd4 строку иd4 колонку и иногда содержит дополнительные dice counts. Это не каталог товаров, stock simulation или обязательное наличие предметов.",
+        "normative_kind": "generator_linked_content",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-059",
+        "locator": {
+          "printed": [
+            138,
+            139
+          ],
+          "pdf": [
+            142,
+            143
+          ],
+          "section": "Shops; Shop Generator; Interesting Customer"
+        },
+        "parameters": {
+          "shop_type_dice": {
+            "poor": "d12",
+            "standard": "d10",
+            "wealthy": "d10"
+          },
+          "name_feature_die": "d20 columns; explicit recipe",
+          "customer_die": "d4 row,d4 column",
+          "customer_followup_counts": [
+            "1d10 children",
+            "1d4 priests"
+          ],
+          "locators": [
+            "printed138/PDF142 Shops",
+            "printed139/PDF143 Shop Generator; Interesting Customer"
+          ]
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-059",
+        "normative_kind": "generator_linked_content",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Назвать конкретную лавку и выбрать её специализацию",
+        "inputs_and_units": {
+          "place": "S",
+          "synthetic_name": "Медная лавка",
+          "specialization": "tools"
+        },
+        "product_operation": "Назвать конкретную лавку и выбрать её специализацию",
+        "expected_output": "У S имя «Медная лавка» и специализация инструменты; случайный посетитель и ассортимент не созданы.",
+        "constraints_and_exceptions": [
+          "Пример синтетический. Генератор NPC/покупателей, наличия товаров, остатков и финансов исключён.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"place\":\"S\",\"synthetic_name\":\"Медная лавка\",\"specialization\":\"tools\"}",
+            "when": "Назвать конкретную лавку и выбрать её специализацию; сохранить и открыть карту",
+            "expected": "У S имя «Медная лавка» и специализация инструменты; случайный посетитель и ассортимент не созданы."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Многостолбцовый name/known-for recipe не уточнён; наличие/stock/цены товаров отсутствуют."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Магазины и посетители как связанный контент: Имя и специализация конкретного магазина допустимы; генерация посетителя/NPC и ассортимент/stock исключены.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Назвать конкретную лавку и выбрать её специализацию",
+      "map_object_or_state": {
+        "place": "S",
+        "synthetic_name": "Медная лавка",
+        "specialization": "tools"
+      },
+      "expected_result": "У S имя «Медная лавка» и специализация инструменты; случайный посетитель и ассортимент не созданы.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ids": [
+        "SD-CORE-059-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "schema"
+      ],
+      "result": "Проверенные типы и редактор имён позволяют картографировать обычное место.",
+      "remaining": "Выбор и сохранение специализации конкретной лавки вместе с именем не испытаны. Наличие общего POI или имени лавки этого не доказывает."
+    },
+    {
+      "id": "SD-CORE-063-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 143,
+        "pdf_page": 147,
+        "printed_pages": [
+          143,
+          145,
+          147,
+          149,
+          153,
+          155,
+          157,
+          159,
+          161,
+          163,
+          167,
+          169,
+          171,
+          173,
+          175,
+          177,
+          179,
+          181,
+          183,
+          185
+        ],
+        "pdf_pages": [
+          147,
+          149,
+          151,
+          153,
+          157,
+          159,
+          161,
+          163,
+          165,
+          167,
+          171,
+          173,
+          175,
+          177,
+          179,
+          181,
+          183,
+          185,
+          187,
+          189
+        ],
+        "section": "Encounter sites, shelters, landmarks and routes",
+        "local_pages": [
+          {
+            "printed_page": 143,
+            "pdf_page": 147,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-147.txt"
+          },
+          {
+            "printed_page": 145,
+            "pdf_page": 149,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-149.txt"
+          },
+          {
+            "printed_page": 147,
+            "pdf_page": 151,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-151.txt"
+          },
+          {
+            "printed_page": 149,
+            "pdf_page": 153,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-153.txt"
+          },
+          {
+            "printed_page": 153,
+            "pdf_page": 157,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-157.txt"
+          },
+          {
+            "printed_page": 155,
+            "pdf_page": 159,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-159.txt"
+          },
+          {
+            "printed_page": 157,
+            "pdf_page": 161,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-161.txt"
+          },
+          {
+            "printed_page": 159,
+            "pdf_page": 163,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-163.txt"
+          },
+          {
+            "printed_page": 161,
+            "pdf_page": 165,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-165.txt"
+          },
+          {
+            "printed_page": 163,
+            "pdf_page": 167,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-167.txt"
+          },
+          {
+            "printed_page": 167,
+            "pdf_page": 171,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-171.txt"
+          },
+          {
+            "printed_page": 169,
+            "pdf_page": 173,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-173.txt"
+          },
+          {
+            "printed_page": 171,
+            "pdf_page": 175,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-175.txt"
+          },
+          {
+            "printed_page": 173,
+            "pdf_page": 177,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-177.txt"
+          },
+          {
+            "printed_page": 175,
+            "pdf_page": 179,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-179.txt"
+          },
+          {
+            "printed_page": 177,
+            "pdf_page": 181,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-181.txt"
+          },
+          {
+            "printed_page": 179,
+            "pdf_page": 183,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-183.txt"
+          },
+          {
+            "printed_page": 181,
+            "pdf_page": 185,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-185.txt"
+          },
+          {
+            "printed_page": 183,
+            "pdf_page": 187,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-187.txt"
+          },
+          {
+            "printed_page": 185,
+            "pdf_page": 189,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-189.txt"
+          }
+        ],
+        "paraphrase": "Некоторые результаты дают постоянный кандидат места: убежище, логово, колодец, храм, причал, башню, руины или вход. Их можно закрепить на карте; сама таблица не приказывает менять географию при каждом броске.",
+        "normative_kind": "random_table_content",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-063",
+        "locator": {
+          "printed": [
+            143,
+            145,
+            147,
+            149,
+            153,
+            155,
+            157,
+            159,
+            161,
+            163,
+            167,
+            169,
+            171,
+            173,
+            175,
+            177,
+            179,
+            181,
+            183,
+            185
+          ],
+          "pdf": [
+            147,
+            149,
+            151,
+            153,
+            157,
+            159,
+            161,
+            163,
+            165,
+            167,
+            171,
+            173,
+            175,
+            177,
+            179,
+            181,
+            183,
+            185,
+            187,
+            189
+          ],
+          "section": "Encounter sites, shelters, landmarks and routes"
+        },
+        "parameters": {
+          "example_refs": [
+            {
+              "printed_page": 155,
+              "row": "92–93",
+              "feature": "overgrown chapel, safe shelter"
+            },
+            {
+              "printed_page": 171,
+              "row": "76–77",
+              "feature": "unlit lighthouse on island"
+            },
+            {
+              "printed_page": 153,
+              "row": "92–93",
+              "feature": "ship skeleton over freshwater well"
+            },
+            {
+              "printed_page": 145,
+              "row": "92–93",
+              "feature": "hidden door revealed by sun"
+            }
+          ]
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-063",
+        "normative_kind": "random_table_content",
+        "applicability": "Shadowdark RPG v4-6 local core; региональная карта, содержимое, исследование и внешние игровые адаптеры в указанном объёме.",
+        "layer": "L1",
+        "trigger_or_user_action": "Закрепить подтверждённый постоянный объект сцены на карте",
+        "inputs_and_units": {
+          "scene": "E",
+          "chosen_static_place": "well W",
+          "map_location": "H",
+          "GM_confirms_persistent": true
+        },
+        "product_operation": "Закрепить подтверждённый постоянный объект сцены на карте",
+        "expected_output": "На H один колодец W, связанный с исходной сценой E; повторное сохранение не создаёт дубля.",
+        "constraints_and_exceptions": [
+          "Плотность, координаты, размер территории и гарантированное убежище от всех механик книгой здесь не определены.",
+          "Мастер выбирает именно постоянное географическое место. Не материализовать каждую сцену/монстра автоматически и не создавать генератор событий.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"scene\":\"E\",\"chosen_static_place\":\"well W\",\"map_location\":\"H\",\"GM_confirms_persistent\":true}",
+            "when": "Закрепить подтверждённый постоянный объект сцены на карте; сохранить и открыть карту",
+            "expected": "На H один колодец W, связанный с исходной сценой E; повторное сохранение не создаёт дубля."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа, условия и назначения таблиц — положения локального источника; хранение, кнопка, событие, адаптер и идемпотентная запись — предлагаемая продуктовая интерпретация. Реализация не заявлена.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.landmarks",
+          "content.fixed_lair",
+          "map.routes_and_barriers",
+          "content.discovery_levels"
+        ],
+        "unresolved_parameters": []
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Статические признаки и места внутри случайной сцены: Конкретный постоянный колодец/логово/вход из выбранной сцены можно закрепить на карте по решению мастера; каждую встречу материализовать не требуется.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Закрепить подтверждённый постоянный объект сцены на карте",
+      "map_object_or_state": {
+        "scene": "E",
+        "chosen_static_place": "well W",
+        "map_location": "H",
+        "GM_confirms_persistent": true
+      },
+      "expected_result": "На H один колодец W, связанный с исходной сценой E; повторное сохранение не создаёт дубля.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.landmarks",
+        "content.fixed_lair",
+        "map.routes_and_barriers",
+        "content.discovery_levels"
+      ],
+      "binding_ids": [
+        "SD-CORE-063-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "schema",
+        "names"
+      ],
+      "result": "Для вручную созданных точек JSON-цикл не добавляет копии. Проверена общая операция размещения объекта.",
+      "remaining": "Связь колодца с историей исходной сцены и защита от повторного закрепления одной сцены остаются непроверенными. Гекскроул не обязан превращать каждую встречу в объект."
+    },
+    {
+      "id": "SD-CORE-074-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 196,
+        "pdf_page": 200,
+        "printed_pages": [
+          196,
+          203,
+          210,
+          211,
+          213,
+          218,
+          219,
+          221,
+          225,
+          227,
+          229,
+          231,
+          233,
+          238,
+          240,
+          246,
+          247,
+          248,
+          251,
+          253,
+          254,
+          256,
+          259,
+          260,
+          262,
+          263,
+          264,
+          265
+        ],
+        "pdf_pages": [
+          200,
+          207,
+          214,
+          215,
+          217,
+          222,
+          223,
+          225,
+          229,
+          231,
+          233,
+          235,
+          237,
+          242,
+          244,
+          250,
+          251,
+          252,
+          255,
+          257,
+          258,
+          260,
+          263,
+          264,
+          266,
+          267,
+          268,
+          269
+        ],
+        "section": "Monster descriptive ecology and named lairs",
+        "local_pages": [
+          {
+            "printed_page": 196,
+            "pdf_page": 200,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-200.txt"
+          },
+          {
+            "printed_page": 203,
+            "pdf_page": 207,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-207.txt"
+          },
+          {
+            "printed_page": 210,
+            "pdf_page": 214,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-214.txt"
+          },
+          {
+            "printed_page": 211,
+            "pdf_page": 215,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-215.txt"
+          },
+          {
+            "printed_page": 213,
+            "pdf_page": 217,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-217.txt"
+          },
+          {
+            "printed_page": 218,
+            "pdf_page": 222,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-222.txt"
+          },
+          {
+            "printed_page": 219,
+            "pdf_page": 223,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-223.txt"
+          },
+          {
+            "printed_page": 221,
+            "pdf_page": 225,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-225.txt"
+          },
+          {
+            "printed_page": 225,
+            "pdf_page": 229,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-229.txt"
+          },
+          {
+            "printed_page": 227,
+            "pdf_page": 231,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-231.txt"
+          },
+          {
+            "printed_page": 229,
+            "pdf_page": 233,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-233.txt"
+          },
+          {
+            "printed_page": 231,
+            "pdf_page": 235,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-235.txt"
+          },
+          {
+            "printed_page": 233,
+            "pdf_page": 237,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-237.txt"
+          },
+          {
+            "printed_page": 238,
+            "pdf_page": 242,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-242.txt"
+          },
+          {
+            "printed_page": 240,
+            "pdf_page": 244,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-244.txt"
+          },
+          {
+            "printed_page": 246,
+            "pdf_page": 250,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-250.txt"
+          },
+          {
+            "printed_page": 247,
+            "pdf_page": 251,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-251.txt"
+          },
+          {
+            "printed_page": 248,
+            "pdf_page": 252,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-252.txt"
+          },
+          {
+            "printed_page": 251,
+            "pdf_page": 255,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-255.txt"
+          },
+          {
+            "printed_page": 253,
+            "pdf_page": 257,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-257.txt"
+          },
+          {
+            "printed_page": 254,
+            "pdf_page": 258,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-258.txt"
+          },
+          {
+            "printed_page": 256,
+            "pdf_page": 260,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-260.txt"
+          },
+          {
+            "printed_page": 259,
+            "pdf_page": 263,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-263.txt"
+          },
+          {
+            "printed_page": 260,
+            "pdf_page": 264,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-264.txt"
+          },
+          {
+            "printed_page": 262,
+            "pdf_page": 266,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-266.txt"
+          },
+          {
+            "printed_page": 263,
+            "pdf_page": 267,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-267.txt"
+          },
+          {
+            "printed_page": 264,
+            "pdf_page": 268,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-268.txt"
+          },
+          {
+            "printed_page": 265,
+            "pdf_page": 269,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-269.txt"
+          }
+        ],
+        "paraphrase": "Описания видов связывают обитателей с лесами, пещерами, болотами, льдом, морем, руинами и особыми сооружениями. Драконьи логова удалённые и защищённые, в излюбленной среде. Эти связи пригодны как данные мест и справочные подсказки совместимости.",
+        "normative_kind": "descriptive_data",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-074",
+        "locator": {
+          "printed": [
+            196,
+            203,
+            210,
+            211,
+            213,
+            218,
+            219,
+            221,
+            225,
+            227,
+            229,
+            231,
+            233,
+            238,
+            240,
+            246,
+            247,
+            248,
+            251,
+            253,
+            254,
+            256,
+            259,
+            260,
+            262,
+            263,
+            264,
+            265
+          ],
+          "pdf": [
+            200,
+            207,
+            214,
+            215,
+            217,
+            222,
+            223,
+            225,
+            229,
+            231,
+            233,
+            235,
+            237,
+            242,
+            244,
+            250,
+            251,
+            252,
+            255,
+            257,
+            258,
+            260,
+            263,
+            264,
+            266,
+            267,
+            268,
+            269
+          ],
+          "section": "Monster descriptive ecology and named lairs"
+        },
+        "parameters": {
+          "habitat_examples": [
+            {
+              "printed_page": 210,
+              "creature": "dragons",
+              "habitat": "remote protected lair in favored environment"
+            },
+            {
+              "printed_page": 218,
+              "creature": "fire/frost/stone/cloud/storm giants",
+              "habitat": "volcano/frozen waste/underground/mountain castle/deep sea stronghold"
+            },
+            {
+              "printed_page": 225,
+              "creature": "sea/night/weald hags",
+              "habitat": "ocean caves/depravity and woe/deep boggy woods"
+            },
+            {
+              "printed_page": 248,
+              "creature": "roc",
+              "habitat": "remote mountain nest"
+            },
+            {
+              "printed_page": 259,
+              "creature": "troll",
+              "habitat": "deep forest and swamp"
+            },
+            {
+              "printed_page": 262,
+              "creature": "viperians",
+              "habitat": "ruins of forgotten cities"
+            }
+          ]
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-074",
+        "normative_kind": "descriptive_data",
+        "applicability": "Shadowdark RPG v4-6 local core; региональная карта, содержимое, исследование и внешние игровые адаптеры в указанном объёме.",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить выбранное логово в указанной источником среде",
+        "inputs_and_units": {
+          "site": "L",
+          "environment": "forest",
+          "occupant_reference": "GM selected source creature"
+        },
+        "product_operation": "Разместить выбранное логово в указанной источником среде",
+        "expected_output": "Логово L связано с лесной местностью и внешней ссылкой обитателя; численность/статблок/популяция не создаются.",
+        "constraints_and_exceptions": [
+          "Не задаёт вероятность встречи, ареал в километрах или правило соседства биомов.",
+          "Единственность Tarrasque не допускает произвольного размножения этой записи.",
+          "Не объявлять биом жёстким запретом другого сеттинга; источник даёт предпочтения. Никакой симуляции экологической плотности.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"site\":\"L\",\"environment\":\"forest\",\"occupant_reference\":\"GM selected source creature\"}",
+            "when": "Разместить выбранное логово в указанной источником среде; сохранить и открыть карту",
+            "expected": "Логово L связано с лесной местностью и внешней ссылкой обитателя; численность/статблок/популяция не создаются."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа, условия и назначения таблиц — положения локального источника; хранение, кнопка, событие, адаптер и идемпотентная запись — предлагаемая продуктовая интерпретация. Реализация не заявлена.",
+        "canonical_rule_refs": [
+          "content.fixed_lair",
+          "map.terrain_zones",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Численность колоний и плотности каталог не определяет."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Биомные предпочтения и фиксированные логова из каталога: Среда конкретного размещённого логова — географическое ограничение. Генератор видов, популяций и статблоков не следует.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Разместить выбранное логово в указанной источником среде",
+      "map_object_or_state": {
+        "site": "L",
+        "environment": "forest",
+        "occupant_reference": "GM selected source creature"
+      },
+      "expected_result": "Логово L связано с лесной местностью и внешней ссылкой обитателя; численность/статблок/популяция не создаются.",
+      "canonical_rule_ids": [
+        "content.fixed_lair",
+        "map.terrain_zones",
+        "content.place_description"
+      ],
+      "binding_ids": [
+        "SD-CORE-074-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "biome",
+        "names"
+      ],
+      "result": "Лесное логово сохранено в выбранном гексе с хвойным биомом. Рост карты и загрузка сохранили тип, координаты, имя и биом.",
+      "remaining": "Внешняя ссылка на выбранного обитателя и автоматическая проверка условия среды не подтверждены. Статблоки и популяции вне объёма."
+    },
+    {
+      "id": "SD-CORE-079-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 194,
+        "pdf_page": 198,
+        "printed_pages": [
+          194,
+          199,
+          210,
+          211,
+          213,
+          218,
+          221,
+          223,
+          227,
+          230,
+          234,
+          246,
+          248,
+          255,
+          263,
+          264,
+          265
+        ],
+        "pdf_pages": [
+          198,
+          203,
+          214,
+          215,
+          217,
+          222,
+          225,
+          227,
+          231,
+          234,
+          238,
+          250,
+          252,
+          259,
+          267,
+          268,
+          269
+        ],
+        "section": "Clues, camouflage, tracking and sensed quarry",
+        "local_pages": [
+          {
+            "printed_page": 194,
+            "pdf_page": 198,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-198.txt"
+          },
+          {
+            "printed_page": 199,
+            "pdf_page": 203,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-203.txt"
+          },
+          {
+            "printed_page": 210,
+            "pdf_page": 214,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-214.txt"
+          },
+          {
+            "printed_page": 211,
+            "pdf_page": 215,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-215.txt"
+          },
+          {
+            "printed_page": 213,
+            "pdf_page": 217,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-217.txt"
+          },
+          {
+            "printed_page": 218,
+            "pdf_page": 222,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-222.txt"
+          },
+          {
+            "printed_page": 221,
+            "pdf_page": 225,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-225.txt"
+          },
+          {
+            "printed_page": 223,
+            "pdf_page": 227,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-227.txt"
+          },
+          {
+            "printed_page": 227,
+            "pdf_page": 231,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-231.txt"
+          },
+          {
+            "printed_page": 230,
+            "pdf_page": 234,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-234.txt"
+          },
+          {
+            "printed_page": 234,
+            "pdf_page": 238,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-238.txt"
+          },
+          {
+            "printed_page": 246,
+            "pdf_page": 250,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-250.txt"
+          },
+          {
+            "printed_page": 248,
+            "pdf_page": 252,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-252.txt"
+          },
+          {
+            "printed_page": 255,
+            "pdf_page": 259,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-259.txt"
+          },
+          {
+            "printed_page": 263,
+            "pdf_page": 267,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-267.txt"
+          },
+          {
+            "printed_page": 264,
+            "pdf_page": 268,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-268.txt"
+          },
+          {
+            "printed_page": 265,
+            "pdf_page": 269,
+            "text_path": "/workspace/scratch/6acad40b62ad/shadowdark-audit/pdf-269.txt"
+          }
+        ],
+        "paraphrase": "Каталог даёт признаки для исследования: запах дракона, маскировку под камень, тревогу животных у wraith. Есть особые чувства: invisible stalker знает направление выбранной добычи, vulture безошибочно выслеживает мёртвую плоть в1 миле. Численные DC для описательных признаков не выдумываются.",
+        "normative_kind": "descriptive_data_and_special_rule",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-079",
+        "locator": {
+          "printed": [
+            194,
+            199,
+            210,
+            211,
+            213,
+            218,
+            221,
+            223,
+            227,
+            230,
+            234,
+            246,
+            248,
+            255,
+            263,
+            264,
+            265
+          ],
+          "pdf": [
+            198,
+            203,
+            214,
+            215,
+            217,
+            222,
+            225,
+            227,
+            231,
+            234,
+            238,
+            250,
+            252,
+            259,
+            267,
+            268,
+            269
+          ],
+          "section": "Clues, camouflage, tracking and sensed quarry"
+        },
+        "parameters": {
+          "examples": [
+            {
+              "printed_page": 210,
+              "creature": "desert dragon",
+              "clue": "ozone smell precedes it"
+            },
+            {
+              "printed_page": 211,
+              "creature": "forest dragon",
+              "clue": "wet loam smell follows it"
+            },
+            {
+              "printed_page": 223,
+              "creature": "grick",
+              "camouflage": "hard to see in cave terrain/rocks",
+              "DC": null
+            },
+            {
+              "printed_page": 227,
+              "creature": "invisible stalker",
+              "tracking": "always senses direction of chosen quarry",
+              "range": null
+            },
+            {
+              "printed_page": 263,
+              "creature": "vulture",
+              "tracking": "dead flesh unerringly within1mile"
+            },
+            {
+              "printed_page": 265,
+              "creature": "wraith",
+              "clue": "unsettles animals"
+            }
+          ]
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-079",
+        "normative_kind": "descriptive_data_and_special_rule",
+        "applicability": "Shadowdark RPG v4-6 local core; региональная карта, содержимое, исследование и внешние игровые адаптеры в указанном объёме.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий готовит след или признак обитателя в месте.",
+        "inputs_and_units": {
+          "location": "map ref",
+          "clue": "source-supported short description",
+          "hidden_source_ref": "creature/site",
+          "visibility": "GM/player"
+        },
+        "product_operation": "Сохранить признак и скрытую ссылку на источник раздельно; раскрыть только выбранную наблюдаемую часть.",
+        "expected_output": "Признак с местом, происхождением и видимостью.",
+        "constraints_and_exceptions": [
+          "Дальность запаха и размер зоны признака не указаны.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "SD-CORE-079-L1-AC01",
+            "given": "В месте есть desert dragon; ведущий раскрывает запах озона.",
+            "when": "Показать признак.",
+            "expected": "Игрокам известен запах; имя дракона и логово автоматически не раскрыты."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа, условия и назначения таблиц — положения локального источника; хранение, кнопка, событие, адаптер и идемпотентная запись — предлагаемая продуктовая интерпретация. Реализация не заявлена.",
+        "canonical_rule_refs": [
+          "content.tracks_and_ground",
+          "content.place_description",
+          "content.discovery_levels"
+        ],
+        "unresolved_parameters": []
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Следы, сигналы и особые чувства для исследования: Сохраняется наблюдаемый признак конкретного места отдельно от скрытого источника. Особые чувства/поведение монстра не реализуются.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [
+        {
+          "disposition": "defer_L2",
+          "reason": "Выдача игрокам и открытие после действий относятся к ведению гекскроула."
+        }
+      ],
+      "action": "Ведущий готовит след или признак обитателя в месте.",
+      "map_object_or_state": {
+        "location": "map ref",
+        "clue": "source-supported short description",
+        "hidden_source_ref": "creature/site",
+        "visibility": "GM/player"
+      },
+      "expected_result": "Признак с местом, происхождением и видимостью.",
+      "canonical_rule_ids": [
+        "content.tracks_and_ground",
+        "content.place_description",
+        "content.discovery_levels"
+      ],
+      "binding_ids": [
+        "SD-CORE-079-L1"
+      ],
+      "previous_product_verdict": "outside_historical_regional_audit",
+      "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "audience",
+        "difficulty"
+      ],
+      "result": "В других профилях есть редактируемая улика у POI. Её не засчитывали как поддержку признаков Shadowdark.",
+      "remaining": "Раздельное сохранение признака и скрытого источника для Shadowdark и показ игрокам без раскрытия логова не испытаны. Выдача относится к L2."
+    }
+  ],
+  "evidence": {
+    "scale": {
+      "method": "Physical grid execution, exact App import/export, existing one-mile tests and static JSX",
+      "paths": [
+        "src/detailGrid.ts",
+        "src/App.tsx",
+        "test/oneMile.test.mjs",
+        "test/saveSafety.test.mjs"
+      ],
+      "locators": [
+        "createDetailGrid; detailCellCenter; createSaveData; applyMapScale; select[data-fine-step]; ONE-MILE1 preview/cancel/apply and public15 roundtrip"
+      ],
+      "checks": [
+        "general_grid_and_saved_camera"
+      ],
+      "blob_shas": {
+        "src/detailGrid.ts": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+        "src/App.tsx": "c24cb13a554f05483fb7a8e65bab279e8f27f3af",
+        "test/oneMile.test.mjs": "affdac2923ea199dcad74d63ab787a2f4004a377",
+        "test/saveSafety.test.mjs": "45c634cc15ee73350e94b2a9d0b51a11b833e30f"
+      }
+    },
+    "biome": {
+      "method": "Current App transactions and exact reload",
+      "paths": [
+        "src/App.tsx",
+        "test/helpers/generation-harness.mjs"
+      ],
+      "locators": [
+        "setSelectedHexBiomeOverride; safelyAddRegionToMap; handleImportJson; undoMap"
+      ],
+      "checks": [
+        "classic_extension_preserves_manual_lair_and_other_sites"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "c24cb13a554f05483fb7a8e65bab279e8f27f3af",
+        "test/helpers/generation-harness.mjs": "5e8932273b4928a51e39ed7d36ce210cb94fbff6"
+      }
+    },
+    "difficulty": {
+      "method": "Knave-profile control executed on main, no transfer to Shadowdark",
+      "paths": [
+        "src/App.tsx",
+        "src/knaveClassic.ts",
+        "test/tags.test.mjs"
+      ],
+      "locators": [
+        "KnaveLayer; setKnaveDifficulty; changeKnaveDraft; finishKnaveDraft; Knave difficulty is sparse and detached"
+      ],
+      "checks": [
+        "passability_Knave_only_control"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "c24cb13a554f05483fb7a8e65bab279e8f27f3af",
+        "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+        "test/tags.test.mjs": "daf193a46859bdb224787235d63f5ac75b2996bd"
+      }
+    },
+    "names": {
+      "method": "Current real App callbacks and serializer/importer with detached React harness",
+      "paths": [
+        "src/App.tsx",
+        "src/manualPois.ts",
+        "src/toponyms.ts",
+        "test/regionEditing.test.mjs"
+      ],
+      "locators": [
+        "setSelectedPoiKind; setSelectedCentralPoiKind; showNameTarget; saveNameDraft; editorNames; E8 real POI move is one exact transaction with full payload and literal hex notes classic"
+      ],
+      "checks": [
+        "manual_regional_sites",
+        "typed_named_settlement"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "c24cb13a554f05483fb7a8e65bab279e8f27f3af",
+        "src/manualPois.ts": "41a7d1b6b24bbdab42971deecb404f43efa9d40c",
+        "src/toponyms.ts": "d748053073e663d10589d1279e6027e9a9982a07",
+        "test/regionEditing.test.mjs": "5cfeb350e84aa776a6a3e10b67626e0283a451a9"
+      }
+    },
+    "generation": {
+      "method": "Static active generation entrypoints plus Classic positive control",
+      "paths": [
+        "src/App.tsx",
+        "src/modes/kingdoms.ts",
+        "src/tags/knave.ts",
+        "test/worldContinuation.test.mjs"
+      ],
+      "locators": [
+        "GenerationMode; chooseKnaveProfile; generateAt; safelyAddRegionToMap; chooseWeightedRandom; assignSecondaryPoiKindsForRegion; prepareKnaveGeneratedMap; production document exports RNG and undo restores continuation"
+      ],
+      "checks": [
+        "classic_extension_preserves_manual_lair_and_other_sites"
+      ],
+      "blob_shas": {
+        "src/App.tsx": "c24cb13a554f05483fb7a8e65bab279e8f27f3af",
+        "src/modes/kingdoms.ts": "a33b80de2f5de74785a90432f2736c907eddcf71",
+        "src/tags/knave.ts": "b56e7fd3a5c9ea3943b7c3e35a525f17f40cd01a",
+        "test/worldContinuation.test.mjs": "1f2972d3c798ea968abb7aaf92249048d1095174"
+      }
+    },
+    "schema": {
+      "method": "Current editor and save shape inspection",
+      "paths": [
+        "src/App.tsx",
+        "src/manualPois.ts",
+        "src/knaveClassic.ts"
+      ],
+      "locators": [
+        "HexcrawlSaveData; PoiKind; EDITABLE_POI_KIND_ORDER; editorNameLocators; createSaveData; validateKnaveLayer"
+      ],
+      "checks": [],
+      "blob_shas": {
+        "src/App.tsx": "c24cb13a554f05483fb7a8e65bab279e8f27f3af",
+        "src/manualPois.ts": "41a7d1b6b24bbdab42971deecb404f43efa9d40c",
+        "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717"
+      }
+    },
+    "audience": {
+      "method": "Static scope boundary; no browser or player-view claim",
+      "paths": [
+        "src/App.tsx",
+        "src/knaveClassic.ts"
+      ],
+      "locators": [
+        "createSaveData; handleExportPng; knavePanel; PoiDiscovery"
+      ],
+      "checks": [],
+      "blob_shas": {
+        "src/App.tsx": "c24cb13a554f05483fb7a8e65bab279e8f27f3af",
+        "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717"
+      }
+    },
+    "dice": {
+      "method": "Reference calculation enumerates preserved source parameters; separate from product runtime",
+      "paths": [],
+      "locators": [
+        "SD Core 132 / PDF136, Hex Terrain, New Hex, POI presence"
+      ],
+      "checks": [
+        "Shadowdark_source_reference_only"
+      ],
+      "blob_shas": {}
+    }
+  },
+  "verification": {
+    "product_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+    "main_change": "PR #506 / published-product branch snapshot",
+    "verified_blobs": 142,
+    "node_tests": [
+      {
+        "command": "node --test --test-name-pattern='ONE-MILE1 preview|Knave difficulty is|E8 real POI move.*classic|production document exports RNG' test/saveSafety.test.mjs test/tags.test.mjs test/regionEditing.test.mjs test/worldContinuation.test.mjs",
+        "output": "✔ E8 real POI move is one exact transaction with full payload and literal hex notes classic (797.71165ms)\n✔ ONE-MILE1 preview/cancel/apply and public15 roundtrip use real import and exact undo (207.391579ms)\n✔ Knave difficulty is sparse and detached; accepted submerged flags survive without enabling water edits (2.210462ms)\n✔ production document exports RNG and undo restores continuation (605.130199ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3064.168457\n"
+      },
+      {
+        "command": "node --test test/oneMile.test.mjs",
+        "output": "✔ partial fine display is full while accepted geography area stays exact (17.286878ms)\n✔ dominant biome aggregates duplicate IDs then uses a canonical maximum tie (0.282525ms)\n✔ source permutation and fixed origin preserve biome assignments and water coverage (23.512399ms)\n✔ candidates form one legal fine row, never the whole source candidate projection (33.181538ms)\n✔ enclosed holes get only legal accessible edge neighbours (1.386579ms)\n✔ pointer and keyboard select ordinary anchors with stable q/r ties (0.435446ms)\n✔ local command edits one fine target and current language without source-six writes (2.387547ms)\n✔ stale, malformed, unsafe and unsupported local fields fail without partial writes (2.784025ms)\n✔ mixed and water cells retain local name/notes but refuse land overrides (2.725387ms)\n✔ destructive support loss requires consent and leaves an exact undo snapshot (1.282071ms)\n✔ fine POI label retains localized type and explicit name without fallback duplication (0.186992ms)\n✔ fine crossing paint distinguishes bridge, translucent ford and a real ferry road gap (2.020434ms)\n✔ fine crossing splits all ordered unique crossings and clamps endpoint or degenerate input (10.659522ms)\n✔ refined crossing paint follows display width without moving accepted paths or POI masks (1.423375ms)\n✔ finite visible water preserves dry approaches at shallow and endpoint crossings (1.394301ms)\nℹ tests 15\nℹ suites 0\nℹ pass 15\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 462.878794\n"
+      }
+    ],
+    "probe": {
+      "ref": "agent-work/research/requirements/SD-CORE-L1-implementation-probe.mjs",
+      "reproduce": "Copy to root of pinned product checkout, install dependencies with npm ci, run node on the copied probe.",
+      "checks": [
+        {
+          "check": "general_grid_and_saved_camera",
+          "coarseMiles": 6,
+          "projectAxis": "across_flats",
+          "areaSquareMiles": 31.176914536239792,
+          "cameraValues": [
+            1,
+            2
+          ],
+          "mapUnchanged": true
+        },
+        {
+          "check": "typed_named_settlement",
+          "address": "0,0",
+          "type": "town",
+          "name": "Медный Холм",
+          "roundtrip": true
+        },
+        {
+          "check": "manual_regional_sites",
+          "sites": [
+            [
+              "0,1",
+              "tower",
+              "Чёрная Башня"
+            ],
+            [
+              "-1,1",
+              "tavern",
+              "У моста"
+            ],
+            [
+              "-1,2",
+              "dungeon",
+              "Каменный вход"
+            ],
+            [
+              "0,-1",
+              "lair",
+              "Лесное логово"
+            ]
+          ],
+          "siblingsAndGeometryPreserved": true,
+          "mapRoundtrip": true
+        },
+        {
+          "check": "classic_extension_preserves_manual_lair_and_other_sites",
+          "addedRegions": 1,
+          "lairAddress": "0,-1",
+          "biome": "plain_coniferous_forest",
+          "reload": true,
+          "undoRedo": true
+        },
+        {
+          "check": "passability_Knave_only_control",
+          "profile": "classic.knave2",
+          "address": "0,-1",
+          "difficulty": "difficult",
+          "reload": true,
+          "undoRedo": true,
+          "ShadowdarkDangerProfileExercised": false
+        },
+        {
+          "check": "Shadowdark_source_reference_only",
+          "orderedPairs": 36,
+          "initialTerrainCounts": [
+            1,
+            2,
+            12,
+            11,
+            7,
+            2,
+            1
+          ],
+          "nextActions": {
+            "plus1": 3,
+            "same": 23,
+            "plus2": 9,
+            "reroll": 1
+          },
+          "mountainPlusOne": 0,
+          "oceanPlusTwo": 0,
+          "mountainPlusTwo": 1,
+          "rerollTwelve": 6,
+          "poiPresence": [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "productShadowdarkProfileExercised": false
+        }
+      ]
+    },
+    "verification_limit": "App callbacks and real save/import run without rendering a real browser; the reference dice calculation is not a product implementation. Source is the already screened supplied Core, not an independent quickstart/current-errata collation."
+  },
+  "quality": {
+    "RA-Q01": "Фиксированы входной Core ©2023, SHA256, язык, доступ и отдельно неопределённая внутренняя редакция.",
+    "RA-Q02": "Переиспользован тематический скрининг всех 332 PDF-страниц предоставленного экземпляра. Новое чтение всего корпуса и сверка errata не заявлены.",
+    "RA-Q03": "Смысл, локатор и исходные параметры сохранены отдельно от действий продукта.",
+    "RA-Q04": "Сохранены 6 miles across с открытой осью, веса 2d6, циклический переход, отдельный переброс, d6=1 и неопределённость двух колонок.",
+    "RA-Q05": "Исходные правила, советы, числовые результаты проверки и продуктовые ограничения различены.",
+    "RA-Q06": "Для каждой строки сохранены действие, входы, объект, результат и критерии с известным выходом.",
+    "RA-Q07": "Заметки не засчитаны как функции. Выдача игрокам отложена в L2.",
+    "RA-Q08": "Все 18 точных привязок найдены. Результаты Knave и общего редактора не перенесены на профиль Shadowdark.",
+    "RA-Q09": "Граничные случаи 2d6 и сохранение карты воспроизведены. Исследовательская проверка распределения отделена от фактического генератора.",
+    "RA-Q10": "Подтверждены отдельные операции на 1721550, по другим записаны конкретные пробелы и неизвестное.",
+    "RA-Q11": "Отдельно записаны исполнение обработчиков, модульные тесты, проверка схемы и эталонный арифметический расчёт.",
+    "RA-Q12": "Передача стратегу без создания задач и дублирования общих реестров.",
+    "RA-Q13": "Человекочитаемый обзор и JSON согласованы по строкам и ограничениям.",
+    "RA-Q14": "Завершён ограниченный L1 проход. Полная игра и overall top5 остаются открытыми.",
+    "RA-Q15": "Рейтинг, методика, score, объявленная поддержка, очередь, код и публикация не менялись."
+  },
+  "remaining": [
+    {
+      "scope": "Shadowdark input",
+      "detail": "Тематический скрининг ранее выполнен по 332-страничному предоставленному Core ©2023. Название файла v4.6 не подтверждает внутреннюю ревизию; независимая сверка errata и соседних выпусков открыта.",
+      "ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json"
+    },
+    {
+      "scope": "Shadowdark map profile",
+      "detail": "Печатная с. 132 задаёт 2d6 и один слот при d6=1. Уровень угрозы встреч хранить отдельно от проходимости. Частота назначения Danger и safe cadence не заданы."
+    },
+    {
+      "scope": "Shadowdark POI policy",
+      "detail": "Печатная с. 133 даёт колонки location и development. Общий или независимый бросок открыты; сами таблицы не разрешают автоматически выбрать рецепт. Связанные документы, услуги и предупреждения остаются узкими проверяемыми пробелами."
+    },
+    {
+      "scope": "Cohort gate",
+      "detail": "DND5 остаётся первым в overall top5, поэтому следующая достижимая задача — испытание уже извлечённых L1 строк на новой версии. Зафиксировать остатки DND5/PF2/Knave/Crows/SD. До выполнения общего условия не открывать create-top10."
+    }
+  ],
+  "full_game_accepted": false
+}
