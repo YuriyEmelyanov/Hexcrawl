@@ -882,9 +882,9 @@
       "approved_at": "2026-11-17T11:24:24.659Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "Прежние замечания R04 закрыты. Подтверждён дефект R03: сборка копирует заменённую гравюру при несовпадении SHA-256.",
-      "next_role": "programmer",
-      "next_step": "В HX-BL-060 добавить обязательную сверку 26 PNG с утверждёнными SHA-256 при сборке каталога. Подтвердить, что подменённый файл блокирует сборку, и передать новый точный SHA на приёмку.",
+      "execution_state": "Проверка 26 утверждённых гравюр обязательна перед штатной сборкой. Оба негативных случая подтверждены, полный CI зелёный. Передано на независимую приёмку.",
+      "next_role": "reviewer",
+      "next_step": "Независимо принять точный SHA ffe92d6. Воспроизвести отказ сборки при подменённой и отсутствующей гравюре, сверить успешный пакет и актуализировать score_assessment 1.2.",
       "requirements": [
         "Оставить одно представление биомов: согласованный цвет + прозрачный PNG + смещённый межбиомный градиент160% со сглаженными углами. Удалить режимы биомов Эмоджи/Цвет и переключатель трёх режимов из RU/EN интерфейса.",
         "Заменить старые рисунки всех существующих биомов, включая озеро/море, выбранными гравюрами; новые биомы добавляются в HX-BL-021 через тот же реестр. Отображать POI единственным видом со штатными значками. Убрать выбор вида POI.",
@@ -947,7 +947,7 @@
         "remove_poi_presentation_control": true,
         "latest_ui_refinement_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-060-smooth-color-junction.json"
       },
-      "updated_at": "2026-11-18T23:04:01.671Z",
+      "updated_at": "2026-11-19T01:14:10.452Z",
       "precedes_task_ids": [
         "HX-BL-021"
       ],
@@ -961,7 +961,7 @@
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-17-unified-biome-map.json",
         "publication_authorized": false
       },
-      "next_handoff_ref": "agent-work/handoffs/2026-11-19T0200-reviewer-HX-BL-060-F4-next.json",
+      "next_handoff_ref": "agent-work/handoffs/2026-11-19T0400-programmer-HX-BL-060-F4-next.json",
       "draft_spec_version": "D2",
       "ui_preview_ref": "agent-work/previews/HX-BL-060-F4/README.md",
       "ui_preview_version": "F4",
@@ -977,15 +977,13 @@
       "final_spec_version": "F4",
       "latest_owner_refinement_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-060-smooth-water-boundaries.json",
       "implementation_checkpoint": {
-        "stage": "shore_round_trip_and_shared_corner",
-        "status": "changes_requested",
-        "head_sha": "4561f299b09c5b5ac954c279904059a5a38a9354",
+        "stage": "fail_closed_engraving_catalog",
+        "status": "review_ready",
+        "head_sha": "ffe92d6b4c425e6d5c2683c6ac9287611f8734b0",
         "pr": 506,
-        "next_role": "programmer",
-        "evidence_ref": "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/implementation.json",
-        "visible_evidence_ref": "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png",
-        "review_ref": "agent-work/evidence/HX-BL-060-review-4561f29/review.json",
-        "score_assessment_ref": "agent-work/evidence/HX-BL-060-review-4561f29/score-assessment1.2.json"
+        "next_role": "reviewer",
+        "evidence_ref": "agent-work/evidence/HX-BL-060-catalog-build-ffe92d6/implementation.json",
+        "visible_evidence_ref": "agent-work/evidence/HX-BL-060-shore-corrections-4561f29/classic42-shore-before-after.png"
       }
     }
   ],
