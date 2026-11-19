@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-CROWS-L1-implementation-1795055633781",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_Crows_L1_implementation_review_completed",
+  "selected_task": {
+    "id": "HX-RSR-CROWS-RETAINED-L1-EVIDENCE",
+    "game_id": "CROWS",
+    "layer": "L1",
+    "completion_condition": "Сохранить фактические решения по 13 отобранным строкам карты на закреплённом SHA, с проверками основных операций и точным остатком."
+  },
+  "selection_reason": "Crows входит в общий топ-5. Предыдущий checkpoint выбрал уже отфильтрованный L1 корпус. На свежем SHA можно проверить значимый пробел между готовыми общими инструментами карты и специфичными для Crows привязками.",
+  "alternatives": [
+    {
+      "candidate": "DND5/DMG2014",
+      "reason": "Полное тематическое чтение источника остаётся открытым, оснований повторять поиск сегодня нет."
+    },
+    {
+      "candidate": "Shadowdark",
+      "reason": "Также доступен в общем топ-5. Следующий ограниченный срез после Crows, для которого уже готовы профильные контроли масштаба и переправ."
+    }
+  ],
+  "inputs_and_versions": {
+    "agent_operations": "9503b388cbf4172f5a9ae4bc06e3799812326eda",
+    "product_main": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "scope_ref": "agent-work/research/requirements/CROWS-PT3-scope-audit.json",
+    "source_ref": "agent-work/market/rules/CROWS-PT3.json",
+    "coverage_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+    "packet_ref": "agent-work/research/requirements/CROWS-PT3-v2-source-packet.json",
+    "base_hex_owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-16-base-hex-five-six-miles-ui.json",
+    "cohort_ref": "agent-work/score/cohorts-2026-11-15.json",
+    "ranking_version": "three-scenario-ranks-1.4-CROWS-addition",
+    "top5": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ]
+  },
+  "findings": [
+    {
+      "id": "CROWS-L1-geometry",
+      "result": "Мост на пересечении сохраняется с дорогой и рекой, руину можно вручную превратить в деревню. Общая базовая геометрия пригодна для согласованного режима 5–6 миль.",
+      "impact": "Переиспользовать операции редактирования. Текущая подпись 6 миль остаётся предметом уже открытой HX-BL-058."
+    },
+    {
+      "id": "CROWS-L1-riverbank",
+      "result": "Лесопилка вручную ставится в гекс на реке, но та же ручная команда принимает гекс на карте без реки. Свойство речного берега для этого объекта в адаптере остаётся unknown.",
+      "impact": "Размещение и именование существующей POI можно переиспользовать. Автоматическую или явную привязку Crows к берегу нельзя выводить из её типа."
+    },
+    {
+      "id": "CROWS-L2-scout",
+      "result": "Задача Scout for Places обозначена Safe. При наличии ранее неизвестного POI, подземелья или деревни разведчик находит место. Правила дня требуют ролевой тест для рискованных задач. У Scout for Places отдельного броска нет. Scout for Shelter — отдельная рискованная задача с тестом 2d10 + A или M. Этот вывод не переносится на обнаружение ловушек и скрытых деталей внутри места.",
+      "impact": "Подготовить существующие места заранее. Ведение игры может раскрыть уже размещённое место по действию разведчика. Отдельная выдача карты игроков остаётся непроверенной."
+    }
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/CROWS-PT3-L1-implementation.json",
+    "agent-work/research/requirements/CROWS-PT3-L1-implementation.md",
+    "agent-work/research/requirements/CROWS-PT3-L1-implementation-probe.mjs",
+    "agent-work/market/rules/CROWS-PT3.md",
+    "agent-work/research/handoffs/2026-11-19-CROWS-L1-implementation-1795055633781-strategist.json",
+    "agent-work/research/runs/2026-11-19-CROWS-L1-implementation-1795055633781.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "matrix_ref": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json",
+    "checks": {
+      "product_sha": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+      "matched_git_blobs": 129,
+      "node_test": {
+        "command": "node --test --test-name-pattern='GEO2 (POI|accepted POI|actual mixed dry road)|E8 real POI move.*classic|ONE-MILE1 (preview|public10)|manual path' test/geometryRefinementPois.test.mjs test/manualRoads.test.mjs test/regionEditing.test.mjs test/oneMile.test.mjs test/mapTransactions.test.mjs",
+        "output": "✔ GEO2 actual mixed dry road approach preserves existing typed crossing and history (1021.009834ms)\n✔ test/oneMile.test.mjs (284.279144ms)\n✔ E8 real POI move is one exact transaction with full payload and literal hex notes classic (851.440121ms)\nℹ tests 6\nℹ suites 0\nℹ pass 6\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3194.177665\n",
+        "initial_reporter_output": "✔ GEO2 POI candidates retain source requirements, same-parent rigid footprints and both route entries; conflicts are atomic (82.504784ms)\n✔ GEO2 accepted POI source adapter uses actual owner and policy row, not attachment eligibility (192.828812ms)\n✔ manual path allocates one ID and deterministic crossings without mutating input (3.696469ms)\n",
+        "exit_code": 0
+      },
+      "probe": {
+        "ref": "agent-work/research/requirements/CROWS-PT3-L1-implementation-probe.mjs",
+        "instructions": "Copy to root of pinned product checkout and execute with Node after npm ci.",
+        "output": [
+          {
+            "check": "base_grid",
+            "axis": "across_flats",
+            "miles": 6,
+            "area": 31.176914536239792,
+            "separateFiveMileGrid": false
+          },
+          {
+            "check": "ordinary_classic_world",
+            "regions": 1,
+            "mapRoundtrip": true,
+            "requiredCornathData": false
+          },
+          {
+            "check": "bridge_on_existing_crossing",
+            "kind": "bridge",
+            "previousKind": "ford",
+            "roadId": 1,
+            "riverId": 1,
+            "undoRedo": true,
+            "reload": true
+          },
+          {
+            "check": "sawmill_manual_address_and_unbound_river_rule",
+            "near": "1,0",
+            "awayOnMapWithoutRivers": "1,0",
+            "riverEdge": "24.249,-14|24.249,14",
+            "nearName": "Заброшенная лесопилка",
+            "requirementProvenance": "unknown",
+            "reload": true
+          },
+          {
+            "check": "two_villages_two_named_entrances",
+            "existingVillage": "0,0",
+            "ruinConverted": "0,1",
+            "entrances": [
+              "-1,1",
+              "-1,2"
+            ],
+            "roadsAndRiversPreserved": true,
+            "reload": true,
+            "conversionUndoRedo": true
+          },
+          {
+            "check": "forest_biome_retains_map_data",
+            "address": "2,0",
+            "biome": "plain_coniferous_forest",
+            "poiType": "village",
+            "reload": true
+          },
+          {
+            "check": "radius_reference_only",
+            "radii": [
+              1,
+              2,
+              5,
+              6
+            ],
+            "counts": [
+              7,
+              19,
+              91,
+              127
+            ],
+            "overlap": 4,
+            "remainingAfterRemovingOneSource": 7,
+            "distanceTwoAllowed": true,
+            "distanceThreeAllowed": false,
+            "applicationZoneOrLinkFeatureExecuted": false
+          }
+        ],
+        "exit_code": 0
+      },
+      "limits": "The repository App harness runs real transactions and serializer/importer with virtual React state. No browser clicks, public deployment, player interface or automated Crows gameplay were claimed."
+    },
+    "quality": {
+      "RA-Q01": "October 2026 Public Playtest 3 с идентификатором и манифестом частного первичного пакета.",
+      "RA-Q02": "Переиспользованы 339 ранее проверенных страниц, 50 положений и 35 операций. Точечно проверен раздел Scout. Существующие редакционные расхождения сохранены.",
+      "RA-Q03": "Самодостаточные пересказы и локаторы сохранены отдельно от действий продукта.",
+      "RA-Q04": "Сохранены 5 miles across с неизвестной осью, опциональный предел 2 гекса, отсутствие численного предела у Rekhya и диапазоны области маяка.",
+      "RA-Q05": "Отдельно указаны примеры и предложения ведущему. Решение о подписи режима отделено от источника.",
+      "RA-Q06": "Каждая строка имеет действие, объект, входы и проверяемый результат.",
+      "RA-Q07": "Услуги и содержание относятся к конкретным местам. Заметка и одноимённый POI не доказывают выполненную операцию.",
+      "RA-Q08": "Все 13 профильных привязок сверены в реестре. Отличия источника сохранены; валидность привязок не перенесена на поддержку.",
+      "RA-Q09": "Реальные критерии приложения сохранены, отклонения и контрольная геометрия отмечены.",
+      "RA-Q10": "Текущее поведение проверено на закреплённом SHA. Неизвестная выдача игрокам и сложные случаи явно открыты.",
+      "RA-Q11": "Реальные обработчики, статическое чтение UI, проверка источника и исследовательский расчёт радиусов разграничены.",
+      "RA-Q12": "Передача стратегу ссылается на действующую HX-BL-058; дубль не заведён.",
+      "RA-Q13": "Читаемый обзор связан с матрицей и данным той же версии.",
+      "RA-Q14": "Закрыт ограниченный проход; полный профиль игры и общий топ-5 ещё открыты.",
+      "RA-Q15": "Нет изменений поддержки, кода продукта, рейтинга, score, методики, очереди и публикаций."
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T01:16:10.073259+00:00",
+        "next": "2026-11-19T06:00:00+03:00"
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-18T23:42:31.729176+00:00",
+        "next": "2026-11-19T05:30:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T01:16:10.073259+00:00",
+        "next": "2026-11-19T06:00:00+03:00"
+      },
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-18T23:42:31.729176+00:00",
+        "next": "2026-11-19T05:30:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_Crows_L1_implementation_review_completed",
+    "run_id": "2026-11-19-CROWS-L1-implementation-1795055633781",
+    "stage": "retained_L1_implementation",
+    "last_successful_step": "Сверены 13 строк на точном SHA, выполнены проверки карты и подтверждена граница Scout for Places.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Выбранный срез закрыт. Точные непроверенные случаи сохранены.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-19-CROWS-L1-implementation-1795055633781.json",
+      "agent-work/research/requirements/CROWS-PT3-L1-implementation.json",
+      "agent-work/research/requirements/CROWS-PT3-L1-implementation.md",
+      "agent-work/research/requirements/CROWS-PT3-L1-implementation-probe.mjs",
+      "agent-work/market/rules/CROWS-PT3.md",
+      "agent-work/research/handoffs/2026-11-19-CROWS-L1-implementation-1795055633781-strategist.json"
+    ],
+    "exact_continuation": "Сверить отобранные операции создания карты Shadowdark по сохранённой ревизии SD-CORE. Начать с принятого масштаба, местности, регионального размещения и сохранения. Различить бесплатный тематический корпус и пробелы полного Core; использовать существующую матрицу и проверять отличающиеся профили.",
+    "remaining": [
+      {
+        "item": "scene_and_reveal",
+        "detail": "Подготовка отдельных данных мастера и известных группе мест нуждается в фактическом Crows сценарии. Раскрытие безопасным действием разведчика и выдача информации игрокам относятся к L2."
+      },
+      {
+        "item": "scales",
+        "detail": "HX-BL-058 уже согласована владельцем. Актуальный JSX всё ещё показывает 6 миль. Геометрию не перекалибровывать без нового поручения."
+      },
+      {
+        "item": "site_content",
+        "detail": "Ручные объекты и перенос доказаны для общего редактора. Привязка выбранного POI к реке, простые услуги конкретного места и условия подхода остаются узкими вопросами. Наличие заметки не засчитывается."
+      },
+      {
+        "item": "specific_map_dependencies",
+        "detail": "Связь лесопилки с опциональным тайником до двух гексов и карта области вне Миазмы остаются отдельными пространственными операциями. Показ числового процветания ждёт отдельного основания."
+      },
+      {
+        "item": "full_alignment",
+        "detail": "Не возобновлять чтение уже закрытого пакета без новой редакции или конфликтующей ссылки. Сохранить расхождения источников из quality и полный остаток DND5/PF2/Knave; общий топ-5 остаётся открытым."
+      }
+    ],
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-SD-RETAINED-L1-EVIDENCE",
+    "game_id": "SD",
+    "layer": "L1",
+    "status": "selected_after_CROWS_bounded_implementation",
+    "action": "Сверить отобранные операции создания карты Shadowdark по сохранённой ревизии SD-CORE. Начать с принятого масштаба, местности, регионального размещения и сохранения. Различить бесплатный тематический корпус и пробелы полного Core; использовать существующую матрицу и проверять отличающиеся профили.",
+    "completion_condition": "Сохранить сопоставление применимых L1 операций с фактическим evidence на свежем SHA, условия доступа к источнику и остаток. Передать стратегу точные пробелы.",
+    "scope_ref": "agent-work/research/requirements/SD-CORE-scope-audit.json",
+    "overall_top5_complete": false
+  },
+  "started_at": "2026-11-19T02:33:53.781Z",
+  "completed_at": "2026-11-19T02:40:41.571Z"
+}
