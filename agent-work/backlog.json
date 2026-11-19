@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-19T21:43:08.719Z",
+  "updated_at": "2026-11-19T21:49:28.124Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -1756,6 +1756,94 @@
       },
       "forecast": "unknown_until_draft_and_interview",
       "updated_at": "2026-11-19T21:43:08.719Z"
+    },
+    {
+      "task_id": "HX-BL-062",
+      "title": "Обнаружение точек интереса в классическом режиме",
+      "status": "Согласована",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json"
+      },
+      "approval_ref": "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+      "approved_at": "2026-11-19T21:49:28.124Z",
+      "implementation_authorized": true,
+      "release_authorized": false,
+      "requirements": [
+        "Перенести из Knave 2e свойство «Обнаружение» в карточку точки интереса обычного классического режима.",
+        "При создании точки автоматически присваивать одно из трёх значений: «При прохождении», «При исследовании», «Секретное место».",
+        "Для каждого типа объектов предусмотреть либо фиксированное значение, либо случайный выбор из допустимых для этого типа значений."
+      ],
+      "examples": [
+        {
+          "poi_type": "capital",
+          "name": "Столица",
+          "policy": "fixed",
+          "allowed_values": [
+            "При прохождении"
+          ]
+        },
+        {
+          "poi_type": "portal",
+          "name": "Портал",
+          "policy": "random",
+          "allowed_values": [
+            "При прохождении",
+            "При исследовании",
+            "Секретное место"
+          ],
+          "secret_example": "Портал активируется с помощью магии. Это пример условия обнаружения или раскрытия секрета для мастера."
+        }
+      ],
+      "acceptance_outline": [
+        "В обычном Classic новая точка интереса получает значение из её политики типа и показывает его в карточке.",
+        "Столица всегда получает «При прохождении». В проверяемых сценариях для портала достижимы все три указанных значения.",
+        "Сохранение и повторное открытие карты восстанавливают присвоенное значение. Значение не перебрасывается при просмотре карточки."
+      ],
+      "scope_questions": [
+        "Какие значения и вероятности применить к каждому типу, включая типы без явного примера владельца.",
+        "Когда допустимо изменять автоматически присвоенное значение и как обрабатывать условие или улику для секрета в Classic. В Knave 2e секрет уже требует непустой текст улики.",
+        "Как отображать старые точки без заданного свойства и как разделить обычный Classic и профиль Knave в совместимых сохранениях."
+      ],
+      "scope_notes": [
+        "Свойство описывает подготовленный объект для мастера. Пример про магию не добавляет исполнение заклинаний или автоматическое раскрытие для игроков.",
+        "HX-BL-044 и HX-FB-013 служат источником контекста. Задача ограничена обнаружением POI в обычном Classic."
+      ],
+      "references": {
+        "main_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "files": [
+          "src/knaveClassic.ts",
+          "src/App.tsx",
+          "docs/poi-editor-data.md"
+        ],
+        "history": {
+          "feedback_id": "HX-FB-013",
+          "ref": "agent-work/decisions/owner-direction-2026-11-09-CLASSIFY1.json",
+          "historical_task_id": "HX-BL-044"
+        }
+      },
+      "execution_state": "Добавлена владельцем. Ожидается черновик спецификации в действующей очереди.",
+      "next_role": "business-analyst",
+      "next_step": "Подготовить черновик с таблицей фиксированных и случайных значений по типам, сценариями создания и сохранения и макетами карточки. Затем передать интервьюеру.",
+      "draft_spec_ref": null,
+      "spec_ref": null,
+      "acceptance_ref": null,
+      "published_ref": null,
+      "ready_for_development": false,
+      "interview_status": "not_started",
+      "interview_completed": false,
+      "ui_preview_pending": true,
+      "ui_preview_responsible": "business-analyst",
+      "criterion_id": "S05-C03",
+      "score_forecast": {
+        "model_version": "1.2",
+        "status": "unknown",
+        "criterion_ids": [
+          "S05-C03"
+        ]
+      },
+      "forecast": "unknown_until_draft_and_interview",
+      "updated_at": "2026-11-19T21:49:28.124Z"
     }
   ],
   "retired_pr_packages": {
