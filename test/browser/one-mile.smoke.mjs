@@ -286,6 +286,7 @@ try{
  // persisted and exported by the production handlers, including history.
  await lang('en');
  await page.setViewportSize({width:1500,height:1000});
+ await page.reload();
  const loadWorld=async(buffer)=>{
    await page.locator('input[type=file]').setInputFiles({name:'small-lakes.json',mimeType:'application/json',buffer});
    await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
@@ -308,6 +309,8 @@ try{
  await shot('small-lake-draft.jpg');
  await button('Save lake').click();
  const smallLake=page.locator('[data-small-lake="1"]');
+ await page.waitForFunction(()=>!!document.querySelector('[data-small-lake="1"], .info-body > [role="alert"]'));
+ assert.deepEqual(await page.locator('.info-body > [role="alert"]').allTextContents(),[],'save prepares the real document without silent refusal');
  await smallLake.waitFor();
  const lakePath=await smallLake.locator('path').getAttribute('d');
  assert.ok(lakePath?.length>40);

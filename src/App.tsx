@@ -16467,14 +16467,21 @@ export function App() {
   const commitSmallLake=()=>{
     const display=automaticFineSceneRef.current??physicalGridRef.current;
     const state=physicalGridRef.current??display?.geometryRefinement?.sourceState??display;
-    if(!state||display?.viewStep!==1||!smallLakeDraft||!manualSmallLake||smallLakeDraft.revision!==documentRevision.current||mutationBlocked())return;
+    if(!state||display?.viewStep!==1||!smallLakeDraft||smallLakeDraft.revision!==documentRevision.current){
+      setEditError(language==='ru'?'Карта изменилась. Отмените черновик и выберите гексы заново.':'The map changed. Cancel the draft and select the hexes again.');
+      return;
+    }
+    if(mutationBlocked()){
+      setEditError(language==='ru'?'Завершите текущее действие на карте перед сохранением озера.':'Finish the current map action before saving the lake.');
+      return;
+    }
     try{
       const before=copyDocument(captureDocument());
       const layer=addManualSmallLake(state.smallLakes,smallLakeDraft.cells,projectOneMile(oneMileSources(before.map),state.grid.origin));
       const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes:layer}}});
       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);
     }catch(error){
-      setEditError(error instanceof Error?error.message:'Invalid small lake');
+      setEditError(error instanceof Error?error.message:(language==='ru'?'Не удалось сохранить малое озеро.':'Could not save the small lake.'));
     }
   };
   const selectedSmallLake=acceptedSmallLakes?.lakes.find(lake=>lake.cells.some(cell=>fineDisplay?.selectedCell&&isSameHex(cell,fineDisplay.selectedCell)));
@@ -16502,16 +16509,16 @@ export function App() {
     rivers={(fineSummary?.rivers??[]).map(r=>`${editorNames[`river:${r.id}`]?.[language]??toponyms[`river:${r.id}`]?.[language]??`${t.river} ${r.id}`}${r.crossingIds.length?` · ${r.crossingIds.map(id=>crossings.find(c=>`crossing:${c.key}`===id)?.kind).filter(Boolean).map(k=>t[k as 'bridge'|'ferry'|'ford']).join(', ')}`:''}`)}
     pois={(fineSummary?.pois??[]).map(p=>finePoi(fineDisplay!.poiFootprints.find(fp=>fp.poiId===p.poiId)!).label)} draft={fineDraft} canEdit={!!fineDisplay?.selectedCell} water={!!fineRow?.waterArea} busy={isImporting||!!pendingRegen||!!kingdomJob} error={editError}
     biomes={Object.values(BIOMES).map(b=>({id:b.id,label:getBiomeLabel(b.id,language)}))} onEdit={startFineDraft} onChange={fields=>changeFineDraft(fields,fineDraft)} onSave={()=>saveFineDraft(fineDraft)} onCancel={()=>cancelFineDraft(fineDraft)} onComposition={active=>{fineComposing.current=active;}}>
-    {!fineDraft&&(smallLakeDraft?<div data-small-lake-editor>
+    {!fineDraft&&(smallLakeDraft?<form data-small-lake-editor onSubmit={event=>{event.preventDefault();commitSmallLake();}}>
       <strong>{language==='ru'?'Малое озеро':'Small lake'}</strong>
       <p>{language==='ru'?`Выбрано гексов: ${smallLakeDraft.cells.length}`:`Selected hexes: ${smallLakeDraft.cells.length}`}</p>
       {!manualSmallLake&&<p role="alert">{language==='ru'?'Выберите смежные гексы целиком на суше без другого малого озера.':'Select connected hexes entirely on dry land, clear of another small lake.'}</p>}
       {smallLakeDraft.revision!==documentRevision.current&&<p role="alert">{language==='ru'?'Карта изменилась. Начните заново.':'The map changed. Start again.'}</p>}
       <div className="fine-actions">
-        <button type="button" disabled={!manualSmallLake||smallLakeDraft.revision!==documentRevision.current||documentBusy()} onClick={commitSmallLake}>{language==='ru'?'Сохранить озеро':'Save lake'}</button>
+        <button type="submit" disabled={!manualSmallLake||smallLakeDraft.revision!==documentRevision.current||documentBusy()}>{language==='ru'?'Сохранить озеро':'Save lake'}</button>
         <button type="button" className="secondary" onClick={()=>{setSmallLakeDraft(null);setEditError(null);}}>{language==='ru'?'Отмена':'Cancel'}</button>
       </div>
-    </div>:selectedSmallLake?<div data-small-lake-controls>
+    </form>:selectedSmallLake?<div data-small-lake-controls>
       <p>{language==='ru'?'Малое озеро':'Small lake'} №{selectedSmallLake.id}</p>
       <button type="button" className="secondary" disabled={documentBusy()} onClick={removeSelectedSmallLake}>{language==='ru'?'Удалить малое озеро':'Remove small lake'}</button>
     </div>:<button type="button" className="secondary" disabled={!smallLakeCanStart||documentBusy()} onClick={startSmallLake}>{language==='ru'?'Добавить малое озеро':'Add small lake'}</button>)}
