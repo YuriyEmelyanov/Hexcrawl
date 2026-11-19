@@ -7,8 +7,10 @@ import {fineCellKey,type OneMileCell,type FineCandidate} from './oneMile';
 import {Engraving} from './rendering/EngravedTerrain';
 import {engravingFor, type TerrainKind} from './rendering/engravingAssets';
 import {terrainTextures} from './rendering/terrainBlend';
+import {buildNaturalLakes} from './rendering/lakeGeometry';
+import type {SmallLake} from './smallLakes';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
-type Props={rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
+type Props={smallLakes?:readonly SmallLake[];smallLakeDraft?:SmallLake;smallLakeSeed?:number;rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
  poi:(p:DetailPoiFootprint)=>{label:string;image:string};geography?:ReactNode;interactive?:boolean;
  rivers:readonly {key:string;x1:number;y1:number;x2:number;y2:number;width:number;fullness:number}[];
  roads:readonly FineRoad[];
@@ -33,6 +35,10 @@ export function OneMileArtwork(p:Props){
  const textures=useMemo(()=>terrainTextures(p.cells.map(({cell})=>({
    ...cell,color:engravingFor(terrain.get(fineCellKey(cell))!)!.color,
  }))),[p.cells,terrain]);
+ const shorelines=useMemo(()=>[...(p.smallLakes??[]),...(p.smallLakeDraft?[p.smallLakeDraft]:[])].map(lake=>{
+  const cells=lake.cells.map(c=>({...c,...center(c),lakeId:lake.id}));
+  return {lake,shapes:buildNaturalLakes(cells,radius,p.smallLakeSeed??0)};
+ }),[p.smallLakes,p.smallLakeDraft,p.smallLakeSeed,origin.x,origin.y,p.offset.x,p.offset.y]);
  const occupied=new Set<string>();
  const pointsOfInterest=p.state.poiFootprints.map(fp=>{
    const extent=detailFootprintExtentMiles(fp,grid),large=extent!==null&&extent>=1;
@@ -59,6 +65,16 @@ export function OneMileArtwork(p:Props){
     {!occupied.has(key)&&<Engraving id={id} x={c.x} y={c.y} radius={radius} rotated={p.rotated}/>}
    </g>;
   })}</g>
+  {shorelines.map(({lake,shapes})=>{
+    const draft=lake===p.smallLakeDraft,clip=`${clipPrefix}-small-lake-${lake.id}`;
+    return <g key={lake.id} data-small-lake={draft?undefined:lake.id} data-editor-only={draft?'small-lake-draft':undefined} pointerEvents="none">
+      <defs><clipPath id={clip}>{lake.cells.map(cell=><polygon key={fineCellKey(cell)} points={polygon(cell)}/>)}</clipPath></defs>
+      <g clipPath={`url(#${clip})`}>
+        {shapes.map(shape=><path key={shape.key} data-small-lake-shore={draft?undefined:lake.id} d={shape.path} fill="#117f8c" fillRule="evenodd" stroke="#159dac" strokeWidth={radius*.09} opacity={draft ? .7 : 1}/>)}
+      </g>
+      {draft&&lake.cells.map(cell=><polygon key={fineCellKey(cell)} points={polygon(cell)} fill="none" stroke="#f7dc6f" strokeWidth={.3} strokeDasharray=".7 .5"/>)}
+    </g>;
+  })}
   {p.geography??<><g className="rivers-layer" pointerEvents="none">{p.rivers.map(r=><line key={r.key} data-river-fullness={r.fullness} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className="river-polyline" strokeWidth={fineRiverStrokeWidth(r.fullness)}/>)}</g>
   <g className="roads-layer" pointerEvents="none">{p.roads.map(r=>{const plan=fineRoadPresentation(r,p.crossings,p.rivers);return <g key={r.key} data-fine-road={r.key}>
    {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>)}

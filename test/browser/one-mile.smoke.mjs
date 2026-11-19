@@ -282,6 +282,69 @@ try{
  else {assert.deepEqual(afterGen,beforeGen,'failed ordinary generation is atomic');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'bounded_refusal_no_success_claim'});}
  await checkFineModeCandidates({page,snap,shot,button,manifest});
  await checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture:geometryLegacySave});
+ // A supported pair on the same imported real Classic map is rendered,
+ // persisted and exported by the production handlers, including history.
+ await lang('en');
+ await page.setViewportSize({width:1500,height:1000});
+ const loadWorld=async(buffer)=>{
+   await page.locator('input[type=file]').setInputFiles({name:'small-lakes.json',mimeType:'application/json',buffer});
+   await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+ };
+ const showOneMile=async()=>{
+   await step.selectOption('1');
+   await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});
+   await page.locator('[data-fine-world]').waitFor();
+ };
+ await loadWorld(Buffer.from(JSON.stringify(classicSource)));
+ await showOneMile();
+ const lakeCell=(key)=>page.locator(`[data-fine-key="${key}"]`);
+ await lakeCell('4,0').scrollIntoViewIfNeeded();
+ await lakeCell('4,0').press('Enter');
+ await shot('small-lake-before.jpg');
+ await button('Add small lake').click();
+ await lakeCell('5,0').press('Enter');
+ assert.match(await page.locator('[data-small-lake-editor]').innerText(),/Selected hexes: 2/);
+ await page.locator('[data-editor-only="small-lake-draft"] path').waitFor();
+ await shot('small-lake-draft.jpg');
+ await button('Save lake').click();
+ const smallLake=page.locator('[data-small-lake="1"]');
+ await smallLake.waitFor();
+ const lakePath=await smallLake.locator('path').getAttribute('d');
+ assert.ok(lakePath?.length>40);
+ const savedLakeWorld=await snap();
+ assert.deepEqual(savedLakeWorld.map.physicalGrid.smallLakes,{nextId:2,lakes:[{id:1,cells:[{q:4,r:0},{q:5,r:0}],origin:'manual'}]});
+ assert.deepEqual(savedLakeWorld.generation,classicSource.generation,'manual water edit does not change RNG');
+ await lakeCell('4,0').scrollIntoViewIfNeeded();
+ await shot('small-lake-after.jpg');
+ await page.evaluate(()=>{window.__oneSvg=null;});
+ const pngMenu=page.locator('details.export-menu');
+ if(await pngMenu.getAttribute('open')===null)await pngMenu.locator('summary').click();
+ const [smallLakePng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);
+ const smallLakeBytes=await fs.readFile(await smallLakePng.path());
+ assert.equal(smallLakeBytes.subarray(1,4).toString(),'PNG');
+ await fs.writeFile(new URL('small-lake-export.png',out),smallLakeBytes);
+ await page.waitForFunction(()=>typeof window.__oneSvg==='string');
+ const renderedLakeSvg=await page.evaluate(()=>window.__oneSvg);
+ assert.ok(renderedLakeSvg.includes(lakePath)&&renderedLakeSvg.includes('data-small-lake="1"')&&!renderedLakeSvg.includes('small-lake-draft'));
+ await button('Undo').click();
+ await smallLake.waitFor({state:'detached'});
+ await button('Redo').click();
+ await smallLake.waitFor();
+ assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
+ await step.selectOption('6');
+ await smallLake.waitFor({state:'detached'});
+ await loadWorld(Buffer.from(JSON.stringify(savedLakeWorld)));
+ await showOneMile();
+ await smallLake.waitFor();
+ assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
+ await lakeCell('4,0').press('Enter');
+ await button('Remove small lake').click();
+ await smallLake.waitFor({state:'detached'});
+ assert.deepEqual((await snap()).map.physicalGrid.smallLakes,{nextId:2,lakes:[]});
+ await button('Undo').click();
+ await smallLake.waitFor();
+ assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
+ manifest.cases.push({id:'HX056-manual-small-lake-roundtrip-and-png',status:'pass',cells:['4,0','5,0'],pngBytes:smallLakeBytes.length});
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated

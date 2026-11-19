@@ -1,6 +1,7 @@
+import type {ReactNode} from 'react';
 import type {DetailCell} from './detailGrid';
 export type FineDraft={target:DetailCell;revision:number;language:'ru'|'en';name:string;note:string;biome:string;baseline:string};
-type Props={canEdit:boolean;language:'ru'|'en';cell:DetailCell|null;name?:string;biome?:string;note?:string;roads:readonly string[];rivers:readonly string[];pois:readonly string[];draft:FineDraft|null;biomes:readonly {id:string;label:string}[];water:boolean;busy:boolean;error:string|null;
+type Props={children?:ReactNode;canEdit:boolean;language:'ru'|'en';cell:DetailCell|null;name?:string;biome?:string;note?:string;roads:readonly string[];rivers:readonly string[];pois:readonly string[];draft:FineDraft|null;biomes:readonly {id:string;label:string}[];water:boolean;busy:boolean;error:string|null;
  onEdit:()=>void;onChange:(fields:Partial<Pick<FineDraft,'name'|'note'|'biome'>>)=>void;onSave:()=>void;onCancel:()=>void;onComposition:(active:boolean)=>void};
 export function OneMilePanel(p:Props){const ru=p.language==='ru';return <section className={`info-block info-block--hex${p.draft?' is-editing':''}`} data-fine-panel aria-label={ru?'Информация о выбранном гексе':'Selected hex information'}>
  <div className="direct-mode-row"><button type="button" className="secondary direct-mode" aria-label={ru?'Редактировать':'Edit'} disabled={!p.canEdit||p.busy||!!p.draft} onClick={p.onEdit}><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><path d="m16 3 5 5-12 12-6 1 1-6Z"/></svg></button></div>
@@ -13,4 +14,5 @@ export function OneMilePanel(p:Props){const ru=p.language==='ru';return <section
   {p.error&&<p role="alert" className="direct-error">{p.error}</p>}
   <div className="fine-actions"><button type="submit" disabled={p.busy}>{ru?'Сохранить':'Save'}</button><button type="button" className="secondary" onClick={p.onCancel}>{ru?'Отмена':'Cancel'}</button></div>
  </form>:<>{p.biome&&<p>{p.biome}</p>}{p.roads.map((s,i)=><p key={`road${i}`}>{s}</p>)}{p.rivers.map((s,i)=><p key={`river${i}`}>{s}</p>)}{p.pois.map((s,i)=><p key={`poi${i}`}>{s}</p>)}{p.note&&<div className="gm-notes"><strong>{ru?'Заметка мастера':'GM note'}</strong><p className="gm-notes__text">{p.note}</p></div>}</>}
+ {p.children}
  </section>;}

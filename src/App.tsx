@@ -1,5 +1,6 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
+import {addManualSmallLake,hasFullDrySupport,validateSmallLakeSupport} from './smallLakes';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
@@ -1277,6 +1278,8 @@ function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
   }
  }
  const cells=projectOneMile(oneMileSources(map),state.grid.origin);
+ const smallLakes=map.physicalGrid?.smallLakes??state.smallLakes;
+ if(smallLakes)validateSmallLakeSupport(smallLakes,cells);
  parseFineCellEdits(state.fineCellEdits??{},cells,id=>Object.prototype.hasOwnProperty.call(BIOMES,id));
  if(state.selectedCell&&!cells.some(row=>row.cell.q===state.selectedCell!.q&&row.cell.r===state.selectedCell!.r))throw Error('DETAIL1 stale_fine_selection');
 }
@@ -12103,6 +12106,7 @@ export function App() {
   };
   const oneMilePreviewRef=useRef<{revision:number;state:Detail1State}|null>(null);
   const [fineHover,setFineHover]=useState<DetailCell|null>(null);
+  const [smallLakeDraft,setSmallLakeDraft]=useState<{revision:number;cells:readonly DetailCell[]}|null>(null);
   const [fineDraft,setFineDraft]=useState<FineDraft|null>(null);
   const fineDraftRef=useRef(fineDraft);fineDraftRef.current=fineDraft;
   const fineComposing=useRef(false);
@@ -13656,6 +13660,9 @@ export function App() {
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
   const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
+    const lakeState=after.map.physicalGrid;
+    if(before.map.physicalGrid?.smallLakes?.lakes.length&&!lakeState?.smallLakes)throw Error('The accepted small lake layer would be lost');
+    if(lakeState?.smallLakes?.lakes.length)validateSmallLakeSupport(lakeState.smallLakes,projectOneMile(oneMileSources(after.map),lakeState.grid.origin));
     // Source edits while viewing one mile must also have a complete next
     // display. A preparation failure occurs before either history is changed.
     let scene=automaticFineSceneRef.current?.viewStep===1?prepareAutomaticOneMileScene(after.map):null;
@@ -13703,6 +13710,7 @@ export function App() {
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
     fineGenerationTargetRef.current=null;
+    setSmallLakeDraft(null);
     fineLegacyRef.current=doc.requiresFineAdaptation??false;fineDraftRef.current=null;setFineDraft(null);setFineHover(null);setFineExit(null);
     poiDocumentToken.current={};
     tagLocks.current.clear();setTagAnimations({});
@@ -16378,6 +16386,7 @@ export function App() {
     documentRevision.current++;updateAutomaticFineScene({...next,...(state?.selectedCell?{selectedCell:state.selectedCell}:{}),...(state?.selectedWorldPoint?{selectedWorldPoint:state.selectedWorldPoint}:{})});setFineHover(null);setEditMode(false);closeEditors();updateMapScale(scale);return true;
   };
   const switchFineStep=(step:1|6)=>{
+    if(smallLakeDraft)return false;
     if(step===6&&automaticFineJob.current){cancelAutomaticFinePreparation();return true;}
     if(mutationBlocked()||fineComposing.current)return false;
     if(automaticFineSceneRef.current?.viewStep===step)return true;
@@ -16411,6 +16420,13 @@ export function App() {
     const layer=mapSvgRef.current?.querySelector<SVGGElement>('[data-fine-world]'),matrix=layer?.getScreenCTM();
     if(event&&matrix&&mapSvgRef.current){const point=mapSvgRef.current.createSVGPoint();point.x=event.clientX;point.y=event.clientY;const raw=point.matrixTransform(matrix.inverse()),factor=Math.sqrt(3)*HEX_SIZE/6;pointer={x:(raw.x-riverOffset.x)/factor+state.grid.origin.x,y:(raw.y-riverOffset.y)/factor+state.grid.origin.y};}
     if(pointer&&!isSameHex(worldToDetailCell(createDetailGrid(1,state.grid.origin),pointer),cell))pointer=undefined;
+    if(smallLakeDraft){
+      if(candidate||smallLakeDraft.revision!==revision)return false;
+      const cells=smallLakeDraft.cells;
+      const next=cells.some(c=>isSameHex(c,cell))?cells.filter(c=>!isSameHex(c,cell)):[...cells,cell];
+      setSmallLakeDraft({...smallLakeDraft,cells:next});
+      return true;
+    }
     if(candidate){
       const row=fineCandidates.find(row=>isSameHex(row.cell,cell));if(!row)return false;
       const anchor=chooseOneMileAnchor(row,pointer,state.grid.origin);if(!anchor)return false;
@@ -16424,21 +16440,77 @@ export function App() {
   const finePickRef=useRef(pickFine);finePickRef.current=pickFine;
   const startFineDraft=()=>{
     const state=automaticFineSceneRef.current??physicalGridRef.current,cell=state?.selectedCell;
-    if(!cell||mutationBlocked())return;const value=state.fineCellEdits?.[hexKey(cell)];
+    if(!cell||smallLakeDraft||mutationBlocked())return;const value=state.fineCellEdits?.[hexKey(cell)];
     const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
+  const acceptedSmallLakes=physicalGrid?.smallLakes;
+  const manualSmallLake=useMemo(()=>{
+    if(!smallLakeDraft?.cells.length)return null;
+    try{
+      return addManualSmallLake(acceptedSmallLakes,smallLakeDraft.cells,fineCells);
+    }catch{return null;}
+  },[acceptedSmallLakes,fineCells,smallLakeDraft]);
+  const paintSmallLake=manualSmallLake?.lakes[manualSmallLake.lakes.length-1];
+  const startSmallLake=()=>{
+    const target=fineDisplay?.selectedCell;
+    if(!target||fineDisplay?.viewStep!==1||mutationBlocked()||
+       !hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,target)))||
+       acceptedSmallLakes?.lakes.some(lake=>lake.cells.some(cell=>isSameHex(cell,target))))return;
+    setEditError(null);
+    setSmallLakeDraft({revision:documentRevision.current,cells:[target]});
+  };
+  const commitSmallLake=()=>{
+    const display=automaticFineSceneRef.current??physicalGridRef.current;
+    const state=physicalGridRef.current??display?.geometryRefinement?.sourceState??display;
+    if(!state||display?.viewStep!==1||!smallLakeDraft||!manualSmallLake||smallLakeDraft.revision!==documentRevision.current||mutationBlocked())return;
+    try{
+      const before=copyDocument(captureDocument());
+      const layer=addManualSmallLake(state.smallLakes,smallLakeDraft.cells,projectOneMile(oneMileSources(before.map),state.grid.origin));
+      const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes:layer}}});
+      assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);
+    }catch(error){
+      setEditError(error instanceof Error?error.message:'Invalid small lake');
+    }
+  };
+  const selectedSmallLake=acceptedSmallLakes?.lakes.find(lake=>lake.cells.some(cell=>fineDisplay?.selectedCell&&isSameHex(cell,fineDisplay.selectedCell)));
+  const removeSelectedSmallLake=()=>{
+    const state=physicalGridRef.current, layer=state?.smallLakes;
+    if(!state||!layer||!selectedSmallLake||smallLakeDraft||mutationBlocked())return;
+    try{
+      const before=copyDocument(captureDocument());
+      const smallLakes={...layer,lakes:layer.lakes.filter(lake=>lake.id!==selectedSmallLake.id)};
+      const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes}}});
+      recordTransaction(before,after);applyPreparedDocument(after);
+    }catch(error){setEditError(error instanceof Error?error.message:'Could not remove small lake');}
+  };
+  const smallLakeCanStart=!!fineDisplay?.selectedCell&&hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,fineDisplay.selectedCell!)))&&
+    !acceptedSmallLakes?.lakes.some(lake=>lake.cells.some(cell=>isSameHex(cell,fineDisplay.selectedCell!)));
   const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
   const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
-  const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
+  const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} smallLakes={acceptedSmallLakes?.lakes} smallLakeDraft={paintSmallLake} smallLakeSeed={toponymSeed} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
     geography={refinedArtwork(fineDisplay)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [fineDisplay,fineCells,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
+    [fineDisplay,fineCells,fineCandidates,acceptedSmallLakes,paintSmallLake,toponymSeed,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}
     rivers={(fineSummary?.rivers??[]).map(r=>`${editorNames[`river:${r.id}`]?.[language]??toponyms[`river:${r.id}`]?.[language]??`${t.river} ${r.id}`}${r.crossingIds.length?` · ${r.crossingIds.map(id=>crossings.find(c=>`crossing:${c.key}`===id)?.kind).filter(Boolean).map(k=>t[k as 'bridge'|'ferry'|'ford']).join(', ')}`:''}`)}
     pois={(fineSummary?.pois??[]).map(p=>finePoi(fineDisplay!.poiFootprints.find(fp=>fp.poiId===p.poiId)!).label)} draft={fineDraft} canEdit={!!fineDisplay?.selectedCell} water={!!fineRow?.waterArea} busy={isImporting||!!pendingRegen||!!kingdomJob} error={editError}
-    biomes={Object.values(BIOMES).map(b=>({id:b.id,label:getBiomeLabel(b.id,language)}))} onEdit={startFineDraft} onChange={fields=>changeFineDraft(fields,fineDraft)} onSave={()=>saveFineDraft(fineDraft)} onCancel={()=>cancelFineDraft(fineDraft)} onComposition={active=>{fineComposing.current=active;}}/>;
+    biomes={Object.values(BIOMES).map(b=>({id:b.id,label:getBiomeLabel(b.id,language)}))} onEdit={startFineDraft} onChange={fields=>changeFineDraft(fields,fineDraft)} onSave={()=>saveFineDraft(fineDraft)} onCancel={()=>cancelFineDraft(fineDraft)} onComposition={active=>{fineComposing.current=active;}}>
+    {!fineDraft&&(smallLakeDraft?<div data-small-lake-editor>
+      <strong>{language==='ru'?'Малое озеро':'Small lake'}</strong>
+      <p>{language==='ru'?`Выбрано гексов: ${smallLakeDraft.cells.length}`:`Selected hexes: ${smallLakeDraft.cells.length}`}</p>
+      {!manualSmallLake&&<p role="alert">{language==='ru'?'Выберите смежные гексы целиком на суше без другого малого озера.':'Select connected hexes entirely on dry land, clear of another small lake.'}</p>}
+      {smallLakeDraft.revision!==documentRevision.current&&<p role="alert">{language==='ru'?'Карта изменилась. Начните заново.':'The map changed. Start again.'}</p>}
+      <div className="fine-actions">
+        <button type="button" disabled={!manualSmallLake||smallLakeDraft.revision!==documentRevision.current||documentBusy()} onClick={commitSmallLake}>{language==='ru'?'Сохранить озеро':'Save lake'}</button>
+        <button type="button" className="secondary" onClick={()=>{setSmallLakeDraft(null);setEditError(null);}}>{language==='ru'?'Отмена':'Cancel'}</button>
+      </div>
+    </div>:selectedSmallLake?<div data-small-lake-controls>
+      <p>{language==='ru'?'Малое озеро':'Small lake'} №{selectedSmallLake.id}</p>
+      <button type="button" className="secondary" disabled={documentBusy()} onClick={removeSelectedSmallLake}>{language==='ru'?'Удалить малое озеро':'Remove small lake'}</button>
+    </div>:<button type="button" className="secondary" disabled={!smallLakeCanStart||documentBusy()} onClick={startSmallLake}>{language==='ru'?'Добавить малое озеро':'Add small lake'}</button>)}
+  </OneMilePanel>;
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
   const mapArtwork = useMemo(() => (<>
             <defs>
@@ -16778,6 +16850,7 @@ export function App() {
   return (
     <EngravingLoading.Provider value={engravingLoading}>
     <div className="app" onClickCapture={e=>{if(fineGate(e))poiClickGate(e);}} onChangeCapture={e=>{if(fineGate(e))poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(smallLakeDraft&&e.key==='Escape'){e.preventDefault();e.stopPropagation();setSmallLakeDraft(null);setEditError(null);return;}
       if(fineDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelFineDraft();return;}
       if(fineExit&&e.key==='Tab'){const buttons=[...e.currentTarget.querySelectorAll<HTMLButtonElement>('[data-fine-exit] button')],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(e.key!=='Tab'&&guardMaterialRead(e))return;
