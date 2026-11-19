@@ -307,7 +307,11 @@ try{
  assert.match(await page.locator('[data-small-lake-editor]').innerText(),/Selected hexes: 2/);
  await page.locator('[data-editor-only="small-lake-draft"] path').waitFor();
  await shot('small-lake-draft.jpg');
- await button('Save lake').click();
+ const saveLake=button('Save lake');
+ await saveLake.evaluate(node=>node.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));
+ await saveLake.evaluate(node=>node.addEventListener('click',()=>{window.__smallLakeSaveClick=true;},{once:true}));
+ await saveLake.click();
+ assert.equal(await page.evaluate(()=>window.__smallLakeSaveClick),true,'the lake editor receives the native save click');
  const smallLake=page.locator('[data-small-lake="1"]');
  await page.waitForFunction(()=>!!document.querySelector('[data-small-lake="1"], .info-body > [role="alert"]'));
  assert.deepEqual(await page.locator('.info-body > [role="alert"]').allTextContents(),[],'save prepares the real document without silent refusal');
