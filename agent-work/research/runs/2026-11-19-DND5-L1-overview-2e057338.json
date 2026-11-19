@@ -1,0 +1,295 @@
+{
+  "run_id": "2026-11-19-DND5-L1-overview-2e057338",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_selective_overview_audit_completed",
+  "started_at": "2026-11-19T17:27:21.111Z",
+  "completed_at": "2026-11-19T17:31:18.038Z",
+  "selected_task": {
+    "id": "HX-RSR-DND5-L1-SELECTIVE-MAP-OVERVIEW",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "На свежем опубликованном дереве проверить избирательный обзор из DND5-2014-008-L1-v2-draft. Создать/загрузить контрольную карту с городом C, деревней V и границей P. Проверить, можно ли показать C/P, скрыть V на общем обзоре и вернуть V без изменения её записи.",
+    "completion_condition": "Отдельно сохранить фактический результат обзора, зума, общего тумблера значков и сохранения/загрузки на точном SHA. При отсутствии доступного действия назвать точное ограничение; не присваивать сценарию результат по одному наличию зума. Полный DMG 2014 продолжать при новом законном доступе. PF2 и закрытые срезы повторно не читать.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json"
+    ]
+  },
+  "selection_reason": "Сценарий закрывает неизвестную фактическую поддержку L1 у первой игры общего топ-5 по свежему checkpoint. Есть фиксированное дерево, данные контрольной карты и критерий.",
+  "alternatives": [
+    {
+      "id": "DND5-full-primary",
+      "reason": "Полный объявленный экземпляр ожидает нового законного доступа."
+    },
+    {
+      "id": "PF2-residual",
+      "reason": "Ранее сохранён точный остаток, существенной новой зависимости здесь нет."
+    }
+  ],
+  "inputs_and_versions": {
+    "agent_operations": "98451df2f9bb1c60b0dc54a8f51a841902335a00",
+    "main": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "source": {
+      "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-008",
+      "locator": "historical printed p14 Масштаб королевства / континента",
+      "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Отбор объектов по масштабу: крупные города, реки и политические границы",
+      "normative_kind": "recommendation",
+      "parameters_and_units": {
+        "historical_only": true,
+        "primary_text_reverification_required": true
+      },
+      "conditions": [
+        "Точная применимость и нормативность ожидают первичного текста."
+      ],
+      "exceptions": [
+        "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+      ],
+      "cross_references": [],
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "access_level": "retained_historical_extract_only_not_primary_reverified",
+      "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+      "source_verification_status": "historical_paraphrase_not_primary_reverified"
+    },
+    "product_context_refs": [
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json"
+    ],
+    "active_ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json"
+  },
+  "findings": [
+    "C и V присутствуют в SVG при каждом значении. P состоит из 94 линий на каждом шаге. Полный объект map равен исходному.",
+    "Приближение не отбирает POI. Текущая панель содержит поворот, координаты и размер гекса. В отрисовке базовой карты отсутствует пользовательский выбор POI для обзорного режима. Сценарий не реализован в проверенном редакторе.",
+    "Полный объект map совпал. V сохранила тип village, имя Village V и заметку. Зум восстановился до 0,20000000000000004.",
+    "В предыдущем коде переключатель менял SVG-значки и эмодзи. PR 506 убрал эту кнопку. В текущем коде остались старые строки локализации, а обработчика и кнопки в панели нет."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+    "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.md",
+    "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19-probe.mjs",
+    "agent-work/research/handoffs/2026-11-19-DND5-L1-overview-2e057338-strategist.json",
+    "agent-work/research/runs/2026-11-19-DND5-L1-overview-2e057338.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/claims/2026-11-19-DND5-L1-overview-2e057338.json",
+    "agent-work/latest.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "product_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "source_tree_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "matches": 108,
+    "blob_shas": {
+      "src/App.tsx": "21df9ba1af2baea05186289a3aac3e912bb9d580",
+      "src/modes/kingdomBoundaries.ts": "5e166aa7d4d015168e7cff5788f3f226ac175fdd",
+      "src/modes/persistence.ts": "7129765b98cf5a40e6632c5367b1bb76216b1104",
+      "src/styles.css": "0012ba0b41c599141471f9223a6518e18f897199",
+      "test/fixtures/e6-water-editor.json": "f70ae14b3663122d09e29ad7ce95b886de1c010c",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+    },
+    "locators": {
+      "src/App.tsx": [
+        "14994–15039 clampMapScale/applyMapScale/updateMapScale",
+        "15260 serialization; 15344 import spelling of mapScale",
+        "16570–16572 kingdom boundary layer",
+        "16634–16654 points layer",
+        "16914–16945 display toolbar"
+      ],
+      "src/modes/kingdomBoundaries.ts": [
+        "kingdomBoundary"
+      ]
+    },
+    "command": "Copy probe into repo root of the exact main tree with locked deps, run `node --experimental-strip-types --experimental-specifier-resolution=node research-map-overview.mjs`.",
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19-probe.mjs",
+    "observations": {
+      "states": [
+        {
+          "scale": 1,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 0.20000000000000004,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 6,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 1,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        }
+      ],
+      "reloaded": {
+        "scale": 0.20000000000000004,
+        "city": true,
+        "village": true,
+        "boundaryLines": 94
+      },
+      "villageRecord": {
+        "kind": "village",
+        "name": "Village V",
+        "note": "Village retained note"
+      },
+      "displayControls": {
+        "rotate": true,
+        "coordinates": true,
+        "hexSize": true,
+        "globalPoiToggleInDisplayToolbar": false,
+        "selectiveOverviewInDisplayToolbar": false
+      },
+      "methods": [
+        "real App camera state & serializer",
+        "server-rendered coarse POI and kingdom boundary layers and display toolbar",
+        "terrain-decoration components stubbed, no DOM raster or browser interaction"
+      ]
+    },
+    "historical_control": {
+      "removed_by_pr": 506,
+      "baseline_before": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+      "merge_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "verified_diff": [
+        "-  const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;",
+        "-  const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;",
+        "-                className=\"poi-display-toggle\"",
+        "-                aria-label={poiDisplayToggleLabel}",
+        "-                title={poiDisplayToggleTitle}",
+        "-                <span className=\"display-toggle__label\">{t.pointsDisplay}</span>"
+      ]
+    },
+    "limits": [
+      "Browser launch unavailable in this environment. Proven by actual app handler, serialization and React static SVG/toolbar rendering. Browser performance, hit targets and view clipping were outside the test.",
+      "The native Mythic kingdom boundary is a geometric test input. D&D-specific authoring of political boundaries was not tested.",
+      "No current full DMG 2014 primary text; this validates the retained product interpretation only. No inferred numeric threshold."
+    ]
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "2e057338-400c-8321-9049-df31a5c4a994",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T17:30:00Z",
+          "started_at": "2026-11-19T17:26:30.112157Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-19T20:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "d0394aec-636c-8326-8ca4-43ff7fb1d067",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T17:00:00Z",
+          "started_at": "2026-11-19T17:00:28.606435Z",
+          "completed_at": "2026-11-19T17:14:43.125094Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-19T21:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "2e057338-400c-8321-9049-df31a5c4a994",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T17:30:00Z",
+          "started_at": "2026-11-19T17:26:30.112157Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-19T20:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "d0394aec-636c-8326-8ca4-43ff7fb1d067",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T17:00:00Z",
+          "started_at": "2026-11-19T17:00:28.606435Z",
+          "completed_at": "2026-11-19T17:14:43.125094Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-19T21:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_selective_overview_audit_completed",
+    "run_id": "2026-11-19-DND5-L1-overview-2e057338",
+    "stage": "selective_overview_exact_SHA",
+    "last_successful_step": "Выполнен контроль C/V/P через реальные функции App, JSX базовой карты и новый импорт JSON. Проверена история кнопки оформления POI.",
+    "failed_operation": {
+      "tool": "exec_command",
+      "action": "Headless Chromium startup",
+      "locator": "about:blank"
+    },
+    "observed_error": "Check failed: . socket() failed: Operation not permitted (1)",
+    "cause_status": "confirmed",
+    "stop_reason": "Проверка редактора и сохранения закончена через App и статический SVG. Интерактивный браузер в этом запуске недоступен.",
+    "saved_results": [
+      "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.md",
+      "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19-probe.mjs",
+      "agent-work/research/handoffs/2026-11-19-DND5-L1-overview-2e057338-strategist.json",
+      "agent-work/research/runs/2026-11-19-DND5-L1-overview-2e057338.json"
+    ],
+    "exact_continuation": "Проверить один связанный сценарий подготовки места DND5-2014-013/017. Создать или загрузить руины с видимой сломанной аркой и отдельной скрытой частью описания. Изменить видимый признак и сохранить карту.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-OBSERVABLE-PLACE-SIGN",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "Проверить один связанный сценарий подготовки места DND5-2014-013/017. Создать или загрузить руины с видимой сломанной аркой и отдельной скрытой частью описания. Изменить видимый признак и сохранить карту.",
+    "completion_condition": "Проверить доступное действие, привязку признака к POI, сохранение/загрузку и возможность независимо менять закрытое описание на точном продуктном SHA. Отделить данные редактора от раскрытия игрокам в L2. Новое чтение DMG — при новом законном доступе.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "recovered_probe_diagnostics": [
+    {
+      "observed_error": "SyntaxError: Unexpected identifier 'hex'",
+      "recovery": "Escaped display-toolbar JSX when composing the temporary harness, no product change."
+    },
+    {
+      "observed_error": "0.20000000000000004 versus 0.2",
+      "recovery": "Compare screen zoom with documented floating-point tolerance and compare map data exactly."
+    }
+  ]
+}

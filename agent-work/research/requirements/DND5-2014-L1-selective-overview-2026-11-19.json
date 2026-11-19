@@ -1,0 +1,345 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-DND5-L1-overview-2e057338",
+  "game_id": "DND5",
+  "status": "bounded_selective_overview_audit_completed",
+  "product_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+  "source": {
+    "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-008",
+    "locator": "historical printed p14 Масштаб королевства / континента",
+    "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Отбор объектов по масштабу: крупные города, реки и политические границы",
+    "normative_kind": "recommendation",
+    "parameters_and_units": {
+      "historical_only": true,
+      "primary_text_reverification_required": true
+    },
+    "conditions": [
+      "Точная применимость и нормативность ожидают первичного текста."
+    ],
+    "exceptions": [
+      "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+    ],
+    "cross_references": [],
+    "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+    "access_level": "retained_historical_extract_only_not_primary_reverified",
+    "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+    "source_verification_status": "historical_paraphrase_not_primary_reverified"
+  },
+  "source_coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+  "alignment_ref": "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+  "disposition": "keep_L1",
+  "disposition_reason": "Ведущий изменяет состав обзорной карты и сохраняет объекты для дальнейшего редактирования.",
+  "product_boundary": "Отображение авторской карты. Доступ игроков и раскрытие в игре относятся к L2.",
+  "row_id": "DND5-2014-008-L1-v2-draft",
+  "canonical_rule_ids": [
+    "map.display_detail"
+  ],
+  "binding_refs": [
+    "DND5-2014-008-L1"
+  ],
+  "implementation_status": "not_implemented",
+  "historical_result": {
+    "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+    "status": "unverified",
+    "sha": "172155071ca1408abf6960dbc876ba030fc61613"
+  },
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-008",
+    "normative_kind": "research_interpretation_pending_source_revalidation",
+    "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+    "layer": "L1",
+    "trigger_or_user_action": "Изменить уровень отображения",
+    "inputs_and_units": {
+      "city": "C",
+      "village": "V",
+      "boundary": "P"
+    },
+    "product_operation": "Изменить уровень отображения; Крупный обзор сохраняет C/P и скрывает мелкие детали без удаления.",
+    "expected_output": "Крупный обзор сохраняет C/P и скрывает мелкие детали без удаления.",
+    "constraints_and_exceptions": [
+      "Порог масштаба — решение продукта, источник надо восстановить.",
+      "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Город C и деревня V в соседних гексах. P задана валидной границей королевства контрольной карты.",
+        "when": "Установить экранный зум 1 → 0,2 → 6 → 1.",
+        "expected": "Показать исходные данные о наблюдаемом поведении зума отдельно от сценария выборочной детализации."
+      },
+      {
+        "given": "Обзор C/P с временно скрытой V и полный вид с C/V/P.",
+        "when": "Искать отдельное действие выбора состава карты в элементах управления и пути отрисовки.",
+        "expected": "На обзоре C и P видны, V скрыта. После возврата V видна и её запись прежняя."
+      },
+      {
+        "given": "Карта на зуме ≈0,2, деревня V имеет тип, имя и заметку.",
+        "when": "Сохранить штатным сериализатором и загрузить JSON в новый экземпляр редактора.",
+        "expected": "Карта, включая деревню и P, сохраняет данные. Зум восстанавливается с допуском 1e-12."
+      }
+    ],
+    "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+    "canonical_rule_refs": [
+      "agent-work/rules/common-rules.json#map.display_detail"
+    ],
+    "unresolved_parameters": [
+      "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+    ]
+  },
+  "cases": [
+    {
+      "id": "DND5-OVERVIEW-AC01",
+      "given": "Город C и деревня V в соседних гексах. P задана валидной границей королевства контрольной карты.",
+      "when": "Установить экранный зум 1 → 0,2 → 6 → 1.",
+      "expected": "Показать исходные данные о наблюдаемом поведении зума отдельно от сценария выборочной детализации.",
+      "actual": "C и V присутствуют в SVG при каждом значении. P состоит из 94 линий на каждом шаге. Полный объект map равен исходному.",
+      "status": "implemented_for_camera_only"
+    },
+    {
+      "id": "DND5-OVERVIEW-AC02",
+      "given": "Обзор C/P с временно скрытой V и полный вид с C/V/P.",
+      "when": "Искать отдельное действие выбора состава карты в элементах управления и пути отрисовки.",
+      "expected": "На обзоре C и P видны, V скрыта. После возврата V видна и её запись прежняя.",
+      "actual": "Приближение не отбирает POI. Текущая панель содержит поворот, координаты и размер гекса. В отрисовке базовой карты отсутствует пользовательский выбор POI для обзорного режима. Сценарий не реализован в проверенном редакторе.",
+      "status": "not_implemented"
+    },
+    {
+      "id": "DND5-OVERVIEW-AC03",
+      "given": "Карта на зуме ≈0,2, деревня V имеет тип, имя и заметку.",
+      "when": "Сохранить штатным сериализатором и загрузить JSON в новый экземпляр редактора.",
+      "expected": "Карта, включая деревню и P, сохраняет данные. Зум восстанавливается с допуском 1e-12.",
+      "actual": "Полный объект map совпал. V сохранила тип village, имя Village V и заметку. Зум восстановился до 0,20000000000000004.",
+      "status": "implemented_for_roundtrip"
+    },
+    {
+      "id": "DND5-OVERVIEW-AC04",
+      "given": "На прежнем интерфейсе была кнопка оформления POI.",
+      "when": "Проверить назначение и наличие кнопки после PR 506.",
+      "expected": "Отдельно описать разницу между оформлением и составом объектов.",
+      "actual": "В предыдущем коде переключатель менял SVG-значки и эмодзи. PR 506 убрал эту кнопку. В текущем коде остались старые строки локализации, а обработчика и кнопки в панели нет.",
+      "status": "related_control_removed"
+    }
+  ],
+  "evidence": {
+    "product_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "source_tree_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "matches": 108,
+    "blob_shas": {
+      "src/App.tsx": "21df9ba1af2baea05186289a3aac3e912bb9d580",
+      "src/modes/kingdomBoundaries.ts": "5e166aa7d4d015168e7cff5788f3f226ac175fdd",
+      "src/modes/persistence.ts": "7129765b98cf5a40e6632c5367b1bb76216b1104",
+      "src/styles.css": "0012ba0b41c599141471f9223a6518e18f897199",
+      "test/fixtures/e6-water-editor.json": "f70ae14b3663122d09e29ad7ce95b886de1c010c",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+    },
+    "locators": {
+      "src/App.tsx": [
+        "14994–15039 clampMapScale/applyMapScale/updateMapScale",
+        "15260 serialization; 15344 import spelling of mapScale",
+        "16570–16572 kingdom boundary layer",
+        "16634–16654 points layer",
+        "16914–16945 display toolbar"
+      ],
+      "src/modes/kingdomBoundaries.ts": [
+        "kingdomBoundary"
+      ]
+    },
+    "command": "Copy probe into repo root of the exact main tree with locked deps, run `node --experimental-strip-types --experimental-specifier-resolution=node research-map-overview.mjs`.",
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19-probe.mjs",
+    "observations": {
+      "states": [
+        {
+          "scale": 1,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 0.20000000000000004,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 6,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 1,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        }
+      ],
+      "reloaded": {
+        "scale": 0.20000000000000004,
+        "city": true,
+        "village": true,
+        "boundaryLines": 94
+      },
+      "villageRecord": {
+        "kind": "village",
+        "name": "Village V",
+        "note": "Village retained note"
+      },
+      "displayControls": {
+        "rotate": true,
+        "coordinates": true,
+        "hexSize": true,
+        "globalPoiToggleInDisplayToolbar": false,
+        "selectiveOverviewInDisplayToolbar": false
+      },
+      "methods": [
+        "real App camera state & serializer",
+        "server-rendered coarse POI and kingdom boundary layers and display toolbar",
+        "terrain-decoration components stubbed, no DOM raster or browser interaction"
+      ]
+    },
+    "historical_control": {
+      "removed_by_pr": 506,
+      "baseline_before": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+      "merge_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+      "verified_diff": [
+        "-  const poiDisplayToggleLabel = `${t.pointsDisplay}: ${usePoiSvg ? t.iconsMode : t.emojiMode}`;",
+        "-  const poiDisplayToggleTitle = usePoiSvg ? t.showPoiEmojiTitle : t.showPoiIconsTitle;",
+        "-                className=\"poi-display-toggle\"",
+        "-                aria-label={poiDisplayToggleLabel}",
+        "-                title={poiDisplayToggleTitle}",
+        "-                <span className=\"display-toggle__label\">{t.pointsDisplay}</span>"
+      ]
+    },
+    "limits": [
+      "Browser launch unavailable in this environment. Proven by actual app handler, serialization and React static SVG/toolbar rendering. Browser performance, hit targets and view clipping were outside the test.",
+      "The native Mythic kingdom boundary is a geometric test input. D&D-specific authoring of political boundaries was not tested.",
+      "No current full DMG 2014 primary text; this validates the retained product interpretation only. No inferred numeric threshold."
+    ]
+  },
+  "quality": {
+    "source": "RA-Q01–05 preserve historical provenance and open primary revalidation.",
+    "operation": "RA-Q06–09 bounded action and known observed output; no proposed threshold.",
+    "verification": "RA-Q10–12 exact SHA, React server output, App save/import handlers, handoff and limits.",
+    "summary": "RA-Q13–15 bounded finding, primary source and full game remain open."
+  },
+  "full_game_accepted": false,
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-OBSERVABLE-PLACE-SIGN",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "Проверить один связанный сценарий подготовки места DND5-2014-013/017. Создать или загрузить руины с видимой сломанной аркой и отдельной скрытой частью описания. Изменить видимый признак и сохранить карту.",
+    "completion_condition": "Проверить доступное действие, привязку признака к POI, сохранение/загрузку и возможность независимо менять закрытое описание на точном продуктном SHA. Отделить данные редактора от раскрытия игрокам в L2. Новое чтение DMG — при новом законном доступе.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "ra_q01_15": {
+    "RA-Q01": {
+      "status": "pass",
+      "detail": "Редакция и исходный исторический экземпляр названы.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "continuation": null
+    },
+    "RA-Q02": {
+      "status": "blocked",
+      "detail": "Полный первичный экземпляр остаётся недоступным.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "continuation": "Возобновить первичную сверку при доступе к полному заявленному DMG2014."
+    },
+    "RA-Q03": {
+      "status": "blocked",
+      "detail": "Смысл сохранён как исторический пересказ, повторное подтверждение нормы открыто.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "continuation": "Возобновить первичную сверку при доступе к полному заявленному DMG2014."
+    },
+    "RA-Q04": {
+      "status": "blocked",
+      "detail": "Численные пределы и часть условий требуют первичного текста.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "continuation": "Возобновить первичную сверку при доступе к полному заявленному DMG2014."
+    },
+    "RA-Q05": {
+      "status": "pass",
+      "detail": "Пересказ, продуктовый критерий и наблюдения различаются.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "continuation": null
+    },
+    "RA-Q06": {
+      "status": "pass",
+      "detail": "Операция выбора состава и контроль C/V/P сформулированы.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "continuation": null
+    },
+    "RA-Q07": {
+      "status": "pass",
+      "detail": "Связана с отображением авторской карты и проверенным редактором.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "continuation": null
+    },
+    "RA-Q08": {
+      "status": "pass",
+      "detail": "Использованы существующий map.display_detail и привязка DND5-2014-008-L1.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "continuation": null
+    },
+    "RA-Q09": {
+      "status": "pass",
+      "detail": "Камера, общий обзор и сохранение получили отдельные ожидаемые результаты.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "continuation": null
+    },
+    "RA-Q10": {
+      "status": "pass",
+      "detail": "Статус узкой операции установлен на конкретном SHA.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "continuation": null
+    },
+    "RA-Q11": {
+      "status": "pass",
+      "detail": "Границы серверного SVG, App и недоступного браузера записаны.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "continuation": null
+    },
+    "RA-Q12": {
+      "status": "pass",
+      "detail": "Передача с существующей привязкой, без изменения очереди.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-overview-2e057338-strategist.json",
+      "continuation": null
+    },
+    "RA-Q13": {
+      "status": "pass",
+      "detail": "Обзор соответствует матрице и сохраняет факт полного round-trip.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.md",
+      "continuation": null
+    },
+    "RA-Q14": {
+      "status": "fail",
+      "detail": "Готовность правила игры целиком открыта по первичному источнику. Фактическая проверка заявленного среза завершена.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "continuation": "Возобновить первичную сверку при доступе к полному заявленному DMG2014."
+    },
+    "RA-Q15": {
+      "status": "pass",
+      "detail": "Никаких утверждений о полном профиле или допуске общего топ-5.",
+      "scope": "retained_selective_overview_only",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "continuation": null
+    }
+  }
+}
