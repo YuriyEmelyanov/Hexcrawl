@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "game_id": "DND5",
+  "run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "status": "bounded_place_sign_authoring_audit_completed",
+  "source_coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+  "previous_matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+  "rows": [
+    {
+      "id": "DND5-2014-013-L1-v2-draft",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-013",
+        "locator": "historical printed p108 Перемещение по карте",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В новом гексе видны признаки примечательного места, если оно не скрыто",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Ведущий готовит и редактирует содержимое конкретной POI на карте. Перенос выявляет принадлежность данных; произвольный текст заметки не засчитывается как признак.",
+      "product_boundary": "Авторское наполнение руин и сохранение их данных.",
+      "related_disposition": {
+        "disposition": "defer_L2",
+        "reason": "Условия открытия при движении, показ игрокам и разделение доступа остаются отдельным сценарием L2."
+      },
+      "historical_status": "unverified",
+      "implementation_status": "partial",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-013",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий создаёт или редактирует именованные руины, задаёт наблюдаемый признак и сохраняет отдельно описание ведущего.",
+        "inputs_and_units": {
+          "poi_kind": "ruins",
+          "author_name": "Old Gate",
+          "place_sign": "Broken arch",
+          "gm_description": "Refuge under the courtyard",
+          "coordinates": "axial q/r"
+        },
+        "product_operation": "Добавить и независимо изменить данные конкретных руин. Сохранить, переоткрыть и проверить, к какому объекту относится каждый текст.",
+        "expected_output": "Независимо редактируемые данные места с проверяемой связью с POI. Картографический признак привязан к руинам; скрытое описание остаётся связанным с тем же местом при переносе.",
+        "constraints_and_exceptions": [
+          "Подготовка признаков L1; определение открытия при движении L2. Не объявлять весь VTT пробелом карты.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В обычной карте Classic выбран сухой гекс (2,0), Knave-слой ещё не инициализирован.",
+            "when": "Создать руины, назвать Old Gate и сохранить заметку ведущего.",
+            "expected": "Рабочий редактор руин сохраняет тип, имя и заметку на гексе. В том же режиме проверяется наличие отдельного действия редактирования признака POI."
+          },
+          {
+            "given": "Те же руины на том же гексе, слой Knave один раз включён, задан режим interaction.",
+            "when": "Сохранить Broken arch как улику, заменить на Tower visible from road, отдельно изменить заметку и переоткрыть JSON.",
+            "expected": "Улика меняется независимо от заметки. Запись POI и география сохраняются."
+          },
+          {
+            "given": "Именованные руины с уликой и заметкой в исходном (2,0). Свободный сухой гекс (1,0).",
+            "when": "Перенести POI и проверить JSON, отмену и повтор.",
+            "expected": "Если оба текста являются данными одного места, они связаны с перемещённой POI. Отдельная проверка улики и заметки различает их владельцев."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.discovery_levels"
+      ],
+      "binding_ids": [
+        "DND5-2014-013-L1"
+      ],
+      "verified_gap": "В обычном Classic отдельного признака POI нет. Инициализированный профиль Knave даёт редактируемую и переносимую улику. Заметка имеет владельцем гекс и не следует за POI."
+    },
+    {
+      "id": "DND5-2014-017-L1-v2-draft",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-017",
+        "locator": "historical printed p109 Руины / странные места",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Руины и необычные места делают местность содержательной",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Ведущий готовит и редактирует содержимое конкретной POI на карте. Перенос выявляет принадлежность данных; произвольный текст заметки не засчитывается как признак.",
+      "product_boundary": "Авторское наполнение руин и сохранение их данных.",
+      "related_disposition": {
+        "disposition": "defer_L2",
+        "reason": "Условия открытия при движении, показ игрокам и разделение доступа остаются отдельным сценарием L2."
+      },
+      "historical_status": "partial",
+      "implementation_status": "partial",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-017",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий создаёт или редактирует именованные руины, задаёт наблюдаемый признак и сохраняет отдельно описание ведущего.",
+        "inputs_and_units": {
+          "poi_kind": "ruins",
+          "author_name": "Old Gate",
+          "place_sign": "Broken arch",
+          "gm_description": "Refuge under the courtyard",
+          "coordinates": "axial q/r"
+        },
+        "product_operation": "Добавить и независимо изменить данные конкретных руин. Сохранить, переоткрыть и проверить, к какому объекту относится каждый текст.",
+        "expected_output": "Независимо редактируемые данные места с проверяемой связью с POI. Картографический признак привязан к руинам; скрытое описание остаётся связанным с тем же местом при переносе.",
+        "constraints_and_exceptions": [
+          "Атмосферное описание не становится отдельным обязательным генератором.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В обычной карте Classic выбран сухой гекс (2,0), Knave-слой ещё не инициализирован.",
+            "when": "Создать руины, назвать Old Gate и сохранить заметку ведущего.",
+            "expected": "Рабочий редактор руин сохраняет тип, имя и заметку на гексе. В том же режиме проверяется наличие отдельного действия редактирования признака POI."
+          },
+          {
+            "given": "Те же руины на том же гексе, слой Knave один раз включён, задан режим interaction.",
+            "when": "Сохранить Broken arch как улику, заменить на Tower visible from road, отдельно изменить заметку и переоткрыть JSON.",
+            "expected": "Улика меняется независимо от заметки. Запись POI и география сохраняются."
+          },
+          {
+            "given": "Именованные руины с уликой и заметкой в исходном (2,0). Свободный сухой гекс (1,0).",
+            "when": "Перенести POI и проверить JSON, отмену и повтор.",
+            "expected": "Если оба текста являются данными одного места, они связаны с перемещённой POI. Отдельная проверка улики и заметки различает их владельцев."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ids": [
+        "DND5-2014-017-L1"
+      ],
+      "verified_gap": "В обычном Classic отдельного признака POI нет. Инициализированный профиль Knave даёт редактируемую и переносимую улику. Заметка имеет владельцем гекс и не следует за POI."
+    }
+  ],
+  "cases": [
+    {
+      "id": "PLACE-SIGN-01",
+      "given": "В обычной карте Classic выбран сухой гекс (2,0), Knave-слой ещё не инициализирован.",
+      "when": "Создать руины, назвать Old Gate и сохранить заметку ведущего.",
+      "expected": "Рабочий редактор руин сохраняет тип, имя и заметку на гексе. В том же режиме проверяется наличие отдельного действия редактирования признака POI.",
+      "actual": "Тип и имя сохраняются, заметка в gmNotesByHexKey. Панель улики отсутствует, обработчик улики отклоняет запрос."
+    },
+    {
+      "id": "PLACE-SIGN-02",
+      "given": "Те же руины на том же гексе, слой Knave один раз включён, задан режим interaction.",
+      "when": "Сохранить Broken arch как улику, заменить на Tower visible from road, отдельно изменить заметку и переоткрыть JSON.",
+      "expected": "Улика меняется независимо от заметки. Запись POI и география сохраняются.",
+      "actual": "Существующая улика Knave и заметка гекса редактируются независимо. Оба поля присутствуют в JSON редактора. При выключении флажка генерации Knave поле улики продолжает работать на ранее подготовленной карте, включая после импорта."
+    },
+    {
+      "id": "PLACE-SIGN-03",
+      "given": "Именованные руины с уликой и заметкой в исходном (2,0). Свободный сухой гекс (1,0).",
+      "when": "Перенести POI и проверить JSON, отмену и повтор.",
+      "expected": "Если оба текста являются данными одного места, они связаны с перемещённой POI. Отдельная проверка улики и заметки различает их владельцев.",
+      "actual": "Тип, имя и улика на новом гексе. Заметка остаётся в исходном гексе. После загрузки карта совпадает, отмена и повтор восстановили полные состояния."
+    },
+    {
+      "id": "PLACE-SIGN-04",
+      "given": "Перенесённые именованные руины, улика и прежняя заметка в исходном гексе.",
+      "when": "Попробовать удалить руины, очистить авторское имя и удалить с подтверждением потери данных Knave.",
+      "expected": "Защита авторского имени сохраняет карту при первой попытке. При разрешённом удалении уходит только POI и привязанные данные, заметка гекса остаётся.",
+      "actual": "Первое удаление остановилось по защите имени. После очистки и подтверждения исчезли руины и улика. Заметка сохранилась. Undo восстановил руины и улику."
+    }
+  ],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_tree_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matched_git_blobs": 105,
+    "blob_shas": {
+      "package-lock.json": "a3bdfcbca72245a51e5f317be67f561ced8a5bed",
+      "src/App.tsx": "5c7468956842770ec6654d920e14793171275b29",
+      "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+      "src/manualPois.ts": "41a7d1b6b24bbdab42971deecb404f43efa9d40c",
+      "src/saveValidation.ts": "71e6f79924d60d6180ab6ebd3c3478f1fe30b4a5",
+      "test/fixtures/e6-water-editor.json": "f70ae14b3663122d09e29ad7ce95b886de1c010c",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+    },
+    "locations": {
+      "src/App.tsx": [
+        "13726–13745 changeNotesText",
+        "14494–14502 chooseKnaveProfile",
+        "14814–14821 setSelectedPoiKind",
+        "15250–15263 serializer",
+        "15397–15417 POI relocation",
+        "15429–15449 clue draft",
+        "15542–15572 POI name",
+        "15661–15677 Knave panel",
+        "17125–17137 GM notes panel"
+      ],
+      "src/knaveClassic.ts": [
+        "setKnaveDiscovery",
+        "remapKnavePois",
+        "knaveLosses"
+      ],
+      "src/manualPois.ts": [
+        "preparePoiMove",
+        "renamePoiEditorName"
+      ]
+    },
+    "command": "Place probe at the root of the exact product tree, use its lockfile, and run: node --experimental-strip-types --experimental-specifier-resolution=node research-place-sign.mjs",
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19-probe.mjs",
+    "observations": {
+      "plainClassic": {
+        "ruin": "Old Gate",
+        "gmNoteByHex": true,
+        "clueEditor": false,
+        "clueEditRejected": true
+      },
+      "initializedKnaveLayer": {
+        "separateClueAndHexNote": true,
+        "editEitherPreservesOther": true,
+        "saveReload": true
+      },
+      "optOut": {
+        "gameGenerationToggle": false,
+        "retainedLayer": true,
+        "clueEditorStillAvailable": true,
+        "profileOffAfterReload": true
+      },
+      "relocate": {
+        "from": "2,0",
+        "to": "1,0",
+        "nameFollows": true,
+        "clueFollows": true,
+        "gmNoteStaysAtSource": true,
+        "reload": true,
+        "undoRedo": true
+      },
+      "delete": {
+        "namedPOIProtected": true,
+        "ruinsAndClueRemoved": true,
+        "hexNoteRetained": true,
+        "undoRestores": true
+      },
+      "export": {
+        "isEditorDocument": true,
+        "containsClue": true,
+        "containsGMNote": true,
+        "playerAudienceNotExercised": true
+      }
+    },
+    "limitations": [
+      "Выполнялись обработчики App с существующим тестовым harness и статическим выводом панели улики. Браузер не использован.",
+      "Охват первичного DMG 2014 не изменился. Печатные стр. 108–109 сохранены по историческому извлечению.",
+      "Фраза ведущего об авторском месте остаётся операционным тестом, а не восстановленным текстом книги.",
+      "Карта игроков и механизм раскрытия не проверены."
+    ]
+  },
+  "ra_q01_15": {
+    "RA-Q01": {
+      "status": "pass",
+      "detail": "Сохранены DMG 2014 и печатные локаторы.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q02": {
+      "status": "blocked",
+      "detail": "Первичный тематический охват по-прежнему открыт.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q03": {
+      "status": "blocked",
+      "detail": "Ранее извлечённый смысл не перепроверен по заявленному первичному экземпляру.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q04": {
+      "status": "blocked",
+      "detail": "Условия и исключения полной нормы не подтверждены.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q05": {
+      "status": "pass",
+      "detail": "Текст источника отделён от примера и проверяемой операции.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q06": {
+      "status": "pass",
+      "detail": "Есть действие, POI, состояние гекса и ожидаемый выход.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    },
+    "RA-Q07": {
+      "status": "pass",
+      "detail": "Доказана граница между POI и заметкой гекса, L2 отдельно.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    },
+    "RA-Q08": {
+      "status": "pass",
+      "detail": "Использованы прежние привязки и общие механики. Сопоставление с Knave ограничено испытанным режимом.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    },
+    "RA-Q09": {
+      "status": "pass",
+      "detail": "Независимые записи, перенос, загрузка и отказ при удалении имеют заданные результаты.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    },
+    "RA-Q10": {
+      "status": "pass",
+      "detail": "Статус установлен на точном SHA.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    },
+    "RA-Q11": {
+      "status": "pass",
+      "detail": "Отдельно описаны статический вывод, обработчики и граница L2.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    },
+    "RA-Q12": {
+      "status": "pass",
+      "detail": "Передача связана с прежними идентификаторами.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json"
+    },
+    "RA-Q13": {
+      "status": "pass",
+      "detail": "Обзор согласован с наблюдениями.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md"
+    },
+    "RA-Q14": {
+      "status": "fail",
+      "detail": "Две операции проверены, тематическая полнота D&D и представление игрока остаются открыты.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    },
+    "RA-Q15": {
+      "status": "pass",
+      "detail": "Данные исследования сохранены без изменения поддержки, очереди, score или рейтинга.",
+      "scope": "DND5-2014-013/017 bounded authoring trace",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    }
+  },
+  "full_game_accepted": false
+}

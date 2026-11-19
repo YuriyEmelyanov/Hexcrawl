@@ -67,16 +67,17 @@
   ],
   "current_diagnosis": "В существующих материалах выявлены неполнота/неоднородность перевода, но массовый аудит не проводился. Исторические completed и числа строк не доказывают соответствие стандартуv2; действуют исходные evidence до адресной проверки.",
   "next_selected_task": {
-    "id": "HX-RSR-DND5-L1-OBSERVABLE-PLACE-SIGN",
+    "id": "HX-RSR-DND5-L1-HAZARD-AND-SNOW-BIOME",
     "game_id": "DND5",
     "layer": "L1",
     "status": "selected_actionable_overall_top5_gap",
-    "action": "Проверить один связанный сценарий подготовки места DND5-2014-013/017. Создать или загрузить руины с видимой сломанной аркой и отдельной скрытой частью описания. Изменить видимый признак и сохранить карту.",
-    "completion_condition": "Проверить доступное действие, привязку признака к POI, сохранение/загрузку и возможность независимо менять закрытое описание на точном продуктном SHA. Отделить данные редактора от раскрытия игрокам в L2. Новое чтение DMG — при новом законном доступе.",
+    "action": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "completion_condition": "Показать фактические операции редактирования биома и опасного участка; отделить ребровое препятствие от поверхностного состояния, указать конкретный результат и ограничения. Урон, проверки и локальный бой за пределами. Новое чтение DMG только при новом законном доступе.",
     "source_refs": [
       "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
       "agent-work/research/requirements/DND5-2014-v2-coverage.json"
-    ]
+    ],
+    "new_evidence": "PR509 добавил ручные снежные биомы, не доказывает опасность тонкого льда."
   },
   "other_open_tracks": [
     {
@@ -360,7 +361,7 @@
   },
   "research_product_handoff_policy": "Research artifacts and strategist handoff only; strategist owns new productbacklog candidates. No deleted/retired tasks restored and no statuses promoted by researcher.",
   "execution_resume_verified_at": "2026-11-15T20:55:14.806Z",
-  "updated_at": "2026-11-19T17:31:18.038Z",
+  "updated_at": "2026-11-19T20:36:05.565Z",
   "previous_next_selected_task_before_PF2_source_checkpoint": {
     "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
     "game_id": "DND5",
@@ -532,26 +533,22 @@
     "product_reverified": false
   },
   "current_research_checkpoint": {
-    "status": "bounded_selective_overview_audit_completed",
-    "run_id": "2026-11-19-DND5-L1-overview-2e057338",
-    "stage": "selective_overview_exact_SHA",
-    "last_successful_step": "Выполнен контроль C/V/P через реальные функции App, JSX базовой карты и новый импорт JSON. Проверена история кнопки оформления POI.",
-    "failed_operation": {
-      "tool": "exec_command",
-      "action": "Headless Chromium startup",
-      "locator": "about:blank"
-    },
-    "observed_error": "Check failed: . socket() failed: Operation not permitted (1)",
+    "status": "bounded_place_sign_authoring_audit_completed",
+    "run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
+    "stage": "verify_place_sign_and_GM_description",
+    "last_successful_step": "На точном SHA проверены независимое редактирование, поведение после отключения Knave, перенос, загрузка и отмена.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Критерий завершения ограниченной проверки выполнен, полный источник и показ игрокам открыты.",
     "cause_status": "confirmed",
-    "stop_reason": "Проверка редактора и сохранения закончена через App и статический SVG. Интерактивный браузер в этом запуске недоступен.",
     "saved_results": [
-      "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
-      "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.md",
-      "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19-probe.mjs",
-      "agent-work/research/handoffs/2026-11-19-DND5-L1-overview-2e057338-strategist.json",
-      "agent-work/research/runs/2026-11-19-DND5-L1-overview-2e057338.json"
+      "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
+      "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19-probe.mjs"
     ],
-    "exact_continuation": "Проверить один связанный сценарий подготовки места DND5-2014-013/017. Создать или загрузить руины с видимой сломанной аркой и отдельной скрытой частью описания. Изменить видимый признак и сохранить карту.",
+    "exact_continuation": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
     "needs_owner_action": false,
     "owner_action": null
   },
@@ -850,6 +847,27 @@
     "handoff_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-overview-2e057338-strategist.json",
     "result_ref": "agent-work/research/runs/2026-11-19-DND5-L1-overview-2e057338.json",
     "product_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "full_game_accepted": false
+  },
+  "previous_next_selected_task_before_DND5_L1_place_sign": {
+    "id": "HX-RSR-DND5-L1-OBSERVABLE-PLACE-SIGN",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "Проверить один связанный сценарий подготовки места DND5-2014-013/017. Создать или загрузить руины с видимой сломанной аркой и отдельной скрытой частью описания. Изменить видимый признак и сохранить карту.",
+    "completion_condition": "Проверить доступное действие, привязку признака к POI, сохранение/загрузку и возможность независимо менять закрытое описание на точном продуктном SHA. Отделить данные редактора от раскрытия игрокам в L2. Новое чтение DMG — при новом законном доступе.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "latest_DND5_L1_place_sign": {
+    "status": "bounded_place_sign_authoring_audit_completed",
+    "matrix_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+    "overview_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
+    "result_ref": "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "full_game_accepted": false
   }
 }

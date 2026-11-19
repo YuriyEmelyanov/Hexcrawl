@@ -1,0 +1,263 @@
+{
+  "run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_place_sign_authoring_audit_completed",
+  "started_at": "2026-11-19T20:31:00.671Z",
+  "completed_at": "2026-11-19T20:36:05.565Z",
+  "selected_task": {
+    "id": "HX-RSR-DND5-L1-OBSERVABLE-PLACE-SIGN",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "Проверить один связанный сценарий подготовки места DND5-2014-013/017. Создать или загрузить руины с видимой сломанной аркой и отдельной скрытой частью описания. Изменить видимый признак и сохранить карту.",
+    "completion_condition": "Проверить доступное действие, привязку признака к POI, сохранение/загрузку и возможность независимо менять закрытое описание на точном продуктном SHA. Отделить данные редактора от раскрытия игрокам в L2. Новое чтение DMG — при новом законном доступе.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "selection_reason": "Две соседние строки общего top5 имеют один существенный вопрос об авторских данных места. Один сквозной тест проверяет доступную операцию, хранение и принадлежность при переносе.",
+  "alternatives": [
+    {
+      "id": "DND5-full-primary",
+      "reason": "Нет нового законного источника для полной тематической сверки."
+    },
+    {
+      "id": "DND5-020-hazard",
+      "reason": "Новые снежные биомы дают следующий независимый срез, ранее выбранная проверка принадлежности данных готова к исполнению."
+    }
+  ],
+  "inputs_and_versions": {
+    "ops": "40222fb0ab92ea38fd849de93adf0641c93d5ae4",
+    "product": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "primary_source_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+    "original_matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+    "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "context_refs": [
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json"
+    ]
+  },
+  "findings": [
+    "Чистый Classic создаёт именованные руины и сохраняет заметку гекса. Улика требует первоначального создания слоя Knave.",
+    "На карте с инициализированным слоем Knave улика и заметка меняются независимо. Отключение генерации Knave сохраняет доступ к улике и после импорта.",
+    "Улика и имя следуют за перемещённой POI. Заметка остаётся в исходном гексе. Проверены загрузка, отмена и повтор.",
+    "В обычном JSON редактора присутствуют оба текста. Доступ игрокам не проверялся."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+    "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
+    "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19-probe.mjs",
+    "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
+    "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/claims/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+    "agent-work/latest.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_tree_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matched_git_blobs": 105,
+    "blob_shas": {
+      "package-lock.json": "a3bdfcbca72245a51e5f317be67f561ced8a5bed",
+      "src/App.tsx": "5c7468956842770ec6654d920e14793171275b29",
+      "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+      "src/manualPois.ts": "41a7d1b6b24bbdab42971deecb404f43efa9d40c",
+      "src/saveValidation.ts": "71e6f79924d60d6180ab6ebd3c3478f1fe30b4a5",
+      "test/fixtures/e6-water-editor.json": "f70ae14b3663122d09e29ad7ce95b886de1c010c",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+    },
+    "locations": {
+      "src/App.tsx": [
+        "13726–13745 changeNotesText",
+        "14494–14502 chooseKnaveProfile",
+        "14814–14821 setSelectedPoiKind",
+        "15250–15263 serializer",
+        "15397–15417 POI relocation",
+        "15429–15449 clue draft",
+        "15542–15572 POI name",
+        "15661–15677 Knave panel",
+        "17125–17137 GM notes panel"
+      ],
+      "src/knaveClassic.ts": [
+        "setKnaveDiscovery",
+        "remapKnavePois",
+        "knaveLosses"
+      ],
+      "src/manualPois.ts": [
+        "preparePoiMove",
+        "renamePoiEditorName"
+      ]
+    },
+    "command": "Place probe at the root of the exact product tree, use its lockfile, and run: node --experimental-strip-types --experimental-specifier-resolution=node research-place-sign.mjs",
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19-probe.mjs",
+    "observations": {
+      "plainClassic": {
+        "ruin": "Old Gate",
+        "gmNoteByHex": true,
+        "clueEditor": false,
+        "clueEditRejected": true
+      },
+      "initializedKnaveLayer": {
+        "separateClueAndHexNote": true,
+        "editEitherPreservesOther": true,
+        "saveReload": true
+      },
+      "optOut": {
+        "gameGenerationToggle": false,
+        "retainedLayer": true,
+        "clueEditorStillAvailable": true,
+        "profileOffAfterReload": true
+      },
+      "relocate": {
+        "from": "2,0",
+        "to": "1,0",
+        "nameFollows": true,
+        "clueFollows": true,
+        "gmNoteStaysAtSource": true,
+        "reload": true,
+        "undoRedo": true
+      },
+      "delete": {
+        "namedPOIProtected": true,
+        "ruinsAndClueRemoved": true,
+        "hexNoteRetained": true,
+        "undoRestores": true
+      },
+      "export": {
+        "isEditorDocument": true,
+        "containsClue": true,
+        "containsGMNote": true,
+        "playerAudienceNotExercised": true
+      }
+    },
+    "limitations": [
+      "Выполнялись обработчики App с существующим тестовым harness и статическим выводом панели улики. Браузер не использован.",
+      "Охват первичного DMG 2014 не изменился. Печатные стр. 108–109 сохранены по историческому извлечению.",
+      "Фраза ведущего об авторском месте остаётся операционным тестом, а не восстановленным текстом книги.",
+      "Карта игроков и механизм раскрытия не проверены."
+    ]
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "4065bac3-a1ec-8331-a743-ebe10b267e49",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T20:30:00Z",
+          "started_at": "2026-11-19T20:30:18.461239Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-19T23:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "36717f18-b0f8-8321-a069-e73967a13e42",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T20:00:00Z",
+          "started_at": "2026-11-19T20:12:16.418697Z",
+          "completed_at": "2026-11-19T20:16:28.480694Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T00:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "4065bac3-a1ec-8331-a743-ebe10b267e49",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T20:30:00Z",
+          "started_at": "2026-11-19T20:30:18.461239Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-19T23:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "36717f18-b0f8-8321-a069-e73967a13e42",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T20:00:00Z",
+          "started_at": "2026-11-19T20:12:16.418697Z",
+          "completed_at": "2026-11-19T20:16:28.480694Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T00:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_place_sign_authoring_audit_completed",
+    "run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
+    "stage": "verify_place_sign_and_GM_description",
+    "last_successful_step": "На точном SHA проверены независимое редактирование, поведение после отключения Knave, перенос, загрузка и отмена.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Критерий завершения ограниченной проверки выполнен, полный источник и показ игрокам открыты.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
+      "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19-probe.mjs"
+    ],
+    "exact_continuation": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-HAZARD-AND-SNOW-BIOME",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "completion_condition": "Показать фактические операции редактирования биома и опасного участка; отделить ребровое препятствие от поверхностного состояния, указать конкретный результат и ограничения. Урон, проверки и локальный бой за пределами. Новое чтение DMG только при новом законном доступе.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ],
+    "new_evidence": "PR509 добавил ручные снежные биомы, не доказывает опасность тонкого льда."
+  },
+  "recovered_probe_diagnostics": [
+    {
+      "observed_error": "Expected undefined, received 'ruins' on deleting the named POI",
+      "cause_status": "confirmed",
+      "recovery": "Verified the authored-name guard, cleared the name and exercised the accepted deletion."
+    },
+    {
+      "observed_error": "TypeError: Cannot read properties of undefined (reading '1,0')",
+      "cause_status": "confirmed",
+      "recovery": "Adjusted test to accept the serializer omitting the now-empty optional kinds map."
+    }
+  ]
+}
