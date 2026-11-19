@@ -8,20 +8,20 @@
     "frequency": "HOURLY",
     "minute": 30,
     "enabled": true,
-    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+    "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
     "default_timezone": "Europe/Moscow",
     "environment_selection": "inherited",
     "environments_observed": null,
-    "interval": 3,
-    "interval_hours": 3,
-    "cadence_owner_decision_ref": "agent-work/research/runs/2026-11-17-MB-scope-audit-1794871662233.json#automation_health",
-    "verified_at": "2026-11-19T20:36:05.565Z",
+    "interval": 1,
+    "interval_hours": 1,
+    "cadence_owner_decision_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json#automation_health",
+    "verified_at": "2026-11-19T22:34:46.143Z",
     "is_enabled": true,
     "desired_enabled": true,
     "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
     "verification_status": "verified_by_automations_peek",
-    "next_run_time": "2026-11-19T23:30:00+03:00",
-    "cadence_authority": "Latest direct owner instruction: Период между запусками 3 часа. Supersedes1/2hour historical entries."
+    "next_run_time": "2026-11-20T01:30:00+03:00",
+    "cadence_authority": "Latest direct owner instruction 2026-11-20: Запускайся раз в час."
   },
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "contract_ref": "agent-work/research/contract.md",
@@ -65,21 +65,24 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "HX-RSR-DND5-L1-HAZARD-AND-SNOW-BIOME",
-    "game_id": "DND5",
+    "id": "HX-RSR-CLASSIC-POI-DISCOVERY-BOUNDARY",
     "layer": "L1",
-    "status": "selected_actionable_overall_top5_gap",
-    "action": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
-    "completion_condition": "Показать фактические операции редактирования биома и опасного участка; отделить ребровое препятствие от поверхностного состояния, указать конкретный результат и ограничения. Урон, проверки и локальный бой за пределами. Новое чтение DMG только при новом законном доступе.",
-    "source_refs": [
-      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
-      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    "game_ids": [
+      "DND5",
+      "KNAVE2",
+      "CROWS"
     ],
-    "new_evidence": "PR509 добавил ручные снежные биомы, не доказывает опасность тонкого льда."
+    "status": "selected_new_owner_dependency",
+    "action": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
+    "completion_condition": "Дать стратегу проверенные входы/выходы для столицы, портала и прежнего сохранения, границу между признаком карты и действиями раскрытия в L2. Точные вероятности не назначать. Для Crows использовать уже извлечённые материалы.",
+    "source_refs": [
+      "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    ]
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-19-DND5-L1-place-sign-4065bac3",
+  "last_completed_run": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -227,7 +230,8 @@
     "agent-work/research/runs/2026-11-19-overall-top5-L1-acceptance-10329436.json",
     "agent-work/research/runs/2026-11-19-KNAVE2-L1-table-references-44fef5a6.json",
     "agent-work/research/runs/2026-11-19-DND5-L1-overview-2e057338.json",
-    "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json"
+    "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+    "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -247,74 +251,80 @@
       {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "4065bac3-a1ec-8331-a743-ebe10b267e49",
+          "id": "c58e7487-798c-8331-9aef-884cbf52d7f5",
           "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-19T20:30:00Z",
-          "started_at": "2026-11-19T20:30:18.461239Z",
+          "scheduled_for": "2026-11-19T22:30:00Z",
+          "started_at": "2026-11-19T22:30:40.393086Z",
           "completed_at": null,
           "chat_ref": null
         },
-        "next": "2026-11-19T23:30:00+03:00"
+        "next": "2026-11-20T01:30:00+03:00"
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "36717f18-b0f8-8321-a069-e73967a13e42",
+          "id": "318fc104-2e7c-8323-9cc3-3cf8149f9fb2",
           "recorded_status": "completed",
-          "scheduled_for": "2026-11-19T20:00:00Z",
-          "started_at": "2026-11-19T20:12:16.418697Z",
-          "completed_at": "2026-11-19T20:16:28.480694Z",
+          "scheduled_for": "2026-11-19T22:00:00Z",
+          "started_at": "2026-11-19T22:05:40.320336Z",
+          "completed_at": "2026-11-19T22:07:17.571938Z",
           "chat_ref": {
             "type": "chatgpt",
             "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
           }
         },
-        "next": "2026-11-20T00:00:00+03:00"
+        "next": "2026-11-20T02:00:00+03:00"
       }
     ],
     "end": [
       {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "4065bac3-a1ec-8331-a743-ebe10b267e49",
+          "id": "c58e7487-798c-8331-9aef-884cbf52d7f5",
           "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-19T20:30:00Z",
-          "started_at": "2026-11-19T20:30:18.461239Z",
+          "scheduled_for": "2026-11-19T22:30:00Z",
+          "started_at": "2026-11-19T22:30:40.393086Z",
           "completed_at": null,
           "chat_ref": null
         },
-        "next": "2026-11-19T23:30:00+03:00"
+        "next": "2026-11-20T01:30:00+03:00"
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "36717f18-b0f8-8321-a069-e73967a13e42",
+          "id": "318fc104-2e7c-8323-9cc3-3cf8149f9fb2",
           "recorded_status": "completed",
-          "scheduled_for": "2026-11-19T20:00:00Z",
-          "started_at": "2026-11-19T20:12:16.418697Z",
-          "completed_at": "2026-11-19T20:16:28.480694Z",
+          "scheduled_for": "2026-11-19T22:00:00Z",
+          "started_at": "2026-11-19T22:05:40.320336Z",
+          "completed_at": "2026-11-19T22:07:17.571938Z",
           "chat_ref": {
             "type": "chatgpt",
             "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
           }
         },
-        "next": "2026-11-20T00:00:00+03:00"
+        "next": "2026-11-20T02:00:00+03:00"
       }
     ],
-    "schedule_changes": []
+    "schedule_changes": [],
+    "owner_instruction_observed": {
+      "date": "2026-11-20",
+      "scope": "HX-RSR-001",
+      "quote": "Запускайся раз в час",
+      "schedule_verified": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+    }
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -1053,7 +1063,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-19T20:36:05.565Z",
+  "updated_at": "2026-11-19T22:34:46.143Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1111,9 +1121,9 @@
     "result_ref": "agent-work/research/runs/2026-11-15-204811-research-resume2h.json"
   },
   "previous_claim": {
-    "run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
-    "ref": "agent-work/claims/2026-11-19-DND5-L1-place-sign-4065bac3.json",
-    "status": "completed_released"
+    "run_id": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
+    "ref": "agent-work/claims/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+    "status": "result_pending_readback_and_release"
   },
   "latest_PF1_terrain_elements": {
     "ref": "agent-work/research/requirements/PF1-terrain-elements.json",
@@ -1195,7 +1205,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
+  "last_run_id": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1251,24 +1261,24 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-19-DND5-L1-place-sign-4065bac3",
+  "last_run": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
   "checkpoint": {
-    "status": "bounded_place_sign_authoring_audit_completed",
-    "run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
-    "stage": "verify_place_sign_and_GM_description",
-    "last_successful_step": "На точном SHA проверены независимое редактирование, поведение после отключения Knave, перенос, загрузка и отмена.",
+    "status": "bounded_surface_hazard_audit_completed",
+    "run_id": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
+    "stage": "verify_snow_biome_and_thin_ice",
+    "last_successful_step": "Проверены редактирование, отказ на воде, сохранение/загрузка, Undo/Redo озера и снежного биома, контроль трудности Knave и формат обоих масштабов.",
     "failed_operation": null,
     "observed_error": null,
-    "stop_reason": "Критерий завершения ограниченной проверки выполнен, полный источник и показ игрокам открыты.",
+    "stop_reason": "Ограниченная операция проверена на точном SHA. Первичный текст DMG 2014 и полная приёмка игры открыты.",
     "cause_status": "confirmed",
     "saved_results": [
-      "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
-      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
-      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
-      "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
-      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19-probe.mjs"
+      "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md",
+      "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20-probe.mjs"
     ],
-    "exact_continuation": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "exact_continuation": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
     "needs_owner_action": false,
     "owner_action": null
   },
@@ -1961,7 +1971,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "result_commit_sha": "00f10e440abcdfd58e9648941e67468a252edbf1",
+  "result_commit_sha": null,
   "next_alignment_phase": {
     "phase_id": "HX-RSR-CREATE-TOP10-ALIGNMENT",
     "status": "pending_after_overall_top5_acceptance",
@@ -2164,8 +2174,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-19T20:36:05.565Z",
-  "last_bounded_completed_run": "2026-11-19-DND5-L1-place-sign-4065bac3",
+  "last_run_at": "2026-11-19T22:34:46.143Z",
+  "last_bounded_completed_run": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -2310,11 +2320,9 @@
     "actual_implementation_retested": false,
     "full_game_accepted": false
   },
-  "last_result_commit_sha": "00f10e440abcdfd58e9648941e67468a252edbf1",
+  "last_result_commit_sha": null,
   "verification_readback": {
-    "status": "exact",
-    "data_commit": "00f10e440abcdfd58e9648941e67468a252edbf1",
-    "files": 8
+    "status": "pending"
   },
   "previous_checkpoint_before_DND5_scope_audit": {
     "status": "completed_bounded_PF2_scope_audit_remaining_games_pending",
@@ -3104,7 +3112,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "last_run_outcome": "bounded_place_sign_authoring_audit_completed",
+  "last_run_outcome": "bounded_surface_hazard_audit_completed",
   "latest_PF2_GMC3_applicability": {
     "status": "checkpoint_available_sections_screened_printed_chapter_incomplete",
     "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
@@ -3830,6 +3838,48 @@
     "overview_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
     "result_ref": "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
     "handoff_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "full_game_accepted": false
+  },
+  "previous_checkpoint_before_DND5_L1_thin_ice": {
+    "status": "bounded_place_sign_authoring_audit_completed",
+    "run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
+    "stage": "verify_place_sign_and_GM_description",
+    "last_successful_step": "На точном SHA проверены независимое редактирование, поведение после отключения Knave, перенос, загрузка и отмена.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Критерий завершения ограниченной проверки выполнен, полный источник и показ игрокам открыты.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
+      "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19-probe.mjs"
+    ],
+    "exact_continuation": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "previous_next_candidate_before_DND5_L1_thin_ice": {
+    "id": "HX-RSR-DND5-L1-HAZARD-AND-SNOW-BIOME",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "completion_condition": "Показать фактические операции редактирования биома и опасного участка; отделить ребровое препятствие от поверхностного состояния, указать конкретный результат и ограничения. Урон, проверки и локальный бой за пределами. Новое чтение DMG только при новом законном доступе.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ],
+    "new_evidence": "PR509 добавил ручные снежные биомы, не доказывает опасность тонкого льда."
+  },
+  "latest_DND5_L1_thin_ice": {
+    "status": "bounded_surface_hazard_audit_completed",
+    "matrix_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
+    "overview_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md",
+    "result_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
     "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "full_game_accepted": false
   }

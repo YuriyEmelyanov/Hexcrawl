@@ -1,0 +1,289 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
+  "game_id": "DND5",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "status": "bounded_surface_hazard_audit_completed",
+  "context_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+  "source_coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+  "row": {
+    "id": "DND5-2014-020-L1-v2-draft",
+    "source": {
+      "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-020",
+      "locator": "historical printed p110 Опасности в дикой местности",
+      "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Лоза, зыбучий песок, осквернённая земля, скользкий/тонкий лёд, холодная вода",
+      "normative_kind": "optional_variant",
+      "parameters_and_units": {
+        "historical_only": true,
+        "primary_text_reverification_required": true
+      },
+      "conditions": [
+        "Точная применимость и нормативность ожидают первичного текста."
+      ],
+      "exceptions": [
+        "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+      ],
+      "cross_references": [],
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "access_level": "retained_historical_extract_only_not_primary_reverified",
+      "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+      "source_verification_status": "historical_paraphrase_not_primary_reverified"
+    },
+    "disposition": "keep_L1",
+    "disposition_reason": "Ведущий отмечает конкретный опасный участок на карте. Условный знак относится к картографии. Произвольная заметка, снежный биом и ребро в роли препятствия имеют другие результаты.",
+    "product_boundary": "Отметка известного участка при подготовке карты. Нанесение и сохранение H, без игровых проверок.",
+    "canonical_rule_ids": [
+      "content.static_hazard"
+    ],
+    "binding_ids": [
+      "DND5-2014-020-L1"
+    ],
+    "historical_implementation_status": "unverified",
+    "implementation_status": "not_implemented",
+    "operational_requirement": {
+      "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-020",
+      "normative_kind": "research_interpretation_pending_source_revalidation",
+      "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+      "layer": "L1",
+      "trigger_or_user_action": "Отметить опасный участок местности",
+      "inputs_and_units": {
+        "area": "H",
+        "surface": "thin_ice",
+        "hazardous": true
+      },
+      "product_operation": "Отметить опасный участок местности",
+      "expected_output": "H отмечен как опасный участок тонкого льда и сохранён на прежнем месте; биом соседей не меняется.",
+      "constraints_and_exceptions": [
+        "Все типы опасностей и их параметры требуют полного чтения страниц110–111.",
+        "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением.",
+        "Не учреждать отдельный симулятор льда/провала/урона; точные свойства из первичного текста не восстановлены."
+      ],
+      "acceptance_cases": [
+        {
+          "given": "Существуют соседние гексы (2,0) и (1,0), оба в утверждённой 6-мильной карте.",
+          "when": "Изменить (2,0) на озеро и назначить (1,0) снежной равниной. Сохранить JSON и вновь открыть.",
+          "expected": "Гекс (2,0) остаётся озером, (1,0) — снежной равниной. Сохранение и загрузка сохраняют оба значения по их исходным координатам."
+        },
+        {
+          "given": "Та же карта с озером (2,0), сушей (1,0) и (0,0).",
+          "when": "Добавить препятствие на сухом ребре (0,0)–(1,0), затем отдельно сравнить с попыткой на ребре (1,0)–(2,0).",
+          "expected": "Сухое ребро сохраняется как ребровой объект. Запрещённая команда на границе воды сохраняет прежнее состояние."
+        },
+        {
+          "given": "Озеро (2,0), соседний снежный биом (1,0). Подготовленное место опасности H на озере.",
+          "when": "Попытаться назначить геопривязанную отметку thin_ice отдельно от состояния воды и биома, затем сохранить и открыть.",
+          "expected": "У озера есть самостоятельная картографическая отметка тонкого льда, оба гекса сохраняют координаты и исходные типы."
+        }
+      ],
+      "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+      "canonical_rule_refs": [
+        "agent-work/rules/common-rules.json#content.static_hazard"
+      ],
+      "unresolved_parameters": [
+        "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+      ]
+    },
+    "verified_gap": "Редактор и формат сохранения не предусматривают независимую отметку поверхности thin_ice. Реализованные вода, биом, ребро и трудность Knave имеют отличимые объекты и значения."
+  },
+  "cases": [
+    {
+      "id": "ICE-01",
+      "given": "Существуют соседние гексы (2,0) и (1,0), оба в утверждённой 6-мильной карте.",
+      "when": "Изменить (2,0) на озеро и назначить (1,0) снежной равниной. Сохранить JSON и вновь открыть.",
+      "expected": "Гекс (2,0) остаётся озером, (1,0) — снежной равниной. Сохранение и загрузка сохраняют оба значения по их исходным координатам.",
+      "actual": "Подтверждено. Отмена присвоения биома сохранила озеро. Повтор восстановил снежную равнину.",
+      "status": "implemented_for_water_and_biome"
+    },
+    {
+      "id": "ICE-02",
+      "given": "Та же карта с озером (2,0), сушей (1,0) и (0,0).",
+      "when": "Добавить препятствие на сухом ребре (0,0)–(1,0), затем отдельно сравнить с попыткой на ребре (1,0)–(2,0).",
+      "expected": "Сухое ребро сохраняется как ребровой объект. Запрещённая команда на границе воды сохраняет прежнее состояние.",
+      "actual": "Сухое ребро сохранилось в JSON. Водное отклонено без мутации. Код доменной проверки вернул water_obstacle_edge.",
+      "status": "implemented_for_dry_edge"
+    },
+    {
+      "id": "ICE-03",
+      "given": "Озеро (2,0), соседний снежный биом (1,0). Подготовленное место опасности H на озере.",
+      "when": "Попытаться назначить геопривязанную отметку thin_ice отдельно от состояния воды и биома, затем сохранить и открыть.",
+      "expected": "У озера есть самостоятельная картографическая отметка тонкого льда, оба гекса сохраняют координаты и исходные типы.",
+      "actual": "Доступны вода и биом, редактор поверхностей и формат карты не имеют отметки тонкого льда. В Knave трудность сохранилась на сухом снежном гексе, а на озере команда недоступна.",
+      "status": "not_implemented_for_surface_hazard"
+    }
+  ],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_tree_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matched_git_blobs": 105,
+    "blob_shas": {
+      "src/App.tsx": "5c7468956842770ec6654d920e14793171275b29",
+      "src/OneMilePanel.tsx": "effc9e40465c1df1c2f8021541b868aadb5a40ee",
+      "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+      "src/manualObstacles.ts": "3669ec7829ebc6fdf99d321d483ed9b853c41227",
+      "src/manualWater.ts": "40ff56988bad6c7e9a5e94551e1d8ce197f699e0",
+      "src/oneMile.ts": "3f2cafb49c2bb75c611cf18800fcbeb28d767cb9",
+      "src/rendering/manualBiomes.ts": "8f1a83eaebcca9b67637fdb56a912fcd147ae5c0",
+      "src/saveValidation.ts": "71e6f79924d60d6180ab6ebd3c3478f1fe30b4a5",
+      "test/fixtures/e6-water-editor.json": "f70ae14b3663122d09e29ad7ce95b886de1c010c",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+    },
+    "locators": {
+      "src/App.tsx": [
+        "470 HexTerrainOverride",
+        "14066–14108 water draft",
+        "14802–14807 hex biome override",
+        "15250 serializer",
+        "15429–15446 Knave dry-hex validation",
+        "15822 water options",
+        "16020 obstacle command"
+      ],
+      "src/manualObstacles.ts": [
+        "43–48 obstacleTarget"
+      ],
+      "src/saveValidation.ts": [
+        "123 allowed terrain overrides"
+      ],
+      "src/knaveClassic.ts": [
+        "8 Difficulty",
+        "68–75 setKnaveDifficulty"
+      ],
+      "src/rendering/manualBiomes.ts": [
+        "30 snow_plains"
+      ],
+      "src/OneMilePanel.tsx": [
+        "2–10 FineDraft and terrain control"
+      ],
+      "src/oneMile.ts": [
+        "13–18 FineCellEdit"
+      ]
+    },
+    "command": "Run from root of pinned product tree: node --experimental-strip-types --experimental-specifier-resolution=node research-thin-ice.mjs",
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20-probe.mjs",
+    "observations": {
+      "lake": "2,0",
+      "snow": "1,0",
+      "independentTerrainAndBiome": true,
+      "roundtrip": true,
+      "undoRedo": true,
+      "waterBiomeOverride": false,
+      "waterEdgeRejected": true,
+      "waterEdgeDomainReason": "water_obstacle_edge",
+      "wetEdgeFeedback": "Target unavailable",
+      "dryEdge": {
+        "from": {
+          "q": 0,
+          "r": 0
+        },
+        "to": {
+          "q": 1,
+          "r": 0
+        },
+        "edgeKey": "24.249,-14|24.249,14"
+      },
+      "knave": {
+        "drySnowDifficulty": "difficult",
+        "lakeDifficultyRejected": true
+      },
+      "method": "App editor handlers, current JSON export and import, no browser"
+    },
+    "limitations": [
+      "Рабочие обработчики App проверены на 6-мильных данных без браузера. Одномильная панель и формат правок проверены статически.",
+      "Исходный DMG 2014 представлен только ранее извлечённым пересказом печатной стр. 110. Охват и параметры правил сохраняются открытыми.",
+      "Урон, проверки и раскрытие игрокам за пределами среза."
+    ]
+  },
+  "ra_q01_15": {
+    "RA-Q01": {
+      "status": "pass",
+      "detail": "Редакция, исторический локатор и статус экземпляра записаны.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q02": {
+      "status": "blocked",
+      "detail": "Полный тематический просмотр первичного экземпляра открыт.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q03": {
+      "status": "blocked",
+      "detail": "Отдельные формулировки исторического пересказа ждут первичной сверки.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q04": {
+      "status": "blocked",
+      "detail": "Точные параметры и исключения тонкого льда не восстановлены.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q05": {
+      "status": "pass",
+      "detail": "Операция продукта отделена от исторической выписки.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    },
+    "RA-Q06": {
+      "status": "pass",
+      "detail": "Есть редактируемый объект H и ожидаемый результат.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json"
+    },
+    "RA-Q07": {
+      "status": "pass",
+      "detail": "Проверена граница между географией, ребром и опасной поверхностью.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json"
+    },
+    "RA-Q08": {
+      "status": "pass",
+      "detail": "Использованы существующие rule_id и привязка редакции.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json"
+    },
+    "RA-Q09": {
+      "status": "pass",
+      "detail": "Тест различает соседние гексы, Undo/Redo, водное и сухое ребро.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json"
+    },
+    "RA-Q10": {
+      "status": "pass",
+      "detail": "Статус операции установлен на точной версии.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json"
+    },
+    "RA-Q11": {
+      "status": "pass",
+      "detail": "Сохранены пределы статического и фактического кода.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json"
+    },
+    "RA-Q12": {
+      "status": "pass",
+      "detail": "Результат оформлен для стратега в существующей схеме.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json"
+    },
+    "RA-Q13": {
+      "status": "pass",
+      "detail": "Читаемый обзор воспроизводит вывод матрицы.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md"
+    },
+    "RA-Q14": {
+      "status": "fail",
+      "detail": "Первичный корпус и приёмка полной игры остаются открыты.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json"
+    },
+    "RA-Q15": {
+      "status": "pass",
+      "detail": "Нет утверждений о завершении DND5 или активной поддержке.",
+      "scope": "thin_ice_bounded_cartography",
+      "evidence_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json"
+    }
+  },
+  "full_game_accepted": false
+}

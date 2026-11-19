@@ -1,0 +1,265 @@
+{
+  "run_id": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_surface_hazard_audit_completed",
+  "started_at": "2026-11-19T22:31:28.499Z",
+  "completed_at": "2026-11-19T22:34:46.143Z",
+  "selected_task": {
+    "id": "HX-RSR-DND5-L1-HAZARD-AND-SNOW-BIOME",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "completion_condition": "Показать фактические операции редактирования биома и опасного участка; отделить ребровое препятствие от поверхностного состояния, указать конкретный результат и ограничения. Урон, проверки и локальный бой за пределами. Новое чтение DMG только при новом законном доступе.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ],
+    "new_evidence": "PR509 добавил ручные снежные биомы, не доказывает опасность тонкого льда."
+  },
+  "selection_reason": "PR 509 меняет именно соседний биом и даёт новое основание закрыть неизвестность в L1 у первой игры top5.",
+  "alternatives": [
+    {
+      "id": "DND5-full-primary",
+      "reason": "Полный заявленный первичный экземпляр не поступил."
+    },
+    {
+      "id": "HX-BL-062",
+      "reason": "Новая утверждённая зависимость выбрана следующей. Текущий независимый срез уже готов к фактической проверке."
+    }
+  ],
+  "inputs_and_versions": {
+    "ops": "484fe4a37c00e2a11924eb50eeb74e3b4a73af5a",
+    "product": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "original_row_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+    "primary_source_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+    "context_refs": [
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json",
+      "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json"
+    ]
+  },
+  "findings": [
+    "Озеро и соседняя снежная равнина сохраняются независимо. Проверены JSON, Undo и Redo.",
+    "Ребровое препятствие сохраняется только в подходящей геометрии. В тесте ребро у воды отклонено; сухое ребро сохранено.",
+    "Knave сохраняет трудность на сухом гексе. Команда на воде отклонена.",
+    "Независимая картографическая отметка тонкого льда отсутствует в проверенной версии."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
+    "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md",
+    "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20-probe.mjs",
+    "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
+    "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/claims/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+    "agent-work/latest.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_tree_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matched_git_blobs": 105,
+    "blob_shas": {
+      "src/App.tsx": "5c7468956842770ec6654d920e14793171275b29",
+      "src/OneMilePanel.tsx": "effc9e40465c1df1c2f8021541b868aadb5a40ee",
+      "src/knaveClassic.ts": "96554e3b79476aeff34bdac772f7902626728717",
+      "src/manualObstacles.ts": "3669ec7829ebc6fdf99d321d483ed9b853c41227",
+      "src/manualWater.ts": "40ff56988bad6c7e9a5e94551e1d8ce197f699e0",
+      "src/oneMile.ts": "3f2cafb49c2bb75c611cf18800fcbeb28d767cb9",
+      "src/rendering/manualBiomes.ts": "8f1a83eaebcca9b67637fdb56a912fcd147ae5c0",
+      "src/saveValidation.ts": "71e6f79924d60d6180ab6ebd3c3478f1fe30b4a5",
+      "test/fixtures/e6-water-editor.json": "f70ae14b3663122d09e29ad7ce95b886de1c010c",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14"
+    },
+    "locators": {
+      "src/App.tsx": [
+        "470 HexTerrainOverride",
+        "14066–14108 water draft",
+        "14802–14807 hex biome override",
+        "15250 serializer",
+        "15429–15446 Knave dry-hex validation",
+        "15822 water options",
+        "16020 obstacle command"
+      ],
+      "src/manualObstacles.ts": [
+        "43–48 obstacleTarget"
+      ],
+      "src/saveValidation.ts": [
+        "123 allowed terrain overrides"
+      ],
+      "src/knaveClassic.ts": [
+        "8 Difficulty",
+        "68–75 setKnaveDifficulty"
+      ],
+      "src/rendering/manualBiomes.ts": [
+        "30 snow_plains"
+      ],
+      "src/OneMilePanel.tsx": [
+        "2–10 FineDraft and terrain control"
+      ],
+      "src/oneMile.ts": [
+        "13–18 FineCellEdit"
+      ]
+    },
+    "command": "Run from root of pinned product tree: node --experimental-strip-types --experimental-specifier-resolution=node research-thin-ice.mjs",
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20-probe.mjs",
+    "observations": {
+      "lake": "2,0",
+      "snow": "1,0",
+      "independentTerrainAndBiome": true,
+      "roundtrip": true,
+      "undoRedo": true,
+      "waterBiomeOverride": false,
+      "waterEdgeRejected": true,
+      "waterEdgeDomainReason": "water_obstacle_edge",
+      "wetEdgeFeedback": "Target unavailable",
+      "dryEdge": {
+        "from": {
+          "q": 0,
+          "r": 0
+        },
+        "to": {
+          "q": 1,
+          "r": 0
+        },
+        "edgeKey": "24.249,-14|24.249,14"
+      },
+      "knave": {
+        "drySnowDifficulty": "difficult",
+        "lakeDifficultyRejected": true
+      },
+      "method": "App editor handlers, current JSON export and import, no browser"
+    },
+    "limitations": [
+      "Рабочие обработчики App проверены на 6-мильных данных без браузера. Одномильная панель и формат правок проверены статически.",
+      "Исходный DMG 2014 представлен только ранее извлечённым пересказом печатной стр. 110. Охват и параметры правил сохраняются открытыми.",
+      "Урон, проверки и раскрытие игрокам за пределами среза."
+    ]
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "c58e7487-798c-8331-9aef-884cbf52d7f5",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T22:30:00Z",
+          "started_at": "2026-11-19T22:30:40.393086Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T01:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "318fc104-2e7c-8323-9cc3-3cf8149f9fb2",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T22:00:00Z",
+          "started_at": "2026-11-19T22:05:40.320336Z",
+          "completed_at": "2026-11-19T22:07:17.571938Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T02:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "c58e7487-798c-8331-9aef-884cbf52d7f5",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T22:30:00Z",
+          "started_at": "2026-11-19T22:30:40.393086Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T01:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "318fc104-2e7c-8323-9cc3-3cf8149f9fb2",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T22:00:00Z",
+          "started_at": "2026-11-19T22:05:40.320336Z",
+          "completed_at": "2026-11-19T22:07:17.571938Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T02:00:00+03:00"
+      }
+    ],
+    "schedule_changes": [],
+    "owner_instruction_observed": {
+      "date": "2026-11-20",
+      "scope": "HX-RSR-001",
+      "quote": "Запускайся раз в час",
+      "schedule_verified": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+    }
+  },
+  "checkpoint": {
+    "status": "bounded_surface_hazard_audit_completed",
+    "run_id": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
+    "stage": "verify_snow_biome_and_thin_ice",
+    "last_successful_step": "Проверены редактирование, отказ на воде, сохранение/загрузка, Undo/Redo озера и снежного биома, контроль трудности Knave и формат обоих масштабов.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченная операция проверена на точном SHA. Первичный текст DMG 2014 и полная приёмка игры открыты.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md",
+      "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20-probe.mjs"
+    ],
+    "exact_continuation": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-CLASSIC-POI-DISCOVERY-BOUNDARY",
+    "layer": "L1",
+    "game_ids": [
+      "DND5",
+      "KNAVE2",
+      "CROWS"
+    ],
+    "status": "selected_new_owner_dependency",
+    "action": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
+    "completion_condition": "Дать стратегу проверенные входы/выходы для столицы, портала и прежнего сохранения, границу между признаком карты и действиями раскрытия в L2. Точные вероятности не назначать. Для Crows использовать уже извлечённые материалы.",
+    "source_refs": [
+      "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    ]
+  },
+  "recovered_probe_diagnostics": [
+    {
+      "observed_error": "The input did not match the regular expression /Water/. Input: 'Target unavailable'",
+      "recovery": "Проверка App фиксирует отказ и неизменность документа. Отдельный вызов того же доменного валидатора подтверждает код water_obstacle_edge."
+    }
+  ]
+}

@@ -67,17 +67,20 @@
   ],
   "current_diagnosis": "В существующих материалах выявлены неполнота/неоднородность перевода, но массовый аудит не проводился. Исторические completed и числа строк не доказывают соответствие стандартуv2; действуют исходные evidence до адресной проверки.",
   "next_selected_task": {
-    "id": "HX-RSR-DND5-L1-HAZARD-AND-SNOW-BIOME",
-    "game_id": "DND5",
+    "id": "HX-RSR-CLASSIC-POI-DISCOVERY-BOUNDARY",
     "layer": "L1",
-    "status": "selected_actionable_overall_top5_gap",
-    "action": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
-    "completion_condition": "Показать фактические операции редактирования биома и опасного участка; отделить ребровое препятствие от поверхностного состояния, указать конкретный результат и ограничения. Урон, проверки и локальный бой за пределами. Новое чтение DMG только при новом законном доступе.",
-    "source_refs": [
-      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
-      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    "game_ids": [
+      "DND5",
+      "KNAVE2",
+      "CROWS"
     ],
-    "new_evidence": "PR509 добавил ручные снежные биомы, не доказывает опасность тонкого льда."
+    "status": "selected_new_owner_dependency",
+    "action": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
+    "completion_condition": "Дать стратегу проверенные входы/выходы для столицы, портала и прежнего сохранения, границу между признаком карты и действиями раскрытия в L2. Точные вероятности не назначать. Для Crows использовать уже извлечённые материалы.",
+    "source_refs": [
+      "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json"
+    ]
   },
   "other_open_tracks": [
     {
@@ -361,7 +364,7 @@
   },
   "research_product_handoff_policy": "Research artifacts and strategist handoff only; strategist owns new productbacklog candidates. No deleted/retired tasks restored and no statuses promoted by researcher.",
   "execution_resume_verified_at": "2026-11-15T20:55:14.806Z",
-  "updated_at": "2026-11-19T20:36:05.565Z",
+  "updated_at": "2026-11-19T22:34:46.143Z",
   "previous_next_selected_task_before_PF2_source_checkpoint": {
     "task_id": "HX-RSR-DND5-STANDARD-V2-ALIGNMENT",
     "game_id": "DND5",
@@ -533,22 +536,22 @@
     "product_reverified": false
   },
   "current_research_checkpoint": {
-    "status": "bounded_place_sign_authoring_audit_completed",
-    "run_id": "2026-11-19-DND5-L1-place-sign-4065bac3",
-    "stage": "verify_place_sign_and_GM_description",
-    "last_successful_step": "На точном SHA проверены независимое редактирование, поведение после отключения Knave, перенос, загрузка и отмена.",
+    "status": "bounded_surface_hazard_audit_completed",
+    "run_id": "2026-11-20-DND5-L1-surface-hazard-c58e7487",
+    "stage": "verify_snow_biome_and_thin_ice",
+    "last_successful_step": "Проверены редактирование, отказ на воде, сохранение/загрузка, Undo/Redo озера и снежного биома, контроль трудности Knave и формат обоих масштабов.",
     "failed_operation": null,
     "observed_error": null,
-    "stop_reason": "Критерий завершения ограниченной проверки выполнен, полный источник и показ игрокам открыты.",
+    "stop_reason": "Ограниченная операция проверена на точном SHA. Первичный текст DMG 2014 и полная приёмка игры открыты.",
     "cause_status": "confirmed",
     "saved_results": [
-      "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
-      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
-      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
-      "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
-      "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19-probe.mjs"
+      "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md",
+      "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
+      "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20-probe.mjs"
     ],
-    "exact_continuation": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "exact_continuation": "Сверить принятую задачу HX-BL-062 с существующим контрактом Knave и уже проверенными источниками top5. Проверить на свежем SHA, где реально присваивается обнаружение при ручном создании и генерации обычной POI, и как ведёт себя прежняя карта без записи обнаружения.",
     "needs_owner_action": false,
     "owner_action": null
   },
@@ -867,6 +870,28 @@
     "overview_ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.md",
     "result_ref": "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
     "handoff_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "full_game_accepted": false
+  },
+  "previous_next_selected_task_before_DND5_L1_thin_ice": {
+    "id": "HX-RSR-DND5-L1-HAZARD-AND-SNOW-BIOME",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "На актуальном дереве после PR 509 проверить сохранённый критерий DND5-2014-020. На карте с озером и соседним снежным биомом проверить, можно ли поставить, независимо от биома, картографическую отметку опасного участка тонкого льда и восстановить обе записи из JSON.",
+    "completion_condition": "Показать фактические операции редактирования биома и опасного участка; отделить ребровое препятствие от поверхностного состояния, указать конкретный результат и ограничения. Урон, проверки и локальный бой за пределами. Новое чтение DMG только при новом законном доступе.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ],
+    "new_evidence": "PR509 добавил ручные снежные биомы, не доказывает опасность тонкого льда."
+  },
+  "latest_DND5_L1_thin_ice": {
+    "status": "bounded_surface_hazard_audit_completed",
+    "matrix_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
+    "overview_ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.md",
+    "result_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
     "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "full_game_accepted": false
   }
