@@ -13659,9 +13659,9 @@ export function App() {
     setHoverObstacleEdge(null); updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
-  const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
+  const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot, options: {replaceMap?:true} = {}) => {
     const lakeState=after.map.physicalGrid;
-    if(before.map.physicalGrid?.smallLakes?.lakes.length&&!lakeState?.smallLakes)throw Error('The accepted small lake layer would be lost');
+    if(!options.replaceMap&&before.map.physicalGrid?.smallLakes?.lakes.length&&!lakeState?.smallLakes)throw Error('The accepted small lake layer would be lost');
     if(lakeState?.smallLakes?.lakes.length)validateSmallLakeSupport(lakeState.smallLakes,projectOneMile(oneMileSources(after.map),lakeState.grid.origin));
     // Source edits while viewing one mile must also have a complete next
     // display. A preparation failure occurs before either history is changed.
@@ -14490,12 +14490,13 @@ export function App() {
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     if(Object.keys(physicalGridRef.current?.fineCellEdits??{}).length&&!window.confirm(language==='ru'?'Удалить локальные правки одномильных гексов? Отмена вернёт их.':'Remove local one-mile edits? Undo restores them.'))return;
+    if(physicalGridRef.current?.smallLakes?.lakes.length&&!window.confirm(language==='ru'?'Удалить малые озёра при сбросе карты? «Отменить» восстановит их.':'Remove the small lakes when resetting the map? Undo restores them.'))return;
     const newGeneration = createGenerationState(newWorldSeed());
     const after: DocumentSnapshot = { ...before, map: { seas:[],nextSeaId:1,editorNames:{},riverFeatures:emptyRiverFeatures(),nextRiverId:1,tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
       requiresFineAdaptation:false,generationHistory: [], selectedHex: START_HEX, isMapRotated: false, generationMode:nextMode??before.generationMode,knaveEnabled:false };
-    recordTransaction(before,after); applyDocument(after); setEditMode(false); setGenerationError(null);
+    recordTransaction(before,after,{replaceMap:true}); applyDocument(after); setEditMode(false); setGenerationError(null);
   };
 
   const resetMap = () => resetMapToMode();
@@ -14671,7 +14672,11 @@ export function App() {
     map.knave=retainedKnaveCheckpoint(map);
     const after = { ...before, map, generationHistory: history.slice(0,-1),
       selectedHex: checkpoint.regions.length ? checkpoint.regions[checkpoint.regions.length-1].centerHex : START_HEX };
-    recordTransaction(before,after); applyDocument(after);
+    try{
+      recordTransaction(before,after); applyDocument(after);
+    }catch(error){
+      setEditError(error instanceof Error?error.message:'The map checkpoint could not be restored');
+    }
   };
 
   const regenerateLastRegion = () => {
