@@ -1,0 +1,120 @@
+{
+  "task_id": "HX-BL-021",
+  "stage": "F1",
+  "pr": 509,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/509",
+  "branch": "agent/hx-bl-021-new-biomes-f1",
+  "base_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+  "head_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+  "reviewed_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+  "tree_sha": "36e9e022fe451166098a7b140beebd71ec9f2724",
+  "spec_ref": "agent-work/specs/HX-BL-021-new-biomes-F1.md",
+  "spec_blob_sha": "80e64ee3bc6e25cdd3e811359f29f4dee238ce50",
+  "run_id": "2026-11-19T2000-reviewer-HX-BL-021-F1",
+  "role": "reviewer",
+  "role_selection_reason": "Approved F1 had a runnable exact candidate and applicable successful CI; no open task ownership.",
+  "started_at": "2026-11-19T17:00:52.767Z",
+  "completed_at": "2026-11-19T17:13:05.220Z",
+  "status": "changes_requested",
+  "review_verdict": "changes_requested",
+  "result_ref": "agent-work/results/2026-11-19T2000-reviewer-HX-BL-021-F1.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
+  "review_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/score-assessment1.2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-19T2000-reviewer-HX-BL-021-F1-programmer.json",
+  "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44564439361",
+  "findings": [
+    {
+      "id": "BIO-F1-REV-01",
+      "kind": "confirmed_build_validation_defect",
+      "requirements": [
+        "R06",
+        "AC06"
+      ]
+    },
+    {
+      "id": "BIO-F1-REV-02",
+      "kind": "confirmed_UI_readability",
+      "requirements": [
+        "R11",
+        "AC06"
+      ]
+    },
+    {
+      "id": "BIO-F1-EVID-01",
+      "kind": "insufficient_browser_evidence",
+      "requirements": [
+        "R07",
+        "R12",
+        "AC05"
+      ]
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "head_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+    "added": 3,
+    "removed": 0,
+    "modified": 3,
+    "source": "Git diff of test/deadForestBiomes.test.mjs, test/mapTransactions.test.mjs, test/browser/terrain-color.smoke.mjs and test/browser/save-history.smoke.mjs; logical scenario count",
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 1,
+        "removed": 0,
+        "modified": 2,
+        "executed": 430,
+        "passed": 430,
+        "skipped": 0,
+        "scenario": "Manual profile, actual generation, JSON, previous editor constraints and automatic continuation",
+        "reuse_or_new_reason": "Expanded existing catalog and region checks; distinct full-catalog scenario for new IDs."
+      },
+      {
+        "suite": "Browser",
+        "added": 2,
+        "removed": 0,
+        "modified": 1,
+        "runners_passed": 10,
+        "scenario": "Actual Dunes generation/edit/PNG and ten-biome display at both scales/orientations; update old editor count",
+        "reuse_or_new_reason": "Extended existing terrain and history runners."
+      },
+      {
+        "suite": "Browser RNG",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "runners_passed": 1,
+        "scenario": "Existing RNG smoke"
+      }
+    ],
+    "reviewer_assessment": "The new Node catalog/real-handler scenario and two browser scenarios protect distinct selection, persistence, and artwork behaviors. The two Node expectation changes and one Browser history expectation track the exposed repertoire. Extend the existing terrain smoke for mixed-map rendering and selected-label readability; the existing build guard checks can cover mandatory manifest identities. No independent diagnostics are included in these diff counts."
+  },
+  "checked": true,
+  "review_ready": false,
+  "release_ready": false,
+  "publication_authorized": false,
+  "next_role": "programmer",
+  "next_task_id": "HX-BL-021",
+  "next_step": "Закрыть замечания F1 в PR №509. Сборка должна остановиться при потере обязательной гравюры и её записи, подписи панели должны читаться на 320/390 px. Затем в действующем браузерном CI снять карту и PNG со всеми десятью биомами, водой, рекой, дорогой, переправой и POI и передать новый SHA на независимую приёмку.",
+  "user_result": "Десять биомов и сохранность карты подтверждены. Требуются две поправки и PNG смешанной карты из браузерного CI.",
+  "forecast_remaining": "1–2 hourly cycles for targeted fixes and browser CI, then one independent review. Publication timing depends on exact-package approval.",
+  "owner_decisions_needed_now": [],
+  "no_validation_processes_running": true,
+  "no_writing_processes_running": true,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-19T17:00:52.767Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-19T17:12:00.316Z",
+      "status": "checked",
+      "is_enabled": true,
+      "factual_schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+    },
+    "restoration_performed": false,
+    "errors": []
+  }
+}

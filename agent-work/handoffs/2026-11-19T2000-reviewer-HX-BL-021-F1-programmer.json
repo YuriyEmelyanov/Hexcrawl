@@ -1,0 +1,61 @@
+{
+  "task_id": "HX-BL-021",
+  "stage": "F1",
+  "pr": 509,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/509",
+  "branch": "agent/hx-bl-021-new-biomes-f1",
+  "base_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+  "head_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+  "reviewed_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+  "tree_sha": "36e9e022fe451166098a7b140beebd71ec9f2724",
+  "spec_ref": "agent-work/specs/HX-BL-021-new-biomes-F1.md",
+  "spec_blob_sha": "80e64ee3bc6e25cdd3e811359f29f4dee238ce50",
+  "run_id": "2026-11-19T2000-reviewer-HX-BL-021-F1",
+  "source_role": "reviewer",
+  "target_role": "programmer",
+  "status": "changes_requested",
+  "role_selection_reason": "Independent F1 verdict on exact PR #509 after successful Check; remediating bounded findings is the next stage of the already approved task.",
+  "findings": [
+    {
+      "id": "BIO-F1-REV-01",
+      "kind": "confirmed_build_validation_defect",
+      "requirements": [
+        "R06",
+        "AC06"
+      ],
+      "completion": "Required manual biome artwork missing from the catalog must abort the ordinary build before Vite. Retain the existing file and hash failures."
+    },
+    {
+      "id": "BIO-F1-REV-02",
+      "kind": "confirmed_UI_readability",
+      "requirements": [
+        "R11",
+        "AC06"
+      ],
+      "completion": "Selected generator labels remain readable at 320/390 with no horizontal overflow and existing focus order."
+    },
+    {
+      "id": "BIO-F1-EVID-01",
+      "kind": "insufficient_browser_evidence",
+      "requirements": [
+        "R07",
+        "R12",
+        "AC05"
+      ],
+      "completion": "A browser CI witness for a single real mixed map with all ten, repeats, neighboring biomes, water boundary, rivers, roads, a crossing and POI. Inspect the map and PNG in 6/1 mi and both orientations, plus unchanged save and RNG throughout."
+    }
+  ],
+  "input_refs": [
+    "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
+    "agent-work/evidence/HX-BL-021-F1/implementation-fff2dfa/verification.json",
+    "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/score-assessment1.2.json",
+    "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44564439361/artifacts/14551003819"
+  ],
+  "scope_boundary": "One F1 package for all ten manual biomes. Keep existing automatic choices, save schemas and project process.",
+  "implementation_authorized": true,
+  "publication_authorized": false,
+  "next_step": "Закрыть замечания F1 в PR №509. Сборка должна остановиться при потере обязательной гравюры и её записи, подписи панели должны читаться на 320/390 px. Затем в действующем браузерном CI снять карту и PNG со всеми десятью биомами, водой, рекой, дорогой, переправой и POI и передать новый SHA на независимую приёмку.",
+  "completion": "Commit the bounded fixes and browser witness on the existing PR. Full Check on the new head and exact screenshots/PNG, then hand off for independent re-review.",
+  "forecast": "1–2 hourly cycles for targeted fixes and browser CI, then one independent review. Publication timing depends on exact-package approval.",
+  "completed_at": "2026-11-19T17:13:05.220Z"
+}

@@ -1,0 +1,521 @@
+{
+  "task_id": "HX-BL-021",
+  "stage": "F1",
+  "pr": 509,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/509",
+  "branch": "agent/hx-bl-021-new-biomes-f1",
+  "base_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+  "head_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+  "reviewed_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+  "tree_sha": "36e9e022fe451166098a7b140beebd71ec9f2724",
+  "spec_ref": "agent-work/specs/HX-BL-021-new-biomes-F1.md",
+  "spec_blob_sha": "80e64ee3bc6e25cdd3e811359f29f4dee238ce50",
+  "run_id": "2026-11-19T2000-reviewer-HX-BL-021-F1",
+  "role": "reviewer",
+  "reviewed_at": "2026-11-19T17:13:05.220Z",
+  "status": "changes_requested",
+  "role_selection_reason": "Approved F1 had a runnable exact candidate and applicable successful CI; no open task ownership.",
+  "method": "Independent review of exact Git diff and CI checkout/tree; exact SHA artifacts and visual inspection; complete local check, main/candidate chooser parity, real App saves and editors, isolated build failures, and separate reviewer with fresh context.",
+  "independence": {
+    "mode": "review owner plus fresh-context reviewer",
+    "agent": "hx021_f1_independent_review",
+    "change_author_reviewed": false,
+    "product_writes_by_reviewers": false
+  },
+  "checks": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44564439361",
+    "github_runs": {
+      "check": "success",
+      "browser": "success",
+      "world_random": "success",
+      "engraved_map_comparison": "skipped_as_configured_for_PR506"
+    },
+    "ci_checkout_sha": "04fb496efe67d2626cc3ca6ba984b268523a077f",
+    "ci_checkout_tree": "36e9e022fe451166098a7b140beebd71ec9f2724",
+    "ci_node": {
+      "executed": 430,
+      "passed": 430,
+      "failed": 0,
+      "skipped": 0
+    },
+    "ci_browser": {
+      "runners_passed": 10,
+      "rng_runners_passed": 1
+    },
+    "independent_local_check": {
+      "command": "npm run check",
+      "node_version": "v24.22.3",
+      "exit_code": 0,
+      "executed": 430,
+      "passed": 430,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "visual_evidence": {
+    "artifact_id": 14551003819,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44564439361/artifacts/14551003819",
+    "digest": "sha256:0193d55dd891ed8c2bbf79c6dea6ff04f6a1ec7852f39de1e4815f6ce282a9aa",
+    "validated_pngs": {
+      "terrain-v2-f1-atlas-1mi-initial.png": {
+        "sha256": "8e6692654191859869884dcb01437392e1401507e9aa1bc1d3d79d1288bfc2d0",
+        "size": [
+          1924,
+          732
+        ]
+      },
+      "terrain-v2-f1-atlas-1mi-rotated.png": {
+        "sha256": "25fc2669f4ec891aaf60ec953c0ca5292e3416384e94d3c3c7894e83d1266354",
+        "size": [
+          732,
+          1924
+        ]
+      },
+      "terrain-v2-f1-atlas-6mi-initial.png": {
+        "sha256": "064fc311059b9e158cc969534579a893a74afe1f6a0cfdac3e3bd151fe7cadec",
+        "size": [
+          1892,
+          700
+        ]
+      },
+      "terrain-v2-f1-atlas-6mi-rotated.png": {
+        "sha256": "e7895482da5b2026198b260fe932a3590369f6fd6eb58c18aa1870d8abc371a4",
+        "size": [
+          700,
+          1892
+        ]
+      },
+      "terrain-v2-f1-before.png": {
+        "sha256": "039afd529c3bd0ba47433e56864e2d1790f54b28db30ee6c864aa62bfadb07f5",
+        "size": [
+          1440,
+          1000
+        ]
+      },
+      "terrain-v2-f1-dunes-desktop.png": {
+        "sha256": "95dcecb12ec142146d4b795c133b6332e2d2fe8807246c7d3c1752b7ea7b9aa4",
+        "size": [
+          1440,
+          1000
+        ]
+      },
+      "terrain-v2-f1-dunes-export.png": {
+        "sha256": "7449596b5e9b2cc8afc2689af037931826e1aa06d12b58ccb674d5eab4d0a6e5",
+        "size": [
+          582,
+          532
+        ]
+      },
+      "terrain-v2-f1-dunes-narrow-320.png": {
+        "sha256": "990691318c9e3fdf1f5db60b08728d1ec8cff7fece21a24eb0b30f09bf59373e",
+        "size": [
+          320,
+          950
+        ]
+      },
+      "terrain-v2-f1-dunes-narrow-390.png": {
+        "sha256": "d98a66c239321cacadc45a3754393e57a8e531781a2522df164b793a87dea628",
+        "size": [
+          390,
+          950
+        ]
+      }
+    },
+    "coverage": "Dunes through actual generation, PNG and edit/Undo/Redo, and a separate ten-biome atlas with one lake at both scales and orientations."
+  },
+  "acceptance": [
+    {
+      "id": "AC01",
+      "status": "bounded_pass",
+      "notes": "Exact CI Dunes on seed42 via actual generator and per-hex editor, map/RNG, JSON, Undo/Redo and PNG proof."
+    },
+    {
+      "id": "AC02",
+      "status": "pass",
+      "notes": "Independent SHA-256, catalog metadata, colors and measured alpha bounds for all ten; scale/orientation atlas and labels crosschecked."
+    },
+    {
+      "id": "AC03",
+      "status": "pass",
+      "notes": "115968 exact chooser comparisons and 2304 on manual/mixed neighbors; old world JSON including both RNGs and actual tract fallback matched on two additional seeds. Same-height and profile guards, extant Knave/Mythic and cold state checked."
+    },
+    {
+      "id": "AC04",
+      "status": "bounded_pass",
+      "notes": "Full existing import fixtures pass. Three invalid/prototype-key IDs fail atomically. Populated v16 with all ten and 20 real coarse overrides retains entire payload except intended fields, real region undo/redo and import undo; v15/v16 fine-save evidence verified from handoff and existing suites."
+    },
+    {
+      "id": "AC05",
+      "status": "insufficient_browser_evidence",
+      "finding_id": "BIO-F1-EVID-01"
+    },
+    {
+      "id": "AC06",
+      "status": "changes_requested",
+      "finding_ids": [
+        "BIO-F1-REV-01",
+        "BIO-F1-REV-02"
+      ]
+    },
+    {
+      "id": "AC07",
+      "status": "recheck_required_on_new_head",
+      "notes": "Complete green exact-source tree CI and independent checks. SCORE assessment recorded. Publication gate depends on final acceptance and owner."
+    }
+  ],
+  "independent_probes": {
+    "auto_parity": {
+      "manual_neighbor_cases": 2304,
+      "stock_reference_cases": 115968,
+      "stock_neighbor_sets": 604,
+      "axes": [
+        "two land types",
+        "four height/chooser paths",
+        "four river constraints",
+        "six RNG draws incl. zero"
+      ],
+      "seeds": [
+        712,
+        997
+      ],
+      "world_actions_per_seed": [
+        "start",
+        "two continuations",
+        "real emergency tract"
+      ],
+      "detached_fixture_only": true
+    },
+    "masks": {
+      "source": "test/fixtures/classic-six-regions-seed42.json",
+      "save_version": 16,
+      "active_topology": {
+        "rivers": 4,
+        "roads": 5,
+        "crossings": 2,
+        "terrain_water_cells": 3,
+        "secondary_pois": 6
+      },
+      "coarse_pairs": [
+        [
+          "desert",
+          [
+            "0,0",
+            "1,0"
+          ]
+        ],
+        [
+          "dunes",
+          [
+            "0,1",
+            "1,1"
+          ]
+        ],
+        [
+          "lowland_jungle",
+          [
+            "-1,1",
+            "-2,2"
+          ]
+        ],
+        [
+          "jungle_hills",
+          [
+            "-1,2",
+            "0,2"
+          ]
+        ],
+        [
+          "jungle_mountains",
+          [
+            "0,-1",
+            "1,-2"
+          ]
+        ],
+        [
+          "savanna",
+          [
+            "-1,-1",
+            "0,-2"
+          ]
+        ],
+        [
+          "mushroom_forest",
+          [
+            "0,3",
+            "1,2"
+          ]
+        ],
+        [
+          "snow_plains",
+          [
+            "-1,3",
+            "-2,3"
+          ]
+        ],
+        [
+          "snow_hills",
+          [
+            "3,-2",
+            "4,-2"
+          ]
+        ],
+        [
+          "snow_mountains",
+          [
+            "3,-1",
+            "2,0"
+          ]
+        ]
+      ],
+      "checks": [
+        "all ten projected by oneMileSources and projectOneMile",
+        "region mutation retained physicalGrid",
+        "coarse overrides retained all other map layers/RNG",
+        "JSON reload, atomic import Undo and group Undo/Redo"
+      ],
+      "limited_to_model": true
+    },
+    "tags": {
+      "candidate_specific": 10,
+      "modes": [
+        "Classic+Knave",
+        "Mythic"
+      ],
+      "preserved": [
+        "linked POI",
+        "tag snapshots",
+        "roll counters",
+        "clues",
+        "difficulty",
+        "RNG"
+      ],
+      "new_classification_checked": [
+        "forest",
+        "sand",
+        "coldIce false"
+      ]
+    },
+    "import_unknown": [
+      "unknown_f1_biome",
+      "constructor",
+      "__proto__"
+    ],
+    "new_asset_catalog": {
+      "approved_rows_verified": 10,
+      "existing_raw_check_count": 36,
+      "omission_single": "ENOENT before Vite",
+      "replacement": "SHA-256 mismatch before Vite",
+      "omission_asset_and_catalog": "Build unexpectedly succeeds, startup throws TypeError"
+    }
+  },
+  "findings": [
+    {
+      "id": "BIO-F1-REV-01",
+      "severity": "blocking_F1_acceptance",
+      "kind": "confirmed_build_validation_defect",
+      "requirements": [
+        "R06",
+        "AC06"
+      ],
+      "file_refs": [
+        "scripts/verify-engraving-catalog.mjs:9",
+        "src/rendering/engravingAssets.ts:5",
+        "src/App.tsx:664"
+      ],
+      "steps": [
+        "In an isolated git archive of the reviewed SHA, remove public/terrain/engravings/dunes.png and only the dunes key from src/rendering/engravingCatalog.json. Leave MANUAL_BIOMES.dunes registered.",
+        "Run npm run build, then initialize the actual App via test/helpers/generation-harness.mjs."
+      ],
+      "observed": "Build succeeded, verified 35 PNGs and emitted index.html. App initialization throws TypeError Cannot read properties of undefined (reading 'color'). A PNG-only omission fails with ENOENT and a replacement is correctly rejected on SHA-256.",
+      "expected": "Required manual biome artwork missing from the catalog must abort the ordinary build before Vite. Retain the existing file and hash failures.",
+      "reproduced_by": [
+        "review owner",
+        "fresh-context reviewer"
+      ],
+      "impact": "The commit contains the correct asset. Its build guard permits shipping an application that fails at startup when an asset and its catalog record are omitted together."
+    },
+    {
+      "id": "BIO-F1-REV-02",
+      "severity": "F1_acceptance",
+      "kind": "confirmed_UI_readability",
+      "requirements": [
+        "R11",
+        "AC06"
+      ],
+      "file_refs": [
+        "src/styles.css:147",
+        "src/styles.css:151"
+      ],
+      "steps": [
+        "Use Russian, set a 320px viewport, choose «Местность» under «Размер» in Classic generator.",
+        "Use the exact-head CI screenshot terrain-v2-f1-dunes-narrow-320.png."
+      ],
+      "observed": "The closed size selector clips «Местность» to «Местнос». The new biome label «Снежно-ледяная равнина» is fully readable in that capture.",
+      "expected": "Selected generator labels remain readable at 320/390 with no horizontal overflow and existing focus order.",
+      "evidence": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44564439361/artifacts/14551003819"
+      ],
+      "baseline_classification": "Candidate acceptance issue. The older layout used four equal columns, so a newly introduced regression has not been established."
+    },
+    {
+      "id": "BIO-F1-EVID-01",
+      "severity": "blocking_F1_evidence",
+      "kind": "insufficient_browser_evidence",
+      "requirements": [
+        "R07",
+        "R12",
+        "AC05"
+      ],
+      "file_refs": [
+        "test/browser/terrain-color.smoke.mjs:81",
+        "test/browser/terrain-color.smoke.mjs:185"
+      ],
+      "observed": "The all-ten atlas inherits an empty river, road and crossing set and suppresses POIs. A separate Dunes example contains some map layers. They do not prove simultaneous rendering of all ten and the named features in both scales and both orientations.",
+      "expected": "A browser CI witness for a single real mixed map with all ten, repeats, neighboring biomes, water boundary, rivers, roads, a crossing and POI. Inspect the map and PNG in 6/1 mi and both orientations, plus unchanged save and RNG throughout.",
+      "evidence": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44564439361/artifacts/14551003819"
+      ],
+      "replay": {
+        "source": "test/fixtures/classic-six-regions-seed42.json",
+        "seed": 42,
+        "coarse_pairs": [
+          [
+            "desert",
+            [
+              "0,0",
+              "1,0"
+            ]
+          ],
+          [
+            "dunes",
+            [
+              "0,1",
+              "1,1"
+            ]
+          ],
+          [
+            "lowland_jungle",
+            [
+              "-1,1",
+              "-2,2"
+            ]
+          ],
+          [
+            "jungle_hills",
+            [
+              "-1,2",
+              "0,2"
+            ]
+          ],
+          [
+            "jungle_mountains",
+            [
+              "0,-1",
+              "1,-2"
+            ]
+          ],
+          [
+            "savanna",
+            [
+              "-1,-1",
+              "0,-2"
+            ]
+          ],
+          [
+            "mushroom_forest",
+            [
+              "0,3",
+              "1,2"
+            ]
+          ],
+          [
+            "snow_plains",
+            [
+              "-1,3",
+              "-2,3"
+            ]
+          ],
+          [
+            "snow_hills",
+            [
+              "3,-2",
+              "4,-2"
+            ]
+          ],
+          [
+            "snow_mountains",
+            [
+              "3,-1",
+              "2,0"
+            ]
+          ]
+        ],
+        "existing_rivers": 4,
+        "existing_roads": 5,
+        "existing_crossings": 2,
+        "existing_water_cells": 3,
+        "existing_secondary_pois": 6
+      },
+      "classification_detail": "Reviewer confirmed mixed topology and projected IDs with real save and editor handlers. Combined browser rendering and PNG remain open."
+    }
+  ],
+  "test_change_summary": {
+    "base_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "head_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+    "added": 3,
+    "removed": 0,
+    "modified": 3,
+    "source": "Git diff of test/deadForestBiomes.test.mjs, test/mapTransactions.test.mjs, test/browser/terrain-color.smoke.mjs and test/browser/save-history.smoke.mjs; logical scenario count",
+    "suites": [
+      {
+        "suite": "Node",
+        "added": 1,
+        "removed": 0,
+        "modified": 2,
+        "executed": 430,
+        "passed": 430,
+        "skipped": 0,
+        "scenario": "Manual profile, actual generation, JSON, previous editor constraints and automatic continuation",
+        "reuse_or_new_reason": "Expanded existing catalog and region checks; distinct full-catalog scenario for new IDs."
+      },
+      {
+        "suite": "Browser",
+        "added": 2,
+        "removed": 0,
+        "modified": 1,
+        "runners_passed": 10,
+        "scenario": "Actual Dunes generation/edit/PNG and ten-biome display at both scales/orientations; update old editor count",
+        "reuse_or_new_reason": "Extended existing terrain and history runners."
+      },
+      {
+        "suite": "Browser RNG",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "runners_passed": 1,
+        "scenario": "Existing RNG smoke"
+      }
+    ],
+    "reviewer_assessment": "The new Node catalog/real-handler scenario and two browser scenarios protect distinct selection, persistence, and artwork behaviors. The two Node expectation changes and one Browser history expectation track the exposed repertoire. Extend the existing terrain smoke for mixed-map rendering and selected-label readability; the existing build guard checks can cover mandatory manifest identities. No independent diagnostics are included in these diff counts."
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/score-assessment1.2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-19T2000-reviewer-HX-BL-021-F1-programmer.json",
+  "publication_authorized": false,
+  "next_step": "Закрыть замечания F1 в PR №509. Сборка должна остановиться при потере обязательной гравюры и её записи, подписи панели должны читаться на 320/390 px. Затем в действующем браузерном CI снять карту и PNG со всеми десятью биомами, водой, рекой, дорогой, переправой и POI и передать новый SHA на независимую приёмку.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-19T17:00:52.767Z",
+      "is_enabled": true,
+      "status": "checked"
+    },
+    "end": {
+      "checked_at": "2026-11-19T17:12:00.316Z",
+      "status": "checked",
+      "is_enabled": true,
+      "factual_schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+    },
+    "restoration_performed": false,
+    "errors": []
+  }
+}
