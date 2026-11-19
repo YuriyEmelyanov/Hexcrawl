@@ -1,0 +1,1271 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-19-KNAVE2-L1-table-references-44fef5a6",
+  "game_id": "KNAVE2",
+  "status": "bounded_L1_reference_slice_completed",
+  "baseline_ops_sha": "6861e18e0b21142c19976c610969e6098b4d6d03",
+  "product_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+  "scope": "16 existing catalog pointer rows, including three dungeon rows reachable from structures",
+  "source": {
+    "id": "KNAVE2-RU-1.0",
+    "edition": "Knave Second Edition 2024, declared first printing; Russian translation Torbin v1.0 11.06.2024",
+    "filename": "Knave 2e Spreads Rus.pdf",
+    "library_file_id": "libfile_8b6719d4aab88191973e2d4bb59681e8",
+    "file_id": "file_0000000075c882118b3f795cbd180840",
+    "sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+    "pdf_pages": 45,
+    "size_bytes": 43179967,
+    "access_level": "full_text",
+    "author_project_key": "ben-milton/questing-beast/knave2/core2024",
+    "page_numbering": "Printed pages1–79; PDF4 contains unnumbered contents on left and printed1 on right. PDF4–43 right printed2*(pdf-4)+1; PDF44 is unnumbered inside-cover quickref; PDF45 technical82 is not a rules page.",
+    "reviewed_sections": [
+      "Every PDF page1–45 screened, relevant prose/tables/crossreferences extracted; images checked as recorded in ledger."
+    ],
+    "limitations": [
+      "Full thematic source inventory, not all game mechanics or runtime support. Unrelated combat/dungeon/economy details excluded with reasons.",
+      "Russian translation reviewed, not an independent collation against English edition/errata. Source ambiguities and product decisions remain explicit.",
+      "Counts are editorial rule groups and derived requirements; not publisher counts or numerical complexity/popularity weights.",
+      "The source notice distinguishes freely reusable mechanics from text/art; this result paraphrases rules and records table locators without republishing full tables. Product content-pack provenance/permission must be defined before embedding source text."
+    ],
+    "read_for_this_run": {
+      "printed_pages": [
+        1,
+        10,
+        11,
+        14,
+        15,
+        16,
+        17,
+        28,
+        29,
+        36,
+        37,
+        47,
+        48,
+        66
+      ],
+      "pdf_pages": [
+        4,
+        9,
+        11,
+        12,
+        18,
+        22,
+        27,
+        28,
+        37
+      ],
+      "coverage": "Прочитаны процедура, 16 исходных строк, страницы и конкретные столбцы целей. Использован прежний журнал скрининга 45 страниц. Актуальность английской редакции отдельно не подтверждалась."
+    }
+  },
+  "rows": [
+    {
+      "id": "KNAVE2-XREF-LOC-028",
+      "table": "locations",
+      "row": 28,
+      "source": {
+        "printed_page": 10,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 29,
+        "pdf_page": 18,
+        "table_label": "Элементы",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Уточнить состав конкретного природного места. Изменения соседних гексов и магический расчёт не требуются.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "excluded_from_automatic_location_pool",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,10,29",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "locations",
+          "source_row": 28,
+          "target_printed_page": 29,
+          "target_table": "Элементы",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Уточнить состав конкретного природного места. Изменения соседних гексов и магический расчёт не требуются."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица locations, строка 28, первичный указатель на стр. 29.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Элементы» на стр. 29. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-STR-014",
+      "table": "structures",
+      "row": 14,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 47,
+        "pdf_page": 27,
+        "table_label": "Здания",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Уточнить вид здания на карте. Вход из таблицы построек сохраняет адрес исходной POI.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,47",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "structures",
+          "source_row": 14,
+          "target_printed_page": 47,
+          "target_table": "Здания",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Уточнить вид здания на карте. Вход из таблицы построек сохраняет адрес исходной POI."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица structures, строка 14, первичный указатель на стр. 47.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Здания» на стр. 47. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-STR-027",
+      "table": "structures",
+      "row": 27,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 16,
+        "pdf_page": 12,
+        "table_label": "Подземелья",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Уточнить, какая точка или вход размещены на карте. План и содержимое комнат за пределами.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,16",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "structures",
+          "source_row": 27,
+          "target_printed_page": 16,
+          "target_table": "Подземелья",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Уточнить, какая точка или вход размещены на карте. План и содержимое комнат за пределами."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица structures, строка 27, первичный указатель на стр. 16.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Подземелья» на стр. 16. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-STR-048",
+      "table": "structures",
+      "row": 48,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 48,
+        "pdf_page": 28,
+        "table_label": "Две таблицы названия таверны",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Уточнить название конкретной таверны. Способ сочетания двух колонок остаётся за рамками проверки ссылки.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,48",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "structures",
+          "source_row": 48,
+          "target_printed_page": 48,
+          "target_table": "Две таблицы названия таверны",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Уточнить название конкретной таверны. Способ сочетания двух колонок остаётся за рамками проверки ссылки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица structures, строка 48, первичный указатель на стр. 48.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Две таблицы названия таверны» на стр. 48. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка.",
+          "Формат обязательной комбинации частей названия здесь не утверждён."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-STR-074",
+      "table": "structures",
+      "row": 74,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 14,
+        "pdf_page": 11,
+        "table_label": "Комнаты",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "out_of_scope",
+      "disposition_reason": "Генерация внутреннего помещения не нужна для размещения региональной POI. Метка родителя сохранена.",
+      "product_boundary": "Граница региональной карты и локальной сцены.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_applicable_to_current_scope",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": null
+    },
+    {
+      "id": "KNAVE2-XREF-STR-092",
+      "table": "structures",
+      "row": 92,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 14,
+        "pdf_page": 11,
+        "table_label": "Точная таблица не установлена. На стр. 14 находятся комнаты и их подробности",
+        "status": "printed_page_verified_exact_table_unresolved"
+      },
+      "disposition": "out_of_scope",
+      "disposition_reason": "Разрешение локальной ловушки за пределами карты. Указатель в источнике сохранён без перенаправления.",
+      "product_boundary": "Граница региональной карты и локальной сцены.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_applicable_to_current_scope",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": null
+    },
+    {
+      "id": "KNAVE2-XREF-TRAIT-014",
+      "table": "place_traits",
+      "row": 14,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 37,
+        "pdf_page": 22,
+        "table_label": "Цвет",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Добавить наблюдаемое свойство к подготовленному месту без изменения биома.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-045-L1",
+        "KNAVE2-070-L1",
+        "KNAVE2-071-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,37",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "place_traits",
+          "source_row": 14,
+          "target_printed_page": 37,
+          "target_table": "Цвет",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Добавить наблюдаемое свойство к подготовленному месту без изменения биома."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица place_traits, строка 14, первичный указатель на стр. 37.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Цвет» на стр. 37. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-TRAIT-028",
+      "table": "place_traits",
+      "row": 28,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 28,
+        "pdf_page": 18,
+        "table_label": "Эффекты",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Оставить только описательную подсказку конкретного места. Автоматический игровой эффект требует отдельного принятого основания.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,28",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "place_traits",
+          "source_row": 28,
+          "target_printed_page": 28,
+          "target_table": "Эффекты",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Оставить только описательную подсказку конкретного места. Автоматический игровой эффект требует отдельного принятого основания."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица place_traits, строка 28, первичный указатель на стр. 28.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Эффекты» на стр. 28. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-TRAIT-031",
+      "table": "place_traits",
+      "row": 31,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 29,
+        "pdf_page": 18,
+        "table_label": "Элементы",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Описать материал или явление у конкретного места. Связанная симуляция не нужна.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,29",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "place_traits",
+          "source_row": 31,
+          "target_printed_page": 29,
+          "target_table": "Элементы",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Описать материал или явление у конкретного места. Связанная симуляция не нужна."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица place_traits, строка 31, первичный указатель на стр. 29.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Элементы» на стр. 29. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-TRAIT-063",
+      "table": "place_traits",
+      "row": 63,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 28,
+        "pdf_page": 18,
+        "table_label": "Качества",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Уточнить свойство конкретного места. Ссылка на ту же страницу, что у эффектов, ведёт к другой таблице.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,28",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "place_traits",
+          "source_row": 63,
+          "target_printed_page": 28,
+          "target_table": "Качества",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Уточнить свойство конкретного места. Ссылка на ту же страницу, что у эффектов, ведёт к другой таблице."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица place_traits, строка 63, первичный указатель на стр. 28.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Качества» на стр. 28. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-TRAIT-068",
+      "table": "place_traits",
+      "row": 68,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 15,
+        "pdf_page": 11,
+        "table_label": "Тематика комнат",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "out_of_scope",
+      "disposition_reason": "Таблица относится к внутренней комнате и не задаёт отдельное действие региональной карты.",
+      "product_boundary": "Граница региональной карты и локальной сцены.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_applicable_to_current_scope",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": null
+    },
+    {
+      "id": "KNAVE2-XREF-TRAIT-081",
+      "table": "place_traits",
+      "row": 81,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 66,
+        "pdf_page": 37,
+        "table_label": "Звуки",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Сохранить слышимый признак конкретной точки. Радиус, проверки и эффекты на персонажей в L1 не входят.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,66",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "place_traits",
+          "source_row": 81,
+          "target_printed_page": 66,
+          "target_table": "Звуки",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Сохранить слышимый признак конкретной точки. Радиус, проверки и эффекты на персонажей в L1 не входят."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица place_traits, строка 81, первичный указатель на стр. 66.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Звуки» на стр. 66. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-TRAIT-088",
+      "table": "place_traits",
+      "row": 88,
+      "source": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 36,
+        "pdf_page": 22,
+        "table_label": "Текстура",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Добавить наблюдаемое свойство места, не меняя его геометрию и биом.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,11,36",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "place_traits",
+          "source_row": 88,
+          "target_printed_page": 36,
+          "target_table": "Текстура",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Добавить наблюдаемое свойство места, не меняя его геометрию и биом."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица place_traits, строка 88, первичный указатель на стр. 36.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Текстура» на стр. 36. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-DUN-014",
+      "table": "dungeons",
+      "row": 14,
+      "source": {
+        "printed_page": 16,
+        "pdf_page": 12,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 47,
+        "pdf_page": 27,
+        "table_label": "Здания",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Уточнить, какое здание связано с региональным входом в подземелье. Не генерировать интерьер.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,16,47",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "dungeons",
+          "source_row": 14,
+          "target_printed_page": 47,
+          "target_table": "Здания",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Уточнить, какое здание связано с региональным входом в подземелье. Не генерировать интерьер."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица dungeons, строка 14, первичный указатель на стр. 47.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Здания» на стр. 47. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    },
+    {
+      "id": "KNAVE2-XREF-DUN-075",
+      "table": "dungeons",
+      "row": 75,
+      "source": {
+        "printed_page": 16,
+        "pdf_page": 12,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 14,
+        "pdf_page": 11,
+        "table_label": "Комнаты",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "out_of_scope",
+      "disposition_reason": "Привязка к внутреннему помещению сама по себе не даёт операции для регионального входа.",
+      "product_boundary": "Граница региональной карты и локальной сцены.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_applicable_to_current_scope",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": null
+    },
+    {
+      "id": "KNAVE2-XREF-DUN-084",
+      "table": "dungeons",
+      "row": 84,
+      "source": {
+        "printed_page": 16,
+        "pdf_page": 12,
+        "verified_reference": true
+      },
+      "target": {
+        "printed_page": 11,
+        "pdf_page": 9,
+        "table_label": "Постройки",
+        "status": "verified_in_supplied_translation"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Уточнить тип внешнего объекта, связанного с входом в подземелье. Не создавать дополнительную POI автоматически.",
+      "product_boundary": "Наполнение конкретной точки интереса карты и сохранение её географической привязки.",
+      "parent_runtime": "rolled_and_roundtripped_as_unresolved_reference",
+      "followup_runtime": "not_implemented",
+      "canonical_rule_refs": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_refs": [
+        "KNAVE2-020-L1",
+        "KNAVE2-070-L1"
+      ],
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Knave-2e.json#KNAVE2-070; supplied RU pp. 1,16,11",
+        "normative_kind": "rule_with_recommended_boundary",
+        "applicability": "existing map place or candidate content for the selected hex",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий получает исход со ссылкой при наполнении выбранной точки карты и обращается к связанной таблице.",
+        "inputs_and_units": {
+          "poi_id": "stable map entity ID",
+          "source_table": "dungeons",
+          "source_row": 84,
+          "target_printed_page": 11,
+          "target_table": "Постройки",
+          "d100": "1–100, печатная отметка 00 означает 100"
+        },
+        "product_operation": "Уточнить содержание выбранной POI посредством результата связанной таблицы.",
+        "expected_output": "Выбранная подсказка связана с исходной POI, доступны локаторы обеих строк и решение ведущего.",
+        "constraints_and_exceptions": [
+          "Сохранить исходный смысл подсказки в контексте родительской таблицы.",
+          "Следующая строка при второй ссылке рекомендована. Случаи конца таблицы и ещё одной ссылки открыты.",
+          "Уточнить тип внешнего объекта, связанного с входом в подземелье. Не создавать дополнительную POI автоматически."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Точка P, таблица dungeons, строка 84, первичный указатель на стр. 11.",
+            "when": "Ведущий открывает связанную таблицу.",
+            "expected": "Для P доступна цель «Постройки» на стр. 11. Исходная строка и расположение P сохраняются."
+          }
+        ],
+        "source_vs_product_interpretation": "Ручной выбор и d100, обращение к другой таблице и контекст результата задаёт книга. Сохранение локаторов и транзакция карты — продуктовая приёмка.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Выбор после повторной ссылки на последней строке или если следующая строка также ссылка."
+        ]
+      }
+    }
+  ],
+  "verification": {
+    "main_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "source_sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+    "matched_source_and_test_blobs": 108,
+    "blobs": {
+      "src/App.tsx": "21df9ba1af2baea05186289a3aac3e912bb9d580",
+      "src/tags/KnaveContentRow.tsx": "9325b0a3c1aacc28e30a67cf65bea8b32e7aa4be",
+      "src/tags/knave.ts": "b56e7fd3a5c9ea3943b7c3e35a525f17f40cd01a",
+      "src/tags/knaveCatalogData.ts": "40c78d1fae2fe7582898656f5612a3dd203b8025",
+      "src/tags/knavePolicy.json": "bfd291e1fb4d52e7a77c905b3e4b1e68b1c518f4",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14",
+      "test/tags.test.mjs": "daf193a46859bdb224787235d63f5ac75b2996bd"
+    },
+    "methods": [
+      "Primary-corpus locator check against supplied PDF bytes",
+      "Native catalog and resolver with deterministic test counters",
+      "Runtime App handlers with actual createSaveData/import and Undo/Redo via existing harness",
+      "Static JSX action inspection"
+    ],
+    "probe_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19-probe.mjs",
+    "probe_result": {
+      "references": [
+        {
+          "table": "locations",
+          "row": 28,
+          "action": "excluded_from_automatic_location_pool"
+        },
+        {
+          "table": "structures",
+          "row": 14,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 47
+        },
+        {
+          "table": "structures",
+          "row": 27,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 16
+        },
+        {
+          "table": "structures",
+          "row": 48,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 48
+        },
+        {
+          "table": "structures",
+          "row": 74,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 14
+        },
+        {
+          "table": "structures",
+          "row": 92,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 14
+        },
+        {
+          "table": "place_traits",
+          "row": 14,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 37
+        },
+        {
+          "table": "place_traits",
+          "row": 28,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 28
+        },
+        {
+          "table": "place_traits",
+          "row": 31,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 29
+        },
+        {
+          "table": "place_traits",
+          "row": 63,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 28
+        },
+        {
+          "table": "place_traits",
+          "row": 68,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 15
+        },
+        {
+          "table": "place_traits",
+          "row": 81,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 66
+        },
+        {
+          "table": "place_traits",
+          "row": 88,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 36
+        },
+        {
+          "table": "dungeons",
+          "row": 14,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 47
+        },
+        {
+          "table": "dungeons",
+          "row": 75,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 14
+        },
+        {
+          "table": "dungeons",
+          "row": 84,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 11
+        }
+      ],
+      "app": {
+        "colour_label_d100": 14,
+        "colour_target_page": 37,
+        "colour_target_row_saved": false,
+        "save_reload": true,
+        "undo_redo": true,
+        "second_trait_draw": 5,
+        "previous_trait_replaced": true,
+        "extra_list_rejected": true,
+        "anchors_and_clue_preserved": true
+      }
+    },
+    "existing_tests": {
+      "command": "node --experimental-strip-types --experimental-specifier-resolution=node --test test/tags.test.mjs",
+      "tests": 15,
+      "passed": 15
+    },
+    "limits": [
+      "Chromium not run in this bounded probe.",
+      "Исходы повторной ссылки и конца таблицы из книги не выведены.",
+      "Проверка не закрывает всю игру или общий top5."
+    ]
+  },
+  "acceptance_cases": [
+    {
+      "id": "KNAVE2-TABLE-L1-COLOUR",
+      "source": "Печатные стр. 1, 11, 37",
+      "given": "Место P, Свойства мест 14, целевая строка Цвет 1",
+      "when": "Ведущий получает ссылку и применяет результат целевой таблицы для P.",
+      "expected": "У P сохраняется признак ядовито-зелёного цвета с локаторами 11/14 и 37/1. Биом, адрес, имя и соседние места прежние.",
+      "actual": "Проверка App сохранила родительский исход 14 и ссылку на стр. 37. Целевая строка 1 в карту не попала.",
+      "status": "partial"
+    },
+    {
+      "id": "KNAVE2-TABLE-L1-COMBINATION",
+      "source": "Печатная стр. 1",
+      "given": "P уже имеет первую выбранную подсказку. Ведущий хочет добавить вторую.",
+      "when": "Подтвердить вторую подсказку и сохранить карту.",
+      "expected": "Обе подсказки доступны для толкования ведущим. Сохранение списка — критерий реализации, а не формат, заданный книгой.",
+      "actual": "Следующий бросок дал строку 5 и заменил строку 14. Основная запись, имя и улика сохранились. Схема отклонила вторую запись в списке.",
+      "status": "partial"
+    },
+    {
+      "id": "KNAVE2-TABLE-L1-REPEAT-NEXT",
+      "source": "Печатные стр. 1, 11, 66",
+      "given": "Свойства мест 81 → Звуки 1; строки 1 и 2 Звуков отсылают на стр. 19 и 64.",
+      "when": "Ведущий применяет рекомендацию посмотреть следующую строку после второй ссылки.",
+      "expected": "Следующая строка — сама ссылка. Сохранить оба локатора и сообщить неопределённость, без автоматического перехода к строке 3 или вызова другой таблицы.",
+      "actual": "Каталог при исходе 81 сохраняет только указатель стр. 66. В редакторе отсутствует действие разрешения целевого результата. Дальнейший выбор книги открыт.",
+      "status": "source_policy_unresolved"
+    },
+    {
+      "id": "KNAVE2-TABLE-L1-EDGE-00",
+      "source": "Печатная стр. 1. Синтетическая граница, не строка книги.",
+      "given": "Контрольная целевая таблица имеет 100 исходов. Последняя печатная метка 00 и для проверки содержит ссылку.",
+      "when": "После повторной ссылки пытаются взять следующую строку.",
+      "expected": "Следующей строки нет. Отдельно фиксируется неопределённость способа продолжения, без молчаливого перехода к 1.",
+      "actual": "Разрешение целевой таблицы отсутствует, поэтому этот переход не реализован. Исход в книге не установлен.",
+      "status": "source_policy_unresolved"
+    },
+    {
+      "id": "KNAVE2-TABLE-L1-SKIP-ONCE",
+      "source": "Печатные стр. 1, 11, 28",
+      "given": "Свойства мест 63 → Качества 14. Строка 14 отсылает к Цвету, а строка 15 содержит прямое качество.",
+      "when": "Ведущий следует рекомендации взять следующую строку.",
+      "expected": "Получает прямую подсказку Качества 15 с локатором 28/15.",
+      "actual": "Проверен источник. Код хранит первичный указатель стр. 28 и не реализует переход.",
+      "status": "not_implemented"
+    }
+  ],
+  "quality": {
+    "RA-Q01": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/market/rules/Knave-2e-coverage-ledger.json"
+    },
+    "RA-Q02": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/market/rules/Knave-2e-coverage-ledger.json"
+    },
+    "RA-Q03": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/market/rules/Knave-2e-coverage-ledger.json"
+    },
+    "RA-Q04": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#acceptance_cases",
+      "detail": "d100, локаторы, переход после второй ссылки и неразрешённые границы сохранены. Неопределённость источника не нормализована."
+    },
+    "RA-Q05": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/market/rules/Knave-2e-coverage-ledger.json"
+    },
+    "RA-Q06": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#rows"
+    },
+    "RA-Q07": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#rows"
+    },
+    "RA-Q08": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#rows"
+    },
+    "RA-Q09": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#rows"
+    },
+    "RA-Q10": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#verification",
+      "detail": "Указатели и поведение App проверены, ожидаемый продуктовый пробел отделён от открытой политики книги."
+    },
+    "RA-Q11": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#verification"
+    },
+    "RA-Q12": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/handoffs/2026-11-19-KNAVE2-L1-table-references-44fef5a6-strategist.json"
+    },
+    "RA-Q13": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.md"
+    },
+    "RA-Q14": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#acceptance_cases",
+      "detail": "Каждый указатель рассмотрен, открытые ветки и применимые продуктовые пробелы перечислены. Полная готовность игры не заявлена."
+    },
+    "RA-Q15": {
+      "status": "pass",
+      "scope": "bounded_16_reference_trace",
+      "evidence_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json#verification"
+    }
+  },
+  "corrections": {
+    "scope": "Bounded reference-specific evidence, historical implementation verdicts unchanged",
+    "matrix_ref": "agent-work/research/requirements/KNAVE2-L1-implementation.json",
+    "rows": [
+      "KNAVE2-020-L1",
+      "KNAVE2-045-L1",
+      "KNAVE2-070-L1",
+      "KNAVE2-071-L1"
+    ],
+    "confirmed_use": "Сохранение первичного исхода и ссылки на основную страницу, замена единственного свойства при повторном броске.",
+    "missing": "Ручной выбор строки в редакторе, выбор целевой строки по ссылке и сохранение нескольких подсказок у одной POI. Политика продолжения при пограничном исходе источника открыта."
+  },
+  "full_game_accepted": false,
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-SELECTIVE-MAP-OVERVIEW",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "На свежем опубликованном дереве проверить избирательный обзор из DND5-2014-008-L1-v2-draft. Создать/загрузить контрольную карту с городом C, деревней V и границей P. Проверить, можно ли показать C/P, скрыть V на общем обзоре и вернуть V без изменения её записи.",
+    "completion_condition": "Отдельно сохранить фактический результат обзора, зума, общего тумблера значков и сохранения/загрузки на точном SHA. При отсутствии доступного действия назвать точное ограничение; не присваивать сценарию результат по одному наличию зума. Полный DMG 2014 продолжать при новом законном доступе. PF2 и закрытые срезы повторно не читать.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json"
+    ]
+  }
+}

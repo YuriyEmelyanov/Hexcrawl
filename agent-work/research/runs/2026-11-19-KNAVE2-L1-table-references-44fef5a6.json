@@ -1,0 +1,320 @@
+{
+  "run_id": "2026-11-19-KNAVE2-L1-table-references-44fef5a6",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_L1_reference_slice_completed",
+  "selected_task": {
+    "id": "HX-RSR-KNAVE2-L1-MAP-CONTENT-TABLE-REFERENCES",
+    "game_id": "KNAVE2",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "Проверить конечный список ранее найденных ссылок для «Локаций», «Построек» и «Свойств мест» Knave 2e по печатным стр. 1, 10–11 и связанным таблицам. Сопоставить каталог с реальным выбором и сохранением подсказок в редакторе. Использовать ровно доступные первичные материалы и актуальный SHA.",
+    "completion_condition": "Для каждой из 16 известных ссылок подтвердить исходную строку, цель либо точную границу продукта, решение scope и доступность цели. Показать проверку намеренного выбора и сохранения для известного случая цвета на стр. 37, выбор второй подсказки, а также результат случая, когда следующая строка тоже ссылка или строки больше нет. Неуказанное правилами оставить открытым и отделить от результата интерфейса. Завершённый корпус из 45 страниц повторно не сканировать.",
+    "source_refs": [
+      "agent-work/market/rules/Knave-2e-coverage-ledger.json",
+      "agent-work/research/requirements/KNAVE2-L1-implementation.json"
+    ],
+    "alternatives": [
+      "Полный DMG 2014 зависит от нового законного доступа. Его наличие меняет ближайший приоритет.",
+      "PF2 остаётся на точном checkpoint, связанной новой зависимости в текущих материалах нет."
+    ]
+  },
+  "selection_reason": "Связи таблиц — открытый и достижимый факт L1 для игры общего топ-5. Оба входа доступны: исходная книга и текущий адаптер.",
+  "alternatives": [
+    {
+      "id": "DND5-full-primary",
+      "reason": "Полный заявленный первичный корпус ожидает нового доступа."
+    },
+    {
+      "id": "PF2-residual",
+      "reason": "Нет новой прямой зависимости принятой функции или нового существенного источника."
+    }
+  ],
+  "inputs_and_versions": {
+    "ops": "6861e18e0b21142c19976c610969e6098b4d6d03",
+    "product": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "source": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+    "active_ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "cohort": "overall top5",
+    "sources": {
+      "matrix": "agent-work/market/rules/Knave-2e-coverage-ledger.json"
+    }
+  },
+  "findings": [
+    "Книга подтверждает все 16 указателей, включая неоднозначную цель Ловушка → 14.",
+    "15 указателей проходят в JSON без разрешения. Поле элемента исключено из автоматического пула.",
+    "App сохраняет родителя цвета и ссылку, следующий d100 заменяет свойство. Дополнительное сохранённое свойство не проходит валидацию."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json",
+    "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.md",
+    "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19-probe.mjs",
+    "agent-work/research/handoffs/2026-11-19-KNAVE2-L1-table-references-44fef5a6-strategist.json",
+    "agent-work/research/runs/2026-11-19-KNAVE2-L1-table-references-44fef5a6.json",
+    "agent-work/research/README.md",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/claims/2026-11-19-KNAVE2-L1-table-references-44fef5a6.json",
+    "agent-work/latest.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "main_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "source_sha256": "30cf89b9547fd0f76a56f4bcd0ab2dd0303b6be02c00500b37050ad4c71b8795",
+    "matched_source_and_test_blobs": 108,
+    "blobs": {
+      "src/App.tsx": "21df9ba1af2baea05186289a3aac3e912bb9d580",
+      "src/tags/KnaveContentRow.tsx": "9325b0a3c1aacc28e30a67cf65bea8b32e7aa4be",
+      "src/tags/knave.ts": "b56e7fd3a5c9ea3943b7c3e35a525f17f40cd01a",
+      "src/tags/knaveCatalogData.ts": "40c78d1fae2fe7582898656f5612a3dd203b8025",
+      "src/tags/knavePolicy.json": "bfd291e1fb4d52e7a77c905b3e4b1e68b1c518f4",
+      "test/helpers/generation-harness.mjs": "77e5e1a4d2852375d1fae32be505bd9ba52f10af",
+      "test/helpers/region-fixture.mjs": "ea0adae74213f1f8308a7b9d36d4cd81f1e59d14",
+      "test/tags.test.mjs": "daf193a46859bdb224787235d63f5ac75b2996bd"
+    },
+    "methods": [
+      "Primary-corpus locator check against supplied PDF bytes",
+      "Native catalog and resolver with deterministic test counters",
+      "Runtime App handlers with actual createSaveData/import and Undo/Redo via existing harness",
+      "Static JSX action inspection"
+    ],
+    "probe_ref": "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19-probe.mjs",
+    "probe_result": {
+      "references": [
+        {
+          "table": "locations",
+          "row": 28,
+          "action": "excluded_from_automatic_location_pool"
+        },
+        {
+          "table": "structures",
+          "row": 14,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 47
+        },
+        {
+          "table": "structures",
+          "row": 27,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 16
+        },
+        {
+          "table": "structures",
+          "row": 48,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 48
+        },
+        {
+          "table": "structures",
+          "row": 74,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 14
+        },
+        {
+          "table": "structures",
+          "row": 92,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 14
+        },
+        {
+          "table": "place_traits",
+          "row": 14,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 37
+        },
+        {
+          "table": "place_traits",
+          "row": 28,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 28
+        },
+        {
+          "table": "place_traits",
+          "row": 31,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 29
+        },
+        {
+          "table": "place_traits",
+          "row": 63,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 28
+        },
+        {
+          "table": "place_traits",
+          "row": 68,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 15
+        },
+        {
+          "table": "place_traits",
+          "row": 81,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 66
+        },
+        {
+          "table": "place_traits",
+          "row": 88,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 36
+        },
+        {
+          "table": "dungeons",
+          "row": 14,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 47
+        },
+        {
+          "table": "dungeons",
+          "row": 75,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 14
+        },
+        {
+          "table": "dungeons",
+          "row": 84,
+          "action": "rolled_and_roundtripped_as_unresolved_reference",
+          "printedPage": 11
+        }
+      ],
+      "app": {
+        "colour_label_d100": 14,
+        "colour_target_page": 37,
+        "colour_target_row_saved": false,
+        "save_reload": true,
+        "undo_redo": true,
+        "second_trait_draw": 5,
+        "previous_trait_replaced": true,
+        "extra_list_rejected": true,
+        "anchors_and_clue_preserved": true
+      }
+    },
+    "existing_tests": {
+      "command": "node --experimental-strip-types --experimental-specifier-resolution=node --test test/tags.test.mjs",
+      "tests": 15,
+      "passed": 15
+    },
+    "limits": [
+      "Chromium not run in this bounded probe.",
+      "Исходы повторной ссылки и конца таблицы из книги не выведены.",
+      "Проверка не закрывает всю игру или общий top5."
+    ]
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "44fef5a6-729c-8321-9f5d-54c783c675df",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T14:30:00Z",
+          "started_at": "2026-11-19T14:30:56.913418Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-19T17:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "f1585f52-f268-8322-b37d-fb885803255b",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T13:00:00Z",
+          "started_at": "2026-11-19T13:00:19.616467Z",
+          "completed_at": "2026-11-19T13:16:17.183083Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-19T18:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "44fef5a6-729c-8321-9f5d-54c783c675df",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T14:30:00Z",
+          "started_at": "2026-11-19T14:30:56.913418Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-19T17:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "f1585f52-f268-8322-b37d-fb885803255b",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T13:00:00Z",
+          "started_at": "2026-11-19T13:00:19.616467Z",
+          "completed_at": "2026-11-19T13:16:17.183083Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-19T18:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_L1_reference_slice_completed",
+    "run_id": "2026-11-19-KNAVE2-L1-table-references-44fef5a6",
+    "stage": "table_reference_sources_and_App_lifecycle",
+    "last_successful_step": "Выполнены проверка 16 локаторов, действующего резолвера, сохранения/загрузки, повторного броска и Undo/Redo.",
+    "failed_operation": null,
+    "observed_error": null,
+    "cause_status": "confirmed",
+    "stop_reason": "Условие завершения узкой проверки выполнено. Открытые правила и продуктовые пробелы сохранены.",
+    "saved_results": [
+      "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.json",
+      "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19.md",
+      "agent-work/research/handoffs/2026-11-19-KNAVE2-L1-table-references-44fef5a6-strategist.json",
+      "agent-work/research/runs/2026-11-19-KNAVE2-L1-table-references-44fef5a6.json",
+      "agent-work/research/requirements/KNAVE2-L1-table-references-2026-11-19-probe.mjs"
+    ],
+    "exact_continuation": "На свежем опубликованном дереве проверить избирательный обзор из DND5-2014-008-L1-v2-draft. Создать/загрузить контрольную карту с городом C, деревней V и границей P. Проверить, можно ли показать C/P, скрыть V на общем обзоре и вернуть V без изменения её записи.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-SELECTIVE-MAP-OVERVIEW",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "На свежем опубликованном дереве проверить избирательный обзор из DND5-2014-008-L1-v2-draft. Создать/загрузить контрольную карту с городом C, деревней V и границей P. Проверить, можно ли показать C/P, скрыть V на общем обзоре и вернуть V без изменения её записи.",
+    "completion_condition": "Отдельно сохранить фактический результат обзора, зума, общего тумблера значков и сохранения/загрузки на точном SHA. При отсутствии доступного действия назвать точное ограничение; не присваивать сценарию результат по одному наличию зума. Полный DMG 2014 продолжать при новом законном доступе. PF2 и закрытые срезы повторно не читать.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json"
+    ]
+  },
+  "recovered_diagnostics": [
+    {
+      "stage": "primary_PDF_transfer",
+      "operation": "Materialize supplied Knave PDF",
+      "observed_error": "library file transfer failed: [Errno 21] Is a directory",
+      "cause_status": "confirmed",
+      "recovery": "Retried with an explicit file path and verified SHA-256."
+    },
+    {
+      "stage": "native_probe_fixture",
+      "operation": "Execute resolved catalog fixture",
+      "observed_error": "Error: Invalid Knave content",
+      "cause_status": "confirmed",
+      "recovery": "Fixture representation updated to the selected source row policy; rerun passed."
+    }
+  ]
+}
