@@ -41,6 +41,7 @@ import { engravingFor, engravingUrl, type TerrainKind } from './rendering/engrav
 import { terrainTextures } from './rendering/terrainBlend';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 import {forestFamily} from './rendering/forestStyle';
+import { MANUAL_BIOMES, manualBiome, type ManualBiomeId } from './rendering/manualBiomes';
 import { WATER_PALETTE } from './rendering/terrainStyle';
 import { validateKingdomLayers } from './modes/persistence';
 import { findKingdomOrigin, kingdomHexes, kingdomKeys, connectionPath, distance, type Kingdom, type GenerationMode } from './modes/kingdoms';
@@ -189,7 +190,7 @@ type PoiKind = MythicPoi | SettlementPoiKind | SecondaryPoiKind;
 type WaterPoiKind = 'whirlpool' | 'underwater_ruins' | 'lair' | 'rocks' | 'underwater_cave' | 'shipwreck';
 type RegionHeightLevel = 1 | 2 | 3;
 
-type BiomeId =
+type AutomaticBiomeId =
   | 'plain_deciduous_forest'
   | 'plain_mixed_forest'
   | 'plain_coniferous_forest'
@@ -214,6 +215,8 @@ type BiomeId =
   | 'dead_woodland'
   | 'dead_forested_hills'
   | 'dead_mountain_forest';
+
+type BiomeId = AutomaticBiomeId | ManualBiomeId;
 
 type Region = {
   generationMode?: GenerationMode;
@@ -608,12 +611,14 @@ const SIZE_LABELS: Record<Language, Record<Region['sizeCategory'], string>> = {
   en: { tract: 'Tract', locality: 'Locality', small_region: 'Small region', region: 'Region', large_region: 'Large region', land: 'Land', vast_land: 'Vast land' }
 };
 
-const BIOME_LABELS_EN: Record<BiomeId, string> = {
+const BIOME_LABELS_EN: Record<AutomaticBiomeId, string> = {
   plain_deciduous_forest: 'Lowland deciduous forest', plain_mixed_forest: 'Lowland mixed forest', plain_coniferous_forest: 'Lowland coniferous forest', deciduous_forested_hills: 'Deciduous forested hills', mixed_forested_hills: 'Mixed forested hills', coniferous_forested_hills: 'Coniferous forested hills', open_hills: 'Open hills', coniferous_mountain_forest: 'Coniferous mountain forest', mixed_mountain_forest: 'Mixed mountain forest', deciduous_mountain_forest: 'Deciduous mountain forest', mountains: 'Mountains', open_plains: 'Open plains', swamp_forest: 'Swamp forest', swamp: 'Swamp', hilly_woodland: 'Hilly woodland', mountain_woodland: 'Mountain woodland', deciduous_woodland: 'Deciduous woodland', mixed_woodland: 'Mixed woodland', coniferous_woodland: 'Coniferous woodland', semi_desert: 'Semi-desert', dead_forest: 'Dead forest', dead_woodland: 'Dead woodland', dead_forested_hills: 'Dead forested hills', dead_mountain_forest: 'Dead mountain forest'
 };
 
 function getBiomeLabel(biomeId: BiomeId, language: Language): string {
-  return language === 'en' ? BIOME_LABELS_EN[biomeId] : BIOMES[biomeId].label;
+  const manual = manualBiome(biomeId);
+  if (manual) return manual[language];
+  return language === 'en' ? BIOME_LABELS_EN[biomeId as AutomaticBiomeId] : BIOMES[biomeId].label;
 }
 
 function getPoiSvgHref(kind?: CentralPoiKind | PoiKind | WaterPoiKind, water = false): string {
@@ -625,7 +630,7 @@ function translateCoastNotice(message: string, language: Language): string {
   return message;
 }
 
-const BIOMES: Record<BiomeId, Biome> = {
+const AUTOMATIC_BIOMES: Record<AutomaticBiomeId, Biome> = {
   plain_deciduous_forest: { id: 'plain_deciduous_forest', label: 'Равнинный лиственный лес', color: '#7AAD43', primaryEmoji: '🌳', secondaryEmojis: [], wildWeight: 20, settledWeight: 11, heightLevel: 1 },
   plain_mixed_forest: { id: 'plain_mixed_forest', label: 'Равнинный смешанный лес', color: '#4F8A3B', primaryEmoji: '🌳', secondaryEmojis: ['🌲'], wildWeight: 12, settledWeight: 5, heightLevel: 1 },
   plain_coniferous_forest: { id: 'plain_coniferous_forest', label: 'Равнинный хвойный лес', color: '#2F7621', primaryEmoji: '🌲', secondaryEmojis: [], wildWeight: 6, settledWeight: 1, heightLevel: 1 },
@@ -651,7 +656,17 @@ const BIOMES: Record<BiomeId, Biome> = {
   dead_forested_hills: { id: 'dead_forested_hills', label: 'Мёртвый лес на холмах', color: '#919191', primaryEmoji: '〰️', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 2 },
   dead_mountain_forest: { id: 'dead_mountain_forest', label: 'Мёртвый горный лес', color: '#828282', primaryEmoji: '⛰', secondaryEmojis: ['🪾'], wildWeight: 1, settledWeight: 0, heightLevel: 3 }
 };
-// Compile-time coverage of every biome in the drawing palette.
+const BIOMES: Record<BiomeId, Biome> = {
+  ...AUTOMATIC_BIOMES,
+  ...Object.fromEntries(Object.entries(MANUAL_BIOMES).map(([key, biome]) => {
+    const id = key as ManualBiomeId;
+    return [id, {
+      id, label: biome.ru, color: engravingFor(id)!.color, heightLevel: biome.height,
+      primaryEmoji: biome.emoji, secondaryEmojis: [...biome.secondaryEmojis],
+      wildWeight: 0, settledWeight: 0,
+    } satisfies Biome];
+  })) as Record<ManualBiomeId, Biome>,
+};
 
 const FALLBACK_BIOME_ID: BiomeId = 'plain_deciduous_forest';
 const FALLBACK_SETTLED_BIOME_ID: BiomeId = 'open_plains';
@@ -959,7 +974,7 @@ function isWaterPoiKind(value: unknown): value is WaterPoiKind {
 }
 
 function isBiomeId(value: unknown): value is BiomeId {
-  return typeof value === 'string' && value in BIOMES;
+  return typeof value === 'string' && Object.prototype.hasOwnProperty.call(BIOMES, value);
 }
 
 function isHexTerrainData(value: unknown): value is HexTerrainData {
@@ -1084,7 +1099,7 @@ function knaveFactsForMap(map:MapSnapshot):KnaveFacts[]{
     const dry=waterKindAt(map.hexTerrainByKey,key)==='land';
     if(!water&&(!region||!dry))throw Error('knave_invalid_land_owner');
     return {owner,kind:water?'water':['capital','city','town','village'].includes(kind??'')?'settlement':'land',dry,
-      height:region?.heightLevel??null,forest:!!biome&&forestFamily(biome)!==null,wetland:biome==='swamp'||biome==='swamp_forest',sand:biome==='semi_desert',coldIce:false,
+      height:region?.heightLevel??null,forest:!!biome&&forestFamily(biome)!==null,wetland:biome==='swamp'||biome==='swamp_forest',sand:biome!==undefined&&biomeHasSand(biome),coldIce:false,
       river:nearby.length>0,riverStart:nearby.some(r=>r.sectors.some(s=>s.startReason==='river_start'&&vertices.has(s.startVertexKey))),
       rapids:[...edges].some(k=>marks.rapids.has(k)),waterfall:[...vertices].some(k=>marks.waterfalls.has(k)),
       waterContact:nearby.length>0||getHexNeighbors(hex).some(h=>waterKindAt(map.hexTerrainByKey,hexKey(h))!=='land'),
@@ -2061,7 +2076,7 @@ function getToponymEntities(regions: Region[], rivers: River[], terrain: Map<str
     const kind: ToponymKind = region.biomeId === 'swamp' || region.biomeId === 'swamp_forest'
       ? 'swamp'
       : region.biomeId === 'mountains' || region.biomeId.includes('mountain') ? 'mountain'
-        : region.biomeId.includes('forest') || region.biomeId.includes('woodland') ? 'forest' : 'region';
+        : biomeHasForest(region.biomeId) ? 'forest' : 'region';
     entities.push({ key: `region:${region.id}`, kind });
     if (region.centralPoiKind && ['capital', 'city', 'town', 'village', 'throne', 'holding_city', 'holding_castle', 'holding_tower', 'holding_stronghold', 'dwelling'].includes(region.centralPoiKind)) {
       entities.push({ key: `settlement:${region.id}:${hexKey(region.centerHex)}`, kind: 'settlement' });
@@ -2138,6 +2153,8 @@ const DEAD_FOREST_INCOMPATIBLE_NEIGHBORS: Partial<Record<BiomeId, ReadonlySet<Bi
 };
 
 function isBiomesCompatible(biomeA: BiomeId, biomeB: BiomeId, compatibilityMatrix: BiomeCompatibilityMatrix): boolean {
+  biomeA = manualBiome(biomeA)?.neighborProfile ?? biomeA;
+  biomeB = manualBiome(biomeB)?.neighborProfile ?? biomeB;
   if (DEAD_FOREST_INCOMPATIBLE_NEIGHBORS[biomeA]?.has(biomeB)
     || DEAD_FOREST_INCOMPATIBLE_NEIGHBORS[biomeB]?.has(biomeA)) return false;
   if (biomeA in DEAD_FOREST_INCOMPATIBLE_NEIGHBORS
@@ -2181,7 +2198,7 @@ function chooseBiomeId(
   riverHeightConstraint?: RiverHeightConstraint, rng: RandomStreams = fallbackRandomStreams
 ): ChooseBiomeResult {
   const baseWeights = {} as Record<BiomeId, number>;
-  for (const biome of Object.values(BIOMES)) {
+  for (const biome of Object.values(AUTOMATIC_BIOMES)) {
     baseWeights[biome.id] = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
   }
 
@@ -2214,7 +2231,9 @@ function chooseBiomeId(
 
   if (adjacentBiomeIds.length > 0) {
     const relaxedWeights = { ...baseWeights };
-    for (const adjacentBiomeId of uniqueAdjacentBiomeIds) relaxedWeights[adjacentBiomeId] = 0;
+    for (const adjacentBiomeId of uniqueAdjacentBiomeIds) {
+      if (!manualBiome(adjacentBiomeId)) relaxedWeights[adjacentBiomeId] = 0;
+    }
     for (const candidateBiomeId of Object.keys(relaxedWeights) as BiomeId[]) {
       if (
         riverHeightConstraint &&
@@ -2258,7 +2277,7 @@ function chooseBiomeIdAtHeightLevel(
   const constrainedWeights = {} as Record<BiomeId, number>;
   const uniqueAdjacentBiomeIds = new Set(adjacentBiomeIds);
 
-  for (const biome of Object.values(BIOMES)) {
+  for (const biome of Object.values(AUTOMATIC_BIOMES)) {
     const baseWeight = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
     const incompatibleWithHeight = biome.heightLevel !== requiredHeightLevel;
     const incompatibleWithRiver = riverHeightConstraint
@@ -2279,7 +2298,7 @@ function chooseBiomeIdAtHeightLevel(
   }
 
   const relaxedWeights = {} as Record<BiomeId, number>;
-  for (const biome of Object.values(BIOMES)) {
+  for (const biome of Object.values(AUTOMATIC_BIOMES)) {
     const baseWeight = landType === 'settled' ? biome.settledWeight : biome.wildWeight;
     const incompatibleWithRiver = riverHeightConstraint
       ? !isBiomeAllowedByRiverHeightConstraint(biome.id, riverHeightConstraint)
@@ -8622,8 +8641,12 @@ function restoreRiversStartingFromSea(previousRivers: River[], nextRivers: River
   return restored;
 }
 
+function biomeHasSand(biomeId: BiomeId): boolean {
+  return biomeId === 'semi_desert' || manualBiome(biomeId)?.terrain === 'sand';
+}
+
 function getLakeChanceForBiome(biomeId: BiomeId): number {
-  if (biomeId === 'semi_desert') return 0;
+  if (biomeHasSand(biomeId)) return 0;
   if (biomeId === 'swamp' || biomeId === 'swamp_forest') return 0.04;
   return 0.02;
 }
@@ -8852,7 +8875,8 @@ const SECONDARY_POI_KIND_ORDER: SecondaryPoiKind[] = [
 const EDITABLE_POI_KIND_ORDER: PoiKind[] = ['city', 'town', 'village', ...SECONDARY_POI_KIND_ORDER];
 
 function biomeHasForest(biomeId: BiomeId): boolean {
-  return biomeId.includes('forest') || biomeId.includes('woodland');
+  const manual = manualBiome(biomeId);
+  return manual ? manual.terrain === 'forest' : biomeId.includes('forest') || biomeId.includes('woodland');
 }
 
 function secondaryPoiKindCanAppearInRegion(
@@ -14776,7 +14800,7 @@ export function App() {
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
   const waterPoiKindOrder = generationMode === 'mythic' ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
   const setSelectedHexBiomeOverride = (biomeId: BiomeId) => {
-    if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey || !selectedRegion || isSelectedLake || isSelectedSea || !(biomeId in BIOMES)) return;
+    if(mutationBlocked() || !selectedHexKey || notesSelectionRef.current !== selectedHexKey || !selectedRegion || isSelectedLake || isSelectedSea || !isBiomeId(biomeId)) return;
     if(biomeOverrideByHexKey.get(selectedHexKey)===biomeId) { closeEditors(); return; }
     const layer=new Map(biomeOverrideByHexKey); layer.set(selectedHexKey,biomeId);
     commitManualMap({...captureMap(), biomeOverrideByHexKey:layer}, false);
@@ -16881,7 +16905,7 @@ export function App() {
                   <option value="wild">{t.wild}</option>
                 </select>
               </label>
-              <label>
+              <label className="gen-biome-field">
                 {t.biome}
                 <select value={genBiome} onChange={(e) => setGenBiome(e.target.value as typeof genBiome)}>
                   <option value="auto">{t.auto}</option>
@@ -16890,7 +16914,7 @@ export function App() {
                   ))}
                 </select>
               </label>
-              <label>
+              <label className="gen-coast-field">
                 {t.coast}
                 <select value={genCoastal} onChange={(e) => setGenCoastal(e.target.value as typeof genCoastal)}>
                   <option value="auto">{t.auto}</option>

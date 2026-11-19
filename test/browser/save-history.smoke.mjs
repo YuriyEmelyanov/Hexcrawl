@@ -271,7 +271,7 @@ try {
  // Region edit is the region value, not a scope radio or a separate panel.
  await info.getByRole('button',{name:'Местность региона',exact:true}).click();
  const options=await info.getByRole('combobox',{name:'Местность региона',exact:true}).locator('option').evaluateAll(es=>es.map(e=>({value:e.value,disabled:e.disabled})));
- assert.ok([6,12].includes(options.length));await info.getByRole('combobox',{name:'Местность региона',exact:true}).press('Escape');await info.locator('.direct-mode').click();
+ assert.ok([8,18].includes(options.length));await info.getByRole('combobox',{name:'Местность региона',exact:true}).press('Escape');await info.locator('.direct-mode').click();
  const saved=await snapshot();await load(saved);assert.deepEqual(await snapshot(),saved);
  // Actual UI evidence: read/edit/active at desktop and390px, RU/EN.
  await info.scrollIntoViewIfNeeded();await page.locator('#side-panel-info').screenshot({path:fileURLToPath(new URL('desktop-view.png',out))});

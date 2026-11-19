@@ -18,10 +18,22 @@ const invalid = new Map([
   ['dead_forested_hills', [4, 6, 10]],
   ['dead_mountain_forest', Array.from({ length: 12 }, (_, index) => index + 1)]
 ]);
+const manual = [
+  ['desert', 1, 'semi_desert'],
+  ['dunes', 1, 'semi_desert'],
+  ['lowland_jungle', 1, 'plain_deciduous_forest'],
+  ['jungle_hills', 2, 'deciduous_forested_hills'],
+  ['jungle_mountains', 3, 'deciduous_mountain_forest'],
+  ['savanna', 1, 'open_plains'],
+  ['mushroom_forest', 1, 'plain_deciduous_forest'],
+  ['snow_plains', 1, 'open_plains'],
+  ['snow_hills', 2, 'open_hills'],
+  ['snow_mountains', 3, 'mountains'],
+];
 
 test('dead forest labels, weights, heights and symmetric neighbour rules', () => {
   const { geometry: rules } = createGenerationHarness(1);
-  assert.equal(biomes.length, Object.keys(rules.BIOMES).length);
+  assert.equal(biomes.length + manual.length, Object.keys(rules.BIOMES).length);
   assert.deepEqual(biomes.map(id => rules.BIOMES[id]?.id), biomes);
   const expected = [
     ['dead_forest', 'Мёртвый лес', 1],
@@ -64,5 +76,38 @@ test('the real region handler stores and restores each dead-forest biome', () =>
     h.geometry.assertHexcrawlSaveData(saved);
     created.deleteLastRegion();
     assert.equal(h.render().regions.length, 0);
+  }
+});
+
+test('manual biomes use existing neighbor profiles and survive generation and JSON import', async () => {
+  const profileById = new Map(manual.map(([id, , profile]) => [id, profile]));
+  for (const [id, height, profile] of manual) {
+    const h = createGenerationHarness(42);
+    const { BIOMES, BIOME_COMPATIBILITY_MATRIX: matrix, isBiomesCompatible } = h.geometry;
+    assert.equal(BIOMES[id].heightLevel, height, id);
+    for (const neighbor of Object.keys(BIOMES)) {
+      const other = profileById.get(neighbor) ?? neighbor;
+      assert.equal(isBiomesCompatible(id, neighbor, matrix), isBiomesCompatible(profile, other, matrix));
+      assert.equal(isBiomesCompatible(neighbor, id, matrix), isBiomesCompatible(other, profile, matrix));
+    }
+    const generated = h.render().safelyAddRegionToMap({ q: 0, r: 0 }, {
+      biomeId: id, coastalPreference: 'mainland', targetSize: 8,
+    });
+    assert.equal(generated.success, true, id);
+    const save = JSON.parse(JSON.stringify(h.render().createSaveData()));
+    assert.equal(save.map.regions[0].biomeId, id);
+    assert.equal(save.map.regions[0].heightLevel, height);
+    const loaded = createGenerationHarness(1);
+    loaded.setWindow({alert:message=>assert.fail(message),matchMedia:()=>({matches:false})});
+    loaded.injectFunction('readTextFile',async file=>file.text);
+    await loaded.render().handleImportJson({target:{files:[{text:JSON.stringify(save)}],value:'fixture'}});
+    assert.equal(loaded.render().regions[0]?.biomeId, id);
+    for (const neighbor of loaded.render().candidateHexes) {
+      if (loaded.render().safelyAddRegionToMap(neighbor, {
+        coastalPreference: 'mainland', targetSize: 8,
+      }).success) break;
+    }
+    assert.ok(loaded.render().regions.length > 1, id);
+    assert.ok(biomes.includes(loaded.render().regions.at(-1).biomeId), id);
   }
 });

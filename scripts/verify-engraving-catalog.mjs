@@ -1,10 +1,17 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { MANUAL_BIOMES } from '../src/rendering/manualBiomes.ts';
 
 const catalog = JSON.parse(
   readFileSync(new URL('../src/rendering/engravingCatalog.json', import.meta.url), 'utf8'),
 );
 const engravings = new URL('../public/terrain/engravings/', import.meta.url);
+
+for (const id of Object.keys(MANUAL_BIOMES)) {
+  if (!Object.hasOwn(catalog, id)) {
+    throw new Error(`Missing mandatory engraving catalogue entry for ${id}.png`);
+  }
+}
 
 for (const [id, { sha256 }] of Object.entries(catalog)) {
   const file = `${id}.png`;
