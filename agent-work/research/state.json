@@ -15,12 +15,12 @@
     "interval": 3,
     "interval_hours": 3,
     "cadence_owner_decision_ref": "agent-work/research/runs/2026-11-17-MB-scope-audit-1794871662233.json#automation_health",
-    "verified_at": "2026-11-19T08:38:31.417Z",
+    "verified_at": "2026-11-19T11:38:55.937Z",
     "is_enabled": true,
     "desired_enabled": true,
     "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
     "verification_status": "verified_by_automations_peek",
-    "next_run_time": "2026-11-19T11:30:00+03:00",
+    "next_run_time": "2026-11-19T14:30:00+03:00",
     "cadence_authority": "Latest direct owner instruction: Период между запусками 3 часа. Supersedes1/2hour historical entries."
   },
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
@@ -65,17 +65,24 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "HX-RSR-OVERALL-TOP5-L1-EVIDENCE-ACCEPTANCE",
-    "game_id": null,
+    "id": "HX-RSR-KNAVE2-L1-MAP-CONTENT-TABLE-REFERENCES",
+    "game_id": "KNAVE2",
     "layer": "L1",
-    "status": "selected_after_five_bounded_implementation_passes",
-    "action": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
-    "completion_condition": "Одна таблица допуска пяти игр со ссылками, закрытыми и открытыми критериями и условиями входа в create-top10. Подтверждённые исторические результаты не повторять.",
-    "full_overall_top5_complete": false
+    "status": "selected_actionable_overall_top5_gap",
+    "action": "Проверить конечный список ранее найденных ссылок для «Локаций», «Построек» и «Свойств мест» Knave 2e по печатным стр. 1, 10–11 и связанным таблицам. Сопоставить каталог с реальным выбором и сохранением подсказок в редакторе. Использовать ровно доступные первичные материалы и актуальный SHA.",
+    "completion_condition": "Для каждой из 16 известных ссылок подтвердить исходную строку, цель либо точную границу продукта, решение scope и доступность цели. Показать проверку намеренного выбора и сохранения для известного случая цвета на стр. 37, выбор второй подсказки, а также результат случая, когда следующая строка тоже ссылка или строки больше нет. Неуказанное правилами оставить открытым и отделить от результата интерфейса. Завершённый корпус из 45 страниц повторно не сканировать.",
+    "source_refs": [
+      "agent-work/market/rules/Knave-2e-coverage-ledger.json",
+      "agent-work/research/requirements/KNAVE2-L1-implementation.json"
+    ],
+    "alternatives": [
+      "Полный DMG 2014 зависит от нового законного доступа. Его наличие меняет ближайший приоритет.",
+      "PF2 остаётся на точном checkpoint, связанной новой зависимости в текущих материалах нет."
+    ]
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-19-DND5-L1-implementation-1795077125244",
+  "last_completed_run": "2026-11-19-overall-top5-L1-acceptance-10329436",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -219,7 +226,8 @@
     "agent-work/research/runs/2026-11-19-KNAVE2-L1-implementation-1795044846589.json",
     "agent-work/research/runs/2026-11-19-CROWS-L1-implementation-1795055633781.json",
     "agent-work/research/runs/2026-11-19-SD-L1-implementation-1795066537187.json",
-    "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json"
+    "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+    "agent-work/research/runs/2026-11-19-overall-top5-L1-acceptance-10329436.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -237,39 +245,81 @@
   "automation_health": {
     "start": [
       {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "last_run": null
-      },
-      {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "last_run": null
+        "last": "2026-11-19T08:40:02.305507+00:00",
+        "next": "2026-11-19T14:30:00+03:00",
+        "run": {
+          "id": "10329436-85c8-8321-b73c-3f58e01a6b1e",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T11:30:00Z",
+          "started_at": "2026-11-19T11:31:59.417189Z",
+          "completed_at": null,
+          "chat_ref": null
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T11:05:50.062864+00:00",
+        "next": "2026-11-19T16:00:00+03:00",
+        "run": {
+          "id": "4520f6d3-0df0-8320-b74a-ab8c0baaf1b2",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T11:00:00Z",
+          "started_at": "2026-11-19T10:58:03.302037Z",
+          "completed_at": "2026-11-19T11:05:47.942120Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        }
       }
     ],
     "end": [
       {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261116T000000\nRRULE:FREQ=DAILY;BYHOUR=0,3,6,9,12,15,18,21;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "last_run": null
-      },
-      {
         "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261117T023000\nRRULE:FREQ=HOURLY;INTERVAL=3;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "last_run": null
+        "last": "2026-11-19T08:40:02.305507+00:00",
+        "next": "2026-11-19T14:30:00+03:00",
+        "run": {
+          "id": "10329436-85c8-8321-b73c-3f58e01a6b1e",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-19T11:30:00Z",
+          "started_at": "2026-11-19T11:31:59.417189Z",
+          "completed_at": null,
+          "chat_ref": null
+        }
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T000000\nRRULE:FREQ=DAILY;BYHOUR=0,2,4,6,8,10,12,14,16,18,20,22;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": "2026-11-19T11:05:50.062864+00:00",
+        "next": "2026-11-19T16:00:00+03:00",
+        "run": {
+          "id": "4520f6d3-0df0-8320-b74a-ab8c0baaf1b2",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-19T11:00:00Z",
+          "started_at": "2026-11-19T10:58:03.302037Z",
+          "completed_at": "2026-11-19T11:05:47.942120Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        }
       }
     ],
-    "checked_at": "2026-11-18T17:34:34.481Z",
-    "schedules_changed": false
+    "schedule_changes": [],
+    "observation": "Both live schedules checked. Platform last-run status is independent of repository result completion."
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-19-overall-top5-L1-acceptance-10329436.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-19-overall-top5-L1-acceptance-10329436.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -1008,7 +1058,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-19T08:38:31.417Z",
+  "updated_at": "2026-11-19T11:38:55.937Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1051,7 +1101,7 @@
     "resume_quote": "Запускай исследователя - интервал 2 часа."
   },
   "authority_status": "owner_authorized_research",
-  "execution_status": "overalltop5_alignment_resumed_after_completed_scope_revision",
+  "execution_status": "overall_top5_reconciled_full_game_gates_open",
   "owner_resume": {
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
     "requested_at": "2026-11-15T20:50:37.888Z",
@@ -1066,9 +1116,9 @@
     "result_ref": "agent-work/research/runs/2026-11-15-204811-research-resume2h.json"
   },
   "previous_claim": {
-    "run_id": "2026-11-19-DND5-L1-implementation-1795077125244",
-    "ref": "agent-work/claims/2026-11-19-DND5-L1-implementation-1795077125244.json",
-    "status": "completed_released"
+    "run_id": "2026-11-19-overall-top5-L1-acceptance-10329436",
+    "ref": "agent-work/claims/2026-11-19-overall-top5-L1-acceptance-10329436.json",
+    "status": "result_pending_readback_and_release"
   },
   "latest_PF1_terrain_elements": {
     "ref": "agent-work/research/requirements/PF1-terrain-elements.json",
@@ -1150,7 +1200,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-19-DND5-L1-implementation-1795077125244",
+  "last_run_id": "2026-11-19-overall-top5-L1-acceptance-10329436",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1206,48 +1256,68 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-19-DND5-L1-implementation-1795077125244",
+  "last_run": "2026-11-19-overall-top5-L1-acceptance-10329436",
   "checkpoint": {
-    "status": "bounded_DMG2014_L1_implementation_review_completed",
-    "run_id": "2026-11-19-DND5-L1-implementation-1795077125244",
-    "stage": "retained_L1_implementation_and_source_gap",
-    "last_successful_step": "Выполнены ручные сценарии POI, расширения, биома, физической сетки и обхода определённого барьера. Сверены ранее отобранные 16 операций.",
+    "status": "bounded_overall_top5_acceptance_reconciliation_completed",
+    "run_id": "2026-11-19-overall-top5-L1-acceptance-10329436",
+    "stage": "overall_top5_RA_Q01_15_evidence_acceptance",
+    "last_successful_step": "Сверены пять матриц, решения объёма, браузерные доказательства по идентичному дереву main, и условие допуска.",
     "failed_operation": null,
     "observed_error": null,
-    "stop_reason": "Ограниченный срез завершён. Первичный тематический охват и отдельные профильные проверки открыты.",
+    "stop_reason": "Условие завершения ограниченной сверки выполнено. Полнота общего топ-5 остаётся открытой по конкретным критериям.",
     "cause_status": "confirmed",
     "saved_results": [
-      "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
-      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
-      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.md",
-      "agent-work/research/requirements/DND5-2014-v2-L1-implementation-probe.mjs",
-      "agent-work/research/requirements/DND5-2014-v2-review.md",
-      "agent-work/research/handoffs/2026-11-19-DND5-L1-implementation-1795077125244-strategist.json"
+      "agent-work/research/runs/2026-11-19-overall-top5-L1-acceptance-10329436.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.md",
+      "agent-work/research/handoffs/2026-11-19-overall-top5-L1-acceptance-10329436-strategist.json"
     ],
-    "exact_continuation": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
+    "exact_continuation": "Проверить конечный список ранее найденных ссылок для «Локаций», «Построек» и «Свойств мест» Knave 2e по печатным стр. 1, 10–11 и связанным таблицам. Сопоставить каталог с реальным выбором и сохранением подсказок в редакторе. Использовать ровно доступные первичные материалы и актуальный SHA. Для каждой из 16 известных ссылок подтвердить исходную строку, цель либо точную границу продукта, решение scope и доступность цели. Показать проверку намеренного выбора и сохранения для известного случая цвета на стр. 37, выбор второй подсказки, а также результат случая, когда следующая строка тоже ссылка или строки больше нет. Неуказанное правилами оставить открытым и отделить от результата интерфейса. Завершённый корпус из 45 страниц повторно не сканировать.",
     "remaining": [
       {
-        "scope": "primary_source",
-        "ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
-        "detail": "Полный тематический скрининг 322-страничного экземпляра PHantom 2016 ещё открыт. Сохранены печатные локаторы прежней выписки, версии и точные ограничения доступа. Повтор того же поиска уместен только при новом основании.",
-        "ranges": [
-          "Full chapter1 incl settlements, factions, initial region",
-          "Full chapter2 planar geography applicability",
-          "Ch3 adventure types/encounters and ch4 site-NPC applicability",
-          "Ch5 all environments incl settlements112–115, unusual116–119, traps120–123 and dungeon applicability",
-          "Ch6 campaign tracking and ch7 placed-treasure applicability",
-          "Ch8 exploration242–244/objects246 applicability; ch9 variants",
-          "Appendices A–D/maps310–315/index317–320 EN; map to supplied RU pagination before extracting"
-        ]
+        "game": "DND5",
+        "refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json"
+        ],
+        "detail": "Законный доступ к объявленному первичному корпусу. Открыты 60→6→1, избирательный обзор C/P/V, скрытые сведения и признаки руин, часть географических и поселенческих критериев.",
+        "action": "При новом законном доступе закрыть диапазоны ledger DMG2014 и проверить исходные численные условия отдельно от проверенного общего редактора. Старые попытки доставки не повторять."
       },
       {
-        "scope": "product",
-        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
-        "detail": "Открыты точный масштаб и связанная детализация с 60 милями, избирательный обзор, привязки поселения к конкретным ресурсам, слои признаков/видимости, тонкий лёд и отдельные расширенные случаи географии. Отрисовку браузера не проверяли."
+        "game": "PF2",
+        "refs": [
+          "agent-work/research/requirements/PF2-Remaster-v2-coverage.json",
+          "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json"
+        ],
+        "detail": "24 точные привязки найдены, пяти settlement-строк в реестре нет. Из 29 строк исторического прохода 28 относятся к L1, PF2-RM-005-L1-v2 отложена в L2. Точный масштаб и таблицы d20 сохраняют свои отдельные статусы.",
+        "action": "Оставить на checkpoint. Возобновить по новой зависимости согласованной функции или существенному источнику и брать только относящийся к нему остаток."
       },
       {
-        "scope": "cohort",
-        "detail": "Пять ограниченных проверок не означают принятие всей общей когорты. Точный gate сохраняется, числовой рейтинг, скоринг и очередь не изменяются."
+        "game": "KNAVE2",
+        "refs": [
+          "agent-work/market/rules/Knave-2e-coverage-ledger.json",
+          "agent-work/research/requirements/KNAVE2-L1-implementation.json"
+        ],
+        "detail": "Шесть миль без установленной оси в книге. Нужны подтверждённые переходы между таблицами, сохранение нескольких подсказок и адресная улика с отдельной связью.",
+        "action": "Ближайшая задача. Проверить разрешимые ссылки только из таблиц наполнения карты и свести их с фактическим выбором и сохранением результата в Knave."
+      },
+      {
+        "game": "CROWS",
+        "refs": [
+          "agent-work/research/requirements/CROWS-PT3-v2-source-coverage.json",
+          "agent-work/research/requirements/CROWS-PT3-L1-implementation.json"
+        ],
+        "detail": "Специфическая подготовка известности деревни/тайника, связь лесопилки с местом и локальные условия подхода. HX-BL-058 уже покрывает подпись 5–6 миль. Выдача игрокам и разведка в L2.",
+        "action": "Использовать 50 положений и 35 операций. Возвращаться лишь по прямой зависимости принятого профиля, новой редакции или конфликтующей ссылке."
+      },
+      {
+        "game": "SD",
+        "refs": [
+          "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+          "agent-work/research/requirements/SD-CORE-L1-implementation.json"
+        ],
+        "detail": "Точное профильное наполнение 2d6 и d6=1, отдельные поля Danger и проходимости, признаки и скрытые сведения. Для колонок location/development открыта общая или независимые d20.",
+        "action": "При прямой необходимости проверить версию источника и независимый известный блок стр. 132. Вопрос стр. 133 учитывается лишь при выборе конкретного профиля наполнения."
       }
     ],
     "needs_owner_action": false,
@@ -1942,7 +2012,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "result_commit_sha": "edae1e1469a73196bd763a1e039cbebe579d3aae",
+  "result_commit_sha": null,
   "next_alignment_phase": {
     "phase_id": "HX-RSR-CREATE-TOP10-ALIGNMENT",
     "status": "pending_after_overall_top5_acceptance",
@@ -2145,8 +2215,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-19T08:38:31.417Z",
-  "last_bounded_completed_run": "2026-11-19-DND5-L1-implementation-1795077125244",
+  "last_run_at": "2026-11-19T11:38:55.937Z",
+  "last_bounded_completed_run": "2026-11-19-overall-top5-L1-acceptance-10329436",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -2291,11 +2361,9 @@
     "actual_implementation_retested": false,
     "full_game_accepted": false
   },
-  "last_result_commit_sha": "edae1e1469a73196bd763a1e039cbebe579d3aae",
+  "last_result_commit_sha": null,
   "verification_readback": {
-    "status": "exact",
-    "data_commit": "edae1e1469a73196bd763a1e039cbebe579d3aae",
-    "files": 9
+    "status": "pending"
   },
   "previous_checkpoint_before_DND5_scope_audit": {
     "status": "completed_bounded_PF2_scope_audit_remaining_games_pending",
@@ -3085,7 +3153,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "last_run_outcome": "bounded_DMG2014_L1_implementation_review_completed",
+  "last_run_outcome": "bounded_overall_top5_acceptance_reconciliation_completed",
   "latest_PF2_GMC3_applicability": {
     "status": "checkpoint_available_sections_screened_printed_chapter_incomplete",
     "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
@@ -3572,5 +3640,70 @@
     "full_game_accepted": false,
     "source_complete": false,
     "browser_reverified": false
+  },
+  "previous_checkpoint_before_overall_top5_L1_acceptance": {
+    "status": "bounded_DMG2014_L1_implementation_review_completed",
+    "run_id": "2026-11-19-DND5-L1-implementation-1795077125244",
+    "stage": "retained_L1_implementation_and_source_gap",
+    "last_successful_step": "Выполнены ручные сценарии POI, расширения, биома, физической сетки и обхода определённого барьера. Сверены ранее отобранные 16 операций.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченный срез завершён. Первичный тематический охват и отдельные профильные проверки открыты.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-19-DND5-L1-implementation-1795077125244.json",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.md",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation-probe.mjs",
+      "agent-work/research/requirements/DND5-2014-v2-review.md",
+      "agent-work/research/handoffs/2026-11-19-DND5-L1-implementation-1795077125244-strategist.json"
+    ],
+    "exact_continuation": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
+    "remaining": [
+      {
+        "scope": "primary_source",
+        "ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+        "detail": "Полный тематический скрининг 322-страничного экземпляра PHantom 2016 ещё открыт. Сохранены печатные локаторы прежней выписки, версии и точные ограничения доступа. Повтор того же поиска уместен только при новом основании.",
+        "ranges": [
+          "Full chapter1 incl settlements, factions, initial region",
+          "Full chapter2 planar geography applicability",
+          "Ch3 adventure types/encounters and ch4 site-NPC applicability",
+          "Ch5 all environments incl settlements112–115, unusual116–119, traps120–123 and dungeon applicability",
+          "Ch6 campaign tracking and ch7 placed-treasure applicability",
+          "Ch8 exploration242–244/objects246 applicability; ch9 variants",
+          "Appendices A–D/maps310–315/index317–320 EN; map to supplied RU pagination before extracting"
+        ]
+      },
+      {
+        "scope": "product",
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+        "detail": "Открыты точный масштаб и связанная детализация с 60 милями, избирательный обзор, привязки поселения к конкретным ресурсам, слои признаков/видимости, тонкий лёд и отдельные расширенные случаи географии. Отрисовку браузера не проверяли."
+      },
+      {
+        "scope": "cohort",
+        "detail": "Пять ограниченных проверок не означают принятие всей общей когорты. Точный gate сохраняется, числовой рейтинг, скоринг и очередь не изменяются."
+      }
+    ],
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "previous_next_candidate_before_overall_top5_L1_acceptance": {
+    "id": "HX-RSR-OVERALL-TOP5-L1-EVIDENCE-ACCEPTANCE",
+    "game_id": null,
+    "layer": "L1",
+    "status": "selected_after_five_bounded_implementation_passes",
+    "action": "Собрать компактную проверку допуска общего топ-5 по RA-Q01–15 из готовых матриц DND5, PF2, Knave 2e, Crows и Shadowdark. Для каждой назвать конкретный незакрытый критерий, зависимость и достижимый этап; разнести проблемы источника, доказательств интерфейса и подходов продукта. Переиспользовать уже пройденные тесты. Отдельно определить следующее пригодное действие по самому существенному пробелу, не открывать сценарный топ-10 по одной сверке.",
+    "completion_condition": "Одна таблица допуска пяти игр со ссылками, закрытыми и открытыми критериями и условиями входа в create-top10. Подтверждённые исторические результаты не повторять.",
+    "full_overall_top5_complete": false
+  },
+  "latest_overall_top5_L1_acceptance": {
+    "status": "bounded_overall_top5_acceptance_reconciliation_completed",
+    "matrix_ref": "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+    "overview_ref": "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.md",
+    "result_ref": "agent-work/research/runs/2026-11-19-overall-top5-L1-acceptance-10329436.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-19-overall-top5-L1-acceptance-10329436-strategist.json",
+    "main_sha": "172155071ca1408abf6960dbc876ba030fc61613",
+    "full_overall_top5_accepted": false,
+    "create_execution_open": false
   }
 }
