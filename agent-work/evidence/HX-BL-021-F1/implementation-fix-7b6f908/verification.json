@@ -1,0 +1,337 @@
+{
+  "pr": 509,
+  "task_id": "HX-BL-021",
+  "stage": "F1",
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/509",
+  "branch": "agent/hx-bl-021-new-biomes-f1",
+  "head_sha": "7b6f908824ec2aecfd509391827f54e43c47340b",
+  "tree_sha": "c5d09a0c87189c21e1c617aeaf9006ea27d9adb0",
+  "base_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+  "reviewed_prior_head": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+  "spec_ref": "agent-work/specs/HX-BL-021-new-biomes-F1.md",
+  "spec_blob_sha": "80e64ee3bc6e25cdd3e811359f29f4dee238ce50",
+  "run_id": "2026-11-19T2100-programmer-HX-BL-021-F1",
+  "role": "programmer",
+  "role_selection_reason": "F1 is approved and the independent review of PR #509 requested two bounded corrections and one browser witness. Registry revision 224 showed no task or programmer owner after legacy reconciliation.",
+  "prior_review_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
+  "prior_handoff_ref": "agent-work/handoffs/2026-11-19T2000-reviewer-HX-BL-021-F1-programmer.json",
+  "ci_run_id": 44584025342,
+  "ci_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44584025342",
+  "result_ref": "agent-work/results/2026-11-19T2100-programmer-HX-BL-021-F1.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-021-F1/implementation-fix-7b6f908/verification.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-19T2100-programmer-HX-BL-021-F1-reviewer.json",
+  "test_change_summary": {
+    "base_sha": "fff2dfadf7c17c0a99e4fa3927fcde824678dc48",
+    "head_sha": "7b6f908824ec2aecfd509391827f54e43c47340b",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "source": "Logical-case diff of test/browser/terrain-color.smoke.mjs between previously reviewed and current candidate SHA.",
+    "suites": [
+      {
+        "suite": "Browser",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "Extend the existing Dunes scenario to measure closed RU and EN selector values at 320/390px. Replace the layer-empty ten-biome atlas with the same ten-biome scenario on the populated Classic seed-42 map, comparing rendered layers to the real PNG source and exercising save/RNG/history preservation.",
+        "reuse_or_new_reason": "The existing terrain smoke already covers the end-to-end generator and ten-biome matrix. Extending them catches the two missing behaviors without separate runner or duplicated flows."
+      },
+      {
+        "suite": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Existing suite, with separate ad hoc verifier probes excluded from permanent counts."
+      },
+      {
+        "suite": "Browser RNG",
+        "added": 0,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Existing world-random smoke."
+      }
+    ]
+  },
+  "finished_at": "2026-11-19T18:17:17.928Z",
+  "checks": {
+    "ci": {
+      "run": 44584025342,
+      "tree_sha": "c5d09a0c87189c21e1c617aeaf9006ea27d9adb0",
+      "checkout_sha": "5c03f9e9f2d9e2984d17779f09567a19a9b13782",
+      "results": {
+        "check": "success",
+        "browser": "success",
+        "world_random": "success",
+        "engraved_map_comparison": "skipped_by_workflow_for_other_PR"
+      },
+      "jobs": [
+        {
+          "name": "world-random",
+          "id": 135772159169,
+          "conclusion": "success"
+        },
+        {
+          "name": "browser",
+          "id": 135772159527,
+          "conclusion": "success"
+        },
+        {
+          "name": "check",
+          "id": 135772159620,
+          "conclusion": "success"
+        },
+        {
+          "name": "engraved-map-comparison",
+          "id": 135772161239,
+          "conclusion": "skipped"
+        }
+      ],
+      "node": {
+        "executed": 430,
+        "passed": 430,
+        "failed": 0,
+        "skipped": 0
+      },
+      "browser": {
+        "runners": 10,
+        "passed": 10
+      },
+      "browser_rng": {
+        "runners": 1,
+        "passed": 1
+      }
+    },
+    "local": {
+      "node_version": "v24.22.3",
+      "npm_run_check": "success",
+      "executed": 430,
+      "passed": 430,
+      "failed": 0,
+      "skipped": 0,
+      "git_diff_check": true,
+      "script_syntax": true,
+      "checked_source_matches_remote_blobs": true
+    }
+  },
+  "finding_evidence": [
+    {
+      "id": "BIO-F1-REV-01",
+      "status": "pass",
+      "requirements": [
+        "R06",
+        "AC06"
+      ],
+      "method": "Isolated ordinary npm run build on the exact verifier code; three malformed fixtures. Normal build verifies all 36.",
+      "cases": [
+        {
+          "input": "dunes PNG missing",
+          "observed": "ENOENT before Vite"
+        },
+        {
+          "input": "dunes PNG and its catalog row missing",
+          "observed": "Missing mandatory engraving catalogue entry for dunes.png before Vite"
+        },
+        {
+          "input": "dunes replaced by another valid PNG",
+          "observed": "SHA-256 mismatch before Vite"
+        }
+      ]
+    },
+    {
+      "id": "BIO-F1-REV-02",
+      "status": "pass",
+      "requirements": [
+        "R11",
+        "AC06"
+      ],
+      "method": "Existing terrain browser scenario checks text fit of every option in all four selectors in both languages and widths. DOM/focus order retained. Visual exact-SHA 320px shows the full selected Местность and Снежно-ледяная равнина.",
+      "viewports": [
+        320,
+        390
+      ],
+      "locales": [
+        "ru",
+        "en"
+      ],
+      "before": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44564439361/artifacts/14551003819",
+      "after": "agent-work/evidence/HX-BL-021-F1/implementation-fix-7b6f908/dunes-narrow-320.png"
+    },
+    {
+      "id": "BIO-F1-EVID-01",
+      "status": "pass",
+      "requirements": [
+        "AC05",
+        "R07",
+        "R12"
+      ],
+      "method": "Existing atlas scenario uses Classic seed 42 with two adjacent dry non-POI cells per biome. At 6 and 1 miles in both orientations confirms minimum two visible engravings per ID, lakes, rivers, roads, crossings and POI; compares placement/layer geometry with the real raster source and confirms complete JSON map, both RNG streams and Undo/Redo availability. Full artifact ZIP downloaded, digest checked, all 15 F1 PNGs decoded; representative images viewed.",
+      "fixture": "test/fixtures/classic-six-regions-seed42.json",
+      "topology": {
+        "rivers": 4,
+        "roads": 5,
+        "crossings": 2,
+        "water_cells": 3,
+        "secondary_pois": 6,
+        "pairs": 10,
+        "domain_projection_cells": 1951
+      },
+      "visual_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44584025342/artifacts/14559074127"
+    }
+  ],
+  "preview": {
+    "artifact_id": 14559074127,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44584025342/artifacts/14559074127",
+    "zip_digest": "sha256:408e2e08afc37962c78b69cae5e7ee8d0444317d984d222813e655d01dc5f11a",
+    "assets": {
+      "terrain-v2-f1-before.png": {
+        "sha256": "90173f675b2c94e3238bd44f7ab3bb9d60a27c1d4cd10f66570182628cec4748",
+        "size": [
+          1440,
+          1000
+        ],
+        "bytes": 74253
+      },
+      "terrain-v2-f1-dunes-desktop.png": {
+        "sha256": "b32378f6a97a964b101b9b0a1fb4d7a867a1fd43478ba3c6ecb312881774deba",
+        "size": [
+          1440,
+          1000
+        ],
+        "bytes": 112577,
+        "git_path": "agent-work/evidence/HX-BL-021-F1/implementation-fix-7b6f908/dunes-desktop.png",
+        "git_blob_sha": "2ddfb0216e713e938d57046478523332c7ce0a0b"
+      },
+      "terrain-v2-f1-dunes-export.png": {
+        "sha256": "7449596b5e9b2cc8afc2689af037931826e1aa06d12b58ccb674d5eab4d0a6e5",
+        "size": [
+          582,
+          532
+        ],
+        "bytes": 54245
+      },
+      "terrain-v2-f1-dunes-narrow-320-en.png": {
+        "sha256": "118b10e49f368d780bb3a177b1ce6e3023d03bfc4fc6682eb2c3a5d2a8b114bb",
+        "size": [
+          320,
+          950
+        ],
+        "bytes": 57481
+      },
+      "terrain-v2-f1-dunes-narrow-320.png": {
+        "sha256": "3b8fa65f3670e03f17e3b5555f11663f3233fe863b839d59d38a751c14a1c1fb",
+        "size": [
+          320,
+          950
+        ],
+        "bytes": 57798,
+        "git_path": "agent-work/evidence/HX-BL-021-F1/implementation-fix-7b6f908/dunes-narrow-320.png",
+        "git_blob_sha": "c8494c3e469484207887569c40915ea6ec12cba6"
+      },
+      "terrain-v2-f1-dunes-narrow-390-en.png": {
+        "sha256": "fe10bb5b959d8fe29d346fc64727c8ddb22e1ab8dd66ff9ab0a7d1660c3fb723",
+        "size": [
+          390,
+          950
+        ],
+        "bytes": 58153
+      },
+      "terrain-v2-f1-dunes-narrow-390.png": {
+        "sha256": "698101206d5537da4a3b3504ccc47bb8ae65764b2300a027aa29289da94efbbe",
+        "size": [
+          390,
+          950
+        ],
+        "bytes": 60212
+      },
+      "terrain-v2-f1-mixed-1mi-initial-export.png": {
+        "sha256": "cb8ec27227ae26d56e74b37e71b61a214af4c32799e2de21e2a589321040c11e",
+        "size": [
+          1099,
+          1152
+        ],
+        "bytes": 766245
+      },
+      "terrain-v2-f1-mixed-1mi-initial-screen.png": {
+        "sha256": "09943f54f876ce42e9ca45bcd741311b675e0461f202c2178acb887c8f493f1e",
+        "size": [
+          1440,
+          1000
+        ],
+        "bytes": 664921
+      },
+      "terrain-v2-f1-mixed-1mi-rotated-export.png": {
+        "sha256": "6745823b9493c081b3883977cfad48b9e85bec3a91c5ae7e49a42c7ce8286f84",
+        "size": [
+          1152,
+          1099
+        ],
+        "bytes": 426289
+      },
+      "terrain-v2-f1-mixed-1mi-rotated-screen.png": {
+        "sha256": "f45e2316c3612f2354b4eefee752d0285b4ca5b900dc25c622ac5104c938f60b",
+        "size": [
+          1440,
+          1000
+        ],
+        "bytes": 564675
+      },
+      "terrain-v2-f1-mixed-6mi-initial-export.png": {
+        "sha256": "d8488fda885c4c695351e8fda57a7c35ff4f4fda8c2b73a79df33d0b88439d53",
+        "size": [
+          1067,
+          1120
+        ],
+        "bytes": 451441
+      },
+      "terrain-v2-f1-mixed-6mi-initial-screen.png": {
+        "sha256": "a4eb1f9bc903adbd4f368615b86ff6bcf0792ed96225e8c6804eff030a8a3432",
+        "size": [
+          1440,
+          1000
+        ],
+        "bytes": 239013
+      },
+      "terrain-v2-f1-mixed-6mi-rotated-export.png": {
+        "sha256": "b1fced3c589dd5bb9429fb210f1756902e93d1bf18e86bf67bf7cf004b4eb4e1",
+        "size": [
+          1120,
+          1067
+        ],
+        "bytes": 462332
+      },
+      "terrain-v2-f1-mixed-6mi-rotated-screen.png": {
+        "sha256": "f3caf42b873f0ce188ff0b9b4a2da5500b2c48f3bbaa72565dbedbd640a768b6",
+        "size": [
+          1440,
+          1000
+        ],
+        "bytes": 221313
+      }
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "model_blob_sha": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+    "assessment_required": true,
+    "criteria": [
+      {
+        "criterion_id": "S07-C01",
+        "expected": "score-neutral",
+        "evidence": "No generator/selection/RNG source changes in the corrections. Full deterministic suites on current SHA. No gameplay effect claimed."
+      },
+      {
+        "criterion_id": "S04-C03",
+        "expected": "unknown",
+        "evidence": "All ten engravings, repeated at both scales and orientations on one populated map with readable RU/EN controls at 320/390px. This is one bounded scenario, no evidence for player visibility, fog or breadth."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "expected": "unknown",
+        "evidence": "Visible SVG geometry agrees with source of actual four PNG exports. JSON map and RNG compare after rotation, each export and 6→1→6. No full role/export corpus claimed."
+      }
+    ]
+  },
+  "review_ready": true,
+  "release_ready": false,
+  "publication_authorized": false
+}
