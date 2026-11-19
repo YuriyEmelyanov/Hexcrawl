@@ -1,0 +1,101 @@
+{
+  "task_id": "HX-BL-056",
+  "stage_id": "ONE-MILE-SMALL-LAKES",
+  "draft_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-D1.md",
+  "draft_spec_version": "D1",
+  "draft_spec_blob_sha": "657f263d43d7d734c22de41fd235a303c34a33b7",
+  "status": "awaiting_owner_answers",
+  "interview_completed": false,
+  "ready_for_development": false,
+  "open_question_ids": [
+    "LAKE-Q01",
+    "LAKE-Q02",
+    "LAKE-Q03",
+    "LAKE-Q04",
+    "LAKE-Q05",
+    "LAKE-Q06",
+    "LAKE-Q07"
+  ],
+  "conditional_question_ids": [
+    "LAKE-Q08"
+  ],
+  "next_role": "interviewer",
+  "next_step": "Ожидаются решения владельца по LAKE-Q01–07; LAKE-Q08 применяется при выборе автоматического режима. Затем сохранить ответы и передать аналитику для чистовой спецификации.",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-decision-2026-11-16-one-mile-small-lakes.json"
+  ],
+  "round_refs": [
+    "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/round-001.json"
+  ],
+  "decisions": [],
+  "owner_answers": [],
+  "same_chat": true,
+  "updated_at": "2026-11-19T20:15:19.467Z",
+  "analyst_handoff_ref": "agent-work/handoffs/2026-11-19T2300-analyst-HX-BL-056-interviewer.json",
+  "stable_requirement_coverage": {
+    "R01": [
+      "LAKE-Q01",
+      "LAKE-Q02",
+      "LAKE-Q07",
+      "LAKE-Q08"
+    ],
+    "R02": [
+      "LAKE-Q02",
+      "LAKE-Q03",
+      "LAKE-Q07"
+    ],
+    "R03": [
+      "LAKE-Q04",
+      "LAKE-Q06",
+      "LAKE-Q07",
+      "LAKE-Q08"
+    ],
+    "R04": [
+      "LAKE-Q03",
+      "LAKE-Q05",
+      "LAKE-Q06"
+    ],
+    "R05": [
+      "LAKE-Q01",
+      "LAKE-Q05",
+      "LAKE-Q06",
+      "LAKE-Q08"
+    ],
+    "R06": [
+      "LAKE-Q01",
+      "LAKE-Q03",
+      "LAKE-Q05"
+    ]
+  },
+  "already_settled": [
+    {
+      "topic": "Task start and feature scope",
+      "ref": "agent-work/decisions/owner-decision-2026-11-16-one-mile-small-lakes.json",
+      "conclusion": "Small lakes on the one-mile map are in scope. No decision about automation, lake size or river geometry is inferred."
+    }
+  ],
+  "technical_constraints_retained": [
+    "Atomic save, undo and import, explicit incompatibility handling and protected existing objects are contract constraints.",
+    "Manual path should retain both RNG streams. For an automatic path, define deterministic seed/continuation compatibility after Q01 and Q08.",
+    "Existing streams task HX-BL-057 stays separate."
+  ],
+  "conditional_application": {
+    "question_id": "LAKE-Q08",
+    "applies_if": {
+      "question_id": "LAKE-Q01",
+      "option_ids": [
+        "B",
+        "C"
+      ]
+    }
+  },
+  "next_independent_approved_work": {
+    "task_id": "HX-BL-058",
+    "role": "business-analyst",
+    "stage_id": "specification_draft",
+    "approval_ref": "agent-work/decisions/owner-decision-2026-11-16-base-hex-five-six-miles-ui.json",
+    "implementation_authorized": true,
+    "release_authorized": false,
+    "next_step": "Если ответы по озёрам ещё не появились, доступен независимый черновик по выбору базового размера гекса и его виду."
+  }
+}
