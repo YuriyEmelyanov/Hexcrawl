@@ -457,7 +457,7 @@ test('region biome respects stored height and canonical neighbors, keeps all ove
   assert.deepEqual(stable(h.render()).map.toponyms,legacy.map.toponyms,'local terrain preserves literal legacy name metadata');
   const before=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
   const choices=Object.values(h.geometry.BIOMES).filter(b=>b.heightLevel===r.heightLevel);
-  assert.equal(choices.length,({1:12,2:6,3:6})[r.heightLevel]);
+  assert.equal(choices.length,({1:18,2:8,3:8})[r.heightLevel]);
   for(const b of Object.values(h.geometry.BIOMES)) {
     const allowed=!h.render().regionBiomeReason(r,b.id);
     const previous=stable(h.render());
