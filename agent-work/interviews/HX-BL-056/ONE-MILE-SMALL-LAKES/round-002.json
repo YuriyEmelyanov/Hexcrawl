@@ -1,0 +1,104 @@
+{
+  "task_id": "HX-BL-056",
+  "stage_id": "ONE-MILE-SMALL-LAKES",
+  "round_id": "round-002",
+  "draft_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-D1.md",
+  "draft_spec_version": "D1",
+  "trigger": "В первом ответе подтверждено сохранение правки, требовалось уточнить поведение при удалении исходного участка.",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-decision-2026-11-16-one-mile-small-lakes.json",
+    "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json"
+  ],
+  "questions": [
+    {
+      "question_id": "LAKE-Q06a",
+      "related_question_ids": [
+        "LAKE-Q06",
+        "LAKE-Q05",
+        "LAKE-Q07"
+      ],
+      "topic": "Удаление исходной опоры малого озера",
+      "requirement_refs": [
+        "R03",
+        "R04",
+        "R05",
+        "AC02",
+        "AC03",
+        "AC04"
+      ],
+      "fork": "На карте в 1 милю есть озеро. Мастер удаляет участок карты в 6 милях, на котором оно лежит. Что делать с озером?",
+      "why_important": "Участок суши и сохранённое озеро нельзя оставить в несовместимом состоянии.",
+      "options": [
+        {
+          "id": "A",
+          "label": "Остановить удаление участка",
+          "user_effect": "Показать, какое озеро мешает. Озеро можно удалить отдельно."
+        },
+        {
+          "id": "B",
+          "label": "Удалить участок вместе с озером",
+          "user_effect": "Запросить подтверждение. Одно «Отменить» возвращает участок и озеро."
+        }
+      ],
+      "always_allow_free_text": true,
+      "recommendation": {
+        "option_id": "A",
+        "basis": "Останавливает потерю ранее сохранённых объектов при удалении участка."
+      },
+      "owner_answer": {
+        "question_id": "LAKE-Q06a",
+        "verbatim": "удалять.",
+        "selected_option_id": "B",
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "follow_up_owner_reply_to_round_002"
+      },
+      "interpretation": "Если правка карты в 6 милях убирает допустимую опору, удалить затронутое малое озеро вместе с участком после показанного подтверждения. Выполнить одним действием и одной записью истории. Undo восстанавливает участок и все затронутые озёра, Redo повторяет удаление. Если опора остаётся допустимой, озеро сохраняется."
+    }
+  ],
+  "presented_in_chat_at": null,
+  "presented_in_chat_ref": null,
+  "presentation": {
+    "channel": "existing_task_chat",
+    "delivered": true,
+    "message_id_available": false,
+    "timestamp_available": false
+  },
+  "owner_answers": [
+    {
+      "question_id": "LAKE-Q06a",
+      "verbatim": "удалять.",
+      "selected_option_id": "B",
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "follow_up_owner_reply_to_round_002"
+    }
+  ],
+  "interpretation": {
+    "LAKE-Q06a": "Если правка карты в 6 милях убирает допустимую опору, удалить затронутое малое озеро вместе с участком после показанного подтверждения. Выполнить одним действием и одной записью истории. Undo восстанавливает участок и все затронутые озёра, Redo повторяет удаление. Если опора остаётся допустимой, озеро сохраняется."
+  },
+  "open_question_ids": [],
+  "new_question_ids": [
+    "LAKE-Q06a"
+  ],
+  "status": "interview_completed",
+  "next_role": "business-analyst",
+  "next_step": "Подготовить чистовую спецификацию малых озёр на 1-мильной карте по закрытому интервью. Уточнить применение правил размера и автогенерации базового масштаба, обновить критерии карты, PNG и совместимости JSON.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-19T21:29:44.280Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-11-19T21:31:39.942Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": []
+  }
+}

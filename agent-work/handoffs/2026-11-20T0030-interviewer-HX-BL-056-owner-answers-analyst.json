@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-20T0030-interviewer-HX-BL-056-owner-answers",
+  "created_at": "2026-11-19T21:33:29.839Z",
+  "from_role": "interviewer",
+  "status": "interview_completed",
+  "task_id": "HX-BL-056",
+  "role": "business-analyst",
+  "stage_id": "final_spec_after_interview",
+  "authorization_status": "approved",
+  "approval_ref": "agent-work/decisions/owner-decision-2026-11-16-one-mile-small-lakes.json",
+  "publication_authorized": false,
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "draft_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-D1.md",
+  "interview_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/decisions.json",
+  "owner_answers_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-20T0030-interviewer-HX-BL-056-owner-answers-analyst.json",
+  "next_step": "Подготовить чистовую спецификацию малых озёр на 1-мильной карте по закрытому интервью. Уточнить применение правил размера и автогенерации базового масштаба, обновить критерии карты, PNG и совместимости JSON.",
+  "requirement_trace": [
+    {
+      "question_id": "LAKE-Q01",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Малые озёра доступны и при ручном добавлении, и при автогенерации.",
+      "requirement_refs": [
+        "R01",
+        "R05",
+        "R06",
+        "AC01",
+        "AC04",
+        "AC06"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q02",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "За основу размера и контура взять действующее правило озёр в базовом шестимильном масштабе и применять его к одномильной сетке. У базовых озёр есть одиночные и смежные по сторонам многоклеточные тела. В ответе нет отдельного фиксированного размера или лимита 1–3 гекса.",
+      "requirement_refs": [
+        "R01",
+        "R02",
+        "AC01",
+        "AC02",
+        "AC05"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q03",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "При 6 милях малое озеро скрыто на карте и в PNG. При возврате на 1 милю то же озеро видно с прежним контуром и положением.",
+      "requirement_refs": [
+        "R02",
+        "R04",
+        "R06",
+        "AC04",
+        "AC05"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q04",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Допустить касание крупных озёр, рек, ручьёв и POI, а также размещение внутри многогексового POI. Проверить эти случаи отдельно. Сам контакт не меняет геометрию, тип или идентичность уже существующих объектов, не создаёт автоматически исток, устье и не реализует ручьи в рамках этой задачи.",
+      "requirement_refs": [
+        "R02",
+        "R03",
+        "AC02",
+        "AC03",
+        "AC05"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q05",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Мастер может добавить, удалить, отменить и повторить. Для переноса удалить и создать новое озеро с новым ID. Undo/Redo сохраняют исходную идентичность соответствующего состояния.",
+      "requirement_refs": [
+        "R01",
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "AC01",
+        "AC03",
+        "AC04"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q06",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Результат принятой правки сохраняется. Сценарий удаления исходной опоры уточнён отдельно и разрешён ответом на LAKE-Q06a.",
+      "requirement_refs": [
+        "R03",
+        "R04",
+        "R05",
+        "AC02",
+        "AC03",
+        "AC04"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q07",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Каждый выбранный одномильный гекс целиком опирается на существующую сушу. Частично покрытый край отклоняется. Допустимые контакты LAKE-Q04 проверяются отдельно.",
+      "requirement_refs": [
+        "R01",
+        "R02",
+        "R03",
+        "AC02",
+        "AC03"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q08",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Для автогенерации использовать действующую шестимильную политику появления озёр как эталон для 1 мили. Она использует вероятность от биома, рост соседних клеток и группировку по общей стороне. Аналитик явно фиксирует перенос правил на допустимые детальные клетки, момент генерации, воспроизводимость и последствия изменения знаменателя. Старый JSON открывается без досоздания озёр.",
+      "requirement_refs": [
+        "R01",
+        "R03",
+        "R05",
+        "AC02",
+        "AC04",
+        "AC06"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q06a",
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Если правка карты в 6 милях убирает допустимую опору, удалить затронутое малое озеро вместе с участком после показанного подтверждения. Выполнить одним действием и одной записью истории. Undo восстанавливает участок и все затронутые озёра, Redo повторяет удаление. Если опора остаётся допустимой, озеро сохраняется.",
+      "requirement_refs": [
+        "R03",
+        "R04",
+        "R05",
+        "AC02",
+        "AC03",
+        "AC04"
+      ]
+    }
+  ],
+  "remaining_owner_decision_ids": [],
+  "constraints": [
+    "Сохранить начальную постановку задачи и только отдельное согласование конкретного выпуска.",
+    "Привязать каждый критерий к актуальной модели 1.2 и выделить доказательства для обоих способов появления озёр, допустимых контактов, отмены удаления и карты/PNG в двух масштабах.",
+    "Обновить наглядный вид на широком и узком экране с учётом согласованных ручного и автоматического сценариев и подтверждения удаления. Показ не блокирует чистовую спецификацию.",
+    "Пересчитать путь до публикации. При прогнозе свыше 24 запусков сохранить весь согласованный объём и предложить самостоятельно пригодные этапы."
+  ],
+  "ready_for_development": false
+}

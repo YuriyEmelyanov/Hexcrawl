@@ -4,33 +4,318 @@
   "draft_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-D1.md",
   "draft_spec_version": "D1",
   "draft_spec_blob_sha": "657f263d43d7d734c22de41fd235a303c34a33b7",
-  "status": "awaiting_owner_answers",
-  "interview_completed": false,
+  "status": "interview_completed",
+  "interview_completed": true,
   "ready_for_development": false,
-  "open_question_ids": [
-    "LAKE-Q01",
-    "LAKE-Q02",
-    "LAKE-Q03",
-    "LAKE-Q04",
-    "LAKE-Q05",
-    "LAKE-Q06",
-    "LAKE-Q07"
-  ],
-  "conditional_question_ids": [
-    "LAKE-Q08"
-  ],
-  "next_role": "interviewer",
-  "next_step": "Ожидаются решения владельца по LAKE-Q01–07; LAKE-Q08 применяется при выборе автоматического режима. Затем сохранить ответы и передать аналитику для чистовой спецификации.",
+  "open_question_ids": [],
+  "conditional_question_ids": [],
+  "next_role": "business-analyst",
+  "next_step": "Подготовить чистовую спецификацию малых озёр на 1-мильной карте по закрытому интервью. Уточнить применение правил размера и автогенерации базового масштаба, обновить критерии карты, PNG и совместимости JSON.",
   "source_owner_decision_refs": [
     "agent-work/decisions/owner-decision-2026-11-16-one-mile-small-lakes.json"
   ],
   "round_refs": [
-    "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/round-001.json"
+    "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/round-001.json",
+    "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/round-002.json"
   ],
-  "decisions": [],
-  "owner_answers": [],
+  "decisions": [
+    {
+      "question_id": "LAKE-Q01",
+      "selected_option_id": "C",
+      "owner_answer": {
+        "question_id": "LAKE-Q01",
+        "verbatim": "C",
+        "selected_option_id": "C",
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "owner_reply_to_round_001"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Малые озёра доступны и при ручном добавлении, и при автогенерации.",
+      "status": "resolved",
+      "requirement_refs": [
+        "R01",
+        "R05",
+        "R06",
+        "AC01",
+        "AC04",
+        "AC06"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q02",
+      "selected_option_id": null,
+      "owner_answer": {
+        "question_id": "LAKE-Q02",
+        "verbatim": "анологично как для озёр на 6 гексов",
+        "selected_option_id": null,
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "owner_reply_to_round_001"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "За основу размера и контура взять действующее правило озёр в базовом шестимильном масштабе и применять его к одномильной сетке. У базовых озёр есть одиночные и смежные по сторонам многоклеточные тела. В ответе нет отдельного фиксированного размера или лимита 1–3 гекса.",
+      "status": "resolved",
+      "requirement_refs": [
+        "R01",
+        "R02",
+        "AC01",
+        "AC02",
+        "AC05"
+      ],
+      "reference_baseline": {
+        "source_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "paths": [
+          "docs/natural-lakes.md",
+          "docs/water-editing.md",
+          "src/App.tsx:8655–8707"
+        ]
+      }
+    },
+    {
+      "question_id": "LAKE-Q03",
+      "selected_option_id": "A",
+      "owner_answer": {
+        "question_id": "LAKE-Q03",
+        "verbatim": "на 6 милях не видно",
+        "selected_option_id": "A",
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "owner_reply_to_round_001"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "При 6 милях малое озеро скрыто на карте и в PNG. При возврате на 1 милю то же озеро видно с прежним контуром и положением.",
+      "status": "resolved",
+      "requirement_refs": [
+        "R02",
+        "R04",
+        "R06",
+        "AC04",
+        "AC05"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q04",
+      "selected_option_id": null,
+      "owner_answer": {
+        "question_id": "LAKE-Q04",
+        "verbatim": "озер может касаться больших озёр, рек,  ручьёв, точек интереса, быть внутри точек интереса, состоящих из не кольких гексов.",
+        "selected_option_id": null,
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "owner_reply_to_round_001"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Допустить касание крупных озёр, рек, ручьёв и POI, а также размещение внутри многогексового POI. Проверить эти случаи отдельно. Сам контакт не меняет геометрию, тип или идентичность уже существующих объектов, не создаёт автоматически исток, устье и не реализует ручьи в рамках этой задачи.",
+      "status": "resolved",
+      "requirement_refs": [
+        "R02",
+        "R03",
+        "AC02",
+        "AC03",
+        "AC05"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q05",
+      "selected_option_id": "A",
+      "owner_answer": {
+        "question_id": "LAKE-Q05",
+        "verbatim": "A",
+        "selected_option_id": "A",
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "owner_reply_to_round_001"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Мастер может добавить, удалить, отменить и повторить. Для переноса удалить и создать новое озеро с новым ID. Undo/Redo сохраняют исходную идентичность соответствующего состояния.",
+      "status": "resolved",
+      "requirement_refs": [
+        "R01",
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "AC01",
+        "AC03",
+        "AC04"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q06",
+      "selected_option_id": null,
+      "owner_answer": {
+        "question_id": "LAKE-Q06",
+        "verbatim": "не понимаю. Результат правки сокраняктся.",
+        "selected_option_id": null,
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "owner_reply_to_round_001"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Результат принятой правки сохраняется. Сценарий удаления исходной опоры уточнён отдельно и разрешён ответом на LAKE-Q06a.",
+      "status": "resolved_by_follow_up",
+      "requirement_refs": [
+        "R03",
+        "R04",
+        "R05",
+        "AC02",
+        "AC03",
+        "AC04"
+      ],
+      "resolved_by": "LAKE-Q06a"
+    },
+    {
+      "question_id": "LAKE-Q07",
+      "selected_option_id": "A",
+      "owner_answer": {
+        "question_id": "LAKE-Q07",
+        "verbatim": "A",
+        "selected_option_id": "A",
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "owner_reply_to_round_001"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Каждый выбранный одномильный гекс целиком опирается на существующую сушу. Частично покрытый край отклоняется. Допустимые контакты LAKE-Q04 проверяются отдельно.",
+      "status": "resolved",
+      "requirement_refs": [
+        "R01",
+        "R02",
+        "R03",
+        "AC02",
+        "AC03"
+      ]
+    },
+    {
+      "question_id": "LAKE-Q08",
+      "selected_option_id": null,
+      "owner_answer": {
+        "question_id": "LAKE-Q08",
+        "verbatim": "также как в 6-мильном.",
+        "selected_option_id": null,
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "owner_reply_to_round_001"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Для автогенерации использовать действующую шестимильную политику появления озёр как эталон для 1 мили. Она использует вероятность от биома, рост соседних клеток и группировку по общей стороне. Аналитик явно фиксирует перенос правил на допустимые детальные клетки, момент генерации, воспроизводимость и последствия изменения знаменателя. Старый JSON открывается без досоздания озёр.",
+      "status": "resolved",
+      "requirement_refs": [
+        "R01",
+        "R03",
+        "R05",
+        "AC02",
+        "AC04",
+        "AC06"
+      ],
+      "reference_baseline": {
+        "source_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "paths": [
+          "src/App.tsx:8648–8721"
+        ]
+      }
+    },
+    {
+      "question_id": "LAKE-Q06a",
+      "selected_option_id": "B",
+      "owner_answer": {
+        "question_id": "LAKE-Q06a",
+        "verbatim": "удалять.",
+        "selected_option_id": "B",
+        "source_type": "explicit_owner_message_existing_task_chat",
+        "source_message_ref": null,
+        "source_message_position": "follow_up_owner_reply_to_round_002"
+      },
+      "owner_answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json",
+      "decision": "Если правка карты в 6 милях убирает допустимую опору, удалить затронутое малое озеро вместе с участком после показанного подтверждения. Выполнить одним действием и одной записью истории. Undo восстанавливает участок и все затронутые озёра, Redo повторяет удаление. Если опора остаётся допустимой, озеро сохраняется.",
+      "status": "resolved",
+      "requirement_refs": [
+        "R03",
+        "R04",
+        "R05",
+        "AC02",
+        "AC03",
+        "AC04"
+      ]
+    }
+  ],
+  "owner_answers": [
+    {
+      "question_id": "LAKE-Q01",
+      "verbatim": "C",
+      "selected_option_id": "C",
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "owner_reply_to_round_001"
+    },
+    {
+      "question_id": "LAKE-Q02",
+      "verbatim": "анологично как для озёр на 6 гексов",
+      "selected_option_id": null,
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "owner_reply_to_round_001"
+    },
+    {
+      "question_id": "LAKE-Q03",
+      "verbatim": "на 6 милях не видно",
+      "selected_option_id": "A",
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "owner_reply_to_round_001"
+    },
+    {
+      "question_id": "LAKE-Q04",
+      "verbatim": "озер может касаться больших озёр, рек,  ручьёв, точек интереса, быть внутри точек интереса, состоящих из не кольких гексов.",
+      "selected_option_id": null,
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "owner_reply_to_round_001"
+    },
+    {
+      "question_id": "LAKE-Q05",
+      "verbatim": "A",
+      "selected_option_id": "A",
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "owner_reply_to_round_001"
+    },
+    {
+      "question_id": "LAKE-Q06",
+      "verbatim": "не понимаю. Результат правки сокраняктся.",
+      "selected_option_id": null,
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "owner_reply_to_round_001"
+    },
+    {
+      "question_id": "LAKE-Q07",
+      "verbatim": "A",
+      "selected_option_id": "A",
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "owner_reply_to_round_001"
+    },
+    {
+      "question_id": "LAKE-Q08",
+      "verbatim": "также как в 6-мильном.",
+      "selected_option_id": null,
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "owner_reply_to_round_001"
+    },
+    {
+      "question_id": "LAKE-Q06a",
+      "verbatim": "удалять.",
+      "selected_option_id": "B",
+      "source_type": "explicit_owner_message_existing_task_chat",
+      "source_message_ref": null,
+      "source_message_position": "follow_up_owner_reply_to_round_002"
+    }
+  ],
   "same_chat": true,
-  "updated_at": "2026-11-19T20:15:19.467Z",
+  "updated_at": "2026-11-19T21:33:29.839Z",
   "analyst_handoff_ref": "agent-work/handoffs/2026-11-19T2300-analyst-HX-BL-056-interviewer.json",
   "stable_requirement_coverage": {
     "R01": [
@@ -87,7 +372,10 @@
         "B",
         "C"
       ]
-    }
+    },
+    "active": true,
+    "resolved": true,
+    "answer_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json"
   },
   "next_independent_approved_work": {
     "task_id": "HX-BL-058",
@@ -97,5 +385,9 @@
     "implementation_authorized": true,
     "release_authorized": false,
     "next_step": "Если ответы по озёрам ещё не появились, доступен независимый черновик по выбору базового размера гекса и его виду."
-  }
+  },
+  "owner_answer_refs": [
+    "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json"
+  ],
+  "handoff_ref": "agent-work/handoffs/2026-11-20T0030-interviewer-HX-BL-056-owner-answers-analyst.json"
 }
