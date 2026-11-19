@@ -5,10 +5,10 @@ import fs from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import os from 'node:os';
-import {createGenerationHarness} from '../helpers/generation-harness.mjs';
+import {createGenerationHarness,prepareLegacyRefinedSave} from '../helpers/generation-harness.mjs';
 import {withRequiredRiverSite,requiredRiverOwner} from '../helpers/river-required-variant.mjs';
 import {createDetailGrid,detailCellCenter} from '../../src/detailGrid.ts';
-import {checkGeometryRefinement} from './geometry-refinement-evidence.mjs';
+import {assertScaleOnly,checkGeometryRefinement} from './geometry-refinement-evidence.mjs';
 import {prepareFineEvidenceFixture,fineEvidenceSamples,checkFineCamera,checkFineObjectsAndPng,checkFineModeCandidates} from './one-mile-evidence.mjs';
 const root=new URL('../../',import.meta.url),out=new URL('../../reports/ONE-MILE1-UI/',import.meta.url);
 await fs.mkdir(out,{recursive:true});
@@ -18,6 +18,8 @@ const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.re
 // P02: explicit legal F2 ford variant of the same existing world, no geometry edit.
 fixture.map.crossings.find(c=>c.riverId===3).kind='ford';
 geometryFixture.map.crossings.find(c=>c.riverId===3).kind='ford';
+await h.render().handleImportJson({target:{files:[{text:JSON.stringify(geometryFixture)}],value:'legacy-base'}});
+const geometryLegacySave=prepareLegacyRefinedSave(h);
 // P03: keep one declared F3 segment as a legal F5 presentation variant so
 // the real-map browser check covers the complete F1..F5 width scale.
 const f5Sector=fixture.map.rivers.flatMap(r=>r.sectors).find(s=>s.fullness===3);assert.ok(f5Sector);f5Sector.fullness=5;
@@ -31,7 +33,9 @@ assert.equal(h.render().switchFineStep(1),true,h.render().editError);const oracl
 // hand-drawn outside river. Its saved scoped plan still owns the old34 paths.
 const mixedHarness=createGenerationHarness(42);mixedHarness.render();mixedHarness.guardRandom();mixedHarness.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});mixedHarness.injectFunction('readTextFile',async f=>f.text);
 await mixedHarness.render().handleImportJson({target:{files:[{text:await fs.readFile(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url),'utf8')}],value:'x'}});
-const mixedPreview=mixedHarness.render().previewGeometryRefinement();assert.ok(mixedPreview);assert.equal(mixedHarness.render().applyGeometryRefinementPreview(mixedPreview),true);mixedHarness.render();mixedHarness.render().generateAt(mixedHarness.render().candidateHexes[0]);
+const mixedLegacySave=prepareLegacyRefinedSave(mixedHarness);
+await mixedHarness.render().handleImportJson({target:{files:[{text:JSON.stringify(mixedLegacySave)}],value:'legacy'}});
+mixedHarness.render().generateAt(mixedHarness.render().candidateHexes[0]);
 const mixedFixture=structuredClone(mixedHarness.render().createSaveData());assert.equal(mixedFixture.map.rivers.length,5);assert.equal(mixedFixture.map.physicalGrid.geometryRefinement.riverPlan.paths.length,34);
 const mixedOldEdges=new Set(mixedFixture.map.physicalGrid.geometryRefinement.riverPlan.paths.map(p=>JSON.stringify([p.riverId,p.sourceEdgeKey])));
 const mixedNewEdges=mixedFixture.map.rivers.flatMap(r=>r.sectors.flatMap(s=>s.edgeKeys.map(edge=>({id:r.id,edge})))).filter(p=>!mixedOldEdges.has(JSON.stringify([p.id,p.edge])));assert.equal(mixedNewEdges.length,12);
@@ -72,6 +76,7 @@ try{
  await page.locator('input[type=file]').setInputFiles(new URL('../fixtures/classic-six-regions-seed42.json',import.meta.url).pathname);
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  const classicSource=await snap();assert.equal(classicSource.map.physicalGrid,undefined);await shot('classic42-6mi-before.jpg');
+ const classicHistory=await Promise.all(['Undo','Redo'].map(name=>button(name).isEnabled()));
  const lakeKey=Object.entries(classicSource.map.terrainByHexKey).find(([,terrain])=>terrain.terrainOverride==='lake')[0];
  const coastTexture=(svg,key)=>svg.querySelector(`[data-hex-key="${key}"]`).parentElement.querySelector('image.terrain-blend')?.getAttribute('href');
  await page.waitForFunction(key=>document.querySelector(`[data-hex-key="${key}"] + image.terrain-blend`),lakeKey);
@@ -92,21 +97,22 @@ try{
  manifest.cases.push({id:'HX059-worker-busy-cancel-late-reply',status:'pass',viewports:[1500,390],locales:['en','ru'],sourceWrites:false});
  await lang('en');await page.setViewportSize({width:1500,height:1000});
  await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});await page.locator('[data-fine-world]').waitFor();
- assert.equal(await page.getByText('Подробная сетка: предпросмотр готов.',{exact:true}).count(),0);
- assert.equal(await page.locator('[data-geometry-preview]').count(),0);
+ await assertScaleOnly(page,'en');
  assert.equal(await page.locator('[data-fine-crossing]').count(),2);
  assert.ok(await page.locator('[data-refined-river]').count()>0);
  assert.deepEqual((await snap()).map,classicSource.map);
  assert.equal((await snap()).ui.mapScale,classicSource.ui.mapScale,'detached fine zoom is not persisted as source camera zoom');
  const classicSignature=(target=page)=>target.locator('[data-fine-world]').evaluate(el=>({rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])}));
  const classicVisible=await classicSignature();await shot('classic42-1mi-after.jpg');
+ assert.deepEqual(await Promise.all(['Undo','Redo'].map(name=>button(name).isEnabled())),classicHistory);
  await page.evaluate(()=>window.__oneSvg=null);const [classicPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);await fs.copyFile(await classicPng.path(),new URL('classic42-automatic.png',out));
  const classicExport=await page.evaluate(()=>{const el=new DOMParser().parseFromString(window.__oneSvg,'image/svg+xml').querySelector('[data-fine-world]');return {rivers:[...el.querySelectorAll('[data-refined-river]')].map(n=>[n.getAttribute('data-refined-river'),n.getAttribute('data-source-edge'),n.getAttribute('points'),n.getAttribute('stroke-width')]),roads:[...el.querySelectorAll('[data-refined-road]')].map(n=>[n.getAttribute('data-refined-road'),[...n.querySelectorAll('line,polyline')].map(p=>['x1','y1','x2','y2','points','opacity','stroke-width','stroke-dasharray'].map(k=>p.getAttribute(k)))])};});
  assert.deepEqual(classicExport,classicVisible,'screen and PNG use one complete scene');
  await step.selectOption('6');
  const roundTripSvg=page.locator('svg[data-render-phase]');
  assert.equal(await roundTripSvg.evaluate(coastTexture,lakeKey),coarseCoast,'Returning to 6 miles keeps the original visible lake blend');
- await shot('classic42-6mi-after.jpg');assert.deepEqual((await snap()).map,classicSource.map);
+ await shot('classic42-6mi-after.jpg');assert.deepEqual(await snap(),classicSource);
+ assert.deepEqual(await Promise.all(['Undo','Redo'].map(name=>button(name).isEnabled())),classicHistory);
  await page.waitForFunction(()=>!document.querySelector('details.export-menu button:disabled'));
  await page.evaluate(()=>window.__oneSvg=null);
  const [coarsePng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);
@@ -117,6 +123,10 @@ try{
  },lakeKey);
  assert.equal(coarseExport,coarseCoast,'PNG after the 6 → 1 → 6 round trip keeps the same lake blend');
  await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual(await classicSignature(),classicVisible);
+ for(const language of ['ru','en'])for(const width of [1500,390,320]){
+  await lang(language);await page.setViewportSize({width,height:1000});await assertScaleOnly(page,language);
+  await shot(`f2-classic42-1mi-${language}-${width}.jpg`);
+ }
  await page.setViewportSize({width:390,height:1000});await shot('classic42-1mi-after-390.jpg');
  await page.locator('input[type=file]').setInputFiles({name:'classic42-source-roundtrip.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(classicSource))});
  await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);assert.deepEqual(await classicSignature(),classicVisible);assert.deepEqual((await snap()).map,classicSource.map);
@@ -132,7 +142,7 @@ try{
  assert.equal(await zoom(cold),classicSource.ui.mapScale*6,'cold automatic view applies exactly one camera conversion');
  assert.deepEqual(await classicSignature(cold),classicVisible,'cold load reconstructs the same complete river and road scene');
  await cold.screenshot({path:new URL('classic42-cold-390.jpg',out).pathname,type:'jpeg',quality:75,fullPage:true});await cold.close();
- manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390],sourceWrites:false,cameraSourceScaleStable:true,coldDOMReload:true});
+ manifest.cases.push({id:'HX059-classic42-automatic-scene-save-PNG',status:'pass',sourcePaths:34,crossings:2,viewports:[1500,390,320],locales:['ru','en'],manualGeometryActionAbsent:true,sourceWrites:false,cameraSourceScaleStable:true,coldDOMReload:true});
  await page.setViewportSize({width:1500,height:1000});
  // One distinct logical case: the original fixtures have no proven river
  // requirement. Exercise this legal declared variant through public JSON,
@@ -271,7 +281,7 @@ try{
  if(afterGen.map.regions.length>beforeGen.map.regions.length){assert.equal(afterGen.map.regions.length,beforeGen.map.regions.length+1,'double click gives one ordinary Classic unit');assert.equal(`${afterGen.map.physicalGrid.selectedCell.q},${afterGen.map.physicalGrid.selectedCell.r}`,target);await button('Отменить').click();assert.deepEqual(await snap(),beforeGen,'one Undo restores the whole ordinary unit');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'accepted_and_undo_exact'});}
  else {assert.deepEqual(afterGen,beforeGen,'failed ordinary generation is atomic');manifest.cases.push({id:'UI-ordinary-candidate-unit',status:'pass',outcome:'bounded_refusal_no_success_claim'});}
  await checkFineModeCandidates({page,snap,shot,button,manifest});
- await checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture:geometryFixture});
+ await checkGeometryRefinement({page,step,snap,button,lang,shot,manifest,out,fixture:geometryLegacySave});
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated
