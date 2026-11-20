@@ -1,0 +1,61 @@
+{
+  "proposal_id": "2026-11-20-MB-model12-G1-candidate-v1",
+  "version": 1,
+  "status": "awaiting_owner_approval",
+  "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "model_version": "1.2",
+  "active_baseline_ref": "agent-work/score/current-score.json",
+  "baseline_snapshot": "f3506e8b43d33f143c043b68ab1532344ac8bc86",
+  "grade_rule": "G1 = 0.25 × criterion weight for an identified working case. No change to model or coefficients.",
+  "evidence": "agent-work/research/requirements/MB-layer-baseline-2026-11-20.json",
+  "test_refs": [
+    "test/mythicKingdom.test.mjs#classic to mythic, second kingdom and regeneration preserve earlier regions",
+    "test/mythicKingdom.test.mjs#kingdom quotas, d12 sizes, save, classic extension and atomic undo",
+    "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+  ],
+  "proposed": [
+    {
+      "id": "S08-C04",
+      "weight": 10,
+      "before": {
+        "grade": null,
+        "points": null
+      },
+      "after": {
+        "grade": "G1",
+        "points": 2.5
+      },
+      "evidence": "Classic/Knave → Mythic preserves preceding regions and Knave annotations; Mythic → Classic extends the map; undo/redo preserves the prior map. G2 breadth not established."
+    },
+    {
+      "id": "S09-C04",
+      "weight": 10,
+      "before": {
+        "grade": null,
+        "points": null
+      },
+      "after": {
+        "grade": "G1",
+        "points": 2.5
+      },
+      "evidence": "Edit ruins at 1,7, export, fresh import: regions, kingdoms, obstacles and tags equal. Separate undo/redo and rollback tests passed. Bounded ordinary scenario; no complete review of data safety."
+    }
+  ],
+  "no_award": [
+    {
+      "id": "S06-C02",
+      "reason": "Six myth locations validated; no stage advancement or threat resolution evidence."
+    }
+  ],
+  "impact": {
+    "confirmed_subtotal_if_accepted": 5,
+    "assessed_criteria": 2,
+    "unverified_criteria": 48,
+    "unverified_weight": 980,
+    "overall_score": null,
+    "conditional": "Accept either criterion alone: 2.5 confirmed; neither: existing summary remains unknown. No evidence of version-to-version numeric increase.",
+    "market_ranking_effect": "none",
+    "cohort_change": "none"
+  },
+  "approval_scope": "Exact proposed initial grades only. Strategist records accepted baseline, release SHA and history."
+}
