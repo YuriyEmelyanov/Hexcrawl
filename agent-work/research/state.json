@@ -65,15 +65,15 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "HX-RSR-SD-L1-PERSISTENT-SCENE-SITE",
+    "id": "HX-RSR-SD-L1-TRACKS-TO-LAIR",
     "game_id": "SD",
     "layer": "L1",
-    "action": "SD-CORE-063-L1: проверить на примере колодца, может ли мастер закрепить постоянное место из сцены, сохранить источник и повторить сохранение без дубля.",
-    "completion_condition": "Проверить отдельно существование маркера, связь с исходной сценой и повторное сохранение/импорт на точном SHA. Не создавать генератор сюжета."
+    "action": "SD-CORE-079-L1: подготовить след в одном гексе и скрытое логово в соседнем, перенести логово и проверить цель следа после импорта. Переиспользовать проверенные операции улики и имени; проверить только межгексовую связь.",
+    "completion_condition": "Определены адрес и сохранность источника следа, поведение при переносе и независимость обеих точек. Показ игрокам отложен до L2."
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-20T1230-SD-shop-specialty",
+  "last_completed_run": "2026-11-20T1330-SD-well",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -234,7 +234,8 @@
     "agent-work/research/runs/2026-11-20-shadowdark-poi-location-development-063625.json",
     "agent-work/research/runs/2026-11-20T1033-MB-layer-baseline.json",
     "agent-work/research/runs/2026-11-20T1130-research-SD-hazard-sign.json",
-    "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json"
+    "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
+    "agent-work/research/runs/2026-11-20T1330-SD-well.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -313,10 +314,10 @@
       ]
     ]
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-20T1330-SD-well.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-20T1330-SD-well.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -1055,7 +1056,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-20T09:32:28.604Z",
+  "updated_at": "2026-11-20T10:32:40.711Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1197,7 +1198,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-20T1230-SD-shop-specialty",
+  "last_run_id": "2026-11-20T1330-SD-well",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1253,31 +1254,88 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-20T1230-SD-shop-specialty",
+  "last_run": "2026-11-20T1330-SD-well",
   "checkpoint": {
-    "run_id": "2026-11-20T1230-SD-shop-specialty",
+    "run_id": "2026-11-20T1330-SD-well",
     "status": "completed",
-    "stage": "Shadowdark shop L1",
-    "last_successful_step": "Оба профиля, восемь независимых импортов; подтверждены отдельные адреса имени и заметки.",
+    "stage": "Shadowdark persistent well L1",
+    "base_sha": "964050fae62c524d55890fb9a0f7853ff9719d4d",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "previous_result_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
+    "summary": "Именованный колодец пережил три повторных открытия в Classic и Classic с Knave. При переносе имя осталось с маркером, запись об исходной сцене осталась в прежнем гексе. Проверка уникальности имени допускает вторую точку с другим названием.",
+    "selection": "Checkpoint требует установить, переживает ли перенос привязка к сцене. PF2 ретроспектива закрыта; новый скан Crows не нужен.",
+    "last_successful_step": "Оба прогона завершены; повторный импорт, перенос, конфликт одинаковых имён и второй маркер с иным именем проверены.",
     "failed_operation": null,
     "observed_error": null,
-    "resolved_diagnostic": {
-      "failed_operation": "node shop-sd-1230.mjs; setSelectedPoiKind('structure') in fixture",
-      "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'structure'",
-      "cause_status": "confirmed",
-      "recovery": "Выбран допустимый тип hut, затем оба сценария прошли полностью."
-    },
+    "recovered_errors": [
+      {
+        "operation": "github_create_tree / create_commit or update_ref during scoped CAS",
+        "error": "Something went wrong while executing your query on 2026-11-20T10:28:46Z. Please include `06BE:27781B:9FE0B1E:F2788EA:6B0020DD` when reporting this issue.",
+        "cause_status": "unknown",
+        "recovery": "Перечитаны SHA и claims, claim записан."
+      },
+      {
+        "operation": "node well.mjs / fixture",
+        "error": "ENOENT: no such file or directory, open '/workspace/scratch/8b2f69501890/app/test/fixtures/e6-water-editor.json'",
+        "error_code": "ENOENT",
+        "cause_status": "confirmed",
+        "recovery": "Добавлен исходный fixture, сверён blob SHA."
+      },
+      {
+        "operation": "node well.mjs / second authored name",
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n\\nfalse !== true",
+        "cause_status": "confirmed",
+        "recovery": "Проверена диагностика уникальности имени; переименование второй точки позволило проверить независимость от источника."
+      }
+    ],
     "stop_reason": "completion_condition_met",
     "cause_status": "confirmed",
     "needs_owner_action": false,
-    "owner_action": null,
+    "health": {
+      "start": [
+        {
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "title": "Исследователь HexCrawl",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+        },
+        {
+          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+          "title": "Команда HexCrawl",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+        }
+      ],
+      "end": [
+        {
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "title": "Исследователь HexCrawl",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+        },
+        {
+          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+          "title": "Команда HexCrawl",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+        }
+      ]
+    },
+    "saved_results": [
+      "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20.json",
+      "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20.md",
+      "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20T1330-SD-well-strategist.json"
+    ],
     "next_candidate": {
-      "id": "HX-RSR-SD-L1-PERSISTENT-SCENE-SITE",
+      "id": "HX-RSR-SD-L1-TRACKS-TO-LAIR",
       "game_id": "SD",
       "layer": "L1",
-      "action": "SD-CORE-063-L1: проверить на примере колодца, может ли мастер закрепить постоянное место из сцены, сохранить источник и повторить сохранение без дубля.",
-      "completion_condition": "Проверить отдельно существование маркера, связь с исходной сценой и повторное сохранение/импорт на точном SHA. Не создавать генератор сюжета."
-    }
+      "action": "SD-CORE-079-L1: подготовить след в одном гексе и скрытое логово в соседнем, перенести логово и проверить цель следа после импорта. Переиспользовать проверенные операции улики и имени; проверить только межгексовую связь.",
+      "completion_condition": "Определены адрес и сохранность источника следа, поведение при переносе и независимость обеих точек. Показ игрокам отложен до L2."
+    },
+    "result_ref": "agent-work/research/runs/2026-11-20T1330-SD-well.json",
+    "result_commit_sha": "780045503e591dc93d08343d01d78f62c3a96da4"
   },
   "latest_recent_survey_audit": {
     "ref": "agent-work/research/market/recent-survey-2026-11-14.json",
@@ -1968,7 +2026,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "result_commit_sha": "eb294462fbf4ae9de5dccf98d8b753105d7d0c4f",
+  "result_commit_sha": "780045503e591dc93d08343d01d78f62c3a96da4",
   "next_alignment_phase": {
     "phase_id": "HX-RSR-CREATE-TOP10-ALIGNMENT",
     "status": "pending_after_overall_top5_acceptance",
@@ -2171,8 +2229,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-20T09:32:28.604Z",
-  "last_bounded_completed_run": "2026-11-20T1230-SD-shop-specialty",
+  "last_run_at": "2026-11-20T10:32:40.711Z",
+  "last_bounded_completed_run": "2026-11-20T1330-SD-well",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -2317,7 +2375,7 @@
     "actual_implementation_retested": false,
     "full_game_accepted": false
   },
-  "last_result_commit_sha": "eb294462fbf4ae9de5dccf98d8b753105d7d0c4f",
+  "last_result_commit_sha": "780045503e591dc93d08343d01d78f62c3a96da4",
   "verification_readback": {
     "status": "exact",
     "data_commit": "eb294462fbf4ae9de5dccf98d8b753105d7d0c4f",
@@ -3111,7 +3169,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "last_run_outcome": "completed_shadowdark_shop_L1",
+  "last_run_outcome": "completed_shadowdark_scene_well_L1",
   "latest_PF2_GMC3_applicability": {
     "status": "checkpoint_available_sections_screened_printed_chapter_incomplete",
     "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
@@ -4277,29 +4335,86 @@
     "owner_action": null
   },
   "current_research_checkpoint": {
-    "run_id": "2026-11-20T1230-SD-shop-specialty",
+    "run_id": "2026-11-20T1330-SD-well",
     "status": "completed",
-    "stage": "Shadowdark shop L1",
-    "last_successful_step": "Оба профиля, восемь независимых импортов; подтверждены отдельные адреса имени и заметки.",
+    "stage": "Shadowdark persistent well L1",
+    "base_sha": "964050fae62c524d55890fb9a0f7853ff9719d4d",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "previous_result_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
+    "summary": "Именованный колодец пережил три повторных открытия в Classic и Classic с Knave. При переносе имя осталось с маркером, запись об исходной сцене осталась в прежнем гексе. Проверка уникальности имени допускает вторую точку с другим названием.",
+    "selection": "Checkpoint требует установить, переживает ли перенос привязка к сцене. PF2 ретроспектива закрыта; новый скан Crows не нужен.",
+    "last_successful_step": "Оба прогона завершены; повторный импорт, перенос, конфликт одинаковых имён и второй маркер с иным именем проверены.",
     "failed_operation": null,
     "observed_error": null,
-    "resolved_diagnostic": {
-      "failed_operation": "node shop-sd-1230.mjs; setSelectedPoiKind('structure') in fixture",
-      "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'structure'",
-      "cause_status": "confirmed",
-      "recovery": "Выбран допустимый тип hut, затем оба сценария прошли полностью."
-    },
+    "recovered_errors": [
+      {
+        "operation": "github_create_tree / create_commit or update_ref during scoped CAS",
+        "error": "Something went wrong while executing your query on 2026-11-20T10:28:46Z. Please include `06BE:27781B:9FE0B1E:F2788EA:6B0020DD` when reporting this issue.",
+        "cause_status": "unknown",
+        "recovery": "Перечитаны SHA и claims, claim записан."
+      },
+      {
+        "operation": "node well.mjs / fixture",
+        "error": "ENOENT: no such file or directory, open '/workspace/scratch/8b2f69501890/app/test/fixtures/e6-water-editor.json'",
+        "error_code": "ENOENT",
+        "cause_status": "confirmed",
+        "recovery": "Добавлен исходный fixture, сверён blob SHA."
+      },
+      {
+        "operation": "node well.mjs / second authored name",
+        "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n\\nfalse !== true",
+        "cause_status": "confirmed",
+        "recovery": "Проверена диагностика уникальности имени; переименование второй точки позволило проверить независимость от источника."
+      }
+    ],
     "stop_reason": "completion_condition_met",
     "cause_status": "confirmed",
     "needs_owner_action": false,
-    "owner_action": null,
+    "health": {
+      "start": [
+        {
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "title": "Исследователь HexCrawl",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+        },
+        {
+          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+          "title": "Команда HexCrawl",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+        }
+      ],
+      "end": [
+        {
+          "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+          "title": "Исследователь HexCrawl",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+        },
+        {
+          "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+          "title": "Команда HexCrawl",
+          "is_enabled": true,
+          "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+        }
+      ]
+    },
+    "saved_results": [
+      "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20.json",
+      "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20.md",
+      "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20T1330-SD-well-strategist.json"
+    ],
     "next_candidate": {
-      "id": "HX-RSR-SD-L1-PERSISTENT-SCENE-SITE",
+      "id": "HX-RSR-SD-L1-TRACKS-TO-LAIR",
       "game_id": "SD",
       "layer": "L1",
-      "action": "SD-CORE-063-L1: проверить на примере колодца, может ли мастер закрепить постоянное место из сцены, сохранить источник и повторить сохранение без дубля.",
-      "completion_condition": "Проверить отдельно существование маркера, связь с исходной сценой и повторное сохранение/импорт на точном SHA. Не создавать генератор сюжета."
-    }
+      "action": "SD-CORE-079-L1: подготовить след в одном гексе и скрытое логово в соседнем, перенести логово и проверить цель следа после импорта. Переиспользовать проверенные операции улики и имени; проверить только межгексовую связь.",
+      "completion_condition": "Определены адрес и сохранность источника следа, поведение при переносе и независимость обеих точек. Показ игрокам отложен до L2."
+    },
+    "result_ref": "agent-work/research/runs/2026-11-20T1330-SD-well.json",
+    "result_commit_sha": "780045503e591dc93d08343d01d78f62c3a96da4"
   },
   "latest_SD_L1_poi_location_development": {
     "run_id": "2026-11-20-shadowdark-poi-location-development-063625",
@@ -4411,5 +4526,36 @@
     "handoff_ref": "agent-work/research/handoffs/2026-11-20T1230-SD-shop-specialty-strategist.json",
     "result_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
     "summary": "Мастер переименовал лавку и восстановил имя при повторном открытии. При переносе лавки из 2,0 в 2,-1 имя последовало за ней. Вручную записанная специализация плотника осталась у гекса 2,0, даже когда там появилась башня."
+  },
+  "previous_checkpoint_before_SD_well": {
+    "run_id": "2026-11-20T1230-SD-shop-specialty",
+    "status": "completed",
+    "stage": "Shadowdark shop L1",
+    "last_successful_step": "Оба профиля, восемь независимых импортов; подтверждены отдельные адреса имени и заметки.",
+    "failed_operation": null,
+    "observed_error": null,
+    "resolved_diagnostic": {
+      "failed_operation": "node shop-sd-1230.mjs; setSelectedPoiKind('structure') in fixture",
+      "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'structure'",
+      "cause_status": "confirmed",
+      "recovery": "Выбран допустимый тип hut, затем оба сценария прошли полностью."
+    },
+    "stop_reason": "completion_condition_met",
+    "cause_status": "confirmed",
+    "needs_owner_action": false,
+    "owner_action": null,
+    "next_candidate": {
+      "id": "HX-RSR-SD-L1-PERSISTENT-SCENE-SITE",
+      "game_id": "SD",
+      "layer": "L1",
+      "action": "SD-CORE-063-L1: проверить на примере колодца, может ли мастер закрепить постоянное место из сцены, сохранить источник и повторить сохранение без дубля.",
+      "completion_condition": "Проверить отдельно существование маркера, связь с исходной сценой и повторное сохранение/импорт на точном SHA. Не создавать генератор сюжета."
+    }
+  },
+  "latest_SD_well": {
+    "summary": "Именованный колодец пережил три повторных открытия в Classic и Classic с Knave. При переносе имя осталось с маркером, запись об исходной сцене осталась в прежнем гексе. Проверка уникальности имени допускает вторую точку с другим названием.",
+    "matrix_ref": "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-20T1330-SD-well-strategist.json",
+    "result_ref": "agent-work/research/runs/2026-11-20T1330-SD-well.json"
   }
 }
