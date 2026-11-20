@@ -32,3 +32,7 @@ extend into an adjacent cell with full dry support when the visible spill avoids
 protected features and existing small-lake masks. The same derived mask is
 used in the draft, the accepted map, and PNG. Clipping must leave one connected
 body of water. Interior islands are permitted.
+
+Import checks each stored small-lake shoreline against the incoming map's
+one-mile geometry even when the six-mile map is open. A conflict identifies
+the saved footprint and leaves the open map and both history stacks intact.

@@ -409,7 +409,40 @@ try{
  await showOneMile();
  await smallLake.waitFor();
  assert.deepEqual(await maskCells(smallLake),fringe);
- manifest.cases.push({id:'HX056-safe-shore-spill',status:'pass',selectedCells:['10,-9'],maskCells:fringe,pngIncludesSpill:true,roundTrip:true,existingGeographyUnchanged:true});
+
+ // R05: mutate only the saved footprint. The same river conflict rejected
+ // in the editor above must leave the open map and both timelines intact.
+ const invalidLake=structuredClone(shoreAccepted);
+ invalidLake.map.physicalGrid.smallLakes.lakes[0].cells=[{q:-4,r:-28}];
+ await lakeCell('10,-9').scrollIntoViewIfNeeded();
+ await lakeCell('10,-9').press('Enter');
+ await button('Remove small lake').click();
+ await smallLake.waitFor({state:'detached'});
+ const lakeRemoved=await snap();
+ await button('Undo').click();
+ await smallLake.waitFor();
+ let importRefusal='';
+ for(const scale of ['1','6']){
+  await step.selectOption(scale);
+  const original=await snap(), alertsBefore=alerts.length;
+  assert.equal(await button('Redo').isEnabled(),true);
+  await loadWorld(Buffer.from(JSON.stringify(invalidLake)));
+  assert.equal(alerts.length,alertsBefore+1);
+  importRefusal=alerts.pop();
+  assert.match(importRefusal,/map\.physicalGrid\.smallLakes\.lakes\[0\]\.cells: The small lake overlaps river #1\.\)\. Your current map is intact\./);
+  assert.deepEqual(await snap(),original,`conflicting import preserves the open document at scale ${scale}`);
+  assert.equal(await step.inputValue(),scale);
+  assert.equal(await button('Redo').isEnabled(),true);
+ }
+ await showOneMile();
+ await button('Redo').click();
+ await smallLake.waitFor({state:'detached'});
+ assert.deepEqual((await snap()).map,lakeRemoved.map);
+ await button('Undo').click();
+ await smallLake.waitFor();
+ assert.deepEqual(await maskCells(smallLake),fringe);
+ await shot('small-lake-after-rejected-import.jpg');
+ manifest.cases.push({id:'HX056-safe-shore-spill',status:'pass',selectedCells:['10,-9'],maskCells:fringe,pngIncludesSpill:true,roundTrip:true,existingGeographyUnchanged:true,conflictingImportRejectedAt:[1,6],importRefusal,undoRedoPreserved:true});
 
  const waterEditorWorld=await fs.readFile(new URL('../fixtures/e6-water-editor.json',import.meta.url));
  await loadWorld(waterEditorWorld);

@@ -1290,6 +1290,36 @@ function validateImportedOneMile(data:HexcrawlSaveData):void{
  validateDetail1Document(data.map.physicalGrid,data.version,undefined,state=>validateOneMileMap({...data.map,toponymSeed:data.map.toponyms?.seed??legacyToponymSeed(data.map.regions),
   hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),biomeOverrideByHexKey:new Map(Object.entries(data.map.biomeOverrideByHexKey??{})),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()},state));
 }
+
+/** Use the same world geometry for the editor and for a detached import. */
+function smallLakeProtectionForMap(map:OneMileDocumentMap,state:Detail1State):SmallLakeProtection|null{
+ const origin=state.grid.origin,grid=createDetailGrid(1,origin),detail=state.geometryRefinement;
+ const world=(x:number,y:number)=>detailSourcePixelToWorld({x,y},origin);
+ const hidden=new Set([...getLakeEdgeKeys(map.regions.flatMap(r=>r.hexes),map.hexTerrainByKey),...getSeaEdgeKeys(map.hexTerrainByKey)]);
+ const source=detail&&normalizeRefinementRiverSource({rivers:map.rivers,marks:regionMarkKeys(map),origin});
+ const paths=detail&&source?.status==='prepared'
+  ?refinementRiverDisplayPaths(source,detail,hidden).painted
+  :map.rivers.flatMap(river=>renderRiverSegments(river,0,0,hidden).map(r=>({
+   riverId:river.id,sourceEdgeKey:r.key,fullness:r.fullness,points:[world(r.x1,r.y1),world(r.x2,r.y2)]
+  })));
+ const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f,1)]))});
+ if(water.status==='error')return null;
+ const baseRoads=renderRoadSegments(map.roads,0,0),refined=detail?.roads;
+ const segments=new Set(refined?.roads.map(r=>JSON.stringify([r.roadId,r.sourceRoadSegmentKey])));
+ const crossings=new Set(refined?.crossings.map(c=>c.key));
+ return {
+  water,
+  roads:[...refined?.roads.map(r=>({ref:String(r.roadId),points:r.points}))??[],
+   ...baseRoads.filter(r=>!segments.has(JSON.stringify([r.roadId,r.segmentKey]))).map(r=>({ref:String(r.roadId),points:[world(r.x1,r.y1),world(r.x2,r.y2)]}))],
+  crossings:[...refined?.crossings.map(c=>({ref:c.key,points:c.bankPath}))??[],
+   ...renderRiverCrossings(baseRoads,map.crossings).filter(c=>!crossings.has(c.key)).map(c=>({ref:c.key,points:[world(c.x,c.y)]}))],
+  anchors:state.poiFootprints.flatMap(fp=>[
+   ...(!detailFootprintHasOutline(fp,grid)?[{ref:fp.poiId,point:detailFootprintWorldAnchor(fp,grid)}]:[]),
+   ...fp.attachments.map(a=>({ref:fp.poiId,point:a.kind==='route'?a.entry:a.contact})),
+  ]),
+ };
+}
+
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   validateDetail1Document(map.physicalGrid,map.physicalGrid?.version===4?16:map.physicalGrid?15:10,undefined,state=>validateOneMileMap(map,state));
   map=withLegacySeas(map);
@@ -15410,6 +15440,20 @@ export function App() {
       };
       // Everything that can fail (including deep copies) is prepared before the first setter.
       const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
+      const importedLakes=prepared.map.physicalGrid?.smallLakes?.lakes;
+      if(importedLakes?.length){
+        const path='map.physicalGrid.smallLakes';
+        let scene:Detail1State;
+        try{scene=prepareAutomaticOneMileScene(prepared.map);}
+        catch(error){throw new SaveValidationError(path,automaticSceneFailureMessage(error,language));}
+        const protection=smallLakeProtectionForMap(prepared.map,scene);
+        if(!protection)throw new SaveValidationError(path,language==='ru'?'Не удалось проверить существующие водные объекты.':'Could not validate the existing waterways.');
+        for(const [index,lake] of importedLakes.entries()){
+          const {conflict}=prepareSmallLakeShore(lake,prepared.map.toponymSeed,scene.grid.origin,protection);
+          if(conflict)throw new SaveValidationError(`${path}.lakes[${index}].cells`,smallLakeConflictText(conflict));
+        }
+        preparedAutomaticSceneRef.current={map:prepared.map,state:scene};
+      }
       setUndoHistory(current=>[...current,transaction].slice(-100)); setRedoHistory([]);
       applyPreparedDocument(prepared); setEditMode(false); setLegacyNotice(!imported.generation); setGenerationError(null); trackGoal('import_json');
     } catch(error) {
@@ -16483,31 +16527,9 @@ export function App() {
   const acceptedSmallLakes=physicalGrid?.smallLakes;
   const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
   const needsSmallLakeProtection=!!smallLakeDraft||!!acceptedSmallLakes?.lakes.length;
-  const smallLakeProtection=useMemo(():SmallLakeProtection|null=>{
-    if(!needsSmallLakeProtection||fineDisplay?.viewStep!==1)return null;
-    const origin=fineDisplay.grid.origin,grid=createDetailGrid(1,origin);
-    const world=(x:number,y:number)=>detailSourcePixelToWorld({x:x-riverOffset.x,y:y-riverOffset.y},origin);
-    const detail=fineDisplay.geometryRefinement;
-    const paths=detail&&refinedSource?.status==='prepared'
-      ?refinementRiverDisplayPaths(refinedSource,detail,hiddenRiverEdgeKeys).painted
-      :riverSegments.map(r=>({riverId:Number(r.key.split('-')[2]),sourceEdgeKey:r.key,fullness:r.fullness,points:[world(r.x1,r.y1),world(r.x2,r.y2)]}));
-    const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f,1)]))});
-    if(water.status==='error')return null;
-    const refined=fineDisplay.geometryRefinement?.roads;
-    const segments=new Set(refined?.roads.map(r=>JSON.stringify([r.roadId,r.sourceRoadSegmentKey])));
-    const crossings=new Set(refined?.crossings.map(c=>c.key));
-    return {
-      water,
-      roads:[...refined?.roads.map(r=>({ref:String(r.roadId),points:r.points}))??[],
-        ...roadSegments.filter(r=>!segments.has(JSON.stringify([r.roadId,r.segmentKey]))).map(r=>({ref:String(r.roadId),points:[world(r.x1,r.y1),world(r.x2,r.y2)]}))],
-      crossings:[...refined?.crossings.map(c=>({ref:c.key,points:c.bankPath}))??[],
-        ...renderedCrossings.filter(c=>!crossings.has(c.key)).map(c=>({ref:c.key,points:[world(c.x,c.y)]}))],
-      anchors:fineDisplay.poiFootprints.flatMap(fp=>[
-        ...(!detailFootprintHasOutline(fp,grid)?[{ref:fp.poiId,point:detailFootprintWorldAnchor(fp,grid)}]:[]),
-        ...fp.attachments.map(a=>({ref:fp.poiId,point:a.kind==='route'?a.entry:a.contact})),
-      ]),
-    };
-  },[needsSmallLakeProtection,fineDisplay,refinedSource,hiddenRiverEdgeKeys,riverSegments,roadSegments,renderedCrossings,riverOffset]);
+  const smallLakeProtection=useMemo(()=>needsSmallLakeProtection&&fineDisplay?.viewStep===1
+    ?smallLakeProtectionForMap(captureMap(),fineDisplay):null,
+    [needsSmallLakeProtection,fineDisplay,regions,rivers,roads,crossings,riverFeatureOverrides,hexTerrainByKey]);
   const smallLakeCoverage=useMemo(()=>new Map(fineCells.map(cell=>[hexKey(cell.cell),cell])),[fineCells]);
   const acceptedLakeArtwork=useMemo(()=>{
     const views:SmallLakeView[]=[],reserved=new Set<string>();
