@@ -71,3 +71,8 @@ If restoring a checkpoint conflicts with a retained small lake, the same
 confirmation lists that lake along with any that lose dry support.
 An incompatible edit to a road or point is rejected before recording history.
 The editor keeps the selected hexes outlined when a draft fails validation.
+
+For compatible saves without stored shore cells, deleting a small lake or
+editing source water captures each surviving lake's visible fringe before
+changing its neighbours. Empty fringes are stored explicitly. Undo restores
+the original records, and redo or reloading the edited map preserves the coast.

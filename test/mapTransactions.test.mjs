@@ -456,6 +456,45 @@ test('restoring a region checkpoint confirms only lakes conflicting with the res
   assert.deepEqual(alerts,[]);
   assert.deepEqual(stable(h.render()),after);
 });
+test('removing a neighbouring lake preserves a legacy shoreline across deletion, water editing and reload',async()=>{
+  const {h,alerts}=setup();
+  h.render().addFallbackTractToMap({q:0,r:0});
+  h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+  const retained={id:1,origin:'manual',cells:[{q:-8,r:-3}]};
+  const adjacent={id:2,origin:'manual',cells:[{q:-8,r:-4},{q:-7,r:-4},{q:-6,r:-4},{q:-6,r:-3}]};
+  const pick=cell=>assert.ok(h.render().pickFine(cell,false,h.render().getDocumentRevision()));
+  const mask=()=>serial(h.render().acceptedLakeArtwork.views.find(view=>view.lake.id===1).maskCells);
+  assert.ok(h.render().switchFineStep(1));
+  pick(retained.cells[0]);h.render().startSmallLake();h.render().commitSmallLake();
+  assert.ok(h.render().switchFineStep(6));
+  const legacy=stable(h.render());
+  legacy.map.physicalGrid.smallLakes={nextId:3,lakes:[retained,adjacent]};
+  for(const action of ['remove','water']){
+    await load(h,legacy);
+    assert.ok(h.render().switchFineStep(1));
+    assert.deepEqual(mask(),retained.cells);
+    if(action==='remove'){
+      pick(adjacent.cells[0]);h.render().removeSelectedSmallLake();
+    }else{
+      assert.ok(h.render().switchFineStep(6));
+      h.render().setEditMode(true);h.render().setSelectedHex({q:-1,r:0});
+      assert.ok(h.render().startWaterDraft('lake'));
+      assert.equal(h.render().finishWaterDraft(),false);
+      const app=h.render();
+      assert.deepEqual(serial(app.waterPreview.plan.smallLakeLosses.map(l=>l.id)),[2]);
+      app.changeWaterDraft(app.waterDraft,{options:{acceptedLosses:app.waterPreview.plan.losses.map(l=>l.id)},preview:true});
+      assert.ok(h.render().finishWaterDraft(h.render().waterDraft,true));
+    }
+    const after=stable(h.render());
+    assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:3,lakes:[{...retained,shoreCells:[]}]});
+    h.render().undoMap();
+    assert.deepEqual(stable(h.render()).map.physicalGrid.smallLakes,legacy.map.physicalGrid.smallLakes);
+    h.render().redoMap();assert.deepEqual(stable(h.render()),after);
+    await load(h,after);
+    assert.ok(h.render().switchFineStep(1));assert.deepEqual(mask(),retained.cells);
+    assert.deepEqual(alerts,[]);
+  }
+});
 test('expanding into a dry neighbour keeps the accepted manual shore, including legacy saves',async()=>{
   const {h,alerts}=setup();
   const source=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
