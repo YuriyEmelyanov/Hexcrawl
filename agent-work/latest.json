@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-20T0700-programmer-HX-BL-056-shore-spill",
+  "run_id": "2026-11-20T0800-programmer-HX-BL-056-import-shore",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
   "status": "implementation_checkpoint",
@@ -59,7 +59,7 @@
   "result_path": "agent-work/results/2026-11-20T0237-programmer-HX-BL-056-lake-loss.json",
   "handoff_commit_sha": "0d445c70a98c2552c9662cdc449e2f7f96f4535f",
   "active_claim": null,
-  "next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03.",
+  "next_step": "Реализовать автоматические малые озёра R03 на новых пригодных гексах. Сравнить полную сухую опору до и после штатной генерации, использовать независимый детерминированный поток, проверить связный берег по тем же правилам и сохранить его в транзакции. Показать одинаковые озёра при генерации из 1 и 6 миль на одной настоящей карте.",
   "owner_decisions_needed": [],
   "release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
@@ -89,7 +89,7 @@
   "score_update_task_id": "HX-BL-021",
   "score_update_release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "В утверждённой HX-BL-056 следующий готовый этап R02, слот программиста и задача заняты этим запуском через CAS. Пакет остаётся в draft PR и ожидает завершения F1.",
+  "role_selection_reason": "R02/R05 в утверждённой HX-BL-056. После предыдущего результата оставался воспроизводимый дефект импорта. Собственный CAS claim удерживал задачу и общий слот программиста.",
   "score_update_result_ref": "agent-work/results/2026-11-20T0000-strategist-score-PR509.json",
   "score_update_completed_at": "2026-11-19T21:04:32.717Z",
   "score_update_delta": null,
@@ -113,13 +113,13 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-20T04:00:50.901Z",
+      "checked_at": "2026-11-20T04:58:53.276Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
     },
     "end": {
-      "checked_at": "2026-11-20T04:20:40.507Z",
+      "checked_at": "2026-11-20T05:17:00.273Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
@@ -562,7 +562,7 @@
   "deployment_url": "https://app.hexcrawl.ru/",
   "next_task_execution_allowed": true,
   "last_release_pr": 507,
-  "last_material_result_path": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
+  "last_material_result_path": "agent-work/results/2026-11-20T0800-programmer-HX-BL-056-import-shore.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -729,7 +729,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Чистовая спецификация готова. Публикация проверенного пакета согласуется отдельно.",
-  "updated_at": "2026-11-20T04:20:52.807Z",
+  "updated_at": "2026-11-20T05:17:13.080Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1409,13 +1409,13 @@
   "previous_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-20T03:00:51.760Z",
+      "checked_at": "2026-11-20T04:00:50.901Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
     },
     "end": {
-      "checked_at": "2026-11-20T03:17:53.604Z",
+      "checked_at": "2026-11-20T04:20:40.507Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
@@ -2334,7 +2334,7 @@
   "authorization_status": "Implementation within approved F1 and closed interview; no publication approval.",
   "completed_at": "2026-11-19T16:31:41.642Z",
   "score_changed": false,
-  "next_stage_id": "F1_import_shore_validation_then_automatic_generation",
+  "next_stage_id": "F1_automatic_small_lakes_R03",
   "score_evidence_updated": true,
   "current_stage_id": "HX059-responsive-preparation",
   "implementation_started": true,
@@ -7847,7 +7847,7 @@
   },
   "published_scope": "MYTH-CARD1 full72RU reference slice; overall041 has remaining categories",
   "public_book_corpus_approval_scope": "Only exact72MC1 corpus/tree98970e; NATURE2/other corpora excluded",
-  "previous_run_id": "2026-11-20T0600-programmer-HX-BL-056-water-contacts",
+  "previous_run_id": "2026-11-20T0700-programmer-HX-BL-056-shore-spill",
   "next_role_after_approval": "programmer",
   "latest_MC1_EN_intake": {
     "schema_version": 1,
@@ -8215,7 +8215,7 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
+  "latest_result_ref": "agent-work/results/2026-11-20T0800-programmer-HX-BL-056-import-shore.json",
   "checks": {
     "run_id": 44119549919,
     "status": "success",
@@ -14819,7 +14819,7 @@
   "draft_clarifications_closed": true,
   "unchanged_draft_rewrite_needed": false,
   "task_next_role": "programmer",
-  "task_next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03.",
+  "task_next_step": "Реализовать автоматические малые озёра R03 на новых пригодных гексах. Сравнить полную сухую опору до и после штатной генерации, использовать независимый детерминированный поток, проверить связный берег по тем же правилам и сохранить его в транзакции. Показать одинаковые озёра при генерации из 1 и 6 миль на одной настоящей карте.",
   "last_visible_release_D2_confirmation": {
     "run_id": "2026-11-15T1701-interviewer-GEO2-visible-D2",
     "review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
@@ -15123,19 +15123,19 @@
   "next_ready_work": {
     "task_id": "HX-BL-056",
     "role": "programmer",
-    "stage_id": "F1_import_shore_validation_then_automatic_generation",
+    "stage_id": "F1_automatic_small_lakes_R03",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
-    "head_tree_sha": "fb559dcd2a4305cbd92c00c012985b86af2255e5",
+    "head_sha": "d316addd2ba8fa2a1a8384ab18611e14ae21121b",
+    "head_tree_sha": "af285e564d7cfa751752a3f4cde59557f5a6fb18",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/safe-spill-e827f69/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604",
-    "next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03."
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/import-shore-d316add/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44678549152",
+    "next_step": "Реализовать автоматические малые озёра R03 на новых пригодных гексах. Сравнить полную сухую опору до и после штатной генерации, использовать независимый детерминированный поток, проверить связный берег по тем же правилам и сохранить его в транзакции. Показать одинаковые озёра при генерации из 1 и 6 миль на одной настоящей карте."
   },
   "previous_primary_before_HX_BL_055": {
     "run_id": "2026-11-16T0403-interviewer-new-biomes-D1",
@@ -16194,8 +16194,8 @@
     }
   ],
   "task_status": "опубликована",
-  "current_result_ref": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
-  "result_commit_sha": "fb91312fd8a4405bf8f82c2ab889d5bd484dc552",
+  "current_result_ref": "agent-work/results/2026-11-20T0800-programmer-HX-BL-056-import-shore.json",
+  "result_commit_sha": "cbd80993763a9d8fad24924e16e2c3a9bbe1c884",
   "independent_review_status": "accepted_exact_head",
   "execution_locks_ref": "agent-work/execution-locks.json",
   "execution_lock_generation": 233,
@@ -17177,33 +17177,33 @@
   "latest_HX_BL_056_implementation": {
     "task_id": "HX-BL-056",
     "role": "programmer",
-    "stage_id": "F1_import_shore_validation_then_automatic_generation",
+    "stage_id": "F1_automatic_small_lakes_R03",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
-    "head_tree_sha": "fb559dcd2a4305cbd92c00c012985b86af2255e5",
+    "head_sha": "d316addd2ba8fa2a1a8384ab18611e14ae21121b",
+    "head_tree_sha": "af285e564d7cfa751752a3f4cde59557f5a6fb18",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/safe-spill-e827f69/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604",
-    "next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03.",
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/import-shore-d316add/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44678549152",
+    "next_step": "Реализовать автоматические малые озёра R03 на новых пригодных гексах. Сравнить полную сухую опору до и после штатной генерации, использовать независимый детерминированный поток, проверить связный берег по тем же правилам и сохранить его в транзакции. Показать одинаковые озёра при генерации из 1 и 6 миль на одной настоящей карте.",
     "status": "implementation_checkpoint",
-    "result_ref": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
+    "result_ref": "agent-work/results/2026-11-20T0800-programmer-HX-BL-056-import-shore.json",
     "forecast": {
       "remaining_team_runs": [
-        4,
-        11
+        3,
+        10
       ],
       "excludes": [
         "owner_publication_wait",
         "CI_queue_wait"
       ],
-      "basis": "Ручная форма и естественный выход, проверка связности берега, касание крупного озера и экспорт имеют сквозное подтверждение. Остались атомарная проверка импорта, автогенерация R03, итоговый браузерный пакет, независимая приёмка, исправления и выпуск."
+      "basis": "Импорт добавил отказ без изменений карты и истории. Остались автоматический выбор, сквозное подтверждение и итоговая приёмка с возможными исправлениями, затем отдельно разрешённый выпуск."
     },
-    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604/artifacts/14600813620",
+    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44678549152/artifacts/14602604978",
     "review_ready": false
   }
 }
