@@ -1,0 +1,99 @@
+{
+  "run_id": "2026-11-20T1230-SD-shop-specialty",
+  "status": "completed",
+  "stage": "Shadowdark shop L1",
+  "last_successful_step": "Оба профиля, восемь независимых импортов; подтверждены отдельные адреса имени и заметки.",
+  "failed_operation": null,
+  "observed_error": null,
+  "resolved_diagnostic": {
+    "failed_operation": "node shop-sd-1230.mjs; setSelectedPoiKind('structure') in fixture",
+    "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'structure'",
+    "cause_status": "confirmed",
+    "recovery": "Выбран допустимый тип hut, затем оба сценария прошли полностью."
+  },
+  "stop_reason": "completion_condition_met",
+  "cause_status": "confirmed",
+  "needs_owner_action": false,
+  "owner_action": null,
+  "next_candidate": {
+    "id": "HX-RSR-SD-L1-PERSISTENT-SCENE-SITE",
+    "game_id": "SD",
+    "layer": "L1",
+    "action": "SD-CORE-063-L1: проверить на примере колодца, может ли мастер закрепить постоянное место из сцены, сохранить источник и повторить сохранение без дубля.",
+    "completion_condition": "Проверить отдельно существование маркера, связь с исходной сценой и повторное сохранение/импорт на точном SHA. Не создавать генератор сюжета."
+  },
+  "base_sha": "6a286108fbeea82c14219a60a1ef7dd17c464e4e",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "finding": "Мастер переименовал лавку и восстановил имя при повторном открытии. При переносе лавки из 2,0 в 2,-1 имя последовало за ней. Вручную записанная специализация плотника осталась у гекса 2,0, даже когда там появилась башня.",
+  "selection": "Продолжен незакрытый SD checkpoint. География DND5 и SD-031/041 уже сверены; новый источник не нужен.",
+  "saved_results": [
+    "agent-work/research/requirements/SD-CORE-L1-shop-2026-11-20.json",
+    "agent-work/research/requirements/SD-CORE-L1-shop-2026-11-20.md",
+    "agent-work/research/requirements/SD-CORE-L1-shop-2026-11-20-probe.mjs",
+    "agent-work/research/handoffs/2026-11-20T1230-SD-shop-specialty-strategist.json"
+  ],
+  "automation_health": {
+    "start": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        {
+          "id": "39dbffef-5220-8323-8351-ed248b786b8e",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T09:30:00Z",
+          "started_at": "2026-11-20T09:29:29.529095Z",
+          "completed_at": null,
+          "chat_ref": null
+        }
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        {
+          "id": "5c66a06e-c48c-8323-a383-42fbb3d06dff",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T09:00:00Z",
+          "started_at": "2026-11-20T09:01:32.352013Z",
+          "completed_at": "2026-11-20T09:09:45.611100Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        }
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        {
+          "id": "39dbffef-5220-8323-8351-ed248b786b8e",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T09:30:00Z",
+          "started_at": "2026-11-20T09:29:29.529095Z",
+          "completed_at": null,
+          "chat_ref": null
+        }
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        {
+          "id": "5c66a06e-c48c-8323-a383-42fbb3d06dff",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T09:00:00Z",
+          "started_at": "2026-11-20T09:01:32.352013Z",
+          "completed_at": "2026-11-20T09:09:45.611100Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        }
+      ]
+    ]
+  }
+}

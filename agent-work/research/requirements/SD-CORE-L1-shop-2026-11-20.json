@@ -1,0 +1,165 @@
+{
+  "run_id": "2026-11-20T1230-SD-shop-specialty",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "release_ref": "agent-work/evidence/HX-BL-021-F1/release-d6daa2c/publication.json",
+  "rows": [
+    {
+      "id": "SD-CORE-059-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 138,
+        "printed_pages": [
+          138,
+          139
+        ],
+        "pdf_page": 142,
+        "pdf_pages": [
+          142,
+          143
+        ],
+        "section": "Shops; Shop Generator; Interesting Customer",
+        "paraphrase": "Качество магазина определяет таблицу специализации: poord12,standardd10,wealthyd10. Название/особенность строятся изd20 колонок; Interesting Customer используетd4 строку иd4 колонку и иногда содержит дополнительные dice counts. Это не каталог товаров, stock simulation или обязательное наличие предметов.",
+        "normative_kind": "generator_linked_content",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-059",
+        "locator": {
+          "printed": [
+            138,
+            139
+          ],
+          "pdf": [
+            142,
+            143
+          ],
+          "section": "Shops; Shop Generator; Interesting Customer"
+        },
+        "parameters": {
+          "shop_type_dice": {
+            "poor": "d12",
+            "standard": "d10",
+            "wealthy": "d10"
+          },
+          "name_feature_die": "d20 columns; explicit recipe",
+          "customer_die": "d4 row,d4 column",
+          "customer_followup_counts": [
+            "1d10 children",
+            "1d4 priests"
+          ],
+          "locators": [
+            "printed138/PDF142 Shops",
+            "printed139/PDF143 Shop Generator; Interesting Customer"
+          ]
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-059",
+        "normative_kind": "generator_linked_content",
+        "applicability": "Shadowdark Core, региональная карта/гекскроул; внутренние карты данжей и поселений только как linked-site content. Применять при явном выборе данного профиля ведущим.",
+        "layer": "L1",
+        "trigger_or_user_action": "Назвать конкретную лавку и выбрать её специализацию",
+        "inputs_and_units": {
+          "site": "2,0",
+          "name": "Copper Shop",
+          "rename": "Copper Keel",
+          "quality": "standard",
+          "fixed_die": "d10=7",
+          "specialty": "shipwright/carpenter",
+          "source_of_value": "supplier corpus historical case SD-CORE-059-L1-AC01; supplied manually during product probe"
+        },
+        "product_operation": "Назвать конкретную лавку и выбрать её специализацию",
+        "expected_output": "У S имя «Медная лавка» и специализация инструменты; случайный посетитель и ассортимент не созданы.",
+        "constraints_and_exceptions": [
+          "Пример синтетический. Генератор NPC/покупателей, наличия товаров, остатков и финансов исключён.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "У отмеченной постройки есть имя и выбранная специализация плотника",
+            "when": "Переименовать и открыть JSON в новом экземпляре приложения",
+            "expected": "У постройки новое имя; выбранная специализация по-прежнему доступна по исходному адресу."
+          },
+          {
+            "given": "Мастер исправляет местоположение этой же лавки",
+            "when": "Перенести и снова открыть карту",
+            "expected": "Имя и услуга, если записаны как свойства лавки, следуют за ней. Контрольная замена на старом месте не наследует услугу."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.roll_table_resolution"
+        ],
+        "unresolved_parameters": [
+          "Многостолбцовый name/known-for recipe не уточнён; наличие/stock/цены товаров отсутствуют."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Магазины и посетители как связанный контент: Имя и специализация конкретного магазина допустимы; генерация посетителя/NPC и ассортимент/stock исключены.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Назвать конкретную лавку и выбрать её специализацию",
+      "map_object_or_state": {
+        "place": "S",
+        "synthetic_name": "Медная лавка",
+        "specialization": "tools"
+      },
+      "expected_result": "У S имя «Медная лавка» и специализация инструменты; случайный посетитель и ассортимент не созданы.",
+      "canonical_rule_ids": [
+        "content.place_description",
+        "content.roll_table_resolution"
+      ],
+      "binding_ids": [
+        "SD-CORE-059-L1"
+      ],
+      "previous_product_verdict": "unverified",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "shop-runtime",
+        "shop-surface"
+      ],
+      "result": "Мастер переименовал лавку и восстановил имя при повторном открытии. При переносе лавки из 2,0 в 2,-1 имя последовало за ней. Вручную записанная специализация плотника осталась у гекса 2,0, даже когда там появилась башня.",
+      "remaining": "Отдельное присвоение результата специализации лавке по SD на проверенных путях не обнаружено. Веб-интерфейс в браузере не испытывался."
+    }
+  ],
+  "verification": {
+    "matching_git_blobs": 106,
+    "release_runtime": "Node 24.22.3, generation harness and real Classic editor callbacks; repeat with Knave layer enabled",
+    "probe": "agent-work/research/requirements/SD-CORE-L1-shop-2026-11-20-probe.mjs",
+    "reproduction": "Copy probe to project root at product_sha, npm ci, node <probe file>.",
+    "fresh_map_comparisons": 8,
+    "observed": {
+      "mode": [
+        "Classic",
+        "Classic + Knave"
+      ],
+      "name_before": "Copper Shop",
+      "name_after": "Copper Keel",
+      "final_name_owner": "poi:1:2,-1",
+      "specialty_only_in": "gmNotesByHexKey[2,0]",
+      "old_hex_replacement": "Old Watch"
+    },
+    "surface": [
+      "src/App.tsx:setSelectedPoiKind, saveNameDraft, changeNotesText, handleImportJson",
+      "src/tags/knave.ts:KnaveTable, KnavePoiContent",
+      "src/tags/knaveEnglish.ts and src/tags/mythicData.ts: generated places are not selected Shadowdark shop services"
+    ],
+    "evidence_ids": [
+      "shop-runtime",
+      "shop-surface"
+    ],
+    "live_browser": false
+  },
+  "scoring": {
+    "candidate": "1.3-rc2",
+    "previous_credit": 0.5,
+    "supported_credit": 0.5,
+    "confirmed_delta": 0,
+    "explanation": "Штатное именование места подтверждено. Полная приёмка прикреплённой услуги не пройдена. Текст заметки не обосновывает дополнительный балл.",
+    "scope_mismatch": "Архивный source_acceptance содержит создание посетителей, исключённое решением 16.11; использовать актуальную scope_review.current_operational_requirement для оценки."
+  }
+}
