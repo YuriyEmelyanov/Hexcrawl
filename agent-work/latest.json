@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-20-manual-analyst-HX-BL-056-through-flow",
+  "run_id": "2026-11-20T1100-programmer-HX-BL-056-through-flow",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
   "status": "implementation_checkpoint",
@@ -51,15 +51,15 @@
   "schedule_start_at": "2026-11-19T19:00:00+03:00",
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
-  "current_role": "business-analyst",
-  "next_role": "programmer",
+  "current_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-056",
   "spec_path": "agent-work/specs/HX-BL-021-new-biomes-F1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
+  "result_path": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "handoff_commit_sha": "0d445c70a98c2552c9662cdc449e2f7f96f4535f",
   "active_claim": null,
-  "next_step": "В PR №510 разрешить сквозное течение через малое озеро по F1.1 и в штатной генерации ограничить конфликт одной компонентой. Показать на реальной карте и PNG вход и выход реки и сохранение остальных озёр при одном конфликте, проверить JSON и Undo/Redo. Закрыть AC01–AC08 и передать новый точный SHA проверяющему.",
+  "next_step": "Независимо проверить PR №510 на точном SHA по F1.1, включая карту и PNG со сквозной рекой, изоляцию кандидата, старые сохранения, Undo/Redo и полную матрицу AC01–AC08. Сохранить score_assessment 1.2. После приёмки требуется отдельное разрешение владельца на публикацию.",
   "owner_decisions_needed": [],
   "release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
@@ -72,7 +72,7 @@
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44608897197",
   "review_verdict": "accepted",
   "role_selection_mode": "readiness_and_current_owner_direction",
-  "role_selection_source": "owner_clarification_and_execution_registry",
+  "role_selection_source": "approved_F1_1_handoff_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
   "process_commit_sha": "e7e046530757ae2067de13a4075fb0526ca429ee",
   "previous_review": {
@@ -89,7 +89,7 @@
   "score_update_task_id": "HX-BL-021",
   "score_update_release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Прямое уточнение владельца восстановило два требования к текущему PR №510. Реестр и все claims сверены, предыдущий программист сохранил результат и освободил слот.",
+  "role_selection_reason": "Чистовая F1.1 и разрешённый PR №510 были готовы после уточнения владельца. Проверены реестр и 468 записей claims. У предыдущего этапа имелись результат и подтверждённое освобождение.",
   "score_update_result_ref": "agent-work/results/2026-11-20T0000-strategist-score-PR509.json",
   "score_update_completed_at": "2026-11-19T21:04:32.717Z",
   "score_update_delta": null,
@@ -113,13 +113,13 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-20T07:02:46.590Z",
+      "checked_at": "2026-11-20T07:59:31.879Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
     },
     "end": {
-      "checked_at": "2026-11-20T07:08:58.170Z",
+      "checked_at": "2026-11-20T08:31:19.327Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
@@ -562,7 +562,7 @@
   "deployment_url": "https://app.hexcrawl.ru/",
   "next_task_execution_allowed": true,
   "last_release_pr": 507,
-  "last_material_result_path": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
+  "last_material_result_path": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -729,7 +729,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Чистовая спецификация готова. Публикация проверенного пакета согласуется отдельно.",
-  "updated_at": "2026-11-20T07:09:55.970Z",
+  "updated_at": "2026-11-20T08:33:17.448Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1409,13 +1409,13 @@
   "previous_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-20T06:01:00.219Z",
+      "checked_at": "2026-11-20T07:02:46.590Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
     },
     "end": {
-      "checked_at": "2026-11-20T06:58:43.241Z",
+      "checked_at": "2026-11-20T07:08:58.170Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
@@ -2054,7 +2054,7 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "pending_independent_review_on_complete_F1",
+  "current_task_score_assessment_status": "pending_independent_review",
   "published": false,
   "main_changed": true,
   "ui_actual": {
@@ -2221,7 +2221,7 @@
   "parent_spec_version": "2.3",
   "test_change_summary_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/test-change-summary.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/programmer-score-evidence1.2.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "review_evidence_ref": "agent-work/evidence/review-ONE-MILE1-d419-1400",
   "github_review_state": "COMMENT; operational acceptance by fresh independent non-implementer. Same GitHub identity owns PR; formal self-approval unavailable.",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
@@ -2334,12 +2334,12 @@
   "authorization_status": "Implementation within approved F1 and closed interview; no publication approval.",
   "completed_at": "2026-11-19T16:31:41.642Z",
   "score_changed": false,
-  "next_stage_id": "F1_1_through_flow_and_per_lake_conflicts",
+  "next_stage_id": "F1_1_independent_review",
   "score_evidence_updated": true,
   "current_stage_id": "HX059-responsive-preparation",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "first_runtime_map_shown_final_matrix_pending",
   "completed_claim": "agent-work/claims/2026-11-17T1500-programmer-responsive-preparation.json",
   "evidence_commit_sha": "a4ce553233ab9effa6b11202a89e3fa8b069b534",
@@ -7483,7 +7483,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
+  "result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -7880,7 +7880,7 @@
   },
   "published_scope": "MYTH-CARD1 full72RU reference slice; overall041 has remaining categories",
   "public_book_corpus_approval_scope": "Only exact72MC1 corpus/tree98970e; NATURE2/other corpora excluded",
-  "previous_run_id": "2026-11-20T0900-programmer-HX-BL-056-auto-lakes",
+  "previous_run_id": "2026-11-20-manual-analyst-HX-BL-056-through-flow",
   "next_role_after_approval": "programmer",
   "latest_MC1_EN_intake": {
     "schema_version": 1,
@@ -8176,7 +8176,7 @@
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MC1-EN.json"
   },
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
-  "next_task_handoff_ref": "agent-work/handoffs/2026-11-20-manual-analyst-HX-BL-056-F1.1-programmer.json",
+  "next_task_handoff_ref": "agent-work/handoffs/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
     "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
     "status": "published_verified_score_completed",
@@ -8227,7 +8227,7 @@
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
   "review_request_ref": "agent-work/handoffs/2026-11-13T0701-ONE-MILE1-WR1-review.json",
   "programmer_complete": true,
-  "current_programmer_result_ref": "agent-work/results/2026-11-17T1500-programmer-responsive-preparation.json",
+  "current_programmer_result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -8247,8 +8247,8 @@
     "actual_UI_shown_in_chat": true
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
-  "role": "business-analyst",
-  "latest_result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
+  "role": "programmer",
+  "latest_result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "checks": {
     "run_id": 44119549919,
     "status": "success",
@@ -8493,7 +8493,7 @@
     "public_url": "https://app.hexcrawl.ru/"
   },
   "overview_owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
-  "previous_result_ref": "agent-work/results/2026-11-12T0204-programmer-ONE-MILE1.json",
+  "previous_result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
   "last_strategy_queue_extension": {
     "run_id": "2026-11-09T0304-strategist-BASE1-proposal",
     "result_ref": "agent-work/results/2026-11-09T0304-strategist-BASE1-proposal.json",
@@ -8775,7 +8775,7 @@
       }
     ]
   },
-  "current_role_result": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
+  "current_role_result": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "current_stage_score_assessment_status": "pending_independent_exact_SHA_review",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
   "execution_running": false,
@@ -9739,7 +9739,7 @@
   "current_evidence_gaps": [
     "Owner review and separate publication/deployment verification pending; finite corpus limitations and unassessed full product/game breadth recorded in package-review."
   ],
-  "full_package_review_ready": false,
+  "full_package_review_ready": true,
   "bounded_review_ready": false,
   "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
@@ -9909,7 +9909,7 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-20-manual-analyst-HX-BL-056-through-flow",
+  "last_completed_run_id": "2026-11-20T1100-programmer-HX-BL-056-through-flow",
   "storage_verification": {
     "materials_commit_sha": "c87d02f7fd7fe7c5ed3117bb790cbf40ecd91ae0",
     "result_readback": true,
@@ -11445,7 +11445,7 @@
   },
   "updated_on": "2026-11-20",
   "claim_ref": null,
-  "latest_programmer_result_ref": "agent-work/results/2026-11-20T0237-programmer-HX-BL-056-lake-loss.json",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
   "source_sha": "f733cfb372d1db611187528b877930f24e8792ee",
   "source_pr": 496,
   "owner_decision_required": false,
@@ -12912,7 +12912,7 @@
     "result_ref": "agent-work/results/2026-11-14T2239-programmer-GEO2-special-POI.json",
     "head_sha": "cea2f93266913303833ef09477bc8f0c33be63d3"
   },
-  "current_task_owner_decisions_needed": "После независимой приёмки требуется отдельное разрешение на публикацию конкретного проверенного пакета.",
+  "current_task_owner_decisions_needed": "После независимой приёмки дать отдельное разрешение на выпуск точного проверенного пакета.",
   "ui_changed": false,
   "latest_GEO2_GeometryPlan": {
     "run_id": "2026-11-14T2340-programmer-GEO2-GeometryPlan",
@@ -14759,7 +14759,7 @@
     "history_reset": false
   },
   "delivery_contract_decision_required": true,
-  "ready_for_development": true,
+  "ready_for_development": false,
   "last_visible_release_draft": {
     "run_id": "2026-11-15T1404-analyst-GEO2-visible-draft",
     "draft_ref": "agent-work/specs/HX-BL-051-GEO2-visible-release-D1.md",
@@ -14851,8 +14851,8 @@
   "draft_clarification_review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
   "draft_clarifications_closed": true,
   "unchanged_draft_rewrite_needed": false,
-  "task_next_role": "programmer",
-  "task_next_step": "В PR №510 разрешить сквозное течение через малое озеро по F1.1 и в штатной генерации ограничить конфликт одной компонентой. Показать на реальной карте и PNG вход и выход реки и сохранение остальных озёр при одном конфликте, проверить JSON и Undo/Redo. Закрыть AC01–AC08 и передать новый точный SHA проверяющему.",
+  "task_next_role": "reviewer",
+  "task_next_step": "Независимо проверить PR №510 на точном SHA по F1.1, включая карту и PNG со сквозной рекой, изоляцию кандидата, старые сохранения, Undo/Redo и полную матрицу AC01–AC08. Сохранить score_assessment 1.2. После приёмки требуется отдельное разрешение владельца на публикацию.",
   "last_visible_release_D2_confirmation": {
     "run_id": "2026-11-15T1701-interviewer-GEO2-visible-D2",
     "review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
@@ -15006,18 +15006,18 @@
     "score_update_status": "completed",
     "score_update_result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json"
   },
-  "result_commit": "8cbc701b275dd800b535f53f73ff3be516d8d3ba",
+  "result_commit": "8ba35ddffef25c62977ce7e9ec4153f4826cf8b4",
   "score_update_pending": false,
   "latest_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-20T07:02:46.590Z",
+      "checked_at": "2026-11-20T07:59:31.879Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
     },
     "end": {
-      "checked_at": "2026-11-20T07:08:58.170Z",
+      "checked_at": "2026-11-20T08:31:19.327Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
@@ -15154,27 +15154,28 @@
     "handoff_ref": "agent-work/handoffs/2026-11-16-manual-interviewer-biomes-Q02-closure-1794807826291-analyst.json"
   },
   "next_ready_work": {
+    "status": "review_ready",
     "task_id": "HX-BL-056",
-    "role": "programmer",
-    "stage_id": "F1_1_through_flow_and_per_lake_conflicts",
+    "stage_id": "F1_1_independent_review",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
-    "head_tree_sha": "2a3b5be5a66c4ec3631517bff0f1e7426c690240",
+    "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "head_tree_sha": "03f6e1249f6aedc17df0370035c468fe7fd5911f",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/automatic-lakes-b4b10f4/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315",
-    "next_step": "В PR №510 разрешить сквозное течение через малое озеро по F1.1 и в штатной генерации ограничить конфликт одной компонентой. Показать на реальной карте и PNG вход и выход реки и сохранение остальных озёр при одном конфликте, проверить JSON и Undo/Redo. Закрыть AC01–AC08 и передать новый точный SHA проверяющему.",
-    "spec_version": "F1.1",
-    "handoff_ref": "agent-work/handoffs/2026-11-20-manual-analyst-HX-BL-056-F1.1-programmer.json",
-    "owner_clarification_ref": "agent-work/decisions/owner-decision-2026-11-20-HX-BL-056-through-flow-and-conflict-isolation.json",
-    "review_ready": false,
-    "verification_status": "previous_sha_checkpoint_only_current_contract_requires_new_verification",
-    "result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json"
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113",
+    "handoff_ref": "agent-work/handoffs/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
+    "result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
+    "review_ready": true,
+    "role": "reviewer",
+    "next_role": "reviewer",
+    "next_step": "Независимо проверить PR №510 на точном SHA по F1.1, включая карту и PNG со сквозной рекой, изоляцию кандидата, старые сохранения, Undo/Redo и полную матрицу AC01–AC08. Сохранить score_assessment 1.2. После приёмки требуется отдельное разрешение владельца на публикацию.",
+    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/artifacts/14613885370",
+    "before_after_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/before-after.jpg"
   },
   "previous_primary_before_HX_BL_055": {
     "run_id": "2026-11-16T0403-interviewer-new-biomes-D1",
@@ -16233,8 +16234,8 @@
     }
   ],
   "task_status": "спецификация",
-  "current_result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
-  "result_commit_sha": "8cbc701b275dd800b535f53f73ff3be516d8d3ba",
+  "current_result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
+  "result_commit_sha": "8ba35ddffef25c62977ce7e9ec4153f4826cf8b4",
   "independent_review_status": "accepted_exact_head",
   "execution_locks_ref": "agent-work/execution-locks.json",
   "execution_lock_generation": 233,
@@ -17214,48 +17215,49 @@
     "supersedes_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md"
   },
   "latest_HX_BL_056_implementation": {
+    "status": "review_ready",
     "task_id": "HX-BL-056",
-    "role": "programmer",
-    "stage_id": "F1_1_through_flow_and_per_lake_conflicts",
+    "stage_id": "F1_1_independent_review",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
-    "head_tree_sha": "2a3b5be5a66c4ec3631517bff0f1e7426c690240",
+    "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "head_tree_sha": "03f6e1249f6aedc17df0370035c468fe7fd5911f",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
-    "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+    "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/automatic-lakes-b4b10f4/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315",
-    "next_step": "В PR №510 разрешить сквозное течение через малое озеро по F1.1 и в штатной генерации ограничить конфликт одной компонентой. Показать на реальной карте и PNG вход и выход реки и сохранение остальных озёр при одном конфликте, проверить JSON и Undo/Redo. Закрыть AC01–AC08 и передать новый точный SHA проверяющему.",
-    "status": "implementation_checkpoint_requires_F1_1_correction",
-    "result_ref": "agent-work/results/2026-11-20T0900-programmer-HX-BL-056-auto-lakes.json",
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113",
+    "handoff_ref": "agent-work/handoffs/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
+    "result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
+    "review_ready": true,
+    "role": "programmer",
+    "next_role": "reviewer",
+    "next_step": "Независимо проверить PR №510 на точном SHA по F1.1, включая карту и PNG со сквозной рекой, изоляцию кандидата, старые сохранения, Undo/Redo и полную матрицу AC01–AC08. Сохранить score_assessment 1.2. После приёмки требуется отдельное разрешение владельца на публикацию.",
+    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/artifacts/14613885370",
+    "before_after_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/before-after.jpg",
+    "implemented_stage_id": "F1_1_through_flow_and_per_lake_conflicts",
     "forecast": {
       "remaining_team_runs": [
-        4,
-        8
+        2,
+        4
       ],
-      "steps": {
-        "implementation_and_acceptance": [
-          2,
-          4
-        ],
-        "review": 1,
-        "rework_and_recheck": [
+      "phases": {
+        "independent_review": 1,
+        "rework_and_repeat_review": [
           0,
           2
         ],
-        "release": 1
+        "release_after_owner_authorization": 1
       },
       "excludes": [
         "owner_publication_wait",
         "CI_queue_wait"
       ]
     },
-    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315/artifacts/14607759308",
-    "review_ready": false,
-    "active_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
-    "required_handoff_ref": "agent-work/handoffs/2026-11-20-manual-analyst-HX-BL-056-F1.1-programmer.json"
-  }
+    "previous_result_ref": "agent-work/results/2026-11-20T0900-programmer-HX-BL-056-auto-lakes.json",
+    "score_evidence_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/verification.json"
+  },
+  "previous_programmer_result_ref": "agent-work/results/2026-11-20T0900-programmer-HX-BL-056-auto-lakes.json"
 }
