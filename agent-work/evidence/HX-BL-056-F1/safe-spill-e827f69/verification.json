@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-056",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "comparison_base_sha": "c5b7c148c34dd51a975a5f46e373354872511790",
+  "product_base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
+  "head_tree_sha": "fb559dcd2a4305cbd92c00c012985b86af2255e5",
+  "previous_evidence_ref": "agent-work/evidence/HX-BL-056-F1/river-water-c5b7c14/verification.json",
+  "node": {
+    "version": "24.22.3",
+    "typescript": "passed",
+    "diff_check": "passed",
+    "browser_script_syntax": "passed",
+    "targeted": {
+      "suites": [
+        "oneMile",
+        "mapTransactions",
+        "saveSafety"
+      ],
+      "executed": 105,
+      "passed": 105,
+      "failed": 0,
+      "skipped": 0
+    },
+    "cases": [
+      "a natural small-lake shore spills only onto unclaimed dry neighbours",
+      "shore clipping distinguishes disconnected water from an island inside a connected lake"
+    ],
+    "exact_geometry": "Один seeded M/Q/Z берег обрезается объединением авторского следа и безопасного соседнего пояса. Проверены замкнутые дуги и рёбра итогового тела. Ровно один положительный внешний цикл допускает острова."
+  },
+  "temporary_programmer_diagnostics": {
+    "multiple_cells_and_stable_neighbour": {
+      "fixture": "e6-water-editor",
+      "selectedCells": 5,
+      "renderedMaskCells": 9,
+      "nonOverlappingNeighbour": true,
+      "olderShoreUnchanged": true
+    },
+    "import_gap": {
+      "fixture": "classic-six-regions-seed42",
+      "badCell": "-4,-28",
+      "riverId": 1,
+      "manualEditor": "rejected",
+      "importer": "accepted",
+      "validationReasonForNextStage": "existing import validates footprint and dry support but does not enforce protected water",
+      "method": "Штатно создать озеро на 10,-9, выгрузить сохранение, в копии заменить гекс озера на ранее подтверждённый конфликт −4,−28 и открыть через настоящий обработчик. Импорт принимает конфликт при неизменной исходной реке."
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "c5b7c148c34dd51a975a5f46e373354872511790",
+    "head_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
+    "added": 3,
+    "removed": 0,
+    "modified": 0,
+    "count_source": "git diff c5b7c148c34dd51a975a5f46e373354872511790 e827f69a1d67579652d3599d0627c76884a444c5 -- test/oneMile.test.mjs test/browser/one-mile.smoke.mjs",
+    "suites": [
+      {
+        "suite": "Node / oneMile.test.mjs",
+        "added": 2,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Безопасный берег за выбранным следом, обрезка частично мокрой, занятой или защищённой зоны. Связное озеро с островом и разъединённая вода после обрезки.",
+        "risk": "Потеря естественного берега, заливка существующих объектов, сохранение нескольких отдельных луж.",
+        "reuse_or_new_reason": "Две новые геометрические ветки отсутствовали в проверках конфликтов по контуру."
+      },
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "На карте Classic гекс 10,-9 около крупного озера даёт выход в 11,-10; сравнение черновика, сохранённого состояния, PNG и повторного импорта при неизменной существующей географии.",
+        "risk": "Расхождение фактической карты и PNG, изменение выбранного следа или пропажа берега при повторной загрузке.",
+        "reuse_or_new_reason": "Использован действующий браузерный runner и карта Classic. Предыдущий ручной цикл проверяет допуск соседнего с рекой озера без выхода на соседний гекс."
+      }
+    ]
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "incomplete",
+    "criterion_ids": [
+      "S01-C03",
+      "S02-C01",
+      "S02-C03",
+      "S03-C01",
+      "S04-C04"
+    ],
+    "material": [
+      "R02 / AC02 допуск безопасного выхода и связность",
+      "R06 совпадающая видимость берега карты и PNG"
+    ],
+    "limitation": "Нужны исправленный импорт R05, автоматический режим R03 и независимая проверка полного пакета."
+  },
+  "decisions": [
+    "В соседний пояс принимаются гексы с полной сухой опорой. При конфликте защищённого объекта обрезается выход на весь такой гекс. Авторский след не меняется.",
+    "Озёра получают доступное место на берегу по порядку устойчивых ID. Уже занятый берег защищён как и авторский след."
+  ],
+  "remaining": [
+    "Отклонение конфликтного моря/реки/защищённых объектов при импорте и сохранение предыдущей карты, мастера и истории.",
+    "Автогенерация R03 и её воспроизводимость.",
+    "Итоговая независимая приёмка AC01–AC06 и отдельное разрешение выпуска."
+  ],
+  "next_scope": {
+    "requirement": "R05 / AC06",
+    "acceptance": "Корректное сохранение 10,-9 загружается с тем же берегом. JSON с  -4,-28 поверх реки №1 отклоняется до замены импортом. Прежняя карта, выбор и история совпадают с состоянием до попытки.",
+    "implementation_hint": "Собирать защиту из подготовленного detached снимка импорта до setUndoHistory / applyPreparedDocument. Разделить существующую проверку структуры/сухой опоры и проверку сцены, чтобы не вызвать рекурсию prepareAutomaticOneMileScene → checkedRiverMap. Использовать эту же геометрическую подготовку для кандидатов R03."
+  },
+  "ui_visually_inspected": {
+    "before_after": true,
+    "viewport": {
+      "width": 1500,
+      "height": 1000
+    },
+    "artifact_digest_verified": true,
+    "observation": "На паре снимков Classic появился округлый контур светлого мелководья и тёмной воды у 10,−9. Крупное озеро видно на обоих снимках. Выход в 11,−10 подтверждён программной сверкой маски и SVG экспорта."
+  },
+  "checks": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604",
+    "jobs": [
+      {
+        "id": 136076269542,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136076269847,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136076269962,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136076271111,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "node": {
+      "id": 136076269962,
+      "status": "success",
+      "tests": 436,
+      "pass": 436,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "source_head_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
+      "checkout_sha": "78b018249135cdb99b5a95ca5f0288a36c9721eb",
+      "checkout_tree_sha": "fb559dcd2a4305cbd92c00c012985b86af2255e5",
+      "status": "passed",
+      "case": {
+        "id": "HX056-safe-shore-spill",
+        "status": "pass",
+        "selectedCells": [
+          "10,-9"
+        ],
+        "maskCells": [
+          "10,-9",
+          "11,-10"
+        ],
+        "pngIncludesSpill": true,
+        "roundTrip": true,
+        "existingGeographyUnchanged": true
+      },
+      "screenshots": [
+        {
+          "name": "small-lake-spill-before.jpg",
+          "viewport": {
+            "width": 1500,
+            "height": 1000
+          },
+          "mode": "1"
+        },
+        {
+          "name": "small-lake-spill-after.jpg",
+          "viewport": {
+            "width": 1500,
+            "height": 1000
+          },
+          "mode": "1"
+        }
+      ],
+      "case_count": 15,
+      "job_status": "success"
+    }
+  },
+  "visible_result": {
+    "fixture": "Classic seed 42",
+    "authored_footprint": [
+      "10,-9"
+    ],
+    "display_mask": [
+      "10,-9",
+      "11,-10"
+    ],
+    "claim": "Берег переходит в сухой соседний гекс. Выбранный след сохраняется отдельно. Повторная загрузка восстанавливает вид.",
+    "status": "passed",
+    "artifact_id": 14600813620,
+    "artifact_digest": "sha256:2a61964235b308481c9a6537fe2e6811fcb0cab04b5f3268608b3384ed33b5aa",
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604/artifacts/14600813620",
+    "files": [
+      {
+        "name": "small-lake-spill-after.jpg",
+        "sha256": "3b5941575c64d20a90849f9726bd216c04fce31507bf6237ea3969807d72e59f",
+        "bytes": 244417
+      },
+      {
+        "name": "small-lake-spill-before.jpg",
+        "sha256": "5abf291cd3d607c61488ac5dad707704f1dc459ebfdf8c24b946a00ada25eb83",
+        "bytes": 242072
+      },
+      {
+        "name": "small-lake-spill.png",
+        "sha256": "09ee87d7cd720464cee21ecb853247df935ed8f39d94b124e81ab1bc4af19a8a",
+        "bytes": 661930
+      }
+    ],
+    "png_file": "small-lake-spill.png"
+  }
+}

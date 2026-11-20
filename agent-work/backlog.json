@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-20T03:17:53.604Z",
+  "updated_at": "2026-11-20T04:20:40.507Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -426,7 +426,7 @@
       "approved_at": "2026-11-16T06:11:39.034Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "Черновик PR №510. Браузером подтверждён отказ внутри русла и принятие соседнего малого озера с JSON/PNG. Следом безопасный выход берега, связность и автогенерация.",
+      "execution_state": "Черновик PR №510. На карте Classic подтверждён безопасный выход берега за выбранный гекс. Обнаружен разный допуск ручного редактирования и конфликтного импорта. Следом атомарная проверка импорта и автогенерация.",
       "requirements": [
         "Поддержать небольшие озёра на1-мильной карте."
       ],
@@ -437,7 +437,7 @@
         "Плотность/расположение и сопряжение с реками"
       ],
       "next_role": "programmer",
-      "next_step": "Ограничить естественный выход берега сухой безопасной зоной и проверить связность после ограничения. В итоговом браузерном пакете повторить уже воспроизведённое касание большого озера №1 у 10,−9 и допуск внутри многогексового POI. Проверить импорт, затем использовать допуск в автогенерации R03.",
+      "next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03.",
       "draft_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-D1.md",
       "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
       "acceptance_ref": null,
@@ -461,20 +461,20 @@
       },
       "forecast": {
         "remaining_team_runs": [
-          5,
-          12
+          4,
+          11
         ],
         "excludes": [
           "owner_publication_wait",
           "CI_queue_wait"
         ],
-        "basis": "Речная полоса проверяется в общей геометрии и на реальной карте. Остались безопасный выход берега, контакты с крупным озером, импорт, автогенерация и полная независимая приёмка."
+        "basis": "Ручная форма и естественный выход, проверка связности берега, касание крупного озера и экспорт имеют сквозное подтверждение. Остались атомарная проверка импорта, автогенерация R03, итоговый браузерный пакет, независимая приёмка, исправления и выпуск."
       },
       "related_task_ids": [
         "HX-BL-055"
       ],
       "relationship_note": "Связанный вид воды/устьев учесть при спецификации; это не разрешение расширить055 или автоматически менять6mile.",
-      "updated_at": "2026-11-20T03:17:53.604Z",
+      "updated_at": "2026-11-20T04:20:40.507Z",
       "draft_spec_version": "D1",
       "open_question_ids": [],
       "ui_preview_ref": {
@@ -508,13 +508,13 @@
       ],
       "spec_version": "F1",
       "specification_result_ref": "agent-work/results/2026-11-20T0100-analyst-HX-BL-056-final.json",
-      "implementation_checkpoint_ref": "agent-work/results/2026-11-20T0600-programmer-HX-BL-056-water-contacts.json",
-      "implementation_evidence_ref": "agent-work/evidence/HX-BL-056-F1/river-water-c5b7c14/verification.json",
+      "implementation_checkpoint_ref": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
+      "implementation_evidence_ref": "agent-work/evidence/HX-BL-056-F1/safe-spill-e827f69/verification.json",
       "branch": "agent/hx-bl-056-small-lakes-f1",
       "pr": 510,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-      "head_sha": "c5b7c148c34dd51a975a5f46e373354872511790",
-      "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44665457691/artifacts/14597339115"
+      "head_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
+      "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604/artifacts/14600813620"
     },
     {
       "task_id": "HX-BL-057",
