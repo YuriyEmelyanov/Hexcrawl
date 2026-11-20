@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-056",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "comparison_base_sha": "3007f3a7994dd8058c9c911efec46594b2ecfdaa",
+  "product_base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "c5b7c148c34dd51a975a5f46e373354872511790",
+  "head_tree_sha": "a8827982f75db833d5b24755037aa4a83a9bd628",
+  "previous_evidence_ref": "agent-work/evidence/HX-BL-056-F1/protected-shore-3007f3a/verification.json",
+  "node": {
+    "version": "24.22.3",
+    "typescript": "passed",
+    "diff_check": "passed",
+    "browser_script_syntax": "passed",
+    "targeted": {
+      "suites": [
+        "oneMile",
+        "mapTransactions",
+        "saveSafety",
+        "geometryRefinementRivers"
+      ],
+      "executed": 108,
+      "passed": 108,
+      "failed": 0,
+      "skipped": 0
+    },
+    "case": "small lake distinguishes bank tangency from overlap with the finite river strip",
+    "exact_geometry": "Один набор отрисовываемых русел используется для геометрии редактора. Проверяется положительная глубина попадания в капсулу, включая края маски и дуги принятого берега. Касание границы допускается.",
+    "ci_full": {
+      "job_id": 136053513042,
+      "executed": 434,
+      "passed": 434,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "temporary_programmer_diagnostics": {
+    "finite_strip": {
+      "seed": 42,
+      "arcs": 640,
+      "dense_samples_per_arc": 2049,
+      "overlap_cases": 152,
+      "status": "passed",
+      "method": "Сверка аналитических кандидатов с плотной выборкой и границей ошибки по максимальной скорости кривой. Отдельное доказательство от постоянных тестов."
+    },
+    "large_lake_contact": {
+      "fixture": "classic-six-regions-seed42",
+      "lakeId": 1,
+      "cell": "10,-9",
+      "sharedBankMiles": 0.07566452655253868,
+      "existingWaterUnchanged": true,
+      "method": "На карте Classic seed 42 края точной маски и берега малого озера пересекаются вдоль принятого берега в режиме tiles. Штатное сохранение прошло, исходная вода и реки совпали."
+    },
+    "crossing_and_area": [
+      {
+        "poi": "detail-poi:5",
+        "cell": "-20,13",
+        "poiCells": 13,
+        "fixture": "road-entry-zigzags",
+        "liveGeographyUnchanged": true
+      },
+      {
+        "fixture": "road-entry-zigzags",
+        "cell": "-6,14",
+        "crossing": "1:-1,2|-1,3:1",
+        "unchanged": true,
+        "message": "Берег малого озера пересекает действующую переправу."
+      }
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "3007f3a7994dd8058c9c911efec46594b2ecfdaa",
+    "head_sha": "c5b7c148c34dd51a975a5f46e373354872511790",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "count_source": "git diff 3007f3a7994dd8058c9c911efec46594b2ecfdaa c5b7c148c34dd51a975a5f46e373354872511790 -- test/oneMile.test.mjs test/browser/one-mile.smoke.mjs",
+    "suites": [
+      {
+        "suite": "Node / oneMile.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Касание и пересечение полосы и закруглённого конца реки; проверка только сохраняемой части точной кривой, а также попадание полосы в малое озеро без пересечения оси.",
+        "risk": "Отклонение разрешённого касания либо пропуск внутреннего перекрытия водой между двумя сухими концами.",
+        "reuse_or_new_reason": "Существующая проверка дорог/точек проверяет линии и точки, а новая проверяет положительную ширину и касания границы воды."
+      },
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Воспроизведённый отказ на -4,-28, соседнее двухгексовое озеро, PNG, JSON, повторный импорт и история в прежнем ручном цикле.",
+        "risk": "Прежняя карта в редакторе принимала пересечение с рекой №1 несмотря на сухую исходную опору.",
+        "reuse_or_new_reason": "Добавлен второй вид отказа в тот же браузерный цикл существующей карты. Соседний допустимый след заменяет старый пример, который при точной проверке заходил на русло."
+      }
+    ]
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "incomplete",
+    "criterion_ids": [
+      "S01-C03",
+      "S02-C01",
+      "S02-C03",
+      "S03-C01",
+      "S04-C04"
+    ],
+    "material": [
+      "R02 / AC02 river boundary versus wet interior",
+      "R06 map uses one-mile paths and widths, with existing objects unaffected"
+    ],
+    "limitation": "Для пересчёта нужны полный R02/R03, независимая приёмка и выпуск."
+  },
+  "remaining": [
+    "Естественный выход берега за выбранный след пока ограничен маской выбранных гексов. Реализовать безопасный выход и проверку связности остатка.",
+    "Проверить защиту при импорте, прочие типы карт и полные случаи UI AC01–AC06.",
+    "Браузерный сценарий касания большого озера и допуска внутри многогексового POI для итогового пакета.",
+    "Автогенерация R03, итоговая независимая приёмка, исправления и разрешение выпуска."
+  ],
+  "checked_at": "2026-11-20T03:17:53.604Z",
+  "current_workflow": {
+    "id": 44665457691,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44665457691",
+    "jobs": [
+      {
+        "id": 136053513042,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136053513217,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136053513493,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136053515395,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ]
+  },
+  "browser": {
+    "source_head_sha": "c5b7c148c34dd51a975a5f46e373354872511790",
+    "checkout_sha": "b8a184fd7b8181237efcde85a56ade6d9de3b78a",
+    "checkout_tree_sha": "a8827982f75db833d5b24755037aa4a83a9bd628",
+    "status": "passed",
+    "case": {
+      "id": "HX056-manual-small-lake-roundtrip-and-png",
+      "status": "pass",
+      "cells": [
+        "-4,-27",
+        "-4,-26"
+      ],
+      "pngBytes": 661976,
+      "roadConflict": {
+        "cell": "0,0",
+        "message": "The small lake crosses road or trail #1.",
+        "documentUnchanged": true
+      },
+      "riverConflict": {
+        "cell": "-4,-28",
+        "message": "The small lake overlaps river #1.",
+        "documentUnchanged": true
+      }
+    },
+    "screenshots": [
+      {
+        "name": "small-lake-river-conflict.jpg",
+        "viewport": {
+          "width": 1500,
+          "height": 1000
+        },
+        "mode": "1"
+      },
+      {
+        "name": "small-lake-after.jpg",
+        "viewport": {
+          "width": 1500,
+          "height": 1000
+        },
+        "mode": "1"
+      }
+    ],
+    "case_count": 14,
+    "artifact_id": 14597339115,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44665457691/artifacts/14597339115",
+    "artifact_digest": "sha256:de21cbf2f1850ac0f1b13a4ac862d9706c581c4b2776fd204ad531ae43e11300",
+    "workflow_run_id": 44665457691,
+    "verified_files": {
+      "small-lake-river-conflict.jpg": "7e7aaf6b20dfee86079788aec5032a373d895a4c55f0af807f26a6d6c0a0d8db",
+      "small-lake-after.jpg": "170c42e20b6b3aec8c261ddd52997233ec77baaa8867ee10bda87992056811c4",
+      "small-lake-export.png": "dad2631f8b4534f4df3c7ed27cb86537d04d84558c9a1523cf4926a16546e8c0",
+      "manifest.json": "ea23496e8d4cd03c26f29f0f7ad54c48b3a5367393fb2ad82d5a503f82bfe4cf"
+    }
+  }
+}
