@@ -35,7 +35,7 @@ protected features and existing small-lake masks. The same derived mask is
 used in the draft, the accepted map, and PNG. Clipping must leave one connected
 body of water. Interior islands are permitted.
 
-Import checks each stored small-lake shoreline against the incoming map's
+Edits and import check each stored small-lake shoreline against the resulting
 one-mile geometry even when the six-mile map is open. A conflict identifies
 the saved footprint and leaves the open map and both history stacks intact.
 
@@ -57,3 +57,11 @@ paths and sites before committing. If a previously valid lake conflicts
 with that geometry, the change lists it in the normal lake-loss confirmation.
 Accepting the change removes the whole affected lake. Declining preserves
 the previous map, random state and history.
+
+Automatic lakes keep the permitted fringe cells with their saved footprint.
+The generator allocates shared fringe to the ordered batch before checking
+which candidates conflict with roads, crossings or protected points.
+A skipped candidate cannot enlarge the visible shoreline of another.
+Older saves without the optional fringe field still open.
+An incompatible edit to a road or point is rejected before recording history.
+The editor keeps the selected hexes outlined when a draft fails validation.

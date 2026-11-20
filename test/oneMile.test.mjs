@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles, detailCellCenter} from '../src/detailGrid.ts';
-import {prepareSmallLakeShore,smallLakeShoreConflict,smallLakeShorePath,smallLakeWaterConnected} from '../src/smallLakeShore.ts';
-import {rollSmallLakeFootprints} from '../src/smallLakes.ts';
+import {prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,smallLakeShoreConflict,smallLakeShorePath,smallLakeWaterConnected} from '../src/smallLakeShore.ts';
+import {parseSmallLakes,rollSmallLakeFootprints} from '../src/smallLakes.ts';
 import {prepareRefinementShoreCells,prepareRefinementShorePath} from '../src/geometryRefinementShore.ts';
 import {dominantFineBiome, projectOneMile, oneMileCandidates, chooseOneMileAnchor,
   fineCellKey, parseFineCellEdits, prepareFineCellEdit, prepareFineCellLoss} from '../src/oneMile.ts';
@@ -50,6 +50,28 @@ test('a natural small-lake shore spills only onto unclaimed dry neighbours',()=>
   }
 });
 
+test('a skipped automatic lake leaves the neighbour’s visible shoreline intact after reload',()=>{
+  const grid=createDetailGrid(1),origin=grid.origin;
+  const candidates=Array.from({length:28*28},(_,i)=>({cell:c(i%28,Math.floor(i/28)),chance:.02}));
+  const coverage=new Map(candidates.map(({cell})=>[fineCellKey(cell),{cell,landBiomeId:'forest',acceptedArea:area,waterArea:0}]));
+  const footprints=rollSmallLakeFootprints(candidates,15,.1),open={roads:[],crossings:[],anchors:[]};
+  const earlier=[c(23,10),c(24,10)],later=[c(25,6),c(25,7),c(25,8)];
+  const road={...open,roads:[{ref:'review-path',points:earlier.map(cell=>detailCellCenter(grid,cell))}]};
+  const generate=protection=>prepareAutomaticSmallLakeBatch(footprints,1,42,origin,protection,coverage,new Set());
+  const clear=generate(open),blocked=generate(road);
+  const find=(layer,cells)=>layer.lakes.find(lake=>JSON.stringify(lake.cells)===JSON.stringify(cells));
+  assert.ok(find(clear,earlier).shoreCells.some(cell=>fineCellKey(cell)==='24,9'));
+  assert.equal(find(blocked,earlier),undefined);
+  assert.equal(blocked.lakes.length,clear.lakes.length-1);
+  const mask=(layer,protection)=>{
+    const lake=find(layer,later);
+    return prepareSmallLakeShore(lake,42,origin,protection,coverage).view.maskCells;
+  };
+  assert.deepEqual(mask(clear,open),mask(blocked,road));
+  const saved=parseSmallLakes(JSON.parse(JSON.stringify(blocked)));
+  assert.deepEqual(mask(saved,road),mask(clear,open));
+  assert.ok(mask(saved,road).every(cell=>fineCellKey(cell)!=='24,9'));
+});
 test('shore clipping distinguishes disconnected water from an island inside a connected lake',()=>{
   const mask=prepareRefinementShoreCells([c(0,0)],{x:0,y:0},1);
   const connected=prepareRefinementShorePath('M-.4 -.2 L.4 -.2 L.4 .2 L-.4 .2 Z M-.1 -.1 L.1 -.1 L.1 .1 L-.1 .1 Z');
@@ -180,23 +202,9 @@ test('destructive support loss requires consent and leaves an exact undo snapsho
 
 // P01–03: distinct rendering contracts absent from existing geometry/edit cases.
 import {FINE_HEX_WIDTH, finePoiLabel, fineRefinedRoadPresentation, fineRoadPresentation, fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
-import {prepareRefinementWater,refinementWaterCurveOverlaps} from '../src/geometryRefinementWater.ts';
+import {prepareRefinementWater} from '../src/geometryRefinementWater.ts';
 const displayWater=(paths,scale=1)=>{const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/scale]))});assert.equal(water.status,'prepared');return water;};
 
-test('river strip geometry distinguishes tangency and overlap',()=>{
-  const strip=prepareRefinementWater({paths:[{riverId:1,sourceEdgeKey:'edge',fullness:4,points:[{x:-2,y:0},{x:2,y:0}]}],widthByFullness:new Map([[4,.4]])});
-  assert.equal(strip.status,'prepared');
-  const capsule=strip.capsules[0],arc={from:{x:-1,y:.5},control:{x:0,y:-.1},to:{x:1,y:.5}};
-  assert.equal(refinementWaterCurveOverlaps(capsule,arc),false,'quadratic tangent at the bank');
-  const dipping={...arc,control:{x:0,y:-.12}};
-  assert.equal(refinementWaterCurveOverlaps(capsule,dipping),true,'interior overlap between dry endpoints');
-  assert.equal(refinementWaterCurveOverlaps(capsule,dipping,0,.25),false,'overlap outside the retained arc is irrelevant');
-  const pastEnd={from:{x:2.3,y:-.5},control:{x:2.1,y:0},to:{x:2.3,y:.5}};
-  assert.equal(refinementWaterCurveOverlaps(capsule,pastEnd),false,'tangency at a round endpoint');
-  assert.equal(refinementWaterCurveOverlaps(capsule,{...pastEnd,control:{x:2.08,y:0}}),true,'overlap only at the round cap');
-
-
-});
 test('fine POI label retains localized type and explicit name without fallback duplication',()=>{
  assert.equal(finePoiLabel('Городок','Айхенхайм'),'Городок Айхенхайм');
  assert.equal(finePoiLabel('Town','Eichenheim'),'Town Eichenheim');

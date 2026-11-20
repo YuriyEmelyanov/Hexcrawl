@@ -351,6 +351,16 @@ try{
  await button('Add small lake').click();
  assert.match(await page.locator('[data-small-lake-editor]').innerText(),/Selected hexes: 1/);
  await page.locator('[data-editor-only="small-lake-draft"] path').waitFor();
+ const disconnected='-4,-25';
+ await lakeCell(disconnected).press('Enter');
+ const selected=page.locator('[data-small-lake-selected-cell]');
+ assert.deepEqual(await selected.evaluateAll(cells=>cells.map(cell=>cell.getAttribute('data-small-lake-selected-cell'))),['-4,-28',disconnected]);
+ assert.match(await page.locator('[data-small-lake-editor]').innerText(),/Selected hexes: 2/);
+ assert.equal(await button('Save lake').isDisabled(),true);
+ assert.equal(await page.locator('[data-editor-only="small-lake-draft"] path').count(),0);
+ await shot('small-lake-invalid-selection.jpg');
+ await lakeCell(disconnected).press('Enter');
+ await page.locator('[data-editor-only="small-lake-draft"] path').waitFor();
  await shot('small-lake-draft.jpg');
  const saveLake=button('Save lake');
  await saveLake.evaluate(node=>node.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'}));

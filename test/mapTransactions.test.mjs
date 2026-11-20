@@ -397,6 +397,26 @@ test('deleting a real region lists the unsupported small lakes and undo restores
   assert.equal(h.render().undoHistory.length,count+1);
   assertUndoRedo(h,before,after);
 });
+test('a new trail crossing a retained small lake is rejected before save and history',async()=>{
+  const {h,alerts}=setup();
+  await load(h,JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url))));
+  assert.equal(h.render().switchFineStep(1),true);
+  const {pickFine,getDocumentRevision}=h.render();
+  assert.equal(pickFine({q:3,r:-12},false,getDocumentRevision()),true);
+  h.render().startSmallLake();h.render().commitSmallLake();
+  assert.equal(h.render().editError,null);
+  assert.equal(h.render().switchFineStep(6),true);
+  const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  assert.equal(before.map.physicalGrid.smallLakes.lakes.length,1);
+  const trail={type:'create',path:[{q:0,r:-2},{q:1,r:-2}],kind:'trail'};
+  assert.equal(h.render().editRoadDocument(trail),false);
+  assert.match(h.render().editError,/Берег малого озера пересекает дорогу или тропу №1/);
+  assert.deepEqual(stable(h.render()),before);
+  assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  await load(h,before);assert.deepEqual(alerts,[]);assert.deepEqual(stable(h.render()),before);
+  h.render().undoMap();assert.deepEqual(stable(h.render()),before);
+  h.render().redoMap();assert.deepEqual(stable(h.render()),before);
+});
 test('delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit',async()=>{
   const {h}=setup();h.setWindow({alert(){},confirm:()=>false,matchMedia:()=>({matches:false})});
   h.render().addFallbackTractToMap({q:0,r:0});h.render().addFallbackTractToMap(h.render().candidateHexes[0]);

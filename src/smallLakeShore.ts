@@ -3,7 +3,7 @@ import {prepareRefinementShoreCells,prepareRefinementShorePath,refinementShoreIn
 import {FINE_HEX_WIDTH} from './oneMilePresentation.ts';
 import {buildNaturalLakes} from './rendering/lakeGeometry.ts';
 import {fineCellKey,type OneMileCell} from './oneMile.ts';
-import {hasFullDrySupport,type SmallLake} from './smallLakes.ts';
+import {hasFullDrySupport,smallLakeNeighbours,type SmallLake} from './smallLakes.ts';
 
 export type SmallLakeProtection=Readonly<{
   roads:readonly Readonly<{ref:string;points:readonly WorldPoint[]}>[];
@@ -139,8 +139,6 @@ function shoreConflict(shore:RefinementShore,clip:RefinementShore,protection:Sma
 }
 
 export type SmallLakeView=Readonly<{lake:SmallLake;path:string;maskCells:readonly DetailCell[]}>;
-const offsets=[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]] as const;
-const neighbours=(cells:readonly DetailCell[])=>cells.flatMap(c=>offsets.map(([q,r])=>({q:c.q+q,r:c.r+r})));
 
 /** Fringe cells never change the selected footprint. Reserve a fringe only
  * where the world supports dry land and no existing lake owns that area. */
@@ -156,8 +154,8 @@ export function prepareSmallLakeShore(lake:SmallLake,seed:number,origin:WorldPoi
   if(!arcs||!connectedWater(arcs))return finish(core,invalidShape);
   if(!coverage)return finish(core,null);
 
-  const excluded=new Set([...reserved,...lake.cells.map(fineCellKey)]);
-  const fringe=new Map(neighbours(lake.cells).map(cell=>[fineCellKey(cell),cell]));
+  const excluded=new Set([...(lake.shoreCells?[]:reserved),...lake.cells.map(fineCellKey)]);
+  const fringe=new Map((lake.shoreCells??lake.cells.flatMap(smallLakeNeighbours)).map(cell=>[fineCellKey(cell),cell]));
   const extras=[...fringe].filter(([key])=>!excluded.has(key)&&hasFullDrySupport(coverage.get(key))).map(([,cell])=>cell).filter(cell=>{
     const mask=prepareRefinementShoreCells([cell],origin,1);
     if(mask.status==='error')return false;
@@ -175,6 +173,29 @@ export function prepareSmallLakeShore(lake:SmallLake,seed:number,origin:WorldPoi
     return connected(candidate)?candidate:accepted;
   },lake.cells);
   return finish({...core,maskCells},null);
+}
+
+/** Reserve shared spill before applying per-lake road, crossing or POI
+ * conflicts. That allocation is independent of which candidates survive. */
+export function prepareAutomaticSmallLakeBatch(footprints:readonly (readonly DetailCell[])[],nextId:number,
+  seed:number,origin:WorldPoint,protection:SmallLakeProtection,coverage:ReadonlyMap<string,OneMileCell>,occupied:ReadonlySet<string>) {
+  const candidates=footprints.filter(cells=>cells.every(cell=>!occupied.has(fineCellKey(cell))));
+  const reserved=new Set([...occupied,...candidates.flatMap(cells=>cells.map(fineCellKey))]);
+  const noProtection:SmallLakeProtection={roads:[],crossings:[],anchors:[]};
+  const lakes:SmallLake[]=[];
+  for(const cells of candidates){
+    const lake:SmallLake={id:nextId,origin:'automatic',cells};
+    const planned=prepareSmallLakeShore(lake,seed,origin,noProtection,coverage,reserved);
+    if(planned.conflict)continue;
+    const shoreCells=planned.view.maskCells.slice(cells.length);
+    for(const cell of shoreCells)reserved.add(fineCellKey(cell));
+    const checked=prepareSmallLakeShore({...lake,shoreCells},seed,origin,protection,coverage);
+    if(checked.conflict)continue;
+    if(nextId===Number.MAX_SAFE_INTEGER)throw Error('Small lake id counter overflow');
+    lakes.push({...lake,shoreCells:checked.view.maskCells.slice(cells.length)});
+    nextId++;
+  }
+  return {lakes,nextId};
 }
 
 export function smallLakeShoreConflict(lake:SmallLake,seed:number,origin:WorldPoint,protection:SmallLakeProtection) {

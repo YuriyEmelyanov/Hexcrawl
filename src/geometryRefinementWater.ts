@@ -3,7 +3,6 @@
  * renderer in world units; this module does not calibrate F or change RNG. */
 import type {WorldPoint} from './detailGrid.ts';
 import {prepareRefinementBoundaryRoutes} from './geometryRefinementExits.ts';
-import {shoreCurvePoint,shoreQuadraticRoots,type ShoreCurve} from './geometryRefinementShore.ts';
 type Path=Readonly<{riverId:number;sourceEdgeKey:string;fullness:number;points:readonly WorldPoint[]}>;
 type Ref=Readonly<{riverId:number;sourceEdgeKey:string;stepIndex:number}>;
 type Capsule=Ref&Readonly<{from:WorldPoint;to:WorldPoint;radius:number;length:number;ux:number;uy:number}>;
@@ -14,45 +13,6 @@ const lexical=(a:string,b:string)=>a<b?-1:a>b?1:0;
 const refKey=(r:Ref)=>JSON.stringify([r.riverId,r.sourceEdgeKey,r.stepIndex]);
 const fail=(code:'invalid_water'|'invalid_query'|'capacity',refs:string[]=[])=>Object.freeze({status:'error' as const,code,refs:freeze(refs),completeGeometryPlan:false as const});
 
-function cubicRootsInRange(a:number,b:number,c:number,d:number,lo:number,hi:number):number[] {
- const stops=[lo,...shoreQuadraticRoots(3*a,2*b,c).filter(t=>t>lo&&t<hi),hi];
- const value=(t:number)=>((a*t+b)*t+c)*t+d;
- const roots=[...stops]; // Also sample turning points to cover repeated roots.
- for(let i=1;i<stops.length;i++){
-  let left=stops[i-1],right=stops[i];const negative=value(left)<0;
-  if(negative===(value(right)<0))continue;
-  for(let j=0;j<48;j++){
-   const mid=(left+right)/2;
-   if((value(mid)<0)===negative)left=mid;else right=mid;
-  }
-  roots.push((left+right)/2);
- }
- return roots;
-}
-
-/** Test the minimum curve-to-axis distance on a clipped quadratic arc. A bank
- * tangency is allowed. Endpoint caps and the finite sides are both included. */
-export function refinementWaterCurveOverlaps(capsule:Capsule,curve:ShoreCurve,lo=0,hi=1):boolean {
- const {from,control,to}=curve;
- const ax=from.x-2*control.x+to.x,ay=from.y-2*control.y+to.y;
- const bx=2*(control.x-from.x),by=2*(control.y-from.y);
- const cx=from.x-capsule.from.x,cy=from.y-capsule.from.y,{ux,uy}=capsule;
- const a=ax*ux+ay*uy,b=bx*ux+by*uy,c=cx*ux+cy*uy;
- const u=ay*ux-ax*uy,v=by*ux-bx*uy,w=cy*ux-cx*uy;
- const probes=[lo,hi,...shoreQuadraticRoots(a,b,c),...shoreQuadraticRoots(a,b,c-capsule.length),
-  ...shoreQuadraticRoots(u,v,w),...shoreQuadraticRoots(0,2*u,v)];
- for(const p of [capsule.from,capsule.to]){
-  const x=from.x-p.x,y=from.y-p.y;
-  probes.push(...cubicRootsInRange(2*(ax*ax+ay*ay),3*(ax*bx+ay*by),bx*bx+by*by+2*(ax*x+ay*y),bx*x+by*y,lo,hi));
- }
- const threshold=capsule.radius-1e-9;
- return probes.some(t=>{
-  if(t<lo||t>hi)return false;
-  const p=shoreCurvePoint(curve,t),x=p.x-capsule.from.x,y=p.y-capsule.from.y;
-  const along=Math.min(capsule.length,Math.max(0,x*ux+y*uy));
-  return Math.hypot(x-along*ux,y-along*uy)<threshold;
- });
-}
 export function prepareRefinementWater(input:Readonly<{paths:readonly Path[];widthByFullness:ReadonlyMap<number,number>;consumeWork?:(units:number)=>void}>){
  if(input.paths.length>4096||input.paths.reduce((n,p)=>n+Math.max(0,p.points.length-1),0)>24576)return fail('capacity');
  const seen=new Set<string>(),capsules:Capsule[]=[];

@@ -6,19 +6,32 @@ export type SmallLake = Readonly<{
   id: number;
   cells: readonly DetailCell[];
   origin: 'manual' | 'automatic';
+  shoreCells?: readonly DetailCell[];
 }>;
 
 export type SmallLakeLayer = Readonly<{nextId: number; lakes: readonly SmallLake[]}>;
 
 const emptyLayer: SmallLakeLayer = {nextId: 1, lakes: []};
 
-function exactRecord(value: unknown, keys: readonly string[]): Record<string, unknown> {
+function exactRecord(value: unknown, keys: readonly string[], optional: readonly string[] = []): Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value) ||
-      Object.keys(value).length !== keys.length || keys.some(key => !Object.prototype.hasOwnProperty.call(value, key))) {
+      Object.keys(value).some(key => !keys.includes(key) && !optional.includes(key)) ||
+      keys.some(key => !Object.prototype.hasOwnProperty.call(value, key))) {
     throw new Error('Invalid small lake record');
   }
   return value as Record<string, unknown>;
 }
+
+function parseLakeCell(raw: unknown): DetailCell {
+  const {q, r} = exactRecord(raw, ['q', 'r']);
+  if (typeof q !== 'number' || !Number.isSafeInteger(q) || typeof r !== 'number' || !Number.isSafeInteger(r)) {
+    throw new Error('Invalid small lake cell');
+  }
+  return {q, r};
+}
+
+export const smallLakeNeighbours = (cell: DetailCell): DetailCell[] =>
+  neighbours.map(([q, r]) => ({q: cell.q+q, r: cell.r+r}));
 
 export function parseSmallLakes(raw: unknown): SmallLakeLayer {
   const {nextId, lakes} = exactRecord(raw, ['nextId', 'lakes']);
@@ -28,26 +41,28 @@ export function parseSmallLakes(raw: unknown): SmallLakeLayer {
   const ids = new Set<number>();
   const occupied = new Set<string>();
   const parsed = lakes.map(rawLake => {
-    const {id, cells, origin} = exactRecord(rawLake, ['id', 'cells', 'origin']);
+    const fields = exactRecord(rawLake, ['id', 'cells', 'origin'], ['shoreCells']);
+    const {id, cells, origin, shoreCells} = fields;
     if (typeof id !== 'number' || !Number.isSafeInteger(id) || id < 1 || id >= nextId ||
         ids.has(id) || !Array.isArray(cells) || (origin !== 'manual' && origin !== 'automatic')) {
       throw new Error('Invalid small lake');
     }
     ids.add(id);
-    const footprint = cells.map(rawCell => {
-      const {q, r} = exactRecord(rawCell, ['q', 'r']);
-      if (typeof q !== 'number' || typeof r !== 'number' || !Number.isSafeInteger(q) || !Number.isSafeInteger(r)) {
-        throw new Error('Invalid small lake cell');
-      }
-      return {q, r};
-    });
+    const footprint = cells.map(parseLakeCell);
     validateDetailFootprint(footprint);
-    for (const cell of footprint) {
+    const hasShore = Object.prototype.hasOwnProperty.call(fields, 'shoreCells');
+    if (hasShore && (origin !== 'automatic' || !Array.isArray(shoreCells))) throw new Error('Invalid small lake shore');
+    const shore = Array.isArray(shoreCells) ? shoreCells.map(parseLakeCell) : undefined;
+    if (shore?.length) {
+      const adjacent = new Set(footprint.flatMap(smallLakeNeighbours).map(fineCellKey));
+      if (shore.some(cell => !adjacent.has(fineCellKey(cell)))) throw new Error('Invalid small lake shore');
+    }
+    for (const cell of [...footprint, ...(shore ?? [])]) {
       const key = fineCellKey(cell);
-      if (occupied.has(key)) throw new Error('Small lake footprints overlap');
+      if (occupied.has(key)) throw new Error('Small lake footprints or stored shores overlap');
       occupied.add(key);
     }
-    return {id, cells: footprint, origin} as const;
+    return {id, cells: footprint, origin, ...(shore ? {shoreCells: shore} : {})} as const;
   });
   return {nextId, lakes: parsed};
 }
@@ -79,7 +94,7 @@ function smallLakeRoll(seed:number,stage:'seed'|'growth',cell:DetailCell):number
 export function rollSmallLakeFootprints(candidates:readonly LakeCandidate[],seed:number,expansionChance:number):DetailCell[][] {
   const sorted=[...candidates].sort((a,b)=>compareCells(a.cell,b.cell));
   const first=new Set(sorted.filter(({cell,chance})=>smallLakeRoll(seed,'seed',cell)<chance).map(({cell})=>fineCellKey(cell)));
-  const adjacent=(cell:DetailCell)=>neighbours.map(([q,r])=>fineCellKey({q:cell.q+q,r:cell.r+r}));
+  const adjacent=(cell:DetailCell)=>smallLakeNeighbours(cell).map(fineCellKey);
   const unvisited=new Map(sorted
     .filter(({cell})=>first.has(fineCellKey(cell))||adjacent(cell).some(key=>first.has(key))&&smallLakeRoll(seed,'growth',cell)<expansionChance)
     .map(({cell})=>[fineCellKey(cell),cell]));
@@ -122,7 +137,10 @@ export function exactAutomaticLakeRollback(current:SmallLakeLayer,previous:Small
   return supported.layer.lakes.length===prior.lakes.length&&supported.layer.lakes.every((lake,index)=>{
     const other=prior.lakes[index];
     return lake.id===other.id&&lake.origin===other.origin&&lake.cells.length===other.cells.length&&
-      lake.cells.every((cell,i)=>fineCellKey(cell)===fineCellKey(other.cells[i]));
+      lake.cells.every((cell,i)=>fineCellKey(cell)===fineCellKey(other.cells[i]))&&
+      (lake.shoreCells===undefined)===(other.shoreCells===undefined)&&
+      (lake.shoreCells?.length??0)===(other.shoreCells?.length??0)&&
+      (lake.shoreCells?.every((cell,i)=>fineCellKey(cell)===fineCellKey(other.shoreCells![i]))??true);
   });
 }
 
