@@ -1,0 +1,63 @@
+{
+  "status": "changes_requested",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1_1_repair_region_checkpoint_roundtrip",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+  "head_tree_sha": "680e9be665bfe300b5db699f0103fe494b637270",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/repair-f7ab0eb/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600",
+  "handoff_ref": "agent-work/handoffs/2026-11-20T1400-reviewer-HX-BL-056-f7ab0eb.json",
+  "result_ref": "agent-work/results/2026-11-20T1400-reviewer-HX-BL-056-f7ab0eb.json",
+  "review_ready": false,
+  "role": "programmer",
+  "next_role": "programmer",
+  "next_step": "Исправить HX056-F11-RV04 и RV05 в PR №510. Проверить итоговую контрольную точку удаления региона вместе с озёрами до записи и подтвердить потерю допустимой опоры. Зафиксировать берег принятого ручного озера при присоединении соседнего участка. Проверить отмену, повторное открытие принятого результата, Undo/Redo и совместимость, затем передать новый точный SHA на независимую приёмку.",
+  "verification_status": "independent_review_changes_requested",
+  "forecast": {
+    "remaining_team_runs": [
+      3,
+      5
+    ],
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ],
+    "stages": {
+      "fix": [
+        1,
+        2
+      ],
+      "independent_review": [
+        1,
+        2
+      ],
+      "authorized_release": 1
+    }
+  },
+  "repair_base_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/review.json",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600/artifacts/14620231791",
+  "reviewed_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/score-assessment1.2.json",
+  "schema_version": "1.0",
+  "from_role": "reviewer",
+  "run_id": "2026-11-20T1400-reviewer-HX-BL-056-f7ab0eb",
+  "created_at": "2026-11-20T11:05:41.346Z",
+  "scope": [
+    "HX056-F11-RV04",
+    "HX056-F11-RV05"
+  ],
+  "acceptance_criteria": [
+    "Добавить регион по сценарию RV04. Отмена решения не меняет карту, историю и RNG. Принятый результат сохраняется и повторно загружается. Undo/Redo восстанавливают точные валидные документы.",
+    "На сценарии RV05 зафиксировать прежний берег до добавления соседнего участка и сравнить после расширения и JSON. Новый участок остаётся доступным.",
+    "Подтвердить на новом SHA прямое отклонение тропы, изоляцию соседнего кандидата, подсветку черновика и представительный набор AC01–AC08. Передать выводы и вид на новом SHA независимому проверяющему."
+  ]
+}

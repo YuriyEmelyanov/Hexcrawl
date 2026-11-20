@@ -1,0 +1,358 @@
+{
+  "status": "changes_requested",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1_1_repair_region_checkpoint_roundtrip",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+  "head_tree_sha": "680e9be665bfe300b5db699f0103fe494b637270",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/repair-f7ab0eb/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600",
+  "handoff_ref": "agent-work/handoffs/2026-11-20T1400-reviewer-HX-BL-056-f7ab0eb.json",
+  "result_ref": "agent-work/results/2026-11-20T1400-reviewer-HX-BL-056-f7ab0eb.json",
+  "review_ready": false,
+  "role": "reviewer",
+  "next_role": "programmer",
+  "next_step": "Исправить HX056-F11-RV04 и RV05 в PR №510. Проверить итоговую контрольную точку удаления региона вместе с озёрами до записи и подтвердить потерю допустимой опоры. Зафиксировать берег принятого ручного озера при присоединении соседнего участка. Проверить отмену, повторное открытие принятого результата, Undo/Redo и совместимость, затем передать новый точный SHA на независимую приёмку.",
+  "verification_status": "independent_review_changes_requested",
+  "forecast": {
+    "remaining_team_runs": [
+      3,
+      5
+    ],
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ],
+    "stages": {
+      "fix": [
+        1,
+        2
+      ],
+      "independent_review": [
+        1,
+        2
+      ],
+      "authorized_release": 1
+    }
+  },
+  "repair_base_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/review.json",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600/artifacts/14620231791",
+  "reviewed_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/score-assessment1.2.json",
+  "schema_version": "1.0",
+  "review_role": "reviewer",
+  "completed_at": "2026-11-20T11:05:41.346Z",
+  "findings": [
+    {
+      "id": "HX056-F11-RV04",
+      "related_to": "HX056-F11-RV01",
+      "severity": "P1",
+      "status": "confirmed_release_blocker",
+      "title": "Удаление последнего региона возвращает старую тропу поверх малого озера и сохраняет JSON, который не открывается",
+      "contract": [
+        "R02",
+        "R04",
+        "R05",
+        "AC02",
+        "AC03",
+        "AC06"
+      ],
+      "steps": [
+        "Загрузить e6-water-editor.json с принятой внутренней тропой №1 (0,−1) → (1,−1). Подготовка исходного fixture добавляет только тропу и её счётчик. Сам импорт проходит штатно.",
+        "Добавить регион через обычный путь резервного участка. Контрольная точка содержит первоначальную тропу.",
+        "Штатно удалить тропу №1. На карте 1 миля создать ручное озеро №1 в (3,−6), на территории первого региона. Выгруженный на этом шаге JSON открывается.",
+        "Вернуться на 6 миль и удалить последний регион. Обработчик без предупреждения сохраняет озеро, восстанавливает тропу поверх него и добавляет один шаг истории.",
+        "Отменить и повторить. Повтор возвращает несовместимую пару. Повторно загрузить выгруженный JSON. Импорт отклоняет его из-за пересечения озера с тропой №1."
+      ],
+      "observed": {
+        "fixture": "test/fixtures/e6-water-editor.json",
+        "fixture_adjustment": "В существующую тестовую карту добавлена принятая внутренняя тропа и её счётчик. Остальное через настоящие обработчики приложения без подмены предметных функций.",
+        "old_trail": {
+          "id": 1,
+          "from": {
+            "q": 0,
+            "r": -1
+          },
+          "to": {
+            "q": 1,
+            "r": -1
+          }
+        },
+        "lake": {
+          "id": 1,
+          "cells": [
+            {
+              "q": 3,
+              "r": -6
+            }
+          ],
+          "origin": "manual"
+        },
+        "regions_before": 2,
+        "regions_after": 1,
+        "confirmations": 0,
+        "undo_steps_added": 1,
+        "undo_and_redo_are_exact": true,
+        "roundtrip_before": true,
+        "roundtrip_after": false,
+        "rejected_import_is_atomic": true,
+        "import_error": "Не удалось загрузить JSON: ошибка подготовки карты (map.physicalGrid.smallLakes.lakes[0].cells: Берег малого озера пересекает дорогу или тропу №1.). Текущая карта сохранена."
+      },
+      "source": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f7ab0eb7c953f5c7934b9fdb1647fae95b427548/src/App.tsx#L14778-L14792",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f7ab0eb7c953f5c7934b9fdb1647fae95b427548/src/App.tsx#L14801-L14809",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f7ab0eb7c953f5c7934b9fdb1647fae95b427548/src/App.tsx#L15516-L15521"
+      ],
+      "expected": "Проверить итоговую географию контрольной точки вместе с сохраняемыми малыми озёрами до изменения карты и истории. При реальной потере допустимой опоры перечислить затронутые озёра и сохранить транзакцию только после согласия. Отмена решения должна оставить прежний документ, RNG и обе истории. Любое принятое состояние должно повторно открываться.",
+      "evidence": [
+        "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/checkpoint-probe.mjs.txt"
+      ]
+    },
+    {
+      "id": "HX056-F11-RV05",
+      "severity": "P2",
+      "status": "confirmed_contract_mismatch",
+      "contract": [
+        "R03",
+        "R04",
+        "AC08"
+      ],
+      "title": "Незатронутое ручное озеро самостоятельно расширяется после пристройки соседнего участка",
+      "steps": [
+        "Открыть неизменённый e6-water-editor.json, seed 42. В масштабе 1 миля принять ручное озеро №1 в (9,13).",
+        "Записать ячейки фактически показываемого берега. В масштабе 6 миль добавить соседний резервный участок с опорой (3,3). Переключиться обратно на 1 милю.",
+        "Сравнить маску отрисовки. Обе прежние ячейки сохранили полную сухую опору и прежние защищённые объекты, но новое покрытие позволяет добавить (8,14). Озеро не редактировалось, ID, запись JSON и необрезанный контур равны."
+      ],
+      "observed": {
+        "fixture": "test/fixtures/e6-water-editor.json",
+        "lake_id": 1,
+        "source_anchor": {
+          "q": 3,
+          "r": 3
+        },
+        "footprint": [
+          {
+            "q": 9,
+            "r": 13
+          }
+        ],
+        "before": [
+          "9,13",
+          "10,12"
+        ],
+        "after": [
+          "9,13",
+          "8,14",
+          "10,12"
+        ],
+        "old_cells_fully_supported": true,
+        "record_and_raw_path_unchanged": true,
+        "prompts": 0
+      },
+      "evidence": [
+        "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/unchanged-shore-probe.mjs.txt",
+        "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/unchanged-shore-harness.patch.txt"
+      ],
+      "source": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f7ab0eb7c953f5c7934b9fdb1647fae95b427548/src/App.tsx#L16599-L16610",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/f7ab0eb7c953f5c7934b9fdb1647fae95b427548/src/smallLakeShore.ts#L157-L175"
+      ],
+      "expected": "Охранять форму ранее принятого озера, если прежняя опора остаётся валидной. Подключение соседней территории должно сохранять точный берег. Проверить также последующий импорт, Undo/Redo и сохранение старых документов."
+    }
+  ],
+  "checks": {
+    "node_ci": {
+      "id": 136226166981,
+      "completed": "success",
+      "test_count": 439,
+      "passed": 439,
+      "failed": 0,
+      "skipped": 0,
+      "node_version_major": 24
+    },
+    "browser_ci": {
+      "id": 136226162993,
+      "completed": "success",
+      "one_mile_cases": 17,
+      "passed": 17,
+      "failed": 0,
+      "hx056_case_ids": [
+        "HX056-manual-small-lake-roundtrip-and-png",
+        "HX056-safe-shore-spill",
+        "HX056-source-water-removes-small-lake",
+        "HX056-regeneration-confirms-small-lake-loss",
+        "HX056-automatic-small-lakes",
+        "HX056-automatic-conflict-isolation"
+      ],
+      "artifact": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600/artifacts/14620778144",
+      "verified_checkout": "659f592c817387956f28ff2232ce46e16c81c0f1",
+      "verified_tree": "680e9be665bfe300b5db699f0103fe494b637270"
+    },
+    "rng_ci": {
+      "id": 136226166263,
+      "completed": "success",
+      "primary_seed_cases": 8
+    },
+    "independent_node": {
+      "passed": 4,
+      "executed": 4,
+      "scenarios": [
+        "deleting a real region lists the unsupported small lakes and undo restores all of them",
+        "a new trail crossing a retained small lake is rejected before save and history",
+        "source water edit previews whole small lake losses and confirms exact undo and redo",
+        "a skipped automatic lake leaves the neighbour’s visible shoreline intact after reload"
+      ]
+    },
+    "independent_runtime_probe": {
+      "result": "reproduced_defect",
+      "artifact": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/checkpoint-probe.mjs.txt",
+      "scenarios": 2,
+      "artifacts": [
+        "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/checkpoint-probe.mjs.txt",
+        "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/unchanged-shore-probe.mjs.txt"
+      ]
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "head_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+    "added": 2,
+    "removed": 1,
+    "modified": 1,
+    "count_source": "git diff a61bc5af878e744bd08e576324755b0b1a0f2206 f7ab0eb7c953f5c7934b9fdb1647fae95b427548 -- test",
+    "suites": [
+      {
+        "suite": "Node · mapTransactions.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Ручное озеро → тропа → JSON. Отказ происходит до записи и сохраняет карту, RNG и обе истории.",
+        "reuse_or_new_reason": "Новый порядок действий воспроизводит потерю возможности повторной загрузки. Существующие проверки создания озера поверх дороги проверяют обратный порядок."
+      },
+      {
+        "suite": "Node · oneMile.test.mjs",
+        "added": 1,
+        "removed": 1,
+        "modified": 0,
+        "scenario": "Парное сравнение итоговой береговой маски при пропуске соседа и после JSON. Удалён кейс на функцию пересечения с полосой реки, у которой больше нет продуктового вызова.",
+        "reuse_or_new_reason": "Стабильный исходный путь и повтор одинаковой операции не проверяют равенство видимых берегов между операциями с конфликтом и без него."
+      },
+      {
+        "suite": "Playwright · one-mile.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Две подсветки несвязного выбора видимы при недоступном сохранении. После снятия лишнего выделения штатное сохранение продолжается.",
+        "reuse_or_new_reason": "Расширен существующий сценарий ручного озера на карте Classic."
+      }
+    ],
+    "review_conclusion": "Обе новые проверки имеют разные обязательные сценарии. Первый тест проверяет порядок озеро → тропа и защищает от локального повторения ошибки, но не покрывает восстановление тропы из контрольной точки. Второй проверяет итоговую маску при пропуске и загрузку. Браузерный случай расширен на том же сценарии. У удалённой функции пересечения с полосой реки не осталось вызовов в исходниках пакета."
+  },
+  "acceptance_matrix": [
+    {
+      "id": "AC01",
+      "status": "observed",
+      "observation": "Classic, ручное малое озеро, фактический вход/выход реки, JSON и PNG."
+    },
+    {
+      "id": "AC02",
+      "status": "partial",
+      "observation": "Прямой конфликт тропы и исправленная геометрия несвязного черновика подтверждены. Контрольная точка возвращает запрещённое пересечение (RV04). Не подтверждались независимо все комбинации ручья и большого POI."
+    },
+    {
+      "id": "AC03",
+      "status": "failed",
+      "observation": "Обычная потеря сухой опоры в проверках проходит. При удалении региона старую тропу возвращают без запроса, несмотря на конфликт; новый снимок не загружается (RV04)."
+    },
+    {
+      "id": "AC04",
+      "status": "partial",
+      "observation": "Подтверждены изоляция и воспроизводимость в браузере и парная независимая проверка маски; полного независимого повторения всех вероятностей, POI и биомов не было."
+    },
+    {
+      "id": "AC05",
+      "status": "observed",
+      "observation": "В CI показаны сохранение и экспорт, поворот, одномильный интерфейс, подсветка двух несвязных клеток. Адаптивные проверки 320/390 RU/EN есть в общей одномильной матрице."
+    },
+    {
+      "id": "AC06",
+      "status": "failed",
+      "observation": "Сборка, весь браузер и проверка RNG прошли. JSON, который приложение само создало после удаления региона, приложение отклоняет (RV04)."
+    },
+    {
+      "id": "AC07",
+      "status": "observed",
+      "observation": "В CI штатные ручной и автоматический случаи показывают вход, воду и выход; ручной 1-мильный экспорт проверен в обеих ориентациях."
+    },
+    {
+      "id": "AC08",
+      "status": "failed",
+      "observation": "Парное сравнение соседнего берега после пропуска подтвердилось. В настоящей генерации сохранено ручное озеро и принято 23 допустимых, конфликтующая компонента отклонена. Прежнее ручное озеро расширяется при пристройке соседнего участка без изменения старой опоры (RV05)."
+    }
+  ],
+  "prior_findings": [
+    {
+      "id": "HX056-F11-RV01",
+      "status": "direct_edit_verified_checkpoint_case_open",
+      "evidence": "HX056-F11-RV04"
+    },
+    {
+      "id": "HX056-F11-RV02",
+      "status": "fixed_in_paired_case",
+      "evidence": "Independent Node production batch and scoped CI"
+    },
+    {
+      "id": "HX056-F11-RV03",
+      "status": "fixed",
+      "evidence": "Exact CI browser and small-lake-invalid-selection.jpg"
+    }
+  ],
+  "fresh_context_review": {
+    "available": true,
+    "completed": true,
+    "scope": "Отдельный проверяющий со свежим контекстом сопоставил проверяемый SHA и F1.1, повторил четыре целевые проверки Node и независимо воспроизвёл изменение береговой маски. Основной проверяющий повторил два диагностических сценария и проверил журналы CI.",
+    "confirmed_findings": [
+      "HX056-F11-RV04",
+      "HX056-F11-RV05"
+    ],
+    "persistent_tests_added_by_review": 0
+  },
+  "limitations": [
+    "Приёмка остановлена на двух воспроизведённых нарушениях. Не утверждается полное независимое покрытие всех профилей, биомов и комбинаций AC01–AC08."
+  ],
+  "run_id": "2026-11-20T1400-reviewer-HX-BL-056-f7ab0eb",
+  "claim_ref": "agent-work/claims/2026-11-20T1400-reviewer-HX-BL-056-f7ab0eb.json",
+  "execution_lock_generation": 310,
+  "started_at": "2026-11-20T10:59:44.697Z",
+  "role_selection_reason": "Задача HX-BL-056 была в review_ready на точном SHA, владелец реализации завершил работу и освободил слот. В проверенном реестре и полном списке claims активного владельца продуктовой задачи не было.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-20T10:58:39.210Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-11-20T11:05:41.346Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "main_changed": false,
+  "published": false,
+  "owner_decisions_needed": [],
+  "no_writing_processes_running": true,
+  "no_validation_processes_running": true
+}

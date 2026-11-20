@@ -1,0 +1,22 @@
+diff --git a/test/helpers/generation-harness.mjs b/test/helpers/hx056-fresh-review-harness.mjs
+index e282896..11cb64a 100644
+--- a/test/helpers/generation-harness.mjs
++++ b/test/helpers/hx056-fresh-review-harness.mjs
+@@ -18,7 +18,7 @@ const artworks = app.body.statements.flatMap(node => ts.isVariableStatement(node
+ let prefix = source.slice(0, lastReturn.getStart(ast));
+ for(const artwork of artworks.sort((a,b)=>b.initializer.getStart(ast)-a.initializer.getStart(ast)))if(artwork.initializer)prefix = prefix.slice(0, artwork.initializer.getStart(ast)) + 'undefined' + prefix.slice(artwork.initializer.end);
+ const instrumented = prefix + `return {
+-  startSmallLake, commitSmallLake, fineDraft, startFineDraft, changeFineDraft, saveFineDraft, cancelFineDraft, fineHover, setFineHover, switchFineStep, pickFine, fineCells, fineCandidates, fineReadCell, fineSummary, resolveFineExit,
++  acceptedLakeArtwork, smallLakeDraft, paintSmallLake, startSmallLake, commitSmallLake, fineDraft, startFineDraft, changeFineDraft, saveFineDraft, cancelFineDraft, fineHover, setFineHover, switchFineStep, pickFine, fineCells, fineCandidates, fineReadCell, fineSummary, resolveFineExit,
+   physicalGrid, fineDisplay, automaticFineError, previewOneMile, applyOneMilePreview, cancelOneMilePreview, editOneMileCell, getDocumentRevision:()=>documentRevision.current, getMapScale:()=>mapScaleRef.current,
+   chooseKnaveProfile, changeGenerationMode, mutateKnaveContent, knaveDraft, knaveError, changeKnaveDraft, finishKnaveDraft, resetKnaveDraft, requestKnaveExit, resolveKnaveExit, knaveExitRequest, knavePanel,
+   poiDraft, startPoiDraft, changePoiTarget, finishPoiDraft, resetPoiDraft, poiPreview, requestPoiExit, resolvePoiExit, poiExitRequest,
+@@ -38,7 +38,7 @@ const instrumented = prefix + `return {
+   setSelectedWaterPoiKind, deleteSelectedWaterPoi, deleteSelectedPoi, isImporting,
+   selectNameTarget, nameTargetHex, nameTargets, nameDraft, nameErrors, showNameTarget, requestNameTarget, changeNameDraft, changeOtherNameDraft, saveNameDraft, cancelNameDraft, applyDocument, setLanguage, language, setSelectedRegionBiome, regionBiomeReason, editMode, setEditMode
+ };` + source.slice(lastReturn.end) + `
+-export const testGeometry = { geometryPlanInput, toPixel, getLakesForRegions, getRiverWidth, getHexWidth, oneMileSources, regionMarkKeys, detailMapRiverGeometry, knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
++export const testGeometry = { smallLakeProtectionForMap, geometryPlanInput, toPixel, getLakesForRegions, getRiverWidth, getHexWidth, oneMileSources, regionMarkKeys, detailMapRiverGeometry, knaveFactsForMap, prepareKnaveGeneratedMap, WaterEditError, TagCapacityError, prepareRegionMapEdit, generateConnectedRegionFromAnchorImpl, generateFallbackTractFromAnchor, findFillableEnclosedEmptyAreas, getNewRiverLakeReentryViolation, getHexCornerPoints, getHexEdgeKeys, getHexNeighbors, hexKey, buildRiverGraphForRegion,
+   findRiverEndpointsTouchingRegion, getCandidateHexes, generateRiverForRegion, assertHexcrawlSaveData,
+   prepareWaterMapEdit, prepareRiverMapEdit, buildManualRiverGeometryContext, riverFeatureEligibility, buildRegionRiverNetwork, reconcileRegionRiverModel, completeRegionRiverEnds, addLakeAroundRiverSplitVertex, createInitialRiverSectors,
+   countRoadPathRiverCrossings, findLowestRiverCrossingPathWithinWildRegion, getWildRoadCandidates, chooseBestWildRoadCandidate, collectSettledIncomingRoadPathsToTarget, generateRoadsForRegionImpl, findIncomingRoadEndpointsForRegion, getRoadEndpointHexKeysImpl,

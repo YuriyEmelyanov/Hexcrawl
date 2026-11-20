@@ -1,0 +1,47 @@
+// Save this file as test/hx056-fresh-fringe-expansion-probe.mjs and run it from the repository root.
+// First copy test/helpers/generation-harness.mjs to test/helpers/hx056-fresh-review-harness.mjs
+// and add the two observation exports documented in unchanged-shore-harness.patch.txt.
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createGenerationHarness} from './helpers/hx056-fresh-review-harness.mjs';
+import {hasFullDrySupport} from '../src/smallLakes.ts';
+import {projectOneMile,fineCellKey} from '../src/oneMile.ts';
+import {prepareSmallLakeShore} from '../src/smallLakeShore.ts';
+function setup(){const h=createGenerationHarness(42,'','en');h.render();const alerts=[],prompts=[];
+ h.setWindow({alert:m=>alerts.push(m),confirm:m=>{prompts.push(m);return true;}}); h.injectFunction('readTextFile',async file=>file.text);
+ return {h,alerts,prompts}; }
+const fixture=JSON.parse(fs.readFileSync('test/fixtures/e6-water-editor.json'));
+const load=(h,data)=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'file'}});
+const {h,alerts,prompts}=setup(),other=setup();
+await Promise.all([load(h,fixture),load(other.h,fixture)]);
+const add=({h},cell)=>h.render().addFallbackTractToMap(cell);
+const source=h.render().candidateHexes.at(-1);add(other,source);
+const newMap=other.h.render().captureDocument().map;assert.equal(newMap.regions.length,2);
+assert.equal(h.render().switchFineStep(1),true);
+const a=h.render(),origin=a.fineDisplay.grid.origin,beforeMap=a.captureDocument().map;
+const before=new Map(a.fineCells.map(x=>[fineCellKey(x.cell),x]));
+const after=new Map(projectOneMile(h.geometry.oneMileSources(newMap),origin).map(x=>[fineCellKey(x.cell),x]));
+const protection=h.geometry.smallLakeProtectionForMap(beforeMap,a.fineDisplay);
+const nextProtection=h.geometry.smallLakeProtectionForMap(newMap,a.fineDisplay);
+const cases=[];
+for(const row of before.values()){
+ const cell=row.cell,key=fineCellKey(cell);if(!hasFullDrySupport(row)||!hasFullDrySupport(after.get(key)))continue;
+ const lake={id:1,origin:'manual',cells:[cell]};
+ const pre=prepareSmallLakeShore(lake,beforeMap.toponymSeed,origin,protection,before),post=prepareSmallLakeShore(lake,beforeMap.toponymSeed,origin,nextProtection,after);
+ if(!pre.conflict&&!post.conflict&&pre.view.maskCells.length<post.view.maskCells.length&&pre.view.maskCells.every(cell=>hasFullDrySupport(after.get(fineCellKey(cell)))))cases.push({cell,before:pre.view.maskCells.map(fineCellKey),after:post.view.maskCells.map(fineCellKey)});
+}
+console.log(JSON.stringify({source,cases}));
+const witness=cases[0]; assert.ok(witness);
+assert.equal(a.pickFine(witness.cell,false,a.getDocumentRevision()),true);
+h.render().startSmallLake();h.render().commitSmallLake();assert.equal(h.render().editError,null);
+const initial=h.render().acceptedLakeArtwork.views[0],initialRecord=h.render().createSaveData().map.physicalGrid.smallLakes.lakes[0];
+assert.equal(h.render().switchFineStep(6),true);add({h},source);
+assert.equal(h.render().regions.length,2,h.render().generationError);
+assert.equal(h.render().switchFineStep(1),true,h.render().editError);
+const final=h.render().acceptedLakeArtwork.views.find(v=>v.lake.id===1),finalRecord=h.render().createSaveData().map.physicalGrid.smallLakes.lakes[0];
+console.log(JSON.stringify({witness,initial:initial.maskCells.map(fineCellKey),final:final.maskCells.map(fineCellKey),initialRecord,finalRecord,prompts,alerts,identicalPath:initial.path===final.path}));
+assert.deepEqual(initial.maskCells.map(fineCellKey),witness.before);
+assert.deepEqual(final.maskCells.map(fineCellKey),witness.after);
+assert.ok(witness.before.every(key=>witness.after.includes(key)));
+assert.deepEqual(initialRecord,finalRecord);
+assert.deepEqual(prompts,[]);
