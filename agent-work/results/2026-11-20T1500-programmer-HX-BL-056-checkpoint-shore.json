@@ -1,0 +1,247 @@
+{
+  "status": "review_ready",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1_1_checkpoint_confirmation_and_fixed_manual_shore",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+  "head_tree_sha": "9b0a6abc8a09ba9fea851ff904cb022a2308893b",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/checkpoint-shore-1c37165/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000",
+  "review_ready": true,
+  "role": "programmer",
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить HX056-F11-RV04 и RV05 на точном новом SHA, включая две отрицательные проверки на прежней версии, успешный JSON и Undo/Redo, неизменный берег и сохранение AC01–AC08. Записать score_assessment 1.2. После приёмки представить точный пакет на отдельное разрешение публикации.",
+  "verification_status": "new_revision_requires_independent_review",
+  "forecast": {
+    "remaining_team_runs": [
+      2,
+      4
+    ],
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ],
+    "stages": {
+      "independent_review": 1,
+      "rework_and_review": [
+        0,
+        2
+      ],
+      "authorized_release": 1
+    }
+  },
+  "repair_base_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-20T1500-programmer-HX-BL-056-checkpoint-shore.json",
+  "result_ref": "agent-work/results/2026-11-20T1500-programmer-HX-BL-056-checkpoint-shore.json",
+  "previous_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/score-assessment1.2.json",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628872841",
+  "schema_version": "1.0",
+  "run_id": "2026-11-20T1500-programmer-HX-BL-056-checkpoint-shore",
+  "claim_ref": "agent-work/claims/2026-11-20T1500-programmer-HX-BL-056-checkpoint-shore.json",
+  "execution_lock_generation": 322,
+  "started_at": "2026-11-20T12:00:27.558Z",
+  "completed_at": "2026-11-20T12:43:16.761Z",
+  "role_selection_reason": "Независимая приёмка PR №510 подтвердила два нарушения на базовом SHA. Утверждённая задача и свободный слот позволили исправить оба в текущем запуске.",
+  "findings": [
+    {
+      "id": "HX056-F11-RV04",
+      "status": "addressed_pending_independent_review",
+      "before": "После возврата внутренней тропы №1 в контрольной точке получался JSON, который не открывался.",
+      "after": "Диалог перечисляет озеро №1. Отмена сохраняет исходную карту, историю и RNG. Подтверждение возвращает тропу и удаляет ровно конфликтующее озеро, соседнее остаётся. Один шаг истории, оба состояния восстановимы, JSON после подтверждения открывается.",
+      "fixture": "e6-water-editor.json + принятая внутренняя тропа (0,−1) → (1,−1)"
+    },
+    {
+      "id": "HX056-F11-RV05",
+      "status": "addressed_pending_independent_review",
+      "before": "Покрытие берега (9,13), (10,12) росло на новый сухой гекс (8,14).",
+      "after": "На карте Classic с соседним регионом в (3,3) озеро №1 сохраняет исходные две ячейки берега до и после JSON. Новый сухой гекс доступен. Старый JSON без shoreCells открывается без обновления записи; при расширении берётся прежняя видимая маска.",
+      "fixture": "e6-water-editor.json, seed 42"
+    }
+  ],
+  "checks": {
+    "targeted_node": {
+      "status": "success",
+      "node_version": "24.22.3",
+      "executed": 8,
+      "passed": 8,
+      "detail": "В затронутых файлах подтверждены восемь именованных тестовых случаев; Node также отметил загруженный файл saveSafety.test.mjs без совпадений по фильтру."
+    },
+    "tsc": {
+      "status": "success"
+    },
+    "build": {
+      "status": "success"
+    },
+    "negative_control": {
+      "status": "expected_regressions_reproduced",
+      "sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+      "executed": 2,
+      "failed_as_expected": 2,
+      "evidence": [
+        {
+          "id": "HX056-F11-RV04",
+          "observed": "Старый сценарий удаляет регион без диалога о конфликтующем озере."
+        },
+        {
+          "id": "HX056-F11-RV05",
+          "observed": "Старая видимая маска расширяется на 8,14."
+        }
+      ]
+    },
+    "full_node": {
+      "id": 136289935008,
+      "status": "success",
+      "executed": 441,
+      "passed": 441,
+      "failed": 0,
+      "skipped": 0
+    },
+    "world_random": {
+      "id": 136289862809,
+      "status": "success",
+      "primary_seed_cases": 8
+    },
+    "browser": {
+      "id": 136289860586,
+      "status": "success",
+      "browser_step": "success",
+      "exactManifest": true,
+      "one_mile": {
+        "status": "passed",
+        "case_count": 17,
+        "hx056": [
+          [
+            "HX056-manual-small-lake-roundtrip-and-png",
+            "pass"
+          ],
+          [
+            "HX056-safe-shore-spill",
+            "pass"
+          ],
+          [
+            "HX056-source-water-removes-small-lake",
+            "pass"
+          ],
+          [
+            "HX056-regeneration-confirms-small-lake-loss",
+            "pass"
+          ],
+          [
+            "HX056-automatic-small-lakes",
+            "pass"
+          ],
+          [
+            "HX056-automatic-conflict-isolation",
+            "pass"
+          ]
+        ]
+      },
+      "retry_history": [
+        {
+          "job_id": 136282269453,
+          "status": "cancelled",
+          "one_mile_status": "passed",
+          "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+          "tree_sha": "9b0a6abc8a09ba9fea851ff904cb022a2308893b",
+          "case_count": 17,
+          "reason": [
+            "2026-11-20T12:32:14.5938536Z ##[error]The operation was canceled."
+          ]
+        }
+      ]
+    },
+    "prior_fixture_rejection": {
+      "head_sha": "d4e806f191dd321cb8e85c60a4f8e8c4d55e74e0",
+      "run_id": 44733057715,
+      "job_id": 136277430344,
+      "reason": "В старом браузерном примере изменение следа оставляло shoreCells от прежнего озера. Исправлены только данные проверки, чтобы снова подтвердить геометрическое пересечение тропы."
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+    "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+    "added": 2,
+    "removed": 0,
+    "modified": 2,
+    "count_source": "git diff f7ab0eb7c953f5c7934b9fdb1647fae95b427548 1c37165eaeafe2352f1647d7698b39f38369214e -- test",
+    "suites": [
+      {
+        "suite": "Node · test/mapTransactions.test.mjs",
+        "added": 2,
+        "removed": 0,
+        "modified": 0,
+        "scenarios": [
+          "HX056-F11-RV04: возврат старой тропы из контрольной точки, точный список озёр, отмена, один шаг истории, повторное открытие.",
+          "HX056-F11-RV05: прежняя видимая маска ручного озера после ввода нового сухого соседа, сохранение с shoreCells и без, точные Undo/Redo и загрузка."
+        ],
+        "reuse_or_new_reason": "Существующий случай создания тропы не восстанавливает её из старого снимка; тест пропуска автоматического кандидата не проверяет ручное озеро при приросте исходной территории."
+      },
+      {
+        "suite": "Playwright · test/browser/one-mile.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenarios": [
+          "Сквозной ручной сценарий сравнивает видимые и записанные береговые ячейки и проверяет их повторно после открытия.",
+          "Существующий случай выхода берега за границу теперь проверяет сохранение именно (11,−10). Негативное сохранение переносит след вместе с его метаданными, чтобы проверить геометрическую причину отказа."
+        ],
+        "reuse_or_new_reason": "Расширены две существующие браузерные проверки с настоящей картой. Прежние действия и PNG продолжают проверяться."
+      }
+    ]
+  },
+  "visual_artifact": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628872841",
+    "artifact_id": 14628872841,
+    "digest": "sha256:9b317e7ee4ffb9d427a591490b6c9b679fa4eb37659fffd33f04da87f3d0ca2a",
+    "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+    "tree_sha": "9b0a6abc8a09ba9fea851ff904cb022a2308893b",
+    "checkout_sha": "8c4e9f268fb92b04fed8b0c3108d2cffe0536a20",
+    "status": "passed",
+    "files": {
+      "manual_before": "small-lake-before.jpg",
+      "manual_after": "small-lake-after.jpg",
+      "manual_png": "small-lake-export.png",
+      "shore_before": "small-lake-spill-before.jpg",
+      "shore_after": "small-lake-spill-after.jpg",
+      "shore_export": "small-lake-spill.png",
+      "rotated_png": "small-lake-river-rotated.png",
+      "invalid_draft": "small-lake-invalid-selection.jpg"
+    },
+    "verified_download": {
+      "artifact_id": 14628433388,
+      "digest": "f84a8617c48e423f1269fe470c71f7854a3f98bc1b4214e4b78c15a28ce5d0ff",
+      "status": "verified",
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628433388"
+    }
+  },
+  "score_evidence_ref": "agent-work/evidence/HX-BL-056-F1/checkpoint-shore-1c37165/verification.json",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-20T11:59:44.934Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-11-20T12:43:16.761Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "owner_decisions_needed": [],
+  "main_changed": false,
+  "published": false,
+  "no_writing_processes_running": true,
+  "no_validation_processes_running": true
+}
