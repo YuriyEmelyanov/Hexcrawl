@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-056",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "comparison_base_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+  "product_base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "3007f3a7994dd8058c9c911efec46594b2ecfdaa",
+  "head_tree_sha": "377567b90042a02d114c8acbc5a9d2c0df90b3c9",
+  "previous_evidence_ref": "agent-work/evidence/HX-BL-056-F1/regeneration-25cd645/verification.json",
+  "node": {
+    "version": "24.22.3",
+    "typescript": "passed",
+    "diff_check": "passed",
+    "browser_script_syntax": "passed",
+    "targeted": {
+      "suites": [
+        "oneMile",
+        "saveSafety",
+        "mapTransactions"
+      ],
+      "executed": 102,
+      "passed": 102,
+      "failed": 0,
+      "skipped": 0
+    },
+    "case": "small lake protects crossed paths and anchors while dry hex margins remain usable",
+    "exact_geometry": "M/Q/Z path prepared at the renderer's six-to-one scale. Intersections use both the filled path and the exact union mask of the selected cells.",
+    "ci_full": {
+      "job_id": 136031903775,
+      "executed": 433,
+      "passed": 433,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "temporary_programmer_diagnostics": {
+    "crossing": {
+      "fixture": "road-entry-zigzags",
+      "cell": "-6,14",
+      "crossing": "1:-1,2|-1,3:1",
+      "unchanged": true,
+      "message": "Берег малого озера пересекает действующую переправу.",
+      "method": "Настоящая уточнённая переправа. Выбран полностью сухой гекс её берегового прохода. Проверен штатный ручной commit, документ и оба стека сохранены."
+    },
+    "area_poi": {
+      "poi": "detail-poi:5",
+      "cell": "-20,13",
+      "poiCells": 13,
+      "fixture": "road-entry-zigzags",
+      "liveGeographyUnchanged": true,
+      "method": "Карта road-entry-zigzags и действующий одномильный fixture с явно заданным трёхмильным размером POI. Проверен штатный commit внутри принятого следа. Дороги, переправы, реки и исходный слой POI совпали."
+    },
+    "point_anchor": {
+      "fixture": "Classic seed42 fallback tract",
+      "cell": "0,0",
+      "result": "refused",
+      "method": "Штатный ручной commit сообщает о перекрытии защищённой точки интереса или привязки."
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+    "head_sha": "3007f3a7994dd8058c9c911efec46594b2ecfdaa",
+    "added": 1,
+    "removed": 0,
+    "modified": 3,
+    "count_source": "git diff 25cd6450e38032508b6d6fbffdd030fd95be851b 3007f3a7994dd8058c9c911efec46594b2ecfdaa -- test/oneMile.test.mjs test/saveSafety.test.mjs test/browser/one-mile.smoke.mjs",
+    "suites": [
+      {
+        "suite": "Node / oneMile.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Точный контур и маска: сухая кромка, дорога, переправа и защищённая точка, также ненулевое мировое начало.",
+        "risk": "Ложный отказ от совпадения ячеек либо пропуск линии, пересекающей воду между двумя сухими концами.",
+        "reuse_or_new_reason": "Существующий набор одномильной геометрии расширен отдельной проверкой нового правила пересечения."
+      },
+      {
+        "suite": "Node / saveSafety.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Регрессионное озеро с сохраняемой опорой перенесено на сухой гекс без защищённой точки.",
+        "risk": "Сценарий перегенерации должен доходить до настоящего подтверждения потери опоры.",
+        "reuse_or_new_reason": "Сохранены те же требования и обработчики, обновлён только допустимый исходный гекс."
+      },
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "Существующий ручной цикл Classic сначала показывает отказ на дороге, затем подтверждает допустимый берег, сохранение и PNG. Сценарий перегенерации использует допустимый гекс для сохраняемого озера.",
+        "risk": "Черновик с конфликтом может дать сохранить документ или скрыть причину.",
+        "reuse_or_new_reason": "Расширен существующий путь ручного озера. Для регресса перегенерации изменён только допустимый исходный гекс."
+      }
+    ]
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "incomplete",
+    "criterion_ids": [
+      "S01-C03",
+      "S02-C01",
+      "S02-C03",
+      "S03-C01",
+      "S04-C04"
+    ],
+    "material": [
+      "R02 / AC02 exact protected road, crossing and anchor checks",
+      "R06 same rendered path in DOM and PNG"
+    ],
+    "limitation": "Нужно принять весь R02 и R03 и независимо проверить полный F1."
+  },
+  "remaining": [
+    "Касание существующего большого озера и речной полосы по конечному контуру.",
+    "Безопасное ограничение естественного выхода берега. В текущем черновике маска ограничивает воду выбранными клетками. Полный допуск R02 по выходу и связности ещё нужно подтвердить.",
+    "Браузерный сценарий внутри многогексового POI и проверка защищённых зон около переправ в итоговом пакете.",
+    "Автогенерация R03, итоговая независимая приёмка и разрешение выпуска.",
+    "Применение полного правила геометрии при импорте и проверка более широких защищённых зон переправ выполняются в связанном R02/R05 пакете."
+  ],
+  "next_scope": {
+    "requirement": "R02",
+    "method": "Единый канонический M/Q/Z путь и маска используются при подготовке и отрисовке. Переиспользовать refinementShoreIntervals и существующую GEO2 геометрию принятой воды. На настоящей карте доказать допустимое касание и отсутствие захвата внутренней воды. Не двигать существующие линии и привязки.",
+    "river_witness": {
+      "fixture": "classic-six-regions-seed42",
+      "cell": "-4,-28",
+      "riverId": 1,
+      "sourceEdge": "-121.244,-182|-145.492,-196",
+      "accepted": true,
+      "actualCenterlineOverlap": true,
+      "riverUnchanged": true,
+      "method": "Карта Classic seed 42, текущие подготовленные линии riverPlan с видимой водой, мировые координаты. Пересечение оси проверено тем же обрезанным M/Q/Z берегом. Штатное сохранение приняло озеро, уже проведённая река осталась на месте.",
+      "expected": "Не занимать внутреннюю часть существующей речной воды. Сохранить разрешённое касание и существующую геометрию."
+    }
+  },
+  "checked_at": "2026-11-20T02:20:46.077Z",
+  "current_workflow": {
+    "id": 44658897191,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44658897191",
+    "jobs": [
+      {
+        "id": 136031903379,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136031903704,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136031903775,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136031905997,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ]
+  },
+  "browser": {
+    "source_head_sha": "3007f3a7994dd8058c9c911efec46594b2ecfdaa",
+    "checkout_sha": "e8a8d232d8650d60c872c141d0f3e1dbc04c6306",
+    "checkout_tree_sha": "377567b90042a02d114c8acbc5a9d2c0df90b3c9",
+    "status": "passed",
+    "case": {
+      "id": "HX056-manual-small-lake-roundtrip-and-png",
+      "status": "pass",
+      "cells": [
+        "4,0",
+        "5,0"
+      ],
+      "pngBytes": 661249,
+      "roadConflict": {
+        "cell": "0,0",
+        "message": "The small lake crosses road or trail #1.",
+        "documentUnchanged": true
+      }
+    },
+    "screenshots": [
+      {
+        "name": "small-lake-road-conflict.jpg",
+        "viewport": {
+          "width": 1500,
+          "height": 1000
+        },
+        "mode": "1"
+      },
+      {
+        "name": "small-lake-after.jpg",
+        "viewport": {
+          "width": 1500,
+          "height": 1000
+        },
+        "mode": "1"
+      }
+    ],
+    "case_count": 14,
+    "artifact_id": 14595470638,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44658897191/artifacts/14595470638",
+    "artifact_digest": "sha256:72ae8a08b90c018469c546d88faedddc9621d75256fec17b0a69e7b9fef731a3",
+    "workflow_run_id": 44658897191,
+    "verified_files": {
+      "small-lake-road-conflict.jpg": "65f3619d12748089d7e9d642a981a33281a4276cf18ac253ba89c4f21232aaf5",
+      "small-lake-after.jpg": "7ebfe6a69480be2333c42484005ab6542598950d871af48ab77ffcd820e5f82f",
+      "small-lake-export.png": "a9214b5aabe1f5c9f42788d6aea8670ffca441e4b42927ab31d87283f1295949",
+      "manifest.json": "924af595c515a10378af2e4892556c78e8a8b3d142e31e97a6dd30e22739d5d5"
+    }
+  }
+}
