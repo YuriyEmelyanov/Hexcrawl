@@ -1,0 +1,581 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-20T0900-programmer-HX-BL-056-auto-lakes",
+  "completed_at": "2026-11-20T06:58:43.241Z",
+  "task_id": "HX-BL-056",
+  "role": "programmer",
+  "stage_id": "F1_close_acceptance_then_independent_review",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
+  "head_tree_sha": "2a3b5be5a66c4ec3631517bff0f1e7426c690240",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/automatic-lakes-b4b10f4/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315",
+  "next_step": "Закрыть итоговую матрицу F1 на видимом рабочем пакете. Сверить малые озёра с картой и PNG при смене ориентации и масштаба, проверить продолжение существующего сохранения и источник конфликтов. После этого передать проверяющему точный SHA и всю приёмку AC01–AC06.",
+  "claim_ref": "agent-work/claims/2026-11-20T0900-programmer-HX-BL-056-auto-lakes.json",
+  "execution_lock_generation": 279,
+  "status": "implementation_checkpoint",
+  "implemented_stage_id": "F1_automatic_small_lakes_R03",
+  "role_selection_reason": "Утверждённый этап R03 берёт роль программиста после закрытия импорта. Получено исключительное владение задачей и слотом.",
+  "result_ref": "agent-work/results/2026-11-20T0900-programmer-HX-BL-056-auto-lakes.json",
+  "implemented_in_this_run": "Случайные малые озёра на новой полной сухой опоре. Воспроизводимые начальный бросок и однократный рост без записи в старые потоки случайности. Проверка защищённой географии и сохранение вместе с регионом.",
+  "visible_result": {
+    "fixture": "Classic seed 42",
+    "observation": "Продолжение карты Classic на одном и том же якоре из 1 и 6 миль дало один регион и девять одинаковых малых озёр. При перестройке реки конфликт с существующим озером отдельно подтверждается, Undo восстанавливает всю карту. PNG и JSON включают результат.",
+    "anchor": [
+      -4,
+      -1
+    ],
+    "fine_anchor": [
+      -23,
+      -4
+    ],
+    "lake_count": 9,
+    "artifact_id": 14607759308,
+    "artifact_digest": "sha256:69b28c98fff31fc3b01130bb76e3da32783ff46983084d11a33c2bd3f1f09cbf",
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315/artifacts/14607759308",
+    "files": [
+      {
+        "name": "automatic-small-lakes-after.jpg",
+        "sha256": "6d014090b6fc6ca2852e0b73d6033ca0a9817391b7604a7dc2511bb70d56836f",
+        "bytes": 241574
+      },
+      {
+        "name": "automatic-small-lakes-before.jpg",
+        "sha256": "8c503a3852b6a15a1166dfe477bf536879232582971af75d4afa39014c4bb95e",
+        "bytes": 123106
+      },
+      {
+        "name": "automatic-small-lakes.png",
+        "sha256": "a7cc24558c0af94ed3e68fa1fa809fb72587f29d1771fc4f79fd587e7bb34e26",
+        "bytes": 824934
+      }
+    ]
+  },
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315/artifacts/14607759308",
+  "test_change_summary": {
+    "base_sha": "d316addd2ba8fa2a1a8384ab18611e14ae21121b",
+    "head_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
+    "added": 3,
+    "removed": 0,
+    "modified": 4,
+    "count_source": "git diff d316addd2ba8fa2a1a8384ab18611e14ae21121b b4b10f4067599f450c7e11551187956f9b55ff29 -- test",
+    "suites": [
+      {
+        "suite": "Node / oneMile.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Детерминированное сравнение 0/2/4 процентов и отсутствие каскада или роста через исключённую клетку.",
+        "reuse_or_new_reason": "У существующих тестов ручного берега нет политики первичных бросков и роста."
+      },
+      {
+        "suite": "Node / saveSafety.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Регенерация сохраняет прежний допустимый объект и ID, а новым автоматическим озёрам выдаёт свежие ID. Новая проверка воспроизводит конфликт старого озера с перестроенной рекой, отказ и согласие, Undo/Redo и повторный импорт.",
+        "reuse_or_new_reason": "Расширено действующее покрытие сохранения и отмены регенерации. Одна логическая проверка нужна для воспроизводимого дефекта, когда полный сухой след сохранялся, а путь реки менялся."
+      },
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Паритет обоих масштабов, JSON, Undo/Redo и PNG на реальной карте. Существующий тест согласия на регенерацию различает сохранённый ручной объект и новые автоматические.",
+        "reuse_or_new_reason": "Действующего браузерного сравнения запусков из двух масштабов не было. Согласие проверяет уже имеющийся сценарий."
+      },
+      {
+        "suite": "Node / tags.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "По-прежнему проверяет неизменность географии базового масштаба при профиле Knave. Детальный слой зависит от защищённых POI. Точное сравнение полного JSON того же профиля осталось.",
+        "reuse_or_new_reason": "Уточнена уже существующая проверка, чтобы новая одномильная геометрия не смешивалась с прежним шестимильным контрактом."
+      },
+      {
+        "suite": "Node / mythicKingdom.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Смена режима сохраняет карту без подтверждения. Отдельная следующая генерация принимает только ожидаемый диалог потери озёр.",
+        "reuse_or_new_reason": "Сохранено действующее сравнение карты и ранее принятых дорог между режимами, уточнён этап появления диалога."
+      }
+    ],
+    "shared_runner_changes": [
+      "Общий обработчик существующих Playwright сценариев generation, world-random и save-history подтверждает штатные диалоги потери озёр при изменении региона, удалении и сбросе. Проверки результатов, исключительных состояний и истории сохранены."
+    ]
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-20T06:01:00.219Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-11-20T06:58:43.241Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "forecast": {
+    "remaining_team_runs": [
+      3,
+      7
+    ],
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ],
+    "basis": "Следующий этап программиста закрывает итоговые доказательства F1. Затем один независимый запуск и один запуск выпуска после разрешения. Верхняя граница включает исправления и повторную приёмку."
+  },
+  "next_task_id": "HX-BL-056",
+  "next_role": "programmer",
+  "review_ready": false,
+  "no_writing_processes_running": true,
+  "no_validation_processes_running": true,
+  "checks": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315",
+    "jobs": [
+      {
+        "id": 136133495647,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136133495913,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136133495999,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136133496915,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "node": {
+      "id": 136133495913,
+      "status": "success",
+      "tests": 438,
+      "pass": 438,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "source_head_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
+      "checkout_sha": "32030b3889c7694ca7f6861599f08f679bc038bb",
+      "checkout_tree_sha": "2a3b5be5a66c4ec3631517bff0f1e7426c690240",
+      "status": "passed",
+      "case": {
+        "id": "HX056-automatic-small-lakes",
+        "status": "pass",
+        "coarseAnchor": "-4,-1",
+        "fineAnchor": "-23,-4",
+        "regionId": 7,
+        "lakes": [
+          {
+            "id": 1,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -32,
+                "r": -15
+              },
+              {
+                "q": -31,
+                "r": -16
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -31,
+                "r": -14
+              },
+              {
+                "q": -31,
+                "r": -13
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -31,
+                "r": -10
+              },
+              {
+                "q": -31,
+                "r": -9
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -31,
+                "r": -5
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -29,
+                "r": 1
+              },
+              {
+                "q": -29,
+                "r": 2
+              },
+              {
+                "q": -28,
+                "r": 1
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -26,
+                "r": -7
+              },
+              {
+                "q": -25,
+                "r": -8
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -26,
+                "r": -5
+              }
+            ]
+          },
+          {
+            "id": 8,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -22,
+                "r": 1
+              }
+            ]
+          },
+          {
+            "id": 9,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -8,
+                "r": -32
+              }
+            ]
+          }
+        ],
+        "scaleParity": true,
+        "rngParity": true,
+        "undoRedo": true,
+        "roundTrip": true,
+        "png": true
+      },
+      "screenshots": [
+        {
+          "name": "automatic-small-lakes-before.jpg",
+          "viewport": {
+            "width": 1500,
+            "height": 1000
+          },
+          "mode": "1"
+        },
+        {
+          "name": "automatic-small-lakes-after.jpg",
+          "viewport": {
+            "width": 1500,
+            "height": 1000
+          },
+          "mode": "1"
+        }
+      ],
+      "case_count": 16,
+      "job_status": "success"
+    },
+    "local": {
+      "targeted_passed": 10,
+      "targeted_failed": 0,
+      "typecheck": "passed",
+      "browser_script_syntax": "passed",
+      "samples": "Classic 42 eight expansions, including two with unavailable one-mile view, exact handler JSON reimport after each.",
+      "final_guarded_mode_switch": "passed (1 isolated Node case)"
+    },
+    "exact_classic_diagnostics": {
+      "selection": {
+        "candidate": {
+          "cell": {
+            "q": -23,
+            "r": -4
+          },
+          "anchors": [
+            {
+              "q": -4,
+              "r": -1
+            }
+          ]
+        },
+        "anchor": {
+          "q": -4,
+          "r": -1
+        }
+      },
+      "observed": {
+        "region": 7,
+        "biome": "deciduous_forested_hills",
+        "lakes": {
+          "nextId": 10,
+          "lakes": [
+            {
+              "id": 1,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -32,
+                  "r": -15
+                },
+                {
+                  "q": -31,
+                  "r": -16
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -31,
+                  "r": -14
+                },
+                {
+                  "q": -31,
+                  "r": -13
+                }
+              ]
+            },
+            {
+              "id": 3,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -31,
+                  "r": -10
+                },
+                {
+                  "q": -31,
+                  "r": -9
+                }
+              ]
+            },
+            {
+              "id": 4,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -31,
+                  "r": -5
+                }
+              ]
+            },
+            {
+              "id": 5,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -29,
+                  "r": 1
+                },
+                {
+                  "q": -29,
+                  "r": 2
+                },
+                {
+                  "q": -28,
+                  "r": 1
+                }
+              ]
+            },
+            {
+              "id": 6,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -26,
+                  "r": -7
+                },
+                {
+                  "q": -25,
+                  "r": -8
+                }
+              ]
+            },
+            {
+              "id": 7,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -26,
+                  "r": -5
+                }
+              ]
+            },
+            {
+              "id": 8,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -22,
+                  "r": 1
+                }
+              ]
+            },
+            {
+              "id": 9,
+              "origin": "automatic",
+              "cells": [
+                {
+                  "q": -8,
+                  "r": -32
+                }
+              ]
+            }
+          ]
+        },
+        "afterReload": true,
+        "afterUndoRedo": true,
+        "geographyAndPoiState": {
+          "geography": 2183993131,
+          "poi": 303764042
+        }
+      },
+      "scale_and_base_comparison": {
+        "eligible": 847,
+        "proposedComponents": 10,
+        "acceptedLakes": 9,
+        "priorSourceAndRngUnchanged": true
+      },
+      "profileSeed19": [
+        {
+          "biome": "semi_desert",
+          "eligible": 402,
+          "lakes": 0
+        },
+        {
+          "biome": "swamp",
+          "eligible": 402,
+          "lakes": 11
+        },
+        {
+          "biome": "swamp_forest",
+          "eligible": 402,
+          "lakes": 11
+        },
+        {
+          "biome": "open_plains",
+          "eligible": 402,
+          "lakes": 6
+        }
+      ],
+      "extendedSaveCompatibility": [
+        {
+          "i": 1,
+          "lakes": 3,
+          "scene": true,
+          "alert": null,
+          "reopened": true
+        },
+        {
+          "i": 2,
+          "lakes": 9,
+          "scene": true,
+          "alert": null,
+          "reopened": true
+        },
+        {
+          "i": 3,
+          "lakes": 15,
+          "scene": true,
+          "alert": null,
+          "reopened": true
+        },
+        {
+          "i": 4,
+          "lakes": 23,
+          "scene": true,
+          "alert": null,
+          "reopened": true
+        },
+        {
+          "i": 5,
+          "lakes": 29,
+          "scene": true,
+          "alert": null,
+          "reopened": true
+        },
+        {
+          "i": 6,
+          "lakes": 37,
+          "scene": true,
+          "alert": null,
+          "reopened": true
+        },
+        {
+          "i": 7,
+          "lakes": 36,
+          "scene": false,
+          "alert": null,
+          "reopened": true
+        },
+        {
+          "i": 8,
+          "lakes": 36,
+          "scene": false,
+          "alert": null,
+          "reopened": true
+        }
+      ]
+    }
+  }
+}
