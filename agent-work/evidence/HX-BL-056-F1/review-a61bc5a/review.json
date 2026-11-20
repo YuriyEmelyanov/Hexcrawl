@@ -1,0 +1,264 @@
+{
+  "status": "changes_requested",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1_1_repair_roundtrip_shore_and_draft",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+  "head_tree_sha": "03f6e1249f6aedc17df0370035c468fe7fd5911f",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113",
+  "handoff_ref": "agent-work/handoffs/2026-11-20T1200-reviewer-HX-BL-056-F1.1.json",
+  "result_ref": "agent-work/results/2026-11-20T1200-reviewer-HX-BL-056-F1.1.json",
+  "review_ready": false,
+  "role": "programmer",
+  "next_role": "programmer",
+  "next_step": "Исправить HX056-F11-RV01–03 в PR №510. Воспроизвести ручное озеро → тропа → JSON, подтвердить сохранение берегов соседних озёр при пропуске кандидата и видимость выбранных гексов в ошибочном черновике. На новом SHA показать карту и пройти независимую проверку.",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/artifacts/14613885370",
+  "before_after_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/before-after.jpg",
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/score-assessment1.2.json",
+  "verification_status": "independent_review_changes_requested",
+  "forecast": {
+    "remaining_team_runs": [
+      3,
+      5
+    ],
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ],
+    "stages": {
+      "fix": [
+        1,
+        2
+      ],
+      "independent_review": [
+        1,
+        2
+      ],
+      "authorized_release": 1
+    }
+  },
+  "schema_version": 1,
+  "review_role": "reviewer",
+  "reviewed_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+  "completed_at": "2026-11-20T09:07:30.279Z",
+  "findings": [
+    {
+      "id": "HX056-F11-RV01",
+      "severity": "P1",
+      "status": "confirmed_release_blocker",
+      "contract": [
+        "R02",
+        "R04",
+        "R05",
+        "AC02",
+        "AC06"
+      ],
+      "title": "Ручная правка пути может создать JSON, который приложение затем отклоняет",
+      "observed": {
+        "fixture": "e6-water-editor.json",
+        "lake": {
+          "id": 1,
+          "cells": [
+            {
+              "q": 3,
+              "r": -12
+            }
+          ],
+          "origin": "manual"
+        },
+        "path": {
+          "id": 1,
+          "regionId": 1,
+          "segments": [
+            {
+              "from": {
+                "q": 0,
+                "r": -2
+              },
+              "to": {
+                "q": 1,
+                "r": -2
+              },
+              "kind": "trail"
+            }
+          ]
+        },
+        "version": 15,
+        "prompts": [],
+        "alerts": [
+          "Не удалось загрузить JSON: ошибка подготовки карты (map.physicalGrid.smallLakes.lakes[0].cells: Берег малого озера пересекает дорогу или тропу №1.). Текущая карта сохранена."
+        ],
+        "undoRedo": true
+      },
+      "steps": [
+        "Открыть неизменённый fixture test/fixtures/e6-water-editor.json.",
+        "Переключить на 1 милю и штатным способом сохранить малое озеро №1 в (3,−12). Его исходный JSON загружается.",
+        "Вернуться на 6 миль и создать тропу (0,−2) → (1,−2). Обработчик принимает изменение без диалога и добавляет шаг истории. В выгрузку JSON v15 попадают и озеро, и тропа.",
+        "Открыть выгруженный JSON: импорт отклоняет map.physicalGrid.smallLakes.lakes[0].cells с конфликтом тропы №1."
+      ],
+      "source": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/App.tsx#L1287-L1289",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/App.tsx#L13937-L13941",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/App.tsx#L15534-L15540"
+      ],
+      "expected": "До записи правки и истории применить совместимую с импортом проверку затронутого озера. При подтверждённой потере опоры применять согласованную семантику R04. Любой принятый снимок обязан повторно загружаться, а отказ сохраняет карту, историю и RNG."
+    },
+    {
+      "id": "HX056-F11-RV02",
+      "severity": "P2",
+      "status": "confirmed_contract_mismatch",
+      "contract": [
+        "R03",
+        "AC08"
+      ],
+      "title": "Пропуск кандидата меняет видимую береговую линию другого озера",
+      "observed": {
+        "seed": 15,
+        "toponym": 42,
+        "componentCount": 16,
+        "protectedRoad": [
+          {
+            "x": 28,
+            "y": 8.660254037844386
+          },
+          {
+            "x": 29,
+            "y": 8.660254037844386
+          }
+        ],
+        "withEarlier": [
+          "25,6",
+          "25,7",
+          "25,8",
+          "26,6",
+          "24,7",
+          "26,7",
+          "24,8"
+        ],
+        "earlierRejected": [
+          "25,6",
+          "25,7",
+          "25,8",
+          "26,6",
+          "24,7",
+          "26,7",
+          "24,8",
+          "24,9"
+        ],
+        "sameRawPath": true
+      },
+      "steps": [
+        "Полностью сухая сетка 28×28, seed 15, seed формы 42, шансы .02 и .10. Использовать штатные rollSmallLakeFootprints и prepareSmallLakeShore.",
+        "Компонента (23,10)+(24,10) резервирует край (24,9). Соседняя компонента (25,6)+(25,7)+(25,8) принимает тот же необрезанный SVG.",
+        "Защитить путь внутри первой компоненты. Первая отклоняется, но видимая маска второй расширяется на (24,9). Полный прогон всех компонент отдельным проверяющим дал 16 против 15 парных результатов."
+      ],
+      "source": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/App.tsx#L1373-L1381",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/App.tsx#L16620-L16630",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/smallLakeShore.ts#L159-L172"
+      ],
+      "expected": "Одинаковые эффективные береговые контуры других кандидатов при локальном пропуске. Проверять итоговую маску на карте и после JSON. Детальная диагностика использует подготовленные производственные функции на контролируемой сетке."
+    },
+    {
+      "id": "HX056-F11-RV03",
+      "severity": "P2",
+      "status": "confirmed_contract_mismatch",
+      "contract": [
+        "R01",
+        "AC02",
+        "AC05"
+      ],
+      "title": "При несвязном выделении черновик теряет контур выбранных гексов",
+      "observed": {
+        "picked": [
+          {
+            "q": 3,
+            "r": -12
+          },
+          {
+            "q": 7,
+            "r": -12
+          }
+        ],
+        "paintSmallLake": null
+      },
+      "steps": [
+        "Открыть e6-water-editor.json, в 1 миле начать черновик в (3,−12).",
+        "Добавить (7,−12). В фактическом состоянии есть два выбранных гекса и сообщение об ошибке, но paintSmallLake становится undefined.",
+        "Рендерер получает пустой черновик и убирает пунктир всех выбранных гексов."
+      ],
+      "source": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/App.tsx#L16641-L16649",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/App.tsx#L16707-L16715",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/a61bc5af878e744bd08e576324755b0b1a0f2206/src/OneMileArtwork.tsx#L87-L98"
+      ],
+      "expected": "Сохранить видимую подсветку всех выбранных клеток, причину отказа и возможность поправить либо отменить черновик. Проверить несвязный и частично поддержанный след."
+    }
+  ],
+  "checks": {
+    "remote_ci": {
+      "run": 44700875113,
+      "checkout_tree": "03f6e1249f6aedc17df0370035c468fe7fd5911f",
+      "node": {
+        "tests": 438,
+        "pass": 438,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "browser": "success",
+      "world_random": "success"
+    },
+    "independent_local_node": {
+      "executed": 6,
+      "passed": 6,
+      "skipped": 0
+    },
+    "independent_temporary_diagnostics": {
+      "executed": 3,
+      "confirmed": 3,
+      "tracked_test_case_change": 0
+    },
+    "artifact": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/artifacts/14613885370",
+      "sha256": "9a8e26464c8116aeb9f958f3ec1934dd58673da543cd193b9da9d3bf27b8233d",
+      "manifest_status": "passed",
+      "confirmed": [
+        "Две реки проходят через ручное и автоматическое озеро. In/inside/out наблюдаются на фактической геометрии.",
+        "При конфликте с дорогой №6 одна компонента пропускается, 23 новые и прежняя сохраняются."
+      ]
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "added": 0,
+    "removed": 0,
+    "modified": 0,
+    "suite": "reviewer temporary diagnostics",
+    "scenario_or_risk": [
+      "HX056-F11-RV01",
+      "HX056-F11-RV02",
+      "HX056-F11-RV03"
+    ],
+    "reuse_or_new_reason": "Диагностика исполнена из сообщения Node и временной копии оболочки. Код и постоянные тесты не изменялись.",
+    "count_source": "Рабочее дерево на проверенном SHA, git diff --check. Сравнение PR b4b10f4→a61bc5a проверялось отдельно.",
+    "pr_test_review": {
+      "comparison_base": "b4b10f4067599f450c7e11551187956f9b55ff29",
+      "verified_governance_note": "Браузерные проверки сквозной реки и пропуска имеют отличимые пользовательские цели. Математический refinementWaterCurveOverlaps после снятия старого запрета вызывается только тестами, поэтому не заменяет проверку касания в продукте. При правке проверить возможность убрать ставший неиспользуемым код и его тест либо обосновать действующий вызов."
+    }
+  },
+  "fresh_context_review": {
+    "available": true,
+    "agent": "fresh_lakes",
+    "method": "Самостоятельный разбор точного дерева и проба через production handlers. Основной проверяющий независимо повторил три наблюдения."
+  }
+}
