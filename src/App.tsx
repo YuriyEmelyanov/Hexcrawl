@@ -14132,24 +14132,26 @@ export function App() {
     map.seas=sea.seas;map.nextSeaId=sea.nextSeaId;
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
     const originalFine=backup?.fineRegeneration;
+    const accepted=originalFine&&projectOneMile(oneMileSources(map),originalFine.grid.origin);
+    const smallLakes=accepted&&originalFine.smallLakes?.lakes.length
+      ?prepareSmallLakeSupport(originalFine.smallLakes,accepted)
+      :undefined;
     let fineLost:string[]=[];
-    if(originalFine&&!originalFine.geometryRefinement){
-      const accepted=projectOneMile(oneMileSources(map),originalFine.grid.origin),supported=new Set(accepted.map(row=>hexKey(row.cell)));
-      const lost=Object.keys(originalFine.fineCellEdits??{}).filter(key=>!supported.has(key));
-      fineLost=lost;
-      const retainedOwners=new Set(backup?.fineRetainedPoiOwners??[]);
-      if(originalFine.poiFootprints.some(fp=>fp.legacyRef&&!retainedOwners.has(fp.legacyRef)&&['manual_size','measured_polygon'].includes(fp.extent.kind)))throw Error('Regeneration would replace authored POI geometry; explicit adaptation required');
-      const layer={...originalFine,fineCellEdits:prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true).edits};
-      if(layer.selectedCell&&!supported.has(hexKey(layer.selectedCell))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
-      const candidate={...map,physicalGrid:layer},live=poiNameLocators(candidate,true);
-      const removed=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!retainedOwners.has(alias)||!live.has(alias)).map(alias=>[alias,null]));
-      map={...candidate,physicalGrid:reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removed)};
-    }
-    if(originalFine?.geometryRefinement){
-      const accepted=projectOneMile(oneMileSources(map),originalFine.grid.origin);
-      const edits=prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true).edits;
-      fineLost=Object.keys(originalFine.fineCellEdits??{}).filter(key=>!(key in edits));
-      map=prepareSourceTransition(backup!.map,{...map,physicalGrid:{...originalFine,fineCellEdits:edits}});
+    if(originalFine&&accepted){
+      const {edits,losses}=prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true);
+      fineLost=[...losses];
+      const layer={...originalFine,fineCellEdits:edits,...(smallLakes?{smallLakes:smallLakes.layer}:{})};
+      if(layer.selectedCell&&!accepted.some(row=>isSameHex(row.cell,layer.selectedCell!))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
+      const candidate={...map,physicalGrid:layer};
+      if(originalFine.geometryRefinement){
+        map=prepareSourceTransition(backup!.map,candidate);
+      }else{
+        const retainedOwners=new Set(backup?.fineRetainedPoiOwners??[]);
+        if(originalFine.poiFootprints.some(fp=>fp.legacyRef&&!retainedOwners.has(fp.legacyRef)&&['manual_size','measured_polygon'].includes(fp.extent.kind)))throw Error('Regeneration would replace authored POI geometry; explicit adaptation required');
+        const live=poiNameLocators(candidate,true);
+        const removed=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!retainedOwners.has(alias)||!live.has(alias)).map(alias=>[alias,null]));
+        map={...candidate,physicalGrid:reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removed)};
+      }
     }else if(map.physicalGrid?.geometryRefinement){
       map=prepareSourceTransition(checkpoint.physicalGrid?.geometryRefinement?checkpoint:captureMap(),map);
     }else if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
@@ -14164,7 +14166,16 @@ export function App() {
     if (missing.length) throw new NotesLossConflict(missing);
     map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
     map.gmNotesByHexKey = {...notes};
-    if(fineLost.length&&!window.confirm(language==='ru'?`Регенерация удалит локальные правки одномильных гексов (${fineLost.length}): ${fineLost.join('; ')}. Продолжить?`:`Regeneration removes local one-mile edits (${fineLost.length}): ${fineLost.join('; ')}. Continue?`))throw new FineRegenerationCancelled();
+    const lossMessages:string[]=[];
+    if(fineLost.length)lossMessages.push(language==='ru'?`Будут удалены локальные правки одномильных гексов (${fineLost.length}): ${fineLost.join('; ')}.`:`Local one-mile edits will be removed (${fineLost.length}): ${fineLost.join('; ')}.`);
+    if(smallLakes?.losses.length){
+      const lakes=smallLakes.losses.map(lake=>`№${lake.id} (${lake.cells.map(hexKey).join('; ')})`).join(', ');
+      lossMessages.push(language==='ru'?`Изменение участка целиком удалит малые озёра ${lakes}.`:`Changing the area removes these small lakes in full: ${lakes}.`);
+    }
+    if(lossMessages.length){
+      lossMessages.push(language==='ru'?'«Отменить» восстановит прежнюю карту. Продолжить?':'Undo restores the previous map. Continue?');
+      if(!window.confirm(lossMessages.join('\n')))throw new FineRegenerationCancelled();
+    }
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
       generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] });
     fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;

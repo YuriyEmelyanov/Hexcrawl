@@ -49,14 +49,18 @@ const requiredFixture=structuredClone(requiredHarness.render().createSaveData())
 assert.equal(requiredHarness.render().switchFineStep(1),true,requiredHarness.render().automaticFineError);
 const requiredMove=requiredHarness.render().fineDisplay.geometryRefinement.pois.pois.find(p=>p.footprint.legacyRef===requiredRiverOwner);assert.ok(requiredMove?.contact);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4195','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
-let browser,page,baselineServer,baselineDir;const errors=[],alerts=[];
+let browser,page,baselineServer,baselineDir,regenerationConsent=null;const errors=[],alerts=[];
 const manifest={source_head_sha:null,checkout_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),checkout_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),fixture:'road-entry-zigzags.json',screenshots:[],cases:[]};
 if(process.env.GITHUB_EVENT_PATH){const event=JSON.parse(await fs.readFile(process.env.GITHUB_EVENT_PATH));manifest.source_head_sha=event.pull_request?.head.sha??process.env.GITHUB_SHA;}
 
 try{
  await new Promise((resolve,reject)=>{let text='';const timer=setTimeout(()=>reject(Error(text)),10000);server.stdout.on('data',d=>{text+=d;if(text.replace(/\x1b\[[0-9;]*m/g,'').includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',reject);server.on('exit',c=>reject(Error('preview '+c)));});
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
- page=await browser.newPage({viewport:{width:1500,height:1000}});page.setDefaultTimeout(20000);page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{alerts.push(d.message());await d.dismiss();});
+ page=await browser.newPage({viewport:{width:1500,height:1000}});page.setDefaultTimeout(20000);page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{
+   if(d.type()==='confirm'&&regenerationConsent!==null&&d.message().includes('removes these small lakes in full')){
+     if(regenerationConsent)await d.accept();else await d.dismiss();
+   }else{alerts.push(d.message());await d.dismiss();}
+ });
  await page.route(/mc\.yandex/,r=>r.abort());
  await page.addInitScript(()=>{window.__fineClicks=[];document.addEventListener('click',e=>{const row=e.target.closest?.('[data-fine-key],[data-fine-candidate]');if(row)window.__fineClicks.push({cell:row.getAttribute('data-fine-key'),candidate:row.getAttribute('data-fine-candidate'),detail:e.detail});},true);const clone=window.structuredClone;window.structuredClone=function(value){if(window.__failGeoPrepare&&value?.regions&&value?.physicalGrid){window.__failGeoPrepare=false;throw Error('GEO2 poi: detail-poi:1; river:3');}if(window.__failFineSave&&value?.regions&&value?.physicalGrid){window.__failFineSave=false;throw Error('Injected fine preparation failure');}return clone(value);};const make=URL.createObjectURL,click=HTMLAnchorElement.prototype.click,blobs=new Map();URL.createObjectURL=function(b){const url=make.call(this,b);if(b.type.startsWith('application/json'))blobs.set(url,b.text());return url;};HTMLAnchorElement.prototype.click=function(){if(this.download.endsWith('.json')&&blobs.has(this.href)){blobs.get(this.href).then(t=>window.__oneExport=JSON.parse(t));return;}return click.call(this);};});
  await page.addInitScript(()=>{const make=URL.createObjectURL;URL.createObjectURL=function(blob){if(blob.type.startsWith('image/svg+xml'))blob.text().then(text=>window.__oneSvg=text);return make.call(this,blob);};});
@@ -394,6 +398,55 @@ try{
  await smallLake.waitFor({state:'detached'});
  await shot('small-lake-source-edit-after.jpg');
  manifest.cases.push({id:'HX056-source-water-removes-small-lake',status:'pass',sourceHex:'0,0',cancelExact:true,undoRedoExact:true});
+
+ await page.reload();
+ const seed=page.getByRole('textbox',{name:'World seed',exact:true});
+ await seed.fill('42');await seed.press('Tab');
+ const generationSize=page.getByRole('combobox',{name:'Size',exact:true});
+ await generationSize.selectOption('small_region');
+ await page.locator('polygon.hex.candidate[data-hex-key="0,0"]').dispatchEvent('click');
+ await button('Regenerate region').waitFor();
+ await generationSize.selectOption('locality');
+ await showOneMile();
+ const lakeCells=['-21,19','0,0'];
+ for(const [i,key] of lakeCells.entries()){
+   await lakeCell(key).press('Enter');
+   await button('Add small lake').click();
+   await saveLake.evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));
+   await saveLake.click();
+   await page.locator(`[data-small-lake="${i+1}"]`).waitFor();
+ }
+ await lakeCell(lakeCells[0]).scrollIntoViewIfNeeded();
+ await shot('small-lake-regeneration-before.jpg');
+ await step.selectOption('6');
+ const beforeRegeneration=await snap();
+ assert.deepEqual(beforeRegeneration.map.physicalGrid.smallLakes.lakes.map(lake=>lake.id),[1,2]);
+ const regenerateWithConsent=async accept=>{
+   if(await pngMenu.getAttribute('open')!==null)await pngMenu.locator('summary').click();
+   regenerationConsent=accept;
+   try{
+     const [dialog]=await Promise.all([page.waitForEvent('dialog'),button('Regenerate region').click()]);
+     assert.equal(dialog.type(),'confirm');
+     assert.match(dialog.message(),/small lakes in full: №1 \(-21,19\)/);
+     assert.doesNotMatch(dialog.message(),/№2/);
+     await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
+     return dialog.message();
+   }finally{regenerationConsent=null;}
+ };
+ const warning=await regenerateWithConsent(false);
+ assert.deepEqual(await snap(),beforeRegeneration);
+ assert.equal(await regenerateWithConsent(true),warning);
+ const afterRegeneration=await snap();
+ assert.notDeepEqual(afterRegeneration.map.regions,beforeRegeneration.map.regions);
+ assert.deepEqual(afterRegeneration.map.physicalGrid.smallLakes,{nextId:3,lakes:[beforeRegeneration.map.physicalGrid.smallLakes.lakes[1]]});
+ await button('Undo').click();assert.deepEqual(await snap(),beforeRegeneration);
+ await button('Redo').click();assert.deepEqual(await snap(),afterRegeneration);
+ await showOneMile();
+ await page.locator('[data-small-lake="2"]').waitFor();
+ assert.equal(await smallLake.count(),0);
+ await lakeCell(lakeCells[1]).scrollIntoViewIfNeeded();
+ await shot('small-lake-regeneration-after.jpg');
+ manifest.cases.push({id:'HX056-regeneration-confirms-small-lake-loss',status:'pass',seed:42,warning,cancelExact:true,undoRedoExact:true,retainedLake:2});
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated
