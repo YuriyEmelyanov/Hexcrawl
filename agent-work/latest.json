@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-11-19",
-  "branch": "agent/hx-bl-021-new-biomes-f1",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
   "strategy_branch": "main",
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-20T1600-reviewer-HX-BL-056-1c37165",
+  "run_id": "2026-11-21T0200-programmer-HX-BL-056-RV06",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "changes_requested",
+  "status": "review_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -51,26 +51,26 @@
   "schedule_start_at": "2026-11-19T19:00:00+03:00",
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
-  "next_role": "programmer",
+  "current_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-056",
-  "spec_path": "agent-work/specs/HX-BL-021-new-biomes-F1.md",
+  "spec_path": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
+  "result_path": "agent-work/results/2026-11-21T0200-programmer-HX-BL-056-RV06.json",
   "handoff_commit_sha": "3f93c4e102ba00306ec62ee957520f919e46e19e",
   "active_claim": null,
-  "next_step": "Исправить HX056-F11-RV06 в PR №510. До изменения соседства сохранить фактический берег уже принятого озера в совместимой записи без shoreCells. Повторить удаление соседнего озера и правку исходной воды, проверив сохранение контура, JSON и Undo/Redo. Передать новый SHA на независимую проверку.",
+  "next_step": "Проверяющему независимо проверить RV06 по F1.1 на 849854f, регрессии прежних исправлений, карту и PNG. Сохранить score_assessment 1.2 и заключение по всему пакету.",
   "owner_decisions_needed": [],
   "release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-021-F1/release-d6daa2c/publication.json",
-  "branch_name": "agent/hx-bl-021-new-biomes-f1",
-  "pr": 509,
-  "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
-  "tree_sha": "c5d09a0c87189c21e1c617aeaf9006ea27d9adb0",
-  "checks_status": "deployed_exact_tree_live_verified",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44608897197",
-  "review_verdict": "changes_requested",
+  "evidence_path": "agent-work/evidence/HX-BL-056-F1/rv06-849854f/verification.json",
+  "branch_name": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
+  "tree_sha": "6f2d2132deede35a1e57cbbe89e0209992a1581a",
+  "checks_status": "passed",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44833781688",
+  "review_verdict": "pending",
   "role_selection_mode": "readiness_and_current_owner_direction",
   "role_selection_source": "review_ready_exact_head_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -111,20 +111,16 @@
   },
   "base_sha": "172155071ca1408abf6960dbc876ba030fc61613",
   "automation_health": {
-    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-20T13:03:18.232Z",
-      "status": "checked",
-      "is_enabled": true,
-      "error": null
+      "at": "2026-11-20T22:59:21.684Z",
+      "is_enabled": true
     },
     "end": {
-      "checked_at": "2026-11-20T13:11:06.728Z",
-      "status": "checked",
-      "is_enabled": true,
-      "error": null
+      "at": "2026-11-20T23:12:44.539Z",
+      "is_enabled": true
     },
-    "restoration_performed": false,
+    "restored": false,
     "errors": []
   },
   "open_findings": [
@@ -2341,7 +2337,7 @@
   "current_stage_id": "HX059-responsive-preparation",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "first_runtime_map_shown_final_matrix_pending",
   "completed_claim": "agent-work/claims/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
   "evidence_commit_sha": "a4ce553233ab9effa6b11202a89e3fa8b069b534",
@@ -15226,55 +15222,91 @@
     "handoff_ref": "agent-work/handoffs/2026-11-16-manual-interviewer-biomes-Q02-closure-1794807826291-analyst.json"
   },
   "next_ready_work": {
-    "status": "changes_requested",
+    "run_id": "2026-11-21T0200-programmer-HX-BL-056-RV06",
+    "role": "reviewer",
     "task_id": "HX-BL-056",
-    "stage_id": "F1_1_legacy_shore_before_neighbour_change",
-    "authorization_status": "approved_for_implementation",
-    "publication_authorized": false,
+    "role_selection_reason": "Открытое замечание проверяющего RV06 и свободный слот программиста",
+    "status": "review_ready",
+    "review_ready": true,
+    "stage_id": "F1.1-RV06",
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
-    "head_tree_sha": "9b0a6abc8a09ba9fea851ff904cb022a2308893b",
-    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
-    "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/checkpoint-shore-1c37165/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000",
-    "review_ready": false,
-    "role": "programmer",
-    "next_role": "programmer",
-    "next_step": "Исправить HX056-F11-RV06 в PR №510. До изменения соседства сохранить фактический берег уже принятого озера в совместимой записи без shoreCells. Повторить удаление соседнего озера и правку исходной воды, проверив сохранение контура, JSON и Undo/Redo. Передать новый SHA на независимую проверку.",
-    "verification_status": "independent_review_changes_requested",
-    "forecast": {
-      "remaining_team_runs": [
-        3,
-        5
-      ],
-      "excludes": [
-        "owner_publication_wait",
-        "CI_queue_wait"
-      ],
-      "stages": {
-        "fix": [
-          1,
-          2
-        ],
-        "independent_review": [
-          1,
-          2
-        ],
-        "authorized_release": 1
+    "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
+    "head_tree_sha": "6f2d2132deede35a1e57cbbe89e0209992a1581a",
+    "repair_base_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv06-849854f/verification.json",
+    "visible_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv06-849854f/comparison.svg",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44833781688",
+    "ci_jobs": [
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": []
+      },
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": []
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": []
+      },
+      {
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
       }
+    ],
+    "checks": {
+      "node": {
+        "executed": 442,
+        "passed": 442,
+        "skipped": 0
+      },
+      "browser": "passed; job 136624970029",
+      "rng": "passed; job 136624970045",
+      "artifact_id": 14678345645
     },
-    "repair_base_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
-    "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/review.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
-    "result_ref": "agent-work/results/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
-    "previous_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/score-assessment1.2.json",
-    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628872841",
-    "reviewed_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
-    "review_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/review.json",
-    "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/score-assessment1.2.json"
+    "publication_authorized": false,
+    "score_update": "unpublished",
+    "next_role": "reviewer",
+    "next_step": "Проверяющему независимо проверить RV06 по F1.1 на 849854f, регрессии прежних исправлений, карту и PNG. Сохранить score_assessment 1.2 и заключение по всему пакету.",
+    "forecast": "При успешной независимой приёмке остаются приёмка и выпуск после отдельного согласования.",
+    "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/review.json",
+    "result_ref": "agent-work/results/2026-11-21T0200-programmer-HX-BL-056-RV06.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-21T0200-programmer-HX-BL-056-RV06.json",
+    "test_change_summary": {
+      "base_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+      "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
+      "added": 1,
+      "removed": 0,
+      "modified": 0,
+      "suite": "Node mapTransactions",
+      "scenario": "legacy shoreline after manual and source-water removal",
+      "reuse_or_new_reason": "Existing dry expansion and checkpoint tests never removed an adjacent blocking lake from a legacy document.",
+      "source": "git diff and node:test case declarations"
+    },
+    "automation_health": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "at": "2026-11-20T22:59:21.684Z",
+        "is_enabled": true
+      },
+      "end": {
+        "at": "2026-11-20T23:12:44.539Z",
+        "is_enabled": true
+      },
+      "restored": false,
+      "errors": []
+    }
   },
   "previous_primary_before_HX_BL_055": {
     "run_id": "2026-11-16T0403-interviewer-new-biomes-D1",
@@ -15595,29 +15627,9 @@
   },
   "forecast": "7–12 рабочих запусков для предложенного ручного варианта, без ожидания ответов владельца и очереди CI. Пересчитать после интервью.",
   "actual_ui": {
-    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628872841",
-    "artifact_id": 14628872841,
-    "digest": "sha256:9b317e7ee4ffb9d427a591490b6c9b679fa4eb37659fffd33f04da87f3d0ca2a",
-    "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
-    "tree_sha": "9b0a6abc8a09ba9fea851ff904cb022a2308893b",
-    "checkout_sha": "8c4e9f268fb92b04fed8b0c3108d2cffe0536a20",
-    "status": "passed",
-    "files": {
-      "manual_before": "small-lake-before.jpg",
-      "manual_after": "small-lake-after.jpg",
-      "manual_png": "small-lake-export.png",
-      "shore_before": "small-lake-spill-before.jpg",
-      "shore_after": "small-lake-spill-after.jpg",
-      "shore_export": "small-lake-spill.png",
-      "rotated_png": "small-lake-river-rotated.png",
-      "invalid_draft": "small-lake-invalid-selection.jpg"
-    },
-    "verified_download": {
-      "artifact_id": 14628433388,
-      "digest": "f84a8617c48e423f1269fe470c71f7854a3f98bc1b4214e4b78c15a28ce5d0ff",
-      "status": "verified",
-      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628433388"
-    }
+    "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
+    "artifact_id": 14678345645,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44833781688/artifacts/14678345645"
   },
   "publication": {
     "url": "https://app.hexcrawl.ru",
@@ -17193,85 +17205,90 @@
     "supersedes_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md"
   },
   "latest_HX_BL_056_implementation": {
-    "status": "review_ready",
+    "run_id": "2026-11-21T0200-programmer-HX-BL-056-RV06",
+    "role": "programmer",
     "task_id": "HX-BL-056",
-    "stage_id": "F1_1_checkpoint_confirmation_and_fixed_manual_shore",
-    "authorization_status": "approved_for_implementation",
-    "publication_authorized": false,
+    "role_selection_reason": "Открытое замечание проверяющего RV06 и свободный слот программиста",
+    "status": "review_ready",
+    "review_ready": true,
+    "stage_id": "F1.1-RV06",
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
-    "head_tree_sha": "9b0a6abc8a09ba9fea851ff904cb022a2308893b",
-    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
-    "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/checkpoint-shore-1c37165/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000",
-    "review_ready": true,
-    "role": "programmer",
-    "next_role": "reviewer",
-    "next_step": "Независимо проверить HX056-F11-RV04 и RV05 на точном новом SHA, включая две отрицательные проверки на прежней версии, успешный JSON и Undo/Redo, неизменный берег и сохранение AC01–AC08. Записать score_assessment 1.2. После приёмки представить точный пакет на отдельное разрешение публикации.",
-    "verification_status": "new_revision_requires_independent_review",
-    "forecast": {
-      "remaining_team_runs": [
-        2,
-        4
-      ],
-      "excludes": [
-        "owner_publication_wait",
-        "CI_queue_wait"
-      ],
-      "stages": {
-        "independent_review": 1,
-        "rework_and_review": [
-          0,
-          2
-        ],
-        "authorized_release": 1
+    "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
+    "head_tree_sha": "6f2d2132deede35a1e57cbbe89e0209992a1581a",
+    "repair_base_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv06-849854f/verification.json",
+    "visible_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv06-849854f/comparison.svg",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44833781688",
+    "ci_jobs": [
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": []
+      },
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": []
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": []
+      },
+      {
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
       }
+    ],
+    "checks": {
+      "node": {
+        "executed": 442,
+        "passed": 442,
+        "skipped": 0
+      },
+      "browser": "passed; job 136624970029",
+      "rng": "passed; job 136624970045",
+      "artifact_id": 14678345645
     },
-    "repair_base_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
-    "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/review.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-20T1500-programmer-HX-BL-056-checkpoint-shore.json",
-    "result_ref": "agent-work/results/2026-11-20T1500-programmer-HX-BL-056-checkpoint-shore.json",
-    "previous_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/score-assessment1.2.json",
-    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628872841",
-    "previous_result_ref": "agent-work/results/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
-    "score_evidence_ref": "agent-work/evidence/HX-BL-056-F1/checkpoint-shore-1c37165/verification.json",
-    "result_commit_sha": "497bcc697e4433402467d22fa75bf6638bb10c50",
-    "claim_ref": "agent-work/claims/2026-11-20T1500-programmer-HX-BL-056-checkpoint-shore.json",
-    "execution_lock_released": true,
+    "publication_authorized": false,
+    "score_update": "unpublished",
+    "next_role": "reviewer",
+    "next_step": "Проверяющему независимо проверить RV06 по F1.1 на 849854f, регрессии прежних исправлений, карту и PNG. Сохранить score_assessment 1.2 и заключение по всему пакету.",
+    "forecast": "При успешной независимой приёмке остаются приёмка и выпуск после отдельного согласования.",
+    "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/review.json",
+    "result_ref": "agent-work/results/2026-11-21T0200-programmer-HX-BL-056-RV06.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-21T0200-programmer-HX-BL-056-RV06.json",
     "test_change_summary": {
-      "base_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
-      "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
-      "added": 2,
+      "base_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+      "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
+      "added": 1,
       "removed": 0,
-      "modified": 2,
-      "count_source": "git diff f7ab0eb7c953f5c7934b9fdb1647fae95b427548 1c37165eaeafe2352f1647d7698b39f38369214e -- test",
-      "suites": [
-        {
-          "suite": "Node · test/mapTransactions.test.mjs",
-          "added": 2,
-          "removed": 0,
-          "modified": 0,
-          "scenarios": [
-            "HX056-F11-RV04: возврат старой тропы из контрольной точки, точный список озёр, отмена, один шаг истории, повторное открытие.",
-            "HX056-F11-RV05: прежняя видимая маска ручного озера после ввода нового сухого соседа, сохранение с shoreCells и без, точные Undo/Redo и загрузка."
-          ],
-          "reuse_or_new_reason": "Существующий случай создания тропы не восстанавливает её из старого снимка; тест пропуска автоматического кандидата не проверяет ручное озеро при приросте исходной территории."
-        },
-        {
-          "suite": "Playwright · test/browser/one-mile.smoke.mjs",
-          "added": 0,
-          "removed": 0,
-          "modified": 2,
-          "scenarios": [
-            "Сквозной ручной сценарий сравнивает видимые и записанные береговые ячейки и проверяет их повторно после открытия.",
-            "Существующий случай выхода берега за границу теперь проверяет сохранение именно (11,−10). Негативное сохранение переносит след вместе с его метаданными, чтобы проверить геометрическую причину отказа."
-          ],
-          "reuse_or_new_reason": "Расширены две существующие браузерные проверки с настоящей картой. Прежние действия и PNG продолжают проверяться."
-        }
-      ]
+      "modified": 0,
+      "suite": "Node mapTransactions",
+      "scenario": "legacy shoreline after manual and source-water removal",
+      "reuse_or_new_reason": "Existing dry expansion and checkpoint tests never removed an adjacent blocking lake from a legacy document.",
+      "source": "git diff and node:test case declarations"
+    },
+    "automation_health": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "at": "2026-11-20T22:59:21.684Z",
+        "is_enabled": true
+      },
+      "end": {
+        "at": "2026-11-20T23:12:44.539Z",
+        "is_enabled": true
+      },
+      "restored": false,
+      "errors": []
     }
   },
   "previous_programmer_result_ref": "agent-work/results/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
