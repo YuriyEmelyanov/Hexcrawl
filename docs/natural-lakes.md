@@ -15,3 +15,9 @@ Validation: Node.js 24 `npm run check` covers type checking, 154 regression test
 
 
 Manual water editing uses the same persisted cells/lake IDs and natural renderer; see [water-editing.md](water-editing.md). E6 prepares water edits before committing, invalidates contour/mouth inputs through the actual geometry, and preserves local land biomes beneath water. It does not change the seeded shoreline style or the existing Color/Tiles/Emoji distinction.
+
+The one-mile small-lake editor checks the seeded shoreline inside its selected
+cell mask against existing path centerlines, crossing approaches and protected
+point anchors. The map and PNG render the same path and mask. An intersection
+identifies the existing feature in the draft and prevents the save. An area POI
+can contain a lake when its route and water attachment points stay dry.

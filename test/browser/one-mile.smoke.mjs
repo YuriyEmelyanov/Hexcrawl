@@ -303,6 +303,20 @@ try{
  await loadWorld(Buffer.from(JSON.stringify(classicSource)));
  await showOneMile();
  const lakeCell=(key)=>page.locator(`[data-fine-key="${key}"]`);
+ await lakeCell('0,0').press('Enter');
+ const beforeBlockedLake=await snap();
+ const exportMenu=page.locator('details.export-menu');
+ if(await exportMenu.getAttribute('open')!==null)await exportMenu.locator('summary').click();
+ await button('Add small lake').click();
+ const blockedLake=page.locator('[data-small-lake-conflict]');
+ const protectedRoadMessage=await blockedLake.innerText();
+ assert.match(protectedRoadMessage,/crosses road or trail #1/);
+ assert.equal(await button('Save lake').isDisabled(),true);
+ await blockedLake.scrollIntoViewIfNeeded();
+ await shot('small-lake-road-conflict.jpg');
+ await page.locator('[data-small-lake-editor]').getByRole('button',{name:'Cancel',exact:true}).click();
+ assert.deepEqual(await snap(),beforeBlockedLake);
+ if(await exportMenu.getAttribute('open')!==null)await exportMenu.locator('summary').click();
  await lakeCell('4,0').scrollIntoViewIfNeeded();
  await lakeCell('4,0').press('Enter');
  await shot('small-lake-before.jpg');
@@ -355,7 +369,7 @@ try{
  await button('Undo').click();
  await smallLake.waitFor();
  assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
- manifest.cases.push({id:'HX056-manual-small-lake-roundtrip-and-png',status:'pass',cells:['4,0','5,0'],pngBytes:smallLakeBytes.length});
+ manifest.cases.push({id:'HX056-manual-small-lake-roundtrip-and-png',status:'pass',cells:['4,0','5,0'],pngBytes:smallLakeBytes.length,roadConflict:{cell:'0,0',message:protectedRoadMessage,documentUnchanged:true}});
 
  const waterEditorWorld=await fs.readFile(new URL('../fixtures/e6-water-editor.json',import.meta.url));
  await loadWorld(waterEditorWorld);
@@ -408,7 +422,7 @@ try{
  await button('Regenerate region').waitFor();
  await generationSize.selectOption('locality');
  await showOneMile();
- const lakeCells=['-21,19','0,0'];
+ const lakeCells=['-21,19','1,1'];
  for(const [i,key] of lakeCells.entries()){
    await lakeCell(key).press('Enter');
    await button('Add small lake').click();

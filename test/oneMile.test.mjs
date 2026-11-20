@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles, detailCellCenter} from '../src/detailGrid.ts';
+import {smallLakeShoreConflict} from '../src/smallLakeShore.ts';
 import {dominantFineBiome, projectOneMile, oneMileCandidates, chooseOneMileAnchor,
   fineCellKey, parseFineCellEdits, prepareFineCellEdit, prepareFineCellLoss} from '../src/oneMile.ts';
 
@@ -13,6 +14,19 @@ const area=detailCellAreaSquareMiles(createDetailGrid(1));
 const valid=id=>['forest','hills','plain'].includes(id);
 const accepted=()=>projectOneMile([source(0,0)]);
 const neighbours=cell=>[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>c(cell.q+q,cell.r+r));
+
+test('small lake protects crossed paths and anchors while dry hex margins remain usable',()=>{
+  const lake={id:1,origin:'manual',cells:[c(0,0)]},origin={x:10,y:-2};
+  const point=(x,y)=>({x:x+origin.x,y:y+origin.y});
+  const dryEdge={ref:'edge',points:[point(.48,.28),point(.49,.29)]};
+  const through={ref:'through',points:[point(-1,0),point(1,0)]};
+  const anchor={ref:'site',point:origin};
+  const safe={roads:[dryEdge],crossings:[],anchors:[{ref:'dry point',point:point(.48,.28)}]};
+  assert.equal(smallLakeShoreConflict(lake,42,origin,safe),null);
+  assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,roads:[dryEdge,through]}),{kind:'road',ref:'through'});
+  assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,crossings:[through]}),{kind:'crossing',ref:'through'});
+  assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,anchors:[anchor]}),{kind:'anchor',ref:'site'});
+});
 
 test('partial fine display is full while accepted geography area stays exact',()=>{
   const input=[source(0,0)], before=JSON.stringify(input), rows=projectOneMile(input);

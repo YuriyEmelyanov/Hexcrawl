@@ -1,13 +1,14 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
 import {addManualSmallLake,hasFullDrySupport,prepareSmallLakeSupport,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
+import {smallLakeShoreConflict,type SmallLakeProtection} from './smallLakeShore';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {OneMilePanel,type FineDraft} from './OneMilePanel';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIntersections,worldToDetailCell,type DetailCell} from './detailGrid';
 import {summarizeDetailCell} from './detailSummary';
-import {detailFootprintWorldAnchor} from './detailSizes';
+import {detailFootprintHasOutline,detailFootprintWorldAnchor} from './detailSizes';
 import {prepareRefinementLakeModes} from './geometryRefinementMouths';
 import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
 import {prepareGeometryRefinementBoundary,geometryBoundaryHasValidClosure} from './geometryRefinementBoundary';
@@ -16479,13 +16480,38 @@ export function App() {
     const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
   const acceptedSmallLakes=physicalGrid?.smallLakes;
+  const smallLakeProtection=useMemo(():SmallLakeProtection|null=>{
+    if(!smallLakeDraft||!fineDisplay)return null;
+    const origin=fineDisplay.grid.origin,grid=createDetailGrid(1,origin);
+    const world=(x:number,y:number)=>detailSourcePixelToWorld({x:x-riverOffset.x,y:y-riverOffset.y},origin);
+    const refined=fineDisplay.geometryRefinement?.roads;
+    const segments=new Set(refined?.roads.map(r=>JSON.stringify([r.roadId,r.sourceRoadSegmentKey])));
+    const crossings=new Set(refined?.crossings.map(c=>c.key));
+    return {
+      roads:[...refined?.roads.map(r=>({ref:String(r.roadId),points:r.points}))??[],
+        ...roadSegments.filter(r=>!segments.has(JSON.stringify([r.roadId,r.segmentKey]))).map(r=>({ref:String(r.roadId),points:[world(r.x1,r.y1),world(r.x2,r.y2)]}))],
+      crossings:[...refined?.crossings.map(c=>({ref:c.key,points:c.bankPath}))??[],
+        ...renderedCrossings.filter(c=>!crossings.has(c.key)).map(c=>({ref:c.key,points:[world(c.x,c.y)]}))],
+      anchors:fineDisplay.poiFootprints.flatMap(fp=>[
+        ...(!detailFootprintHasOutline(fp,grid)?[{ref:fp.poiId,point:detailFootprintWorldAnchor(fp,grid)}]:[]),
+        ...fp.attachments.map(a=>({ref:fp.poiId,point:a.kind==='route'?a.entry:a.contact})),
+      ]),
+    };
+  },[smallLakeDraft!==null,fineDisplay,roadSegments,renderedCrossings,riverOffset]);
+  const smallLakeConflictText=(conflict:NonNullable<ReturnType<typeof smallLakeShoreConflict>>)=>{
+    if(conflict.kind==='road')return language==='ru'?`Берег малого озера пересекает дорогу или тропу №${conflict.ref}.`:`The small lake crosses road or trail #${conflict.ref}.`;
+    if(conflict.kind==='crossing')return language==='ru'?'Берег малого озера пересекает действующую переправу.':'The small lake crosses an existing crossing.';
+    if(conflict.kind==='anchor')return language==='ru'?'Берег малого озера перекрывает защищённую точку интереса или её привязку.':'The small lake covers a protected point of interest or its attachment.';
+    return language==='ru'?'На выбранных гексах нет подходящего берега.':'The selected cells do not form a valid shore.';
+  };
   const manualSmallLake=useMemo(()=>{
-    if(!smallLakeDraft?.cells.length)return null;
+    if(!smallLakeDraft?.cells.length||!fineDisplay||!smallLakeProtection)return null;
     try{
-      return addManualSmallLake(acceptedSmallLakes,smallLakeDraft.cells,fineCells);
+      const layer=addManualSmallLake(acceptedSmallLakes,smallLakeDraft.cells,fineCells),lake=layer.lakes[layer.lakes.length-1];
+      return {lake,conflict:smallLakeShoreConflict(lake,toponymSeed,fineDisplay.grid.origin,smallLakeProtection)};
     }catch{return null;}
-  },[acceptedSmallLakes,fineCells,smallLakeDraft]);
-  const paintSmallLake=manualSmallLake?.lakes[manualSmallLake.lakes.length-1];
+  },[acceptedSmallLakes,fineCells,smallLakeDraft,fineDisplay,smallLakeProtection,toponymSeed]);
+  const paintSmallLake=manualSmallLake?.lake;
   const startSmallLake=()=>{
     const target=fineDisplay?.selectedCell;
     if(!target||fineDisplay?.viewStep!==1||mutationBlocked()||
@@ -16497,7 +16523,7 @@ export function App() {
   const commitSmallLake=()=>{
     const display=automaticFineSceneRef.current??physicalGridRef.current;
     const state=physicalGridRef.current??display?.geometryRefinement?.sourceState??display;
-    if(!state||display?.viewStep!==1||!smallLakeDraft||smallLakeDraft.revision!==documentRevision.current){
+    if(!state||display?.viewStep!==1||!smallLakeDraft||!smallLakeProtection||smallLakeDraft.revision!==documentRevision.current){
       setEditError(language==='ru'?'Карта изменилась. Отмените черновик и выберите гексы заново.':'The map changed. Cancel the draft and select the hexes again.');
       return;
     }
@@ -16508,6 +16534,8 @@ export function App() {
     try{
       const before=copyDocument(captureDocument());
       const layer=addManualSmallLake(state.smallLakes,smallLakeDraft.cells,projectOneMile(oneMileSources(before.map),state.grid.origin));
+      const conflict=smallLakeShoreConflict(layer.lakes[layer.lakes.length-1],before.map.toponymSeed,state.grid.origin,smallLakeProtection);
+      if(conflict){setEditError(smallLakeConflictText(conflict));return;}
       const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes:layer}}});
       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);
     }catch(error){
@@ -16543,9 +16571,10 @@ export function App() {
       <strong>{language==='ru'?'Малое озеро':'Small lake'}</strong>
       <p>{language==='ru'?`Выбрано гексов: ${smallLakeDraft.cells.length}`:`Selected hexes: ${smallLakeDraft.cells.length}`}</p>
       {!manualSmallLake&&<p role="alert">{language==='ru'?'Выберите смежные гексы целиком на суше без другого малого озера.':'Select connected hexes entirely on dry land, clear of another small lake.'}</p>}
+      {manualSmallLake?.conflict&&<p role="alert" data-small-lake-conflict>{smallLakeConflictText(manualSmallLake.conflict)}</p>}
       {smallLakeDraft.revision!==documentRevision.current&&<p role="alert">{language==='ru'?'Карта изменилась. Начните заново.':'The map changed. Start again.'}</p>}
       <div className="fine-actions">
-        <button type="button" disabled={!manualSmallLake||smallLakeDraft.revision!==documentRevision.current||documentBusy()} onClick={commitSmallLake}>{language==='ru'?'Сохранить озеро':'Save lake'}</button>
+        <button type="button" disabled={!manualSmallLake||!!manualSmallLake.conflict||smallLakeDraft.revision!==documentRevision.current||documentBusy()} onClick={commitSmallLake}>{language==='ru'?'Сохранить озеро':'Save lake'}</button>
         <button type="button" className="secondary" onClick={()=>{setSmallLakeDraft(null);setEditError(null);}}>{language==='ru'?'Отмена':'Cancel'}</button>
       </div>
     </div>:selectedSmallLake?<div data-small-lake-controls>

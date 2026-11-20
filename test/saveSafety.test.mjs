@@ -400,7 +400,7 @@ test('ONE-MILE1 regeneration retains edits supported by final candidate rather t
 
  const {g:loss}=fineSetup();fineActivate(loss);
  assert.equal(loss.render().switchFineStep(1),true);
- for(const cell of [{q:-9,r:-5},{q:-9,r:-4},{q:0,r:0}]){
+ for(const cell of [{q:-9,r:-5},{q:-9,r:-4},{q:1,r:1}]){
   const app=loss.render();assert.equal(app.pickFine(cell,false,app.getDocumentRevision()),true);
   loss.render().startSmallLake();loss.render().commitSmallLake();assert.equal(loss.render().editError,null);
  }
