@@ -1,0 +1,87 @@
+// Save as test/independent-tract-water.mjs. Copy test/helpers/generation-harness.mjs to test/helpers/independent-generation-harness.mjs.
+// Add smallLakeProtectionForMap to the copied testGeometry exports. Run from the repository root with Node 24.
+// The final equality assertion deliberately fails on the reviewed SHA.
+import assert from 'node:assert/strict';
+import {createGenerationHarness} from './helpers/independent-generation-harness.mjs';
+import {smallLakeNeighbours,hasFullDrySupport} from '../src/smallLakes.ts';
+import {prepareSmallLakeShore} from '../src/smallLakeShore.ts';
+import {oneMileSourceOverlaps} from '../src/oneMile.ts';
+const h = createGenerationHarness(42);
+h.render();
+const prompts=[],alerts=[];
+h.setWindow({alert:m=>alerts.push(m),confirm:m=>(prompts.push(m),true),matchMedia:()=>({matches:false})});
+h.injectFunction('readTextFile',async file=>file.text);
+const load=async data=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'file'}});
+const serial=v=>JSON.parse(JSON.stringify(v));
+const snap=()=>serial(h.render().createSaveData());
+const key=({q,r})=>q+','+r;
+const show=()=>{const ok=h.render().switchFineStep(1);assert.equal(ok,true,h.render().automaticFineError);};
+const hide=()=>assert.equal(h.render().switchFineStep(6),true);
+h.render().addFallbackTractToMap({q:0,r:0});
+h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+assert.equal(h.render().regions.length,2);
+assert.equal(h.render().rivers.length,0);
+show();
+const {fineCells, fineDisplay,toponymSeed}=h.render(),map=h.render().captureDocument().map,origin=fineDisplay.grid.origin;
+const coverage=new Map(fineCells.map(cell=>[key(cell.cell),cell]));
+const protection=h.geometry.smallLakeProtectionForMap(map,fineDisplay);
+const sourceCells=new Set(h.geometry.oneMileSources(map).map(row=>key(row.cell)));
+const fineOverlap=cell=>oneMileSourceOverlaps(cell,origin,sourceCells).map(hit=>key(hit.cell));
+let retained,blocking,coarse,fringe;
+for(const {cell} of fineCells.filter(hasFullDrySupport)){
+ const targetKey=key(cell);
+ const lake={id:1,origin:'manual',cells:[cell]};
+ const {conflict,view}=prepareSmallLakeShore(lake,toponymSeed,origin,protection,coverage);
+ if(conflict||view.maskCells.length<2)continue;
+ for(const start of view.maskCells.slice(1)){
+  const stableBase=new Set([cell,start].flatMap(fineOverlap));
+  const queue=[[start]], visited=new Set([key(start)]);
+  while(queue.length){
+   const path=queue.shift(), tail=path.at(-1);
+   const outside=fineOverlap(tail).find(k=>!stableBase.has(k));
+   if(outside){
+    const candidate={id:2,origin:'manual',cells:path};
+    if(!prepareSmallLakeShore(candidate,toponymSeed,origin,protection,coverage).conflict){
+     retained=lake;blocking=candidate;coarse=outside;fringe=start;
+     break;
+    }
+   }
+   if(path.length>=4)continue;
+   for(const neighbour of smallLakeNeighbours(tail)){
+    const k=key(neighbour);
+    if(k===targetKey||visited.has(k)||!hasFullDrySupport(coverage.get(k)))continue;
+    visited.add(k);queue.push([...path,neighbour]);
+   }
+  }
+  if(retained)break;
+ }
+ if(retained)break;
+}
+assert.ok(blocking,'find second lake straddling edited and retained support');
+console.log(JSON.stringify({retained,blocking,coarse,fringe, anchors:map.regions.map(r=>r.anchorHex), overlap:[retained.cells[0],{q:-8,r:-4},{q:-7,r:-4}].map(fineOverlap)}));
+assert.equal(h.render().pickFine(retained.cells[0],false,h.render().getDocumentRevision()),true);
+h.render().startSmallLake();h.render().commitSmallLake();assert.equal(h.render().editError,null);
+hide();
+const input=snap();
+input.map.physicalGrid.smallLakes={nextId:3,lakes:[retained,blocking]};
+await load(input);
+assert.deepEqual(alerts,[]);
+show();
+const before=serial(h.render().acceptedLakeArtwork.views.find(v=>v.lake.id===1).maskCells);
+hide();
+const [q,r]=coarse.split(',').map(Number);
+h.render().setEditMode(true);
+h.render().setSelectedHex({q,r});
+assert.equal(h.render().startWaterDraft('lake'),true);
+assert.equal(h.render().finishWaterDraft(),false);
+let a=h.render();
+console.log(a.waterPreview?.error, a.waterPreview?.plan?.smallLakeLosses);
+assert.deepEqual(serial(a.waterPreview.plan.smallLakeLosses.map(l=>l.id)),[2]);
+a.changeWaterDraft(a.waterDraft,{options:{acceptedLosses:a.waterPreview.plan.losses.map(l=>l.id)},preview:true});
+assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true);
+assert.deepEqual(snap().map.physicalGrid.smallLakes.lakes,[retained]);
+h.render().setEditMode(false);
+show();
+const after=serial(h.render().acceptedLakeArtwork.views.find(v=>v.lake.id===1).maskCells);
+console.log(JSON.stringify({before,after,prompts,alerts}));
+assert.deepEqual(after,before,'surviving old lake shore must remain stable');

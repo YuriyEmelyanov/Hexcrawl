@@ -1,0 +1,478 @@
+{
+  "status": "changes_requested",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1_1_legacy_shore_before_neighbour_change",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+  "head_tree_sha": "9b0a6abc8a09ba9fea851ff904cb022a2308893b",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/checkpoint-shore-1c37165/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000",
+  "review_ready": false,
+  "role": "reviewer",
+  "next_role": "programmer",
+  "next_step": "Исправить HX056-F11-RV06 в PR №510. До изменения соседства сохранить фактический берег уже принятого озера в совместимой записи без shoreCells. Повторить удаление соседнего озера и правку исходной воды, проверив сохранение контура, JSON и Undo/Redo. Передать новый SHA на независимую проверку.",
+  "verification_status": "independent_review_changes_requested",
+  "forecast": {
+    "remaining_team_runs": [
+      3,
+      5
+    ],
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ],
+    "stages": {
+      "fix": [
+        1,
+        2
+      ],
+      "independent_review": [
+        1,
+        2
+      ],
+      "authorized_release": 1
+    }
+  },
+  "repair_base_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
+  "result_ref": "agent-work/results/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
+  "previous_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-f7ab0eb/score-assessment1.2.json",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628872841",
+  "reviewed_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/score-assessment1.2.json",
+  "schema_version": "1.0",
+  "run_id": "2026-11-20T1600-reviewer-HX-BL-056-1c37165",
+  "review_role": "reviewer",
+  "completed_at": "2026-11-20T13:11:06.728Z",
+  "findings": [
+    {
+      "id": "HX056-F11-RV06",
+      "severity": "P2",
+      "status": "confirmed_contract_mismatch",
+      "contract": [
+        "R04",
+        "R05",
+        "AC03",
+        "AC08"
+      ],
+      "title": "В старых сохранениях удаление соседа или подтверждённая правка воды меняет берег незатронутого озера",
+      "steps": [
+        "На e6-water-editor.json принять два малых озера на карте 1 миля. №1 в (−20,−11), №2 в (−21,−11).",
+        "Сохранить JSON. Для совместимого старого экземпляра убрать только необязательное поле shoreCells у №2. Открыть сохранение. На обоих экземплярах фактически виден берег №2 в одном гексе (−21,−11).",
+        "Удалить №1. При записанном береге №2 сохраняет одну клетку. При старой записи берег №2 занимает также (−20,−11). След, ID, происхождение и JSON-запись оставшегося объекта равны исходным. Undo и Redo точно повторяют обе видимые маски."
+      ],
+      "comparison": [
+        {
+          "label": "modern",
+          "removedLake": {
+            "q": -20,
+            "r": -11
+          },
+          "retainedLake": {
+            "q": -21,
+            "r": -11
+          },
+          "before": [
+            "-21,-11"
+          ],
+          "after": [
+            "-21,-11"
+          ],
+          "retainedRecordUnchanged": true,
+          "undoRedoMatch": true
+        },
+        {
+          "label": "legacy",
+          "removedLake": {
+            "q": -20,
+            "r": -11
+          },
+          "retainedLake": {
+            "q": -21,
+            "r": -11
+          },
+          "before": [
+            "-21,-11"
+          ],
+          "after": [
+            "-21,-11",
+            "-20,-11"
+          ],
+          "retainedRecordUnchanged": true,
+          "undoRedoMatch": true
+        }
+      ],
+      "reproduction_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/legacy-shore-removal-probe.mjs.txt",
+      "expected": "Сдвиг незатронутого озера требует явной правки. При изменении принятого состояния сохранять прежнюю видимую маску наследуемого озера, пока её опора остаётся допустимой. Воспроизвести на совместимом и текущем сохранениях, проверить JSON и Undo/Redo.",
+      "source": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/1c37165eaeafe2352f1647d7698b39f38369214e/src/App.tsx#L16691-L16699",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/1c37165eaeafe2352f1647d7698b39f38369214e/src/smallLakeShore.ts#L157-L185",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/blob/1c37165eaeafe2352f1647d7698b39f38369214e/src/App.tsx#L14215-L14223"
+      ],
+      "independent_case": {
+        "fixture": "Два настоящих резервных участка с опорами (0,0), (1,0), seed 42, без рек",
+        "edited_coarse": {
+          "q": -1,
+          "r": 0
+        },
+        "stable_base": {
+          "q": -1,
+          "r": -1
+        },
+        "confirmed_loss_ids": [
+          2
+        ],
+        "retained_lake_id": 1,
+        "old_mask": [
+          "-8,-3"
+        ],
+        "observed_new_mask": [
+          "-8,-3",
+          "-8,-4",
+          "-7,-4"
+        ],
+        "old_json_accepted": true,
+        "retained_record_unchanged": true,
+        "alerts": 0,
+        "reproduction_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/legacy-source-water-probe.mjs.txt"
+      }
+    }
+  ],
+  "prior_findings": [
+    {
+      "id": "HX056-F11-RV01",
+      "status": "verified_fixed_in_manual_path_scenario"
+    },
+    {
+      "id": "HX056-F11-RV02",
+      "status": "verified_fixed_in_pair_and_browser"
+    },
+    {
+      "id": "HX056-F11-RV03",
+      "status": "verified_fixed_in_browser"
+    },
+    {
+      "id": "HX056-F11-RV04",
+      "status": "verified_fixed",
+      "evidence": "На контрольной точке возвращается тропа, один запрос перечисляет затронутое озеро, отмена и загрузка подтверждены."
+    },
+    {
+      "id": "HX056-F11-RV05",
+      "status": "verified_fixed_for_new_dry_support",
+      "evidence": "У старого и нового сохранений при расширении на (3,3) удержаны (9,13), (10,12). Изменение доступности уже поддержанной ячейки записано как RV06."
+    }
+  ],
+  "checks": {
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000",
+    "node": {
+      "job_id": 136289935008,
+      "tests": 441,
+      "passed": 441,
+      "failed": 0,
+      "skipped": 0
+    },
+    "world_random": {
+      "job_id": 136289862809,
+      "classic": 4,
+      "mythic": 4,
+      "status": "pass"
+    },
+    "browser": {
+      "job_id": 136289860586,
+      "cases": 17,
+      "hx056_cases": [
+        [
+          "HX056-manual-small-lake-roundtrip-and-png",
+          "pass"
+        ],
+        [
+          "HX056-safe-shore-spill",
+          "pass"
+        ],
+        [
+          "HX056-source-water-removes-small-lake",
+          "pass"
+        ],
+        [
+          "HX056-regeneration-confirms-small-lake-loss",
+          "pass"
+        ],
+        [
+          "HX056-automatic-small-lakes",
+          "pass"
+        ],
+        [
+          "HX056-automatic-conflict-isolation",
+          "pass"
+        ]
+      ],
+      "conclusion": "passed",
+      "head": "1c37165eaeafe2352f1647d7698b39f38369214e",
+      "tree": "9b0a6abc8a09ba9fea851ff904cb022a2308893b",
+      "artifact": {
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44734436000/artifacts/14628872841",
+        "artifact_id": 14628872841,
+        "sha256": "9b317e7ee4ffb9d427a591490b6c9b679fa4eb37659fffd33f04da87f3d0ca2a",
+        "exact_manifest": true,
+        "examples": [
+          "small-lake-before.jpg",
+          "small-lake-after.jpg",
+          "small-lake-export.png",
+          "small-lake-spill-before.jpg",
+          "small-lake-spill-after.jpg",
+          "small-lake-spill.png",
+          "small-lake-river-rotated.png"
+        ]
+      }
+    },
+    "review_node": {
+      "passed": 8,
+      "failed": 0,
+      "runner_note": "Также вывод summary содержит загруженный файл saveSafety без совпадений с фильтром."
+    },
+    "negative_controls": {
+      "head_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+      "observed_regressions": [
+        "RV04: диалог отсутствует",
+        "RV05: маска занимает дополнительную клетку (8,14)"
+      ],
+      "executed": 2,
+      "failed_as_expected": 2
+    },
+    "temporary_diagnostics": [
+      {
+        "path": "agent-work/evidence/HX-BL-056-F1/review-1c37165/manual-footprint-probe.mjs.txt",
+        "scenario": "Четыре связанных гекса, отказ частично поддержанной клетки и атомарный отказ дубликата",
+        "observation": {
+          "four": [
+            {
+              "q": -21,
+              "r": -11
+            },
+            {
+              "q": -20,
+              "r": -11
+            },
+            {
+              "q": -19,
+              "r": -11
+            },
+            {
+              "q": -18,
+              "r": -11
+            }
+          ],
+          "partial": {
+            "q": -22,
+            "r": -10
+          },
+          "adjacent": {
+            "q": -21,
+            "r": -10
+          },
+          "duplicate_refused": true,
+          "undo_preserved": true,
+          "beforeHashable": 10
+        }
+      },
+      {
+        "path": "agent-work/evidence/HX-BL-056-F1/review-1c37165/legacy-shore-removal-probe.mjs.txt",
+        "scenario": "Парное сравнение фактического берега при удалении соседнего озера на карте со свежим и старым JSON",
+        "observations": [
+          {
+            "label": "modern",
+            "removedLake": {
+              "q": -20,
+              "r": -11
+            },
+            "retainedLake": {
+              "q": -21,
+              "r": -11
+            },
+            "before": [
+              "-21,-11"
+            ],
+            "after": [
+              "-21,-11"
+            ],
+            "retainedRecordUnchanged": true,
+            "undoRedoMatch": true
+          },
+          {
+            "label": "legacy",
+            "removedLake": {
+              "q": -20,
+              "r": -11
+            },
+            "retainedLake": {
+              "q": -21,
+              "r": -11
+            },
+            "before": [
+              "-21,-11"
+            ],
+            "after": [
+              "-21,-11",
+              "-20,-11"
+            ],
+            "retainedRecordUnchanged": true,
+            "undoRedoMatch": true
+          }
+        ]
+      },
+      {
+        "path": "agent-work/evidence/HX-BL-056-F1/review-1c37165/legacy-source-water-probe.mjs.txt",
+        "scenario": "Старый JSON и штатный редактор воды. Вывод целевого наблюдения подтверждён повтором под основным проверяющим.",
+        "observation": {
+          "fixture": "Два настоящих резервных участка с опорами (0,0), (1,0), seed 42, без рек",
+          "edited_coarse": {
+            "q": -1,
+            "r": 0
+          },
+          "stable_base": {
+            "q": -1,
+            "r": -1
+          },
+          "confirmed_loss_ids": [
+            2
+          ],
+          "retained_lake_id": 1,
+          "old_mask": [
+            "-8,-3"
+          ],
+          "observed_new_mask": [
+            "-8,-3",
+            "-8,-4",
+            "-7,-4"
+          ],
+          "old_json_accepted": true,
+          "retained_record_unchanged": true,
+          "alerts": 0,
+          "reproduction_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/legacy-source-water-probe.mjs.txt"
+        },
+        "failed_equality_as_expected": true
+      }
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+    "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+    "added": 2,
+    "removed": 0,
+    "modified": 2,
+    "count_source": "git diff f7ab0eb7c953f5c7934b9fdb1647fae95b427548 1c37165eaeafe2352f1647d7698b39f38369214e -- test",
+    "suites": [
+      {
+        "suite": "Node · test/mapTransactions.test.mjs",
+        "added": 2,
+        "removed": 0,
+        "modified": 0,
+        "scenarios": [
+          "HX056-F11-RV04: возврат старой тропы из контрольной точки, точный список озёр, отмена, один шаг истории, повторное открытие.",
+          "HX056-F11-RV05: прежняя видимая маска ручного озера после ввода нового сухого соседа, сохранение с shoreCells и без, точные Undo/Redo и загрузка."
+        ],
+        "reuse_or_new_reason": "Существующий случай создания тропы не восстанавливает её из старого снимка; тест пропуска автоматического кандидата не проверяет ручное озеро при приросте исходной территории."
+      },
+      {
+        "suite": "Playwright · test/browser/one-mile.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenarios": [
+          "Сквозной ручной сценарий сравнивает видимые и записанные береговые ячейки и проверяет их повторно после открытия.",
+          "Существующий случай выхода берега за границу теперь проверяет сохранение именно (11,−10). Негативное сохранение переносит след вместе с его метаданными, чтобы проверить геометрическую причину отказа."
+        ],
+        "reuse_or_new_reason": "Расширены две существующие браузерные проверки с настоящей картой. Прежние действия и PNG продолжают проверяться."
+      }
+    ],
+    "review_conclusion": "На старом SHA два добавленных теста воспроизводят именно исправленные дефекты. Сценарии различаются по операции и эффекту. Два изменённых браузерных кейса сохраняют прежние проверки и добавляют сопоставление записанной и фактической маски. Исправление данных отрицательного браузерного кейса проходит проверку структуры, чтобы по-прежнему проверять отказ по геометрии. Результаты временных проверок не включены в постоянный diff."
+  },
+  "acceptance_matrix": [
+    {
+      "id": "AC01",
+      "status": "observed",
+      "observation": "Classic 42. Ручное озеро, действующая река, снимки до и после, JSON и PNG."
+    },
+    {
+      "id": "AC02",
+      "status": "observed_with_limits",
+      "observation": "Четыре смежных гекса приняты в приложении. Частичная клетка (−22,−10) и повторный ID отклонены без изменения карты и истории. Конфликт тропы и видимость ошибочного черновика есть на точном SHA. Часть сочетаний POI и ручья просмотрена выборочно."
+    },
+    {
+      "id": "AC03",
+      "status": "failed",
+      "observation": "Штатная контрольная точка отменяется без записи, при подтверждении удаляет только конфликтующее озеро. Однако при удалении озера берег незатронутого соседа со старой записью расширяется (RV06). Независимый проверяющий воспроизвёл то же после штатной правки воды (−1,0), при которой условие подтверждения перечисляет только соседнее озеро №2."
+    },
+    {
+      "id": "AC04",
+      "status": "observed_with_limits",
+      "observation": "Сопоставление seed, масштабов, штатного продолжения, слоёв и RNG в браузере. Расширение через новое сухое соседство независимо проверено для записанной маски и её отсутствия. Другие биомы и карты проверены выборочно."
+    },
+    {
+      "id": "AC05",
+      "status": "observed",
+      "observation": "Измерены сквозное озеро, выгрузки PNG, поворот, черновик и адаптивная одномильная матрица 320/390 RU/EN."
+    },
+    {
+      "id": "AC06",
+      "status": "observed_with_limits",
+      "observation": "441 Node-проверка, полный браузерный набор, RNG Classic/Mythic, импорт Knave/старых JSON в CI. После возврата старой тропы новый JSON повторно открывается. Проверена конечная выборка профилей."
+    },
+    {
+      "id": "AC07",
+      "status": "observed",
+      "observation": "Ручной проход реки №1 через (−4,−28) и автоматический реки №5 на карте и PNG. Вход, вода и выход подтверждены точками манифеста. Поворот показан отдельно."
+    },
+    {
+      "id": "AC08",
+      "status": "failed_in_legacy_source_edit",
+      "observation": "В одной штатной генерации 23 автоматических озера приняты, конфликтующая компонента пропущена, исходное ручное №1 сохранено, повторение и JSON проходят. Для старых записей остаётся RV06 в другой операции. В независимом сценарии исходной воды предусмотренное удаление №2 увеличило берег №1 на заведомо незатронутом базовом гексе (−1,−1)."
+    }
+  ],
+  "fresh_context_review": {
+    "available": true,
+    "completed": true,
+    "scope": "Свежий контекст. Отдельный проверяющий проверил последний diff и реальные обработчики. Нашёл отдельный сценарий RV06 в штатном E6, повторенный основным проверяющим.",
+    "head_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+    "result": "changes_requested",
+    "reproduction_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/legacy-source-water-probe.mjs.txt",
+    "observation": {
+      "fixture": "Два настоящих резервных участка с опорами (0,0), (1,0), seed 42, без рек",
+      "edited_coarse": {
+        "q": -1,
+        "r": 0
+      },
+      "stable_base": {
+        "q": -1,
+        "r": -1
+      },
+      "confirmed_loss_ids": [
+        2
+      ],
+      "retained_lake_id": 1,
+      "old_mask": [
+        "-8,-3"
+      ],
+      "observed_new_mask": [
+        "-8,-3",
+        "-8,-4",
+        "-7,-4"
+      ],
+      "old_json_accepted": true,
+      "retained_record_unchanged": true,
+      "alerts": 0,
+      "reproduction_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/legacy-source-water-probe.mjs.txt"
+    }
+  },
+  "limitations": [
+    "Проверена конечная выборка карт, языков, профилей и исходных взаимодействий. Снимки и PNG относятся к прошедшим браузерным сценариям, временная проверка RV06 отдельно сравнивает фактические SVG-маски."
+  ]
+}

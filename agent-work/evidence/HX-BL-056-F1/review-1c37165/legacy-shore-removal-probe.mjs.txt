@@ -1,0 +1,53 @@
+// Save as test/review-legacy-lake-removal-1c.mjs. Copy test/helpers/generation-harness.mjs to test/helpers/review-1c-lake-harness.mjs.
+// In the copied harness expose removeSelectedSmallLake next to acceptedLakeArtwork in the instrumented App return.
+// Run from the repository root with Node 24.
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createGenerationHarness} from './helpers/review-1c-lake-harness.mjs';
+import {fineCellKey as key} from '../src/oneMile.ts';
+
+const source=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
+const h=createGenerationHarness(42);
+h.render();
+const alerts=[];
+h.setWindow({alert:x=>alerts.push(x),matchMedia:()=>({matches:false})});
+h.injectFunction('readTextFile',async file=>file.text);
+const load=data=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'file'}});
+const snap=()=>JSON.parse(JSON.stringify(h.render().createSaveData()));
+const pick=cell=>{const app=h.render();return app.pickFine(cell,false,app.getDocumentRevision());};
+const mask=()=>h.render().acceptedLakeArtwork.views.find(view=>view.lake.id===2).maskCells.map(key);
+const removedLake={q:-20,r:-11}, retainedLake={q:-21,r:-11};
+
+await load(source);
+assert.equal(h.render().switchFineStep(1),true);
+for(const cell of [removedLake,retainedLake]){
+  assert.ok(pick(cell));
+  h.render().startSmallLake();
+  h.render().commitSmallLake();
+  assert.equal(h.render().editError,null);
+}
+const modern=snap();
+assert.deepEqual(modern.map.physicalGrid.smallLakes.lakes[1].shoreCells,[]);
+const legacy=structuredClone(modern);
+delete legacy.map.physicalGrid.smallLakes.lakes[1].shoreCells;
+for(const [label,input,expected] of [
+  ['modern',modern,['-21,-11']],
+  ['legacy',legacy,['-21,-11','-20,-11']],
+]){
+  await load(input);
+  assert.deepEqual(alerts,[]);
+  assert.equal(h.render().switchFineStep(1),true);
+  const before=mask();
+  assert.deepEqual(before,['-21,-11']);
+  const oldRecord=snap().map.physicalGrid.smallLakes.lakes[1];
+  assert.ok(pick(removedLake));
+  h.render().removeSelectedSmallLake();
+  const after=mask();
+  assert.deepEqual(after,expected);
+  assert.deepEqual(snap().map.physicalGrid.smallLakes.lakes,[oldRecord]);
+  h.render().undoMap();
+  assert.deepEqual(mask(),before);
+  h.render().redoMap();
+  assert.deepEqual(mask(),after);
+  console.log(JSON.stringify({label,removedLake,retainedLake,before,after,retainedRecordUnchanged:true,undoRedoMatch:true}));
+}
