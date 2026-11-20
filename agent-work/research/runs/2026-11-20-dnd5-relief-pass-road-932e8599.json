@@ -1,0 +1,288 @@
+{
+  "run_id": "2026-11-20-dnd5-relief-pass-road-932e8599",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_dmg2014_relief_and_pass_road_verified",
+  "started_at": "2026-11-20T03:28:21Z",
+  "completed_at": "2026-11-20T03:32:57Z",
+  "selected_task": {
+    "id": "HX-RSR-DND5-L1-RELIEF-AND-PASS-ROUTE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить связанный картографический сценарий DND5-2014-006 и DND5-2014-011: разместить рядом хребет, предгорье и равнину и провести через заданный проход дорогу.",
+    "completion_condition": "Зафиксировать конкретные смежные участки, их высоту и биом, заданную трассу и сохранение после повторного импорта. Указать отдельно штатный ручной выбор и возможность автоматического распознавания прохода. Для игры зафиксировать только известный объём исторического источника.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-006-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-011-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "selection_reason": "Проверка двух связанных строк DND5 на одной карте воспроизводит открытый критерий L1 от задания рельефа до выбора дороги через доступное ребро.",
+  "alternatives": [
+    {
+      "task_id": "Полный первичный корпус DMG2014",
+      "reason": "Нового подтверждённого доступа нет. Точные диапазоны сохранены."
+    },
+    {
+      "task_id": "DND5-2014-014/015",
+      "reason": "Наполнение области отдельными местами идёт следующим цельным срезом после географической проверки."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_sha": "4a49ac23c6fe43556f2ebc3f67afcc178a55937e",
+    "main_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "active_ranking": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "active_overall_cohort": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ],
+    "refs": [
+      "AGENTS.md",
+      "agent-work/research/contract.md",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json",
+      "agent-work/research/method.json",
+      "agent-work/research/proposals.json",
+      "agent-work/research/data-contract.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/research/rule-analysis-standard.md",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json",
+      "agent-work/execution-locks.json",
+      "agent-work/budget.json",
+      "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "agent-work/rules/game-bindings.json#DND5-2014-006-L1",
+      "agent-work/rules/game-bindings.json#DND5-2014-011-L1",
+      "agent-work/market/rules/DND5-2014.json#DND5-2014-006",
+      "agent-work/market/rules/DND5-2014.json#DND5-2014-011"
+    ]
+  },
+  "findings": [
+    "На базовой карте Classic через редактор регионов сохранена последовательность смежных областей «горы 3 → открытые холмы 2 → открытая равнина 1». Замена средних холмов равниной отклонена из-за несовместимости соседних биомов в этой конфигурации.",
+    "На гексе 0,1 внутри горного региона сохранён локальный биом открытых холмов. Высота региона осталась 3. Эта отметка меняет биом отдельного гекса, а не задаёт высоту перевала.",
+    "Ручная дорога прошла через выбранный гекс и сохранилась после импорта. На испытанной границе шесть из семи рёбер удалось закрыть препятствиями. Оставшееся ребро 0,1–1,0 пропустило дорогу. Попытка пройти через закрытое ребро отклонена без изменения карты.",
+    "На карте с одним препятствием приложение также приняло вручную выбранный обход через 0,−1. Поэтому локальная правка биома сама по себе не делает гекс обязательным для ручной трассы. Просмотренный код обычного генератора дорог не получает локальный переопределённый биом или объект перевала как вход. Автоматический выбор перевала в полном генераторе не подтверждён."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.json",
+    "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.md",
+    "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20-probe.mjs",
+    "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json",
+    "agent-work/research/handoffs/2026-11-20-dnd5-relief-pass-road-932e8599-strategist.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/latest.json",
+    "agent-work/claims/2026-11-20-dnd5-relief-pass-road-932e8599.json",
+    "agent-work/research/automation-health/2026-11-20-dnd5-relief-pass-road-932e8599-started.json",
+    "agent-work/execution-locks.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "verified_at": "2026-11-20T03:32:57Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "method": "Штатные обработчики App: редактирование регионов, локального биома, барьеров и дороги, вызов обработчика выбора типа из исходного React-элемента, повторный импорт и undo/redo. Отдельный статический просмотр входов автогенератора дороги.",
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "primary_source_reverified": false,
+    "matching_git_blobs": 105,
+    "exit_code": 0,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20-probe.mjs",
+    "command": "Копировать probe в корень checkout product_sha и выполнить node research-relief-pass-road.mjs",
+    "source_pins": [
+      "src/App.tsx#L1418",
+      "src/App.tsx#L9845",
+      "src/App.tsx#L11402",
+      "src/App.tsx#L14036",
+      "src/App.tsx#L14804",
+      "src/App.tsx#L16020",
+      "src/App.tsx#L16210",
+      "src/manualRegions.ts#L54",
+      "src/manualRoads.ts#L59",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "scaleMiles": 6,
+        "seed": 42,
+        "cellsPerRegion": 4,
+        "start": "0,0",
+        "finish": "2,1"
+      },
+      "relief": [
+        [
+          1,
+          3,
+          "mountains"
+        ],
+        [
+          2,
+          2,
+          "open_hills"
+        ],
+        [
+          3,
+          1,
+          "open_plains"
+        ]
+      ],
+      "pass": {
+        "hex": "0,1",
+        "regionHeight": 3,
+        "effectiveBiome": "open_hills"
+      },
+      "regionalCompatibility": {
+        "rejected": "Terrain is incompatible with a neighboring region. (Lindengrund; Ulvdal) Your map is unchanged.",
+        "unchanged": true
+      },
+      "barrier": {
+        "hex": "0,0",
+        "neighbor": "1,0",
+        "blocked": "A path or barrier already occupies this edge.",
+        "unchangedOnAttempt": true
+      },
+      "singleGap": {
+        "boundaryEdges": 7,
+        "barrierCount": 6,
+        "openPair": "0,1|1,0",
+        "selectedRoadImportExact": true
+      },
+      "traces": {
+        "selected": [
+          "0,0",
+          "0,1",
+          "1,0",
+          "1,1",
+          "2,1"
+        ],
+        "alternative": [
+          "0,0",
+          "0,-1",
+          "1,-1",
+          "1,0",
+          "1,1",
+          "2,1"
+        ],
+        "alternativeBypassesPass": true,
+        "pathKind": "road"
+      },
+      "saveReloadExact": true,
+      "undoRedo": true,
+      "method": "App region, cell, obstacle and road edits in repo React harness. It exposes the original road panel to call the type selector. No browser."
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "932e8599-7258-8323-a900-094c167bf794",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T03:30:00Z",
+          "started_at": "2026-11-20T03:27:54.304967Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T06:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "d642b3f4-0158-8331-9af7-e0bf4e6b8faf",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T03:00:00Z",
+          "started_at": "2026-11-20T03:00:17.704953Z",
+          "completed_at": "2026-11-20T03:19:23.808668Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T07:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "932e8599-7258-8323-a900-094c167bf794",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T03:30:00Z",
+          "started_at": "2026-11-20T03:27:54.304967Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T06:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "d642b3f4-0158-8331-9af7-e0bf4e6b8faf",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T03:00:00Z",
+          "started_at": "2026-11-20T03:00:17.704953Z",
+          "completed_at": "2026-11-20T03:19:23.808668Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T07:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_dmg2014_relief_and_pass_road_verified",
+    "run_id": "2026-11-20-dnd5-relief-pass-road-932e8599",
+    "stage": "dnd5_l1_relief_pass_road",
+    "last_successful_step": "Рельеф, локальное переопределение и дорога через одно открытое ребро испытаны штатными обработчиками. JSON и история проверены.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Проверка ограниченного картографического сценария завершена. Сохраняются остатки первичного корпуса и автоматического распознавания прохода.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.md",
+      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20-dnd5-relief-pass-road-932e8599-strategist.json",
+      "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json"
+    ],
+    "exact_continuation": "Проверить один сценарий наполнения карты конкретными местами по DND5-2014-014 и 015. Указать размер области и вручную разместить несколько данных ведущим мест, включая два логовища, затем проверить их независимое содержимое. На проверенной версии восстановить координаты, типы и карточки мест после JSON. Разделить структурированные сведения конкретного логовища, свободный текст и количественный ориентир из исторической выписки. Самостоятельную механику монстров не выводить.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-MAPPED-SITES-AND-LAIRS",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить один сценарий наполнения карты конкретными местами по DND5-2014-014 и 015. Указать размер области и вручную разместить несколько данных ведущим мест, включая два логовища, затем проверить их независимое содержимое.",
+    "completion_condition": "На проверенной версии восстановить координаты, типы и карточки мест после JSON. Разделить структурированные сведения конкретного логовища, свободный текст и количественный ориентир из исторической выписки. Самостоятельную механику монстров не выводить.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-014-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-015-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  }
+}
