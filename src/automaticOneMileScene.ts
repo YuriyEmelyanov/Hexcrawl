@@ -4,8 +4,10 @@ import {parseDetail1StateV11,type Detail1State} from './detailModel.ts';
 import {prepareRefinementGeographyPreview} from './geometryRefinementPreview.ts';
 
 export class OneMileGeometryConflict extends Error {
- constructor(readonly stage:string,refs:readonly string[]){
+ readonly stage:string;
+ constructor(stage:string,refs:readonly string[]){
   super(`${stage}: ${refs.join(', ')}`);
+  this.stage=stage;
  }
 }
 
