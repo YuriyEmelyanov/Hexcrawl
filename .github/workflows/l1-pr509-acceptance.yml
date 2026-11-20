@@ -23,8 +23,8 @@ jobs:
       - run: |
           npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/l1-vite.log 2>&1 &
           for i in {1..30}; do curl --silent --fail http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
-          node l1-games.mjs ${{ matrix.profile }}
+          node l1-sites.mjs ${{ matrix.profile }}
       - uses: actions/upload-artifact@v4
         with:
-          name: l1-games-${{ matrix.profile }}
-          path: l1-games-${{ matrix.profile }}.json
+          name: l1-sites-${{ matrix.profile }}
+          path: l1-sites-${{ matrix.profile }}.json
