@@ -1,0 +1,679 @@
+{
+  "schema_version": 1,
+  "role": "programmer",
+  "task_id": "HX-BL-056",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+  "head_tree_sha": "03f6e1249f6aedc17df0370035c468fe7fd5911f",
+  "comparison_base_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
+  "previous_evidence_ref": "agent-work/evidence/HX-BL-056-F1/automatic-lakes-b4b10f4/verification.json",
+  "exact_checkout": {
+    "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "checkout_sha": "46268719d07a4657d32329ac18f22fd24ab8ed51",
+    "checkout_tree": "03f6e1249f6aedc17df0370035c468fe7fd5911f"
+  },
+  "requirements": {
+    "AC07": {
+      "seed": 42,
+      "profile": "Classic",
+      "manual": {
+        "cells": [
+          "-4,-28"
+        ],
+        "river_id": 1,
+        "source_edge_key": "-121.244,-182|-145.492,-196",
+        "interior_fraction": [
+          0.03248915635728969,
+          0.25809776001313167
+        ]
+      },
+      "automatic": {
+        "region_anchor": "-4,-1",
+        "cells": [
+          "-28,-14"
+        ],
+        "river_id": 5,
+        "source_edge_key": "-266.736,-98|-290.985,-112",
+        "interior_fraction": [
+          0.6250109092872135,
+          0.8219615312547027
+        ]
+      },
+      "geometry_method": "Пересечение принятого русла с фактическим SVG-берегом и объединением гексов его маски. На обоих рёбрах найден внутренний интервал с береговыми выходами с обеих сторон."
+    },
+    "AC08": {
+      "seed": 42,
+      "profile": "Classic",
+      "region_anchor": "-1,0",
+      "rejected": {
+        "cells": [
+          "-5,-1",
+          "-5,0"
+        ],
+        "protection": "road",
+        "road_id": 6
+      },
+      "accepted_automatic": 23,
+      "retained_manual": {
+        "id": 1,
+        "cells": [
+          "-4,-28"
+        ]
+      },
+      "note": "Обычный генератор сохраняет остальные 23 озера и существующее озеро. Повтор из исходного документа даёт те же карту и потоки RNG. Временная диагностическая трассировка 24 компонентов в отдельном рабочем дереве. Она не вошла в PR."
+    }
+  },
+  "observed": "На Classic seed 42 река №1 проходит через ручное озеро −4,−28 и река №5 проходит через озеро, добавленное генерацией. В отдельной обычной генерации кандидат над дорогой №6 пропущен, 23 других добавлены и прежнее ручное озеро сохранено.",
+  "checks": {
+    "node": {
+      "command": "npm run check",
+      "node_version": 24,
+      "execution": "GitHub Actions",
+      "tests": 438,
+      "pass": 438,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "status": "passed"
+    },
+    "browser": {
+      "command": "npm run test:browser",
+      "one_mile_manifest_cases": 17,
+      "status": "passed"
+    },
+    "browser_rng": {
+      "command": "npm run test:browser:rng",
+      "status": "passed"
+    },
+    "workflow_jobs": [
+      {
+        "name": "world-random",
+        "status": "success",
+        "job_id": 136168778378,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/job/136168778378"
+      },
+      {
+        "name": "check",
+        "status": "success",
+        "job_id": 136168778800,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/job/136168778800"
+      },
+      {
+        "name": "browser",
+        "status": "success",
+        "job_id": 136168778818,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/job/136168778818"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "status": "skipped",
+        "job_id": 136168781166,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/job/136168781166"
+      }
+    ],
+    "additional_exact_local": {
+      "typescript": "pass",
+      "targeted_node": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
+    "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "added": 1,
+    "removed": 0,
+    "modified": 7,
+    "count_source": "git diff b4b10f4067599f450c7e11551187956f9b55ff29 a61bc5af878e744bd08e576324755b0b1a0f2206 -- test",
+    "suites": [
+      {
+        "suite": "Node / oneMile.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "Контуры других автоматических озёр независимы от выделения ID. Геометрическая проверка касания кромки реки сохранена.",
+        "reuse_or_new_reason": "Расширена действующая проверка защищённых объектов. Проверка только математической геометрии отделена от отменённого запрета озеру пересекать реку."
+      },
+      {
+        "suite": "Node / saveSafety.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Обычное продолжение карты удерживает озёра при появлении реки и выдерживает Undo/Redo и JSON.",
+        "reuse_or_new_reason": "Использован существующий сценарий с seed 42, прежнее ожидание удаления заменено требованием F1.1."
+      },
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 4,
+        "scenario": "Ручной и автоматический проход на реальной карте, маска при PNG и повороте, отрицательный импорт по настоящей дороге, локальный пропуск рядом с дорогой. Проверка настоящей потери опоры отслеживает сохранённые ручные озёра по их фактическим ID при наличии автоматических.",
+        "reuse_or_new_reason": "Три действующих сценария расширены. Новый пример изоляции требует другого обычного кандидата и проверяет один защищённый конфликт среди многих пригодных озёр."
+      }
+    ],
+    "execution": {
+      "node": {
+        "executed": 438,
+        "passed": 438,
+        "skipped": 0
+      },
+      "one_mile_manifest": {
+        "executed": 17,
+        "passed": 17,
+        "skipped": 0
+      },
+      "browser_and_rng_runs_reported_separately": true
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "model_blob": "51c2ca9701a6669aced78a82a4bdf00accbbf075",
+    "criterion_evidence": [
+      {
+        "criterion_id": "S01-C02",
+        "weight": 40,
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "evidence": [
+          "HX056-manual-small-lake-roundtrip-and-png",
+          "HX056-automatic-small-lakes"
+        ],
+        "confirmed_grade_after": null,
+        "delta": null
+      },
+      {
+        "criterion_id": "S01-C03",
+        "weight": 30,
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "evidence": [
+          "HX056-safe-shore-spill",
+          "HX056-automatic-conflict-isolation",
+          "HX056-source-water-removes-small-lake"
+        ],
+        "confirmed_grade_after": null,
+        "delta": null
+      },
+      {
+        "criterion_id": "S02-C01",
+        "weight": 30,
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "evidence": [
+          "HX056-automatic-conflict-isolation",
+          "HX056-automatic-small-lakes",
+          "world-random"
+        ],
+        "confirmed_grade_after": null,
+        "delta": null
+      },
+      {
+        "criterion_id": "S02-C03",
+        "weight": 20,
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "evidence": [
+          "HX056-safe-shore-spill",
+          "HX056-manual-small-lake-roundtrip-and-png",
+          "Node/saveSafety"
+        ],
+        "confirmed_grade_after": null,
+        "delta": null
+      },
+      {
+        "criterion_id": "S03-C01",
+        "weight": 25,
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "evidence": [
+          "HX056-manual-small-lake-roundtrip-and-png",
+          "HX056-regeneration-confirms-small-lake-loss",
+          "HX056-source-water-removes-small-lake"
+        ],
+        "confirmed_grade_after": null,
+        "delta": null
+      },
+      {
+        "criterion_id": "S04-C04",
+        "weight": 15,
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "evidence": [
+          "HX056-manual-small-lake-roundtrip-and-png",
+          "HX056-safe-shore-spill",
+          "HX056-automatic-small-lakes"
+        ],
+        "confirmed_grade_after": null,
+        "delta": null
+      }
+    ],
+    "baseline_ref": "agent-work/score/current-score.json",
+    "baseline_blob": "6a0e03c335e17cc754a63f3e2be9a33dc62e9aa3",
+    "status": "developer_evidence_pending_independent_assessment",
+    "limitations": "Фиксированные сквозные сценарии F1.1 и регрессионные наборы не оценивают полный критерий или широту по top5/10/20."
+  },
+  "acceptance_trace": {
+    "AC01": [
+      "HX056-manual-small-lake-roundtrip-and-png",
+      "HX056-safe-shore-spill",
+      "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/before-after.jpg"
+    ],
+    "AC02": [
+      "Node: ordered automatic footprints, dry support and protected paths/anchors",
+      "Browser: road conflict, valid manual shoreline, malformed imported footprint versus current document"
+    ],
+    "AC03": [
+      "HX056-source-water-removes-small-lake",
+      "HX056-regeneration-confirms-small-lake-loss",
+      "Node/mapTransactions"
+    ],
+    "AC04": [
+      "HX056-automatic-small-lakes",
+      "HX056-automatic-conflict-isolation",
+      "Node/oneMile",
+      "world-random"
+    ],
+    "AC05": [
+      "ONE-MILE1-UI: 1500/390/320 RU/EN; rotations; both scales",
+      "HX056-manual-small-lake-roundtrip-and-png"
+    ],
+    "AC06": [
+      "438 Node cases, browser suite and world-random",
+      "HX056-safe-shore-spill",
+      "Node/saveSafety; Knave/Mythic ordinary and compatibility cases"
+    ],
+    "AC07": [
+      "HX056-manual-small-lake-roundtrip-and-png",
+      "HX056-automatic-small-lakes"
+    ],
+    "AC08": [
+      "HX056-automatic-conflict-isolation",
+      "HX056-regeneration-confirms-small-lake-loss"
+    ]
+  },
+  "visual": {
+    "artifact_id": 14613885370,
+    "artifact_digest": "sha256:9a8e26464c8116aeb9f958f3ec1934dd58673da543cd193b9da9d3bf27b8233d",
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/artifacts/14613885370",
+    "comparison": {
+      "path": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/before-after.jpg",
+      "sha256": "48aa5cfc60109998d53ddfe1fa4915c93e3401246f650eb997c50cbcda68d696",
+      "bytes": 46874,
+      "method": "Увеличенные фрагменты до и после из того же точного архива без изменения карты",
+      "source_files": [
+        "small-lake-before.jpg",
+        "small-lake-after.jpg"
+      ]
+    },
+    "head": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "checkout": "46268719d07a4657d32329ac18f22fd24ab8ed51",
+    "tree": "03f6e1249f6aedc17df0370035c468fe7fd5911f",
+    "status": "passed",
+    "case_count": 17,
+    "cases": [
+      {
+        "id": "HX056-manual-small-lake-roundtrip-and-png",
+        "status": "pass",
+        "cells": [
+          "-4,-28"
+        ],
+        "pngBytes": 661698,
+        "roadConflict": {
+          "cell": "0,0",
+          "message": "The small lake crosses road or trail #1.",
+          "documentUnchanged": true
+        },
+        "manualPass": {
+          "riverId": 1,
+          "edge": "-121.244,-182|-145.492,-196",
+          "approach": {
+            "x": 173.06072998046875,
+            "y": 165.25,
+            "inside": false
+          },
+          "inside": {
+            "x": 173.7824249267578,
+            "y": 166.3333282470703,
+            "inside": true
+          },
+          "exit": {
+            "x": 173.7824249267578,
+            "y": 167.8333282470703,
+            "inside": false
+          }
+        },
+        "rotatedPng": true
+      },
+      {
+        "id": "HX056-safe-shore-spill",
+        "status": "pass",
+        "selectedCells": [
+          "10,-9"
+        ],
+        "maskCells": [
+          "10,-9",
+          "11,-10"
+        ],
+        "pngIncludesSpill": true,
+        "roundTrip": true,
+        "existingGeographyUnchanged": true,
+        "conflictingImportRejectedAt": [
+          1,
+          6
+        ],
+        "importRefusal": "Failed to load JSON: map preparation error (map.physicalGrid.smallLakes.lakes[0].cells: The small lake crosses road or trail #1.). Your current map is intact.",
+        "undoRedoPreserved": true
+      },
+      {
+        "id": "HX056-source-water-removes-small-lake",
+        "status": "pass",
+        "sourceHex": "0,0",
+        "cancelExact": true,
+        "undoRedoExact": true
+      },
+      {
+        "id": "HX056-regeneration-confirms-small-lake-loss",
+        "status": "pass",
+        "seed": 42,
+        "warning": "Changing the area removes these small lakes in full: №1 (1,3; 2,3), №4 (-21,19).\nUndo restores the previous map. Continue?",
+        "cancelExact": true,
+        "undoRedoExact": true,
+        "retainedLake": 5
+      },
+      {
+        "id": "HX056-automatic-small-lakes",
+        "status": "pass",
+        "coarseAnchor": "-4,-1",
+        "fineAnchor": "-23,-4",
+        "regionId": 7,
+        "lakes": [
+          {
+            "id": 1,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -32,
+                "r": -15
+              },
+              {
+                "q": -31,
+                "r": -16
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -31,
+                "r": -14
+              },
+              {
+                "q": -31,
+                "r": -13
+              }
+            ]
+          },
+          {
+            "id": 3,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -31,
+                "r": -10
+              },
+              {
+                "q": -31,
+                "r": -9
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -31,
+                "r": -5
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -29,
+                "r": 1
+              },
+              {
+                "q": -29,
+                "r": 2
+              },
+              {
+                "q": -28,
+                "r": 1
+              }
+            ]
+          },
+          {
+            "id": 6,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -28,
+                "r": -14
+              }
+            ]
+          },
+          {
+            "id": 7,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -26,
+                "r": -7
+              },
+              {
+                "q": -25,
+                "r": -8
+              }
+            ]
+          },
+          {
+            "id": 8,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -26,
+                "r": -5
+              }
+            ]
+          },
+          {
+            "id": 9,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -22,
+                "r": 1
+              }
+            ]
+          },
+          {
+            "id": 10,
+            "origin": "automatic",
+            "cells": [
+              {
+                "q": -8,
+                "r": -32
+              }
+            ]
+          }
+        ],
+        "automaticPass": {
+          "riverId": 5,
+          "edge": "-266.736,-98|-290.985,-112",
+          "approach": {
+            "x": 131.02964782714844,
+            "y": 262.3166809082031,
+            "inside": false
+          },
+          "inside": {
+            "x": 132.24208068847656,
+            "y": 263.01666259765625,
+            "inside": true
+          },
+          "exit": {
+            "x": 133.4545135498047,
+            "y": 263.61663818359375,
+            "inside": false
+          }
+        },
+        "scaleParity": true,
+        "rngParity": true,
+        "undoRedo": true,
+        "roundTrip": true,
+        "png": true
+      },
+      {
+        "id": "HX056-automatic-conflict-isolation",
+        "status": "pass",
+        "seed": 42,
+        "anchor": "-1,0",
+        "conflict": {
+          "cell": "-5,-1",
+          "message": "The small lake crosses road or trail #6.",
+          "documentUnchanged": true,
+          "cells": [
+            "-5,-1",
+            "-5,0"
+          ]
+        },
+        "acceptedAutomatic": 23,
+        "retainedManualId": 1,
+        "repeatAndRoundTrip": true
+      }
+    ],
+    "png_bytes": 705221,
+    "files": [
+      {
+        "name": "small-lake-before.jpg",
+        "bytes": 234380,
+        "sha256": "ded087883e5ecfb4e3450a6cee18a499063e791a72e820eb3a539f505c22dfad",
+        "size": [
+          1500,
+          1000
+        ]
+      },
+      {
+        "name": "small-lake-after.jpg",
+        "bytes": 236611,
+        "sha256": "3b5dc54b3c525d6c443920ee415c1964b1074cce4a9228dc3d5c3fc853318634",
+        "size": [
+          1500,
+          1000
+        ]
+      },
+      {
+        "name": "small-lake-export.png",
+        "bytes": 661698,
+        "sha256": "453192bc8710bac138915926e13d4c95e9559a4fb3428ad33eaa2a9a45a7b9a5",
+        "size": [
+          1099,
+          1152
+        ]
+      },
+      {
+        "name": "small-lake-river-rotated.jpg",
+        "bytes": 216330,
+        "sha256": "4aa9f8af175f8c0a8813d5002e22a247c61aeab2faebe73d21357608a4b2bd92",
+        "size": [
+          1500,
+          1000
+        ]
+      },
+      {
+        "name": "small-lake-river-rotated.png",
+        "bytes": 339914,
+        "sha256": "498fefb3d180871025283752e391548458585781bf0e62352693a60aa527f406",
+        "size": [
+          1152,
+          1099
+        ]
+      },
+      {
+        "name": "automatic-small-lakes-after.jpg",
+        "bytes": 241953,
+        "sha256": "c782268c975a81771e4f5c578cbbc6c38bfa8d6bb1be8eeee4f9d49178d98ca2",
+        "size": [
+          1500,
+          1000
+        ]
+      },
+      {
+        "name": "automatic-small-lakes.png",
+        "bytes": 824896,
+        "sha256": "eb4ed113c167772a9f34e841af4aa92d8a5591ef2acc27ee0abe1139d08ebe55",
+        "size": [
+          1293,
+          1152
+        ]
+      },
+      {
+        "name": "automatic-small-lake-isolated-conflict.jpg",
+        "bytes": 264696,
+        "sha256": "fba77719ef56949c96f460278ce2655bb383039acd0abb2e9fe47ef03d5ae5cf",
+        "size": [
+          1500,
+          1000
+        ]
+      },
+      {
+        "name": "automatic-small-lake-conflict-isolation.jpg",
+        "bytes": 262458,
+        "sha256": "e2bb096cee53446c73c2aaea55e1e449e69af588608e99eb7755993181e1082f",
+        "size": [
+          1500,
+          1000
+        ]
+      }
+    ]
+  },
+  "initial_attempt": {
+    "product_head_sha": "cfbce1b69f5c1b911e9291680aa0221f583201bd",
+    "workflow_run_id": 44699989991,
+    "browser_job_id": 136165742392,
+    "failed_at": "Сценарий регенерации ожидал только два номера ручных озёр. После допуска русла карта уже содержала три автоматических озера.",
+    "resolution": "Использованы действительные ID и координаты двух ручных озёр. Такой тест проверяет сохранённые и новые записи по отдельности. Итоговый браузерный прогон успешен."
+  },
+  "limitations": [
+    "Итоговые доказательства ограничены проверенными картами и seed. Независимый проверяющий оценивает достаточность матрицы F1.1, включая сложные варианты берегов и полное покрытие требований.",
+    "Автоматические контуры привязаны к координатам, поэтому ID, выделенные после пропуска другой компоненты, на их форму не влияют. В старом неопубликованном черновике форма зависела от ID.",
+    "При полном отказе подготовки одномильной геометрии применяется прежний безопасный путь, без приёма неподтверждённых берегов."
+  ]
+}

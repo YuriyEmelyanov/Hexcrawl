@@ -1,0 +1,178 @@
+{
+  "status": "review_ready",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1_1_independent_review",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+  "head_tree_sha": "03f6e1249f6aedc17df0370035c468fe7fd5911f",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113",
+  "handoff_ref": "agent-work/handoffs/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
+  "result_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
+  "review_ready": true,
+  "role": "programmer",
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить PR №510 на точном SHA по F1.1, включая карту и PNG со сквозной рекой, изоляцию кандидата, старые сохранения, Undo/Redo и полную матрицу AC01–AC08. Сохранить score_assessment 1.2. После приёмки требуется отдельное разрешение владельца на публикацию.",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/artifacts/14613885370",
+  "before_after_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/before-after.jpg",
+  "schema_version": 1,
+  "run_id": "2026-11-20T1100-programmer-HX-BL-056-through-flow",
+  "claim_ref": "agent-work/claims/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
+  "execution_lock_generation": 291,
+  "completed_at": "2026-11-20T08:31:19.327Z",
+  "started_at": "2026-11-20T08:00:27.582Z",
+  "role_selection_reason": "Чистовая F1.1 и разрешённый PR №510 были готовы после уточнения владельца. Проверены реестр и 468 записей claims. У предыдущего этапа имелись результат и подтверждённое освобождение.",
+  "implemented_stage_id": "F1_1_through_flow_and_per_lake_conflicts",
+  "previous_result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
+  "visible_result": "На Classic seed 42 река №1 проходит через ручное озеро −4,−28 и река №5 проходит через озеро, добавленное генерацией. В отдельной обычной генерации кандидат над дорогой №6 пропущен, 23 других добавлены и прежнее ручное озеро сохранено.",
+  "checks": {
+    "node": {
+      "command": "npm run check",
+      "node_version": 24,
+      "execution": "GitHub Actions",
+      "tests": 438,
+      "pass": 438,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "status": "passed"
+    },
+    "browser": {
+      "command": "npm run test:browser",
+      "one_mile_manifest_cases": 17,
+      "status": "passed"
+    },
+    "browser_rng": {
+      "command": "npm run test:browser:rng",
+      "status": "passed"
+    },
+    "workflow_jobs": [
+      {
+        "name": "world-random",
+        "status": "success",
+        "job_id": 136168778378,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/job/136168778378"
+      },
+      {
+        "name": "check",
+        "status": "success",
+        "job_id": 136168778800,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/job/136168778800"
+      },
+      {
+        "name": "browser",
+        "status": "success",
+        "job_id": 136168778818,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/job/136168778818"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "status": "skipped",
+        "job_id": 136168781166,
+        "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/job/136168781166"
+      }
+    ],
+    "additional_exact_local": {
+      "typescript": "pass",
+      "targeted_node": {
+        "executed": 7,
+        "passed": 7,
+        "skipped": 0
+      }
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
+    "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "added": 1,
+    "removed": 0,
+    "modified": 7,
+    "count_source": "git diff b4b10f4067599f450c7e11551187956f9b55ff29 a61bc5af878e744bd08e576324755b0b1a0f2206 -- test",
+    "suites": [
+      {
+        "suite": "Node / oneMile.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "Контуры других автоматических озёр независимы от выделения ID. Геометрическая проверка касания кромки реки сохранена.",
+        "reuse_or_new_reason": "Расширена действующая проверка защищённых объектов. Проверка только математической геометрии отделена от отменённого запрета озеру пересекать реку."
+      },
+      {
+        "suite": "Node / saveSafety.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Обычное продолжение карты удерживает озёра при появлении реки и выдерживает Undo/Redo и JSON.",
+        "reuse_or_new_reason": "Использован существующий сценарий с seed 42, прежнее ожидание удаления заменено требованием F1.1."
+      },
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 4,
+        "scenario": "Ручной и автоматический проход на реальной карте, маска при PNG и повороте, отрицательный импорт по настоящей дороге, локальный пропуск рядом с дорогой. Проверка настоящей потери опоры отслеживает сохранённые ручные озёра по их фактическим ID при наличии автоматических.",
+        "reuse_or_new_reason": "Три действующих сценария расширены. Новый пример изоляции требует другого обычного кандидата и проверяет один защищённый конфликт среди многих пригодных озёр."
+      }
+    ],
+    "execution": {
+      "node": {
+        "executed": 438,
+        "passed": 438,
+        "skipped": 0
+      },
+      "one_mile_manifest": {
+        "executed": 17,
+        "passed": 17,
+        "skipped": 0
+      },
+      "browser_and_rng_runs_reported_separately": true
+    }
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-20T07:59:31.879Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-11-20T08:31:19.327Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "forecast": {
+    "remaining_team_runs": [
+      2,
+      4
+    ],
+    "phases": {
+      "independent_review": 1,
+      "rework_and_repeat_review": [
+        0,
+        2
+      ],
+      "release_after_owner_authorization": 1
+    },
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ]
+  },
+  "main_changed": false,
+  "published": false,
+  "no_writing_processes_running": true,
+  "no_validation_processes_running": true,
+  "score_model_version": "1.2",
+  "owner_decisions_needed": "После независимой приёмки дать отдельное разрешение на выпуск точного проверенного пакета."
+}
