@@ -1,0 +1,196 @@
+{
+  "run_id": "2026-11-20T1630-PF2-island",
+  "status": "completed_bounded_L1_workflow",
+  "source_sha": "92fafc3d306134f0a403f5e899e925327fb5dce4",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "research_selection": "В состоянии регулярного исследования следующая строка PF2-RM-123. Предыдущий D&D-тест пригоден как основа. Новая глава Pirate Borg расширила бы корпус, повтор PF2-122 дублировал бы закрытый сценарий.",
+  "game": "PF2",
+  "decision": "keep_L1",
+  "result_ref": "agent-work/research/runs/2026-11-20T1630-PF2-island.json",
+  "evidence_ref": "agent-work/research/requirements/PF2-Remaster-L1-coast-island-2026-11-20.json",
+  "overview_ref": "agent-work/research/requirements/PF2-Remaster-L1-coast-island-2026-11-20.md",
+  "next_candidate": {
+    "id": "HX-RSR-PF2-124-L1-RIDGE",
+    "game_id": "PF2",
+    "layer": "L1",
+    "action": "На подготовленной карте отредактировать предгорье H у хребта R. После открытия сравнить высоты и биомы R, H и контрольной равнины P."
+  },
+  "automation_health": {
+    "start": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ]
+  },
+  "candidate_effect": {
+    "rating_changed": false,
+    "quality_score_changed": false,
+    "conditional_delta": 0.28735632183908044,
+    "reason": "На фиксированном перечне 29 операций PF2, при принятии полного функционального зачёта этой ручной операции вместо ½. Без новых испытаний скорости и устройств."
+  },
+  "diagnostics": {
+    "stage": "additional archipelago fixture",
+    "failed_operation": "node pf2-island.mjs, mainland component assertion",
+    "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n28 !== 42",
+    "cause_status": "confirmed",
+    "stop_reason": null,
+    "recovery": "Первоначальный второй остров рядом с внешней границей разделил оставшуюся сушу на несколько компонент. Сдвинут в глубину испытательной карты, пять сравнений прошли.",
+    "needs_owner_action": false
+  },
+  "needs_owner_action": false,
+  "rows": [
+    {
+      "id": "PF2-RM-123-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p135; Берега и острова",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2963",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-123-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Суша, море и берег непосредственно определяют региональную карту.",
+      "product_boundary": "Берег и водные области",
+      "action": "Задать берег и остров",
+      "map_object_or_state": {
+        "land": "mainland",
+        "island": "I",
+        "water": "sea"
+      },
+      "expected_result": "I окружёнморем, материкотдельно.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-123",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать берег и остров",
+        "inputs_and_units": {
+          "land": "mainland",
+          "island": "I",
+          "water": "sea"
+        },
+        "product_operation": "Задать берег и остров. I окружёнморем, материкотдельно.",
+        "expected_output": "I окружёнморем, материкотдельно.",
+        "constraints_and_exceptions": [
+          "Это географические советы, не обязанность побережья на каждой карте.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Нарисовать I и проверить соединения",
+            "when": "Задать берег и остров",
+            "expected": "Суша I не соединена с материком случайнойперемычкой"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.land_water_shapes"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.land_water_shapes"
+        ],
+        "binding_ids": [
+          "PF2-RM-123-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "implemented_for_bounded_manual_workflow",
+      "evidence_level": "executed_component_or_App_and_profile_limits",
+      "evidence_ids": [
+        "agent-work/research/requirements/PF2-Remaster-L1-coast-island-2026-11-20-probe.mjs",
+        "agent-work/research/requirements/PF2-Remaster-L1-coast-island-2026-11-20.json#observations"
+      ],
+      "comment": "В Classic на 6 милях реальными командами редактора построены берег, отдельный остров, архипелаг и кольцо суши с выходом из лагуны. Изменение пролива меняет сухопутную связность. Во всех пяти импортах карта восстановилась целиком.",
+      "remaining": "Другие физические масштабы, обзор континентов, браузерная и аппаратная приёмка остаются открытыми."
+    }
+  ],
+  "observations": [
+    {
+      "seed": 42,
+      "scaleMiles": 6,
+      "total": 61,
+      "island": [
+        "0,0",
+        "1,0",
+        "0,1"
+      ],
+      "sea": [
+        "-4,0",
+        "-3,0",
+        "-2,0",
+        "-1,1",
+        "-1,0",
+        "0,-1",
+        "1,-1",
+        "2,0",
+        "1,1",
+        "2,-1",
+        "0,2",
+        "-1,2"
+      ],
+      "mainland": "3,0",
+      "gate": "2,0",
+      "seaId": 1,
+      "before": {
+        "island": 3,
+        "mainland": 46,
+        "water": 12
+      },
+      "withBridge": {
+        "land": 50,
+        "water": 11
+      },
+      "after": {
+        "island": 3,
+        "mainland": 46,
+        "water": 12
+      },
+      "jsonRoundTrips": 3,
+      "undoRedoExact": true,
+      "rngUnchanged": true
+    },
+    {
+      "archipelago": {
+        "islandSizes": [
+          1,
+          2
+        ],
+        "sea": 15,
+        "mainland": 43
+      },
+      "openLagoon": {
+        "rim": 5,
+        "pass": "1,0",
+        "center": "0,0",
+        "sea": 16,
+        "mainland": 40
+      },
+      "additionalRoundTrips": 2
+    }
+  ],
+  "test_environment": "Node 24.22.3; App generation harness; verified local src and test/helpers Git blob hashes against main. Fresh isolated imports; 6-mile classic baseline, no browser rendering."
+}
