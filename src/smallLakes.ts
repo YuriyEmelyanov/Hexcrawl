@@ -112,6 +112,20 @@ export function validateSmallLakeSupport(layer: SmallLakeLayer, accepted: readon
   if (losses.length) throw new Error(`Small lake ${losses[0].id} has no full dry support`);
 }
 
+/** A region rollback can restore the previous counter only when every
+ * intervening allocation belongs to that region's discarded automatic lakes. */
+export function exactAutomaticLakeRollback(current:SmallLakeLayer,previous:SmallLakeLayer|undefined,
+  supported:ReturnType<typeof prepareSmallLakeSupport>):boolean{
+  const prior=previous??emptyLayer;
+  if(!supported.losses.length||current.nextId!==prior.nextId+supported.losses.length||
+    supported.losses.some(lake=>lake.origin!=='automatic'||lake.id<prior.nextId))return false;
+  return supported.layer.lakes.length===prior.lakes.length&&supported.layer.lakes.every((lake,index)=>{
+    const other=prior.lakes[index];
+    return lake.id===other.id&&lake.origin===other.origin&&lake.cells.length===other.cells.length&&
+      lake.cells.every((cell,i)=>fineCellKey(cell)===fineCellKey(other.cells[i]));
+  });
+}
+
 export function addManualSmallLake(layer: SmallLakeLayer | undefined, cells: readonly DetailCell[], accepted: readonly OneMileCell[]): SmallLakeLayer {
   const previous = layer ?? emptyLayer;
   const sorted = [...cells].sort((a,b) => a.q - b.q || a.r - b.r);

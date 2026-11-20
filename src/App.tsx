@@ -1,6 +1,6 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage,OneMileGeometryConflict} from './automaticOneMileScene';
-import {addManualSmallLake,hasFullDrySupport,hasFullOneMileSupport,prepareSmallLakeSupport,rollSmallLakeFootprints,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
+import {addManualSmallLake,exactAutomaticLakeRollback,hasFullDrySupport,hasFullOneMileSupport,prepareSmallLakeSupport,rollSmallLakeFootprints,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
 import {prepareSmallLakeShore,smallLakeShorePath,type SmallLakeProtection,type SmallLakeView} from './smallLakeShore';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
@@ -1201,6 +1201,9 @@ function geometryRiverHydrology(map:MapSnapshot){
  }
  return {...hydrology,network:{nodes:[...nodes.values()],edges}};
 }
+function localLakeGrid(state:Detail1State|undefined):boolean{
+ return state?.version===3&&!!state.smallLakes&&!state.poiIdentities&&!state.poiFootprints.length;
+}
 function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuationKeys?:ReadonlySet<string>){
  const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
  const cells=projectOneMile(oneMileSources(map),origin).map(row=>row.cell);
@@ -1210,7 +1213,8 @@ function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuation
  const hydrology=geometryRiverHydrology(boundaryMap??map);
  const retainedEdges=new Set(map.rivers.flatMap(r=>r.sectors.flatMap(s=>s.edgeKeys)));
  const scopedHydrology=boundaryMap?{...hydrology,network:{...hydrology.network,edges:hydrology.network.edges.filter(e=>retainedEdges.has(e.id))},internalLakeEdges:new Map([...(hydrology.internalLakeEdges??[])].filter(([k])=>retainedEdges.has(k)))}:hydrology;
- return {map,origin,liveRivers:detailMapRiverGeometry(map,origin),marks,
+ // A local lake overlay does not author or lock any projected point.
+ return {map:localLakeGrid(map.physicalGrid)?{...map,physicalGrid:undefined}:map,origin,liveRivers:detailMapRiverGeometry(map,origin),marks,
   landCells:map.regions.flatMap(r=>r.hexes).filter(c=>!['lake','sea'].includes(map.hexTerrainByKey.get(hexKey(c))?.terrainOverride??'')),
   riverInput:{rivers:map.rivers,marks,origin,cells,seed:map.generation.masterSeed},
   riverContext:{hydrology:scopedHydrology,candidates:map.candidateHexes,continuationKeys},widths,lakeInputs};
@@ -1222,7 +1226,8 @@ function prepareAutomaticOneMileScene(map:MapSnapshot):Detail1State {
  checkedRiverMap(map);
  const state=prepareAutomaticSceneCandidate({...geometryPlanInput(map),scopePolicy:'automatic_presentation'});
  validateOneMileMap(map,state);
- return {...state,viewStep:1};
+ const local=localLakeGrid(map.physicalGrid)?map.physicalGrid:undefined;
+ return {...state,viewStep:1,...(local?.selectedCell?{selectedCell:local.selectedCell,selectedWorldPoint:local.selectedWorldPoint}:{})};
 }
 function scopedGeometryBoundary(map:OneMileDocumentMap,state:Detail1State){
  const refinement=state.geometryRefinement;if(!refinement)throw Error('GEO2 missing_scoped_refinement');
@@ -1267,7 +1272,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
 function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
  if(map.knave&&state.source.physicalConvention!=='unknown')throw Error('DETAIL1 unproven_knave_source_convention');
  const authored=detailAuthoredState(state);
- validateDetailGeographyFootprints({...map,physicalGrid:authored},detailMapRiverGeometry(map,state.grid.origin),authored);
+ if(!localLakeGrid(state))validateDetailGeographyFootprints({...map,physicalGrid:authored},detailMapRiverGeometry(map,state.grid.origin),authored);
  if(state.geometryRefinement){
   if(map.rivers.some(r=>r.deltaParentRiverId!==undefined))validateEditedRiverDeltas([],map.rivers,buildManualRiverGeometryContext(map).geometry);
   if(state.globalAuthoredState){
@@ -1313,7 +1318,10 @@ function smallLakeProtectionForMap(map:OneMileDocumentMap,state:Detail1State):Sm
    ...baseRoads.filter(r=>!segments.has(JSON.stringify([r.roadId,r.segmentKey]))).map(r=>({ref:String(r.roadId),points:[world(r.x1,r.y1),world(r.x2,r.y2)]}))],
   crossings:[...refined?.crossings.map(c=>({ref:c.key,points:c.bankPath}))??[],
    ...renderRiverCrossings(baseRoads,map.crossings).filter(c=>!crossings.has(c.key)).map(c=>({ref:c.key,points:[world(c.x,c.y)]}))],
-  anchors:state.poiFootprints.flatMap(fp=>[
+  anchors:localLakeGrid(state)?[...poiNameLocators(map,true)].map(ref=>{
+   const cell=parseHexKey(ref.slice(ref.lastIndexOf(':')+1));
+   return {ref,point:detailCellCenter(createDetailGrid(6,origin),cell)};
+  }):state.poiFootprints.flatMap(fp=>[
    ...(!detailFootprintHasOutline(fp,grid)?[{ref:fp.poiId,point:detailFootprintWorldAnchor(fp,grid)}]:[]),
    ...fp.attachments.map(a=>({ref:fp.poiId,point:a.kind==='route'?a.entry:a.contact})),
   ]),
@@ -1371,7 +1379,7 @@ function prepareGeneratedSmallLakes(checkpoint:MapSnapshot,map:MapSnapshot,gener
   lakes.push(lake);
  }
  if(nextId===(layer?.nextId??1))return {map,scene};
- const physicalGrid=map.physicalGrid??{...detailAuthoredState(scene),viewStep:6 as const};
+ const physicalGrid=map.physicalGrid??{schema:scene.schema,version:3 as const,active:true as const,grid:scene.grid,source:scene.source,viewStep:6 as const,poiFootprints:[],fineCellEdits:{}};
  return {map:{...map,physicalGrid:{...physicalGrid,smallLakes:{nextId,lakes}}},scene};
 }
 
@@ -14667,23 +14675,25 @@ export function App() {
   // Удаление последнего региона = восстановление снимка состояния, сделанного
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
   // числе изменения, которые новый регион внёс в соседние регионы.
-  const retainFineCheckpoint=(snapshot:MapSnapshot,allowFineLoss=false,confirmedSmallLakes?:SmallLakeLayer):MapSnapshot=>{
+  const retainFineCheckpoint=(snapshot:MapSnapshot,allowFineLoss=false,confirmedSmallLakes?:{layer?:SmallLakeLayer}):MapSnapshot=>{
     const current=physicalGridRef.current,edits=current?.fineCellEdits??{};
     if(!current||(!current.geometryRefinement&&!current.smallLakes&&!Object.keys(edits).length))return snapshot;
     const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
-    const smallLakes=confirmedSmallLakes??current.smallLakes;
+    const smallLakes=confirmedSmallLakes?confirmedSmallLakes.layer:current.smallLakes;
     if(smallLakes)validateSmallLakeSupport(smallLakes,accepted);
     const retained=prepareFineCellLoss(edits,accepted,allowFineLoss).edits;
     if(current.geometryRefinement){
-      const layer={...current,fineCellEdits:retained,...(smallLakes?{smallLakes}:{})};
+      const {smallLakes:discarded,...base}=current;
+      const layer={...base,fineCellEdits:retained,...(smallLakes?{smallLakes}:{})};
       if(layer.selectedCell&&!accepted.some(row=>isSameHex(row.cell,layer.selectedCell!))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
       const retainedMap=prepareSourceTransition(captureMap(),{...snapshot,physicalGrid:layer});
       return smallLakes&&retainedMap.physicalGrid?{...retainedMap,physicalGrid:{...retainedMap.physicalGrid,smallLakes}}:retainedMap;
     }
-    if(!smallLakes&&!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
+    const {smallLakes:discarded,...base}=snapshot.physicalGrid??current;
+    if(!smallLakes&&!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...base,fineCellEdits:{}}}:snapshot;
     // Preserve accepted local data even when the checkpoint predates the
     // detailed layer. Reconcile its POIs before committing the replacement.
-    const layer={...(snapshot.physicalGrid??current),fineCellEdits:retained,...(smallLakes?{smallLakes}:{})};
+    const layer={...base,fineCellEdits:retained,...(smallLakes?{smallLakes}:{})};
     const acceptedKeys=new Set(accepted.map(row=>hexKey(row.cell)));
     if(layer.selectedCell&&!acceptedKeys.has(hexKey(layer.selectedCell))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
     const candidate={...snapshot,physicalGrid:layer};
@@ -14764,6 +14774,7 @@ export function App() {
   const deleteLastRegion = () => {
     if (mutationBlocked() || history.length === 0) return;
     let checkpoint = history[history.length-1];
+    let exactLakeRollback=false;
     try{
       const state=physicalGridRef.current;
       const accepted=state?projectOneMile(oneMileSources(checkpoint),state.grid.origin):[];
@@ -14778,7 +14789,9 @@ export function App() {
           :`Deleting the last region also removes small lakes ${ids}. Undo restores the region and its lakes. Delete the region?`;
         if(!window.confirm(prompt))return;
       }
-      checkpoint=retainFineCheckpoint(checkpoint,losses.length>0,smallLakes?.layer);
+      const priorLayer=checkpoint.physicalGrid?.smallLakes;
+      exactLakeRollback=!!(state?.smallLakes&&smallLakes&&exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes));
+      checkpoint=retainFineCheckpoint(checkpoint,losses.length>0,smallLakes?{layer:exactLakeRollback?priorLayer:smallLakes.layer}:undefined);
     }catch(error){setEditError(error instanceof Error?error.message:'Local edits cannot be retained');return;}
     if(!checkPoiNameCheckpoint(checkpoint)||!confirmRiverCheckpointLoss(checkpoint))return;
     const entities = getToponymEntities(checkpoint.regions, checkpoint.rivers, checkpoint.hexTerrainByKey);
@@ -14795,7 +14808,7 @@ export function App() {
     const after = { ...before, map, generationHistory: history.slice(0,-1),
       selectedHex: checkpoint.regions.length ? checkpoint.regions[checkpoint.regions.length-1].centerHex : START_HEX };
     try{
-      recordTransaction(before,after); applyDocument(after);
+      recordTransaction(before,after,exactLakeRollback?{replaceMap:true}:undefined); applyDocument(after);
     }catch(error){
       setEditError(error instanceof Error?error.message:'The map checkpoint could not be restored');
     }
@@ -15507,16 +15520,22 @@ export function App() {
       const importedLakes=prepared.map.physicalGrid?.smallLakes?.lakes;
       if(importedLakes?.length){
         const path='map.physicalGrid.smallLakes';
-        let scene:Detail1State;
+        let scene:Detail1State|null=null;
         try{scene=prepareAutomaticOneMileScene(prepared.map);}
-        catch(error){throw new SaveValidationError(path,automaticSceneFailureMessage(error,language));}
-        const protection=smallLakeProtectionForMap(prepared.map,scene);
+        catch(error){
+          if(!(error instanceof OneMileGeometryConflict&&localLakeGrid(prepared.map.physicalGrid)))
+            throw new SaveValidationError(path,automaticSceneFailureMessage(error,language));
+        }
+        // If only the coarse view is available, check its actual features.
+        // A local overlay stores no claim that any detailed paths were fixed.
+        const geometry=scene??prepared.map.physicalGrid!;
+        const protection=smallLakeProtectionForMap(prepared.map,geometry);
         if(!protection)throw new SaveValidationError(path,language==='ru'?'Не удалось проверить существующие водные объекты.':'Could not validate the existing waterways.');
         for(const [index,lake] of importedLakes.entries()){
-          const {conflict}=prepareSmallLakeShore(lake,prepared.map.toponymSeed,scene.grid.origin,protection);
+          const {conflict}=prepareSmallLakeShore(lake,prepared.map.toponymSeed,geometry.grid.origin,protection);
           if(conflict)throw new SaveValidationError(`${path}.lakes[${index}].cells`,smallLakeConflictText(conflict));
         }
-        preparedAutomaticSceneRef.current={map:prepared.map,state:scene};
+        if(scene)preparedAutomaticSceneRef.current={map:prepared.map,state:scene};
       }
       setUndoHistory(current=>[...current,transaction].slice(-100)); setRedoHistory([]);
       applyPreparedDocument(prepared); setEditMode(false); setLegacyNotice(!imported.generation); setGenerationError(null); trackGoal('import_json');

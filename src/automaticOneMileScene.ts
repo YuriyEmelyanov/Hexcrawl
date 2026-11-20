@@ -30,7 +30,7 @@ export function prepareAutomaticSceneCandidate(input:GeometryPlanInput):Detail1S
  if(plan.status==='error')throw new OneMileGeometryConflict(plan.stage,plan.refs);
  let state=plan.candidateState;
  if(!state){
-  const preview=buildDetailGeographyPreview(input.map,input.liveRivers,{x:0,y:0});
+  const preview=buildDetailGeographyPreview(input.map,input.liveRivers,input.origin);
   state=parseDetail1StateV11({schema:'hexcrawl.detail1',version:3,active:true,viewStep:6,grid:preview.grid,source:preview.source,poiIdentities:preview.poiIdentities,poiFootprints:preview.poiFootprints,fineCellEdits:{}});
  }
  // Source collision envelopes stay unchanged. A required POI and its road

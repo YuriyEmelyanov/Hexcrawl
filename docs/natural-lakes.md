@@ -45,4 +45,7 @@ The same world seed and placement produce the same rolls without advancing
 the geography and POI streams. Water conflicts reject a whole candidate
 component. Where an existing detail-geometry conflict prevents the one-mile
 scene from being prepared, the source region can still be generated while
-the unverified small lakes are skipped. Fallback tracts make no lake rolls.
+the unverified small lakes are skipped. Existing local-only lake overlays on
+those maps are checked against the source rivers, paths, crossings and points
+on import. The automatic layer does not persist generated point geometry.
+Fallback tracts make no lake rolls.
