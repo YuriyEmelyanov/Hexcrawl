@@ -1,0 +1,315 @@
+{
+  "run_id": "2026-11-20-dnd5-land-water-shapes-3dbe4622",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_dmg2014_land_water_shapes_verified_partial",
+  "started_at": "2026-11-20T00:34:46Z",
+  "completed_at": "2026-11-20T00:39:40Z",
+  "selected_task": {
+    "id": "HX-RSR-DND5-L1-LAND-WATER-SHAPES",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
+    "completion_condition": "Для каждого входного сценария проверить связность суши и воды по графу соседства, координаты и повторную загрузку. Разграничить существующие данные и географические формы, требующие иных принятых операций. Малые озёра на 1 миле относятся к отдельной задаче команды HX-BL-056; использовать готовое доказательство, когда появится.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "selection_reason": "Это первый открытый остаток DND5 по основному действующему топ‑5. Полный сценарий геометрии доступен штатными правками и сокращает неопределённость по приёмке L1.",
+  "alternatives": [
+    {
+      "task_id": "DND5 DMG2014 full source",
+      "reason": "Полный первичный корпус ранее недоступен, новых сведений о доступе в этом запуске нет."
+    },
+    {
+      "task_id": "HX-BL-056",
+      "reason": "Малые озёра на сетке 1 миля ведёт основная команда. Выбран независимый базовый масштаб."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_sha": "010a2eaf000d7a6cd82ee919c3292d2b418377c6",
+    "main_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "rating_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "active_overall_cohort": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ],
+    "read_refs": [
+      "AGENTS.md",
+      "agent-work/research/contract.md",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json",
+      "agent-work/research/data-contract.json",
+      "agent-work/research/method.json",
+      "agent-work/research/proposals.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/research/rule-analysis-standard.md",
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json",
+      "agent-work/execution-locks.json",
+      "agent-work/budget.json",
+      "agent-work/rules/common-rules.json",
+      "agent-work/rules/game-bindings.json",
+      "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json"
+    ]
+  },
+  "findings": [
+    "Берег, остров, полуостров и озеро создаются штатной ручной правкой воды в Classic на базовой 6-мильной сетке. После экспорта и импорта совпали координаты и содержимое карты.",
+    "Остров 0,0 образует отдельную компоненту из одного гекса. Кончик полуострова в той же позиции соединён с материком через единственный сухой гекс 1,0.",
+    "Бассейн из трёх гексов может оставаться частью моря, пока есть выход через пролив к краю карты. После перекрытия пролива редактор предлагает для отсечённых гексов только тип «озеро». До выбора изменений в карте нет. Отмена и повтор восстанавливают обе версии.",
+    "Поддержка условного критерия остаётся частичной из-за невозможности сохранить полностью замкнутый водоём как тип «море» в проверенной операции. Исторический пересказ не выясняет, требует ли источник отдельного типа или имеет в виду море с узким выходом."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json",
+    "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.md",
+    "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20-probe.mjs",
+    "agent-work/research/handoffs/2026-11-20-dnd5-land-water-shapes-3dbe4622-strategist.json",
+    "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/claims/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
+    "agent-work/research/automation-health/2026-11-20-dnd5-land-water-shapes-3dbe4622-started.json",
+    "agent-work/execution-locks.json",
+    "agent-work/latest.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "verified_at": "2026-11-20T00:39:40Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "release_scope": "main source tree",
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "source_primary_reverified": false,
+    "runtime": true,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20-probe.mjs",
+    "command": "node research-land-water-shapes.mjs",
+    "exit_code": 0,
+    "matched_git_blobs": 105,
+    "source_paths": [
+      "src/App.tsx#L1534",
+      "src/App.tsx#L14066",
+      "src/App.tsx#L15250",
+      "src/App.tsx#L15328",
+      "src/manualWater.ts#L65",
+      "src/seaIdentity.ts#L52",
+      "test/helpers/generation-harness.mjs",
+      "test/helpers/region-fixture.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "cellCount": 61,
+        "scaleMiles": 6,
+        "edgeCells": 24,
+        "seed": 42
+      },
+      "coast": {
+        "edge": "-4,0",
+        "landNeighbors": [
+          "-4,1",
+          "-3,-1"
+        ],
+        "regionCoastal": true
+      },
+      "island": {
+        "cell": "0,0",
+        "componentSize": 1,
+        "mainlandSize": 51,
+        "seaCells": [
+          "-4,0",
+          "-3,0",
+          "-2,0",
+          "1,0",
+          "0,1",
+          "-1,1",
+          "-1,0",
+          "0,-1",
+          "1,-1"
+        ],
+        "seaId": 1
+      },
+      "peninsula": {
+        "tip": "0,0",
+        "onlyDryNeighbor": "1,0",
+        "landComponentSize": 53,
+        "seaCells": [
+          "-4,0",
+          "-3,0",
+          "-2,0",
+          "0,1",
+          "-1,1",
+          "-1,0",
+          "0,-1",
+          "1,-1"
+        ]
+      },
+      "lake": {
+        "cells": [
+          "-1,0",
+          "0,0",
+          "1,0"
+        ],
+        "lakeId": 20
+      },
+      "enclosedSea": {
+        "cells": [
+          "-1,0",
+          "0,0",
+          "1,0"
+        ],
+        "choices": [
+          "lake"
+        ],
+        "result": "lake",
+        "lakeId": 20,
+        "unchangedUntilChoice": true
+      },
+      "strait": {
+        "closedCell": "-2,0",
+        "choices": [
+          "lake"
+        ],
+        "seaCells": [
+          "-4,0",
+          "-3,0"
+        ],
+        "seaId": 1,
+        "lakeCells": [
+          "-1,0",
+          "0,0",
+          "1,0"
+        ],
+        "lakeId": 20,
+        "undoRedo": true
+      },
+      "saveReloadMapEquality": true,
+      "method": "Actual App callbacks with repo React harness and an independent axial graph. No browser."
+    },
+    "intermediate_probe_diagnostics": [
+      {
+        "observed_error": "1.1 !== 'region'",
+        "cause": "Проверка обращалась к zoom вместо шага сетки. Исправлена на проверку fineDisplay.viewStep."
+      },
+      {
+        "observed_error": "true !== false",
+        "cause": "В тесте ошибочно ожидалось подтверждение простой правки с готовой топологией. Исправлено на обычное успешное завершение."
+      },
+      {
+        "observed_error": "Values have same structure but are not reference-equal",
+        "cause": "Массив получен из отдельного контекста VM. Сравнение нормализовано, результаты редактора не менялись."
+      }
+    ]
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "3dbe4622-1ce0-8323-a4bb-8f72c71be8a5",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T00:30:00Z",
+          "started_at": "2026-11-20T00:33:19.995337Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T03:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "9e1e9df3-7100-8324-827f-faabeb7b28a8",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T00:00:00Z",
+          "started_at": "2026-11-19T23:57:51.799020Z",
+          "completed_at": "2026-11-20T00:18:07.198555Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T04:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "3dbe4622-1ce0-8323-a4bb-8f72c71be8a5",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T00:30:00Z",
+          "started_at": "2026-11-20T00:33:19.995337Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T03:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "9e1e9df3-7100-8324-827f-faabeb7b28a8",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T00:00:00Z",
+          "started_at": "2026-11-19T23:57:51.799020Z",
+          "completed_at": "2026-11-20T00:18:07.198555Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T04:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_dmg2014_land_water_shapes_verified_partial",
+    "run_id": "2026-11-20-dnd5-land-water-shapes-3dbe4622",
+    "stage": "dnd5_l1_land_water_topology",
+    "last_successful_step": "Проверены берег, остров, полуостров, озеро, открытый и затем закрытый пролив на закреплённом SHA. Подтверждены ограничения и сохранение.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченная проверка геометрии завершена. Отдельный тип замкнутого моря ограничен редактором, применение к источнику ждёт первичного текста.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.md",
+      "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20-probe.mjs",
+      "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
+      "agent-work/research/handoffs/2026-11-20-dnd5-land-water-shapes-3dbe4622-strategist.json"
+    ],
+    "exact_continuation": "Проверить, можно ли штатными правками создать направленные основное русло и приток с общим слиянием и устьем именно в выбранном озере по DND5-2014-007. На свежем SHA задать S, T и выбранное озеро L. Подтвердить оба пути к слиянию, непрерывность до L, принадлежность устья нужному озеру и сохранение после повторного импорта. Установить точный остаток, если доступна только часть операций. Продолжить при отсутствии пересекающегося claim.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-RIVER-LAKE-CONFLUENCE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить, можно ли штатными правками создать направленные основное русло и приток с общим слиянием и устьем именно в выбранном озере по DND5-2014-007.",
+    "completion_condition": "На свежем SHA задать S, T и выбранное озеро L. Подтвердить оба пути к слиянию, непрерывность до L, принадлежность устья нужному озеру и сохранение после повторного импорта. Установить точный остаток, если доступна только часть операций. Продолжить при отсутствии пересекающегося claim.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-007-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  }
+}

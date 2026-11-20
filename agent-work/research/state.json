@@ -15,12 +15,12 @@
     "interval": 1,
     "interval_hours": 1,
     "cadence_owner_decision_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json#automation_health",
-    "verified_at": "2026-11-19T23:35:04.197Z",
+    "verified_at": "2026-11-20T00:39:40Z",
     "is_enabled": true,
     "desired_enabled": true,
     "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
     "verification_status": "verified_by_automations_peek",
-    "next_run_time": "2026-11-20T02:30:00+03:00",
+    "next_run_time": "2026-11-20T03:30:00+03:00",
     "cadence_authority": "Latest direct owner instruction 2026-11-20: Запускайся раз в час."
   },
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
@@ -65,20 +65,20 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "HX-RSR-DND5-L1-LAND-WATER-SHAPES",
+    "id": "HX-RSR-DND5-L1-RIVER-LAKE-CONFLUENCE",
     "game_id": "DND5",
     "layer": "L1",
     "status": "selected_bounded_unverified_remainder",
-    "action": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
-    "completion_condition": "Для каждого входного сценария проверить связность суши и воды по графу соседства, координаты и повторную загрузку. Разграничить существующие данные и географические формы, требующие иных принятых операций. Малые озёра на 1 миле относятся к отдельной задаче команды HX-BL-056; использовать готовое доказательство, когда появится.",
+    "action": "Проверить, можно ли штатными правками создать направленные основное русло и приток с общим слиянием и устьем именно в выбранном озере по DND5-2014-007.",
+    "completion_condition": "На свежем SHA задать S, T и выбранное озеро L. Подтвердить оба пути к слиянию, непрерывность до L, принадлежность устья нужному озеру и сохранение после повторного импорта. Установить точный остаток, если доступна только часть операций. Продолжить при отсутствии пересекающегося claim.",
     "source_refs": [
-      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-007-L1-v2-draft",
       "agent-work/research/requirements/DND5-2014-v2-coverage.json"
     ]
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-20-classic-poi-discovery-498562e0",
+  "last_completed_run": "2026-11-20-dnd5-land-water-shapes-3dbe4622",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -228,7 +228,8 @@
     "agent-work/research/runs/2026-11-19-DND5-L1-overview-2e057338.json",
     "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
     "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
-    "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json"
+    "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+    "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -250,28 +251,31 @@
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "498562e0-acac-8331-9857-5cbbeff667a6",
+          "id": "3dbe4622-1ce0-8323-a4bb-8f72c71be8a5",
           "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-19T23:30:00Z",
-          "started_at": "2026-11-19T23:31:07.793701Z",
+          "scheduled_for": "2026-11-20T00:30:00Z",
+          "started_at": "2026-11-20T00:33:19.995337Z",
           "completed_at": null,
           "chat_ref": null
         },
-        "next": "2026-11-20T02:30:00+03:00"
+        "next": "2026-11-20T03:30:00+03:00"
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "8bcb00d9-19d8-832e-9087-8fa27fc8bae1",
-          "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-19T23:00:00Z",
-          "started_at": "2026-11-19T23:04:31.159652Z",
-          "completed_at": null,
-          "chat_ref": null
+          "id": "9e1e9df3-7100-8324-827f-faabeb7b28a8",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T00:00:00Z",
+          "started_at": "2026-11-19T23:57:51.799020Z",
+          "completed_at": "2026-11-20T00:18:07.198555Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
         },
-        "next": "2026-11-20T02:00:00+03:00"
+        "next": "2026-11-20T04:00:00+03:00"
       }
     ],
     "end": [
@@ -280,36 +284,39 @@
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "498562e0-acac-8331-9857-5cbbeff667a6",
+          "id": "3dbe4622-1ce0-8323-a4bb-8f72c71be8a5",
           "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-19T23:30:00Z",
-          "started_at": "2026-11-19T23:31:07.793701Z",
+          "scheduled_for": "2026-11-20T00:30:00Z",
+          "started_at": "2026-11-20T00:33:19.995337Z",
           "completed_at": null,
           "chat_ref": null
         },
-        "next": "2026-11-20T02:30:00+03:00"
+        "next": "2026-11-20T03:30:00+03:00"
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "8bcb00d9-19d8-832e-9087-8fa27fc8bae1",
-          "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-19T23:00:00Z",
-          "started_at": "2026-11-19T23:04:31.159652Z",
-          "completed_at": null,
-          "chat_ref": null
+          "id": "9e1e9df3-7100-8324-827f-faabeb7b28a8",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T00:00:00Z",
+          "started_at": "2026-11-19T23:57:51.799020Z",
+          "completed_at": "2026-11-20T00:18:07.198555Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
         },
-        "next": "2026-11-20T02:00:00+03:00"
+        "next": "2026-11-20T04:00:00+03:00"
       }
     ],
     "schedule_changes": []
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -485,7 +492,7 @@
     ],
     "result_ref": "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json"
   },
-  "last_health_ref": "agent-work/research/runs/2026-11-10T1531-SD-regional-L1-runtime.json#automation_health",
+  "last_health_ref": "agent-work/research/automation-health/2026-11-20-dnd5-land-water-shapes-3dbe4622-started.json",
   "open_checkpoints": {
     "KNAVE2": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
     "SD": "agent-work/research/checkpoints/SD-terrain-mapping.json",
@@ -1048,7 +1055,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-19T23:35:04.197Z",
+  "updated_at": "2026-11-20T00:39:40Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1190,7 +1197,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-20-classic-poi-discovery-498562e0",
+  "last_run_id": "2026-11-20-dnd5-land-water-shapes-3dbe4622",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1246,24 +1253,24 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-20-classic-poi-discovery-498562e0",
+  "last_run": "2026-11-20-dnd5-land-water-shapes-3dbe4622",
   "checkpoint": {
-    "status": "classic_poi_discovery_baseline_verified",
-    "run_id": "2026-11-20-classic-poi-discovery-498562e0",
-    "stage": "classic_discovery_contract_and_runtime",
-    "last_successful_step": "На точном SHA проверены ручные POI, автоматическая генерация, старая карта, Knave и разница между подписью и записью.",
+    "status": "bounded_dmg2014_land_water_shapes_verified_partial",
+    "run_id": "2026-11-20-dnd5-land-water-shapes-3dbe4622",
+    "stage": "dnd5_l1_land_water_topology",
+    "last_successful_step": "Проверены берег, остров, полуостров, озеро, открытый и затем закрытый пролив на закреплённом SHA. Подтверждены ограничения и сохранение.",
     "failed_operation": null,
     "observed_error": null,
-    "stop_reason": "Ограниченная сверка завершена. Будущий контракт Classic и игровое раскрытие остаются в своих производственных этапах.",
+    "stop_reason": "Ограниченная проверка геометрии завершена. Отдельный тип замкнутого моря ограничен редактором, применение к источнику ждёт первичного текста.",
     "cause_status": "confirmed",
     "saved_results": [
-      "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
-      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json",
-      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.md",
-      "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json",
-      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20-probe.mjs"
+      "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.md",
+      "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20-probe.mjs",
+      "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
+      "agent-work/research/handoffs/2026-11-20-dnd5-land-water-shapes-3dbe4622-strategist.json"
     ],
-    "exact_continuation": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
+    "exact_continuation": "Проверить, можно ли штатными правками создать направленные основное русло и приток с общим слиянием и устьем именно в выбранном озере по DND5-2014-007. На свежем SHA задать S, T и выбранное озеро L. Подтвердить оба пути к слиянию, непрерывность до L, принадлежность устья нужному озеру и сохранение после повторного импорта. Установить точный остаток, если доступна только часть операций. Продолжить при отсутствии пересекающегося claim.",
     "needs_owner_action": false,
     "owner_action": null
   },
@@ -2159,8 +2166,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-19T23:35:04.197Z",
-  "last_bounded_completed_run": "2026-11-20-classic-poi-discovery-498562e0",
+  "last_run_at": "2026-11-20T00:39:40Z",
+  "last_bounded_completed_run": "2026-11-20-dnd5-land-water-shapes-3dbe4622",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -3099,7 +3106,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "last_run_outcome": "classic_poi_discovery_baseline_verified",
+  "last_run_outcome": "bounded_dmg2014_land_water_shapes_verified_partial",
   "latest_PF2_GMC3_applicability": {
     "status": "checkpoint_available_sections_screened_printed_chapter_incomplete",
     "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
@@ -3914,5 +3921,48 @@
     "handoff_ref": "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json",
     "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "full_game_accepted": false
+  },
+  "previous_checkpoint_before_DND5_L1_land_water_shapes": {
+    "status": "classic_poi_discovery_baseline_verified",
+    "run_id": "2026-11-20-classic-poi-discovery-498562e0",
+    "stage": "classic_discovery_contract_and_runtime",
+    "last_successful_step": "На точном SHA проверены ручные POI, автоматическая генерация, старая карта, Knave и разница между подписью и записью.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченная сверка завершена. Будущий контракт Classic и игровое раскрытие остаются в своих производственных этапах.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.md",
+      "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json",
+      "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20-probe.mjs"
+    ],
+    "exact_continuation": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "previous_next_candidate_before_DND5_L1_land_water_shapes": {
+    "id": "HX-RSR-DND5-L1-LAND-WATER-SHAPES",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить нативные 6-мильные операции для ранее выделенного DND5-2014-005. Зафиксировать сохранение и топологию используемых географических форм, начиная с острова, полуострова и внутреннего моря.",
+    "completion_condition": "Для каждого входного сценария проверить связность суши и воды по графу соседства, координаты и повторную загрузку. Разграничить существующие данные и географические формы, требующие иных принятых операций. Малые озёра на 1 миле относятся к отдельной задаче команды HX-BL-056; использовать готовое доказательство, когда появится.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "latest_DND5_L1_land_water_shapes": {
+    "status": "bounded_dmg2014_land_water_shapes_verified_partial",
+    "matrix_ref": "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json",
+    "overview_ref": "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.md",
+    "result_ref": "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-20-dnd5-land-water-shapes-3dbe4622-strategist.json",
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20-probe.mjs",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "full_game_accepted": false,
+    "implementation_status": "partial"
   }
 }

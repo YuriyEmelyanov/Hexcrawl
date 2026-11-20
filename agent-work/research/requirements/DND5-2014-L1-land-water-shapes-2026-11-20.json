@@ -1,0 +1,450 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-20-dnd5-land-water-shapes-3dbe4622",
+  "game_id": "DND5",
+  "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+  "status": "bounded_dmg2014_land_water_shapes_verified_partial",
+  "reviewed_at": "2026-11-20T00:39:40Z",
+  "research_baseline_sha": "010a2eaf000d7a6cd82ee919c3292d2b418377c6",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "scope_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "previous_matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+  "coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+  "standard_ref": "agent-work/research/rule-analysis-standard.md",
+  "rows": [
+    {
+      "id": "DND5-2014-005-L1-v2-draft",
+      "legacy_id": "DND5-2014-005-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-005",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Берега, острова, внутренние моря, озёра и полуострова",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Берега/острова/озёра имеют географический результат, проверяемый связностью суши/воды.",
+      "product_boundary": "География суши и воды",
+      "related_disposition": null,
+      "action": "В классическом редакторе выделить гексы, выбрать сушу, озеро или море, завершить правку и повторно открыть экспортированный JSON.",
+      "map_object_or_state": {
+        "footprint_hexes": 61,
+        "layer": "base",
+        "hex_miles": 6,
+        "terrain": "land/lake/sea",
+        "coordinate_system": "axial q,r"
+      },
+      "expected_result": "Сохраняются берег и связность суши/воды. Полностью отсечённое море требует выбора озера.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-005",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Выделить существующие гексы воды или суши, изменить тип воды либо перекрыть пролив, подтвердить выбор типа при запросе, сохранить и открыть карту заново.",
+        "inputs_and_units": {
+          "scale_miles": 6,
+          "coordinates": "axial q,r",
+          "hexes": 61,
+          "public_targets": [
+            "land",
+            "lake",
+            "sea"
+          ]
+        },
+        "product_operation": "Ручное редактирование суши и воды в Classic.",
+        "expected_output": "Гекс острова изолирован, гекс полуострова соединён с материком одним сухим проходом, берег примыкает к морю. Замкнутая вода сохраняется как озеро с одним ID.",
+        "constraints_and_exceptions": [
+          "Море проверяется по соседству водной компоненты с границей существующей карты. Замкнутому бассейну доступен только тип озера.",
+          "Существующие центр и опорный гекс региона оставлены сухими.",
+          "Все сценарии синтетические. Размеры и координаты из испытания не восстанавливают игровой источник."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "На базовой Classic-карте сухой диск из 61 гекса, край в −4,0.",
+            "when": "Перевести в море кольцо из шести соседей 0,0 и продолжить море от кольца до края через −2,0, −3,0 и −4,0. Сохранить и загрузить JSON.",
+            "expected": "0,0 отделён от материка. Море касается края, имеет сухих соседей −4,1 и −3,−1. Материк образует компоненту из 51 гекса."
+          },
+          {
+            "given": "Тот же сухой диск, будущий конец полуострова в 0,0.",
+            "when": "Построить то же кольцо и соединение с морем, оставив гекс 1,0 сухим. Сохранить и загрузить.",
+            "expected": "0,0 связан с материком через 1,0. Без 1,0 этот путь исчезает. Общая суша образует компоненту из 53 гексов."
+          },
+          {
+            "given": "Полностью окружённые сушей −1,0, 0,0 и 1,0.",
+            "when": "Выделить три гекса и выбрать «Озеро». Сохранить и загрузить.",
+            "expected": "Три гекса образуют один водоём с общим lakeId; море в документе отсутствует."
+          },
+          {
+            "given": "Тот же замкнутый набор из трёх гексов.",
+            "when": "Выбрать для него «Море», затем явно подтвердить доступный тип.",
+            "expected": "Доступно только «Озеро». До выбора карта не меняется. После подтверждения сохранены три гекса озера и ноль записей моря."
+          },
+          {
+            "given": "Этот бассейн связан через −2,0 с морем, которое выходит к краю в −4,0.",
+            "when": "Редактировать −2,0 как сушу и подтвердить нужный тип отсечённой воды. Сохранить, загрузить, на исходной карте проверить отмену и повтор.",
+            "expected": "−2,0 становится сушей. Внешняя вода остаётся морем с прежним seaId, бассейн получает один lakeId. Отмена открывает пролив, повтор возвращает закрытый пролив и озеро."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.land_water_shapes"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.land_water_shapes"
+      ],
+      "binding_ids": [
+        "DND5-2014-005-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "DND5-2014-L1-LAND-WATER-RUNTIME"
+      ],
+      "result": "Берег, остров, полуостров и озеро создаются штатной ручной правкой воды в Classic на базовой 6-мильной сетке. После экспорта и импорта совпали координаты и содержимое карты. Остров 0,0 образует отдельную компоненту из одного гекса. Кончик полуострова в той же позиции соединён с материком через единственный сухой гекс 1,0. Бассейн из трёх гексов может оставаться частью моря, пока есть выход через пролив к краю карты. После перекрытия пролива редактор предлагает для отсечённых гексов только тип «озеро». До выбора изменений в карте нет. Отмена и повтор восстанавливают обе версии. Поддержка условного критерия остаётся частичной из-за невозможности сохранить полностью замкнутый водоём как тип «море» в проверенной операции. Исторический пересказ не выясняет, требует ли источник отдельного типа или имеет в виду море с узким выходом.",
+      "remaining": "Первичный текст DMG 2014 о формах, включая значение выражения «внутреннее море», ожидает нового подтверждённого доступа. Границы полного тематического корпуса описаны в coverage ledger. Отрисовка в браузере, автоматическая генерация форм, отдельные режимы других игр, права игроков и 1-мильный слой за рамками этого прогона.",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-005",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Берега, острова, внутренние моря, озёра и полуострова",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "canonical_mapping": [
+        {
+          "rule_id": "map.land_water_shapes",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-005-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Действующий редактор уже задаёт те же объекты по координатам и связности. Игровой смысл отдельного внутреннего моря остаётся открытым.",
+          "profile_differences": [
+            "Проверены операции Classic на базовой сетке. Параметры других профилей и точный смысл первичного текста остаются открыты."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Поддержка условного критерия остаётся частичной из-за невозможности сохранить полностью замкнутый водоём как тип «море» в проверенной операции. Исторический пересказ не выясняет, требует ли источник отдельного типа или имеет в виду море с узким выходом.",
+        "verified_parts": [
+          "Берег, остров, полуостров и озеро создаются штатной ручной правкой воды в Classic на базовой 6-мильной сетке. После экспорта и импорта совпали координаты и содержимое карты.",
+          "Остров 0,0 образует отдельную компоненту из одного гекса. Кончик полуострова в той же позиции соединён с материком через единственный сухой гекс 1,0.",
+          "Бассейн из трёх гексов может оставаться частью моря, пока есть выход через пролив к краю карты. После перекрытия пролива редактор предлагает для отсечённых гексов только тип «озеро». До выбора изменений в карте нет. Отмена и повтор восстанавливают обе версии."
+        ],
+        "missing_or_unverified_parts": [
+          "Первичный текст DMG 2014 о формах, включая значение выражения «внутреннее море», ожидает нового подтверждённого доступа. Границы полного тематического корпуса описаны в coverage ledger.",
+          "Отрисовка в браузере, автоматическая генерация форм, отдельные режимы других игр, права игроков и 1-мильный слой за рамками этого прогона."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Хуки и обработчики App без DOM, независимый граф смежности по координатам сохранённой карты, повторный импорт, undo/redo для закрытия пролива.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json#verification",
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20-probe.mjs"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    }
+  ],
+  "verification": {
+    "verified_at": "2026-11-20T00:39:40Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "release_scope": "main source tree",
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "source_primary_reverified": false,
+    "runtime": true,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20-probe.mjs",
+    "command": "node research-land-water-shapes.mjs",
+    "exit_code": 0,
+    "matched_git_blobs": 105,
+    "source_paths": [
+      "src/App.tsx#L1534",
+      "src/App.tsx#L14066",
+      "src/App.tsx#L15250",
+      "src/App.tsx#L15328",
+      "src/manualWater.ts#L65",
+      "src/seaIdentity.ts#L52",
+      "test/helpers/generation-harness.mjs",
+      "test/helpers/region-fixture.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "cellCount": 61,
+        "scaleMiles": 6,
+        "edgeCells": 24,
+        "seed": 42
+      },
+      "coast": {
+        "edge": "-4,0",
+        "landNeighbors": [
+          "-4,1",
+          "-3,-1"
+        ],
+        "regionCoastal": true
+      },
+      "island": {
+        "cell": "0,0",
+        "componentSize": 1,
+        "mainlandSize": 51,
+        "seaCells": [
+          "-4,0",
+          "-3,0",
+          "-2,0",
+          "1,0",
+          "0,1",
+          "-1,1",
+          "-1,0",
+          "0,-1",
+          "1,-1"
+        ],
+        "seaId": 1
+      },
+      "peninsula": {
+        "tip": "0,0",
+        "onlyDryNeighbor": "1,0",
+        "landComponentSize": 53,
+        "seaCells": [
+          "-4,0",
+          "-3,0",
+          "-2,0",
+          "0,1",
+          "-1,1",
+          "-1,0",
+          "0,-1",
+          "1,-1"
+        ]
+      },
+      "lake": {
+        "cells": [
+          "-1,0",
+          "0,0",
+          "1,0"
+        ],
+        "lakeId": 20
+      },
+      "enclosedSea": {
+        "cells": [
+          "-1,0",
+          "0,0",
+          "1,0"
+        ],
+        "choices": [
+          "lake"
+        ],
+        "result": "lake",
+        "lakeId": 20,
+        "unchangedUntilChoice": true
+      },
+      "strait": {
+        "closedCell": "-2,0",
+        "choices": [
+          "lake"
+        ],
+        "seaCells": [
+          "-4,0",
+          "-3,0"
+        ],
+        "seaId": 1,
+        "lakeCells": [
+          "-1,0",
+          "0,0",
+          "1,0"
+        ],
+        "lakeId": 20,
+        "undoRedo": true
+      },
+      "saveReloadMapEquality": true,
+      "method": "Actual App callbacks with repo React harness and an independent axial graph. No browser."
+    }
+  },
+  "quality": {
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "game_id": "DND5",
+    "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+    "source_inventory_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+    "analysis_ref": "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json",
+    "reviewed_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "reviewer": "HX-RSR-001",
+    "overall_status": "checkpoint",
+    "checks": [
+      {
+        "criterion_id": "RA-Q01",
+        "result": "pass",
+        "comment": "Редакция и локатор обозначены, происхождение исторического пересказа зафиксировано.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q02",
+        "result": "blocked",
+        "comment": "Полный исходный корпус 322 страницы остаётся недоступным.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "Первичный текст DMG 2014 о формах, включая значение выражения «внутреннее море», ожидает нового подтверждённого доступа. Границы полного тематического корпуса описаны в coverage ledger."
+      },
+      {
+        "criterion_id": "RA-Q03",
+        "result": "blocked",
+        "comment": "Текст p14 и полный смысл внутреннего моря первично не подтверждены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "Первичный текст DMG 2014 о формах, включая значение выражения «внутреннее море», ожидает нового подтверждённого доступа. Границы полного тематического корпуса описаны в coverage ledger."
+      },
+      {
+        "criterion_id": "RA-Q04",
+        "result": "blocked",
+        "comment": "Координаты теста известны. Источниковые параметры и исключения ожидают первичного текста.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "Первичный текст DMG 2014 о формах, включая значение выражения «внутреннее море», ожидает нового подтверждённого доступа. Границы полного тематического корпуса описаны в coverage ledger."
+      },
+      {
+        "criterion_id": "RA-Q05",
+        "result": "pass",
+        "comment": "Исторический пересказ и синтетические критерии разделены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q06",
+        "result": "pass",
+        "comment": "Действие ведущего и сохраняемая геометрия описаны.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q07",
+        "result": "pass",
+        "comment": "Сценарий лежит в принятом редактировании карты и воспроизводится штатным редактором.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q08",
+        "result": "pass",
+        "comment": "Использованы существующие map.land_water_shapes и привязка DND5. Параметры других профилей не наследуются.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q09",
+        "result": "pass",
+        "comment": "Заданы конкретные координаты, раскрыты границы формы и проверены ожидаемые результаты.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q10",
+        "result": "pass",
+        "comment": "Частичный статус с конкретным ограничением текущего редактора дан на проверенном SHA.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q11",
+        "result": "pass",
+        "comment": "Результат обработчиков и повторного импорта ограничен базовой Classic-картой.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q12",
+        "result": "pass",
+        "comment": "Стратегу передана сверка. 1-мильные озёра относятся к отдельному HX-BL-056.",
+        "evidence_refs": [
+          "agent-work/research/handoffs/2026-11-20-dnd5-land-water-shapes-3dbe4622-strategist.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q13",
+        "result": "pass",
+        "comment": "Читаемый обзор и JSON согласованы по каждому сценарию.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.md"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q14",
+        "result": "blocked",
+        "comment": "Полное решение зависит от смысла источника для замкнутого моря и полного тематического корпуса.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "Первичный текст DMG 2014 о формах, включая значение выражения «внутреннее море», ожидает нового подтверждённого доступа. Границы полного тематического корпуса описаны в coverage ledger."
+      },
+      {
+        "criterion_id": "RA-Q15",
+        "result": "pass",
+        "comment": "Ограниченная сверка выполнена. Приёмка игры и когорты остаётся открытой.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      }
+    ],
+    "remaining_work": [
+      "Первичный текст DMG 2014 о формах, включая значение выражения «внутреннее море», ожидает нового подтверждённого доступа. Границы полного тематического корпуса описаны в coverage ledger.",
+      "Отрисовка в браузере, автоматическая генерация форм, отдельные режимы других игр, права игроков и 1-мильный слой за рамками этого прогона."
+    ]
+  },
+  "full_game_accepted": false
+}
