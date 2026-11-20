@@ -1,8 +1,7 @@
 import {useId} from 'react';
 import type {Detail1State} from './detailModel';
 import type {WorldPoint} from './detailGrid';
-import type {GeometryRefinement} from './geometryPlan';
-import {geometryMixedRiverPaths} from './geometryRefinementBoundary';
+import {refinementRiverDisplayPaths} from './geometryRefinementBoundary';
 import type {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {refinementPolylineArc} from './geometryRefinementSource';
 import type {FineRoad,FineCrossing} from './oneMilePresentation';
@@ -40,9 +39,6 @@ export function RefinedLakeWater(p:Pick<Props,'state'|'mode'|'offset'>&{shapes:r
  return <LakeWater shapes={refinementLakeShapes(p.state,p.mode,p.offset,p.shapes).map(l=>({...l,key:`${prefix}-${l.key}`}))} cells={p.cells} radius={28} seed={p.seed}/>;
 }
 /** A view of accepted physical4 only. Preview candidates never enter map or PNG. */
-export function refinementVisiblePaths(source:Source,accepted:GeometryRefinement){
- return [...accepted.riverPlan.paths,...geometryMixedRiverPaths(source,accepted)];
-}
 export function RefinedGeographyArtwork(p:Props){
  const id=useId().replace(/:/g,'_'),refinement=p.state.geometryRefinement!;
  const factor=Math.sqrt(3)*28/6,origin=p.state.grid.origin;
@@ -52,8 +48,7 @@ export function RefinedGeographyArtwork(p:Props){
  const retained=new Set(refinement.roads.roads.map(r=>pair(r.roadId,r.sourceRoadSegmentKey)));
  const outsideRoads=p.roads.filter(r=>!retained.has(pair(r.roadId,r.segmentKey)));
  const retainedRapids=new Set(refinement.riverPlan.source.segments.map(s=>pair(s.riverId,s.edgeKey)));
- const retainedPaths=new Set(refinement.riverPlan.paths.map(path=>pair(path.riverId,path.sourceEdgeKey)));
- const visiblePaths=refinementVisiblePaths(p.source,refinement).filter(path=>retainedPaths.has(pair(path.riverId,path.sourceEdgeKey))||!p.hiddenRiverEdgeKeys?.has(path.sourceEdgeKey));
+ const {visible:visiblePaths,painted:paintedPaths}=refinementRiverDisplayPaths(p.source,refinement,p.hiddenRiverEdgeKeys);
  const displayWater=prepareRefinementWater({paths:visiblePaths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/factor]))});
  const pathByRef=new Map(visiblePaths.map(path=>[pair(path.riverId,path.sourceEdgeKey),path]));
  const locations=[...visiblePaths.flatMap(path=>path.points.map(point)),...p.roads.flatMap(r=>[{x:r.x1,y:r.y1},{x:r.x2,y:r.y2}])];
@@ -70,10 +65,9 @@ export function RefinedGeographyArtwork(p:Props){
    {refinement.roads.masks.map(m=><path key={m.poiId} d={shore(m.body)} fill="black" fillRule="evenodd"/>)}
   </mask></defs>
   <g className="rivers-layer" mask={`url(#${id})`}>
-   {visiblePaths.map(path=>{
+   {paintedPaths.map(path=>{
     const width=fineRiverStrokeWidth(path.fullness);
-    const internal=refinement.riverPlan.water.capsules.some(c=>c.riverId===path.riverId&&c.sourceEdgeKey===path.sourceEdgeKey)&&!refinement.riverPlan.paintWater.capsules.some(c=>c.riverId===path.riverId&&c.sourceEdgeKey===path.sourceEdgeKey);
-    return internal?null:<polyline key={pair(path.riverId,path.sourceEdgeKey)} data-refined-river={path.riverId} data-source-edge={path.sourceEdgeKey} data-river-fullness={path.fullness} points={points(path.points)} className="river-polyline" strokeWidth={width} fill="none"/>;
+    return <polyline key={pair(path.riverId,path.sourceEdgeKey)} data-refined-river={path.riverId} data-source-edge={path.sourceEdgeKey} data-river-fullness={path.fullness} points={points(path.points)} className="river-polyline" strokeWidth={width} fill="none"/>;
    })}
   </g>
   <g className="roads-layer" mask={`url(#${id}-roads)`}>

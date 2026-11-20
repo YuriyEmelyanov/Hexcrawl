@@ -1,5 +1,6 @@
 import {createDetailGrid,detailCellCenter,type WorldPoint} from './detailGrid.ts';
-import {prepareRefinementShoreCells,prepareRefinementShorePath,refinementShoreIntervals,refinementShoreLocation} from './geometryRefinementShore.ts';
+import {prepareRefinementShoreCells,prepareRefinementShorePath,refinementShoreIntervals,refinementShoreLocation,shoreCurvePoint,type ShoreCurve} from './geometryRefinementShore.ts';
+import {refinementWaterCurveOverlaps,type RefinementWater} from './geometryRefinementWater.ts';
 import {FINE_HEX_WIDTH} from './oneMilePresentation.ts';
 import {buildNaturalLakes} from './rendering/lakeGeometry.ts';
 import type {SmallLake} from './smallLakes.ts';
@@ -8,6 +9,7 @@ export type SmallLakeProtection=Readonly<{
   roads:readonly Readonly<{ref:string;points:readonly WorldPoint[]}>[];
   crossings:readonly Readonly<{ref:string;points:readonly WorldPoint[]}>[];
   anchors:readonly Readonly<{ref:string;point:WorldPoint}>[];
+  water?:RefinementWater;
 }>;
 
 /** Keep the seeded, rounded SVG path identical during validation, zoom and export. */
@@ -48,5 +50,34 @@ export function smallLakeShoreConflict(lake:SmallLake,seed:number,origin:WorldPo
   if(road)return {kind:'road' as const,ref:road.ref};
   const anchor=protection.anchors.find(x=>contains(x.point));
   if(anchor)return {kind:'anchor' as const,ref:anchor.ref};
+  const nearby=protection.water?.capsules.filter(c=>Math.max(c.from.x,c.to.x)+c.radius>=minX&&Math.min(c.from.x,c.to.x)-c.radius<=maxX&&
+    Math.max(c.from.y,c.to.y)+c.radius>=minY&&Math.min(c.from.y,c.to.y)-c.radius<=maxY)??[];
+  const axis=nearby.find(c=>overlaps([c.from,c.to]));
+  if(axis)return {kind:'water' as const,ref:String(axis.riverId)};
+  if(!nearby.length)return null;
+
+  // The clipped body's boundary consists of shore arcs in the mask and mask
+  // edges in the shore. Test both, including thin overlaps at a hex edge.
+  const arcs: Array<{curve:ShoreCurve;lo:number;hi:number}>=[];
+  const shoreCuts=new Map<ShoreCurve,number[]>();
+  for(const loop of clip.loops)for(const edge of loop){
+    const intersection=refinementShoreIntervals(shore,edge);
+    if(intersection.status==='error')return {kind:'shape' as const,ref:''};
+    for(const a of intersection.intervals)arcs.push({curve:edge,lo:a.startFraction,hi:a.endFraction});
+    for(const hit of intersection.cuts){
+      const curve=shore.loops[hit.loopIndex][hit.curveIndex],cuts=shoreCuts.get(curve)??[];
+      cuts.push(hit.shoreFraction);
+      shoreCuts.set(curve,cuts);
+    }
+  }
+  for(const loop of shore.loops)for(const curve of loop){
+    const stops=[0,...shoreCuts.get(curve)??[],1].sort((a,b)=>a-b);
+    for(let i=1;i<stops.length;i++){
+      const lo=stops[i-1],hi=stops[i];
+      if(hi-lo>1e-10&&refinementShoreLocation(clip,shoreCurvePoint(curve,(lo+hi)/2))!=='outside')arcs.push({curve,lo,hi});
+    }
+  }
+  const water=nearby.find(c=>arcs.some(({curve,lo,hi})=>refinementWaterCurveOverlaps(c,curve,lo,hi)));
+  if(water)return {kind:'water' as const,ref:String(water.riverId)};
   return null;
 }

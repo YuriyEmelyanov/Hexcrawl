@@ -21,3 +21,8 @@ cell mask against existing path centerlines, crossing approaches and protected
 point anchors. The map and PNG render the same path and mask. An intersection
 identifies the existing feature in the draft and prevents the save. An area POI
 can contain a lake when its route and water attachment points stay dry.
+
+For rivers the same one-mile paths and widths define the protected channel.
+The clipped lake shoreline may meet a bank, including a round bend or end,
+but may not take up any interior of the existing river strip. This check does
+not join the two waters or change either feature's direction or attachments.

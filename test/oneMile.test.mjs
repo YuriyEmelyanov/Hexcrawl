@@ -133,8 +133,27 @@ test('destructive support loss requires consent and leaves an exact undo snapsho
 
 // P01–03: distinct rendering contracts absent from existing geometry/edit cases.
 import {FINE_HEX_WIDTH, finePoiLabel, fineRefinedRoadPresentation, fineRoadPresentation, fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
-import {prepareRefinementWater} from '../src/geometryRefinementWater.ts';
+import {prepareRefinementWater,refinementWaterCurveOverlaps} from '../src/geometryRefinementWater.ts';
 const displayWater=(paths,scale=1)=>{const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/scale]))});assert.equal(water.status,'prepared');return water;};
+
+test('small lake distinguishes bank tangency from overlap with the finite river strip',()=>{
+  const strip=prepareRefinementWater({paths:[{riverId:1,sourceEdgeKey:'edge',fullness:4,points:[{x:-2,y:0},{x:2,y:0}]}],widthByFullness:new Map([[4,.4]])});
+  assert.equal(strip.status,'prepared');
+  const capsule=strip.capsules[0],arc={from:{x:-1,y:.5},control:{x:0,y:-.1},to:{x:1,y:.5}};
+  assert.equal(refinementWaterCurveOverlaps(capsule,arc),false,'quadratic tangent at the bank');
+  const dipping={...arc,control:{x:0,y:-.12}};
+  assert.equal(refinementWaterCurveOverlaps(capsule,dipping),true,'interior overlap between dry endpoints');
+  assert.equal(refinementWaterCurveOverlaps(capsule,dipping,0,.25),false,'overlap outside the retained arc is irrelevant');
+  const pastEnd={from:{x:2.3,y:-.5},control:{x:2.1,y:0},to:{x:2.3,y:.5}};
+  assert.equal(refinementWaterCurveOverlaps(capsule,pastEnd),false,'tangency at a round endpoint');
+  assert.equal(refinementWaterCurveOverlaps(capsule,{...pastEnd,control:{x:2.08,y:0}}),true,'overlap only at the round cap');
+
+  const lake={id:1,origin:'manual',cells:[c(0,0)]};
+  const beside=y=>prepareRefinementWater({paths:[{riverId:1,sourceEdgeKey:'edge',fullness:4,points:[{x:-2,y},{x:2,y}]}],widthByFullness:new Map([[4,.4]])});
+  const nearby={roads:[],crossings:[],anchors:[],water:beside(.5)};
+  assert.deepEqual(smallLakeShoreConflict(lake,42,{x:0,y:0},nearby),{kind:'water',ref:'1'});
+  assert.equal(smallLakeShoreConflict(lake,42,{x:0,y:0},{...nearby,water:beside(.8)}),null);
+});
 test('fine POI label retains localized type and explicit name without fallback duplication',()=>{
  assert.equal(finePoiLabel('Городок','Айхенхайм'),'Городок Айхенхайм');
  assert.equal(finePoiLabel('Town','Eichenheim'),'Town Eichenheim');
