@@ -1,0 +1,80 @@
+{
+  "run_id": "2026-11-20T1330-SD-well",
+  "status": "completed",
+  "stage": "Shadowdark persistent well L1",
+  "base_sha": "964050fae62c524d55890fb9a0f7853ff9719d4d",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "previous_result_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
+  "summary": "Именованный колодец пережил три повторных открытия в Classic и Classic с Knave. При переносе имя осталось с маркером, запись об исходной сцене осталась в прежнем гексе. Проверка уникальности имени допускает вторую точку с другим названием.",
+  "selection": "Checkpoint требует установить, переживает ли перенос привязка к сцене. PF2 ретроспектива закрыта; новый скан Crows не нужен.",
+  "last_successful_step": "Оба прогона завершены; повторный импорт, перенос, конфликт одинаковых имён и второй маркер с иным именем проверены.",
+  "failed_operation": null,
+  "observed_error": null,
+  "recovered_errors": [
+    {
+      "operation": "github_create_tree / create_commit or update_ref during scoped CAS",
+      "error": "Something went wrong while executing your query on 2026-11-20T10:28:46Z. Please include `06BE:27781B:9FE0B1E:F2788EA:6B0020DD` when reporting this issue.",
+      "cause_status": "unknown",
+      "recovery": "Перечитаны SHA и claims, claim записан."
+    },
+    {
+      "operation": "node well.mjs / fixture",
+      "error": "ENOENT: no such file or directory, open '/workspace/scratch/8b2f69501890/app/test/fixtures/e6-water-editor.json'",
+      "error_code": "ENOENT",
+      "cause_status": "confirmed",
+      "recovery": "Добавлен исходный fixture, сверён blob SHA."
+    },
+    {
+      "operation": "node well.mjs / second authored name",
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n\\nfalse !== true",
+      "cause_status": "confirmed",
+      "recovery": "Проверена диагностика уникальности имени; переименование второй точки позволило проверить независимость от источника."
+    }
+  ],
+  "stop_reason": "completion_condition_met",
+  "cause_status": "confirmed",
+  "needs_owner_action": false,
+  "health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      }
+    ]
+  },
+  "saved_results": [
+    "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20.json",
+    "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20.md",
+    "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20-probe.mjs",
+    "agent-work/research/handoffs/2026-11-20T1330-SD-well-strategist.json"
+  ],
+  "next_candidate": {
+    "id": "HX-RSR-SD-L1-TRACKS-TO-LAIR",
+    "game_id": "SD",
+    "layer": "L1",
+    "action": "SD-CORE-079-L1: подготовить след в одном гексе и скрытое логово в соседнем, перенести логово и проверить цель следа после импорта. Переиспользовать проверенные операции улики и имени; проверить только межгексовую связь.",
+    "completion_condition": "Определены адрес и сохранность источника следа, поведение при переносе и независимость обеих точек. Показ игрокам отложен до L2."
+  }
+}

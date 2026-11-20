@@ -1,0 +1,144 @@
+{
+  "run_id": "2026-11-20T1330-SD-well",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "release_ref": "agent-work/evidence/HX-BL-021-F1/release-d6daa2c/publication.json",
+  "rows": [
+    {
+      "id": "SD-CORE-063-L1",
+      "disposition": "keep_L1",
+      "reason": "Статические признаки и места внутри случайной сцены: Конкретный постоянный колодец/логово/вход из выбранной сцены можно закрепить на карте по решению мастера; каждую встречу материализовать не требуется.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "source_locator": {
+        "printed": [
+          143,
+          145,
+          147,
+          149,
+          153,
+          155,
+          157,
+          159,
+          161,
+          163,
+          167,
+          169,
+          171,
+          173,
+          175,
+          177,
+          179,
+          181,
+          183,
+          185
+        ],
+        "pdf": [
+          147,
+          149,
+          151,
+          153,
+          157,
+          159,
+          161,
+          163,
+          165,
+          167,
+          171,
+          173,
+          175,
+          177,
+          179,
+          181,
+          183,
+          185,
+          187,
+          189
+        ],
+        "section": "Encounter sites, shelters, landmarks and routes"
+      },
+      "source_access": "owner-supplied Shadowdark RPG v4-6; retained inventory",
+      "dedup_key": "The Arcane Library/Shadowdark RPG v4-6/SD-CORE-063",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-063",
+        "normative_kind": "random_table_content",
+        "applicability": "Shadowdark RPG v4-6 local core; региональная карта, содержимое, исследование и внешние игровые адаптеры в указанном объёме.",
+        "layer": "L1",
+        "trigger_or_user_action": "Закрепить подтверждённый постоянный объект сцены на карте",
+        "inputs_and_units": {
+          "scene": "E",
+          "chosen_static_place": "well W",
+          "map_location": "H",
+          "GM_confirms_persistent": true
+        },
+        "product_operation": "Закрепить подтверждённый постоянный объект сцены на карте",
+        "expected_output": "На H один колодец W, связанный с исходной сценой E; повторное сохранение не создаёт дубля.",
+        "constraints_and_exceptions": [
+          "Плотность, координаты, размер территории и гарантированное убежище от всех механик книгой здесь не определены.",
+          "Мастер выбирает именно постоянное географическое место. Не материализовать каждую сцену/монстра автоматически и не создавать генератор событий.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "{\"scene\":\"E\",\"chosen_static_place\":\"well W\",\"map_location\":\"H\",\"GM_confirms_persistent\":true}",
+            "when": "Закрепить подтверждённый постоянный объект сцены на карте; сохранить и открыть карту",
+            "expected": "На H один колодец W, связанный с исходной сценой E; повторное сохранение не создаёт дубля."
+          }
+        ],
+        "source_vs_product_interpretation": "Числа, условия и назначения таблиц — положения локального источника; хранение, кнопка, событие, адаптер и идемпотентная запись — предлагаемая продуктовая интерпретация. Реализация не заявлена.",
+        "canonical_rule_refs": [
+          "content.place_description",
+          "content.landmarks",
+          "content.fixed_lair",
+          "map.routes_and_barriers",
+          "content.discovery_levels"
+        ],
+        "unresolved_parameters": []
+      },
+      "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-063-L1",
+      "implementation_status": "partial",
+      "result": "Именованный колодец пережил три повторных открытия в Classic и Classic с Knave. При переносе имя осталось с маркером, запись об исходной сцене осталась в прежнем гексе. Проверка уникальности имени допускает вторую точку с другим названием.",
+      "remaining": "Не подтверждена самостоятельная связь маркера с E или идемпотентное закрепление по ключу сцены. Импорт готовой карты не вызывает такой операции.",
+      "measurement_limit": "Проверены обработчики приложения и JSON. Отдельный тип колодца, UI-задержка и иные режимы не засчитываются."
+    }
+  ],
+  "verification": {
+    "inputs": "102 exact product source/helper blobs and e6-water-editor.json blob f70ae14b3663122d09e29ad7ce95b886de1c010c",
+    "profile": "6-mile Classic ± Knave, seed 42; W represented by named generic hut marker",
+    "probe": "agent-work/research/requirements/SD-CORE-L1-well-2026-11-20-probe.mjs",
+    "results": [
+      {
+        "sameNameAccepted": false,
+        "rejection": {
+          "general": "Enter a unique name of up to 80 characters. Leave the field blank to clear an authored name."
+        },
+        "withKnave": false,
+        "markersAfterThreeReopens": 1,
+        "afterMove": {
+          "marker": "2,-1",
+          "sceneTextOwner": "2,0"
+        },
+        "markersAfterManualReentry": 2,
+        "explicitSceneLinkObserved": false
+      },
+      {
+        "sameNameAccepted": false,
+        "rejection": {
+          "general": "Enter a unique name of up to 80 characters. Leave the field blank to clear an authored name."
+        },
+        "withKnave": true,
+        "markersAfterThreeReopens": 1,
+        "afterMove": {
+          "marker": "2,-1",
+          "sceneTextOwner": "2,0"
+        },
+        "markersAfterManualReentry": 2,
+        "explicitSceneLinkObserved": false
+      }
+    ]
+  },
+  "scoring": {
+    "prior_functional_status": "partial",
+    "new_functional_status": "partial",
+    "quality_delta": null,
+    "active_score_changed": false
+  }
+}
