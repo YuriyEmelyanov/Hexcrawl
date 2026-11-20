@@ -15,12 +15,12 @@
     "interval": 1,
     "interval_hours": 1,
     "cadence_owner_decision_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json#automation_health",
-    "verified_at": "2026-11-20T03:32:57Z",
+    "verified_at": "2026-11-20T04:36:35Z",
     "is_enabled": true,
     "desired_enabled": true,
     "owner_resume_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
     "verification_status": "verified_by_automations_peek",
-    "next_run_time": "2026-11-20T06:30:00+03:00",
+    "next_run_time": "2026-11-20T07:30:00+03:00",
     "cadence_authority": "Latest direct owner instruction 2026-11-20: Запускайся раз в час."
   },
   "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
@@ -65,21 +65,22 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "HX-RSR-DND5-L1-MAPPED-SITES-AND-LAIRS",
+    "id": "HX-RSR-DND5-L1-CONSOLIDATE-ACCEPTANCE",
     "game_id": "DND5",
     "layer": "L1",
-    "status": "selected_bounded_unverified_remainder",
-    "action": "Проверить один сценарий наполнения карты конкретными местами по DND5-2014-014 и 015. Указать размер области и вручную разместить несколько данных ведущим мест, включая два логовища, затем проверить их независимое содержимое.",
-    "completion_condition": "На проверенной версии восстановить координаты, типы и карточки мест после JSON. Разделить структурированные сведения конкретного логовища, свободный текст и количественный ориентир из исторической выписки. Самостоятельную механику монстров не выводить.",
+    "status": "selected_consolidation_after_bounded_checks",
+    "action": "Свести в единую актуальную рабочую матрицу L1 D&D 5e ограниченные проверки после 19 ноября, разрешить расхождения с исходной рабочей матрицей по точным SHA и передать стратегу один остаток.",
+    "completion_condition": "Каждая старая строка получает актуальный статус с наиболее сильным доказательством либо точным отложенным остатком. Для обеих геометрий, состава карты, обнаружения и логовищ использовать уже исполненные проверки. Сохранить старые результаты, отделить первичный источник, ручную поддержку и спорные запросы. Выбрать один следующий достижимый срез общего топ‑5 с учётом оставшихся источников.",
     "source_refs": [
-      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-014-L1-v2-draft",
-      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-015-L1-v2-draft",
-      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json"
     ]
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-20-dnd5-relief-pass-road-932e8599",
+  "last_completed_run": "2026-11-20-dnd5-mapped-sites-lairs-afbbaebe",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -233,7 +234,8 @@
     "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
     "agent-work/research/runs/2026-11-20-dnd5-river-lake-confluence-9e816807.json",
     "agent-work/research/runs/2026-11-20-dnd5-settled-wild-farmland-27732b2e.json",
-    "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json"
+    "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json",
+    "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -255,31 +257,31 @@
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "932e8599-7258-8323-a900-094c167bf794",
+          "id": "afbbaebe-6d74-8323-bf0e-de9ea9145f72",
           "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-20T03:30:00Z",
-          "started_at": "2026-11-20T03:27:54.304967Z",
+          "scheduled_for": "2026-11-20T04:30:00Z",
+          "started_at": "2026-11-20T04:33:31.627993Z",
           "completed_at": null,
           "chat_ref": null
         },
-        "next": "2026-11-20T06:30:00+03:00"
+        "next": "2026-11-20T07:30:00+03:00"
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "d642b3f4-0158-8331-9af7-e0bf4e6b8faf",
+          "id": "b1881daa-15a4-8328-b5c3-83efd6e502ad",
           "recorded_status": "completed",
-          "scheduled_for": "2026-11-20T03:00:00Z",
-          "started_at": "2026-11-20T03:00:17.704953Z",
-          "completed_at": "2026-11-20T03:19:23.808668Z",
+          "scheduled_for": "2026-11-20T04:00:00Z",
+          "started_at": "2026-11-20T04:11:28.902252Z",
+          "completed_at": "2026-11-20T04:21:15.323646Z",
           "chat_ref": {
             "type": "chatgpt",
             "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
           }
         },
-        "next": "2026-11-20T07:00:00+03:00"
+        "next": "2026-11-20T08:00:00+03:00"
       }
     ],
     "end": [
@@ -288,39 +290,39 @@
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "932e8599-7258-8323-a900-094c167bf794",
+          "id": "afbbaebe-6d74-8323-bf0e-de9ea9145f72",
           "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-20T03:30:00Z",
-          "started_at": "2026-11-20T03:27:54.304967Z",
+          "scheduled_for": "2026-11-20T04:30:00Z",
+          "started_at": "2026-11-20T04:33:31.627993Z",
           "completed_at": null,
           "chat_ref": null
         },
-        "next": "2026-11-20T06:30:00+03:00"
+        "next": "2026-11-20T07:30:00+03:00"
       },
       {
         "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
         "enabled": true,
         "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
         "last": {
-          "id": "d642b3f4-0158-8331-9af7-e0bf4e6b8faf",
+          "id": "b1881daa-15a4-8328-b5c3-83efd6e502ad",
           "recorded_status": "completed",
-          "scheduled_for": "2026-11-20T03:00:00Z",
-          "started_at": "2026-11-20T03:00:17.704953Z",
-          "completed_at": "2026-11-20T03:19:23.808668Z",
+          "scheduled_for": "2026-11-20T04:00:00Z",
+          "started_at": "2026-11-20T04:11:28.902252Z",
+          "completed_at": "2026-11-20T04:21:15.323646Z",
           "chat_ref": {
             "type": "chatgpt",
             "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
           }
         },
-        "next": "2026-11-20T07:00:00+03:00"
+        "next": "2026-11-20T08:00:00+03:00"
       }
     ],
     "schedule_changes": []
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -496,7 +498,7 @@
     ],
     "result_ref": "agent-work/research/runs/2026-11-06-SD-core-thematic-audit.json"
   },
-  "last_health_ref": "agent-work/research/automation-health/2026-11-20-dnd5-relief-pass-road-932e8599-started.json",
+  "last_health_ref": "agent-work/research/automation-health/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe-started.json",
   "open_checkpoints": {
     "KNAVE2": "agent-work/research/checkpoints/KNAVE2-table-reuse.json",
     "SD": "agent-work/research/checkpoints/SD-terrain-mapping.json",
@@ -1059,7 +1061,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-20T03:32:57Z",
+  "updated_at": "2026-11-20T04:36:35Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1201,7 +1203,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-20-dnd5-relief-pass-road-932e8599",
+  "last_run_id": "2026-11-20-dnd5-mapped-sites-lairs-afbbaebe",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1257,24 +1259,24 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-20-dnd5-relief-pass-road-932e8599",
+  "last_run": "2026-11-20-dnd5-mapped-sites-lairs-afbbaebe",
   "checkpoint": {
-    "status": "bounded_dmg2014_relief_and_pass_road_verified",
-    "run_id": "2026-11-20-dnd5-relief-pass-road-932e8599",
-    "stage": "dnd5_l1_relief_pass_road",
-    "last_successful_step": "Рельеф, локальное переопределение и дорога через одно открытое ребро испытаны штатными обработчиками. JSON и история проверены.",
+    "status": "bounded_dmg2014_sites_lairs_verified_partial",
+    "run_id": "2026-11-20-dnd5-mapped-sites-lairs-afbbaebe",
+    "stage": "dnd5_l1_mapped_sites_lairs",
+    "last_successful_step": "Проверены масштаб вдоль одной оси, два независимых логовища, руины и башня, перенос, отказ на занятой клетке, JSON и история.",
     "failed_operation": null,
     "observed_error": null,
-    "stop_reason": "Проверка ограниченного картографического сценария завершена. Сохраняются остатки первичного корпуса и автоматического распознавания прохода.",
+    "stop_reason": "Ограниченная проверка завершена. Исторические количественные ориентиры и структурированное содержимое остаются отдельно от подтверждённой геометрии.",
     "cause_status": "confirmed",
     "saved_results": [
-      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.json",
-      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.md",
-      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20-probe.mjs",
-      "agent-work/research/handoffs/2026-11-20-dnd5-relief-pass-road-932e8599-strategist.json",
-      "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json"
+      "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.md",
+      "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe-strategist.json",
+      "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json"
     ],
-    "exact_continuation": "Проверить один сценарий наполнения карты конкретными местами по DND5-2014-014 и 015. Указать размер области и вручную разместить несколько данных ведущим мест, включая два логовища, затем проверить их независимое содержимое. На проверенной версии восстановить координаты, типы и карточки мест после JSON. Разделить структурированные сведения конкретного логовища, свободный текст и количественный ориентир из исторической выписки. Самостоятельную механику монстров не выводить.",
+    "exact_continuation": "Свести в единую актуальную рабочую матрицу L1 D&D 5e ограниченные проверки после 19 ноября, разрешить расхождения с исходной рабочей матрицей по точным SHA и передать стратегу один остаток. Каждая старая строка получает актуальный статус с наиболее сильным доказательством либо точным отложенным остатком. Для обеих геометрий, состава карты, обнаружения и логовищ использовать уже исполненные проверки. Сохранить старые результаты, отделить первичный источник, ручную поддержку и спорные запросы. Выбрать один следующий достижимый срез общего топ‑5 с учётом оставшихся источников.",
     "needs_owner_action": false,
     "owner_action": null
   },
@@ -2170,8 +2172,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-20T03:32:57Z",
-  "last_bounded_completed_run": "2026-11-20-dnd5-relief-pass-road-932e8599",
+  "last_run_at": "2026-11-20T04:36:35Z",
+  "last_bounded_completed_run": "2026-11-20-dnd5-mapped-sites-lairs-afbbaebe",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -3110,7 +3112,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "last_run_outcome": "bounded_dmg2014_relief_and_pass_road_verified",
+  "last_run_outcome": "bounded_dmg2014_sites_lairs_verified_partial",
   "latest_PF2_GMC3_applicability": {
     "status": "checkpoint_available_sections_screened_printed_chapter_incomplete",
     "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
@@ -4099,6 +4101,53 @@
     "implementation_status_by_row": {
       "DND5-2014-006-L1": "implemented",
       "DND5-2014-011-L1": "partial"
+    },
+    "full_game_accepted": false
+  },
+  "previous_checkpoint_before_DND5_L1_mapped_sites_lairs": {
+    "status": "bounded_dmg2014_relief_and_pass_road_verified",
+    "run_id": "2026-11-20-dnd5-relief-pass-road-932e8599",
+    "stage": "dnd5_l1_relief_pass_road",
+    "last_successful_step": "Рельеф, локальное переопределение и дорога через одно открытое ребро испытаны штатными обработчиками. JSON и история проверены.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Проверка ограниченного картографического сценария завершена. Сохраняются остатки первичного корпуса и автоматического распознавания прохода.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.md",
+      "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20-dnd5-relief-pass-road-932e8599-strategist.json",
+      "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json"
+    ],
+    "exact_continuation": "Проверить один сценарий наполнения карты конкретными местами по DND5-2014-014 и 015. Указать размер области и вручную разместить несколько данных ведущим мест, включая два логовища, затем проверить их независимое содержимое. На проверенной версии восстановить координаты, типы и карточки мест после JSON. Разделить структурированные сведения конкретного логовища, свободный текст и количественный ориентир из исторической выписки. Самостоятельную механику монстров не выводить.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "previous_next_candidate_before_DND5_L1_mapped_sites_lairs": {
+    "id": "HX-RSR-DND5-L1-MAPPED-SITES-AND-LAIRS",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить один сценарий наполнения карты конкретными местами по DND5-2014-014 и 015. Указать размер области и вручную разместить несколько данных ведущим мест, включая два логовища, затем проверить их независимое содержимое.",
+    "completion_condition": "На проверенной версии восстановить координаты, типы и карточки мест после JSON. Разделить структурированные сведения конкретного логовища, свободный текст и количественный ориентир из исторической выписки. Самостоятельную механику монстров не выводить.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-014-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-015-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "latest_DND5_L1_mapped_sites_lairs": {
+    "status": "bounded_dmg2014_sites_lairs_verified_partial",
+    "matrix_ref": "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+    "overview_ref": "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.md",
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs",
+    "result_ref": "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe-strategist.json",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "implementation_status_by_row": {
+      "DND5-2014-014-L1": "partial",
+      "DND5-2014-015-L1": "partial"
     },
     "full_game_accepted": false
   }

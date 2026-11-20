@@ -1,0 +1,545 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-20-dnd5-mapped-sites-lairs-afbbaebe",
+  "status": "bounded_dmg2014_sites_lairs_verified_partial",
+  "game_id": "DND5",
+  "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+  "reviewed_at": "2026-11-20T04:36:35Z",
+  "research_baseline_sha": "d29758f7bc1ae67bfaf4bfb3ce74168a08e165bc",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "scope_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "source_coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+  "previous_matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+  "rows": [
+    {
+      "id": "DND5-2014-014-L1-v2-draft",
+      "legacy_id": "DND5-2014-014-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-014",
+        "locator": "historical printed p108 Особенности дикой местности",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В районе около 50 миль достаточно примерно дюжины достойных исследования мест",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Ведущий размечает конкретные места и сохраняет их в выбранной области.",
+      "product_boundary": "Региональное наполнение",
+      "related_disposition": null,
+      "action": "Отметить на базовой карте заданные ведущим места и сохранить их.",
+      "map_object_or_state": {
+        "scale_miles_center_step": 6,
+        "area_hexes": 61,
+        "measured_row": "r=0",
+        "measured_center_span_miles": 48,
+        "site_coordinates": [
+          "-2,0",
+          "2,0",
+          "0,2",
+          "0,-2"
+        ]
+      },
+      "expected_result": "Восстановлены четыре точки с именами, типами и координатами.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-014",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Ручная подготовка карты Classic, базовый масштаб. Исторический ориентир уточняется по первичному тексту.",
+        "layer": "L1",
+        "trigger_or_user_action": "Отметить на базовой карте заданные ведущим места и сохранить их.",
+        "inputs_and_units": {
+          "scale_miles_center_step": 6,
+          "area_hexes": 61,
+          "measured_row": "r=0",
+          "measured_center_span_miles": 48,
+          "site_coordinates": [
+            "-2,0",
+            "2,0",
+            "0,2",
+            "0,-2"
+          ]
+        },
+        "product_operation": "Ручное размещение и именование четырёх разных картографических объектов, затем повторный импорт.",
+        "expected_output": "Восстановлены четыре точки с именами, типами и координатами.",
+        "constraints_and_exceptions": [
+          "Тестовые координаты, 48 миль между указанными центрами и размер синтетической сетки представляют условия проверки.",
+          "Игровые числа из прежней выписки ждут сверки. Текст заметки по координате рассматривается только как контроль владения данными."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Синтетическая область Classic из 61 базового гекса. По оси r=0 между центрами (−4,0) и (4,0) восемь шагов.",
+            "when": "Разместить логовища в −2,0 и 2,0, руины в 0,2, башню в 0,−2. Назвать четыре места и повторно открыть сохранение.",
+            "expected": "Четыре разных объекта восстанавливаются в указанных гексах вместе с именами и типами. Положение крайних центров по оси соответствует 48 милям при шаге 6. Предыдущее испытание 12 точек остаётся отдельным свидетельством вместимости."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_density"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.site_density"
+      ],
+      "binding_ids": [
+        "DND5-2014-014-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "DND5-2014-L1-MAPPED-SITES-RUNTIME"
+      ],
+      "result": "На одной базовой карте Classic из 61 гекса ведущий разместил четыре отдельных места: два логовища, руины и башню. Типы, координаты и собственные имена восстановились после импорта. На центральной оси r=0 между крайними центрами восемь шагов по 6 миль, то есть 48 миль по принятой для проверки геометрии HexCrawl.",
+      "remaining": "Точный критерий площади или диаметра и автоматический игровой профиль плотности из источника не установлены. Ранее подтверждена ручная вместимость 12 точек. Исторические ориентиры из печатной стр. 108: район около 50 миль, около дюжины мест, около шести логовищ и ограничение на верховного хищника. Точный смысл расстояния, нормативность и применимость чисел требуют первичного текста PHantom 2016. 48 миль между центрами вдоль r=0 измерены для синтетической карты, это не интерпретация размера из книги. Проверены обработчики Classic и JSON. Браузер, доступ игрока, автоматическое наполнение и слои других профилей не проверялись.",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-014",
+        "locator": "historical printed p108 Особенности дикой местности",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В районе около 50 миль достаточно примерно дюжины достойных исследования мест",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "canonical_mapping": [
+        {
+          "rule_id": "content.site_density",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-014-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Ручное размещение и именование четырёх разных картографических объектов, затем повторный импорт.",
+          "profile_differences": [
+            "Проверен базовый Classic. Параметры другого масштаба и других игр здесь не выводятся."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Точный критерий площади или диаметра и автоматический игровой профиль плотности из источника не установлены. Ранее подтверждена ручная вместимость 12 точек.",
+        "verified_parts": [
+          "На одной базовой карте Classic из 61 гекса ведущий разместил четыре отдельных места: два логовища, руины и башню. Типы, координаты и собственные имена восстановились после импорта. На центральной оси r=0 между крайними центрами восемь шагов по 6 миль, то есть 48 миль по принятой для проверки геометрии HexCrawl."
+        ],
+        "missing_or_unverified_parts": [
+          "Точный критерий площади или диаметра и автоматический игровой профиль плотности из источника не установлены. Ранее подтверждена ручная вместимость 12 точек."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Штатные обработчики размещения, именования, заметок, переноса, JSON и истории в React harness. Масштаб вдоль оси рассчитан по фактической проекции toPixel с шагом 6 миль.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json#verification",
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs"
+        ]
+      },
+      "acceptance_scope": "bounded_Classic_base_manual_editor",
+      "previous_result_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-014-L1-v2-draft",
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-015-L1-v2-draft",
+      "legacy_id": "DND5-2014-015-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-015",
+        "locator": "historical printed p108 Логова чудовищ",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Ориентир: около шести логовищ и не более одного верховного хищника",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Ведущий размещает конкретное логово. Именование, тип и потенциально необходимая справка о месте входят в карту.",
+      "product_boundary": "Размещение логовищ",
+      "related_disposition": null,
+      "action": "Создать два логовища с независимыми именами, подготовить сведения об обитателях и проверить их привязку переносом.",
+      "map_object_or_state": {
+        "scale_miles_center_step": 6,
+        "source_hex": "-2,0",
+        "other_lair_hex": "2,0",
+        "free_target_hex": "-3,1",
+        "map_mode": "Classic"
+      },
+      "expected_result": "Имя и тип следуют за логовищем. Простой текст остаётся по адресу исходной клетки.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-015",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Ручная подготовка карты Classic, базовый масштаб. Исторический ориентир уточняется по первичному тексту.",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать два логовища с независимыми именами, подготовить сведения об обитателях и проверить их привязку переносом.",
+        "inputs_and_units": {
+          "scale_miles_center_step": 6,
+          "source_hex": "-2,0",
+          "other_lair_hex": "2,0",
+          "free_target_hex": "-3,1",
+          "map_mode": "Classic"
+        },
+        "product_operation": "Редактирование типа/имени POI и сравнение с заметкой гекса при переносе и повторной загрузке.",
+        "expected_output": "Имя и тип следуют за логовищем. Простой текст остаётся по адресу исходной клетки.",
+        "constraints_and_exceptions": [
+          "Тестовые координаты, 48 миль между указанными центрами и размер синтетической сетки представляют условия проверки.",
+          "Игровые числа из прежней выписки ждут сверки. Текст заметки по координате рассматривается только как контроль владения данными."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Два поименованных логовища и разные тексты об обитателях в исходных гексах −2,0 и 2,0.",
+            "when": "Попытаться перенести первое логовище в 2,0, затем переместить его в свободный −3,1. Выполнить импорт, отмену и повтор.",
+            "expected": "Занятый гекс отклоняется без изменений. В −3,1 сохраняются тип и имя первого логовища. Второе остаётся в 2,0 со своим именем. Оба текста остаются по исходным координатам, что подтверждает их привязку к гексам."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.fixed_lair"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.fixed_lair"
+      ],
+      "binding_ids": [
+        "DND5-2014-015-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "DND5-2014-L1-MAPPED-SITES-RUNTIME"
+      ],
+      "result": "Попытка перенести Ash Lair в гекс Reed Lair отклонена без изменений. При переносе Ash Lair с −2,0 в −3,1 тип и имя переехали, Reed Lair сохранило свои данные. Повторный импорт, отмена и повтор подтвердили результат. Тексты об обитателях хранятся по координатам в gmNotesByHexKey. После переноса текст Ash Lair остался в −2,0, а в −3,1 заметки нет. В проверенном чистом Classic карточка хранит тип, имя и координаты места. Отдельной редактируемой записи обитателя или связи с локальной картой в этом сценарии не обнаружено.",
+      "remaining": "Редактируемая структурированная запись обитателя или связь с локальной схемой, принадлежащая логовищу, не подтверждена в проверенном Classic. Исторические ориентиры из печатной стр. 108: район около 50 миль, около дюжины мест, около шести логовищ и ограничение на верховного хищника. Точный смысл расстояния, нормативность и применимость чисел требуют первичного текста PHantom 2016. 48 миль между центрами вдоль r=0 измерены для синтетической карты, это не интерпретация размера из книги. Проверены обработчики Classic и JSON. Браузер, доступ игрока, автоматическое наполнение и слои других профилей не проверялись.",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-015",
+        "locator": "historical printed p108 Логова чудовищ",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Ориентир: около шести логовищ и не более одного верховного хищника",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "canonical_mapping": [
+        {
+          "rule_id": "content.fixed_lair",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-015-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Редактирование типа/имени POI и сравнение с заметкой гекса при переносе и повторной загрузке.",
+          "profile_differences": [
+            "Проверен базовый Classic. Параметры другого масштаба и других игр здесь не выводятся."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Редактируемая структурированная запись обитателя или связь с локальной схемой, принадлежащая логовищу, не подтверждена в проверенном Classic.",
+        "verified_parts": [
+          "Попытка перенести Ash Lair в гекс Reed Lair отклонена без изменений. При переносе Ash Lair с −2,0 в −3,1 тип и имя переехали, Reed Lair сохранило свои данные. Повторный импорт, отмена и повтор подтвердили результат.",
+          "Тексты об обитателях хранятся по координатам в gmNotesByHexKey. После переноса текст Ash Lair остался в −2,0, а в −3,1 заметки нет. В проверенном чистом Classic карточка хранит тип, имя и координаты места. Отдельной редактируемой записи обитателя или связи с локальной картой в этом сценарии не обнаружено."
+        ],
+        "missing_or_unverified_parts": [
+          "Редактируемая структурированная запись обитателя или связь с локальной схемой, принадлежащая логовищу, не подтверждена в проверенном Classic."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Штатные обработчики размещения, именования, заметок, переноса, JSON и истории в React harness. Масштаб вдоль оси рассчитан по фактической проекции toPixel с шагом 6 миль.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json#verification",
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs"
+        ]
+      },
+      "acceptance_scope": "bounded_Classic_base_manual_editor",
+      "previous_result_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-015-L1-v2-draft",
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    }
+  ],
+  "verification": {
+    "verified_at": "2026-11-20T04:36:35Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "method": "Штатные обработчики размещения, именования, заметок, переноса, JSON и истории в React harness. Масштаб вдоль оси рассчитан по фактической проекции toPixel с шагом 6 миль.",
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "primary_source_reverified": false,
+    "matching_git_blobs": 105,
+    "exit_code": 0,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs",
+    "command": "Копировать probe в корень checkout указанного product_sha и выполнить node research-mapped-sites-lairs.mjs",
+    "source_pins": [
+      "src/App.tsx#L888",
+      "src/App.tsx#L13726",
+      "src/App.tsx#L14814",
+      "src/App.tsx#L15252",
+      "src/App.tsx#L15354",
+      "src/App.tsx#L15388",
+      "src/manualPois.ts#L71",
+      "src/detailModel.ts#L25",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "seed": 42,
+        "profile": "Classic",
+        "hexes": 61,
+        "stepMiles": 6,
+        "axis": "r=0",
+        "first": "-4,0",
+        "last": "4,0",
+        "centerIntervals": 8,
+        "centerSpanMiles": 48
+      },
+      "initial": [
+        {
+          "hex": "-2,0",
+          "kind": "lair",
+          "name": "Ash Lair"
+        },
+        {
+          "hex": "2,0",
+          "kind": "lair",
+          "name": "Reed Lair"
+        },
+        {
+          "hex": "0,2",
+          "kind": "ruins",
+          "name": "Broken Gate"
+        },
+        {
+          "hex": "0,-2",
+          "kind": "tower",
+          "name": "West Watch"
+        }
+      ],
+      "move": {
+        "start": "-2,0",
+        "destination": "-3,1",
+        "otherLair": "2,0",
+        "bothNamesIndependent": true,
+        "oldDetailInOriginalHex": true,
+        "newHexHasNoNote": true
+      },
+      "representation": {
+        "names": "editorNames[poi:region:q,r]",
+        "notes": "gmNotesByHexKey[q,r]",
+        "classicLinkedOccupantRecord": false
+      },
+      "occupiedTarget": {
+        "error": "This hex already has a point of interest. (2,0)",
+        "mapUnchanged": true
+      },
+      "saveReloadExact": true,
+      "undoRedo": true
+    }
+  },
+  "quality": {
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "game_id": "DND5",
+    "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+    "source_inventory_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+    "analysis_ref": "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+    "reviewed_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "reviewer": "HX-RSR-001",
+    "overall_status": "checkpoint",
+    "checks": [
+      {
+        "criterion_id": "RA-Q01",
+        "result": "pass",
+        "comment": "Редакция, язык и печатная стр. 108 названы.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q02",
+        "result": "blocked",
+        "comment": "Полный первичный тематический корпус остаётся открытым.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При новом подтверждённом доступе сверить печатную стр. 108 и соответствующие тематические диапазоны."
+      },
+      {
+        "criterion_id": "RA-Q03",
+        "result": "blocked",
+        "comment": "Сохранён исторический смысл. Точный исходный текст ждёт доступа.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При новом подтверждённом доступе сверить печатную стр. 108 и соответствующие тематические диапазоны."
+      },
+      {
+        "criterion_id": "RA-Q04",
+        "result": "blocked",
+        "comment": "Единицы измерения испытания известны, интерпретация ≈50 миль остаётся открытой.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При новом подтверждённом доступе сверить печатную стр. 108 и соответствующие тематические диапазоны."
+      },
+      {
+        "criterion_id": "RA-Q05",
+        "result": "pass",
+        "comment": "Исторический совет и эксперимент разделены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q06",
+        "result": "pass",
+        "comment": "Операции задают отдельные объекты и адреса на карте.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q07",
+        "result": "pass",
+        "comment": "Проверены существующие операции с POI. Заметка использована для контроля привязки.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q08",
+        "result": "pass",
+        "comment": "Переиспользованы действующие canonical IDs и привязки.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q09",
+        "result": "pass",
+        "comment": "Заданы ожидаемые позиции, защита занятой клетки и владение текстом.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q10",
+        "result": "pass",
+        "comment": "Обе строки частично подтверждены на свежем SHA.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q11",
+        "result": "pass",
+        "comment": "Частичная реализация, статическая схема и открытые профили разграничены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q12",
+        "result": "pass",
+        "comment": "Передача фиксирует остаток без предложения отдельной механики существ.",
+        "evidence_refs": [
+          "agent-work/research/handoffs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe-strategist.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q13",
+        "result": "pass",
+        "comment": "Обзор совпадает с матрицей и воспроизводимыми результатами.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.md"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q14",
+        "result": "blocked",
+        "comment": "Первичный тематический корпус и игровой количественный профиль остаются открытыми.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При новом подтверждённом доступе сверить печатную стр. 108 и соответствующие тематические диапазоны."
+      },
+      {
+        "criterion_id": "RA-Q15",
+        "result": "pass",
+        "comment": "Границы результата и полномочия соблюдены.",
+        "evidence_refs": [
+          "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json"
+        ],
+        "exact_continuation": null
+      }
+    ],
+    "remaining_work": [
+      "Исторические ориентиры из печатной стр. 108: район около 50 миль, около дюжины мест, около шести логовищ и ограничение на верховного хищника. Точный смысл расстояния, нормативность и применимость чисел требуют первичного текста PHantom 2016. 48 миль между центрами вдоль r=0 измерены для синтетической карты, это не интерпретация размера из книги.",
+      "Проверены обработчики Classic и JSON. Браузер, доступ игрока, автоматическое наполнение и слои других профилей не проверялись."
+    ]
+  },
+  "full_game_accepted": false
+}

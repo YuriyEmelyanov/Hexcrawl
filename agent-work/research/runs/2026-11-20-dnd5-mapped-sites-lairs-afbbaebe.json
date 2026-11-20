@@ -1,0 +1,277 @@
+{
+  "run_id": "2026-11-20-dnd5-mapped-sites-lairs-afbbaebe",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_dmg2014_sites_lairs_verified_partial",
+  "started_at": "2026-11-20T04:33:59Z",
+  "completed_at": "2026-11-20T04:36:35Z",
+  "selected_task": {
+    "id": "HX-RSR-DND5-L1-MAPPED-SITES-AND-LAIRS",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить один сценарий наполнения карты конкретными местами по DND5-2014-014 и 015. Указать размер области и вручную разместить несколько данных ведущим мест, включая два логовища, затем проверить их независимое содержимое.",
+    "completion_condition": "На проверенной версии восстановить координаты, типы и карточки мест после JSON. Разделить структурированные сведения конкретного логовища, свободный текст и количественный ориентир из исторической выписки. Самостоятельную механику монстров не выводить.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-014-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-015-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "selection_reason": "Открытый сценарий L1 DND5 позволяет проверить принадлежность содержимого места при переносе и восстановить привязку карты к конкретному измерению, сохранив отдельно неизвестный смысл ориентира из книги.",
+  "alternatives": [
+    {
+      "task_id": "Полный первичный корпус DMG2014",
+      "reason": "Нового подтверждённого доступа нет. Остаток сохранён в coverage ledger."
+    },
+    {
+      "task_id": "Повторить серию создания 12 точек",
+      "reason": "Предыдущий прогон уже проверил вместимость. Время использовано на масштаб и владельца данных при переносе."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_sha": "d29758f7bc1ae67bfaf4bfb3ce74168a08e165bc",
+    "main_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "active_ranking": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "active_overall_cohort": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ],
+    "refs": [
+      "AGENTS.md",
+      "agent-work/research/contract.md",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json",
+      "agent-work/research/method.json",
+      "agent-work/research/proposals.json",
+      "agent-work/research/data-contract.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/research/rule-analysis-standard.md",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json",
+      "agent-work/execution-locks.json",
+      "agent-work/budget.json",
+      "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "agent-work/rules/game-bindings.json#DND5-2014-014-L1",
+      "agent-work/rules/game-bindings.json#DND5-2014-015-L1",
+      "agent-work/market/rules/DND5-2014.json#DND5-2014-014",
+      "agent-work/market/rules/DND5-2014.json#DND5-2014-015"
+    ]
+  },
+  "findings": [
+    "На одной базовой карте Classic из 61 гекса ведущий разместил четыре отдельных места: два логовища, руины и башню. Типы, координаты и собственные имена восстановились после импорта. На центральной оси r=0 между крайними центрами восемь шагов по 6 миль, то есть 48 миль по принятой для проверки геометрии HexCrawl.",
+    "Попытка перенести Ash Lair в гекс Reed Lair отклонена без изменений. При переносе Ash Lair с −2,0 в −3,1 тип и имя переехали, Reed Lair сохранило свои данные. Повторный импорт, отмена и повтор подтвердили результат.",
+    "Тексты об обитателях хранятся по координатам в gmNotesByHexKey. После переноса текст Ash Lair остался в −2,0, а в −3,1 заметки нет. В проверенном чистом Classic карточка хранит тип, имя и координаты места. Отдельной редактируемой записи обитателя или связи с локальной картой в этом сценарии не обнаружено.",
+    "Покрытие обоих пунктов остаётся частичным: размещение подтверждено, трактовка размера и чисел из истории остаётся открытой, а текст по гексу не подтверждает структурированное содержимое логовища."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+    "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.md",
+    "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs",
+    "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json",
+    "agent-work/research/handoffs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe-strategist.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/latest.json",
+    "agent-work/claims/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json",
+    "agent-work/research/automation-health/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe-started.json",
+    "agent-work/execution-locks.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "verified_at": "2026-11-20T04:36:35Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "method": "Штатные обработчики размещения, именования, заметок, переноса, JSON и истории в React harness. Масштаб вдоль оси рассчитан по фактической проекции toPixel с шагом 6 миль.",
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "primary_source_reverified": false,
+    "matching_git_blobs": 105,
+    "exit_code": 0,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs",
+    "command": "Копировать probe в корень checkout указанного product_sha и выполнить node research-mapped-sites-lairs.mjs",
+    "source_pins": [
+      "src/App.tsx#L888",
+      "src/App.tsx#L13726",
+      "src/App.tsx#L14814",
+      "src/App.tsx#L15252",
+      "src/App.tsx#L15354",
+      "src/App.tsx#L15388",
+      "src/manualPois.ts#L71",
+      "src/detailModel.ts#L25",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "seed": 42,
+        "profile": "Classic",
+        "hexes": 61,
+        "stepMiles": 6,
+        "axis": "r=0",
+        "first": "-4,0",
+        "last": "4,0",
+        "centerIntervals": 8,
+        "centerSpanMiles": 48
+      },
+      "initial": [
+        {
+          "hex": "-2,0",
+          "kind": "lair",
+          "name": "Ash Lair"
+        },
+        {
+          "hex": "2,0",
+          "kind": "lair",
+          "name": "Reed Lair"
+        },
+        {
+          "hex": "0,2",
+          "kind": "ruins",
+          "name": "Broken Gate"
+        },
+        {
+          "hex": "0,-2",
+          "kind": "tower",
+          "name": "West Watch"
+        }
+      ],
+      "move": {
+        "start": "-2,0",
+        "destination": "-3,1",
+        "otherLair": "2,0",
+        "bothNamesIndependent": true,
+        "oldDetailInOriginalHex": true,
+        "newHexHasNoNote": true
+      },
+      "representation": {
+        "names": "editorNames[poi:region:q,r]",
+        "notes": "gmNotesByHexKey[q,r]",
+        "classicLinkedOccupantRecord": false
+      },
+      "occupiedTarget": {
+        "error": "This hex already has a point of interest. (2,0)",
+        "mapUnchanged": true
+      },
+      "saveReloadExact": true,
+      "undoRedo": true
+    },
+    "recovered_probe_error": {
+      "observed_error": "assert.ok(Math.abs(measured-48)<1e-8)",
+      "cause": "Начальный вызов теста передавал объект вместо двух координат в toPixel(q,r). Сигнатура исправлена и весь прогон завершён."
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "afbbaebe-6d74-8323-bf0e-de9ea9145f72",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T04:30:00Z",
+          "started_at": "2026-11-20T04:33:31.627993Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T07:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "b1881daa-15a4-8328-b5c3-83efd6e502ad",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T04:00:00Z",
+          "started_at": "2026-11-20T04:11:28.902252Z",
+          "completed_at": "2026-11-20T04:21:15.323646Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T08:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "afbbaebe-6d74-8323-bf0e-de9ea9145f72",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T04:30:00Z",
+          "started_at": "2026-11-20T04:33:31.627993Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T07:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "b1881daa-15a4-8328-b5c3-83efd6e502ad",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T04:00:00Z",
+          "started_at": "2026-11-20T04:11:28.902252Z",
+          "completed_at": "2026-11-20T04:21:15.323646Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T08:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_dmg2014_sites_lairs_verified_partial",
+    "run_id": "2026-11-20-dnd5-mapped-sites-lairs-afbbaebe",
+    "stage": "dnd5_l1_mapped_sites_lairs",
+    "last_successful_step": "Проверены масштаб вдоль одной оси, два независимых логовища, руины и башня, перенос, отказ на занятой клетке, JSON и история.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченная проверка завершена. Исторические количественные ориентиры и структурированное содержимое остаются отдельно от подтверждённой геометрии.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.md",
+      "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe-strategist.json",
+      "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json"
+    ],
+    "exact_continuation": "Свести в единую актуальную рабочую матрицу L1 D&D 5e ограниченные проверки после 19 ноября, разрешить расхождения с исходной рабочей матрицей по точным SHA и передать стратегу один остаток. Каждая старая строка получает актуальный статус с наиболее сильным доказательством либо точным отложенным остатком. Для обеих геометрий, состава карты, обнаружения и логовищ использовать уже исполненные проверки. Сохранить старые результаты, отделить первичный источник, ручную поддержку и спорные запросы. Выбрать один следующий достижимый срез общего топ‑5 с учётом оставшихся источников.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-CONSOLIDATE-ACCEPTANCE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_consolidation_after_bounded_checks",
+    "action": "Свести в единую актуальную рабочую матрицу L1 D&D 5e ограниченные проверки после 19 ноября, разрешить расхождения с исходной рабочей матрицей по точным SHA и передать стратегу один остаток.",
+    "completion_condition": "Каждая старая строка получает актуальный статус с наиболее сильным доказательством либо точным отложенным остатком. Для обеих геометрий, состава карты, обнаружения и логовищ использовать уже исполненные проверки. Сохранить старые результаты, отделить первичный источник, ручную поддержку и спорные запросы. Выбрать один следующий достижимый срез общего топ‑5 с учётом оставшихся источников.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json"
+    ]
+  }
+}
