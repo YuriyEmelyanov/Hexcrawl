@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-20T09:07:30.279Z",
+  "updated_at": "2026-11-20T10:28:34.934Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -426,7 +426,7 @@
       "approved_at": "2026-11-16T06:11:39.034Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "Независимая проверка PR №510 выявила три дефекта F1.1. Возврат программисту, публикация требует нового проверенного SHA.",
+      "execution_state": "Три исправления F1.1 на новом SHA. Набор доказательств передан на независимую проверку.",
       "requirements": [
         "Поддержать небольшие озёра на1-мильной карте.",
         "Реки могут проходить через малые озёра по правилу шестимильной карты.",
@@ -438,8 +438,8 @@
         "Связь с исходной6-мильной географией и поведение при смене масштаба",
         "Плотность/расположение и сопряжение с реками"
       ],
-      "next_role": "programmer",
-      "next_step": "Исправить HX056-F11-RV01–03 в PR №510. Воспроизвести ручное озеро → тропа → JSON, подтвердить сохранение берегов соседних озёр при пропуске кандидата и видимость выбранных гексов в ошибочном черновике. На новом SHA показать карту и пройти независимую проверку.",
+      "next_role": "reviewer",
+      "next_step": "Независимо проверить на точном новом SHA исправления HX056-F11-RV01–03 и сохранение AC01–AC08. Обновить заключение и score_assessment 1.2. После успешной приёмки получить отдельное разрешение публикации.",
       "draft_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-D1.md",
       "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
       "acceptance_ref": null,
@@ -464,20 +464,17 @@
       },
       "forecast": {
         "remaining_team_runs": [
-          3,
-          5
+          2,
+          4
         ],
         "excludes": [
           "owner_publication_wait",
           "CI_queue_wait"
         ],
         "stages": {
-          "fix": [
-            1,
-            2
-          ],
-          "independent_review": [
-            1,
+          "independent_review": 1,
+          "rework_and_review": [
+            0,
             2
           ],
           "authorized_release": 1
@@ -487,7 +484,7 @@
         "HX-BL-055"
       ],
       "relationship_note": "Связанный вид воды/устьев учесть при спецификации; это не разрешение расширить055 или автоматически менять6mile.",
-      "updated_at": "2026-11-20T09:07:30.279Z",
+      "updated_at": "2026-11-20T10:28:34.934Z",
       "draft_spec_version": "D1",
       "open_question_ids": [],
       "ui_preview_ref": {
@@ -508,7 +505,7 @@
         }
       },
       "ui_preview_version": "F1",
-      "handoff_ref": "agent-work/handoffs/2026-11-20T1200-reviewer-HX-BL-056-F1.1.json",
+      "handoff_ref": "agent-work/handoffs/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
       "draft_result_ref": "agent-work/results/2026-11-19T2300-analyst-HX-BL-056.json",
       "interview_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/decisions.json",
       "interview_round_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/round-002.json",
@@ -521,19 +518,21 @@
       ],
       "spec_version": "F1.1",
       "specification_result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
-      "implementation_checkpoint_ref": "agent-work/results/2026-11-20T1100-programmer-HX-BL-056-through-flow.json",
-      "implementation_evidence_ref": "agent-work/evidence/HX-BL-056-F1/through-flow-a61bc5a/verification.json",
+      "implementation_checkpoint_ref": "agent-work/results/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
+      "implementation_evidence_ref": "agent-work/evidence/HX-BL-056-F1/repair-f7ab0eb/verification.json",
       "branch": "agent/hx-bl-056-small-lakes-f1",
       "pr": 510,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-      "head_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
-      "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44700875113/artifacts/14613885370",
+      "head_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+      "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600/artifacts/14620231791",
       "supersedes_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
       "scope_clarification_ref": "agent-work/decisions/owner-decision-2026-11-20-HX-BL-056-through-flow-and-conflict-isolation.json",
-      "head_tree_sha": "03f6e1249f6aedc17df0370035c468fe7fd5911f",
-      "review_ready": false,
-      "review_result_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/review.json",
-      "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/score-assessment1.2.json"
+      "head_tree_sha": "680e9be665bfe300b5db699f0103fe494b637270",
+      "review_ready": true,
+      "review_result_ref": null,
+      "score_assessment_ref": null,
+      "previous_review_result_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/review.json",
+      "previous_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/score-assessment1.2.json"
     },
     {
       "task_id": "HX-BL-057",

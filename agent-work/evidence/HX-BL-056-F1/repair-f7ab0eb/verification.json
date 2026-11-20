@@ -1,0 +1,296 @@
+{
+  "status": "review_ready",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1_1_review_repaired_roundtrip_shore_draft",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+  "head_tree_sha": "680e9be665bfe300b5db699f0103fe494b637270",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/repair-f7ab0eb/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600",
+  "handoff_ref": "agent-work/handoffs/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
+  "result_ref": "agent-work/results/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
+  "review_ready": true,
+  "role": "reviewer",
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить на точном новом SHA исправления HX056-F11-RV01–03 и сохранение AC01–AC08. Обновить заключение и score_assessment 1.2. После успешной приёмки получить отдельное разрешение публикации.",
+  "verification_status": "new_revision_requires_independent_review",
+  "forecast": {
+    "remaining_team_runs": [
+      2,
+      4
+    ],
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ],
+    "stages": {
+      "independent_review": 1,
+      "rework_and_review": [
+        0,
+        2
+      ],
+      "authorized_release": 1
+    }
+  },
+  "repair_base_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-a61bc5a/review.json",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600/artifacts/14620231791",
+  "schema_version": "1.0",
+  "verified_at": "2026-11-20T10:28:34.934Z",
+  "method": "Точный исходный коммит и дерево сопоставлены с локальной сборкой, журналами Actions и манифестом загруженного артeфакта.",
+  "findings": [
+    {
+      "id": "HX056-F11-RV01",
+      "status": "addressed_pending_independent_review",
+      "description": "Дорожка через принятый защищаемый берег отклоняется до записи. То же правило проверяет следующие составные состояния карты и входящий JSON.",
+      "case": "Карта из e6-water-editor.json, ручное озеро (3,−12), тропа (0,−2) → (1,−2), неизменная карта, история, RNG и повторное открытие."
+    },
+    {
+      "id": "HX056-F11-RV02",
+      "status": "addressed_pending_independent_review",
+      "description": "Пакет заранее распределяет береговые гексы и хранит допустимый растровый след как shoreCells в JSON новых автоматических озёр.",
+      "case": "Парный прогон с одинаковым seed 15, кандидат 23,10|24,10 пропускается, сосед 25,6|25,7|25,8 не включает 24,9 при генерации и после загрузки. Отдельный живой Classic seed 42 сохранил прежнее озеро и принял 23 остальных."
+    },
+    {
+      "id": "HX056-F11-RV03",
+      "status": "addressed_pending_independent_review",
+      "description": "Контур выделенных гексов отображается при любом состоянии черновика, включая недоступное сохранение.",
+      "case": "На живой карте Classic гексы −4,−28 и −4,−25 подсвечены одновременно, «Сохранить» недоступна. Снятие лишнего выделения позволяет продолжить.",
+      "artifact_file": "small-lake-invalid-selection.jpg"
+    }
+  ],
+  "checks": {
+    "main_node": {
+      "build": "success",
+      "status": "success",
+      "tests": 439,
+      "pass": 439,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "job_id": 136226166981
+    },
+    "targeted_node": {
+      "executed": 7,
+      "passed": 7,
+      "skipped": 0
+    },
+    "local_world_probe": {
+      "invalidDraftCanBeRepaired": true,
+      "coarseLakes": 10,
+      "isolatedLakes": 23,
+      "retained": {
+        "id": 1,
+        "cells": [
+          {
+            "q": -4,
+            "r": -28
+          }
+        ],
+        "origin": "manual"
+      },
+      "savedShoreCoordinates": true,
+      "reloaded": true
+    },
+    "world_random": {
+      "status": "success",
+      "job_id": 136226166263,
+      "primary_seed_cases": 8,
+      "profiles": [
+        "Classic",
+        "Mythic Bastionland"
+      ]
+    },
+    "ci_workflow_run_id": 44715683600,
+    "browser": {
+      "status": "success",
+      "job_id": 136226162993,
+      "command": "npm run test:browser",
+      "executed_suites": 10,
+      "relevant_one_mile_suite": {
+        "executed": 17,
+        "passed": 17,
+        "failed": 0,
+        "skipped": 0,
+        "hx056_cases": [
+          {
+            "id": "HX056-manual-small-lake-roundtrip-and-png",
+            "status": "pass"
+          },
+          {
+            "id": "HX056-safe-shore-spill",
+            "status": "pass"
+          },
+          {
+            "id": "HX056-source-water-removes-small-lake",
+            "status": "pass"
+          },
+          {
+            "id": "HX056-regeneration-confirms-small-lake-loss",
+            "status": "pass"
+          },
+          {
+            "id": "HX056-automatic-small-lakes",
+            "status": "pass"
+          },
+          {
+            "id": "HX056-automatic-conflict-isolation",
+            "status": "pass"
+          }
+        ]
+      },
+      "verified_source": {
+        "head": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+        "tree": "680e9be665bfe300b5db699f0103fe494b637270"
+      },
+      "attempts": [
+        {
+          "job_id": 136218345919,
+          "status": "cancelled",
+          "reason": "15-minute job timeout. Relevant 1-mile suite had already passed and uploaded exact-source artifacts.",
+          "artifact_id": 14620231791
+        },
+        {
+          "job_id": 136226162993,
+          "status": "success",
+          "artifact_id": 14620778144,
+          "digest": "sha256:cb21f5290f2225fb7cfc3c3408db160c1b42461e9e49c0b302a4ad955617901b"
+        }
+      ]
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "a61bc5af878e744bd08e576324755b0b1a0f2206",
+    "head_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+    "added": 2,
+    "removed": 1,
+    "modified": 1,
+    "count_source": "git diff a61bc5af878e744bd08e576324755b0b1a0f2206 f7ab0eb7c953f5c7934b9fdb1647fae95b427548 -- test",
+    "suites": [
+      {
+        "suite": "Node · mapTransactions.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Ручное озеро → тропа → JSON. Отказ происходит до записи и сохраняет карту, RNG и обе истории.",
+        "reuse_or_new_reason": "Новый порядок действий воспроизводит потерю возможности повторной загрузки. Существующие проверки создания озера поверх дороги проверяют обратный порядок."
+      },
+      {
+        "suite": "Node · oneMile.test.mjs",
+        "added": 1,
+        "removed": 1,
+        "modified": 0,
+        "scenario": "Парное сравнение итоговой береговой маски при пропуске соседа и после JSON. Удалён кейс на функцию пересечения с полосой реки, у которой больше нет продуктового вызова.",
+        "reuse_or_new_reason": "Стабильный исходный путь и повтор одинаковой операции не проверяют равенство видимых берегов между операциями с конфликтом и без него."
+      },
+      {
+        "suite": "Playwright · one-mile.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Две подсветки несвязного выбора видимы при недоступном сохранении. После снятия лишнего выделения штатное сохранение продолжается.",
+        "reuse_or_new_reason": "Расширен существующий сценарий ручного озера на карте Classic."
+      }
+    ]
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "model_path": "agent-work/strategy/score-model.md",
+    "baseline_path": "agent-work/score/current-score.json",
+    "baseline_blob_sha": "6a0e03c335e17cc754a63f3e2be9a33dc62e9aa3",
+    "head_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+    "status": "evidence_only_pending_independent_assessment",
+    "criteria": [
+      {
+        "criterion_id": "S01-C02",
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "browser_case": "HX056-manual-small-lake-roundtrip-and-png",
+        "observation": "Сквозная река и тот же путь на карте и PNG."
+      },
+      {
+        "criterion_id": "S01-C03",
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "browser_case": "HX056-automatic-conflict-isolation",
+        "observation": "Парная проверка итогового соседнего берега и его повторной загрузки."
+      },
+      {
+        "criterion_id": "S02-C01",
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "browser_case": "HX056-automatic-small-lakes",
+        "observation": "Изоляция потока случайности, плюс неизменное состояние истории и RNG при отказе тропы."
+      },
+      {
+        "criterion_id": "S02-C03",
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "browser_case": "HX056-manual-small-lake-roundtrip-and-png",
+        "observation": "Совместимость отсутствующего shoreCells и сохранение точного разрешённого берега нового озера."
+      },
+      {
+        "criterion_id": "S03-C01",
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "browser_case": "HX056-manual-small-lake-roundtrip-and-png",
+        "observation": "Невалидный черновик показывает ровно выбранные гексы. Защищённое состояние сохраняется при отказе."
+      },
+      {
+        "criterion_id": "S04-C04",
+        "before": {
+          "status": "unverified",
+          "grade": null,
+          "points": null
+        },
+        "browser_case": "HX056-safe-shore-spill",
+        "observation": "PNG и JSON принятого берега, примеры после отмены и повторной загрузки."
+      }
+    ],
+    "limitations": [
+      "Проверки ограничены контрактом HX-BL-056 F1.1 и отдельными картами. Нет основания оценивать целиком критерии, начислять баллы или обновлять модель."
+    ]
+  },
+  "visual_artifact": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44715683600/artifacts/14620231791",
+    "artifact_id": 14620231791,
+    "digest_sha256": "a4fe19ce5532372c18915e826970569a2c855506562809679f1ef47ce408a682",
+    "head_merge_checkout_sha": "659f592c817387956f28ff2232ce46e16c81c0f1",
+    "head_source_sha": "f7ab0eb7c953f5c7934b9fdb1647fae95b427548",
+    "head_source_tree": "680e9be665bfe300b5db699f0103fe494b637270",
+    "files": {
+      "invalid_draft": "small-lake-invalid-selection.jpg",
+      "manual_before": "small-lake-before.jpg",
+      "manual_after": "small-lake-after.jpg",
+      "manual_png": "small-lake-export.png",
+      "automatic_before": "automatic-small-lakes-before.jpg",
+      "automatic_after": "automatic-small-lakes-after.jpg",
+      "automatic_png": "automatic-small-lakes.png",
+      "isolated_conflict": "automatic-small-lake-isolated-conflict.jpg",
+      "rotated_river_png": "small-lake-river-rotated.png"
+    }
+  },
+  "main_changed": false,
+  "published": false
+}
