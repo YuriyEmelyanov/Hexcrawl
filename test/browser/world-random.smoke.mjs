@@ -1,3 +1,4 @@
+import {isSmallLakeLossConfirmation} from './small-lake-confirmations.mjs';
 import {spawn} from 'node:child_process';
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
@@ -11,7 +12,7 @@ try{
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  async function open(seed,mode){
   const context=await browser.newContext({viewport:{width:1500,height:1100}});const page=await context.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
-  page.on('dialog',d=>/Будет восстановлено исходное состояние рек|Original river state will be restored|Изменение участка целиком удалит малые озёра|Changing the area removes these small lakes|При удалении последнего региона будут также удалены малые озёра|Deleting the last region also removes small lakes/.test(d.message())?d.accept():d.dismiss());
+  page.on('dialog',d=>isSmallLakeLossConfirmation(d)||/Будет восстановлено исходное состояние рек|Original river state will be restored/.test(d.message())?d.accept():d.dismiss());
   await page.route(/mc\.yandex/,r=>r.abort());
   await page.addInitScript(()=>{const make=URL.createObjectURL,click=HTMLAnchorElement.prototype.click,blobs=new Map();URL.createObjectURL=function(blob){const url=make.call(this,blob);if(blob.type.startsWith('application/json'))blobs.set(url,blob.text());return url;};HTMLAnchorElement.prototype.click=function(){if(this.download.endsWith('.json')&&blobs.has(this.href)){blobs.get(this.href).then(t=>window.__exported=JSON.parse(t));return;}return click.call(this);};});
   await page.addInitScript(()=>{

@@ -1,3 +1,4 @@
+import {isSmallLakeLossConfirmation} from './small-lake-confirmations.mjs';
 import {createGenerationState} from '../../src/worldRandom.ts';
 import { spawn } from 'node:child_process';
 import { chromium } from 'playwright';
@@ -50,7 +51,7 @@ try {
   page.on('pageerror', error => errors.push(error.message));
   let acceptCheckpointLoss=true,riverCheckpointPrompt='';
   page.on('dialog',async d=>{
-    if(/Изменение участка целиком удалит малые озёра|Changing the area removes these small lakes|При удалении последнего региона будут также удалены малые озёра|Deleting the last region also removes small lakes/.test(d.message())){await d.accept();return;}
+    if(isSmallLakeLossConfirmation(d)){await d.accept();return;}
     assert.match(d.message(),/Будет восстановлено исходное состояние рек|Original river state will be restored|Будет восстановлена вода и берег|The checkpoint water and shore/);
     riverCheckpointPrompt=d.message();if(acceptCheckpointLoss)await d.accept();else await d.dismiss();
   });
