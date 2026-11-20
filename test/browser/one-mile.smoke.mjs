@@ -463,10 +463,12 @@ try{
  await smallLake.waitFor();
  assert.deepEqual(await maskCells(smallLake),fringe);
 
- // R05: mutate only the saved footprint. The same river conflict rejected
- // in the editor above must leave the open map and both timelines intact.
+ // R05: move the footprint onto the path with a structurally valid shore.
+ // The geometry refusal must leave the open map and both timelines intact.
  const invalidLake=structuredClone(shoreAccepted);
- invalidLake.map.physicalGrid.smallLakes.lakes[0].cells=[{q:0,r:0}];
+ const conflictingLake=invalidLake.map.physicalGrid.smallLakes.lakes[0];
+ conflictingLake.cells=[{q:0,r:0}];
+ conflictingLake.shoreCells=[];
  await lakeCell('10,-9').scrollIntoViewIfNeeded();
  await lakeCell('10,-9').press('Enter');
  await button('Remove small lake').click();
