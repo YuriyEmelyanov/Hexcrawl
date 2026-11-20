@@ -536,26 +536,30 @@ try{
  await generationSize.selectOption('locality');
  await showOneMile();
  const lakeCells=['-21,19','1,1'];
- for(const [i,key] of lakeCells.entries()){
+ for(const key of lakeCells){
    await lakeCell(key).press('Enter');
    await button('Add small lake').click();
    await saveLake.evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));
    await saveLake.click();
-   await page.locator(`[data-small-lake="${i+1}"]`).waitFor();
+   await page.locator('[data-small-lake-controls]').waitFor();
  }
  await lakeCell(lakeCells[0]).scrollIntoViewIfNeeded();
  await shot('small-lake-regeneration-before.jpg');
  await step.selectOption('6');
  const beforeRegeneration=await snap();
- assert.deepEqual(beforeRegeneration.map.physicalGrid.smallLakes.lakes.map(lake=>lake.id),[1,2]);
+ const priorLakes=beforeRegeneration.map.physicalGrid.smallLakes;
+ const manualLakes=priorLakes.lakes.filter(lake=>lake.origin==='manual');
+ assert.deepEqual(manualLakes.map(lake=>lake.cells.map(cell=>`${cell.q},${cell.r}`)),lakeCells.map(cell=>[cell]));
+ const [lostLake,retainedLake]=manualLakes;
  const regenerateWithConsent=async accept=>{
    if(await pngMenu.getAttribute('open')!==null)await pngMenu.locator('summary').click();
    regenerationConsent=accept;
    try{
      const [dialog]=await Promise.all([page.waitForEvent('dialog'),button('Regenerate region').click()]);
      assert.equal(dialog.type(),'confirm');
-     assert.match(dialog.message(),/small lakes in full: №1 \(-21,19\)/);
-     assert.doesNotMatch(dialog.message(),/№2/);
+     assert.ok(dialog.message().includes(`№${lostLake.id} (${lakeCells[0]})`));
+     assert.match(dialog.message(),/small lakes in full:/);
+     assert.ok(!dialog.message().includes(`№${retainedLake.id} (${lakeCells[1]})`));
      await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
      return dialog.message();
    }finally{regenerationConsent=null;}
@@ -565,16 +569,19 @@ try{
  assert.equal(await regenerateWithConsent(true),warning);
  const afterRegeneration=await snap();
  assert.notDeepEqual(afterRegeneration.map.regions,beforeRegeneration.map.regions);
- assert.deepEqual(afterRegeneration.map.physicalGrid.smallLakes.lakes.filter(lake=>lake.origin==='manual'),[beforeRegeneration.map.physicalGrid.smallLakes.lakes[1]]);
- assert.ok(afterRegeneration.map.physicalGrid.smallLakes.lakes.filter(lake=>lake.origin==='automatic').every(lake=>lake.id>=beforeRegeneration.map.physicalGrid.smallLakes.nextId));
+ const afterLakes=afterRegeneration.map.physicalGrid.smallLakes.lakes;
+ assert.deepEqual(afterLakes.filter(lake=>lake.origin==='manual'),[retainedLake]);
+ for(const lake of afterLakes.filter(lake=>lake.id<priorLakes.nextId)){
+   assert.deepEqual(lake,priorLakes.lakes.find(original=>original.id===lake.id),'an existing ID retains the same full footprint');
+ }
  await button('Undo').click();assert.deepEqual(await snap(),beforeRegeneration);
  await button('Redo').click();assert.deepEqual(await snap(),afterRegeneration);
  await showOneMile();
- await page.locator('[data-small-lake="2"]').waitFor();
+ await page.locator(`[data-small-lake="${retainedLake.id}"]`).waitFor();
  assert.equal(await smallLake.count(),0);
  await lakeCell(lakeCells[1]).scrollIntoViewIfNeeded();
  await shot('small-lake-regeneration-after.jpg');
- manifest.cases.push({id:'HX056-regeneration-confirms-small-lake-loss',status:'pass',seed:42,warning,cancelExact:true,undoRedoExact:true,retainedLake:2});
+ manifest.cases.push({id:'HX056-regeneration-confirms-small-lake-loss',status:'pass',seed:42,warning,cancelExact:true,undoRedoExact:true,retainedLake:retainedLake.id});
 
  // Same production generation action from matching candidates in both views.
  await page.reload();
