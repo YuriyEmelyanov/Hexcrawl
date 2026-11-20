@@ -1,0 +1,157 @@
+{
+  "run_id": "2026-11-20T1530-PF2-overview",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "source_inventory_ref": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json",
+  "earlier_control": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19-probe.mjs",
+  "rows": [
+    {
+      "id": "PF2-RM-122-L1-v2",
+      "source": {
+        "edition": "Pathfinder 2e Remaster / GM Core",
+        "locator": "Printed p135; Отбор деталей региональной карты",
+        "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2963",
+        "dedup_key": "paizo:pathfinder2:remaster",
+        "access_level": "previously_recorded_primary_Archives_of_Nethys",
+        "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-122-L1-v2"
+      },
+      "source_scope_disposition": "keep_L1",
+      "disposition": "keep_L1",
+      "disposition_reason": "Карта выделяет значимые места, не обязана воспроизводить каждый дом.",
+      "product_boundary": "Региональный уровень детализации",
+      "action": "Выбрать важные для обзора объекты",
+      "map_object_or_state": {
+        "important": [
+          "city C",
+          "pass P"
+        ],
+        "minor": [
+          "hamlet H"
+        ]
+      },
+      "expected_result": "C/P отмечены; H может быть опущен в обзоре без потери подготовленных данных.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-122",
+        "normative_kind": "research_interpretation_of_recommendation",
+        "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать важные для обзора объекты",
+        "inputs_and_units": {
+          "important": [
+            "city C",
+            "pass P"
+          ],
+          "minor": [
+            "hamlet H"
+          ]
+        },
+        "product_operation": "Выбрать важные для обзора объекты. C/P отмечены; H может быть опущен в обзоре без потери подготовленных данных.",
+        "expected_output": "C/P отмечены; H может быть опущен в обзоре без потери подготовленных данных.",
+        "constraints_and_exceptions": [
+          "Источник не задаёт численные пороги скрытия.",
+          "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Скрыть мелкие объекты и вернуть отображение",
+            "when": "Выбрать важные для обзора объекты",
+            "expected": "H возвращён на прежнее место, C/P сохраняются"
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.display_detail",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": []
+      },
+      "canonical": {
+        "candidate_common_rule_refs": [
+          "agent-work/rules/common-rules.json#map.display_detail",
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "binding_ids": [
+          "PF2-RM-122-L1"
+        ],
+        "status": "existing_binding_profile_not_auto_accepted"
+      },
+      "implementation_status": "not_implemented",
+      "evidence_level": "executed_product_callbacks_and_rendered_SVG_plus_code_review",
+      "evidence_ids": [
+        "agent-work/research/requirements/PF2-Remaster-L1-selective-overview-2026-11-20-probe.mjs"
+      ],
+      "comment": "В шестимильном Classic при зуме 1 → 0,2 → 6 → 1 отрисовываются город, перевал и деревня. При импорте сохраняются их места, имена и заметка деревни. В панели и в пути отрисовки нет выбора состава обзора. Удаление безымянной деревни даёт нужные два значка, но меняет исходную карту. С авторским именем редактор защищает деревню от удаления.",
+      "remaining": "Отображение растровой картинки в браузере и время отклика неизвестны. Доступ игроков вне этой строки.",
+      "previous_implementation_status": "unverified",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee"
+    }
+  ],
+  "source_vs_fixture": "GM Core, с. 135: мастер отбирает важные детали. В проверке P — вручную названный ориентир типа obelisk; отдельный тип перевала и численный порог зума источнику не приписаны.",
+  "evidence": {
+    "observations": {
+      "states": [
+        {
+          "zoom": 1,
+          "markers": [
+            "1,0",
+            "2,-1",
+            "2,0"
+          ]
+        },
+        {
+          "zoom": 0.2,
+          "markers": [
+            "1,0",
+            "2,-1",
+            "2,0"
+          ]
+        },
+        {
+          "zoom": 6,
+          "markers": [
+            "1,0",
+            "2,-1",
+            "2,0"
+          ]
+        },
+        {
+          "zoom": 1,
+          "markers": [
+            "1,0",
+            "2,-1",
+            "2,0"
+          ]
+        }
+      ],
+      "afterImport": [
+        "1,0",
+        "2,-1",
+        "2,0"
+      ],
+      "afterDeletionAndImport": [
+        "1,0",
+        "2,-1"
+      ],
+      "undoRestoresAll": true,
+      "refusal": "The edit would remove the authored name “Hamlet H”. Clear it explicitly first. Your map is unchanged.",
+      "controls": "<div class=\"control-block controls controls--display\"><button type=\"button\" class=\"rotate-map-button\" data-poi-navigation=\"true\" aria-label=\"Rotate map 90 degrees\" title=\"Rotate map 90°\"><svg class=\"rotate-map-button__icon\" viewBox=\"0 0 64 48\" aria-hidden=\"true\" focusable=\"false\"><polygon points=\"20,4 44,4 56,24 44,44 20,44 8,24\" class=\"rotate-map-button__hex\"></polygon><text x=\"32\" y=\"25\" class=\"rotate-map-button__sign\">↻</text></svg></button><button type=\"button\" class=\"hex-coordinate-toggle\" aria-pressed=\"false\" aria-label=\"Show hex coordinates\" title=\"Show or hide hex coordinates\"><span aria-hidden=\"true\">#</span><span>Coordinates</span></button><label class=\"fine-step\"><span>Hex size</span><select data-fine-step=\"true\" aria-label=\"Hex size\"><option value=\"1\">1 mile</option><option value=\"6\" selected=\"\">6 miles</option></select></label></div>"
+    },
+    "blob_check": {
+      "matched": 103,
+      "app": "5c7468956842770ec6654d920e14793171275b29"
+    },
+    "code_paths": [
+      "src/App.tsx:16658–16680 — состав значков",
+      "src/App.tsx:16952–16970 — панель",
+      "src/App.tsx:14839–14846 — удаление",
+      "src/App.tsx:492–530 — сохраняемая карта и UI"
+    ],
+    "method": "React SSR реальной панели и слоя значков; декорации рельефа подменены. Свежий экземпляр приложения для импорта. Копировать probe в корень checkout релиза и выполнить node."
+  },
+  "acceptance": {
+    "retain_authored_map": "pass",
+    "selective_composition": "fail",
+    "reload_selected_overview": "unavailable",
+    "player_view": "outside_scope"
+  },
+  "score_impact": "Новое функциональное свидетельство о недоступности операции. Положительной прибавки к нижней оценке L1 нет. Активные баллы и верхние границы не пересчитывались."
+}

@@ -1,0 +1,28 @@
+{
+  "result_ref": "agent-work/research/runs/2026-11-20T1530-PF2-overview.json",
+  "matrix_ref": "agent-work/research/requirements/PF2-Remaster-L1-selective-overview-2026-11-20.json",
+  "overview_ref": "agent-work/research/requirements/PF2-Remaster-L1-selective-overview-2026-11-20.md",
+  "handoff_ref": "agent-work/research/handoffs/2026-11-20T1530-PF2-overview-strategist.json",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "summary": "В шестимильном Classic при зуме 1 → 0,2 → 6 → 1 отрисовываются город, перевал и деревня. При импорте сохраняются их места, имена и заметка деревни. В панели и в пути отрисовки нет выбора состава обзора. Удаление безымянной деревни даёт нужные два значка, но меняет исходную карту. С авторским именем редактор защищает деревню от удаления.",
+  "id": "PF2-RM-122-L1-v2",
+  "disposition": "keep_L1",
+  "previous": "unverified",
+  "current": "not_implemented",
+  "reason": "Карта выделяет значимые места, не обязана воспроизводить каждый дом.",
+  "acceptance": [
+    {
+      "given": "Скрыть мелкие объекты и вернуть отображение",
+      "when": "Выбрать важные для обзора объекты",
+      "expected": "H возвращён на прежнее место, C/P сохраняются"
+    }
+  ],
+  "next_candidate": {
+    "id": "HX-RSR-PF2-123-L1-ISLAND",
+    "layer": "L1",
+    "game_id": "PF2",
+    "action": "PF2-RM-123-L1-v2: подготовить берег и отдельный остров внутри моря, проверить отсутствие сухопутного соединения, сохранить JSON и сравнить связность после открытия.",
+    "completion_condition": "Один воспроизводимый сценарий берег–море–остров, проверены независимость острова и сохранность геометрии; переиспользовать имеющиеся проверки водных форм DND5."
+  },
+  "needs_owner_action": false
+}

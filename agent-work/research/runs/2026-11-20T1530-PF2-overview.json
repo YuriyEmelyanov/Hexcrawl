@@ -1,0 +1,76 @@
+{
+  "run_id": "2026-11-20T1530-PF2-overview",
+  "status": "completed",
+  "base_sha": "39d0ebb1a6ef58f0a5c1189aa5ac41bb80751abc",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "started_at": "2026-11-20T12:32:58.006Z",
+  "completed_at": "2026-11-20T12:35:25.802Z",
+  "stage": "PF2 selective overview",
+  "previous_result_ref": "agent-work/research/runs/2026-11-20T1430-SD-tracks.json",
+  "selection": "Продолжение последнего checkpoint. Повторная ревизия PF2 и повторный скан Crows уже закрыты; допуск create-top10 остаётся отдельной задачей.",
+  "summary": "В шестимильном Classic при зуме 1 → 0,2 → 6 → 1 отрисовываются город, перевал и деревня. При импорте сохраняются их места, имена и заметка деревни. В панели и в пути отрисовки нет выбора состава обзора. Удаление безымянной деревни даёт нужные два значка, но меняет исходную карту. С авторским именем редактор защищает деревню от удаления.",
+  "saved_results": [
+    "agent-work/research/requirements/PF2-Remaster-L1-selective-overview-2026-11-20.json",
+    "agent-work/research/requirements/PF2-Remaster-L1-selective-overview-2026-11-20.md",
+    "agent-work/research/requirements/PF2-Remaster-L1-selective-overview-2026-11-20-probe.mjs",
+    "agent-work/research/handoffs/2026-11-20T1530-PF2-overview-strategist.json"
+  ],
+  "next_candidate": {
+    "id": "HX-RSR-PF2-123-L1-ISLAND",
+    "layer": "L1",
+    "game_id": "PF2",
+    "action": "PF2-RM-123-L1-v2: подготовить берег и отдельный остров внутри моря, проверить отсутствие сухопутного соединения, сохранить JSON и сравнить связность после открытия.",
+    "completion_condition": "Один воспроизводимый сценарий берег–море–остров, проверены независимость острова и сохранность геометрии; переиспользовать имеющиеся проверки водных форм DND5."
+  },
+  "health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last_run_time": "2026-11-20T11:32:20.997017+00:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last_run_time": "2026-11-20T11:07:50.893788+00:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last_run_time": "2026-11-20T11:32:20.997017+00:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last_run_time": "2026-11-20T11:07:50.893788+00:00"
+      }
+    ]
+  },
+  "last_successful_step": "Сверка 103 blob и проверка сохранения, удаления, Undo, панели и SVG.",
+  "failed_operation": null,
+  "observed_error": null,
+  "recovered_errors": [
+    {
+      "operation": "Playwright chromium.launch /usr/bin/chromium",
+      "observed_error": "browserType.launch: Target page, context or browser has been closed",
+      "cause_status": "unknown",
+      "recovery": "React SVG/toolbar and editor callbacks used; browser coverage open."
+    },
+    {
+      "operation": "node pf2-overview.mjs / named hamlet deletion",
+      "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
+      "error_code": "ERR_ASSERTION",
+      "cause_status": "confirmed",
+      "recovery": "The edit would remove the authored name “Hamlet H”. Clear it explicitly first. Your map is unchanged. Repeated separately with unnamed hamlet."
+    }
+  ],
+  "stop_reason": "completion_condition_met",
+  "needs_owner_action": false,
+  "cause_status": "confirmed"
+}
