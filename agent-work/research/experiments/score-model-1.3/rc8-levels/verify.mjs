@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {score} from './score.mjs';
+
+const exact = n => ({min:n, max:n});
+const row = () => ({core:[600,600], games:[300,300], ours:exact(10), unseenMax:0});
+const input = {levels:{L1:row(), L2:row(), L3:row()}, apps:[]};
+const before = score(input);
+input.apps.push({id:'Foundry VTT', audience:{L2:exact(11)}});
+const after = score(input);
+assert.deepEqual(after.L1,before.L1);
+assert.deepEqual(after.L3,before.L3);
+assert.equal(after.L2.exact,(600+300+990)/3);
+const rivals = Array.from({length:99}, (_,i) => ({id:String(i), audience:{L1:exact(20)}}));
+assert.equal(score({...input,apps:rivals}).L1.exact, (600+300+10)/3);
+rivals.push({id:'100',audience:{L1:exact(20)}});
+assert.equal(score({...input,apps:rivals}).L1.exact,300);
+const baseline = JSON.parse(readFileSync(new URL('./baseline.json', import.meta.url)));
+baseline.levels.L3.core = null;
+const report = score(baseline);
+assert.equal(report.L3.exact,null);
+assert.equal(report.L3.guaranteed,0);
+assert.equal(report.L3.possible,1000);
+console.log(JSON.stringify(report,null,2));
