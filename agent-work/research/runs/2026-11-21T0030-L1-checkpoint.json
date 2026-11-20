@@ -1,0 +1,73 @@
+{
+  "run_id": "2026-11-21T0030-L1-checkpoint",
+  "status": "completed_bounded_functional_check",
+  "stage": "completed",
+  "last_successful_step": "6-mile Classic roundtrip, undo, redo; 106 local file hashes matched product tree",
+  "failed_operation": {
+    "tool": "Playwright Chromium.launch",
+    "action": "Запуск дополнительной проверки в портретной эмуляции браузера",
+    "safe_locator": "local Chromium, 390 × 844 CSS px",
+    "observed_error": "Check failed: . socket() failed: Operation not permitted (1)"
+  },
+  "cause_status": "confirmed",
+  "stop_reason": "Проверка обработчиков завершена. ОС отклонила создание сокета при запуске локального Chromium. Мобильная приёмка остаётся открытой.",
+  "needs_owner_action": false,
+  "exact_continuation": "При доступном браузерном исполнителе импортировать сохранение, коснуться 1,1, изменить биом, экспортировать и повторно открыть. Для следующей географической операции использовать next_candidate.",
+  "result_ref": "agent-work/research/runs/2026-11-21T0030-L1-checkpoint.json",
+  "next_candidate": {
+    "id": "HX-RSR-PF2-125-L1-CONFLUENCE",
+    "game_id": "PF2",
+    "layer": "L1",
+    "action": "Проверить существующее PF2-RM-125-L1-v2 на подготовленной карте. Задать основную реку S→J→O и приток T→J, сравнить направления и общее русло до и после повторного открытия. Начать с имеющейся проверки DND5 для той же геометрии."
+  },
+  "source_sha": "8b87ae0df170b7496a84bc5fe6377e835fe7e7f9",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "summary": "В Classic на карте из 12 гексов мастер поднял хребет, задал предгорья и изменил биом одного гекса предгорья на лесистую местность. Равнина и 11 остальных гексов сохранились. Вся карта совпала после экспорта и повторного открытия, отмена и повтор восстановили ожидаемые состояния.",
+  "selection": "Продолжение прямо указано в последнем результате. Предыдущая проверка DND5 затрагивала перевал и дорогу, но не проверяла правку одного гекса предгорья PF2 и сохранность равнины. Повторное чтение главы не закрывает этот пробел.",
+  "automation_health": {
+    "start": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ]
+  },
+  "evidence_ref": "agent-work/research/requirements/PF2-Remaster-L1-ridge-2026-11-21.json",
+  "overview_ref": "agent-work/research/requirements/PF2-Remaster-L1-ridge-2026-11-21.md",
+  "handoff_ref": "agent-work/research/handoffs/2026-11-21T0030-L1-checkpoint-strategist.json",
+  "candidate_effect": {
+    "proposal_id": "HX-PF2-124-L1-functional-v1",
+    "version": 1,
+    "status": "awaiting_owner_approval",
+    "existing": 0.5,
+    "proposed": 1,
+    "formula": "1000/3/20/29*(1-0.5)",
+    "conditional_delta": 0.28735632183908044,
+    "delta_if_not_accepted": 0,
+    "applied_delta": 0,
+    "quality_delta": 0,
+    "market_delta": 0,
+    "other_scenarios_or_cohorts_changed": false,
+    "baseline_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/PF2.json",
+    "assumption": "Фиксированный состав 20 игр create, равный вес игр, 29 операций PF2. При пересмотре знаменателя пересчитать."
+  },
+  "mobile_decision_ref": "agent-work/decisions/owner-decision-2026-11-21-mobile-browser-acceptance.json"
+}

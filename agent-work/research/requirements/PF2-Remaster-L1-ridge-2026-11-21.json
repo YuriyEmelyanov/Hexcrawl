@@ -1,0 +1,113 @@
+{
+  "run_id": "2026-11-21T0030-L1-checkpoint",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "id": "PF2-RM-124-L1-v2",
+  "source": {
+    "edition": "Pathfinder 2e Remaster / GM Core",
+    "locator": "Printed p135; Хребты,холмы и равнины",
+    "source_ref": "https://2e.aonprd.com/Rules.aspx?ID=2963",
+    "dedup_key": "paizo:pathfinder2:remaster",
+    "access_level": "previously_recorded_primary_Archives_of_Nethys",
+    "fact_ref": "agent-work/research/requirements/PF2-Remaster-v2-scope-audit.json#PF2-RM-124-L1-v2"
+  },
+  "source_scope_disposition": "keep_L1",
+  "disposition": "keep_L1",
+  "disposition_reason": "Хребты, холмы и островные цепи — региональная география.",
+  "product_boundary": "Рельеф региональной карты",
+  "action": "Задать хребет и предгорья",
+  "map_object_or_state": {
+    "ridge": "R",
+    "hills": "H",
+    "plain": "P"
+  },
+  "expected_result": "Хребет R соседствует с H; невыбранные низменности P остаются равниной.",
+  "operational_requirement": {
+    "source_rule_ref": "agent-work/market/rules/PF2-Remaster.json#PF2-RM-124",
+    "normative_kind": "research_interpretation_of_recommendation",
+    "applicability": "PF2 Remaster regional-map preparation; selected optional Hexploration only where specified",
+    "layer": "L1",
+    "trigger_or_user_action": "Задать хребет и предгорья",
+    "inputs_and_units": {
+      "ridge": "R",
+      "hills": "H",
+      "plain": "P"
+    },
+    "product_operation": "Задать хребет и предгорья. Хребет R соседствует с H; невыбранные низменности P остаются равниной.",
+    "expected_output": "Хребет R соседствует с H; невыбранные низменности P остаются равниной.",
+    "constraints_and_exceptions": [
+      "Не превращать «обычно» в запрет исключений.",
+      "Сохранение, изменение и приёмка — предложение для приложения; не буквальное правило НРИ и не разрешение разработки."
+    ],
+    "acceptance_cases": [
+      {
+        "given": "Создать R/H и локально изменить один участок H",
+        "when": "Задать хребет и предгорья",
+        "expected": "Изменился только участок; остальнойхребет сохранён"
+      }
+    ],
+    "source_vs_product_interpretation": "Исходный игровой смысл отдельно; действие и ожидаемый результат — исследовательская интерпретация. Данные модели, API и способ интерфейса здесь не проектируются.",
+    "canonical_rule_refs": [
+      "agent-work/rules/common-rules.json#map.relief_transitions"
+    ],
+    "unresolved_parameters": []
+  },
+  "canonical": {
+    "candidate_common_rule_refs": [
+      "agent-work/rules/common-rules.json#map.relief_transitions"
+    ],
+    "binding_ids": [
+      "PF2-RM-124-L1"
+    ],
+    "status": "existing_binding_profile_not_auto_accepted"
+  },
+  "implementation_status": "implemented_manual_classic_6mi_functional",
+  "evidence_level": "versioned_application_handlers",
+  "evidence_ids": [
+    "agent-work/research/requirements/PF2-Remaster-L1-ridge-2026-11-21-probe.mjs"
+  ],
+  "comment": "В Classic на карте из 12 гексов мастер поднял хребет, задал предгорья и изменил биом одного гекса предгорья на лесистую местность. Равнина и 11 остальных гексов сохранились. Вся карта совпала после экспорта и повторного открытия, отмена и повтор восстановили ожидаемые состояния.",
+  "remaining": "Мобильный интерфейс и нормативы времени в этом опыте не подтверждены.",
+  "historical_status": "partial",
+  "probe_command": "Из корня приложения на указанном SHA скопировать файл пробы в корень и выполнить node <имя пробы>. Node v24.22.3, установлены зависимости проекта.",
+  "observed": {
+    "seed": 42,
+    "regions": [
+      [
+        "R",
+        3,
+        "mountains"
+      ],
+      [
+        "H",
+        2,
+        "open_hills"
+      ],
+      [
+        "P",
+        1,
+        "open_plains"
+      ]
+    ],
+    "changed": "1,1 → hilly_woodland",
+    "unchanged_cells": 11,
+    "full_map_equal_after_json_reimport": true,
+    "undo": true,
+    "redo": true
+  },
+  "candidate_effect": {
+    "proposal_id": "HX-PF2-124-L1-functional-v1",
+    "version": 1,
+    "status": "awaiting_owner_approval",
+    "existing": 0.5,
+    "proposed": 1,
+    "formula": "1000/3/20/29*(1-0.5)",
+    "conditional_delta": 0.28735632183908044,
+    "delta_if_not_accepted": 0,
+    "applied_delta": 0,
+    "quality_delta": 0,
+    "market_delta": 0,
+    "other_scenarios_or_cohorts_changed": false,
+    "baseline_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/data/PF2.json",
+    "assumption": "Фиксированный состав 20 игр create, равный вес игр, 29 операций PF2. При пересмотре знаменателя пересчитать."
+  }
+}
