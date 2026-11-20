@@ -1,0 +1,101 @@
+{
+  "run_id": "2026-11-21-L1-portrait-roundtrip",
+  "status": "completed_bounded_case",
+  "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "disposition": "keep_L1",
+  "scope_basis": "Возврат к карте после ошибочного открытия другого файла.",
+  "selection": "Портретная серия заблокирована. Возврат к карте проверяет четыре общих критерия сразу для трёх профилей; повтор анализа правил и рынка не проверяет сохранность работы.",
+  "criteria": [
+    "S02-C03",
+    "S03-C05",
+    "S04-C04",
+    "S09-C04"
+  ],
+  "method": "Реальные обработчики App; независимые экземпляры приложения, без DOM.",
+  "cases": [
+    {
+      "mode": "classic",
+      "sourceVersion": 2,
+      "outputVersion": 10,
+      "name": "Return classic",
+      "cell": "0,0",
+      "regions": 1,
+      "invalidInputs": [
+        "truncated JSON",
+        "version 9999"
+      ],
+      "messages": [
+        "Failed to load JSON: invalid JSON syntax ($: invalid JSON syntax). Your current map is intact.",
+        "Failed to load JSON: invalid map data (version: unknown value). Your current map is intact."
+      ],
+      "passed": true
+    },
+    {
+      "mode": "mythic",
+      "sourceVersion": 2,
+      "outputVersion": 10,
+      "name": "Return mythic",
+      "cell": "3,6",
+      "regions": 27,
+      "invalidInputs": [
+        "truncated JSON",
+        "version 9999"
+      ],
+      "messages": [
+        "Failed to load JSON: invalid JSON syntax ($: invalid JSON syntax). Your current map is intact.",
+        "Failed to load JSON: invalid map data (version: unknown value). Your current map is intact."
+      ],
+      "passed": true
+    },
+    {
+      "mode": "knave",
+      "sourceVersion": 10,
+      "outputVersion": 10,
+      "name": "Return knave",
+      "cell": "0,0",
+      "regions": 1,
+      "invalidInputs": [
+        "truncated JSON",
+        "version 9999"
+      ],
+      "messages": [
+        "Failed to load JSON: invalid JSON syntax ($: invalid JSON syntax). Your current map is intact.",
+        "Failed to load JSON: invalid map data (version: unknown value). Your current map is intact."
+      ],
+      "passed": true
+    }
+  ],
+  "script": "agent-work/research/acceptance/L1-PR509/reopen-invalid-redo.mjs",
+  "score_delta": 0,
+  "next": {
+    "ids": [
+      "S09-C01",
+      "DND5-2014-001-L1-v2-draft",
+      "PF2-RM-121-L1-v2",
+      "AWN-obs-04",
+      "SWC-obs-01"
+    ],
+    "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
+    "fallback": "Если браузер недоступен, продолжать независимые проверки ядра и игр из реестра."
+  },
+  "stage": "портретная серия 42–61",
+  "last_successful_step": "Проверена сохранность карты, генератора и истории после ошибочных импортов и Redo.",
+  "failed_operation": "Playwright Chromium launch; Chromium DevTools on app.hexcrawl.ru",
+  "observed_error": [
+    "socket() failed: Operation not permitted (1)",
+    "Your organization has blocked the use of DevTools on this page"
+  ],
+  "stop_reason": "Недоступна портретная эмуляция. Замеры отсутствуют.",
+  "cause_status": "confirmed",
+  "needs_owner_action": false,
+  "automation_health": [
+    [
+      "Исследователь HexCrawl",
+      true
+    ],
+    [
+      "Команда HexCrawl",
+      true
+    ]
+  ]
+}

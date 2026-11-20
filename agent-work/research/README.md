@@ -39,3 +39,5 @@
 [Точки интереса Shadowdark](requirements/SD-CORE-L1-poi-location-development-2026-11-20.md). Тип и имя следуют за точкой при переносе. Текст Development остаётся у гекса и хранит прежний адрес цели.
 
 [Ручная карта Shadowdark](requirements/SD-CORE-L1-overland-editor-2026-11-20.md) · [Рабочая матрица L1 D&D 5e](requirements/DND5-2014-L1-working-matrix-2026-11-20.md) · [Условия допуска общего топ‑5](requirements/overall-top5-L1-acceptance-2026-11-19.md).
+
+21.11.2026. В Classic, Mythic Bastionland и Knave проверено восстановление карты и истории после двух ошибочных импортов. [Результаты](runs/2026-11-21-L1-portrait-roundtrip.json).
