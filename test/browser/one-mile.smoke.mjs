@@ -374,7 +374,9 @@ try{
  const lakePath=await smallLake.locator('path').getAttribute('d');
  assert.ok(lakePath?.length>40);
  const savedLakeWorld=await snap();
- assert.deepEqual(savedLakeWorld.map.physicalGrid.smallLakes,{nextId:2,lakes:[{id:1,cells:[{q:-4,r:-28}],origin:'manual'}]});
+ const visibleLakeCells=await smallLake.locator('[data-small-lake-shore-cell]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-small-lake-shore-cell')));
+ const persistedFringe=visibleLakeCells.slice(1).map(key=>{const [q,r]=key.split(',').map(Number);return {q,r};});
+ assert.deepEqual(savedLakeWorld.map.physicalGrid.smallLakes,{nextId:2,lakes:[{id:1,cells:[{q:-4,r:-28}],origin:'manual',shoreCells:persistedFringe}]});
  assert.deepEqual(savedLakeWorld.generation,classicSource.generation,'manual water edit does not change RNG');
  const manualPass=await throughLakeSamples(smallLake,1);
  assert.ok(manualPass?.inside.inside&&manualPass.shore===lakePath,'river 1 has distinct entry and exit at the same accepted contour');
@@ -416,6 +418,7 @@ try{
  await showOneMile();
  await smallLake.waitFor();
  assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
+ assert.deepEqual(await smallLake.locator('[data-small-lake-shore-cell]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-small-lake-shore-cell'))),visibleLakeCells);
  assert.equal((await throughLakeSamples(smallLake,1))?.edge,manualPass.edge);
  await lakeCell('-4,-28').press('Enter');
  await button('Remove small lake').click();
@@ -444,7 +447,7 @@ try{
  await smallLake.waitFor();
  assert.deepEqual(await maskCells(smallLake),fringe);
  const shoreAccepted=await snap();
- assert.deepEqual(shoreAccepted.map.physicalGrid.smallLakes.lakes,[{id:1,origin:'manual',cells:[{q:10,r:-9}]}]);
+ assert.deepEqual(shoreAccepted.map.physicalGrid.smallLakes.lakes,[{id:1,origin:'manual',cells:[{q:10,r:-9}],shoreCells:[{q:11,r:-10}]}]);
  for(const key of ['terrainByHexKey','rivers','roads','crossings'])assert.deepEqual(shoreAccepted.map[key],shoreBefore.map[key]);
  await lakeCell('10,-9').scrollIntoViewIfNeeded();
  await shot('small-lake-spill-after.jpg');

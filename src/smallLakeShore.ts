@@ -175,6 +175,17 @@ export function prepareSmallLakeShore(lake:SmallLake,seed:number,origin:WorldPoi
   return finish({...core,maskCells},null);
 }
 
+export function prepareAcceptedSmallLakeViews(lakes:readonly SmallLake[],seed:number,origin:WorldPoint,
+  protection:SmallLakeProtection,coverage:ReadonlyMap<string,OneMileCell>) {
+  const reserved=new Set(lakes.flatMap(lake=>[...lake.cells,...(lake.shoreCells??[])].map(fineCellKey)));
+  const views=[...lakes].sort((a,b)=>a.id-b.id).map(lake=>{
+    const {view}=prepareSmallLakeShore(lake,seed,origin,protection,coverage,reserved);
+    for(const cell of view.maskCells)reserved.add(fineCellKey(cell));
+    return view;
+  });
+  return {views,reserved};
+}
+
 /** Reserve shared spill before applying per-lake road, crossing or POI
  * conflicts. That allocation is independent of which candidates survive. */
 export function prepareAutomaticSmallLakeBatch(footprints:readonly (readonly DetailCell[])[],nextId:number,

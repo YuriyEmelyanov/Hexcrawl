@@ -51,7 +51,7 @@ export function parseSmallLakes(raw: unknown): SmallLakeLayer {
     const footprint = cells.map(parseLakeCell);
     validateDetailFootprint(footprint);
     const hasShore = Object.prototype.hasOwnProperty.call(fields, 'shoreCells');
-    if (hasShore && (origin !== 'automatic' || !Array.isArray(shoreCells))) throw new Error('Invalid small lake shore');
+    if (hasShore && !Array.isArray(shoreCells)) throw new Error('Invalid small lake shore');
     const shore = Array.isArray(shoreCells) ? shoreCells.map(parseLakeCell) : undefined;
     if (shore?.length) {
       const adjacent = new Set(footprint.flatMap(smallLakeNeighbours).map(fineCellKey));

@@ -58,10 +58,16 @@ with that geometry, the change lists it in the normal lake-loss confirmation.
 Accepting the change removes the whole affected lake. Declining preserves
 the previous map, random state and history.
 
-Automatic lakes keep the permitted fringe cells with their saved footprint.
+Manual and automatic lakes keep the permitted fringe cells with their saved
+footprint, so accepted water does not expand when neighbouring land is added.
 The generator allocates shared fringe to the ordered batch before checking
 which candidates conflict with roads, crossings or protected points.
 A skipped candidate cannot enlarge the visible shoreline of another.
-Older saves without the optional fringe field still open.
+Older saves without the optional fringe field still open. When expansion
+would add dry support beside one of those lakes, the accepted shore is taken
+from the map before expansion.
+Deleting the last region checks the restored paths and sites before committing.
+If restoring a checkpoint conflicts with a retained small lake, the same
+confirmation lists that lake along with any that lose dry support.
 An incompatible edit to a road or point is rejected before recording history.
 The editor keeps the selected hexes outlined when a draft fails validation.

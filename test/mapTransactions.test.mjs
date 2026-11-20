@@ -417,6 +417,76 @@ test('a new trail crossing a retained small lake is rejected before save and his
   h.render().undoMap();assert.deepEqual(stable(h.render()),before);
   h.render().redoMap();assert.deepEqual(stable(h.render()),before);
 });
+test('restoring a region checkpoint confirms only lakes conflicting with the restored paths',async()=>{
+  const {h,alerts}=setup();
+  const source=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
+  const trail={id:1,regionId:1,segments:[{from:{q:0,r:-1},to:{q:1,r:-1},kind:'trail'}]};
+  source.map.roads=[trail];source.map.nextRoadId=2;
+  await load(h,source);
+  h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+  assert.equal(h.render().regions.length,2);
+  assert.equal(h.render().editRoadDocument({type:'remove',roadId:trail.id}),true);
+  assert.equal(h.render().switchFineStep(1),true);
+  for(const cell of [{q:3,r:-6},{q:9,r:13}]){
+    const app=h.render();
+    assert.equal(app.pickFine(cell,false,app.getDocumentRevision()),true);
+    h.render().startSmallLake();
+    h.render().commitSmallLake();
+    assert.equal(h.render().editError,null);
+  }
+  assert.equal(h.render().switchFineStep(6),true);
+  const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  const prompts=[];
+  for(const confirmed of [false,true]){
+    h.setWindow({alert:m=>alerts.push(m),confirm:m=>(prompts.push(m),confirmed)});
+    h.render().deleteLastRegion();
+    assert.match(prompts.at(-1),/малые озёра №1\./);
+    if(!confirmed){
+      assert.deepEqual(stable(h.render()),before);
+      assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+    }
+  }
+  const after=stable(h.render());
+  assert.equal(after.map.regions.length,1);
+  assert.deepEqual(after.map.roads,[trail]);
+  assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:3,lakes:[before.map.physicalGrid.smallLakes.lakes[1]]});
+  assert.equal(h.render().undoHistory.length,stacks[0].length+1);
+  assertUndoRedo(h,before,after);
+  await load(h,after);
+  assert.deepEqual(alerts,[]);
+  assert.deepEqual(stable(h.render()),after);
+});
+test('expanding into a dry neighbour keeps the accepted manual shore, including legacy saves',async()=>{
+  const {h,alerts}=setup();
+  const source=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
+  const shore=()=>serial(h.render().acceptedLakeArtwork.views[0].maskCells);
+  const acceptedCells=[{q:9,r:13},{q:10,r:12}];
+  await load(h,source);
+  assert.equal(h.render().switchFineStep(1),true);
+  const app=h.render();
+  assert.equal(app.pickFine({q:9,r:13},false,app.getDocumentRevision()),true);
+  h.render().startSmallLake();h.render().commitSmallLake();
+  assert.deepEqual(shore(),acceptedCells);
+  assert.equal(h.render().switchFineStep(6),true);
+  const saved=stable(h.render());
+  const legacy=structuredClone(saved);
+  delete legacy.map.physicalGrid.smallLakes.lakes[0].shoreCells;
+  for(const input of [saved,legacy]){
+    await load(h,input);
+    assert.deepEqual(stable(h.render()),input);
+    const generated=h.render().safelyAddRegionToMap({q:3,r:3});
+    assert.equal(generated.success,true);
+    const result=stable(h.render());
+    assert.equal(result.map.regions.length,2);
+    assert.deepEqual(result.map.physicalGrid.smallLakes.lakes.find(lake=>lake.id===1),saved.map.physicalGrid.smallLakes.lakes[0]);
+    assertUndoRedo(h,input,result);
+    await load(h,result);
+    assert.equal(h.render().switchFineStep(1),true);
+    assert.ok(h.render().fineCells.some(row=>row.cell.q===8&&row.cell.r===14&&hasFullDrySupport(row)));
+    assert.deepEqual(shore(),acceptedCells);
+    assert.deepEqual(alerts,[]);
+  }
+});
 test('delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit',async()=>{
   const {h}=setup();h.setWindow({alert(){},confirm:()=>false,matchMedia:()=>({matches:false})});
   h.render().addFallbackTractToMap({q:0,r:0});h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
