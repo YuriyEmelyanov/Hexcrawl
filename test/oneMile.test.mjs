@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles, detailCellCenter} from '../src/detailGrid.ts';
-import {smallLakeShoreConflict} from '../src/smallLakeShore.ts';
+import {prepareSmallLakeShore,smallLakeShoreConflict,smallLakeWaterConnected} from '../src/smallLakeShore.ts';
+import {prepareRefinementShoreCells,prepareRefinementShorePath} from '../src/geometryRefinementShore.ts';
 import {dominantFineBiome, projectOneMile, oneMileCandidates, chooseOneMileAnchor,
   fineCellKey, parseFineCellEdits, prepareFineCellEdit, prepareFineCellLoss} from '../src/oneMile.ts';
 
@@ -14,6 +15,34 @@ const area=detailCellAreaSquareMiles(createDetailGrid(1));
 const valid=id=>['forest','hills','plain'].includes(id);
 const accepted=()=>projectOneMile([source(0,0)]);
 const neighbours=cell=>[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>c(cell.q+q,cell.r+r));
+
+test('a natural small-lake shore spills only onto unclaimed dry neighbours',()=>{
+  const lake={id:1,origin:'manual',cells:[c(0,0),c(1,0)]},origin={x:0,y:0};
+  const protection={roads:[],crossings:[],anchors:[]};
+  const coverage=new Map(accepted().map(row=>[fineCellKey(row.cell),row]));
+  const before=JSON.stringify(lake),open=prepareSmallLakeShore(lake,42,origin,protection,coverage);
+  assert.equal(open.conflict,null);
+  assert.ok(open.view.maskCells.some(cell=>fineCellKey(cell)==='2,0'),'a dry fringe preserves a natural outward bend');
+  const wet=new Map(coverage);wet.set('2,0',{...wet.get('2,0'),waterArea:.02});
+  const protectedFringe={...protection,anchors:[{ref:'point',point:{x:1.51,y:.12}}]};
+  for(const clipped of [prepareSmallLakeShore(lake,42,origin,protection,wet),
+    prepareSmallLakeShore(lake,42,origin,protection,coverage,new Set(['2,0'])),
+    prepareSmallLakeShore(lake,42,origin,protectedFringe,coverage)]){
+    assert.equal(clipped.conflict,null);
+    assert.equal(clipped.view.path,open.view.path);
+    assert.ok(!clipped.view.maskCells.some(cell=>fineCellKey(cell)==='2,0'));
+    assert.equal(JSON.stringify(clipped.view.lake),before,'spill does not enlarge the authored footprint');
+  }
+});
+
+test('shore clipping distinguishes disconnected water from an island inside a connected lake',()=>{
+  const mask=prepareRefinementShoreCells([c(0,0)],{x:0,y:0},1);
+  const connected=prepareRefinementShorePath('M-.4 -.2 L.4 -.2 L.4 .2 L-.4 .2 Z M-.1 -.1 L.1 -.1 L.1 .1 L-.1 .1 Z');
+  const cut=prepareRefinementShorePath('M-.25 0 L-.15 0 L-.15 .65 L.15 .65 L.15 0 L.25 0 L.25 .8 L-.25 .8 Z');
+  assert.deepEqual([mask.status,connected.status,cut.status],['prepared','prepared','prepared']);
+  assert.equal(smallLakeWaterConnected(connected,mask),true,'the island is a hole, not additional disconnected water');
+  assert.equal(smallLakeWaterConnected(cut,mask),false,'clipping away the joining arm leaves separate pools');
+});
 
 test('small lake protects crossed paths and anchors while dry hex margins remain usable',()=>{
   const lake={id:1,origin:'manual',cells:[c(0,0)]},origin={x:10,y:-2};

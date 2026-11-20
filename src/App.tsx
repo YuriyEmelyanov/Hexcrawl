@@ -1,7 +1,7 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
 import {addManualSmallLake,hasFullDrySupport,prepareSmallLakeSupport,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
-import {smallLakeShoreConflict,type SmallLakeProtection} from './smallLakeShore';
+import {prepareSmallLakeShore,smallLakeShorePath,type SmallLakeProtection,type SmallLakeView} from './smallLakeShore';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {prepareRefinementWater} from './geometryRefinementWater';
@@ -16482,8 +16482,9 @@ export function App() {
   };
   const acceptedSmallLakes=physicalGrid?.smallLakes;
   const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
+  const needsSmallLakeProtection=!!smallLakeDraft||!!acceptedSmallLakes?.lakes.length;
   const smallLakeProtection=useMemo(():SmallLakeProtection|null=>{
-    if(!smallLakeDraft||!fineDisplay)return null;
+    if(!needsSmallLakeProtection||fineDisplay?.viewStep!==1)return null;
     const origin=fineDisplay.grid.origin,grid=createDetailGrid(1,origin);
     const world=(x:number,y:number)=>detailSourcePixelToWorld({x:x-riverOffset.x,y:y-riverOffset.y},origin);
     const detail=fineDisplay.geometryRefinement;
@@ -16506,27 +16507,44 @@ export function App() {
         ...fp.attachments.map(a=>({ref:fp.poiId,point:a.kind==='route'?a.entry:a.contact})),
       ]),
     };
-  },[smallLakeDraft!==null,fineDisplay,refinedSource,hiddenRiverEdgeKeys,riverSegments,roadSegments,renderedCrossings,riverOffset]);
-  const smallLakeConflictText=(conflict:NonNullable<ReturnType<typeof smallLakeShoreConflict>>)=>{
+  },[needsSmallLakeProtection,fineDisplay,refinedSource,hiddenRiverEdgeKeys,riverSegments,roadSegments,renderedCrossings,riverOffset]);
+  const smallLakeCoverage=useMemo(()=>new Map(fineCells.map(cell=>[hexKey(cell.cell),cell])),[fineCells]);
+  const acceptedLakeArtwork=useMemo(()=>{
+    const views:SmallLakeView[]=[],reserved=new Set<string>();
+    if(fineDisplay?.viewStep!==1||!acceptedSmallLakes?.lakes.length)return {views,reserved};
+    for(const lake of acceptedSmallLakes.lakes)for(const cell of lake.cells)reserved.add(hexKey(cell));
+    for(const lake of [...acceptedSmallLakes.lakes].sort((a,b)=>a.id-b.id)){
+      const view=smallLakeProtection
+        ?prepareSmallLakeShore(lake,toponymSeed,fineDisplay.grid.origin,smallLakeProtection,smallLakeCoverage,reserved).view
+        :{lake,path:smallLakeShorePath(lake,toponymSeed),maskCells:lake.cells};
+      views.push(view);
+      for(const cell of view.maskCells)reserved.add(hexKey(cell));
+    }
+    return {views,reserved};
+  },[acceptedSmallLakes,smallLakeProtection,smallLakeCoverage,toponymSeed,fineDisplay]);
+  const overlapsSmallLake={kind:'small_lake' as const,ref:''};
+  const smallLakeConflictText=(conflict:NonNullable<ReturnType<typeof prepareSmallLakeShore>['conflict']>|typeof overlapsSmallLake)=>{
     if(conflict.kind==='road')return language==='ru'?`Берег малого озера пересекает дорогу или тропу №${conflict.ref}.`:`The small lake crosses road or trail #${conflict.ref}.`;
     if(conflict.kind==='crossing')return language==='ru'?'Берег малого озера пересекает действующую переправу.':'The small lake crosses an existing crossing.';
     if(conflict.kind==='anchor')return language==='ru'?'Берег малого озера перекрывает защищённую точку интереса или её привязку.':'The small lake covers a protected point of interest or its attachment.';
     if(conflict.kind==='water')return language==='ru'?`Малое озеро перекрывает русло реки №${conflict.ref}.`:`The small lake overlaps river #${conflict.ref}.`;
+    if(conflict.kind==='small_lake')return language==='ru'?'Выбранные гексы заходят на берег другого малого озера.':'The selected hexes overlap the shore of another small lake.';
     return language==='ru'?'На выбранных гексах нет подходящего берега.':'The selected cells do not form a valid shore.';
   };
   const manualSmallLake=useMemo(()=>{
     if(!smallLakeDraft?.cells.length||!fineDisplay||!smallLakeProtection)return null;
     try{
       const layer=addManualSmallLake(acceptedSmallLakes,smallLakeDraft.cells,fineCells),lake=layer.lakes[layer.lakes.length-1];
-      return {lake,conflict:smallLakeShoreConflict(lake,toponymSeed,fineDisplay.grid.origin,smallLakeProtection)};
+      const prepared=prepareSmallLakeShore(lake,toponymSeed,fineDisplay.grid.origin,smallLakeProtection,smallLakeCoverage,acceptedLakeArtwork.reserved);
+      return {...prepared,conflict:lake.cells.some(cell=>acceptedLakeArtwork.reserved.has(hexKey(cell)))?overlapsSmallLake:prepared.conflict};
     }catch{return null;}
-  },[acceptedSmallLakes,fineCells,smallLakeDraft,fineDisplay,smallLakeProtection,toponymSeed]);
-  const paintSmallLake=manualSmallLake?.lake;
+  },[acceptedSmallLakes,acceptedLakeArtwork,fineCells,smallLakeCoverage,smallLakeDraft,fineDisplay,smallLakeProtection,toponymSeed]);
+  const paintSmallLake=manualSmallLake?.view;
   const startSmallLake=()=>{
     const target=fineDisplay?.selectedCell;
     if(!target||fineDisplay?.viewStep!==1||mutationBlocked()||
        !hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,target)))||
-       acceptedSmallLakes?.lakes.some(lake=>lake.cells.some(cell=>isSameHex(cell,target))))return;
+       acceptedLakeArtwork.reserved.has(hexKey(target)))return;
     setEditError(null);
     setSmallLakeDraft({revision:documentRevision.current,cells:[target]});
   };
@@ -16543,8 +16561,11 @@ export function App() {
     }
     try{
       const before=copyDocument(captureDocument());
-      const layer=addManualSmallLake(state.smallLakes,smallLakeDraft.cells,projectOneMile(oneMileSources(before.map),state.grid.origin));
-      const conflict=smallLakeShoreConflict(layer.lakes[layer.lakes.length-1],before.map.toponymSeed,state.grid.origin,smallLakeProtection);
+      const accepted=projectOneMile(oneMileSources(before.map),state.grid.origin);
+      const layer=addManualSmallLake(state.smallLakes,smallLakeDraft.cells,accepted),lake=layer.lakes[layer.lakes.length-1];
+      const coverage=new Map(accepted.map(cell=>[hexKey(cell.cell),cell]));
+      const conflict=lake.cells.some(cell=>acceptedLakeArtwork.reserved.has(hexKey(cell)))?overlapsSmallLake:
+        prepareSmallLakeShore(lake,before.map.toponymSeed,state.grid.origin,smallLakeProtection,coverage,acceptedLakeArtwork.reserved).conflict;
       if(conflict){setEditError(smallLakeConflictText(conflict));return;}
       const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes:layer}}});
       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);
@@ -16564,12 +16585,12 @@ export function App() {
     }catch(error){setEditError(error instanceof Error?error.message:'Could not remove small lake');}
   };
   const smallLakeCanStart=!!fineDisplay?.selectedCell&&hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,fineDisplay.selectedCell!)))&&
-    !acceptedSmallLakes?.lakes.some(lake=>lake.cells.some(cell=>isSameHex(cell,fineDisplay.selectedCell!)));
+    !acceptedLakeArtwork.reserved.has(hexKey(fineDisplay.selectedCell));
   const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
-  const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} smallLakes={acceptedSmallLakes?.lakes} smallLakeDraft={paintSmallLake} smallLakeSeed={toponymSeed} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
+  const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} smallLakes={acceptedLakeArtwork.views} smallLakeDraft={paintSmallLake} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
     geography={refinedArtwork(fineDisplay)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [fineDisplay,fineCells,fineCandidates,acceptedSmallLakes,paintSmallLake,toponymSeed,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
+    [fineDisplay,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}

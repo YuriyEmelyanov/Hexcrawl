@@ -376,6 +376,41 @@ try{
  assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
  manifest.cases.push({id:'HX056-manual-small-lake-roundtrip-and-png',status:'pass',cells:['-4,-27','-4,-26'],pngBytes:smallLakeBytes.length,roadConflict,riverConflict});
 
+ // A separate real shoreline witnesses actual spill and continuity across
+ // save/reload. The large existing lake borders the selected fine hex.
+ await loadWorld(Buffer.from(JSON.stringify(classicSource)));
+ await showOneMile();
+ await lakeCell('10,-9').scrollIntoViewIfNeeded();
+ await lakeCell('10,-9').press('Enter');
+ const shoreBefore=await snap();
+ if(await exportMenu.getAttribute('open')!==null)await exportMenu.locator('summary').click();
+ await shot('small-lake-spill-before.jpg');
+ await button('Add small lake').click();
+ const maskCells=async lake=>lake.locator('[data-small-lake-shore-cell]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-small-lake-shore-cell')));
+ const fringe=['10,-9','11,-10'];
+ assert.deepEqual(await maskCells(page.locator('[data-editor-only="small-lake-draft"]')),fringe);
+ await saveLake.evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));
+ await saveLake.click();
+ await smallLake.waitFor();
+ assert.deepEqual(await maskCells(smallLake),fringe);
+ const shoreAccepted=await snap();
+ assert.deepEqual(shoreAccepted.map.physicalGrid.smallLakes.lakes,[{id:1,origin:'manual',cells:[{q:10,r:-9}]}]);
+ for(const key of ['terrainByHexKey','rivers','roads','crossings'])assert.deepEqual(shoreAccepted.map[key],shoreBefore.map[key]);
+ await lakeCell('10,-9').scrollIntoViewIfNeeded();
+ await shot('small-lake-spill-after.jpg');
+ await page.evaluate(()=>window.__oneSvg=null);
+ const [spillDownload]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);
+ await fs.copyFile(await spillDownload.path(),new URL('small-lake-spill.png',out));
+ await page.waitForFunction(()=>typeof window.__oneSvg==='string');
+ const spillSvg=await page.evaluate(()=>window.__oneSvg);
+ assert.match(spillSvg,/data-small-lake-shore-cell="11,-10"/);
+ assert.doesNotMatch(spillSvg,/small-lake-draft/);
+ await loadWorld(Buffer.from(JSON.stringify(shoreAccepted)));
+ await showOneMile();
+ await smallLake.waitFor();
+ assert.deepEqual(await maskCells(smallLake),fringe);
+ manifest.cases.push({id:'HX056-safe-shore-spill',status:'pass',selectedCells:['10,-9'],maskCells:fringe,pngIncludesSpill:true,roundTrip:true,existingGeographyUnchanged:true});
+
  const waterEditorWorld=await fs.readFile(new URL('../fixtures/e6-water-editor.json',import.meta.url));
  await loadWorld(waterEditorWorld);
  await showOneMile();

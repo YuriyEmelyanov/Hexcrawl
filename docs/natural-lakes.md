@@ -26,3 +26,9 @@ For rivers the same one-mile paths and widths define the protected channel.
 The clipped lake shoreline may meet a bank, including a round bend or end,
 but may not take up any interior of the existing river strip. This check does
 not join the two waters or change either feature's direction or attachments.
+
+A small lake keeps its selected cells in the document. Its natural shore may
+extend into an adjacent cell with full dry support when the visible spill avoids
+protected features and existing small-lake masks. The same derived mask is
+used in the draft, the accepted map, and PNG. Clipping must leave one connected
+body of water. Interior islands are permitted.
