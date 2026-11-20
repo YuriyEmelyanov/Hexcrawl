@@ -1,0 +1,727 @@
+[
+  {
+    "pr": 495,
+    "title": "Единые броски MB/Knave, подписи сущностей и текущий язык",
+    "parent": "01341b3c981324603f5413b0c675d53a5bac2bc2",
+    "release": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+    "delta_common": [
+      {
+        "id": "roll-label",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/495",
+    "change_files": [
+      "docs/knave-classic-checkpoint.md",
+      "docs/mythic-bastionland.md",
+      "src/App.tsx",
+      "src/styles.css",
+      "src/tags/KnaveContentRow.tsx",
+      "src/tags/TableResultRow.tsx",
+      "src/tags/TagRow.tsx",
+      "src/tags/knave.ts",
+      "test/browser/knave-properties-lifecycle.mjs",
+      "test/browser/tags.smoke.mjs",
+      "test/helpers/generation-harness.mjs",
+      "test/tags.test.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/knave-properties-lifecycle.mjs",
+        [
+          "+ assert.equal(await primary.locator('.tag-die').count(),0,'filtered source row is not presented as original d100');assert.equal(await pick.count(),1)",
+          "+ for(const row of [primary,trait])assert.equal(await row.evaluate(el=>{const label=el.querySelector('.tag-label'),action=el.querySelector('.tag-die,."
+        ]
+      ],
+      [
+        "test/browser/tags.smoke.mjs",
+        [
+          "+ assert.equal(await page.locator('.language-toggle').innerText(),'EN');",
+          "+ await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();assert.equal(await page.locator('.language-toggle').innerText(),'R"
+        ]
+      ],
+      [
+        "test/helpers/generation-harness.mjs",
+        []
+      ],
+      [
+        "test/tags.test.mjs",
+        [
+          "+test('Knave granular rerolls preserve categories and siblings, consume only targeted counters and replay after JSON',()=>{",
+          "+  assert.equal(after.category,before.category);assert.equal(after.site.table,before.site.table);"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  },
+  {
+    "pr": 497,
+    "title": "Preserve Knave maps across modes and clean up content cards",
+    "parent": "853c639f2c75b725a29eec3d65cfad4dd823ae5f",
+    "release": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+    "delta_common": [
+      {
+        "id": "mode-continue",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/497",
+    "change_files": [
+      "docs/knave-classic-checkpoint.md",
+      "docs/mythic-bastionland.md",
+      "src/App.tsx",
+      "src/knaveClassic.ts",
+      "src/saveValidation.ts",
+      "src/styles.css",
+      "src/tags/KnaveContentRow.tsx",
+      "src/tags/TableResultRow.tsx",
+      "src/tags/knave.ts",
+      "src/tags/knaveEnglish.ts",
+      "test/browser/entity-name-lifecycle.mjs",
+      "test/browser/knave-properties-lifecycle.mjs",
+      "test/browser/water-lifecycle.mjs",
+      "test/mythicKingdom.test.mjs",
+      "test/saveSafety.test.mjs",
+      "test/tags.test.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/entity-name-lifecycle.mjs",
+        [
+          "+  await page.getByRole('combobox',{name:'Поверхность',exact:true}).selectOption('sea');await page.locator('[data-water-finish]').click();const merge="
+        ]
+      ],
+      [
+        "test/browser/knave-properties-lifecycle.mjs",
+        [
+          "+ assert.deepEqual((await snapshot()).map.knave,chosen.map.knave);",
+          "+ await page.getByRole('combobox',{name:'Режим',exact:true}).selectOption('classic');assert.equal(await checkbox.isChecked(),true);"
+        ]
+      ],
+      [
+        "test/browser/water-lifecycle.mjs",
+        [
+          "+  await page.getByRole('combobox',{name:'Поверхность',exact:true}).selectOption('lake');await page.keyboard.press('Escape');assert.equal(await page.l",
+          "+ await select('3,0');await ensureEdit();await page.getByRole('combobox',{name:'Поверхность',exact:true}).selectOption('land');await page.locator('[da"
+        ]
+      ],
+      [
+        "test/mythicKingdom.test.mjs",
+        [
+          "+  app.changeGenerationMode('mythic');assert.equal(h.render().generationMode,'mythic');assert.equal(JSON.stringify(h.render().regions),old);assert.dee",
+          "+  app=h.render();app.startKingdom(app.candidateHexes[0]);app=finish(h);assert.equal(JSON.stringify(app.regions.slice(0,1)),old);validate(h,app.kingdo"
+        ]
+      ],
+      [
+        "test/saveSafety.test.mjs",
+        [
+          "+ profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.deepEqual(structuredClone(profile.rend",
+          "+ assert.equal(profile.render().chooseKnaveProfile(false),true);assert.equal(profile.render().createSaveData().ui.knaveEnabled,false);assert.deepEqual"
+        ]
+      ],
+      [
+        "test/tags.test.mjs",
+        [
+          "+  assert.equal(knaveEnglish[table].length,100);",
+          "+   assert.ok(en.trim());assert.doesNotMatch(en,/[А-Яа-яЁё]|\\(p\\.\\s*\\d+\\)/);"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  },
+  {
+    "pr": 499,
+    "title": "Complete English Mythic Bastionland content and legacy map localization",
+    "parent": "90afe931d9e9f8a2482febf77eaed20b401ceece",
+    "release": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "delta_common": [
+      {
+        "id": "mb-en",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/499",
+    "change_files": [
+      "docs/editor-names.md",
+      "docs/evidence/MC1-EN/english-390.png",
+      "docs/myth-material-localization.json",
+      "docs/myth-material.md",
+      "docs/mythic-tags.md",
+      "src/App.tsx",
+      "src/tags/MythMaterialView.tsx",
+      "src/tags/TagRow.tsx",
+      "src/tags/engine.ts",
+      "src/tags/mythMaterial.ts",
+      "src/tags/mythMaterialData.ts",
+      "src/tags/mythic.ts",
+      "src/tags/mythicData.ts",
+      "src/tags/tagPresentation.ts",
+      "test/browser/myth-material-lifecycle.mjs",
+      "test/tags.test.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/myth-material-lifecycle.mjs",
+        [
+          "+ assert.deepEqual(await englishOmens.locator('details p').allTextContents(),actual.locales.en.omens.map(o=>o.text));",
+          "+ assert.deepEqual(await englishRoles.locator('details p').allTextContents(),actual.locales.en.roles.map(r=>r.text));"
+        ]
+      ],
+      [
+        "test/tags.test.mjs",
+        [
+          "+   const before=structuredClone(saved);validateTags(saved,owners,defs);assert.deepEqual(saved,before);",
+          "+   const wrong=structuredClone(saved);wrong.instances[0].texts[0].ru+=' changed';assert.throws(()=>validateTags(wrong,owners,defs));"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  },
+  {
+    "pr": 503,
+    "title": "ONE-MILE1: одномильная карта и согласованное уточнение географии",
+    "parent": "1962fb9a835a9c310e55c1a09415fe180f22cca9",
+    "release": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "delta_common": [
+      {
+        "id": "fine-edit",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/503",
+    "change_files": [
+      ".github/workflows/check.yml",
+      "docs/geo2-work-in-progress.md",
+      "docs/one-mile-state.md",
+      "docs/poi-editor-data.md",
+      "docs/region-generation.md",
+      "docs/river-model-integration.md",
+      "docs/river-model.md",
+      "docs/road-model.md",
+      "docs/water-editing.md",
+      "package.json",
+      "src/App.tsx",
+      "src/OneMileArtwork.tsx",
+      "src/OneMilePanel.tsx",
+      "src/RefinedGeographyArtwork.tsx",
+      "src/detailGeography.ts",
+      "src/detailGrid.ts",
+      "src/detailIdentity.ts",
+      "src/detailModel.ts",
+      "src/detailPlacement.ts",
+      "src/detailSizes.ts",
+      "src/detailSummary.ts",
+      "src/geometryPlan.ts",
+      "src/geometryRefinementBanks.ts",
+      "src/geometryRefinementBoundary.ts",
+      "src/geometryRefinementExits.ts",
+      "src/geometryRefinementFingerprint.ts",
+      "src/geometryRefinementGrid.ts",
+      "src/geometryRefinementMouths.ts",
+      "src/geometryRefinementPoiFeatures.ts",
+      "src/geometryRefinementPoiSource.ts",
+      "src/geometryRefinementPois.ts",
+      "src/geometryRefinementPorts.ts",
+      "src/geometryRefinementPreview.ts",
+      "src/geometryRefinementRivers.ts",
+      "src/geometryRefinementRoadSearch.ts",
+      "src/geometryRefinementRoads.ts",
+      "src/geometryRefinementScope.ts",
+      "src/geometryRefinementShore.ts",
+      "src/geometryRefinementSource.ts",
+      "src/geometryRefinementState.ts",
+      "src/geometryRefinementTerminalRoutes.ts",
+      "src/geometryRefinementWater.ts",
+      "src/geometryRefinementWork.ts",
+      "src/knaveClassic.ts",
+      "src/manualPois.ts",
+      "src/oneMile.ts",
+      "src/oneMilePresentation.ts",
+      "src/saveValidation.ts",
+      "src/styles.css",
+      "test/browser/geometry-refinement-evidence.mjs",
+      "test/browser/myth-material-lifecycle.mjs",
+      "test/browser/one-mile-evidence.mjs",
+      "test/browser/one-mile.smoke.mjs",
+      "test/fixtures/classic-six-regions-seed42.json",
+      "test/geometryPlan.test.mjs",
+      "test/geometryRefinementExits.test.mjs",
+      "test/geometryRefinementGrid.test.mjs",
+      "test/geometryRefinementPois.test.mjs",
+      "test/geometryRefinementPorts.test.mjs",
+      "test/geometryRefinementRivers.test.mjs",
+      "test/geometryRefinementRoads.test.mjs",
+      "test/geometryRefinementShore.test.mjs",
+      "test/geometryRefinementWater.test.mjs",
+      "test/helpers/artwork-renderer.mjs",
+      "test/helpers/generation-harness.mjs",
+      "test/mapTransactions.test.mjs",
+      "test/oneMile.test.mjs",
+      "test/saveSafety.test.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/geometry-refinement-evidence.mjs",
+        [
+          "+ assert.ok(await preview.locator('[data-refined-river]').count());",
+          "+ assert.equal(await page.locator('svg[data-render-phase] [data-fine-world] [data-refined-geography]').count(),0,'candidate is separate from accepted "
+        ]
+      ],
+      [
+        "test/browser/myth-material-lifecycle.mjs",
+        [
+          "+  const before=await target.boundingBox();await target.scrollIntoViewIfNeeded();const rect=await target.boundingBox();assert.ok(rect);",
+          "+  console.log('MC1_DISABLED_POINTER '+JSON.stringify({before,after:rect,hit}));assert.equal(hit,true,'disabled material pointer hits the intended vis"
+        ]
+      ],
+      [
+        "test/browser/one-mile-evidence.mjs",
+        [
+          "+ assert.ok(owner);",
+          "+  const sample=summaries.find(predicate);assert.ok(sample,`accepted fixture contains ${kind}`);const value=selected.get(key(sample.cell))??{...sample"
+        ]
+      ],
+      [
+        "test/browser/one-mile.smoke.mjs",
+        [
+          "+const prepared=h.render().previewOneMile();assert.ok(prepared);assert.equal(h.render().applyOneMilePreview(prepared),true);const geometryFixture=stru",
+          "+for(const river of fixture.map.rivers){const name=fixture.map.toponyms.names[`river:${river.id}`];assert.ok(name);name.ru=`OM река ${river.id}`;name."
+        ]
+      ],
+      [
+        "test/fixtures/classic-six-regions-seed42.json",
+        []
+      ],
+      [
+        "test/geometryPlan.test.mjs",
+        [
+          "+ const before=JSON.stringify(map),result=prepareGeometryPlan(input);assert.equal(result.status,'prepared',JSON.stringify(result));assert.equal(JSON.s",
+          "+test('GEO2 classic seed42 through-lake refinement applies, roundtrips and undoes atomically',async()=>{"
+        ]
+      ],
+      [
+        "test/geometryRefinementExits.test.mjs",
+        [
+          "+test('GEO2 actual source hydrology separates open exits from lake/source and enforces fine boundary refs',async()=>{",
+          "+ const hydrology=h.geometry.buildRegionRiverNetwork(map.rivers,map.rivers,map.regions,map.candidateHexes,map.hexTerrainByKey,true);assert.equal(hydro"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  },
+  {
+    "pr": 504,
+    "title": "HX-BL-055: ширина рек на 1-мильной карте",
+    "parent": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
+    "release": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+    "delta_common": [
+      {
+        "id": "river-width",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/504",
+    "change_files": [
+      ".github/workflows/check.yml",
+      "docs/natural-lakes.md",
+      "docs/river-model.md",
+      "src/App.tsx",
+      "src/OneMileArtwork.tsx",
+      "src/RefinedGeographyArtwork.tsx",
+      "src/oneMilePresentation.ts",
+      "test/browser/one-mile.smoke.mjs",
+      "test/geometryPlan.test.mjs",
+      "test/lakeGeometry.test.mjs",
+      "test/oneMile.test.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/one-mile.smoke.mjs",
+        [
+          "+const f5Sector=fixture.map.rivers.flatMap(r=>r.sectors).find(s=>s.fullness===3);assert.ok(f5Sector);f5Sector.fullness=5;",
+          "+ assert.ok(pngRaster.maxDelta<=3&&pngRaster.changedFraction<=.001,'AC05 native6 exported PNG unchanged '+JSON.stringify(pngRaster));"
+        ]
+      ],
+      [
+        "test/geometryPlan.test.mjs",
+        [
+          "+ assert.match(mixed,new RegExp(`data-source-edge=\"outside0\"[^>]*stroke-width=\"${fineRiverStrokeWidth(1)}\"`));",
+          "+ assert.match(mixed,new RegExp(`data-source-edge=\"outside1\"[^>]*stroke-width=\"${fineRiverStrokeWidth(5)}\"`));"
+        ]
+      ],
+      [
+        "test/lakeGeometry.test.mjs",
+        [
+          "+  assert.equal(forward.mouths.length,1);assert.deepEqual(forward.mouths,backward.mouths);assert.deepEqual(forward.mouths[0].anchor,a);",
+          "+  assert.ok(Math.abs(Math.hypot(x-a.x,y-a.y)-width*.55)<.002,`F${fullness} mouth begins at the same visible bank`);"
+        ]
+      ],
+      [
+        "test/oneMile.test.mjs",
+        [
+          "+const displayWater=(paths,scale=1)=>{const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/",
+          "+ for(let F=1;F<=5;F++)assert.ok(Math.abs(fineRiverStrokeWidth(F)/FINE_HEX_WIDTH-F/10)<1e-12);"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  },
+  {
+    "pr": 505,
+    "title": "feat: automatic one-mile river-edge scenes",
+    "parent": "7c0eb9f3c9baabc01d63356845c1372df9fc9da5",
+    "release": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "delta_common": [
+      {
+        "id": "river-edges",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/505",
+    "change_files": [
+      ".github/workflows/check.yml",
+      "docs/one-mile-state.md",
+      "src/App.tsx",
+      "src/automaticOneMile.worker.ts",
+      "src/automaticOneMileJob.ts",
+      "src/automaticOneMileScene.ts",
+      "src/geometryPlan.ts",
+      "src/geometryRefinementPreview.ts",
+      "src/geometryRefinementRetention.ts",
+      "test/browser/geometry-refinement-evidence.mjs",
+      "test/browser/one-mile-evidence.mjs",
+      "test/browser/one-mile.smoke.mjs",
+      "test/geometryPlan.test.mjs",
+      "test/helpers/generation-harness.mjs",
+      "test/helpers/river-required-variant.mjs",
+      "test/saveSafety.test.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/geometry-refinement-evidence.mjs",
+        [
+          "+ assert.equal(await page.locator('svg[data-render-phase] [data-fine-world] [data-refined-geography]').count(),1,'the automatic base scene stays visib",
+          "+ assert.doesNotMatch(await page.evaluate(()=>window.__oneSvg),/data-geometry-preview/,'PNG excludes the optional proposal overlay; the automatic base"
+        ]
+      ],
+      [
+        "test/browser/one-mile-evidence.mjs",
+        [
+          "+ const png=async name=>{const shown=await page.locator('[data-fine-world]').evaluate(fineArtworkGeometry);await page.evaluate(()=>window.__oneSvg=nul",
+          "+   assert.equal(await page.locator('[data-fine-step]').inputValue(),'1');assert.equal(await page.locator('[data-fine-selected]').getAttribute('data-f"
+        ]
+      ],
+      [
+        "test/browser/one-mile.smoke.mjs",
+        [
+          "+assert.equal(h.render().switchFineStep(1),true,h.render().editError);const oracle=fineEvidenceSamples(h,h.render().fineDisplay);",
+          "+const mixedPreview=mixedHarness.render().previewGeometryRefinement();assert.ok(mixedPreview);assert.equal(mixedHarness.render().applyGeometryRefineme"
+        ]
+      ],
+      [
+        "test/geometryPlan.test.mjs",
+        [
+          "+for(const locale of ['ru','en'])test(`HX059 ${locale} import keeps a visible preparation error and source map`,async()=>{",
+          "+ assert.equal(h.render().switchFineStep(1),true);"
+        ]
+      ],
+      [
+        "test/helpers/generation-harness.mjs",
+        []
+      ],
+      [
+        "test/helpers/river-required-variant.mjs",
+        []
+      ],
+      [
+        "test/saveSafety.test.mjs",
+        [
+          "+ assert.equal(g.render().switchFineStep(1),true);assert.equal(g.render().getMapScale(),scale*6,'fine artwork keeps its physical screen size');assert.",
+          "+ g.render().setFineHover({q:1,r:0});assert.deepEqual(structuredClone(g.render().fineReadCell),{q:1,r:0});assert.deepEqual(g.render().fineDisplay.sele"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  },
+  {
+    "pr": 506,
+    "title": "HX-BL-060 F4 — первое подключение единого вида карты",
+    "parent": "292428e970dbe66e2146d8f9528dd6f97f32666d",
+    "release": "172155071ca1408abf6960dbc876ba030fc61613",
+    "delta_common": [
+      {
+        "id": "unified-map",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/506",
+    "change_files": [
+      ".github/workflows/check.yml",
+      "package.json",
+      "public/terrain/engravings/coniferous_forested_hills.png",
+      "public/terrain/engravings/coniferous_mountain_forest.png",
+      "public/terrain/engravings/coniferous_woodland.png",
+      "public/terrain/engravings/dead_forest.png",
+      "public/terrain/engravings/dead_forested_hills.png",
+      "public/terrain/engravings/dead_mountain_forest.png",
+      "public/terrain/engravings/dead_woodland.png",
+      "public/terrain/engravings/deciduous_forested_hills.png",
+      "public/terrain/engravings/deciduous_mountain_forest.png",
+      "public/terrain/engravings/deciduous_woodland.png",
+      "public/terrain/engravings/hilly_woodland.png",
+      "public/terrain/engravings/lake.png",
+      "public/terrain/engravings/mixed_forested_hills.png",
+      "public/terrain/engravings/mixed_mountain_forest.png",
+      "public/terrain/engravings/mixed_woodland.png",
+      "public/terrain/engravings/mountain_woodland.png",
+      "public/terrain/engravings/mountains.png",
+      "public/terrain/engravings/open_hills.png",
+      "public/terrain/engravings/open_plains.png",
+      "public/terrain/engravings/plain_coniferous_forest.png",
+      "public/terrain/engravings/plain_deciduous_forest.png",
+      "public/terrain/engravings/plain_mixed_forest.png",
+      "public/terrain/engravings/sea.png",
+      "public/terrain/engravings/semi_desert.png",
+      "public/terrain/engravings/swamp.png",
+      "public/terrain/engravings/swamp_forest.png",
+      "scripts/profile-engraved-map.mjs",
+      "scripts/profile-large-map.mjs",
+      "scripts/verify-engraving-catalog.mjs",
+      "src/App.tsx",
+      "src/OneMileArtwork.tsx",
+      "src/oneMile.ts",
+      "src/rendering/ColorHexGrid.tsx",
+      "src/rendering/EngravedTerrain.tsx",
+      "src/rendering/engravingAssets.ts",
+      "src/rendering/engravingCatalog.json",
+      "src/rendering/terrainBlend.ts",
+      "src/styles.css",
+      "test/browser/engraved-map.smoke.mjs",
+      "test/browser/forest-display.smoke.mjs",
+      "test/browser/geometry-refinement-evidence.mjs",
+      "test/browser/navigation.smoke.mjs",
+      "test/browser/one-mile-evidence.mjs",
+      "test/browser/one-mile.smoke.mjs",
+      "test/browser/poi-display.smoke.mjs",
+      "test/browser/terrain-color.smoke.mjs",
+      "test/browser/water-lifecycle.mjs",
+      "test/browser/world-random.smoke.mjs",
+      "test/fixtures/engraved-classic-map.json",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/engraved-map.smoke.mjs",
+        [
+          "+    assert.ok(layout.gap >= 0 && layout.gap <= 12 && layout.overlap > 0 && layout.fits, JSON.stringify(layout));",
+          "+  assert.equal(await map.getAttribute('data-biome-display'), 'engraved');"
+        ]
+      ],
+      [
+        "test/browser/forest-display.smoke.mjs",
+        [
+          "+ assert.equal(initial['-1,0'],'plain_coniferous_forest');",
+          "+ assert.equal(initial['2,0'],'swamp_forest');"
+        ]
+      ],
+      [
+        "test/browser/geometry-refinement-evidence.mjs",
+        [
+          "+ const expected=await signature();assert.ok(expected.rivers.length&&expected.roads.length);assert.ok(expected.riverMasks.length&&expected.visibleWate",
+          "+  const visible=await signature();assert.deepEqual(visible,expected,'existing river masks and lake cells stay stable');"
+        ]
+      ],
+      [
+        "test/browser/navigation.smoke.mjs",
+        []
+      ],
+      [
+        "test/browser/one-mile-evidence.mjs",
+        [
+          "+ const png=async name=>{const shown=await page.locator('[data-fine-world]').evaluate(fineArtworkGeometry);await page.evaluate(()=>window.__oneSvg=nul",
+          "+ const first=await png('fine-engraved.png');await page.locator(`[data-fine-key=\"${key(oracle.samples[0].cell)}\"]`).hover();const second=await png('fi"
+        ]
+      ],
+      [
+        "test/browser/one-mile.smoke.mjs",
+        [
+          "+ assert.equal(await roundTripSvg.evaluate(coastTexture,lakeKey),coarseCoast,'Returning to 6 miles keeps the original visible lake blend');",
+          "+ await shot('classic42-6mi-after.jpg');assert.deepEqual((await snap()).map,classicSource.map);"
+        ]
+      ],
+      [
+        "test/browser/poi-display.smoke.mjs",
+        [
+          "+  assert.equal(await page.locator('.biome-display-toggle,.poi-display-toggle').count(),0);",
+          "+  assert.ok(await page.locator('image[data-engraving=\"plain_deciduous_forest\"]').count());"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  },
+  {
+    "pr": 507,
+    "title": "HX-BL-059 F2 — карта в 1 милю сразу из выбора масштаба",
+    "parent": "172155071ca1408abf6960dbc876ba030fc61613",
+    "release": "52ada2492e6a39e499edbafe7f64be86100f0624",
+    "delta_common": [
+      {
+        "id": "fine-direct",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/507",
+    "change_files": [
+      "src/App.tsx",
+      "src/styles.css",
+      "test/browser/geometry-refinement-evidence.mjs",
+      "test/browser/one-mile.smoke.mjs",
+      "test/geometryPlan.test.mjs",
+      "test/helpers/generation-harness.mjs",
+      "test/mapTransactions.test.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/geometry-refinement-evidence.mjs",
+        [
+          "+ assert.equal(await selector.inputValue(),'1');",
+          "+ assert.equal(await selector.isVisible(),true);"
+        ]
+      ],
+      [
+        "test/browser/one-mile.smoke.mjs",
+        [
+          "+ assert.deepEqual(await Promise.all(['Undo','Redo'].map(name=>button(name).isEnabled())),classicHistory);",
+          "+ await shot('classic42-6mi-after.jpg');assert.deepEqual(await snap(),classicSource);"
+        ]
+      ],
+      [
+        "test/geometryPlan.test.mjs",
+        [
+          "+test('GEO2 classic seed42 through-lake legacy refinement imports, roundtrips and undoes atomically',async()=>{",
+          "+ assert.equal(JSON.stringify(h.render().captureDocument()),before);"
+        ]
+      ],
+      [
+        "test/helpers/generation-harness.mjs",
+        [
+          "+  assert.equal(plan.status, 'prepared', JSON.stringify(plan.refs));",
+          "+  assert.equal(saved.version, 16);"
+        ]
+      ],
+      [
+        "test/mapTransactions.test.mjs",
+        [
+          "+ assert.deepEqual(stable(h.render()),before);",
+          "+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),history);"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  },
+  {
+    "pr": 508,
+    "title": "Allow 30 minutes for the Pages build",
+    "parent": "52ada2492e6a39e499edbafe7f64be86100f0624",
+    "release": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "delta_common": [],
+    "delta_game": [],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/508",
+    "change_files": [
+      ".github/workflows/deploy.yml"
+    ],
+    "test_diff": [],
+    "scope": "Только timeout сборки 20→30. Путь мастера не изменился."
+  },
+  {
+    "pr": 509,
+    "title": "HX-BL-021 F1 — десять биомов для ручного выбора",
+    "parent": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+    "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "delta_common": [
+      {
+        "id": "manual-biomes",
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "delta_game": [
+      {
+        "id": "PF2-RM-044-L1-v2",
+        "game": "PF2",
+        "level": 1,
+        "before": 0,
+        "after": 1
+      }
+    ],
+    "evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/509",
+    "change_files": [
+      "docs/region-generation.md",
+      "public/terrain/engravings/desert.png",
+      "public/terrain/engravings/dunes.png",
+      "public/terrain/engravings/jungle_hills.png",
+      "public/terrain/engravings/jungle_mountains.png",
+      "public/terrain/engravings/lowland_jungle.png",
+      "public/terrain/engravings/mushroom_forest.png",
+      "public/terrain/engravings/savanna.png",
+      "public/terrain/engravings/snow_hills.png",
+      "public/terrain/engravings/snow_mountains.png",
+      "public/terrain/engravings/snow_plains.png",
+      "scripts/verify-engraving-catalog.mjs",
+      "src/App.tsx",
+      "src/rendering/engravingCatalog.json",
+      "src/rendering/forestStyle.ts",
+      "src/rendering/manualBiomes.ts",
+      "src/styles.css",
+      "test/browser/save-history.smoke.mjs",
+      "test/browser/terrain-color.smoke.mjs",
+      "test/deadForestBiomes.test.mjs",
+      "test/mapTransactions.test.mjs"
+    ],
+    "test_diff": [
+      [
+        "test/browser/save-history.smoke.mjs",
+        [
+          "+ assert.ok([8,18].includes(options.length));await info.getByRole('combobox',{name:'Местность региона',exact:true}).press('Escape');await info.locator"
+        ]
+      ],
+      [
+        "test/browser/terrain-color.smoke.mjs",
+        [
+          "+  assert.equal(await choices.inputValue(), 'auto');",
+          "+    assert.equal(await choices.locator('option[value=\"' + id + '\"]').textContent(), biome.ru);"
+        ]
+      ],
+      [
+        "test/deadForestBiomes.test.mjs",
+        [
+          "+  assert.equal(biomes.length + manual.length, Object.keys(rules.BIOMES).length);",
+          "+test('manual biomes use existing neighbor profiles and survive generation and JSON import', async () => {"
+        ]
+      ],
+      [
+        "test/mapTransactions.test.mjs",
+        [
+          "+  assert.equal(choices.length,({1:18,2:8,3:8})[r.heightLevel]);"
+        ]
+      ]
+    ],
+    "scope": "Атрибутированное изменение на фиксированном наборе критериев; другие строки обеих версий не прогонялись."
+  }
+]
