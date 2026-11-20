@@ -1,0 +1,80 @@
+{
+  "run_id": "2026-11-20T1430-SD-tracks",
+  "status": "completed",
+  "stage": "Shadowdark Core L1: связь следа с логовом и сверка рабочего набора",
+  "base_sha": "b59125b3ba5930adea39bdca5b1af8be3fe96555",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "started_at": "2026-11-20T11:27:23.052Z",
+  "completed_at": "2026-11-20T11:31:06.549Z",
+  "previous_result_ref": "agent-work/research/runs/2026-11-20T1330-SD-well.json",
+  "selection": "Последний checkpoint оставлял открытым адрес скрытого источника. Это последняя из пяти исходно непроверенных строк SD L1. Полный повторный скан Crows не требовался, переход к create-top10 зависит от приёмки общего top5.",
+  "summary": "След в 2,0 сохранился. После переноса логова из 2,-1 в 1,-1 его имя и тип переехали. Записанный мастером адрес источника остался прежним даже после появления башни в 2,-1. Ручная правка в гексе следа пережила повторное открытие.",
+  "counts": {
+    "partial": 15,
+    "implemented": 1,
+    "not_implemented": 2,
+    "unverified": 0
+  },
+  "last_successful_step": "Оба режима дали одинаковый результат при переносе и замене цели. Сверены 18 уникальных идентификаторов с исходным L1, старый контроль повторён на SHA релиза.",
+  "failed_operation": null,
+  "observed_error": null,
+  "recovered_errors": [
+    {
+      "operation": "node tracks.mjs / ручная правка после импорта",
+      "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\\n+ actual - expected\\n\\n+ 'A sharp smell of ozone.\\\\nSource at 2,-1'\\n- 'A sharp smell of ozone.\\\\nSource at 1,-1'",
+      "error_code": "ERR_ASSERTION",
+      "cause_status": "confirmed",
+      "recovery": "Перед вводом в редактор заметки выбран нужный гекс, оба сценария полностью пройдены."
+    }
+  ],
+  "stop_reason": "completion_condition_met",
+  "cause_status": "confirmed",
+  "needs_owner_action": false,
+  "health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last_run_time": "2026-11-20T10:33:29.983483+00:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last_run_time": "2026-11-20T11:07:50.893788+00:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last_run_time": "2026-11-20T10:33:29.983483+00:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last_run_time": "2026-11-20T11:07:50.893788+00:00"
+      }
+    ]
+  },
+  "saved_results": [
+    "agent-work/research/requirements/SD-CORE-L1-working-matrix-2026-11-20.json",
+    "agent-work/research/requirements/SD-CORE-L1-working-matrix-2026-11-20.md",
+    "agent-work/research/requirements/SD-CORE-L1-tracks-2026-11-20-probe.mjs",
+    "agent-work/research/handoffs/2026-11-20T1430-SD-tracks-strategist.json"
+  ],
+  "next_candidate": {
+    "id": "HX-RSR-PF2-RM-122-L1-OVERVIEW",
+    "game_id": "PF2",
+    "layer": "L1",
+    "action": "Проверить выборочное отображение трёх сохранённых объектов по PF2-RM-122-L1-v2. Использовать существующую проверку обзора DND5 и обновить только недостающие доказательства по профилю PF2.",
+    "completion_condition": "В обзорной карте мастер оставляет C и P и скрывает H. Проверены фактический обзор, повторное открытие и сохранность H в исходной карте. Доступ игроков и PF2-RM-005 вынесены за этот тест."
+  }
+}
