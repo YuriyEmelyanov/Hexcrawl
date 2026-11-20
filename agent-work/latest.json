@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-20T0600-programmer-HX-BL-056-water-contacts",
+  "run_id": "2026-11-20T0700-programmer-HX-BL-056-shore-spill",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
   "status": "implementation_checkpoint",
@@ -59,7 +59,7 @@
   "result_path": "agent-work/results/2026-11-20T0237-programmer-HX-BL-056-lake-loss.json",
   "handoff_commit_sha": "0d445c70a98c2552c9662cdc449e2f7f96f4535f",
   "active_claim": null,
-  "next_step": "Ограничить естественный выход берега сухой безопасной зоной и проверить связность после ограничения. В итоговом браузерном пакете повторить уже воспроизведённое касание большого озера №1 у 10,−9 и допуск внутри многогексового POI. Проверить импорт, затем использовать допуск в автогенерации R03.",
+  "next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03.",
   "owner_decisions_needed": [],
   "release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
@@ -89,7 +89,7 @@
   "score_update_task_id": "HX-BL-021",
   "score_update_release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Owner explicitly authorized the exact accepted PR #509 in the task chat; merge and verification are the release role.",
+  "role_selection_reason": "В утверждённой HX-BL-056 следующий готовый этап R02, слот программиста и задача заняты этим запуском через CAS. Пакет остаётся в draft PR и ожидает завершения F1.",
   "score_update_result_ref": "agent-work/results/2026-11-20T0000-strategist-score-PR509.json",
   "score_update_completed_at": "2026-11-19T21:04:32.717Z",
   "score_update_delta": null,
@@ -113,13 +113,13 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-20T03:00:51.760Z",
+      "checked_at": "2026-11-20T04:00:50.901Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
     },
     "end": {
-      "checked_at": "2026-11-20T03:17:53.604Z",
+      "checked_at": "2026-11-20T04:20:40.507Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
@@ -562,7 +562,7 @@
   "deployment_url": "https://app.hexcrawl.ru/",
   "next_task_execution_allowed": true,
   "last_release_pr": 507,
-  "last_material_result_path": "agent-work/results/2026-11-17T1500-programmer-responsive-preparation.json",
+  "last_material_result_path": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -729,7 +729,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Чистовая спецификация готова. Публикация проверенного пакета согласуется отдельно.",
-  "updated_at": "2026-11-20T03:17:53.604Z",
+  "updated_at": "2026-11-20T04:20:52.807Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1408,25 +1408,20 @@
   },
   "previous_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-    "title": "Команда HexCrawl",
     "start": {
-      "checked_at": "2026-11-15T03:57:24.848Z",
-      "method": "automations.peek",
+      "checked_at": "2026-11-20T03:00:51.760Z",
       "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "error": null
     },
     "end": {
-      "checked_at": "2026-11-15T04:18:58.528Z",
-      "method": "automations.peek",
+      "checked_at": "2026-11-20T03:17:53.604Z",
       "status": "checked",
-      "is_enabled": true
+      "is_enabled": true,
+      "error": null
     },
-    "restoration": {
-      "performed": false,
-      "reason": "Both actual observations enabled"
-    },
-    "errors": [],
-    "scope": "Actual point-in-time checks only; no guarantee against later service changes. Same task/prompt/schedule unchanged."
+    "restoration_performed": false,
+    "errors": []
   },
   "previous_completed_claim": "agent-work/claims/2026-11-10T0859-reviewer-HX-BL-051-a4e8a48.json",
   "test_audit": {
@@ -2339,7 +2334,7 @@
   "authorization_status": "Implementation within approved F1 and closed interview; no publication approval.",
   "completed_at": "2026-11-19T16:31:41.642Z",
   "score_changed": false,
-  "next_stage_id": "HX059-FINAL-MATRIX",
+  "next_stage_id": "F1_import_shore_validation_then_automatic_generation",
   "score_evidence_updated": true,
   "current_stage_id": "HX059-responsive-preparation",
   "implementation_started": true,
@@ -7837,7 +7832,7 @@
   },
   "published_scope": "MYTH-CARD1 full72RU reference slice; overall041 has remaining categories",
   "public_book_corpus_approval_scope": "Only exact72MC1 corpus/tree98970e; NATURE2/other corpora excluded",
-  "previous_run_id": "2026-11-11T0205-reviewer-TABLES1-9cf202e",
+  "previous_run_id": "2026-11-20T0600-programmer-HX-BL-056-water-contacts",
   "next_role_after_approval": "programmer",
   "latest_MC1_EN_intake": {
     "schema_version": 1,
@@ -8205,7 +8200,7 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-20T0600-programmer-HX-BL-056-water-contacts.json",
+  "latest_result_ref": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
   "checks": {
     "run_id": 44119549919,
     "status": "success",
@@ -14809,7 +14804,7 @@
   "draft_clarifications_closed": true,
   "unchanged_draft_rewrite_needed": false,
   "task_next_role": "programmer",
-  "task_next_step": "Continue mixed retained/unrefined whole-map display preserving accepted paths; remaining busy/cancel/fallback camera and complete F1 acceptance.",
+  "task_next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03.",
   "last_visible_release_D2_confirmation": {
     "run_id": "2026-11-15T1701-interviewer-GEO2-visible-D2",
     "review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
@@ -15113,19 +15108,19 @@
   "next_ready_work": {
     "task_id": "HX-BL-056",
     "role": "programmer",
-    "stage_id": "F1_safe_shore_spill_then_automatic_generation",
+    "stage_id": "F1_import_shore_validation_then_automatic_generation",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "c5b7c148c34dd51a975a5f46e373354872511790",
-    "head_tree_sha": "a8827982f75db833d5b24755037aa4a83a9bd628",
+    "head_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
+    "head_tree_sha": "fb559dcd2a4305cbd92c00c012985b86af2255e5",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/river-water-c5b7c14/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44665457691",
-    "next_step": "Ограничить естественный выход берега сухой безопасной зоной и проверить связность после ограничения. В итоговом браузерном пакете повторить уже воспроизведённое касание большого озера №1 у 10,−9 и допуск внутри многогексового POI. Проверить импорт, затем использовать допуск в автогенерации R03."
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/safe-spill-e827f69/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604",
+    "next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03."
   },
   "previous_primary_before_HX_BL_055": {
     "run_id": "2026-11-16T0403-interviewer-new-biomes-D1",
@@ -16184,8 +16179,8 @@
     }
   ],
   "task_status": "опубликована",
-  "current_result_ref": "agent-work/results/2026-11-20T0600-programmer-HX-BL-056-water-contacts.json",
-  "result_commit_sha": "0d445c70a98c2552c9662cdc449e2f7f96f4535f",
+  "current_result_ref": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
+  "result_commit_sha": "fb91312fd8a4405bf8f82c2ab889d5bd484dc552",
   "independent_review_status": "accepted_exact_head",
   "execution_locks_ref": "agent-work/execution-locks.json",
   "execution_lock_generation": 233,
@@ -17167,33 +17162,33 @@
   "latest_HX_BL_056_implementation": {
     "task_id": "HX-BL-056",
     "role": "programmer",
-    "stage_id": "F1_safe_shore_spill_then_automatic_generation",
+    "stage_id": "F1_import_shore_validation_then_automatic_generation",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "c5b7c148c34dd51a975a5f46e373354872511790",
-    "head_tree_sha": "a8827982f75db833d5b24755037aa4a83a9bd628",
+    "head_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
+    "head_tree_sha": "fb559dcd2a4305cbd92c00c012985b86af2255e5",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/river-water-c5b7c14/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44665457691",
-    "next_step": "Ограничить естественный выход берега сухой безопасной зоной и проверить связность после ограничения. В итоговом браузерном пакете повторить уже воспроизведённое касание большого озера №1 у 10,−9 и допуск внутри многогексового POI. Проверить импорт, затем использовать допуск в автогенерации R03.",
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/safe-spill-e827f69/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604",
+    "next_step": "Переиспользовать проверку берегов в импорте. Воспроизводимый случай Classic, гекс −4,−28 на реке №1: ручной редактор отклоняет, а изменённый JSON пока открывается. Проверить атомарный отказ. Затем использовать тот же допуск при автогенерации R03.",
     "status": "implementation_checkpoint",
-    "result_ref": "agent-work/results/2026-11-20T0600-programmer-HX-BL-056-water-contacts.json",
+    "result_ref": "agent-work/results/2026-11-20T0700-programmer-HX-BL-056-shore-spill.json",
     "forecast": {
       "remaining_team_runs": [
-        5,
-        12
+        4,
+        11
       ],
       "excludes": [
         "owner_publication_wait",
         "CI_queue_wait"
       ],
-      "basis": "Речная полоса проверяется в общей геометрии и на реальной карте. Остались безопасный выход берега, контакты с крупным озером, импорт, автогенерация и полная независимая приёмка."
+      "basis": "Ручная форма и естественный выход, проверка связности берега, касание крупного озера и экспорт имеют сквозное подтверждение. Остались атомарная проверка импорта, автогенерация R03, итоговый браузерный пакет, независимая приёмка, исправления и выпуск."
     },
-    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44665457691/artifacts/14597339115",
+    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44672431604/artifacts/14600813620",
     "review_ready": false
   }
 }
