@@ -1,0 +1,30 @@
+name: L1 PR509 quality measurements
+on:
+  push:
+    branches: [qa/l1-pr509-quality-20261121-run]
+permissions:
+  contents: read
+jobs:
+  acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        profile: [desktop, portrait]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: |
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > /tmp/l1-vite.log 2>&1 &
+          for i in {1..30}; do curl --silent --fail http://127.0.0.1:4173/ > /dev/null && break; sleep 1; done
+          node l1-browser.mjs ${{ matrix.profile }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: l1-${{ matrix.profile }}
+          path: l1-${{ matrix.profile }}.json
