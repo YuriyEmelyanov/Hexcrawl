@@ -1,0 +1,200 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-056",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "comparison_base_sha": "2aec62335770852df9a68dbc85e77d3446596722",
+  "product_base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+  "head_tree_sha": "f3e3315a1c305c9550d5f95c5b89f599df92524b",
+  "previous_evidence_ref": "agent-work/evidence/HX-BL-056-F1/source-water-2aec623/verification.json",
+  "node": {
+    "version": "24.22.3",
+    "typescript": "passed",
+    "diff_check": "passed",
+    "browser_script_syntax": "passed",
+    "targeted": {
+      "suites": [
+        "oneMile",
+        "saveSafety",
+        "mapTransactions"
+      ],
+      "executed": 101,
+      "passed": 101,
+      "failed": 0,
+      "skipped": 0
+    },
+    "revised_case": {
+      "suite": "test/saveSafety.test.mjs",
+      "case": "ONE-MILE1 regeneration retains edits supported by final candidate rather than temporary empty checkpoint",
+      "seed": 42,
+      "lost_lakes": [
+        {
+          "id": 1,
+          "cell": "-9,-5"
+        },
+        {
+          "id": 2,
+          "cell": "-9,-4"
+        }
+      ],
+      "retained_lake": 3,
+      "combined_prompt": true,
+      "cancel_exact": true,
+      "confirmation_exception_rollback": true,
+      "single_transaction": true,
+      "undo_redo_exact": true
+    },
+    "ci_full": {
+      "job_id": 136006355596,
+      "executed": 432,
+      "passed": 432,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "temporary_mythic_diagnostic": {
+    "seed": 42,
+    "mode": "mythic",
+    "retainedCell": "0,0",
+    "prompts": 0,
+    "undoRedoExact": true,
+    "kind": "temporary programmer diagnostic",
+    "method": "Регион Mythic и озеро с допустимой опорой из принятого слоя physical3. Перегенерация штатным обработчиком, проверка сохранённого озера, RNG и Undo/Redo. Проверка браузера относится к Classic."
+  },
+  "test_change_summary": {
+    "base_sha": "2aec62335770852df9a68dbc85e77d3446596722",
+    "head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "count_source": "git diff 2aec62335770852df9a68dbc85e77d3446596722 25cd6450e38032508b6d6fbffdd030fd95be851b -- test/saveSafety.test.mjs test/browser/one-mile.smoke.mjs",
+    "suites": [
+      {
+        "suite": "Node / saveSafety.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Реальная перегенерация Classic: два малых озера теряют опору, одно остаётся. Потери правок и озёр подтверждаются вместе. Отказ и сбой диалога сохраняют точные снимки и оба стека.",
+        "risk": "Потеря при проверке временного снимка или отказ после подготовки итогового кандидата.",
+        "reuse_or_new_reason": "Существующий тест перегенерации и локальных правок расширен тем же действием и той же проверкой Undo/Redo."
+      },
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Генерация seed 42, нативное подтверждение перечисляет потерю одного из двух озёр. Сохранение карты при отказе, точный Undo/Redo, проверка видимых контуров.",
+        "risk": "Проводка подтверждения в React и реальное отображение не проверяются harness.",
+        "reuse_or_new_reason": "Тот же runner и вспомогательные функции JSON/скриншотов. Реальный клик по кнопке перегенерации и ответ нативному диалогу."
+      }
+    ]
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "incomplete",
+    "criterion_ids": [
+      "S01-C03",
+      "S02-C01",
+      "S02-C03",
+      "S03-C01",
+      "S04-C04"
+    ],
+    "material": [
+      "R04 / AC03 final map and restoration in actual regeneration",
+      "R05 / retained accepted layer and exact history in Classic and Mythic harness"
+    ],
+    "limitation": "Требуются итоговая геометрия R02, автогенерация R03 и независимая оценка полного F1."
+  },
+  "next_scope": {
+    "requirement": "R02",
+    "user_result": "На настоящей карте принять малое озеро рядом с водой и POI и увидеть понятный отказ при пересечении защищённого объекта.",
+    "implementation_inputs": [
+      "src/OneMileArtwork.tsx: используется buildNaturalLakes и маска следа",
+      "src/geometryRefinementShore.ts: существующие пересечения и проверка попадания для фактического берега",
+      "src/App.tsx: подготовленная геометрия действующих рек, дорог, переправ и точечных привязок"
+    ],
+    "completion": "Одинаковая конечная геометрия в валидаторе, DOM и SVG перед PNG, существующие пути, привязки и ID сохранены, причины отказа показаны в редакторе.",
+    "fixture_note": "Проверенный сценарий R04 использует сохраняемое озеро на гексе 0,0 с карточкой дороги и POI. При проверке R02 брать участок с подтверждённой допустимостью и отдельно проверять пересечение по конечному контуру."
+  },
+  "remaining": [
+    "Конечный контур и защита существующих объектов R02.",
+    "Автоматический розыгрыш и воспроизводимость R03.",
+    "Полная проверка F1, независимая приёмка и разрешение выпуска."
+  ],
+  "checked_at": "2026-11-20T01:20:31.042Z",
+  "current_workflow": {
+    "id": 44651237632,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632",
+    "jobs": [
+      {
+        "id": 136006355596,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136006355930,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136006355975,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136006358000,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ]
+  },
+  "browser": {
+    "source_head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+    "checkout_sha": "14002c1505a4858b1378da2e086641c7152c0ede",
+    "checkout_tree_sha": "f3e3315a1c305c9550d5f95c5b89f599df92524b",
+    "status": "passed",
+    "case": {
+      "id": "HX056-regeneration-confirms-small-lake-loss",
+      "status": "pass",
+      "seed": 42,
+      "warning": "Changing the area removes these small lakes in full: №1 (-21,19).\nUndo restores the previous map. Continue?",
+      "cancelExact": true,
+      "undoRedoExact": true,
+      "retainedLake": 2
+    },
+    "screenshots": [
+      {
+        "name": "small-lake-regeneration-before.jpg",
+        "viewport": {
+          "width": 1500,
+          "height": 1000
+        },
+        "mode": "1"
+      },
+      {
+        "name": "small-lake-regeneration-after.jpg",
+        "viewport": {
+          "width": 1500,
+          "height": 1000
+        },
+        "mode": "1"
+      }
+    ],
+    "case_count": 14,
+    "artifact_id": 14590559850,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632/artifacts/14590559850",
+    "artifact_digest": "sha256:f3a56e2d717be93121e725ce08765e52980ae05d7969567d55c1ad8ddb8361db",
+    "workflow_run_id": 44651237632,
+    "verified_files": {
+      "small-lake-regeneration-before.jpg": "c9e15f4006d37c3a5598aef437b48de8ddb85315f51748037761b24ac2073462",
+      "small-lake-regeneration-after.jpg": "2fbc4967207b86986106a0f69e94ca132bdf68459b10a4fcd76f0c6857d6dce1",
+      "manifest.json": "e5f6c0b70f3c110cdbd22fd76b8b58563b6d042aa683ecc588e4b99fb1196da2"
+    }
+  }
+}

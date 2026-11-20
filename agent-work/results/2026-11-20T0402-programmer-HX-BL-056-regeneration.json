@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-20T0402-programmer-HX-BL-056-regeneration",
+  "task_id": "HX-BL-056",
+  "role": "programmer",
+  "stage_id": "F1_contacts_then_automatic_generation",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+  "head_tree_sha": "f3e3315a1c305c9550d5f95c5b89f599df92524b",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/regeneration-25cd645/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632",
+  "next_step": "Довести R02 до сквозной проверки на реальной карте. Валидировать итоговый контур и допустимые касания к воде и краю POI, защищать существующие дороги, переправы и точечные привязки. Затем использовать эту же проверку для автоматического розыгрыша R03.",
+  "status": "implementation_checkpoint",
+  "implemented_stage_id": "F1_regeneration_small_lake_support",
+  "role_selection_reason": "Утверждённый F1, свободный слот программиста и воспроизведённое замечание перегенерации на предыдущем SHA черновика PR №510.",
+  "started_at": "2026-11-20T01:03:39.820Z",
+  "completed_at": "2026-11-20T01:20:31.042Z",
+  "result_ref": "agent-work/results/2026-11-20T0402-programmer-HX-BL-056-regeneration.json",
+  "implemented_in_this_run": "Перегенерация сверяет малые озёра с итоговой картой, показывает единое подтверждение с номерами и координатами теряемых озёр и локальными правками. При отказе откатывается карта, RNG и оба стека. При согласии поддержанные озёра и счётчик остаются, замена региона и удаление входят в один шаг.",
+  "visible_result": {
+    "source_head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+    "checkout_sha": "14002c1505a4858b1378da2e086641c7152c0ede",
+    "checkout_tree_sha": "f3e3315a1c305c9550d5f95c5b89f599df92524b",
+    "status": "passed",
+    "case": {
+      "id": "HX056-regeneration-confirms-small-lake-loss",
+      "status": "pass",
+      "seed": 42,
+      "warning": "Changing the area removes these small lakes in full: №1 (-21,19).\nUndo restores the previous map. Continue?",
+      "cancelExact": true,
+      "undoRedoExact": true,
+      "retainedLake": 2
+    },
+    "screenshots": [
+      {
+        "name": "small-lake-regeneration-before.jpg",
+        "viewport": {
+          "width": 1500,
+          "height": 1000
+        },
+        "mode": "1"
+      },
+      {
+        "name": "small-lake-regeneration-after.jpg",
+        "viewport": {
+          "width": 1500,
+          "height": 1000
+        },
+        "mode": "1"
+      }
+    ],
+    "case_count": 14,
+    "artifact_id": 14590559850,
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632/artifacts/14590559850",
+    "artifact_digest": "sha256:f3a56e2d717be93121e725ce08765e52980ae05d7969567d55c1ad8ddb8361db",
+    "workflow_run_id": 44651237632,
+    "verified_files": {
+      "small-lake-regeneration-before.jpg": "c9e15f4006d37c3a5598aef437b48de8ddb85315f51748037761b24ac2073462",
+      "small-lake-regeneration-after.jpg": "2fbc4967207b86986106a0f69e94ca132bdf68459b10a4fcd76f0c6857d6dce1",
+      "manifest.json": "e5f6c0b70f3c110cdbd22fd76b8b58563b6d042aa683ecc588e4b99fb1196da2"
+    }
+  },
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632/artifacts/14590559850",
+  "test_change_summary": {
+    "base_sha": "2aec62335770852df9a68dbc85e77d3446596722",
+    "head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "count_source": "git diff 2aec62335770852df9a68dbc85e77d3446596722 25cd6450e38032508b6d6fbffdd030fd95be851b -- test/saveSafety.test.mjs test/browser/one-mile.smoke.mjs",
+    "suites": [
+      {
+        "suite": "Node / saveSafety.test.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Реальная перегенерация Classic: два малых озера теряют опору, одно остаётся. Потери правок и озёр подтверждаются вместе. Отказ и сбой диалога сохраняют точные снимки и оба стека.",
+        "risk": "Потеря при проверке временного снимка или отказ после подготовки итогового кандидата.",
+        "reuse_or_new_reason": "Существующий тест перегенерации и локальных правок расширен тем же действием и той же проверкой Undo/Redo."
+      },
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Генерация seed 42, нативное подтверждение перечисляет потерю одного из двух озёр. Сохранение карты при отказе, точный Undo/Redo, проверка видимых контуров.",
+        "risk": "Проводка подтверждения в React и реальное отображение не проверяются harness.",
+        "reuse_or_new_reason": "Тот же runner и вспомогательные функции JSON/скриншотов. Реальный клик по кнопке перегенерации и ответ нативному диалогу."
+      }
+    ]
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "checked_at": "2026-11-20T01:02:55.619Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "end": {
+      "checked_at": "2026-11-20T01:20:31.042Z",
+      "status": "checked",
+      "is_enabled": true,
+      "error": null
+    },
+    "restoration_performed": false,
+    "errors": []
+  },
+  "forecast": {
+    "remaining_team_runs": [
+      6,
+      13
+    ],
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ],
+    "basis": "Ручное добавление, сохранение и PNG, правка источника и перегенерация имеют отдельные сквозные проверки. Остаются финальная геометрия R02, автогенерация R03, полная независимая приёмка, исправления и выпуск."
+  },
+  "next_task_id": "HX-BL-056",
+  "next_role": "programmer",
+  "review_ready": false,
+  "no_validation_processes_running": true,
+  "no_writing_processes_running": true
+}
