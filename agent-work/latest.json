@@ -26,7 +26,7 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-20T0258-programmer-HX-BL-056-source-edits",
+  "run_id": "2026-11-20T0402-programmer-HX-BL-056-regeneration",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
   "status": "implementation_checkpoint",
@@ -59,7 +59,7 @@
   "result_path": "agent-work/results/2026-11-20T0237-programmer-HX-BL-056-lake-loss.json",
   "handoff_commit_sha": "0d445c70a98c2552c9662cdc449e2f7f96f4535f",
   "active_claim": null,
-  "next_step": "На реальной карте проверить и реализовать сохранение поддержанных озёр и подтверждаемое снятие всей группы при потере опоры в перегенерации. Затем закрыть правила контактов с водой и защищёнными объектами и автогенерацию.",
+  "next_step": "Довести R02 до сквозной проверки на реальной карте. Валидировать итоговый контур и допустимые касания к воде и краю POI, защищать существующие дороги, переправы и точечные привязки. Затем использовать эту же проверку для автоматического розыгрыша R03.",
   "owner_decisions_needed": [],
   "release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
@@ -113,13 +113,13 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "checked_at": "2026-11-19T23:58:17.602Z",
+      "checked_at": "2026-11-20T01:02:55.619Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
     },
     "end": {
-      "checked_at": "2026-11-20T00:16:41.279Z",
+      "checked_at": "2026-11-20T01:20:31.042Z",
       "status": "checked",
       "is_enabled": true,
       "error": null
@@ -729,7 +729,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Чистовая спецификация готова. Публикация проверенного пакета согласуется отдельно.",
-  "updated_at": "2026-11-20T00:16:41.279Z",
+  "updated_at": "2026-11-20T01:20:31.042Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -2321,19 +2321,19 @@
   "next_approved_stage": {
     "task_id": "HX-BL-056",
     "role": "programmer",
-    "stage_id": "F1_regeneration_contacts_then_generation",
+    "stage_id": "F1_contacts_then_automatic_generation",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "2aec62335770852df9a68dbc85e77d3446596722",
-    "head_tree_sha": "c82ce6f6ca02cf8feb34204a8318ebd81a646292",
+    "head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+    "head_tree_sha": "f3e3315a1c305c9550d5f95c5b89f599df92524b",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/source-water-2aec623/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44642813895",
-    "next_step": "На реальной карте проверить и реализовать сохранение поддержанных озёр и подтверждаемое снятие всей группы при потере опоры в перегенерации. Затем закрыть правила контактов с водой и защищёнными объектами и автогенерацию."
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/regeneration-25cd645/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632",
+    "next_step": "Довести R02 до сквозной проверки на реальной карте. Валидировать итоговый контур и допустимые касания к воде и краю POI, защищать существующие дороги, переправы и точечные привязки. Затем использовать эту же проверку для автоматического розыгрыша R03."
   },
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-20T0100-analyst-HX-BL-056-final-programmer.json",
   "authorization_status": "Implementation within approved F1 and closed interview; no publication approval.",
@@ -8168,7 +8168,7 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "role": "programmer",
-  "latest_result_ref": "agent-work/results/2026-11-20T0258-programmer-HX-BL-056-source-edits.json",
+  "latest_result_ref": "agent-work/results/2026-11-20T0402-programmer-HX-BL-056-regeneration.json",
   "checks": {
     "run_id": 44119549919,
     "status": "success",
@@ -12369,7 +12369,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-20T0258-programmer-HX-BL-056-source-edits.json",
+  "last_result_ref": "agent-work/results/2026-11-20T0402-programmer-HX-BL-056-regeneration.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -15076,19 +15076,19 @@
   "next_ready_work": {
     "task_id": "HX-BL-056",
     "role": "programmer",
-    "stage_id": "F1_regeneration_contacts_then_generation",
+    "stage_id": "F1_contacts_then_automatic_generation",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "2aec62335770852df9a68dbc85e77d3446596722",
-    "head_tree_sha": "c82ce6f6ca02cf8feb34204a8318ebd81a646292",
+    "head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+    "head_tree_sha": "f3e3315a1c305c9550d5f95c5b89f599df92524b",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/source-water-2aec623/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44642813895",
-    "next_step": "На реальной карте проверить и реализовать сохранение поддержанных озёр и подтверждаемое снятие всей группы при потере опоры в перегенерации. Затем закрыть правила контактов с водой и защищёнными объектами и автогенерацию."
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/regeneration-25cd645/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632",
+    "next_step": "Довести R02 до сквозной проверки на реальной карте. Валидировать итоговый контур и допустимые касания к воде и краю POI, защищать существующие дороги, переправы и точечные привязки. Затем использовать эту же проверку для автоматического розыгрыша R03."
   },
   "previous_primary_before_HX_BL_055": {
     "run_id": "2026-11-16T0403-interviewer-new-biomes-D1",
@@ -16147,7 +16147,7 @@
     }
   ],
   "task_status": "опубликована",
-  "current_result_ref": "agent-work/results/2026-11-20T0258-programmer-HX-BL-056-source-edits.json",
+  "current_result_ref": "agent-work/results/2026-11-20T0402-programmer-HX-BL-056-regeneration.json",
   "result_commit_sha": "0d445c70a98c2552c9662cdc449e2f7f96f4535f",
   "independent_review_status": "accepted_exact_head",
   "execution_locks_ref": "agent-work/execution-locks.json",
@@ -17130,33 +17130,33 @@
   "latest_HX_BL_056_implementation": {
     "task_id": "HX-BL-056",
     "role": "programmer",
-    "stage_id": "F1_regeneration_contacts_then_generation",
+    "stage_id": "F1_contacts_then_automatic_generation",
     "authorization_status": "approved_for_implementation",
     "publication_authorized": false,
     "branch": "agent/hx-bl-056-small-lakes-f1",
-    "head_sha": "2aec62335770852df9a68dbc85e77d3446596722",
-    "head_tree_sha": "c82ce6f6ca02cf8feb34204a8318ebd81a646292",
+    "head_sha": "25cd6450e38032508b6d6fbffdd030fd95be851b",
+    "head_tree_sha": "f3e3315a1c305c9550d5f95c5b89f599df92524b",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/source-water-2aec623/verification.json",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44642813895",
-    "next_step": "На реальной карте проверить и реализовать сохранение поддержанных озёр и подтверждаемое снятие всей группы при потере опоры в перегенерации. Затем закрыть правила контактов с водой и защищёнными объектами и автогенерацию.",
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/regeneration-25cd645/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632",
+    "next_step": "Довести R02 до сквозной проверки на реальной карте. Валидировать итоговый контур и допустимые касания к воде и краю POI, защищать существующие дороги, переправы и точечные привязки. Затем использовать эту же проверку для автоматического розыгрыша R03.",
     "status": "implementation_checkpoint",
-    "result_ref": "agent-work/results/2026-11-20T0258-programmer-HX-BL-056-source-edits.json",
+    "result_ref": "agent-work/results/2026-11-20T0402-programmer-HX-BL-056-regeneration.json",
     "forecast": {
       "remaining_team_runs": [
-        7,
-        14
+        6,
+        13
       ],
       "excludes": [
         "owner_publication_wait",
         "CI_queue_wait"
       ],
-      "basis": "Ручное создание, JSON и PNG, удаление региона и предупреждение при правке воды имеют проверяемые сценарии. Остаются перегенерация, геометрия контактов, автогенерация, независимая приёмка полного F1, правки и выпуск. Главная неопределённость — проверка защищённых существующих объектов по конечному контуру."
+      "basis": "Ручное добавление, сохранение и PNG, правка источника и перегенерация имеют отдельные сквозные проверки. Остаются финальная геометрия R02, автогенерация R03, полная независимая приёмка, исправления и выпуск."
     },
-    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44642813895/artifacts/14588275319",
+    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44651237632/artifacts/14590559850",
     "review_ready": false
   }
 }
