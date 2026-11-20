@@ -352,6 +352,48 @@ try{
  await smallLake.waitFor();
  assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
  manifest.cases.push({id:'HX056-manual-small-lake-roundtrip-and-png',status:'pass',cells:['4,0','5,0'],pngBytes:smallLakeBytes.length});
+
+ const waterEditorWorld=await fs.readFile(new URL('../fixtures/e6-water-editor.json',import.meta.url));
+ await loadWorld(waterEditorWorld);
+ await showOneMile();
+ await lakeCell('0,0').press('Enter');
+ await button('Add small lake').click();
+ await saveLake.evaluate(node=>node.scrollIntoView({block:'center',behavior:'instant'}));
+ await saveLake.click();
+ await smallLake.waitFor();
+ await step.selectOption('6');
+ await smallLake.waitFor({state:'detached'});
+ const sourceHex=page.locator('polygon.hex[data-hex-key="0,0"]');
+ await sourceHex.dispatchEvent('click');
+ if(await button('Edit').count())await button('Edit').click();
+ const beforeWaterEdit=await snap();
+ const showWaterLoss=async()=>{
+   if(await pngMenu.getAttribute('open')!==null)await pngMenu.locator('summary').click();
+   await page.getByRole('combobox',{name:'Surface',exact:true}).selectOption('lake');
+   await page.locator('[data-water-finish]').click();
+   const loss=page.locator('[data-water-small-lake-losses]');
+   await loss.waitFor();
+   assert.match(await loss.innerText(),/№1 · one-mile hexes 0,0/);
+   return loss;
+ };
+ const waterLoss=await showWaterLoss();
+ await waterLoss.scrollIntoViewIfNeeded();
+ await shot('small-lake-source-edit-preview.jpg');
+ await page.locator('[data-water-reset]').click();
+ assert.deepEqual(await snap(),beforeWaterEdit);
+ await showWaterLoss();
+ await page.locator('[data-water-confirm]').click();
+ const afterWaterEdit=await snap();
+ assert.equal(afterWaterEdit.map.terrainByHexKey['0,0'].terrainOverride,'lake');
+ assert.deepEqual(afterWaterEdit.map.physicalGrid.smallLakes,{nextId:2,lakes:[]});
+ await button('Undo').click();
+ assert.deepEqual(await snap(),beforeWaterEdit);
+ await button('Redo').click();
+ assert.deepEqual(await snap(),afterWaterEdit);
+ await showOneMile();
+ await smallLake.waitFor({state:'detached'});
+ await shot('small-lake-source-edit-after.jpg');
+ manifest.cases.push({id:'HX056-source-water-removes-small-lake',status:'pass',sourceHex:'0,0',cancelExact:true,undoRedoExact:true});
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated

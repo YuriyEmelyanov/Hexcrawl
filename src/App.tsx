@@ -1234,6 +1234,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
  const layer=before.physicalGrid;
  if(!layer?.geometryRefinement)return candidate;
  const accepted=candidate.physicalGrid??layer;
+ const preserveSmallLakes=(state:Detail1State|undefined)=>state&&accepted.smallLakes?{...state,smallLakes:accepted.smallLakes}:state;
  if(!accepted.globalAuthoredState&&accepted.geometryRefinement&&validateGeometryRefinementSource(refinementSourceInput(candidate,accepted,accepted.geometryRefinement.riverPlan),accepted.geometryRefinement))return candidate;
  const source=detailAuthoredState(accepted);
  const sourceMap={...candidate,physicalGrid:source};
@@ -1250,7 +1251,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
   const retainedMap={...candidate,...projected.input.map,physicalGrid:{...projected.input.map.physicalGrid,version:4 as const,geometryRefinement:layer.geometryRefinement}} as MapSnapshot;
   const result=prepareGeometryPlan({...geometryPlanInput(retainedMap,candidate,projected.continuationKeys),authoredState:projected.input.map.physicalGrid});
   if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
-  const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
+  const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:preserveSmallLakes(scoped)},boundary=scopedGeometryBoundary(map,scoped);
   if(geometryBoundaryHasValidClosure(boundary))return map;
   // Potential pairs are not confirmed defects or permission to move them.
   // Until exact mixed closure is integrated, preserve the complete old state.
@@ -1259,7 +1260,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
  const map={...candidate,physicalGrid:{...accepted,version:4 as const,geometryRefinement:layer.geometryRefinement}};
  const result=prepareGeometryPlan({...geometryPlanInput(map),authoredState:authored});
  if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
- return {...candidate,physicalGrid:result.candidateState};
+ return {...candidate,physicalGrid:preserveSmallLakes(result.candidateState)};
 }
 function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
  if(map.knave&&state.source.physicalConvention!=='unknown')throw Error('DETAIL1 unproven_knave_source_convention');
@@ -1536,7 +1537,7 @@ type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'
 /** Full E6 detached preparation. Staged preview answers never reach a setter. */
 function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOptions={}){
   const geometry=prepareWaterGeometry(map,edit);
-  const empty={map,geometry,sea:{choices:[],unresolved:[]} as Pick<ReturnType<typeof prepareSeaIdentity>,'choices'|'unresolved'>,losses:[] as WaterLoss[],unresolvedLosses:[] as WaterLoss[],unresolvedFeatures:[] as FeatureEdit[],unresolvedCrossings:[] as RiverCrossing[],newCrossings:[] as RiverCrossing[],invalidFeatures:[] as FeatureEdit[],confirmationRequired:false};
+  const empty={map,geometry,sea:{choices:[],unresolved:[]} as Pick<ReturnType<typeof prepareSeaIdentity>,'choices'|'unresolved'>,losses:[] as WaterLoss[],smallLakeLosses:[] as SmallLakeLayer['lakes'],unresolvedLosses:[] as WaterLoss[],unresolvedFeatures:[] as FeatureEdit[],unresolvedCrossings:[] as RiverCrossing[],newCrossings:[] as RiverCrossing[],invalidFeatures:[] as FeatureEdit[],confirmationRequired:false};
   if(geometry.hexTerrainByKey===map.hexTerrainByKey)return empty;
   map=checkedRiverMap(map);
   const beforeContext=buildManualRiverGeometryContext(map);
@@ -1652,9 +1653,15 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
     for(const loss of removed){losses.push({id:`knave:${loss.kind}:${loss.key}`,type:'knave',key:loss.key,value:{kind:loss.kind,data:knaveLossValue(layer,loss)}});dropKnaveLoss(layer,loss);}
     candidate={...candidate,knave:layer};
   }
+  const physical=candidate.physicalGrid;
+  const smallLakes=physical?.smallLakes?.lakes.length
+    ?prepareSmallLakeSupport(physical.smallLakes,projectOneMile(oneMileSources(candidate),physical.grid.origin))
+    :undefined;
+  if(physical&&smallLakes?.losses.length)candidate={...candidate,physicalGrid:{...physical,smallLakes:smallLakes.layer}};
   candidate=checkedRiverMap(prepareSourceTransition(map,{...candidate,editorNames:authored,toponyms:names,tags}));assertGeneratedIds(candidate);
   const unresolvedLosses=losses.filter(loss=>!options.acceptedLosses?.includes(loss.id));
-  return {map:candidate,geometry,sea,losses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
+  const smallLakeLosses=smallLakes?.losses??[];
+  return {map:candidate,geometry,sea,losses,smallLakeLosses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:smallLakeLosses.length>0||losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -14099,7 +14106,7 @@ export function App() {
     try{
       const original=captureMap(),plan=prepareWaterMapEdit(original,draft.edit,draft.options);
       if(plan.map===original){updateWaterDraft(null);setEditError(null);return true;}
-      if(plan.sea.unresolved.length||plan.geometry.unresolved.length||plan.unresolvedLosses.length||plan.unresolvedFeatures.length||plan.unresolvedCrossings.length||plan.confirmationRequired&&!confirmed){
+      if(plan.sea.unresolved.length||plan.geometry.unresolved.length||plan.unresolvedLosses.length||plan.unresolvedFeatures.length||plan.unresolvedCrossings.length||plan.confirmationRequired&&(!confirmed||plan.smallLakeLosses.length>0&&!draft.preview)){
         updateWaterDraft({...draft,preview:true});setEditError(null);setIsSidePanelCollapsed(false);return false;
       }
       // Both full snapshots, validation and all allocation are ready before any setter.
@@ -15873,6 +15880,10 @@ export function App() {
         </select></label>}
       </div>)}
       {waterPreview?.plan?.losses.map(loss=><label className="water-loss" key={loss.id}><input type="checkbox" data-water-loss={loss.id} checked={waterDraft.options.acceptedLosses?.includes(loss.id)??false} onChange={e=>changeWaterDraft(waterDraft,{options:{...waterDraft.options,acceptedLosses:e.target.checked?[...waterDraft.options.acceptedLosses??[],loss.id]:(waterDraft.options.acceptedLosses??[]).filter(id=>id!==loss.id)},preview:true})}/>{' '}{waterLossText(loss)}</label>)}
+      {!!waterPreview?.plan?.smallLakeLosses.length&&<div role="status" data-water-small-lake-losses>
+        <p>{language==='ru'?'Изменение поверхности в выделенных гексах удалит целиком следующие малые озёра. «Отменить» восстановит поверхность и озёра.':'Changing the surface in the selected hexes removes the following small lakes in full. Undo restores the surface and the lakes.'}</p>
+        <ul>{waterPreview.plan.smallLakeLosses.map(lake=><li key={lake.id}>№{lake.id} · {language==='ru'?'гексы на 1 миле':'one-mile hexes'} {lake.cells.map(hexKey).join('; ')}</li>)}</ul>
+      </div>}
       {waterPreview?.plan?.newCrossings.map(c=><label className="direct-line" key={c.key}>{language==='ru'?'Новая переправа':'New crossing'} · {waterName(`river:${c.riverId}`)} · {language==='ru'?'путь':'path'} {c.roadId} <select data-water-crossing={c.key} aria-label={`${language==='ru'?'Вид новой переправы':'New crossing type'} ${c.key}`} value={waterDraft.options.crossingKinds?.[c.key]??''} onChange={e=>e.target.value&&changeWaterDraft(waterDraft,{options:{...waterDraft.options,crossingKinds:{...waterDraft.options.crossingKinds,[c.key]:e.target.value as RiverCrossingKind}},preview:true})}><option value="">{language==='ru'?'Выберите':'Choose'}</option>{(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind} disabled={kind==='ford'&&Number(knownRiverEdgeFullness(rivers.find(r=>r.id===c.riverId)!,c.riverEdgeKey))>=3}>{t[kind]}</option>)}</select></label>)}
       {waterPreview?.plan?.invalidFeatures.map((feature,i)=><label className="direct-line" key={i}>{waterFeatureText(feature)} <select data-water-feature={i} aria-label={waterFeatureText(feature)} value={waterDraft.options.featureEdits?.find(e=>e.type===feature.type&&(e.type==='rapid'&&feature.type==='rapid'?e.riverId===feature.riverId&&e.edgeKey===feature.edgeKey:e.type==='waterfall'&&feature.type==='waterfall'&&e.vertexKey===feature.vertexKey))?.state??''} onChange={e=>e.target.value&&waterFeatureChoice(waterDraft,feature,e.target.value as 'auto'|'off')}><option value="">{language==='ru'?'Снять ручное включение':'Resolve manual On'}</option><option value="off">{language==='ru'?'Нет':'Off'}</option><option value="auto">{language==='ru'?'Авто':'Auto'}</option></select></label>)}
       {waterDraft.preview&&<p>{language==='ru'?'Заметки гексов сохранятся. Названия и теги, не перечисленные выше, останутся прежними.':'Hex notes will be retained. Names and tags not listed above will stay unchanged.'}</p>}

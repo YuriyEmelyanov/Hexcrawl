@@ -676,6 +676,38 @@ test('E5 river draft guards writes, preserves invalid and cancelled work and com
 // and identity cases live in manualWater; this lifecycle catches setter wiring.
 const waterFixture=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
 async function waterSetup(data=waterFixture){const {h,alerts}=setup();await load(h,data);assert.deepEqual(alerts,[]);h.render().setEditMode(true);h.render().setSelectedHex({q:0,r:0});return h;}
+test('source water edit previews whole small lake losses and confirms exact undo and redo',async()=>{
+ const h=await waterSetup();
+ assert.equal(h.render().switchFineStep(1),true);
+ for(const cell of [{q:0,r:0},{q:1,r:0},{q:6,r:0}]){
+  const app=h.render();
+  assert.ok(hasFullDrySupport(app.fineCells.find(row=>row.cell.q===cell.q&&row.cell.r===cell.r)));
+  assert.equal(app.pickFine(cell,false,app.getDocumentRevision()),true);
+  h.render().startSmallLake();
+  h.render().commitSmallLake();
+  assert.equal(h.render().editError,null);
+ }
+ assert.equal(h.render().switchFineStep(6),true);
+ h.render().setEditMode(true);
+ h.render().setSelectedHex({q:0,r:0});
+ const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().startWaterDraft('lake'),true);
+ assert.equal(h.render().finishWaterDraft(),false);
+ assert.deepEqual(h.render().waterPreview.plan.smallLakeLosses.map(lake=>lake.id),[1,2]);
+ h.render().resetWaterDraft();
+ assert.deepEqual(stable(h.render()),before);
+ assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+ assert.equal(h.render().startWaterDraft('lake'),true);
+ assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),false,'confirmation requires a visible preview');
+ assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true,h.render().editError);
+ const after=stable(h.render());
+ assert.equal(after.map.terrainByHexKey['0,0'].terrainOverride,'lake');
+ assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:4,lakes:[before.map.physicalGrid.smallLakes.lakes[2]]});
+ assert.equal(h.render().undoHistory.length,stacks[0].length+1);
+ assertUndoRedo(h,before,after);
+ await load(h,after);
+ assert.deepEqual(stable(h.render()),after);
+});
 test('E6 real water transaction preserves dormant biome, notes, RNG, exact history and v7 roundtrip',async()=>{
  const h=await waterSetup(),before=stable(h.render()),oldGeneration=serial(before.generation),count=h.render().undoHistory.length;
  assert.equal(h.render().startWaterDraft('lake'),true);assert.equal(h.render().finishWaterDraft(),true);
