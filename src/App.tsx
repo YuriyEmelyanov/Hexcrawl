@@ -1340,35 +1340,50 @@ function prepareGeneratedSmallLakes(checkpoint:MapSnapshot,map:MapSnapshot,gener
  const biomes=new Map(map.regions.flatMap(r=>r.hexes.map(c=>[hexKey(c),r.biomeId] as const)));
  const acceptedSource=new Set(source.map(row=>hexKey(row.cell)));
  const layer=map.physicalGrid?.smallLakes;
- const reserved=new Set(layer?.lakes.flatMap(lake=>lake.cells.map(hexKey)));
- const eligible=[...coverage.values()].flatMap(row=>{
+ const support=layer&&prepareSmallLakeSupport(layer,[...coverage.values()]);
+ const losses=[...support?.losses??[]];
+ if(support?.losses.length&&map.physicalGrid)map={...map,physicalGrid:{...map.physicalGrid,smallLakes:support.layer}};
+ const reserved=new Set(support?.layer.lakes.flatMap(lake=>lake.cells.map(hexKey)));
+ const eligible=generated.length?[...coverage.values()].flatMap(row=>{
   const key=hexKey(row.cell);
   if(previouslyCovered.has(key)||centers.has(key)||reserved.has(key)||!hasFullDrySupport(row))return [];
   const overlaps=oneMileSourceOverlaps(row.cell,origin,acceptedSource);
   if(!overlaps.some(hit=>owners.has(hexKey(hit.cell))))return [];
   const owner=hexKey(overlaps[0].cell),biome=owners.get(owner)??biomes.get(owner);
   return biome?[{cell:row.cell,chance:getLakeChanceForBiome(biome)}]:[];
- });
+ }):[];
  const footprints=rollSmallLakeFootprints(eligible,map.generation.masterSeed,LAKE_EXPANSION_CHANCE);
- if(!footprints.length)return {map,scene:null};
- let scene:Detail1State;
+ if(!footprints.length&&!support?.layer.lakes.length)return {map,scene:null,losses};
+ let scene:Detail1State|null=null;
  try{scene=prepareAutomaticOneMileScene(map);}
  catch(error){
   // An already unsupported detail view cannot certify any new shoreline.
   // Keep the ordinary source region available independently of that view.
-  if(!(error instanceof OneMileGeometryConflict))throw error;
+  if(!(error instanceof OneMileGeometryConflict)||support?.layer.lakes.length&&!localLakeGrid(map.physicalGrid))throw error;
   generationLog.detail('Automatic small lakes skipped: detail geometry conflict',{stage:error.stage,components:footprints.length});
-  return {map,scene:null};
  }
- const protection=smallLakeProtectionForMap(map,scene);
+ const geometry=scene??map.physicalGrid;
+ if(!geometry)return {map,scene,losses};
+ const protection=smallLakeProtectionForMap(map,geometry);
  if(!protection)throw Error('Could not validate waterways for small lake generation');
- for(const lake of [...layer?.lakes??[]].sort((a,b)=>a.id-b.id)){
+
+ // Source generation may move previously displayed channels. Keep the lake
+ // only if the new accepted geography still supports its entire shoreline.
+ const existing=support?.layer.lakes??[];
+ const retained=existing.filter(lake=>{
+  const {conflict}=prepareSmallLakeShore(lake,map.toponymSeed,origin,protection);
+  if(conflict)losses.push(lake);
+  return !conflict;
+ });
+ reserved.clear();
+ for(const lake of retained)for(const cell of lake.cells)reserved.add(hexKey(cell));
+ for(const lake of [...retained].sort((a,b)=>a.id-b.id)){
   const {view}=prepareSmallLakeShore(lake,map.toponymSeed,origin,protection,coverage,reserved);
   for(const cell of view.maskCells)reserved.add(hexKey(cell));
  }
- const lakes=[...layer?.lakes??[]];
+ const lakes=[...retained];
  let nextId=layer?.nextId??1;
- for(const cells of footprints){
+ for(const cells of scene?footprints:[]){
   if(cells.some(cell=>reserved.has(hexKey(cell))))continue;
   const lake={id:nextId,origin:'automatic' as const,cells};
   const {view,conflict}=prepareSmallLakeShore(lake,map.toponymSeed,origin,protection,coverage,reserved);
@@ -1378,9 +1393,9 @@ function prepareGeneratedSmallLakes(checkpoint:MapSnapshot,map:MapSnapshot,gener
   nextId++;
   lakes.push(lake);
  }
- if(nextId===(layer?.nextId??1))return {map,scene};
- const physicalGrid=map.physicalGrid??{schema:scene.schema,version:3 as const,active:true as const,grid:scene.grid,source:scene.source,viewStep:6 as const,poiFootprints:[],fineCellEdits:{}};
- return {map:{...map,physicalGrid:{...physicalGrid,smallLakes:{nextId,lakes}}},scene};
+ if(lakes.length===existing.length&&nextId===(layer?.nextId??1))return {map,scene,losses};
+ const physicalGrid=map.physicalGrid??{schema:geometry.schema,version:3 as const,active:true as const,grid:geometry.grid,source:geometry.source,viewStep:6 as const,poiFootprints:[],fineCellEdits:{}};
+ return {map:{...map,physicalGrid:{...physicalGrid,smallLakes:{nextId,lakes}}},scene,losses};
 }
 
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
@@ -14253,10 +14268,12 @@ export function App() {
       map=prepareSourceTransition(checkpoint.physicalGrid?.geometryRefinement?checkpoint:captureMap(),map);
     }else if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
     let preparedScene:Detail1State|undefined;
-    if(lakeRegions.length&&(!kingdomJob||backup)){
+    const lakeLosses=[...smallLakes?.losses??[]];
+    if((lakeRegions.length||map.physicalGrid?.smallLakes?.lakes.length)&&(!kingdomJob||backup)){
       const prepared=prepareGeneratedSmallLakes(checkpoint,map,lakeRegions);
       map=prepared.map;
       preparedScene=prepared.scene??undefined;
+      lakeLosses.push(...prepared.losses);
     }
     const fineTarget=fineGenerationTargetRef.current;
     if(map.physicalGrid&&fineTarget&&projectOneMile(oneMileSources(map),map.physicalGrid.grid.origin).some(row=>isSameHex(row.cell,fineTarget.cell)))map={...map,physicalGrid:{...map.physicalGrid,selectedCell:fineTarget.cell,selectedWorldPoint:fineTarget.point}};
@@ -14271,8 +14288,8 @@ export function App() {
     map.gmNotesByHexKey = {...notes};
     const lossMessages:string[]=[];
     if(fineLost.length)lossMessages.push(language==='ru'?`Будут удалены локальные правки одномильных гексов (${fineLost.length}): ${fineLost.join('; ')}.`:`Local one-mile edits will be removed (${fineLost.length}): ${fineLost.join('; ')}.`);
-    if(smallLakes?.losses.length){
-      const lakes=smallLakes.losses.map(lake=>`№${lake.id} (${lake.cells.map(hexKey).join('; ')})`).join(', ');
+    if(lakeLosses.length){
+      const lakes=lakeLosses.map(lake=>`№${lake.id} (${lake.cells.map(hexKey).join('; ')})`).join(', ');
       lossMessages.push(language==='ru'?`Изменение участка целиком удалит малые озёра ${lakes}.`:`Changing the area removes these small lakes in full: ${lakes}.`);
     }
     if(lossMessages.length){

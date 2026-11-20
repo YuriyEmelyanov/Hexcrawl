@@ -422,6 +422,29 @@ test('ONE-MILE1 regeneration retains edits supported by final candidate rather t
 
 });
 
+test('ONE-MILE1 changed river requests consent before removing an automatic small lake',async()=>{
+ const g=createGenerationHarness(42), prompts=[], alerts=[];
+ g.render();let accept=false;
+ g.setWindow({confirm:m=>{prompts.push(m);return accept;},alert:m=>alerts.push(m),matchMedia:()=>({matches:false})});
+ g.injectFunction('readTextFile',async file=>file.text);
+ const options={targetSize:15,coastalPreference:'mainland'};
+ assert.equal(g.render().safelyAddRegionToMap({q:0,r:0},options).success,true);
+ const before=fineStable(g), anchor=g.render().candidateHexes[0];
+ assert.equal(before.data.map.physicalGrid.smallLakes.lakes.length,3);
+ assert.equal(g.render().safelyAddRegionToMap(anchor,options).success,false);
+ assert.match(prompts[0],/малые озёра №3/);
+ assert.deepEqual(fineStable(g),before);
+ accept=true;
+ assert.equal(g.render().safelyAddRegionToMap(anchor,options).success,true);
+ assert.equal(prompts.length,2);
+ const after=fineSave(g);
+ assert.equal(after.map.regions.length,2);
+ assert.ok(after.map.physicalGrid.smallLakes.lakes.every(lake=>lake.id!==3));
+ g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
+ g.render().redoMap();assert.deepEqual(fineSave(g),after);
+ await fineLoad(g,after);assert.deepEqual(alerts,[]);assert.deepEqual(fineSave(g),after);
+});
+
 test('ONE-MILE1 Mythic accepts fine geography only after a complete kingdom and preserves retained owners',()=>{
  const g=createGenerationHarness(42);g.render();const prompts=[];g.setWindow({confirm:m=>{prompts.push(m);return false},matchMedia:()=>({matches:false})});g.render().setGenerationMode('mythic');
  const finish=()=>{let n=0;while(g.render().kingdomJob&&n++<120)g.render().advanceKingdom();assert.equal(g.render().kingdomJob,null,'bounded ordinary job finishes');};

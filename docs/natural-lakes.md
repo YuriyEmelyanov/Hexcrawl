@@ -49,3 +49,9 @@ the unverified small lakes are skipped. Existing local-only lake overlays on
 those maps are checked against the source rivers, paths, crossings and points
 on import. The automatic layer does not persist generated point geometry.
 Fallback tracts make no lake rolls.
+
+Region generation checks existing small lakes against its finished water,
+paths and sites before committing. If a previously valid lake conflicts
+with that geometry, the change lists it in the normal lake-loss confirmation.
+Accepting the change removes the whole affected lake. Declining preserves
+the previous map, random state and history.
