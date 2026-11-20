@@ -1,0 +1,43 @@
+{
+  "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "observations": [
+    {
+      "unit": "release-ci",
+      "case": "base",
+      "contract": "ci",
+      "evidence": "agent-work/evidence/HX-BL-021-F1/review-7b6f908/review.json#checks.ci + release-d6daa2c/merge.json",
+      "result": true,
+      "scope": "accepted release tree; 430 Node tests and 10 browser runners plus world_random",
+      "independent": true
+    },
+    {
+      "unit": "map-integrity",
+      "case": "base",
+      "contract": "integrity",
+      "evidence": "edit-result.json; edit-probe.mjs; source-hashes.json",
+      "scope": "regionFixture 2,0, snow_mountains; map + RNG after import in application handlers",
+      "result": true,
+      "persistence": true,
+      "isolated": true
+    },
+    {
+      "unit": "PF2-RM-044-L1-v2",
+      "case": "base",
+      "contract": "edit",
+      "evidence": "edit-result.json plus ../baseline.json proof; PR509 review and production manifest",
+      "scope": "regionFixture: PF2 mountain + snow after edit and JSON reopen; measured handler only",
+      "result": true,
+      "persistence": true,
+      "isolated": true
+    },
+    {
+      "unit": "generate-region",
+      "case": "base",
+      "contract": "generate",
+      "scope": "new locality region, mainland, dunes, from empty map; first visible editable result",
+      "evidence": "probe.mjs; no device latency samples"
+    }
+  ],
+  "milestones": [],
+  "leadership_evidence": null
+}
