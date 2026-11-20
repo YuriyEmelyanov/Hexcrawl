@@ -1,0 +1,436 @@
+ok 1 - prefers one level above the highest neighbour for only outgoing rivers
+ok 2 - prefers height one when a full river flows into a height-one neighbour
+ok 3 - does not apply the preference without rivers or with an incoming river
+ok 4 - keeps the normal fallback when no neighbouring height is known
+ok 5 - auto coast retries an incompatible shape before choosing a tract
+ok 6 - dead forest labels, weights, heights and symmetric neighbour rules
+ok 7 - automatic settled generation never chooses a zero-weight dead forest, even at exact height
+ok 8 - the real region handler stores and restores each dead-forest biome
+ok 9 - manual biomes use existing neighbor profiles and survive generation and JSON import
+ok 10 - E8.2 road uses one stable paired name with exact history,reload and real continuation
+ok 11 - E8.2 obstacle uses one stable paired name with exact history,reload and real continuation
+ok 12 - E8.2 crossing uses one stable paired name with exact history,reload and real continuation
+ok 13 - E8.2 rapid uses one stable paired name with exact history,reload and real continuation
+ok 14 - E8.2 waterfall uses one stable paired name with exact history,reload and real continuation
+ok 15 - E8.2 sea uses one stable paired name with exact history,reload and real continuation
+ok 16 - E8.2 path and opaque crossing names survive kind edits and confirmed removal is one transaction
+ok 17 - E8.2 obstacle named deletion cancellation is inert and acceptance restores object+name together
+ok 18 - E8.2 visible feature Off refuses with its authored name; clearing enables the original feature command
+ok 19 - E8.2 import rejects orphan/hidden/composite mistargets atomically and shared waterfall is a single name
+ok 20 - indexed joins retain the approved large-map geometry exactly
+ok 21 - four edge reflections preserve exact endpoints and are reversible
+ok 22 - approved compositions retain exactly 3 or 4 closed contours and stay inside all rotated hexes
+ok 23 - dense canopy removes shared edges and retains a field hole; woodland islands are separate
+ok 24 - coordinate selection survives map growth, reordering and biome edits
+ok 25 - a frozen clearing style covers the whole open region, including its outer cells
+ok 26 - candidate-facing crown edges remain exactly straight
+ok 27 - woodland lake hexes suppress shapes and retain the underlying canopy
+ok 28 - bridges preserve the original size and placement of source woodland contours
+ok 29 - diagnostics default off; detailed logging does not change generation or randomness
+ok 30 - exhausted attempts produce one contextual summary and no debug stream
+ok 31 - incompatible coastal endpoints exhaust retries before creating a tract
+ok 32 - late tract failure only reports programming error; diagnostic survives later actions
+ok 33 - last rejection records lake reentry rather than a stale earlier river failure
+ok 34 - HX059 ru import keeps a visible preparation error and source map
+ok 35 - HX059 en import keeps a visible preparation error and source map
+ok 36 - GEO2 classic seed42 through-lake legacy refinement imports, roundtrips and undoes atomically
+ok 37 - GEO2 complete immutable physical4 plan preserves authored source and exact accepted choices
+ok 38 - GEO2 scoped source projection retains literal choices and refuses hidden boundary dependencies
+ok 39 - GEO2 scoped physical4 preserves global authored owners and strictly binds the retained source
+ok 40 - GEO2 boundary preflight conservatively separates supplied envelopes or requires dependency closure
+ok 41 - GEO2 persisted records reject broken source, topology, contacts and outer authored correspondence atomically
+ok 42 - GEO2 actual source hydrology separates open exits from lake/source and enforces fine boundary refs
+ok 43 - GEO2 canonical shared edges match physical grid and ignore cell order
+ok 44 - GEO2 side choice follows specified UTF8 FNV and is reproducible without shared RNG
+ok 45 - GEO2 all six diameter directions have opposite equal-edge perimeter alternatives
+ok 46 - GEO2 finite edge routing handles blocked alternatives without center shortcuts or mutation
+ok 47 - GEO2 nearest exposed bank handles inside starts, buried confluence banks, side, parent and quadratic lake constraints
+ok 48 - GEO2 POI candidates retain source requirements, same-parent rigid footprints and both route entries; conflicts are atomic
+ok 49 - GEO2 accepted POI source adapter uses actual owner and policy row, not attachment eligibility
+ok 50 - GEO2 terminal edge splits preserve physical positions and connected source-edge partitions
+ok 51 - GEO2 explicit boundary ports exclude internal edges and reject aliases and unavailable constraints atomically
+ok 52 - GEO2 river confluence uses shared ports, stable correspondence and immutable source
+ok 53 - GEO2 river conflicts return no partial plan for cycles, aliases and unavailable corridors
+ok 54 - GEO2 retained zigzag world preserves all53 source segment IDs without new river joins
+ok 55 - GEO2 source bridge rejects sector direction, coverage and mark-reference contradictions atomically
+ok 56 - GEO2 marks use directed arc position on bent refined paths and preserve sector exit refs
+ok 57 - GEO2 roads preserve finite transverse crossing banks, source kinds and order; untyped water and illegal fords reject atomically
+ok 58 - GEO2 moved POI retains both source approaches and unrelated roads; whole-cell masks preserve data, internal joins and holes
+ok 59 - GEO2 road search minimizes physical length before exact old-route deviation and numeric ties
+ok 60 - GEO2 dry road detours stay on generated land; exhausted/cancelled search is atomic and not no-path
+ok 61 - GEO2 moved POI composes both approaches with ordered typed bank corridors and legal dry detours
+ok 62 - GEO2 jointly selects ordered crossing candidates when source and direct roads are lake-blocked
+ok 63 - GEO2 prepared river-required POI contact authorizes both dry road approaches only at its exposed bank
+ok 64 - GEO2 exact quadratic shores and lake-cell unions retain curved contacts, islands and closed-body clipping
+ok 65 - GEO2 finite round water respects corners, caps, parallel crossings and tangent contact
+ok 66 - GEO2 water unions variable widths without internal banks and preserves dry gaps and source refs
+ok 67 - lake contours are stable after reload and input reordering; unrelated lakes cannot change them
+ok 68 - single-cell lakes have distinct silhouettes with bounded visual spill
+ok 69 - multi-cell lake shares one contour; island remains a separate hole; identities do not merge
+ok 70 - river inlet and outlet anchors both receive a connected mouth, regardless of direction
+ok 71 - bounded per-layer cache reuses unchanged lakes, including map-origin translations, and invalidates changed data
+ok 72 - consecutive lake cells retain broad joins instead of hex-edge pinches
+ok 73 - multi-cell shoreline can spill slightly but stays within the bounded neighbouring margin
+ok 74 - unchanged saved lake reentry does not force a new inland region into a tract
+ok 75 - final endpoint completion rejects a newly introduced lake with reentry on an old river
+ok 76 - legacy reentry allowance does not hide a new river, a changed path, or a resized lake
+ok 77 - late lake introduction is rejected by real regular and tract callbacks, then work can continue
+ok 78 - legacy migration assigns deterministic IDs without changing array order or membership
+ok 79 - v5 counter normalization rejects duplicate IDs, duplicate edges and unsafe allocation
+ok 80 - Classic add and remove preserve input and unrelated state without a fake kingdom
+ok 81 - move retains identity and unrelated records while recalculating real kingdom membership
+ok 82 - invalid targets and reversed duplicates reject atomically; source move remains no-op
+ok 83 - E7 height prepares one compatible base projection without rewriting administrative/authored data
+ok 84 - E7 original height/biome pair is an exact no-op even when a legacy pair is incompatible
+ok 85 - E7 transfer preserves union, owned water, order, flags and a noncentral POI
+ok 86 - E7 transfer refuses invalid ownership, nonadjacency, bridge cuts and protected cells
+ok 87 - E7 keeps kingdom membership and refuses removal of the final owned in-area cell
+ok 88 - E7 identifies a new incompatible physical side even between an already incompatible pair
+ok 89 - E7 reparents full bilingual names, tag results and counter prefixes without reroll
+ok 90 - E7 identity migration rejects destination collisions before changing either record
+ok 91 - E8 coordinate relocation migrates complete bilingual names,tag payload/counters and keeps hex layers
+ok 92 - E8 no-op does not reinterpret a legacy type or consume a counter; centers remain protected
+ok 93 - E8 rejects all hidden target identity records before altering any payload
+ok 94 - E8 detects real road and trail source geometry,without rewriting destination paths
+ok 95 - E8 rejects occupied,mismatched,missing and ambiguous coordinates without fallback selection
+ok 96 - E8 water movement preserves the waterbody and applies exact sea/lake pools
+ok 97 - E8 Mythic relocation retains kingdom semantics and refuses a second myth
+ok 98 - E8 sparse POI names cover nonsettlements/water and preserve fallback isolation
+ok 99 - E7 river owner loss remaps only to the receiving region and preserves supported sector identities
+ok 100 - E7 directed heights reject new uphill owner contacts without using surrounding maxima
+ok 101 - E5 migration preserves geometry; monotonic IDs and delta references fail closed
+ok 102 - E5 feature Auto/Off/On intentions, strict states, no-op and failure leave input unchanged
+ok 103 - E5 cleanup preserves shared physical waterfall while deleting only orphaned targets
+ok 104 - E5 reach edit spans region boundaries; no-op/failed source change preserves document
+ok 105 - E5 reverse/create/delete validate physical path, counter and dependencies without mutation
+ok 106 - E5 network validation preserves independent unchanged legacy defects, rejects new ones
+ok 107 - E5 changed delta groups preserve identity and reject invalid parent, arm and overlap
+ok 108 - manual path allocates one ID and deterministic crossings without mutating input
+ok 109 - creation refuses invalid geometry, endpoints, obstacles, duplicate and overflow
+ok 110 - kind no-op returns document and region minimum rejects loss without changes
+ok 111 - deletion preserves destinations and open exits; removable redundant edge keeps other IDs
+ok 112 - crossing edit requires live intersection, rejects deep ford and preserves unrelated records
+ok 113 - E6 creates only registered cells, preserves inputs and no-op identity
+ok 114 - E6 expand/shrink keeps identity; split has an explicit primary and never reuses retired IDs
+ok 115 - E6 merge requires selection of retained old lake; vertex contact does not join bodies
+ok 116 - E6 external sea reclamation requires one explicitly adjacent existing region
+ok 117 - E6 enclosed sea is an explicit lake choice; open sea needs at least two cells
+ok 118 - E6 lake-to-sea joining lists the whole affected body before deleting old identities
+ok 119 - E6 unchanged legacy disconnected lake is preserved; touching it and ID overflow refuse atomically
+ok 120 - SEA01 legacy metadata is numeric-order deterministic and v9 exactly covers sea-only edge components
+ok 121 - SEA02 expansion and split preserve one heir, largest overlap ties numeric, and allocation is detached
+ok 122 - SEA02 merge candidates follow split heirs before many-to-many allocation and names never imply identity equality
+ok 123 - import is one exact transaction; invalid and preparation failure preserve both stacks
+ok 124 - all existing manual families, import, reset, and 100 exact undo/redo snapshots
+ok 125 - manual edits do not replace generation checkpoints, regenerate rollback retains undo and redo
+ok 126 - pending file read serializes imports and blocks edits, generation and reset
+ok 127 - all manifest saves round-trip unchanged entities, names and can continue then undo
+ok 128 - v5 obstacle IDs and counter survive migration, round-trip and history; invalid v5 is atomic
+ok 129 - no-op and failed imports preserve redo; fresh edit clears it; reset on empty is a no-op
+ok 130 - notes autosave coalesces a series, preserves redo on no-op, and commits before other operations
+ok 131 - import replaces notes exactly and legacy imports clear them; malformed notes preserve full history
+ok 132 - delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit
+ok 133 - direct names change only the captured locale; exact history, validation, legacy other locale and stale fault guards
+ok 134 - region biome respects stored height and canonical neighbors, keeps all overrides and exact metadata/history
+ok 135 - manual road command commits exactly once and stale callback cannot write after import
+ok 136 - road draft is ephemeral, blocks other writes, commits once and stale finish is inert
+ok 137 - E5 native v7 feature intentions and counter survive real import, edits, history and rejected files
+ok 138 - E5 real river transaction resolves deep ford once and preserves no-op, failure and exact undo redo
+ok 139 - E5 real feature and E3 crossing resolution share one accepted transaction with exact reload
+ok 140 - E5 river draft guards writes, preserves invalid and cancelled work and commits one exact document
+ok 141 - E6 real water transaction preserves dormant biome, notes, RNG, exact history and v7 roundtrip
+ok 142 - E6 real POI/name/tag losses require every explicit answer and Undo restores authored content
+ok 143 - E6 water cancel/no-op/stale callbacks and snapshot failure preserve map and both history branches
+ok 144 - E6 real water dependencies block roads and require explicit barrier/water-POI loss without deleting notes
+ok 145 - E6 real water feature conflict requires Off/Auto together with the accepted geography
+ok 146 - E6 generation checkpoint warns before restoring changed water and restores authored lake data together
+ok 147 - SEA App named split/merge is one explicit atomic water transaction classic
+ok 148 - SEA App named split/merge is one explicit atomic water transaction mythic
+ok 149 - SEA real continuation and checkpoint restore retain identity and require explicit named-water warning
+ok 150 - G208-AUTO failed scale preparation is localized and preserves the document and redo
+ok 151 - G208-AUTO actual ordinary river edit atomically updates physical4, preserves unrelated choices, roundtrips16 and restores in one undo redo
+ok 152 - GEO2 actual connected land-only generation retains old refinement and leaves new domain unrefined in one history action
+ok 153 - GEO2 actual scoped road and crossing-part removal preserve surviving geometry and one undo redo
+ok 154 - G208-AUTO actual closure failure and invalid16 import preserve source, refinement and the available redo branch
+ok 155 - G208-AUTO actual missing required river dependency rejects the source edit without changing map or redo
+ok 156 - GEO2 actual mixed river continuation retains scoped crossings, identities and one undo redo
+ok 157 - GEO2 actual mixed dry road approach preserves existing typed crossing and history
+ok 158 - GEO2 scoped lake growth across empty support replans shoreline in one actual water transaction
+ok 159 - kingdom quotas, d12 sizes, save, classic extension and atomic undo
+ok 160 - classic to mythic, second kingdom and regeneration preserve earlier regions
+ok 161 - late exception rolls back entire kingdom
+ok 162 - nearest free rectangle and disjoint territory
+ok 163 - first settled region starts at the rectangle center, including its throne
+ok 164 - Mythic growth fills an enclosed pocket even when the target is already reached
+ok 165 - real Mythic handler absorbs a pocket beyond the roll and undo restores it
+ok 166 - partial fine display is full while accepted geography area stays exact
+ok 167 - dominant biome aggregates duplicate IDs then uses a canonical maximum tie
+ok 168 - source permutation and fixed origin preserve biome assignments and water coverage
+ok 169 - candidates form one legal fine row, never the whole source candidate projection
+ok 170 - enclosed holes get only legal accessible edge neighbours
+ok 171 - pointer and keyboard select ordinary anchors with stable q/r ties
+ok 172 - local command edits one fine target and current language without source-six writes
+ok 173 - stale, malformed, unsafe and unsupported local fields fail without partial writes
+ok 174 - mixed and water cells retain local name/notes but refuse land overrides
+ok 175 - destructive support loss requires consent and leaves an exact undo snapshot
+ok 176 - fine POI label retains localized type and explicit name without fallback duplication
+ok 177 - fine crossing paint distinguishes bridge, translucent ford and a real ferry road gap
+ok 178 - fine crossing splits all ordered unique crossings and clamps endpoint or degenerate input
+ok 179 - refined crossing paint follows display width without moving accepted paths or POI masks
+ok 180 - finite visible water preserves dry approaches at shallow and endpoint crossings
+ok 181 - E7 App transfer keeps full POI identity/history and real reload continuation classic
+ok 182 - E7 App transfer keeps full POI identity/history and real reload continuation mythic
+ok 183 - E7 App height is one atomic explicit biome pair and retains local/underwater overrides
+ok 184 - E7 real dependency preparation enforces ROAD07 category growth and preserves emergency-tract policy
+ok 185 - E7 real hex geometry validates directed owner height contacts and preserves dry F1 paths
+ok 186 - E7 no-op/cancel/stale callbacks and guarded actions retain accepted document and executable Redo
+ok 187 - E7 v7 import retains only an exact unique frontier order; legacy/mismatch/duplicate/empty/sea retain prior normalization
+ok 188 - E7 late clone and v7 format faults keep both stacks, counters and selected UI unchanged
+ok 189 - E8 real POI move is one exact transaction with full payload and literal hex notes classic
+ok 190 - E8 real POI move is one exact transaction with full payload and literal hex notes mythic
+ok 191 - E8 real move cancels/no-ops without consuming Redo and captured handlers cannot act on a new document
+ok 192 - E8 actual path refusal and snapshot fault leave document and both histories exact
+ok 193 - fallback commits a tract with the clicked anchor and no independent river
+ok 194 - coast click without touching river endpoints creates a region
+ok 195 - candidate click: no rivers, sea=false, mode=auto
+ok 196 - candidate click: no rivers, sea=false, mode=coast
+ok 197 - candidate click: no rivers, sea=false, mode=mainland
+ok 198 - candidate click: no rivers, sea=true, mode=auto
+ok 199 - candidate click: no rivers, sea=true, mode=coast
+ok 200 - candidate click: no rivers, sea=true, mode=mainland
+ok 201 - candidate click: incoming, sea=false, mode=auto
+ok 202 - candidate click: incoming, sea=false, mode=coast
+ok 203 - candidate click: incoming, sea=false, mode=mainland
+ok 204 - candidate click: incoming, sea=true, mode=auto
+ok 205 - candidate click: incoming, sea=true, mode=coast
+ok 206 - candidate click: incoming, sea=true, mode=mainland
+ok 207 - candidate click: outgoing, sea=false, mode=auto
+ok 208 - candidate click: outgoing, sea=false, mode=coast
+ok 209 - candidate click: outgoing, sea=false, mode=mainland
+ok 210 - candidate click: outgoing, sea=true, mode=auto
+ok 211 - candidate click: outgoing, sea=true, mode=coast
+ok 212 - candidate click: outgoing, sea=true, mode=mainland
+ok 213 - candidate click: incoming+incoming, sea=false, mode=auto
+ok 214 - candidate click: incoming+incoming, sea=false, mode=coast
+ok 215 - candidate click: incoming+incoming, sea=false, mode=mainland
+ok 216 - candidate click: incoming+incoming, sea=true, mode=auto
+ok 217 - candidate click: incoming+incoming, sea=true, mode=coast
+ok 218 - candidate click: incoming+incoming, sea=true, mode=mainland
+ok 219 - candidate click: outgoing+outgoing, sea=false, mode=auto
+ok 220 - candidate click: outgoing+outgoing, sea=false, mode=coast
+ok 221 - candidate click: outgoing+outgoing, sea=false, mode=mainland
+ok 222 - candidate click: outgoing+outgoing, sea=true, mode=auto
+ok 223 - candidate click: outgoing+outgoing, sea=true, mode=coast
+ok 224 - candidate click: outgoing+outgoing, sea=true, mode=mainland
+ok 225 - candidate click: incoming+outgoing, sea=false, mode=auto
+ok 226 - candidate click: incoming+outgoing, sea=false, mode=coast
+ok 227 - candidate click: incoming+outgoing, sea=false, mode=mainland
+ok 228 - candidate click: incoming+outgoing, sea=true, mode=auto
+ok 229 - candidate click: incoming+outgoing, sea=true, mode=coast
+ok 230 - candidate click: incoming+outgoing, sea=true, mode=mainland
+ok 231 - programming error at exports.generateConnectedRegionFromAnchor preserves map/history and permits recovery
+ok 232 - programming error at getCoastalRiverEndpointHexes preserves map/history and permits recovery
+ok 233 - programming error at assignWaterPoiLayer preserves map/history and permits recovery
+ok 234 - programming error at reconcileRiverCrossings preserves map/history and permits recovery
+ok 235 - expected small-region rejection retries then creates one tract
+ok 236 - late failure at targetSize=1 preserves state; successful retry clears error
+ok 237 - late failure at targetSize=8 preserves state; successful retry clears error
+ok 238 - failed regeneration restores replaced region, selection and full undo history
+ok 239 - calculates bridge chance from all applicable modifiers
+ok 240 - splits non-bridge crossings between ferry and ford with modifiers
+ok 241 - fullness three and above selects a ferry from the non-bridge remainder
+ok 242 - unchanged old source is checked when new land closes its frontier
+ok 243 - unchanged old mouth is checked when new land closes its frontier
+ok 244 - RIV-017 closed mouth prefers reachable unexplored land to a new lake
+ok 245 - RIV-017 real Mythic tract retains an open upper river instead of inventing an inland source
+ok 246 - closed source F=1 has a valid real terminus and keeps old flow
+ok 247 - closed source F=3 has a valid real terminus and keeps old flow
+ok 248 - closed source F=5 has a valid real terminus and keeps old flow
+ok 249 - closed mouth F=1 has a valid real terminus and keeps old flow
+ok 250 - closed mouth F=3 has a valid real terminus and keeps old flow
+ok 251 - closed mouth F=5 has a valid real terminus and keeps old flow
+ok 252 - closed mouth is extended to reachable sea, without changing old edges
+ok 253 - real tract handler closes a mouth; save/undo/recovery retain old map and history
+ok 254 - insufficient source lake area is an atomic expected rejection, never a broken success
+ok 255 - incoming river can finish in another river without changing either old channel
+ok 256 - RIV-015/017 real Mythic tract joins compatible incoming and outgoing rivers before making a lake
+ok 257 - closing several mouths handles every river, not just the lowest ID
+ok 258 - outgoing connector keeps endpoint fullness
+ok 259 - reduces a height-one main river upstream when a fullness-one tributary joins it
+ok 260 - keeps the existing height-two upstream reduction for any tributary
+ok 261 - AUD-01/02 RIV-EX-07/08/15/16 real upstream clicks preserve fixed flows and validate new sources
+ok 262 - AUD-03 RIV-EX-16 lake placement is atomic when actual connected area is insufficient
+ok 263 - AUD-04 imported numeric fullness outside 1…5 is rejected without mutating the map
+ok 264 - RIV-EX-01/12/13/15 real map expansion validates each extension in all coast modes
+ok 265 - RIV-EX-03/19 adapter solves real sector directions at a junction and preserves region ownership
+ok 266 - RIV-EX-08 tract lake source uses actual area and retains exact old downstream flow
+ok 267 - RIV-EX-21 lake shared by two regions counts unique hexes and all ports once
+ok 268 - E5 manual geometry uses actual vertices, neighbours, owners and open frontier without touching the document
+ok 269 - E5 real path solver keeps explicit reach conditions and reports bounded limit without a partial document
+ok 270 - E5 unknown tributary preserves fixed neighbouring legacy source and owner heights
+ok 271 - E5 solved draft still rejects a new physical cycle beyond the fixed exterior cut
+ok 272 - RIV-004/005/013 all 125 triples, symmetry and inverse share the accepted relation
+ok 273 - RIV-EX-01 / AUD-01 no change at region or height boundary
+ok 274 - RIV-EX-02 weak tributary cannot raise 3
+ok 275 - RIV-EX-03 / EX-22 region height two selects 2, lowland selects 3
+ok 276 - RIV-EX-04/05 known downstream values are hard constraints
+ok 277 - RIV-EX-06 any tributary can join 5
+ok 278 - RIV-EX-07 / AUD-02 true source always 1, independent of height
+ok 279 - RIV-EX-08/17 lake source minimum size, not equality
+ok 280 - RIV-EX-09/10/18/23/24 flowing lakes: exhaustive values and sizes
+ok 281 - RIV-EX-11 closed lake absorbs the sum once
+ok 282 - RIV-EX-12 every fullness may enter sea, never emerge from it
+ok 283 - RIV-EX-14 open upstream is not a source
+ok 284 - RIV-EX-15 numerical scope: input immutable, fixed values survive JSON roundtrip
+ok 285 - RIV-EX-16 numerical scope: actual area one cannot justify drop by two
+ok 286 - RIV-EX-19/20 growth downstream, reduced new upstream
+ok 287 - RIV-EX-21 multi-inlet/outlet lake uses aggregate budget
+ok 288 - RIV-001 / AUD-04 reject invalid numeric values at runtime
+ok 289 - RIV-006 / topology: unsupported degree, duplicate ids, dangling edges and cycles
+ok 290 - RIV-EX-13 two confluences propagate constraints both ways; order invariant
+ok 291 - bounded search reports limit, never false impossibility or a partial optimum
+ok 292 - calculates rapids chance from the height and fullness threshold table
+ok 293 - selects rapids when the roll is below the calculated chance
+ok 294 - permits waterfalls at every height away from river starts, lakes, and confluences
+ok 295 - calculates waterfall chance from height and river fullness
+ok 296 - selects a waterfall only when the roll is below its calculated chance
+ok 297 - ROAD-AUD-01 closed exits: 103/settled/mainland
+ok 298 - ROAD-AUD-01 closed exits: 103/wild/mainland
+ok 299 - ROAD-AUD-01 closed exits: 42/settled/coast
+ok 300 - ROAD-AUD-01 closed exits: 103/wild/coast
+ok 301 - ROAD-AUD-01 closed exits: 103/settled/coast
+ok 302 - ROAD-AUD-02 adjacent roads remain open until physically joined
+ok 303 - ROAD-AUD-03 center can be an incoming road entry
+ok 304 - route starts at old endpoint: user map region 3
+ok 305 - route starts at old endpoint: user map region 4
+ok 306 - settled incoming path searches from the old road hex through the new region
+ok 307 - two old road endpoints cannot be joined by a segment wholly outside the new region
+ok 308 - reject v7 missing river features
+ok 309 - reject v7 array river features
+ok 310 - reject v7 missing river counter
+ok 311 - reject v7 stale river counter
+ok 312 - reject notes null container
+ok 313 - reject notes array container
+ok 314 - reject notes scalar container
+ok 315 - reject notes non-string
+ok 316 - reject notes noncanonical key
+ok 317 - reject notes orphan
+ok 318 - reject notes prototype key
+ok 319 - reject road wrong structure
+ok 320 - reject fractional axial
+ok 321 - reject duplicate region id
+ok 322 - reject invalid region enum
+ok 323 - reject noncanonical terrain key
+ok 324 - reject wrong rotation type
+ok 325 - reject wrong scale type
+ok 326 - reject unsafe next road counter
+ok 327 - reject dangling water POI
+ok 328 - supported corpus: lake-reentry-map
+ok 329 - supported corpus: sea-pocket-map
+ok 330 - supported corpus: terrain-display-map
+ok 331 - supported corpus: road-entry-zigzags
+ok 332 - generated proposals reject overflow in every allocated ID namespace and counter
+ok 333 - imported boundary roadCounter: production continuation stays valid or rolls back whole document
+ok 334 - imported boundary regionId: production continuation stays valid or rolls back whole document
+ok 335 - imported boundary lakeCounter: production continuation stays valid or rolls back whole document
+ok 336 - imported boundary riverId: production continuation stays valid or rolls back whole document
+ok 337 - exhausted kingdom ID refuses production start and preserves document and both stacks
+ok 338 - notes versions 2/3/4/5 accept exact text on actual land/water; v4+ require RNG and future versions reject
+ok 339 - E8 v8 authored POI names use real import,exact export and UndoRedo without touching hex notes
+ok 340 - E8 malformed,orphan and older-version authored names refuse atomically in the real importer
+ok 341 - E8 type change preserves paired settlement name before entity reconciliation
+ok 342 - E8 paired name form commits and clears one atomic land POI
+ok 343 - E8 paired name form commits and clears one atomic water POI
+ok 344 - E8 paired name form commits and clears one atomic center POI
+ok 345 - E8 paired name form rejects half-pairs,duplicates and captured old secondary-field writes
+ok 346 - SEA v2-v8 metadata migration and strict v9 refusal use the real atomic importer
+ok 347 - ONE-MILE1 preview/cancel/apply and public15 roundtrip use real import and exact undo
+ok 348 - ONE-MILE1 local transaction preserves the other language, neighbouring source and RNG
+ok 349 - ONE-MILE1 public10 Knave payload survives15 import/export literally
+ok 350 - ONE-MILE1 rejects private versions, foreign layers and invalid fine data atomically with redo
+ok 351 - ONE-MILE1 reset refuses authored loss without consent and undo restores a consented reset
+ok 352 - ONE-MILE1 older generation checkpoints cannot silently discard later local edits
+ok 353 - ONE-MILE1 view/hover/pinned form and stale callbacks preserve local address and camera scale
+ok 354 - ONE-MILE1 regeneration retains edits supported by final candidate rather than temporary empty checkpoint
+ok 355 - ONE-MILE1 Mythic accepts fine geography only after a complete kingdom and preserves retained owners
+ok 356 - 3/-3 sea recovery preserves old map, river ends and undo: auto
+ok 357 - 3/-3 sea recovery preserves old map, river ends and undo: mainland
+ok 358 - 3/-3 sea recovery preserves old map, river ends and undo: coast
+ok 359 - exhausted sea recovery and programming errors leave map and history unchanged
+ok 360 - Knave content snapshots use filtered source rows and separate real d100, remain immutable and replay after JSON
+ok 361 - Knave granular rerolls preserve categories and siblings, consume only targeted counters and replay after JSON
+ok 362 - Knave catalog and snapshot refusals are atomic; context predicates use existing features and never infer climate
+ok 363 - Knave real generation commits content with its map, preserves world RNG and replays exact accepted snapshots
+ok 364 - Knave profile permits mixed generation modes and refuses unknown scales, legacy injection and dangling annotations without mutation
+ok 365 - Knave difficulty is sparse and detached; accepted submerged flags survive without enabling water edits
+ok 366 - Knave interaction requires a bounded separate clue and mode changes preserve authored text
+ok 367 - Knave POI remapping preserves coordinate flags, refuses collisions and previews losses before pruning
+ok 368 - independent columns preserve sibling overrides and counters; product tuple selects one of 72 complete records
+ok 369 - saved tags validate references, tuples, counts and known snapshots; future dictionary is read-only data
+ok 370 - myth material selects only the exact compatible snapshot without mutating or repairing it
+ok 371 - equal independent dice expose visible purpose before dice and current localized edited results
+ok 372 - Knave actual reroll command is one reversible transaction preserving authored context and continuation
+ok 373 - production imported legacy map does not roll; explicit fill and separate rerolls are exact reversible transactions and v6 roundtrip
+ok 374 - actual tag commands do not consume world RNG, double click is one command, deletion prunes and undo restores
+ok 375 - seeded terrain variation is stable and avoids all six neighbours, including negative coordinates
+ok 376 - all twenty overlays exist as distinct transparent SVGs; forests use vector canopy without tree overlays
+ok 377 - lake shoreline removes shared edges while preserving island edges
+ok 378 - one Germanic model spans distinct formations while keeping each name internally consistent
+ok 379 - many lakes stay unique in both languages and existing names survive growth and order changes
+ok 380 - reroll preserves the model, renames accept paired values and reject duplicates
+ok 381 - real map handlers save names, keep old names on growth, and restore them on undo
+ok 382 - manual edits to old and regenerated regions survive the region history rollback
+ok 383 - tract source stays away from existing sea: coast
+ok 384 - tract source stays away from existing sea: mainland
+ok 385 - tract source stays away from existing sea: auto
+ok 386 - only the starting contact chooses islands or clearings; persisted choice wins
+ok 387 - real tract callback persists woodland style, save validates it and undo restores the original map
+ok 388 - water cuts an exterior bank but does not divide the forest interior
+ok 389 - lakes do not reshape neighbouring forest banks
+ok 390 - R5 consumed regeneration A stays inert after B and undo/redo classic
+ok 391 - R5 consumed regeneration A stays inert after B and undo/redo mythic
+ok 392 - R3 late Mythic regeneration failure retains original action and detached inputs
+ok 393 - AC10 recorded action replay classic/add/success
+ok 394 - AC10 recorded action replay classic/add/failure
+ok 395 - AC10 recorded action replay classic/regenerate/success
+ok 396 - AC10 recorded action replay classic/regenerate/failure
+ok 397 - AC10 recorded action replay mythic/add/success
+ok 398 - AC10 recorded action replay mythic/add/failure
+ok 399 - AC10 recorded action replay mythic/regenerate/success
+ok 400 - AC10 recorded action replay mythic/regenerate/failure
+ok 401 - AC04 mixed manual content and generation checkpoints classic
+ok 402 - AC04 mixed manual content and generation checkpoints mythic
+ok 403 - AC05 classic/programming rollback with redo and next clean control
+ok 404 - AC05 classic/constraint rollback with redo and next clean control
+ok 405 - AC05 mythic/programming rollback with redo and next clean control
+ok 406 - AC05 mythic/constraint rollback with redo and next clean control
+ok 407 - AC05 prepare-regenerate error and successful tract fallback preserve exact stream semantics
+ok 408 - AC06 names restored before next full world classic
+ok 409 - AC06 names restored before next full world mythic
+ok 410 - AC09 consumed Mythic tick remains stale after newer tick and after completion
+ok 411 - production document exports RNG and undo restores continuation
+ok 412 - production streams/continuation/undo classic/0
+ok 413 - production streams/continuation/undo mythic/0
+ok 414 - production streams/continuation/undo classic/1
+ok 415 - production streams/continuation/undo mythic/1
+ok 416 - production streams/continuation/undo classic/123456789
+ok 417 - production streams/continuation/undo mythic/123456789
+ok 418 - production streams/continuation/undo classic/4294967295
+ok 419 - production streams/continuation/undo mythic/4294967295
+ok 420 - classic and late Mythic failures restore RNG and both histories
+ok 421 - v2 migration and v3 validation are deterministic and atomic with redo
+ok 422 - regenerate uses current RNG and undo/repeat restores same variant
+ok 423 - seed validation, repeated renders, pre-options exception and duplicate pending callback
+ok 424 - Mythic regenerate and delete checkpoints restore exact RNG
+ok 425 - R1 stale classic callbacks cannot draw or append a transaction, before or after a render
+ok 426 - R2 Mythic regenerate ignores hidden classic size controls and checkpoints pre-action RNG
+ok 427 - entire v2 and rng-v3 fixture manifests roundtrip and continue in both modes
+ok 428 - complete malformed RNG value classes reject atomically with redo
+ok 429 - mulberry32 matches independent Python uint32 vectors, both independent streams
+ok 430 - saved RNG validation never accepts incomplete/unsupported state
+# tests 430
+# pass 430
+# fail 0
+# cancelled 0
+# skipped 0
+# duration_ms 999660.709134
