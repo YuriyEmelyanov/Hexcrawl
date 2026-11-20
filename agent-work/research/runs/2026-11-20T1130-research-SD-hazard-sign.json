@@ -1,0 +1,146 @@
+{
+  "status": "completed_bounded_shadowdark_L1_hazard_sign",
+  "run_id": "2026-11-20T1130-research-SD-hazard-sign",
+  "stage": "SD-031/041 scoped authoring acceptance",
+  "last_successful_step": "Шесть полных сравнений карты после JSON-импорта, проверка адресов и условный пересчёт изолированного изменения калькулятором rc1.",
+  "failed_operation": null,
+  "observed_error": null,
+  "resolved_diagnostics": [
+    {
+      "tool": "github_create_commit",
+      "action": "start marker scoped CAS on agent-operations",
+      "observed_error": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-20T08:32:27Z. Please include `C808:20011C:83FD3CC:C8C5CE9:6B00059A` when reporting this issue.'}]",
+      "cause_status": "unknown",
+      "recovery": "Перечитаны SHA и claims, совместимая запись marker и claim выполнена и проверена."
+    },
+    {
+      "tool": "github_fetch",
+      "action": "GET repository deployments",
+      "observed_error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
+      "error_code": 400,
+      "cause_status": "confirmed",
+      "recovery": "Для связи SHA с релизом использована запись выпуска PR509 и подтверждён текущий main."
+    }
+  ],
+  "stop_reason": "bounded_completion_condition_met",
+  "cause_status": "confirmed",
+  "saved_results": [
+    "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.json",
+    "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.md",
+    "agent-work/research/handoffs/2026-11-20T1130-research-SD-hazard-sign-strategist.json",
+    "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20-probe.mjs"
+  ],
+  "next_candidate": {
+    "id": "HX-RSR-SD-L1-SHOP-SPECIALTY",
+    "game_id": "SD",
+    "layer": "L1",
+    "action": "SD-CORE-059-L1. Назвать лавку, выбрать конкретную специализацию по уже разобранному источнику, сохранить и открыть карту, затем изменить название и установить, где осталась специализация.",
+    "completion_condition": "Для имени и специализации показать значения и владельца данных на точном SHA. Проверить обычный Classic и пригодный уже существующий профиль, если у него есть операция специализации. Экономика и создание NPC вне проверки.",
+    "rationale": "В исходной матрице конкретная специализация ещё не испытана, в rc1 зачтена половина за общую именованную постройку. Проверка разрешает расхождение без повторного сканирования книги."
+  },
+  "needs_owner_action": false,
+  "base_sha": "a0df34ac8a25f025ab563a2471ec13edf3ae4984",
+  "marker_commit": "e605d21701b81c76fe46e94fb85e9862beee27f8",
+  "marker_ref": "agent-work/research/automation-health/2026-11-20T1130-research-SD-hazard-sign-started.json",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "completed_at": "2026-11-20T08:36:42.085Z",
+  "selection": "Выбран сохранённый checkpoint по опасности SD. Ретроспективный фильтр уже закрыт, новую главу открывать не требуется. Аудит связей между местами выполнен ранее, а этот тест различает место хранения улики и причины.",
+  "finding": "В Classic у руин есть одна заметка гекса. Со слоем Knave признак и причина правятся независимо. При переносе руин 2,0 → 1,0 улика переехала, а причина сохранилась в 2,0.",
+  "model_impact": {
+    "base_model": "1.3.0-rc1",
+    "frozen_snapshot": "47ae1865f2b2622a3ecadf37bffe5e5604de3fa8",
+    "sensitivity_only": true,
+    "criterion": "only SD-CORE-031-L1 absent → partial if optional Classic+Knave authoring counts",
+    "game_before": {
+      "n": 18,
+      "full": 1,
+      "partial": 14,
+      "absent": 3,
+      "unknown": 0,
+      "earned": 8,
+      "confirmed_pct": 44.44444444444444,
+      "upper_pct": 44.44444444444444
+    },
+    "game_if_accepted": {
+      "n": 18,
+      "full": 1,
+      "partial": 15,
+      "absent": 2,
+      "unknown": 0,
+      "earned": 8.5,
+      "confirmed_pct": 47.22222222222222,
+      "upper_pct": 47.22222222222222
+    },
+    "top20_L1_before": 29.843940781440786,
+    "top20_L1_if_accepted": 29.98282967032967,
+    "delta_top20_percentage_points": 0.13888888888888573,
+    "other_levels_and_common_delta": 0
+  },
+  "automations": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "4c493f2e-edac-8323-bad8-e69b62ace188",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T08:30:00Z",
+          "started_at": "2026-11-20T08:30:44.533737Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T11:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "9828ad95-6390-832c-b786-e04c5a952b1e",
+          "recorded_status": "failed",
+          "scheduled_for": "2026-11-20T08:00:00Z",
+          "started_at": "2026-11-20T07:59:11.560219Z",
+          "completed_at": "2026-11-20T08:29:15.747696Z",
+          "chat_ref": null
+        },
+        "next": "2026-11-20T11:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "4c493f2e-edac-8323-bad8-e69b62ace188",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T08:30:00Z",
+          "started_at": "2026-11-20T08:30:44.533737Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T11:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "9828ad95-6390-832c-b786-e04c5a952b1e",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T08:00:00Z",
+          "started_at": "2026-11-20T08:32:10.415955Z",
+          "completed_at": "2026-11-20T08:33:41.214436Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T12:00:00+03:00"
+      }
+    ]
+  },
+  "active_rating_changed": false,
+  "score_changed": false
+}

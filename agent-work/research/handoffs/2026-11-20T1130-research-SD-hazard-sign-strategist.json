@@ -1,0 +1,47 @@
+{
+  "run_id": "2026-11-20T1130-research-SD-hazard-sign",
+  "game": "SD",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "source": "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.json",
+  "finding": "В Classic у руин есть одна заметка гекса. Со слоем Knave признак и причина правятся независимо. При переносе руин 2,0 → 1,0 улика переехала, а причина сохранилась в 2,0.",
+  "task_ref": "HX-BL-062",
+  "relationship": "Согласована политика обнаружения Classic. При приёмке отличить категорию обнаружения от независимого текста улики и сверить владельца данных. Нового объёма разработки из этой проверки не следует.",
+  "scoring": {
+    "base_model": "1.3.0-rc1",
+    "frozen_snapshot": "47ae1865f2b2622a3ecadf37bffe5e5604de3fa8",
+    "sensitivity_only": true,
+    "criterion": "only SD-CORE-031-L1 absent → partial if optional Classic+Knave authoring counts",
+    "game_before": {
+      "n": 18,
+      "full": 1,
+      "partial": 14,
+      "absent": 3,
+      "unknown": 0,
+      "earned": 8,
+      "confirmed_pct": 44.44444444444444,
+      "upper_pct": 44.44444444444444
+    },
+    "game_if_accepted": {
+      "n": 18,
+      "full": 1,
+      "partial": 15,
+      "absent": 2,
+      "unknown": 0,
+      "earned": 8.5,
+      "confirmed_pct": 47.22222222222222,
+      "upper_pct": 47.22222222222222
+    },
+    "top20_L1_before": 29.843940781440786,
+    "top20_L1_if_accepted": 29.98282967032967,
+    "delta_top20_percentage_points": 0.13888888888888573,
+    "other_levels_and_common_delta": 0
+  },
+  "next_candidate": {
+    "id": "HX-RSR-SD-L1-SHOP-SPECIALTY",
+    "game_id": "SD",
+    "layer": "L1",
+    "action": "SD-CORE-059-L1. Назвать лавку, выбрать конкретную специализацию по уже разобранному источнику, сохранить и открыть карту, затем изменить название и установить, где осталась специализация.",
+    "completion_condition": "Для имени и специализации показать значения и владельца данных на точном SHA. Проверить обычный Classic и пригодный уже существующий профиль, если у него есть операция специализации. Экономика и создание NPC вне проверки.",
+    "rationale": "В исходной матрице конкретная специализация ещё не испытана, в rc1 зачтена половина за общую именованную постройку. Проверка разрешает расхождение без повторного сканирования книги."
+  }
+}
