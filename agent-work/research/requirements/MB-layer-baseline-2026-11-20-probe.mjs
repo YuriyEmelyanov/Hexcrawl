@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+import {createGenerationHarness} from './test/helpers/generation-harness.mjs';
+import {tagOwners,mythicDefinitions} from './src/tags/mythic.ts';
+import {findTag} from './src/tags/engine.ts';
+const h=createGenerationHarness(42);
+h.render().startKingdom({q:0,r:0});
+for(let i=0;i<305&&h.render().kingdomJob;i++)h.render().advanceKingdom();
+assert.equal(h.render().generationError,null);
+assert.equal(h.render().kingdomJob,null);
+const owners=[...tagOwners(h.render().captureDocument().map).values()];
+const ruin=owners.find(x=>x.type==='ruins').owner;
+const before=h.render().createSaveData();
+const text='Кровавое поле битвы — метка мастера';
+assert.equal(h.render().mutateTag(ruin,'mb.ruin',undefined,{index:0,text}),true);
+const save=h.render().createSaveData();
+const edit=findTag(save.map.tags,ruin,'mb.ruin');
+assert.ok(JSON.stringify(edit.overrides).includes(text));
+const next=createGenerationHarness(99);
+next.setWindow({alert:m=>{throw Error(m)},matchMedia:()=>({matches:false})});
+next.injectFunction('readTextFile',async f=>f.text);
+await next.render().handleImportJson({target:{files:[{text:JSON.stringify(save)}],value:''}});
+const restored=next.render().createSaveData();
+for(const field of ['regions','kingdoms','obstacles','tags'])assert.deepEqual(JSON.parse(JSON.stringify(restored.map[field])),JSON.parse(JSON.stringify(save.map[field])),field);
+assert.equal(restored.map.obstacles.length,24);
+const mythTags=restored.map.tags.instances.filter(x=>x.definitionId==='mb.myth');
+assert.equal(mythTags.length,6);
+console.log(JSON.stringify({seed:42,verified_fields:['regions','kingdoms','obstacles','tags'],barriers:restored.map.obstacles.length,myths:mythTags.length,edited_ruin:ruin,restored_text:text,seer_first_two:mythicDefinitions['mb.seer'].tables[0].slice(0,2),first_region_target:before.map.regions[0].targetSize}));
+for(const n of [1,7,12]){
+  const cells=h.geometry.generateConnectedRegionFromAnchorImpl({q:0,r:0},n,new Set(),new Set(),new Set());
+  assert.equal(cells.length,n);
+  console.log('free-group',n,cells.length);
+}

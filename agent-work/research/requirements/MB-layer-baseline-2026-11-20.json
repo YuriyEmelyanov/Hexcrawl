@@ -1,0 +1,828 @@
+{
+  "run_id": "2026-11-20T1033-MB-layer-baseline",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "baseline_sha": "c7d3fed6c823e403a2d2ff69484ff9d56acd0822",
+  "release_ref": "agent-work/evidence/HX-BL-021-F1/release-d6daa2c/publication.json",
+  "scope_ref": "agent-work/research/requirements/MB-scope-audit.json",
+  "prior_audit": "agent-work/research/audits/MB-implementation-2026-11-09.json",
+  "count_basis": "Distinct accepted user operations in extracted MB scope only. Source transcription completeness and shared release quality separate. No weights, no G.",
+  "rows": [
+    {
+      "id": "MB-REALM-001-L1",
+      "source": {
+        "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": null,
+        "pdf_page": 1,
+        "section": "Creating a Realm(p14) / Wilderness",
+        "locator": "PDF1 right column Creating a Realm(p14), WILDERNESS first sentence only",
+        "paraphrase": "Рисовать группы одного типа местности размером по d12гексов.",
+        "parameters": {
+          "size_die": "d12",
+          "min_hexes": 1,
+          "max_hexes": 12,
+          "same_terrain": true,
+          "edge_resolution": "unknown"
+        },
+        "normative_kind": "realm_sheet_creation_procedure"
+      },
+      "source_matrix": "agent-work/market/rules/MB-Realm-Sheets.json",
+      "rule_ids": [
+        "map.extend_preserving_content",
+        "map.terrain_zones"
+      ],
+      "disposition": "keep_L1",
+      "reason": "Создание группы рельефа — принятая функция MB. Отдельный новый d12-режим из ложной предпосылки о d20 не нужен.",
+      "product_boundary": "Генерация области MB; расширение без потери карты",
+      "family": "terrain",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-001",
+        "normative_kind": "realm_sheet_creation_procedure",
+        "applicability": "Official free MB Realm Sheets snapshot,PDF1Wilderness first sentence; conscious product profile selection",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать регион",
+        "inputs_and_units": {
+          "accepted_profile": "В свободном обычном случае исходы1/7/12 дают1/7/12 гексов одного типа; повторное открытие не перебрасывает результат."
+        },
+        "product_operation": "тип местности; исход d12=1…12 гексов; доступная область",
+        "expected_output": "Первый регион11/12, заполнение замкнутых карманов и обработка края следуют принятому профилю; правило книги не отменяет их.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-REALM-001-L1-SCOPE-AC01",
+            "given": "В свободном обычном случае исходы1/7/12 дают1/7/12 гексов одного типа; повторное открытие не перебрасывает результат.",
+            "when": "тип местности; исход d12=1…12 гексов; доступная область",
+            "expected": "Первый регион11/12, заполнение замкнутых карманов и обработка края следуют принятому профилю; правило книги не отменяет их."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "map.extend_preserving_content",
+          "map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Правило обработки края, тесной области, недостижения размера.",
+          "Точная связность/порядок роста/выбор типа и соседей.",
+          "Эквивалентность текущей финальной книге/Quickstart; фактическая поддержка HexCrawl."
+        ]
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "test/mythicKingdom.test.mjs",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "Свободный рост 1/7/12 дал 1/7/12. Исключения первого региона и замкнутых карманов прошли отдельные тесты.",
+      "status": "verified_accepted_operation"
+    },
+    {
+      "id": "MB-REALM-002-L1",
+      "source": {
+        "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": null,
+        "pdf_page": 1,
+        "section": "Creating a Realm/Wilderness — Barriers",
+        "locator": "PDF1 rightcolumn Creating a Realm(p14),WILDERNESS second paragraph: Barriers",
+        "paraphrase": "Наносить барьеры по внешним сторонам1-из-6гексов; обычными средствами пересечь барьер нельзя.",
+        "parameters": {
+          "frequency_text": "1-in-6Hexes",
+          "frequency_unit": "hexes_not_edges",
+          "edge_selection": "unknown",
+          "normal_crossing": false,
+          "line_style": "thick_outline_not_physical_width"
+        },
+        "normative_kind": "realm_sheet_creation_procedure_with_unresolved_selection_parameters"
+      },
+      "source_matrix": "agent-work/market/rules/MB-Realm-Sheets.json",
+      "rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "disposition": "keep_L1",
+      "reason": "Барьер — редактируемая граница карты; это L1, а не симулятор пересечения.",
+      "product_boundary": "Грани-препятствия и ручной редактор карты",
+      "family": "barriers",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-002",
+        "normative_kind": "realm_sheet_creation_procedure_with_unresolved_selection_parameters",
+        "applicability": "Official free MBRealmSheet hashpinned snapshot; PDF1Wilderness barrier paragraph only",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить или изменить барьер",
+        "inputs_and_units": {
+          "accepted_profile": "После нанесенияE отмечена со стороныA иB; снятиеE не меняет рельеф иPOI; сохранение восстанавливает выбор."
+        },
+        "product_operation": "соседние гексыA/B; общая граньE; наличие барьера",
+        "expected_output": "Непроходимость — характеристика границы; движение/способы обхода относятся кL2. Не замыкать все6граней.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-REALM-002-L1-SCOPE-AC01",
+            "given": "После нанесенияE отмечена со стороныA иB; снятиеE не меняет рельеф иPOI; сохранение восстанавливает выбор.",
+            "when": "соседние гексыA/B; общая граньE; наличие барьера",
+            "expected": "Непроходимость — характеристика границы; движение/способы обхода относятся кL2. Не замыкать все6граней."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Случайный/ручной способ выбора1-in-6; квота/вероятность/округление и пограничные случаи.",
+          "Сколько сторон и какие стороны очерчивать; пересечения/стыки/край карты.",
+          "Какие необычные средства пересечения возможны; L2процедура не разобрана.",
+          "Текущая поддержка границ в HexCrawl и эквивалентность финальной книге."
+        ]
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "test/manualObstacles.test.mjs",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "На 144 гексах созданы 24 барьера с уникальными ID. Дороги не пересекают их. Проверены ручные операции и восстановление списка.",
+      "status": "verified_accepted_operation"
+    },
+    {
+      "id": "MB-REALM-003-L1",
+      "source": {
+        "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": null,
+        "pdf_page": 1,
+        "section": "Creating a Realm(p14) / HOLDINGS",
+        "locator": "PDF1 right column, entire HOLDINGS paragraph, before MYTH HEXES; p14 is a cross-reference not a read book page",
+        "paraphrase": "При подготовке края нарисовать четыре достаточно удалённых друг от друга владения, обычно замки, города со стенами, крепости или башни, которыми владеют рыцари либо влиятельные вассалы. Одно из этих владений назначить резиденцией правителя.",
+        "parameters": {
+          "holdings_count": 4,
+          "seat_of_power_count": 1,
+          "seat_chosen_from": "the_four_holdings",
+          "spacing": "qualitative_good_distance_apart",
+          "minimum_distance_hexes": null,
+          "typical_forms_examples": [
+            "castle",
+            "walled_town",
+            "fortress",
+            "tower"
+          ],
+          "examples_are_closed_catalogue": false,
+          "holders": "Knights or influential Vassals; exact individual not supplied"
+        },
+        "normative_kind": "realm_sheet_creation_procedure_with_typical_examples"
+      },
+      "source_matrix": "agent-work/market/rules/MB-Realm-Sheets.json",
+      "rule_ids": [
+        "content.site_density",
+        "content.place_description"
+      ],
+      "disposition": "keep_L1",
+      "reason": "Начальное размещение владений входит в наполнение края; персонажи-владельцы нужны только как сведения о месте.",
+      "product_boundary": "Генератор владений и карточка конкретного места",
+      "family": "holdings",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-003",
+        "normative_kind": "realm_sheet_creation_procedure_with_typical_examples",
+        "applicability": "MB official free Realm Sheets hash-pinned snapshot; PDF1 HOLDINGS paragraph, for one realm being prepared",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать край",
+        "inputs_and_units": {
+          "accepted_profile": "Исходная генерация даёт1Престол+3Удела; открытие сохранённой карты восстанавливает эти места."
+        },
+        "product_operation": "один подготовляемый край;4владения;1резиденция среди них",
+        "expected_output": "Качественная удалённость не задаёт численного порога. Ручные изменения без перебалансировки разрешены; автоматическое переназначение единственной роли не принято.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-REALM-003-L1-SCOPE-AC01",
+            "given": "Исходная генерация даёт1Престол+3Удела; открытие сохранённой карты восстанавливает эти места.",
+            "when": "один подготовляемый край;4владения;1резиденция среди них",
+            "expected": "Качественная удалённость не задаёт численного порога. Ручные изменения без перебалансировки разрешены; автоматическое переназначение единственной роли не принято."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Численная дистанция и способ разнесения владений; не подменять их самодельным порогом.",
+          "Соответствие одного Realm единице подготовки текущего генератора и дополнение уже заполненной карты.",
+          "Поведение при недостатке места и изменение целевого количества вне исходного профиля.",
+          "Связь с финальной книгой/Quickstart и другие правила держателей не сверены.",
+          "Фактическая поддержка размещения/роли/сохранения в HexCrawl на точном SHA unknown."
+        ]
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "test/mythicKingdom.test.mjs",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "1 Престол и 3 других владения. После импорта сохранились регионы с теми же объектами.",
+      "status": "verified_accepted_operation"
+    },
+    {
+      "id": "MB-REALM-004-L1",
+      "source": {
+        "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": null,
+        "pdf_page": 1,
+        "section": "Creating a Realm(p14) / MYTH HEXES",
+        "locator": "PDF1 right column, complete MYTH HEXES paragraph before six numbered blanks; p27 is an unread cross-reference",
+        "paraphrase": "Отметить шесть мифов в удалённых местах и присвоить им на карте номера от1до6.",
+        "parameters": {
+          "count": 6,
+          "unit": "myth_placements_per_prepared_realm",
+          "labels": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "placement": "remote_places_qualitative",
+          "minimum_distance_hexes": null,
+          "myth_selection": "not_specified_in_selected_paragraph",
+          "catalogue_number_equals_map_label": false
+        },
+        "normative_kind": "realm_sheet_creation_procedure"
+      },
+      "source_matrix": "agent-work/market/rules/MB-Realm-Sheets.json",
+      "rule_ids": [
+        "content.site_density",
+        "map.reference_labels"
+      ],
+      "disposition": "keep_L1",
+      "reason": "Шесть пространственных мест мифов — принятое содержимое карты; это не управление сюжетом.",
+      "product_boundary": "Генерация шести мест мифов и их карточки",
+      "family": "myths",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-004",
+        "normative_kind": "realm_sheet_creation_procedure",
+        "applicability": "Official free MB Realm Sheets pinned snapshot, PDF1 MYTH HEXES paragraph only, one prepared Realm",
+        "layer": "L1",
+        "trigger_or_user_action": "Заселить край мифами",
+        "inputs_and_units": {
+          "accepted_profile": "После исходной генерации6мест мифов с именами/бросками; сохранение и открытие не меняет выбранные записи."
+        },
+        "product_operation": "один край;6мест;выбранные записи и пары кубов",
+        "expected_output": "Нумерация1–6есть в источнике, но не в принятом интерфейсе по ТЗ владельца. Авто-нумерацию, уникальность каталожных записей и движок Omens не добавлять.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-REALM-004-L1-SCOPE-AC01",
+            "given": "После исходной генерации6мест мифов с именами/бросками; сохранение и открытие не меняет выбранные записи.",
+            "when": "один край;6мест;выбранные записи и пары кубов",
+            "expected": "Нумерация1–6есть в источнике, но не в принятом интерфейсе по ТЗ владельца. Авто-нумерацию, уникальность каталожных записей и движок Omens не добавлять."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "map.reference_labels"
+        ],
+        "unresolved_parameters": [
+          "Численная мера удалённости и автоматическое размещение.",
+          "Соответствие Realm единице генератора и дополнение существующего края.",
+          "Выбор шести мифов, допустимость повторов и материал p27 не проверены.",
+          "Фактическое поведение текущего продукта и точное SHA evidence неизвестны."
+        ]
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "test/mythicKingdom.test.mjs",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "6 мест в разных диких регионах. После импорта те же 6 записей мифов, имена и кубы.",
+      "status": "verified_accepted_operation"
+    },
+    {
+      "id": "MB-REALM-005-L1",
+      "source": {
+        "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": null,
+        "pdf_page": 1,
+        "section": "Creating a Realm(p14) / LANDMARKS",
+        "locator": "PDF1 right column LANDMARKS first two sentences + six bold type headings; individual descriptive sentences/effects excluded",
+        "paraphrase": "Нанести по три или четыре ориентира каждого вида и обозначить их начальной буквой вида либо значком. Перечислены жилища, святилища, монументы, опасности, проклятия и руины.",
+        "parameters": {
+          "types": [
+            "Dwellings",
+            "Sanctums",
+            "Monuments",
+            "Hazards",
+            "Curses",
+            "Ruins"
+          ],
+          "count_per_type_allowed": [
+            3,
+            4
+          ],
+          "count_unit": "each_landmark_type_per_prepared_realm",
+          "derived_total_if_all_six_types": [
+            18,
+            24
+          ],
+          "count_choice_algorithm": "unknown",
+          "marking_options": [
+            "type_initial",
+            "icon"
+          ]
+        },
+        "normative_kind": "realm_sheet_creation_procedure"
+      },
+      "source_matrix": "agent-work/market/rules/MB-Realm-Sheets.json",
+      "rule_ids": [
+        "content.site_density",
+        "map.reference_labels"
+      ],
+      "disposition": "keep_L1",
+      "reason": "Шесть видов ориентиров — существующая пространственная генерация, а не повод вводить отдельный редактор вектора квот.",
+      "product_boundary": "Генератор ориентиров, значки, редакторPOI",
+      "family": "landmarks",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-005",
+        "normative_kind": "realm_sheet_creation_procedure",
+        "applicability": "Official MB Realm Sheet pinned snapshot, PDF1 LANDMARKS count/marking sentences plus six headings; one Realm preparation",
+        "layer": "L1",
+        "trigger_or_user_action": "Нанести ориентиры",
+        "inputs_and_units": {
+          "accepted_profile": "Управляемый выбор всех3даёт18ориентиров, всех4 —24; сочетание3/4/3/4/3/4 —21; значки отражают виды."
+        },
+        "product_operation": "Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins;количество3или4на вид",
+        "expected_output": "Значки — допустимая альтернатива буквам. После ручных правок не навязывать восстановление квоты; отдельный UI заданного вектора не принят.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-REALM-005-L1-SCOPE-AC01",
+            "given": "Управляемый выбор всех3даёт18ориентиров, всех4 —24; сочетание3/4/3/4/3/4 —21; значки отражают виды.",
+            "when": "Dwellings/Sanctums/Monuments/Hazards/Curses/Ruins;количество3или4на вид",
+            "expected": "Значки — допустимая альтернатива буквам. После ручных правок не навязывать восстановление квоты; отдельный UI заданного вектора не принят."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "map.reference_labels"
+        ],
+        "unresolved_parameters": [
+          "Алгоритм выбора3или4 и размещения каждого вида.",
+          "Соответствие Realm единице текущего генератора, правила дополнения и нехватки допустимых мест.",
+          "Переводы/обозначения при совпадающих инициалах и допустимость ручных отступлений — продуктовые решения, не дополнительные параметры источника.",
+          "Описание/эффекты каждого вида и эквивалентность финальной книге не разобраны; фактическая поддержка на SHA unknown."
+        ]
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "src/modes/pointsOfInterest.ts",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "По 3–4 ориентира каждого из шести видов на нескольких seed. Все шесть типов имеют отдельные значки в pointsOfInterest.ts.",
+      "status": "verified_accepted_operation"
+    },
+    {
+      "id": "MB-REALM-006-L1",
+      "source": {
+        "source_id": "MB-OFFICIAL-REALM-SHEETS-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": null,
+        "pdf_page": 1,
+        "section": "LANDMARKS / Sanctums",
+        "locator": "PDF1 entire Sanctums descriptive clause; dependency Quickstart printed/PDF14 Sanctums,26 Knights,28/30 Knighted by",
+        "paraphrase": "Святилище — священный дом Провидца. Выбор по таблице рыцарей отсылает к Провидцу на странице выбранного рыцаря.",
+        "parameters": {
+          "sanctum_role": "sacred_home_of_a_seer",
+          "selection": "Knight table then associated Seer on Knight page",
+          "dice": {
+            "first": "d6",
+            "second": "d12",
+            "combine": "ordered_pair_not_sum"
+          },
+          "verified_chains": [
+            {
+              "roll": [
+                1,
+                1
+              ],
+              "knight": "The True Knight",
+              "seer": "The Rotted Seer",
+              "quickstart_page": 28
+            },
+            {
+              "roll": [
+                1,
+                2
+              ],
+              "knight": "The Snare Knight",
+              "seer": "The Swollen Seer",
+              "quickstart_page": 30
+            }
+          ],
+          "index_only_examples": [
+            {
+              "roll": [
+                2,
+                1
+              ],
+              "knight": "The Trail Knight",
+              "seer": null
+            },
+            {
+              "roll": [
+                6,
+                12
+              ],
+              "knight": "The Rat Knight",
+              "seer": null
+            }
+          ]
+        },
+        "normative_kind": "realm_sheet_creation_procedure_with_bounded_quickstart_dependency",
+        "dependency_source_refs": [
+          "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108#p14",
+          "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108#p26",
+          "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108#p28",
+          "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108#p30"
+        ]
+      },
+      "source_matrix": "agent-work/market/rules/MB-Realm-Sheets.json",
+      "rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description"
+      ],
+      "disposition": "keep_L1",
+      "reason": "Провидец — простое необходимое содержимое конкретного святилища и прямо утверждённая функция; генератор личностей/персонажей из этого не следует.",
+      "product_boundary": "Карточка святилища: независимый бросок Провидца",
+      "family": "seers",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Realm-Sheets.json#MB-REALM-006",
+        "normative_kind": "realm_sheet_creation_procedure_with_bounded_quickstart_dependency",
+        "applicability": "Realm Sheet Sanctums clause, operationally resolved with official Quickstart snapshot p14/26/28/30; no whole-book equivalence",
+        "layer": "L1",
+        "trigger_or_user_action": "Получить или перебросить Провидца при святилище",
+        "inputs_and_units": {
+          "accepted_profile": "Пара1/1даётThe Rotted Seer,1/2даётThe Swollen Seer; переброс Провидца не меняет описание святилища; открытие сохраняет имя/кубы."
+        },
+        "product_operation": "выбранное святилище;d6=1…6;d12=1…12;известная таблица связей",
+        "expected_output": "Прямой lookup допустим для проверенных цепочек; не нужен обязательный промежуточный объект рыцаря. Остальные70связей не подтверждены первоисточником.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-REALM-006-L1-SCOPE-AC01",
+            "given": "Пара1/1даётThe Rotted Seer,1/2даётThe Swollen Seer; переброс Провидца не меняет описание святилища; открытие сохраняет имя/кубы.",
+            "when": "выбранное святилище;d6=1…6;d12=1…12;известная таблица связей",
+            "expected": "Прямой lookup допустим для проверенных цепочек; не нужен обязательный промежуточный объект рыцаря. Остальные70связей не подтверждены первоисточником."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Остальные карточки Провидцев и другие редакции/полная книга не прочитаны.",
+          "Повторный выбор одинакового Провидца для разных святилищ/уникальность не установлены.",
+          "Фактическая поддержка в текущем MB генераторе, сохранение и точное SHA evidence unknown."
+        ]
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "test/tags.test.mjs",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "Пары 1/1 и 1/2 соответствуют Гнилому и Раздутому Провидцам. Переброс и открытие сохраняют независимое описание святилища. Для остальных 70 записей точность передачи источника открыта.",
+      "status": "verified_accepted_operation"
+    },
+    {
+      "id": "MB-QS-001-L1",
+      "source": {
+        "source_id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": 14,
+        "pdf_page": 14,
+        "section": "Creating a Realm / Breaking the Rules; Wilderness/Barriers",
+        "locator": "printed/PDF14 Breaking the Rules paragraph + Wilderness barrier paragraph",
+        "paraphrase": "Для типичного края количество барьеров равно одной шестой общего числа гексов. Барьер бывает на одной или нескольких гранях и обычно непроходим. Рекомендации страницы допускают сознательные отступления.",
+        "parameters": {
+          "typical_target": "N_hexes/6",
+          "numerator_unit": "total_hexes_in_prepared_realm",
+          "result_unit": "Barriers_as_named_in_source_not_all_edge_segments",
+          "rounding": null,
+          "sides": "one_or_more_edges",
+          "normal_crossing": false,
+          "normativity": "typical_guideline_explicitly_may_be_bent_or_broken",
+          "placement_algorithm": null,
+          "multi_edge_barrier_identity": null
+        },
+        "normative_kind": "typical_realm_guideline_explicitly_overridable"
+      },
+      "source_matrix": "agent-work/market/rules/MB-Quickstart.json",
+      "rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "disposition": "keep_L1",
+      "reason": "Уточняет профиль тех же барьеров; не отдельная функция и не требование произвольного размера края.",
+      "product_boundary": "Тот же map.routes_and_barriers, фиксированный144-гексовый край",
+      "family": "barriers",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-001",
+        "normative_kind": "typical_realm_guideline_explicitly_overridable",
+        "applicability": "Official Quickstart pinned snapshot p14 barrier and Breaking the Rules clauses only; not automatic equivalence to all Realm Sheet rules",
+        "layer": "L1",
+        "trigger_or_user_action": "Создать край из 144 гексов",
+        "inputs_and_units": {
+          "accepted_profile": "Исходная подготовка144гексов даёт24объекта; ручная правка количества сохраняется без автоматического возвращения к24."
+        },
+        "product_operation": "N=144гекса;ориентирN/6=24барьера;выбранныеграни",
+        "expected_output": "N/6не вероятность на каждую грань. N=10даёт сырой ориентир5/3, округление/группировка не заданы; универсальныйN не входит в принятый профиль.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-QS-001-L1-SCOPE-AC01",
+            "given": "Исходная подготовка144гексов даёт24объекта; ручная правка количества сохраняется без автоматического возвращения к24.",
+            "when": "N=144гекса;ориентирN/6=24барьера;выбранныеграни",
+            "expected": "N/6не вероятность на каждую грань. N=10даёт сырой ориентир5/3, округление/группировка не заданы; универсальныйN не входит в принятый профиль."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Округление приNне кратном6.",
+          "Какие грани выбирать и как считать один связанный/многогранный Barrier.",
+          "Обработка пересечений/края и алгоритм распределения.",
+          "Фактическая поддержка/current implementation SHA и эквивалентность полной книге unknown."
+        ]
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "test/mythicKingdom.test.mjs",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "То же семейство барьеров. После импорта вернулись все 24.",
+      "status": "verified_accepted_operation"
+    },
+    {
+      "id": "MB-QS-002-L1",
+      "source": {
+        "source_id": "MB-OFFICIAL-QUICKSTART-SNAPSHOT-20261108",
+        "url": "https://chrismcdee.itch.io/mythic-bastionland",
+        "printed_page": 14,
+        "pdf_page": 14,
+        "section": "Creating a Realm / Ruins; Myths index p27",
+        "locator": "printed/PDF14 Ruins descriptive clause; p27 Myths ordered-dice procedure and selected index entries",
+        "paraphrase": "Руины намекают на случайный миф, не активный сейчас в данном крае; такой миф может вернуться.",
+        "parameters": {
+          "place_type": "Ruins",
+          "textual_atmosphere": "hints_at_a_myth_not_currently_active",
+          "mandatory_product_algorithm": false,
+          "catalogue_provenance_is_not_runtime_link": true,
+          "automatic_activation": false,
+          "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json"
+        },
+        "normative_kind": "descriptive_guidance_not_mechanical_algorithm"
+      },
+      "source_matrix": "agent-work/market/rules/MB-Quickstart.json",
+      "rule_ids": [
+        "content.place_description"
+      ],
+      "disposition": "keep_L1",
+      "reason": "Описание конкретных руин уже входит в принятый генератор мест; сохранение произвольной заметки не является основанием для новой подсистемы.",
+      "product_boundary": "Существующее описание выбранных руин; решение владельца09.11",
+      "family": "ruins",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-Quickstart.json#MB-QS-002",
+        "normative_kind": "descriptive_guidance_not_mechanical_algorithm",
+        "applicability": "Ruins atmosphere under direct owner clarification2026-11-09; no mandatory active-Myth eligibility procedure",
+        "layer": "L1",
+        "trigger_or_user_action": "Изменить описание руин и открыть карту снова",
+        "inputs_and_units": {
+          "accepted_profile": "Описание«Кровавое поле битвы»показано даже при совпадении каталожного ряда с активныммифом; изменённыйтекст восстановлен после открытия."
+        },
+        "product_operation": "однируины;существующееилиизменённоеописание;списокактивныхмифовнеобязателен",
+        "expected_output": "Никаких обязательных связей/фильтров/каскадных перебросов/автоматической активации мифа.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-QS-002-L1-SCOPE-AC01",
+            "given": "Описание«Кровавое поле битвы»показано даже при совпадении каталожного ряда с активныммифом; изменённыйтекст восстановлен после открытия.",
+            "when": "однируины;существующееилиизменённоеописание;списокактивныхмифовнеобязателен",
+            "expected": "Никаких обязательных связей/фильтров/каскадных перебросов/автоматической активации мифа."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "owner_decision_ref": "agent-work/decisions/owner-decision-2026-11-09-MB-flavour-and-player-map-layer.json",
+        "unresolved_parameters": []
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "mb-layer-pilot.mjs",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "Изменённый текст руин восстановлен у того же объекта (регион 5, гекс 1,7).",
+      "status": "verified_accepted_operation"
+    },
+    {
+      "id": "MB-FAQ-2025-001-L1",
+      "source": {
+        "source_id": "MB-AUTHOR-FAQ-20250717-EN",
+        "url": "https://www.bastionland.com/2025/07/guidance-from-seers-mythic-bastionland.html",
+        "printed_page": null,
+        "pdf_page": null,
+        "section": "Player-facing map FAQ",
+        "locator": "Question What are players allowed to see/what is on your player facing map? HTML34–35; author metadata82",
+        "paraphrase": "В своей обычной практике автор показывает игрокам владения и общий рельеф, скрывая мифы, ориентиры и барьеры; допускает изменение подхода.",
+        "parameters": {
+          "show": [
+            "Holdings",
+            "general terrain"
+          ],
+          "hide": [
+            "Myths",
+            "Landmarks",
+            "Barriers"
+          ],
+          "normative_force": "optional_author_practice"
+        },
+        "normative_kind": "optional_author_practice_not_mandatory_rule"
+      },
+      "source_matrix": "agent-work/market/rules/MB-author-FAQ-2025.json",
+      "rule_ids": [
+        "map.audience_views"
+      ],
+      "disposition": "defer_L2",
+      "reason": "Профиль для игроков явно отложен владельцем на общий этап ведения гекскроула/VTT; это не пробел текущего генератора.",
+      "product_boundary": "Будущий общий player-view; owner-decision09.11",
+      "family": "player-map",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/MB-author-FAQ-2025.json#MB-FAQ-2025-001",
+        "normative_kind": "optional_author_practice_not_mandatory_rule",
+        "applicability": "Mythic Bastionland authorFAQ17July2025 player-map answer only; conscious selected profile",
+        "layer": "L2",
+        "trigger_or_user_action": "Подготовить игрокам копию края",
+        "inputs_and_units": {
+          "accepted_profile": "В передаваемом представлении естьвладения/общийрельеф, нетмифов/ориентиров/барьеров иихсекретныхподписей;GM-картацелая."
+        },
+        "product_operation": "GM-карта;показатьHoldings/terrain;скрытьMyths/Landmarks/Barriers",
+        "expected_output": "Необязательная авторская практика. Динамическийreveal не задан; фактические каналы вывода требуют будущей проверки.",
+        "constraints_and_exceptions": [],
+        "acceptance_cases": [
+          {
+            "id": "MB-FAQ-2025-001-L1-SCOPE-AC01",
+            "given": "В передаваемом представлении естьвладения/общийрельеф, нетмифов/ориентиров/барьеров иихсекретныхподписей;GM-картацелая.",
+            "when": "GM-карта;показатьHoldings/terrain;скрытьMyths/Landmarks/Barriers",
+            "expected": "Необязательная авторская практика. Динамическийreveal не задан; фактические каналы вывода требуют будущей проверки."
+          }
+        ],
+        "source_vs_product_interpretation": "Исходный текст/числа/исключения сохранены в rule и прежней operational_requirement; здесь только действующая продуктовая проекция с учётом владельца и проверки09.11.",
+        "canonical_rule_refs": [
+          "map.audience_views"
+        ],
+        "unresolved_parameters": [
+          "Какие каналы копирования/экспорта реально поддерживает HexCrawl и что доступно получателю.",
+          "Частное раскрытие отдельных объектов и дальнейшее исследование не заданы FAQ.",
+          "Правила основной книги/конкретной печати и полная карта L1 не разобраны."
+        ]
+      },
+      "version": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence": [
+        "src/App.tsx#createExportSvgClone",
+        "agent-work/research/requirements/MB-layer-baseline-2026-11-20-probe.mjs"
+      ],
+      "finding": "JSON содержит скрытые сведения мастера. PNG копирует текущий SVG, удаляя служебные элементы. Отдельный артефакт для игроков на этой версии не проверен.",
+      "status": "unverified_player_output"
+    }
+  ],
+  "component_decisions": [
+    {
+      "id": "MB-SCOPE-C01",
+      "requirement_id": "MB-REALM-001-L1",
+      "disposition": "out_of_scope",
+      "component": "Новый обязательный d12-режим вместо якобы d20 вMB",
+      "reason": "Существующий MB d12 подтверждён старым аудитом; ложная предпосылка не создаёт функцию.",
+      "product_boundary": "Генерация области MB; расширение без потери карты",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C02",
+      "requirement_id": "MB-REALM-001-L1",
+      "disposition": "needs_owner_decision",
+      "component": "Принудительно точный размер вопреки первому региону/карманам",
+      "reason": "Предлагаемый альтернативный профиль не отменяет принятые исключения; вне принятого рабочего объёма.",
+      "product_boundary": "Генерация области MB; расширение без потери карты",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C03",
+      "requirement_id": "MB-REALM-002-L1",
+      "disposition": "defer_L2",
+      "component": "Пересечение/обход барьера партией",
+      "reason": "Сохранение границыL1 остаётся; вычисление движения/способов преодоления относится кL2.",
+      "product_boundary": "Грани-препятствия и ручной редактор карты",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C04",
+      "requirement_id": "MB-REALM-003-L1",
+      "disposition": "needs_owner_decision",
+      "component": "Автоматически переназначать единственный Престол после ручной правки",
+      "reason": "Отдельная операция не принята; текущие ручные изменения не обязаны сохранять квоты.",
+      "product_boundary": "Генератор владений и карточка конкретного места",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C05",
+      "requirement_id": "MB-REALM-004-L1",
+      "disposition": "out_of_scope",
+      "component": "Обязательные номера мифов1–6впринятом интерфейсе",
+      "reason": "Источник сохраняется, но вариант продукта без номеров уже утверждён; не новый вопрос и не дефект.",
+      "product_boundary": "Генерация шести мест мифов и их карточки",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C06",
+      "requirement_id": "MB-REALM-004-L1",
+      "disposition": "out_of_scope",
+      "component": "Движок Omens/сюжета мифов",
+      "reason": "Для пространственного размещения6мест не требуется; управление сюжетом исключено владельцем.",
+      "product_boundary": "Генерация шести мест мифов и их карточки",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C07",
+      "requirement_id": "MB-REALM-005-L1",
+      "disposition": "needs_owner_decision",
+      "component": "UI заданного вектора квот/автоперебалансировка ручных правок",
+      "reason": "Квота начальной генерации сохранена; новая панель/ограничение не приняты.",
+      "product_boundary": "Генератор ориентиров, значки, редакторPOI",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C08",
+      "requirement_id": "MB-REALM-006-L1",
+      "disposition": "out_of_scope",
+      "component": "Обязательный промежуточный объект рыцаря/создание личности Провидца",
+      "reason": "Прямое разрешение имени для места достаточно проверенным цепочкам; персонажный движок не требуется.",
+      "product_boundary": "Карточка святилища: независимый бросок Провидца",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C09",
+      "requirement_id": "MB-QS-001-L1",
+      "disposition": "needs_owner_decision",
+      "component": "Произвольный N, округление и группировка многогранных барьеров",
+      "reason": "Принятая карта фиксирована144гексами; расширение не дефект текущего режима, источник не задаёт часть параметров.",
+      "product_boundary": "Тот же map.routes_and_barriers, фиксированный144-гексовый край",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C10",
+      "requirement_id": "MB-QS-002-L1",
+      "disposition": "out_of_scope",
+      "component": "Фильтр активных мифов/обязательная связь руины→миф",
+      "reason": "Отозванная трактовка по прямому решению09.11; не восстанавливать.",
+      "product_boundary": "Существующее описание выбранных руин; решение владельца09.11",
+      "accepted_working_scope": false
+    },
+    {
+      "id": "MB-SCOPE-C11",
+      "requirement_id": "MB-FAQ-2025-001-L1",
+      "disposition": "needs_owner_decision",
+      "component": "Автоматическое раскрытие по посещению",
+      "reason": "FAQ задаёт статическую авторскую практику, не протокол динамическогоreveal; нет принятой зависимости.",
+      "product_boundary": "Будущий общий player-view; owner-decision09.11",
+      "accepted_working_scope": false
+    }
+  ],
+  "layer_counts": {
+    "L1": {
+      "families": 7,
+      "verified_within_accepted_profile": 7,
+      "percent": 100
+    },
+    "L2": {
+      "extracted_profiles": 1,
+      "additional_deferred_component": "MB-SCOPE-C03",
+      "verified_player_exports": 0,
+      "percent": null
+    },
+    "L3": {
+      "families": 0,
+      "percent": null
+    }
+  },
+  "test_results": {
+    "runtime": "Node v24.22.3, production handlers in generation harness; browser evidence reused from deployment",
+    "kingdom_tests": 7,
+    "obstacle_tests": 5,
+    "tags_tests": 15,
+    "probe": "{\"seed\":42,\"verified_fields\":[\"regions\",\"kingdoms\",\"obstacles\",\"tags\"],\"barriers\":24,\"myths\":6,\"edited_ruin\":{\"kind\":\"poi\",\"regionId\":5,\"hexKey\":\"1,7\"},\"restored_text\":\"Кровавое поле битвы — метка мастера\",\"seer_first_two\":[{\"ru\":\"Гнилой Провидец\",\"en\":\"The Rotted Seer\"},{\"ru\":\"Раздутый Провидец\",\"en\":\"The Swollen Seer\"}],\"first_region_target\":12}\nfree-group 1 1\nfree-group 7 7\nfree-group 12 12\n",
+    "fixture_recovery": "First tags invocation lacked test/fixtures/import-v2/baseline-mythic.json (ENOENT); restored release fixture; rerun 15/15."
+  },
+  "complete_game": false,
+  "G": null,
+  "exact_pilot_followup": "Открыть сохранённый край MB с известным прибрежным владением, найти его без подсказки координат, переключить 6→1 милю, изменить название, экспортировать и открыть заново. Сверить идентичность владения и берег, записать время поиска и повторные действия."
+}
