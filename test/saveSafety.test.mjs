@@ -422,24 +422,22 @@ test('ONE-MILE1 regeneration retains edits supported by final candidate rather t
 
 });
 
-test('ONE-MILE1 changed river requests consent before removing an automatic small lake',async()=>{
+test('ONE-MILE1 ordinary expansion retains lakes when a new river passes through one',async()=>{
  const g=createGenerationHarness(42), prompts=[], alerts=[];
- g.render();let accept=false;
- g.setWindow({confirm:m=>{prompts.push(m);return accept;},alert:m=>alerts.push(m),matchMedia:()=>({matches:false})});
+ g.render();
+ g.setWindow({confirm:m=>{prompts.push(m);return false;},alert:m=>alerts.push(m),matchMedia:()=>({matches:false})});
  g.injectFunction('readTextFile',async file=>file.text);
  const options={targetSize:15,coastalPreference:'mainland'};
  assert.equal(g.render().safelyAddRegionToMap({q:0,r:0},options).success,true);
  const before=fineStable(g), anchor=g.render().candidateHexes[0];
- assert.equal(before.data.map.physicalGrid.smallLakes.lakes.length,3);
- assert.equal(g.render().safelyAddRegionToMap(anchor,options).success,false);
- assert.match(prompts[0],/малые озёра №3/);
- assert.deepEqual(fineStable(g),before);
- accept=true;
+ const existing=before.data.map.physicalGrid.smallLakes.lakes;
+ assert.equal(existing.length,3);
  assert.equal(g.render().safelyAddRegionToMap(anchor,options).success,true);
- assert.equal(prompts.length,2);
+ assert.deepEqual(prompts,[]);
  const after=fineSave(g);
  assert.equal(after.map.regions.length,2);
- assert.ok(after.map.physicalGrid.smallLakes.lakes.every(lake=>lake.id!==3));
+ assert.deepEqual(after.map.physicalGrid.smallLakes.lakes.slice(0,3),existing);
+ assert.ok(after.map.physicalGrid.smallLakes.lakes.length>=existing.length+2);
  g.render().undoMap();assert.deepEqual(fineSave(g),before.data);
  g.render().redoMap();assert.deepEqual(fineSave(g),after);
  await fineLoad(g,after);assert.deepEqual(alerts,[]);assert.deepEqual(fineSave(g),after);

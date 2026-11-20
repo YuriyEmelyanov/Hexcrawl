@@ -1,10 +1,9 @@
-import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
+import {finePoiLabel} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage,OneMileGeometryConflict} from './automaticOneMileScene';
 import {addManualSmallLake,exactAutomaticLakeRollback,hasFullDrySupport,hasFullOneMileSupport,prepareSmallLakeSupport,rollSmallLakeFootprints,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
 import {prepareSmallLakeShore,smallLakeShorePath,type SmallLakeProtection,type SmallLakeView} from './smallLakeShore';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
-import {prepareRefinementWater} from './geometryRefinementWater';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {OneMilePanel,type FineDraft} from './OneMilePanel';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,worldToDetailCell,type DetailCell} from './detailGrid';
@@ -12,7 +11,7 @@ import {summarizeDetailCell} from './detailSummary';
 import {detailFootprintHasOutline,detailFootprintWorldAnchor} from './detailSizes';
 import {prepareRefinementLakeModes} from './geometryRefinementMouths';
 import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
-import {prepareGeometryRefinementBoundary,geometryBoundaryHasValidClosure,refinementRiverDisplayPaths} from './geometryRefinementBoundary';
+import {prepareGeometryRefinementBoundary,geometryBoundaryHasValidClosure} from './geometryRefinementBoundary';
 import {composeScopedDetailState} from './geometryRefinementState';
 import {projectGeometryRefinementEdit,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
 import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
@@ -1297,23 +1296,13 @@ function validateImportedOneMile(data:HexcrawlSaveData):void{
 }
 
 /** Use the same world geometry for the editor and for a detached import. */
-function smallLakeProtectionForMap(map:OneMileDocumentMap,state:Detail1State):SmallLakeProtection|null{
+function smallLakeProtectionForMap(map:OneMileDocumentMap,state:Detail1State):SmallLakeProtection{
  const origin=state.grid.origin,grid=createDetailGrid(1,origin),detail=state.geometryRefinement;
  const world=(x:number,y:number)=>detailSourcePixelToWorld({x,y},origin);
- const hidden=new Set([...getLakeEdgeKeys(map.regions.flatMap(r=>r.hexes),map.hexTerrainByKey),...getSeaEdgeKeys(map.hexTerrainByKey)]);
- const source=detail&&normalizeRefinementRiverSource({rivers:map.rivers,marks:regionMarkKeys(map),origin});
- const paths=detail&&source?.status==='prepared'
-  ?refinementRiverDisplayPaths(source,detail,hidden).painted
-  :map.rivers.flatMap(river=>renderRiverSegments(river,0,0,hidden).map(r=>({
-   riverId:river.id,sourceEdgeKey:r.key,fullness:r.fullness,points:[world(r.x1,r.y1),world(r.x2,r.y2)]
-  })));
- const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f,1)]))});
- if(water.status==='error')return null;
  const baseRoads=renderRoadSegments(map.roads,0,0),refined=detail?.roads;
  const segments=new Set(refined?.roads.map(r=>JSON.stringify([r.roadId,r.sourceRoadSegmentKey])));
  const crossings=new Set(refined?.crossings.map(c=>c.key));
  return {
-  water,
   roads:[...refined?.roads.map(r=>({ref:String(r.roadId),points:r.points}))??[],
    ...baseRoads.filter(r=>!segments.has(JSON.stringify([r.roadId,r.segmentKey]))).map(r=>({ref:String(r.roadId),points:[world(r.x1,r.y1),world(r.x2,r.y2)]}))],
   crossings:[...refined?.crossings.map(c=>({ref:c.key,points:c.bankPath}))??[],
@@ -1365,10 +1354,8 @@ function prepareGeneratedSmallLakes(checkpoint:MapSnapshot,map:MapSnapshot,gener
  const geometry=scene??map.physicalGrid;
  if(!geometry)return {map,scene,losses};
  const protection=smallLakeProtectionForMap(map,geometry);
- if(!protection)throw Error('Could not validate waterways for small lake generation');
 
- // Source generation may move previously displayed channels. Keep the lake
- // only if the new accepted geography still supports its entire shoreline.
+ // Retain each lake whose accepted terrain and protected features still permit it.
  const existing=support?.layer.lakes??[];
  const retained=existing.filter(lake=>{
   const {conflict}=prepareSmallLakeShore(lake,map.toponymSeed,origin,protection);
@@ -15547,7 +15534,6 @@ export function App() {
         // A local overlay stores no claim that any detailed paths were fixed.
         const geometry=scene??prepared.map.physicalGrid!;
         const protection=smallLakeProtectionForMap(prepared.map,geometry);
-        if(!protection)throw new SaveValidationError(path,language==='ru'?'Не удалось проверить существующие водные объекты.':'Could not validate the existing waterways.');
         for(const [index,lake] of importedLakes.entries()){
           const {conflict}=prepareSmallLakeShore(lake,prepared.map.toponymSeed,geometry.grid.origin,protection);
           if(conflict)throw new SaveValidationError(`${path}.lakes[${index}].cells`,smallLakeConflictText(conflict));
@@ -16649,7 +16635,6 @@ export function App() {
     if(conflict.kind==='road')return language==='ru'?`Берег малого озера пересекает дорогу или тропу №${conflict.ref}.`:`The small lake crosses road or trail #${conflict.ref}.`;
     if(conflict.kind==='crossing')return language==='ru'?'Берег малого озера пересекает действующую переправу.':'The small lake crosses an existing crossing.';
     if(conflict.kind==='anchor')return language==='ru'?'Берег малого озера перекрывает защищённую точку интереса или её привязку.':'The small lake covers a protected point of interest or its attachment.';
-    if(conflict.kind==='water')return language==='ru'?`Малое озеро перекрывает русло реки №${conflict.ref}.`:`The small lake overlaps river #${conflict.ref}.`;
     if(conflict.kind==='small_lake')return language==='ru'?'Выбранные гексы заходят на берег другого малого озера.':'The selected hexes overlap the shore of another small lake.';
     return language==='ru'?'На выбранных гексах нет подходящего берега.':'The selected cells do not form a valid shore.';
   };
@@ -16708,9 +16693,9 @@ export function App() {
   };
   const smallLakeCanStart=!!fineDisplay?.selectedCell&&hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,fineDisplay.selectedCell!)))&&
     !acceptedLakeArtwork.reserved.has(hexKey(fineDisplay.selectedCell));
-  const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
+  const refinedArtwork=(state:Detail1State,smallLakeRiverMask?:string)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} smallLakeRiverMask={smallLakeRiverMask} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
   const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} smallLakes={acceptedLakeArtwork.views} smallLakeDraft={paintSmallLake} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
-    geography={refinedArtwork(fineDisplay)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
+    geography={mask=>refinedArtwork(fineDisplay,mask)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
     [fineDisplay,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');

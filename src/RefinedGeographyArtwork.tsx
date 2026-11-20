@@ -14,7 +14,7 @@ import type {RefinementShore} from './geometryRefinementShore';
 type River={key:string;x1:number;y1:number;x2:number;y2:number;width:number;fullness:number};
 type Source=Extract<ReturnType<typeof normalizeRefinementRiverSource>,{status:'prepared'}>;
 type Props={state:Detail1State;source:Source;offset:WorldPoint;mode:'tiles'|'emoji'|'color';
- rivers:readonly River[];roads:readonly FineRoad[];crossings:readonly FineCrossing[];hiddenRiverEdgeKeys?:ReadonlySet<string>;
+ rivers:readonly River[];roads:readonly FineRoad[];crossings:readonly FineCrossing[];hiddenRiverEdgeKeys?:ReadonlySet<string>;smallLakeRiverMask?:string;
  rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number;edgeKey?:string}[];
  waterfalls:readonly {key:string;x:number;y:number}[];rotated:boolean};
 const pair=(id:number,key:string)=>JSON.stringify([id,key]);
@@ -64,12 +64,12 @@ export function RefinedGeographyArtwork(p:Props){
    <rect {...bounds} fill="white"/>
    {refinement.roads.masks.map(m=><path key={m.poiId} d={shore(m.body)} fill="black" fillRule="evenodd"/>)}
   </mask></defs>
-  <g className="rivers-layer" mask={`url(#${id})`}>
+  <g mask={p.smallLakeRiverMask}><g className="rivers-layer" mask={`url(#${id})`}>
    {paintedPaths.map(path=>{
     const width=fineRiverStrokeWidth(path.fullness);
     return <polyline key={pair(path.riverId,path.sourceEdgeKey)} data-refined-river={path.riverId} data-source-edge={path.sourceEdgeKey} data-river-fullness={path.fullness} points={points(path.points)} className="river-polyline" strokeWidth={width} fill="none"/>;
    })}
-  </g>
+  </g></g>
   <g className="roads-layer" mask={`url(#${id}-roads)`}>
    {outsideRoads.map(r=>{const plan=fineRoadPresentation(r,p.crossings,p.rivers);return <g key={r.key} data-fine-road={r.key}>
     {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>)}
@@ -81,6 +81,7 @@ export function RefinedGeographyArtwork(p:Props){
    </g>;})}
    {refinement.roads.crossings.map(c=><g key={c.key} data-fine-crossing={c.key} data-crossing-kind={c.kind}><title>{c.kind}</title></g>)}
   </g>
+  <g mask={p.smallLakeRiverMask}>
   {p.rapids.filter(m=>!retainedRapids.has(pair(Number(m.key.match(/^river-rapid-(\d+)-/)?.[1]),m.edgeKey??''))).map(m=>{
    const path=pathByRef.get(pair(Number(m.key.match(/^river-rapid-(\d+)-/)?.[1]),m.edgeKey??''));
    if(!path)return <line key={m.key} data-fine-rapid={m.key} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} className="river-rapid-mark" style={{strokeWidth:.2}}/>;
@@ -90,5 +91,6 @@ export function RefinedGeographyArtwork(p:Props){
   {refinement.riverPlan.rapids.map(m=>{const q=point(m.point),dx=-m.tangent.y*.8,dy=m.tangent.x*.8;return <line key={m.sourceRef} x1={q.x-dx} y1={q.y-dy} x2={q.x+dx} y2={q.y+dy} className="river-rapid-mark" style={{strokeWidth:.2}}/>;})}
   {p.waterfalls.filter(w=>![...retainedWaterfalls].some(key=>w.key===`river-waterfall-${key}`)).map(w=><image key={w.key} transform={p.rotated?`rotate(-90 ${w.x} ${w.y})`:undefined} href="/waterfall-color.svg" x={w.x-1.3} y={w.y-1.3} width={2.6} height={2.6}/>)}
   {refinement.riverPlan.waterfalls.map(w=>{const q=point(w.point);return <image key={w.sourceRef} transform={p.rotated?`rotate(-90 ${q.x} ${q.y})`:undefined} href="/waterfall-color.svg" x={q.x-1.3} y={q.y-1.3} width={2.6} height={2.6}/>;})}
+  </g>
  </g>;
 }

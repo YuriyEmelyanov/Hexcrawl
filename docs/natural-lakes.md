@@ -22,10 +22,12 @@ point anchors. The map and PNG render the same path and mask. An intersection
 identifies the existing feature in the draft and prevents the save. An area POI
 can contain a lake when its route and water attachment points stay dry.
 
-For rivers the same one-mile paths and widths define the protected channel.
-The clipped lake shoreline may meet a bank, including a round bend or end,
-but may not take up any interior of the existing river strip. This check does
-not join the two waters or change either feature's direction or attachments.
+An accepted one-mile river can feed and leave a small lake. The accepted shore
+and its cell mask also mask the river artwork, so the river meets the shore at
+its actual entry and exit and the lake fill shows between them. The surface
+area, upstream and downstream river path, direction and ID are preserved.
+A bank contact needs no new source or outlet. The six-mile map keeps its
+existing river display.
 
 A small lake keeps its selected cells in the document. Its natural shore may
 extend into an adjacent cell with full dry support when the visible spill avoids
@@ -42,8 +44,8 @@ cells outside region centers, even from the six-mile view. The owning region's
 biome supplies the initial chance (0% sand, 4% swamp and swamp forest, 2%
 elsewhere). Original seeds can recruit adjacent new cells once at 10%.
 The same world seed and placement produce the same rolls without advancing
-the geography and POI streams. Water conflicts reject a whole candidate
-component. Where an existing detail-geometry conflict prevents the one-mile
+the geography and POI streams. A protected feature or an invalid shore rejects only the affected automatic
+candidate. Other accepted candidates keep their own shore geometry. Where an existing detail-geometry conflict prevents the one-mile
 scene from being prepared, the source region can still be generated while
 the unverified small lakes are skipped. Existing local-only lake overlays on
 those maps are checked against the source rivers, paths, crossings and points

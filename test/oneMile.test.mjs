@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles, detailCellCenter} from '../src/detailGrid.ts';
-import {prepareSmallLakeShore,smallLakeShoreConflict,smallLakeWaterConnected} from '../src/smallLakeShore.ts';
+import {prepareSmallLakeShore,smallLakeShoreConflict,smallLakeShorePath,smallLakeWaterConnected} from '../src/smallLakeShore.ts';
 import {rollSmallLakeFootprints} from '../src/smallLakes.ts';
 import {prepareRefinementShoreCells,prepareRefinementShorePath} from '../src/geometryRefinementShore.ts';
 import {dominantFineBiome, projectOneMile, oneMileCandidates, chooseOneMileAnchor,
@@ -70,6 +70,9 @@ test('small lake protects crossed paths and anchors while dry hex margins remain
   assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,roads:[dryEdge,through]}),{kind:'road',ref:'through'});
   assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,crossings:[through]}),{kind:'crossing',ref:'through'});
   assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,anchors:[anchor]}),{kind:'anchor',ref:'site'});
+  const automatic={...lake,origin:'automatic'};
+  assert.equal(smallLakeShorePath(automatic,42),smallLakeShorePath({...automatic,id:2},42),
+    'rejecting an earlier automatic candidate does not change another basin’s contour');
 });
 
 test('partial fine display is full while accepted geography area stays exact',()=>{
@@ -180,7 +183,7 @@ import {FINE_HEX_WIDTH, finePoiLabel, fineRefinedRoadPresentation, fineRoadPrese
 import {prepareRefinementWater,refinementWaterCurveOverlaps} from '../src/geometryRefinementWater.ts';
 const displayWater=(paths,scale=1)=>{const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/scale]))});assert.equal(water.status,'prepared');return water;};
 
-test('small lake distinguishes bank tangency from overlap with the finite river strip',()=>{
+test('river strip geometry distinguishes tangency and overlap',()=>{
   const strip=prepareRefinementWater({paths:[{riverId:1,sourceEdgeKey:'edge',fullness:4,points:[{x:-2,y:0},{x:2,y:0}]}],widthByFullness:new Map([[4,.4]])});
   assert.equal(strip.status,'prepared');
   const capsule=strip.capsules[0],arc={from:{x:-1,y:.5},control:{x:0,y:-.1},to:{x:1,y:.5}};
@@ -192,11 +195,7 @@ test('small lake distinguishes bank tangency from overlap with the finite river 
   assert.equal(refinementWaterCurveOverlaps(capsule,pastEnd),false,'tangency at a round endpoint');
   assert.equal(refinementWaterCurveOverlaps(capsule,{...pastEnd,control:{x:2.08,y:0}}),true,'overlap only at the round cap');
 
-  const lake={id:1,origin:'manual',cells:[c(0,0)]};
-  const beside=y=>prepareRefinementWater({paths:[{riverId:1,sourceEdgeKey:'edge',fullness:4,points:[{x:-2,y},{x:2,y}]}],widthByFullness:new Map([[4,.4]])});
-  const nearby={roads:[],crossings:[],anchors:[],water:beside(.5)};
-  assert.deepEqual(smallLakeShoreConflict(lake,42,{x:0,y:0},nearby),{kind:'water',ref:'1'});
-  assert.equal(smallLakeShoreConflict(lake,42,{x:0,y:0},{...nearby,water:beside(.8)}),null);
+
 });
 test('fine POI label retains localized type and explicit name without fallback duplication',()=>{
  assert.equal(finePoiLabel('Городок','Айхенхайм'),'Городок Айхенхайм');

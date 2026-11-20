@@ -1,6 +1,5 @@
 import {createDetailGrid,detailCellCenter,type DetailCell,type WorldPoint} from './detailGrid.ts';
 import {prepareRefinementShoreCells,prepareRefinementShorePath,refinementShoreIntervals,refinementShoreLocation,shoreCurvePoint,type RefinementShore,type ShoreCurve} from './geometryRefinementShore.ts';
-import {refinementWaterCurveOverlaps,type RefinementWater} from './geometryRefinementWater.ts';
 import {FINE_HEX_WIDTH} from './oneMilePresentation.ts';
 import {buildNaturalLakes} from './rendering/lakeGeometry.ts';
 import {fineCellKey,type OneMileCell} from './oneMile.ts';
@@ -10,7 +9,6 @@ export type SmallLakeProtection=Readonly<{
   roads:readonly Readonly<{ref:string;points:readonly WorldPoint[]}>[];
   crossings:readonly Readonly<{ref:string;points:readonly WorldPoint[]}>[];
   anchors:readonly Readonly<{ref:string;point:WorldPoint}>[];
-  water?:RefinementWater;
 }>;
 
 /** Keep the seeded, rounded SVG path identical during validation, zoom and export. */
@@ -18,7 +16,9 @@ export function smallLakeShorePath(lake:SmallLake,seed:number):string {
   const grid=createDetailGrid(1);
   const cells=lake.cells.map(c=>{
     const p=detailCellCenter(grid,c);
-    return {...c,x:p.x*FINE_HEX_WIDTH,y:p.y*FINE_HEX_WIDTH,lakeId:lake.id};
+    // Generated basins keep their shape if an earlier candidate is skipped.
+    const lakeId=lake.origin==='manual'?lake.id:undefined;
+    return {...c,x:p.x*FINE_HEX_WIDTH,y:p.y*FINE_HEX_WIDTH,lakeId};
   });
   const [shape]=buildNaturalLakes(cells,28/6,seed);
   return shape?.path??'';
@@ -111,7 +111,7 @@ export function smallLakeWaterConnected(shore:RefinementShore,clip:RefinementSho
   return !!boundary&&connectedWater(boundary);
 }
 
-function shoreConflict(shore:RefinementShore,clip:RefinementShore,protection:SmallLakeProtection,prepared?:readonly Arc[]) {
+function shoreConflict(shore:RefinementShore,clip:RefinementShore,protection:SmallLakeProtection) {
   const bounds=clip.loops.flatMap(loop=>loop.map(c=>c.from));
   const minX=Math.min(...bounds.map(p=>p.x)),maxX=Math.max(...bounds.map(p=>p.x));
   const minY=Math.min(...bounds.map(p=>p.y)),maxY=Math.max(...bounds.map(p=>p.y));
@@ -135,16 +135,6 @@ function shoreConflict(shore:RefinementShore,clip:RefinementShore,protection:Sma
   if(road)return {kind:'road' as const,ref:road.ref};
   const anchor=protection.anchors.find(x=>contains(x.point));
   if(anchor)return {kind:'anchor' as const,ref:anchor.ref};
-  const nearby=protection.water?.capsules.filter(c=>Math.max(c.from.x,c.to.x)+c.radius>=minX&&Math.min(c.from.x,c.to.x)-c.radius<=maxX&&
-    Math.max(c.from.y,c.to.y)+c.radius>=minY&&Math.min(c.from.y,c.to.y)-c.radius<=maxY)??[];
-  const axis=nearby.find(c=>overlaps([c.from,c.to]));
-  if(axis)return {kind:'water' as const,ref:String(axis.riverId)};
-  if(!nearby.length)return null;
-
-  const arcs=prepared??clippedArcs(shore,clip);
-  if(!arcs)return invalidShape;
-  const water=nearby.find(c=>arcs.some(({curve,lo,hi})=>refinementWaterCurveOverlaps(c,curve,lo,hi)));
-  if(water)return {kind:'water' as const,ref:String(water.riverId)};
   return null;
 }
 
@@ -158,10 +148,10 @@ export function prepareSmallLakeShore(lake:SmallLake,seed:number,origin:WorldPoi
   coverage?:ReadonlyMap<string,OneMileCell>,reserved:ReadonlySet<string>=new Set()) {
   const path=smallLakeShorePath(lake,seed),core={lake,path,maskCells:lake.cells};
   const shore=prepareRefinementShorePath(path,1/FINE_HEX_WIDTH,origin),clip=prepareRefinementShoreCells(lake.cells,origin,1);
-  const finish=(view:SmallLakeView,conflict:ReturnType<typeof shoreConflict>)=>({view,conflict});
+  const finish=(view:SmallLakeView,conflict:ReturnType<typeof shoreConflict>|typeof invalidShape)=>({view,conflict});
   if(shore.status==='error'||clip.status==='error')return finish(core,invalidShape);
   const arcs=clippedArcs(shore,clip);
-  const conflict=shoreConflict(shore,clip,protection,arcs??undefined);
+  const conflict=shoreConflict(shore,clip,protection);
   if(conflict)return finish(core,conflict);
   if(!arcs||!connectedWater(arcs))return finish(core,invalidShape);
   if(!coverage)return finish(core,null);
@@ -172,7 +162,7 @@ export function prepareSmallLakeShore(lake:SmallLake,seed:number,origin:WorldPoi
     const mask=prepareRefinementShoreCells([cell],origin,1);
     if(mask.status==='error')return false;
     const boundary=clippedArcs(shore,mask);
-    return !!boundary?.length&&!shoreConflict(shore,mask,protection,boundary);
+    return !!boundary?.length&&!shoreConflict(shore,mask,protection);
   });
   if(!extras.length)return finish(core,null);
   const connected=(cells:readonly DetailCell[])=>{

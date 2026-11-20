@@ -304,12 +304,13 @@ try{
  await showOneMile();
  const lakeCell=(key)=>page.locator(`[data-fine-key="${key}"]`);
  const exportMenu=page.locator('details.export-menu');
- const checkBlockedLake=async(cell,expected,screenshot)=>{
+ const checkBlockedLake=async(cell,expected,screenshot,otherCells=[])=>{
    await lakeCell(cell).scrollIntoViewIfNeeded();
    await lakeCell(cell).press('Enter');
    const beforeBlockedLake=await snap();
    if(await exportMenu.getAttribute('open')!==null)await exportMenu.locator('summary').click();
    await button('Add small lake').click();
+   for(const extra of otherCells)await lakeCell(extra).press('Enter');
    const blockedLake=page.locator('[data-small-lake-conflict]'),message=await blockedLake.innerText();
    assert.match(message,expected);
    assert.equal(await button('Save lake').isDisabled(),true);
@@ -321,13 +322,34 @@ try{
    return {cell,message,documentUnchanged:true};
  };
  const roadConflict=await checkBlockedLake('0,0',/crosses road or trail #1/,'small-lake-road-conflict.jpg');
- const riverConflict=await checkBlockedLake('-4,-28',/overlaps river #1/,'small-lake-river-conflict.jpg');
- await lakeCell('-4,-27').scrollIntoViewIfNeeded();
- await lakeCell('-4,-27').press('Enter');
+ const throughLakeSamples=async(lake,riverId)=>lake.evaluate((el,riverId)=>{
+   const world=el.closest('[data-fine-world]'), shore=el.querySelector('[data-small-lake-shore]');
+   const inverse=shore.transform.baseVal.getItem(0).matrix.inverse();
+   const cells=[...el.querySelectorAll('[data-small-lake-shore-cell]')];
+   const riverMask=world.querySelector('[data-small-lake-river-mask]');
+   if(!riverMask)return null;
+   for(const river of world.querySelectorAll(`[data-refined-river="${riverId}"]`)){
+     const isMasked=river.closest(`[mask="url(#${riverMask.id})"]`);
+     if(!isMasked)continue;
+     const length=river.getTotalLength();
+     const samples=Array.from({length:Math.ceil(length*10)+1},(_,i)=>{
+       const point=river.getPointAtLength(Math.min(i/10,length));
+       return {x:point.x,y:point.y,inside:cells.some(cell=>cell.isPointInFill(point))&&shore.isPointInFill(point.matrixTransform(inverse))};
+     });
+     const first=samples.findIndex(p=>p.inside),last=samples.findLastIndex(p=>p.inside);
+     if(first>0&&last<samples.length-1){
+       return {shore:riverMask.querySelector(`[clip-path="url(#${el.querySelector('clipPath').id})"] path`)?.getAttribute('d'),
+         riverId,edge:river.getAttribute('data-source-edge'),approach:samples[Math.max(0,first-10)],inside:samples[Math.round((first+last)/2)],exit:samples[Math.min(samples.length-1,last+10)]};
+     }
+   }
+   return null;
+ },riverId);
+ await lakeCell('-4,-28').scrollIntoViewIfNeeded();
+ await lakeCell('-4,-28').press('Enter');
+ const beforeLakeRivers=(await classicSignature()).rivers;
  await shot('small-lake-before.jpg');
  await button('Add small lake').click();
- await lakeCell('-4,-26').press('Enter');
- assert.match(await page.locator('[data-small-lake-editor]').innerText(),/Selected hexes: 2/);
+ assert.match(await page.locator('[data-small-lake-editor]').innerText(),/Selected hexes: 1/);
  await page.locator('[data-editor-only="small-lake-draft"] path').waitFor();
  await shot('small-lake-draft.jpg');
  const saveLake=button('Save lake');
@@ -342,9 +364,13 @@ try{
  const lakePath=await smallLake.locator('path').getAttribute('d');
  assert.ok(lakePath?.length>40);
  const savedLakeWorld=await snap();
- assert.deepEqual(savedLakeWorld.map.physicalGrid.smallLakes,{nextId:2,lakes:[{id:1,cells:[{q:-4,r:-27},{q:-4,r:-26}],origin:'manual'}]});
+ assert.deepEqual(savedLakeWorld.map.physicalGrid.smallLakes,{nextId:2,lakes:[{id:1,cells:[{q:-4,r:-28}],origin:'manual'}]});
  assert.deepEqual(savedLakeWorld.generation,classicSource.generation,'manual water edit does not change RNG');
- await lakeCell('-4,-27').scrollIntoViewIfNeeded();
+ const manualPass=await throughLakeSamples(smallLake,1);
+ assert.ok(manualPass?.inside.inside&&manualPass.shore===lakePath,'river 1 has distinct entry and exit at the same accepted contour');
+ assert.deepEqual((await classicSignature()).rivers,beforeLakeRivers,'lake does not reroute or renumber the refined rivers');
+ assert.deepEqual(savedLakeWorld.map.rivers,classicSource.map.rivers);
+ await lakeCell('-4,-28').scrollIntoViewIfNeeded();
  await shot('small-lake-after.jpg');
  await page.evaluate(()=>{window.__oneSvg=null;});
  const pngMenu=page.locator('details.export-menu');
@@ -356,6 +382,19 @@ try{
  await page.waitForFunction(()=>typeof window.__oneSvg==='string');
  const renderedLakeSvg=await page.evaluate(()=>window.__oneSvg);
  assert.ok(renderedLakeSvg.includes(lakePath)&&renderedLakeSvg.includes('data-small-lake="1"')&&!renderedLakeSvg.includes('small-lake-draft'));
+ assert.match(renderedLakeSvg,/data-small-lake-river-mask/);
+ assert.match(renderedLakeSvg,/mask="url\(#[^"]+-small-lake-rivers\)"/);
+ await page.getByRole('button',{name:/^Rotate map/}).click();
+ assert.match(await page.locator('[data-fine-world]').getAttribute('transform'),/rotate/);
+ assert.equal((await throughLakeSamples(smallLake,1))?.edge,manualPass.edge);
+ await lakeCell('-4,-28').scrollIntoViewIfNeeded();
+ await shot('small-lake-river-rotated.jpg');
+ await page.evaluate(()=>window.__oneSvg=null);
+ const [rotatedLakePng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);
+ await fs.copyFile(await rotatedLakePng.path(),new URL('small-lake-river-rotated.png',out));
+ await page.waitForFunction(()=>typeof window.__oneSvg==='string');
+ assert.match(await page.evaluate(()=>window.__oneSvg),/data-small-lake-river-mask/);
+ await page.getByRole('button',{name:'Restore original map rotation'}).click();
  await button('Undo').click();
  await smallLake.waitFor({state:'detached'});
  await button('Redo').click();
@@ -367,14 +406,15 @@ try{
  await showOneMile();
  await smallLake.waitFor();
  assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
- await lakeCell('-4,-27').press('Enter');
+ assert.equal((await throughLakeSamples(smallLake,1))?.edge,manualPass.edge);
+ await lakeCell('-4,-28').press('Enter');
  await button('Remove small lake').click();
  await smallLake.waitFor({state:'detached'});
  assert.deepEqual((await snap()).map.physicalGrid.smallLakes,{nextId:2,lakes:[]});
  await button('Undo').click();
  await smallLake.waitFor();
  assert.equal(await smallLake.locator('path').getAttribute('d'),lakePath);
- manifest.cases.push({id:'HX056-manual-small-lake-roundtrip-and-png',status:'pass',cells:['-4,-27','-4,-26'],pngBytes:smallLakeBytes.length,roadConflict,riverConflict});
+ manifest.cases.push({id:'HX056-manual-small-lake-roundtrip-and-png',status:'pass',cells:['-4,-28'],pngBytes:smallLakeBytes.length,roadConflict,manualPass,rotatedPng:true});
 
  // A separate real shoreline witnesses actual spill and continuity across
  // save/reload. The large existing lake borders the selected fine hex.
@@ -413,7 +453,7 @@ try{
  // R05: mutate only the saved footprint. The same river conflict rejected
  // in the editor above must leave the open map and both timelines intact.
  const invalidLake=structuredClone(shoreAccepted);
- invalidLake.map.physicalGrid.smallLakes.lakes[0].cells=[{q:-4,r:-28}];
+ invalidLake.map.physicalGrid.smallLakes.lakes[0].cells=[{q:0,r:0}];
  await lakeCell('10,-9').scrollIntoViewIfNeeded();
  await lakeCell('10,-9').press('Enter');
  await button('Remove small lake').click();
@@ -429,7 +469,7 @@ try{
   await loadWorld(Buffer.from(JSON.stringify(invalidLake)));
   assert.equal(alerts.length,alertsBefore+1);
   importRefusal=alerts.pop();
-  assert.match(importRefusal,/map\.physicalGrid\.smallLakes\.lakes\[0\]\.cells: The small lake overlaps river #1\.\)\. Your current map is intact\./);
+  assert.match(importRefusal,/map\.physicalGrid\.smallLakes\.lakes\[0\]\.cells: The small lake crosses road or trail #1\.\)\. Your current map is intact\./);
   assert.deepEqual(await snap(),original,`conflicting import preserves the open document at scale ${scale}`);
   assert.equal(await step.inputValue(),scale);
   assert.equal(await button('Redo').isEnabled(),true);
@@ -550,10 +590,14 @@ try{
  const fromFine=await snap();
  const autoLayer=fromFine.map.physicalGrid.smallLakes;
  assert.equal(fromFine.map.regions.length,classicSource.map.regions.length+1);
- assert.equal(autoLayer.lakes.length,9);
+ assert.equal(autoLayer.lakes.length,10);
  assert.ok(autoLayer.lakes.every(lake=>lake.origin==='automatic'));
  const lakeGroups=page.locator('[data-small-lake]');
  assert.equal(await lakeGroups.count(),autoLayer.lakes.length);
+ const riverLake=autoLayer.lakes.find(lake=>lake.cells.some(cell=>cell.q===-28&&cell.r===-14));
+ assert.ok(riverLake);
+ const automaticPass=await throughLakeSamples(page.locator(`[data-small-lake="${riverLake.id}"]`),5);
+ assert.ok(automaticPass?.inside.inside,'the ordinary generator accepted a lake with a through-flow');
  await lakeCell('-31,-14').scrollIntoViewIfNeeded();
  if(await pngMenu.getAttribute('open')===null)await pngMenu.locator('summary').click();
  await shot('automatic-small-lakes-after.jpg');
@@ -585,7 +629,39 @@ try{
  assert.equal(await lakeGroups.count(),autoLayer.lakes.length);
  assert.deepEqual((await snap()).map.physicalGrid.smallLakes,autoLayer);
  manifest.cases.push({id:'HX056-automatic-small-lakes',status:'pass',coarseAnchor:autoAnchor,fineAnchor,regionId:fromFine.map.regions.at(-1).id,
-   lakes:autoLayer.lakes,scaleParity:true,rngParity:true,undoRedo:true,roundTrip:true,png:true});
+   lakes:autoLayer.lakes,automaticPass,scaleParity:true,rngParity:true,undoRedo:true,roundTrip:true,png:true});
+
+ // Another ordinary candidate on the same seed rolls a lake over real road 6.
+ // It must skip that component without dropping its siblings or an existing lake.
+ await loadWorld(Buffer.from(JSON.stringify(savedLakeWorld)));
+ await step.selectOption('6');
+ const isolationBefore=await snap();
+ const isolationAnchor=page.locator('polygon.hex.candidate[data-hex-key="-1,0"]');
+ await isolationAnchor.dispatchEvent('click');
+ await settleGeneration();
+ const isolationAfter=await snap();
+ const isolatedLakes=isolationAfter.map.physicalGrid.smallLakes.lakes;
+ const blockedCells=['-5,-1','-5,0'];
+ assert.equal(isolationAfter.map.regions.length,isolationBefore.map.regions.length+1);
+ assert.deepEqual(isolatedLakes[0],isolationBefore.map.physicalGrid.smallLakes.lakes[0]);
+ assert.equal(isolatedLakes.filter(lake=>lake.origin==='automatic').length,23);
+ assert.ok(isolatedLakes.every(lake=>lake.cells.every(cell=>!blockedCells.includes(`${cell.q},${cell.r}`))));
+ await showOneMile();
+ const isolationConflict=await checkBlockedLake(blockedCells[0],/crosses road or trail #6/,'automatic-small-lake-isolated-conflict.jpg',blockedCells.slice(1));
+ await lakeCell(blockedCells[0]).scrollIntoViewIfNeeded();
+ await shot('automatic-small-lake-conflict-isolation.jpg');
+ await loadWorld(Buffer.from(JSON.stringify(isolationBefore)));
+ await step.selectOption('6');
+ await isolationAnchor.dispatchEvent('click');
+ await settleGeneration();
+ const isolationRepeat=await snap();
+ assert.deepEqual(isolationRepeat.map,isolationAfter.map);
+ assert.deepEqual(isolationRepeat.generation,isolationAfter.generation);
+ await loadWorld(Buffer.from(JSON.stringify(isolationAfter)));
+ await showOneMile();
+ assert.deepEqual((await snap()).map.physicalGrid.smallLakes.lakes,isolatedLakes);
+ manifest.cases.push({id:'HX056-automatic-conflict-isolation',status:'pass',seed:42,anchor:'-1,0',conflict:{...isolationConflict,cells:blockedCells},acceptedAutomatic:23,retainedManualId:isolatedLakes[0].id,repeatAndRoundTrip:true});
+
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated
