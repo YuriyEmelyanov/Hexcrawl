@@ -36,3 +36,13 @@ body of water. Interior islands are permitted.
 Import checks each stored small-lake shoreline against the incoming map's
 one-mile geometry even when the six-mile map is open. A conflict identifies
 the saved footprint and leaves the open map and both history stacks intact.
+
+Ordinary region generation rolls small lakes on newly supported dry one-mile
+cells outside region centers, even from the six-mile view. The owning region's
+biome supplies the initial chance (0% sand, 4% swamp and swamp forest, 2%
+elsewhere). Original seeds can recruit adjacent new cells once at 10%.
+The same world seed and placement produce the same rolls without advancing
+the geography and POI streams. Water conflicts reject a whole candidate
+component. Where an existing detail-geometry conflict prevents the one-mile
+scene from being prepared, the source region can still be generated while
+the unverified small lakes are skipped. Fallback tracts make no lake rolls.

@@ -1,13 +1,13 @@
 import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
-import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
-import {addManualSmallLake,hasFullDrySupport,prepareSmallLakeSupport,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
+import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage,OneMileGeometryConflict} from './automaticOneMileScene';
+import {addManualSmallLake,hasFullDrySupport,hasFullOneMileSupport,prepareSmallLakeSupport,rollSmallLakeFootprints,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
 import {prepareSmallLakeShore,smallLakeShorePath,type SmallLakeProtection,type SmallLakeView} from './smallLakeShore';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {prepareRefinementWater} from './geometryRefinementWater';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {OneMilePanel,type FineDraft} from './OneMilePanel';
-import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIntersections,worldToDetailCell,type DetailCell} from './detailGrid';
+import {createDetailGrid,detailCellCenter,detailCellPolygon,worldToDetailCell,type DetailCell} from './detailGrid';
 import {summarizeDetailCell} from './detailSummary';
 import {detailFootprintHasOutline,detailFootprintWorldAnchor} from './detailSizes';
 import {prepareRefinementLakeModes} from './geometryRefinementMouths';
@@ -17,7 +17,7 @@ import {composeScopedDetailState} from './geometryRefinementState';
 import {projectGeometryRefinementEdit,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
 import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
 import {buildDetailGeographyPreview,reconcileDetailGeography,validateDetailGeographyFootprints,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
-import {projectOneMile,oneMileCandidates,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
+import {projectOneMile,oneMileCandidates,oneMileSourceOverlaps,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
 import knaveCatalogData from './tags/knaveCatalogData';
 import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,knaveResultText,type KnaveCatalog,type KnaveFacts} from './tags/knave';
 import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,type Difficulty,type Discovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
@@ -1318,6 +1318,61 @@ function smallLakeProtectionForMap(map:OneMileDocumentMap,state:Detail1State):Sm
    ...fp.attachments.map(a=>({ref:fp.poiId,point:a.kind==='route'?a.entry:a.contact})),
   ]),
  };
+}
+
+/** Prepare the fine lake layer against the finished terrain, paths and POIs. */
+function prepareGeneratedSmallLakes(checkpoint:MapSnapshot,map:MapSnapshot,generated:readonly Region[]){
+ const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
+ const grid=createDetailGrid(1,origin),baseGrid=createDetailGrid(6,origin);
+ const source=oneMileSources(map),previous=projectOneMile(oneMileSources(checkpoint),origin);
+ const coverage=new Map(projectOneMile(source,origin).map(row=>[hexKey(row.cell),row]));
+ const previouslyCovered=new Set(previous.filter(hasFullOneMileSupport).map(row=>hexKey(row.cell)));
+ const centers=new Set(map.regions.map(r=>hexKey(worldToDetailCell(grid,detailCellCenter(baseGrid,r.centerHex)))));
+ const owners=new Map(generated.flatMap(r=>r.hexes.map(c=>[hexKey(c),r.biomeId] as const)));
+ const biomes=new Map(map.regions.flatMap(r=>r.hexes.map(c=>[hexKey(c),r.biomeId] as const)));
+ const acceptedSource=new Set(source.map(row=>hexKey(row.cell)));
+ const layer=map.physicalGrid?.smallLakes;
+ const reserved=new Set(layer?.lakes.flatMap(lake=>lake.cells.map(hexKey)));
+ const eligible=[...coverage.values()].flatMap(row=>{
+  const key=hexKey(row.cell);
+  if(previouslyCovered.has(key)||centers.has(key)||reserved.has(key)||!hasFullDrySupport(row))return [];
+  const overlaps=oneMileSourceOverlaps(row.cell,origin,acceptedSource);
+  if(!overlaps.some(hit=>owners.has(hexKey(hit.cell))))return [];
+  const owner=hexKey(overlaps[0].cell),biome=owners.get(owner)??biomes.get(owner);
+  return biome?[{cell:row.cell,chance:getLakeChanceForBiome(biome)}]:[];
+ });
+ const footprints=rollSmallLakeFootprints(eligible,map.generation.masterSeed,LAKE_EXPANSION_CHANCE);
+ if(!footprints.length)return {map,scene:null};
+ let scene:Detail1State;
+ try{scene=prepareAutomaticOneMileScene(map);}
+ catch(error){
+  // An already unsupported detail view cannot certify any new shoreline.
+  // Keep the ordinary source region available independently of that view.
+  if(!(error instanceof OneMileGeometryConflict))throw error;
+  generationLog.detail('Automatic small lakes skipped: detail geometry conflict',{stage:error.stage,components:footprints.length});
+  return {map,scene:null};
+ }
+ const protection=smallLakeProtectionForMap(map,scene);
+ if(!protection)throw Error('Could not validate waterways for small lake generation');
+ for(const lake of [...layer?.lakes??[]].sort((a,b)=>a.id-b.id)){
+  const {view}=prepareSmallLakeShore(lake,map.toponymSeed,origin,protection,coverage,reserved);
+  for(const cell of view.maskCells)reserved.add(hexKey(cell));
+ }
+ const lakes=[...layer?.lakes??[]];
+ let nextId=layer?.nextId??1;
+ for(const cells of footprints){
+  if(cells.some(cell=>reserved.has(hexKey(cell))))continue;
+  const lake={id:nextId,origin:'automatic' as const,cells};
+  const {view,conflict}=prepareSmallLakeShore(lake,map.toponymSeed,origin,protection,coverage,reserved);
+  if(conflict)continue;
+  for(const cell of view.maskCells)reserved.add(hexKey(cell));
+  if(nextId===Number.MAX_SAFE_INTEGER)throw Error('Small lake id counter overflow');
+  nextId++;
+  lakes.push(lake);
+ }
+ if(nextId===(layer?.nextId??1))return {map,scene};
+ const physicalGrid=map.physicalGrid??{...detailAuthoredState(scene),viewStep:6 as const};
+ return {map:{...map,physicalGrid:{...physicalGrid,smallLakes:{nextId,lakes}}},scene};
 }
 
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
@@ -12743,6 +12798,7 @@ export function App() {
     })();
 
     const snapshot: MapSnapshot = {
+      physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
         knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
@@ -13617,6 +13673,7 @@ export function App() {
       })();
 
       const snapshot: MapSnapshot = {
+        physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
         knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
@@ -13652,7 +13709,7 @@ export function App() {
       const committedMap=recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
         rivers: riversWithDeltas, roads: roadResult.roads, crossings: finalCrossings,
         hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
-        nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId, nextRiverId:allocatedRegionRivers.nextRiverId }, finalCenterHex, pendingRegen?.backup);
+        nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId, nextRiverId:allocatedRegionRivers.nextRiverId }, finalCenterHex, pendingRegen?.backup,history,[finalRegionWithPoiKinds]);
       setHistory((current) => [...current, structuredClone(snapshot)]);
       setRegions(committedMap.regions);
       setCandidateHexes(finalCandidateHexes);
@@ -13698,13 +13755,13 @@ export function App() {
     setHoverObstacleEdge(null); updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
-  const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot, options: {replaceMap?:true} = {}) => {
+  const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot, options: {replaceMap?:true;preparedScene?:Detail1State} = {}) => {
     const lakeState=after.map.physicalGrid;
     if(!options.replaceMap&&before.map.physicalGrid?.smallLakes?.lakes.length&&!lakeState?.smallLakes)throw Error('The accepted small lake layer would be lost');
     if(lakeState?.smallLakes?.lakes.length)validateSmallLakeSupport(lakeState.smallLakes,projectOneMile(oneMileSources(after.map),lakeState.grid.origin));
     // Source edits while viewing one mile must also have a complete next
     // display. A preparation failure occurs before either history is changed.
-    let scene=automaticFineSceneRef.current?.viewStep===1?prepareAutomaticOneMileScene(after.map):null;
+    let scene=automaticFineSceneRef.current?.viewStep===1?(options.preparedScene??prepareAutomaticOneMileScene(after.map)):null;
     const target=fineGenerationTargetRef.current;
     if(scene&&target&&projectOneMile(oneMileSources(after.map),scene.grid.origin).some(row=>isSameHex(row.cell,target.cell)))scene={...scene,selectedCell:target.cell,selectedWorldPoint:target.point};
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
@@ -14153,7 +14210,7 @@ export function App() {
     }
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
-    backup?: GenerationBackup, checkpoints = history) => {
+    backup?: GenerationBackup, checkpoints = history, lakeRegions:readonly Region[] = []) => {
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
       map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
@@ -14187,6 +14244,12 @@ export function App() {
     }else if(map.physicalGrid?.geometryRefinement){
       map=prepareSourceTransition(checkpoint.physicalGrid?.geometryRefinement?checkpoint:captureMap(),map);
     }else if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
+    let preparedScene:Detail1State|undefined;
+    if(lakeRegions.length&&(!kingdomJob||backup)){
+      const prepared=prepareGeneratedSmallLakes(checkpoint,map,lakeRegions);
+      map=prepared.map;
+      preparedScene=prepared.scene??undefined;
+    }
     const fineTarget=fineGenerationTargetRef.current;
     if(map.physicalGrid&&fineTarget&&projectOneMile(oneMileSources(map),map.physicalGrid.grid.origin).some(row=>isSameHex(row.cell,fineTarget.cell)))map={...map,physicalGrid:{...map.physicalGrid,selectedCell:fineTarget.cell,selectedWorldPoint:fineTarget.point}};
     checkedRiverMap(map);
@@ -14209,7 +14272,7 @@ export function App() {
       if(!window.confirm(lossMessages.join('\n')))throw new FineRegenerationCancelled();
     }
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
-      generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] });
+      generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] },{preparedScene});
     fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
@@ -14452,7 +14515,8 @@ export function App() {
       nextRoadId: roadId, crossings: finalCrossings,
       waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
       kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...identifiedObstacles], nextObstacleId: finalNextObstacleId },
-      assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history);
+      assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history,
+      regions.slice(job.backup.map.regions.length).filter(r=>!r.isTract));
     setRegions(finalRegions);
     setRoads(rebuiltRoads);setNextRoadId(roadId);
     setCrossings(finalCrossings);
@@ -16514,9 +16578,9 @@ export function App() {
       fineBusyRef.current=true;fineGenerationTargetRef.current={cell,point:pointer??detailCellCenter(createDetailGrid(1,state.grid.origin),cell)};try{generateAt(anchor);}finally{fineBusyRef.current=false;if(!kingdomInFlight.current)fineGenerationTargetRef.current=null;}return true;
     }
     if(!fineCells.some(row=>isSameHex(row.cell,cell)))return false;
-    const center=detailCellCenter(createDetailGrid(1,state.grid.origin),cell),hits=detailPositiveAreaIntersections(createDetailGrid(6,state.grid.origin),detailCellPolygon(createDetailGrid(1,state.grid.origin),cell));
-    const accepted=new Set(oneMileSources(captureMap()).map(row=>hexKey(row.cell))),source=hits.filter(hit=>accepted.has(hexKey(hit.cell))).sort((a,b)=>b.areaSquareMiles-a.areaSquareMiles||a.cell.q-b.cell.q||a.cell.r-b.cell.r)[0];
-    documentRevision.current++;updateAutomaticFineScene({...state,selectedCell:cell,selectedWorldPoint:pointer??center});setFineHover(null);if(source)setSelectedHex(source.cell);return true;
+    const center=detailCellCenter(createDetailGrid(1,state.grid.origin),cell);
+    const source=oneMileSourceOverlaps(cell,state.grid.origin,new Set(oneMileSources(captureMap()).map(row=>hexKey(row.cell))))[0]?.cell;
+    documentRevision.current++;updateAutomaticFineScene({...state,selectedCell:cell,selectedWorldPoint:pointer??center});setFineHover(null);if(source)setSelectedHex(source);return true;
   };
   const finePickRef=useRef(pickFine);finePickRef.current=pickFine;
   const startFineDraft=()=>{

@@ -2,9 +2,24 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles, detailCellCenter} from '../src/detailGrid.ts';
 import {prepareSmallLakeShore,smallLakeShoreConflict,smallLakeWaterConnected} from '../src/smallLakeShore.ts';
+import {rollSmallLakeFootprints} from '../src/smallLakes.ts';
 import {prepareRefinementShoreCells,prepareRefinementShorePath} from '../src/geometryRefinementShore.ts';
 import {dominantFineBiome, projectOneMile, oneMileCandidates, chooseOneMileAnchor,
   fineCellKey, parseFineCellEdits, prepareFineCellEdit, prepareFineCellLoss} from '../src/oneMile.ts';
+
+test('automatic small lakes use keyed cell odds and grow only from original seeds',()=>{
+  const cells=Array.from({length:256},(_,q)=>({q,r:2}));
+  const seeded=chance=>rollSmallLakeFootprints(cells.map(cell=>({cell,chance})),42,0);
+  assert.deepEqual(seeded(0),[]);
+  assert.equal(seeded(.02).flat().length,8);
+  assert.equal(seeded(.04).flat().length,14);
+  assert.deepEqual(rollSmallLakeFootprints(cells.toReversed().map(cell=>({cell,chance:.04})),42,0),seeded(.04));
+
+  const line=cells.slice(0,4).map((cell,index)=>({cell,chance:index===0?1:0}));
+  assert.deepEqual(rollSmallLakeFootprints(line,42,1),[cells.slice(0,2)]);
+  assert.deepEqual(rollSmallLakeFootprints(line.filter((_,index)=>index!==1),42,1),[[cells[0]]],
+    'growth cannot cross an excluded cell');
+});
 
 // This is the first fine-address domain seam on main. Existing mapTransactions
 // tests exercise source-six fields and cannot detect a fine-to-source overwrite.

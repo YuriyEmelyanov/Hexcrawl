@@ -525,7 +525,8 @@ try{
  assert.equal(await regenerateWithConsent(true),warning);
  const afterRegeneration=await snap();
  assert.notDeepEqual(afterRegeneration.map.regions,beforeRegeneration.map.regions);
- assert.deepEqual(afterRegeneration.map.physicalGrid.smallLakes,{nextId:3,lakes:[beforeRegeneration.map.physicalGrid.smallLakes.lakes[1]]});
+ assert.deepEqual(afterRegeneration.map.physicalGrid.smallLakes.lakes.filter(lake=>lake.origin==='manual'),[beforeRegeneration.map.physicalGrid.smallLakes.lakes[1]]);
+ assert.ok(afterRegeneration.map.physicalGrid.smallLakes.lakes.filter(lake=>lake.origin==='automatic').every(lake=>lake.id>=beforeRegeneration.map.physicalGrid.smallLakes.nextId));
  await button('Undo').click();assert.deepEqual(await snap(),beforeRegeneration);
  await button('Redo').click();assert.deepEqual(await snap(),afterRegeneration);
  await showOneMile();
@@ -534,6 +535,57 @@ try{
  await lakeCell(lakeCells[1]).scrollIntoViewIfNeeded();
  await shot('small-lake-regeneration-after.jpg');
  manifest.cases.push({id:'HX056-regeneration-confirms-small-lake-loss',status:'pass',seed:42,warning,cancelExact:true,undoRedoExact:true,retainedLake:2});
+
+ // Same production generation action from matching candidates in both views.
+ await page.reload();
+ await loadWorld(Buffer.from(JSON.stringify(classicSource)));
+ await showOneMile();
+ const autoAnchor='-4,-1',fineAnchor='-23,-4';
+ const autoCandidate=page.locator(`[data-fine-candidate="${fineAnchor}"]`);
+ await autoCandidate.scrollIntoViewIfNeeded();
+ await shot('automatic-small-lakes-before.jpg');
+ const settleGeneration=async()=>page.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready');
+ await autoCandidate.dblclick();
+ await settleGeneration();
+ const fromFine=await snap();
+ const autoLayer=fromFine.map.physicalGrid.smallLakes;
+ assert.equal(fromFine.map.regions.length,classicSource.map.regions.length+1);
+ assert.equal(autoLayer.lakes.length,9);
+ assert.ok(autoLayer.lakes.every(lake=>lake.origin==='automatic'));
+ const lakeGroups=page.locator('[data-small-lake]');
+ assert.equal(await lakeGroups.count(),autoLayer.lakes.length);
+ await lakeCell('-31,-14').scrollIntoViewIfNeeded();
+ if(await pngMenu.getAttribute('open')===null)await pngMenu.locator('summary').click();
+ await shot('automatic-small-lakes-after.jpg');
+ await page.evaluate(()=>window.__oneSvg=null);
+ const [autoPng]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);
+ await fs.copyFile(await autoPng.path(),new URL('automatic-small-lakes.png',out));
+ await page.waitForFunction(()=>typeof window.__oneSvg==='string');
+ const autoSvg=await page.evaluate(()=>window.__oneSvg);
+ for(const {id} of autoLayer.lakes)assert.ok(autoSvg.includes(`data-small-lake="${id}"`));
+ assert.doesNotMatch(autoSvg,/small-lake-draft/);
+
+ await loadWorld(Buffer.from(JSON.stringify(classicSource)));
+ await step.selectOption('6');
+ await page.locator(`polygon.hex.candidate[data-hex-key="${autoAnchor}"]`).dispatchEvent('click');
+ await settleGeneration();
+ const fromCoarse=await snap();
+ assert.equal(await lakeGroups.count(),0);
+ const withoutFineSelection=map=>{
+   const normalized=structuredClone(map);
+   delete normalized.physicalGrid.selectedCell;delete normalized.physicalGrid.selectedWorldPoint;
+   return normalized;
+ };
+ assert.deepEqual(withoutFineSelection(fromFine.map),withoutFineSelection(fromCoarse.map));
+ assert.deepEqual(fromFine.generation,fromCoarse.generation);
+ await button('Undo').click();assert.equal((await snap()).map.physicalGrid,undefined);
+ await button('Redo').click();assert.deepEqual((await snap()).map,fromCoarse.map);
+ await loadWorld(Buffer.from(JSON.stringify(fromFine)));
+ await showOneMile();
+ assert.equal(await lakeGroups.count(),autoLayer.lakes.length);
+ assert.deepEqual((await snap()).map.physicalGrid.smallLakes,autoLayer);
+ manifest.cases.push({id:'HX056-automatic-small-lakes',status:'pass',coarseAnchor:autoAnchor,fineAnchor,regionId:fromFine.map.regions.at(-1).id,
+   lakes:autoLayer.lakes,scaleParity:true,rngParity:true,undoRedo:true,roundTrip:true,png:true});
  assert.deepEqual(errors,[]);assert.deepEqual(alerts,[]);manifest.status='passed';
  await fs.writeFile(new URL('manifest.json',out),JSON.stringify(manifest,null,2));
  // Bounded portable actual previews for the repository handoff. Not generated

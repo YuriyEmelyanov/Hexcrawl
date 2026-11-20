@@ -413,7 +413,10 @@ test('ONE-MILE1 regeneration retains edits supported by final candidate rather t
  loss.setWindow({confirm:m=>{messages.push(m);return true},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();const accepted=fineSave(loss),beforeEdits=stable.data.map.physicalGrid.fineCellEdits,afterEdits=accepted.map.physicalGrid.fineCellEdits,removed=Object.keys(beforeEdits).filter(k=>!Object.hasOwn(afterEdits,k));
  assert.ok(removed.length>0);assert.ok(removed.length<Object.keys(beforeEdits).length);for(const key of removed)assert.ok(messages.at(-1).includes(key));for(const [key,value] of Object.entries(afterEdits))assert.deepEqual(value,beforeEdits[key]);assert.equal(loss.render().generationError,null);
  assert.equal(messages.length,2,'one confirmation per attempt for both kinds of losses');
- assert.deepEqual(accepted.map.physicalGrid.smallLakes,{nextId:4,lakes:[stable.data.map.physicalGrid.smallLakes.lakes[2]]});
+ const retained=accepted.map.physicalGrid.smallLakes;
+ assert.deepEqual(retained.lakes.filter(lake=>lake.id<4),[stable.data.map.physicalGrid.smallLakes.lakes[2]]);
+ assert.ok(retained.lakes.filter(lake=>lake.id>=4).every(lake=>lake.origin==='automatic'));
+ assert.equal(retained.nextId,4+retained.lakes.filter(lake=>lake.id>=4).length);
  assert.equal(loss.render().undoHistory.length,JSON.parse(stable.undo).length+1);
  loss.render().undoMap();assert.deepEqual(fineSave(loss),stable.data);loss.render().redoMap();assert.deepEqual(fineSave(loss),accepted);
 

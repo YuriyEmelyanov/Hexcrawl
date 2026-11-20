@@ -1,5 +1,6 @@
 import {createDetailGrid, detailCellAreaSquareMiles, validateDetailFootprint, type DetailCell} from './detailGrid.ts';
 import {fineCellKey, type OneMileCell} from './oneMile.ts';
+import {createGenerationState,draw} from './worldRandom.ts';
 
 export type SmallLake = Readonly<{
   id: number;
@@ -55,7 +56,44 @@ const fineArea = detailCellAreaSquareMiles(createDetailGrid(1));
 const tolerance = fineArea * 1e-8;
 
 export function hasFullDrySupport(row: OneMileCell | undefined): boolean {
-  return !!row && !!row.landBiomeId && row.acceptedArea >= fineArea - tolerance && row.waterArea <= tolerance;
+  return !!row && hasFullOneMileSupport(row) && !!row.landBiomeId && row.waterArea <= tolerance;
+}
+
+export function hasFullOneMileSupport(row:OneMileCell):boolean{
+  return row.acceptedArea >= fineArea - tolerance;
+}
+
+type LakeCandidate = Readonly<{cell:DetailCell;chance:number}>;
+const neighbours=([[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]] as const);
+const compareCells=(a:DetailCell,b:DetailCell)=>a.q-b.q||a.r-b.r;
+
+function smallLakeRoll(seed:number,stage:'seed'|'growth',cell:DetailCell):number{
+  // The temporary RNG is seeded by place and phase. It never advances the
+  // accepted world's geography or POI state.
+  let hash=2166136261;
+  for(const ch of `small-lakes-v1:${stage}:${fineCellKey(cell)}`)hash=Math.imul(hash^ch.charCodeAt(0),16777619);
+  return draw(createGenerationState((seed^hash)>>>0),'geography');
+}
+
+/** Roll once per eligible coordinate, then grow once from the original seeds. */
+export function rollSmallLakeFootprints(candidates:readonly LakeCandidate[],seed:number,expansionChance:number):DetailCell[][] {
+  const sorted=[...candidates].sort((a,b)=>compareCells(a.cell,b.cell));
+  const first=new Set(sorted.filter(({cell,chance})=>smallLakeRoll(seed,'seed',cell)<chance).map(({cell})=>fineCellKey(cell)));
+  const adjacent=(cell:DetailCell)=>neighbours.map(([q,r])=>fineCellKey({q:cell.q+q,r:cell.r+r}));
+  const unvisited=new Map(sorted
+    .filter(({cell})=>first.has(fineCellKey(cell))||adjacent(cell).some(key=>first.has(key))&&smallLakeRoll(seed,'growth',cell)<expansionChance)
+    .map(({cell})=>[fineCellKey(cell),cell]));
+  const components:DetailCell[][]=[];
+  for(const [key,cell] of unvisited){
+    const cells=[cell];
+    unvisited.delete(key);
+    for(const current of cells)for(const neighbour of adjacent(current)){
+      const next=unvisited.get(neighbour);
+      if(next){cells.push(next);unvisited.delete(neighbour);}
+    }
+    components.push(cells.sort(compareCells));
+  }
+  return components;
 }
 
 export function prepareSmallLakeSupport(layer: SmallLakeLayer, accepted: readonly OneMileCell[]) {

@@ -3,6 +3,12 @@ import {buildDetailGeographyPreview} from './detailGeography.ts';
 import {parseDetail1StateV11,type Detail1State} from './detailModel.ts';
 import {prepareRefinementGeographyPreview} from './geometryRefinementPreview.ts';
 
+export class OneMileGeometryConflict extends Error {
+ constructor(readonly stage:string,refs:readonly string[]){
+  super(`${stage}: ${refs.join(', ')}`);
+ }
+}
+
 export function automaticSceneFailureMessage(error:unknown,language:'ru'|'en',fallback=false){
  const raw=error instanceof Error?error.message:String(error),ru=language==='ru';
  const owner=raw.match(/(detail-poi|river|lake):(\d+)/);
@@ -19,7 +25,7 @@ export function automaticSceneFailureMessage(error:unknown,language:'ru'|'en',fa
 /** Pure detached preparation shared by the controller and its worker. */
 export function prepareAutomaticSceneCandidate(input:GeometryPlanInput):Detail1State {
  const plan=prepareGeometryPlan(input);
- if(plan.status==='error')throw Error(`${plan.stage}: ${plan.refs.join(', ')}`);
+ if(plan.status==='error')throw new OneMileGeometryConflict(plan.stage,plan.refs);
  let state=plan.candidateState;
  if(!state){
   const preview=buildDetailGeographyPreview(input.map,input.liveRivers,{x:0,y:0});
@@ -36,7 +42,7 @@ export function prepareAutomaticSceneCandidate(input:GeometryPlanInput):Detail1S
   const remaining=plan.status==='prepared'?plan.workBudget.remaining:(input.prepareWorkBudget??24000000);
   if(remaining<1)throw Error('prepare_incomplete_budget');
   const prepared=prepareRefinementGeographyPreview({...input,map:{...input.map,physicalGrid:g.sourceState},riverPlan,lockedPoiIds:new Set(g.lockedPoiIds),prepareWorkBudget:remaining});
-  if(prepared.status==='error')throw Error(`${prepared.stage}: ${prepared.refs.join(', ')}`);
+  if(prepared.status==='error')throw new OneMileGeometryConflict(prepared.stage,prepared.refs);
   const refinement=parseGeometryRefinement({...g,sourceFingerprint:prepared.sourceFingerprint,riverPlan,pois:prepared.pois,roads:prepared.roads,unresolved:prepared.unresolved},parseDetail1StateV11);
   state=parseDetail1StateV11({...state,poiFootprints:prepared.footprints,geometryRefinement:refinement});
  }
