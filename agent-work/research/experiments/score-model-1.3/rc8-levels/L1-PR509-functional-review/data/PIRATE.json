@@ -1,0 +1,115 @@
+{
+  "rank": 10,
+  "id": "PIRATE",
+  "name": "Pirate Borg",
+  "closed": false,
+  "source": [
+    "Pirate Borg, Treasure Maps, с. 119–121",
+    "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+    "публичная копия книги"
+  ],
+  "ops": [
+    {
+      "id": "PIRATE-obs-01",
+      "game": "PIRATE",
+      "disposition": "keep_L1",
+      "scope_basis": "На простой карте сокровищ отметить единственную цель знаком X.",
+      "origin": "candidate_observation",
+      "common_rule": "map.reference_labels",
+      "action": "На простой карте сокровищ отметить единственную цель знаком X.",
+      "expected": "После открытия X указывает на прежнее место, мастер может найти его.",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "finding": "Типизированному объекту можно дать имя X и найти его. Вывод отдельного X на изображении выдаваемой карты не проверен.",
+      "evidence": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json#PF2-RM-004-L1-v2",
+      "matching_prior_operation": "PF2-RM-004-L1-v2",
+      "source": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+      "source_locator": "Pirate Borg, Treasure Maps, с. 119–121",
+      "access": "публичная копия книги",
+      "dedup_key": "PIRATE/map.reference_labels/1",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "PIRATE-obs-02",
+      "game": "PIRATE",
+      "disposition": "keep_L1",
+      "scope_basis": "Подготовить маршрут из нескольких значков в установленном порядке.",
+      "origin": "candidate_observation",
+      "common_rule": "content.site_links",
+      "action": "Подготовить маршрут из нескольких значков в установленном порядке.",
+      "expected": "Для A→B→C сохраняется именно эта последовательность.",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "finding": "Места и их координаты сохраняются. Порядок посещения как свойство маршрута не подтверждён.",
+      "evidence": "agent-work/research/requirements/PF2-Remaster-v2-L1-implementation.json#PF2-RM-004-L1-v2",
+      "matching_prior_operation": "PF2-RM-004-L1-v2",
+      "source": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+      "source_locator": "Pirate Borg, Treasure Maps, с. 119–121",
+      "access": "публичная копия книги",
+      "dedup_key": "PIRATE/content.site_links/2",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "PIRATE-obs-03",
+      "game": "PIRATE",
+      "disposition": "keep_L1",
+      "scope_basis": "Подготовить карту-подсказку и скрыть следующие места до её раскрытия, включая арканный вариант.",
+      "origin": "candidate_observation",
+      "common_rule": "map.audience_views",
+      "action": "Подготовить карту-подсказку и скрыть следующие места до её раскрытия, включая арканный вариант.",
+      "expected": "На первой карте видна только первая подсказка. Следующая существует у мастера.",
+      "functional": "absent",
+      "functional_credit": 0,
+      "finding": "PNG выводит вид мастера, а JSON содержит весь документ. Проверка разделения выдачи провалена. Событие раскрытия за столом относится к L2.",
+      "evidence": "src/App.tsx:createExportSvgClone, handleExportPng, createSaveData; score13-surface.mjs",
+      "matching_prior_operation": "PF2-RM-005-L1-v2",
+      "source": "https://fliphtml5.com/xrdjv/hksu/Pirate_Borg/",
+      "source_locator": "Pirate Borg, Treasure Maps, с. 119–121",
+      "access": "публичная копия книги",
+      "dedup_key": "PIRATE/map.audience_views/3",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail"
+        }
+      ]
+    }
+  ],
+  "stats": {
+    "n": 3,
+    "counts": {
+      "full": 0,
+      "partial": 2,
+      "absent": 1,
+      "unknown": 0
+    },
+    "function_fraction": 0.3333333333333333,
+    "upper_if_unknown_pass": 0.3333333333333333,
+    "quality": [
+      0,
+      0.6666666666666666
+    ]
+  }
+}

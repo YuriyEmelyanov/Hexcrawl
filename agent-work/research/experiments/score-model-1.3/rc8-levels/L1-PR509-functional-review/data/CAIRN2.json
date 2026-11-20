@@ -1,0 +1,429 @@
+{
+  "rank": 9,
+  "id": "CAIRN2",
+  "name": "Cairn 2e",
+  "closed": false,
+  "ops": [
+    {
+      "id": "CAIRN2-PC-001-L1",
+      "game": "CAIRN2",
+      "action": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+      "expected": "Выбранные места различимы по номеру; текст и расположение исходных мест сохраняются.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-001-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-001-L1",
+      "finding": "Редактор сохраняет присвоенную месту текстовую метку и координаты. Отдельная стабильная нумерация с сохранением самостоятельного имени не доказана.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Позволить ведущему обозначить выбранные места номерами, сохранив их названия и положение.",
+      "source_acceptance": "Given Выбраны мельница, башня и пристань; ведущий назначил номера1,2,3. When Подготовить обозначения мест. Expected Номера1,2,3 относятся к этим трём местам соответственно; названия и положения прежние.; Given На карте есть четвёртое место «Пещера», не выбранное ведущим. When Пронумеровать только выбранные три места. Expected Пещере не придуман номер и она не удалена.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-PC-001-L1"
+    },
+    {
+      "id": "CAIRN2-PC-002-L1",
+      "game": "CAIRN2",
+      "action": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+      "expected": "Сеть содержит указанные ведущим связи с их видом; изолированные места видны как не имеющие соединений.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-002-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-PC-002-L1",
+      "finding": "Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Дать ведущему отметить существующие пути между выбранными местами и отдельно увидеть места без соединений; не добавлять путь только ради общей связности.",
+      "source_acceptance": "Given A–B соединены тропой, B–C водным маршрутом; D без соединений. When Подготовить сеть этих четырёх мест. Expected Сохранены тропа A–B и водный маршрут B–C; D обозначен без соединений, новая дорога к D не придумана.; Given E и F соседствуют на гексовой карте; дороги, тропы или водного маршрута между ними не отмечено. When Показать подготовленную сеть. Expected Соединение E–F не создано только из соседства; обычное движение по исходной карте не объявлено запрещённым.; Given Ведущий добавил к D известную дорогу от C. When Обновить представление сети. Expected Показана дорога C–D; D больше не обозначен как не имеющий соединений.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-PC-002-L1"
+    },
+    {
+      "id": "CAIRN2-SS-001-L1",
+      "game": "CAIRN2",
+      "action": "Подготавливать области по заданным броскам и положениям",
+      "expected": "Исходные и дополнительные области различимы; принятые границы сохранены.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-001-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-001-L1",
+      "finding": "Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Подготавливать области по заданным броскам и положениям",
+      "source_acceptance": "CAIRN2-SS-001-L1-AC01: Число = 3; точки A и B внутри карты, C вне карты. → Три исходные области; A и B не заменены, принятые границы сохранены.\nCAIRN2-SS-001-L1-AC02: Приняты три области; осталась пустота. → Четыре области; число начальных кубов не ограничивает итог.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-001-L1"
+    },
+    {
+      "id": "CAIRN2-SS-002-L1",
+      "game": "CAIRN2",
+      "action": "Различать исходные категории Easy/Tough/Perilous",
+      "expected": "У каждой опорной точки сохранена исходная категория.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-002-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-002-L1",
+      "finding": "Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Различать исходные категории Easy/Tough/Perilous",
+      "source_acceptance": "CAIRN2-SS-002-L1-AC01: Заданы броски 1, 3, 4, 5, 6. → Easy, Easy, Tough, Tough, Perilous соответственно.\nCAIRN2-SS-002-L1-AC02: Получен Perilous, конкретная география ещё не выбрана. → Сохранён Perilous; урон и класс HX-BL-044 автоматически не назначены.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-002-L1"
+    },
+    {
+      "id": "CAIRN2-SS-003-L1",
+      "game": "CAIRN2",
+      "action": "Получать независимые местность и ориентир по категории",
+      "expected": "Область содержит местность и ориентир с исходными индексами.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-003-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-003-L1",
+      "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Получать независимые местность и ориентир по категории",
+      "source_acceptance": "CAIRN2-SS-003-L1-AC01: Easy; местность = 15, ориентир = 1. → Plains + Broken Sundial; использованы разные строки.\nCAIRN2-SS-003-L1-AC02: Perilous; местность = 15, ориентир = 20. → Mountains + Weeping Bubble; индексы не выравниваются автоматически.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-003-L1"
+    },
+    {
+      "id": "CAIRN2-SS-004-L1",
+      "game": "CAIRN2",
+      "action": "Размещать ориентир как географическую опору",
+      "expected": "Ориентир, положение и исходная область связаны.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-004-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-004-L1",
+      "finding": "Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Размещать ориентир как географическую опору",
+      "source_acceptance": "CAIRN2-SS-004-L1-AC01: У области A выбран Broken Sundial в точке P. → Ориентир связан с A и P; соседние области не изменены.\nCAIRN2-SS-004-L1-AC02: Известно описание видимости, численный радиус неизвестен. → Описание сохранено; радиус в милях или гексах не добавлен.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-004-L1"
+    },
+    {
+      "id": "CAIRN2-SS-005-L1",
+      "game": "CAIRN2",
+      "action": "Подготавливать воду и осмысленное направление реки",
+      "expected": "Источник воды и выбранный путь или выход сохранены.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-005-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-005-L1",
+      "finding": "Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Подготавливать воду и осмысленное направление реки",
+      "source_acceptance": "CAIRN2-SS-005-L1-AC01: В регионе есть озеро; ведущий не добавляет реку. → Озеро осталось источником; новая река не навязана.\nCAIRN2-SS-005-L1-AC02: Высокая точка H, низкая L, море S. → Сохранены направление и выход в море; дополнительное озеро не создано.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-005-L1"
+    },
+    {
+      "id": "CAIRN2-SS-007-L1",
+      "game": "CAIRN2",
+      "action": "Назначать Heart у воды и отдельное число мест",
+      "expected": "Heart сохранён отдельно; вместе с дополнительными местами получается N + 1.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-007-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-007-L1",
+      "finding": "Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Назначать Heart у воды и отдельное число мест",
+      "source_acceptance": "CAIRN2-SS-007-L1-AC01: Heart H у воды, N = 3. → Четыре места: H и три дополнительных.\nCAIRN2-SS-007-L1-AC02: Heart H, N = 8; одна дополнительная точка вне карты. → Девять мест: H и восемь дополнительных; прочие положения сохранены.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-007-L1"
+    },
+    {
+      "id": "CAIRN2-SS-008-L1",
+      "game": "CAIRN2",
+      "action": "Назначать категории только выбранным дополнительным местам",
+      "expected": "Категории соответствуют броскам; Heart сохранён отдельно.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-008-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-008-L1",
+      "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Назначать категории только выбранным дополнительным местам",
+      "source_acceptance": "CAIRN2-SS-008-L1-AC01: Шесть точек, броски 1, 2, 3, 4, 5, 6; на 1 выбран Waypoint. → Waypoint, Curiosity, Curiosity, Lair, Dungeon, Dungeon.\nCAIRN2-SS-008-L1-AC02: Heart уже есть; для нового места получен 1. → Новое место — Settlement; Heart не переименован.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-008-L1"
+    },
+    {
+      "id": "CAIRN2-SS-009-L1",
+      "game": "CAIRN2",
+      "action": "Нумеровать места начиная с Heart",
+      "expected": "Номера пригодны для ссылок между местами.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-009-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-009-L1",
+      "finding": "Редактор сохраняет присвоенную месту текстовую метку и координаты. Отдельная стабильная нумерация с сохранением самостоятельного имени не доказана.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Нумеровать места начиная с Heart",
+      "source_acceptance": "CAIRN2-SS-009-L1-AC01: Ведущий выбрал 1, 2, 3, 4 для H, A, B, C. → H = 1, A = 2, B = 3, C = 4; имена и положения прежние.\nCAIRN2-SS-009-L1-AC02: Место A остаётся в точке P; новое обозначение — 7. → A имеет номер 7 в P; описание прежнее. Старые ссылки требуют отдельной проверки согласованности.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-009-L1"
+    },
+    {
+      "id": "CAIRN2-SS-010-L1",
+      "game": "CAIRN2",
+      "action": "Наполнять каждое место двумя независимыми подсказками",
+      "expected": "Место содержит обе исходные подсказки и их принятый смысл.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-010-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-010-L1",
+      "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Наполнять каждое место двумя независимыми подсказками",
+      "source_acceptance": "CAIRN2-SS-010-L1-AC01: Settlement; тип = 4, свойство = 20. → City + Trading Hub.\nCAIRN2-SS-010-L1-AC02: Dungeon; тип = 2, свойство = 18. → Cave + Sealed; комнаты и монстры автоматически не созданы.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-010-L1"
+    },
+    {
+      "id": "CAIRN2-SS-011-L1",
+      "game": "CAIRN2",
+      "action": "Различать доступность пути и его физический вид",
+      "expected": "Смена физического вида не стирает условие пути.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-011-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-011-L1",
+      "finding": "Сохраняется пространственная основа: отдельные области, POI и физические дороги. Полный собственный профиль Cairn с указанными в исходной строке параметрами не подтверждён.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Различать доступность пути и его физический вид",
+      "source_acceptance": "CAIRN2-SS-011-L1-AC01: A–B — условный водный путь; нужна лодка. → Условие «лодка» сохранено; проходимость без лодки не заявлена.\nCAIRN2-SS-011-L1-AC02: A–C — скрытая дорога; цена поиска неизвестна. → Hidden и неизвестная цена сохранены; деньги и вахты не придуманы.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-011-L1"
+    },
+    {
+      "id": "CAIRN2-SS-012-L1",
+      "game": "CAIRN2",
+      "action": "Связывать места сетью с осмысленными развилками",
+      "expected": "У каждого пути сохранены концы и принятый физический вид.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-012-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-012-L1",
+      "finding": "Подтверждена пространственная часть соответствующего действия: размещение точки, проведение пути или воды, либо сохранение рельефа при уточнении. Проверки CROWS/SD/PF2 и DND5 working matrix. Полный исход и исключения игрового профиля не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Связывать места сетью с осмысленными развилками",
+      "source_acceptance": "CAIRN2-SS-012-L1-AC01: H–A — дорога, H–B — тропа, A–B — сокращение. → Три пары и петля H–A–B–H; соседство гексов не добавляет рёбер.\nCAIRN2-SS-012-L1-AC02: B — конечное место единственного пути. → Автоматическая дорога из B ради соединения со всеми местами не добавлена.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-012-L1"
+    },
+    {
+      "id": "CAIRN2-SS-013-L1",
+      "game": "CAIRN2",
+      "action": "Описывать путь парой независимых результатов",
+      "expected": "Путь содержит обе исходные подсказки.",
+      "source": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-013-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/CAIRN2-scope-audit.json#CAIRN2-SS-013-L1",
+      "finding": "В генераторах Classic, MB и Knave проверены реестры таблиц и выбор броска. Требуемое соответствие броска и результата отсутствует. Свободный текст не выполняет процедуру.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Описывать путь парой независимых результатов",
+      "source_acceptance": "CAIRN2-SS-013-L1-AC01: A–B; Feature = 12, Condition = 20. → Mile Markers + Uneven, Soggy Ground; физический вид пути прежний.\nCAIRN2-SS-013-L1-AC02: Condition = 1. → Bandit Ambushes записано как угроза; бой и характеристики противников не созданы.",
+      "probe": "score13-surface.mjs",
+      "origin": "registered",
+      "binding": "CAIRN2-SS-013-L1"
+    }
+  ],
+  "stats": {
+    "n": 14,
+    "counts": {
+      "full": 0,
+      "partial": 10,
+      "absent": 4,
+      "unknown": 0
+    },
+    "function_fraction": 0.35714285714285715,
+    "upper_if_unknown_pass": 0.35714285714285715,
+    "quality": [
+      0,
+      0.7142857142857143
+    ]
+  }
+}

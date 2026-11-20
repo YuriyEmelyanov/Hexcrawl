@@ -1,0 +1,491 @@
+{
+  "rank": 1,
+  "id": "DND5",
+  "name": "D&D 5e",
+  "closed": false,
+  "ops": [
+    {
+      "id": "DND5-2014-001-L1-v2-draft",
+      "game": "DND5",
+      "action": "Добавить соседнюю область к существующей карте",
+      "expected": "A и его объекты остаются; B добавлена без перезаписи A.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-001-L1-v2-draft",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-001-L1-v2-draft",
+      "finding": "Соседняя область добавлена, 12 поименованных мест и прежняя геометрия сохранены. JSON и история подтверждены.",
+      "quality": [
+        0.5,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "devices": {
+            "desktop": "pass",
+            "android": "unknown"
+          },
+          "low": 0.5,
+          "high": 1
+        }
+      ],
+      "quality_evidence": "live-desktop.json#extension + replay-result.json (20 newly generated adjacent localities; no old hex lost; prior map region objects preserved, undo/redo, JSON including RNG). Edition-specific semantics in original evidence. This pass is for the registered prototype case.",
+      "disposition": "keep_L1",
+      "scope_basis": "Добавить соседнюю область к существующей карте",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Создать территорию и расширять существующую, сохраняя созданное. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции. Защита от перегенерации — отдельное требование продукта S03-C03, не буквальное требование DMG о lock.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-001-L1"
+    },
+    {
+      "id": "DND5-2014-002-L1-v2-draft",
+      "game": "DND5",
+      "action": "Выбрать физический размер гекса независимо от приближения",
+      "expected": "Физическая длина сохраняется при изменении зума; неподдержанный 60 не подменяется 24.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-002-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-002-L1-v2-draft",
+      "finding": "Модуль рассчитан на 1/6/12/24 мили между сторонами. Селектор App предлагает 1 и 6. Камера 1×/2× не меняет карту. 60 миль модулем отклонены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Выбрать физический размер гекса независимо от приближения",
+      "source_acceptance": "DND5-2014-002-L1-SCALE01: Длина6 и исходнаяunknownконвенция сохранены; проектная сторона–сторона отмечена как допущение проекта, не подтверждениеDND.\nDND5-2014-002-L1-SCALE02: Между вершинами4√3≈6.9282032303mi; площадь18√3≈31.1769145362mi². Перевод ширины вkm даёт9.656064.\nDND5-2014-002-L1-SCALE03: Между сторонами3√3≈5.1961524227mi; площадь13.5√3≈23.3826859022mi². Это другая геометрия, не та же6mileячейка изSCALE02.\nDND5-2014-002-L1-SCALE04: Длина4√3mi; география/площадь прежние. Просто переименовать6side как6corner — ошибка.\nDND5-2014-002-L1-SCALE05: Исходныйunknown не исчезает, проектная конвенция остаётся отдельной; POI/география/RNG не изменяются.\nDND5-2014-002-L1-SCALE06: Совместимостьunverified; corner-to-cornerPF2 не переносится вDND. Новая задача/обязательная переделка051 из одногоunknown не выводится.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-002-L1"
+    },
+    {
+      "id": "DND5-2014-003-L1-v2-draft",
+      "game": "DND5",
+      "action": "Задать основной биом и локальное исключение",
+      "expected": "Один гекс изменён на холмы; остальные гексы лесные.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-003-L1-v2-draft",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-003-L1-v2-draft",
+      "finding": "Локальные открытые холмы в лесном регионе сохранились по отдельному адресу. Остальная карта совпала, работают повторный импорт и undo/redo.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Задать основной биом и локальное исключение",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Крупные зоны биома и локальные отличия отдельных гексов. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-003-L1"
+    },
+    {
+      "id": "DND5-2014-004-L1-v2-draft",
+      "game": "DND5",
+      "action": "Подготовить населённую и дикую области",
+      "expected": "Две POI поселения, связанные сельхозучастки; дикая область не заполнена той же плотностью автоматически.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-004-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-004-L1-v2-draft",
+      "finding": "Classic сохраняет освоенность, города/деревни, ферму и пастбище в отдельных гексах. Ферма перемещается независимо.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Подготовить населённую и дикую области",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Поселения и сельхозземли с плотностью, подходящей масштабу и освоенности. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-004-L1"
+    },
+    {
+      "id": "DND5-2014-005-L1-v2-draft",
+      "game": "DND5",
+      "action": "Нарисовать типы суши и воды",
+      "expected": "Все5 форм различимы геометрией, а не только названием.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-005-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-005-L1-v2-draft",
+      "finding": "Ручное создание берега, острова, полуострова и озера проверено. После закрытия пролива отсечённый бассейн сохраняется как озеро при явном выборе.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Нарисовать типы суши и воды",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: География суши и воды с перечисленными формами. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-005-L1"
+    },
+    {
+      "id": "DND5-2014-006-L1-v2-draft",
+      "game": "DND5",
+      "action": "Подготовить переход рельефа",
+      "expected": "Хребет, предгорье и равнина размещены в заданном порядке.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-006-L1-v2-draft",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-006-L1-v2-draft",
+      "finding": "Смежные области с высотами 3→2→1 и соответствующими биомами можно вручную создать, сохранить и открыть. Отдельный биом гекса остаётся независимым.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Подготовить переход рельефа",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Горы, холмы и равнины с осмысленными переходами. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-006-L1"
+    },
+    {
+      "id": "DND5-2014-007-L1-v2-draft",
+      "game": "DND5",
+      "action": "Создать связную реку и приток",
+      "expected": "Основная река и приток связаны; устье принадлежит L; направления согласованы.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-007-L1-v2-draft",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-007-L1-v2-draft",
+      "finding": "Ведущий рисует основное русло до выбранного озера и добавляет приток в узле. Два направленных входа, один выход и ID озера сохранены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Создать связную реку и приток",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Связная речная сеть с истоками, притоками и устьями. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-007-L1"
+    },
+    {
+      "id": "DND5-2014-008-L1-v2-draft",
+      "game": "DND5",
+      "action": "Изменить уровень отображения",
+      "expected": "Крупный обзор сохраняет C/P и скрывает мелкие детали без удаления.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-008-L1-v2-draft",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-008-L1-v2-draft",
+      "finding": "На зуме 1×→0,2×→6× город, деревня и граница остаются в статическом SVG. Данные сохранены. В проверенной панели отсутствует режим «город и граница, деревня скрыта».",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Изменить уровень отображения",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Управлять детализацией и отображением объектов для области/королевства/континента. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-008-L1"
+    },
+    {
+      "id": "DND5-2014-009-L1-v2-draft",
+      "game": "DND5",
+      "action": "Уточнить крупную карту",
+      "expected": "C остаётся в том же мировом месте при детализации; новая мелкая география не сдвигает C.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-009-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-009-L1-v2-draft",
+      "finding": "Переход 6→1, JSON версии 15, точная история и сохранение связанных охватов POI подтверждены в относящихся к ним проверках.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Уточнить крупную карту",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Вложенные карты разных масштабов, согласованные координаты и опорные объекты. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-009-L1"
+    },
+    {
+      "id": "DND5-2014-011-L1-v2-draft",
+      "game": "DND5",
+      "action": "Провести путь через проходимое место",
+      "expected": "Дорога R пересекает хребет через P, а не случайную непроходимую грань.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-011-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-011-L1-v2-draft",
+      "finding": "Дорога через одно открытое ребро хребта сохранена. Шаг через явный барьер отклонён. При свободном обходе редактор принимает обе ручные трассы.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Провести путь через проходимое место",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Показывать дороги/тропы, барьеры и доступные проходы в рельефе. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-011-L1"
+    },
+    {
+      "id": "DND5-2014-013-L1-v2-draft",
+      "game": "DND5",
+      "action": "Разделить сведения мастера и признаки обнаружения",
+      "expected": "Признак башни и скрытые сведения о руинах раздельны.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-013-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-013-L1-v2-draft",
+      "finding": "В подготовленном слое Knave улика хранится за POI и следует за ней. В чистом Classic тест отдельного поля не прошёл; запись ведущего принадлежит гексу.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Разделить сведения мастера и признаки обнаружения",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Содержимое гекса, признаки места и различие открытого/скрытого. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-013-L1"
+    },
+    {
+      "id": "DND5-2014-014-L1-v2-draft",
+      "game": "DND5",
+      "action": "Задать набор мест в области",
+      "expected": "При явном выборе ориентира мастером подготовлены12 мест; это не жёсткий минимум для любой карты.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-014-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-014-L1-v2-draft",
+      "finding": "Ручное размещение 12 мест подтверждено вновь. Отдельная карта из 61 гекса содержит четыре именованных объекта и измеренный осевой отрезок 48 миль между центрами.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Задать набор мест в области",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Размещать поселения, крепости, руины и другие места с управляемой плотностью. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-014-L1"
+    },
+    {
+      "id": "DND5-2014-015-L1-v2-draft",
+      "game": "DND5",
+      "action": "Разместить заданные мастером логовища",
+      "expected": "В R шесть заданных логовищ, каждое сохраняет место и простое описание; боевых статблоков и расчёта экологии нет.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-015-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-015-L1-v2-draft",
+      "finding": "Шесть логовищ помещаются на карте. При переносе одного именованного логовища вид и имя следуют за точкой. Сведения об обитателях остаются в исходном гексе.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Разместить заданные мастером логовища",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Размещать фиксированные логова, их описания и связи с локальной картой. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-015-L1"
+    },
+    {
+      "id": "DND5-2014-016-L1-v2-draft",
+      "game": "DND5",
+      "action": "Связать поселение с ресурсами",
+      "expected": "V имеет явные связи с R/F/W; присутствие названия реки не считается географической связью.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-016-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-016-L1-v2-draft; src/App.tsx; src/knaveClassic.ts; score13-surface.mjs",
+      "finding": "Ранее на этом SHA тест settled-wild-farmland подтвердил соседство отдельного поселения и угодий. Полный набор требуемых R/F/W и независимые связи не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Связать поселение с ресурсами",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Связывать поселения с ресурсами, различать населённую провинцию и глушь. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-016-L1"
+    },
+    {
+      "id": "DND5-2014-017-L1-v2-draft",
+      "game": "DND5",
+      "action": "Разместить описанное примечательное место",
+      "expected": "Одна POI руины с именем и наблюдаемым признаком.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-017-L1-v2-draft",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-017-L1-v2-draft",
+      "finding": "Руины с типом, именем и адресом сохраняются. Признак как переносимая улика подтверждён только через подготовленный слой Knave. Заметка остаётся у гекса.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Разместить описанное примечательное место",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Размещать и описывать руины, монументы, странные места и их признаки. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-017-L1"
+    },
+    {
+      "id": "DND5-2014-020-L1-v2-draft",
+      "game": "DND5",
+      "action": "Отметить опасный участок местности",
+      "expected": "H отмечен как опасный участок тонкого льда и сохранён на прежнем месте; биом соседей не меняется.",
+      "source": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json#DND5-2014-020-L1-v2-draft",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#DND5-2014-020-L1-v2-draft",
+      "finding": "Снег, озеро и сухое ребровое препятствие сохраняются раздельно. Независимая поверхностная отметка тонкого льда отсутствует в проверенной операции и модели.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Отметить опасный участок местности",
+      "source_acceptance": "На зафиксированной карте и выбранном масштабе выполнить: Размещать неподвижные опасные участки и хранить их свойства/описания. Проверить сохраняемые данные и относящиеся к операции ограничения; если операция меняет документ — save/load и undo/redo без потери принятого материала. Ручную запись отличать от автоматической функции.",
+      "probe": "DND5-2014-L1-working-matrix-2026-11-20.json",
+      "origin": "registered",
+      "binding": "DND5-2014-020-L1"
+    }
+  ],
+  "stats": {
+    "n": 16,
+    "counts": {
+      "full": 4,
+      "partial": 10,
+      "absent": 2,
+      "unknown": 0
+    },
+    "function_fraction": 0.5625,
+    "upper_if_unknown_pass": 0.5625,
+    "quality": [
+      0.03125,
+      0.875
+    ]
+  }
+}

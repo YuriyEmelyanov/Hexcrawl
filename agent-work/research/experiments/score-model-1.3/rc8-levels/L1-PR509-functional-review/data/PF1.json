@@ -1,0 +1,592 @@
+{
+  "rank": 16,
+  "id": "PF1",
+  "name": "Pathfinder 1",
+  "closed": false,
+  "ops": [
+    {
+      "id": "PF1-UC-001-L1",
+      "game": "PF1",
+      "action": "Физический масштаб",
+      "expected": "Профиль12mile/corner сохранён; геометрическое отличие от12mile/side известно.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-001-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/audits/PF1-L1-2026-11-14.json#PF1-UC-001-L1",
+      "finding": "Опубликованный профиль Knave фиксирует6mi и не имеет PF1 12mi/corner; географический параметр PF1 не доступен как отдельный сохраняемый профиль.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Физический масштаб",
+      "source_acceptance": "Ширина6√3≈10.3923048454mi; площадь54√3≈93.530743609mi².; Не эквивалентна: между вершинами8√3≈13.8564064606mi.; Длина, конвенция и положениеA сохранены.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-001-L1"
+    },
+    {
+      "id": "PF1-UC-002-L1",
+      "game": "PF1",
+      "action": "Начальный гекс и выбранное продолжение",
+      "expected": "Выбор старта не требует скрытого случайного выбора, продолжение идёт в указанную клетку.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-002-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/PF1-L1-2026-11-14.json#PF1-UC-002-L1",
+      "finding": "Ручной выбор/расширение — общая возможность; генерируются регионы с собственным размером, не подтверждена процедура одного следующего PF1-гекса.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Начальный гекс и выбранное продолжение",
+      "source_acceptance": "H имеетhill без обязательного случайного типа.; ИзменёнQ, H и его содержимое сохранены.; Q не переброшен; возможное обновление требует отдельного явного действия.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-002-L1"
+    },
+    {
+      "id": "PF1-UC-003-L1",
+      "game": "PF1",
+      "action": "Таблица типа местности",
+      "expected": "Сохранены бросок, профиль и итоговый тип; повтор не заменён новым броском.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-003-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/audits/PF1-L1-2026-11-14.json#PF1-UC-003-L1",
+      "finding": "Нет отдельного маршрута PF1d20 с повтором previous; текущие параметры сохраняемого профильного слоя допускают classic.knave2.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Таблица типа местности",
+      "source_acceptance": "settlement.; Оба даютmarsh, без дополнительного броска.; Статусneeds_previous; равнина не придумана.; Отклонены без изменения карты.; Каждое значение попадает ровно в один диапазон; все границы сверены.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-003-L1"
+    },
+    {
+      "id": "PF1-UC-004-L1",
+      "game": "PF1",
+      "action": "Независимый элемент",
+      "expected": "Один гекс имеет отдельно тип и элемент; происхождение обоих результатов известно.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-004-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/audits/PF1-L1-2026-11-14.json#PF1-UC-004-L1",
+      "finding": "Независимая PF1 пара terrain/element и её происхождение не представлены отдельным профилем; свободный текст пары не выполняет два броска.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Независимый элемент",
+      "source_acceptance": "forest+secret.; settlement+standard; элемент не превращает settlement вplain.; water+feature.; Пара не фиксируется как корректная, география не меняется.; 400 пар разрешаются без дыр/пересечений; каждый бросок имеет отдельное происхождение.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-004-L1"
+    },
+    {
+      "id": "PF1-UC-005-L1",
+      "game": "PF1",
+      "action": "Преобладающий тип не исключает детали",
+      "expected": "Основнойforest не удаляет реку и локальную поляну.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-005-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/PF1-L1-2026-11-14.json#PF1-UC-005-L1",
+      "finding": "Реальные обработчики смены локального биома сохраняют регион/реку/RNG и переживают JSON/UndoRedo. Словарь восьми PF1типов не сопоставлен с продуктовыми BiomeID.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Преобладающий тип не исключает детали",
+      "source_acceptance": "forest, река и поляна остаются.; Точные площади/порог преобладания не выдуманы.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-005-L1"
+    },
+    {
+      "id": "PF1-UC-006-L1",
+      "game": "PF1",
+      "action": "Явная климатическая интерпретация",
+      "expected": "plain может отображаться как выбранное мастером ледяное поле без изменения исходного броска.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-006-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/PF1-L1-2026-11-14.json#PF1-UC-006-L1; src/App.tsx; src/knaveClassic.ts; score13-surface.mjs",
+      "finding": "Биом и явная климатическая интерпретация сохраняются раздельно (probe13 и PF1 notes). Исходная строка PF1 и бросок как структурированный источник не сохранены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Явная климатическая интерпретация",
+      "source_acceptance": "Исходныйplain и авторское ледяное поле различимы.; Обычный исходный тип, не автоматический арктический профиль.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-006-L1"
+    },
+    {
+      "id": "PF1-UC-008-L1",
+      "game": "PF1",
+      "action": "Добавить конкретное препятствие, сохранив основной тип",
+      "expected": "На карте остаётся исходная местность, рядом доступно выбранное препятствие; численные эффекты вынесены отдельно.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-008-L1",
+      "functional": "partial",
+      "functional_credit": 0.2222222222222222,
+      "evidence": "score13-surface.mjs; agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-008-L1",
+      "finding": "Введены соответствующие биом и конкретная характеристика гекса через редактор. После импорта оба значения сохранены. native PF1 category и остальные разновидности отдельно не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "1",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "2",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "3",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "4",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "5",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "6",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "7",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "8",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "9",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Добавить конкретное препятствие, сохранив основной тип",
+      "source_acceptance": "На карте остаётся исходная местность, рядом доступно выбранное препятствие; численные эффекты вынесены отдельно.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-008-L1"
+    },
+    {
+      "id": "PF1-UC-009-L1",
+      "game": "PF1",
+      "action": "Добавить особенность и при необходимости ориентир",
+      "expected": "Гекс имеет конкретную особенность; ориентир не назначается автоматически всем feature.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-009-L1",
+      "functional": "partial",
+      "functional_credit": 0.1111111111111111,
+      "evidence": "score13-surface.mjs; agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-009-L1",
+      "finding": "Введены соответствующие биом и конкретная характеристика гекса через редактор. После импорта оба значения сохранены. native PF1 category и остальные разновидности отдельно не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "1",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "2",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "3",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "4",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "5",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "6",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "7",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "8",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "9",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Добавить особенность и при необходимости ориентир",
+      "source_acceptance": "Гекс имеет конкретную особенность; ориентир не назначается автоматически всем feature.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-009-L1"
+    },
+    {
+      "id": "PF1-UC-011-L1",
+      "game": "PF1",
+      "action": "Записать конкретный доступный ресурс",
+      "expected": "В гексе понятен выбранный ресурс; единицы добычи и гарантированная прибыль не придуманы.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-011-L1",
+      "functional": "partial",
+      "functional_credit": 0.2222222222222222,
+      "evidence": "score13-surface.mjs; agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-011-L1",
+      "finding": "Введены соответствующие биом и конкретная характеристика гекса через редактор. После импорта оба значения сохранены. native PF1 category и остальные разновидности отдельно не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "1",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "2",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "3",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "4",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "5",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "6",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "7",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "8",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "9",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Записать конкретный доступный ресурс",
+      "source_acceptance": "В гексе понятен выбранный ресурс; единицы добычи и гарантированная прибыль не придуманы.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-011-L1"
+    },
+    {
+      "id": "PF1-UC-012-L1",
+      "game": "PF1",
+      "action": "Подготовить содержание secret без единого алгоритма скрытия",
+      "expected": "У каждого варианта сохранён свой смысл: туман/пещера/проход/тайник/источник/поселение.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-012-L1",
+      "functional": "partial",
+      "functional_credit": 0.1111111111111111,
+      "evidence": "score13-surface.mjs; agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-012-L1",
+      "finding": "Введены соответствующие биом и конкретная характеристика гекса через редактор. После импорта оба значения сохранены. native PF1 category и остальные разновидности отдельно не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "1",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "2",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "3",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "4",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "5",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "6",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "7",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "8",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        },
+        {
+          "case": "9",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Подготовить содержание secret без единого алгоритма скрытия",
+      "source_acceptance": "У каждого варианта сохранён свой смысл: туман/пещера/проход/тайник/источник/поселение.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-012-L1"
+    },
+    {
+      "id": "PF1-UC-013-L1",
+      "game": "PF1",
+      "action": "Сохранить сезонную интерпретацию холодной пустыни",
+      "expected": "Для мерзлоты указано plain, для оттепели marsh; названия/авторское описание местности сохранены.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-013-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "score13-surface.mjs; agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-013-L1",
+      "finding": "Введены соответствующие биом и конкретная характеристика гекса через редактор. После импорта оба значения сохранены. native PF1 category и остальные разновидности отдельно не подтверждены.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Сохранить сезонную интерпретацию холодной пустыни",
+      "source_acceptance": "Для мерзлоты указано plain, для оттепели marsh; названия/авторское описание местности сохранены.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-013-L1"
+    },
+    {
+      "id": "PF1-UC-014-L1",
+      "game": "PF1",
+      "action": "Сохранить поселение вместе с подстилающей местностью",
+      "expected": "Поселение не стирает сведения о лесной/болотной/иной основе.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-014-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/PF1-L1-2026-11-14.json#PF1-UC-014-L1",
+      "finding": "Поселение и лесную основу можно описать вместе; generic biome+POI существуют, но PF1 settlement/underlying/hidden-access отдельно не проверены как структурированная связка.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Сохранить поселение вместе с подстилающей местностью",
+      "source_acceptance": "Поселение не стирает сведения о лесной/болотной/иной основе.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-014-L1"
+    },
+    {
+      "id": "PF1-UC-015-L1",
+      "game": "PF1",
+      "action": "Сохранить берег и пригодный проход водного гекса",
+      "expected": "Вода не стирает тип берега; мост записан как отдельное свойство прохода.",
+      "source": "agent-work/research/requirements/PF1-scope-audit.json#PF1-UC-015-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/PF1-L1-2026-11-14.json#PF1-UC-015-L1",
+      "finding": "Заметка сохраняет берег/мост; вода/переходы имеют отдельные общие редакторы. Точный PF1 береговой профиль целиком не подтверждён, геометрию мостов не переоценивали.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Сохранить берег и пригодный проход водного гекса",
+      "source_acceptance": "Вода не стирает тип берега; мост записан как отдельное свойство прохода.",
+      "probe": "PF1-L1-2026-11-14-biome-probe.mjs + notes-probe",
+      "origin": "registered",
+      "binding": "PF1-UC-015-L1"
+    }
+  ],
+  "stats": {
+    "n": 13,
+    "counts": {
+      "full": 0,
+      "partial": 10,
+      "absent": 3,
+      "unknown": 0
+    },
+    "function_fraction": 0.28205128205128205,
+    "upper_if_unknown_pass": 0.28205128205128205,
+    "quality": [
+      0,
+      0.7692307692307693
+    ]
+  }
+}

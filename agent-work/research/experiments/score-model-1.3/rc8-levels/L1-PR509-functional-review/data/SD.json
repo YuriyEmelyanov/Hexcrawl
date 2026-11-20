@@ -1,0 +1,551 @@
+{
+  "rank": 4,
+  "id": "SD",
+  "name": "Shadowdark",
+  "closed": false,
+  "ops": [
+    {
+      "id": "SD-CORE-001-L1",
+      "game": "SD",
+      "action": "Физический размер гекса",
+      "expected": "Карта с устойчивым масштабом и явно указанной неопределённостью геометрии.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-001-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-001-L1",
+      "finding": "Базовая сетка использует 6 миль между сторонами. Повторное открытие той же карты с приближением 1× и 2× меняет только состояние камеры. Отдельным тестом прошла одномильная проекция и загрузка.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Физический размер гекса",
+      "source_acceptance": "Given Новая карта, профиль Shadowdark, геометрия не выбрана When Задать масштаб и сохранить/открыть Expected hex_across=6 mile восстановлен; face-to-face/vertex-to-vertex не назначен без решения.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-001-L1"
+    },
+    {
+      "id": "SD-CORE-002-L1",
+      "game": "SD",
+      "action": "Стоимость пересечения гекса по способу и местности",
+      "expected": "H отмечен труднопроходимым; исходный лес и соседние гексы сохраняются после загрузки.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-002-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-002-L1",
+      "finding": "Хвойный биом и логово сохранились вместе. Контроль на карте Knave показывает отдельный difficult без изменения биома и точки.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Стоимость пересечения гекса по способу и местности",
+      "source_acceptance": "Given Гекс H17: forest; GM выбирает normal When Сохранить/открыть Expected Биом forest и travel_difficulty=normal сохранены; категория не изменена автоматически.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-002-L1"
+    },
+    {
+      "id": "SD-CORE-031-L1",
+      "game": "SD",
+      "action": "Наблюдаемые признаки, сведения и телеграфирование угроз",
+      "expected": "Два представления одного места с явно выбранной доступностью.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-031-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-working-matrix-2026-11-20.json#SD-CORE-031-L1",
+      "finding": "Самостоятельное поле признака недоступно. Необязательный признак можно пропустить. Мастер независимо редактирует улику у POI и причину в заметке гекса. Обе переживают отдельные импорты; при переносе POI оказываются по разным адресам.",
+      "quality": [
+        0,
+        0.5
+      ],
+      "quality_cases": [
+        {
+          "case": "show_tell_hide_secret",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        },
+        {
+          "case": "optional_tell_omitted",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Наблюдаемые признаки, сведения и телеграфирование угроз",
+      "source_acceptance": "Given GM записал у пещеры tell «сломанные кости у входа» и secret «внутри мантикора»; tell разрешён игрокам When Открыть player view Expected Показаны сломанные кости; секрет об обитателе не показан.; Given GM не задал tell для места When Сохранить место Expected Место сохраняется; совет о большинстве угроз не принуждает создать признак.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-031-L1"
+    },
+    {
+      "id": "SD-CORE-041-L1",
+      "game": "SD",
+      "action": "Пассивные опасности и сочетание категорий",
+      "expected": "У H есть выбранная опасность и её наблюдаемый признак; соседняя география не перегенерирована.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-041-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-041-L1; src/App.tsx; score13-surface.mjs",
+      "finding": "Прямой тест score13-surface.mjs на релизе: неподвижное логово, признак и причина либо именованный склад и факт о Рине восстановлены при повторном открытии. Заметка принадлежит гексу, у признака отсутствует независимая видимость.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Пассивные опасности и сочетание категорий",
+      "source_acceptance": "Given GM выбрал movement=quicksand и weaken=antimagic как явно смешанный hazard When Сохранить Expected У опасности две категории и оба выбранных описания; damage/DC/tick не придуманы.; Given У строки нет numerical damage When Экспортировать паспорт Expected damage=null; неизвестное не заменяется0 или arbitrary die.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-041-L1"
+    },
+    {
+      "id": "SD-CORE-043-L1",
+      "game": "SD",
+      "action": "Приключение и название linked site из выбранных деталей",
+      "expected": "У P имя «Чёрная Башня» с выбранными деталями; второй объект не переименован.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-043-L1",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-043-L1",
+      "finding": "Одной башне задано составленное мастером имя «Чёрная Башня». Сравнение карты до и после показало изменение только имени выбранного объекта. После импорта имя осталось.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Приключение и название linked site из выбранных деталей",
+      "source_acceptance": "Given Site name колонки1/2/3 выбраны3/7/13 When Скомбинировать и вручную исправить связь слов Expected Сохранено название башни у лесного болота с исходными3/7/13; редактор разрешил изменить предлог.; Given GM выбрал только колонку1 приключения, результат1 When Сохранить черновик Expected Разрешено сохранить неполный крючок о спасении; не требуются остальные колонки.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-043-L1"
+    },
+    {
+      "id": "SD-CORE-046-L1",
+      "game": "SD",
+      "action": "Данж как linked site; внутренняя раскладка вне регионального движка",
+      "expected": "На карте один вход D с именем и справочной ссылкой; комнаты не создаются как региональные гексы.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-046-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-046-L1",
+      "finding": "Проверен один именованный региональный вход типа dungeon. После импорта сохранились его координаты, имя, тип и остальная география.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Данж как linked site; внутренняя раскладка вне регионального движка",
+      "source_acceptance": "Given Региональное местоA; linked dungeonD; size=medium; type=cave When Связать Expected A→D; descriptor medium/source_room_dice8d10; внутренняя карта не создаётся.; Given GM приложил внешний планD When Открыть linked site Expected Доступна ссылка на внешний план; региональная позицияA не заменяется внутренними координатами.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-046-L1"
+    },
+    {
+      "id": "SD-CORE-047-L1",
+      "game": "SD",
+      "action": "Начальная местность overland и взвешенный выбор",
+      "expected": "Гекс с категорией, исходными костями/выбором и необязательным уточнением.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-047-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json#SD-CORE-047-L1",
+      "finding": "Геометрический минимум моря не допускает отображения отдельного океанического гекса этим инструментом. Бросок и категория не сохраняются как профильный результат Classic.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Начальная местность overland и взвешенный выбор",
+      "source_acceptance": "Given Начальный hex; dice1+1 When Сгенерировать terrain Expected category=desert_or_arctic; subtype=null до выбораGM.; Given Начальный hex; dice3+4 When Сгенерировать terrain Expected category=forest_or_jungle; никакой автоматический forest/jungle tie-break не выполняется.; Given GM вручную выбрал mountain When Создать стартовый гекс Expected category=mountain; random dice не требуются.; Given Фиксированные 36 упорядоченных пар (a,b), a,b ∈ {1,2,3,4,5,6}; каждый исход используется ровно один раз. When Разрешить Hex Terrain для всех 36 пар. Expected Числа по семи упорядоченным категориям: [1,2,12,11,7,2,1]. Uniform d12 не проходит этот тест.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-047-L1"
+    },
+    {
+      "id": "SD-CORE-048-L1",
+      "game": "SD",
+      "action": "Генерация пустого гекса и циклические шаги по строкам terrain",
+      "expected": "Назначенная категория нового гекса с точным происхождением и без перезаписи готового гекса.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-048-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json#SD-CORE-048-L1",
+      "finding": "Сохранён только ручной результат. Из этой проверки не следует поддержка события входа в пустой гекс или штатного кольцевого перехода.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Генерация пустого гекса и циклические шаги по строкам terrain",
+      "source_acceptance": "Given current=mountain; empty destination; dice1+1 =>2 When Создать новый hex Expected +1 category row с wrap даёт desert_or_arctic.; Given current=ocean; dice4+5 =>9 When Создать новый hex Expected +2 category rows: ocean→mountain→desert_or_arctic.; Given current=mountain; dice5+5 =>10 When Создать новый hex Expected +2 rows даёт swamp; не арифметический total14.; Given NewHex dice6+6; отдельный terrain dice6+6 When Создать новый hex Expected Сработал reroll; итогmountain; записаны две пары костей.; Given Гекс уже имеет grassland и linked POI; поступила команда генерации When Применить защиту продукта Expected Содержимое сохранено; требуется явное GM overwrite, если оно вообще поддерживается.; Given Фиксированные 36 упорядоченных пар двух d6; current terrain произвольна; повторный terrain roll при 12 фиксирован отдельно. When Разрешить New Hex для всех 36 пар. Expected Числа действий: +1 строка=3, same=23, +2 строки=9, новый terrain roll=1. Uniform d12 неэквивалентен.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-048-L1"
+    },
+    {
+      "id": "SD-CORE-049-L1",
+      "game": "SD",
+      "action": "Назначаемый danger profile гекса и источник таблицы",
+      "expected": "Назначенный danger profile без выдуманной частоты назначения.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-049-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-049-L1",
+      "finding": "В проверенной схеме общего редактора и активных режимах нет отдельной сохраняемой оценки safe/unsafe/risky/deadly для гекса.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Назначаемый danger profile гекса и источник таблицы",
+      "source_acceptance": "Given GM вызвал Danger Level; die1 When Назначить гексуA Expected A.danger=safe; encounter_cadence не подставляется.; Given GM вызвал Danger Level; die5 When Назначить гексуB Expected B.danger=risky.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-049-L1"
+    },
+    {
+      "id": "SD-CORE-050-L1",
+      "game": "SD",
+      "action": "Плотность POI: один объект на успешномd6",
+      "expected": "Ноль или одна POI slot с исходом броска.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-050-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json#SD-CORE-050-L1",
+      "finding": "Состояние «проверен и пуст» и исходы d6 не создаются ручной командой. Утверждённый профиль, автоматически создающий слот, этим тестом не подтверждается.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Плотность POI: один объект на успешномd6",
+      "source_acceptance": "Given Новый гексA; die1 When Проверить POI presence Expected Создана ровно1POI slot.; Given Новый гексB; die6 When Проверить POI presence Expected По этому рецепту создано0POI, не6.; Given ГексA уже содержит результатcheck1 When Повторно открыть генератор Expected Нет скрытого повторного броска и новогоPOI; повторная генерация возможна только явно по решениюGM.; Given Шесть новых гексов и фиксированные POI presence outcomes [1,2,3,4,5,6]. When Разрешить по одной presence check на гекс. Expected Числа созданных POI slots [1,0,0,0,0,0], всего один POI; повторная обработка не скрыто перебрасывается.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-050-L1"
+    },
+    {
+      "id": "SD-CORE-051-L1",
+      "game": "SD",
+      "action": "POI location/development и смысловые связи",
+      "expected": "POI с независимыми source coordinates, рецептом и linked content.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-051-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json#SD-CORE-051-L1",
+      "finding": "Структурированная связь POI→POI, прикрепление отдельной схемы и происхождение двух результатов таблицы не подтверждены в проверенном пути. Выбор рецепта генерации остаётся неопределённым.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "POI location/development и смысловые связи",
+      "source_acceptance": "Given Product profile явно same_roll; roll2 When Создать POI Expected Location=укреплённый keep; development=связь с большим tomb; recipe=same_roll recorded, source certainty=unresolved.; Given Product profile явно independent; location roll7,development20 When Создать POI Expected Location=деревня; development=дверь в иной plane; оба результата сохранены отдельно.; Given Рецепт не выбран When Попросить полностью автоматическую генерацию Expected Возвращён unresolved_column_policy; same/independent не назначены молча.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-051-L1"
+    },
+    {
+      "id": "SD-CORE-052-L1",
+      "game": "SD",
+      "action": "Катаклизм как результат POI development",
+      "expected": "Тема относится только к P; её источник сохранён, неизвестные радиус/урон/длительность не выдуманы.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-052-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-052-L1",
+      "finding": "В проверенной модели POI нет операции выбрать результат Cataclysm и сохранить его исходную строку как тему конкретного места.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Катаклизм как результат POI development",
+      "source_acceptance": "Given POI development1; cataclysm roll4 When Разрешить follow-up Expected УPOI записан storm; trace133:development1→132:cataclysm4; цепочка завершена.; Given Cataclysm roll6 When Разрешить Expected Записан war как сюжетный катаклизм; состав армий/зона боёв не сгенерированы.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-052-L1"
+    },
+    {
+      "id": "SD-CORE-053-L1",
+      "game": "SD",
+      "action": "Имя поселения по его выбранному масштабу",
+      "expected": "Поселение с именем и сохранённым типом.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-053-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-053-L1",
+      "finding": "Проверено, что изменение имени городка сохраняет тип town и тот же адрес после загрузки.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Имя поселения по его выбранному масштабу",
+      "source_acceptance": "Given type=village; roll1 When Назвать Expected Имя=Bruga’s Hold; type остаётсяvillage.; Given type=metropolis; roll8 When Назвать Expected Имя=Rahgbat изcity/metropolis колонки; численность жителей неизвестна.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-053-L1"
+    },
+    {
+      "id": "SD-CORE-058-L1",
+      "game": "SD",
+      "action": "Таверна: название, меню и разные кости drinks",
+      "expected": "T названа «У моста», предлагаются хлеб и пиво; никаких цен/рационов/персонажных эффектов не рассчитано.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-058-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-058-L1",
+      "finding": "Именованная таверна «У моста» сохраняет тип и координаты после импорта.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Таверна: название, меню и разные кости drinks",
+      "source_acceptance": "Given quality=standard; drink dice(1,1),(3,4),(6,6) When Создать меню Expected 3drink entries с суммами[2,7,12]; неd12. Food slots:1poor,2standard.; Given quality=poor; drink rolls[1,6] When Создать меню Expected 2drink entries; food slots3poor. Drink roll7 этим рецептом недопустим.; Given quality=wealthy; selected food row1; food price die5 When Разрешитьwealthyfood Expected Выбраны fried basilisk eyes; цена5gp; численные эффекты drink не активированы.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-058-L1"
+    },
+    {
+      "id": "SD-CORE-059-L1",
+      "game": "SD",
+      "action": "Магазины и посетители как связанный контент",
+      "expected": "У S имя «Медная лавка» и специализация инструменты; случайный посетитель и ассортимент не созданы.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-059-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-059-L1; score13-surface.mjs, src/App.tsx:492, src/App.tsx:15250, src/App.tsx:16884",
+      "finding": "Именованная постройка или вход в выбранном месте и повторное открытие проверены через реальные команды POI. Специфичная связь с поляной, сценой или услугой из этого правила отдельно не подтверждена.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Магазины и посетители как связанный контент",
+      "source_acceptance": "Given quality=standard; shop roll7 When Создать магазин Expected Специализация=shipwright/carpenter; доступность конкретной лодки не установлена.; Given customer row1,col2; nested d10 roll7 When Создать visitor descriptor Expected Получено7детей; trace139:(1,2)→d10=7.; Given quality=wealthy; shop roll12 When Проверитьinput Expected Ошибка:wealthy shop используетd10; результат12 недопустим.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-059-L1"
+    },
+    {
+      "id": "SD-CORE-063-L1",
+      "game": "SD",
+      "action": "Статические признаки и места внутри случайной сцены",
+      "expected": "На H один колодец W, связанный с исходной сценой E; повторное сохранение не создаёт дубля.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-063-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-063-L1; score13-surface.mjs, src/App.tsx:492, src/App.tsx:15250, src/App.tsx:16884",
+      "finding": "Именованная постройка или вход в выбранном месте и повторное открытие проверены через реальные команды POI. Специфичная связь с поляной, сценой или услугой из этого правила отдельно не подтверждена.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Статические признаки и места внутри случайной сцены",
+      "source_acceptance": "Given Forest92–93 выбрана; ведущий закрепляет её вhexH When Создать место Expected ВH появляется заброшенная часовня с признакомsafe_shelter и ссылкойForest92–93; соседние гексы не меняются.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-063-L1"
+    },
+    {
+      "id": "SD-CORE-074-L1",
+      "game": "SD",
+      "action": "Биомные предпочтения и фиксированные логова из каталога",
+      "expected": "Логово L связано с лесной местностью и внешней ссылкой обитателя; численность/статблок/популяция не создаются.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-074-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-074-L1",
+      "finding": "Лесное логово сохранено в выбранном гексе с хвойным биомом. Рост карты и загрузка сохранили тип, координаты, имя и биом.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Биомные предпочтения и фиксированные логова из каталога",
+      "source_acceptance": "Given Fire giant из 218; кандидат volcanoV. When Показать совместимость. Expected Есть прямое источниковое основание для анклава в volcanoV.; Given Roc из 248; кандидат remote mountainM. When Разместить по выбору ведущего. Expected Гнездо закреплено в M; остальные популяции не размещены.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-074-L1"
+    },
+    {
+      "id": "SD-CORE-079-L1",
+      "game": "SD",
+      "action": "Следы, сигналы и особые чувства для исследования",
+      "expected": "Признак с местом, происхождением и видимостью.",
+      "source": "agent-work/research/requirements/SD-CORE-scope-audit.json#SD-CORE-079-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-079-L1; src/App.tsx; score13-surface.mjs",
+      "finding": "Прямой тест score13-surface.mjs на релизе: неподвижное логово, признак и причина либо именованный склад и факт о Рине восстановлены при повторном открытии. Заметка принадлежит гексу, у признака отсутствует независимая видимость.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Следы, сигналы и особые чувства для исследования",
+      "source_acceptance": "Given В месте есть desert dragon; ведущий раскрывает запах озона. When Показать признак. Expected Игрокам известен запах; имя дракона и логово автоматически не раскрыты.",
+      "probe": "SD-CORE-L1-implementation-probe.mjs + SD 2026-11-20 probes",
+      "origin": "registered",
+      "binding": "SD-CORE-079-L1"
+    }
+  ],
+  "stats": {
+    "n": 18,
+    "counts": {
+      "full": 1,
+      "partial": 15,
+      "absent": 2,
+      "unknown": 0
+    },
+    "function_fraction": 0.4722222222222222,
+    "upper_if_unknown_pass": 0.4722222222222222,
+    "quality": [
+      0,
+      0.8611111111111112
+    ]
+  }
+}

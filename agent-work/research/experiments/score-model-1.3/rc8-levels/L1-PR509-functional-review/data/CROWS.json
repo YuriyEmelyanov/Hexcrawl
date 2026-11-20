@@ -1,0 +1,400 @@
+{
+  "rank": 11,
+  "id": "CROWS",
+  "name": "Crows: Fortune or Death",
+  "closed": false,
+  "ops": [
+    {
+      "id": "CROWS-PT3-L1-001",
+      "game": "CROWS",
+      "action": "Свой мир или Cornath",
+      "expected": "Можно подготовить собственный мир без обязательной географии и названий Cornath. Это само по себе не отключает выбранные игровые подсистемы.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-001",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-001",
+      "finding": "Классическая карта создаётся с нуля и загружается повторно без обязательной карты Корната.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Свой мир или Cornath",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-002",
+      "game": "CROWS",
+      "action": "Физический размер гекса",
+      "expected": "Используется действующая базовая геометрия; режим обозначается5–6миль по решению владельца. Новая5-мильная сетка не добавлена; исходное5across сохранено отдельно как правило книги.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-002",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-002",
+      "finding": "Базовый шаг 6 миль сохраняет геометрию и одномильную детализацию. Движок сетки использует 6 миль между сторонами; отдельного шага 5 миль нет, как и предусмотрено решением владельца.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Физический размер гекса",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-003",
+      "game": "CROWS",
+      "action": "Среда и климат гекса",
+      "expected": "На карте остаётся лес; холодный климат указан отдельно. Не создана выдуманная единственная категория «холод» вместо всех видов местности.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-003",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-003",
+      "finding": "Хвойный лес сохранился как отдельный биом гекса вместе с прежней деревней после JSON-загрузки.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Среда и климат гекса",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-004",
+      "game": "CROWS",
+      "action": "Дороги, реки и переправы",
+      "expected": "Мост, дорога и река сохраняются после загрузки. Этот случай не помечен как переход без моста; расчёт дневной дистанции остаётся L2.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-004",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-004",
+      "finding": "Существующий брод сменил на мост. При повторном открытии сохранились родительские ID дороги и реки, ребро пересечения и тип bridge. Отмена точно восстанавливает брод.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Дороги, реки и переправы",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-005",
+      "game": "CROWS",
+      "action": "Что известно игрокам",
+      "expected": "Представление игроков показывает разрешённую деревню и не раскрывает тайник/ловушку; истинные сведения ведущего сохранены.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-005",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "src/App.tsx:createExportSvgClone, handleExportPng, createSaveData; score13-surface.mjs",
+      "finding": "Проверка реализации штатных выходов: PNG копирует SVG мастера и удаляет служебные элементы; JSON сохраняет полную карту. Выборочная выдача по признаку известности игрокам отсутствует в режиме/контракте экспорта. Проверка кода, отдельное изображение для игроков не предъявлено.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Что известно игрокам",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-007",
+      "game": "CROWS",
+      "action": "Выбранные POI и их содержание",
+      "expected": "На карте одна выбранная лесопилка у R с именем и краткими признаками; остальные7готовыхмест не добавлены.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-007",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-007",
+      "finding": "Лесопилка с именем сохранена в гексе, который имеет общее ребро с рекой. Появилась только выбранная точка. Такой же тип принимается и на карте без реки.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Выбранные POI и их содержание",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-009",
+      "game": "CROWS",
+      "action": "Карта и связанный тайник",
+      "expected": "Для A/B сохранена географическая связь и предел2гекса; для второго тайника предел не выдуман.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-009",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-009",
+      "finding": "Проверенные записи POI и операции карты не содержат сохраняемой связи лесопилка → тайник с числовым пределом. Осевой расчёт даёт «2 допустимо, 3 за пределом» как исследовательский критерий.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Карта и связанный тайник",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-011",
+      "game": "CROWS",
+      "action": "Домашняя деревня",
+      "expected": "На карте одна V с выбранным именем; у неё указаны пять исходных и одна выбранная служба. Повторная загрузка не создаёт вторую V.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-011",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-011",
+      "finding": "Уже существующую деревню можно именовать с сохранением её единственного объекта по тому же адресу. JSON-восстановление не создаёт копию.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Домашняя деревня",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-017",
+      "game": "CROWS",
+      "action": "Зона маяка",
+      "expected": "На полной сетке радиусы1/2/5/6 охватывают7/19/91/127гексов. Обозначение зоны не меняет биомы, реки и POI; перекрытие двух источников не исчезает при удалении одного.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-017",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-017",
+      "finding": "Для исходного гекса получен контрольный ряд 7, 19, 91, 127 клеток для радиусов 1, 2, 5, 6. Заданные зоны с источниками и пересечениями в текущем контракте карты отсутствуют.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Зона маяка",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-019",
+      "game": "CROWS",
+      "action": "Новая деревня и смена базы",
+      "expected": "P обозначено как деревня B на прежнем месте; A и её содержимое сохраняются. Мастер может выбрать B новой базой.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-019",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-019",
+      "finding": "Руина вручную меняется на деревню в том же гексе. Существующая деревня и её имя сохраняются. Новое имя и тип загружаются из JSON; отмена возвращает тип руины.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Новая деревня и смена базы",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-022",
+      "game": "CROWS",
+      "action": "Готовая карта или перенос мест",
+      "expected": "Сохраняются выбранные места, имена и содержание. Импорт картинки и перенос данных вместе с объектом оцениваются отдельно; генерация всего Cornath не предполагается.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-022",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-022",
+      "finding": "Общие инструменты сохраняют выбранные именованные POI. Штатный тест переносит POI вместе с её собственными данными между гексами одного документа.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Готовая карта или перенос мест",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-023",
+      "game": "CROWS",
+      "action": "Четыре готовые деревни",
+      "expected": "На карте Farcliffe в бывшей шахте; выбранные исходные услуги относятся к ней. Шаблон стартовых6служб другой деревни не подставлен автоматически.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-023",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-023",
+      "finding": "Именованные деревни привязаны к отдельным гексам и не получают новых объектов при импорте.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Четыре готовые деревни",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "CROWS-PT3-L1-024",
+      "game": "CROWS",
+      "action": "Региональные входы в подземелья",
+      "expected": "Оба региональных места различимы и сохраняют условия подхода. Комнаты и высоты в футах не стали региональными гексами.",
+      "source": "agent-work/research/requirements/CROWS-PT3-scope-audit.json#CROWS-PT3-L1-024",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/CROWS-PT3-L1-implementation.json#CROWS-PT3-L1-024",
+      "finding": "Blood Library и Floating Manor вручную сохранены как разные региональные входы по двум адресам. Имя и тип POI сохранились, дорожная и речная геометрия совпали после импорта.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Региональные входы в подземелья",
+      "source_acceptance": null,
+      "probe": "CROWS-PT3-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": null
+    }
+  ],
+  "stats": {
+    "n": 13,
+    "counts": {
+      "full": 2,
+      "partial": 8,
+      "absent": 3,
+      "unknown": 0
+    },
+    "function_fraction": 0.46153846153846156,
+    "upper_if_unknown_pass": 0.46153846153846156,
+    "quality": [
+      0,
+      0.7692307692307693
+    ]
+  }
+}

@@ -1,0 +1,429 @@
+{
+  "rank": 7,
+  "id": "ROOT",
+  "name": "Root: The Roleplaying Game",
+  "closed": false,
+  "ops": [
+    {
+      "id": "ROOT-CORE-001-L1",
+      "game": "ROOT",
+      "action": "Подготовить 12 полян или использовать готовую карту",
+      "expected": "У новой карты12полян; готовая карта не перегенерирована.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-001-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-CORE-001-L1",
+      "finding": "Hex regions and POIs exist; there is no Root12-clearing construction profile. Existing import preserves an accepted map, not allRoot invariants.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Подготовить 12 полян или использовать готовую карту",
+      "source_acceptance": "Given Выбрана новая карта стандартного Леса. When Завершить добавление полян. Expected Всего12полян; число гексов не выведено из этого правила.; Given Готовая карта содержит12названных полян и подготовленные связи. When Выбрать её для кампании. Expected Названия, положения и связи сохранены; новые броски карты не выполнены.",
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": "ROOT-CORE-001-L1"
+    },
+    {
+      "id": "ROOT-CORE-002-L1",
+      "game": "ROOT",
+      "action": "Выбирать преобладающее сообщество с ограничением количества",
+      "expected": "На каждой поляне одно преобладающее сообщество; одинаковое преобладание встречается не больше четырёх раз.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-002-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-CORE-002-L1",
+      "finding": "No majority-community field or four-per-community policy in published map/setup model; a descriptive note is not an enforced cap.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Выбирать преобладающее сообщество с ограничением количества",
+      "source_acceptance": "Given Кроличьих полян ещё нет; заданd6=2. When Выбрать сообщество. Expected Преобладают кролики; существование мышей/лис на поляне не отрицается.; Given Есть4кроличьи поляны; последовательностьd6=1,5; лисьих меньше4. When Выбрать сообщество новой поляны. Expected Первый результат переброшен; в новой поляне преобладают лисы, пятая кроличья не добавлена.; Given Завершены12полян с тремя допустимыми сообществами и лимитом4. When Проверить итоговую подготовку. Expected У каждого сообщества4поляны; это проверка следствия ограничений.",
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": "ROOT-CORE-002-L1"
+    },
+    {
+      "id": "ROOT-CORE-003-L1",
+      "game": "ROOT",
+      "action": "Развивать пути, учитывая существующий вход и предел12полян",
+      "expected": "У поляны планируется общее число путей по броску; существующий вход не посчитан дополнительно. Число полян не превышает12.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-003-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-CORE-003-L1",
+      "finding": "Manual roads use adjacent axial segments and protect a geometric network; no Root named-clearing path budget/incoming-count/unfinished-line procedure.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Развивать пути, учитывая существующий вход и предел12полян",
+      "source_acceptance": "Given К новой поляне уже подходит1путь; сумма2d6=7. When Наметить остальные пути. Expected Общий план3; добавляются2линии, не3.; Given К новой поляне подходит1путь; сумма2d6=2. When Наметить остальные пути. Expected Общий план1; дополнительных линий0.; Given На карте12полян и2незавершённые линии; ведущий выбирает оставить отметки. When Завершить построение. Expected Полян остаётся12; линии отмечены незавершёнными, не выданы за доступные дороги к новым полянам.; Given Тот же Лес, ведущий выбирает убрать незавершённые линии. When Завершить подготовку. Expected Линии убраны; число и содержимое12полян сохранены.",
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": "ROOT-CORE-003-L1"
+    },
+    {
+      "id": "ROOT-CORE-004-L1",
+      "game": "ROOT",
+      "action": "Выбирать неповторяющееся имя поляны",
+      "expected": "У подготовленных полян разные имена; имена существующей карты не переписаны.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-CORE-004-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-CORE-004-L1",
+      "finding": "POI names are editable and saved; no Root ordered-name catalog, reverse-pair collision policy or Woodland uniqueness enforcement.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Выбирать неповторяющееся имя поляны",
+      "source_acceptance": "Given ИмяSundell уже занято; задана пара2,6; обратное имяOpensky Haven свободно. When Ведущий выбирает обратное чтение. Expected ВыбраноOpensky Haven по6,2; занятоеSundell не повторено.; Given Оба имени для исходного и обратного порядка уже заняты. When Ведущий выбирает переброс и получает свободное имя. Expected Используется новый свободный результат; старые названия не изменены.",
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": "ROOT-CORE-004-L1"
+    },
+    {
+      "id": "ROOT-TO-001-L1",
+      "game": "ROOT",
+      "action": "Название, описание и первое впечатление поляны",
+      "expected": "Поляна сохранила название, мост/ворота как описание места и исходную позицию; конфликт/угроза/NPCне сгенерированы.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-001-L1",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-TO-001-L1",
+      "finding": "Name and accepted situation/first impression fit existing POI name plus GM note and survive actual import/history. No dedicated clearing model/UI is claimed.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Название, описание и первое впечатление поляны",
+      "source_acceptance": "ROOT-TO-001-L1-AC01: Поляна «Ольховый брод»; ситуация — спор о мельнице; первое впечатление — толпа у закрытых ворот. Ведущий сохраняет подготовку поляны. → У поляны доступны название, спор о мельнице и видимая сцена у ворот; это три согласованные части подготовки.\nROOT-TO-001-L1-AC02: У «Ольхового брода» есть описание толпы у ворот. Ведущий меняет первое впечатление на «у ворот дежурит один стражник». → Первое впечатление отражает одного стражника; название и уже подготовленный спор о мельнице сохранены.",
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": "ROOT-TO-001-L1"
+    },
+    {
+      "id": "ROOT-TO-008-L1",
+      "game": "ROOT",
+      "action": "Riverfolk: добавить водные объекты и провести реку",
+      "expected": "На карте подготовлен выбранный водный объект; известные соединения с полянами сохранены, неподтверждённые размеры и направление не придуманы.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-008-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-TO-008-L1",
+      "finding": "Manual water/river editing is reusable geometry, but does not select Root edge clearings or execute its conditional Riverfolk setup. Source lake-direction question remains open.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Riverfolk: добавить водные объекты и провести реку",
+      "source_acceptance": "ROOT-TO-008-L1-AC01: На карте нет воды; в отдельных выборах d6=1,4,6. Определить вид добавляемой воды. → Соответственно предлагаются река, озеро, река вместе с озером.\nROOT-TO-008-L1-AC02: Выбрана только река; входной край:5, затем1; выходной край:4. Ближайшие поляны к верху и правому краю однозначноA/B. Ведущий намечает русло между краями. → 5 переброшено; река входит сверху черезA и выходит справа черезB. Промежуточное русло определяется намеченными изгибами.\nROOT-TO-008-L1-AC03: Озеро уже есть, дополнительная вода ведущим не запрошена. Начинается подготовка Riverfolk. → Условный выбор нового водного объекта не добавляет второе озеро или реку только из-за включения фракции.",
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": "ROOT-TO-008-L1"
+    },
+    {
+      "id": "ROOT-TO-009-L1",
+      "game": "ROOT",
+      "action": "Расширять озеро с пределом четырёх полян и двух путей",
+      "expected": "Сохранены допустимые расширения озера и ограничения; неясные численные условия остаются видимыми.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-TO-009-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/audits/ROOT-L1-runtime-2026-11-10.json#ROOT-TO-009-L1",
+      "finding": "Geometric lake editing is not the Root rule limiting four clearings and two lost named paths. Modifier sign remains source-uncertain and is not invented.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Расширять озеро с пределом четырёх полян и двух путей",
+      "source_acceptance": "ROOT-TO-009-L1-AC01: Озеро связано сA/B/C; ведущий передал подтверждённый hit дляD. Удаление путей укладывается в предел2. Расширить озеро кD, затем рассмотретьE. → ПодключеныA/B/C/D; на четырёх расширение остановлено, E не добавлена.\nROOT-TO-009-L1-AC02: При подготовке озера уже стёрты два пути; подключениеE требует стереть третий. Рассмотреть это расширение. → Третий путь не стёрт; такой вариант не выдан за соответствующий пределу источника.\nROOT-TO-009-L1-AC03: Есть сырые2d6 и буквальное subtract–1; знак модификатора не уточнён. Порог hit уже известен:7+. Ведущий хочет вычислить исход расширения. → Нужное уточнение знака остаётся явным; порог больше не помечен неизвестным. Итог из сырых кубиков не выдуман.\nROOT-TO-009-L1-AC04: Для допустимого кандидата озера уже переданы скорректированные итоги6,7,10; знак модификатора в этом примере не вычисляется. Определить только условие hit. → 6 — не-hit;7 и10 — hit. Остальные условия расширения проверяются отдельно.",
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": "ROOT-TO-009-L1"
+    },
+    {
+      "id": "ROOT-SCOPE-M01",
+      "game": "ROOT",
+      "action": "Крепость как конкретное место",
+      "expected": "KнаходитсявA; новых полян и фракционного контроля не создано.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M01",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M01; score13-surface.mjs, src/App.tsx:492, src/App.tsx:15250, src/App.tsx:16884",
+      "finding": "Именованная постройка или вход в выбранном месте и повторное открытие проверены через реальные команды POI. Специфичная связь с поляной, сценой или услугой из этого правила отдельно не подтверждена.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Крепость как конкретное место",
+      "source_acceptance": null,
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "ROOT-SCOPE-M02",
+      "game": "ROOT",
+      "action": "Roost как укреплённая постройка",
+      "expected": "BсодержитвыбранныйRoost; присутствие/контроль соседей не назначены.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M02",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M02; score13-surface.mjs, src/App.tsx:492, src/App.tsx:15250, src/App.tsx:16884",
+      "finding": "Именованная постройка или вход в выбранном месте и повторное открытие проверены через реальные команды POI. Специфичная связь с поляной, сценой или услугой из этого правила отдельно не подтверждена.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Roost как укреплённая постройка",
+      "source_acceptance": null,
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "ROOT-SCOPE-M03",
+      "game": "ROOT",
+      "action": "Выбранные постройки поляны",
+      "expected": "ВAсохраненывыбранныепостройки; не созданы2NPC/2проблемы и не обещана полная108ячейковаятаблица.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M03",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M03; src/App.tsx; src/knaveClassic.ts; score13-surface.mjs",
+      "finding": "CROWS runtime на том же SHA поставил и именовал две отдельные POI в одном регионе, сохранил обе. Привязка двух построек именно к одной поляне отдельной сущностью не доказана.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Выбранные постройки поляны",
+      "source_acceptance": null,
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "ROOT-SCOPE-M04",
+      "game": "ROOT",
+      "action": "Конкретное место и простое сведение о жителе",
+      "expected": "SсохранёнвA; фактработыРинасохранён; мотивы/характер/конфликт/трекивреданесозданы.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M04",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M04; src/App.tsx; score13-surface.mjs",
+      "finding": "Прямой тест score13-surface.mjs на релизе: неподвижное логово, признак и причина либо именованный склад и факт о Рине восстановлены при повторном открытии. Заметка принадлежит гексу, у признака отсутствует независимая видимость.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Конкретное место и простое сведение о жителе",
+      "source_acceptance": null,
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "ROOT-SCOPE-M05",
+      "game": "ROOT",
+      "action": "Сад как конкретный объект",
+      "expected": "ВCрасположенG; Outcast/присутствие/контрольневычислены.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M05",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M05; score13-surface.mjs, src/App.tsx:492, src/App.tsx:15250, src/App.tsx:16884",
+      "finding": "Именованная постройка или вход в выбранном месте и повторное открытие проверены через реальные команды POI. Специфичная связь с поляной, сценой или услугой из этого правила отдельно не подтверждена.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Сад как конкретный объект",
+      "source_acceptance": null,
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "ROOT-SCOPE-M06",
+      "game": "ROOT",
+      "action": "Торговый пост как место снабжения",
+      "expected": "PсохранёнвD; экономика/цены/численностьфракциинепридуманы.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M06",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M06; score13-surface.mjs, src/App.tsx:492, src/App.tsx:15250, src/App.tsx:16884",
+      "finding": "Именованная постройка или вход в выбранном месте и повторное открытие проверены через реальные команды POI. Специфичная связь с поляной, сценой или услугой из этого правила отдельно не подтверждена.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Торговый пост как место снабжения",
+      "source_acceptance": null,
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": null
+    },
+    {
+      "id": "ROOT-SCOPE-M07",
+      "game": "ROOT",
+      "action": "Вход туннеля как место/проход",
+      "expected": "ВходTотмеченвE; контроль/время/вместимость/конечнаятрассанепридуманы.",
+      "source": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M07",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/ROOT-scope-audit.json#ROOT-SCOPE-M07; score13-surface.mjs, src/App.tsx:492, src/App.tsx:15250, src/App.tsx:16884",
+      "finding": "Именованная постройка или вход в выбранном месте и повторное открытие проверены через реальные команды POI. Специфичная связь с поляной, сценой или услугой из этого правила отдельно не подтверждена.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Вход туннеля как место/проход",
+      "source_acceptance": null,
+      "probe": "ROOT-L1-runtime-2026-11-10-probes.mjs",
+      "origin": "registered",
+      "binding": null
+    }
+  ],
+  "stats": {
+    "n": 14,
+    "counts": {
+      "full": 1,
+      "partial": 12,
+      "absent": 1,
+      "unknown": 0
+    },
+    "function_fraction": 0.5,
+    "upper_if_unknown_pass": 0.5,
+    "quality": [
+      0,
+      0.9285714285714286
+    ]
+  }
+}

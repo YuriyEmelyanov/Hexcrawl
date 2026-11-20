@@ -1,0 +1,371 @@
+{
+  "rank": 3,
+  "id": "KNAVE2",
+  "name": "Knave 2e",
+  "closed": false,
+  "ops": [
+    {
+      "id": "KNAVE2-005-L1",
+      "game": "KNAVE2",
+      "action": "Хранить шестимильный физический профиль карты отдельно от zoom",
+      "expected": "Физический профиль 6 mi, независимый от экранного приближения.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-005-L1",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-005-L1",
+      "finding": "В документе хранится профиль 6 миль с неопределённым способом измерения. При импорте одной карты с приближением 1× и 2× профиль и данные карты совпали.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Хранить шестимильный физический профиль карты отдельно от zoom",
+      "source_acceptance": "Given Новая карта с профилем Knave 2e When Сохранить и загрузить Expected Физическая длина 6 mile; convention=null/unknown, а не профиль PF2 с длиной 12.; Given Физический профиль 6 mile When Изменить zoom с 1 на 2 Expected Физическая длина остаётся 6 mile.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-005-L1"
+    },
+    {
+      "id": "KNAVE2-006-L1",
+      "game": "KNAVE2",
+      "action": "Обозначать труднопроходимость отдельно от типа местности",
+      "expected": "Труднопроходимость видна ведущему и сохраняется в документе.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-006-L1",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-006-L1",
+      "finding": "На выбранном хвойном гексе с замком сохранил труднопроходимость. Импорт восстановил её. Снятие флага и отмена сохранили биом, замок, геометрию и улику.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Обозначать труднопроходимость отдельно от типа местности",
+      "source_acceptance": "Given H — лес, содержит POI A, difficult=false When Включить труднопроходимость H, сохранить и загрузить Expected H остаётся лесом с POI A, difficult=true.; Given То же состояние с difficult=true When Снять флаг, затем отменить действие Expected После снятия difficult=false, после undo=true; POI и рельеф прежние.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-006-L1"
+    },
+    {
+      "id": "KNAVE2-010-L1",
+      "game": "KNAVE2",
+      "action": "Хранить секрет отдельно от улики и связывать их",
+      "expected": "Секрет и подсказка — отдельные объекты или поля с управляемым раскрытием.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-010-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-010-L1",
+      "finding": "У живой точки сохраняются режим «секрет через взаимодействие» и поле улики. Ввод секрета без улики отклоняется без изменения карты; введённая улика переживает импорт.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Хранить секрет отдельно от улики и связывать их",
+      "source_acceptance": "Given C связана с S; C открыта, S закрыт When Сформировать представление игрока Expected C видна; S и его секретные поля не переданы игроку.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-010-L1"
+    },
+    {
+      "id": "KNAVE2-020-L1",
+      "game": "KNAVE2",
+      "action": "Наполнять выбранное место карты подсказками из таблиц и их сочетанием, сохраняя толкование ведущего.",
+      "expected": "На выбранном участке карты есть описанное место; ведущему доступны выбранные подсказки и его собственное толкование.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-020-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-020-L1",
+      "finding": "Рабочий генератор создал точки из встроенного каталога. При seed 41 для одной точки получена строка «Локации» 1, свойство d100 перебросилось 25 → 14. Тип подсказки, номер строки и текст сохранены; переброс не менял исходное место или состояние генерации карты.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Наполнять выбранное место карты подсказками из таблиц и их сочетанием, сохраняя толкование ведущего.",
+      "source_acceptance": "Given H, таблица «Локации» p10, фиксированный бросок 1 When Добавить POI Expected Создан один POI типа «Пепелище», source=p10,row1.; Given H, таблица «Постройки» p11 с броском 1; таблица «Свойства мест» p11 с броском 1 When Добавить POI со свойством Expected Создано одно «Аббатство» со свойством «Пепельный»; оба источника и броска сохранены.; Given H, таблица «Подземелья» p16 с броском 1 When Добавить POI Expected Создан один POI «Лаборатория алхимии»; сетка комнат не генерируется автоматически.; Given Существующая карта содержит POI A When Добавить POI B в H, сохранить и загрузить Expected POI A сохранён; POI B находится в H с тем же ID; другие гексы и рельеф не перегенерированы.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-020-L1"
+    },
+    {
+      "id": "KNAVE2-037-L1",
+      "game": "KNAVE2",
+      "action": "Связать святилище с покровителем и реликвиями",
+      "expected": "На карте одно святилище S с указанной посвящённостью; переименование S не изменяет его положение.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-037-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-037-L1",
+      "finding": "У гекса сохраняются точка типа holy_place и имя святилища после импорта; дороги и адрес точки прежние.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Связать святилище с покровителем и реликвиями",
+      "source_acceptance": "Given Создан P с2доменами; SпосвящёнP; RсвязанP When ПереименоватьS и сохранить/загрузить Expected S по устойчивомуID по-прежнему ведёткP; R связансP; доменовPдва.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-037-L1"
+    },
+    {
+      "id": "KNAVE2-040-L1",
+      "game": "KNAVE2",
+      "action": "Привязать алхимический ресурс к опасному или затерянному месту",
+      "expected": "У P есть выбранное растение; скрытое содержимое не выдано игрокам автоматически.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-040-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-040-L1; src/App.tsx; src/knaveClassic.ts; score13-surface.mjs",
+      "finding": "Проверены KnaveLayer, схемы content/discovery и генерация четырёх таблиц. Для пары ресурс–место с состояниями yield/respawn записи и команды нет; свободная подпись не выполняет заданный исход.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Привязать алхимический ресурс к опасному или затерянному месту",
+      "source_acceptance": "Given P—затерянные руины, выбран ресурсI, объёмдобычи неизвестен When Добавить ресурс и сохранить/загрузить Expected I привязанP; yield=null, respawn=null; таблица карты не заполняет все соседние гексы тем же растением.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-040-L1"
+    },
+    {
+      "id": "KNAVE2-045-L1",
+      "game": "KNAVE2",
+      "action": "Разрешить выбранные вспомогательные таблицы для результата погоды, признака или места",
+      "expected": "У P выбранное свойство «Ядовито-зелёный», локатор с.37/строка1; биом и соседние места прежние.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-045-L1",
+      "functional": "absent",
+      "functional_credit": 0,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-045-L1",
+      "finding": "Адаптер работает с Локациями, Постройками, Свойствами мест и Подземельями. Встроенные ссылки сохраняются как нерешённые; целевая таблица «Цвета», с. 37, в этом пути отсутствует.",
+      "quality": [
+        0,
+        0
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "fail",
+          "low": 0,
+          "high": 0
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Разрешить выбранные вспомогательные таблицы для результата погоды, признака или места",
+      "source_acceptance": "Given Признак места ссылается на таблицу «Цвет» p37; задан следующий бросок1. When Разрешить ссылку по общему правилу. Expected Сохранён «Ядовито-зеленый» и provenance p37/row1; биом и соседние места не изменены.; Given Первый переход привёл в «Качества» p28,row69, которая снова является ссылкой; выбрана рекомендованная политика следующей строки. When Применить общий resolver. Expected Выбрана строка70 той же таблицы, «Планарный»; исходная строка69 и сдвиг сохранены; третий бросок не выполняется.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-045-L1"
+    },
+    {
+      "id": "KNAVE2-051-L1",
+      "game": "KNAVE2",
+      "action": "Добавить выбранному POI подсказки для названия таверны и меню.",
+      "expected": "Existing P stores chosen name/menu prompts, not new map geometry or rations.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-051-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-051-L1",
+      "finding": "Ручное имя и тип таверны пережили экспорт и импорт. Общая работа с местом доступна.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Добавить выбранному POI подсказки для названия таверны и меню.",
+      "source_acceptance": "Given P selected; tavern1=2, tavern2=3, food_detail=1, food=1 When Generate requested values Expected Store name components Орущий + Топор and menu components Вяленый + Желудь; no ration inventory increment.; Given P.name has a manual edit When Reroll menu only to food_detail=100 and food=100 Expected Menu becomes Завернутый + Ямс; manual name preserved.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-051-L1"
+    },
+    {
+      "id": "KNAVE2-070-L1",
+      "game": "KNAVE2",
+      "action": "Выбрать подсказку вручную или броском, уточнить её по связанной таблице и сохранить с толкованием у места.",
+      "expected": "У места остаются исходные подсказки с указанием таблиц и строк и составленное ведущим описание.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-070-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-070-L1",
+      "finding": "У каждой принятой подсказки сохраняется номер исходной строки. Ссылки в каталоге помечены как нерешённые. Один переброс обновляет только выбранную часть, сохраняется в JSON и отменяется.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Выбрать подсказку вручную или броском, уточнить её по связанной таблице и сохранить с толкованием у места.",
+      "source_acceptance": "Given Синтетическая таблица A: строка37 содержит payload37; местоP без содержимого. When Вручную выбрать строку37. Expected P получает payload37, provenance A/37; RNG не вызывается.; Given Синтетическая A[1] ссылается наB; B[7] содержит payloadB7. When Задать броски1 и7. Expected Сохранены A/1→B/7 и payloadB7; не выполняется третий бросок.; Given Синтетическая A[1]→B, B[8]→C, B[9] содержит payloadB9. When Задать броски1 и8 и включить рекомендованную политику следующей записи. Expected Выбран B/9, сохранены исходный8 и причина сдвига; таблицаC не бросается.; Given Индекс0,101 или дробь2.5 для таблицы100строк. When Попытаться применить результат. Expected Нет записи результата/измененияP; вход отвергнут как недопустимый.; Given A[1]→B; B[100] is another reference and no following row exists. When Apply recommended second-reference policy. Expected Show unresolved edge and preserve A/1→B/100; require an explicit manual choice. Do not silently wrap to B/1 or roll a third table.; Given A[1]→B; B[8]→C and next B[9] is also a reference. When Apply recommended second-reference policy. Expected Show unresolved edge and preserve provenance; no unbounded cascade or silent fabricated terminal value.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-070-L1"
+    },
+    {
+      "id": "KNAVE2-071-L1",
+      "game": "KNAVE2",
+      "action": "Сочетать подсказки выбранных таблиц, включая повторное использование одной таблицы, и сохранить описание ведущего; две-три таблицы рекомендованы автором.",
+      "expected": "У места сохранены все выбранные подсказки и итоговое описание; совпавшие результаты не затирают друг друга.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-071-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-071-L1",
+      "finding": "Одно место может иметь основную подсказку и независимое свойство. Оба результата сохраняются, а отдельный переброс свойства сохраняет основную подсказку.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Сочетать подсказки выбранных таблиц, включая повторное использование одной таблицы, и сохранить описание ведущего; две-три таблицы рекомендованы автором.",
+      "source_acceptance": "Given Синтетическая таблицаA; два вызоваA с индексами1и2, интерпретацияGM=X. When Сохранить сочетание уP. Expected УP два компонента A/1 иA/2 и описаниеX; второй не затирает первый.; Given Три синтетические таблицыA,B,C с индексами1,50,100. When Применить рецепт кP. Expected Сохранены ровно3 компонента в выбранном порядке; индекс100 не теряется и дополнительные броски не появляются.; Given Ведущий явно задаёт пользовательский рецепт A,A,B,C с четырьмя фиксированными индексами1,2,3,4. When Применить пользовательский рецепт кP. Expected Сохранены четыре компонента A/1,A/2,B/3,C/4; рекомендация2–3 таблицы не превращается в ошибку или усечение рецепта.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-071-L1"
+    },
+    {
+      "id": "KNAVE2-072-L1",
+      "game": "KNAVE2",
+      "action": "Нанести и сохранить альтернативный путь к подготовленной области без удаления существующего пути.",
+      "expected": "Два указанных ведущим пути к цели существуют одновременно и видны как разные соединения.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-072-L1",
+      "functional": "full",
+      "functional_credit": 1,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-072-L1",
+      "finding": "Через обработчик дороги создал A–B и тропу A–C–B. Сохранились обе линии с разными ID, адреса трёх точек, JSON-загрузка и точные Undo/Redo.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Нанести и сохранить альтернативный путь к подготовленной области без удаления существующего пути.",
+      "source_acceptance": "Given ОбластиA,B,C; существующий прямой путьA–B. When Добавить A–C и C–B как альтернативу. Expected Сохранены A–B и A–C–B; исходный путь не удалён; объектыA,B,C сохраняют IDs.; Given Карта с двумя указанными путями кB. When Сохранить и загрузить карту. Expected Оба пути и их условия доступны после загрузки без превращения в единую линию.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-072-L1"
+    },
+    {
+      "id": "KNAVE2-073-L1",
+      "game": "KNAVE2",
+      "action": "Привязать наблюдаемый признак к подготовленной опасности и отделить его от скрытой механики.",
+      "expected": "Игрок видит выбранное предупреждение, но не получает автоматически все скрытые параметры угрозы.",
+      "source": "agent-work/research/requirements/KNAVE2-scope-audit.json#KNAVE2-073-L1",
+      "functional": "partial",
+      "functional_credit": 0.5,
+      "evidence": "agent-work/research/requirements/KNAVE2-L1-implementation.json#KNAVE2-073-L1",
+      "finding": "Ведущий может привязать и сохранить текст предупреждения к конкретной точке через поле улики.",
+      "quality": [
+        0,
+        1
+      ],
+      "quality_cases": [
+        {
+          "case": "base",
+          "state": "unknown",
+          "low": 0,
+          "high": 1
+        }
+      ],
+      "disposition": "keep_L1",
+      "scope_basis": "Привязать наблюдаемый признак к подготовленной опасности и отделить его от скрытой механики.",
+      "source_acceptance": "Given ОпасностьH с GM-механикойM, признакC помечен открытым. When Открыть представление игроков. Expected C присутствует, M отсутствует; в GM-виде доступны оба.; Given ОпасностьH и открытый признакC, GM вручную редактируетC→C2. When Сохранить и загрузить карту. Expected Связь C2→H сохранена, механизмM не изменён.",
+      "probe": "KNAVE2-L1-implementation-probe.mjs",
+      "origin": "registered",
+      "binding": "KNAVE2-073-L1"
+    }
+  ],
+  "stats": {
+    "n": 12,
+    "counts": {
+      "full": 3,
+      "partial": 7,
+      "absent": 2,
+      "unknown": 0
+    },
+    "function_fraction": 0.5416666666666666,
+    "upper_if_unknown_pass": 0.5416666666666666,
+    "quality": [
+      0,
+      0.8333333333333334
+    ]
+  }
+}
