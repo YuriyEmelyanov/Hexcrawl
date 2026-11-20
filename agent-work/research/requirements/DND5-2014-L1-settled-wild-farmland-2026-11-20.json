@@ -1,0 +1,432 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-20-dnd5-settled-wild-farmland-27732b2e",
+  "status": "bounded_dmg2014_settled_wild_farmland_verified_partial",
+  "game_id": "DND5",
+  "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+  "reviewed_at": "2026-11-20T02:34:00Z",
+  "research_baseline_sha": "9dc350e0e664c25108583917d3077e4f02381e7e",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "scope_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "source_coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+  "previous_matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+  "rows": [
+    {
+      "id": "DND5-2014-004-L1-v2-draft",
+      "legacy_id": "DND5-2014-004-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-004",
+        "locator": "historical printed p14 Масштаб области",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Поселения, фермы и различие населённой и дикой области",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Ведущий задаёт освоенность области, размещает поселения и места сельхоздеятельности в гексах, затем сохраняет эту часть региональной карты.",
+      "product_boundary": "Размещение поселений и угодий",
+      "related_disposition": null,
+      "action": "Выбрать освоенность при генерации области и отредактировать наземные точки поселений и угодий на базовой карте Classic.",
+      "map_object_or_state": {
+        "hex_miles": 6,
+        "region_type": [
+          "settled",
+          "wild"
+        ],
+        "settlements": [
+          "city",
+          "village"
+        ],
+        "farming_poi": [
+          "farm",
+          "pasture"
+        ]
+      },
+      "expected_result": "Типы областей и отдельные объекты сохраняются. Соседство угодий с поселением проверяется по координатам.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-004",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Существующий Classic, базовая региональная карта. Сельхозобъекты учитываются как содержимое места.",
+        "layer": "L1",
+        "trigger_or_user_action": "Установить «Тип» при генерации, создать смежные области, выбрать гексы и разместить поселения и сельскохозяйственные точки, открыть карту из JSON.",
+        "inputs_and_units": {
+          "seed": 42,
+          "hex_scale_miles": 6,
+          "area_per_region_hexes": 17,
+          "initial_adjacent_anchors": [
+            "0,0",
+            "0,2"
+          ],
+          "distance_unit": "гекс по графу соседства"
+        },
+        "product_operation": "Генерация областей с двумя типами освоенности, ручное сохранение точек и перенос фермы.",
+        "expected_output": "Два разных типа областей, два поселения и две сельскохозяйственные POI в заданных гексах. Отдельная территориальная или объектная привязка угодий остаётся пробелом в сценарии.",
+        "constraints_and_exceptions": [
+          "Координаты, seed и число объектов заданы для воспроизводимой проверки и не являются требованиями DMG.",
+          "Одинаковое число POI в двух регионах установлено для этого seed и не задаёт статистику генерации.",
+          "Плотность, самостоятельный ареал угодий и хозяйственный расчёт не выводятся из возможности поставить ферму."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Пустая карта Classic, seed 42, малый регион, материковый режим, гексы-кандидаты 0,0 и 0,2.",
+            "when": "Первый регион сгенерировать как освоенный, второй как дикий.",
+            "expected": "Регионы 1 и 2 занимают по 17 гексов и сохраняют типы settled/wild. В обоих по четыре POI с учётом центральной. В первом есть поселения, во втором на этом seed поселений нет."
+          },
+          {
+            "given": "В первом регионе городок в −1,0 и деревня в 1,0, гексы −2,0 и 1,1 сухие и свободные.",
+            "when": "Заменить центральный городок городом, поставить ферму в −2,0, пастбище в 1,1, сохранить и загрузить JSON.",
+            "expected": "Два поселения и две отдельные точки угодий восстановлены с привязкой к координатам. Каждый объект угодий располагается на расстоянии 1 гекса от соответствующего поселения. Слои воды и биомов и дикий регион сохраняются."
+          },
+          {
+            "given": "Ферма в −2,0 и свободный гекс 2,−1 в том же регионе.",
+            "when": "Перенести ферму через редактор POI, загрузить JSON, отдельно выполнить отмену и повтор на исходной карте.",
+            "expected": "Новая позиция фермы в трёх гексах от города. Оба поселения остались на своих местах. Отмена и повтор восстанавливают обе позиции. Редактор не поддерживает в этом сценарии обязательную связь фермы с городом."
+          },
+          {
+            "given": "Дикая область с сухим свободным гексом −1,3.",
+            "when": "Поставить ферму вручную и затем отменить действие.",
+            "expected": "Появляется POI farm, тип области остаётся wild. Отмена восстанавливает ранее сохранённую карту."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_density"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.settlement_density"
+      ],
+      "binding_ids": [
+        "DND5-2014-004-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "DND5-2014-L1-SETTLED-WILD-FARMLAND-RUNTIME"
+      ],
+      "result": "На одной карте Classic базового масштаба 6 миль с seed 42 построены два смежных малых региона по 17 гексов. В JSON сохранены отдельные типы settled и wild. Генератор дал по четыре POI на регион с учётом центральной точки. В освоенном вышли городок и деревня, в диком не оказалось поселений. Редактор позволил заменить центральный городок городом, сохранить деревню и разместить ферму в одном гексе от города, пастбище в одном гексе от деревни. Весь документ, включая типы регионов, координаты и виды объектов, совпал после повторного импорта за исключением времени сохранения. Ферма и пастбище записываются как типы точек с координатами. Размещение не изменило слои биома и воды. Ферма переместилась с одного на три гекса от города, оба поселения и обе области сохранились. Ферму также удалось вручную поставить в дикой области без изменения её типа. Число дополнительных POI в стандартной генерации привязано к количеству подходящих гексов. По коду тип и размер региона влияют на подбор видов POI и поселений, а пользовательский выбор отдельной нормы плотности и связь фермы с конкретным поселением в проверенном ходе не обнаружены.",
+      "remaining": "Печатная стр. 14 пока доступна через историческую выписку. Исторические ориентиры «1 городок и 8–12 деревень» и пояс сельхозземель требуют подтверждения первичным текстом. Они не применялись как нормы редактора. Сценарий проверен через обработчики Classic и JSON. Браузер, опубликованная версия, область применения пользовательских контуров на 1-мильной сетке и распределение генерации по множеству seed остаются вне проверенного среза.",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-004",
+        "locator": "historical printed p14 Масштаб области",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Поселения, фермы и различие населённой и дикой области",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "canonical_mapping": [
+        {
+          "rule_id": "map.settlement_density",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-004-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Существующие типы областей и типы POI реализуют размещение и тематический состав. Пространственный пояс, обязательная связь и игровой профиль плотности требуют отдельного подтверждения.",
+          "profile_differences": [
+            "Координаты и состав действительны для Classic на тестовом seed. Числовой профиль DMG 2014 не принят."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "both",
+        "comment": "Метки и типы сохраняются. Генератор учитывает освоенность при выборе видов объектов. Проверенный редактор хранит простые сельхозобъекты по координатам.",
+        "verified_parts": [
+          "На одной карте Classic базового масштаба 6 миль с seed 42 построены два смежных малых региона по 17 гексов. В JSON сохранены отдельные типы settled и wild. Генератор дал по четыре POI на регион с учётом центральной точки. В освоенном вышли городок и деревня, в диком не оказалось поселений.",
+          "Редактор позволил заменить центральный городок городом, сохранить деревню и разместить ферму в одном гексе от города, пастбище в одном гексе от деревни. Весь документ, включая типы регионов, координаты и виды объектов, совпал после повторного импорта за исключением времени сохранения.",
+          "Ферма и пастбище записываются как типы точек с координатами. Размещение не изменило слои биома и воды. Ферма переместилась с одного на три гекса от города, оба поселения и обе области сохранились. Ферму также удалось вручную поставить в дикой области без изменения её типа."
+        ],
+        "missing_or_unverified_parts": [
+          "В проверенной базовой операции нет отдельной записи отношения «угодья принадлежат поселению» или слоя пояса угодий. Числовые нормы плотности игрового источника не подтверждены.",
+          "Печатная стр. 14 пока доступна через историческую выписку. Исторические ориентиры «1 городок и 8–12 деревень» и пояс сельхозземель требуют подтверждения первичным текстом. Они не применялись как нормы редактора.",
+          "Сценарий проверен через обработчики Classic и JSON. Браузер, опубликованная версия, область применения пользовательских контуров на 1-мильной сетке и распределение генерации по множеству seed остаются вне проверенного среза."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Обработчики Classic и экспорт/импорт JSON в штатном React harness с доступом к двум существующим setter формы параметров. Алгоритмы генерации и редактирования взяты из исходного App. Сравнение документов выполнялось без savedAt.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json#verification",
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20-probe.mjs"
+        ]
+      },
+      "acceptance_scope": "bounded_Classic_base_generation_and_manual_poi",
+      "previous_result_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-004-L1-v2-draft",
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    }
+  ],
+  "verification": {
+    "verified_at": "2026-11-20T02:34:00Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "method": "Обработчики Classic и экспорт/импорт JSON в штатном React harness с доступом к двум существующим setter формы параметров. Алгоритмы генерации и редактирования взяты из исходного App. Сравнение документов выполнялось без savedAt.",
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "primary_source_reverified": false,
+    "matching_git_blobs": 105,
+    "exit_code": 0,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20-probe.mjs",
+    "command": "Поместить probe в корень checkout product_sha под именем research-settled-wild-farmland.mjs и выполнить node research-settled-wild-farmland.mjs",
+    "source_pins": [
+      "src/App.tsx#L8733",
+      "src/App.tsx#L8890",
+      "src/App.tsx#L8951",
+      "src/App.tsx#L14530",
+      "src/App.tsx#L14814",
+      "src/App.tsx#L15388",
+      "src/App.tsx#L16902",
+      "src/saveValidation.ts#L84",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "seed": 42,
+        "regionSizeControl": "small_region",
+        "coastControl": "mainland",
+        "scaleMiles": 6,
+        "anchors": [
+          "0,0",
+          "0,2"
+        ]
+      },
+      "initial": [
+        {
+          "id": 1,
+          "type": "settled",
+          "cells": 17,
+          "center": "-1,0",
+          "centralKind": "town",
+          "otherPoints": {
+            "1,0": "village",
+            "0,0": "holy_place",
+            "0,1": "hut"
+          }
+        },
+        {
+          "id": 2,
+          "type": "wild",
+          "cells": 17,
+          "center": "0,3",
+          "centralKind": "lair",
+          "otherPoints": {
+            "0,2": "ruins",
+            "-2,3": "tower",
+            "0,5": "statue"
+          }
+        }
+      ],
+      "authored": {
+        "settlements": {
+          "-1,0": "city",
+          "1,0": "village"
+        },
+        "farm": {
+          "key": "-2,0",
+          "distanceFromCity": 1
+        },
+        "pasture": {
+          "key": "1,1",
+          "distanceFromVillage": 1
+        },
+        "waterAndBiomeUnchanged": true
+      },
+      "moved": {
+        "farmKey": "2,-1",
+        "distanceFromCity": 3,
+        "bothSettlementsRetained": true
+      },
+      "manualFarmInWild": {
+        "key": "-1,3",
+        "landType": "wild"
+      },
+      "saveReloadExact": true,
+      "undoRedo": true,
+      "method": "App Classic generation and manual POI callbacks, JSON save and import. Existing React harness exposes two additional original form setters. No browser."
+    }
+  },
+  "quality": {
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "game_id": "DND5",
+    "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+    "source_inventory_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+    "analysis_ref": "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json",
+    "reviewed_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "reviewer": "HX-RSR-001",
+    "overall_status": "checkpoint",
+    "checks": [
+      {
+        "criterion_id": "RA-Q01",
+        "result": "pass",
+        "comment": "Издание, язык и локатор сохранены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q02",
+        "result": "blocked",
+        "comment": "Полный заявленный корпус не просмотрен в первичном виде.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При подтверждённом доступе сверить первичный текст и нормы плотности по coverage ledger."
+      },
+      {
+        "criterion_id": "RA-Q03",
+        "result": "blocked",
+        "comment": "Сохранён исторический пересказ. Требуется первичное чтение.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При подтверждённом доступе сверить первичный текст и нормы плотности по coverage ledger."
+      },
+      {
+        "criterion_id": "RA-Q04",
+        "result": "blocked",
+        "comment": "Числовые ориентиры и исключения источника требуют первичного чтения.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При подтверждённом доступе сверить первичный текст и нормы плотности по coverage ledger."
+      },
+      {
+        "criterion_id": "RA-Q05",
+        "result": "pass",
+        "comment": "Историческая рекомендация и тестовые параметры отделены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q06",
+        "result": "pass",
+        "comment": "Указаны пользовательские действия с типом региона и координатами POI.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q07",
+        "result": "pass",
+        "comment": "Операции опираются на редактор областей и наземных объектов.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q08",
+        "result": "pass",
+        "comment": "Привязка переиспользует map.settlement_density без переноса числовых допущений.",
+        "evidence_refs": [
+          "agent-work/rules/game-bindings.json#DND5-2014-004-L1"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q09",
+        "result": "pass",
+        "comment": "Есть известные входы для генерации, переноса, отмены и импорта.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q10",
+        "result": "pass",
+        "comment": "Частичный статус подтверждён на точном дереве.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q11",
+        "result": "pass",
+        "comment": "Разделены редактор, данные JSON, код генерации и непроверенные режимы.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q12",
+        "result": "pass",
+        "comment": "Передача содержит подтверждённый остаток по существующему критерию.",
+        "evidence_refs": [
+          "agent-work/research/handoffs/2026-11-20-dnd5-settled-wild-farmland-27732b2e-strategist.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q13",
+        "result": "pass",
+        "comment": "Читаемый обзор согласован с JSON и результатом проверки.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.md"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q14",
+        "result": "blocked",
+        "comment": "Плотность и территориальный смысл ожидают источника. Основная приёмка открыта.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При подтверждённом доступе сверить первичный текст и нормы плотности по coverage ledger."
+      },
+      {
+        "criterion_id": "RA-Q15",
+        "result": "pass",
+        "comment": "Фактическая проверка в пределах исследовательской роли.",
+        "evidence_refs": [
+          "agent-work/research/runs/2026-11-20-dnd5-settled-wild-farmland-27732b2e.json"
+        ],
+        "exact_continuation": null
+      }
+    ],
+    "remaining_work": [
+      "Печатная стр. 14 пока доступна через историческую выписку. Исторические ориентиры «1 городок и 8–12 деревень» и пояс сельхозземель требуют подтверждения первичным текстом. Они не применялись как нормы редактора.",
+      "Сценарий проверен через обработчики Classic и JSON. Браузер, опубликованная версия, область применения пользовательских контуров на 1-мильной сетке и распределение генерации по множеству seed остаются вне проверенного среза."
+    ]
+  },
+  "full_game_accepted": false
+}

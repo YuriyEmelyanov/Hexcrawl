@@ -1,0 +1,286 @@
+{
+  "run_id": "2026-11-20-dnd5-settled-wild-farmland-27732b2e",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_dmg2014_settled_wild_farmland_verified_partial",
+  "started_at": "2026-11-20T02:31:13Z",
+  "completed_at": "2026-11-20T02:34:00Z",
+  "selected_task": {
+    "id": "HX-RSR-DND5-L1-SETTLED-WILD-FARMLAND",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить на карте Classic предусмотренную DND5-2014-004 подготовку освоенной и дикой областей, двух поселений и угодий рядом с поселением.",
+    "completion_condition": "Выставить разные типы двух областей, добавить два поселения и угодья, восстановить карту из JSON и показать, какие данные реально сохраняются: тип области, координаты, самостоятельная привязка угодий или только соседство. Проверять плотность лишь в рамках действующего инструмента создания карты.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-004-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "selection_reason": "Открытый сценарий L1 у первой игры общего рейтинга. Сопоставление генерации, ручного наполнения и сохранения отделяет действующую функцию карты от недоказанной плотности и связи с угодьями.",
+  "alternatives": [
+    {
+      "task_id": "DND5-2014-006 / 011",
+      "reason": "Рельеф и связанный маршрут остаются следующим достижимым срезом. По результату текущего checkpoint сначала нужен законченный сценарий наполнения областей."
+    },
+    {
+      "task_id": "Полный источник DMG2014",
+      "reason": "Новое основание для чтения всего корпуса отсутствует. Точный остаток уже закреплён в coverage ledger."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_sha": "9dc350e0e664c25108583917d3077e4f02381e7e",
+    "main_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "active_ranking": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "active_overall_cohort": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ],
+    "refs": [
+      "AGENTS.md",
+      "agent-work/research/contract.md",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json",
+      "agent-work/research/method.json",
+      "agent-work/research/proposals.json",
+      "agent-work/research/data-contract.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/research/rule-analysis-standard.md",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json",
+      "agent-work/execution-locks.json",
+      "agent-work/budget.json",
+      "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "agent-work/rules/common-rules.json#map.settlement_density",
+      "agent-work/rules/game-bindings.json#DND5-2014-004-L1",
+      "agent-work/score/DND5-2014-traceability.json#DND5-2014-004-L1",
+      "agent-work/market/rules/DND5-2014.json#DND5-2014-004"
+    ]
+  },
+  "findings": [
+    "На одной карте Classic базового масштаба 6 миль с seed 42 построены два смежных малых региона по 17 гексов. В JSON сохранены отдельные типы settled и wild. Генератор дал по четыре POI на регион с учётом центральной точки. В освоенном вышли городок и деревня, в диком не оказалось поселений.",
+    "Редактор позволил заменить центральный городок городом, сохранить деревню и разместить ферму в одном гексе от города, пастбище в одном гексе от деревни. Весь документ, включая типы регионов, координаты и виды объектов, совпал после повторного импорта за исключением времени сохранения.",
+    "Ферма и пастбище записываются как типы точек с координатами. Размещение не изменило слои биома и воды. Ферма переместилась с одного на три гекса от города, оба поселения и обе области сохранились. Ферму также удалось вручную поставить в дикой области без изменения её типа.",
+    "Число дополнительных POI в стандартной генерации привязано к количеству подходящих гексов. По коду тип и размер региона влияют на подбор видов POI и поселений, а пользовательский выбор отдельной нормы плотности и связь фермы с конкретным поселением в проверенном ходе не обнаружены."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json",
+    "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.md",
+    "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20-probe.mjs",
+    "agent-work/research/runs/2026-11-20-dnd5-settled-wild-farmland-27732b2e.json",
+    "agent-work/research/handoffs/2026-11-20-dnd5-settled-wild-farmland-27732b2e-strategist.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/latest.json",
+    "agent-work/claims/2026-11-20-dnd5-settled-wild-farmland-27732b2e.json",
+    "agent-work/research/automation-health/2026-11-20-dnd5-settled-wild-farmland-27732b2e-started.json",
+    "agent-work/execution-locks.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "verified_at": "2026-11-20T02:34:00Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "method": "Обработчики Classic и экспорт/импорт JSON в штатном React harness с доступом к двум существующим setter формы параметров. Алгоритмы генерации и редактирования взяты из исходного App. Сравнение документов выполнялось без savedAt.",
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "primary_source_reverified": false,
+    "matching_git_blobs": 105,
+    "exit_code": 0,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20-probe.mjs",
+    "command": "Поместить probe в корень checkout product_sha под именем research-settled-wild-farmland.mjs и выполнить node research-settled-wild-farmland.mjs",
+    "source_pins": [
+      "src/App.tsx#L8733",
+      "src/App.tsx#L8890",
+      "src/App.tsx#L8951",
+      "src/App.tsx#L14530",
+      "src/App.tsx#L14814",
+      "src/App.tsx#L15388",
+      "src/App.tsx#L16902",
+      "src/saveValidation.ts#L84",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "seed": 42,
+        "regionSizeControl": "small_region",
+        "coastControl": "mainland",
+        "scaleMiles": 6,
+        "anchors": [
+          "0,0",
+          "0,2"
+        ]
+      },
+      "initial": [
+        {
+          "id": 1,
+          "type": "settled",
+          "cells": 17,
+          "center": "-1,0",
+          "centralKind": "town",
+          "otherPoints": {
+            "1,0": "village",
+            "0,0": "holy_place",
+            "0,1": "hut"
+          }
+        },
+        {
+          "id": 2,
+          "type": "wild",
+          "cells": 17,
+          "center": "0,3",
+          "centralKind": "lair",
+          "otherPoints": {
+            "0,2": "ruins",
+            "-2,3": "tower",
+            "0,5": "statue"
+          }
+        }
+      ],
+      "authored": {
+        "settlements": {
+          "-1,0": "city",
+          "1,0": "village"
+        },
+        "farm": {
+          "key": "-2,0",
+          "distanceFromCity": 1
+        },
+        "pasture": {
+          "key": "1,1",
+          "distanceFromVillage": 1
+        },
+        "waterAndBiomeUnchanged": true
+      },
+      "moved": {
+        "farmKey": "2,-1",
+        "distanceFromCity": 3,
+        "bothSettlementsRetained": true
+      },
+      "manualFarmInWild": {
+        "key": "-1,3",
+        "landType": "wild"
+      },
+      "saveReloadExact": true,
+      "undoRedo": true,
+      "method": "App Classic generation and manual POI callbacks, JSON save and import. Existing React harness exposes two additional original form setters. No browser."
+    },
+    "recovered_probe_error": {
+      "observed_error": "The map changed. Select the point again. (-2,0)",
+      "cause": "В вызове прогона использовался неверный дискриминатор локатора. После применения kind=land как в UI перенос прошёл."
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "27732b2e-2e00-8323-8988-ed5e25011493",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T02:30:00Z",
+          "started_at": "2026-11-20T02:30:47.782468Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T05:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "7f4ec0d1-9870-8326-b160-f3b51b57acc1",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T02:00:00Z",
+          "started_at": "2026-11-20T02:02:59.690604Z",
+          "completed_at": "2026-11-20T02:22:24.510765Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T06:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "27732b2e-2e00-8323-8988-ed5e25011493",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T02:30:00Z",
+          "started_at": "2026-11-20T02:30:47.782468Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T05:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "7f4ec0d1-9870-8326-b160-f3b51b57acc1",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T02:00:00Z",
+          "started_at": "2026-11-20T02:02:59.690604Z",
+          "completed_at": "2026-11-20T02:22:24.510765Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T06:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_dmg2014_settled_wild_farmland_verified_partial",
+    "run_id": "2026-11-20-dnd5-settled-wild-farmland-27732b2e",
+    "stage": "dnd5_l1_settled_wild_farmland",
+    "last_successful_step": "Проверены генерация двух регионов, независимое редактирование и перенос точек, повторный импорт, отмена и повтор.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченная проверка завершена. Полный первичный источник и количественные ориентиры остаются открытыми по coverage ledger.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.md",
+      "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20-dnd5-settled-wild-farmland-27732b2e-strategist.json",
+      "agent-work/research/runs/2026-11-20-dnd5-settled-wild-farmland-27732b2e.json"
+    ],
+    "exact_continuation": "Проверить связанный картографический сценарий DND5-2014-006 и DND5-2014-011: разместить рядом хребет, предгорье и равнину и провести через заданный проход дорогу. Зафиксировать конкретные смежные участки, их высоту и биом, заданную трассу и сохранение после повторного импорта. Указать отдельно штатный ручной выбор и возможность автоматического распознавания прохода. Для игры зафиксировать только известный объём исторического источника.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-RELIEF-AND-PASS-ROUTE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить связанный картографический сценарий DND5-2014-006 и DND5-2014-011: разместить рядом хребет, предгорье и равнину и провести через заданный проход дорогу.",
+    "completion_condition": "Зафиксировать конкретные смежные участки, их высоту и биом, заданную трассу и сохранение после повторного импорта. Указать отдельно штатный ручной выбор и возможность автоматического распознавания прохода. Для игры зафиксировать только известный объём исторического источника.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-006-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-011-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  }
+}
