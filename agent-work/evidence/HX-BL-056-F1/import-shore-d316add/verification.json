@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "task_id": "HX-BL-056",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "comparison_base_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
+  "head_sha": "d316addd2ba8fa2a1a8384ab18611e14ae21121b",
+  "head_tree_sha": "af285e564d7cfa751752a3f4cde59557f5a6fb18",
+  "previous_evidence_ref": "agent-work/evidence/HX-BL-056-F1/safe-spill-e827f69/verification.json",
+  "requirements": [
+    "R02",
+    "R05",
+    "AC01",
+    "AC06"
+  ],
+  "checks": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44678549152",
+    "jobs": [
+      {
+        "id": 136096138577,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136096138863,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136096139101,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136096140051,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "node": {
+      "id": 136096139101,
+      "status": "success",
+      "tests": 436,
+      "pass": 436,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "source_head_sha": "d316addd2ba8fa2a1a8384ab18611e14ae21121b",
+      "checkout_sha": "86d604fc2121d9a327cc46e1415478616ba134bc",
+      "checkout_tree_sha": "af285e564d7cfa751752a3f4cde59557f5a6fb18",
+      "status": "passed",
+      "case": {
+        "id": "HX056-safe-shore-spill",
+        "status": "pass",
+        "selectedCells": [
+          "10,-9"
+        ],
+        "maskCells": [
+          "10,-9",
+          "11,-10"
+        ],
+        "pngIncludesSpill": true,
+        "roundTrip": true,
+        "existingGeographyUnchanged": true,
+        "conflictingImportRejectedAt": [
+          1,
+          6
+        ],
+        "importRefusal": "Failed to load JSON: map preparation error (map.physicalGrid.smallLakes.lakes[0].cells: The small lake overlaps river #1.). Your current map is intact.",
+        "undoRedoPreserved": true
+      },
+      "screenshots": [
+        {
+          "name": "small-lake-spill-before.jpg",
+          "viewport": {
+            "width": 1500,
+            "height": 1000
+          },
+          "mode": "1"
+        },
+        {
+          "name": "small-lake-spill-after.jpg",
+          "viewport": {
+            "width": 1500,
+            "height": 1000
+          },
+          "mode": "1"
+        },
+        {
+          "name": "small-lake-after-rejected-import.jpg",
+          "viewport": {
+            "width": 1500,
+            "height": 1000
+          },
+          "mode": "1"
+        }
+      ],
+      "case_count": 15,
+      "job_status": "success"
+    },
+    "local_node": {
+      "suites": [
+        "oneMile.test.mjs",
+        "saveSafety.test.mjs",
+        "mapTransactions.test.mjs"
+      ],
+      "tests": 105,
+      "pass": 105,
+      "fail": 0,
+      "skipped": 0,
+      "duration_ms": 96585
+    },
+    "typecheck": "passed",
+    "diff_check": "passed",
+    "browser_script_syntax": "passed"
+  },
+  "visible_result": {
+    "fixture": "Classic seed 42",
+    "observation": "В Classic seed 42 конфликтное озеро поверх русла №1 отклоняется в обоих масштабах. Между загрузками карта не меняется. Redo удаляет ранее выбранное озеро, Undo восстанавливает берег.",
+    "invalid_cell": "-4,-28",
+    "river_id": 1,
+    "artifact_id": 14602604978,
+    "artifact_digest": "sha256:7b910d79704f3afb1657cac69226ff0b94b01bd27a7e06a64de3f70751a40de6",
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44678549152/artifacts/14602604978",
+    "files": [
+      {
+        "name": "small-lake-after-rejected-import.jpg",
+        "sha256": "363d64d331aaa1587e0404f81b59ec7b82a634003419edfde210d8111bdc589d",
+        "bytes": 242983
+      },
+      {
+        "name": "small-lake-spill-after.jpg",
+        "sha256": "3b5941575c64d20a90849f9726bd216c04fce31507bf6237ea3969807d72e59f",
+        "bytes": 244417
+      },
+      {
+        "name": "small-lake-spill-before.jpg",
+        "sha256": "5abf291cd3d607c61488ac5dad707704f1dc459ebfdf8c24b946a00ada25eb83",
+        "bytes": 242072
+      },
+      {
+        "name": "small-lake-spill.png",
+        "sha256": "09ee87d7cd720464cee21ecb853247df935ed8f39d94b124e81ab1bc4af19a8a",
+        "bytes": 661930
+      }
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "e827f69a1d67579652d3599d0627c76884a444c5",
+    "head_sha": "d316addd2ba8fa2a1a8384ab18611e14ae21121b",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "count_source": "git diff e827f69a1d67579652d3599d0627c76884a444c5 d316addd2ba8fa2a1a8384ab18611e14ae21121b -- test/browser/one-mile.smoke.mjs",
+    "suites": [
+      {
+        "suite": "Playwright / one-mile.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Отказ конфликтного JSON в режимах 1 и 6 миль в существующем сценарии HX056-safe-shore-spill, с проверкой исходной карты и рабочего Undo/Redo.",
+        "risk": "Импорт пропускает конфликт с рекой; попытка загрузки заменяет карту или очищает историю.",
+        "reuse_or_new_reason": "Расширен уже существующий браузерный сценарий с подходящим рабочим сохранением и проверкой PNG. Отдельный постоянный сценарий не требуется."
+      }
+    ]
+  },
+  "temporary_programmer_diagnostics": {
+    "classicFixture": "classic-six-regions-seed42.json",
+    "rejectedCell": "-4,-28",
+    "riverId": 1,
+    "validSample": "10,-9",
+    "rejectedAt": [
+      1,
+      6
+    ],
+    "mapUnchanged": true,
+    "historyStacksUnchanged": true,
+    "revisionUnchanged": true,
+    "russianMessage": "Не удалось загрузить JSON: ошибка подготовки карты (map.physicalGrid.smallLakes.lakes[0].cells: Малое озеро перекрывает русло реки №1.). Текущая карта сохранена.",
+    "redoReplay": true,
+    "undoReplay": true,
+    "crossMap": {
+      "coldSixMile": true,
+      "openRegionsBefore": 0,
+      "conflictingImportedMapRegions": 6,
+      "validationUsesImportedWorld": true,
+      "openMapUnchanged": true,
+      "validImportAccepted": true
+    },
+    "laterRoadDiagnostic": {
+      "witness": {
+        "q": 0,
+        "r": 1
+      },
+      "roadAccepted": false,
+      "editError": "Path unchanged: Could not prepare the path edit.",
+      "alerts": [],
+      "trail": [
+        {
+          "q": 0,
+          "r": 0
+        },
+        {
+          "q": 0,
+          "r": 1
+        },
+        {
+          "q": 1,
+          "r": 1
+        }
+      ],
+      "interpretation": "Проверена одна попытка проложить путь через уже принятое озеро. Путь отклонён текущим редактором, сохранение повторно загружается. Причина общего сообщения отдельно не изолирована."
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "status": "partial",
+    "S02-C03": {
+      "evidence": "Exact candidate SHA above. Legacy, valid and invalid real import tests, exact both history stacks in temporary diagnostic and replay in Playwright.",
+      "limitations": "Full F1 independent review, automatic layer compatibility and score assessment remain."
+    }
+  },
+  "remaining": [
+    "R03 generation and deterministic snapshots",
+    "F1 final acceptance including orientation and both scales",
+    "Independent exact-SHA review and separate release approval"
+  ],
+  "next_scope": {
+    "normal_eligible_call": "App.tsx normal generation calls recordGenerated after completing source river/road/terrain work.",
+    "exclude": "The fallback-tract call to recordGenerated does not use the base lake policy. Record explicit generation provenance; do not infer it from current view step.",
+    "snapshot": "Compare full dry support in checkpoint and candidate, prepare before recordTransaction, persist in authored state even when scale is 6. Use shared shore protection and do not draw existing world random streams."
+  }
+}
