@@ -1,0 +1,373 @@
+{
+  "run_id": "2026-11-20-dnd5-river-lake-confluence-9e816807",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_dmg2014_manual_river_lake_confluence_verified",
+  "started_at": "2026-11-20T01:33:37Z",
+  "completed_at": "2026-11-20T01:36:36Z",
+  "selected_task": {
+    "id": "HX-RSR-DND5-L1-RIVER-LAKE-CONFLUENCE",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить, можно ли штатными правками создать направленные основное русло и приток с общим слиянием и устьем именно в выбранном озере по DND5-2014-007.",
+    "completion_condition": "На свежем SHA задать S, T и выбранное озеро L. Подтвердить оба пути к слиянию, непрерывность до L, принадлежность устья нужному озеру и сохранение после повторного импорта. Установить точный остаток, если доступна только часть операций. Продолжить при отсутствии пересекающегося claim.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-007-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  },
+  "selection_reason": "Открытый критерий L1 у первой игры действующего общего рейтинга. Операция достигается на текущем main и проверяет реальную геометрию карты, редактирование и повторное открытие.",
+  "alternatives": [
+    {
+      "task_id": "Полный корпус DMG2014",
+      "reason": "Ранее зафиксирована недоступность точного полного источника. Нового сигнала доступа нет."
+    },
+    {
+      "task_id": "HX-BL-056",
+      "reason": "Отдельная работа основной команды ведётся для 1-мильных озёр. Выбран независимый сценарий базовой карты."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_sha": "b58e7c11577b62302d66ae8b7d22fda15929582b",
+    "main_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "active_ranking": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "active_overall_cohort": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ],
+    "refs": [
+      "AGENTS.md",
+      "agent-work/research/contract.md",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json",
+      "agent-work/research/method.json",
+      "agent-work/research/proposals.json",
+      "agent-work/research/data-contract.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/research/rule-analysis-standard.md",
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json",
+      "agent-work/execution-locks.json",
+      "agent-work/budget.json",
+      "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "agent-work/rules/common-rules.json#map.river_network",
+      "agent-work/rules/game-bindings.json#DND5-2014-007-L1",
+      "agent-work/score/DND5-2014-traceability.json#DND5-2014-007-L1"
+    ]
+  },
+  "findings": [
+    "На синтетической карте Classic в масштабе 6 миль ведущий штатно построил основное русло от сухопутного истока до береговой вершины выбранного озера и отдельным действием добавил приток до вершины слияния.",
+    "Граф из экспортированных координат содержит два направленных входа в точку слияния и один выход. Оба истока ведут к озеру ID 20 через гекс 2,0. Соседнее в документе озеро ID 21 не участвует в сети. Граф и ID подтверждены после повторного импорта.",
+    "Полноводность обеих ветвей и общего русла после добавления притока осталась 1. Отдельной правкой ведущий увеличил весь общий участок до 2, значения выше по течению не изменились. Вариант 3 при двух входах со значением 1 отклонён, данные сохранились. Попытка закончить русло перед озером на замкнутой суше тоже отклонена.",
+    "Критерий ручного построения и сохранения из DND5-2014-007 выполнен в проверенном сценарии. Для всего первичного источника и других режимов этого свидетельства недостаточно."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.json",
+    "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.md",
+    "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs",
+    "agent-work/research/runs/2026-11-20-dnd5-river-lake-confluence-9e816807.json",
+    "agent-work/research/handoffs/2026-11-20-dnd5-river-lake-confluence-9e816807-strategist.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/latest.json",
+    "agent-work/claims/2026-11-20-dnd5-river-lake-confluence-9e816807.json",
+    "agent-work/research/automation-health/2026-11-20-dnd5-river-lake-confluence-9e816807-started.json",
+    "agent-work/execution-locks.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "verified_at": "2026-11-20T01:36:36Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "method": "Реальные App-обработчики ручного редактора, импорт и экспорт JSON в React harness. Отдельный обход направленных путей по JSON и проверка принадлежности устья гексу озера.",
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "primary_source_reverified": false,
+    "matching_git_blobs": 105,
+    "exit_code": 0,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs",
+    "command": "Скопировать probe в корень checkout указанного product_sha под именем research-river-lake-confluence.mjs и выполнить node research-river-lake-confluence.mjs",
+    "source_pins": [
+      "src/App.tsx#L1033",
+      "src/App.tsx#L13910",
+      "src/App.tsx#L16091",
+      "src/manualRivers.ts#L263",
+      "src/manualRiverGeometry.ts#L19",
+      "src/riverModel/core.ts#L22",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "seed": 42,
+        "scaleMiles": 6,
+        "hexCount": 61
+      },
+      "confluence": "24.249,-14",
+      "selectedLake": {
+        "id": 20,
+        "cells": [
+          "2,0",
+          "2,1"
+        ]
+      },
+      "otherLake": {
+        "id": 21,
+        "cells": [
+          "-2,1"
+        ]
+      },
+      "riverIds": [
+        1,
+        2
+      ],
+      "initialNetwork": {
+        "mainTrace": [
+          "0,-56",
+          "0,-28",
+          "24.249,-14",
+          "24.249,14",
+          "48.497,28",
+          "72.746,14"
+        ],
+        "tributaryTrace": [
+          "48.497,-56",
+          "48.497,-28",
+          "24.249,-14",
+          "24.249,14",
+          "48.497,28",
+          "72.746,14"
+        ],
+        "lakeCellsAtMouth": [
+          {
+            "key": "2,0",
+            "id": 20
+          }
+        ],
+        "edges": [
+          {
+            "from": "0,-56",
+            "to": "0,-28",
+            "fullness": 1
+          },
+          {
+            "from": "0,-28",
+            "to": "24.249,-14",
+            "fullness": 1
+          },
+          {
+            "from": "24.249,-14",
+            "to": "24.249,14",
+            "fullness": 1
+          },
+          {
+            "from": "24.249,14",
+            "to": "48.497,28",
+            "fullness": 1
+          },
+          {
+            "from": "48.497,28",
+            "to": "72.746,14",
+            "fullness": 1
+          },
+          {
+            "from": "48.497,-56",
+            "to": "48.497,-28",
+            "fullness": 1
+          },
+          {
+            "from": "48.497,-28",
+            "to": "24.249,-14",
+            "fullness": 1
+          }
+        ]
+      },
+      "increasedNetwork": {
+        "mainTrace": [
+          "0,-56",
+          "0,-28",
+          "24.249,-14",
+          "24.249,14",
+          "48.497,28",
+          "72.746,14"
+        ],
+        "tributaryTrace": [
+          "48.497,-56",
+          "48.497,-28",
+          "24.249,-14",
+          "24.249,14",
+          "48.497,28",
+          "72.746,14"
+        ],
+        "lakeCellsAtMouth": [
+          {
+            "key": "2,0",
+            "id": 20
+          }
+        ],
+        "edges": [
+          {
+            "from": "0,-56",
+            "to": "0,-28",
+            "fullness": 1
+          },
+          {
+            "from": "0,-28",
+            "to": "24.249,-14",
+            "fullness": 1
+          },
+          {
+            "from": "24.249,-14",
+            "to": "24.249,14",
+            "fullness": 2
+          },
+          {
+            "from": "24.249,14",
+            "to": "48.497,28",
+            "fullness": 2
+          },
+          {
+            "from": "48.497,28",
+            "to": "72.746,14",
+            "fullness": 2
+          },
+          {
+            "from": "48.497,-56",
+            "to": "48.497,-28",
+            "fullness": 1
+          },
+          {
+            "from": "48.497,-28",
+            "to": "24.249,-14",
+            "fullness": 1
+          }
+        ]
+      },
+      "rejections": {
+        "dryEnd": {
+          "error": "Could not change the river. Your map is unchanged.",
+          "unchanged": true
+        },
+        "excessiveFlow": {
+          "error": "Fullness at the confluence conflicts with its tributaries. Connected rivers: Falkelv (Beside hexes 1,-1 → 0,0)",
+          "unchanged": true
+        }
+      },
+      "saveReloadMapEquality": true,
+      "undoRedo": true,
+      "method": "Actual river and water editor callbacks in the repository React harness, with independent directed tracing over exported JSON. No browser."
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "9e816807-592c-8323-8cb9-d795ce9552be",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T01:30:00Z",
+          "started_at": "2026-11-20T01:33:08.556689Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T04:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "3040803b-90f0-832f-a48c-4d3115ea9f4e",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T01:00:00Z",
+          "started_at": "2026-11-20T01:02:33.326350Z",
+          "completed_at": "2026-11-20T01:22:00.136143Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T05:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "9e816807-592c-8323-8cb9-d795ce9552be",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T01:30:00Z",
+          "started_at": "2026-11-20T01:33:08.556689Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T04:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "3040803b-90f0-832f-a48c-4d3115ea9f4e",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T01:00:00Z",
+          "started_at": "2026-11-20T01:02:33.326350Z",
+          "completed_at": "2026-11-20T01:22:00.136143Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        },
+        "next": "2026-11-20T05:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_dmg2014_manual_river_lake_confluence_verified",
+    "run_id": "2026-11-20-dnd5-river-lake-confluence-9e816807",
+    "stage": "dnd5_l1_river_lake_confluence",
+    "last_successful_step": "Проверены две ручные операции рисования русел, граф путей в выбранное озеро, редактирование полноводности, отказ на сухом устье и сохранение.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Ограниченный критерий достигнут. Полный источник остаётся открытым по списку в coverage ledger.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.json",
+      "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.md",
+      "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20-dnd5-river-lake-confluence-9e816807-strategist.json",
+      "agent-work/research/runs/2026-11-20-dnd5-river-lake-confluence-9e816807.json"
+    ],
+    "exact_continuation": "Проверить на карте Classic предусмотренную DND5-2014-004 подготовку освоенной и дикой областей, двух поселений и угодий рядом с поселением. Выставить разные типы двух областей, добавить два поселения и угодья, восстановить карту из JSON и показать, какие данные реально сохраняются: тип области, координаты, самостоятельная привязка угодий или только соседство. Проверять плотность лишь в рамках действующего инструмента создания карты.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-DND5-L1-SETTLED-WILD-FARMLAND",
+    "game_id": "DND5",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Проверить на карте Classic предусмотренную DND5-2014-004 подготовку освоенной и дикой областей, двух поселений и угодий рядом с поселением.",
+    "completion_condition": "Выставить разные типы двух областей, добавить два поселения и угодья, восстановить карту из JSON и показать, какие данные реально сохраняются: тип области, координаты, самостоятельная привязка угодий или только соседство. Проверять плотность лишь в рамках действующего инструмента создания карты.",
+    "source_refs": [
+      "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-004-L1-v2-draft",
+      "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+    ]
+  }
+}

@@ -1,0 +1,522 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-20-dnd5-river-lake-confluence-9e816807",
+  "status": "bounded_dmg2014_manual_river_lake_confluence_verified",
+  "game_id": "DND5",
+  "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+  "reviewed_at": "2026-11-20T01:36:36Z",
+  "research_baseline_sha": "b58e7c11577b62302d66ae8b7d22fda15929582b",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "scope_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "source_coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+  "previous_matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+  "rows": [
+    {
+      "id": "DND5-2014-007-L1-v2-draft",
+      "legacy_id": "DND5-2014-007-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-007",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Истоки рек, притоки и сток в крупный водоём",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "При добавлении русел ведущий меняет геометрию существующей карты и получает сохраняемую сеть с проверяемой направленностью и устьем.",
+      "product_boundary": "Реки",
+      "related_disposition": null,
+      "action": "На базовой карте Classic вручную нарисовать основное русло и приток, сохранить и открыть карту повторно.",
+      "map_object_or_state": {
+        "layer": "base",
+        "hex_miles": 6,
+        "vertices": {
+          "source": "0,-56",
+          "tributary": "48.497,-56",
+          "confluence": "24.249,-14",
+          "mouth": "72.746,14"
+        },
+        "lake_cells": [
+          "2,0",
+          "2,1"
+        ]
+      },
+      "expected_result": "От каждого сухопутного истока существует непрерывный направленный путь до общего устья в выбранном озере. Координаты, направления и настройки полноводности сохраняются.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-007",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Проверяемый сценарий ручного картографирования Classic. Историческая выписка об истоках, притоках и стоке в крупный водоём служит ориентиром для операции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать береговую вершину конкретного озера как конец основного русла, затем довести отдельное русло от сухопутного истока до нужной вершины слияния.",
+        "inputs_and_units": {
+          "hex_scale_miles": 6,
+          "hex_count": 61,
+          "lake_cells": [
+            "2,0",
+            "2,1"
+          ],
+          "other_lake_cell": "-2,1",
+          "vertex_key_units": "координаты вершин редактора, не мили",
+          "fullness_units": "целочисленный показатель редактора 1–5"
+        },
+        "product_operation": "Создание двух последовательных направленных русел в ручном редакторе и повторный импорт карты.",
+        "expected_output": "Два истока, вершина с двумя входами и одним выходом, семь физических рёбер без дублей, общее устье в указанном озере, сохранение данных.",
+        "constraints_and_exceptions": [
+          "Направление задаётся порядком выбора соседних вершин. Озеро выбирается конечной береговой вершиной.",
+          "Сухая внутренняя вершина без допустимого стока не принимается как устье.",
+          "Числа полноводности, координаты, число гексов и два действия редактора описывают проверку HexCrawl."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Карта Classic из 61 гекса с двумя озёрами. Целевое озеро состоит из гексов 2,0 и 2,1, другое — из −2,1.",
+            "when": "В редакторе воды нанести оба озера. В ручном редакторе реки провести от вершины 0,−56 путь через 24.249,−14 до 72.746,14. Вторым руслом соединить 48.497,−56 и 24.249,−14.",
+            "expected": "В слияние входят два ребра и из него выходит одно. Оба направленных пути заканчиваются в одной вершине озера ID 20, смежной с гексом 2,0. ID 21 в устье отсутствует. Импорт восстанавливает те же пути и идентификаторы."
+          },
+          {
+            "given": "На исходной карте выбран сухопутный исток и путь до соседней с устьем вершины 48.497,28, расположенной на замкнутой суше.",
+            "when": "Закончить русло на этой сухой вершине.",
+            "expected": "Редактор отказывает без изменения карты, счётчиков и генерации."
+          },
+          {
+            "given": "Два входа полноводностью 1 соединены общим руслом полноводностью 1. Озеро у устья занимает 2 гекса.",
+            "when": "Изменить полноводность последнего ребра общего русла на 2, сохранить и загрузить. Затем попытаться изменить её на 3.",
+            "expected": "Три ребра от слияния до озера получили значение 2. Четыре ребра выше слияния сохранили 1; значение 3 отклоняется. После повторного импорта значения и весь документ сохранены."
+          },
+          {
+            "given": "Основное русло и приток сохранены на одной карте.",
+            "when": "Выполнить отмену и повтор операции добавления притока.",
+            "expected": "Отмена возвращает карту с одним основным руслом. Повтор возвращает обе ветви, слияние и целевое озеро."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.river_network"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.river_network"
+      ],
+      "binding_ids": [
+        "DND5-2014-007-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "evidence_ids": [
+        "DND5-2014-L1-RIVER-LAKE-CONFLUENCE-RUNTIME"
+      ],
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "layer": "L1",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-007",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Истоки рек, притоки и сток в крупный водоём",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.river_network",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-007-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Исток, приток, слияние и устье описываются существующей направленной сетью; принадлежность конечной вершины озеру проверяется по фактической геометрии.",
+          "profile_differences": [
+            "Проверена одна ручная операция, состоящая из двух последовательных действий, в Classic. Смысл параметров игры и другие профили требуют собственного подтверждения."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "full",
+        "mode": "manual_existing_tools",
+        "comment": "Реализовано для описанного ручного сценария на базовой карте Classic. Два русла добавляются последовательно, устье определяется береговой вершиной.",
+        "verified_parts": [
+          "На синтетической карте Classic в масштабе 6 миль ведущий штатно построил основное русло от сухопутного истока до береговой вершины выбранного озера и отдельным действием добавил приток до вершины слияния.",
+          "Граф из экспортированных координат содержит два направленных входа в точку слияния и один выход. Оба истока ведут к озеру ID 20 через гекс 2,0. Соседнее в документе озеро ID 21 не участвует в сети. Граф и ID подтверждены после повторного импорта.",
+          "Полноводность обеих ветвей и общего русла после добавления притока осталась 1. Отдельной правкой ведущий увеличил весь общий участок до 2, значения выше по течению не изменились. Вариант 3 при двух входах со значением 1 отклонён, данные сохранились. Попытка закончить русло перед озером на замкнутой суше тоже отклонена."
+        ],
+        "missing_or_unverified_parts": [],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Реальные App-обработчики ручного редактора, импорт и экспорт JSON в React harness. Отдельный обход направленных путей по JSON и проверка принадлежности устья гексу озера.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.json#verification",
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs"
+        ]
+      },
+      "implementation_status": "implemented",
+      "acceptance_scope": "bounded_runtime_operation_only",
+      "previous_implementation_status": "partial",
+      "previous_result_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-007-L1-v2-draft",
+      "result": "Критерий ручного построения и сохранения из DND5-2014-007 выполнен в проверенном сценарии. Для всего первичного источника и других режимов этого свидетельства недостаточно.",
+      "remaining": "Полный текст DMG 2014 и точная нормативность совета на исторической печатной стр. 14 ожидают первичного источника. Повторный поиск без нового доступа не требуется. Проверены обработчики App на базовой сетке Classic. Отрисовка в браузере, опубликованная версия, автоматическая генерация сети, 1-мильный режим и варианты других игр не входили в испытание.",
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    }
+  ],
+  "verification": {
+    "verified_at": "2026-11-20T01:36:36Z",
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "product_head_confirmed": true,
+    "method": "Реальные App-обработчики ручного редактора, импорт и экспорт JSON в React harness. Отдельный обход направленных путей по JSON и проверка принадлежности устья гексу озера.",
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "primary_source_reverified": false,
+    "matching_git_blobs": 105,
+    "exit_code": 0,
+    "probe_ref": "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs",
+    "command": "Скопировать probe в корень checkout указанного product_sha под именем research-river-lake-confluence.mjs и выполнить node research-river-lake-confluence.mjs",
+    "source_pins": [
+      "src/App.tsx#L1033",
+      "src/App.tsx#L13910",
+      "src/App.tsx#L16091",
+      "src/manualRivers.ts#L263",
+      "src/manualRiverGeometry.ts#L19",
+      "src/riverModel/core.ts#L22",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "evidence": {
+      "fixture": {
+        "seed": 42,
+        "scaleMiles": 6,
+        "hexCount": 61
+      },
+      "confluence": "24.249,-14",
+      "selectedLake": {
+        "id": 20,
+        "cells": [
+          "2,0",
+          "2,1"
+        ]
+      },
+      "otherLake": {
+        "id": 21,
+        "cells": [
+          "-2,1"
+        ]
+      },
+      "riverIds": [
+        1,
+        2
+      ],
+      "initialNetwork": {
+        "mainTrace": [
+          "0,-56",
+          "0,-28",
+          "24.249,-14",
+          "24.249,14",
+          "48.497,28",
+          "72.746,14"
+        ],
+        "tributaryTrace": [
+          "48.497,-56",
+          "48.497,-28",
+          "24.249,-14",
+          "24.249,14",
+          "48.497,28",
+          "72.746,14"
+        ],
+        "lakeCellsAtMouth": [
+          {
+            "key": "2,0",
+            "id": 20
+          }
+        ],
+        "edges": [
+          {
+            "from": "0,-56",
+            "to": "0,-28",
+            "fullness": 1
+          },
+          {
+            "from": "0,-28",
+            "to": "24.249,-14",
+            "fullness": 1
+          },
+          {
+            "from": "24.249,-14",
+            "to": "24.249,14",
+            "fullness": 1
+          },
+          {
+            "from": "24.249,14",
+            "to": "48.497,28",
+            "fullness": 1
+          },
+          {
+            "from": "48.497,28",
+            "to": "72.746,14",
+            "fullness": 1
+          },
+          {
+            "from": "48.497,-56",
+            "to": "48.497,-28",
+            "fullness": 1
+          },
+          {
+            "from": "48.497,-28",
+            "to": "24.249,-14",
+            "fullness": 1
+          }
+        ]
+      },
+      "increasedNetwork": {
+        "mainTrace": [
+          "0,-56",
+          "0,-28",
+          "24.249,-14",
+          "24.249,14",
+          "48.497,28",
+          "72.746,14"
+        ],
+        "tributaryTrace": [
+          "48.497,-56",
+          "48.497,-28",
+          "24.249,-14",
+          "24.249,14",
+          "48.497,28",
+          "72.746,14"
+        ],
+        "lakeCellsAtMouth": [
+          {
+            "key": "2,0",
+            "id": 20
+          }
+        ],
+        "edges": [
+          {
+            "from": "0,-56",
+            "to": "0,-28",
+            "fullness": 1
+          },
+          {
+            "from": "0,-28",
+            "to": "24.249,-14",
+            "fullness": 1
+          },
+          {
+            "from": "24.249,-14",
+            "to": "24.249,14",
+            "fullness": 2
+          },
+          {
+            "from": "24.249,14",
+            "to": "48.497,28",
+            "fullness": 2
+          },
+          {
+            "from": "48.497,28",
+            "to": "72.746,14",
+            "fullness": 2
+          },
+          {
+            "from": "48.497,-56",
+            "to": "48.497,-28",
+            "fullness": 1
+          },
+          {
+            "from": "48.497,-28",
+            "to": "24.249,-14",
+            "fullness": 1
+          }
+        ]
+      },
+      "rejections": {
+        "dryEnd": {
+          "error": "Could not change the river. Your map is unchanged.",
+          "unchanged": true
+        },
+        "excessiveFlow": {
+          "error": "Fullness at the confluence conflicts with its tributaries. Connected rivers: Falkelv (Beside hexes 1,-1 → 0,0)",
+          "unchanged": true
+        }
+      },
+      "saveReloadMapEquality": true,
+      "undoRedo": true,
+      "method": "Actual river and water editor callbacks in the repository React harness, with independent directed tracing over exported JSON. No browser."
+    }
+  },
+  "quality": {
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "game_id": "DND5",
+    "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+    "source_inventory_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+    "analysis_ref": "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.json",
+    "reviewed_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "reviewer": "HX-RSR-001",
+    "overall_status": "checkpoint",
+    "checks": [
+      {
+        "criterion_id": "RA-Q01",
+        "result": "pass",
+        "comment": "Редакция, локатор и происхождение исторического пересказа обозначены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q02",
+        "result": "blocked",
+        "comment": "Полный тематический корпус 322 страницы ожидает доступа.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При новом подтверждённом доступе прочитать первичный текст по плану покрытия и сверить применимость DND5-2014-007."
+      },
+      {
+        "criterion_id": "RA-Q03",
+        "result": "blocked",
+        "comment": "Самодостаточная исходная норма ждёт первичный текст печатной страницы 14.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При новом подтверждённом доступе прочитать первичный текст по плану покрытия и сверить применимость DND5-2014-007."
+      },
+      {
+        "criterion_id": "RA-Q04",
+        "result": "blocked",
+        "comment": "Параметры испытания зафиксированы. Игровые числа, условия и исключения из полного текста неизвестны.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При новом подтверждённом доступе прочитать первичный текст по плану покрытия и сверить применимость DND5-2014-007."
+      },
+      {
+        "criterion_id": "RA-Q05",
+        "result": "pass",
+        "comment": "Историческая рекомендация, синтетическая приёмка и политика проекта разведены по полям.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q06",
+        "result": "pass",
+        "comment": "Указаны действия ведущего, физические вершины и проверяемое устье.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q07",
+        "result": "pass",
+        "comment": "Штатный редактор связывает две существующие картографические операции.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q08",
+        "result": "pass",
+        "comment": "Указаны существующие map.river_network и DND5 binding без переноса доказательства на другие игры.",
+        "evidence_refs": [
+          "agent-work/rules/game-bindings.json#DND5-2014-007-L1"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q09",
+        "result": "pass",
+        "comment": "Входы и ожидаемые результаты зафиксированы для обычной работы, отказа и повторного импорта.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q10",
+        "result": "pass",
+        "comment": "Выполнен ручной тест на точном дереве main, включая отказ и undo/redo.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q11",
+        "result": "pass",
+        "comment": "Граф независимо восстановлен по сохранённым вершинам и сверён с геометрией береговой клетки.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q12",
+        "result": "pass",
+        "comment": "Передан результат по действующему S01-C02. 1-мильные слои, ширина и визуальный изгиб рек относятся к другим работам.",
+        "evidence_refs": [
+          "agent-work/research/handoffs/2026-11-20-dnd5-river-lake-confluence-9e816807-strategist.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q13",
+        "result": "pass",
+        "comment": "Выводы JSON, читаемого обзора и передачи согласованы.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.md"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q14",
+        "result": "blocked",
+        "comment": "Сценарий закрыт на версии. Полная приёмка издательского корпуса остаётся открытой.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "При новом подтверждённом доступе прочитать первичный текст по плану покрытия и сверить применимость DND5-2014-007."
+      },
+      {
+        "criterion_id": "RA-Q15",
+        "result": "pass",
+        "comment": "Исследовательский результат ограничен фактическим сценарием и сохраняет процедуры принятия.",
+        "evidence_refs": [
+          "agent-work/research/runs/2026-11-20-dnd5-river-lake-confluence-9e816807.json"
+        ],
+        "exact_continuation": null
+      }
+    ],
+    "remaining_work": [
+      "Полный текст DMG 2014 и точная нормативность совета на исторической печатной стр. 14 ожидают первичного источника. Повторный поиск без нового доступа не требуется.",
+      "Проверены обработчики App на базовой сетке Classic. Отрисовка в браузере, опубликованная версия, автоматическая генерация сети, 1-мильный режим и варианты других игр не входили в испытание."
+    ]
+  },
+  "full_game_accepted": false
+}
