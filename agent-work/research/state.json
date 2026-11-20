@@ -65,16 +65,15 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "HX-RSR-SD-L1-SHOP-SPECIALTY",
+    "id": "HX-RSR-SD-L1-PERSISTENT-SCENE-SITE",
     "game_id": "SD",
     "layer": "L1",
-    "action": "SD-CORE-059-L1. Назвать лавку, выбрать конкретную специализацию по уже разобранному источнику, сохранить и открыть карту, затем изменить название и установить, где осталась специализация.",
-    "completion_condition": "Для имени и специализации показать значения и владельца данных на точном SHA. Проверить обычный Classic и пригодный уже существующий профиль, если у него есть операция специализации. Экономика и создание NPC вне проверки.",
-    "rationale": "В исходной матрице конкретная специализация ещё не испытана, в rc1 зачтена половина за общую именованную постройку. Проверка разрешает расхождение без повторного сканирования книги."
+    "action": "SD-CORE-063-L1: проверить на примере колодца, может ли мастер закрепить постоянное место из сцены, сохранить источник и повторить сохранение без дубля.",
+    "completion_condition": "Проверить отдельно существование маркера, связь с исходной сценой и повторное сохранение/импорт на точном SHA. Не создавать генератор сюжета."
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-20T1130-research-SD-hazard-sign",
+  "last_completed_run": "2026-11-20T1230-SD-shop-specialty",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -234,7 +233,8 @@
     "agent-work/research/runs/2026-11-20-shadowdark-overland-editor-832a4448.json",
     "agent-work/research/runs/2026-11-20-shadowdark-poi-location-development-063625.json",
     "agent-work/research/runs/2026-11-20T1033-MB-layer-baseline.json",
-    "agent-work/research/runs/2026-11-20T1130-research-SD-hazard-sign.json"
+    "agent-work/research/runs/2026-11-20T1130-research-SD-hazard-sign.json",
+    "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -251,73 +251,72 @@
   "last_setup_result_ref": "agent-work/research/runs/2026-11-06-setup.json",
   "automation_health": {
     "start": [
-      {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "last": {
-          "id": "4c493f2e-edac-8323-bad8-e69b62ace188",
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        {
+          "id": "39dbffef-5220-8323-8351-ed248b786b8e",
           "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-20T08:30:00Z",
-          "started_at": "2026-11-20T08:30:44.533737Z",
+          "scheduled_for": "2026-11-20T09:30:00Z",
+          "started_at": "2026-11-20T09:29:29.529095Z",
           "completed_at": null,
           "chat_ref": null
-        },
-        "next": "2026-11-20T11:30:00+03:00"
-      },
-      {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "last": {
-          "id": "9828ad95-6390-832c-b786-e04c5a952b1e",
-          "recorded_status": "failed",
-          "scheduled_for": "2026-11-20T08:00:00Z",
-          "started_at": "2026-11-20T07:59:11.560219Z",
-          "completed_at": "2026-11-20T08:29:15.747696Z",
-          "chat_ref": null
-        },
-        "next": "2026-11-20T11:00:00+03:00"
-      }
-    ],
-    "end": [
-      {
-        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
-        "enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "last": {
-          "id": "4c493f2e-edac-8323-bad8-e69b62ace188",
-          "recorded_status": "in_progress",
-          "scheduled_for": "2026-11-20T08:30:00Z",
-          "started_at": "2026-11-20T08:30:44.533737Z",
-          "completed_at": null,
-          "chat_ref": null
-        },
-        "next": "2026-11-20T11:30:00+03:00"
-      },
-      {
-        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-        "enabled": true,
-        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "last": {
-          "id": "9828ad95-6390-832c-b786-e04c5a952b1e",
+        }
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        {
+          "id": "5c66a06e-c48c-8323-a383-42fbb3d06dff",
           "recorded_status": "completed",
-          "scheduled_for": "2026-11-20T08:00:00Z",
-          "started_at": "2026-11-20T08:32:10.415955Z",
-          "completed_at": "2026-11-20T08:33:41.214436Z",
+          "scheduled_for": "2026-11-20T09:00:00Z",
+          "started_at": "2026-11-20T09:01:32.352013Z",
+          "completed_at": "2026-11-20T09:09:45.611100Z",
           "chat_ref": {
             "type": "chatgpt",
             "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
           }
-        },
-        "next": "2026-11-20T12:00:00+03:00"
-      }
+        }
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        {
+          "id": "39dbffef-5220-8323-8351-ed248b786b8e",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T09:30:00Z",
+          "started_at": "2026-11-20T09:29:29.529095Z",
+          "completed_at": null,
+          "chat_ref": null
+        }
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        {
+          "id": "5c66a06e-c48c-8323-a383-42fbb3d06dff",
+          "recorded_status": "completed",
+          "scheduled_for": "2026-11-20T09:00:00Z",
+          "started_at": "2026-11-20T09:01:32.352013Z",
+          "completed_at": "2026-11-20T09:09:45.611100Z",
+          "chat_ref": {
+            "type": "chatgpt",
+            "id": "6afe9db7-9ae0-83ed-a711-0927c88008c1"
+          }
+        }
+      ]
     ]
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-20T1130-research-SD-hazard-sign.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-20T1130-research-SD-hazard-sign.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-15-research-resume-2h.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -1056,7 +1055,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-20T08:37:02.374Z",
+  "updated_at": "2026-11-20T09:32:28.604Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1198,7 +1197,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-20T1130-research-SD-hazard-sign",
+  "last_run_id": "2026-11-20T1230-SD-shop-specialty",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1254,48 +1253,31 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-20T1130-research-SD-hazard-sign",
+  "last_run": "2026-11-20T1230-SD-shop-specialty",
   "checkpoint": {
-    "status": "completed_bounded_shadowdark_L1_hazard_sign",
-    "run_id": "2026-11-20T1130-research-SD-hazard-sign",
-    "stage": "SD-031/041 scoped authoring acceptance",
-    "last_successful_step": "Шесть полных сравнений карты после JSON-импорта, проверка адресов и условный пересчёт изолированного изменения калькулятором rc1.",
+    "run_id": "2026-11-20T1230-SD-shop-specialty",
+    "status": "completed",
+    "stage": "Shadowdark shop L1",
+    "last_successful_step": "Оба профиля, восемь независимых импортов; подтверждены отдельные адреса имени и заметки.",
     "failed_operation": null,
     "observed_error": null,
-    "resolved_diagnostics": [
-      {
-        "tool": "github_create_commit",
-        "action": "start marker scoped CAS on agent-operations",
-        "observed_error": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-20T08:32:27Z. Please include `C808:20011C:83FD3CC:C8C5CE9:6B00059A` when reporting this issue.'}]",
-        "cause_status": "unknown",
-        "recovery": "Перечитаны SHA и claims, совместимая запись marker и claim выполнена и проверена."
-      },
-      {
-        "tool": "github_fetch",
-        "action": "GET repository deployments",
-        "observed_error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
-        "error_code": 400,
-        "cause_status": "confirmed",
-        "recovery": "Для связи SHA с релизом использована запись выпуска PR509 и подтверждён текущий main."
-      }
-    ],
-    "stop_reason": "bounded_completion_condition_met",
+    "resolved_diagnostic": {
+      "failed_operation": "node shop-sd-1230.mjs; setSelectedPoiKind('structure') in fixture",
+      "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'structure'",
+      "cause_status": "confirmed",
+      "recovery": "Выбран допустимый тип hut, затем оба сценария прошли полностью."
+    },
+    "stop_reason": "completion_condition_met",
     "cause_status": "confirmed",
-    "saved_results": [
-      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.json",
-      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.md",
-      "agent-work/research/handoffs/2026-11-20T1130-research-SD-hazard-sign-strategist.json",
-      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20-probe.mjs"
-    ],
+    "needs_owner_action": false,
+    "owner_action": null,
     "next_candidate": {
-      "id": "HX-RSR-SD-L1-SHOP-SPECIALTY",
+      "id": "HX-RSR-SD-L1-PERSISTENT-SCENE-SITE",
       "game_id": "SD",
       "layer": "L1",
-      "action": "SD-CORE-059-L1. Назвать лавку, выбрать конкретную специализацию по уже разобранному источнику, сохранить и открыть карту, затем изменить название и установить, где осталась специализация.",
-      "completion_condition": "Для имени и специализации показать значения и владельца данных на точном SHA. Проверить обычный Classic и пригодный уже существующий профиль, если у него есть операция специализации. Экономика и создание NPC вне проверки.",
-      "rationale": "В исходной матрице конкретная специализация ещё не испытана, в rc1 зачтена половина за общую именованную постройку. Проверка разрешает расхождение без повторного сканирования книги."
-    },
-    "needs_owner_action": false
+      "action": "SD-CORE-063-L1: проверить на примере колодца, может ли мастер закрепить постоянное место из сцены, сохранить источник и повторить сохранение без дубля.",
+      "completion_condition": "Проверить отдельно существование маркера, связь с исходной сценой и повторное сохранение/импорт на точном SHA. Не создавать генератор сюжета."
+    }
   },
   "latest_recent_survey_audit": {
     "ref": "agent-work/research/market/recent-survey-2026-11-14.json",
@@ -1986,7 +1968,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "result_commit_sha": "6e2f5c134d1f1dc64a274ccf91861ec632751f06",
+  "result_commit_sha": "eb294462fbf4ae9de5dccf98d8b753105d7d0c4f",
   "next_alignment_phase": {
     "phase_id": "HX-RSR-CREATE-TOP10-ALIGNMENT",
     "status": "pending_after_overall_top5_acceptance",
@@ -2189,8 +2171,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-20T08:37:02.374Z",
-  "last_bounded_completed_run": "2026-11-20T1130-research-SD-hazard-sign",
+  "last_run_at": "2026-11-20T09:32:28.604Z",
+  "last_bounded_completed_run": "2026-11-20T1230-SD-shop-specialty",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -2335,10 +2317,10 @@
     "actual_implementation_retested": false,
     "full_game_accepted": false
   },
-  "last_result_commit_sha": "6e2f5c134d1f1dc64a274ccf91861ec632751f06",
+  "last_result_commit_sha": "eb294462fbf4ae9de5dccf98d8b753105d7d0c4f",
   "verification_readback": {
     "status": "exact",
-    "data_commit": "6e2f5c134d1f1dc64a274ccf91861ec632751f06",
+    "data_commit": "eb294462fbf4ae9de5dccf98d8b753105d7d0c4f",
     "files": 6
   },
   "previous_checkpoint_before_DND5_scope_audit": {
@@ -3129,7 +3111,7 @@
     "needs_owner_action": false,
     "owner_action": null
   },
-  "last_run_outcome": "completed_bounded_shadowdark_L1_hazard_sign",
+  "last_run_outcome": "completed_shadowdark_shop_L1",
   "latest_PF2_GMC3_applicability": {
     "status": "checkpoint_available_sections_screened_printed_chapter_incomplete",
     "audit_ref": "agent-work/research/requirements/PF2-Remaster-v2-GMC3-applicability.json",
@@ -4295,46 +4277,29 @@
     "owner_action": null
   },
   "current_research_checkpoint": {
-    "status": "completed_bounded_shadowdark_L1_hazard_sign",
-    "run_id": "2026-11-20T1130-research-SD-hazard-sign",
-    "stage": "SD-031/041 scoped authoring acceptance",
-    "last_successful_step": "Шесть полных сравнений карты после JSON-импорта, проверка адресов и условный пересчёт изолированного изменения калькулятором rc1.",
+    "run_id": "2026-11-20T1230-SD-shop-specialty",
+    "status": "completed",
+    "stage": "Shadowdark shop L1",
+    "last_successful_step": "Оба профиля, восемь независимых импортов; подтверждены отдельные адреса имени и заметки.",
     "failed_operation": null,
     "observed_error": null,
-    "resolved_diagnostics": [
-      {
-        "tool": "github_create_commit",
-        "action": "start marker scoped CAS on agent-operations",
-        "observed_error": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-20T08:32:27Z. Please include `C808:20011C:83FD3CC:C8C5CE9:6B00059A` when reporting this issue.'}]",
-        "cause_status": "unknown",
-        "recovery": "Перечитаны SHA и claims, совместимая запись marker и claim выполнена и проверена."
-      },
-      {
-        "tool": "github_fetch",
-        "action": "GET repository deployments",
-        "observed_error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
-        "error_code": 400,
-        "cause_status": "confirmed",
-        "recovery": "Для связи SHA с релизом использована запись выпуска PR509 и подтверждён текущий main."
-      }
-    ],
-    "stop_reason": "bounded_completion_condition_met",
+    "resolved_diagnostic": {
+      "failed_operation": "node shop-sd-1230.mjs; setSelectedPoiKind('structure') in fixture",
+      "observed_error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'structure'",
+      "cause_status": "confirmed",
+      "recovery": "Выбран допустимый тип hut, затем оба сценария прошли полностью."
+    },
+    "stop_reason": "completion_condition_met",
     "cause_status": "confirmed",
-    "saved_results": [
-      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.json",
-      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.md",
-      "agent-work/research/handoffs/2026-11-20T1130-research-SD-hazard-sign-strategist.json",
-      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20-probe.mjs"
-    ],
+    "needs_owner_action": false,
+    "owner_action": null,
     "next_candidate": {
-      "id": "HX-RSR-SD-L1-SHOP-SPECIALTY",
+      "id": "HX-RSR-SD-L1-PERSISTENT-SCENE-SITE",
       "game_id": "SD",
       "layer": "L1",
-      "action": "SD-CORE-059-L1. Назвать лавку, выбрать конкретную специализацию по уже разобранному источнику, сохранить и открыть карту, затем изменить название и установить, где осталась специализация.",
-      "completion_condition": "Для имени и специализации показать значения и владельца данных на точном SHA. Проверить обычный Classic и пригодный уже существующий профиль, если у него есть операция специализации. Экономика и создание NPC вне проверки.",
-      "rationale": "В исходной матрице конкретная специализация ещё не испытана, в rc1 зачтена половина за общую именованную постройку. Проверка разрешает расхождение без повторного сканирования книги."
-    },
-    "needs_owner_action": false
+      "action": "SD-CORE-063-L1: проверить на примере колодца, может ли мастер закрепить постоянное место из сцены, сохранить источник и повторить сохранение без дубля.",
+      "completion_condition": "Проверить отдельно существование маркера, связь с исходной сценой и повторное сохранение/импорт на точном SHA. Не создавать генератор сюжета."
+    }
   },
   "latest_SD_L1_poi_location_development": {
     "run_id": "2026-11-20-shadowdark-poi-location-development-063625",
@@ -4398,5 +4363,53 @@
     "handoff_ref": "agent-work/research/handoffs/2026-11-20T1130-research-SD-hazard-sign-strategist.json",
     "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "finding": "В Classic у руин есть одна заметка гекса. Со слоем Knave признак и причина правятся независимо. При переносе руин 2,0 → 1,0 улика переехала, а причина сохранилась в 2,0."
+  },
+  "previous_checkpoint_before_SD_shop": {
+    "status": "completed_bounded_shadowdark_L1_hazard_sign",
+    "run_id": "2026-11-20T1130-research-SD-hazard-sign",
+    "stage": "SD-031/041 scoped authoring acceptance",
+    "last_successful_step": "Шесть полных сравнений карты после JSON-импорта, проверка адресов и условный пересчёт изолированного изменения калькулятором rc1.",
+    "failed_operation": null,
+    "observed_error": null,
+    "resolved_diagnostics": [
+      {
+        "tool": "github_create_commit",
+        "action": "start marker scoped CAS on agent-operations",
+        "observed_error": "GithubGraphQLAPIError: [{'message': 'Something went wrong while executing your query on 2026-11-20T08:32:27Z. Please include `C808:20011C:83FD3CC:C8C5CE9:6B00059A` when reporting this issue.'}]",
+        "cause_status": "unknown",
+        "recovery": "Перечитаны SHA и claims, совместимая запись marker и claim выполнена и проверена."
+      },
+      {
+        "tool": "github_fetch",
+        "action": "GET repository deployments",
+        "observed_error": "HTTPError: 400: GitHub Fetch URL is not an allowed public GitHub repository or search endpoint. (Response: None)",
+        "error_code": 400,
+        "cause_status": "confirmed",
+        "recovery": "Для связи SHA с релизом использована запись выпуска PR509 и подтверждён текущий main."
+      }
+    ],
+    "stop_reason": "bounded_completion_condition_met",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.json",
+      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.md",
+      "agent-work/research/handoffs/2026-11-20T1130-research-SD-hazard-sign-strategist.json",
+      "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20-probe.mjs"
+    ],
+    "next_candidate": {
+      "id": "HX-RSR-SD-L1-SHOP-SPECIALTY",
+      "game_id": "SD",
+      "layer": "L1",
+      "action": "SD-CORE-059-L1. Назвать лавку, выбрать конкретную специализацию по уже разобранному источнику, сохранить и открыть карту, затем изменить название и установить, где осталась специализация.",
+      "completion_condition": "Для имени и специализации показать значения и владельца данных на точном SHA. Проверить обычный Classic и пригодный уже существующий профиль, если у него есть операция специализации. Экономика и создание NPC вне проверки.",
+      "rationale": "В исходной матрице конкретная специализация ещё не испытана, в rc1 зачтена половина за общую именованную постройку. Проверка разрешает расхождение без повторного сканирования книги."
+    },
+    "needs_owner_action": false
+  },
+  "latest_SD_shop": {
+    "matrix_ref": "agent-work/research/requirements/SD-CORE-L1-shop-2026-11-20.json",
+    "handoff_ref": "agent-work/research/handoffs/2026-11-20T1230-SD-shop-specialty-strategist.json",
+    "result_ref": "agent-work/research/runs/2026-11-20T1230-SD-shop-specialty.json",
+    "summary": "Мастер переименовал лавку и восстановил имя при повторном открытии. При переносе лавки из 2,0 в 2,-1 имя последовало за ней. Вручную записанная специализация плотника осталась у гекса 2,0, даже когда там появилась башня."
   }
 }
