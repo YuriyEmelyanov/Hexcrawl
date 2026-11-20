@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-11-20-manual-analyst-HX-BL-056-through-flow",
+  "created_at": "2026-11-20T07:08:37.348Z",
+  "from_role": "business-analyst",
+  "status": "ready_for_development",
+  "task_id": "HX-BL-056",
+  "role": "programmer",
+  "stage_id": "F1_1_through_flow_and_per_lake_conflicts",
+  "authorization_status": "approved_for_implementation",
+  "publication_authorized": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "head_sha": "b4b10f4067599f450c7e11551187956f9b55ff29",
+  "head_tree_sha": "2a3b5be5a66c4ec3631517bff0f1e7426c690240",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/automatic-lakes-b4b10f4/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315",
+  "next_step": "В PR №510 разрешить сквозное течение через малое озеро по F1.1 и в штатной генерации ограничить конфликт одной компонентой. Показать на реальной карте и PNG вход и выход реки и сохранение остальных озёр при одном конфликте, проверить JSON и Undo/Redo. Закрыть AC01–AC08 и передать новый точный SHA проверяющему.",
+  "spec_version": "F1.1",
+  "handoff_ref": "agent-work/handoffs/2026-11-20-manual-analyst-HX-BL-056-F1.1-programmer.json",
+  "owner_clarification_ref": "agent-work/decisions/owner-decision-2026-11-20-HX-BL-056-through-flow-and-conflict-isolation.json",
+  "review_ready": false,
+  "verification_status": "previous_sha_checkpoint_only_current_contract_requires_new_verification",
+  "approval_ref": "agent-work/decisions/owner-decision-2026-11-16-one-mile-small-lakes.json",
+  "interview_ref": "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/decisions.json",
+  "interview_status": "interview_completed_owner_clarification_direct",
+  "supersedes_handoff_ref": "agent-work/handoffs/2026-11-20T0100-analyst-HX-BL-056-final-programmer.json",
+  "result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
+  "ready_for_development": true,
+  "scope_requirements": [
+    {
+      "id": "R02",
+      "owner_requirement": "Реки могут проходить через малые озёра по правилу шестимильной карты.",
+      "acceptance": [
+        "AC07"
+      ],
+      "existing_interview_ids": [
+        "LAKE-Q02",
+        "LAKE-Q04"
+      ]
+    },
+    {
+      "id": "R03",
+      "owner_requirement": "Конфликт одного малого озера обрабатывается локально, остальные пригодные озёра остаются.",
+      "acceptance": [
+        "AC08"
+      ],
+      "existing_interview_ids": [
+        "LAKE-Q06a",
+        "LAKE-Q08"
+      ]
+    }
+  ],
+  "ui_preview_ref": {
+    "version": "F1",
+    "status": "proposal",
+    "desktop": "agent-work/previews/HX-BL-056/desktop-F1.png",
+    "mobile": "agent-work/previews/HX-BL-056/mobile-F1.png",
+    "base_source_head": "e65bfdcb2388b6c3ba46b56bd25a1bbb43fe77de",
+    "base_fixture": "Classic seed 42",
+    "illustrates": [
+      "manual",
+      "automatic",
+      "confirmed_source_loss"
+    ],
+    "image_blob_shas": {
+      "desktop": "4b4a99a44f913a99795e505d51ad9419732dafd7",
+      "mobile": "01a0c6f85a630284bd49cffd2b1b24a67f26a40d"
+    }
+  },
+  "rendering_reference": {
+    "kind": "existing_base_lake_example",
+    "result_ref": "agent-work/results/2026-11-15T2056-programmer-PR503-through-lake-fix.json",
+    "artifact_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/43745760981/artifacts/14174452800"
+  },
+  "prior_visible_checkpoint_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44690076315/artifacts/14607759308",
+  "forecast": {
+    "remaining_team_runs": [
+      4,
+      8
+    ],
+    "steps": {
+      "implementation_and_acceptance": [
+        2,
+        4
+      ],
+      "review": 1,
+      "rework_and_recheck": [
+        0,
+        2
+      ],
+      "release": 1
+    },
+    "excludes": [
+      "owner_publication_wait",
+      "CI_queue_wait"
+    ]
+  },
+  "score_model_version": "1.2",
+  "score_criterion_ids": [
+    "S01-C02",
+    "S01-C03",
+    "S02-C01",
+    "S02-C03",
+    "S03-C01",
+    "S04-C04"
+  ],
+  "implementation_notes": [
+    "Сначала выбрать реальный проход через малое озеро на Classic. Зафиксировать seed и координаты и снять до/после. Сверить штатную обработку устьев и маску русла по принятому берегу. Использовать общий путь для карты и PNG.",
+    "Обновить общую береговую проверку для ручного размещения, генерации и JSON. Проверить, что разрешённая речная полоса не классифицируется как потеря опоры при изменении источника.",
+    "Сверить проверку кандидатов по отдельным компонентам. Подтверждение настоящей потери опоры относится к конкретным сохранённым озёрам. Использовать действующую транзакцию генерации и Undo/Redo.",
+    "Негативный пример импорта брать из фактического запрета R02 или некорректного документа. Факт пересечения с рекой сам по себе не объясняет отказ."
+  ],
+  "completion_criteria": [
+    "AC07: настоящее озеро со сквозной рекой на карте и в PNG. Связность, JSON и Undo/Redo подтверждены.",
+    "AC08: в одном штатном запуске пропущен один конфликтующий кандидат и сохранены как минимум два пригодных.",
+    "AC01–AC08 и свидетельства на новом точном SHA переданы проверяющему.",
+    "Исходный PR и родительские требования сохранены."
+  ],
+  "owner_decisions_needed": "После независимой приёмки требуется отдельное разрешение на публикацию конкретного проверенного пакета."
+}
