@@ -1,0 +1,3034 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-20-dnd5-l1-consolidation-66558481",
+  "status": "bounded_dmg2014_l1_working_evidence_consolidated",
+  "game_id": "DND5",
+  "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+  "reviewed_at": "2026-11-20T05:31:29Z",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "research_baseline_sha": "c9198aa8daf92eb9f3837007ff6bc204da3433ad",
+  "previous_matrix_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+  "scope_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "scope_audit_ref": "agent-work/research/requirements/DND5-2014-v2-scope-audit.json",
+  "source_coverage_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+  "counts": {
+    "implemented": 4,
+    "partial": 9,
+    "not_implemented": 2,
+    "unverified": 1
+  },
+  "rows": [
+    {
+      "id": "DND5-2014-001-L1-v2-draft",
+      "legacy_id": "DND5-2014-001-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-001",
+        "locator": "historical printed p13 Создание карты для вашей кампании",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Методы сверху вниз и снизу вверх",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Расширение территории сохраняет уже подготовленную карту.",
+      "product_boundary": "Расширение карты",
+      "related_disposition": null,
+      "action": "Добавить соседнюю область к существующей карте",
+      "map_object_or_state": {
+        "existing_region": "A",
+        "new_region": "B"
+      },
+      "expected_result": "A и его объекты остаются; B добавлена без перезаписи A.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-001",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Добавить соседнюю область к существующей карте",
+        "inputs_and_units": {
+          "existing_region": "A",
+          "new_region": "B"
+        },
+        "product_operation": "Добавить соседнюю область к существующей карте; A и его объекты остаются; B добавлена без перезаписи A.",
+        "expected_output": "A и его объекты остаются; B добавлена без перезаписи A.",
+        "constraints_and_exceptions": [
+          "Не требуется заранее заполнить весь мир.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создать A с POI X, затем B",
+            "when": "Добавить соседнюю область к существующей карте",
+            "expected": "A/X сохранены, B существует"
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.extend_preserving_content"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.extend_preserving_content"
+      ],
+      "binding_ids": [
+        "DND5-2014-001-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "implemented",
+      "evidence_ids": [
+        "baseline"
+      ],
+      "result": "Соседняя область добавлена, 12 поименованных мест и прежняя геометрия сохранены. JSON и история подтверждены.",
+      "remaining": "Проверен этот сценарий общего редактора; нормы расширения по полному DMG ожидают источника.",
+      "label": "Расширить карту с сохранением мест",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-001",
+        "locator": "historical printed p13 Создание карты для вашей кампании",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Методы сверху вниз и снизу вверх",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-001-L1-v2-draft",
+        "status": "implemented",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.extend_preserving_content",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-001-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Расширение территории сохраняет уже подготовленную карту.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "full",
+        "mode": "manual_existing_tools",
+        "comment": "Соседняя область добавлена, 12 поименованных мест и прежняя геометрия сохранены. JSON и история подтверждены.",
+        "verified_parts": [
+          "Соседняя область добавлена, 12 поименованных мест и прежняя геометрия сохранены. JSON и история подтверждены."
+        ],
+        "missing_or_unverified_parts": [],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Исполнение на свежем дереве",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-002-L1-v2-draft",
+      "legacy_id": "DND5-2014-002-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-002",
+        "locator": "historical printed p14 Создание карты / масштабы",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Гекс-сетка и масштаб 1, 6 или 60 миль по нужной детализации",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Физический размер гекса нужен для географии, независимо от зума; ось измерения DMG пока не подтверждена.",
+      "product_boundary": "Физический масштаб карты",
+      "related_disposition": null,
+      "action": "Выбрать физический размер гекса независимо от приближения",
+      "map_object_or_state": {
+        "miles": [
+          1,
+          6,
+          60
+        ],
+        "axis": "unknown in source; project across_flats"
+      },
+      "expected_result": "Физическая длина сохраняется при изменении зума; неподдержанный 60 не подменяется 24.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-002",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать физический размер гекса независимо от приближения",
+        "inputs_and_units": {
+          "miles": [
+            1,
+            6,
+            60
+          ],
+          "axis": "unknown in source; project across_flats"
+        },
+        "product_operation": "Выбрать физический размер гекса независимо от приближения; Физическая длина сохраняется при изменении зума; неподдержанный 60 не подменяется 24.",
+        "expected_output": "Физическая длина сохраняется при изменении зума; неподдержанный 60 не подменяется 24.",
+        "constraints_and_exceptions": [
+          "Проектная конвенция не приписывается DND. Полный профиль60 не подтверждён.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создать сетку 6, origin(10,-4), соседние клетки (0,0)/(1,0)",
+            "when": "Выбрать физический размер гекса независимо от приближения",
+            "expected": "Дистанция центров 6 миль; площадь клетки 18√3; запрос 60 отклонён явно"
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.physical_hex_scale"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.physical_hex_scale"
+      ],
+      "binding_ids": [
+        "DND5-2014-002-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "baseline",
+        "nested_current"
+      ],
+      "result": "Модуль рассчитан на 1/6/12/24 мили между сторонами. Селектор App предлагает 1 и 6. Камера 1×/2× не меняет карту. 60 миль модулем отклонены.",
+      "remaining": "Ось и масштабы конкретного источника не сверены. 12/24 подтверждены как входы модуля, доступность в меню не установлена и показаны только 1/6.",
+      "label": "Шаг гекса и приближение",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-002",
+        "locator": "historical printed p14 Создание карты / масштабы",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Гекс-сетка и масштаб 1, 6 или 60 миль по нужной детализации",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-002-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.physical_hex_scale",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-002-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Физический размер гекса нужен для географии, независимо от зума; ось измерения DMG пока не подтверждена.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Модуль рассчитан на 1/6/12/24 мили между сторонами. Селектор App предлагает 1 и 6. Камера 1×/2× не меняет карту. 60 миль модулем отклонены.",
+        "verified_parts": [
+          "Модуль рассчитан на 1/6/12/24 мили между сторонами. Селектор App предлагает 1 и 6. Камера 1×/2× не меняет карту. 60 миль модулем отклонены."
+        ],
+        "missing_or_unverified_parts": [
+          "Ось и масштабы конкретного источника не сверены. 12/24 подтверждены как входы модуля, доступность в меню не установлена и показаны только 1/6."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Исполнение на свежем дереве · Исполнение на свежем дереве",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": [
+        "HX-BL-058"
+      ]
+    },
+    {
+      "id": "DND5-2014-003-L1-v2-draft",
+      "legacy_id": "DND5-2014-003-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-003",
+        "locator": "historical printed p14 Масштаб области",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Преобладающая местность с небольшими участками другого типа",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Основная местность и локальные исключения непосредственно определяют карту.",
+      "product_boundary": "Редактирование биомов",
+      "related_disposition": null,
+      "action": "Задать основной биом и локальное исключение",
+      "map_object_or_state": {
+        "region": "forest",
+        "cell": "hill"
+      },
+      "expected_result": "Один гекс изменён на холмы; остальные гексы лесные.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-003",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать основной биом и локальное исключение",
+        "inputs_and_units": {
+          "region": "forest",
+          "cell": "hill"
+        },
+        "product_operation": "Задать основной биом и локальное исключение; Один гекс изменён на холмы; остальные гексы лесные.",
+        "expected_output": "Один гекс изменён на холмы; остальные гексы лесные.",
+        "constraints_and_exceptions": [
+          "Число7 — пример приёмки, не правило книги.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Лесной регион из7 гексов; изменить центральный",
+            "when": "Задать основной биом и локальное исключение",
+            "expected": "1 холм,6 лесных"
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.terrain_zones"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.terrain_zones"
+      ],
+      "binding_ids": [
+        "DND5-2014-003-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "implemented",
+      "evidence_ids": [
+        "baseline",
+        "relief_pass_road"
+      ],
+      "result": "Локальные открытые холмы в лесном регионе сохранились по отдельному адресу. Остальная карта совпала, работают повторный импорт и undo/redo.",
+      "remaining": "Границы размеров лесных и холмистых зон из полного текста открыты.",
+      "label": "Основной биом и исключение в гексе",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-003",
+        "locator": "historical printed p14 Масштаб области",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Преобладающая местность с небольшими участками другого типа",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-003-L1-v2-draft",
+        "status": "implemented",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.terrain_zones",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-003-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Основная местность и локальные исключения непосредственно определяют карту.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "full",
+        "mode": "manual_existing_tools",
+        "comment": "Локальные открытые холмы в лесном регионе сохранились по отдельному адресу. Остальная карта совпала, работают повторный импорт и undo/redo.",
+        "verified_parts": [
+          "Локальные открытые холмы в лесном регионе сохранились по отдельному адресу. Остальная карта совпала, работают повторный импорт и undo/redo."
+        ],
+        "missing_or_unverified_parts": [],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Исполнение на свежем дереве · Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+          "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-004-L1-v2-draft",
+      "legacy_id": "DND5-2014-004-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-004",
+        "locator": "historical printed p14 Масштаб области",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Поселения, фермы и различие населённой и дикой области",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Поселения и сельхозугодья — наполнение региональной карты; автоматическая экономика не следует из источника.",
+      "product_boundary": "Размещение поселений и угодий",
+      "related_disposition": null,
+      "action": "Подготовить населённую и дикую области",
+      "map_object_or_state": {
+        "settlements": 2,
+        "farmland": "near settlement",
+        "wilderness": 1
+      },
+      "expected_result": "Две POI поселения, связанные сельхозучастки; дикая область не заполнена той же плотностью автоматически.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-004",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Существующий Classic, базовая региональная карта. Сельхозобъекты учитываются как содержимое места.",
+        "layer": "L1",
+        "trigger_or_user_action": "Установить «Тип» при генерации, создать смежные области, выбрать гексы и разместить поселения и сельскохозяйственные точки, открыть карту из JSON.",
+        "inputs_and_units": {
+          "seed": 42,
+          "hex_scale_miles": 6,
+          "area_per_region_hexes": 17,
+          "initial_adjacent_anchors": [
+            "0,0",
+            "0,2"
+          ],
+          "distance_unit": "гекс по графу соседства"
+        },
+        "product_operation": "Генерация областей с двумя типами освоенности, ручное сохранение точек и перенос фермы.",
+        "expected_output": "Два разных типа областей, два поселения и две сельскохозяйственные POI в заданных гексах. Отдельная территориальная или объектная привязка угодий остаётся пробелом в сценарии.",
+        "constraints_and_exceptions": [
+          "Координаты, seed и число объектов заданы для воспроизводимой проверки и не являются требованиями DMG.",
+          "Одинаковое число POI в двух регионах установлено для этого seed и не задаёт статистику генерации.",
+          "Плотность, самостоятельный ареал угодий и хозяйственный расчёт не выводятся из возможности поставить ферму."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Пустая карта Classic, seed 42, малый регион, материковый режим, гексы-кандидаты 0,0 и 0,2.",
+            "when": "Первый регион сгенерировать как освоенный, второй как дикий.",
+            "expected": "Регионы 1 и 2 занимают по 17 гексов и сохраняют типы settled/wild. В обоих по четыре POI с учётом центральной. В первом есть поселения, во втором на этом seed поселений нет."
+          },
+          {
+            "given": "В первом регионе городок в −1,0 и деревня в 1,0, гексы −2,0 и 1,1 сухие и свободные.",
+            "when": "Заменить центральный городок городом, поставить ферму в −2,0, пастбище в 1,1, сохранить и загрузить JSON.",
+            "expected": "Два поселения и две отдельные точки угодий восстановлены с привязкой к координатам. Каждый объект угодий располагается на расстоянии 1 гекса от соответствующего поселения. Слои воды и биомов и дикий регион сохраняются."
+          },
+          {
+            "given": "Ферма в −2,0 и свободный гекс 2,−1 в том же регионе.",
+            "when": "Перенести ферму через редактор POI, загрузить JSON, отдельно выполнить отмену и повтор на исходной карте.",
+            "expected": "Новая позиция фермы в трёх гексах от города. Оба поселения остались на своих местах. Отмена и повтор восстанавливают обе позиции. Редактор не поддерживает в этом сценарии обязательную связь фермы с городом."
+          },
+          {
+            "given": "Дикая область с сухим свободным гексом −1,3.",
+            "when": "Поставить ферму вручную и затем отменить действие.",
+            "expected": "Появляется POI farm, тип области остаётся wild. Отмена восстанавливает ранее сохранённую карту."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_density"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.settlement_density"
+      ],
+      "binding_ids": [
+        "DND5-2014-004-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "settled_wild_farmland"
+      ],
+      "result": "Classic сохраняет освоенность, города/деревни, ферму и пастбище в отдельных гексах. Ферма перемещается независимо.",
+      "remaining": "В проверенном режиме нет самостоятельной связи угодий с поселением и отдельной настройки численной плотности. Игровые ориентиры требуют источника.",
+      "label": "Освоенность, поселения и угодья",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-004",
+        "locator": "historical printed p14 Масштаб области",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Поселения, фермы и различие населённой и дикой области",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-004-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.settlement_density",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-004-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Поселения и сельхозугодья — наполнение региональной карты; автоматическая экономика не следует из источника.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "both",
+        "comment": "Classic сохраняет освоенность, города/деревни, ферму и пастбище в отдельных гексах. Ферма перемещается независимо.",
+        "verified_parts": [
+          "Classic сохраняет освоенность, города/деревни, ферму и пастбище в отдельных гексах. Ферма перемещается независимо."
+        ],
+        "missing_or_unverified_parts": [
+          "В проверенном режиме нет самостоятельной связи угодий с поселением и отдельной настройки численной плотности. Игровые ориентиры требуют источника."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-005-L1-v2-draft",
+      "legacy_id": "DND5-2014-005-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-005",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Берега, острова, внутренние моря, озёра и полуострова",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Берега/острова/озёра имеют географический результат, проверяемый связностью суши/воды.",
+      "product_boundary": "География суши и воды",
+      "related_disposition": null,
+      "action": "Нарисовать типы суши и воды",
+      "map_object_or_state": {
+        "features": [
+          "coast",
+          "island",
+          "inland_sea",
+          "lake",
+          "peninsula"
+        ]
+      },
+      "expected_result": "Все5 форм различимы геометрией, а не только названием.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-005",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Выделить существующие гексы воды или суши, изменить тип воды либо перекрыть пролив, подтвердить выбор типа при запросе, сохранить и открыть карту заново.",
+        "inputs_and_units": {
+          "scale_miles": 6,
+          "coordinates": "axial q,r",
+          "hexes": 61,
+          "public_targets": [
+            "land",
+            "lake",
+            "sea"
+          ]
+        },
+        "product_operation": "Ручное редактирование суши и воды в Classic.",
+        "expected_output": "Гекс острова изолирован, гекс полуострова соединён с материком одним сухим проходом, берег примыкает к морю. Замкнутая вода сохраняется как озеро с одним ID.",
+        "constraints_and_exceptions": [
+          "Море проверяется по соседству водной компоненты с границей существующей карты. Замкнутому бассейну доступен только тип озера.",
+          "Существующие центр и опорный гекс региона оставлены сухими.",
+          "Все сценарии синтетические. Размеры и координаты из испытания не восстанавливают игровой источник."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "На базовой Classic-карте сухой диск из 61 гекса, край в −4,0.",
+            "when": "Перевести в море кольцо из шести соседей 0,0 и продолжить море от кольца до края через −2,0, −3,0 и −4,0. Сохранить и загрузить JSON.",
+            "expected": "0,0 отделён от материка. Море касается края, имеет сухих соседей −4,1 и −3,−1. Материк образует компоненту из 51 гекса."
+          },
+          {
+            "given": "Тот же сухой диск, будущий конец полуострова в 0,0.",
+            "when": "Построить то же кольцо и соединение с морем, оставив гекс 1,0 сухим. Сохранить и загрузить.",
+            "expected": "0,0 связан с материком через 1,0. Без 1,0 этот путь исчезает. Общая суша образует компоненту из 53 гексов."
+          },
+          {
+            "given": "Полностью окружённые сушей −1,0, 0,0 и 1,0.",
+            "when": "Выделить три гекса и выбрать «Озеро». Сохранить и загрузить.",
+            "expected": "Три гекса образуют один водоём с общим lakeId; море в документе отсутствует."
+          },
+          {
+            "given": "Тот же замкнутый набор из трёх гексов.",
+            "when": "Выбрать для него «Море», затем явно подтвердить доступный тип.",
+            "expected": "Доступно только «Озеро». До выбора карта не меняется. После подтверждения сохранены три гекса озера и ноль записей моря."
+          },
+          {
+            "given": "Этот бассейн связан через −2,0 с морем, которое выходит к краю в −4,0.",
+            "when": "Редактировать −2,0 как сушу и подтвердить нужный тип отсечённой воды. Сохранить, загрузить, на исходной карте проверить отмену и повтор.",
+            "expected": "−2,0 становится сушей. Внешняя вода остаётся морем с прежним seaId, бассейн получает один lakeId. Отмена открывает пролив, повтор возвращает закрытый пролив и озеро."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.land_water_shapes"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.land_water_shapes"
+      ],
+      "binding_ids": [
+        "DND5-2014-005-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "land_water_shapes"
+      ],
+      "result": "Ручное создание берега, острова, полуострова и озера проверено. После закрытия пролива отсечённый бассейн сохраняется как озеро при явном выборе.",
+      "remaining": "Тип «море» для полностью замкнутого бассейна в проверенной операции недоступен. Требование выделять такой тип из DMG не подтверждено.",
+      "label": "Берег, остров, полуостров и водоёмы",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-005",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Берега, острова, внутренние моря, озёра и полуострова",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-005-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.land_water_shapes",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-005-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Берега/острова/озёра имеют географический результат, проверяемый связностью суши/воды.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Ручное создание берега, острова, полуострова и озера проверено. После закрытия пролива отсечённый бассейн сохраняется как озеро при явном выборе.",
+        "verified_parts": [
+          "Ручное создание берега, острова, полуострова и озера проверено. После закрытия пролива отсечённый бассейн сохраняется как озеро при явном выборе."
+        ],
+        "missing_or_unverified_parts": [
+          "Тип «море» для полностью замкнутого бассейна в проверенной операции недоступен. Требование выделять такой тип из DMG не подтверждено."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-006-L1-v2-draft",
+      "legacy_id": "DND5-2014-006-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-006",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Горные хребты, предгорья и равнинные участки",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Хребет/предгорье/равнина — региональный рельеф; совет не превращается в запрет необычных сочетаний.",
+      "product_boundary": "Рельеф карты",
+      "related_disposition": null,
+      "action": "Подготовить переход рельефа",
+      "map_object_or_state": {
+        "sequence": [
+          "mountain",
+          "hill",
+          "plain"
+        ]
+      },
+      "expected_result": "Хребет, предгорье и равнина размещены в заданном порядке.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-006",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Ручное редактирование существующей карты Classic на базовой сетке.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать регион и изменить согласованную пару высоты и биома. Выбрать гекс горного региона и задать местный биом.",
+        "inputs_and_units": {
+          "scale_miles": 6,
+          "regions": [
+            [
+              1,
+              3,
+              "mountains"
+            ],
+            [
+              2,
+              2,
+              "open_hills"
+            ],
+            [
+              3,
+              1,
+              "open_plains"
+            ]
+          ],
+          "local_hex": "0,1",
+          "local_biome": "open_hills"
+        },
+        "product_operation": "Редактирование региональных высот и биомов с отдельным переопределением биома клетки.",
+        "expected_output": "Три смежные области сохраняют порядок 3 → 2 → 1, одна клетка имеет независимый биом.",
+        "constraints_and_exceptions": [
+          "Координаты и высоты представляют синтетическую картографическую проверку.",
+          "Правила перемещения и автоматический выбор трассы не следуют из подтверждения ручной правки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Три полосы по 4 гекса в координатах q=0, 1, 2. Все изначально открытые холмы, уровень 2.",
+            "when": "Изменить регион q=0 на горы уровня 3 и q=2 на равнину уровня 1. Гексу 0,1 назначить местный биом открытых холмов.",
+            "expected": "Сохранены три региональных пары 3/mountains, 2/open_hills, 1/open_plains и отдельный локальный open_hills в 0,1. Геометрия регионов и высота 3 под локальной правкой сохраняются после импорта."
+          },
+          {
+            "given": "Холмы отделяют горы от равнины в тестовой конфигурации.",
+            "when": "Попытаться присвоить средним холмам пару 1/open_plains.",
+            "expected": "Редактор возвращает отказ о несовместимости соседей. Карта сохраняет три исходные пары."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.relief_transitions"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.relief_transitions"
+      ],
+      "binding_ids": [
+        "DND5-2014-006-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "implemented",
+      "evidence_ids": [
+        "relief_pass_road"
+      ],
+      "result": "Смежные области с высотами 3→2→1 и соответствующими биомами можно вручную создать, сохранить и открыть. Отдельный биом гекса остаётся независимым.",
+      "remaining": "Подтверждён ограниченный ручной сценарий. Условия рекомендованного соседства в первичном тексте открыты.",
+      "label": "Горы, предгорья и равнина",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-006",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Горные хребты, предгорья и равнинные участки",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-006-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.relief_transitions",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-006-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Хребет/предгорье/равнина — региональный рельеф; совет не превращается в запрет необычных сочетаний.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "full",
+        "mode": "manual_existing_tools",
+        "comment": "Смежные области с высотами 3→2→1 и соответствующими биомами можно вручную создать, сохранить и открыть. Отдельный биом гекса остаётся независимым.",
+        "verified_parts": [
+          "Смежные области с высотами 3→2→1 и соответствующими биомами можно вручную создать, сохранить и открыть. Отдельный биом гекса остаётся независимым."
+        ],
+        "missing_or_unverified_parts": [],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-007-L1-v2-draft",
+      "legacy_id": "DND5-2014-007-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-007",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Истоки рек, притоки и сток в крупный водоём",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Исток, приток и устье задают связность речной сети.",
+      "product_boundary": "Реки",
+      "related_disposition": null,
+      "action": "Создать связную реку и приток",
+      "map_object_or_state": {
+        "source": "S",
+        "tributary": "T",
+        "mouth": "lake L"
+      },
+      "expected_result": "Основная река и приток связаны; устье принадлежит L; направления согласованы.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-007",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Проверяемый сценарий ручного картографирования Classic. Историческая выписка об истоках, притоках и стоке в крупный водоём служит ориентиром для операции.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать береговую вершину конкретного озера как конец основного русла, затем довести отдельное русло от сухопутного истока до нужной вершины слияния.",
+        "inputs_and_units": {
+          "hex_scale_miles": 6,
+          "hex_count": 61,
+          "lake_cells": [
+            "2,0",
+            "2,1"
+          ],
+          "other_lake_cell": "-2,1",
+          "vertex_key_units": "координаты вершин редактора, не мили",
+          "fullness_units": "целочисленный показатель редактора 1–5"
+        },
+        "product_operation": "Создание двух последовательных направленных русел в ручном редакторе и повторный импорт карты.",
+        "expected_output": "Два истока, вершина с двумя входами и одним выходом, семь физических рёбер без дублей, общее устье в указанном озере, сохранение данных.",
+        "constraints_and_exceptions": [
+          "Направление задаётся порядком выбора соседних вершин. Озеро выбирается конечной береговой вершиной.",
+          "Сухая внутренняя вершина без допустимого стока не принимается как устье.",
+          "Числа полноводности, координаты, число гексов и два действия редактора описывают проверку HexCrawl."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Карта Classic из 61 гекса с двумя озёрами. Целевое озеро состоит из гексов 2,0 и 2,1, другое — из −2,1.",
+            "when": "В редакторе воды нанести оба озера. В ручном редакторе реки провести от вершины 0,−56 путь через 24.249,−14 до 72.746,14. Вторым руслом соединить 48.497,−56 и 24.249,−14.",
+            "expected": "В слияние входят два ребра и из него выходит одно. Оба направленных пути заканчиваются в одной вершине озера ID 20, смежной с гексом 2,0. ID 21 в устье отсутствует. Импорт восстанавливает те же пути и идентификаторы."
+          },
+          {
+            "given": "На исходной карте выбран сухопутный исток и путь до соседней с устьем вершины 48.497,28, расположенной на замкнутой суше.",
+            "when": "Закончить русло на этой сухой вершине.",
+            "expected": "Редактор отказывает без изменения карты, счётчиков и генерации."
+          },
+          {
+            "given": "Два входа полноводностью 1 соединены общим руслом полноводностью 1. Озеро у устья занимает 2 гекса.",
+            "when": "Изменить полноводность последнего ребра общего русла на 2, сохранить и загрузить. Затем попытаться изменить её на 3.",
+            "expected": "Три ребра от слияния до озера получили значение 2. Четыре ребра выше слияния сохранили 1; значение 3 отклоняется. После повторного импорта значения и весь документ сохранены."
+          },
+          {
+            "given": "Основное русло и приток сохранены на одной карте.",
+            "when": "Выполнить отмену и повтор операции добавления притока.",
+            "expected": "Отмена возвращает карту с одним основным руслом. Повтор возвращает обе ветви, слияние и целевое озеро."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.river_network"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.river_network"
+      ],
+      "binding_ids": [
+        "DND5-2014-007-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "implemented",
+      "evidence_ids": [
+        "river_lake_confluence"
+      ],
+      "result": "Ведущий рисует основное русло до выбранного озера и добавляет приток в узле. Два направленных входа, один выход и ID озера сохранены.",
+      "remaining": "Подтверждены две последовательные операции на 6-мильной карте Classic. Автогенерация всей сети и другие профили здесь не проверены.",
+      "label": "Исток, приток и устье",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-007",
+        "locator": "historical printed p14 Масштаб королевства",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Истоки рек, притоки и сток в крупный водоём",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-007-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.river_network",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-007-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Исток, приток и устье задают связность речной сети.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "full",
+        "mode": "manual_existing_tools",
+        "comment": "Ведущий рисует основное русло до выбранного озера и добавляет приток в узле. Два направленных входа, один выход и ID озера сохранены.",
+        "verified_parts": [
+          "Ведущий рисует основное русло до выбранного озера и добавляет приток в узле. Два направленных входа, один выход и ID озера сохранены."
+        ],
+        "missing_or_unverified_parts": [],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-008-L1-v2-draft",
+      "legacy_id": "DND5-2014-008-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-008",
+        "locator": "historical printed p14 Масштаб королевства / континента",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Отбор объектов по масштабу: крупные города, реки и политические границы",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Изменение детализации должно сохранять данные скрываемых объектов.",
+      "product_boundary": "Отображение карты по масштабу",
+      "related_disposition": null,
+      "action": "Изменить уровень отображения",
+      "map_object_or_state": {
+        "city": "C",
+        "village": "V",
+        "boundary": "P"
+      },
+      "expected_result": "Крупный обзор сохраняет C/P и скрывает мелкие детали без удаления.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-008",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Изменить уровень отображения",
+        "inputs_and_units": {
+          "city": "C",
+          "village": "V",
+          "boundary": "P"
+        },
+        "product_operation": "Изменить уровень отображения; Крупный обзор сохраняет C/P и скрывает мелкие детали без удаления.",
+        "expected_output": "Крупный обзор сохраняет C/P и скрывает мелкие детали без удаления.",
+        "constraints_and_exceptions": [
+          "Порог масштаба — решение продукта, источник надо восстановить.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Город C и деревня V в соседних гексах. P задана валидной границей королевства контрольной карты.",
+            "when": "Установить экранный зум 1 → 0,2 → 6 → 1.",
+            "expected": "Показать исходные данные о наблюдаемом поведении зума отдельно от сценария выборочной детализации."
+          },
+          {
+            "given": "Обзор C/P с временно скрытой V и полный вид с C/V/P.",
+            "when": "Искать отдельное действие выбора состава карты в элементах управления и пути отрисовки.",
+            "expected": "На обзоре C и P видны, V скрыта. После возврата V видна и её запись прежняя."
+          },
+          {
+            "given": "Карта на зуме ≈0,2, деревня V имеет тип, имя и заметку.",
+            "when": "Сохранить штатным сериализатором и загрузить JSON в новый экземпляр редактора.",
+            "expected": "Карта, включая деревню и P, сохраняет данные. Зум восстанавливается с допуском 1e-12."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.display_detail"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.display_detail"
+      ],
+      "binding_ids": [
+        "DND5-2014-008-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "not_implemented",
+      "evidence_ids": [
+        "overview_current"
+      ],
+      "result": "На зуме 1×→0,2×→6× город, деревня и граница остаются в статическом SVG. Данные сохранены. В проверенной панели отсутствует режим «город и граница, деревня скрыта».",
+      "remaining": "Граница контрольного примера взята из режима Mythic; авторинг границы D&D и выдача игрокам остаются вне проверки. Порог масштаба из источника не установлен.",
+      "label": "Избирательный обзор карты",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-008",
+        "locator": "historical printed p14 Масштаб королевства / континента",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Отбор объектов по масштабу: крупные города, реки и политические границы",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-008-L1-v2-draft",
+        "status": "unverified",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.display_detail",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-008-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Изменение детализации должно сохранять данные скрываемых объектов.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "absent",
+        "mode": "manual_existing_tools",
+        "comment": "На зуме 1×→0,2×→6× город, деревня и граница остаются в статическом SVG. Данные сохранены. В проверенной панели отсутствует режим «город и граница, деревня скрыта».",
+        "verified_parts": [
+          "На зуме 1×→0,2×→6× город, деревня и граница остаются в статическом SVG. Данные сохранены. В проверенной панели отсутствует режим «город и граница, деревня скрыта»."
+        ],
+        "missing_or_unverified_parts": [
+          "Граница контрольного примера взята из режима Mythic; авторинг границы D&D и выдача игрокам остаются вне проверки. Порог масштаба из источника не установлен."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Исполнение на свежем дереве",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-009-L1-v2-draft",
+      "legacy_id": "DND5-2014-009-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-009",
+        "locator": "historical printed p14 Комбинирование масштабов",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Согласование карт 60/6/1 миля с сохранением опорных городов",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Опорное место сохраняет мировую позицию при детализации карты; профиль60миль не считается утверждённым.",
+      "product_boundary": "Вложенные масштабы и координаты",
+      "related_disposition": null,
+      "action": "Уточнить крупную карту",
+      "map_object_or_state": {
+        "scales_miles": [
+          60,
+          6,
+          1
+        ],
+        "anchor_city": "C"
+      },
+      "expected_result": "C остаётся в том же мировом месте при детализации; новая мелкая география не сдвигает C.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-009",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Уточнить крупную карту",
+        "inputs_and_units": {
+          "scales_miles": [
+            60,
+            6,
+            1
+          ],
+          "anchor_city": "C"
+        },
+        "product_operation": "Уточнить крупную карту; C остаётся в том же мировом месте при детализации; новая мелкая география не сдвигает C.",
+        "expected_output": "C остаётся в том же мировом месте при детализации; новая мелкая география не сдвигает C.",
+        "constraints_and_exceptions": [
+          "Это не означает одобрение добавления60; такой профиль пока непроверен.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Создать C, перейти60→6→1→6",
+            "when": "Уточнить крупную карту",
+            "expected": "Мировая позиция и имя C неизменны"
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.nested_scales"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.nested_scales"
+      ],
+      "binding_ids": [
+        "DND5-2014-009-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "nested_current",
+        "baseline"
+      ],
+      "result": "Переход 6→1, JSON версии 15, точная история и сохранение связанных охватов POI подтверждены в относящихся к ним проверках.",
+      "remaining": "Полная цепочка 60→6→1 с одной мировой координатой POI отсутствует в проверенном пути: модуль отклоняет шаг 60. Значение по игровому источнику историческое.",
+      "label": "Связанные физические масштабы",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-009",
+        "locator": "historical printed p14 Комбинирование масштабов",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Согласование карт 60/6/1 миля с сохранением опорных городов",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-009-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.nested_scales",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-009-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Опорное место сохраняет мировую позицию при детализации карты; профиль60миль не считается утверждённым.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Переход 6→1, JSON версии 15, точная история и сохранение связанных охватов POI подтверждены в относящихся к ним проверках.",
+        "verified_parts": [
+          "Переход 6→1, JSON версии 15, точная история и сохранение связанных охватов POI подтверждены в относящихся к ним проверках."
+        ],
+        "missing_or_unverified_parts": [
+          "Полная цепочка 60→6→1 с одной мировой координатой POI отсутствует в проверенном пути: модуль отклоняет шаг 60. Значение по игровому источнику историческое."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Исполнение на свежем дереве · Исполнение на свежем дереве",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification",
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-011-L1-v2-draft",
+      "legacy_id": "DND5-2014-011-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-011",
+        "locator": "historical printed p108 Составление карты дикой местности",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Рельеф направляет пути: долины, хребты, проходы и перевалы",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Путь проходит через географический перевал/проход и учитывает барьеры.",
+      "product_boundary": "Дороги, тропы и региональные барьеры",
+      "related_disposition": null,
+      "action": "Провести путь через проходимое место",
+      "map_object_or_state": {
+        "barrier": "ridge",
+        "pass": "P",
+        "road": "R"
+      },
+      "expected_result": "Дорога R пересекает хребет через P, а не случайную непроходимую грань.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-011",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Ручное редактирование существующей карты Classic на базовой сетке.",
+        "layer": "L1",
+        "trigger_or_user_action": "Выставить препятствия на границе хребта, вручную выбрать последовательность соседних гексов для дороги и подтвердить её.",
+        "inputs_and_units": {
+          "scale_miles": 6,
+          "start": "0,0",
+          "exit": "2,1",
+          "open_edge": "0,1|1,0",
+          "edge_count": 7,
+          "blocked_edges": 6
+        },
+        "product_operation": "Ручная трассировка дороги между двумя POI через оставленное открытым ребро и сохранение карты.",
+        "expected_output": "Дорога пересекает заданную границу в указанном месте, а попытка шага через препятствие отклоняется.",
+        "constraints_and_exceptions": [
+          "Координаты и высоты представляют синтетическую картографическую проверку.",
+          "Правила перемещения и автоматический выбор трассы не следуют из подтверждения ручной правки."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Два поселения в 0,0 и 2,1. На границе гор с холмами семь рёбер. В шести поставлены препятствия, остаётся проход 0,1–1,0.",
+            "when": "Попытаться пройти с 0,−1 на 1,−1, затем вручную провести дорогу 0,0 → 0,1 → 1,0 → 1,1 → 2,1.",
+            "expected": "Закрытый шаг отклонён без записи. Допустимая дорога имеет четыре сегмента, в том числе открытое ребро 0,1–1,0. После импорта версии с шестью препятствиями сохраняются дорога, барьеры и остальные данные карты."
+          },
+          {
+            "given": "Та же география, но на границе поставлено только одно препятствие 0,0–1,0.",
+            "when": "Сравнить два независимых построения: дорогу через 0,1 и дорогу через 0,−1 → 1,−1.",
+            "expected": "Обе ручные трассы принимаются по незакрытым рёбрам. Локальный биом 0,1 сам по себе не принуждает редактор выбирать этот гекс. Отмена и повтор в сценарии через 0,1 возвращают исходную геометрию дороги."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.routes_and_barriers"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.routes_and_barriers"
+      ],
+      "binding_ids": [
+        "DND5-2014-011-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "relief_pass_road"
+      ],
+      "result": "Дорога через одно открытое ребро хребта сохранена. Шаг через явный барьер отклонён. При свободном обходе редактор принимает обе ручные трассы.",
+      "remaining": "Автоматическое определение перевала не проверено. Требование автоматизации не выведено из исторического совета.",
+      "label": "Путь через проход и барьеры",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-011",
+        "locator": "historical printed p108 Составление карты дикой местности",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Рельеф направляет пути: долины, хребты, проходы и перевалы",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-011-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.routes_and_barriers",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-011-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Путь проходит через географический перевал/проход и учитывает барьеры.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Дорога через одно открытое ребро хребта сохранена. Шаг через явный барьер отклонён. При свободном обходе редактор принимает обе ручные трассы.",
+        "verified_parts": [
+          "Дорога через одно открытое ребро хребта сохранена. Шаг через явный барьер отклонён. При свободном обходе редактор принимает обе ручные трассы."
+        ],
+        "missing_or_unverified_parts": [
+          "Автоматическое определение перевала не проверено. Требование автоматизации не выведено из исторического совета."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-013-L1-v2-draft",
+      "legacy_id": "DND5-2014-013-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-013",
+        "locator": "historical printed p108 Перемещение по карте",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В новом гексе видны признаки примечательного места, если оно не скрыто",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Признак места и его скрытая часть нужны принятой классификации обнаружения; автоматическое раскрытие после входа — L2.",
+      "product_boundary": "Наполнение и обнаружимость POI",
+      "related_disposition": {
+        "disposition": "defer_L2",
+        "reason": "Раскрытие по событию и выдача игрокам относятся к ведению гекскроула."
+      },
+      "action": "Разделить сведения мастера и признаки обнаружения",
+      "map_object_or_state": {
+        "site": "ruin",
+        "visible_sign": "tower",
+        "hidden": true
+      },
+      "expected_result": "Признак башни и скрытые сведения о руинах раздельны.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-013",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий создаёт или редактирует именованные руины, задаёт наблюдаемый признак и сохраняет отдельно описание ведущего.",
+        "inputs_and_units": {
+          "poi_kind": "ruins",
+          "author_name": "Old Gate",
+          "place_sign": "Broken arch",
+          "gm_description": "Refuge under the courtyard",
+          "coordinates": "axial q/r"
+        },
+        "product_operation": "Добавить и независимо изменить данные конкретных руин. Сохранить, переоткрыть и проверить, к какому объекту относится каждый текст.",
+        "expected_output": "Независимо редактируемые данные места с проверяемой связью с POI. Картографический признак привязан к руинам; скрытое описание остаётся связанным с тем же местом при переносе.",
+        "constraints_and_exceptions": [
+          "Подготовка признаков L1; определение открытия при движении L2. Не объявлять весь VTT пробелом карты.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В обычной карте Classic выбран сухой гекс (2,0), Knave-слой ещё не инициализирован.",
+            "when": "Создать руины, назвать Old Gate и сохранить заметку ведущего.",
+            "expected": "Рабочий редактор руин сохраняет тип, имя и заметку на гексе. В том же режиме проверяется наличие отдельного действия редактирования признака POI."
+          },
+          {
+            "given": "Те же руины на том же гексе, слой Knave один раз включён, задан режим interaction.",
+            "when": "Сохранить Broken arch как улику, заменить на Tower visible from road, отдельно изменить заметку и переоткрыть JSON.",
+            "expected": "Улика меняется независимо от заметки. Запись POI и география сохраняются."
+          },
+          {
+            "given": "Именованные руины с уликой и заметкой в исходном (2,0). Свободный сухой гекс (1,0).",
+            "when": "Перенести POI и проверить JSON, отмену и повтор.",
+            "expected": "Если оба текста являются данными одного места, они связаны с перемещённой POI. Отдельная проверка улики и заметки различает их владельцев."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.discovery_levels"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.discovery_levels"
+      ],
+      "binding_ids": [
+        "DND5-2014-013-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "place_sign",
+        "classic_poi_discovery"
+      ],
+      "result": "В подготовленном слое Knave улика хранится за POI и следует за ней. В чистом Classic тест отдельного поля не прошёл; запись ведущего принадлежит гексу.",
+      "remaining": "Согласованное автоприсвоение для Classic относится к HX-BL-062 и на проверенной версии не действовало. Выдача и раскрытие при движении отложены в L2.",
+      "label": "Подготовка признака и скрытых сведений",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-013",
+        "locator": "historical printed p108 Перемещение по карте",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В новом гексе видны признаки примечательного места, если оно не скрыто",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-013-L1-v2-draft",
+        "status": "unverified",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.discovery_levels",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-013-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Признак места и его скрытая часть нужны принятой классификации обнаружения; автоматическое раскрытие после входа — L2.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "В подготовленном слое Knave улика хранится за POI и следует за ней. В чистом Classic тест отдельного поля не прошёл; запись ведущего принадлежит гексу.",
+        "verified_parts": [
+          "В подготовленном слое Knave улика хранится за POI и следует за ней. В чистом Classic тест отдельного поля не прошёл; запись ведущего принадлежит гексу."
+        ],
+        "missing_or_unverified_parts": [
+          "Согласованное автоприсвоение для Classic относится к HX-BL-062 и на проверенной версии не действовало. Выдача и раскрытие при движении отложены в L2."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача. · Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+          "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": [
+        "HX-BL-062"
+      ]
+    },
+    {
+      "id": "DND5-2014-014-L1-v2-draft",
+      "legacy_id": "DND5-2014-014-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-014",
+        "locator": "historical printed p108 Особенности дикой местности",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В районе около 50 миль достаточно примерно дюжины достойных исследования мест",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Места исследования непосредственно наполняют выбранную область. Численный ориентир остаётся неподтверждённым историческим пересказом, не обязательной квотой генератора.",
+      "product_boundary": "Региональное наполнение",
+      "related_disposition": null,
+      "action": "Задать набор мест в области",
+      "map_object_or_state": {
+        "region_extent_approx_miles": 50,
+        "sites_approx": 12
+      },
+      "expected_result": "При явном выборе ориентира мастером подготовлены12 мест; это не жёсткий минимум для любой карты.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-014",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Задать набор мест в области",
+        "inputs_and_units": {
+          "region_extent_approx_miles": 50,
+          "sites_approx": 12
+        },
+        "product_operation": "Задать набор мест в области; При явном выборе ориентира мастером подготовлены12 мест; это не жёсткий минимум для любой карты.",
+        "expected_output": "При явном выборе ориентира мастером подготовлены12 мест; это не жёсткий минимум для любой карты.",
+        "constraints_and_exceptions": [
+          "Неизвестно, как50миль определены геометрически; восстановить первоисточник, не вычислять площадь по догадке.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Выбрать ориентир12 и создать12 отдельных мест",
+            "when": "Задать набор мест в области",
+            "expected": "12 POI внутри выбранной области, без удвоения по типам"
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.site_density"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.site_density"
+      ],
+      "binding_ids": [
+        "DND5-2014-014-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "baseline",
+        "mapped_sites_lairs"
+      ],
+      "result": "Ручное размещение 12 мест подтверждено вновь. Отдельная карта из 61 гекса содержит четыре именованных объекта и измеренный осевой отрезок 48 миль между центрами.",
+      "remaining": "Историческое «около 50 миль» не имеет подтверждённой геометрической трактовки. Автоматическая квота на этом основании не задаётся.",
+      "label": "Набор мест в выбранной области",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-014",
+        "locator": "historical printed p108 Особенности дикой местности",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: В районе около 50 миль достаточно примерно дюжины достойных исследования мест",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-014-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.site_density",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-014-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Места исследования непосредственно наполняют выбранную область. Численный ориентир остаётся неподтверждённым историческим пересказом, не обязательной квотой генератора.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Ручное размещение 12 мест подтверждено вновь. Отдельная карта из 61 гекса содержит четыре именованных объекта и измеренный осевой отрезок 48 миль между центрами.",
+        "verified_parts": [
+          "Ручное размещение 12 мест подтверждено вновь. Отдельная карта из 61 гекса содержит четыре именованных объекта и измеренный осевой отрезок 48 миль между центрами."
+        ],
+        "missing_or_unverified_parts": [
+          "Историческое «около 50 миль» не имеет подтверждённой геометрической трактовки. Автоматическая квота на этом основании не задаётся."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Исполнение на свежем дереве · Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-015-L1-v2-draft",
+      "legacy_id": "DND5-2014-015-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-015",
+        "locator": "historical printed p108 Логова чудовищ",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Ориентир: около шести логовищ и не более одного верховного хищника",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Логово — конкретное место на карте; численность/роль обитателей допустимы как простое содержимое, без боевого статблока и модели пищевой цепи.",
+      "product_boundary": "Размещение логовищ",
+      "related_disposition": null,
+      "action": "Разместить заданные мастером логовища",
+      "map_object_or_state": {
+        "lairs": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "F"
+        ],
+        "region": "R"
+      },
+      "expected_result": "В R шесть заданных логовищ, каждое сохраняет место и простое описание; боевых статблоков и расчёта экологии нет.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-015",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Разместить заданные мастером логовища",
+        "inputs_and_units": {
+          "lairs": [
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F"
+          ],
+          "region": "R"
+        },
+        "product_operation": "Разместить заданные мастером логовища",
+        "expected_output": "В R шесть заданных логовищ, каждое сохраняет место и простое описание; боевых статблоков и расчёта экологии нет.",
+        "constraints_and_exceptions": [
+          "Пример/ориентир, не автоматический запрет двух существ без уточнения книги.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением.",
+          "Шесть — приёмочный пример из исторического пересказа; нормативность и лимит верховного хищника ожидают первичного текста. Не создавать движок баланса/пищевой цепи."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В R нет логовищ; мастер задаёт A–F.",
+            "when": "Разместить A–F и сохранить/загрузить карту.",
+            "expected": "В R шесть заданных логовищ, каждое сохраняет место и простое описание; боевых статблоков и расчёта экологии нет."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.fixed_lair"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.fixed_lair"
+      ],
+      "binding_ids": [
+        "DND5-2014-015-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "baseline",
+        "mapped_sites_lairs"
+      ],
+      "result": "Шесть логовищ помещаются на карте. При переносе одного именованного логовища вид и имя следуют за точкой. Сведения об обитателях остаются в исходном гексе.",
+      "remaining": "Структурированные сведения об обитателе и связанная локальная схема в проверенном Classic не подтверждены. Исторические числа и нормативность ожидают текста.",
+      "label": "Логовища и содержимое места",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-015",
+        "locator": "historical printed p108 Логова чудовищ",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Ориентир: около шести логовищ и не более одного верховного хищника",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-015-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.fixed_lair",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-015-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Логово — конкретное место на карте; численность/роль обитателей допустимы как простое содержимое, без боевого статблока и модели пищевой цепи.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Шесть логовищ помещаются на карте. При переносе одного именованного логовища вид и имя следуют за точкой. Сведения об обитателях остаются в исходном гексе.",
+        "verified_parts": [
+          "Шесть логовищ помещаются на карте. При переносе одного именованного логовища вид и имя следуют за точкой. Сведения об обитателях остаются в исходном гексе."
+        ],
+        "missing_or_unverified_parts": [
+          "Структурированные сведения об обитателе и связанная локальная схема в проверенном Classic не подтверждены. Исторические числа и нормативность ожидают текста."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Исполнение на свежем дереве · Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-016-L1-v2-draft",
+      "legacy_id": "DND5-2014-016-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-016",
+        "locator": "historical printed p108 Поселения",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Размещение поселений опирается на воду, пищу, угодья и стройматериалы",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Поселение располагается относительно конкретной воды/угодий/лесов; не требуется новая абстрактная экономика ресурсов.",
+      "product_boundary": "Пространственная привязка поселений",
+      "related_disposition": null,
+      "action": "Связать поселение с ресурсами",
+      "map_object_or_state": {
+        "settlement": "V",
+        "water": "river R",
+        "food": "fields F",
+        "building_material": "wood W"
+      },
+      "expected_result": "V имеет явные связи с R/F/W; присутствие названия реки не считается географической связью.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-016",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Выбрать гекс поселения относительно уже размещённых воды, угодий и леса. Сохранить и открыть карту.",
+        "inputs_and_units": {
+          "settlement": "V",
+          "water": "R",
+          "fields": "F",
+          "woodland": "W",
+          "addresses": "axial q/r"
+        },
+        "product_operation": "Ручное размещение в географическом отношении к существующим объектам.",
+        "expected_output": "Адрес и тип поселения сохраняются. Географическое отношение проверяется по координатам карты.",
+        "constraints_and_exceptions": [
+          "Конкретные радиусы не найдены в исторической строке; не изобретать.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "На карте известны гексы R, F, W и свободный сухой гекс V рядом с выбранными ресурсами.",
+            "when": "Поставить поселение V, сохранить и открыть JSON.",
+            "expected": "Сохраняются адреса и типы объектов. По координатам можно отдельно подтвердить соседство с требуемыми объектами."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#map.settlement_resources"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "map.settlement_resources"
+      ],
+      "binding_ids": [
+        "DND5-2014-016-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "unverified",
+      "evidence_ids": [
+        "resource_static",
+        "settled_wild_farmland"
+      ],
+      "result": "Для пары поселение–угодья проверено географическое соседство и независимость точек. В просмотренной штатной модели нет отдельной операции записи трёх типизированных отношений V→река/угодья/лес.",
+      "remaining": "Совместный сценарий размещения трёх ресурсов на свежей версии отдельно не испытан. Требовать поля отношений можно только при подтверждённой необходимости. Экономика вне объёма.",
+      "label": "Расположение поселения рядом с ресурсами",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-016",
+        "locator": "historical printed p108 Поселения",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Размещение поселений опирается на воду, пищу, угодья и стройматериалы",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-016-L1-v2-draft",
+        "status": "not_implemented",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "map.settlement_resources",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-016-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Поселение располагается относительно конкретной воды/угодий/лесов; не требуется новая абстрактная экономика ресурсов.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "unverified",
+        "mode": "unknown",
+        "comment": "Для пары поселение–угодья проверено географическое соседство и независимость точек. В просмотренной штатной модели нет отдельной операции записи трёх типизированных отношений V→река/угодья/лес.",
+        "verified_parts": [
+          "Для пары поселение–угодья проверено географическое соседство и независимость точек. В просмотренной штатной модели нет отдельной операции записи трёх типизированных отношений V→река/угодья/лес."
+        ],
+        "missing_or_unverified_parts": [
+          "Совместный сценарий размещения трёх ресурсов на свежей версии отдельно не испытан. Требовать поля отношений можно только при подтверждённой необходимости. Экономика вне объёма."
+        ],
+        "release_sha": null,
+        "method": "Точечный статический просмотр существующей модели Region, HexcrawlSaveData, операции редактора POI и модели связей в src/App.tsx:224–249,492–525,14814–14823; src/manualPois.ts:7–12. Карта из settled_wild_farmland содержит независимые POI и не заявляет сохранённую ссылку на ресурсы. · Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification",
+          "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [
+        "Типизированные сохранённые связи поселения с водой, угодьями и лесом. Нет прямой подтверждённой зависимости принятой функции. Исключено из текущего объёма до необходимости."
+      ],
+      "backlog_refs": [],
+      "pending_scope_decision": {
+        "disposition": "needs_owner_decision",
+        "scope": "Типизированные сохранённые связи поселения с водой, угодьями и лесом",
+        "reason": "Нет прямой подтверждённой зависимости принятой функции. Исключено из текущего объёма до необходимости."
+      }
+    },
+    {
+      "id": "DND5-2014-017-L1-v2-draft",
+      "legacy_id": "DND5-2014-017-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-017",
+        "locator": "historical printed p109 Руины / странные места",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Руины и необычные места делают местность содержательной",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Руина/монумент — конкретное место с наблюдаемым признаком, не генератор сюжета.",
+      "product_boundary": "Наполнение POI",
+      "related_disposition": null,
+      "action": "Разместить описанное примечательное место",
+      "map_object_or_state": {
+        "type": "ruins",
+        "name": "Old Gate",
+        "sign": "broken arches"
+      },
+      "expected_result": "Одна POI руины с именем и наблюдаемым признаком.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-017",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий создаёт или редактирует именованные руины, задаёт наблюдаемый признак и сохраняет отдельно описание ведущего.",
+        "inputs_and_units": {
+          "poi_kind": "ruins",
+          "author_name": "Old Gate",
+          "place_sign": "Broken arch",
+          "gm_description": "Refuge under the courtyard",
+          "coordinates": "axial q/r"
+        },
+        "product_operation": "Добавить и независимо изменить данные конкретных руин. Сохранить, переоткрыть и проверить, к какому объекту относится каждый текст.",
+        "expected_output": "Независимо редактируемые данные места с проверяемой связью с POI. Картографический признак привязан к руинам; скрытое описание остаётся связанным с тем же местом при переносе.",
+        "constraints_and_exceptions": [
+          "Атмосферное описание не становится отдельным обязательным генератором.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "В обычной карте Classic выбран сухой гекс (2,0), Knave-слой ещё не инициализирован.",
+            "when": "Создать руины, назвать Old Gate и сохранить заметку ведущего.",
+            "expected": "Рабочий редактор руин сохраняет тип, имя и заметку на гексе. В том же режиме проверяется наличие отдельного действия редактирования признака POI."
+          },
+          {
+            "given": "Те же руины на том же гексе, слой Knave один раз включён, задан режим interaction.",
+            "when": "Сохранить Broken arch как улику, заменить на Tower visible from road, отдельно изменить заметку и переоткрыть JSON.",
+            "expected": "Улика меняется независимо от заметки. Запись POI и география сохраняются."
+          },
+          {
+            "given": "Именованные руины с уликой и заметкой в исходном (2,0). Свободный сухой гекс (1,0).",
+            "when": "Перенести POI и проверить JSON, отмену и повтор.",
+            "expected": "Если оба текста являются данными одного места, они связаны с перемещённой POI. Отдельная проверка улики и заметки различает их владельцев."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.place_description"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.place_description"
+      ],
+      "binding_ids": [
+        "DND5-2014-017-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "place_sign",
+        "mapped_sites_lairs"
+      ],
+      "result": "Руины с типом, именем и адресом сохраняются. Признак как переносимая улика подтверждён только через подготовленный слой Knave. Заметка остаётся у гекса.",
+      "remaining": "Общее отдельное поле наблюдаемого признака в чистом Classic не подтверждено. Сюжетные генераторы вне картографического сценария.",
+      "label": "Описание примечательного места",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-017",
+        "locator": "historical printed p109 Руины / странные места",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Руины и необычные места делают местность содержательной",
+        "normative_kind": "recommendation",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-017-L1-v2-draft",
+        "status": "partial",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-017-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Руина/монумент — конкретное место с наблюдаемым признаком, не генератор сюжета.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Руины с типом, именем и адресом сохраняются. Признак как переносимая улика подтверждён только через подготовленный слой Knave. Заметка остаётся у гекса.",
+        "verified_parts": [
+          "Руины с типом, именем и адресом сохраняются. Признак как переносимая улика подтверждён только через подготовленный слой Knave. Заметка остаётся у гекса."
+        ],
+        "missing_or_unverified_parts": [
+          "Общее отдельное поле наблюдаемого признака в чистом Classic не подтверждено. Сюжетные генераторы вне картографического сценария."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача. · Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+          "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "DND5-2014-020-L1-v2-draft",
+      "legacy_id": "DND5-2014-020-L1",
+      "source": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-020",
+        "locator": "historical printed p110 Опасности в дикой местности",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Лоза, зыбучий песок, осквернённая земля, скользкий/тонкий лёд, холодная вода",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Сохраняется только размещение опасного участка/места и его обнаружимость. Параметры локальных ловушек, урон и спасброски исключены.",
+      "product_boundary": "Принятая проходимость/опасность и места на карте",
+      "related_disposition": null,
+      "action": "Отметить опасный участок местности",
+      "map_object_or_state": {
+        "area": "H",
+        "surface": "thin_ice",
+        "hazardous": true
+      },
+      "expected_result": "H отмечен как опасный участок тонкого льда и сохранён на прежнем месте; биом соседей не меняется.",
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-020",
+        "normative_kind": "research_interpretation_pending_source_revalidation",
+        "applicability": "Existing bounded L1 inventory only; not full DMG2014 coverage",
+        "layer": "L1",
+        "trigger_or_user_action": "Отметить опасный участок местности",
+        "inputs_and_units": {
+          "area": "H",
+          "surface": "thin_ice",
+          "hazardous": true
+        },
+        "product_operation": "Отметить опасный участок местности",
+        "expected_output": "H отмечен как опасный участок тонкого льда и сохранён на прежнем месте; биом соседей не меняется.",
+        "constraints_and_exceptions": [
+          "Все типы опасностей и их параметры требуют полного чтения страниц110–111.",
+          "Исследовательская передача, не спецификация/разрешение разработки. Запись правила заметкой не считается исполнением.",
+          "Не учреждать отдельный симулятор льда/провала/урона; точные свойства из первичного текста не восстановлены."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Существуют соседние гексы (2,0) и (1,0), оба в утверждённой 6-мильной карте.",
+            "when": "Изменить (2,0) на озеро и назначить (1,0) снежной равниной. Сохранить JSON и вновь открыть.",
+            "expected": "Гекс (2,0) остаётся озером, (1,0) — снежной равниной. Сохранение и загрузка сохраняют оба значения по их исходным координатам."
+          },
+          {
+            "given": "Та же карта с озером (2,0), сушей (1,0) и (0,0).",
+            "when": "Добавить препятствие на сухом ребре (0,0)–(1,0), затем отдельно сравнить с попыткой на ребре (1,0)–(2,0).",
+            "expected": "Сухое ребро сохраняется как ребровой объект. Запрещённая команда на границе воды сохраняет прежнее состояние."
+          },
+          {
+            "given": "Озеро (2,0), соседний снежный биом (1,0). Подготовленное место опасности H на озере.",
+            "when": "Попытаться назначить геопривязанную отметку thin_ice отдельно от состояния воды и биома, затем сохранить и открыть.",
+            "expected": "У озера есть самостоятельная картографическая отметка тонкого льда, оба гекса сохраняют координаты и исходные типы."
+          }
+        ],
+        "source_vs_product_interpretation": "Слева сохранён краткий исторический смысл; справа предлагаемый проверяемый результат приложения. Источник, готовность и продуктовое решение не отождествляются.",
+        "canonical_rule_refs": [
+          "agent-work/rules/common-rules.json#content.static_hazard"
+        ],
+        "unresolved_parameters": [
+          "Полный первичный текст, численные границы, условия и исключения ещё не сверены."
+        ]
+      },
+      "canonical_rule_ids": [
+        "content.static_hazard"
+      ],
+      "binding_ids": [
+        "DND5-2014-020-L1"
+      ],
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "not_implemented",
+      "evidence_ids": [
+        "thin_ice"
+      ],
+      "result": "Снег, озеро и сухое ребровое препятствие сохраняются раздельно. Независимая поверхностная отметка тонкого льда отсутствует в проверенной операции и модели.",
+      "remaining": "Результат ограничен тонким льдом. Другие типы опасностей, точные свойства по источнику и игровое разрешение не проверены.",
+      "label": "Картографическая отметка тонкого льда",
+      "game_id": "DND5",
+      "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+      "source_rule": {
+        "source_ref": "agent-work/market/rules/DND5-2014.json#DND5-2014-020",
+        "locator": "historical printed p110 Опасности в дикой местности",
+        "self_contained_rule": "Исторический неполный пересказ, НЕ повторно подтверждённый исходный текст: Лоза, зыбучий песок, осквернённая земля, скользкий/тонкий лёд, холодная вода",
+        "normative_kind": "optional_variant",
+        "parameters_and_units": {
+          "historical_only": true,
+          "primary_text_reverification_required": true
+        },
+        "conditions": [
+          "Точная применимость и нормативность ожидают первичного текста."
+        ],
+        "exceptions": [
+          "Числа и примеры операции ниже — исследовательская приёмка; не восстановленный текст книги."
+        ],
+        "cross_references": [],
+        "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+        "access_level": "retained_historical_extract_only_not_primary_reverified",
+        "author_project_dedup_key": "wizards-of-the-coast:dnd5:DMG2014:phantom-ru2016",
+        "source_verification_status": "historical_paraphrase_not_primary_reverified"
+      },
+      "layer": "L1",
+      "historical": {
+        "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json#DND5-2014-020-L1-v2-draft",
+        "status": "unverified",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "canonical_mapping": [
+        {
+          "rule_id": "content.static_hazard",
+          "binding_ref": "agent-work/rules/game-bindings.json#DND5-2014-020-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Сохраняется только размещение опасного участка/места и его обнаружимость. Параметры локальных ловушек, урон и спасброски исключены.",
+          "profile_differences": [
+            "Доказательство относится к указанным режиму, операции и версии. Исходный профиль DMG2014 по первичному тексту остаётся открытым."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "absent",
+        "mode": "manual_existing_tools",
+        "comment": "Снег, озеро и сухое ребровое препятствие сохраняются раздельно. Независимая поверхностная отметка тонкого льда отсутствует в проверенной операции и модели.",
+        "verified_parts": [
+          "Снег, озеро и сухое ребровое препятствие сохраняются раздельно. Независимая поверхностная отметка тонкого льда отсутствует в проверенной операции и модели."
+        ],
+        "missing_or_unverified_parts": [
+          "Результат ограничен тонким льдом. Другие типы опасностей, точные свойства по источнику и игровое разрешение не проверены."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    }
+  ],
+  "changes": [
+    {
+      "row_id": "DND5-2014-006-L1-v2-draft",
+      "from": "partial",
+      "to": "implemented",
+      "reason": "Смежные области с высотами 3→2→1 и соответствующими биомами можно вручную создать, сохранить и открыть. Отдельный биом гекса остаётся независимым."
+    },
+    {
+      "row_id": "DND5-2014-007-L1-v2-draft",
+      "from": "partial",
+      "to": "implemented",
+      "reason": "Ведущий рисует основное русло до выбранного озера и добавляет приток в узле. Два направленных входа, один выход и ID озера сохранены."
+    },
+    {
+      "row_id": "DND5-2014-008-L1-v2-draft",
+      "from": "unverified",
+      "to": "not_implemented",
+      "reason": "На зуме 1×→0,2×→6× город, деревня и граница остаются в статическом SVG. Данные сохранены. В проверенной панели отсутствует режим «город и граница, деревня скрыта»."
+    },
+    {
+      "row_id": "DND5-2014-013-L1-v2-draft",
+      "from": "unverified",
+      "to": "partial",
+      "reason": "В подготовленном слое Knave улика хранится за POI и следует за ней. В чистом Classic тест отдельного поля не прошёл; запись ведущего принадлежит гексу."
+    },
+    {
+      "row_id": "DND5-2014-016-L1-v2-draft",
+      "from": "not_implemented",
+      "to": "unverified",
+      "reason": "Для пары поселение–угодья проверено географическое соседство и независимость точек. В просмотренной штатной модели нет отдельной операции записи трёх типизированных отношений V→река/угодья/лес."
+    },
+    {
+      "row_id": "DND5-2014-020-L1-v2-draft",
+      "from": "unverified",
+      "to": "not_implemented",
+      "reason": "Снег, озеро и сухое ребровое препятствие сохраняются раздельно. Независимая поверхностная отметка тонкого льда отсутствует в проверенной операции и модели."
+    }
+  ],
+  "evidence": {
+    "baseline": {
+      "ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": true,
+      "probe_ref": "agent-work/research/requirements/DND5-2014-v2-L1-implementation-probe.mjs",
+      "scope": "Исполнены четыре проверки прежнего сценария до строки const x=; исключён контроль дороги, заменённый точным прогоном relief_pass_road.",
+      "observed": [
+        {
+          "check": "physical_scale_and_camera_not_conflated",
+          "steps": [
+            {
+              "step": 1,
+              "area": 0.8660254037844386
+            },
+            {
+              "step": 6,
+              "area": 31.176914536239792
+            },
+            {
+              "step": 12,
+              "area": 124.70765814495917
+            },
+            {
+              "step": 24,
+              "area": 498.8306325798367
+            }
+          ],
+          "savedCamera": [
+            1,
+            2
+          ],
+          "samePhysicalMap": true,
+          "step60Accepted": false
+        },
+        {
+          "check": "manual_hill_inside_woodland",
+          "address": "1,0",
+          "base": "deciduous_woodland",
+          "override": "open_hills",
+          "otherMapStateUnchanged": true,
+          "reload": true,
+          "undoRedo": true
+        },
+        {
+          "check": "twelve_manual_sites_and_six_distinct_lairs",
+          "placed": 12,
+          "lairs": 6,
+          "ruin": "Old Gate",
+          "reload": true,
+          "automaticQuotaSet": false
+        },
+        {
+          "check": "adjacent_growth_keeps_existing_sites",
+          "addedRegions": 1,
+          "retainedNamedSites": 12,
+          "reload": true,
+          "undoRedo": true
+        }
+      ]
+    },
+    "overview_current": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": true,
+      "probe_ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19-probe.mjs",
+      "observed": {
+        "states": [
+          {
+            "scale": 1,
+            "city": true,
+            "village": true,
+            "boundaryLines": 94
+          },
+          {
+            "scale": 0.20000000000000004,
+            "city": true,
+            "village": true,
+            "boundaryLines": 94
+          },
+          {
+            "scale": 6,
+            "city": true,
+            "village": true,
+            "boundaryLines": 94
+          },
+          {
+            "scale": 1,
+            "city": true,
+            "village": true,
+            "boundaryLines": 94
+          }
+        ],
+        "reloaded": {
+          "scale": 0.20000000000000004,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        "villageRecord": {
+          "kind": "village",
+          "name": "Village V",
+          "note": "Village retained note"
+        },
+        "displayControls": {
+          "rotate": true,
+          "coordinates": true,
+          "hexSize": true,
+          "globalPoiToggleInDisplayToolbar": false,
+          "selectiveOverviewInDisplayToolbar": false
+        },
+        "methods": [
+          "real App camera state & serializer",
+          "server-rendered coarse POI and kingdom boundary layers and display toolbar",
+          "terrain-decoration components stubbed, no DOM raster or browser interaction"
+        ]
+      }
+    },
+    "nested_current": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": true,
+      "command": "node --test --test-name-pattern='ONE-MILE1 preview/cancel/apply|GEO2 POI candidates' test/saveSafety.test.mjs test/geometryRefinementPois.test.mjs",
+      "observed": "✔ ONE-MILE1 preview/cancel/apply and public15 roundtrip use real import and exact undo (293.131621ms)\nℹ tests 2\nℹ suites 0\nℹ pass 2\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3148.042542\n"
+    },
+    "resource_static": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json#verification",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": true,
+      "method": "Точечный статический просмотр существующей модели Region, HexcrawlSaveData, операции редактора POI и модели связей в src/App.tsx:224–249,492–525,14814–14823; src/manualPois.ts:7–12. Карта из settled_wild_farmland содержит независимые POI и не заявляет сохранённую ссылку на ресурсы."
+    },
+    "selective_overview": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-selective-overview-2026-11-19.json",
+      "run_ref": "agent-work/research/runs/2026-11-19-DND5-L1-overview-2e057338.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-overview-2e057338-strategist.json",
+      "product_sha": "36f443abe852e9655994e4c7d2b17e65b8ea3b9c",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    },
+    "place_sign": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-place-sign-2026-11-19.json",
+      "run_ref": "agent-work/research/runs/2026-11-19-DND5-L1-place-sign-4065bac3.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-19-DND5-L1-place-sign-4065bac3-strategist.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    },
+    "thin_ice": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-thin-ice-2026-11-20.json",
+      "run_ref": "agent-work/research/runs/2026-11-20-DND5-L1-surface-hazard-c58e7487.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-20-DND5-L1-surface-hazard-c58e7487-strategist.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    },
+    "classic_poi_discovery": {
+      "ref": "agent-work/research/requirements/CLASSIC-POI-discovery-2026-11-20.json",
+      "run_ref": "agent-work/research/runs/2026-11-20-classic-poi-discovery-498562e0.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-20-classic-poi-discovery-498562e0-strategist.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    },
+    "land_water_shapes": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-land-water-shapes-2026-11-20.json",
+      "run_ref": "agent-work/research/runs/2026-11-20-dnd5-land-water-shapes-3dbe4622.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-20-dnd5-land-water-shapes-3dbe4622-strategist.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    },
+    "river_lake_confluence": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-river-lake-confluence-2026-11-20.json",
+      "run_ref": "agent-work/research/runs/2026-11-20-dnd5-river-lake-confluence-9e816807.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-20-dnd5-river-lake-confluence-9e816807-strategist.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    },
+    "settled_wild_farmland": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-settled-wild-farmland-2026-11-20.json",
+      "run_ref": "agent-work/research/runs/2026-11-20-dnd5-settled-wild-farmland-27732b2e.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-20-dnd5-settled-wild-farmland-27732b2e-strategist.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    },
+    "relief_pass_road": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-relief-pass-road-2026-11-20.json",
+      "run_ref": "agent-work/research/runs/2026-11-20-dnd5-relief-pass-road-932e8599.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-20-dnd5-relief-pass-road-932e8599-strategist.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    },
+    "mapped_sites_lairs": {
+      "ref": "agent-work/research/requirements/DND5-2014-L1-mapped-sites-lairs-2026-11-20.json",
+      "run_ref": "agent-work/research/runs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe.json",
+      "handoff_ref": "agent-work/research/handoffs/2026-11-20-dnd5-mapped-sites-lairs-afbbaebe-strategist.json",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "executed_this_run": false,
+      "method": "Сопоставлены ранее зафиксированные результат, версия и оперативная передача."
+    }
+  },
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_head_observed": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matching_git_blobs": 110,
+    "baseline_recheck": [
+      {
+        "check": "physical_scale_and_camera_not_conflated",
+        "steps": [
+          {
+            "step": 1,
+            "area": 0.8660254037844386
+          },
+          {
+            "step": 6,
+            "area": 31.176914536239792
+          },
+          {
+            "step": 12,
+            "area": 124.70765814495917
+          },
+          {
+            "step": 24,
+            "area": 498.8306325798367
+          }
+        ],
+        "savedCamera": [
+          1,
+          2
+        ],
+        "samePhysicalMap": true,
+        "step60Accepted": false
+      },
+      {
+        "check": "manual_hill_inside_woodland",
+        "address": "1,0",
+        "base": "deciduous_woodland",
+        "override": "open_hills",
+        "otherMapStateUnchanged": true,
+        "reload": true,
+        "undoRedo": true
+      },
+      {
+        "check": "twelve_manual_sites_and_six_distinct_lairs",
+        "placed": 12,
+        "lairs": 6,
+        "ruin": "Old Gate",
+        "reload": true,
+        "automaticQuotaSet": false
+      },
+      {
+        "check": "adjacent_growth_keeps_existing_sites",
+        "addedRegions": 1,
+        "retainedNamedSites": 12,
+        "reload": true,
+        "undoRedo": true
+      }
+    ],
+    "selective_overview_recheck": {
+      "states": [
+        {
+          "scale": 1,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 0.20000000000000004,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 6,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        },
+        {
+          "scale": 1,
+          "city": true,
+          "village": true,
+          "boundaryLines": 94
+        }
+      ],
+      "reloaded": {
+        "scale": 0.20000000000000004,
+        "city": true,
+        "village": true,
+        "boundaryLines": 94
+      },
+      "villageRecord": {
+        "kind": "village",
+        "name": "Village V",
+        "note": "Village retained note"
+      },
+      "displayControls": {
+        "rotate": true,
+        "coordinates": true,
+        "hexSize": true,
+        "globalPoiToggleInDisplayToolbar": false,
+        "selectiveOverviewInDisplayToolbar": false
+      },
+      "methods": [
+        "real App camera state & serializer",
+        "server-rendered coarse POI and kingdom boundary layers and display toolbar",
+        "terrain-decoration components stubbed, no DOM raster or browser interaction"
+      ]
+    },
+    "nested_recheck": "✔ ONE-MILE1 preview/cancel/apply and public15 roundtrip use real import and exact undo (293.131621ms)\nℹ tests 2\nℹ suites 0\nℹ pass 2\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 3148.042542\n",
+    "new_product_code": false,
+    "browser_verified": false,
+    "primary_source_reverified": false
+  },
+  "quality": {
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "game_id": "DND5",
+    "edition": "D&D 5e Dungeon Master's Guide 2014, русский перевод PHantom 2016",
+    "source_inventory_ref": "agent-work/research/requirements/DND5-2014-v2-coverage.json",
+    "analysis_ref": "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json",
+    "reviewed_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "reviewer": "HX-RSR-001",
+    "overall_status": "checkpoint",
+    "checks": [
+      {
+        "criterion_id": "RA-Q01",
+        "result": "pass",
+        "comment": "Точное издание, язык и исторические локаторы перенесены из прежней матрицы.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q02",
+        "result": "blocked",
+        "comment": "Нет доступа к полному тематическому корпусу.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "Пройти объявленный первичный корпус, сопоставить исторические страницы и обновить условия применимости."
+      },
+      {
+        "criterion_id": "RA-Q03",
+        "result": "blocked",
+        "comment": "Полный смысл первичного текста открыт.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "Пройти объявленный первичный корпус, сопоставить исторические страницы и обновить условия применимости."
+      },
+      {
+        "criterion_id": "RA-Q04",
+        "result": "blocked",
+        "comment": "Параметры тестов заданы. Игровые параметры требуют первичного чтения.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "Пройти объявленный первичный корпус, сопоставить исторические страницы и обновить условия применимости."
+      },
+      {
+        "criterion_id": "RA-Q05",
+        "result": "pass",
+        "comment": "Источниковый и продуктовый статусы раздельны.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q06",
+        "result": "pass",
+        "comment": "Каждая строка содержит картографическое действие и проверяемый результат.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q07",
+        "result": "pass",
+        "comment": "Спорная запись связей вынесена за текущий объём до необходимости.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q08",
+        "result": "pass",
+        "comment": "Проверены существующие общие правила и игровые привязки.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q09",
+        "result": "pass",
+        "comment": "Критерии включают операцию, условия и ожидаемый выход.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q10",
+        "result": "pass",
+        "comment": "Статусы учитывают фактические операции, версии и непроверенный остаток.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q11",
+        "result": "pass",
+        "comment": "Методы, ограничения и различие проверок указаны.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q12",
+        "result": "pass",
+        "comment": "Передача связывает утверждённые задачи без дублей.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q13",
+        "result": "pass",
+        "comment": "Таблица и JSON сформированы из одного перечня.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q14",
+        "result": "blocked",
+        "comment": "Финальная приёмка ждёт источника и известных открытых операций.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-v2-coverage.json"
+        ],
+        "exact_continuation": "Пройти объявленный первичный корпус, сопоставить исторические страницы и обновить условия применимости."
+      },
+      {
+        "criterion_id": "RA-Q15",
+        "result": "pass",
+        "comment": "Объявленная поддержка и действующий рейтинг не пересматривались.",
+        "evidence_refs": [
+          "agent-work/research/requirements/DND5-2014-L1-working-matrix-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      }
+    ],
+    "remaining_work": [
+      "Полный тематический корпус русского DMG2014 PHantom 2016 (322 страницы), включая тематические диапазоны и ссылки coverage ledger, ожидает доступа. Смысл указанных в выписках чисел и терминов открыт.",
+      "Избирательный обзор, схема 60→6→1, автоматический выбор перевала, отдельный картографический признак места и связанное содержимое логовища. Свойство обнаружения чистого Classic сопоставлять с уже согласованным HX-BL-062.",
+      "Типизированное отношение поселения к набору ресурсов исключено из текущего принятого объёма до прямой необходимости. Сценарий географического размещения с полным набором объектов остаётся отдельно непроверенным.",
+      "На свежем SHA проверялись обработчики, данные и статический вид отдельных элементов. Браузерный доступ игроков, выдача карты и условное раскрытие L2 остаются отдельной проверкой."
+    ]
+  },
+  "remaining": [
+    "Полный тематический корпус русского DMG2014 PHantom 2016 (322 страницы), включая тематические диапазоны и ссылки coverage ledger, ожидает доступа. Смысл указанных в выписках чисел и терминов открыт.",
+    "Избирательный обзор, схема 60→6→1, автоматический выбор перевала, отдельный картографический признак места и связанное содержимое логовища. Свойство обнаружения чистого Classic сопоставлять с уже согласованным HX-BL-062.",
+    "Типизированное отношение поселения к набору ресурсов исключено из текущего принятого объёма до прямой необходимости. Сценарий географического размещения с полным набором объектов остаётся отдельно непроверенным.",
+    "На свежем SHA проверялись обработчики, данные и статический вид отдельных элементов. Браузерный доступ игроков, выдача карты и условное раскрытие L2 остаются отдельной проверкой."
+  ],
+  "full_game_accepted": false,
+  "overall_top5_accepted": false,
+  "create_top10_started": false
+}
