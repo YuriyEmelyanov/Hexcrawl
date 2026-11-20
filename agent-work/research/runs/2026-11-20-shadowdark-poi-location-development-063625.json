@@ -1,0 +1,269 @@
+{
+  "run_id": "2026-11-20-shadowdark-poi-location-development-063625",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_shadowdark_poi_ownership_verified",
+  "started_at": "2026-11-20T06:36:25Z",
+  "completed_at": "2026-11-20T06:40:01Z",
+  "selected_task": {
+    "id": "HX-RSR-SD-L1-POI-LOCATION-DEVELOPMENT",
+    "game_id": "SD",
+    "layer": "L1",
+    "status": "completed_bounded_runtime_check",
+    "action": "Взять один из результатов точки интереса Shadowdark со стр. 133 и проверить, какие части Location/Development сохраняются за самой точкой на карте. Использовать уже извлечённые строки.",
+    "completion_condition": "Показать разницу между сохраняемым типом места, отдельной ссылкой на другое место или локальную схему и текстом гекса. Взять заранее заданные индексы колонок. Способ выбора общего или независимых бросков оставить неопределённым, пока источник его не уточняет.",
+    "source_refs": [
+      "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-051-L1",
+      "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+      "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+    ],
+    "selection_reason": "Ручное размещение результата d6=1 подтверждено. Следующий реальный вопрос — может ли подготовленное место сохранить оба компонента и их происхождение при повторном открытии."
+  },
+  "selection_reason": "Выбран следующий ограниченный вопрос текущего чекпойнта в общей top5. Карта со стр. 132 уже проверена. Прежний аудит p133 не отличал текст гекса от данных самого объекта после редактирования.",
+  "alternatives": [
+    {
+      "task_id": "Полный D&D 5e или печатный остаток PF2",
+      "reason": "Новое наличие недостающего первичного материала в актуальных входах не обнаружено."
+    },
+    {
+      "task_id": "Повторить сценарий Shadowdark стр. 132",
+      "reason": "Уже сохранено доказательство на том же SHA. Страница 133 проверяет отдельный эффект редактирования."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_sha": "d70e56cba2d3773581c343bfa7aac24da710532a",
+    "main_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "active_ranking": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "active_overall_cohort": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ],
+    "refs": [
+      "AGENTS.md",
+      "agent-work/research/contract.md",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json",
+      "agent-work/research/method.json",
+      "agent-work/research/proposals.json",
+      "agent-work/research/data-contract.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/research/rule-analysis-standard.md",
+      "agent-work/research/requirements/SD-CORE-L1-implementation.json",
+      "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/research/requirements/SD-CORE-scope-audit.json",
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json",
+      "agent-work/execution-locks.json",
+      "agent-work/budget.json",
+      "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+      "agent-work/rules/game-bindings.json#SD-CORE-051-L1",
+      "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+    ]
+  },
+  "findings": [
+    "Classic сохраняет тип и имя укрепления, отдельную гробницу и деревню. Три состояния карты прошли точное сравнение после JSON-экспорта и импорта с исключением временной метки.",
+    "При переносе укрепления из −2,0 в −2,1 его тип и имя следуют за точкой. Смысловое описание остаётся в −2,0 и сохраняется там после установки новой башни.",
+    "После переноса гробницы из 2,0 в 2,−1 и переименования фраза в исходном гексе по-прежнему указывает прежние имя и координаты. В испытанном пути она хранится как текст гекса, без адресной привязки к гробнице.",
+    "Сочетание Location 7 и Development 20 представлено деревней и текстом гекса о двери в иной план. Ссылка на локальную схему и профильное сохранение двух индексов не подтверждены. Фиксированные индексы были переданы сценарию заранее."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+    "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.md",
+    "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs",
+    "agent-work/research/runs/2026-11-20-shadowdark-poi-location-development-063625.json",
+    "agent-work/research/handoffs/2026-11-20-shadowdark-poi-location-development-063625-strategist.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/latest.json",
+    "agent-work/claims/2026-11-20-shadowdark-poi-location-development-063625.json",
+    "agent-work/research/automation-health/2026-11-20-shadowdark-poi-location-development-063625-started.json",
+    "agent-work/execution-locks.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_head_observed": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matching_git_blobs": 106,
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "source_reopened_this_run": false,
+    "probe_ref": "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs",
+    "command": "Скопировать probe в корень checkout проверенного SHA и выполнить node research-shadowdark-poi-location-development.mjs.",
+    "exit_code": 0,
+    "method": "Вызваны реальные обработчики App в штатном репозиторном harness. Три состояния экспортированы и повторно открыты, исключая savedAt. Переиспользованы факты страницы из исходной матрицы.",
+    "specific_code_refs": [
+      "src/App.tsx#L14814",
+      "src/App.tsx#L15252",
+      "src/App.tsx#L15511",
+      "src/App.tsx#L15661",
+      "src/App.tsx#L17125",
+      "src/detailModel.ts#L7",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "observed": {
+      "fixture": {
+        "seed": 42,
+        "mode": "Classic",
+        "stepMiles": 6,
+        "hexes": 37
+      },
+      "fixedColumnIndices": [
+        {
+          "location": 2,
+          "development": 2
+        },
+        {
+          "location": 7,
+          "development": 20
+        }
+      ],
+      "initiallySaved": {
+        "kinds": {
+          "-2,0": "fort",
+          "2,0": "ruins",
+          "0,2": "village"
+        },
+        "editorNames": {
+          "poi:1:-2,0": {
+            "en": "Flint Keep",
+            "ru": "Flint Keep"
+          },
+          "poi:1:2,0": {
+            "en": "Reed Tomb",
+            "ru": "Reed Tomb"
+          }
+        }
+      },
+      "destination": {
+        "from": "2,0",
+        "to": "2,-1",
+        "nameAfter": "Slate Tomb",
+        "sourceNoteStill": "An entrance connects this keep to Reed Tomb at 2,0."
+      },
+      "source": {
+        "from": "-2,0",
+        "to": "-2,1",
+        "typeAndNameMoved": true,
+        "noteStayedWithHex": true
+      },
+      "oldHexReused": {
+        "kind": "tower",
+        "noteStayedWithHex": true
+      },
+      "secondExample": {
+        "hex": "0,2",
+        "placeKind": "village",
+        "settlementToponym": "Moss Village",
+        "textInHexNote": "A door leads from here to another plane."
+      },
+      "exactExportImportSnapshots": 3
+    },
+    "scope_finding": "Геометрические attachments POI относятся к водным объектам и маршрутам. Их наличие не подтверждает ссылку между двумя местами или прикреплённый план."
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "832a4448-a1e8-8323-a304-3c4cd6832532",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T06:30:00Z",
+          "started_at": "2026-11-20T06:36:07.940789Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T09:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "1d2a1673-a1c8-832a-9a92-81fc7fe648a5",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T06:00:00Z",
+          "started_at": "2026-11-20T06:33:30.615113Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T09:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "832a4448-a1e8-8323-a304-3c4cd6832532",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T06:30:00Z",
+          "started_at": "2026-11-20T06:36:07.940789Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T09:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "1d2a1673-a1c8-832a-9a92-81fc7fe648a5",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T06:00:00Z",
+          "started_at": "2026-11-20T06:33:30.615113Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T09:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_shadowdark_poi_ownership_verified",
+    "run_id": "2026-11-20-shadowdark-poi-location-development-063625",
+    "stage": "shadowdark_poi_location_development",
+    "last_successful_step": "Три снимка сохранены и повторно открыты. Отдельно доказано сохранение заметки у старого гекса после перемещения и замены POI.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Сценарий чекпойнта завершён на версии приложения. Определены владелец текста и ограничение связи.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+      "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.md",
+      "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20-shadowdark-poi-location-development-063625-strategist.json",
+      "agent-work/research/runs/2026-11-20-shadowdark-poi-location-development-063625.json"
+    ],
+    "exact_continuation": "По сохранённым строкам Shadowdark выбрать одну неподвижную опасность и фиксированный наблюдаемый признак. Проверить, можно ли в Classic независимо сохранить место, признак и скрытую причину на карте. На свежем SHA показать фактическое хранение признака и причины после экспорта и импорта на одном месте. Проверить адресность и доступность каждого элемента средствами текущего редактора. Выдачу игрокам, урон и проверки оставить за пределами L1.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-SD-L1-STATIC-HAZARD-SIGN",
+    "game_id": "SD",
+    "layer": "L1",
+    "status": "selected_bounded_top5_remainder",
+    "action": "По сохранённым строкам Shadowdark выбрать одну неподвижную опасность и фиксированный наблюдаемый признак. Проверить, можно ли в Classic независимо сохранить место, признак и скрытую причину на карте.",
+    "completion_condition": "На свежем SHA показать фактическое хранение признака и причины после экспорта и импорта на одном месте. Проверить адресность и доступность каждого элемента средствами текущего редактора. Выдачу игрокам, урон и проверки оставить за пределами L1.",
+    "source_refs": [
+      "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-041-L1",
+      "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-031-L1"
+    ],
+    "selection_reason": "Связи POI с другими местами уже проверены. У статической опасности остаётся отдельный вопрос о данных карты для подготовки исследования. Перед проверкой сверить свежие решения и приоритеты общего top5."
+  }
+}

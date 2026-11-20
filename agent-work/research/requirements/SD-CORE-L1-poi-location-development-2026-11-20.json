@@ -1,0 +1,544 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-20-shadowdark-poi-location-development-063625",
+  "game_id": "SD",
+  "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+  "status": "bounded_shadowdark_poi_ownership_verified",
+  "research_baseline_sha": "d70e56cba2d3773581c343bfa7aac24da710532a",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "reviewed_at": "2026-11-20T06:40:01Z",
+  "scope_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "coverage_ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+  "prior_ref": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-051-L1",
+  "rows": [
+    {
+      "id": "SD-CORE-051-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 133,
+        "printed_pages": [
+          133
+        ],
+        "pdf_page": 137,
+        "pdf_pages": [
+          137
+        ],
+        "section": "Points of Interest",
+        "paraphrase": "Таблицаd20 содержит location и development, включая поселения, святилища, естественные/искусственные sites и связи с подземными/иными местами. Наличие общего индексного столбца не доказывает ни независимый, ни один общий бросок двух колонок. Рецепт соединения нужно явно выбрать и сохранить как продуктовое решение.",
+        "normative_kind": "table_generator",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+        "locator": {
+          "printed": [
+            133
+          ],
+          "pdf": [
+            137
+          ],
+          "section": "Points of Interest"
+        },
+        "parameters": {
+          "die": "d20",
+          "columns": [
+            "location",
+            "development"
+          ],
+          "table_locator": "printed133/PDF137 Points of Interest",
+          "column_roll_policy": null,
+          "followup_cataclysm_if_development1": true
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+        "normative_kind": "table_generator",
+        "applicability": "Ручная подготовка региональной карты для выбранных результатов Shadowdark. Адресная связь между существующими местами рассматривается как свойство карты.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий наносит место из Location, проверяет привязку Development к этому месту и переоткрывает карту после переноса точек.",
+        "inputs_and_units": {
+          "location_index": "заданный индекс 1–20",
+          "development_index": "заданный индекс 1–20",
+          "cases": [
+            {
+              "location": 2,
+              "development": 2
+            },
+            {
+              "location": 7,
+              "development": 20
+            }
+          ],
+          "scale_miles": 6,
+          "positions": [
+            "-2,0",
+            "2,0",
+            "0,2"
+          ]
+        },
+        "product_operation": "Разместить тип и имя места в Classic. Проверить, есть ли сохранённая адресная связь Development с другой точкой, и сохраняется ли текст за местом при переносе.",
+        "expected_output": "Сохранены типы и имена отдельных точек. Для полноценной связи перемещение или переименование цели сохраняет разрешимость по идентификатору, а перенос источника сохраняет связь за тем же объектом. Текст гекса учитывается отдельно.",
+        "constraints_and_exceptions": [
+          "Индексы поставляет ведущий. Способ соединения колонок не утверждён.",
+          "При Development=1 источник отсылает к Cataclysm. Реализация эффектов этим испытанием не рассматривается.",
+          "Названия и координаты тестовой гробницы созданы для проверки. Содержание иной карты, генерация подземелья и перемещение между планами исключены."
+        ],
+        "acceptance_cases": [
+          {
+            "id": "SD-CORE-051-L1-AUTHOR-01",
+            "given": "Location=2, Development=2. Пустой гекс −2,0 и выбранное ведущим место гробницы 2,0.",
+            "when": "Добавить укрепление и отдельную точку гробницы. Сохранить JSON и открыть повторно.",
+            "expected": "Типы fort и ruins и заданные имена сохраняются на своих гексах. Слова о связи хранятся в gmNotesByHexKey исходного гекса."
+          },
+          {
+            "id": "SD-CORE-051-L1-AUTHOR-02",
+            "given": "Фраза в −2,0 указывает гробницу в 2,0.",
+            "when": "Передвинуть гробницу в 2,−1 и изменить имя. Затем передвинуть укрепление в −2,1. Поставить башню в −2,0 и открыть сохранение.",
+            "expected": "Гробница и укрепление получают новые координаты. Ссылка в виде текста сохраняет старое имя и адрес. Исходный текст остаётся за −2,0 даже после замены объекта башней."
+          },
+          {
+            "id": "SD-CORE-051-L1-AUTHOR-03",
+            "given": "Location=7, Development=20, гекс 0,2.",
+            "when": "Ручным редактором поместить деревню, дать ей имя и проверить область хранения записи о двери.",
+            "expected": "Деревня и её топоним сохраняются. Запись о двери сохраняется в gmNotesByHexKey. Фиксированные индексы известны испытанию."
+          }
+        ],
+        "source_vs_product_interpretation": "Таблица даёт тип места и развитие. Представление места маркером и проверка адресности после правок относятся к продукту. Запись текста использована как контроль хранения.",
+        "canonical_rule_refs": [
+          "content.roll_table_resolution",
+          "content.place_description",
+          "content.site_links"
+        ],
+        "unresolved_parameters": [
+          "Источник не указывает общий или независимые броски колонок.",
+          "Вложенная схема или внешний документ проверяются отдельно только при принятой зависимости."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Маркер места и адресная связь между конкретными местами прямо относятся к наполнению и редактированию региональной карты. Текст гекса проверен как контроль.",
+      "product_boundary": "Наполнение и редактирование региональной карты. Внутреннее устройство гробницы и игровые эффекты двери исключены.",
+      "related_dispositions": [
+        {
+          "part": "тип и имя места, адресная связь с другой картографической точкой",
+          "disposition": "keep_L1",
+          "reason": "Данные места и связи между нанесёнными точками"
+        },
+        {
+          "part": "генерация внутреннего плана, описание сюжета и эффекты перемещения между планами",
+          "disposition": "out_of_scope",
+          "reason": "За границей создания и правки региональной карты"
+        }
+      ],
+      "action": "Ведущий наносит место из Location, проверяет привязку Development к этому месту и переоткрывает карту после переноса точек.",
+      "map_object_or_state": {
+        "location_index": "заданный индекс 1–20",
+        "development_index": "заданный индекс 1–20",
+        "cases": [
+          {
+            "location": 2,
+            "development": 2
+          },
+          {
+            "location": 7,
+            "development": 20
+          }
+        ],
+        "scale_miles": 6,
+        "positions": [
+          "-2,0",
+          "2,0",
+          "0,2"
+        ]
+      },
+      "expected_result": "Сохранены типы и имена отдельных точек. Для полноценной связи перемещение или переименование цели сохраняет разрешимость по идентификатору, а перенос источника сохраняет связь за тем же объектом. Текст гекса учитывается отдельно.",
+      "canonical_rule_ids": [
+        "content.roll_table_resolution",
+        "content.place_description",
+        "content.site_links"
+      ],
+      "binding_ids": [
+        "SD-CORE-051-L1"
+      ],
+      "previous_product_verdict": "partial_manual_pipeline",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "SD-POI-OWNERSHIP-2026-11-20"
+      ],
+      "result": "Classic сохраняет тип и имя укрепления, отдельную гробницу и деревню. Три состояния карты прошли точное сравнение после JSON-экспорта и импорта с исключением временной метки. При переносе укрепления из −2,0 в −2,1 его тип и имя следуют за точкой. Смысловое описание остаётся в −2,0 и сохраняется там после установки новой башни. После переноса гробницы из 2,0 в 2,−1 и переименования фраза в исходном гексе по-прежнему указывает прежние имя и координаты. В испытанном пути она хранится как текст гекса, без адресной привязки к гробнице. Сочетание Location 7 и Development 20 представлено деревней и текстом гекса о двери в иной план. Ссылка на локальную схему и профильное сохранение двух индексов не подтверждены. Фиксированные индексы были переданы сценарию заранее.",
+      "remaining": "Структурированная связь POI→POI, прикрепление отдельной схемы и происхождение двух результатов таблицы не подтверждены в проверенном пути. Выбор рецепта генерации остаётся неопределённым.",
+      "game_id": "SD",
+      "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+      "source_rule": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 133,
+        "printed_pages": [
+          133
+        ],
+        "pdf_page": 137,
+        "pdf_pages": [
+          137
+        ],
+        "section": "Points of Interest",
+        "paraphrase": "Таблицаd20 содержит location и development, включая поселения, святилища, естественные/искусственные sites и связи с подземными/иными местами. Наличие общего индексного столбца не доказывает ни независимый, ни один общий бросок двух колонок. Рецепт соединения нужно явно выбрать и сохранить как продуктовое решение.",
+        "normative_kind": "optional_variant",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+        "locator": "Печатная с. 133, PDF 137, Points of Interest",
+        "parameters": {
+          "die": "d20",
+          "columns": [
+            "location",
+            "development"
+          ],
+          "table_locator": "printed133/PDF137 Points of Interest",
+          "column_roll_policy": null,
+          "followup_cataclysm_if_development1": true
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023",
+        "source_normative_kind": "table_generator",
+        "self_contained_rule": "Таблица d20 даёт Location и Development места. Location 2 — укрепление, Location 7 — деревня. Development 2 связывает место с большой гробницей, Development 20 задаёт дверь в иной план. Development 1 отсылает к Cataclysm. Источник не задаёт, снимать ли оба результата одним броском или двумя.",
+        "parameters_and_units": {
+          "die": "d20",
+          "columns": [
+            "location",
+            "development"
+          ],
+          "table_locator": "printed133/PDF137 Points of Interest",
+          "column_roll_policy": null,
+          "followup_cataclysm_if_development1": true,
+          "checked_location_indices": [
+            2,
+            7
+          ],
+          "checked_development_indices": [
+            2,
+            20
+          ]
+        },
+        "conditions": [
+          "Используется при наполнении POI в Shadowdark. Способ выбора двух колонок явно не указан."
+        ],
+        "exceptions": [
+          "Development 1 требует обращения к Cataclysm."
+        ],
+        "cross_references": [
+          "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-052"
+        ]
+      },
+      "layer": "L1",
+      "canonical_mapping": [
+        {
+          "rule_id": "content.roll_table_resolution",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-051-L1",
+          "disposition": "pending",
+          "semantic_comparison": "Индексы поданы извне. Рецепт и история бросков не подтверждены.",
+          "profile_differences": [
+            "Проверены существующие средства Classic для двух заданных пар."
+          ]
+        },
+        {
+          "rule_id": "content.place_description",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-051-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Тип и имя проверены. Прочий текст записывается за гексом.",
+          "profile_differences": [
+            "Проверены существующие средства Classic для двух заданных пар."
+          ]
+        },
+        {
+          "rule_id": "content.site_links",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-051-L1",
+          "disposition": "pending",
+          "semantic_comparison": "Две точки можно разместить независимо. Повторное разрешение ссылки после правки цели не подтверждено.",
+          "profile_differences": [
+            "Проверены существующие средства Classic для двух заданных пар."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Структурированная связь POI→POI, прикрепление отдельной схемы и происхождение двух результатов таблицы не подтверждены в проверенном пути. Выбор рецепта генерации остаётся неопределённым.",
+        "verified_parts": [
+          "Classic сохраняет тип и имя укрепления, отдельную гробницу и деревню. Три состояния карты прошли точное сравнение после JSON-экспорта и импорта с исключением временной метки.",
+          "При переносе укрепления из −2,0 в −2,1 его тип и имя следуют за точкой. Смысловое описание остаётся в −2,0 и сохраняется там после установки новой башни.",
+          "После переноса гробницы из 2,0 в 2,−1 и переименования фраза в исходном гексе по-прежнему указывает прежние имя и координаты. В испытанном пути она хранится как текст гекса, без адресной привязки к гробнице."
+        ],
+        "missing_or_unverified_parts": [
+          "Структурированная связь POI→POI, прикрепление отдельной схемы и происхождение двух результатов таблицы не подтверждены в проверенном пути. Выбор рецепта генерации остаётся неопределённым."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Вызваны реальные обработчики App в штатном репозиторном harness. Три состояния экспортированы и повторно открыты, исключая savedAt. Переиспользованы факты страницы из исходной матрицы.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json#verification",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ]
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [
+        "При отдельном принятии профильного генератора требуется выбрать рецепт. Активного запроса владельцу нет."
+      ],
+      "backlog_refs": []
+    }
+  ],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_head_observed": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matching_git_blobs": 106,
+    "runtime_verified": true,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "source_reopened_this_run": false,
+    "probe_ref": "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs",
+    "command": "Скопировать probe в корень checkout проверенного SHA и выполнить node research-shadowdark-poi-location-development.mjs.",
+    "exit_code": 0,
+    "method": "Вызваны реальные обработчики App в штатном репозиторном harness. Три состояния экспортированы и повторно открыты, исключая savedAt. Переиспользованы факты страницы из исходной матрицы.",
+    "specific_code_refs": [
+      "src/App.tsx#L14814",
+      "src/App.tsx#L15252",
+      "src/App.tsx#L15511",
+      "src/App.tsx#L15661",
+      "src/App.tsx#L17125",
+      "src/detailModel.ts#L7",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "observed": {
+      "fixture": {
+        "seed": 42,
+        "mode": "Classic",
+        "stepMiles": 6,
+        "hexes": 37
+      },
+      "fixedColumnIndices": [
+        {
+          "location": 2,
+          "development": 2
+        },
+        {
+          "location": 7,
+          "development": 20
+        }
+      ],
+      "initiallySaved": {
+        "kinds": {
+          "-2,0": "fort",
+          "2,0": "ruins",
+          "0,2": "village"
+        },
+        "editorNames": {
+          "poi:1:-2,0": {
+            "en": "Flint Keep",
+            "ru": "Flint Keep"
+          },
+          "poi:1:2,0": {
+            "en": "Reed Tomb",
+            "ru": "Reed Tomb"
+          }
+        }
+      },
+      "destination": {
+        "from": "2,0",
+        "to": "2,-1",
+        "nameAfter": "Slate Tomb",
+        "sourceNoteStill": "An entrance connects this keep to Reed Tomb at 2,0."
+      },
+      "source": {
+        "from": "-2,0",
+        "to": "-2,1",
+        "typeAndNameMoved": true,
+        "noteStayedWithHex": true
+      },
+      "oldHexReused": {
+        "kind": "tower",
+        "noteStayedWithHex": true
+      },
+      "secondExample": {
+        "hex": "0,2",
+        "placeKind": "village",
+        "settlementToponym": "Moss Village",
+        "textInHexNote": "A door leads from here to another plane."
+      },
+      "exactExportImportSnapshots": 3
+    },
+    "scope_finding": "Геометрические attachments POI относятся к водным объектам и маршрутам. Их наличие не подтверждает ссылку между двумя местами или прикреплённый план."
+  },
+  "quality": {
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "game_id": "SD",
+    "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+    "source_inventory_ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+    "analysis_ref": "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+    "reviewed_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "reviewer": "HX-RSR-001",
+    "overall_status": "checkpoint",
+    "checks": [
+      {
+        "criterion_id": "RA-Q01",
+        "result": "pass",
+        "comment": "Издание, экземпляр, страница и номер редакции обозначены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q02",
+        "result": "blocked",
+        "comment": "Использован существующий тематический ledger. Срез p133 не закрывает полноту остальных слоёв.",
+        "evidence_refs": [
+          "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json"
+        ],
+        "exact_continuation": "Проверять оставшиеся применимые вопросы без повторного полного чтения Core."
+      },
+      {
+        "criterion_id": "RA-Q03",
+        "result": "pass",
+        "comment": "Смысл заданных строк и переход к Cataclysm сохранены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q04",
+        "result": "pass",
+        "comment": "Входы 1–20 и неопределённость способа броска записаны.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q05",
+        "result": "pass",
+        "comment": "Правило, выбор ведущего и модель Classic различены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q06",
+        "result": "pass",
+        "comment": "Указаны операции создания, переноса, переименования и повторного открытия.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q07",
+        "result": "pass",
+        "comment": "Данные привязки проверены на карте. Текст гекса считается отдельным объектом.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q08",
+        "result": "pass",
+        "comment": "Привязка и идентификаторы взяты из канонических реестров.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q09",
+        "result": "pass",
+        "comment": "Заданы два конкретных набора входов, положительные и отрицательный сценарии.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q10",
+        "result": "pass",
+        "comment": "Тип, имя и текст проверены. Ссылка и схема остаются за границей доказательства.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q11",
+        "result": "pass",
+        "comment": "Записан SHA и сохранён воспроизводимый probe.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q12",
+        "result": "pass",
+        "comment": "Передача в исследовательские материалы, решение очереди не запрашивается.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q13",
+        "result": "pass",
+        "comment": "Обзор содержит конкретные исходы обеих пар.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q14",
+        "result": "blocked",
+        "comment": "Структурированная связь и профиль остались открыты с точным условием.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": "Если будет утверждена операция связей, доказать разрешение цели по идентификатору после переноса и переименования или отдельно оставить unknown."
+      },
+      {
+        "criterion_id": "RA-Q15",
+        "result": "pass",
+        "comment": "Проверка ограничена подготовкой регионального места и узкой операцией переноса.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20.json",
+          "agent-work/research/requirements/SD-CORE-L1-poi-location-development-2026-11-20-probe.mjs"
+        ],
+        "exact_continuation": null
+      }
+    ],
+    "remaining_work": [
+      "Использована существующая выписка Points of Interest, печатная с. 133 / PDF 137 предоставленного Shadowdark RPG Core ©2023. Внутренняя редакция файла с обозначением v4.6 независимо не подтверждена.",
+      "Общий индекс d20 не устанавливает один или два броска. Пары 2/2 и 7/20 заданы на входе; пример размещения отдельного маркера гробницы и тестовые имена принадлежат ведущему.",
+      "Для Development 1 источник указывает переход к Cataclysm. Это исключение сохранено в фактах, его эффект здесь не моделируется. Схемы подземелий, переходы между планами и выдача игрокам за пределами испытания базового Classic.",
+      "Выполнены обработчики приложения и сериализация на точном SHA основной ветки, отдельно от браузера и опубликованной версии. Knave используется только как сравнение модели кода при чтении, его поля не считаются Shadowdark-профилем."
+    ]
+  },
+  "remaining": [
+    "Структурированная связь POI→POI, прикрепление отдельной схемы и происхождение двух результатов таблицы не подтверждены в проверенном пути. Выбор рецепта генерации остаётся неопределённым."
+  ],
+  "full_game_accepted": false
+}
