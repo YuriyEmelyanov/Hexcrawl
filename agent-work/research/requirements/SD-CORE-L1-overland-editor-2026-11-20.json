@@ -1,0 +1,1168 @@
+{
+  "schema_version": 2,
+  "run_id": "2026-11-20-shadowdark-overland-editor-832a4448",
+  "status": "bounded_shadowdark_overland_manual_translation_verified",
+  "game_id": "SD",
+  "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+  "reviewed_at": "2026-11-20T06:29:42Z",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "research_baseline_sha": "1a62685fbf4587d42704764f1ba3442aa49ddb52",
+  "previous_matrix_ref": "agent-work/research/requirements/SD-CORE-L1-implementation.json",
+  "scope_ref": "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+  "source_coverage_ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+  "rows": [
+    {
+      "id": "SD-CORE-047-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps; Hex Terrain",
+        "paraphrase": "Начало overland hex map: бросить или выбрать стартовую категорию Hex Terrain. Таблица2d6 содержит семь категориальных строк, некоторые объединяют альтернативы: desert/arctic и forest/jungle. Это распределение2d6, а не равномерныйd12; выбор внутри объединённой категории не уточняется.",
+        "normative_kind": "procedure",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+        "locator": {
+          "printed": [
+            132
+          ],
+          "pdf": [
+            136
+          ],
+          "section": "Overland Hex Maps; Hex Terrain"
+        },
+        "parameters": {
+          "die": "2d6",
+          "ordered_category_keys": [
+            "desert_or_arctic",
+            "swamp",
+            "grassland",
+            "forest_or_jungle",
+            "river_or_coast",
+            "ocean",
+            "mountain"
+          ],
+          "roll_intervals": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              4,
+              6
+            ],
+            [
+              7,
+              8
+            ],
+            [
+              9,
+              10
+            ],
+            [
+              11,
+              11
+            ],
+            [
+              12,
+              12
+            ]
+          ],
+          "derived_weights_out_of_36": [
+            1,
+            2,
+            12,
+            11,
+            7,
+            2,
+            1
+          ],
+          "within_category_choice": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+        "normative_kind": "procedure",
+        "applicability": "Ручная подготовка базовой карты Classic после внешнего получения результатов Shadowdark.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий выбирает вариант результата и наносит сушу, открытое море либо русло на базовую карту.",
+        "inputs_and_units": {
+          "terrain_dice": [
+            4,
+            5
+          ],
+          "coast_hex": "-3,0",
+          "ocean_hexes": [
+            "-4,0",
+            "-4,1"
+          ],
+          "river_hex": "0,-1",
+          "scale_miles": 6
+        },
+        "product_operation": "Ручное присвоение геометрии для выбранного результата Hex Terrain.",
+        "expected_output": "На JSON сохранены сухое побережье, отдельная морская компонента и направленное русло.",
+        "constraints_and_exceptions": [
+          "Суммы имеют2d6 weights; count step относится к категориям, не ко всем числовым значениям.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение.",
+          "Фиксированные выборы варианта — входы ведущего. Вне процедуры не считаются обязательными."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Бросок Hex Terrain 4+5, выбран берег. Сухой гекс −3,0 рядом с краем области. Первый ocean гекс −4,0.",
+            "when": "Поставить морскую область у выбранного берега, сначала одним гексом, затем добавить −4,1.",
+            "expected": "Одиночный морской гекс отклонён без изменения. Вторая попытка создаёт одну морскую компоненту из двух смежных гексов. Берег −3,0 сохраняется сухим."
+          },
+          {
+            "given": "Результат той же категории в гексе 0,−1. Ведущий выбирает реку.",
+            "when": "Выбрать реальное ребро гекса и провести русло до общей морской компоненты.",
+            "expected": "В документе одно направленное русло от ребра 0,−1 до вершины моря. Берег и река представлены разными геометрическими сущностями."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "map.terrain_zones",
+          "map.terrain_distribution"
+        ],
+        "unresolved_parameters": [
+          "Выбор внутри трёх объединённых категорий источником не определён.",
+          "Наличие non-lossy mapping этих source categories в существующий Classic terrain vocabulary не проверено; наличие похожего имени не доказывает эквивалентность."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Ведущий наносит конкретную географию и воду и сохраняет результат подготовки карты.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Ведущий выбирает вариант результата и наносит сушу, открытое море либо русло на базовую карту.",
+      "map_object_or_state": {
+        "terrain_dice": [
+          4,
+          5
+        ],
+        "coast_hex": "-3,0",
+        "ocean_hexes": [
+          "-4,0",
+          "-4,1"
+        ],
+        "river_hex": "0,-1",
+        "scale_miles": 6
+      },
+      "expected_result": "На JSON сохранены сухое побережье, отдельная морская компонента и направленное русло.",
+      "canonical_rule_ids": [
+        "map.terrain_zones",
+        "map.terrain_distribution"
+      ],
+      "binding_ids": [
+        "SD-CORE-047-L1"
+      ],
+      "previous_product_verdict": "arithmetic_reuse_profile_absent",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "SD-OVERLAND-MANUAL-2026-11-20"
+      ],
+      "result": "В обычном Classic руками созданы сухой берег и река по рёбрам с устьем в морской компоненте. Для результата «океан» выбранный гекс −4,0 понадобилось дополнить смежным −4,1. Одиночный гекс редактор отклоняет (проверено sea_minimum), исходная карта сохраняется. Дополнительный морской гекс представляет соединённую геометрию редактора.",
+      "remaining": "Геометрический минимум моря не допускает отображения отдельного океанического гекса этим инструментом. Бросок и категория не сохраняются как профильный результат Classic.",
+      "game_id": "SD",
+      "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+      "source_rule": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps; Hex Terrain",
+        "paraphrase": "Начало overland hex map: бросить или выбрать стартовую категорию Hex Terrain. Таблица2d6 содержит семь категориальных строк, некоторые объединяют альтернативы: desert/arctic и forest/jungle. Это распределение2d6, а не равномерныйd12; выбор внутри объединённой категории не уточняется.",
+        "normative_kind": "optional_variant",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+        "locator": "Печатная с. 132, PDF 136, Overland Hex Maps; Hex Terrain",
+        "parameters": {
+          "die": "2d6",
+          "ordered_category_keys": [
+            "desert_or_arctic",
+            "swamp",
+            "grassland",
+            "forest_or_jungle",
+            "river_or_coast",
+            "ocean",
+            "mountain"
+          ],
+          "roll_intervals": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              4,
+              6
+            ],
+            [
+              7,
+              8
+            ],
+            [
+              9,
+              10
+            ],
+            [
+              11,
+              11
+            ],
+            [
+              12,
+              12
+            ]
+          ],
+          "derived_weights_out_of_36": [
+            1,
+            2,
+            12,
+            11,
+            7,
+            2,
+            1
+          ],
+          "within_category_choice": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023",
+        "source_normative_kind": "procedure",
+        "self_contained_rule": "Начало overland hex map: бросить или выбрать стартовую категорию Hex Terrain. Таблица2d6 содержит семь категориальных строк, некоторые объединяют альтернативы: desert/arctic и forest/jungle. Это распределение2d6, а не равномерныйd12; выбор внутри объединённой категории не уточняется.",
+        "parameters_and_units": {
+          "die": "2d6",
+          "ordered_category_keys": [
+            "desert_or_arctic",
+            "swamp",
+            "grassland",
+            "forest_or_jungle",
+            "river_or_coast",
+            "ocean",
+            "mountain"
+          ],
+          "roll_intervals": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              3
+            ],
+            [
+              4,
+              6
+            ],
+            [
+              7,
+              8
+            ],
+            [
+              9,
+              10
+            ],
+            [
+              11,
+              11
+            ],
+            [
+              12,
+              12
+            ]
+          ],
+          "derived_weights_out_of_36": [
+            1,
+            2,
+            12,
+            11,
+            7,
+            2,
+            1
+          ],
+          "within_category_choice": null
+        },
+        "conditions": [
+          "Применяется при выборе ведущим процедуры Shadowdark. В исходной матрице сохранена классификация procedure."
+        ],
+        "exceptions": [
+          "Выбор внутри трёх объединённых категорий источником не определён.",
+          "Наличие non-lossy mapping этих source categories в существующий Classic terrain vocabulary не проверено; наличие похожего имени не доказывает эквивалентность."
+        ],
+        "cross_references": []
+      },
+      "layer": "L1",
+      "canonical_mapping": [
+        {
+          "rule_id": "map.terrain_zones",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-047-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Ручное присвоение геометрии для выбранного результата Hex Terrain.",
+          "profile_differences": [
+            "Штатная разметка проверена для выбранного результата. Профильные броски и категориальные состояния остаются отдельными."
+          ]
+        },
+        {
+          "rule_id": "map.terrain_distribution",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-047-L1",
+          "disposition": "pending",
+          "semantic_comparison": "Ручное присвоение геометрии для выбранного результата Hex Terrain.",
+          "profile_differences": [
+            "Штатная разметка проверена для выбранного результата. Профильные броски и категориальные состояния остаются отдельными."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Геометрический минимум моря не допускает отображения отдельного океанического гекса этим инструментом. Бросок и категория не сохраняются как профильный результат Classic.",
+        "verified_parts": [
+          "В обычном Classic руками созданы сухой берег и река по рёбрам с устьем в морской компоненте. Для результата «океан» выбранный гекс −4,0 понадобилось дополнить смежным −4,1. Одиночный гекс редактор отклоняет (проверено sea_minimum), исходная карта сохраняется. Дополнительный морской гекс представляет соединённую геометрию редактора."
+        ],
+        "missing_or_unverified_parts": [
+          "Геометрический минимум моря не допускает отображения отдельного океанического гекса этим инструментом. Бросок и категория не сохраняются как профильный результат Classic."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Независимый расчёт фиксированных исходов по сохранённым параметрам страницы. Исполнение обработчиков App для морских гексов, рёбер русла и локальных биомов и редактора POI. Экспорт и повторный импорт сравниваются без savedAt.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json#verification",
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20-probe.mjs"
+        ]
+      },
+      "acceptance_scope": "bounded_manual_map_translation_only",
+      "native_profile_baseline": {
+        "status": "not_implemented",
+        "ref": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-047-L1",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "SD-CORE-048-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps; New Hex",
+        "paraphrase": "При входе персонажей в пустой гекс применяется New Hex:2–3 сдвигают текущую terrain на одну строку,4–8 сохраняют её,9–11 сдвигают на две строки,12 требует новый бросок Hex Terrain. Шаги идут по семи строкам категорий по кругу, с возвратом к началу после mountain; это не арифметика над2d6 итогом.",
+        "normative_kind": "procedure",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048",
+        "locator": {
+          "printed": [
+            132
+          ],
+          "pdf": [
+            136
+          ],
+          "section": "Overland Hex Maps; New Hex"
+        },
+        "parameters": {
+          "new_hex_die": "2d6",
+          "actions_by_total": {
+            "12": "reroll Hex Terrain with2d6",
+            "2-3": "+1 row",
+            "4-8": "same row",
+            "9-11": "+2 rows"
+          },
+          "derived_action_weights_out_of_36": {
+            "plus1": 3,
+            "same": 23,
+            "plus2": 9,
+            "reroll": 1
+          },
+          "row_count": 7,
+          "wrap_formula": "(current_row_index+step)%7",
+          "terrain_order_ref": "SD-CORE-047",
+          "step_unit": "category row",
+          "batch_generation_algorithm": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048",
+        "normative_kind": "procedure",
+        "applicability": "Ручная подготовка базовой карты Classic после внешнего получения результатов Shadowdark.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий разрешает заранее заданные броски New Hex и раскрашивает соседние клетки готовой основы.",
+        "inputs_and_units": {
+          "new_hex_totals": [
+            2,
+            9,
+            4,
+            12,
+            2
+          ],
+          "separate_terrain_at_12": [
+            3,
+            4
+          ],
+          "row_count": 7,
+          "scale_miles": 6
+        },
+        "product_operation": "Ручное нанесение локальных биомов, воды и русла по фиксированной цепочке.",
+        "expected_output": "После загрузки координаты и типы совпали с выбранной географической интерпретацией.",
+        "constraints_and_exceptions": [
+          "Source empty не приравнивается автоматически к любому visited/unvisited; продукт должен явно хранить отсутствие terrain.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение.",
+          "Фиксированные выборы варианта — входы ведущего. Вне процедуры не считаются обязательными."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "Шесть смежных гексов и фиксированные исходы 9, 2, 9, 4, 12 с отдельным 7, затем 2.",
+            "when": "Разрешить каждый бросок по таблице соответствующего этапа и руками нанести выбранные биомы и воду.",
+            "expected": "Исходы по порядку: река/побережье, океан, пустыня/Арктика, пустыня/Арктика, лес/джунгли, река/побережье. После JSON сохраняются Arctic как snow_plains в −3,−1 и −2,−1, forest как plain_deciduous_forest в −1,−1, вода и русло."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "map.generate_on_discovery",
+          "map.terrain_distribution",
+          "map.extend_preserving_content"
+        ],
+        "unresolved_parameters": [
+          "Источник не задаёт обработку смены current hex при маршруте, split party и повторной генерации; данные требуют явного выбора.",
+          "Source trigger — enter empty hex. Batch-генерация всей карты, порядок обхода, опорный сосед и обработка границ не заданы; такой режим требует явных origin/next и продуктового рецепта."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Ведущий наносит географические результаты на соседние клетки и сохраняет результат подготовки карты.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [
+        {
+          "disposition": "defer_L2",
+          "scope": "применение при входе группы в пустой гекс",
+          "reason": "Это событие ведения гекскроула; в исследовании выполнена ручная подготовка."
+        }
+      ],
+      "action": "Ведущий разрешает заранее заданные броски New Hex и раскрашивает соседние клетки готовой основы.",
+      "map_object_or_state": {
+        "new_hex_totals": [
+          2,
+          9,
+          4,
+          12,
+          2
+        ],
+        "separate_terrain_at_12": [
+          3,
+          4
+        ],
+        "row_count": 7,
+        "scale_miles": 6
+      },
+      "expected_result": "После загрузки координаты и типы совпали с выбранной географической интерпретацией.",
+      "canonical_rule_ids": [
+        "map.generate_on_discovery",
+        "map.terrain_distribution",
+        "map.extend_preserving_content"
+      ],
+      "binding_ids": [
+        "SD-CORE-048-L1"
+      ],
+      "previous_product_verdict": "profile_absent",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "SD-OVERLAND-MANUAL-2026-11-20"
+      ],
+      "result": "Из зафиксированных бросков подготовлена непрерывная цепочка из шести гексов. Старт 9 даёт «река или побережье», следующий бросок 2 даёт океан. Переход на две строки с океана возвращает к «пустыня или Арктика», после сохранения строки бросок 12 требует отдельно бросить Hex Terrain. Подстановка 7 даёт «лес или джунгли», следующий шаг возвращает к «река или побережье». Два арктических участка и лес сохранены через локальные биомы. Для последовательности d6 [2,6,3,5,1,4] ведущий вручную поставил руины только в −1,−1. После открытия JSON остались те же координаты, биомы, река, компонента моря и единственная POI.",
+      "remaining": "Сохранён только ручной результат. Из этой проверки не следует поддержка события входа в пустой гекс или штатного кольцевого перехода.",
+      "game_id": "SD",
+      "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+      "source_rule": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps; New Hex",
+        "paraphrase": "При входе персонажей в пустой гекс применяется New Hex:2–3 сдвигают текущую terrain на одну строку,4–8 сохраняют её,9–11 сдвигают на две строки,12 требует новый бросок Hex Terrain. Шаги идут по семи строкам категорий по кругу, с возвратом к началу после mountain; это не арифметика над2d6 итогом.",
+        "normative_kind": "optional_variant",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048",
+        "locator": "Печатная с. 132, PDF 136, Overland Hex Maps; New Hex",
+        "parameters": {
+          "new_hex_die": "2d6",
+          "actions_by_total": {
+            "12": "reroll Hex Terrain with2d6",
+            "2-3": "+1 row",
+            "4-8": "same row",
+            "9-11": "+2 rows"
+          },
+          "derived_action_weights_out_of_36": {
+            "plus1": 3,
+            "same": 23,
+            "plus2": 9,
+            "reroll": 1
+          },
+          "row_count": 7,
+          "wrap_formula": "(current_row_index+step)%7",
+          "terrain_order_ref": "SD-CORE-047",
+          "step_unit": "category row",
+          "batch_generation_algorithm": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023",
+        "source_normative_kind": "procedure",
+        "self_contained_rule": "При входе персонажей в пустой гекс применяется New Hex:2–3 сдвигают текущую terrain на одну строку,4–8 сохраняют её,9–11 сдвигают на две строки,12 требует новый бросок Hex Terrain. Шаги идут по семи строкам категорий по кругу, с возвратом к началу после mountain; это не арифметика над2d6 итогом.",
+        "parameters_and_units": {
+          "new_hex_die": "2d6",
+          "actions_by_total": {
+            "12": "reroll Hex Terrain with2d6",
+            "2-3": "+1 row",
+            "4-8": "same row",
+            "9-11": "+2 rows"
+          },
+          "derived_action_weights_out_of_36": {
+            "plus1": 3,
+            "same": 23,
+            "plus2": 9,
+            "reroll": 1
+          },
+          "row_count": 7,
+          "wrap_formula": "(current_row_index+step)%7",
+          "terrain_order_ref": "SD-CORE-047",
+          "step_unit": "category row",
+          "batch_generation_algorithm": null
+        },
+        "conditions": [
+          "Применяется при выборе ведущим процедуры Shadowdark. В исходной матрице сохранена классификация procedure."
+        ],
+        "exceptions": [
+          "Источник не задаёт обработку смены current hex при маршруте, split party и повторной генерации; данные требуют явного выбора.",
+          "Source trigger — enter empty hex. Batch-генерация всей карты, порядок обхода, опорный сосед и обработка границ не заданы; такой режим требует явных origin/next и продуктового рецепта."
+        ],
+        "cross_references": [
+          "SD-CORE-047"
+        ]
+      },
+      "layer": "L1",
+      "canonical_mapping": [
+        {
+          "rule_id": "map.generate_on_discovery",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-048-L1",
+          "disposition": "pending",
+          "semantic_comparison": "Ручное нанесение локальных биомов, воды и русла по фиксированной цепочке.",
+          "profile_differences": [
+            "Штатная разметка проверена для выбранного результата. Профильные броски и категориальные состояния остаются отдельными."
+          ]
+        },
+        {
+          "rule_id": "map.terrain_distribution",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-048-L1",
+          "disposition": "pending",
+          "semantic_comparison": "Ручное нанесение локальных биомов, воды и русла по фиксированной цепочке.",
+          "profile_differences": [
+            "Штатная разметка проверена для выбранного результата. Профильные броски и категориальные состояния остаются отдельными."
+          ]
+        },
+        {
+          "rule_id": "map.extend_preserving_content",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-048-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Ручное нанесение локальных биомов, воды и русла по фиксированной цепочке.",
+          "profile_differences": [
+            "Штатная разметка проверена для выбранного результата. Профильные броски и категориальные состояния остаются отдельными."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Сохранён только ручной результат. Из этой проверки не следует поддержка события входа в пустой гекс или штатного кольцевого перехода.",
+        "verified_parts": [
+          "Из зафиксированных бросков подготовлена непрерывная цепочка из шести гексов. Старт 9 даёт «река или побережье», следующий бросок 2 даёт океан. Переход на две строки с океана возвращает к «пустыня или Арктика», после сохранения строки бросок 12 требует отдельно бросить Hex Terrain. Подстановка 7 даёт «лес или джунгли», следующий шаг возвращает к «река или побережье».",
+          "Два арктических участка и лес сохранены через локальные биомы. Для последовательности d6 [2,6,3,5,1,4] ведущий вручную поставил руины только в −1,−1. После открытия JSON остались те же координаты, биомы, река, компонента моря и единственная POI."
+        ],
+        "missing_or_unverified_parts": [
+          "Сохранён только ручной результат. Из этой проверки не следует поддержка события входа в пустой гекс или штатного кольцевого перехода."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Независимый расчёт фиксированных исходов по сохранённым параметрам страницы. Исполнение обработчиков App для морских гексов, рёбер русла и локальных биомов и редактора POI. Экспорт и повторный импорт сравниваются без savedAt.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json#verification",
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20-probe.mjs"
+        ]
+      },
+      "acceptance_scope": "bounded_manual_map_translation_only",
+      "native_profile_baseline": {
+        "status": "not_implemented",
+        "ref": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-048-L1",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    },
+    {
+      "id": "SD-CORE-050-L1",
+      "source": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps",
+        "paraphrase": "Для каждого гекса бросаетсяd6; на1 в гексе есть одна point of interest. Это вероятность1/6 одного POI, а не числоPOI=d6 и не обязательный объект в каждом гексе. Прямой процедуры многократной проверки уже обработанного гекса источник не задаёт.",
+        "normative_kind": "procedure",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050",
+        "locator": {
+          "printed": [
+            132
+          ],
+          "pdf": [
+            136
+          ],
+          "section": "Overland Hex Maps"
+        },
+        "parameters": {
+          "die": "1d6",
+          "POI_on": 1,
+          "POI_count_on_success": 1,
+          "probability": {
+            "numerator": 1,
+            "denominator": 6
+          },
+          "retry_policy": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023"
+      },
+      "operational_requirement": {
+        "source_rule_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050",
+        "normative_kind": "procedure",
+        "applicability": "Ручная подготовка базовой карты Classic после внешнего получения результатов Shadowdark.",
+        "layer": "L1",
+        "trigger_or_user_action": "Ведущий размещает вручную выбранную точку только на гексе, где внешняя проверка дала d6=1.",
+        "inputs_and_units": {
+          "dice": [
+            2,
+            6,
+            3,
+            5,
+            1,
+            4
+          ],
+          "success_hex": "-1,-1",
+          "type": "ruins",
+          "scale_miles": 6
+        },
+        "product_operation": "Ручное размещение одного места по заранее разрешённому исходу presence.",
+        "expected_output": "Одна POI в ожидаемой клетке после импорта, остальные без POI.",
+        "constraints_and_exceptions": [
+          "Idempotence/check_state — предложенная защита продукта, а не отдельное правило книги.",
+          "Применимость к карте не означает утверждённой разработки или реализации. Числа/исключения полного источника сохранены; заметка не доказывает исполнение.",
+          "Фиксированные выборы варианта — входы ведущего. Вне процедуры не считаются обязательными."
+        ],
+        "acceptance_cases": [
+          {
+            "given": "У шести гексов фиксированы результаты presence d6 [2,6,3,5,1,4]. Основа не содержит POI.",
+            "when": "На результате 1 в −1,−1 вручную поставить выбранные руины, затем сохранить и открыть карту.",
+            "expected": "Единственная POI — руины в −1,−1. На остальных пяти проверяемых гексах POI отсутствуют. Причина появления и результат броска остаются во внешнем протоколе проверки."
+          }
+        ],
+        "source_vs_product_interpretation": "Игровое правило/совет и численные параметры принадлежат источнику. Структурированные поля, автоматизация, проверки ввода, журнал и адаптеры — предлагаемая продуктовая реализация. Она не обязательна по книге; ведущий может изменить или отключить правило (p102).",
+        "canonical_rule_refs": [
+          "content.site_density",
+          "content.feature_distribution"
+        ],
+        "unresolved_parameters": [
+          "Повторная проверка уже подготовленного гекса не описана."
+        ]
+      },
+      "disposition": "keep_L1",
+      "disposition_reason": "Ведущий наносит одну точку интереса в заданный гекс и сохраняет результат подготовки карты.",
+      "product_boundary": "Создание/наполнение/редактирование региональной карты",
+      "related_dispositions": [],
+      "action": "Ведущий размещает вручную выбранную точку только на гексе, где внешняя проверка дала d6=1.",
+      "map_object_or_state": {
+        "dice": [
+          2,
+          6,
+          3,
+          5,
+          1,
+          4
+        ],
+        "success_hex": "-1,-1",
+        "type": "ruins",
+        "scale_miles": 6
+      },
+      "expected_result": "Одна POI в ожидаемой клетке после импорта, остальные без POI.",
+      "canonical_rule_ids": [
+        "content.site_density",
+        "content.feature_distribution"
+      ],
+      "binding_ids": [
+        "SD-CORE-050-L1"
+      ],
+      "previous_product_verdict": "profile_absent",
+      "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "implementation_status": "partial",
+      "evidence_ids": [
+        "SD-OVERLAND-MANUAL-2026-11-20"
+      ],
+      "result": "Два арктических участка и лес сохранены через локальные биомы. Для последовательности d6 [2,6,3,5,1,4] ведущий вручную поставил руины только в −1,−1. После открытия JSON остались те же координаты, биомы, река, компонента моря и единственная POI.",
+      "remaining": "Состояние «проверен и пуст» и исходы d6 не создаются ручной командой. Утверждённый профиль, автоматически создающий слот, этим тестом не подтверждается.",
+      "game_id": "SD",
+      "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+      "source_rule": {
+        "source_id": "SD-CORE-SUPPLIED-20261106",
+        "printed_page": 132,
+        "printed_pages": [
+          132
+        ],
+        "pdf_page": 136,
+        "pdf_pages": [
+          136
+        ],
+        "section": "Overland Hex Maps",
+        "paraphrase": "Для каждого гекса бросаетсяd6; на1 в гексе есть одна point of interest. Это вероятность1/6 одного POI, а не числоPOI=d6 и не обязательный объект в каждом гексе. Прямой процедуры многократной проверки уже обработанного гекса источник не задаёт.",
+        "normative_kind": "optional_variant",
+        "quotation": null,
+        "also": [],
+        "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+        "source_ref": "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050",
+        "locator": "Печатная с. 132, PDF 136, Overland Hex Maps",
+        "parameters": {
+          "die": "1d6",
+          "POI_on": 1,
+          "POI_count_on_success": 1,
+          "probability": {
+            "numerator": 1,
+            "denominator": 6
+          },
+          "retry_policy": null
+        },
+        "access_level": "full_text",
+        "author_project_dedup_key": "kelsey-dionne/the-arcane-library/shadowdark/core2023",
+        "source_normative_kind": "procedure",
+        "self_contained_rule": "Для каждого гекса бросаетсяd6; на1 в гексе есть одна point of interest. Это вероятность1/6 одного POI, а не числоPOI=d6 и не обязательный объект в каждом гексе. Прямой процедуры многократной проверки уже обработанного гекса источник не задаёт.",
+        "parameters_and_units": {
+          "die": "1d6",
+          "POI_on": 1,
+          "POI_count_on_success": 1,
+          "probability": {
+            "numerator": 1,
+            "denominator": 6
+          },
+          "retry_policy": null
+        },
+        "conditions": [
+          "Применяется при выборе ведущим процедуры Shadowdark. В исходной матрице сохранена классификация procedure."
+        ],
+        "exceptions": [
+          "Повторная проверка уже подготовленного гекса не описана."
+        ],
+        "cross_references": [
+          "SD-CORE-051"
+        ]
+      },
+      "layer": "L1",
+      "canonical_mapping": [
+        {
+          "rule_id": "content.site_density",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-050-L1",
+          "disposition": "reuse",
+          "semantic_comparison": "Ручное размещение одного места по заранее разрешённому исходу presence.",
+          "profile_differences": [
+            "Штатная разметка проверена для выбранного результата. Профильные броски и категориальные состояния остаются отдельными."
+          ]
+        },
+        {
+          "rule_id": "content.feature_distribution",
+          "binding_ref": "agent-work/rules/game-bindings.json#SD-CORE-050-L1",
+          "disposition": "pending",
+          "semantic_comparison": "Ручное размещение одного места по заранее разрешённому исходу presence.",
+          "profile_differences": [
+            "Штатная разметка проверена для выбранного результата. Профильные броски и категориальные состояния остаются отдельными."
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "partial",
+        "mode": "manual_existing_tools",
+        "comment": "Состояние «проверен и пуст» и исходы d6 не создаются ручной командой. Утверждённый профиль, автоматически создающий слот, этим тестом не подтверждается.",
+        "verified_parts": [
+          "Два арктических участка и лес сохранены через локальные биомы. Для последовательности d6 [2,6,3,5,1,4] ведущий вручную поставил руины только в −1,−1. После открытия JSON остались те же координаты, биомы, река, компонента моря и единственная POI."
+        ],
+        "missing_or_unverified_parts": [
+          "Состояние «проверен и пуст» и исходы d6 не создаются ручной командой. Утверждённый профиль, автоматически создающий слот, этим тестом не подтверждается."
+        ],
+        "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+        "method": "Независимый расчёт фиксированных исходов по сохранённым параметрам страницы. Исполнение обработчиков App для морских гексов, рёбер русла и локальных биомов и редактора POI. Экспорт и повторный импорт сравниваются без savedAt.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json#verification",
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20-probe.mjs"
+        ]
+      },
+      "acceptance_scope": "bounded_manual_map_translation_only",
+      "native_profile_baseline": {
+        "status": "not_implemented",
+        "ref": "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-050-L1",
+        "product_sha": "172155071ca1408abf6960dbc876ba030fc61613"
+      },
+      "owner_decision_refs": [
+        "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json"
+      ],
+      "open_decisions": [],
+      "backlog_refs": []
+    }
+  ],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_head_observed": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matching_git_blobs": 105,
+    "runtime_verified": true,
+    "source_reopened_this_run": false,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "probe_ref": "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20-probe.mjs",
+    "command": "Скопировать probe в корень checkout проверенного SHA, выполнить node research-shadowdark-overland-editor.mjs.",
+    "method": "Независимый расчёт фиксированных исходов по сохранённым параметрам страницы. Исполнение обработчиков App для морских гексов, рёбер русла и локальных биомов и редактора POI. Экспорт и повторный импорт сравниваются без savedAt.",
+    "specific_code_refs": [
+      "src/App.tsx#L1033",
+      "src/App.tsx#L14066",
+      "src/App.tsx#L14802",
+      "src/App.tsx#L14814",
+      "src/App.tsx#L16091",
+      "src/manualWater.ts#L64",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "exit_code": 0,
+    "observed": {
+      "fixture": {
+        "seed": 42,
+        "baseHexStepMiles": 6,
+        "foundationHexes": 61
+      },
+      "sourceProcedure": [
+        {
+          "hex": "-3,0",
+          "dice": [
+            4,
+            5
+          ],
+          "poi": 2,
+          "choice": "coast",
+          "terrainRoll": 9,
+          "operation": "initial",
+          "category": "river_or_coast"
+        },
+        {
+          "hex": "-4,0",
+          "dice": [
+            1,
+            1
+          ],
+          "poi": 6,
+          "choice": "ocean",
+          "terrainRoll": 2,
+          "operation": "plus1",
+          "category": "ocean"
+        },
+        {
+          "hex": "-3,-1",
+          "dice": [
+            4,
+            5
+          ],
+          "poi": 3,
+          "choice": "arctic",
+          "terrainRoll": 9,
+          "operation": "plus2",
+          "category": "desert_or_arctic"
+        },
+        {
+          "hex": "-2,-1",
+          "dice": [
+            2,
+            2
+          ],
+          "poi": 5,
+          "choice": "arctic",
+          "terrainRoll": 4,
+          "operation": "same",
+          "category": "desert_or_arctic"
+        },
+        {
+          "hex": "-1,-1",
+          "dice": [
+            6,
+            6
+          ],
+          "reroll": [
+            3,
+            4
+          ],
+          "poi": 1,
+          "choice": "forest",
+          "terrainRoll": 12,
+          "operation": "reroll",
+          "category": "forest_or_jungle"
+        },
+        {
+          "hex": "0,-1",
+          "dice": [
+            1,
+            1
+          ],
+          "poi": 4,
+          "choice": "river",
+          "terrainRoll": 2,
+          "operation": "plus1",
+          "category": "river_or_coast"
+        }
+      ],
+      "persisted": {
+        "coast": {
+          "hex": "-3,0",
+          "adjacentOcean": "-4,0",
+          "dry": true
+        },
+        "ocean": {
+          "cells": [
+            "-4,0",
+            "-4,1"
+          ],
+          "id": 1
+        },
+        "biomeOverrides": {
+          "-3,-1": "snow_plains",
+          "-2,-1": "snow_plains",
+          "-1,-1": "plain_deciduous_forest"
+        },
+        "river": {
+          "id": 1,
+          "adjacentHex": "0,-1",
+          "startsAt": "0,-56",
+          "endsAt": "-145.492,28",
+          "vertices": [
+            "0,-56",
+            "0,-28",
+            "-24.249,-14",
+            "-24.249,14",
+            "-48.497,28",
+            "-72.746,14",
+            "-96.995,28",
+            "-121.244,14",
+            "-145.492,28"
+          ]
+        },
+        "poi": {
+          "-1,-1": "ruins"
+        }
+      },
+      "rejectedOneSeaCell": {
+        "feedback": "Sea identity could not be validated. Update the cell choices or check the save. Your map is unchanged.",
+        "originalMapUnchanged": true
+      },
+      "exactSaveReload": true,
+      "randomGenerationStateUnchanged": true
+    }
+  },
+  "quality": {
+    "standard_ref": "agent-work/research/rule-analysis-standard.md",
+    "game_id": "SD",
+    "edition": "Shadowdark RPG Core, copyright2023; supplied filename v4.6, internal revision unverified",
+    "source_inventory_ref": "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+    "analysis_ref": "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json",
+    "reviewed_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "reviewer": "HX-RSR-001",
+    "overall_status": "checkpoint",
+    "checks": [
+      {
+        "criterion_id": "RA-Q01",
+        "result": "pass",
+        "comment": "Издание, конкретный экземпляр и страницы указаны. Внутренний номер редакции не заявлен.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q02",
+        "result": "blocked",
+        "comment": "Общий тематический корпус остаётся в существующем ledger. В этом запуске проверен ограниченный тематический блок.",
+        "evidence_refs": [
+          "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json"
+        ],
+        "exact_continuation": "Продолжать с ранее извлечённым корпусом и только относящимися к карте операциями."
+      },
+      {
+        "criterion_id": "RA-Q03",
+        "result": "pass",
+        "comment": "Смысл трёх ранее извлечённых процедур и их параметры сохранены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q04",
+        "result": "pass",
+        "comment": "Внутригрупповой выбор, отдельный переброс, направление сдвига и d6 не смешаны.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q05",
+        "result": "pass",
+        "comment": "Правило, решение ведущего и ограничения приложения разделены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q06",
+        "result": "pass",
+        "comment": "Известны действие и результат для каждого гекса.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q07",
+        "result": "pass",
+        "comment": "Действия относятся к подготовке и сохранению карты.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q08",
+        "result": "pass",
+        "comment": "Переиспользованы действующие привязки и точные ключи механик.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q09",
+        "result": "pass",
+        "comment": "Позитивные случаи и отказ для одного морского гекса исполнены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q10",
+        "result": "pass",
+        "comment": "Вердикт разделяет ручное исполнение и исторический native baseline.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q11",
+        "result": "pass",
+        "comment": "Метод и точный SHA отделены от ранее прочитанной страницы.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q12",
+        "result": "pass",
+        "comment": "Передача не добавляет очередь и не смешивает 6‑мильное море с малым озером.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q13",
+        "result": "pass",
+        "comment": "Обзор и фактические выходы сверены.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      },
+      {
+        "criterion_id": "RA-Q14",
+        "result": "blocked",
+        "comment": "Полная приёмка игры и профильная автоматизация не открыты этим срезом.",
+        "evidence_refs": [
+          "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json"
+        ],
+        "exact_continuation": "Продолжать с ранее извлечённым корпусом и только относящимися к карте операциями."
+      },
+      {
+        "criterion_id": "RA-Q15",
+        "result": "pass",
+        "comment": "Вывод ограничен проверенными картографическими операциями.",
+        "evidence_refs": [
+          "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+        ],
+        "exact_continuation": null
+      }
+    ],
+    "remaining_work": [
+      "Источниковые параметры взяты из уже проверенной выписки печатной стр. 132, PDF 136 предоставленного Shadowdark RPG Core ©2023. Номер внутренней редакции при имени файла v4.6 не подтверждён. Выбор берег/река, Арктика и лес остаётся выбором ведущего.",
+      "Фикстура заранее содержит сухую основу. Ручная разметка на готовой основе не проверяет событие входа в пустой гекс, последовательную автогенерацию или режим партии. Ход с точкой использует вручную выбранные руины без предписания таблицы location/development.",
+      "Доказательство относится к базовой сетке Classic, обработчикам App и JSON. Отрисовка браузера, 1-мильные озёра и объявленная игровая поддержка вне проверки."
+    ]
+  },
+  "full_game_accepted": false
+}

@@ -1,0 +1,348 @@
+{
+  "run_id": "2026-11-20-shadowdark-overland-editor-832a4448",
+  "program_id": "HX-RSR-001",
+  "status": "bounded_shadowdark_overland_manual_translation_verified",
+  "started_at": "2026-11-20T06:27:08Z",
+  "completed_at": "2026-11-20T06:29:42Z",
+  "selected_task": {
+    "id": "HX-RSR-SD-L1-OVERLAND-EDITOR-TRANSLATION",
+    "game_id": "SD",
+    "layer": "L1",
+    "status": "selected_bounded_cross_profile_check",
+    "action": "Испытать ручное нанесение известного набора Shadowdark Overland Hex Maps, печатная стр. 132, в текущем редакторе. Переиспользовать первичную выписку SD-CORE-047/048/050. Проверить, как ведущий наносит результат категории «река или побережье», отдельный океан и место по исходу d6=1.",
+    "completion_condition": "Дать фиксированную последовательность исходов и проверенные координаты биома, береговой воды либо русла и POI после повторного импорта. Отдельно показать, какие результаты можно нанести вручную, а какие требуют штатного профиля. Общее отсутствие автоматики уже проверено и повторно не доказывается.",
+    "source_refs": [
+      "agent-work/research/requirements/SD-CORE-L1-implementation.json",
+      "agent-work/market/rules/Shadowdark-Core.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json"
+    ],
+    "selection_reason": "Полный D&D и печатный остаток PF2 ждут доступа. Для Shadowdark доступна ранее проверенная страница с конкретным действием картографа и конкретной границей существующих инструментов."
+  },
+  "selection_reason": "У Shadowdark есть ранее прочитанный блок с точными параметрами. Проверка ручного переложения устраняет неопределённость, скрытую общим статусом отсутствия профильной автоматики. Проводится в пределах L1 на действующем дереве.",
+  "alternatives": [
+    {
+      "task_id": "Полный DMG2014 или печатный остаток PF2",
+      "reason": "Новый доступ к недостающим тематическим диапазонам не заявлен. Чтение с прежними входами не даст закрытия."
+    },
+    {
+      "task_id": "Повторить сверку генератора Shadowdark",
+      "reason": "Прежняя проверка уже показала отличие профилей. Выбран фактический путь нанесения известных результатов и ограничения представления."
+    }
+  ],
+  "inputs_and_versions": {
+    "operations_sha": "1a62685fbf4587d42704764f1ba3442aa49ddb52",
+    "main_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "active_ranking": "agent-work/market/three-scenario-ranking-2026-11-15.json",
+    "active_overall_cohort": [
+      "DND5",
+      "PF2",
+      "KNAVE2",
+      "CROWS",
+      "SD"
+    ],
+    "refs": [
+      "AGENTS.md",
+      "agent-work/research/contract.md",
+      "agent-work/research/README.md",
+      "agent-work/research/state.json",
+      "agent-work/research/method.json",
+      "agent-work/research/proposals.json",
+      "agent-work/research/data-contract.json",
+      "agent-work/research/work-plan.json",
+      "agent-work/research/rule-analysis-standard.md",
+      "agent-work/research/requirements/SD-CORE-L1-implementation.json",
+      "agent-work/market/rules/Shadowdark-Core-coverage-ledger.json",
+      "agent-work/research/requirements/overall-top5-L1-acceptance-2026-11-19.json",
+      "agent-work/research/requirements/SD-CORE-scope-audit.json",
+      "agent-work/process.md",
+      "agent-work/latest.json",
+      "agent-work/backlog.json",
+      "agent-work/approvals.json",
+      "agent-work/feedback.json",
+      "agent-work/execution-locks.json",
+      "agent-work/budget.json",
+      "agent-work/decisions/owner-decision-2026-11-16-research-product-scope-filter.json",
+      "agent-work/rules/game-bindings.json#SD-CORE-047-L1",
+      "agent-work/rules/game-bindings.json#SD-CORE-048-L1",
+      "agent-work/rules/game-bindings.json#SD-CORE-050-L1",
+      "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-047",
+      "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-048",
+      "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-050"
+    ]
+  },
+  "findings": [
+    "Из зафиксированных бросков подготовлена непрерывная цепочка из шести гексов. Старт 9 даёт «река или побережье», следующий бросок 2 даёт океан. Переход на две строки с океана возвращает к «пустыня или Арктика», после сохранения строки бросок 12 требует отдельно бросить Hex Terrain. Подстановка 7 даёт «лес или джунгли», следующий шаг возвращает к «река или побережье».",
+    "В обычном Classic руками созданы сухой берег и река по рёбрам с устьем в морской компоненте. Для результата «океан» выбранный гекс −4,0 понадобилось дополнить смежным −4,1. Одиночный гекс редактор отклоняет (проверено sea_minimum), исходная карта сохраняется. Дополнительный морской гекс представляет соединённую геометрию редактора.",
+    "Два арктических участка и лес сохранены через локальные биомы. Для последовательности d6 [2,6,3,5,1,4] ведущий вручную поставил руины только в −1,−1. После открытия JSON остались те же координаты, биомы, река, компонента моря и единственная POI.",
+    "Карта воспроизводит географию выбранных результатов. Пары костей, исходные категории Shadowdark и отметка проверки без результата записаны в исследовательском сценарии. Их хранение в штатном игровом профиле и автоматическое применение таблиц не заявляются."
+  ],
+  "changed_refs": [
+    "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json",
+    "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.md",
+    "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20-probe.mjs",
+    "agent-work/research/runs/2026-11-20-shadowdark-overland-editor-832a4448.json",
+    "agent-work/research/handoffs/2026-11-20-shadowdark-overland-editor-832a4448-strategist.json",
+    "agent-work/research/state.json",
+    "agent-work/research/work-plan.json",
+    "agent-work/research/README.md",
+    "agent-work/latest.json",
+    "agent-work/claims/2026-11-20-shadowdark-overland-editor-832a4448.json",
+    "agent-work/research/automation-health/2026-11-20-shadowdark-overland-editor-832a4448-started.json",
+    "agent-work/execution-locks.json"
+  ],
+  "rating_proposal_refs": [],
+  "product_task_refs": [],
+  "verification": {
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "main_head_observed": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "matching_git_blobs": 105,
+    "runtime_verified": true,
+    "source_reopened_this_run": false,
+    "browser_verified": false,
+    "live_deployment_verified": false,
+    "probe_ref": "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20-probe.mjs",
+    "command": "Скопировать probe в корень checkout проверенного SHA, выполнить node research-shadowdark-overland-editor.mjs.",
+    "method": "Независимый расчёт фиксированных исходов по сохранённым параметрам страницы. Исполнение обработчиков App для морских гексов, рёбер русла и локальных биомов и редактора POI. Экспорт и повторный импорт сравниваются без savedAt.",
+    "specific_code_refs": [
+      "src/App.tsx#L1033",
+      "src/App.tsx#L14066",
+      "src/App.tsx#L14802",
+      "src/App.tsx#L14814",
+      "src/App.tsx#L16091",
+      "src/manualWater.ts#L64",
+      "test/helpers/generation-harness.mjs"
+    ],
+    "exit_code": 0,
+    "observed": {
+      "fixture": {
+        "seed": 42,
+        "baseHexStepMiles": 6,
+        "foundationHexes": 61
+      },
+      "sourceProcedure": [
+        {
+          "hex": "-3,0",
+          "dice": [
+            4,
+            5
+          ],
+          "poi": 2,
+          "choice": "coast",
+          "terrainRoll": 9,
+          "operation": "initial",
+          "category": "river_or_coast"
+        },
+        {
+          "hex": "-4,0",
+          "dice": [
+            1,
+            1
+          ],
+          "poi": 6,
+          "choice": "ocean",
+          "terrainRoll": 2,
+          "operation": "plus1",
+          "category": "ocean"
+        },
+        {
+          "hex": "-3,-1",
+          "dice": [
+            4,
+            5
+          ],
+          "poi": 3,
+          "choice": "arctic",
+          "terrainRoll": 9,
+          "operation": "plus2",
+          "category": "desert_or_arctic"
+        },
+        {
+          "hex": "-2,-1",
+          "dice": [
+            2,
+            2
+          ],
+          "poi": 5,
+          "choice": "arctic",
+          "terrainRoll": 4,
+          "operation": "same",
+          "category": "desert_or_arctic"
+        },
+        {
+          "hex": "-1,-1",
+          "dice": [
+            6,
+            6
+          ],
+          "reroll": [
+            3,
+            4
+          ],
+          "poi": 1,
+          "choice": "forest",
+          "terrainRoll": 12,
+          "operation": "reroll",
+          "category": "forest_or_jungle"
+        },
+        {
+          "hex": "0,-1",
+          "dice": [
+            1,
+            1
+          ],
+          "poi": 4,
+          "choice": "river",
+          "terrainRoll": 2,
+          "operation": "plus1",
+          "category": "river_or_coast"
+        }
+      ],
+      "persisted": {
+        "coast": {
+          "hex": "-3,0",
+          "adjacentOcean": "-4,0",
+          "dry": true
+        },
+        "ocean": {
+          "cells": [
+            "-4,0",
+            "-4,1"
+          ],
+          "id": 1
+        },
+        "biomeOverrides": {
+          "-3,-1": "snow_plains",
+          "-2,-1": "snow_plains",
+          "-1,-1": "plain_deciduous_forest"
+        },
+        "river": {
+          "id": 1,
+          "adjacentHex": "0,-1",
+          "startsAt": "0,-56",
+          "endsAt": "-145.492,28",
+          "vertices": [
+            "0,-56",
+            "0,-28",
+            "-24.249,-14",
+            "-24.249,14",
+            "-48.497,28",
+            "-72.746,14",
+            "-96.995,28",
+            "-121.244,14",
+            "-145.492,28"
+          ]
+        },
+        "poi": {
+          "-1,-1": "ruins"
+        }
+      },
+      "rejectedOneSeaCell": {
+        "feedback": "Sea identity could not be validated. Update the cell choices or check the save. Your map is unchanged.",
+        "originalMapUnchanged": true
+      },
+      "exactSaveReload": true,
+      "randomGenerationStateUnchanged": true
+    },
+    "recovered_probe_error": {
+      "observed_error": "The input did not match the regular expression /two|2/i. Input: Sea identity could not be validated. Update the cell choices or check the save. Your map is unchanged.",
+      "cause": "Тест первоначально ожидал буквальное указание минимума в интерфейсе. Общий отказ проверен отдельно от кода sea_minimum в доменной операции."
+    }
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "832a4448-a1e8-8323-a304-3c4cd6832532",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T06:30:00Z",
+          "started_at": "2026-11-20T06:26:39.180714Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T09:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "1d2a1673-a1c8-832a-9a92-81fc7fe648a5",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T06:00:00Z",
+          "started_at": "2026-11-20T06:00:37.074444Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T09:00:00+03:00"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "832a4448-a1e8-8323-a304-3c4cd6832532",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T06:30:00Z",
+          "started_at": "2026-11-20T06:26:39.180714Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T09:30:00+03:00"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+        "last": {
+          "id": "1d2a1673-a1c8-832a-9a92-81fc7fe648a5",
+          "recorded_status": "in_progress",
+          "scheduled_for": "2026-11-20T06:00:00Z",
+          "started_at": "2026-11-20T06:00:37.074444Z",
+          "completed_at": null,
+          "chat_ref": null
+        },
+        "next": "2026-11-20T09:00:00+03:00"
+      }
+    ],
+    "schedule_changes": []
+  },
+  "checkpoint": {
+    "status": "bounded_shadowdark_overland_manual_translation_verified",
+    "run_id": "2026-11-20-shadowdark-overland-editor-832a4448",
+    "stage": "shadowdark_l1_overland_editor_translation",
+    "last_successful_step": "Проверен полный заявленный ручной сценарий от фиксированных бросков до повторного импорта карты.",
+    "failed_operation": null,
+    "observed_error": null,
+    "stop_reason": "Заявленный сценарий проверен. Автоматический профиль и содержимое следующего блока вынесены в точный остаток.",
+    "cause_status": "confirmed",
+    "saved_results": [
+      "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json",
+      "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.md",
+      "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20-probe.mjs",
+      "agent-work/research/handoffs/2026-11-20-shadowdark-overland-editor-832a4448-strategist.json",
+      "agent-work/research/runs/2026-11-20-shadowdark-overland-editor-832a4448.json"
+    ],
+    "exact_continuation": "Взять один из результатов точки интереса Shadowdark со стр. 133 и проверить, какие части Location/Development сохраняются за самой точкой на карте. Использовать уже извлечённые строки. Показать разницу между сохраняемым типом места, отдельной ссылкой на другое место или локальную схему и текстом гекса. Взять заранее заданные индексы колонок. Способ выбора общего или независимых бросков оставить неопределённым, пока источник его не уточняет.",
+    "needs_owner_action": false,
+    "owner_action": null
+  },
+  "next_candidate": {
+    "id": "HX-RSR-SD-L1-POI-LOCATION-DEVELOPMENT",
+    "game_id": "SD",
+    "layer": "L1",
+    "status": "selected_bounded_unverified_remainder",
+    "action": "Взять один из результатов точки интереса Shadowdark со стр. 133 и проверить, какие части Location/Development сохраняются за самой точкой на карте. Использовать уже извлечённые строки.",
+    "completion_condition": "Показать разницу между сохраняемым типом места, отдельной ссылкой на другое место или локальную схему и текстом гекса. Взять заранее заданные индексы колонок. Способ выбора общего или независимых бросков оставить неопределённым, пока источник его не уточняет.",
+    "source_refs": [
+      "agent-work/research/requirements/SD-CORE-L1-implementation.json#SD-CORE-051-L1",
+      "agent-work/market/rules/Shadowdark-Core.json#SD-CORE-051",
+      "agent-work/research/requirements/SD-CORE-L1-overland-editor-2026-11-20.json"
+    ],
+    "selection_reason": "Ручное размещение результата d6=1 подтверждено. Следующий реальный вопрос — может ли подготовленное место сохранить оба компонента и их происхождение при повторном открытии."
+  }
+}
