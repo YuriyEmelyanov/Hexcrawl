@@ -76,11 +76,11 @@
       "SWC-obs-01"
     ],
     "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
-    "fallback": "Пока портретный профиль недоступен, проверить KNAVE2-006-L1 на сайте: изменить проходимость выбранного гекса отдельно от биома и сравнить оба значения после перезагрузки из JSON. Настольное расширение Classic с авторским POI закрыто."
+    "fallback": "KNAVE2-010-L1. В профиле Knave сохранить секрет с уликой, проверить отказ при пустой улике, затем проверить, что именно передаётся игроку при раскрытии улики."
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-21-L1-authored-growth-history",
+  "last_completed_run": "2026-11-21-L1-Knave-traversal-0630",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -252,7 +252,8 @@
     "agent-work/research/runs/2026-11-21-L1-all-acceptance-214516.json",
     "agent-work/research/runs/2026-11-21-L1-MB-generation-20.json",
     "agent-work/research/runs/2026-11-21-L1-classic-growth-roundtrip-0430.json",
-    "agent-work/research/runs/2026-11-21-L1-authored-growth-history.json"
+    "agent-work/research/runs/2026-11-21-L1-authored-growth-history.json",
+    "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -297,10 +298,10 @@
       ]
     ]
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-21-L1-authored-growth-history.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-21-L1-authored-growth-history.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-21-mobile-browser-acceptance.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -1182,7 +1183,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-21-L1-authored-growth-history",
+  "last_run_id": "2026-11-21-L1-Knave-traversal-0630",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1238,11 +1239,11 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-21-L1-authored-growth-history",
+  "last_run": "2026-11-21-L1-Knave-traversal-0630",
   "checkpoint": {
     "status": "checkpoint_large_unfinished_corpus",
-    "run_id": "2026-11-21-L1-authored-growth-history",
-    "result_ref": "agent-work/research/runs/2026-11-21-L1-authored-growth-history.json",
+    "run_id": "2026-11-21-L1-Knave-traversal-0630",
+    "result_ref": "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json",
     "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
     "next": {
       "ids": [
@@ -1253,8 +1254,15 @@
         "SWC-obs-01"
       ],
       "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
-      "fallback": "Пока портретный профиль недоступен, проверить KNAVE2-006-L1 на сайте: изменить проходимость выбранного гекса отдельно от биома и сравнить оба значения после перезагрузки из JSON. Настольное расширение Classic с авторским POI закрыто."
-    }
+      "fallback": "KNAVE2-010-L1. В профиле Knave сохранить секрет с уликой, проверить отказ при пустой улике, затем проверить, что именно передаётся игроку при раскрытии улики."
+    },
+    "last_successful_step": "Compared five production exports; measured 20 verified UI edits.",
+    "remaining": [
+      "desktop browser-local input to visible result P95 <250 ms",
+      "portrait phone emulation, 20 edits, P95 <500 ms and each <2000 ms, verify persistence"
+    ],
+    "needs_owner_action": false,
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee"
   },
   "latest_recent_survey_audit": {
     "ref": "agent-work/research/market/recent-survey-2026-11-14.json",
@@ -4254,23 +4262,11 @@
     "owner_action": null
   },
   "current_research_checkpoint": {
-    "run_id": "2026-11-21-L1-all-acceptance-214516",
     "status": "checkpoint_large_unfinished_corpus",
-    "stage": "browser_and_quality_acceptance",
-    "source_sha": "f1b8a4dac52521b4958fb3a6d3d42ad19edad773",
-    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "run_id": "2026-11-21-L1-Knave-traversal-0630",
+    "result_ref": "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json",
     "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
-    "overview_ref": "agent-work/research/acceptance/L1-PR509/README.md",
-    "last_successful_step": "10,000 land regions and extensions, twelve functional replays, 211 item ledger",
-    "failed_operation": "Playwright Chromium.launch for portrait mobile acceptance",
-    "observed_error": "Check failed: . socket() failed: Operation not permitted (1)",
-    "cause_status": "confirmed",
-    "stop_reason": "Large unfinished corpus. Local browser launch denied. Expert review for S01-C05 also open.",
-    "needs_owner_action": false,
-    "next_candidate": {
-      "id": "L1-ALL-ACCEPTANCE",
-      "layer": "L1",
-      "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
+    "next": {
       "ids": [
         "S09-C01",
         "DND5-2014-001-L1-v2-draft",
@@ -4279,40 +4275,15 @@
         "SWC-obs-01"
       ],
       "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
-      "fallback": "Если браузер недоступен, продолжать независимые проверки ядра и игр из реестра."
+      "fallback": "KNAVE2-010-L1. В профиле Knave сохранить секрет с уликой, проверить отказ при пустой улике, затем проверить, что именно передаётся игроку при раскрытии улики."
     },
-    "automation_health": [
-      [
-        "Automation_7690c42b2a7881919aaca4103dcd338f",
-        true,
-        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT",
-        "completed"
-      ],
-      [
-        "6ad9c2426c7481919bb9f3d2b289e9b9",
-        true,
-        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
-        "no_update"
-      ]
+    "last_successful_step": "Compared five production exports; measured 20 verified UI edits.",
+    "remaining": [
+      "desktop browser-local input to visible result P95 <250 ms",
+      "portrait phone emulation, 20 edits, P95 <500 ms and each <2000 ms, verify persistence"
     ],
-    "candidate_score_floor": 9.913127926777351,
-    "active_changed": false,
-    "core": {
-      "total": 34,
-      "fully_accepted": 0,
-      "partial_credit": 3,
-      "known_failure_with_unresolved_cases": 1,
-      "remaining_with_no_credit": 30
-    },
-    "games": {
-      "total": 177,
-      "fully_accepted": 0,
-      "partial_credit": 4,
-      "failed": 26,
-      "mixed": 1,
-      "open": 146
-    },
-    "result_ref": "agent-work/research/runs/2026-11-21-L1-all-acceptance-214516.json"
+    "needs_owner_action": false,
+    "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee"
   },
   "latest_SD_L1_poi_location_development": {
     "run_id": "2026-11-20-shadowdark-poi-location-development-063625",
@@ -4814,5 +4785,20 @@
       "before/after extension identity of authored POIs and notes",
       "portrait"
     ]
+  },
+  "latest_knave_traversal": {
+    "disposition": "keep_L1",
+    "ref": "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json",
+    "profile": "Knave 2e, Classic, 6 miles, desktop browser, seed 42, hex 0/0",
+    "outcome": "pass_all_functional_acceptance_examples",
+    "basis": "Мастер отдельно задаёт проходимость гекса с лесом и замком. Сохранение, открытие, снятие признака, отмена и повтор прошли на сайте.",
+    "timing": {
+      "samples": 20,
+      "max_upper_ms": 1047,
+      "p95_upper_ms": 1038,
+      "per_run_ceiling": "pass_20_of_20",
+      "desktop_p95": "unresolved_remote_overhead",
+      "portrait": "unmeasured"
+    }
   }
 }

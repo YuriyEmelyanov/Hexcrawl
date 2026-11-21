@@ -2977,7 +2977,22 @@
           "source_acceptance": "Given H — лес, содержит POI A, difficult=false When Включить труднопроходимость H, сохранить и загрузить Expected H остаётся лесом с POI A, difficult=true.; Given То же состояние с difficult=true When Снять флаг, затем отменить действие Expected После снятия difficult=false, после undo=true; POI и рельеф прежние.",
           "probe": "KNAVE2-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": "KNAVE2-006-L1"
+          "binding": "KNAVE2-006-L1",
+          "live_desktop_acceptance": {
+            "disposition": "keep_L1",
+            "ref": "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json",
+            "profile": "Knave 2e, Classic, 6 miles, desktop browser, seed 42, hex 0/0",
+            "outcome": "pass_all_functional_acceptance_examples",
+            "basis": "Мастер отдельно задаёт проходимость гекса с лесом и замком. Сохранение, открытие, снятие признака, отмена и повтор прошли на сайте.",
+            "timing": {
+              "samples": 20,
+              "max_upper_ms": 1047,
+              "p95_upper_ms": 1038,
+              "per_run_ceiling": "pass_20_of_20",
+              "desktop_p95": "unresolved_remote_overhead",
+              "portrait": "unmeasured"
+            }
+          }
         },
         {
           "id": "KNAVE2-010-L1",
@@ -7380,7 +7395,7 @@
       }
     ]
   },
-  "current_run": "2026-11-21-L1-authored-growth-history",
+  "current_run": "2026-11-21-L1-Knave-traversal-0630",
   "next_batch": {
     "ids": [
       "S09-C01",
@@ -7390,6 +7405,6 @@
       "SWC-obs-01"
     ],
     "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
-    "fallback": "Пока портретный профиль недоступен, проверить KNAVE2-006-L1 на сайте: изменить проходимость выбранного гекса отдельно от биома и сравнить оба значения после перезагрузки из JSON. Настольное расширение Classic с авторским POI закрыто."
+    "fallback": "KNAVE2-010-L1. В профиле Knave сохранить секрет с уликой, проверить отказ при пустой улике, затем проверить, что именно передаётся игроку при раскрытии улики."
   }
 }

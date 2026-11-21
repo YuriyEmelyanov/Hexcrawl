@@ -1,0 +1,283 @@
+{
+  "status": "checkpoint_large_unfinished_corpus",
+  "run_id": "2026-11-21-L1-Knave-traversal-0630",
+  "stage": "L1 desktop edit acceptance",
+  "base_sha": "fa7722abd72e47bcb8eb3a739fd1a0ea9aa3dbe2",
+  "marker_commit": "8726260b9b200e2981fb59e63ffe1dfb212c9bb1",
+  "release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "release_source": "ledger.release / PR509",
+  "url": "https://app.hexcrawl.ru/",
+  "started_at": "2026-11-21T03:30:03.202Z",
+  "completed_at": "2026-11-21T03:34:55Z",
+  "selection": "Открытый настольный сценарий из checkpoint. Для расширения Classic и генерации MB настольная серия уже сохранена.",
+  "row": "KNAVE2-006-L1",
+  "disposition": "keep_L1",
+  "ref": "agent-work/research/runs/2026-11-21-L1-Knave-traversal-0630.json",
+  "profile": "Knave 2e, Classic, 6 miles, desktop browser, seed 42, hex 0/0",
+  "outcome": "pass_all_functional_acceptance_examples",
+  "basis": "Мастер отдельно задаёт проходимость гекса с лесом и замком. Сохранение, открытие, снятие признака, отмена и повтор прошли на сайте.",
+  "timing": {
+    "samples": 20,
+    "max_upper_ms": 1047,
+    "p95_upper_ms": 1038,
+    "per_run_ceiling": "pass_20_of_20",
+    "desktop_p95": "unresolved_remote_overhead",
+    "portrait": "unmeasured"
+  },
+  "fixture": {
+    "schema": "hexcrawl-map",
+    "generation": {
+      "generatorVersion": "regions-2026-10-24-rng.1",
+      "rngVersion": "mulberry32-v1",
+      "masterSeed": 42,
+      "streams": {
+        "geography": 42,
+        "poi": 2654435731
+      }
+    },
+    "version": 10,
+    "savedAt": "2026-11-04T00:00:00.000Z",
+    "map": {
+      "riverFeatures": {
+        "rapids": [],
+        "waterfalls": []
+      },
+      "tags": {
+        "schemaVersion": 1,
+        "instances": [],
+        "rollCounters": {}
+      },
+      "gmNotesByHexKey": {},
+      "kingdoms": [],
+      "obstacles": [],
+      "regions": [
+        {
+          "id": 1,
+          "hexes": [
+            {
+              "q": 0,
+              "r": 0
+            },
+            {
+              "q": 1,
+              "r": 0
+            },
+            {
+              "q": 0,
+              "r": 1
+            },
+            {
+              "q": 1,
+              "r": 1
+            }
+          ],
+          "centerHex": {
+            "q": 0,
+            "r": 0
+          },
+          "anchorHex": {
+            "q": 1,
+            "r": 0
+          },
+          "targetSize": 18,
+          "finalSize": 4,
+          "sizeCategory": "tract",
+          "sizeLabel": "Урочище",
+          "biomeLandType": "wild",
+          "heightLevel": 1,
+          "biomeId": "open_plains",
+          "biomeLabel": "Открытые равнины",
+          "biomePrimaryEmoji": "🌱",
+          "biomeSecondaryEmojis": [],
+          "biomeEmojiLabel": "🌱",
+          "pointsOfInterest": [
+            {
+              "q": 0,
+              "r": 0
+            },
+            {
+              "q": 1,
+              "r": 0
+            },
+            {
+              "q": 0,
+              "r": 1
+            }
+          ],
+          "isCoastal": false,
+          "isTract": false,
+          "pointOfInterestKinds": {
+            "0,0": "castle",
+            "1,0": "ruins",
+            "0,1": "tower"
+          },
+          "generationMode": "classic",
+          "suppressCentralPoi": true
+        }
+      ],
+      "candidateHexes": [],
+      "rivers": [],
+      "roads": [],
+      "crossings": [],
+      "terrainByHexKey": {},
+      "waterPoiByHexKey": {},
+      "biomeOverrideByHexKey": {
+        "0,0": "plain_coniferous_forest"
+      },
+      "toponyms": {
+        "seed": 42,
+        "model": "germanic",
+        "names": {}
+      },
+      "seas": [],
+      "nextSeaId": 1,
+      "editorNames": {},
+      "knave": {
+        "profile": {
+          "id": "classic.knave2",
+          "version": 1,
+          "physicalHex": {
+            "length": 6,
+            "unit": "mile",
+            "measurementConvention": null
+          }
+        },
+        "difficultyByHex": {},
+        "discoveryByPoi": {}
+      }
+    },
+    "counters": {
+      "nextLakeId": 20,
+      "nextRoadId": 1,
+      "nextObstacleId": 1,
+      "nextRiverId": 1
+    },
+    "ui": {
+      "generationMode": "classic",
+      "selectedHex": {
+        "q": 0,
+        "r": 0
+      },
+      "isMapRotated": false,
+      "mapScale": 1.1
+    }
+  },
+  "checks": [
+    [
+      "Import fixture",
+      "Difficulty: Unspecified",
+      "Lowland coniferous forest",
+      "Castle"
+    ],
+    [
+      "Edit > Difficulty > Difficult > Done; Export JSON; Load JSON",
+      "Difficulty: Difficult",
+      "Lowland coniferous forest",
+      "Castle"
+    ],
+    [
+      "Edit > Unspecified > Done",
+      "Difficulty: Unspecified"
+    ],
+    [
+      "Undo",
+      "Difficulty: Difficult"
+    ],
+    [
+      "Redo",
+      "Difficulty: Unspecified"
+    ]
+  ],
+  "file_comparison": {
+    "algorithm": "SHA-256 of UTF-8 json.dumps(map, ensure_ascii=False, sort_keys=True, separators=(\",\",\":\"))",
+    "before_clear_redo": "5c92323acc0ac48ec1ee8b8027be18c8cb34de20b04d9b31a54c90d24b3c2bfe",
+    "set_undo": "1576ae34fea21884d5651e845f45e7d17287ac0b3f730227e160b52fbdb5c4e7",
+    "only_map_difference": {
+      "path": "/map/knave/difficultyByHex/0,0",
+      "set": "difficult",
+      "clear": "key absent"
+    },
+    "generation_equal_all": true,
+    "counters_equal_all": true
+  },
+  "measurement": {
+    "units": "ms",
+    "method": "20 consecutive alternating edits on the same loaded hex. Client clock immediately before remote Done click until expected read-only Difficulty value visible. Includes automation transport; upper bound, not browser-native latency.",
+    "raw": [
+      856,
+      1029,
+      1011,
+      1018,
+      1012,
+      998,
+      1047,
+      1038,
+      1011,
+      1015,
+      1026,
+      1012,
+      1036,
+      1024,
+      997,
+      1038,
+      1022,
+      1024,
+      1004,
+      1018
+    ],
+    "p95_nearest_rank": 1038,
+    "max": 1047,
+    "expected_states_verified": 20,
+    "product_failures_observed": 0
+  },
+  "automation_health": {
+    "start": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ]
+  },
+  "failed_operation": null,
+  "observed_error": null,
+  "stop_reason": "Selected desktop functional slice complete. Cloud browser exposes no viewport emulation capability. Whole-model acceptance and browser-local timing remain open.",
+  "cause_status": "confirmed",
+  "last_successful_step": "Compared five production exports; measured 20 verified UI edits.",
+  "exact_continuation": {
+    "ids": [
+      "S09-C01",
+      "DND5-2014-001-L1-v2-draft",
+      "PF2-RM-121-L1-v2",
+      "AWN-obs-04",
+      "SWC-obs-01"
+    ],
+    "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
+    "fallback": "KNAVE2-010-L1. В профиле Knave сохранить секрет с уликой, проверить отказ при пустой улике, затем проверить, что именно передаётся игроку при раскрытии улики."
+  },
+  "remaining_for_this_row": [
+    "desktop browser-local input to visible result P95 <250 ms",
+    "portrait phone emulation, 20 edits, P95 <500 ms and each <2000 ms, verify persistence"
+  ],
+  "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
+  "market": 0,
+  "active_score_changed": false,
+  "needs_owner_action": false
+}
