@@ -30,6 +30,14 @@ export const fineCellKey = (cell: DetailCell): string => `${cell.q},${cell.r}`;
 const compare = (a: DetailCell,b: DetailCell) => a.q-b.q || a.r-b.r;
 const own = (value: object,key: string) => Object.prototype.hasOwnProperty.call(value,key);
 
+/** The largest accepted source overlap owns the detail cell. */
+export function oneMileSourceOverlaps(cell:DetailCell,origin:WorldPoint,acceptedSourceKeys:ReadonlySet<string>){
+  const polygon=detailCellPolygon(createDetailGrid(1,origin),cell);
+  return detailPositiveAreaIntersections(createDetailGrid(6,origin),polygon)
+    .filter(hit=>acceptedSourceKeys.has(fineCellKey(hit.cell)))
+    .sort((a,b)=>b.areaSquareMiles-a.areaSquareMiles||compare(a.cell,b.cell));
+}
+
 /** Canonical ID comparison is independent of locale, array order and RNG.
  * First aggregate all pieces of the same biome; then compare to the true max
  * (not a tolerance chain, which can make the winner order-dependent). */

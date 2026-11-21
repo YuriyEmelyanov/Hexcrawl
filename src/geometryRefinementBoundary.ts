@@ -22,6 +22,16 @@ type Input=GeometrySourceValidationInput&Readonly<{
  roadPaddingMiles:number;boundaryWorkBudget?:number;
 }>;
 type Box=Readonly<{ref:string;minX:number;maxX:number;minY:number;maxY:number}>;
+
+/** The paths rendered above native water, shared by the one-mile editor. */
+export function refinementRiverDisplayPaths(source:Parameters<typeof geometryMixedRiverPaths>[0],refinement:GeometryRefinement,hidden?:ReadonlySet<string>){
+ const key=(r:{riverId:number;sourceEdgeKey:string})=>JSON.stringify([r.riverId,r.sourceEdgeKey]);
+ const nativeWater=new Set(refinement.riverPlan.water.capsules.map(key));
+ const paint=new Set(refinement.riverPlan.paintWater.capsules.map(key));
+ const visible=[...refinement.riverPlan.paths,...geometryMixedRiverPaths(source,refinement).filter(p=>!hidden?.has(p.sourceEdgeKey))];
+ const painted=visible.filter(p=>!nativeWater.has(key(p))||paint.has(key(p)));
+ return {visible,painted};
+}
 const cellKey=(p:{q:number;r:number})=>`${p.q},${p.r}`;
 const lexical=(a:string,b:string)=>a<b?-1:a>b?1:0;
 const sameKeys=(a:ReadonlySet<string>,b:ReadonlySet<string>)=>a.size===b.size&&[...a].every(k=>b.has(k));

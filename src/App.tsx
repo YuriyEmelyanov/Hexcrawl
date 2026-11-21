@@ -1,12 +1,14 @@
-import {finePoiLabel,fineRiverStrokeWidth} from './oneMilePresentation';
-import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage} from './automaticOneMileScene';
+import {finePoiLabel} from './oneMilePresentation';
+import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage,OneMileGeometryConflict} from './automaticOneMileScene';
+import {addManualSmallLake,exactAutomaticLakeRollback,hasFullDrySupport,hasFullOneMileSupport,prepareSmallLakeSupport,rollSmallLakeFootprints,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
+import {prepareAcceptedSmallLakeViews,prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,type SmallLakeProtection,type SmallLakeView} from './smallLakeShore';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {OneMilePanel,type FineDraft} from './OneMilePanel';
-import {createDetailGrid,detailCellCenter,detailCellPolygon,detailPositiveAreaIntersections,worldToDetailCell,type DetailCell} from './detailGrid';
+import {createDetailGrid,detailCellCenter,detailCellPolygon,worldToDetailCell,type DetailCell} from './detailGrid';
 import {summarizeDetailCell} from './detailSummary';
-import {detailFootprintWorldAnchor} from './detailSizes';
+import {detailFootprintHasOutline,detailFootprintWorldAnchor} from './detailSizes';
 import {prepareRefinementLakeModes} from './geometryRefinementMouths';
 import {prepareGeometryPlan,validateGeometryRefinementSource} from './geometryPlan';
 import {prepareGeometryRefinementBoundary,geometryBoundaryHasValidClosure} from './geometryRefinementBoundary';
@@ -14,7 +16,7 @@ import {composeScopedDetailState} from './geometryRefinementState';
 import {projectGeometryRefinementEdit,type GeometryScopeRemovalIntent} from './geometryRefinementScope';
 import {parseDetail1StateV11,validateDetail1Document,detailAuthoredState,type Detail1State} from './detailModel';
 import {buildDetailGeographyPreview,reconcileDetailGeography,validateDetailGeographyFootprints,detailSourcePixelToWorld,detailCrossingPoint} from './detailGeography';
-import {projectOneMile,oneMileCandidates,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
+import {projectOneMile,oneMileCandidates,oneMileSourceOverlaps,chooseOneMileAnchor,parseFineCellEdits,prepareFineCellEdit,prepareFineCellLoss,type OneMileSource} from './oneMile';
 import knaveCatalogData from './tags/knaveCatalogData';
 import {emptyKnaveContent,fillKnaveContent,rerollKnaveContent,validateKnaveCatalog,knaveResultText,type KnaveCatalog,type KnaveFacts} from './tags/knave';
 import {knaveLossValue,dropKnaveLoss,newKnaveLayer,setKnaveDifficulty,setKnaveDiscovery,type Difficulty,type Discovery,validateKnaveLayer,remapKnavePois,knaveLosses,type KnaveLayer,type KnaveContext} from './knaveClassic';
@@ -1198,6 +1200,9 @@ function geometryRiverHydrology(map:MapSnapshot){
  }
  return {...hydrology,network:{nodes:[...nodes.values()],edges}};
 }
+function localLakeGrid(state:Detail1State|undefined):boolean{
+ return state?.version===3&&!!state.smallLakes&&!state.poiIdentities&&!state.poiFootprints.length;
+}
 function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuationKeys?:ReadonlySet<string>){
  const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
  const cells=projectOneMile(oneMileSources(map),origin).map(row=>row.cell);
@@ -1207,7 +1212,8 @@ function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuation
  const hydrology=geometryRiverHydrology(boundaryMap??map);
  const retainedEdges=new Set(map.rivers.flatMap(r=>r.sectors.flatMap(s=>s.edgeKeys)));
  const scopedHydrology=boundaryMap?{...hydrology,network:{...hydrology.network,edges:hydrology.network.edges.filter(e=>retainedEdges.has(e.id))},internalLakeEdges:new Map([...(hydrology.internalLakeEdges??[])].filter(([k])=>retainedEdges.has(k)))}:hydrology;
- return {map,origin,liveRivers:detailMapRiverGeometry(map,origin),marks,
+ // A local lake overlay does not author or lock any projected point.
+ return {map:localLakeGrid(map.physicalGrid)?{...map,physicalGrid:undefined}:map,origin,liveRivers:detailMapRiverGeometry(map,origin),marks,
   landCells:map.regions.flatMap(r=>r.hexes).filter(c=>!['lake','sea'].includes(map.hexTerrainByKey.get(hexKey(c))?.terrainOverride??'')),
   riverInput:{rivers:map.rivers,marks,origin,cells,seed:map.generation.masterSeed},
   riverContext:{hydrology:scopedHydrology,candidates:map.candidateHexes,continuationKeys},widths,lakeInputs};
@@ -1219,7 +1225,8 @@ function prepareAutomaticOneMileScene(map:MapSnapshot):Detail1State {
  checkedRiverMap(map);
  const state=prepareAutomaticSceneCandidate({...geometryPlanInput(map),scopePolicy:'automatic_presentation'});
  validateOneMileMap(map,state);
- return {...state,viewStep:1};
+ const local=localLakeGrid(map.physicalGrid)?map.physicalGrid:undefined;
+ return {...state,viewStep:1,...(local?.selectedCell?{selectedCell:local.selectedCell,selectedWorldPoint:local.selectedWorldPoint}:{})};
 }
 function scopedGeometryBoundary(map:OneMileDocumentMap,state:Detail1State){
  const refinement=state.geometryRefinement;if(!refinement)throw Error('GEO2 missing_scoped_refinement');
@@ -1233,6 +1240,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
  const layer=before.physicalGrid;
  if(!layer?.geometryRefinement)return candidate;
  const accepted=candidate.physicalGrid??layer;
+ const preserveSmallLakes=(state:Detail1State|undefined)=>state&&accepted.smallLakes?{...state,smallLakes:accepted.smallLakes}:state;
  if(!accepted.globalAuthoredState&&accepted.geometryRefinement&&validateGeometryRefinementSource(refinementSourceInput(candidate,accepted,accepted.geometryRefinement.riverPlan),accepted.geometryRefinement))return candidate;
  const source=detailAuthoredState(accepted);
  const sourceMap={...candidate,physicalGrid:source};
@@ -1249,7 +1257,7 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
   const retainedMap={...candidate,...projected.input.map,physicalGrid:{...projected.input.map.physicalGrid,version:4 as const,geometryRefinement:layer.geometryRefinement}} as MapSnapshot;
   const result=prepareGeometryPlan({...geometryPlanInput(retainedMap,candidate,projected.continuationKeys),authoredState:projected.input.map.physicalGrid});
   if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
-  const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:scoped},boundary=scopedGeometryBoundary(map,scoped);
+  const scoped=composeScopedDetailState(authored,result.status==='prepared'?result.geometryRefinement:layer.geometryRefinement),map={...candidate,physicalGrid:preserveSmallLakes(scoped)},boundary=scopedGeometryBoundary(map,scoped);
   if(geometryBoundaryHasValidClosure(boundary))return map;
   // Potential pairs are not confirmed defects or permission to move them.
   // Until exact mixed closure is integrated, preserve the complete old state.
@@ -1258,12 +1266,12 @@ function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:
  const map={...candidate,physicalGrid:{...accepted,version:4 as const,geometryRefinement:layer.geometryRefinement}};
  const result=prepareGeometryPlan({...geometryPlanInput(map),authoredState:authored});
  if(result.status==='error')throw Error(`GEO2 ${result.stage}: ${result.refs.join('; ')}`);
- return {...candidate,physicalGrid:result.candidateState};
+ return {...candidate,physicalGrid:preserveSmallLakes(result.candidateState)};
 }
 function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
  if(map.knave&&state.source.physicalConvention!=='unknown')throw Error('DETAIL1 unproven_knave_source_convention');
  const authored=detailAuthoredState(state);
- validateDetailGeographyFootprints({...map,physicalGrid:authored},detailMapRiverGeometry(map,state.grid.origin),authored);
+ if(!localLakeGrid(state))validateDetailGeographyFootprints({...map,physicalGrid:authored},detailMapRiverGeometry(map,state.grid.origin),authored);
  if(state.geometryRefinement){
   if(map.rivers.some(r=>r.deltaParentRiverId!==undefined))validateEditedRiverDeltas([],map.rivers,buildManualRiverGeometryContext(map).geometry);
   if(state.globalAuthoredState){
@@ -1277,6 +1285,8 @@ function validateOneMileMap(map:OneMileDocumentMap,state:Detail1State):void{
   }
  }
  const cells=projectOneMile(oneMileSources(map),state.grid.origin);
+ const smallLakes=map.physicalGrid?.smallLakes??state.smallLakes;
+ if(smallLakes)validateSmallLakeSupport(smallLakes,cells);
  parseFineCellEdits(state.fineCellEdits??{},cells,id=>Object.prototype.hasOwnProperty.call(BIOMES,id));
  if(state.selectedCell&&!cells.some(row=>row.cell.q===state.selectedCell!.q&&row.cell.r===state.selectedCell!.r))throw Error('DETAIL1 stale_fine_selection');
 }
@@ -1284,6 +1294,102 @@ function validateImportedOneMile(data:HexcrawlSaveData):void{
  validateDetail1Document(data.map.physicalGrid,data.version,undefined,state=>validateOneMileMap({...data.map,toponymSeed:data.map.toponyms?.seed??legacyToponymSeed(data.map.regions),
   hexTerrainByKey:new Map(Object.entries(data.map.terrainByHexKey)),biomeOverrideByHexKey:new Map(Object.entries(data.map.biomeOverrideByHexKey??{})),waterPoiByKey:new Map(Object.entries(data.map.waterPoiByHexKey??{})),seas:data.map.seas??[],riverFeatures:data.map.riverFeatures??emptyRiverFeatures()},state));
 }
+
+/** Use the same world geometry for the editor and for a detached import. */
+function smallLakeProtectionForMap(map:OneMileDocumentMap,state:Detail1State):SmallLakeProtection{
+ const origin=state.grid.origin,grid=createDetailGrid(1,origin),detail=state.geometryRefinement;
+ const world=(x:number,y:number)=>detailSourcePixelToWorld({x,y},origin);
+ const baseRoads=renderRoadSegments(map.roads,0,0),refined=detail?.roads;
+ const segments=new Set(refined?.roads.map(r=>JSON.stringify([r.roadId,r.sourceRoadSegmentKey])));
+ const crossings=new Set(refined?.crossings.map(c=>c.key));
+ return {
+  roads:[...refined?.roads.map(r=>({ref:String(r.roadId),points:r.points}))??[],
+   ...baseRoads.filter(r=>!segments.has(JSON.stringify([r.roadId,r.segmentKey]))).map(r=>({ref:String(r.roadId),points:[world(r.x1,r.y1),world(r.x2,r.y2)]}))],
+  crossings:[...refined?.crossings.map(c=>({ref:c.key,points:c.bankPath}))??[],
+   ...renderRiverCrossings(baseRoads,map.crossings).filter(c=>!crossings.has(c.key)).map(c=>({ref:c.key,points:[world(c.x,c.y)]}))],
+  anchors:localLakeGrid(state)?[...poiNameLocators(map,true)].map(ref=>{
+   const cell=parseHexKey(ref.slice(ref.lastIndexOf(':')+1));
+   return {ref,point:detailCellCenter(createDetailGrid(6,origin),cell)};
+  }):state.poiFootprints.flatMap(fp=>[
+   ...(!detailFootprintHasOutline(fp,grid)?[{ref:fp.poiId,point:detailFootprintWorldAnchor(fp,grid)}]:[]),
+   ...fp.attachments.map(a=>({ref:fp.poiId,point:a.kind==='route'?a.entry:a.contact})),
+  ]),
+ };
+}
+
+// Legacy records derive their fringe from the current terrain and neighbouring lakes.
+function retainAcceptedLakeShores(lakes:SmallLakeLayer['lakes'],before:MapSnapshot,visible?:readonly SmallLakeView[]){
+ const state=before.physicalGrid;
+ if(!state?.smallLakes||!lakes.some(lake=>lake.shoreCells===undefined))return lakes;
+ if(!visible){
+  const origin=state.grid.origin;
+  const coverage=new Map(projectOneMile(oneMileSources(before),origin).map(row=>[hexKey(row.cell),row]));
+  let geometry=state;
+  try{geometry=prepareAutomaticOneMileScene(before);}
+  catch(error){if(!(error instanceof OneMileGeometryConflict&&localLakeGrid(state)))throw error;}
+  visible=prepareAcceptedSmallLakeViews(state.smallLakes.lakes,before.toponymSeed,origin,smallLakeProtectionForMap(before,geometry),coverage).views;
+ }
+ const shores=new Map(visible.map(view=>[view.lake.id,view.maskCells.slice(view.lake.cells.length)]));
+ return lakes.map(lake=>{
+  const shoreCells=shores.get(lake.id);
+  return lake.shoreCells===undefined&&shoreCells?{...lake,shoreCells}:lake;
+ });
+}
+
+/** Prepare the fine lake layer against the finished terrain, paths and POIs. */
+function prepareGeneratedSmallLakes(before:MapSnapshot,map:MapSnapshot,generated:readonly Region[]){
+ const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
+ const grid=createDetailGrid(1,origin),baseGrid=createDetailGrid(6,origin);
+ const source=oneMileSources(map),previous=projectOneMile(oneMileSources(before),origin);
+ const coverage=new Map(projectOneMile(source,origin).map(row=>[hexKey(row.cell),row]));
+ const previouslyCovered=new Set(previous.filter(hasFullOneMileSupport).map(row=>hexKey(row.cell)));
+ const centers=new Set(map.regions.map(r=>hexKey(worldToDetailCell(grid,detailCellCenter(baseGrid,r.centerHex)))));
+ const owners=new Map(generated.flatMap(r=>r.hexes.map(c=>[hexKey(c),r.biomeId] as const)));
+ const biomes=new Map(map.regions.flatMap(r=>r.hexes.map(c=>[hexKey(c),r.biomeId] as const)));
+ const acceptedSource=new Set(source.map(row=>hexKey(row.cell)));
+ const layer=map.physicalGrid?.smallLakes;
+ const support=layer&&prepareSmallLakeSupport(layer,[...coverage.values()]);
+ const losses=[...support?.losses??[]];
+ if(support?.losses.length&&map.physicalGrid)map={...map,physicalGrid:{...map.physicalGrid,smallLakes:support.layer}};
+ const reserved=new Set(support?.layer.lakes.flatMap(lake=>lake.cells.map(hexKey)));
+ const eligible=generated.length?[...coverage.values()].flatMap(row=>{
+  const key=hexKey(row.cell);
+  if(previouslyCovered.has(key)||centers.has(key)||reserved.has(key)||!hasFullDrySupport(row))return [];
+  const overlaps=oneMileSourceOverlaps(row.cell,origin,acceptedSource);
+  if(!overlaps.some(hit=>owners.has(hexKey(hit.cell))))return [];
+  const owner=hexKey(overlaps[0].cell),biome=owners.get(owner)??biomes.get(owner);
+  return biome?[{cell:row.cell,chance:getLakeChanceForBiome(biome)}]:[];
+ }):[];
+ const footprints=rollSmallLakeFootprints(eligible,map.generation.masterSeed,LAKE_EXPANSION_CHANCE);
+ if(!footprints.length&&!support?.layer.lakes.length)return {map,scene:null,losses};
+ let scene:Detail1State|null=null;
+ try{scene=prepareAutomaticOneMileScene(map);}
+ catch(error){
+  // An already unsupported detail view cannot certify any new shoreline.
+  // Keep the ordinary source region available independently of that view.
+  if(!(error instanceof OneMileGeometryConflict)||support?.layer.lakes.length&&!localLakeGrid(map.physicalGrid))throw error;
+  generationLog.detail('Automatic small lakes skipped: detail geometry conflict',{stage:error.stage,components:footprints.length});
+ }
+ const geometry=scene??map.physicalGrid;
+ if(!geometry)return {map,scene,losses};
+ const protection=smallLakeProtectionForMap(map,geometry);
+
+ // Retain each lake whose accepted terrain and protected features still permit it.
+ const existing=support?.layer.lakes??[];
+ const retained=existing.filter(lake=>{
+  const {conflict}=prepareSmallLakeShore(lake,map.toponymSeed,origin,protection);
+  if(conflict)losses.push(lake);
+  return !conflict;
+ });
+ const retainedWithShores=retainAcceptedLakeShores(retained,before);
+ const allocation=prepareAcceptedSmallLakeViews(retainedWithShores,map.toponymSeed,origin,protection,coverage);
+ const batch=prepareAutomaticSmallLakeBatch(scene?footprints:[],layer?.nextId??1,map.toponymSeed,origin,protection,coverage,allocation.reserved);
+ const lakes=[...retainedWithShores,...batch.lakes],{nextId}=batch;
+ if(lakes.length===existing.length&&nextId===(layer?.nextId??1)&&lakes.every((lake,i)=>lake===existing[i]))return {map,scene,losses};
+ const physicalGrid=map.physicalGrid??{schema:geometry.schema,version:3 as const,active:true as const,grid:geometry.grid,source:geometry.source,viewStep:6 as const,poiFootprints:[],fineCellEdits:{}};
+ return {map:{...map,physicalGrid:{...physicalGrid,smallLakes:{nextId,lakes}}},scene,losses};
+}
+
 function checkedRiverMap<T extends MapSnapshot>(map:T):T{
   validateDetail1Document(map.physicalGrid,map.physicalGrid?.version===4?16:map.physicalGrid?15:10,undefined,state=>validateOneMileMap(map,state));
   map=withLegacySeas(map);
@@ -1533,7 +1639,7 @@ type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'
 /** Full E6 detached preparation. Staged preview answers never reach a setter. */
 function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOptions={}){
   const geometry=prepareWaterGeometry(map,edit);
-  const empty={map,geometry,sea:{choices:[],unresolved:[]} as Pick<ReturnType<typeof prepareSeaIdentity>,'choices'|'unresolved'>,losses:[] as WaterLoss[],unresolvedLosses:[] as WaterLoss[],unresolvedFeatures:[] as FeatureEdit[],unresolvedCrossings:[] as RiverCrossing[],newCrossings:[] as RiverCrossing[],invalidFeatures:[] as FeatureEdit[],confirmationRequired:false};
+  const empty={map,geometry,sea:{choices:[],unresolved:[]} as Pick<ReturnType<typeof prepareSeaIdentity>,'choices'|'unresolved'>,losses:[] as WaterLoss[],smallLakeLosses:[] as SmallLakeLayer['lakes'],unresolvedLosses:[] as WaterLoss[],unresolvedFeatures:[] as FeatureEdit[],unresolvedCrossings:[] as RiverCrossing[],newCrossings:[] as RiverCrossing[],invalidFeatures:[] as FeatureEdit[],confirmationRequired:false};
   if(geometry.hexTerrainByKey===map.hexTerrainByKey)return empty;
   map=checkedRiverMap(map);
   const beforeContext=buildManualRiverGeometryContext(map);
@@ -1649,9 +1755,18 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
     for(const loss of removed){losses.push({id:`knave:${loss.kind}:${loss.key}`,type:'knave',key:loss.key,value:{kind:loss.kind,data:knaveLossValue(layer,loss)}});dropKnaveLoss(layer,loss);}
     candidate={...candidate,knave:layer};
   }
+  const physical=candidate.physicalGrid;
+  const smallLakes=physical?.smallLakes?.lakes.length
+    ?prepareSmallLakeSupport(physical.smallLakes,projectOneMile(oneMileSources(candidate),physical.grid.origin))
+    :undefined;
+  if(physical&&smallLakes){
+    const lakes=retainAcceptedLakeShores(smallLakes.layer.lakes,map);
+    candidate={...candidate,physicalGrid:{...physical,smallLakes:{...smallLakes.layer,lakes}}};
+  }
   candidate=checkedRiverMap(prepareSourceTransition(map,{...candidate,editorNames:authored,toponyms:names,tags}));assertGeneratedIds(candidate);
   const unresolvedLosses=losses.filter(loss=>!options.acceptedLosses?.includes(loss.id));
-  return {map:candidate,geometry,sea,losses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
+  const smallLakeLosses=smallLakes?.losses??[];
+  return {map:candidate,geometry,sea,losses,smallLakeLosses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -2052,6 +2167,7 @@ type DocumentSnapshot = {
 };
 type MapTransaction = { before: DocumentSnapshot; after: DocumentSnapshot };
 type GenerationBackup = {
+  checkpointWarnings?:string[];
   fineRegeneration?:Detail1State;
   fineRetainedPoiOwners?:string[];
   map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null;
@@ -12103,6 +12219,7 @@ export function App() {
   };
   const oneMilePreviewRef=useRef<{revision:number;state:Detail1State}|null>(null);
   const [fineHover,setFineHover]=useState<DetailCell|null>(null);
+  const [smallLakeDraft,setSmallLakeDraft]=useState<{revision:number;cells:readonly DetailCell[]}|null>(null);
   const [fineDraft,setFineDraft]=useState<FineDraft|null>(null);
   const fineDraftRef=useRef(fineDraft);fineDraftRef.current=fineDraft;
   const fineComposing=useRef(false);
@@ -12700,6 +12817,7 @@ export function App() {
     })();
 
     const snapshot: MapSnapshot = {
+      physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
         knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
@@ -13574,6 +13692,7 @@ export function App() {
       })();
 
       const snapshot: MapSnapshot = {
+        physicalGrid:physicalGridRef.current,
       ...seaIdentityRef.current,
         knave:structuredClone(knaveRef.current),editorNames:structuredClone(editorNamesRef.current),tags:structuredClone(tagsRef.current),
       gmNotesByHexKey: {...notesMapRef.current},
@@ -13609,7 +13728,7 @@ export function App() {
       const committedMap=recordGenerated(snapshot, { ...captureMap(), regions: finalRegions, candidateHexes: finalCandidateHexes,
         rivers: riversWithDeltas, roads: roadResult.roads, crossings: finalCrossings,
         hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
-        nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId, nextRiverId:allocatedRegionRivers.nextRiverId }, finalCenterHex, pendingRegen?.backup);
+        nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId, nextRiverId:allocatedRegionRivers.nextRiverId }, finalCenterHex, pendingRegen?.backup,history,[finalRegionWithPoiKinds]);
       setHistory((current) => [...current, structuredClone(snapshot)]);
       setRegions(committedMap.regions);
       setCandidateHexes(finalCandidateHexes);
@@ -13655,10 +13774,13 @@ export function App() {
     setHoverObstacleEdge(null); updateObstacleDraft(null); setSelectedObstacleId(null);
     setEditingHexBiomeKey(null); setEditingPoiHexKey(null); setEditingCentralPoiRegionId(null); setEditingRegionBiomeId(null); setEditError(null);
   };
-  const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot) => {
+  const recordTransaction = (before: DocumentSnapshot, after: DocumentSnapshot, options: {replaceMap?:true;preparedScene?:Detail1State} = {}) => {
+    const lakeState=after.map.physicalGrid;
+    if(!options.replaceMap&&before.map.physicalGrid?.smallLakes?.lakes.length&&!lakeState?.smallLakes)throw Error('The accepted small lake layer would be lost');
+    if(lakeState?.smallLakes?.lakes.length)validateSmallLakeSupport(lakeState.smallLakes,projectOneMile(oneMileSources(after.map),lakeState.grid.origin));
     // Source edits while viewing one mile must also have a complete next
     // display. A preparation failure occurs before either history is changed.
-    let scene=automaticFineSceneRef.current?.viewStep===1?prepareAutomaticOneMileScene(after.map):null;
+    let scene=automaticFineSceneRef.current?.viewStep===1?(options.preparedScene??prepareAutomaticOneMileScene(after.map)):null;
     const target=fineGenerationTargetRef.current;
     if(scene&&target&&projectOneMile(oneMileSources(after.map),scene.grid.origin).some(row=>isSameHex(row.cell,target.cell)))scene={...scene,selectedCell:target.cell,selectedWorldPoint:target.point};
     const transaction = { before: copyDocument(before), after: copyDocument(after) };
@@ -13703,6 +13825,7 @@ export function App() {
   });
   const applyPreparedDocument = (doc: DocumentSnapshot) => {
     fineGenerationTargetRef.current=null;
+    setSmallLakeDraft(null);
     fineLegacyRef.current=doc.requiresFineAdaptation??false;fineDraftRef.current=null;setFineDraft(null);setFineHover(null);setFineExit(null);
     poiDocumentToken.current={};
     tagLocks.current.clear();setTagAnimations({});
@@ -13822,12 +13945,13 @@ export function App() {
       }
       const permittedScopeRemovals:GeometryScopeRemovalIntent=edit.type==='remove'?{roadParts:new Map([[edit.roadId,new Set((roads.find(r=>r.id===edit.roadId)?.segments??[]).filter(s=>!edit.segmentKey||pairKey(s.from,s.to)===edit.segmentKey).map(s=>pairKey(s.from,s.to)))]])}:{};
       const after = copyDocument({...captureDocument(), map: prepareSourceTransition(captureMap(),{...captureMap(), ...result,riverFeatures,editorNames},new Map(),permittedScopeRemovals)});
+      validateAcceptedLakeShores(after.map);
       // Both copies are complete before any state write. Never reconcile crossings here.
       setUndoHistory(current => [...current, {before, after}].slice(-100)); setRedoHistory([]);
       applyPreparedDocument(after);
       return true;
     } catch (error) {
-      setEditError(authoredNameError(error,language)??`${language === 'ru' ? 'Путь не изменён' : 'Path unchanged'}: ${roadErrorText(error instanceof Error ? error.message : '')}`);
+      setEditError(authoredNameError(error,language)??`${language === 'ru' ? 'Путь не изменён' : 'Path unchanged'}: ${lakeSourceError(error)??roadErrorText(error instanceof Error ? error.message : '')}`);
       return false;
     }
   };
@@ -13837,8 +13961,9 @@ export function App() {
     const keys = actualHexKeys(map);
     return Object.fromEntries(Object.entries(notesMapRef.current).filter(([key]) => keys.has(key)));
   };
+  const removedNoteKeys = (notes: Record<string, string>) => Object.keys(notesMapRef.current).filter(key => !(key in notes));
   const confirmNotesRemoval = (notes: Record<string, string>) => {
-    const removed = Object.keys(notesMapRef.current).filter(key => !(key in notes));
+    const removed = removedNoteKeys(notes);
     return !removed.length || window.confirm(language === 'ru'
       ? `Удалить заметки мастера (${removed.length}) в гексах ${removed.join('; ')}? Их можно восстановить отменой.`
       : `Delete GM notes (${removed.length}) at ${removed.join('; ')}? Undo can restore them.`);
@@ -13877,13 +14002,14 @@ export function App() {
           const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
       map=prepareSourceTransition(captureMap(),map,new Map(),permittedScopeRemovals);
       checkedRiverMap(map);
+      validateAcceptedLakeShores(map);
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,
         getToponymEntities(map.regions, map.rivers, map.hexTerrainByKey), map.toponymSeed) : map.toponyms });
       const before = captureDocument(), after = { ...before, map: prepared };
       recordTransaction(before, after); applyExactMap(prepared); closeEditors();
       return true;
     } catch (error) {
-      setEditError(geometryCommandError(error,language)??authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
+      setEditError(lakeSourceError(error)??geometryCommandError(error,language)??authoredNameError(error,language)??(error instanceof PoiMoveError?(language==='ru'?'Изменение удалит авторское имя POI. Сначала очистите его явно. Карта не изменена.':'The edit would remove an authored POI name. Clear it explicitly first. Your map is unchanged.'):error instanceof TagCapacityError?tagCommandError(error):language === 'ru' ? 'Не удалось изменить значение. Карта не изменена.' : 'Could not change the value. Your map is unchanged.'));
       return false;
     }
   };
@@ -14056,9 +14182,10 @@ export function App() {
       const original=captureMap(),map=prepareRegionMapEdit(original,draft.edit);
       if(map===original){resetRegionDraft(draft);return true;}
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map});
+      const scene=validateAcceptedLakeShores(after.map);
       assertHexcrawlSaveData(createSaveData(after));
-      recordTransaction(before,after);applyPreparedDocument(after);return true;
-    }catch(error){setEditError(regionCommandError(error));return false;}
+      recordTransaction(before,after,scene?{preparedScene:scene}:undefined);applyPreparedDocument(after);return true;
+    }catch(error){setEditError(lakeSourceError(error)??regionCommandError(error));return false;}
   };
   const resetWaterDraft=(expected:WaterDraft|null=waterDraft)=>{
     if(waterDraftRef.current!==expected)return false;updateWaterDraft(null);setEditError(null);return true;
@@ -14096,17 +14223,18 @@ export function App() {
       }
       // Both full snapshots, validation and all allocation are ready before any setter.
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:plan.map});
-      recordTransaction(before,after);applyPreparedDocument(after);return true;
+      const scene=validateAcceptedLakeShores(after.map);
+      recordTransaction(before,after,scene?{preparedScene:scene}:undefined);applyPreparedDocument(after);return true;
     }catch(error){
       if(!(error instanceof WaterEditError)&&!(error instanceof TagCapacityError)){
         // Retain the original cause/stack without attaching map or authored data.
         try{console.error('Water edit preparation failed',error);}catch{/* Diagnostics must not interrupt the atomic refusal. */}
       }
-      updateWaterDraft({...draft,preview:true});setEditError(waterCommandError(error));return false;
+      updateWaterDraft({...draft,preview:true});setEditError(lakeSourceError(error)??waterCommandError(error));return false;
     }
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
-    backup?: GenerationBackup, checkpoints = history) => {
+    backup?: GenerationBackup, checkpoints = history, lakeRegions:readonly Region[] = []) => {
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
       map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
@@ -14117,27 +14245,35 @@ export function App() {
     map.seas=sea.seas;map.nextSeaId=sea.nextSeaId;
     if (!kingdomJob) backup ??= activeGenerationBackup.current ?? undefined;
     const originalFine=backup?.fineRegeneration;
+    const accepted=originalFine&&projectOneMile(oneMileSources(map),originalFine.grid.origin);
+    const smallLakes=accepted&&originalFine.smallLakes?.lakes.length
+      ?prepareSmallLakeSupport(originalFine.smallLakes,accepted)
+      :undefined;
     let fineLost:string[]=[];
-    if(originalFine&&!originalFine.geometryRefinement){
-      const accepted=projectOneMile(oneMileSources(map),originalFine.grid.origin),supported=new Set(accepted.map(row=>hexKey(row.cell)));
-      const lost=Object.keys(originalFine.fineCellEdits??{}).filter(key=>!supported.has(key));
-      fineLost=lost;
-      const retainedOwners=new Set(backup?.fineRetainedPoiOwners??[]);
-      if(originalFine.poiFootprints.some(fp=>fp.legacyRef&&!retainedOwners.has(fp.legacyRef)&&['manual_size','measured_polygon'].includes(fp.extent.kind)))throw Error('Regeneration would replace authored POI geometry; explicit adaptation required');
-      const layer={...originalFine,fineCellEdits:prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true).edits};
-      if(layer.selectedCell&&!supported.has(hexKey(layer.selectedCell))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
-      const candidate={...map,physicalGrid:layer},live=poiNameLocators(candidate,true);
-      const removed=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!retainedOwners.has(alias)||!live.has(alias)).map(alias=>[alias,null]));
-      map={...candidate,physicalGrid:reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removed)};
-    }
-    if(originalFine?.geometryRefinement){
-      const accepted=projectOneMile(oneMileSources(map),originalFine.grid.origin);
-      const edits=prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true).edits;
-      fineLost=Object.keys(originalFine.fineCellEdits??{}).filter(key=>!(key in edits));
-      map=prepareSourceTransition(backup!.map,{...map,physicalGrid:{...originalFine,fineCellEdits:edits}});
+    if(originalFine&&accepted){
+      const {edits,losses}=prepareFineCellLoss(originalFine.fineCellEdits??{},accepted,true);
+      fineLost=[...losses];
+      const layer={...originalFine,fineCellEdits:edits,...(smallLakes?{smallLakes:smallLakes.layer}:{})};
+      if(layer.selectedCell&&!accepted.some(row=>isSameHex(row.cell,layer.selectedCell!))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
+      const candidate={...map,physicalGrid:layer};
+      if(originalFine.geometryRefinement){
+        map=prepareSourceTransition(backup!.map,candidate);
+      }else{
+        const retainedOwners=new Set(backup?.fineRetainedPoiOwners??[]);
+        if(originalFine.poiFootprints.some(fp=>fp.legacyRef&&!retainedOwners.has(fp.legacyRef)&&['manual_size','measured_polygon'].includes(fp.extent.kind)))throw Error('Regeneration would replace authored POI geometry; explicit adaptation required');
+        const live=poiNameLocators(candidate,true);
+        const removed=new Map<string,string|null>(Object.keys(layer.poiIdentities?.byLegacyRef??{}).filter(alias=>!retainedOwners.has(alias)||!live.has(alias)).map(alias=>[alias,null]));
+        map={...candidate,physicalGrid:reconcileDetailGeography(candidate,detailMapRiverGeometry(candidate,layer.grid.origin),removed)};
+      }
     }else if(map.physicalGrid?.geometryRefinement){
       map=prepareSourceTransition(checkpoint.physicalGrid?.geometryRefinement?checkpoint:captureMap(),map);
     }else if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
+    let preparedScene:Detail1State|undefined;
+    if((lakeRegions.length||map.physicalGrid?.smallLakes?.lakes.length)&&(!kingdomJob||backup)){
+      const prepared=prepareGeneratedSmallLakes(backup?.map??checkpoint,map,lakeRegions);
+      map=prepared.map;
+      preparedScene=prepared.scene??undefined;
+    }
     const fineTarget=fineGenerationTargetRef.current;
     if(map.physicalGrid&&fineTarget&&projectOneMile(oneMileSources(map),map.physicalGrid.grid.origin).some(row=>isSameHex(row.cell,fineTarget.cell)))map={...map,physicalGrid:{...map.physicalGrid,selectedCell:fineTarget.cell,selectedWorldPoint:fineTarget.point}};
     checkedRiverMap(map);
@@ -14149,9 +14285,14 @@ export function App() {
     if (missing.length) throw new NotesLossConflict(missing);
     map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
     map.gmNotesByHexKey = {...notes};
-    if(fineLost.length&&!window.confirm(language==='ru'?`Регенерация удалит локальные правки одномильных гексов (${fineLost.length}): ${fineLost.join('; ')}. Продолжить?`:`Regeneration removes local one-mile edits (${fineLost.length}): ${fineLost.join('; ')}. Continue?`))throw new FineRegenerationCancelled();
+    const lossMessages=[...(backup?.checkpointWarnings??[])];
+    if(fineLost.length)lossMessages.push(language==='ru'?`Будут удалены локальные правки одномильных гексов (${fineLost.length}): ${fineLost.join('; ')}.`:`Local one-mile edits will be removed (${fineLost.length}): ${fineLost.join('; ')}.`);
+    if(lossMessages.length){
+      lossMessages.push(language==='ru'?'«Отменить» восстановит прежнюю карту. Продолжить?':'Undo restores the previous map. Continue?');
+      if(!window.confirm(lossMessages.join('\n')))throw new FineRegenerationCancelled();
+    }
     recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
-      generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] });
+      generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] },{preparedScene});
     fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
@@ -14394,7 +14535,8 @@ export function App() {
       nextRoadId: roadId, crossings: finalCrossings,
       waterPoiByKey: water, toponyms: synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed),
       kingdoms: [...kingdoms,kingdom], obstacles: [...obstacles,...identifiedObstacles], nextObstacleId: finalNextObstacleId },
-      assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history);
+      assigned.find(r=>r.centralPoiKind==='throne')!.centerHex, job.failureBackup ?? job.backup, job.backup.history,
+      regions.slice(job.backup.map.regions.length).filter(r=>!r.isTract));
     setRegions(finalRegions);
     setRoads(rebuiltRoads);setNextRoadId(roadId);
     setCrossings(finalCrossings);
@@ -14482,12 +14624,13 @@ export function App() {
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     if(Object.keys(physicalGridRef.current?.fineCellEdits??{}).length&&!window.confirm(language==='ru'?'Удалить локальные правки одномильных гексов? Отмена вернёт их.':'Remove local one-mile edits? Undo restores them.'))return;
+    if(physicalGridRef.current?.smallLakes?.lakes.length&&!window.confirm(language==='ru'?'Удалить малые озёра при сбросе карты? «Отменить» восстановит их.':'Remove the small lakes when resetting the map? Undo restores them.'))return;
     const newGeneration = createGenerationState(newWorldSeed());
     const after: DocumentSnapshot = { ...before, map: { seas:[],nextSeaId:1,editorNames:{},riverFeatures:emptyRiverFeatures(),nextRiverId:1,tags:emptyTags(), gmNotesByHexKey: {}, generation: newGeneration, kingdoms: [], obstacles: [], regions: [], candidateHexes: [],
       rivers: [], roads: [], crossings: [], hexTerrainByKey: new Map(), waterPoiByKey: new Map(), biomeOverrideByHexKey: new Map(),
       toponyms: {}, toponymSeed: toponymSeedFor(newGeneration.masterSeed), nextLakeId: 1, nextRoadId: 1, nextObstacleId: 1 },
       requiresFineAdaptation:false,generationHistory: [], selectedHex: START_HEX, isMapRotated: false, generationMode:nextMode??before.generationMode,knaveEnabled:false };
-    recordTransaction(before,after); applyDocument(after); setEditMode(false); setGenerationError(null);
+    recordTransaction(before,after,{replaceMap:true}); applyDocument(after); setEditMode(false); setGenerationError(null);
   };
 
   const resetMap = () => resetMapToMode();
@@ -14544,24 +14687,25 @@ export function App() {
   // Удаление последнего региона = восстановление снимка состояния, сделанного
   // перед его добавлением. Это надёжно откатывает и реки, и дороги, в том
   // числе изменения, которые новый регион внёс в соседние регионы.
-  const retainFineCheckpoint=(snapshot:MapSnapshot,allowLoss=false):MapSnapshot=>{
+  const retainFineCheckpoint=(snapshot:MapSnapshot,allowFineLoss=false,confirmedSmallLakes?:{layer?:SmallLakeLayer}):MapSnapshot=>{
     const current=physicalGridRef.current,edits=current?.fineCellEdits??{};
-    if(!current)return snapshot;
-    if(current.geometryRefinement){
-      const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
-      const fineCellEdits=prepareFineCellLoss(edits,accepted,allowLoss).edits;
-      const layer={...current,fineCellEdits};
-      if(layer.selectedCell&&!accepted.some(row=>isSameHex(row.cell,layer.selectedCell!))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
-      return prepareSourceTransition(captureMap(),{...snapshot,physicalGrid:layer});
-    }
-    if(!Object.keys(edits).length)return snapshot;
+    if(!current||(!current.geometryRefinement&&!current.smallLakes&&!Object.keys(edits).length))return snapshot;
     const accepted=projectOneMile(oneMileSources(snapshot),current.grid.origin);
-    const retained=prepareFineCellLoss(edits,accepted,allowLoss).edits;
-    if(!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...snapshot.physicalGrid,fineCellEdits:{}}}:snapshot;
-    // A generation checkpoint can predate explicit fine adaptation. Carry its
-    // surviving local addresses into that candidate map, retaining accepted
-    // identities/footprints; reconcile live owners before any setters/history.
-    const layer={...(snapshot.physicalGrid??current),fineCellEdits:retained};
+    const smallLakes=confirmedSmallLakes?confirmedSmallLakes.layer:current.smallLakes;
+    if(smallLakes)validateSmallLakeSupport(smallLakes,accepted);
+    const retained=prepareFineCellLoss(edits,accepted,allowFineLoss).edits;
+    if(current.geometryRefinement){
+      const {smallLakes:discarded,...base}=current;
+      const layer={...base,fineCellEdits:retained,...(smallLakes?{smallLakes}:{})};
+      if(layer.selectedCell&&!accepted.some(row=>isSameHex(row.cell,layer.selectedCell!))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
+      const retainedMap=prepareSourceTransition(captureMap(),{...snapshot,physicalGrid:layer});
+      return smallLakes&&retainedMap.physicalGrid?{...retainedMap,physicalGrid:{...retainedMap.physicalGrid,smallLakes}}:retainedMap;
+    }
+    const {smallLakes:discarded,...base}=snapshot.physicalGrid??current;
+    if(!smallLakes&&!Object.keys(retained).length)return snapshot.physicalGrid?{...snapshot,physicalGrid:{...base,fineCellEdits:{}}}:snapshot;
+    // Preserve accepted local data even when the checkpoint predates the
+    // detailed layer. Reconcile its POIs before committing the replacement.
+    const layer={...base,fineCellEdits:retained,...(smallLakes?{smallLakes}:{})};
     const acceptedKeys=new Set(accepted.map(row=>hexKey(row.cell)));
     if(layer.selectedCell&&!acceptedKeys.has(hexKey(layer.selectedCell))){delete layer.selectedCell;delete layer.selectedWorldPoint;}
     const candidate={...snapshot,physicalGrid:layer};
@@ -14612,7 +14756,7 @@ export function App() {
       ||JSON.stringify(seaNames(editorNamesRef.current))!==JSON.stringify(seaNames(checkpoint.editorNames??{}))
       ||[...keys].some(key=>JSON.stringify(hexTerrainByKey.get(key))!==JSON.stringify(checkpoint.hexTerrainByKey.get(key)));
   };
-  const confirmRiverCheckpointLoss=(checkpoint:MapSnapshot)=>{
+  const riverCheckpointWarning=(checkpoint:MapSnapshot)=>{
     const retained=new Set(checkpoint.regions.map(r=>r.id));
     const currentById=new Map(rivers.map(r=>[r.id,r]));
     const checkpointById=new Map(checkpoint.rivers.map(r=>[r.id,r]));
@@ -14631,47 +14775,92 @@ export function App() {
     });
     const featuresChanged=JSON.stringify(riverFeatureOverrides)!==JSON.stringify(checkpoint.riverFeatures??emptyRiverFeatures());
     const waterChanged=checkpointWaterChanged(checkpoint);
-    if(!changed.length&&!featuresChanged&&!waterChanged)return true;
-    if(waterChanged)return window.confirm(language==='ru'?`Будет восстановлена вода и берег из контрольной точки. Также будут восстановлены её POI, названия, теги, заметки и счётчики. Изменённые реки: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Undo вернёт текущую карту точно. Продолжить?`:`The checkpoint water and shore will be restored together with its POI, names, tags, notes and counters. Changed rivers: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Undo restores this current map exactly. Continue?`);
-    return window.confirm(language==='ru'?`Будет восстановлено исходное состояние рек. Изменённые русла: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Ручные отметки: ${featuresChanged?'будут заменены':'сохранятся'}. Отмена вернёт карту точно. Продолжить?`:`Original river state will be restored. Changed routes: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Manual markers: ${featuresChanged?'will be replaced':'retained'}. Undo restores this map exactly. Continue?`);
+    if(!changed.length&&!featuresChanged&&!waterChanged)return null;
+    if(waterChanged)return language==='ru'?`Будет восстановлена вода и берег из контрольной точки. Также будут восстановлены её POI, названия, теги, заметки и счётчики. Изменённые реки: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Undo вернёт текущую карту точно.`:`The checkpoint water and shore will be restored together with its POI, names, tags, notes and counters. Changed rivers: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Undo restores this current map exactly.`;
+    return language==='ru'?`Будет восстановлено исходное состояние рек. Изменённые русла: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Ручные отметки: ${featuresChanged?'будут заменены':'сохранятся'}. Отмена вернёт карту точно.`:`Original river state will be restored. Changed routes: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Manual markers: ${featuresChanged?'will be replaced':'retained'}. Undo restores this map exactly.`;
   };
-  const checkPoiNameCheckpoint=(checkpoint:MapSnapshot)=>{try{retainPoiNames(checkpoint,editorNamesRef.current);
+  const checkpointWarnings=(checkpoint:MapSnapshot):string[]|null=>{
+    try{
+      retainPoiNames(checkpoint,editorNamesRef.current);
+    }catch(error){
+      setEditError(authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));
+      return null;
+    }
+    const warnings:string[]=[];
     const losses=knaveRef.current?knaveLosses(knaveRef.current,knaveMapContext(checkpoint)):[];
-    if(losses.length&&!window.confirm(language==='ru'?`Контрольная точка удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`The checkpoint removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
-    return true;}catch(error){setEditError(authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));return false;}};
+    if(losses.length)warnings.push(language==='ru'
+      ?`Контрольная точка удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}).`
+      :`The checkpoint removes Knave point content and terrain/discovery data (${losses.length}).`);
+    const riverWarning=riverCheckpointWarning(checkpoint);
+    if(riverWarning)warnings.push(riverWarning);
+    return warnings;
+  };
   const deleteLastRegion = () => {
     if (mutationBlocked() || history.length === 0) return;
     let checkpoint = history[history.length-1];
+    const warnings:string[]=[];
+    let exactLakeRollback=false;
     try{
       const state=physicalGridRef.current;
-      const support=state?new Set(projectOneMile(oneMileSources(checkpoint),state.grid.origin).map(row=>hexKey(row.cell))):new Set<string>();
+      const accepted=state?projectOneMile(oneMileSources(checkpoint),state.grid.origin):[];
+      const support=new Set(accepted.map(row=>hexKey(row.cell)));
       const losses=Object.keys(state?.fineCellEdits??{}).filter(key=>!support.has(key));
-      if(losses.length&&!window.confirm(language==='ru'?`Удалить локальные правки одномильных гексов (${losses.length}): ${losses.join('; ')}? Отмена вернёт их.`:`Remove local one-mile edits (${losses.length}): ${losses.join('; ')}? Undo restores them.`))return;
-      checkpoint=retainFineCheckpoint(checkpoint,losses.length>0);
+      if(losses.length)warnings.push(language==='ru'
+        ?`Будут удалены локальные правки одномильных гексов (${losses.length}): ${losses.join('; ')}.`
+        :`Local one-mile edits will be removed (${losses.length}): ${losses.join('; ')}.`);
+      const smallLakes=state?.smallLakes?prepareSmallLakeSupport(state.smallLakes,accepted):undefined;
+      const priorLayer=checkpoint.physicalGrid?.smallLakes;
+      if(state?.smallLakes&&smallLakes){
+        exactLakeRollback=exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes);
+        // Generation records the visible shore of legacy lakes. Compare that
+        // shore on its original map before treating the difference as an edit.
+        if(!exactLakeRollback&&smallLakes.losses.length&&priorLayer?.lakes.some(lake=>lake.shoreCells===undefined)){
+          const lakes=retainAcceptedLakeShores(priorLayer.lakes,checkpoint);
+          exactLakeRollback=exactAutomaticLakeRollback(state.smallLakes,{...priorLayer,lakes},smallLakes);
+        }
+      }
+      checkpoint=retainFineCheckpoint(checkpoint,losses.length>0,smallLakes?{layer:exactLakeRollback?priorLayer:smallLakes.layer}:undefined);
     }catch(error){setEditError(error instanceof Error?error.message:'Local edits cannot be retained');return;}
-    if(!checkPoiNameCheckpoint(checkpoint)||!confirmRiverCheckpointLoss(checkpoint))return;
+    const restoredLayers=checkpointWarnings(checkpoint);
+    if(!restoredLayers)return;
+    warnings.push(...restoredLayers);
     const entities = getToponymEntities(checkpoint.regions, checkpoint.rivers, checkpoint.hexTerrainByKey);
     const retainedNames: ToponymRegistry = { ...(checkpoint.toponyms ?? {}) };
     for (const {key} of entities) if(toponyms[key]) retainedNames[key]=toponyms[key];
     const exactWater=checkpointWaterChanged(checkpoint);
     const retainedNotes = exactWater?checkpoint.gmNotesByHexKey:notesForSurvivingHexes(checkpoint);
-    if (!confirmNotesRemoval(retainedNotes)) return;
+    const removedNotes=removedNoteKeys(retainedNotes);
+    if(removedNotes.length)warnings.push(language==='ru'
+      ?`Будут удалены заметки мастера (${removedNotes.length}) в гексах ${removedNotes.join('; ')}.`
+      :`GM notes will be removed (${removedNotes.length}) at ${removedNotes.join('; ')}.`);
     const map = exactWater?structuredClone(checkedRiverMap(checkpoint)):{ ...checkpoint,editorNames:retainPoiNames(checkpoint,editorNamesRef.current), tags:reconcileTags(tagsRef.current,checkpoint,captureMap(),generationRef.current.masterSeed,false), gmNotesByHexKey: retainedNotes, toponymSeed: checkpoint.toponymSeed ?? toponymSeed,
       toponyms: synchronizeToponyms(retainedNames,entities,checkpoint.toponymSeed ?? toponymSeed),
       roads: pruneRoadsToRegionHexes(cloneRoads(checkpoint.roads),checkpoint.regions) };
     const before = captureDocument();
     map.knave=retainedKnaveCheckpoint(map);
-    const after = { ...before, map, generationHistory: history.slice(0,-1),
-      selectedHex: checkpoint.regions.length ? checkpoint.regions[checkpoint.regions.length-1].centerHex : START_HEX };
-    recordTransaction(before,after); applyDocument(after);
+    try{
+      // Check the roads and sites restored by the checkpoint as well as dry support.
+      const prepared=map.physicalGrid?.smallLakes?.lakes.length?prepareGeneratedSmallLakes(exactLakeRollback?map:before.map,map,[]):null;
+      if(warnings.length){
+        warnings.push(language==='ru'?'Удалить регион? Отмена действия восстановит карту.':'Delete the region? Undo restores the map.');
+        if(!window.confirm(warnings.join('\n\n')))return;
+      }
+      const after={...before,map:prepared?.map??map,generationHistory:history.slice(0,-1),
+        selectedHex:checkpoint.regions.length?checkpoint.regions[checkpoint.regions.length-1].centerHex:START_HEX};
+      recordTransaction(before,after,{...(exactLakeRollback?{replaceMap:true}:{}),preparedScene:prepared?.scene??undefined});applyDocument(after);
+    }catch(error){
+      setEditError(error instanceof Error?error.message:'The map checkpoint could not be restored');
+    }
   };
 
   const regenerateLastRegion = () => {
     if (mutationBlocked()) return;
     if (regions.length === 0 || history.length === 0) return;
-    if(!checkPoiNameCheckpoint(history[history.length-1])||!confirmRiverCheckpointLoss(history[history.length-1]))return;
+    const warnings=checkpointWarnings(history[history.length-1]);
+    if(!warnings)return;
     documentRevision.current++;
     const backup = captureGenerationBackup();
+    backup.checkpointWarnings=warnings;
     const lastKingdom = kingdoms.find(k=>k.regionIds.includes(regions[regions.length-1].id));
     const lastAnchor = lastKingdom?.anchor ?? regions[regions.length - 1].anchorHex;
     const snapshot = history[history.length - 1];
@@ -15369,6 +15558,8 @@ export function App() {
       };
       // Everything that can fail (including deep copies) is prepared before the first setter.
       const prepared=copyDocument(after), transaction={before:copyDocument(before),after:copyDocument(after)};
+      const scene=validateAcceptedLakeShores(prepared.map);
+      if(scene)preparedAutomaticSceneRef.current={map:prepared.map,state:scene};
       setUndoHistory(current=>[...current,transaction].slice(-100)); setRedoHistory([]);
       applyPreparedDocument(prepared); setEditMode(false); setLegacyNotice(!imported.generation); setGenerationError(null); trackGoal('import_json');
     } catch(error) {
@@ -15413,8 +15604,9 @@ export function App() {
     if(draft!==expected||!currentPoiDraft(draft)||notesComposingRef.current||dirtyNameDraft())return false;
     try{const {original,map}=preparePoiDraft(draft);if(map===original){resetPoiDraft(draft);return true;}
       const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:prepareSourceTransition(original,map,new Map([[poiLocatorKey(draft.source),draft.source.kind==='water'?`waterPoi:${draft.q},${draft.r}`:`poi:${map.regions.find(r=>r.hexes.some(c=>hexKey(c)===`${draft.q},${draft.r}`))!.id}:${draft.q},${draft.r}`]])),selectedHex:{q:Number(draft.q),r:Number(draft.r)}});
-      assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);return true;
-    }catch(error){setEditError(poiCommandError(error));return false;}
+      const scene=validateAcceptedLakeShores(after.map);
+      assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after,scene?{preparedScene:scene}:undefined);applyPreparedDocument(after);return true;
+    }catch(error){setEditError(lakeSourceError(error)??poiCommandError(error));return false;}
   };
   const poiPreview=(()=>{if(!poiDraft)return null;try{return {plan:preparePoiDraft(poiDraft),error:null,code:null};}catch(error){return {plan:null,error:poiCommandError(error),code:(error as {code?:string}).code};}})();
   const requestPoiExit=(action:()=>void)=>{const draft=poiDraftRef.current;if(!draft)return;setPoiExitRequest({draft,action});};
@@ -15852,6 +16044,10 @@ export function App() {
         </select></label>}
       </div>)}
       {waterPreview?.plan?.losses.map(loss=><label className="water-loss" key={loss.id}><input type="checkbox" data-water-loss={loss.id} checked={waterDraft.options.acceptedLosses?.includes(loss.id)??false} onChange={e=>changeWaterDraft(waterDraft,{options:{...waterDraft.options,acceptedLosses:e.target.checked?[...waterDraft.options.acceptedLosses??[],loss.id]:(waterDraft.options.acceptedLosses??[]).filter(id=>id!==loss.id)},preview:true})}/>{' '}{waterLossText(loss)}</label>)}
+      {!!waterPreview?.plan?.smallLakeLosses.length&&<div role="status" data-water-small-lake-losses>
+        <p>{language==='ru'?'Изменение поверхности в выделенных гексах удалит целиком следующие малые озёра. «Отменить» восстановит поверхность и озёра.':'Changing the surface in the selected hexes removes the following small lakes in full. Undo restores the surface and the lakes.'}</p>
+        <ul>{waterPreview.plan.smallLakeLosses.map(lake=><li key={lake.id}>№{lake.id} · {language==='ru'?'гексы на 1 миле':'one-mile hexes'} {lake.cells.map(hexKey).join('; ')}</li>)}</ul>
+      </div>}
       {waterPreview?.plan?.newCrossings.map(c=><label className="direct-line" key={c.key}>{language==='ru'?'Новая переправа':'New crossing'} · {waterName(`river:${c.riverId}`)} · {language==='ru'?'путь':'path'} {c.roadId} <select data-water-crossing={c.key} aria-label={`${language==='ru'?'Вид новой переправы':'New crossing type'} ${c.key}`} value={waterDraft.options.crossingKinds?.[c.key]??''} onChange={e=>e.target.value&&changeWaterDraft(waterDraft,{options:{...waterDraft.options,crossingKinds:{...waterDraft.options.crossingKinds,[c.key]:e.target.value as RiverCrossingKind}},preview:true})}><option value="">{language==='ru'?'Выберите':'Choose'}</option>{(['bridge','ferry','ford'] as const).map(kind=><option key={kind} value={kind} disabled={kind==='ford'&&Number(knownRiverEdgeFullness(rivers.find(r=>r.id===c.riverId)!,c.riverEdgeKey))>=3}>{t[kind]}</option>)}</select></label>)}
       {waterPreview?.plan?.invalidFeatures.map((feature,i)=><label className="direct-line" key={i}>{waterFeatureText(feature)} <select data-water-feature={i} aria-label={waterFeatureText(feature)} value={waterDraft.options.featureEdits?.find(e=>e.type===feature.type&&(e.type==='rapid'&&feature.type==='rapid'?e.riverId===feature.riverId&&e.edgeKey===feature.edgeKey:e.type==='waterfall'&&feature.type==='waterfall'&&e.vertexKey===feature.vertexKey))?.state??''} onChange={e=>e.target.value&&waterFeatureChoice(waterDraft,feature,e.target.value as 'auto'|'off')}><option value="">{language==='ru'?'Снять ручное включение':'Resolve manual On'}</option><option value="off">{language==='ru'?'Нет':'Off'}</option><option value="auto">{language==='ru'?'Авто':'Auto'}</option></select></label>)}
       {waterDraft.preview&&<p>{language==='ru'?'Заметки гексов сохранятся. Названия и теги, не перечисленные выше, останутся прежними.':'Hex notes will be retained. Names and tags not listed above will stay unchanged.'}</p>}
@@ -16032,12 +16228,13 @@ export function App() {
         editorNames=Object.fromEntries(Object.entries(editorNames).filter(([key])=>key!==`obstacle:${edit.id}`));
       }
       const after=copyDocument({...before,map:prepareSourceTransition(before.map,{...before.map,...prepared,editorNames})});
+      validateAcceptedLakeShores(after.map);
       recordTransaction(before,after);applyExactMap(after.map);closeEditors();
       setIsSidePanelCollapsed(false);
       const focusId=edit.type==='remove'?'nearby':edit.type==='move'?edit.id:prepared.nextObstacleId-1;
       setSelectedObstacleId(typeof focusId==='number'?focusId:null);obstacleReturnFocus.current=focusId;
       return true;
-    }catch(error){setEditError(obstacleMessage(error));return false;}
+    }catch(error){setEditError(lakeSourceError(error)??obstacleMessage(error));return false;}
   };
   const cancelObstacleChoice = () => {setIsSidePanelCollapsed(false);obstacleReturnFocus.current=obstacleDraftRef.current?.id??'add';updateObstacleDraft(null);};
   const startObstacleChoice = (id:number|null) => {
@@ -16378,6 +16575,7 @@ export function App() {
     documentRevision.current++;updateAutomaticFineScene({...next,...(state?.selectedCell?{selectedCell:state.selectedCell}:{}),...(state?.selectedWorldPoint?{selectedWorldPoint:state.selectedWorldPoint}:{})});setFineHover(null);setEditMode(false);closeEditors();updateMapScale(scale);return true;
   };
   const switchFineStep=(step:1|6)=>{
+    if(smallLakeDraft)return false;
     if(step===6&&automaticFineJob.current){cancelAutomaticFinePreparation();return true;}
     if(mutationBlocked()||fineComposing.current)return false;
     if(automaticFineSceneRef.current?.viewStep===step)return true;
@@ -16411,34 +16609,152 @@ export function App() {
     const layer=mapSvgRef.current?.querySelector<SVGGElement>('[data-fine-world]'),matrix=layer?.getScreenCTM();
     if(event&&matrix&&mapSvgRef.current){const point=mapSvgRef.current.createSVGPoint();point.x=event.clientX;point.y=event.clientY;const raw=point.matrixTransform(matrix.inverse()),factor=Math.sqrt(3)*HEX_SIZE/6;pointer={x:(raw.x-riverOffset.x)/factor+state.grid.origin.x,y:(raw.y-riverOffset.y)/factor+state.grid.origin.y};}
     if(pointer&&!isSameHex(worldToDetailCell(createDetailGrid(1,state.grid.origin),pointer),cell))pointer=undefined;
+    if(smallLakeDraft){
+      if(candidate||smallLakeDraft.revision!==revision)return false;
+      const cells=smallLakeDraft.cells;
+      const next=cells.some(c=>isSameHex(c,cell))?cells.filter(c=>!isSameHex(c,cell)):[...cells,cell];
+      setSmallLakeDraft({...smallLakeDraft,cells:next});
+      return true;
+    }
     if(candidate){
       const row=fineCandidates.find(row=>isSameHex(row.cell,cell));if(!row)return false;
       const anchor=chooseOneMileAnchor(row,pointer,state.grid.origin);if(!anchor)return false;
       fineBusyRef.current=true;fineGenerationTargetRef.current={cell,point:pointer??detailCellCenter(createDetailGrid(1,state.grid.origin),cell)};try{generateAt(anchor);}finally{fineBusyRef.current=false;if(!kingdomInFlight.current)fineGenerationTargetRef.current=null;}return true;
     }
     if(!fineCells.some(row=>isSameHex(row.cell,cell)))return false;
-    const center=detailCellCenter(createDetailGrid(1,state.grid.origin),cell),hits=detailPositiveAreaIntersections(createDetailGrid(6,state.grid.origin),detailCellPolygon(createDetailGrid(1,state.grid.origin),cell));
-    const accepted=new Set(oneMileSources(captureMap()).map(row=>hexKey(row.cell))),source=hits.filter(hit=>accepted.has(hexKey(hit.cell))).sort((a,b)=>b.areaSquareMiles-a.areaSquareMiles||a.cell.q-b.cell.q||a.cell.r-b.cell.r)[0];
-    documentRevision.current++;updateAutomaticFineScene({...state,selectedCell:cell,selectedWorldPoint:pointer??center});setFineHover(null);if(source)setSelectedHex(source.cell);return true;
+    const center=detailCellCenter(createDetailGrid(1,state.grid.origin),cell);
+    const source=oneMileSourceOverlaps(cell,state.grid.origin,new Set(oneMileSources(captureMap()).map(row=>hexKey(row.cell))))[0]?.cell;
+    documentRevision.current++;updateAutomaticFineScene({...state,selectedCell:cell,selectedWorldPoint:pointer??center});setFineHover(null);if(source)setSelectedHex(source);return true;
   };
   const finePickRef=useRef(pickFine);finePickRef.current=pickFine;
   const startFineDraft=()=>{
     const state=automaticFineSceneRef.current??physicalGridRef.current,cell=state?.selectedCell;
-    if(!cell||mutationBlocked())return;const value=state.fineCellEdits?.[hexKey(cell)];
+    if(!cell||smallLakeDraft||mutationBlocked())return;const value=state.fineCellEdits?.[hexKey(cell)];
     const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
+  const acceptedSmallLakes=physicalGrid?.smallLakes;
   const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
-  const refinedArtwork=(state:Detail1State)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
-  const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
-    geography={refinedArtwork(fineDisplay)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
+  const needsSmallLakeProtection=!!smallLakeDraft||!!acceptedSmallLakes?.lakes.length;
+  const smallLakeProtection=useMemo(()=>needsSmallLakeProtection&&fineDisplay?.viewStep===1
+    ?smallLakeProtectionForMap(captureMap(),fineDisplay):null,
+    [needsSmallLakeProtection,fineDisplay,regions,rivers,roads,crossings,riverFeatureOverrides,hexTerrainByKey]);
+  const smallLakeCoverage=useMemo(()=>new Map(fineCells.map(cell=>[hexKey(cell.cell),cell])),[fineCells]);
+  const acceptedLakeArtwork=useMemo(()=>{
+    if(fineDisplay?.viewStep!==1||!acceptedSmallLakes?.lakes.length||!smallLakeProtection)
+      return {views:[] as SmallLakeView[],reserved:new Set<string>()};
+    return prepareAcceptedSmallLakeViews(acceptedSmallLakes.lakes,toponymSeed,fineDisplay.grid.origin,smallLakeProtection,smallLakeCoverage);
+  },[acceptedSmallLakes,smallLakeProtection,smallLakeCoverage,toponymSeed,fineDisplay]);
+  const overlapsSmallLake={kind:'small_lake' as const,ref:''};
+  const smallLakeConflictText=(conflict:NonNullable<ReturnType<typeof prepareSmallLakeShore>['conflict']>|typeof overlapsSmallLake)=>{
+    if(conflict.kind==='road')return language==='ru'?`Берег малого озера пересекает дорогу или тропу №${conflict.ref}.`:`The small lake crosses road or trail #${conflict.ref}.`;
+    if(conflict.kind==='crossing')return language==='ru'?'Берег малого озера пересекает действующую переправу.':'The small lake crosses an existing crossing.';
+    if(conflict.kind==='anchor')return language==='ru'?'Берег малого озера перекрывает защищённую точку интереса или её привязку.':'The small lake covers a protected point of interest or its attachment.';
+    if(conflict.kind==='small_lake')return language==='ru'?'Выбранные гексы заходят на берег другого малого озера.':'The selected hexes overlap the shore of another small lake.';
+    return language==='ru'?'На выбранных гексах нет подходящего берега.':'The selected cells do not form a valid shore.';
+  };
+  const validateAcceptedLakeShores=(map:MapSnapshot)=>{
+    const state=map.physicalGrid, lakes=state?.smallLakes?.lakes;
+    if(!state||!lakes?.length)return null;
+    const path='map.physicalGrid.smallLakes';
+    let scene:Detail1State|null=null;
+    try{scene=prepareAutomaticOneMileScene(map);}
+    catch(error){
+      if(!(error instanceof OneMileGeometryConflict&&localLakeGrid(state)))
+        throw new SaveValidationError(path,automaticSceneFailureMessage(error,language));
+    }
+    const geometry=scene??state;
+    const protection=smallLakeProtectionForMap(map,geometry);
+    for(const [index,lake] of lakes.entries()){
+      const {conflict}=prepareSmallLakeShore(lake,map.toponymSeed,geometry.grid.origin,protection);
+      if(conflict)throw new SaveValidationError(`${path}.lakes[${index}].cells`,smallLakeConflictText(conflict));
+    }
+    return scene;
+  };
+  const lakeSourceError=(error:unknown)=>error instanceof SaveValidationError&&error.path.startsWith('map.physicalGrid.smallLakes')
+    ?error.reason:undefined;
+  const manualSmallLake=useMemo(()=>{
+    if(!smallLakeDraft?.cells.length||!fineDisplay||!smallLakeProtection)return null;
+    try{
+      const layer=addManualSmallLake(acceptedSmallLakes,smallLakeDraft.cells,fineCells),lake=layer.lakes[layer.lakes.length-1];
+      const prepared=prepareSmallLakeShore(lake,toponymSeed,fineDisplay.grid.origin,smallLakeProtection,smallLakeCoverage,acceptedLakeArtwork.reserved);
+      return {...prepared,conflict:lake.cells.some(cell=>acceptedLakeArtwork.reserved.has(hexKey(cell)))?overlapsSmallLake:prepared.conflict};
+    }catch{return null;}
+  },[acceptedSmallLakes,acceptedLakeArtwork,fineCells,smallLakeCoverage,smallLakeDraft,fineDisplay,smallLakeProtection,toponymSeed]);
+  const paintSmallLake=manualSmallLake?.view;
+  const startSmallLake=()=>{
+    const target=fineDisplay?.selectedCell;
+    if(!target||fineDisplay?.viewStep!==1||mutationBlocked()||
+       !hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,target)))||
+       acceptedLakeArtwork.reserved.has(hexKey(target)))return;
+    setEditError(null);
+    setSmallLakeDraft({revision:documentRevision.current,cells:[target]});
+  };
+  const commitSmallLake=()=>{
+    const display=automaticFineSceneRef.current??physicalGridRef.current;
+    const state=physicalGridRef.current??display?.geometryRefinement?.sourceState??display;
+    if(!state||display?.viewStep!==1||!smallLakeDraft||!smallLakeProtection||smallLakeDraft.revision!==documentRevision.current){
+      setEditError(language==='ru'?'Карта изменилась. Отмените черновик и выберите гексы заново.':'The map changed. Cancel the draft and select the hexes again.');
+      return;
+    }
+    if(mutationBlocked()){
+      setEditError(language==='ru'?'Завершите текущее действие на карте перед сохранением озера.':'Finish the current map action before saving the lake.');
+      return;
+    }
+    try{
+      const before=copyDocument(captureDocument());
+      const accepted=projectOneMile(oneMileSources(before.map),state.grid.origin);
+      const layer=addManualSmallLake(state.smallLakes,smallLakeDraft.cells,accepted),lake=layer.lakes[layer.lakes.length-1];
+      const coverage=new Map(accepted.map(cell=>[hexKey(cell.cell),cell]));
+      if(lake.cells.some(cell=>acceptedLakeArtwork.reserved.has(hexKey(cell)))){setEditError(smallLakeConflictText(overlapsSmallLake));return;}
+      const {conflict,view}=prepareSmallLakeShore(lake,before.map.toponymSeed,state.grid.origin,smallLakeProtection,coverage,acceptedLakeArtwork.reserved);
+      if(conflict){setEditError(smallLakeConflictText(conflict));return;}
+      const smallLakes={...layer,lakes:[...layer.lakes.slice(0,-1),{...lake,shoreCells:view.maskCells.slice(lake.cells.length)}]};
+      const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes}}});
+      assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);
+    }catch(error){
+      setEditError(error instanceof Error?error.message:(language==='ru'?'Не удалось сохранить малое озеро.':'Could not save the small lake.'));
+    }
+  };
+  const selectedSmallLake=acceptedSmallLakes?.lakes.find(lake=>lake.cells.some(cell=>fineDisplay?.selectedCell&&isSameHex(cell,fineDisplay.selectedCell)));
+  const removeSelectedSmallLake=()=>{
+    const state=physicalGridRef.current, layer=state?.smallLakes;
+    if(!state||!layer||!selectedSmallLake||smallLakeDraft||mutationBlocked())return;
+    try{
+      const before=copyDocument(captureDocument());
+      const survivors=layer.lakes.filter(lake=>lake.id!==selectedSmallLake.id);
+      const smallLakes={...layer,lakes:retainAcceptedLakeShores(survivors,before.map,acceptedLakeArtwork.views)};
+      const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes}}});
+      recordTransaction(before,after);applyPreparedDocument(after);
+    }catch(error){setEditError(error instanceof Error?error.message:'Could not remove small lake');}
+  };
+  const smallLakeCanStart=!!fineDisplay?.selectedCell&&hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,fineDisplay.selectedCell!)))&&
+    !acceptedLakeArtwork.reserved.has(hexKey(fineDisplay.selectedCell));
+  const refinedArtwork=(state:Detail1State,smallLakeRiverMask?:string)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} smallLakeRiverMask={smallLakeRiverMask} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
+  const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} smallLakes={acceptedLakeArtwork.views} smallLakeDraft={paintSmallLake} smallLakeDraftCells={smallLakeDraft?.cells} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
+    geography={mask=>refinedArtwork(fineDisplay,mask)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [fineDisplay,fineCells,fineCandidates,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
+    [fineDisplay,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}
     rivers={(fineSummary?.rivers??[]).map(r=>`${editorNames[`river:${r.id}`]?.[language]??toponyms[`river:${r.id}`]?.[language]??`${t.river} ${r.id}`}${r.crossingIds.length?` · ${r.crossingIds.map(id=>crossings.find(c=>`crossing:${c.key}`===id)?.kind).filter(Boolean).map(k=>t[k as 'bridge'|'ferry'|'ford']).join(', ')}`:''}`)}
     pois={(fineSummary?.pois??[]).map(p=>finePoi(fineDisplay!.poiFootprints.find(fp=>fp.poiId===p.poiId)!).label)} draft={fineDraft} canEdit={!!fineDisplay?.selectedCell} water={!!fineRow?.waterArea} busy={isImporting||!!pendingRegen||!!kingdomJob} error={editError}
-    biomes={Object.values(BIOMES).map(b=>({id:b.id,label:getBiomeLabel(b.id,language)}))} onEdit={startFineDraft} onChange={fields=>changeFineDraft(fields,fineDraft)} onSave={()=>saveFineDraft(fineDraft)} onCancel={()=>cancelFineDraft(fineDraft)} onComposition={active=>{fineComposing.current=active;}}/>;
+    biomes={Object.values(BIOMES).map(b=>({id:b.id,label:getBiomeLabel(b.id,language)}))} onEdit={startFineDraft} onChange={fields=>changeFineDraft(fields,fineDraft)} onSave={()=>saveFineDraft(fineDraft)} onCancel={()=>cancelFineDraft(fineDraft)} onComposition={active=>{fineComposing.current=active;}}>
+    {!fineDraft&&(smallLakeDraft?<div data-small-lake-editor>
+      <strong>{language==='ru'?'Малое озеро':'Small lake'}</strong>
+      <p>{language==='ru'?`Выбрано гексов: ${smallLakeDraft.cells.length}`:`Selected hexes: ${smallLakeDraft.cells.length}`}</p>
+      {!manualSmallLake&&<p role="alert">{language==='ru'?'Выберите смежные гексы целиком на суше без другого малого озера.':'Select connected hexes entirely on dry land, clear of another small lake.'}</p>}
+      {manualSmallLake?.conflict&&<p role="alert" data-small-lake-conflict>{smallLakeConflictText(manualSmallLake.conflict)}</p>}
+      {smallLakeDraft.revision!==documentRevision.current&&<p role="alert">{language==='ru'?'Карта изменилась. Начните заново.':'The map changed. Start again.'}</p>}
+      <div className="fine-actions">
+        <button type="button" disabled={!manualSmallLake||!!manualSmallLake.conflict||smallLakeDraft.revision!==documentRevision.current||documentBusy()} onClick={commitSmallLake}>{language==='ru'?'Сохранить озеро':'Save lake'}</button>
+        <button type="button" className="secondary" onClick={()=>{setSmallLakeDraft(null);setEditError(null);}}>{language==='ru'?'Отмена':'Cancel'}</button>
+      </div>
+    </div>:selectedSmallLake?<div data-small-lake-controls>
+      <p>{language==='ru'?'Малое озеро':'Small lake'} №{selectedSmallLake.id}</p>
+      <button type="button" className="secondary" disabled={documentBusy()} onClick={removeSelectedSmallLake}>{language==='ru'?'Удалить малое озеро':'Remove small lake'}</button>
+    </div>:<button type="button" className="secondary" disabled={!smallLakeCanStart||documentBusy()} onClick={startSmallLake}>{language==='ru'?'Добавить малое озеро':'Add small lake'}</button>)}
+  </OneMilePanel>;
   const mapMotionCanvasRef = useRef<HTMLCanvasElement>(null);
   const mapArtwork = useMemo(() => (<>
             <defs>
@@ -16778,6 +17094,7 @@ export function App() {
   return (
     <EngravingLoading.Provider value={engravingLoading}>
     <div className="app" onClickCapture={e=>{if(fineGate(e))poiClickGate(e);}} onChangeCapture={e=>{if(fineGate(e))poiSelectGate(e);}} onPointerDownCapture={finishBeforePointer} onKeyDownCapture={e=>{
+      if(smallLakeDraft&&e.key==='Escape'){e.preventDefault();e.stopPropagation();setSmallLakeDraft(null);setEditError(null);return;}
       if(fineDraftRef.current&&e.key==='Escape'&&!e.nativeEvent.isComposing){e.preventDefault();e.stopPropagation();cancelFineDraft();return;}
       if(fineExit&&e.key==='Tab'){const buttons=[...e.currentTarget.querySelectorAll<HTMLButtonElement>('[data-fine-exit] button')],first=buttons[0],last=buttons[buttons.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
       if(e.key!=='Tab'&&guardMaterialRead(e))return;

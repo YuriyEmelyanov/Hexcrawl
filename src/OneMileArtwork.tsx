@@ -7,9 +7,11 @@ import {fineCellKey,type OneMileCell,type FineCandidate} from './oneMile';
 import {Engraving} from './rendering/EngravedTerrain';
 import {engravingFor, type TerrainKind} from './rendering/engravingAssets';
 import {terrainTextures} from './rendering/terrainBlend';
+import type {SmallLakeView} from './smallLakeShore';
+import {LakeWater} from './rendering/LakeWater';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
-type Props={rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
- poi:(p:DetailPoiFootprint)=>{label:string;image:string};geography?:ReactNode;interactive?:boolean;
+type Props={smallLakes?:readonly SmallLakeView[];smallLakeDraft?:SmallLakeView;smallLakeDraftCells?:readonly DetailCell[];rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
+ poi:(p:DetailPoiFootprint)=>{label:string;image:string};geography?:(smallLakeRiverMask:string|undefined)=>ReactNode;interactive?:boolean;
  rivers:readonly {key:string;x1:number;y1:number;x2:number;y2:number;width:number;fullness:number}[];
  roads:readonly FineRoad[];
  onHover:(cell:DetailCell|null)=>void;onPick:(cell:DetailCell,candidate:boolean,revision:number,event?:MouseEvent<SVGGElement>)=>void;busy:boolean};
@@ -33,6 +35,24 @@ export function OneMileArtwork(p:Props){
  const textures=useMemo(()=>terrainTextures(p.cells.map(({cell})=>({
    ...cell,color:engravingFor(terrain.get(fineCellKey(cell))!)!.color,
  }))),[p.cells,terrain]);
+ const lakes=p.smallLakes??[];
+ const shorelines=[...lakes,...(p.smallLakeDraft?[p.smallLakeDraft]:[])];
+ const lakeClipId=(id:number)=>`${clipPrefix}-small-lake-${id}`;
+ const riverMaskId=`${clipPrefix}-small-lake-rivers`;
+ const riverMask=lakes.length?`url(#${riverMaskId})`:undefined;
+ const lakeTranslation=`translate(${p.offset.x} ${p.offset.y})`;
+ const riverMaskBounds=useMemo(()=>{
+   if(!riverMask)return undefined;
+   let left=p.offset.x,right=p.offset.x,top=p.offset.y,bottom=p.offset.y;
+   const include=({x,y}:WorldPoint)=>{
+     left=Math.min(left,x);right=Math.max(right,x);
+     top=Math.min(top,y);bottom=Math.max(bottom,y);
+   };
+   for(const {cell} of p.cells)include(center(cell));
+   for(const r of p.rivers){include({x:r.x1,y:r.y1});include({x:r.x2,y:r.y2});}
+   const padding=factor*6;
+   return {x:left-padding,y:top-padding,width:right-left+padding*2,height:bottom-top+padding*2};
+ },[riverMask,p.cells,p.rivers,origin,p.offset]);
  const occupied=new Set<string>();
  const pointsOfInterest=p.state.poiFootprints.map(fp=>{
    const extent=detailFootprintExtentMiles(fp,grid),large=extent!==null&&extent>=1;
@@ -59,13 +79,35 @@ export function OneMileArtwork(p:Props){
     {!occupied.has(key)&&<Engraving id={id} x={c.x} y={c.y} radius={radius} rotated={p.rotated}/>}
    </g>;
   })}</g>
-  {p.geography??<><g className="rivers-layer" pointerEvents="none">{p.rivers.map(r=><line key={r.key} data-river-fullness={r.fullness} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className="river-polyline" strokeWidth={fineRiverStrokeWidth(r.fullness)}/>)}</g>
+  {/* The same clipped shore paints the lake and hides the underlying river. */}
+  {riverMask&&<defs><mask id={riverMaskId} maskUnits="userSpaceOnUse" {...riverMaskBounds} style={{maskType:'luminance'}} data-small-lake-river-mask>
+   <rect {...riverMaskBounds} fill="white"/>
+   {lakes.map(({lake,path})=><g key={lake.id} clipPath={`url(#${lakeClipId(lake.id)})`}>
+     <path d={path} transform={lakeTranslation} fill="black" fillRule="evenodd"/>
+   </g>)}
+  </mask></defs>}
+  {shorelines.map(({lake,shape,maskCells})=>{
+    if(!shape)return null;
+    const draft=lake===p.smallLakeDraft?.lake,clip=lakeClipId(lake.id);
+    return <g key={lake.id} data-small-lake={draft?undefined:lake.id} data-editor-only={draft?'small-lake-draft':undefined} pointerEvents="none">
+      <defs><clipPath id={clip}>{maskCells.map(cell=><polygon key={fineCellKey(cell)} points={polygon(cell)} data-small-lake-shore-cell={fineCellKey(cell)}/>)}</clipPath></defs>
+      <g clipPath={`url(#${clip})`}>
+        <g transform={lakeTranslation} data-small-lake-water opacity={draft ? .7 : 1}>
+          <LakeWater cells={shape.cells} radius={radius} shapes={[{...shape,key:clip+'-water'}]}/>
+        </g>
+      </g>
+    </g>;
+  })}
+  {p.smallLakeDraftCells?.length&&<g data-editor-only="small-lake-selection" pointerEvents="none">
+   {p.smallLakeDraftCells.map(cell=><polygon key={fineCellKey(cell)} data-small-lake-selected-cell={fineCellKey(cell)} points={polygon(cell)} fill="none" stroke="#f7dc6f" strokeWidth={.3} strokeDasharray=".7 .5"/>)}
+  </g>}
+  {p.geography?.(riverMask)??<><g className="rivers-layer" mask={riverMask} pointerEvents="none">{p.rivers.map(r=><line key={r.key} data-river-fullness={r.fullness} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className="river-polyline" strokeWidth={fineRiverStrokeWidth(r.fullness)}/>)}</g>
   <g className="roads-layer" pointerEvents="none">{p.roads.map(r=>{const plan=fineRoadPresentation(r,p.crossings,p.rivers);return <g key={r.key} data-fine-road={r.key}>
    {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>)}
    {plan.rails.map(rail=><polyline key={rail.key} points={rail.points} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
    {plan.crossings.map(c=><g key={c.key} data-fine-crossing={c.key} data-crossing-kind={c.kind}><title>{c.kind}</title></g>)}
   </g>;})}</g>
-  <g pointerEvents="none">{p.rapids.map(m=><line key={m.key} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} className="river-rapid-mark" style={{strokeWidth:.2}}/>)}{p.waterfalls.map(w=><image transform={p.rotated?`rotate(-90 ${w.x} ${w.y})`:undefined} key={w.key} href="/waterfall-color.svg" x={w.x-1.3} y={w.y-1.3} width={2.6} height={2.6}/>)}</g>
+  <g mask={riverMask} pointerEvents="none">{p.rapids.map(m=><line key={m.key} x1={m.x1} y1={m.y1} x2={m.x2} y2={m.y2} className="river-rapid-mark" style={{strokeWidth:.2}}/>)}{p.waterfalls.map(w=><image transform={p.rotated?`rotate(-90 ${w.x} ${w.y})`:undefined} key={w.key} href="/waterfall-color.svg" x={w.x-1.3} y={w.y-1.3} width={2.6} height={2.6}/>)}</g>
 
   </>}
   <g data-fine-grid pointerEvents="none"><ColorHexGrid cells={p.cells.map(row=>center(row.cell))} radius={radius} viewMagnification={6}/></g>

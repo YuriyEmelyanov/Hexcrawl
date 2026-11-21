@@ -114,7 +114,9 @@ test('Knave real generation commits content with its map, preserves world RNG an
  const plain=setup(false),knave=setup(true),options={targetSize:18,landType:'wild',coastalPreference:'mainland'};
  const map=h=>structuredClone(h.render().captureDocument().map);
  const serialized=m=>JSON.parse(JSON.stringify(m,(_key,value)=>value instanceof Map?{entries:[...value]}:value));
- const physical=m=>{const out=structuredClone(m);delete out.knave;for(const r of out.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return out;};
+ // The fine layer can legitimately differ when the profile provides other
+ // site anchors. Compare base geography here and keep the exact reload check.
+ const physical=m=>{const out=structuredClone(m);delete out.knave;delete out.physicalGrid;for(const r of out.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return out;};
  const generate=(h,anchor)=>assert.equal(h.render().safelyAddRegionToMap(anchor,options).success,true);
  const empty=map(knave);generate(plain,{q:0,r:0});generate(knave,{q:0,r:0});
  const first=map(knave),facts=knave.geometry.knaveFactsForMap(first);assert.ok(facts.length>=2);assert.deepEqual(physical(first),physical(map(plain)));
