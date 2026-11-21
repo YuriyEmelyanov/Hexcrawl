@@ -1,0 +1,188 @@
+{
+  "run_id": "2026-11-21T1605-reviewer-PR511-rc8",
+  "role": "reviewer",
+  "task_id": "HX-BL-058",
+  "pr": 511,
+  "model_version": "1.3-rc8",
+  "level": "L1",
+  "status": "completed",
+  "baseline_release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "release_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+  "reviewed_head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+  "release_tree_sha": "53555ea73e7735c3f1ab1df9faa0086223272ba6",
+  "tree_matches_reviewed_head": true,
+  "baseline_operations_sha": "92ae06d40a60b42a86efd023b5b9b84c7df51f0d",
+  "canonical_baseline": [
+    "agent-work/research/acceptance/L1-PR509/ledger.json#acceptance_summary",
+    "agent-work/research/acceptance/L1-PR509/classic-common/README.md",
+    "agent-work/score/current-score.json"
+  ],
+  "model_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/README.md",
+  "weights_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/calculation.json",
+  "score_rules_available": "Подробные правила в score/rules относятся к S01-C01…C04. Для этих двух строк S04 действует принятый срез Classic.",
+  "formula": "max_L1 = 1000 × weight / 675 / 3. Величины в строках уже включают долю ядра в L1.",
+  "current_L1_points": 169.74683328569623,
+  "accepted_core_points": 99.16857693157779,
+  "accepted_game_points": 70.57825635411842,
+  "confirmed_market_points": 0,
+  "confirmed_release_delta": 0,
+  "resulting_L1_points_if_applied": 169.74683328569623,
+  "scope_exclusions": [
+    "L2",
+    "L3",
+    "игровая и рыночная трети L1",
+    "S01-C04: дорожные знаки уже учтены отдельной приёмкой на том же SHA"
+  ],
+  "rows": [
+    {
+      "criterion_id": "S04-C01",
+      "title": "Запуск без обучения",
+      "weight": 20,
+      "max_L1": 9.876543209876543,
+      "before": {
+        "accepted_fraction": 0,
+        "L1_points": 0
+      },
+      "after": {
+        "accepted_fraction": 0,
+        "L1_points": 0
+      },
+      "delta": 0,
+      "status": "ограниченная проверка интерфейса; самостоятельность новых пользователей не измерена",
+      "method": "Сравнение элементов управления, обработчиков, языков и доказательств сценария переключения. Результаты подготовленного проверяющего не позволяют определить долю успешных первых запусков.",
+      "remaining_evidence": "Создание и экспорт первой карты за две минуты без инструкции у 30 новых пользователей, с порогом 90%.",
+      "evidence": [
+        "agent-work/research/acceptance/L1-PR509/classic-common/README.md",
+        "agent-work/evidence/HX-BL-058-F1/review-d70366e/review.json",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44889572317"
+      ],
+      "key": "HX-BL-058|7ecf76c5c71724e1d810ba34480e4962c98b444e|1.3-rc8|S04-C01"
+    },
+    {
+      "criterion_id": "S04-C04",
+      "title": "Экспорт и импорт без потери данных",
+      "weight": 15,
+      "max_L1": 7.407407407407407,
+      "before": {
+        "accepted_fraction": 0.5,
+        "L1_points": 3.7037037037037037
+      },
+      "after": {
+        "accepted_fraction": 0.5,
+        "L1_points": 3.7037037037037037
+      },
+      "delta": 0,
+      "status": "ранее принятая сохранность подтверждена в пределах сравнения",
+      "method": "Два дерева, реальные обработчики импорта, переключения и сохранения. Сравнение байтов и декодированных пикселей пар PNG из проверенного архива CI. Инъекция ошибки подготовки при импорте отдельно в RU и EN.",
+      "remaining_evidence": "Полный заявленный набор форматов, слоёв, стилей и вариантов карты для получателя, включая самостоятельный SVG. Один PNG и две входные карты не закрывают остаток.",
+      "evidence": [
+        "agent-work/research/acceptance/L1-PR509/classic-common/README.md",
+        "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/round-trip.mjs",
+        "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/fallback.mjs",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44889572317"
+      ],
+      "key": "HX-BL-058|7ecf76c5c71724e1d810ba34480e4962c98b444e|1.3-rc8|S04-C04"
+    }
+  ],
+  "double_count_check": "0 записей модели 1.3-rc8 для пары HX-BL-058 + SHA в score/history.json на исходном срезе. Принятый вклад JSON учтён один раз. Повторное открытие и переименование не создают отдельного игрового профиля на пять миль.",
+  "publication_evidence": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44894704937",
+  "next_role": "strategist-manager",
+  "score_update_status": "pending_strategist_recording",
+  "evidence": {
+    "independent_reviewer": "/root/independent_pr511_rc8",
+    "node_version": "24.22.3",
+    "comparison": "Родитель выпуска PR509 и выпущенный merge PR511, отдельно от дерева реализации. Сравнены выводы скрипта на обеих версиях, байты и хеши совпали.",
+    "maps": [
+      "classic-six-regions-seed42",
+      "road-entry-zigzags"
+    ],
+    "locales": [
+      "ru",
+      "en"
+    ],
+    "json_versions": [
+      2,
+      10,
+      15,
+      16
+    ],
+    "scale_switch_stages": 24,
+    "roundtrip_output_sha256": "d6dfe4a643272d367e73f4bed72a14edf8867eb26e9e3e72c3f9d5ed3baec53e",
+    "forced_failure": {
+      "version": 15,
+      "locale_runs": 2,
+      "requested_step": 1,
+      "recovered_step": 6,
+      "regions": 4,
+      "preserved": [
+        "regions",
+        "roads",
+        "rivers"
+      ],
+      "method": "реальный обработчик импорта, искусственно вызванный отказ подготовки геометрии"
+    },
+    "ci_artifact": {
+      "id": 14701352959,
+      "archive_sha256": "a989706d9e8e0cd73b1118662db8afd08f13b51771aa9561d3d34e199fe23afb",
+      "export": {
+        "width": 1455,
+        "height": 1288,
+        "bytes": 492567,
+        "same_bytes": true,
+        "same_RGBA": true,
+        "sha256": "c9d42eabacb947ebf18020051438a1f03c1db1191d521a039a0a05c7c34f24f5"
+      },
+      "map_capture": {
+        "viewport_widths": [
+          1500,
+          390
+        ],
+        "same_bytes_and_RGBA_per_pair": true
+      }
+    },
+    "browser_limitations": "Chromium выполнен в CI на принятом дереве. В текущей среде проверены сохранённые изображения, локальный браузер недоступен (socket EPERM)."
+  },
+  "test_change_summary": {
+    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "head_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+    "added": 0,
+    "removed": 0,
+    "modified": 5,
+    "suite": [
+      {
+        "name": "Node mapTransactions + geometryPlan",
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "scenario": "Один сценарий ошибки при переключении и два существующих параметризованных сценария импорта (ru/en) проверяют согласованную фразу, причину, восстановление исходной карты и историю."
+      },
+      {
+        "name": "Chromium engraved-map, one-mile",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "Изменены проверка компоновки поля и сквозное переключение Classic seed 42 с клавиатуры."
+      }
+    ],
+    "reuse_or_new_reason": "Расширены существующие сценарии в тех же runner. Три ширины и две локализации — параметры существующего сценария. Опциональные снимки для сравнения с базой — диагностические артефакты.",
+    "source": "git diff d6daa2c..7ecf76c -- test. Подтверждено совпадение дерева выпуска и принятого head.",
+    "review": "Три существующих Node-проверки защищают сообщение и сохранность карты при отказе. Две браузерные защищают расположение выбора гекса и переключение с клавиатуры в работающем интерфейсе.",
+    "execution_at_reviewed_tree": {
+      "node": {
+        "executed": 430,
+        "passed": 430,
+        "skipped": 0
+      },
+      "browser_scripts": {
+        "executed": 10,
+        "passed": 10,
+        "skipped": 0
+      },
+      "rng_scripts": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      }
+    }
+  }
+}
