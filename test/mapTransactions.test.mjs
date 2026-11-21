@@ -367,6 +367,7 @@ test('deleting a real region lists the unsupported small lakes and undo restores
   assert.equal(h.render().switchFineStep(1),true);
   const dryRows=()=>h.render().fineCells.filter(hasFullDrySupport);
   const key=({q,r})=>`${q},${r}`;
+  const originalFine=new Set(h.render().fineCells.map(row=>key(row.cell)));
   const first=dryRows(), firstKeys=new Set(first.map(row=>key(row.cell)));
   h.render().switchFineStep(6);
   h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
@@ -381,7 +382,16 @@ test('deleting a real region lists the unsupported small lakes and undo restores
     h.render().commitSmallLake();
     assert.equal(h.render().editError,null);
   }
+  const fine=added.find(row=>!originalFine.has(key(row.cell))).cell;
+  const app=h.render();
+  assert.ok(app.pickFine(fine,false,app.getDocumentRevision()));
+  h.render().setFineHover(null);h.render().startFineDraft();
+  assert.ok(h.render().changeFineDraft({note:'lake note'},h.render().fineDraft));
+  assert.ok(h.render().saveFineDraft(h.render().fineDraft));
   assert.equal(h.render().switchFineStep(6),true);
+  const coarse=h.render().regions.at(-1).hexes[0];
+  h.render().setSelectedHex(coarse);
+  h.render().changeNotesText(key(coarse),'region note');h.render().finishNotesGroup();
   const before=stable(h.render()), count=h.render().undoHistory.length, prompts=[];
   h.setWindow({confirm:prompt=>{prompts.push(prompt);return false;}});
   h.render().deleteLastRegion();
@@ -389,9 +399,14 @@ test('deleting a real region lists the unsupported small lakes and undo restores
   assert.equal(h.render().undoHistory.length,count);
   assert.match(prompts.at(-1),/малые озёра №1, №2/);
   assert.doesNotMatch(prompts.at(-1),/№3/);
-  h.setWindow({confirm:()=>true});
+  assert.equal(prompts.length,1);
+  assert.ok(prompts[0].includes(key(fine))&&prompts[0].includes(key(coarse)));
+  assert.match(prompts[0],/локальные правки/);
+  assert.match(prompts[0],/заметки мастера/);
+  h.setWindow({confirm:prompt=>{prompts.push(prompt);return true;}});
   h.render().deleteLastRegion();
   const after=stable(h.render());
+  assert.deepEqual(prompts,[prompts[0],prompts[0]]);
   assert.equal(after.map.regions.length,1);
   assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:4,lakes:[before.map.physicalGrid.smallLakes.lakes[2]]});
   assert.equal(h.render().undoHistory.length,count+1);

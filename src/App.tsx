@@ -13960,8 +13960,9 @@ export function App() {
     const keys = actualHexKeys(map);
     return Object.fromEntries(Object.entries(notesMapRef.current).filter(([key]) => keys.has(key)));
   };
+  const removedNoteKeys = (notes: Record<string, string>) => Object.keys(notesMapRef.current).filter(key => !(key in notes));
   const confirmNotesRemoval = (notes: Record<string, string>) => {
-    const removed = Object.keys(notesMapRef.current).filter(key => !(key in notes));
+    const removed = removedNoteKeys(notes);
     return !removed.length || window.confirm(language === 'ru'
       ? `Удалить заметки мастера (${removed.length}) в гексах ${removed.join('; ')}? Их можно восстановить отменой.`
       : `Delete GM notes (${removed.length}) at ${removed.join('; ')}? Undo can restore them.`);
@@ -14760,7 +14761,7 @@ export function App() {
       ||JSON.stringify(seaNames(editorNamesRef.current))!==JSON.stringify(seaNames(checkpoint.editorNames??{}))
       ||[...keys].some(key=>JSON.stringify(hexTerrainByKey.get(key))!==JSON.stringify(checkpoint.hexTerrainByKey.get(key)));
   };
-  const confirmRiverCheckpointLoss=(checkpoint:MapSnapshot)=>{
+  const riverCheckpointWarning=(checkpoint:MapSnapshot)=>{
     const retained=new Set(checkpoint.regions.map(r=>r.id));
     const currentById=new Map(rivers.map(r=>[r.id,r]));
     const checkpointById=new Map(checkpoint.rivers.map(r=>[r.id,r]));
@@ -14779,17 +14780,30 @@ export function App() {
     });
     const featuresChanged=JSON.stringify(riverFeatureOverrides)!==JSON.stringify(checkpoint.riverFeatures??emptyRiverFeatures());
     const waterChanged=checkpointWaterChanged(checkpoint);
-    if(!changed.length&&!featuresChanged&&!waterChanged)return true;
-    if(waterChanged)return window.confirm(language==='ru'?`Будет восстановлена вода и берег из контрольной точки. Также будут восстановлены её POI, названия, теги, заметки и счётчики. Изменённые реки: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Undo вернёт текущую карту точно. Продолжить?`:`The checkpoint water and shore will be restored together with its POI, names, tags, notes and counters. Changed rivers: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Undo restores this current map exactly. Continue?`);
-    return window.confirm(language==='ru'?`Будет восстановлено исходное состояние рек. Изменённые русла: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Ручные отметки: ${featuresChanged?'будут заменены':'сохранятся'}. Отмена вернёт карту точно. Продолжить?`:`Original river state will be restored. Changed routes: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Manual markers: ${featuresChanged?'will be replaced':'retained'}. Undo restores this map exactly. Continue?`);
+    if(!changed.length&&!featuresChanged&&!waterChanged)return null;
+    if(waterChanged)return language==='ru'?`Будет восстановлена вода и берег из контрольной точки. Также будут восстановлены её POI, названия, теги, заметки и счётчики. Изменённые реки: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Undo вернёт текущую карту точно.`:`The checkpoint water and shore will be restored together with its POI, names, tags, notes and counters. Changed rivers: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Undo restores this current map exactly.`;
+    return language==='ru'?`Будет восстановлено исходное состояние рек. Изменённые русла: ${changed.map(r=>riverLabel(r.id)).join(', ')||'нет'}. Ручные отметки: ${featuresChanged?'будут заменены':'сохранятся'}. Отмена вернёт карту точно.`:`Original river state will be restored. Changed routes: ${changed.map(r=>riverLabel(r.id)).join(', ')||'none'}. Manual markers: ${featuresChanged?'will be replaced':'retained'}. Undo restores this map exactly.`;
   };
-  const checkPoiNameCheckpoint=(checkpoint:MapSnapshot)=>{try{retainPoiNames(checkpoint,editorNamesRef.current);
+  const checkpointWarnings=(checkpoint:MapSnapshot):string[]|null=>{
+    try{
+      retainPoiNames(checkpoint,editorNamesRef.current);
+    }catch(error){
+      setEditError(authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));
+      return null;
+    }
+    const warnings:string[]=[];
     const losses=knaveRef.current?knaveLosses(knaveRef.current,knaveMapContext(checkpoint)):[];
-    if(losses.length&&!window.confirm(language==='ru'?`Контрольная точка удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`The checkpoint removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
-    return true;}catch(error){setEditError(authoredNameError(error,language)??(language==='ru'?'Контрольная точка удалит авторское имя. Сначала очистите его явно.':'The checkpoint would remove an authored name. Clear it explicitly first.'));return false;}};
+    if(losses.length)warnings.push(language==='ru'
+      ?`Контрольная точка удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}).`
+      :`The checkpoint removes Knave point content and terrain/discovery data (${losses.length}).`);
+    const riverWarning=riverCheckpointWarning(checkpoint);
+    if(riverWarning)warnings.push(riverWarning);
+    return warnings;
+  };
   const deleteLastRegion = () => {
     if (mutationBlocked() || history.length === 0) return;
     let checkpoint = history[history.length-1];
+    const warnings:string[]=[];
     let exactLakeRollback=false;
     const lakeLosses:SmallLakeLayer['lakes'][number][]=[];
     try{
@@ -14797,7 +14811,9 @@ export function App() {
       const accepted=state?projectOneMile(oneMileSources(checkpoint),state.grid.origin):[];
       const support=new Set(accepted.map(row=>hexKey(row.cell)));
       const losses=Object.keys(state?.fineCellEdits??{}).filter(key=>!support.has(key));
-      if(losses.length&&!window.confirm(language==='ru'?`Удалить локальные правки одномильных гексов (${losses.length}): ${losses.join('; ')}? Отмена вернёт их.`:`Remove local one-mile edits (${losses.length}): ${losses.join('; ')}? Undo restores them.`))return;
+      if(losses.length)warnings.push(language==='ru'
+        ?`Будут удалены локальные правки одномильных гексов (${losses.length}): ${losses.join('; ')}.`
+        :`Local one-mile edits will be removed (${losses.length}): ${losses.join('; ')}.`);
       const smallLakes=state?.smallLakes?prepareSmallLakeSupport(state.smallLakes,accepted):undefined;
       lakeLosses.push(...smallLakes?.losses??[]);
       const priorLayer=checkpoint.physicalGrid?.smallLakes;
@@ -14812,13 +14828,18 @@ export function App() {
       }
       checkpoint=retainFineCheckpoint(checkpoint,losses.length>0,smallLakes?{layer:exactLakeRollback?priorLayer:smallLakes.layer}:undefined);
     }catch(error){setEditError(error instanceof Error?error.message:'Local edits cannot be retained');return;}
-    if(!checkPoiNameCheckpoint(checkpoint)||!confirmRiverCheckpointLoss(checkpoint))return;
+    const restoredLayers=checkpointWarnings(checkpoint);
+    if(!restoredLayers)return;
+    warnings.push(...restoredLayers);
     const entities = getToponymEntities(checkpoint.regions, checkpoint.rivers, checkpoint.hexTerrainByKey);
     const retainedNames: ToponymRegistry = { ...(checkpoint.toponyms ?? {}) };
     for (const {key} of entities) if(toponyms[key]) retainedNames[key]=toponyms[key];
     const exactWater=checkpointWaterChanged(checkpoint);
     const retainedNotes = exactWater?checkpoint.gmNotesByHexKey:notesForSurvivingHexes(checkpoint);
-    if (!confirmNotesRemoval(retainedNotes)) return;
+    const removedNotes=removedNoteKeys(retainedNotes);
+    if(removedNotes.length)warnings.push(language==='ru'
+      ?`Будут удалены заметки мастера (${removedNotes.length}) в гексах ${removedNotes.join('; ')}.`
+      :`GM notes will be removed (${removedNotes.length}) at ${removedNotes.join('; ')}.`);
     const map = exactWater?structuredClone(checkedRiverMap(checkpoint)):{ ...checkpoint,editorNames:retainPoiNames(checkpoint,editorNamesRef.current), tags:reconcileTags(tagsRef.current,checkpoint,captureMap(),generationRef.current.masterSeed,false), gmNotesByHexKey: retainedNotes, toponymSeed: checkpoint.toponymSeed ?? toponymSeed,
       toponyms: synchronizeToponyms(retainedNames,entities,checkpoint.toponymSeed ?? toponymSeed),
       roads: pruneRoadsToRegionHexes(cloneRoads(checkpoint.roads),checkpoint.regions) };
@@ -14830,10 +14851,13 @@ export function App() {
       lakeLosses.push(...prepared?.losses??[]);
       if(lakeLosses.length){
         const ids=lakeLosses.map(lake=>`№${lake.id}`).join(', ');
-        const prompt=language==='ru'
-          ?`При удалении последнего региона будут также удалены малые озёра ${ids}. «Отменить» восстановит регион и озёра. Удалить регион?`
-          :`Deleting the last region also removes small lakes ${ids}. Undo restores the region and its lakes. Delete the region?`;
-        if(!window.confirm(prompt))return;
+        warnings.push(language==='ru'
+          ?`При удалении последнего региона будут также удалены малые озёра ${ids}.`
+          :`Deleting the last region also removes small lakes ${ids}.`);
+      }
+      if(warnings.length){
+        warnings.push(language==='ru'?'Удалить регион? Отмена действия восстановит карту.':'Delete the region? Undo restores the map.');
+        if(!window.confirm(warnings.join('\n\n')))return;
       }
       const after={...before,map:prepared?.map??map,generationHistory:history.slice(0,-1),
         selectedHex:checkpoint.regions.length?checkpoint.regions[checkpoint.regions.length-1].centerHex:START_HEX};
@@ -14846,7 +14870,8 @@ export function App() {
   const regenerateLastRegion = () => {
     if (mutationBlocked()) return;
     if (regions.length === 0 || history.length === 0) return;
-    if(!checkPoiNameCheckpoint(history[history.length-1])||!confirmRiverCheckpointLoss(history[history.length-1]))return;
+    const warnings=checkpointWarnings(history[history.length-1]);
+    if(!warnings||!warnings.every(message=>window.confirm(message)))return;
     documentRevision.current++;
     const backup = captureGenerationBackup();
     const lastKingdom = kingdoms.find(k=>k.regionIds.includes(regions[regions.length-1].id));
