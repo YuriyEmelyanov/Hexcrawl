@@ -122,7 +122,15 @@ try{
    return svg.querySelector(`[data-hex-key="${key}"]`).parentElement.querySelector('image.terrain-blend')?.getAttribute('href');
  },lakeKey);
  assert.equal(coarseExport,coarseCoast,'PNG after the 6 → 1 → 6 round trip keeps the same lake blend');
- await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual(await classicSignature(),classicVisible);
+ await lang('ru');
+ await page.locator('.hex-coordinate-toggle').focus();
+ await page.keyboard.press('Tab');
+ assert.ok(await step.evaluate(node=>node===document.activeElement));
+ await page.keyboard.press('Alt+ArrowDown');
+ await page.keyboard.press('ArrowUp');
+ await page.keyboard.press('Enter');
+ await page.locator('[data-fine-world]').waitFor();
+ assert.deepEqual(await classicSignature(),classicVisible);
  for(const language of ['ru','en'])for(const width of [1500,390,320]){
   await lang(language);await page.setViewportSize({width,height:1000});await assertScaleOnly(page,language);
   await shot(`f2-classic42-1mi-${language}-${width}.jpg`);
@@ -227,12 +235,19 @@ try{
    const profiles=[];
    for(const [version,source] of [['before',baselinePage],['after',page]]){
      const control=source.locator('[data-fine-step]');
+     const toggle=source.locator('.language-toggle');
+     if(await toggle.getAttribute('aria-label')==='Переключить на русский'){
+       if(!await toggle.isVisible())await source.locator('[aria-controls="header-links-actions"]').click();
+       await toggle.click();
+     }
      for(const width of [1280,390,320]){
        await source.setViewportSize({width,height:850});
        const panel=source.locator('.controls--display');
        await panel.screenshot({path:new URL(`base-scale-${version}-${width}.png`,out).pathname});
        profiles.push({version,width,options:await control.locator('option').allTextContents()});
      }
+     if(!await toggle.isVisible())await source.locator('[aria-controls="header-links-actions"]').click();
+     await toggle.click();
    }
    manifest.base_scale_comparison={baseline:baselineSha,profiles};
  }
