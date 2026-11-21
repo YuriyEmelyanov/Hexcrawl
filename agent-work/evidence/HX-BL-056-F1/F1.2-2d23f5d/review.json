@@ -1,0 +1,73 @@
+{
+  "task_id": "HX-BL-056",
+  "pr": 510,
+  "stage": "F1.2",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
+  "head_sha": "2d23f5dc8ace5cc4d30fb1d3685a9eebe8cae242",
+  "tree_sha": "56cf4d52d92c9509bf18dc6d6f1c11b87f232b46",
+  "checkout_sha": "8c6fd3d2f78dccbe98342065058ecb490f418c55",
+  "checks": {
+    "world-random": "success",
+    "check": "success",
+    "browser": "success",
+    "engraved-map-comparison": "skipped"
+  },
+  "workflow_run": 44953263197,
+  "browser_artifact_id": 14727365391,
+  "one_mile_cases": [
+    "HX059-worker-busy-cancel-late-reply",
+    "HX059-classic42-automatic-scene-save-PNG",
+    "HX059-required-POI-pick-PNG",
+    "HX059-mixed-growth-retained-paths-PNG",
+    "UI-grid-local-read",
+    "UI-pinned-editor-exit-and-undo",
+    "UI-responsive-390-320-RU-EN",
+    "UI-fine-export-local-features",
+    "UI-ordinary-candidate-unit",
+    "G209-AUTO-source-edit-error-busy-RU-EN",
+    "GEO2-UI-legacy-import-scale-history-roundtrip-PNG",
+    "HX056-manual-small-lake-roundtrip-and-png",
+    "HX056-safe-shore-spill",
+    "HX056-source-water-removes-small-lake",
+    "HX056-regeneration-automatically-removes-unsupported-lakes",
+    "HX056-automatic-small-lakes",
+    "HX056-automatic-conflict-isolation"
+  ],
+  "screenshots": [
+    {
+      "file": "agent-work/evidence/HX-BL-056-F1/F1.2-2d23f5d/example-near-large-lake.png",
+      "cell": "10,-9"
+    },
+    {
+      "file": "agent-work/evidence/HX-BL-056-F1/F1.2-2d23f5d/example-inside-poi.png",
+      "cell": "-20,13"
+    },
+    {
+      "file": "agent-work/evidence/HX-BL-056-F1/F1.2-2d23f5d/example-multi-cell.png",
+      "cell": "-32,-15"
+    },
+    {
+      "file": "agent-work/evidence/HX-BL-056-F1/F1.2-2d23f5d/example-river.png",
+      "cell": "-29,2"
+    }
+  ],
+  "independent_reviewer": "review510",
+  "reviewed_sha": "2d23f5dc8ace5cc4d30fb1d3685a9eebe8cae242",
+  "accepted": true,
+  "release_authorized": false,
+  "published": false,
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/F1.2-2d23f5d/score-assessment1.3-rc8.json",
+  "next_role": "owner",
+  "open_review_findings": [],
+  "visual_review": [
+    "POI (-20,13): в воде только озёрный PNG. На сухих гексах видны знаки и контур большой точки интереса.",
+    "У большого озера (10,-9): совпадают цвет и PNG воды, гекс без выделения.",
+    "Река №1: подтверждён проход по внутренним рёбрам двухгексового ручного и четырёхгексового автоматического озера №14. Вход и выход в разных местах.",
+    "В (-32,-15) видна пара соседних гексов одного озера."
+  ],
+  "regressions": [
+    "Расположение и направление реки сохраняются при добавлении озера. Гексы для дороги и POI проверяются по фактической границе воды.",
+    "Соседний сухой гекс остаётся доступен при создании рядом с новым озером и после загрузки карты со старым полем shoreCells. Проверены Undo, Redo, повторный импорт.",
+    "На старом сохранении с seed 1257875020 после перегенерации и удаления участка восстановлены озеро №24 и счётчик 34."
+  ]
+}
