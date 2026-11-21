@@ -1,0 +1,267 @@
+{
+  "run_id": "2026-11-21T1857-programmer-HX056-RV11",
+  "role": "programmer",
+  "task_id": "HX-BL-056",
+  "stage": "F1.2",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
+  "previous_review_ref": "agent-work/results/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
+  "base_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+  "head_sha": "b2f732a57ae9ed18062d617039d127c27ba85b16",
+  "tree_sha": "4e8ba5ce82e6c4ec567e479d21bef13d40d8adb6",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44922703877",
+  "evidence_ref": "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/verification.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1857-programmer-HX056-RV11.json",
+  "result_ref": "agent-work/results/2026-11-21T1857-programmer-HX056-RV11.json",
+  "review_ready": true,
+  "accepted": false,
+  "published": false,
+  "release_authorized": false,
+  "next_role": "reviewer",
+  "next_step": "Проверяющий независимо проверяет восстановление озера после заметки, сохранение намеренного удаления и оформление четырёх примеров на b2f732a, затем рассчитывает предварительную оценку по 1.3-rc8.",
+  "score_model_version": "1.3-rc8",
+  "role_selection_reason": "Замечание HX056-RV11 на проверенном SHA и уточнение владельца о виде малых озёр в F1.2. До получения слота сверены 533 claims и 587 результатов. Учёт PR511 по 1.3-rc8 уже завершён.",
+  "forecast": "Один запуск на независимую проверку при отсутствии новых замечаний. Выпуск после отдельного разрешения владельца.",
+  "checks_status": "passed",
+  "status": "review_ready",
+  "generation": 425,
+  "claim_ref": "agent-work/claims/2026-11-21T1857-programmer-HX056-RV11.json",
+  "visible_result": "На карте после заметки и удаления восьмого региона вернулось озеро №24 с исходным берегом и счётчиком 34. Повторение создаёт №34 и №35. На соседних малом и большом озёрах виден одинаковый волнистый рисунок и цвет воды; в сравнительном кадре выделение снято. Общая кромка сглажена по границе водоёма.",
+  "images": {
+    "commit": "000182584ef7ad5f349a4d0dedc2cc2bcbb1c2b3",
+    "paths": [
+      "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/example-inside-poi.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/example-near-large-lake.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/example-river.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/example-multi-cell.png"
+    ],
+    "blobs": [
+      "2c18f0c779c1c3008667cdc07c3a332c24f7fca2",
+      "14fbe1c154d2991cc364401c2770f4d64bb8c872",
+      "9eb1dccd4e6fbdccf4e0fe1b310061c8e0e36721",
+      "85f261f631eb344427987569b11a3b49a6db9bec"
+    ]
+  },
+  "verification": {
+    "workflow_jobs": [
+      {
+        "id": 136902081447,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136902081783,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136902081810,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136902082569,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "node": {
+      "tests": 443,
+      "pass": 443,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "status": "success",
+      "one_mile_cases": {
+        "executed": 17,
+        "passed": 17,
+        "skipped": 0
+      },
+      "task_cases": [
+        {
+          "id": "HX056-manual-small-lake-roundtrip-and-png",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-safe-shore-spill",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-source-water-removes-small-lake",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-regeneration-automatically-removes-unsupported-lakes",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-automatic-small-lakes",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-automatic-conflict-isolation",
+          "status": "pass"
+        }
+      ],
+      "generation_rollback_after_note": "passed",
+      "export_engraving": "Оба водоёма используют один встроенный PNG, проверены размер и цвет на карте, совпадение ссылки на встроенный ресурс в экспорте и пиксели выгруженного PNG."
+    },
+    "world_random": "success: production Classic/Mythic, fresh, continuation, undo-repeat, invalid import and busy actions",
+    "targeted_node": {
+      "head_sha": "4f2121a33895af5304fa2b135194edfb568ef6d2",
+      "files": [
+        "test/mapTransactions.test.mjs",
+        "test/mythicKingdom.test.mjs"
+      ],
+      "executed": 50,
+      "passed": 50,
+      "skipped": 0
+    },
+    "artifact": {
+      "id": 14714946229,
+      "digest": "sha256:cacdd5d32d467bf452868a02dfb4f69a49609a4133706e31eb8c9ff50de7e0ac",
+      "source_head_sha": "b2f732a57ae9ed18062d617039d127c27ba85b16",
+      "checkout_tree": "4e8ba5ce82e6c4ec567e479d21bef13d40d8adb6",
+      "checkout_sha": "2b4476586861ae1d3b3d9be8ee770143ad72ff49",
+      "status": "passed",
+      "cases": [
+        {
+          "id": "HX059-worker-busy-cancel-late-reply",
+          "status": "pass"
+        },
+        {
+          "id": "HX059-classic42-automatic-scene-save-PNG",
+          "status": "pass"
+        },
+        {
+          "id": "HX059-required-POI-pick-PNG",
+          "status": "pass"
+        },
+        {
+          "id": "HX059-mixed-growth-retained-paths-PNG",
+          "status": "pass"
+        },
+        {
+          "id": "UI-grid-local-read",
+          "status": "pass"
+        },
+        {
+          "id": "UI-pinned-editor-exit-and-undo",
+          "status": "pass"
+        },
+        {
+          "id": "UI-responsive-390-320-RU-EN",
+          "status": "pass"
+        },
+        {
+          "id": "UI-fine-export-local-features",
+          "status": "pass"
+        },
+        {
+          "id": "UI-ordinary-candidate-unit",
+          "status": "pass"
+        },
+        {
+          "id": "G209-AUTO-source-edit-error-busy-RU-EN",
+          "status": "pass"
+        },
+        {
+          "id": "GEO2-UI-legacy-import-scale-history-roundtrip-PNG",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-manual-small-lake-roundtrip-and-png",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-safe-shore-spill",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-source-water-removes-small-lake",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-regeneration-automatically-removes-unsupported-lakes",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-automatic-small-lakes",
+          "status": "pass"
+        },
+        {
+          "id": "HX056-automatic-conflict-isolation",
+          "status": "pass"
+        }
+      ]
+    }
+  },
+  "score_evidence": {
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "head_sha": "b2f732a57ae9ed18062d617039d127c27ba85b16",
+    "baseline_ref": "agent-work/score/current-score.json",
+    "confirmed_points_awarded": null,
+    "assessment_status": "pending_independent_review",
+    "criteria": {
+      "S01-C02": "Сопряжение реки и малого озера: видны вход и выход, проверены исходное русло и его ID.",
+      "S01-C03": "Сравнение рядом с большим озером в том же режиме: сглаженная кромка, цвет и рисунок, единый берег соседних клеток.",
+      "S02-C01": "На seed 1257875020 повторное расширение возвращает тот же слой и ID 34/35. Отдельный случай SEED-07 про ручной биом при перебросе этим сценарием не проверен.",
+      "S02-C03": "Сохранение и повторное открытие карты из текущего сценария, плюс отказ при конфликтном импорте.",
+      "S03-C01": "При откате заметка сохраняется, намеренно удалённое озеро не возвращается, Undo/Redo точно воспроизводят состояние.",
+      "S04-C04": "Сравнены снимок карты и экспорт с тем же PNG воды; сквозная проверка поворота и повторного открытия."
+    },
+    "scope": "Classic и одномильное представление. Оценку по строкам и четырём масштабам рассчитывает проверяющий по текущим правилам. Публикация и начисление баллов отсутствуют."
+  },
+  "test_change_summary": {
+    "base_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "head_sha": "b2f732a57ae9ed18062d617039d127c27ba85b16",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": [
+      {
+        "name": "Chromium generation.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "В существующий откат восьмого региона добавлена заметка на старом гексе, проверяется вся сохранённая карта."
+      },
+      {
+        "name": "Chromium one-mile.smoke.mjs / HX056-safe-shore-spill",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Карта и экспорт содержат один и тот же озёрный PNG; сверяются размеры рисунка и видимый базовый тон, сохранён сравнительный кадр без выделения."
+      }
+    ],
+    "scenario": "Откат с независимой правкой; регрессия вида малого озера рядом с большим.",
+    "reuse_or_new_reason": "Оба сценария уже создавали подходящую карту и выполняли нужное действие. Дополнены проверки результата в существующих сценариях.",
+    "source": "git diff 02aaa188031e0ad8c59dfc246420d1a093869a88 b2f732a57ae9ed18062d617039d127c27ba85b16 -- test/; сравнены логические сценарии каждого runner."
+  },
+  "addressed_findings_pending_review": [
+    "HX056-RV11",
+    "owner F1.2 shore, colour, PNG"
+  ],
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T15:57:04.818Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T16:24:16.034Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-21T16:24:16.034Z"
+}
