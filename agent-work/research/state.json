@@ -65,12 +65,12 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "reddit-regional-map-authors-archive-recovery",
-    "scenario": "Взять комментарии r/rpg за ноябрь 2025 по разрывам coverage.json. Начать с ограниченных UTC-окон по несколько часов либо сопоставимой публичной выгрузки. Искать и в комментариях к более старым постам. Удалять уже полученные ID по source-ids.json, восстанавливать родителей коротких ответов. Затем те же действия для следующих месяцев и двух остальных сообществ. Добавлять найденные инструменты после сверки по первоисточнику. Пересчитать год и каждый месяц из evidence.csv."
+    "id": "reddit-rpg-dec-comments",
+    "scenario": "Ноябрьские временные окна пройдены; расхождение в один объект локализовано 11 ноября. Использовать отложенные контексты ноября из unconfirmed.csv без повторной выгрузки всего месяца. Следующий крупный пробел — комментарии r/rpg за декабрь 2025: пройти UTC-интервалы с 2025-12-01T00:00:00Z с переиспользованием source-ids.json."
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-21-DND5-regional-scales-2030",
+  "last_completed_run": "2026-11-21-reddit-rpg-nov-2130",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -257,7 +257,8 @@
     "agent-work/research/runs/2026-11-21-competitors-1730.json",
     "agent-work/research/runs/2026-11-21-competitors-1830.json",
     "agent-work/research/runs/2026-11-21-competitors-1930.json",
-    "agent-work/research/runs/2026-11-21-DND5-regional-scales-2030.json"
+    "agent-work/research/runs/2026-11-21-DND5-regional-scales-2030.json",
+    "agent-work/research/runs/2026-11-21-reddit-rpg-nov-2130.json"
   ],
   "awaiting_owner_approval": [],
   "conflicts_observed": [
@@ -275,14 +276,14 @@
   "automation_health": {
     "start": [
       [
-        "6ad9c2426c7481919bb9f3d2b289e9b9",
-        true,
-        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
-      ],
-      [
         "Automation_7690c42b2a7881919aaca4103dcd338f",
         true,
         "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
       ]
     ],
     "end": [
@@ -297,12 +298,12 @@
         "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
       ]
     ],
-    "checked_at": "2026-11-21T18:14:12.062Z"
+    "checked_at": "2026-11-21T18:59:22.830Z"
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-21-DND5-regional-scales-2030.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-21-reddit-rpg-nov-2130.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
-  "checkpoint_ref": "agent-work/research/runs/2026-11-21-DND5-regional-scales-2030.json",
+  "checkpoint_ref": "agent-work/research/runs/2026-11-21-reddit-rpg-nov-2130.json",
   "last_owner_update_ref": "agent-work/decisions/owner-decision-2026-11-21-mobile-browser-acceptance.json",
   "source_access_resolved": {
     "KNAVE2": {
@@ -1042,7 +1043,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-21T18:14:12.062Z",
+  "updated_at": "2026-11-21T18:59:22.830Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1184,7 +1185,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-21-DND5-regional-scales-2030",
+  "last_run_id": "2026-11-21-reddit-rpg-nov-2130",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1240,35 +1241,31 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-21-DND5-regional-scales-2030",
+  "last_run": "2026-11-21-reddit-rpg-nov-2130",
   "checkpoint": {
-    "run_id": "2026-11-21-DND5-regional-scales-2030",
+    "run_id": "2026-11-21-reddit-rpg-nov-2130",
     "status": "checkpoint_reddit_author_ranking",
-    "result_ref": "agent-work/research/runs/2026-11-21-DND5-regional-scales-2030.json",
+    "result_ref": "agent-work/research/runs/2026-11-21-reddit-rpg-nov-2130.json",
     "registry_ref": "agent-work/research/competitors/registry.json",
-    "added": 64,
-    "confirmed": 264,
-    "target": 200,
-    "remaining": 0,
-    "direct": 85,
-    "partial": 179,
-    "also_L2": 76,
-    "with_popularity_observation": 161,
     "ranking_ref": "agent-work/research/reddit-map-tools/ranking.csv",
     "monthly_ref": "agent-work/research/reddit-map-tools/monthly.csv",
     "evidence_ref": "agent-work/research/reddit-map-tools/evidence.csv",
     "coverage_ref": "agent-work/research/reddit-map-tools/coverage.json",
-    "evidence_sha": "0920d1769c9a9446ab7ad0cb44bb9f167fa1be6b",
+    "evidence_sha": "fa35d93e8479f03b6b691684f1acbefed59bbb9c",
+    "added": 17,
+    "confirmed": 281,
+    "target": 200,
+    "remaining": 0,
     "reddit": {
       "period": [
         "2025-11",
         "2026-10"
       ],
-      "tools": 93,
-      "distinct_authors_all_tools": 511,
-      "distinct_authors_per_tool_total": 728,
+      "tools": 114,
+      "distinct_authors_all_tools": 529,
+      "distinct_authors_per_tool_total": 762,
       "unique_authors_any_tool_per_month": {
-        "2025-11": 71,
+        "2025-11": 93,
         "2025-12": 28,
         "2026-01": 56,
         "2026-02": 47,
@@ -1281,23 +1278,23 @@
         "2026-09": 52,
         "2026-10": 54
       },
-      "retrieved": 47503,
+      "retrieved": 91521,
       "archive": 688423,
-      "archive_gap": 640920,
-      "records": 988,
-      "objects": 747,
-      "hx_rank": 42,
+      "archive_gap": 596902,
+      "records": 1026,
+      "objects": 772,
+      "hx_rank": 44,
       "hx_tied": 14,
       "hx_july": 13,
-      "queue": 1068,
+      "queue": 1572,
       "top": [
         [
           "Inkarnate",
-          "88"
+          "89"
         ],
         [
           "Wonderdraft",
-          "59"
+          "60"
         ],
         [
           "Adobe Photoshop",
@@ -1309,7 +1306,7 @@
         ],
         [
           "Azgaar’s Fantasy Map Generator",
-          "32"
+          "33"
         ],
         [
           "QGIS",
@@ -1321,7 +1318,7 @@
         ],
         [
           "Inkscape",
-          "24"
+          "25"
         ],
         [
           "GPlates",
@@ -1339,7 +1336,7 @@
         },
         "rpg": {
           "posts": 13022,
-          "comments": 6866
+          "comments": 50884
         },
         "mapmaking": {
           "posts": 5813,
@@ -1348,8 +1345,8 @@
       }
     },
     "next_candidate": {
-      "id": "reddit-regional-map-authors-archive-recovery",
-      "scenario": "Взять комментарии r/rpg за ноябрь 2025 по разрывам coverage.json. Начать с ограниченных UTC-окон по несколько часов либо сопоставимой публичной выгрузки. Искать и в комментариях к более старым постам. Удалять уже полученные ID по source-ids.json, восстанавливать родителей коротких ответов. Затем те же действия для следующих месяцев и двух остальных сообществ. Добавлять найденные инструменты после сверки по первоисточнику. Пересчитать год и каждый месяц из evidence.csv."
+      "id": "reddit-rpg-dec-comments",
+      "scenario": "Ноябрьские временные окна пройдены; расхождение в один объект локализовано 11 ноября. Использовать отложенные контексты ноября из unconfirmed.csv без повторной выгрузки всего месяца. Следующий крупный пробел — комментарии r/rpg за декабрь 2025: пройти UTC-интервалы с 2025-12-01T00:00:00Z с переиспользованием source-ids.json."
     }
   },
   "latest_recent_survey_audit": {
@@ -2244,8 +2241,8 @@
     "research_outcome_completed": false,
     "selected_source_result_retained": true
   },
-  "last_run_at": "2026-11-21T18:14:12.062Z",
-  "last_bounded_completed_run": "2026-11-21-DND5-regional-scales-2030",
+  "last_run_at": "2026-11-21T18:59:22.830Z",
+  "last_bounded_completed_run": "2026-11-21-reddit-rpg-nov-2130",
   "scope_audit": {
     "status": "in_progress_across_games",
     "completed_game": "PF2",
@@ -2393,8 +2390,8 @@
   "last_result_commit_sha": "ff127eeffc4b90d0381ebedbb4853ece63fac298",
   "verification_readback": {
     "status": "exact",
-    "data_commit": "0920d1769c9a9446ab7ad0cb44bb9f167fa1be6b",
-    "files": 11
+    "data_commit": "fa35d93e8479f03b6b691684f1acbefed59bbb9c",
+    "files": 9
   },
   "previous_checkpoint_before_DND5_scope_audit": {
     "status": "completed_bounded_PF2_scope_audit_remaining_games_pending",
@@ -4350,33 +4347,29 @@
     "owner_action": null
   },
   "current_research_checkpoint": {
-    "run_id": "2026-11-21-DND5-regional-scales-2030",
+    "run_id": "2026-11-21-reddit-rpg-nov-2130",
     "status": "checkpoint_reddit_author_ranking",
-    "result_ref": "agent-work/research/runs/2026-11-21-DND5-regional-scales-2030.json",
+    "result_ref": "agent-work/research/runs/2026-11-21-reddit-rpg-nov-2130.json",
     "registry_ref": "agent-work/research/competitors/registry.json",
-    "added": 64,
-    "confirmed": 264,
-    "target": 200,
-    "remaining": 0,
-    "direct": 85,
-    "partial": 179,
-    "also_L2": 76,
-    "with_popularity_observation": 161,
     "ranking_ref": "agent-work/research/reddit-map-tools/ranking.csv",
     "monthly_ref": "agent-work/research/reddit-map-tools/monthly.csv",
     "evidence_ref": "agent-work/research/reddit-map-tools/evidence.csv",
     "coverage_ref": "agent-work/research/reddit-map-tools/coverage.json",
-    "evidence_sha": "0920d1769c9a9446ab7ad0cb44bb9f167fa1be6b",
+    "evidence_sha": "fa35d93e8479f03b6b691684f1acbefed59bbb9c",
+    "added": 17,
+    "confirmed": 281,
+    "target": 200,
+    "remaining": 0,
     "reddit": {
       "period": [
         "2025-11",
         "2026-10"
       ],
-      "tools": 93,
-      "distinct_authors_all_tools": 511,
-      "distinct_authors_per_tool_total": 728,
+      "tools": 114,
+      "distinct_authors_all_tools": 529,
+      "distinct_authors_per_tool_total": 762,
       "unique_authors_any_tool_per_month": {
-        "2025-11": 71,
+        "2025-11": 93,
         "2025-12": 28,
         "2026-01": 56,
         "2026-02": 47,
@@ -4389,23 +4382,23 @@
         "2026-09": 52,
         "2026-10": 54
       },
-      "retrieved": 47503,
+      "retrieved": 91521,
       "archive": 688423,
-      "archive_gap": 640920,
-      "records": 988,
-      "objects": 747,
-      "hx_rank": 42,
+      "archive_gap": 596902,
+      "records": 1026,
+      "objects": 772,
+      "hx_rank": 44,
       "hx_tied": 14,
       "hx_july": 13,
-      "queue": 1068,
+      "queue": 1572,
       "top": [
         [
           "Inkarnate",
-          "88"
+          "89"
         ],
         [
           "Wonderdraft",
-          "59"
+          "60"
         ],
         [
           "Adobe Photoshop",
@@ -4417,7 +4410,7 @@
         ],
         [
           "Azgaar’s Fantasy Map Generator",
-          "32"
+          "33"
         ],
         [
           "QGIS",
@@ -4429,7 +4422,7 @@
         ],
         [
           "Inkscape",
-          "24"
+          "25"
         ],
         [
           "GPlates",
@@ -4447,7 +4440,7 @@
         },
         "rpg": {
           "posts": 13022,
-          "comments": 6866
+          "comments": 50884
         },
         "mapmaking": {
           "posts": 5813,
@@ -4456,8 +4449,8 @@
       }
     },
     "next_candidate": {
-      "id": "reddit-regional-map-authors-archive-recovery",
-      "scenario": "Взять комментарии r/rpg за ноябрь 2025 по разрывам coverage.json. Начать с ограниченных UTC-окон по несколько часов либо сопоставимой публичной выгрузки. Искать и в комментариях к более старым постам. Удалять уже полученные ID по source-ids.json, восстанавливать родителей коротких ответов. Затем те же действия для следующих месяцев и двух остальных сообществ. Добавлять найденные инструменты после сверки по первоисточнику. Пересчитать год и каждый месяц из evidence.csv."
+      "id": "reddit-rpg-dec-comments",
+      "scenario": "Ноябрьские временные окна пройдены; расхождение в один объект локализовано 11 ноября. Использовать отложенные контексты ноября из unconfirmed.csv без повторной выгрузки всего месяца. Следующий крупный пробел — комментарии r/rpg за декабрь 2025: пройти UTC-интервалы с 2025-12-01T00:00:00Z с переиспользованием source-ids.json."
     }
   },
   "latest_SD_L1_poi_location_development": {
@@ -4977,33 +4970,29 @@
     }
   },
   "latest_reddit_author_ranking": {
-    "run_id": "2026-11-21-DND5-regional-scales-2030",
+    "run_id": "2026-11-21-reddit-rpg-nov-2130",
     "status": "checkpoint_reddit_author_ranking",
-    "result_ref": "agent-work/research/runs/2026-11-21-DND5-regional-scales-2030.json",
+    "result_ref": "agent-work/research/runs/2026-11-21-reddit-rpg-nov-2130.json",
     "registry_ref": "agent-work/research/competitors/registry.json",
-    "added": 64,
-    "confirmed": 264,
-    "target": 200,
-    "remaining": 0,
-    "direct": 85,
-    "partial": 179,
-    "also_L2": 76,
-    "with_popularity_observation": 161,
     "ranking_ref": "agent-work/research/reddit-map-tools/ranking.csv",
     "monthly_ref": "agent-work/research/reddit-map-tools/monthly.csv",
     "evidence_ref": "agent-work/research/reddit-map-tools/evidence.csv",
     "coverage_ref": "agent-work/research/reddit-map-tools/coverage.json",
-    "evidence_sha": "0920d1769c9a9446ab7ad0cb44bb9f167fa1be6b",
+    "evidence_sha": "fa35d93e8479f03b6b691684f1acbefed59bbb9c",
+    "added": 17,
+    "confirmed": 281,
+    "target": 200,
+    "remaining": 0,
     "reddit": {
       "period": [
         "2025-11",
         "2026-10"
       ],
-      "tools": 93,
-      "distinct_authors_all_tools": 511,
-      "distinct_authors_per_tool_total": 728,
+      "tools": 114,
+      "distinct_authors_all_tools": 529,
+      "distinct_authors_per_tool_total": 762,
       "unique_authors_any_tool_per_month": {
-        "2025-11": 71,
+        "2025-11": 93,
         "2025-12": 28,
         "2026-01": 56,
         "2026-02": 47,
@@ -5016,23 +5005,23 @@
         "2026-09": 52,
         "2026-10": 54
       },
-      "retrieved": 47503,
+      "retrieved": 91521,
       "archive": 688423,
-      "archive_gap": 640920,
-      "records": 988,
-      "objects": 747,
-      "hx_rank": 42,
+      "archive_gap": 596902,
+      "records": 1026,
+      "objects": 772,
+      "hx_rank": 44,
       "hx_tied": 14,
       "hx_july": 13,
-      "queue": 1068,
+      "queue": 1572,
       "top": [
         [
           "Inkarnate",
-          "88"
+          "89"
         ],
         [
           "Wonderdraft",
-          "59"
+          "60"
         ],
         [
           "Adobe Photoshop",
@@ -5044,7 +5033,7 @@
         ],
         [
           "Azgaar’s Fantasy Map Generator",
-          "32"
+          "33"
         ],
         [
           "QGIS",
@@ -5056,7 +5045,7 @@
         ],
         [
           "Inkscape",
-          "24"
+          "25"
         ],
         [
           "GPlates",
@@ -5074,7 +5063,7 @@
         },
         "rpg": {
           "posts": 13022,
-          "comments": 6866
+          "comments": 50884
         },
         "mapmaking": {
           "posts": 5813,
@@ -5083,8 +5072,8 @@
       }
     },
     "next_candidate": {
-      "id": "reddit-regional-map-authors-archive-recovery",
-      "scenario": "Взять комментарии r/rpg за ноябрь 2025 по разрывам coverage.json. Начать с ограниченных UTC-окон по несколько часов либо сопоставимой публичной выгрузки. Искать и в комментариях к более старым постам. Удалять уже полученные ID по source-ids.json, восстанавливать родителей коротких ответов. Затем те же действия для следующих месяцев и двух остальных сообществ. Добавлять найденные инструменты после сверки по первоисточнику. Пересчитать год и каждый месяц из evidence.csv."
+      "id": "reddit-rpg-dec-comments",
+      "scenario": "Ноябрьские временные окна пройдены; расхождение в один объект локализовано 11 ноября. Использовать отложенные контексты ноября из unconfirmed.csv без повторной выгрузки всего месяца. Следующий крупный пробел — комментарии r/rpg за декабрь 2025: пройти UTC-интервалы с 2025-12-01T00:00:00Z с переиспользованием source-ids.json."
     }
   }
 }
