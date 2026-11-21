@@ -483,7 +483,9 @@ try {
   const actual=page.getByRole('button',{name:`Участок ${id}: ${pair}`,exact:true});
   await actual.focus();await actual.press('Enter');
   assert.equal(await page.locator('.road-editor__item > button[aria-pressed="true"]').count(),1);
-  assert.equal(await page.locator('[data-editor-only="roads"] line[stroke="#7dd3fc"]').count(),1);
+  const highlight=page.locator('[data-editor-only="roads"] [stroke="#7dd3fc"][stroke-dasharray]');
+  assert.equal(await highlight.count(),1);
+  assert.equal(await highlight.getAttribute('points'),await actual.getAttribute('points'),'highlight follows the selected road segment');
   assert.ok(await actual.evaluate(el=>parseFloat(getComputedStyle(el).strokeWidth)*el.getScreenCTM().a>=43.9),'map target44px at normal rotation');
  }
  // E3 existing-path controls: exact crossing identity, confirmation preview and history.
@@ -502,7 +504,8 @@ try {
  const edgeChoice=page.locator('[data-river-edge-choice]').first();
  const featureEdge=await edgeChoice.getAttribute('data-river-edge-choice');
  await edgeChoice.press('Space');
- assert.ok(await page.locator('[data-editor-only="river-feature"] line').count()>=1);assert.ok(await page.locator(`[data-river-reach-edge="${featureEdge}"]`).count());
+ const reach=page.locator(`[data-editor-only="river-feature"] [data-river-reach-edge="${featureEdge}"]`).first();
+ assert.ok(await reach.evaluate(n=>n.getTotalLength()>0),'selected river reach has visible geometry');
  const beforeFeature=await snapshot();
  const rapidSelect=page.getByRole('combobox',{name:'пороги',exact:true});
  await rapidSelect.selectOption('off');
@@ -544,7 +547,7 @@ try {
  await button('Отменить').click();assert.deepEqual(await snapshot(),oldRoad);
  await button('Повторить').click();assert.deepEqual(await snapshot(),changedRoad);
  await button(roadLabel).click();await button('Удалить весь выделенный путь').click();
- assert.equal(await page.locator('[data-editor-only] line[stroke="#7dd3fc"]').count(),road.segments.length);
+ assert.equal(await page.locator('[data-editor-only="roads"] [stroke="#7dd3fc"][stroke-dasharray]').count(),road.segments.length);
  for(const width of [1500,390]) {
    await page.setViewportSize({width,height:1100});
    const confirmation=page.getByRole('group',{name:'Подтверждение удаления',exact:true});
