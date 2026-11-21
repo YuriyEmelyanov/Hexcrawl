@@ -76,6 +76,14 @@
           "failures": [],
           "evidence": "agent-work/research/acceptance/L1-PR509/extension.mjs",
           "profile": "Один выбранный сосед на каждом из тех же 10 000 регионов, 5000 обычных расширений и 5000 fallback, сравнение связности и занятости"
+        },
+        "coastal_map": {
+          "result_ref": "agent-work/research/runs/2026-11-21-L1-classic-topology-1030.json",
+          "fixture": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+          "disposition": "keep_L1",
+          "scope_basis": "После загрузки одной и той же карты ведущий ожидает тот же набор доступных клеток для следующей области и сохранение воды.",
+          "profile": "Classic, 6 miles, Locality; two coastal sea components; seed 42",
+          "summary": "Classic, карта 42 с двумя морями. Все 24 первых расширения сохранили карту при повторном открытии. Из 755 вариантов второго шага три дали один и тот же отказ: открытие сохранения добавляет озёрный гекс −3/3 в список точек роста. Если выбрать его, новый регион занимает клетку, а признак озера исчезает."
         }
       }
     },
@@ -183,7 +191,15 @@
           "low": 0,
           "high": 1
         }
-      ]
+      ],
+      "coastal_growth": {
+        "result_ref": "agent-work/research/runs/2026-11-21-L1-classic-topology-1030.json",
+        "fixture": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+        "disposition": "keep_L1",
+        "scope_basis": "После загрузки одной и той же карты ведущий ожидает тот же набор доступных клеток для следующей области и сохранение воды.",
+        "profile": "Classic, 6 miles, Locality; two coastal sea components; seed 42",
+        "summary": "Classic, карта 42 с двумя морями. Все 24 первых расширения сохранили карту при повторном открытии. Из 755 вариантов второго шага три дали один и тот же отказ: открытие сохранения добавляет озёрный гекс −3/3 в список точек роста. Если выбрать его, новый регион занимает клетку, а признак озера исчезает."
+      }
     },
     {
       "id": "S01-C04",
@@ -911,6 +927,14 @@
         "devices": "not measured",
         "disposition": "keep_L1",
         "scope_basis": "Возврат к карте после ошибочного открытия другого файла."
+      },
+      "coastal_roundtrip": {
+        "result_ref": "agent-work/research/runs/2026-11-21-L1-classic-topology-1030.json",
+        "fixture": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+        "disposition": "keep_L1",
+        "scope_basis": "После загрузки одной и той же карты ведущий ожидает тот же набор доступных клеток для следующей области и сохранение воды.",
+        "profile": "Classic, 6 miles, Locality; two coastal sea components; seed 42",
+        "summary": "Classic, карта 42 с двумя морями. Все 24 первых расширения сохранили карту при повторном открытии. Из 755 вариантов второго шага три дали один и тот же отказ: открытие сохранения добавляет озёрный гекс −3/3 в список точек роста. Если выбрать его, новый регион занимает клетку, а признак озера исчезает."
       }
     },
     {
@@ -7424,16 +7448,28 @@
       }
     ]
   },
-  "current_run": "2026-11-21-L1-Knave-shrine-0930",
+  "current_run": "2026-11-21-L1-classic-topology-1030",
   "next_batch": {
+    "id": "L1-ALL-ACCEPTANCE",
+    "layer": "L1",
+    "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
     "ids": [
-      "S09-C01",
-      "DND5-2014-001-L1-v2-draft",
-      "PF2-RM-121-L1-v2",
-      "AWN-obs-04",
-      "SWC-obs-01"
+      "S04-C04",
+      "S01-C03"
     ],
-    "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
-    "fallback": "KNAVE2-051-L1. В карточке таверны проверить заданные броски названия и меню, затем перебросить только меню после ручного переименования и открыть карту из JSON."
+    "scenario": "На подготовленном прибрежном сохранении сверить доступность озёрного гекса −3/3 до и после открытия в портретном браузере на заведомо той же версии. Проверить управляемость через экран и сохранение после роста. Это отдельный сценарий восстановления побережья.",
+    "fixture": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+    "then": "S01-C02 — одномильная река Classic: проверить следование рёбрам и сохранение геометрии на настольном и портретном профилях."
+  },
+  "acceptance_summary": {
+    "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "core_ref": "agent-work/research/acceptance/L1-PR509/classic-common/README.md",
+    "game_ref": "agent-work/research/acceptance/L1-PR509/2026-11-21-browser/verdict.json",
+    "published_total_rounded": 132.92,
+    "market": 0,
+    "version": "81eb32bf5da081b1066b74c4da59d55b8744b931",
+    "prior_browser_total": 104.52887363806904,
+    "prior_browser_scope": "34 common + 177 game rows; use Classic review for updated common points",
+    "new_score_awarded": 0
   }
 }

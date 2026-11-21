@@ -1,0 +1,1330 @@
+{
+  "run_id": "2026-11-21-L1-classic-topology-1030",
+  "status": "checkpoint_large_unfinished_corpus",
+  "result_ref": "agent-work/research/runs/2026-11-21-L1-classic-topology-1030.json",
+  "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "next": {
+    "id": "L1-ALL-ACCEPTANCE",
+    "layer": "L1",
+    "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
+    "ids": [
+      "S04-C04",
+      "S01-C03"
+    ],
+    "scenario": "На подготовленном прибрежном сохранении сверить доступность озёрного гекса −3/3 до и после открытия в портретном браузере на заведомо той же версии. Проверить управляемость через экран и сохранение после роста. Это отдельный сценарий восстановления побережья.",
+    "fixture": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+    "then": "S01-C02 — одномильная река Classic: проверить следование рёбрам и сохранение геометрии на настольном и портретном профилях."
+  },
+  "needs_owner_action": false,
+  "last_successful_step": "Classic, карта 42 с двумя морями. Все 24 первых расширения сохранили карту при повторном открытии. Из 755 вариантов второго шага три дали один и тот же отказ: открытие сохранения добавляет озёрный гекс −3/3 в список точек роста. Если выбрать его, новый регион занимает клетку, а признак озера исчезает.",
+  "acceptance_summary": {
+    "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "core_ref": "agent-work/research/acceptance/L1-PR509/classic-common/README.md",
+    "game_ref": "agent-work/research/acceptance/L1-PR509/2026-11-21-browser/verdict.json",
+    "published_total_rounded": 132.92,
+    "market": 0,
+    "version": "81eb32bf5da081b1066b74c4da59d55b8744b931",
+    "prior_browser_total": 104.52887363806904,
+    "prior_browser_scope": "34 common + 177 game rows; use Classic review for updated common points",
+    "new_score_awarded": 0
+  },
+  "base_sha": "8830c4f788a3960e09ffc5656839fe154feb0b14",
+  "marker_commit": "e5872f0f30646ed4135d7bc2b2d0f98a5f610355",
+  "observed_branch_sha": "81eb32bf5da081b1066b74c4da59d55b8744b931",
+  "started_at": "2026-11-21T07:31:04.353Z",
+  "completed_at": "2026-11-21T07:37:38.175Z",
+  "stage": "completed_coastal_frontier_and_reload",
+  "bounded_result": "completed",
+  "disposition": "keep_L1",
+  "selection": "Проверка занятого побережья на том же генераторе Classic. Предыдущие 10 000 сухопутных генераций и браузерные замеры создания малой карты уже приняты. У побережья дополнительные ограничения точек роста и конверсия замкнутой воды.",
+  "operational_requirement": {
+    "trigger": "Мастер выбирает очередной доступный гекс, расширяет регион Classic и открывает сохранение.",
+    "inputs": "Независимые запуски из одной карты Classic v9, seed 42, 35 клеток региона, 8 водных клеток в двух морях, размер Locality.",
+    "expected": "Выбранный гекс вошёл в новую область, старые региональные адреса сохранены, кандидат не дублируется; открытие той же карты сохраняет доступные места роста и водные свойства.",
+    "exception": "Замкнутое море может стать озером при генерации. Эта смена типа сама по себе не является отказом."
+  },
+  "methods": {
+    "product": "App.generateAt, createSaveData, handleImportJson, undoMap; production callbacks on pinned release, no DOM timing",
+    "run_instructions": "Copy coastal-frontier.mjs to root of a checkout of product_sha with its dependencies installed; run node coastal-frontier.mjs. Uses the shipped legacy seaFixture and executes every offered first and second boundary route from an identical saved state.",
+    "probe": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-frontier.mjs",
+    "example_export": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+    "probe_semantics": "second.passed is a conservative screen retaining original sea addressing and no enclosed unassigned address including water. Inspect terrain, reopened.changedKeys, offered and subsequent growth to classify the four flags.",
+    "prior_browser_receipts_ref": "agent-work/research/acceptance/L1-PR509/2026-11-21-browser/verdict.json",
+    "new_portrait_runs": 0
+  },
+  "observations": {
+    "initial": {
+      "hexes": 35,
+      "sea": [
+        "-3,2",
+        "-3,3",
+        "-1,2",
+        "0,2",
+        "1,2",
+        "2,2",
+        "3,2",
+        "3,3"
+      ],
+      "offered": 24,
+      "expected": 24,
+      "missing": [],
+      "extra": [],
+      "holes": 0,
+      "duplicates": 0
+    },
+    "results": [
+      {
+        "anchor": "-1,-3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 28,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-1,3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 36,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-2,-3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 30,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-2,3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 34,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-3,-3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 31,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-4,-1",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 31,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-4,-2",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 34,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-4,0",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 30,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-4,1",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 31,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-4,2",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 29,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "-4,3",
+        "added": 11,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 33,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "0,-3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 29,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "0,3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 35,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "1,-3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 29,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "1,3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 34,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "2,-3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 30,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "2,3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 36,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "3,-3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 29,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "4,-1",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 29,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "4,-2",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 31,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "4,-3",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 31,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "4,0",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 29,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "4,1",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 31,
+        "roundtrip": true,
+        "error": null
+      },
+      {
+        "anchor": "4,2",
+        "added": 10,
+        "anchored": true,
+        "sea_lost": [],
+        "overwrote_sea": [],
+        "old_hexes_lost": [],
+        "overlap": 0,
+        "connected": true,
+        "holes": 0,
+        "missing": [],
+        "extra": [],
+        "duplicates": 0,
+        "offered": 35,
+        "roundtrip": true,
+        "error": null
+      }
+    ],
+    "second": {
+      "total": 755,
+      "passed": 751,
+      "candidates_checked": 28444,
+      "failures": [
+        {
+          "first": "-1,3",
+          "second": "-3,4",
+          "problems": {
+            "unreachable": false,
+            "lostSea": true,
+            "overwroteSea": false,
+            "lostLand": false,
+            "overlap": 0,
+            "disconnected": false,
+            "holes": 1,
+            "missing": [
+              "-3,3"
+            ],
+            "extra": [],
+            "duplicates": 0,
+            "error": null
+          },
+          "cells": [
+            {
+              "key": "-3,3",
+              "terrain": {
+                "terrainOverride": "lake",
+                "lakeId": 1
+              },
+              "seaId": null,
+              "candidate": false
+            },
+            {
+              "key": "-3,2",
+              "terrain": {
+                "terrainOverride": "lake",
+                "lakeId": 1
+              },
+              "seaId": null,
+              "candidate": false
+            }
+          ],
+          "reopened": {
+            "mapEqual": false,
+            "changedKeys": [
+              "candidateHexes"
+            ],
+            "holeKeys": [
+              "-3,3"
+            ],
+            "missing": [],
+            "affected": [
+              {
+                "key": "-3,3",
+                "offered": true,
+                "neighbors": [
+                  {
+                    "key": "-2,3",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,3",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,4",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,2",
+                    "region": true,
+                    "surface": "lake"
+                  },
+                  {
+                    "key": "-2,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,4",
+                    "region": true,
+                    "surface": null
+                  }
+                ],
+                "grew": true,
+                "surface": null
+              },
+              {
+                "key": "-3,2",
+                "offered": false,
+                "neighbors": [
+                  {
+                    "key": "-2,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,3",
+                    "region": false,
+                    "surface": "lake"
+                  },
+                  {
+                    "key": "-3,1",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-2,1",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,3",
+                    "region": true,
+                    "surface": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "first": "-2,3",
+          "second": "-3,4",
+          "problems": {
+            "unreachable": false,
+            "lostSea": true,
+            "overwroteSea": false,
+            "lostLand": false,
+            "overlap": 0,
+            "disconnected": false,
+            "holes": 1,
+            "missing": [
+              "-3,3"
+            ],
+            "extra": [],
+            "duplicates": 0,
+            "error": null
+          },
+          "cells": [
+            {
+              "key": "-3,3",
+              "terrain": {
+                "terrainOverride": "lake",
+                "lakeId": 1
+              },
+              "seaId": null,
+              "candidate": false
+            },
+            {
+              "key": "-3,2",
+              "terrain": {
+                "terrainOverride": "lake",
+                "lakeId": 1
+              },
+              "seaId": null,
+              "candidate": false
+            }
+          ],
+          "reopened": {
+            "mapEqual": false,
+            "changedKeys": [
+              "candidateHexes"
+            ],
+            "holeKeys": [
+              "-3,3"
+            ],
+            "missing": [],
+            "affected": [
+              {
+                "key": "-3,3",
+                "offered": true,
+                "neighbors": [
+                  {
+                    "key": "-2,3",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,3",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,4",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,2",
+                    "region": true,
+                    "surface": "lake"
+                  },
+                  {
+                    "key": "-2,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,4",
+                    "region": true,
+                    "surface": null
+                  }
+                ],
+                "grew": true,
+                "surface": null
+              },
+              {
+                "key": "-3,2",
+                "offered": false,
+                "neighbors": [
+                  {
+                    "key": "-2,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,3",
+                    "region": false,
+                    "surface": "lake"
+                  },
+                  {
+                    "key": "-3,1",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-2,1",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,3",
+                    "region": true,
+                    "surface": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "first": "0,3",
+          "second": "-1,3",
+          "problems": {
+            "unreachable": false,
+            "lostSea": true,
+            "overwroteSea": false,
+            "lostLand": false,
+            "overlap": 0,
+            "disconnected": false,
+            "holes": 1,
+            "missing": [
+              "-3,3"
+            ],
+            "extra": [],
+            "duplicates": 0,
+            "error": null
+          },
+          "cells": [
+            {
+              "key": "-3,3",
+              "terrain": {
+                "terrainOverride": "lake",
+                "lakeId": 1
+              },
+              "seaId": null,
+              "candidate": false
+            },
+            {
+              "key": "-3,2",
+              "terrain": {
+                "terrainOverride": "lake",
+                "lakeId": 1
+              },
+              "seaId": null,
+              "candidate": false
+            }
+          ],
+          "reopened": {
+            "mapEqual": false,
+            "changedKeys": [
+              "candidateHexes"
+            ],
+            "holeKeys": [
+              "-3,3"
+            ],
+            "missing": [],
+            "affected": [
+              {
+                "key": "-3,3",
+                "offered": true,
+                "neighbors": [
+                  {
+                    "key": "-2,3",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,3",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,4",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,2",
+                    "region": true,
+                    "surface": "lake"
+                  },
+                  {
+                    "key": "-2,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,4",
+                    "region": true,
+                    "surface": null
+                  }
+                ],
+                "grew": true,
+                "surface": null
+              },
+              {
+                "key": "-3,2",
+                "offered": false,
+                "neighbors": [
+                  {
+                    "key": "-2,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,2",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-3,3",
+                    "region": false,
+                    "surface": "lake"
+                  },
+                  {
+                    "key": "-3,1",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-2,1",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "-4,3",
+                    "region": true,
+                    "surface": null
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "first": "2,3",
+          "second": "2,4",
+          "problems": {
+            "unreachable": false,
+            "lostSea": false,
+            "overwroteSea": false,
+            "lostLand": false,
+            "overlap": 0,
+            "disconnected": false,
+            "holes": 1,
+            "missing": [],
+            "extra": [],
+            "duplicates": 0,
+            "error": null
+          },
+          "cells": [
+            {
+              "key": "4,4",
+              "terrain": null,
+              "seaId": null,
+              "candidate": true
+            }
+          ],
+          "reopened": {
+            "mapEqual": true,
+            "changedKeys": [],
+            "holeKeys": [
+              "4,4"
+            ],
+            "missing": [],
+            "affected": [
+              {
+                "key": "4,4",
+                "offered": true,
+                "neighbors": [
+                  {
+                    "key": "5,4",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "3,4",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "4,5",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "4,3",
+                    "region": true,
+                    "surface": null
+                  },
+                  {
+                    "key": "5,3",
+                    "region": false,
+                    "surface": "sea"
+                  },
+                  {
+                    "key": "3,5",
+                    "region": true,
+                    "surface": null
+                  }
+                ],
+                "grew": true,
+                "surface": "lake"
+              }
+            ]
+          }
+        }
+      ],
+      "by_first_anchor": [
+        {
+          "first": "-1,-3",
+          "attempts": 28,
+          "passed": 28
+        },
+        {
+          "first": "-1,3",
+          "attempts": 36,
+          "passed": 35
+        },
+        {
+          "first": "-2,-3",
+          "attempts": 30,
+          "passed": 30
+        },
+        {
+          "first": "-2,3",
+          "attempts": 34,
+          "passed": 33
+        },
+        {
+          "first": "-3,-3",
+          "attempts": 31,
+          "passed": 31
+        },
+        {
+          "first": "-4,-1",
+          "attempts": 31,
+          "passed": 31
+        },
+        {
+          "first": "-4,-2",
+          "attempts": 34,
+          "passed": 34
+        },
+        {
+          "first": "-4,0",
+          "attempts": 30,
+          "passed": 30
+        },
+        {
+          "first": "-4,1",
+          "attempts": 31,
+          "passed": 31
+        },
+        {
+          "first": "-4,2",
+          "attempts": 29,
+          "passed": 29
+        },
+        {
+          "first": "-4,3",
+          "attempts": 33,
+          "passed": 33
+        },
+        {
+          "first": "0,-3",
+          "attempts": 29,
+          "passed": 29
+        },
+        {
+          "first": "0,3",
+          "attempts": 35,
+          "passed": 34
+        },
+        {
+          "first": "1,-3",
+          "attempts": 29,
+          "passed": 29
+        },
+        {
+          "first": "1,3",
+          "attempts": 34,
+          "passed": 34
+        },
+        {
+          "first": "2,-3",
+          "attempts": 30,
+          "passed": 30
+        },
+        {
+          "first": "2,3",
+          "attempts": 36,
+          "passed": 35
+        },
+        {
+          "first": "3,-3",
+          "attempts": 29,
+          "passed": 29
+        },
+        {
+          "first": "4,-1",
+          "attempts": 29,
+          "passed": 29
+        },
+        {
+          "first": "4,-2",
+          "attempts": 31,
+          "passed": 31
+        },
+        {
+          "first": "4,-3",
+          "attempts": 31,
+          "passed": 31
+        },
+        {
+          "first": "4,0",
+          "attempts": 29,
+          "passed": 29
+        },
+        {
+          "first": "4,1",
+          "attempts": 31,
+          "passed": 31
+        },
+        {
+          "first": "4,2",
+          "attempts": 35,
+          "passed": 35
+        }
+      ]
+    }
+  },
+  "interpretation": {
+    "first_steps": 24,
+    "first_roundtrips_equal": 24,
+    "second_steps": 755,
+    "second_targets_in_new_region": 755,
+    "second_candidate_entries_examined": 28444,
+    "screen_flags": 4,
+    "distinct_observed_import_defect": 1,
+    "reproductions": 3,
+    "positive_control": "2/3 → 2/4 оставляет пустую клетку 4/4 между пятью клетками региона и морем. До и после загрузки она доступна; расширение состоялось. Отказ сохранения здесь отсутствует.",
+    "specific_failure": "После превращения замкнутого моря в озеро клетка −3/3 имеет lakeId=1 и отсутствует в candidateHexes. Загрузка добавляет её в candidateHexes; из полей map меняется только этот список. Генерация по новой точке добавляет клетку в регион и снимает водный атрибут.",
+    "limits": "Одна фиксированная география. Три траектории на этой карте не оценивают частоту отказа среди всех карт."
+  },
+  "remaining": {
+    "classic_max_recorded": [
+      "S01-C01"
+    ],
+    "common_below_recorded_max": [
+      "S01-C02",
+      "S01-C03",
+      "S01-C04",
+      "S01-C05",
+      "S02-C01",
+      "S02-C02",
+      "S02-C03",
+      "S02-C04",
+      "S02-C05",
+      "S03-C01",
+      "S03-C02",
+      "S03-C03",
+      "S03-C04",
+      "S03-C05",
+      "S04-C01",
+      "S04-C02",
+      "S04-C03",
+      "S04-C04",
+      "S04-C05",
+      "S05-C01",
+      "S05-C03",
+      "S07-C01",
+      "S07-C03",
+      "S07-C04",
+      "S07-C05",
+      "S08-C01",
+      "S08-C04",
+      "S08-C05",
+      "S09-C01",
+      "S09-C02",
+      "S09-C03",
+      "S09-C04",
+      "S09-C05"
+    ],
+    "browser_game_credited": [
+      "DND5-2014-001-L1-v2-draft",
+      "DND5-2014-003-L1-v2-draft",
+      "PF2-RM-121-L1-v2",
+      "PF2-RM-126-L1-v2",
+      "PF2-RM-044-L1-v2",
+      "PF2-RM-ST-009-v2",
+      "KNAVE2-005-L1",
+      "KNAVE2-006-L1",
+      "SD-CORE-043-L1",
+      "MB-QS-002-L1",
+      "ROOT-TO-001-L1",
+      "ROOT-SCOPE-M01",
+      "ROOT-SCOPE-M02",
+      "ROOT-SCOPE-M03",
+      "ROOT-SCOPE-M04",
+      "ROOT-SCOPE-M05",
+      "ROOT-SCOPE-M06",
+      "ROOT-SCOPE-M07",
+      "OSE-ORR-2026-004-L1",
+      "OSE-ORR-2026-005-L1",
+      "OSE-ORR-2026-006-L1",
+      "CROWS-PT3-L1-001",
+      "AWN-obs-04",
+      "SWC-obs-01",
+      "SWC-obs-03",
+      "SALV-obs-02",
+      "DCC-obs-01"
+    ],
+    "browser_game_refused": [
+      "DND5-2014-008-L1-v2-draft",
+      "DND5-2014-020-L1-v2-draft",
+      "PF2-RM-002-L1-v2",
+      "PF2-RM-012-L1-v2",
+      "PF2-RM-013-L1-v2",
+      "PF2-RM-122-L1-v2",
+      "PF2-RM-005-L1-v2",
+      "KNAVE2-040-L1",
+      "KNAVE2-045-L1",
+      "SD-CORE-049-L1",
+      "SD-CORE-052-L1",
+      "WWN-RU-REG-008-L1",
+      "ROOT-CORE-002-L1",
+      "CAIRN2-SS-003-L1",
+      "CAIRN2-SS-008-L1",
+      "CAIRN2-SS-010-L1",
+      "CAIRN2-SS-013-L1",
+      "PIRATE-obs-03",
+      "CROWS-PT3-L1-005",
+      "CROWS-PT3-L1-009",
+      "CROWS-PT3-L1-017",
+      "VAARN-HF2024-001-L1",
+      "VAARN-HF2024-002-L1",
+      "PF1-UC-001-L1",
+      "PF1-UC-003-L1",
+      "PF1-UC-004-L1"
+    ],
+    "later_base_failures": [
+      "KNAVE2-010-L1",
+      "KNAVE2-037-L1"
+    ],
+    "browser_open_without_later_full_failure": [
+      "DND5-2014-002-L1-v2-draft",
+      "DND5-2014-004-L1-v2-draft",
+      "DND5-2014-005-L1-v2-draft",
+      "DND5-2014-006-L1-v2-draft",
+      "DND5-2014-007-L1-v2-draft",
+      "DND5-2014-009-L1-v2-draft",
+      "DND5-2014-011-L1-v2-draft",
+      "DND5-2014-013-L1-v2-draft",
+      "DND5-2014-014-L1-v2-draft",
+      "DND5-2014-015-L1-v2-draft",
+      "DND5-2014-016-L1-v2-draft",
+      "DND5-2014-017-L1-v2-draft",
+      "PF2-RM-003-L1-v2",
+      "PF2-RM-004-L1-v2",
+      "PF2-RM-010-L1-v2",
+      "PF2-RM-011-L1-v2",
+      "PF2-RM-029-L1-v2",
+      "PF2-RM-123-L1-v2",
+      "PF2-RM-124-L1-v2",
+      "PF2-RM-125-L1-v2",
+      "PF2-RM-127-L1-v2",
+      "PF2-RM-066-L1-v2",
+      "PF2-RM-067-L1-v2",
+      "PF2-RM-068-L1-v2",
+      "PF2-RM-069-L1-v2",
+      "PF2-RM-072-L1-v2",
+      "PF2-RM-074-L1-v2",
+      "PF2-RM-076-L1-v2",
+      "PF2-RM-ST-002-v2",
+      "PF2-RM-ST-004-v2",
+      "PF2-RM-ST-007-v2",
+      "PF2-RM-ST-008-v2",
+      "KNAVE2-020-L1",
+      "KNAVE2-051-L1",
+      "KNAVE2-070-L1",
+      "KNAVE2-071-L1",
+      "KNAVE2-072-L1",
+      "KNAVE2-073-L1",
+      "SD-CORE-001-L1",
+      "SD-CORE-002-L1",
+      "SD-CORE-031-L1",
+      "SD-CORE-041-L1",
+      "SD-CORE-046-L1",
+      "SD-CORE-047-L1",
+      "SD-CORE-048-L1",
+      "SD-CORE-050-L1",
+      "SD-CORE-051-L1",
+      "SD-CORE-053-L1",
+      "SD-CORE-058-L1",
+      "SD-CORE-059-L1",
+      "SD-CORE-063-L1",
+      "SD-CORE-074-L1",
+      "SD-CORE-079-L1",
+      "MB-REALM-001-L1",
+      "MB-REALM-002-L1",
+      "MB-REALM-003-L1",
+      "MB-REALM-004-L1",
+      "MB-REALM-005-L1",
+      "MB-REALM-006-L1",
+      "WWN-RU-REG-001-L1",
+      "WWN-RU-REG-002-L1",
+      "WWN-RU-REG-003-L1",
+      "WWN-RU-REG-004-L1",
+      "WWN-RU-REG-006-L1",
+      "WWN-RU-REG-007-L1",
+      "WWN-RU-KNG-001-L1",
+      "WWN-RU-KNG-002-L1",
+      "ROOT-CORE-001-L1",
+      "ROOT-CORE-003-L1",
+      "ROOT-CORE-004-L1",
+      "ROOT-TO-008-L1",
+      "ROOT-TO-009-L1",
+      "OSE-ORR-2026-001-L1",
+      "CAIRN2-PC-001-L1",
+      "CAIRN2-PC-002-L1",
+      "CAIRN2-SS-001-L1",
+      "CAIRN2-SS-002-L1",
+      "CAIRN2-SS-004-L1",
+      "CAIRN2-SS-005-L1",
+      "CAIRN2-SS-007-L1",
+      "CAIRN2-SS-009-L1",
+      "CAIRN2-SS-011-L1",
+      "CAIRN2-SS-012-L1",
+      "PIRATE-obs-01",
+      "PIRATE-obs-02",
+      "CROWS-PT3-L1-002",
+      "CROWS-PT3-L1-003",
+      "CROWS-PT3-L1-004",
+      "CROWS-PT3-L1-007",
+      "CROWS-PT3-L1-011",
+      "CROWS-PT3-L1-019",
+      "CROWS-PT3-L1-022",
+      "CROWS-PT3-L1-023",
+      "CROWS-PT3-L1-024",
+      "SI-obs-01",
+      "SI-obs-02",
+      "SI-obs-03",
+      "SI-obs-04",
+      "SI-obs-05",
+      "AWN-obs-01",
+      "AWN-obs-02",
+      "AWN-obs-03",
+      "BSH-obs-01",
+      "BSH-obs-02",
+      "PF1-UC-002-L1",
+      "PF1-UC-005-L1",
+      "PF1-UC-006-L1",
+      "PF1-UC-008-L1",
+      "PF1-UC-009-L1",
+      "PF1-UC-011-L1",
+      "PF1-UC-012-L1",
+      "PF1-UC-013-L1",
+      "PF1-UC-014-L1",
+      "PF1-UC-015-L1",
+      "SWC-obs-02",
+      "SWC-obs-04",
+      "MAUS-obs-01",
+      "MAUS-obs-02",
+      "MAUS-obs-03",
+      "MAUS-obs-04",
+      "MAUS-obs-05",
+      "SALV-obs-01"
+    ]
+  },
+  "stop_reason": "Обе ступени расширения выбранной карты проверены целиком; остальные профили перечислены в checkpoint.",
+  "automation_health": {
+    "start": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ]
+  },
+  "ranking_changed": false
+}
