@@ -1,0 +1,20 @@
+{
+  "task_id": "HX-BL-056",
+  "role": "programmer",
+  "pr": 510,
+  "base_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+  "stage": "F1.2",
+  "finding_id": "HX056-RV11",
+  "scope": "Исправить восстановление слоя малых озёр при удалении последнего региона после независимой правки заметки, не стирая намеренную правку озёр.",
+  "acceptance": [
+    "На seed 1257875020 после создания восьмого региона, записи заметки в 0,1 и удаления восьмого региона восстанавливаются все семь регионов, озеро №24 с прежним берегом, nextId=34 и текст заметки.",
+    "Повторное добавление региона создаёт №34 и №35. Проверить, что намеренно удалённое мастером озеро не возвращается, а Undo/Redo остаётся точным.",
+    "Расширить существующую проверку контрольной точки, передать новый SHA и результаты независимому проверяющему."
+  ],
+  "replay_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/replay.mjs.txt",
+  "runtime_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/runtime.json",
+  "release_authorized": false,
+  "from_role": "reviewer",
+  "run_id": "2026-11-21T1801-reviewer-HX-BL-056-F1.2",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/score-assessment1.3-rc8.json"
+}
