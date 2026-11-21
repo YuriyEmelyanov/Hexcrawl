@@ -7,16 +7,13 @@
   "interview_round_ref": "agent-work/interviews/HX-BL-061/BENDS/round-001.json",
   "interview_ref": "agent-work/interviews/HX-BL-061/BENDS/decisions.json",
   "open_question_ids": [
-    "BEND-Q01",
-    "BEND-Q02",
-    "BEND-Q03",
-    "BEND-Q04"
+    "BEND-Q02"
   ],
   "interview_status": "awaiting_owner_answers",
   "interview_completed": false,
   "ready_for_development": false,
   "next_role": "owner",
-  "next_step": "Ответы владельца по BEND-Q01–Q04; интервьюер фиксирует решения и передаёт аналитику для чистовой спецификации.",
+  "next_step": "Владелец выбирает выраженность изгиба по трём показанным вариантам BEND-Q02.",
   "round_id": "round-001",
   "trigger": "draft_ready_for_interview",
   "source_owner_decision_refs": [
@@ -52,9 +49,9 @@
         "reason": "Согласованный вид карты при переключении масштаба."
       },
       "always_allow_free_text": true,
-      "answer": null,
-      "answer_source": null,
-      "interpretation": null,
+      "answer": "B",
+      "answer_source": "owner_chat",
+      "interpretation": "Сглаживать на двух действующих масштабах: 5–6 миль и 1 миля.",
       "dependencies": []
     },
     {
@@ -116,9 +113,9 @@
         "reason": "Действующие толщина и штриховка уже различают пути."
       },
       "always_allow_free_text": true,
-      "answer": null,
-      "answer_source": null,
-      "interpretation": null,
+      "answer": "Учитывать фактические углы дорог и троп: они различаются между собой и с речными поворотами. Единую форму для всех углов не задавать.",
+      "answer_source": "owner_chat",
+      "interpretation": "Учитывать фактические углы дорог и троп: они различаются между собой и с речными поворотами. Единую форму для всех углов не задавать.",
       "dependencies": [
         "BEND-Q02"
       ]
@@ -148,9 +145,9 @@
         "reason": "Плавность сохраняется в большем числе мест, пересечение и вход в воду имеют приоритет."
       },
       "always_allow_free_text": true,
-      "answer": null,
-      "answer_source": null,
-      "interpretation": null,
+      "answer": "Водопады, пороги, переправы и мосты остаются на видимом русле. На перекрёстке можно сгладить основной путь и подвести другую дорогу к его изгибу.",
+      "answer_source": "owner_chat",
+      "interpretation": "Водопады, пороги, переправы и мосты остаются на видимом русле. На перекрёстке можно сгладить основной путь и подвести другую дорогу к его изгибу.",
       "dependencies": []
     }
   ],
@@ -162,7 +159,26 @@
   ],
   "presented_in_chat_at": "2026-11-21T21:03:48.814Z",
   "presented_in_chat_ref": "Существующий чат команды, сообщение с таблицей BEND-Q01–Q04 и рисунком. ID сообщения недоступен.",
-  "owner_answers": [],
+  "owner_answers": [
+    {
+      "question_id": "BEND-Q01",
+      "interpretation": "Сглаживать на двух действующих масштабах: 5–6 миль и 1 миля.",
+      "selected_option_id": "B",
+      "source": "Ответ владельца в чате 22.11.2026"
+    },
+    {
+      "question_id": "BEND-Q03",
+      "interpretation": "Учитывать фактические углы дорог и троп: они различаются между собой и с речными поворотами. Единую форму для всех углов не задавать.",
+      "selected_option_id": null,
+      "source": "Ответ владельца в чате 22.11.2026"
+    },
+    {
+      "question_id": "BEND-Q04",
+      "interpretation": "Водопады, пороги, переправы и мосты остаются на видимом русле. На перекрёстке можно сгладить основной путь и подвести другую дорогу к его изгибу.",
+      "selected_option_id": null,
+      "source": "Ответ владельца в чате 22.11.2026"
+    }
+  ],
   "interpretation": null,
   "status": "presented",
   "preview_ref": "agent-work/interviews/HX-BL-061/BENDS/bend-options.svg",
