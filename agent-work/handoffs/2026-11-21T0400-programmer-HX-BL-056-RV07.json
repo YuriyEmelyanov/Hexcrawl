@@ -1,0 +1,98 @@
+{
+  "run_id": "2026-11-21T0400-programmer-HX-BL-056-RV07",
+  "role": "programmer",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1.1-RV07",
+  "role_selection_reason": "Подтверждённое замечание RV07 по утверждённой задаче, слот свободен.",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "head_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+  "head_tree_sha": "914bc0646864a3403faf8cc5393c3995fddebd24",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "repair_base_sha": "849854f58edb1d824783599b9f72e888ee892556",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-849854f/review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T0400-programmer-HX-BL-056-RV07.json",
+  "result_ref": "agent-work/results/2026-11-21T0400-programmer-HX-BL-056-RV07.json",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv07-645ecf0/verification.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44847371238",
+  "publication_authorized": false,
+  "score_update": "unpublished",
+  "test_change_summary": {
+    "base_sha": "849854f58edb1d824783599b9f72e888ee892556",
+    "head_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node mapTransactions",
+    "scenario": "Удалить последний регион и получить тот же слой озёр при повторной генерации на современном и совместимом JSON.",
+    "reuse_or_new_reason": "Расширен существующий тест двух форматов сохранения при добавлении того же региона. Он уже проверял принятый берег, историю и загрузку, но не нумерацию после удаления региона.",
+    "source": "git diff 849854f..645ecf06c664fead8964ec5ba1a9ba2634f93a53 -- test/mapTransactions.test.mjs, одно существующее объявление node:test"
+  },
+  "forecast": "После исправления остаются независимая приёмка и выпуск по отдельному разрешению владельца. При новых замечаниях потребуется цикл исправления.",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T00:56:02.186Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T01:15:50.533Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-21T01:15:50.534Z",
+  "review_ready": true,
+  "status": "review_ready",
+  "ci_jobs": [
+    {
+      "id": 136670296528,
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136670296740,
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136670296752,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136670298523,
+      "name": "engraved-map-comparison",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "checks": {
+    "node": {
+      "executed": 442,
+      "passed": 442,
+      "skipped": 0
+    },
+    "browser": {
+      "status": "passed",
+      "artifact": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44847371238/artifacts/14684805445"
+    },
+    "world_random": "passed",
+    "focused": {
+      "executed": 3,
+      "passed": 3,
+      "skipped": 0
+    }
+  },
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44847371238/artifacts/14684805445",
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить RV07 на 645ecf0 по F1.1, включая повторную генерацию, промежуточные ручные правки, сохранение берегов RV06, карту и PNG. Записать заключение и score_assessment 1.2.",
+  "from_role": "programmer",
+  "to_role": "reviewer"
+}
