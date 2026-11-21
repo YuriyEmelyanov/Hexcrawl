@@ -1092,6 +1092,7 @@ test('G208-AUTO failed scale preparation is localized and preserves the document
    h.render().setLanguage(locale);
    assert.equal(h.render().switchFineStep(1),false);
    const message=h.render().automaticFineError;
+   assert.ok(message.startsWith(locale==='ru'?'1-мильная карта не открылась.':'The 1-mile map did not open.'));
    assert.match(message,locale==='ru'?/объект №1.*Исходная карта сохранена/:/site №1.*The source map is unchanged/);
    assert.doesNotMatch(message,/GEO2|locked_geometry/);
   }

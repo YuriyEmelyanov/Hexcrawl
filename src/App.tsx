@@ -17198,7 +17198,7 @@ export function App() {
                 <option value="classic">{language === 'ru' ? 'Классический режим' : 'Classic mode'}</option>
                 <option value="mythic">Mythic Bastionland</option>
               </select></label></div>
-            {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={knaveEnabled} disabled={mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label><span>{language==='ru'?'6 миль / гекс':'6 miles / hex'}</span></div>}
+            {generationMode==='classic'&&<div className="knave-profile-row"><label><input type="checkbox" aria-label="Knave 2e" checked={knaveEnabled} disabled={mutationBlocked(false)} onChange={e=>chooseKnaveProfile(e.target.checked)}/>Knave 2e</label></div>}
             {!kingdomJob && !detailedRenderReady ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Отрисовка карты…' : 'Drawing map…'}</p> : null}
             {kingdomJob ? <p role="status" className="kingdom-progress">{language === 'ru' ? 'Создание королевства…' : 'Building kingdom…'} {kingdomHexes(kingdomJob.origin).filter(h=>metadataMap.has(hexKey(h))).length}/144</p> : null}
             {generationMode === 'classic' ? <div className="control-block gen-params" aria-label={t.genParamsLabel}>
@@ -17282,7 +17282,19 @@ export function App() {
                 <span aria-hidden="true">#</span>
                 <span>{t.hexCoordinatesMode}</span>
               </button>
-              <label className="fine-step"><span>{language==='ru'?'Размер гекса':'Hex size'}</span><select data-fine-step aria-label={language==='ru'?'Размер гекса':'Hex size'} value={automaticFinePreparing?1:fineDisplay?.viewStep??(busyFineView?1:6)} disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length} onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}><option value={1}>{language==='ru'?'1 миля':'1 mile'}</option><option value={6}>{language==='ru'?'6 миль':'6 miles'}</option></select></label>
+              <label className="fine-step">
+                <select
+                  data-fine-step
+                  aria-labelledby="fine-step-label"
+                  value={automaticFinePreparing?1:fineDisplay?.viewStep??(busyFineView?1:6)}
+                  disabled={isImporting||!!pendingRegen||!!kingdomJob||!regions.length}
+                  onChange={e=>switchFineStep(Number(e.target.value) as 1|6)}
+                >
+                  <option value={1}>{language==='ru'?'1 миля':'1 mile'}</option>
+                  <option value={6}>{language==='ru'?'5–6 миль':'5–6 miles'}</option>
+                </select>
+                <span id="fine-step-label">{language==='ru'?'Размер гекса':'Hex size'}</span>
+              </label>
             </div>
             {visibleEngravingFailures.length > 0 && <div className="control-block" data-engraving-failure>
               <span role="alert" className="direct-error">

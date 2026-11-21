@@ -56,13 +56,17 @@ try {
     return fs.readFile(await file.path());
   }
 
-  async function assertSizeField() {
+  async function assertSizeField(language = 'ru') {
     const field = page.locator('.fine-step');
     await field.scrollIntoViewIfNeeded();
+    const select = field.getByRole('combobox', { name:language === 'ru' ? 'Размер гекса' : 'Hex size', exact:true });
+    assert.deepEqual(await select.locator('option').allTextContents(), language === 'ru' ? ['1 миля', '5–6 миль'] : ['1 mile', '5–6 miles']);
+    await field.locator('span').click();
+    assert.ok(await select.evaluate(node => node === document.activeElement));
     const layout = await field.evaluate(node => {
       const label = node.querySelector('span').getBoundingClientRect();
       const value = node.querySelector('select').getBoundingClientRect();
-      return { gap:value.left-label.right, overlap:Math.min(label.bottom,value.bottom)-Math.max(label.top,value.top),
+      return { gap:label.left-value.right, overlap:Math.min(label.bottom,value.bottom)-Math.max(label.top,value.top),
         fits:node.getBoundingClientRect().right <= window.innerWidth };
     });
     assert.ok(layout.gap >= 0 && layout.gap <= 12 && layout.overlap > 0 && layout.fits, JSON.stringify(layout));
@@ -124,10 +128,15 @@ try {
   }
   await load(saved);
   assert.equal(await cellArt.getAttribute('data-engraving'), next);
-  await page.setViewportSize({ width:320, height:844 });
-  await assertSizeField();
-  await page.setViewportSize({ width:390, height:844 });
-  await assertSizeField();
+  for (const width of [1280, 320, 390]) {
+    await page.setViewportSize({ width, height:844 });
+    await assertSizeField();
+    const languageButton = page.locator('.language-toggle');
+    if (!await languageButton.isVisible()) await page.locator('[aria-controls="header-links-actions"]').click();
+    await languageButton.click();
+    await assertSizeField('en');
+    await languageButton.click();
+  }
   await page.screenshot({ path:fileURLToPath(new URL('terrain-v2-hx060-classic-6-mile-narrow.png', output)) });
   const fine = map.locator('[data-fine-world]');
   const scale = page.locator('[data-fine-step]');
