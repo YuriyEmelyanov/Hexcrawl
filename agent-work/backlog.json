@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-21T12:37:36.980Z",
+  "updated_at": "2026-11-21T13:32:37.713Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -1054,7 +1054,7 @@
                 "pixelIdentical": false,
                 "raster": {
                   "maxDelta": 210,
-                  "changedFraction": 7.626561472715319e-05
+                  "changedFraction": 0.00007626561472715319
                 },
                 "scope": "diagnostic including unrelated controls"
               }
@@ -2124,6 +2124,35 @@
       "release_authorized": false,
       "ready_for_development": false,
       "updated_at": "2026-11-21T10:39:36.849Z"
+    },
+    {
+      "task_id": "HX-BL-069",
+      "title": "Сохранить ручные правки в других регионах при перебросе последнего региона",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/score/rules/S02-C01.md"
+      },
+      "score_criterion": "S02-C01",
+      "score_forecast_l1": {
+        "criterion": "S02-C01",
+        "rule": "SEED-07",
+        "share": 0.1,
+        "remaining_L1_points": 1.4814814814814816
+      },
+      "requirements": [
+        "При перебросе последнего региона сохраняются ручные правки мастера за пределами этого региона."
+      ],
+      "reproduction": "В Classic на seed 1 создать два соседних региона по 8 гексов. После создания второго назначить гексу 0,1 первого региона биом «Снежные равнины» и перебросить второй регион.",
+      "observed": "Назначенный биом исчезает. Потеря правки воспроизведена на 5 из 5 карт (seed 1–5) на PR511.",
+      "acceptance_outline": [
+        "В Classic на seed 1 создать два соседних региона по 8 гексов. После создания второго назначить гексу 0,1 первого региона биом «Снежные равнины» и перебросить второй регион.",
+        "Проверить после переброса, что у гекса 0,1 сохранился назначенный мастером биом, а второй регион получил новый вариант."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "ready_for_development": false,
+      "updated_at": "2026-11-21T13:32:37.713Z"
     }
   ],
   "retired_pr_packages": {
