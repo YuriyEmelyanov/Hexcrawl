@@ -1,0 +1,447 @@
+{
+  "run_id": "2026-11-21-L1-Knave-shrine-0930",
+  "status": "checkpoint_large_unfinished_corpus",
+  "result_ref": "agent-work/research/runs/2026-11-21-L1-Knave-shrine-0930.json",
+  "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "next": {
+    "ids": [
+      "S09-C01",
+      "DND5-2014-001-L1-v2-draft",
+      "PF2-RM-121-L1-v2",
+      "AWN-obs-04",
+      "SWC-obs-01"
+    ],
+    "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
+    "fallback": "KNAVE2-051-L1. В карточке таверны проверить заданные броски названия и меню, затем перебросить только меню после ручного переименования и открыть карту из JSON."
+  },
+  "last_successful_step": "В Knave 2e новое имя святилища сохранилось после экспорта и открытия на сайте. При переносе из 0/1 в 1/1 тип и имя переехали, а запись о покровителе и реликвии осталась в 0/1 под новой башней. Приёмочный случай связи с покровителем провален.",
+  "needs_owner_action": false,
+  "started_at": "2026-11-21T06:28:00.522Z",
+  "completed_at": "2026-11-21 06:31:53 UTC",
+  "base_sha": "999d2aad9e26ee200540d63422bdff7ac1f098f9",
+  "start_marker_commit": "5ca1544727ec9fe5984a0943bc16071af764fdd9",
+  "scope": "KNAVE2-037-L1 shrine links, rename and reopen",
+  "bounded_result": "completed",
+  "selection": "Следующая операция Knave из checkpoint. Проверка раскрывает владельца записи при смене объекта. Рынок и расширение книжного корпуса отложены по поручению владельца.",
+  "operational_requirement": {
+    "action": "Связать святилище с покровителем и реликвиями",
+    "inputs": "Святилище 0/1, покровитель Istra с доменами roads и rain, реликвия Bronze Bell.",
+    "expected": "Given Создан P с2доменами; SпосвящёнP; RсвязанP When ПереименоватьS и сохранить/загрузить Expected S по устойчивомуID по-прежнему ведёткP; R связансP; доменовPдва.",
+    "scope": "Мастер называет и описывает конкретное святилище на карте. Критерий задаёт сохраняемую посвящённость места.",
+    "disposition": "keep_L1"
+  },
+  "result": "В Knave 2e новое имя святилища сохранилось после экспорта и открытия на сайте. При переносе из 0/1 в 1/1 тип и имя переехали, а запись о покровителе и реликвии осталась в 0/1 под новой башней. Приёмочный случай связи с покровителем провален.",
+  "method": {
+    "site": "https://app.hexcrawl.ru/",
+    "site_observations": [
+      "Импорт собственной карты. Выбран Holy place 0/1, Shrine of the Watch. Строка Patron: Istra. Domains: roads and rain. Relic: Bronze Bell. отображается в GM notes.",
+      "Edit → Name → Shrine of the Rain → Enter → Done → Export JSON → Load JSON, выбран скачанный файл. Вновь видны координаты 0/1, новое имя и заметка. В редакторе нет отдельных полей посвящённости и реликвии."
+    ],
+    "source_replay": "Команды App сменили тип точки, имя и заметку. Равенство map проверено после переименования (кроме editorNames), загрузки, переноса, отмены, повтора, замены объекта и повторного импорта. Четыре фактических снимка ниже.",
+    "locators": [
+      "src/knaveClassic.ts",
+      "src/App.tsx"
+    ],
+    "mobile_measured": false
+  },
+  "observed": [
+    {
+      "stage": "before",
+      "kinds": {
+        "0,0": "castle",
+        "1,0": "ruins",
+        "0,1": "holy_place"
+      },
+      "names": {
+        "poi:1:0,1": {
+          "en": "Shrine of the Watch",
+          "ru": "Shrine of the Watch"
+        }
+      },
+      "notes": {
+        "0,1": "Patron: Istra. Domains: roads and rain. Relic: Bronze Bell."
+      },
+      "knave": {
+        "profile": {
+          "id": "classic.knave2",
+          "version": 1,
+          "physicalHex": {
+            "length": 6,
+            "unit": "mile",
+            "measurementConvention": null
+          }
+        },
+        "difficultyByHex": {},
+        "discoveryByPoi": {}
+      }
+    },
+    {
+      "stage": "renamed",
+      "kinds": {
+        "0,0": "castle",
+        "1,0": "ruins",
+        "0,1": "holy_place"
+      },
+      "names": {
+        "poi:1:0,1": {
+          "en": "Shrine of the Rain",
+          "ru": "Shrine of the Watch"
+        }
+      },
+      "notes": {
+        "0,1": "Patron: Istra. Domains: roads and rain. Relic: Bronze Bell."
+      },
+      "knave": {
+        "profile": {
+          "id": "classic.knave2",
+          "version": 1,
+          "physicalHex": {
+            "length": 6,
+            "unit": "mile",
+            "measurementConvention": null
+          }
+        },
+        "difficultyByHex": {},
+        "discoveryByPoi": {}
+      }
+    },
+    {
+      "stage": "moved",
+      "kinds": {
+        "0,0": "castle",
+        "1,0": "ruins",
+        "1,1": "holy_place"
+      },
+      "names": {
+        "poi:1:1,1": {
+          "en": "Shrine of the Rain",
+          "ru": "Shrine of the Watch"
+        }
+      },
+      "notes": {
+        "0,1": "Patron: Istra. Domains: roads and rain. Relic: Bronze Bell."
+      },
+      "knave": {
+        "profile": {
+          "id": "classic.knave2",
+          "version": 1,
+          "physicalHex": {
+            "length": 6,
+            "unit": "mile",
+            "measurementConvention": null
+          }
+        },
+        "difficultyByHex": {},
+        "discoveryByPoi": {}
+      }
+    },
+    {
+      "stage": "tower",
+      "kinds": {
+        "0,0": "castle",
+        "1,0": "ruins",
+        "1,1": "holy_place",
+        "0,1": "tower"
+      },
+      "names": {
+        "poi:1:1,1": {
+          "en": "Shrine of the Rain",
+          "ru": "Shrine of the Watch"
+        }
+      },
+      "notes": {
+        "0,1": "Patron: Istra. Domains: roads and rain. Relic: Bronze Bell."
+      },
+      "knave": {
+        "profile": {
+          "id": "classic.knave2",
+          "version": 1,
+          "physicalHex": {
+            "length": 6,
+            "unit": "mile",
+            "measurementConvention": null
+          }
+        },
+        "difficultyByHex": {},
+        "discoveryByPoi": {}
+      }
+    }
+  ],
+  "quality_verdict": "fail",
+  "score_impact": {
+    "from_268_claim": 0.6944,
+    "accepted_for_full_case": 0,
+    "rejected_for_full_case": 0.6944,
+    "market": 0,
+    "active_rating_changed": false
+  },
+  "remaining": {
+    "definition": "Строки с различными нижней и верхней границами quality после обновления. Отдельные принятые и проваленные условия внутри открытой строки см. в ledger.",
+    "core_total": 34,
+    "core_open": [
+      "S01-C01",
+      "S01-C02",
+      "S01-C03",
+      "S01-C04",
+      "S01-C05",
+      "S02-C01",
+      "S02-C02",
+      "S02-C03",
+      "S02-C04",
+      "S02-C05",
+      "S03-C01",
+      "S03-C02",
+      "S03-C03",
+      "S03-C04",
+      "S03-C05",
+      "S04-C01",
+      "S04-C02",
+      "S04-C03",
+      "S04-C04",
+      "S04-C05",
+      "S05-C01",
+      "S05-C03",
+      "S07-C01",
+      "S07-C03",
+      "S07-C04",
+      "S07-C05",
+      "S08-C01",
+      "S08-C04",
+      "S08-C05",
+      "S09-C01",
+      "S09-C02",
+      "S09-C03",
+      "S09-C04",
+      "S09-C05"
+    ],
+    "games_total": 20,
+    "operations_total": 177,
+    "operations_open_by_game": {
+      "DND5": [
+        "DND5-2014-001-L1-v2-draft",
+        "DND5-2014-002-L1-v2-draft",
+        "DND5-2014-003-L1-v2-draft",
+        "DND5-2014-004-L1-v2-draft",
+        "DND5-2014-005-L1-v2-draft",
+        "DND5-2014-006-L1-v2-draft",
+        "DND5-2014-007-L1-v2-draft",
+        "DND5-2014-009-L1-v2-draft",
+        "DND5-2014-011-L1-v2-draft",
+        "DND5-2014-013-L1-v2-draft",
+        "DND5-2014-014-L1-v2-draft",
+        "DND5-2014-015-L1-v2-draft",
+        "DND5-2014-016-L1-v2-draft",
+        "DND5-2014-017-L1-v2-draft"
+      ],
+      "PF2": [
+        "PF2-RM-003-L1-v2",
+        "PF2-RM-004-L1-v2",
+        "PF2-RM-010-L1-v2",
+        "PF2-RM-011-L1-v2",
+        "PF2-RM-029-L1-v2",
+        "PF2-RM-121-L1-v2",
+        "PF2-RM-123-L1-v2",
+        "PF2-RM-124-L1-v2",
+        "PF2-RM-125-L1-v2",
+        "PF2-RM-126-L1-v2",
+        "PF2-RM-127-L1-v2",
+        "PF2-RM-044-L1-v2",
+        "PF2-RM-066-L1-v2",
+        "PF2-RM-067-L1-v2",
+        "PF2-RM-068-L1-v2",
+        "PF2-RM-069-L1-v2",
+        "PF2-RM-072-L1-v2",
+        "PF2-RM-074-L1-v2",
+        "PF2-RM-076-L1-v2",
+        "PF2-RM-ST-002-v2",
+        "PF2-RM-ST-004-v2",
+        "PF2-RM-ST-007-v2",
+        "PF2-RM-ST-008-v2",
+        "PF2-RM-ST-009-v2"
+      ],
+      "KNAVE2": [
+        "KNAVE2-005-L1",
+        "KNAVE2-006-L1",
+        "KNAVE2-020-L1",
+        "KNAVE2-051-L1",
+        "KNAVE2-070-L1",
+        "KNAVE2-071-L1",
+        "KNAVE2-072-L1",
+        "KNAVE2-073-L1"
+      ],
+      "SD": [
+        "SD-CORE-001-L1",
+        "SD-CORE-002-L1",
+        "SD-CORE-031-L1",
+        "SD-CORE-041-L1",
+        "SD-CORE-043-L1",
+        "SD-CORE-046-L1",
+        "SD-CORE-047-L1",
+        "SD-CORE-048-L1",
+        "SD-CORE-050-L1",
+        "SD-CORE-051-L1",
+        "SD-CORE-053-L1",
+        "SD-CORE-058-L1",
+        "SD-CORE-059-L1",
+        "SD-CORE-063-L1",
+        "SD-CORE-074-L1",
+        "SD-CORE-079-L1"
+      ],
+      "MB": [
+        "MB-REALM-001-L1",
+        "MB-REALM-002-L1",
+        "MB-REALM-003-L1",
+        "MB-REALM-004-L1",
+        "MB-REALM-005-L1",
+        "MB-REALM-006-L1",
+        "MB-QS-002-L1"
+      ],
+      "WWN": [
+        "WWN-RU-REG-001-L1",
+        "WWN-RU-REG-002-L1",
+        "WWN-RU-REG-003-L1",
+        "WWN-RU-REG-004-L1",
+        "WWN-RU-REG-006-L1",
+        "WWN-RU-REG-007-L1",
+        "WWN-RU-KNG-001-L1",
+        "WWN-RU-KNG-002-L1"
+      ],
+      "ROOT": [
+        "ROOT-CORE-001-L1",
+        "ROOT-CORE-003-L1",
+        "ROOT-CORE-004-L1",
+        "ROOT-TO-001-L1",
+        "ROOT-TO-008-L1",
+        "ROOT-TO-009-L1",
+        "ROOT-SCOPE-M01",
+        "ROOT-SCOPE-M02",
+        "ROOT-SCOPE-M03",
+        "ROOT-SCOPE-M04",
+        "ROOT-SCOPE-M05",
+        "ROOT-SCOPE-M06",
+        "ROOT-SCOPE-M07"
+      ],
+      "OSE": [
+        "OSE-ORR-2026-001-L1",
+        "OSE-ORR-2026-004-L1",
+        "OSE-ORR-2026-005-L1",
+        "OSE-ORR-2026-006-L1"
+      ],
+      "CAIRN2": [
+        "CAIRN2-PC-001-L1",
+        "CAIRN2-PC-002-L1",
+        "CAIRN2-SS-001-L1",
+        "CAIRN2-SS-002-L1",
+        "CAIRN2-SS-004-L1",
+        "CAIRN2-SS-005-L1",
+        "CAIRN2-SS-007-L1",
+        "CAIRN2-SS-009-L1",
+        "CAIRN2-SS-011-L1",
+        "CAIRN2-SS-012-L1"
+      ],
+      "PIRATE": [
+        "PIRATE-obs-01",
+        "PIRATE-obs-02"
+      ],
+      "CROWS": [
+        "CROWS-PT3-L1-001",
+        "CROWS-PT3-L1-002",
+        "CROWS-PT3-L1-003",
+        "CROWS-PT3-L1-004",
+        "CROWS-PT3-L1-007",
+        "CROWS-PT3-L1-011",
+        "CROWS-PT3-L1-019",
+        "CROWS-PT3-L1-022",
+        "CROWS-PT3-L1-023",
+        "CROWS-PT3-L1-024"
+      ],
+      "SI": [
+        "SI-obs-01",
+        "SI-obs-02",
+        "SI-obs-03",
+        "SI-obs-04",
+        "SI-obs-05"
+      ],
+      "AWN": [
+        "AWN-obs-01",
+        "AWN-obs-02",
+        "AWN-obs-03",
+        "AWN-obs-04"
+      ],
+      "VAARN": [],
+      "BSH": [
+        "BSH-obs-01",
+        "BSH-obs-02"
+      ],
+      "PF1": [
+        "PF1-UC-002-L1",
+        "PF1-UC-005-L1",
+        "PF1-UC-006-L1",
+        "PF1-UC-008-L1",
+        "PF1-UC-009-L1",
+        "PF1-UC-011-L1",
+        "PF1-UC-012-L1",
+        "PF1-UC-013-L1",
+        "PF1-UC-014-L1",
+        "PF1-UC-015-L1"
+      ],
+      "SWC": [
+        "SWC-obs-01",
+        "SWC-obs-02",
+        "SWC-obs-03",
+        "SWC-obs-04"
+      ],
+      "MAUS": [
+        "MAUS-obs-01",
+        "MAUS-obs-02",
+        "MAUS-obs-03",
+        "MAUS-obs-04",
+        "MAUS-obs-05"
+      ],
+      "SALV": [
+        "SALV-obs-01",
+        "SALV-obs-02"
+      ],
+      "DCC": [
+        "DCC-obs-01"
+      ]
+    }
+  },
+  "stage": "bounded_acceptance_completed",
+  "stop_reason": "Контрольная точка большого корпуса. У выбранного случая получен результат, точные открытые строки перечислены в remaining.",
+  "automation_health": {
+    "start": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ]
+  },
+  "diagnostics": [
+    {
+      "failed_operation": "cua.getBrowser, публичный редактор",
+      "observed_error": "Kernel state was reset after inactivity. This code was not executed. Reinitialize your imports, variables, and browser handles, then retry.",
+      "cause_status": "confirmed",
+      "recovered": true
+    }
+  ]
+}
