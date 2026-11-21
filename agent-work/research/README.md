@@ -1,6 +1,6 @@
 # Исследователь HexCrawl
 
-[Рейтинг авторов Reddit](reddit-map-tools/README.md). HexCrawl.ru делит 44-е место среди 114 инструментов. Два автора в июле дали общее 13-е место за месяц. За ноябрь восстановлены ещё 44 018 комментариев r/rpg. Общий охват — 91 521 из 688 423. [Таблица мест по месяцам](reddit-map-tools/monthly.csv) · [Исходные сообщения](reddit-map-tools/evidence.csv) · [Покрытие](reddit-map-tools/coverage.json).
+[Рейтинг авторов Reddit](reddit-map-tools/README.md). HexCrawl.ru занимает места 44–57 среди 114 инструментов. Два автора в июле дали места 13–17 за месяц. За ноябрь восстановлены ещё 44 018 комментариев r/rpg. Общий охват — 91 521 из 688 423. [Таблица мест по месяцам](reddit-map-tools/monthly.csv) · [Исходные сообщения](reddit-map-tools/evidence.csv) · [Покрытие](reddit-map-tools/coverage.json).
 
 [Единый реестр](competitors/registry.json) — 281 конкурентов при первоначальной цели 200, остаток 0. За запуск +17. [Первичные источники и продолжение](runs/2026-11-21-reddit-rpg-nov-2130.json).
 

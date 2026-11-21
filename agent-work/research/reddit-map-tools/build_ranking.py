@@ -50,7 +50,11 @@ def main():
         raise SystemExit('No audited evidence in selected months')
     ordered = sorted(authors, key=lambda t:(-len(authors[t]), names[t].casefold(), t))
     def rank(counts, n):
-        return 1 + sum(v > n for v in counts) if n else ''
+        if not n:
+            return ''
+        first = 1 + sum(v > n for v in counts)
+        last = first + sum(v == n for v in counts) - 1
+        return str(first) if first == last else f'{first}–{last}'
     counts = [len(authors[t]) for t in ordered]
     with (HERE/'ranking.csv').open('w',newline='') as out, (HERE/'monthly.csv').open('w',newline='') as long:
         w = csv.writer(out,lineterminator='\n')
