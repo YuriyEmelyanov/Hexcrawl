@@ -1,0 +1,72 @@
+{
+  "run_id": "2026-11-21T0302-reviewer-HX-BL-056-849854f",
+  "role": "reviewer",
+  "role_selection_reason": "После исправления RV06 программист освободил слот и передал PR на независимую приёмку по F1.1.",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1.1-RV07",
+  "status": "changes_requested",
+  "review_ready": false,
+  "accepted": false,
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
+  "reviewed_sha": "849854f58edb1d824783599b9f72e888ee892556",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_tree_sha": "6f2d2132deede35a1e57cbbe89e0209992a1581a",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-849854f/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-849854f/score-assessment1.2.json",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/review.json",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv06-849854f/verification.json",
+  "result_ref": "agent-work/results/2026-11-21T0302-reviewer-HX-BL-056-849854f.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T0302-reviewer-HX-BL-056-849854f.json",
+  "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44833781688/artifacts/14678345645",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44833781688",
+  "open_findings": [
+    "HX056-F11-RV07"
+  ],
+  "verified_fixed_findings": [
+    "HX056-F11-RV06"
+  ],
+  "publication_authorized": false,
+  "next_role": "programmer",
+  "next_step": "Исправить RV07 в PR №510. После удаления последнего региона без промежуточных правок старое сохранение должно вернуть прежний счётчик и выдать те же ID при повторной генерации. Сохранить поведение при настоящих промежуточных правках и исправление RV06. Передать новый SHA на независимую приёмку.",
+  "owner_decisions_needed": [],
+  "forecast": {
+    "remaining_team_runs": [
+      3,
+      5
+    ],
+    "excludes": [
+      "CI_queue_wait",
+      "owner_publication_wait"
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+    "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
+    "added": 1,
+    "removed": 0,
+    "modified": 0,
+    "suite": "Node mapTransactions",
+    "scenario": "legacy shoreline after manual and source-water removal",
+    "reuse_or_new_reason": "Existing dry expansion and checkpoint tests never removed an adjacent blocking lake from a legacy document.",
+    "source": "git diff 1c37165..849854f по объявлениям node:test",
+    "reviewer_assessment": "Оправдана отдельная проверка двух путей удаления, перезагрузки и истории. Предыдущие проверки не удаляли соседа из совместимой карты."
+  },
+  "completed_at": "2026-11-21T00:08:30.145Z",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T00:03:09.205Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T00:08:23.575Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
