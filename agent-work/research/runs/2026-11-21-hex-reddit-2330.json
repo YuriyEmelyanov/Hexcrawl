@@ -1,0 +1,116 @@
+{
+  "run_id": "2026-11-21-hex-reddit-2330",
+  "status": "checkpoint_reddit_hex_market",
+  "stage": "regional_hex_evidence_reclassification",
+  "result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+  "registry_ref": "agent-work/research/competitors/registry.json",
+  "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
+  "ranking_ref": "agent-work/research/reddit-map-tools/hex-only/ranking.csv",
+  "monthly_ref": "agent-work/research/reddit-map-tools/hex-only/monthly.csv",
+  "audit_ref": "agent-work/research/reddit-map-tools/hex-only/audit.csv",
+  "updated_at": "2026-11-21 20:42:50 UTC",
+  "registry": {
+    "confirmed_software": 89,
+    "confirmed_previous": 81,
+    "additions": 8,
+    "target": 200,
+    "remaining": 111,
+    "other_procedures_and_assets": 34,
+    "original_candidates_still_pending": 165
+  },
+  "coverage": {
+    "historical_blob_sha": "3203230b0ea6c71fcd3c75a22d013f3374e5a905",
+    "historical_pairs": 1037,
+    "screened": 1037,
+    "reviewed_flagged": 161,
+    "original_confirmed": 109,
+    "original_excluded": 14,
+    "needs_context": 38,
+    "screened_only": 876,
+    "new_pairs_from_reviewed_objects": 5,
+    "confirmed_pairs": 114,
+    "confirmed_objects": 95,
+    "confirmed_unique_authors": 70,
+    "ranked_total": 36,
+    "ranked_software": 23,
+    "archive_obtained": 96783,
+    "archive_control_total": 688423,
+    "new_reddit_download_objects": 0
+  },
+  "hexcrawl_ru": {
+    "distinct_authors": 2,
+    "all_rank": "8–18",
+    "software_rank": "6–13",
+    "july_all_rank": "2",
+    "july_software_rank": "2",
+    "self_authors": 1,
+    "other_authors": 1,
+    "other_months_with_evidence": 0
+  },
+  "next_candidate": {
+    "id": "hex-market-archive-context",
+    "scenario": "Продолжить тот же архив. В audit.csv разобрать 38 needs_context по оригиналам/родителям/изображениям, затем 876 screened_only по изображениям и специализированным реестровым ID без слова hex; сопоставить авторов, проверить два одноимённых Hexer и новые карточки. Связанные строки под одним ID проверять один раз. До окончания ревизии не расширять выгрузку."
+  },
+  "needs_owner_action": false,
+  "base_sha": "a63752f218992b56f97634b11b1a5aac4283d5b1",
+  "started_at": "2026-11-21T20:35:21.324Z",
+  "finished_at": "2026-11-21T20:43:50.173Z",
+  "bounded_result": "Первая воспроизводимая версия рейтинга региональных гекс-карт из существующего broad evidence, проверка ранее пропущенных карточек и перенос восьми редакторов или генераторов из очереди в основной реестр.",
+  "selection_reason": "Вопрос владельца относится к месту собственного продукта и числу подходящих конкурентов. Пересчёт сохранённых сообщений уточняет оба показателя. Новая выгрузка Reddit и очередная глава правил отложены до окончания этой ревизии.",
+  "own_author_evidence": [
+    "https://www.reddit.com/r/osr/comments/1ukqolv/",
+    "https://www.reddit.com/r/osr/comments/1ukqolv/_/ouxwzhp/"
+  ],
+  "validation": {
+    "annual_and_monthly_intervals": "checked independently for contiguous occupied positions",
+    "unique_authors_period": "validated against casefolded sets",
+    "monthly_rows": 432,
+    "source_blob_verified": true
+  },
+  "automation_health": {
+    "start": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      }
+    ],
+    "end": [
+      {
+        "id": "Automation_7690c42b2a7881919aaca4103dcd338f",
+        "title": "Исследователь HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      },
+      {
+        "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+        "title": "Команда HexCrawl",
+        "is_enabled": true,
+        "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      }
+    ]
+  },
+  "diagnostics": {
+    "last_successful_step": "Rebuilt rankings for 12 UTC months and the full period; validated rank intervals and positive source records.",
+    "failed_operation": "web_run.open: direct Reddit link /r/osr/comments/1ukqolv/",
+    "observed_error": "Failed to fetch https://www.reddit.com/r/osr/comments/1ukqolv/: DisabledError",
+    "cause_status": "unknown",
+    "recovery": "Сверены сохранённые оригиналы публикации и комментария с теми же Reddit ID и permalink. Официальная карточка второго набора найдена у автора на Boosty после недоступности страницы Patreon.",
+    "stop_reason": "Завершён первый тематический проход по 161 кандидату. Оставшиеся материалы и проверка изображений входят в следующий этап большого корпуса."
+  },
+  "ambiguities": [
+    {
+      "links": [
+        "https://www.reddit.com/r/osr/comments/1wp12vx/"
+      ],
+      "why": "Мастер показал региональную карту в Hexer. По одному названию невозможно выбрать между независимо зарегистрированными Hexer (hexermap.com) и Hexer (jonaspeheim). Голос ожидает идентификации."
+    }
+  ]
+}
