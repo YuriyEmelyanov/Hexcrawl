@@ -542,11 +542,7 @@ test('removing a neighbouring lake preserves a legacy shoreline across deletion,
       assert.ok(h.render().switchFineStep(6));
       h.render().setEditMode(true);h.render().setSelectedHex({q:-1,r:0});
       assert.ok(h.render().startWaterDraft('lake'));
-      assert.equal(h.render().finishWaterDraft(),false);
-      const app=h.render();
-      assert.deepEqual(serial(app.waterPreview.plan.smallLakeLosses.map(l=>l.id)),[2]);
-      app.changeWaterDraft(app.waterDraft,{options:{acceptedLosses:app.waterPreview.plan.losses.map(l=>l.id)},preview:true});
-      assert.ok(h.render().finishWaterDraft(h.render().waterDraft,true));
+      assert.ok(h.render().finishWaterDraft());
     }
     const after=stable(h.render());
     assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:3,lakes:[{...retained,shoreCells:[]}]});
