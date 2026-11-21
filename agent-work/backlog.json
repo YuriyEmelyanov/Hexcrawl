@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-21T08:09:31.632Z",
+  "updated_at": "2026-11-21T08:49:43.134656+00:00",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -1026,7 +1026,7 @@
                 "pixelIdentical": false,
                 "raster": {
                   "maxDelta": 210,
-                  "changedFraction": 0.00007626561472715319
+                  "changedFraction": 7.626561472715319e-05
                 },
                 "scope": "diagnostic including unrelated controls"
               }
@@ -1805,8 +1805,14 @@
           "S04-C04"
         ]
       },
-      "forecast": "unknown_until_draft_and_interview",
-      "updated_at": "2026-11-19T21:43:08.719Z"
+      "forecast": "L1 S01-C02/G4: +0,59 при приёмке плавных поворотов рек. Вклад дорог оценивается отдельно.",
+      "updated_at": "2026-11-21T08:49:43.134656+00:00",
+      "score_forecast_l1": {
+        "criterion": "S01-C02",
+        "rule": "G4",
+        "share": 0.03,
+        "remaining_L1_points": 0.5925925925925926
+      }
     },
     {
       "task_id": "HX-BL-062",
@@ -1946,6 +1952,60 @@
       "release_authorized": false,
       "updated_at": "2026-11-21T08:03:33.365012Z",
       "estimated_map_share": 0.2
+    },
+    {
+      "task_id": "HX-BL-065",
+      "title": "Автоматическое построение речных дельт",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/research/acceptance/L1-PR509/classic-common/hydrology/weighted.md"
+      },
+      "score_criterion": "S01-C02",
+      "score_weight_share": 0.015,
+      "score_forecast_l1": {
+        "criterion": "S01-C02",
+        "rule": "RIV-019",
+        "share": 0.015,
+        "remaining_L1_points": 0.2962962962962963
+      },
+      "requirements": [
+        "В Classic при обычном построении прибрежного региона без ручной правки воспроизвести развилку реки с двумя разными выходами в море. Сохранить seed и карту."
+      ],
+      "acceptance_outline": [
+        "В Classic при обычном построении прибрежного региона без ручной правки воспроизвести развилку реки с двумя разными выходами в море. Сохранить seed и карту."
+      ],
+      "ready_for_development": false,
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "updated_at": "2026-11-21T08:49:43.134656+00:00"
+    },
+    {
+      "task_id": "HX-BL-066",
+      "title": "Улучшить течение рек с учётом рельефа",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/research/acceptance/L1-PR509/classic-common/hydrology/weighted.md"
+      },
+      "score_criterion": "S01-C02",
+      "score_weight_share": 0.05,
+      "score_forecast_l1": {
+        "criterion": "S01-C02",
+        "rule": "RIV-003",
+        "share": 0.05,
+        "remaining_L1_points": 0.9876543209876543
+      },
+      "requirements": [
+        "На спорных переходах показать по карте объяснимый путь вниз по течению, включая проход по долине через возвышенную местность. Проверить известный пример seed 1068 и новые карты."
+      ],
+      "acceptance_outline": [
+        "На спорных переходах показать по карте объяснимый путь вниз по течению, включая проход по долине через возвышенную местность. Проверить известный пример seed 1068 и новые карты."
+      ],
+      "ready_for_development": false,
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "updated_at": "2026-11-21T08:49:43.134656+00:00"
     }
   ],
   "retired_pr_packages": {
