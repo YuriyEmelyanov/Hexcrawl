@@ -1,0 +1,146 @@
+{
+  "review_ready": true,
+  "checks_status": "passed",
+  "next_step": "Независимо проверить PR №510 на 02aaa188 по F1.2 и сохраняемым требованиям F1.1, четыре примера, маски берегов и PNG, восстановление прежнего озера при удалении региона на seed 1257875020. Записать score_assessment модели 1.2 перед передачей владельцу.",
+  "forecast": "1 запуск на независимую приёмку, 0–2 на исправления и перепроверку, 1 на выпуск после отдельного разрешения владельца.",
+  "stage": "F1.2",
+  "prior_review_superseded": true,
+  "images": {
+    "commit": "75b3992a7e8c09b52293ecdb9cb57709becfa5ba",
+    "paths": [
+      "agent-work/evidence/HX-BL-056-F1/F1.2-02aaa18/example-inside-poi.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-02aaa18/example-near-large-lake.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-02aaa18/example-river.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-02aaa18/example-multi-cell.png"
+    ],
+    "manifest": {
+      "source_head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+      "checkout_tree": "9869c190d61bf04e4f83e4711b64c1efc8449b1d",
+      "checkout_sha": "f4f84fcbd9fa390da6a06e7ac0dc995090ab913a",
+      "status": "passed"
+    }
+  },
+  "artifact": {
+    "id": 14706719123,
+    "digest": "sha256:9345a3701042cbb1dd9a03752a25dd86c230a1be16a82bda1136c450b0be6504"
+  },
+  "verification": {
+    "node": {
+      "passed": 443,
+      "executed": 443,
+      "skipped": 0,
+      "source": [
+        "2026-11-21T12:36:55.9197923Z ℹ tests 443",
+        "2026-11-21T12:36:55.9200449Z ℹ pass 443",
+        "2026-11-21T12:36:55.9200964Z ℹ fail 0",
+        "2026-11-21T12:36:55.9201718Z ℹ skipped 0"
+      ]
+    },
+    "workflow_jobs": [
+      {
+        "id": 136843965629,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136843965778,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136843965897,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136843966236,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "browser_one_mile": {
+      "passed": 17,
+      "executed": 17,
+      "skipped": 0
+    },
+    "browser_generation_seed": 1257875020,
+    "correction": "CI 44902587872 обнаружил потерю прежнего озера №24 и изменение nextId после удаления только что созданного региона. В CI 44903422383 на исходном seed подтверждены потеря озера при генерации и полное восстановление исходной карты после удаления региона.",
+    "previous_ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44902587872"
+  },
+  "score_evidence": {
+    "model_version": "1.2",
+    "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "criteria": {
+      "S01-C02": "HX056-manual-small-lake-roundtrip-and-png и HX056-automatic-small-lakes: вход и выход реки, сохранение ID и русла, поворот карты и PNG.",
+      "S01-C03": "HX056-safe-shore-spill и четыре снимка: единый контур, разрешённая сухая опора и соседство с крупным водоёмом.",
+      "S02-C01": "HX056-automatic-conflict-isolation: повтор seed 42, одинаковые соседи при локальном конфликте; отдельный browser:rng.",
+      "S02-C03": "HX056-safe-shore-spill: отказ конфликтному импорту на двух масштабах сохраняет обе истории. Проверена старая карта без сохранённой кромки.",
+      "S03-C01": "HX056-source-water-removes-small-lake и HX056-regeneration-automatically-removes-unsupported-lakes: одна операция и точный Undo/Redo. generation.smoke: прежнее озеро и счётчик возвращаются после удаления региона, seed 1257875020.",
+      "S04-C04": "HEX-сцена и PNG: идентичный контур, маска и слой глубины. Принятый документ повторно открыт. В PNG реки и соседства с крупным озером обнаружены оба цвета воды. Полный попиксельный паритет всех форматов не оценивался."
+    },
+    "scope": "Реальные карты и PNG из CI; оценка и независимая приёмка переданы проверяющему."
+  },
+  "test_change_summary": {
+    "base_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+    "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "comparison_base_tree": "42435b99b7c523b4ef4a5cb7c972a1504842686c",
+    "added": 1,
+    "removed": 0,
+    "modified": 13,
+    "suite": [
+      {
+        "name": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 7,
+        "scenario": "Пять случаев mapTransactions, один saveSafety и один mythicKingdom. Удаление только неподдержанных озёр, сохранение других предупреждений, старого берега, данных, Undo/Redo."
+      },
+      {
+        "name": "Chromium",
+        "added": 1,
+        "removed": 0,
+        "modified": 6,
+        "scenario": "Добавлен сценарий внутри крупного POI. Расширены пять существующих проверок одномильной карты (река, соседство базового озера, правка воды, перегенерация, автоматическая группа) и сценарий точного восстановления после генерации."
+      }
+    ],
+    "reuse_or_new_reason": "Переиспользованы существующие реальные карты, транзакции, CI и браузерные сценарии. Отдельное размещение внутри 13-гексового POI проверяет ранее не предъявленное требование. В существующий сценарий восстановления подставлен seed обнаруженной ошибки.",
+    "count_source": "git diff 42435b99b7c523b4ef4a5cb7c972a1504842686c 02aaa188031e0ad8c59dfc246420d1a093869a88 -- test: дерево прежнего PR вместе с опубликованным PR511; число сценариев, без повторного счёта общих вспомогательных функций, кадров и запусков."
+  },
+  "run_id": "2026-11-21T1500-programmer-HX-BL-056-F1.2",
+  "role": "programmer",
+  "task_id": "HX-BL-056",
+  "role_selection_reason": "Чистовая F1.2 и передача стратега по опубликованному PR511. Сверены 525 claims и 583 результата. Три прежних открытых записи закрыты подтверждёнными результатами в истории реестра.",
+  "generation": 408,
+  "status": "review_ready",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+  "tree_sha": "9869c190d61bf04e4f83e4711b64c1efc8449b1d",
+  "base_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44903422383",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T12:00:10.168Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T12:37:36.980Z",
+      "is_enabled": true
+    },
+    "restored": false
+  },
+  "release_authorized": false,
+  "published": false,
+  "updated_at": "2026-11-21T12:37:36.980Z",
+  "next_role": "reviewer",
+  "owner_decisions_needed": [],
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
+  "result_ref": "agent-work/results/2026-11-21T1500-programmer-HX-BL-056-F1.2.json"
+}
