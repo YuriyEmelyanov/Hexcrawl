@@ -1,0 +1,190 @@
+{
+  "task_id": "HX-BL-061",
+  "stage_id": "BENDS",
+  "interview_round_id": "round-001",
+  "draft_spec_ref": "agent-work/specs/HX-BL-061-smooth-bends-D1.md",
+  "draft_version": "D1",
+  "interview_round_ref": "agent-work/interviews/HX-BL-061/BENDS/round-001.json",
+  "interview_ref": "agent-work/interviews/HX-BL-061/BENDS/decisions.json",
+  "open_question_ids": [
+    "BEND-Q01",
+    "BEND-Q02",
+    "BEND-Q03",
+    "BEND-Q04"
+  ],
+  "interview_status": "awaiting_owner_answers",
+  "interview_completed": false,
+  "ready_for_development": false,
+  "next_role": "owner",
+  "next_step": "Ответы владельца по BEND-Q01–Q04; интервьюер фиксирует решения и передаёт аналитику для чистовой спецификации.",
+  "round_id": "round-001",
+  "trigger": "draft_ready_for_interview",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-decision-2026-11-20-smooth-river-road-bends.json"
+  ],
+  "questions": [
+    {
+      "question_id": "BEND-Q01",
+      "topic": "Масштабы",
+      "fork": "Для каких видов менять повороты там, где уже видны линии?",
+      "requirement_refs": [
+        "R1",
+        "R5",
+        "AC3"
+      ],
+      "why": "Одинаковое место можно видеть с разным размером гекса.",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Все четыре вида — одинаковый принцип при переключении."
+        },
+        {
+          "id": "B",
+          "effect": "1 и 5–6 миль — крупные обзорные масштабы сохраняют прежний вид."
+        },
+        {
+          "id": "C",
+          "effect": "Только 5–6 миль — скругление ограничено базовой картой."
+        }
+      ],
+      "recommendation": {
+        "id": "A",
+        "reason": "Согласованный вид карты при переключении масштаба."
+      },
+      "always_allow_free_text": true,
+      "answer": null,
+      "answer_source": null,
+      "interpretation": null,
+      "dependencies": []
+    },
+    {
+      "question_id": "BEND-Q02",
+      "topic": "Форма",
+      "fork": "Какой вид изгиба принять как ориентир в свободном месте?",
+      "requirement_refs": [
+        "R1",
+        "R2",
+        "AC1"
+      ],
+      "why": "Более широкая дуга заметнее уходит от вершины сетки.",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Средняя дуга — центральный пример D1, 23% примыкающего отрезка."
+        },
+        {
+          "id": "B",
+          "effect": "Лёгкая дуга — слева, 12%, угол сетки выражен сильнее."
+        },
+        {
+          "id": "C",
+          "effect": "Широкая дуга — справа, 38%, линия сильнее отклоняется у вершины."
+        }
+      ],
+      "recommendation": {
+        "id": "A",
+        "reason": "Средний вариант смягчает угол и оставляет видимым ход вдоль ребра. Проценты описывают макет."
+      },
+      "always_allow_free_text": true,
+      "answer": null,
+      "answer_source": null,
+      "interpretation": null,
+      "dependencies": []
+    },
+    {
+      "question_id": "BEND-Q03",
+      "topic": "Реки, дороги и тропы",
+      "fork": "Должен ли характер поворота различаться по типу линии?",
+      "requirement_refs": [
+        "R1",
+        "AC1",
+        "AC3"
+      ],
+      "why": "Влияет на вид одинакового поворота водного и сухопутного пути.",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Один профиль для всех трёх видов, толщина и штриховка сохраняются."
+        },
+        {
+          "id": "B",
+          "effect": "Дороги и тропы поворачивают теснее рек. Выбранный в Q02 ориентир применяется к реке."
+        }
+      ],
+      "recommendation": {
+        "id": "A",
+        "reason": "Действующие толщина и штриховка уже различают пути."
+      },
+      "always_allow_free_text": true,
+      "answer": null,
+      "answer_source": null,
+      "interpretation": null,
+      "dependencies": [
+        "BEND-Q02"
+      ]
+    },
+    {
+      "question_id": "BEND-Q04",
+      "topic": "Опорные точки",
+      "fork": "Как рисовать подход к неизменной опоре?",
+      "requirement_refs": [
+        "R2",
+        "R3",
+        "AC2"
+      ],
+      "why": "Форма подхода заметна у моста, устья и слияния. Координаты самой опоры фиксированы при любом выборе.",
+      "options": [
+        {
+          "id": "A",
+          "effect": "Допускать дугу через точную опору, сохранять исходный ход локально при конфликте."
+        },
+        {
+          "id": "B",
+          "effect": "Всегда оставлять короткий прямой подход перед опорой и сразу за ней, если маршрут продолжается."
+        }
+      ],
+      "recommendation": {
+        "id": "A",
+        "reason": "Плавность сохраняется в большем числе мест, пересечение и вход в воду имеют приоритет."
+      },
+      "always_allow_free_text": true,
+      "answer": null,
+      "answer_source": null,
+      "interpretation": null,
+      "dependencies": []
+    }
+  ],
+  "new_question_ids": [
+    "BEND-Q01",
+    "BEND-Q02",
+    "BEND-Q03",
+    "BEND-Q04"
+  ],
+  "presented_in_chat_at": "2026-11-21T21:03:48.814Z",
+  "presented_in_chat_ref": "Существующий чат команды, сообщение с таблицей BEND-Q01–Q04 и рисунком. ID сообщения недоступен.",
+  "owner_answers": [],
+  "interpretation": null,
+  "status": "presented",
+  "preview_ref": "agent-work/interviews/HX-BL-061/BENDS/bend-options.svg",
+  "coverage": {
+    "R1": "Q01–03: масштабы, выраженность, тип маршрута.",
+    "R2": "Q02/Q04: допустимый изгиб; локальный возврат к исходной геометрии сохраняет связность.",
+    "R3": "Q04: форма подхода. Положение переправ, POI, устьев, обратная связь при выборе уже заданы.",
+    "R4": "Совместимость, импорт, генерация и Undo/Redo заданы в AC4. Нет новой развилки.",
+    "R5": "Карта и PNG совпадают. Область по масштабам уточняет Q01.",
+    "score": "G4 и PATH-10 проверяются при приёмке. Прогноз из D1 не начислялся."
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T21:02:07.732Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T21:04:13.519Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
