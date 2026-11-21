@@ -7,7 +7,6 @@ import {fineCellKey,type OneMileCell,type FineCandidate} from './oneMile';
 import {Engraving} from './rendering/EngravedTerrain';
 import {engravingFor, type TerrainKind} from './rendering/engravingAssets';
 import {terrainTextures} from './rendering/terrainBlend';
-import {refinementEdgeGraph} from './geometryRefinementGrid';
 import type {SmallLakeView} from './smallLakeShore';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 type Props={smallLakes?:readonly SmallLakeView[];smallLakeDraft?:SmallLakeView;smallLakeDraftCells?:readonly DetailCell[];rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
@@ -40,25 +39,6 @@ export function OneMileArtwork(p:Props){
  const lakeCores=new Set(shorelines.flatMap(({lake})=>lake.cells.map(fineCellKey)));
  const riverMaskId=`${clipPrefix}-small-lake-rivers`;
  const riverMask=lakes.length?`url(#${riverMaskId})`:undefined;
- // Refined rivers follow hex edges. Where a channel coincides with the lake
- // perimeter the polygon alone would leave half its stroke visible on land.
- const shorelineChannels=useMemo(()=>{
-   const channels=[];
-   const edgeLakes=new Map<string,number>();
-   for(const {lake} of p.smallLakes??[]){
-     for(const edge of refinementEdgeGraph(lake.cells).edges)edgeLakes.set(edge.key,lake.id);
-   }
-   if(edgeLakes.size){
-     for(const path of p.state.geometryRefinement?.riverPlan.paths??[]){
-       for(const [i,step] of path.steps.entries()){
-         const lakeId=edgeLakes.get(step.sourceEdgeKey);
-         if(lakeId===undefined)continue;
-         channels.push({lakeId,from:path.points[i],to:path.points[i+1],width:fineRiverStrokeWidth(path.fullness)});
-       }
-     }
-   }
-   return channels;
- },[p.smallLakes,p.state.geometryRefinement]);
  const riverMaskBounds=useMemo(()=>{
    if(!riverMask)return undefined;
    let left=p.offset.x,right=p.offset.x,top=p.offset.y,bottom=p.offset.y;
@@ -99,13 +79,11 @@ export function OneMileArtwork(p:Props){
   })}</g>
   {riverMask&&<defs><mask id={riverMaskId} maskUnits="userSpaceOnUse" {...riverMaskBounds} style={{maskType:'luminance'}} data-small-lake-river-mask>
    <rect {...riverMaskBounds} fill="white"/>
-   {lakes.flatMap(({lake})=>lake.cells.map(cell=>
-     <polygon key={fineCellKey(cell)} data-lake-mask-cell={fineCellKey(cell)} points={polygon(cell)} fill="black"/>
-   ))}
-   {shorelineChannels.map(({lakeId,from,to,width},i)=>{
-     const a=point(from),b=point(to);
-     return <line key={i} data-lake-channel={lakeId} x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-       stroke="black" strokeWidth={width} strokeLinecap="butt"/>;
+   {lakes.map(({lake})=>{
+     // Rasterize the whole footprint once, so shared edges cannot expose the
+     // river between adjacent water cells in the map or its PNG.
+     const path=lake.cells.map(cell=>`M${polygon(cell)}Z`).join(' ');
+     return <path key={lake.id} data-lake-mask={lake.id} d={path} fill="black"/>;
    })}
   </mask></defs>}
   {shorelines.map(({lake,shape})=>{

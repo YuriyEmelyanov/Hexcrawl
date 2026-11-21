@@ -153,7 +153,7 @@ export function prepareSmallLakeShore(lake:SmallLake,seed:number,origin:WorldPoi
   const finish=(view:SmallLakeView,conflict:ReturnType<typeof shoreConflict>|typeof invalidShape)=>({view,conflict});
   if(shore.status==='error'||clip.status==='error')return finish(core,invalidShape);
   const arcs=clippedArcs(shore,clip);
-  const conflict=shoreConflict(shore,clip,protection);
+  const conflict=shoreConflict(clip,clip,protection);
   if(conflict)return finish(core,conflict);
   if(!arcs||!connectedWater(arcs))return finish(core,invalidShape);
   if(!coverage)return finish(core,null);
