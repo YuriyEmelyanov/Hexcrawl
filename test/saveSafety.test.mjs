@@ -408,11 +408,11 @@ test('ONE-MILE1 regeneration retains edits supported by final candidate rather t
  const ld=loss.render().captureDocument();const cells=projectOneMile(ld.map.regions.flatMap(r=>r.hexes.map(cell=>({cell,landBiomeId:r.biomeId}))),ld.map.physicalGrid.grid.origin);
  ld.map.physicalGrid={...ld.map.physicalGrid,fineCellEdits:Object.fromEntries(cells.map(row=>[`${row.cell.q},${row.cell.r}`,{note:'authored local note'}]))};loss.render().applyDocument(ld);loss.render().setGenSizeCategory('tract');loss.render();
  const stable=fineStable(loss),messages=[];loss.setWindow({confirm:m=>{messages.push(m);return false},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();assert.equal(messages.length,1);assert.deepEqual(fineStable(loss),stable,'declining final candidate restores document/RNG/both histories');assert.equal(loss.render().generationError,null);
- assert.match(messages[0],/малые озёра №1 \(-9,-5\), №2 \(-9,-4\)/);assert.doesNotMatch(messages[0],/№3/);assert.match(messages[0],/локальные правки/);
+ assert.doesNotMatch(messages[0],/малые озёра/);assert.match(messages[0],/локальные правки/);
  loss.setWindow({confirm:()=>{throw Error('confirm failure')},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();assert.deepEqual(fineStable(loss),stable,'confirmation exception restores exact accepted state');
  loss.setWindow({confirm:m=>{messages.push(m);return true},matchMedia:()=>({matches:false})});loss.render().regenerateLastRegion();loss.render().finishPendingRegeneration();const accepted=fineSave(loss),beforeEdits=stable.data.map.physicalGrid.fineCellEdits,afterEdits=accepted.map.physicalGrid.fineCellEdits,removed=Object.keys(beforeEdits).filter(k=>!Object.hasOwn(afterEdits,k));
  assert.ok(removed.length>0);assert.ok(removed.length<Object.keys(beforeEdits).length);for(const key of removed)assert.ok(messages.at(-1).includes(key));for(const [key,value] of Object.entries(afterEdits))assert.deepEqual(value,beforeEdits[key]);assert.equal(loss.render().generationError,null);
- assert.equal(messages.length,2,'one confirmation per attempt for both kinds of losses');
+ assert.equal(messages.length,2,'one confirmation per attempt for authored cell edits');
  const retained=accepted.map.physicalGrid.smallLakes;
  assert.deepEqual(retained.lakes.filter(lake=>lake.id<4),[stable.data.map.physicalGrid.smallLakes.lakes[2]]);
  assert.ok(retained.lakes.filter(lake=>lake.id>=4).every(lake=>lake.origin==='automatic'));

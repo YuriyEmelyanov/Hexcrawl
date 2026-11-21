@@ -366,7 +366,7 @@ test('import replaces notes exactly and legacy imports clear them; malformed not
   b.map.gmNotesByHexKey[key]=null;await load(h,b);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),data);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
   await load(h,fixture);assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{});h.render().undoMap();assert.deepEqual(stable(h.render()),data);
 });
-test('deleting a real region lists the unsupported small lakes and undo restores all of them',()=>{
+test('deleting a real region removes unsupported small lakes and undo restores all of them',()=>{
   const {h}=setup();
   h.render().addFallbackTractToMap({q:0,r:0});
   assert.equal(h.render().switchFineStep(1),true);
@@ -402,7 +402,7 @@ test('deleting a real region lists the unsupported small lakes and undo restores
   h.render().deleteLastRegion();
   assert.deepEqual(stable(h.render()),before);
   assert.equal(h.render().undoHistory.length,count);
-  assert.match(prompts.at(-1),/малые озёра №1, №2/);
+  assert.doesNotMatch(prompts.at(-1),/малые озёра/);
   assert.doesNotMatch(prompts.at(-1),/№3/);
   assert.equal(prompts.length,1);
   assert.ok(prompts[0].includes(key(fine))&&prompts[0].includes(key(coarse)));
@@ -467,7 +467,7 @@ test('regeneration confirms checkpoint and replacement losses together',async()=
     assert.equal(prompts.length,1);
     assert.match(prompts[0],/Knave/);
     assert.match(prompts[0],/Река 1/);
-    assert.match(prompts[0],/малые озёра/);
+    assert.doesNotMatch(prompts[0],/малые озёра/);
     if(!accept){
       assert.deepEqual(stable(app()),before);
       assert.deepEqual(structuredClone([app().undoHistory,app().redoHistory]),stacks);
@@ -475,7 +475,7 @@ test('regeneration confirms checkpoint and replacement losses together',async()=
       const after=stable(app());
       const remaining=new Set(after.map.physicalGrid.smallLakes.lakes.map(lake=>lake.id));
       const lost=before.map.physicalGrid.smallLakes.lakes.filter(lake=>!remaining.has(lake.id));
-      assert.deepEqual(Array.from(prompts[0].matchAll(/№(\d+)/g),m=>Number(m[1])),lost.map(lake=>lake.id));
+      assert.ok(lost.length>0);
       const previous=before.map.physicalGrid.smallLakes;
       assert.ok(previous.lakes.every(lake=>lake.id!==17&&lake.id!==19),'fixture lakes were deleted before regeneration');
       const created=after.map.physicalGrid.smallLakes.lakes.filter(lake=>lake.id>=previous.nextId);
@@ -488,7 +488,7 @@ test('regeneration confirms checkpoint and replacement losses together',async()=
     }
   }
 });
-test('restoring a region checkpoint confirms only lakes conflicting with the restored paths',async()=>{
+test('restoring a region checkpoint automatically removes lakes conflicting with the restored paths',async()=>{
   const {h,alerts}=setup();
   const source=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
   const trail={id:1,regionId:1,segments:[{from:{q:0,r:-1},to:{q:1,r:-1},kind:'trail'}]};
@@ -507,16 +507,8 @@ test('restoring a region checkpoint confirms only lakes conflicting with the res
   }
   assert.equal(h.render().switchFineStep(6),true);
   const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
-  const prompts=[];
-  for(const confirmed of [false,true]){
-    h.setWindow({alert:m=>alerts.push(m),confirm:m=>(prompts.push(m),confirmed)});
-    h.render().deleteLastRegion();
-    assert.match(prompts.at(-1),/малые озёра №1\./);
-    if(!confirmed){
-      assert.deepEqual(stable(h.render()),before);
-      assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
-    }
-  }
+  h.setWindow({alert:m=>alerts.push(m),confirm:()=>assert.fail('Unexpected confirmation for a lake loss')});
+  h.render().deleteLastRegion();
   const after=stable(h.render());
   assert.equal(after.map.regions.length,1);
   assert.deepEqual(after.map.roads,[trail]);
@@ -884,7 +876,7 @@ test('E5 river draft guards writes, preserves invalid and cancelled work and com
 // and identity cases live in manualWater; this lifecycle catches setter wiring.
 const waterFixture=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
 async function waterSetup(data=waterFixture){const {h,alerts}=setup();await load(h,data);assert.deepEqual(alerts,[]);h.render().setEditMode(true);h.render().setSelectedHex({q:0,r:0});return h;}
-test('source water edit previews whole small lake losses and confirms exact undo and redo',async()=>{
+test('source water edit removes unsupported lakes in one action with exact undo and redo',async()=>{
  const h=await waterSetup();
  assert.equal(h.render().switchFineStep(1),true);
  for(const cell of [{q:0,r:0},{q:1,r:0},{q:6,r:0}]){
@@ -900,14 +892,7 @@ test('source water edit previews whole small lake losses and confirms exact undo
  h.render().setSelectedHex({q:0,r:0});
  const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
  assert.equal(h.render().startWaterDraft('lake'),true);
- assert.equal(h.render().finishWaterDraft(),false);
- assert.deepEqual(h.render().waterPreview.plan.smallLakeLosses.map(lake=>lake.id),[1,2]);
- h.render().resetWaterDraft();
- assert.deepEqual(stable(h.render()),before);
- assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
- assert.equal(h.render().startWaterDraft('lake'),true);
- assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),false,'confirmation requires a visible preview');
- assert.equal(h.render().finishWaterDraft(h.render().waterDraft,true),true,h.render().editError);
+ assert.equal(h.render().finishWaterDraft(),true);
  const after=stable(h.render());
  assert.equal(after.map.terrainByHexKey['0,0'].terrainOverride,'lake');
  assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:4,lakes:[before.map.physicalGrid.smallLakes.lakes[2]]});

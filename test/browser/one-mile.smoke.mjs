@@ -49,7 +49,7 @@ const requiredFixture=structuredClone(requiredHarness.render().createSaveData())
 assert.equal(requiredHarness.render().switchFineStep(1),true,requiredHarness.render().automaticFineError);
 const requiredMove=requiredHarness.render().fineDisplay.geometryRefinement.pois.pois.find(p=>p.footprint.legacyRef===requiredRiverOwner);assert.ok(requiredMove?.contact);
 const server=spawn(process.execPath,[fileURLToPath(new URL('node_modules/vite/bin/vite.js',root)),'preview','--host','127.0.0.1','--port','4195','--strictPort'],{cwd:root,stdio:['ignore','pipe','inherit']});
-let browser,page,baselineServer,baselineDir,regenerationConsent=null;const errors=[],alerts=[];
+let browser,page,baselineServer,baselineDir;const errors=[],alerts=[];
 const manifest={source_head_sha:null,checkout_sha:execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),checkout_tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{cwd:root,encoding:'utf8'}).trim(),fixture:'road-entry-zigzags.json',screenshots:[],cases:[]};
 if(process.env.GITHUB_EVENT_PATH){const event=JSON.parse(await fs.readFile(process.env.GITHUB_EVENT_PATH));manifest.source_head_sha=event.pull_request?.head.sha??process.env.GITHUB_SHA;}
 
@@ -57,9 +57,7 @@ try{
  await new Promise((resolve,reject)=>{let text='';const timer=setTimeout(()=>reject(Error(text)),10000);server.stdout.on('data',d=>{text+=d;if(text.replace(/\x1b\[[0-9;]*m/g,'').includes('Local:')){clearTimeout(timer);resolve();}});server.on('error',reject);server.on('exit',c=>reject(Error('preview '+c)));});
  browser=await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH||undefined,headless:true,args:['--no-sandbox','--disable-dev-shm-usage']});
  page=await browser.newPage({viewport:{width:1500,height:1000}});page.setDefaultTimeout(20000);page.on('pageerror',e=>errors.push(e.message));page.on('dialog',async d=>{
-   if(d.type()==='confirm'&&regenerationConsent!==null&&d.message().includes('removes these small lakes in full')){
-     if(regenerationConsent)await d.accept();else await d.dismiss();
-   }else{alerts.push(d.message());await d.dismiss();}
+   alerts.push(d.message());await d.dismiss();
  });
  await page.route(/mc\.yandex/,r=>r.abort());
  await page.addInitScript(()=>{window.__fineClicks=[];document.addEventListener('click',e=>{const row=e.target.closest?.('[data-fine-key],[data-fine-candidate]');if(row)window.__fineClicks.push({cell:row.getAttribute('data-fine-key'),candidate:row.getAttribute('data-fine-candidate'),detail:e.detail});},true);const clone=window.structuredClone;window.structuredClone=function(value){if(window.__failGeoPrepare&&value?.regions&&value?.physicalGrid){window.__failGeoPrepare=false;throw Error('GEO2 poi: detail-poi:1; river:3');}if(window.__failFineSave&&value?.regions&&value?.physicalGrid){window.__failFineSave=false;throw Error('Injected fine preparation failure');}return clone(value);};const make=URL.createObjectURL,click=HTMLAnchorElement.prototype.click,blobs=new Map();URL.createObjectURL=function(b){const url=make.call(this,b);if(b.type.startsWith('application/json'))blobs.set(url,b.text());return url;};HTMLAnchorElement.prototype.click=function(){if(this.download.endsWith('.json')&&blobs.has(this.href)){blobs.get(this.href).then(t=>window.__oneExport=JSON.parse(t));return;}return click.call(this);};});
@@ -513,22 +511,9 @@ try{
  await sourceHex.dispatchEvent('click');
  if(await button('Edit').count())await button('Edit').click();
  const beforeWaterEdit=await snap();
- const showWaterLoss=async()=>{
-   if(await pngMenu.getAttribute('open')!==null)await pngMenu.locator('summary').click();
-   await page.getByRole('combobox',{name:'Surface',exact:true}).selectOption('lake');
-   await page.locator('[data-water-finish]').click();
-   const loss=page.locator('[data-water-small-lake-losses]');
-   await loss.waitFor();
-   assert.match(await loss.innerText(),/№1 · one-mile hexes 0,0/);
-   return loss;
- };
- const waterLoss=await showWaterLoss();
- await waterLoss.scrollIntoViewIfNeeded();
- await shot('small-lake-source-edit-preview.jpg');
- await page.locator('[data-water-reset]').click();
- assert.deepEqual(await snap(),beforeWaterEdit);
- await showWaterLoss();
- await page.locator('[data-water-confirm]').click();
+ if(await pngMenu.getAttribute('open')!==null)await pngMenu.locator('summary').click();
+ await page.getByRole('combobox',{name:'Surface',exact:true}).selectOption('lake');
+ await page.locator('[data-water-finish]').click();
  const afterWaterEdit=await snap();
  assert.equal(afterWaterEdit.map.terrainByHexKey['0,0'].terrainOverride,'lake');
  assert.deepEqual(afterWaterEdit.map.physicalGrid.smallLakes,{nextId:2,lakes:[]});
@@ -539,7 +524,7 @@ try{
  await showOneMile();
  await smallLake.waitFor({state:'detached'});
  await shot('small-lake-source-edit-after.jpg');
- manifest.cases.push({id:'HX056-source-water-removes-small-lake',status:'pass',sourceHex:'0,0',cancelExact:true,undoRedoExact:true});
+ manifest.cases.push({id:'HX056-source-water-removes-small-lake',status:'pass',sourceHex:'0,0',appliedOnFinish:true,undoRedoExact:true});
 
  await page.reload();
  const seed=page.getByRole('textbox',{name:'World seed',exact:true});
@@ -566,22 +551,9 @@ try{
  const manualLakes=priorLakes.lakes.filter(lake=>lake.origin==='manual');
  assert.deepEqual(manualLakes.map(lake=>lake.cells.map(cell=>`${cell.q},${cell.r}`)),lakeCells.map(cell=>[cell]));
  const [lostLake,retainedLake]=manualLakes;
- const regenerateWithConsent=async accept=>{
-   if(await pngMenu.getAttribute('open')!==null)await pngMenu.locator('summary').click();
-   regenerationConsent=accept;
-   try{
-     const [dialog]=await Promise.all([page.waitForEvent('dialog'),button('Regenerate region').click()]);
-     assert.equal(dialog.type(),'confirm');
-     assert.ok(dialog.message().includes(`№${lostLake.id} (${lakeCells[0]})`));
-     assert.match(dialog.message(),/small lakes in full:/);
-     assert.ok(!dialog.message().includes(`№${retainedLake.id} (${lakeCells[1]})`));
-     await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
-     return dialog.message();
-   }finally{regenerationConsent=null;}
- };
- const warning=await regenerateWithConsent(false);
- assert.deepEqual(await snap(),beforeRegeneration);
- assert.equal(await regenerateWithConsent(true),warning);
+ if(await pngMenu.getAttribute('open')!==null)await pngMenu.locator('summary').click();
+ await button('Regenerate region').click();
+ await page.waitForFunction(()=>!document.querySelector('.controls--transfer > button').disabled);
  const afterRegeneration=await snap();
  assert.notDeepEqual(afterRegeneration.map.regions,beforeRegeneration.map.regions);
  const afterLakes=afterRegeneration.map.physicalGrid.smallLakes.lakes;
@@ -596,7 +568,7 @@ try{
  assert.equal(await smallLake.count(),0);
  await lakeCell(lakeCells[1]).scrollIntoViewIfNeeded();
  await shot('small-lake-regeneration-after.jpg');
- manifest.cases.push({id:'HX056-regeneration-confirms-small-lake-loss',status:'pass',seed:42,warning,cancelExact:true,undoRedoExact:true,retainedLake:retainedLake.id});
+ manifest.cases.push({id:'HX056-regeneration-automatically-removes-unsupported-lakes',status:'pass',seed:42,removedLake:lostLake.id,undoRedoExact:true,retainedLake:retainedLake.id});
 
  // Same production generation action from matching candidates in both views.
  await page.reload();

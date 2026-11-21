@@ -1766,7 +1766,7 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
   candidate=checkedRiverMap(prepareSourceTransition(map,{...candidate,editorNames:authored,toponyms:names,tags}));assertGeneratedIds(candidate);
   const unresolvedLosses=losses.filter(loss=>!options.acceptedLosses?.includes(loss.id));
   const smallLakeLosses=smallLakes?.losses??[];
-  return {map:candidate,geometry,sea,losses,smallLakeLosses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:smallLakeLosses.length>0||losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
+  return {map:candidate,geometry,sea,losses,smallLakeLosses,unresolvedLosses,unresolvedFeatures,unresolvedCrossings,newCrossings,invalidFeatures:invalid,confirmationRequired:losses.length>0||sea.choices.length>0||geometry.choices.length>0||invalid.length>0||newCrossings.length>0};
 }
 
 function downloadBlob(blob: Blob, filename: string): void {
@@ -14218,7 +14218,7 @@ export function App() {
     try{
       const original=captureMap(),plan=prepareWaterMapEdit(original,draft.edit,draft.options);
       if(plan.map===original){updateWaterDraft(null);setEditError(null);return true;}
-      if(plan.sea.unresolved.length||plan.geometry.unresolved.length||plan.unresolvedLosses.length||plan.unresolvedFeatures.length||plan.unresolvedCrossings.length||plan.confirmationRequired&&(!confirmed||plan.smallLakeLosses.length>0&&!draft.preview)){
+      if(plan.sea.unresolved.length||plan.geometry.unresolved.length||plan.unresolvedLosses.length||plan.unresolvedFeatures.length||plan.unresolvedCrossings.length||plan.confirmationRequired&&!confirmed){
         updateWaterDraft({...draft,preview:true});setEditError(null);setIsSidePanelCollapsed(false);return false;
       }
       // Both full snapshots, validation and all allocation are ready before any setter.
@@ -14269,12 +14269,10 @@ export function App() {
       map=prepareSourceTransition(checkpoint.physicalGrid?.geometryRefinement?checkpoint:captureMap(),map);
     }else if(map.physicalGrid){const state=reconcileDetailGeography(map,detailMapRiverGeometry(map,map.physicalGrid.grid.origin));map={...map,physicalGrid:state};}
     let preparedScene:Detail1State|undefined;
-    const lakeLosses=[...smallLakes?.losses??[]];
     if((lakeRegions.length||map.physicalGrid?.smallLakes?.lakes.length)&&(!kingdomJob||backup)){
       const prepared=prepareGeneratedSmallLakes(backup?.map??checkpoint,map,lakeRegions);
       map=prepared.map;
       preparedScene=prepared.scene??undefined;
-      lakeLosses.push(...prepared.losses);
     }
     const fineTarget=fineGenerationTargetRef.current;
     if(map.physicalGrid&&fineTarget&&projectOneMile(oneMileSources(map),map.physicalGrid.grid.origin).some(row=>isSameHex(row.cell,fineTarget.cell)))map={...map,physicalGrid:{...map.physicalGrid,selectedCell:fineTarget.cell,selectedWorldPoint:fineTarget.point}};
@@ -14289,10 +14287,6 @@ export function App() {
     map.gmNotesByHexKey = {...notes};
     const lossMessages=[...(backup?.checkpointWarnings??[])];
     if(fineLost.length)lossMessages.push(language==='ru'?`Будут удалены локальные правки одномильных гексов (${fineLost.length}): ${fineLost.join('; ')}.`:`Local one-mile edits will be removed (${fineLost.length}): ${fineLost.join('; ')}.`);
-    if(lakeLosses.length){
-      const lakes=lakeLosses.map(lake=>`№${lake.id} (${lake.cells.map(hexKey).join('; ')})`).join(', ');
-      lossMessages.push(language==='ru'?`Изменение участка целиком удалит малые озёра ${lakes}.`:`Changing the area removes these small lakes in full: ${lakes}.`);
-    }
     if(lossMessages.length){
       lossMessages.push(language==='ru'?'«Отменить» восстановит прежнюю карту. Продолжить?':'Undo restores the previous map. Continue?');
       if(!window.confirm(lossMessages.join('\n')))throw new FineRegenerationCancelled();
@@ -14806,7 +14800,6 @@ export function App() {
     let checkpoint = history[history.length-1];
     const warnings:string[]=[];
     let exactLakeRollback=false;
-    const lakeLosses:SmallLakeLayer['lakes'][number][]=[];
     try{
       const state=physicalGridRef.current;
       const accepted=state?projectOneMile(oneMileSources(checkpoint),state.grid.origin):[];
@@ -14816,7 +14809,6 @@ export function App() {
         ?`Будут удалены локальные правки одномильных гексов (${losses.length}): ${losses.join('; ')}.`
         :`Local one-mile edits will be removed (${losses.length}): ${losses.join('; ')}.`);
       const smallLakes=state?.smallLakes?prepareSmallLakeSupport(state.smallLakes,accepted):undefined;
-      lakeLosses.push(...smallLakes?.losses??[]);
       const priorLayer=checkpoint.physicalGrid?.smallLakes;
       if(state?.smallLakes&&smallLakes){
         exactLakeRollback=exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes);
@@ -14849,13 +14841,6 @@ export function App() {
     try{
       // Check the roads and sites restored by the checkpoint as well as dry support.
       const prepared=map.physicalGrid?.smallLakes?.lakes.length?prepareGeneratedSmallLakes(exactLakeRollback?map:before.map,map,[]):null;
-      lakeLosses.push(...prepared?.losses??[]);
-      if(lakeLosses.length){
-        const ids=lakeLosses.map(lake=>`№${lake.id}`).join(', ');
-        warnings.push(language==='ru'
-          ?`При удалении последнего региона будут также удалены малые озёра ${ids}.`
-          :`Deleting the last region also removes small lakes ${ids}.`);
-      }
       if(warnings.length){
         warnings.push(language==='ru'?'Удалить регион? Отмена действия восстановит карту.':'Delete the region? Undo restores the map.');
         if(!window.confirm(warnings.join('\n\n')))return;

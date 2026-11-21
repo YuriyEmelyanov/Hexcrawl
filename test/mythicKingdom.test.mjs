@@ -63,7 +63,7 @@ test('classic to mythic, second kingdom and regeneration preserve earlier region
   app.changeGenerationMode('mythic');assert.equal(h.render().generationMode,'mythic');assert.equal(JSON.stringify(h.render().regions),old);assert.deepEqual(structuredClone(h.render().createSaveData().map.knave),oldKnave);
   // A completed kingdom can move a river onto a prior lake. This is a region
   // transaction after the mode switch, whose no-prompt contract is above.
-  h.setWindow({confirm:message=>{assert.match(message,/Изменение участка целиком удалит малые озёра/);return true;}});
+  h.setWindow({confirm:message=>assert.fail('Unexpected generation confirmation: '+message)});
   app=h.render();app.startKingdom(app.candidateHexes[0]);app=finish(h);assert.equal(JSON.stringify(app.regions.slice(0,1)),old);validate(h,app.kingdoms[0]);
   assert.deepEqual(structuredClone(app.createSaveData().map.knave),oldKnave,'Mythic POIs retain their own types/tags without Knave replacement');
   const built=JSON.stringify(app.createSaveData().map);app.undoMap();assert.equal(JSON.stringify(h.render().regions),old);assert.deepEqual(structuredClone(h.render().createSaveData().map.knave),oldKnave);h.render().redoMap();assert.equal(JSON.stringify(h.render().createSaveData().map),built);app=h.render();

@@ -54,9 +54,9 @@ Fallback tracts make no lake rolls.
 
 Region generation checks existing small lakes against its finished water,
 paths and sites before committing. If a previously valid lake conflicts
-with that geometry, the change lists it in the normal lake-loss confirmation.
-Accepting the change removes the whole affected lake. Declining preserves
-the previous map, random state and history.
+with that geometry, the same transaction removes the affected lake. Undo
+restores both the map and its lakes. Unrelated authored edits retain their
+usual loss confirmations.
 
 Manual and automatic lakes keep the permitted fringe cells with their saved
 footprint, so accepted water does not expand when neighbouring land is added.
@@ -67,8 +67,8 @@ Older saves without the optional fringe field still open. When expansion
 would add dry support beside one of those lakes, the accepted shore is taken
 from the map before expansion.
 Deleting the last region checks the restored paths and sites before committing.
-If restoring a checkpoint conflicts with a retained small lake, the same
-confirmation lists that lake along with any that lose dry support.
+If restoring a checkpoint conflicts with a retained small lake, the editor
+removes it together with lakes that lose dry support in that operation.
 An incompatible edit to a road or point is rejected before recording history.
 The editor keeps the selected hexes outlined when a draft fails validation.
 
