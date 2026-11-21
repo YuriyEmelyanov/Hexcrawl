@@ -417,7 +417,7 @@
     {
       "task_id": "HX-BL-056",
       "title": "Добавление небольших озёр на 1-мильную карту",
-      "status": "разработана",
+      "status": "спецификация",
       "source": {
         "kind": "owner",
         "decision_ref": "agent-work/decisions/owner-decision-2026-11-16-one-mile-small-lakes.json"
@@ -426,11 +426,13 @@
       "approved_at": "2026-11-16T06:11:39.034Z",
       "implementation_authorized": true,
       "release_authorized": false,
-      "execution_state": "Ожидается разрешение владельца на публикацию PR №510 на 0e7e2be при базе d6daa2c. После разрешения программист сверяет пакет и проверяет сайт. Пока ожидается решение, программисту доступна утверждённая HX-BL-058 по чистовой спецификации.",
+      "execution_state": "Возвращена в разработку по решению владельца от 21.11.2026, F1.2.",
       "requirements": [
         "Поддержать небольшие озёра на1-мильной карте.",
         "Реки могут проходить через малые озёра по правилу шестимильной карты.",
-        "Конфликт одного малого озера обрабатывается локально, остальные пригодные озёра остаются."
+        "Конфликт одного малого озера обрабатывается локально, остальные пригодные озёра остаются.",
+        "Удалять озёра, потерявшие опору, вместе с правкой без запроса мастеру.",
+        "Оформлять воду и берег аналогично большим озёрам. Представить четыре примера по F1.2."
       ],
       "scope_questions": [
         "Размеры/диапазон и представление небольшого озера",
@@ -439,10 +441,10 @@
         "Плотность/расположение и сопряжение с реками"
       ],
       "next_role": "programmer",
-      "next_step": "Ожидается разрешение владельца на публикацию PR №510 на 0e7e2be при базе d6daa2c. После разрешения программист сверяет пакет и проверяет сайт. Пока ожидается решение, программисту доступна утверждённая HX-BL-058 по чистовой спецификации.",
+      "next_step": "Исправить оформление и убрать запрос мастеру при потере озёр. Передать четыре примера по F1.2 на повторную приёмку.",
       "draft_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-D1.md",
-      "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
-      "acceptance_ref": "agent-work/evidence/HX-BL-056-F1/review-0e7e2be/review.json",
+      "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
+      "acceptance_ref": null,
       "published_ref": null,
       "ready_for_development": true,
       "interview_status": "interview_completed",
@@ -487,7 +489,7 @@
         "HX-BL-055"
       ],
       "relationship_note": "Связанный вид воды/устьев учесть при спецификации; это не разрешение расширить055 или автоматически менять6mile.",
-      "updated_at": "2026-11-21T08:09:31.632Z",
+      "updated_at": "2026-11-21T08:41:59Z",
       "draft_spec_version": "D1",
       "open_question_ids": [],
       "ui_preview_ref": {
@@ -519,7 +521,7 @@
       "owner_answer_refs": [
         "agent-work/interviews/HX-BL-056/ONE-MILE-SMALL-LAKES/owner-answers-2026-11-20-01.json"
       ],
-      "spec_version": "F1.1",
+      "spec_version": "F1.2",
       "specification_result_ref": "agent-work/results/2026-11-20-manual-analyst-HX-BL-056-through-flow.json",
       "implementation_checkpoint_ref": "agent-work/results/2026-11-21T0600-programmer-HX-BL-056-RV08.json",
       "implementation_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv10-0e7e2be/verification.json",
@@ -528,7 +530,7 @@
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
       "head_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
       "visible_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv10-0e7e2be/before-after.json",
-      "supersedes_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md",
+      "supersedes_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
       "scope_clarification_ref": "agent-work/decisions/owner-decision-2026-11-20-HX-BL-056-through-flow-and-conflict-isolation.json",
       "head_tree_sha": "50aa4a65d25b27e808b3baafcdfedb8967162923",
       "review_ready": false,
@@ -1026,7 +1028,7 @@
                 "pixelIdentical": false,
                 "raster": {
                   "maxDelta": 210,
-                  "changedFraction": 0.00007626561472715319
+                  "changedFraction": 7.626561472715319e-05
                 },
                 "scope": "diagnostic including unrelated controls"
               }
