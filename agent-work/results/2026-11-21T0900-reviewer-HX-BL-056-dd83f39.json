@@ -1,0 +1,180 @@
+{
+  "run_id": "2026-11-21T0900-reviewer-HX-BL-056-dd83f39",
+  "task_id": "HX-BL-056",
+  "role": "reviewer",
+  "role_selection_reason": "Утверждённая F1.1 передана на независимую приёмку с новым SHA. Реестр свободен, проверены 513 claims и 577 результатов, три старые исследовательские записи уже согласованы в истории.",
+  "stage_id": "F1.1",
+  "status": "changes_requested",
+  "accepted": false,
+  "completed_at": "2026-11-21T06:01:37.392Z",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "head_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+  "reviewed_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+  "head_tree_sha": "b5cc7551a26689b199c50fb543d66acd1b3cec53",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/score-assessment1.2.json",
+  "result_ref": "agent-work/results/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
+  "fresh_review": {
+    "accepted": false,
+    "agent": "review_dd83",
+    "fixed": [
+      "HX056-F11-RV09"
+    ],
+    "findings": [
+      "HX056-F11-RV10"
+    ],
+    "method": "Отдельный агент со свежим контекстом, штатные обработчики, исходная карта e6-water-editor, seed 42. Повтор RV10 основным проверяющим на том же SHA.",
+    "rv09": "Classic и Knave: единый вопрос верно перечисляет 22 удаления. Оба ответа и Undo/Redo точны. Именованный POI блокирует потерю до вопроса. Mythic: 31 шаг построения, на перегенерации одно предупреждение о русле и отметках только на последнем шаге. Отказ и Undo/Redo точны, сохранились 24 озера. Одновременная потеря озера и реки в Mythic не наблюдалась.",
+    "finding": {
+      "id": "HX056-F11-RV10",
+      "requirement": "R03 / AC04",
+      "severity": "P2",
+      "before": "В Classic seed 42 на 1 миле явно удалить №17 (29,7) и №19 (31,7).",
+      "action": "Перегенерировать последний регион (3,3) с размером tract по прилагаемому сценарию.",
+      "after": "На прежних клетках и с теми же берегами появились №29 и №30. Даже без удаления №25 и №27 создаются целиком на прежних полностью поддержанных клетках. №26 и №28 — контроль новой опоры.",
+      "source": "src/App.tsx:1343 и :14274. До операции была доступна полная принятая карта, а исключение уже покрытых клеток вычисляется по контрольной точке до добавления региона.",
+      "evidence": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/regeneration-rv10.json"
+    },
+    "next": "Программисту исправить HX056-F11-RV10 по R03: вычислять новое полное покрытие относительно принятой карты перед операцией. Проверить, что удалённые озёра не возвращаются на прежних клетках, новая территория по-прежнему получает озёра, а отказ, Undo/Redo, RNG и единое подтверждение остаются точными. Передать новый SHA на независимую проверку."
+  },
+  "open_findings": [
+    "HX056-F11-RV10"
+  ],
+  "verified_fixed_findings": [
+    "HX056-F11-RV09"
+  ],
+  "acceptance_matrix": {
+    "AC01": "Classic seed 42: ручное озеро в (-4,-28), карточка, JSON и экспорт; просмотрены снимки до и после.",
+    "AC02": "Локальная диагностика приняла четыре смежных гекса и отвергла неполную опору/повтор ID. Ограничения дорог, переправ и привязок проверены на точном дереве.",
+    "AC03": "Операции удаления, правки источника и перегенерации проверены по итоговым ID, отказу и Undo/Redo; подробности проверки RV09 в fresh_review.",
+    "AC04": "Два масштаба, паритет RNG, сохранение и продолжение, вероятности и рост озёр проверены браузерной и Node-матрицами. Не выполнен R03 при перегенерации: территория сравнивается с контрольной точкой до появления региона. Подтверждено повторное заполнение ранее полностью поддержанных клеток, в том числе на месте двух явно удалённых озёр.",
+    "AC05": "Манифест и снимки CI, экспорт PNG, поворот и оба масштаба, состояния черновика и ошибки, широкое и узкое окно.",
+    "AC06": "Успех Node и browser CI на проверенном дереве, отказ по ошибочному JSON без изменения документа/истории, старые сохранения. Совместимость игровых режимов ограничена указанными в evidence сценариями.",
+    "AC07": "Река пересекает ручное и автоматическое озеро; фактический PNG при повороте, исходная география, сохранение и продолжение проверены.",
+    "AC08": "Classic 42, конфликт с дорогой №6 в (-5,-1): ручное озеро №1 сохранено, 23 автоматических приняты, повтор операции и загрузка JSON совпали."
+  },
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44869354789",
+  "checks": {
+    "jobs": [
+      {
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "id": 136740153112
+      },
+      {
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "id": 136740153251
+      },
+      {
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "id": 136740153272
+      },
+      {
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped",
+        "id": 136740154750
+      }
+    ],
+    "node": {
+      "executed": 443,
+      "passed": 443,
+      "skipped": 0
+    },
+    "browser_manifest_cases": 17,
+    "browser_hx056": 6,
+    "local_focused": {
+      "logical_executed": 12,
+      "passed": 12,
+      "skipped": 0
+    },
+    "local_boundary": {
+      "four": [
+        {
+          "q": -21,
+          "r": -11
+        },
+        {
+          "q": -20,
+          "r": -11
+        },
+        {
+          "q": -19,
+          "r": -11
+        },
+        {
+          "q": -18,
+          "r": -11
+        }
+      ],
+      "partial": {
+        "q": -22,
+        "r": -10
+      },
+      "adjacent": {
+        "q": -21,
+        "r": -10
+      },
+      "duplicate_refused": true,
+      "undo_preserved": true,
+      "beforeHashable": 10
+    }
+  },
+  "visible_evidence": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44869354789/artifacts/14693033945",
+    "sha256": "sha256:1021879273a838aec141569afb7e90bbcf6cacd7efdc60f32cade49deb1499f0",
+    "checkout_tree": "b5cc7551a26689b199c50fb543d66acd1b3cec53",
+    "paths": [
+      "small-lake-before.jpg",
+      "small-lake-after.jpg",
+      "small-lake-river-rotated.png",
+      "automatic-small-lakes.png"
+    ],
+    "viewports": [
+      320,
+      390,
+      1500
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
+    "head_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node mapTransactions",
+    "scenario": "Один диалог при сочетании Knave, ручной правки реки и удаления озёр. Проверяются список ID, оба ответа и история. Прежняя матрица речных изменений теперь выполняет отложенный этап.",
+    "reuse_or_new_reason": "Новый сценарий проверяет совпадение перечня потерь с фактической картой при сочетании трёх причин. Прежний тест выделяет ручную правку реки. Оба востребованы.",
+    "source": "git diff 0810e8c..dd83f39 -- test/mapTransactions.test.mjs",
+    "negative_control": "Новый сценарий на предыдущем SHA 0810e8c завершился ошибкой: первый диалог содержал Knave, но не реку. На dd83f39 сценарий пройден."
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T05:56:14.358Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T06:01:28.413Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "published": false,
+  "release_authorized": false,
+  "next_step": "Программисту исправить HX056-F11-RV10 по R03: вычислять новое полное покрытие относительно принятой карты перед операцией. Проверить, что удалённые озёра не возвращаются на прежних клетках, новая территория по-прежнему получает озёра, а отказ, Undo/Redo, RNG и единое подтверждение остаются точными. Передать новый SHA на независимую проверку.",
+  "next_role": "programmer",
+  "owner_decisions_needed": [],
+  "forecast": "Исправление, проверка и выпуск после разрешения."
+}
