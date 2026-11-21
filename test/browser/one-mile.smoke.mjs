@@ -223,6 +223,19 @@ try{
  const exportNativePng=async(p,name)=>{const menu=p.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const [download]=await Promise.all([p.waitForEvent('download'),p.getByRole('button',{name:'PNG',exact:true}).click()]);const bytes=await fs.readFile(await download.path());await fs.writeFile(new URL(name,out),bytes);return bytes;};
  const beforePng=await exportNativePng(baselinePage,'native6-export-before.png'),afterPng=await exportNativePng(page,'native6-export-after.png'),pngRaster=await compareRaster(beforePng,afterPng);
  assert.ok(pngRaster.maxDelta<=3&&pngRaster.changedFraction<=.001,'AC05 native6 exported PNG unchanged '+JSON.stringify(pngRaster));
+ if(process.env.GITHUB_HEAD_REF==='agent/hx-bl-058-base-scale-f1'){
+   const profiles=[];
+   for(const [version,source] of [['before',baselinePage],['after',page]]){
+     const control=source.locator('[data-fine-step]');
+     for(const width of [1280,390,320]){
+       await source.setViewportSize({width,height:850});
+       const panel=source.locator('.controls--display');
+       await panel.screenshot({path:new URL(`base-scale-${version}-${width}.png`,out).pathname});
+       profiles.push({version,width,options:await control.locator('option').allTextContents()});
+     }
+   }
+   manifest.base_scale_comparison={baseline:baselineSha,profiles};
+ }
  manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles,png:{pixelIdentical:beforePng.equals(afterPng),raster:pngRaster}};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
  await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});await page.locator('[data-fine-world]').waitFor();
  const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(nodes=>nodes.map(n=>({geometry:n.getAttribute('points'),width:Number(n.getAttribute('stroke-width')),fullness:Number(n.getAttribute('data-river-fullness'))})));
