@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-11-21",
-  "branch": "agent/hx-bl-058-base-scale-f1",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
   "strategy_branch": "main",
@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-21T1658-reviewer-PR511-closure",
+  "run_id": "2026-11-21T1801-reviewer-HX-BL-056-F1.2",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "completed",
+  "status": "changes_requested",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -50,21 +50,21 @@
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
   "current_role": "reviewer",
-  "next_role": "reviewer",
-  "current_task_id": "HX-BL-058",
+  "next_role": "programmer",
+  "current_task_id": "HX-BL-056",
   "spec_path": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
   "spec_version": "F1.2",
   "result_path": "agent-work/results/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
   "handoff_commit_sha": "ba26deb3aa352290554a27fb9d99d79372164538",
-  "active_claim": "agent-work/claims/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
-  "next_step": "Независимая приёмка малых озёр PR №510 на 02aaa188 по F1.2 и модели 1.3-rc8: четыре примера, отображение на карте и в PNG, сохранность при удалении региона.",
+  "active_claim": null,
+  "next_step": "Исправить восстановление слоя малых озёр при удалении последнего региона после независимой правки заметки, не стирая намеренную правку озёр.",
   "owner_decisions_needed": [],
   "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
   "evidence_path": "agent-work/results/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
   "branch_name": "agent/hx-bl-056-small-lakes-f1",
-  "pr": 511,
-  "head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+  "pr": 510,
+  "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
   "tree_sha": "9869c190d61bf04e4f83e4711b64c1efc8449b1d",
   "checks_status": "passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44903422383",
@@ -83,11 +83,11 @@
     ]
   },
   "release_result": "agent-work/results/2026-11-21T1400-strategist-score-PR511.json",
-  "score_update_status": "completed",
+  "score_update_status": "not_due_unpublished",
   "score_update_task_id": "HX-BL-058",
   "score_update_release_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Владелец поручил проверяющему завершить учёт PR511. Текущий срез и история уже содержали обе строки, но активный маршрут latest.json оставался у стратега.",
+  "role_selection_reason": "PR511 закрыт; чистовая спецификация F1.2 и review_ready PR510 на точном SHA. Сверены 531 claim и 586 результатов.",
   "score_update_result_ref": "agent-work/results/2026-11-21T1658-reviewer-PR511-closure.json",
   "score_update_completed_at": null,
   "score_update_delta": null,
@@ -97,15 +97,15 @@
   "approval_ref": "agent-work/decisions/owner-approval-2026-11-09-HX-BL-051-DETAIL1.json",
   "last_completed_stage": "F1",
   "previous_release_approval": "agent-work/decisions/owner-decision-2026-11-19-publish-PR509.json",
-  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "base_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-21T13:58:34.494Z",
+      "at": "2026-11-21T15:01:51.780Z",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-21T14:01:19.741Z",
+      "at": "2026-11-21T15:06:18.413Z",
       "is_enabled": true
     },
     "restored": false,
@@ -703,7 +703,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "По PR №511 решение исполнено. HX-BL-056 утверждена для разработки F1.2.",
-  "updated_at": "2026-11-21T14:01:19.741Z",
+  "updated_at": "2026-11-21T15:06:18.413Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -1228,7 +1228,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": null,
-  "handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1891,14 +1891,20 @@
   "current_task_release_approval": null,
   "next_product_recommendation": {
     "task_id": "HX-BL-056",
-    "role": "reviewer",
+    "role": "programmer",
     "pr": 510,
-    "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
-    "handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
-    "scope": "Приёмка F1.2 на четырёх примерах малых озёр, включая сохранение при удалении нового региона. В оценке применить действующую модель 1.3-rc8.",
-    "release_authorized": false,
-    "status": "review_ready",
-    "result_ref": "agent-work/results/2026-11-21T1500-programmer-HX-BL-056-F1.2.json"
+    "base_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "stage": "F1.2",
+    "finding_id": "HX056-RV11",
+    "scope": "Исправить восстановление слоя малых озёр при удалении последнего региона после независимой правки заметки, не стирая намеренную правку озёр.",
+    "acceptance": [
+      "На seed 1257875020 после создания восьмого региона, записи заметки в 0,1 и удаления восьмого региона восстанавливаются все семь регионов, озеро №24 с прежним берегом, nextId=34 и текст заметки.",
+      "Повторное добавление региона создаёт №34 и №35. Проверить, что намеренно удалённое мастером озеро не возвращается, а Undo/Redo остаётся точным.",
+      "Расширить существующую проверку контрольной точки, передать новый SHA и результаты независимому проверяющему."
+    ],
+    "replay_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/replay.mjs.txt",
+    "runtime_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/runtime.json",
+    "release_authorized": false
   },
   "owner_editor_scope": {
     "decision_ref": "owner-decision-2026-10-28-editor-functional-scope",
@@ -2086,7 +2092,7 @@
     "errors": [],
     "scope": "Point-in-time observations; no schedule/prompt/update performed."
   },
-  "next_active_slice": "F1.2",
+  "next_active_slice": "F1.2-RV11",
   "review_scope": "Current standalone PR496 A/B, allconfirmedfindingsclosed; C03/G10 pendingproductchoice, stageD deferred.",
   "previous_accepted_release_pending": {
     "task_id": "HX-BL-023",
@@ -2109,7 +2115,7 @@
     "score_update_handoff_ref": "agent-work/handoffs/2026-11-06-PR490-release-score.json",
     "full_editor_ready": false
   },
-  "release_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+  "release_sha": null,
   "score_update_handoff_ref": null,
   "latest_feedback_event": {
     "feedback_id": "HX-FB-014",
@@ -2169,7 +2175,7 @@
     "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-ui3-a265a78/score_assessment.json",
     "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
   },
-  "spec_ref": "agent-work/specs/HX-BL-058-base-scale-F1.md",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
   "spec_blob_sha": "4c3bbfc2d1048406cd2d99cbb8b43a9971216fe6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
@@ -2269,20 +2275,26 @@
   "previous_score_update_result_ref": "agent-work/results/2026-10-29-strategist-score-HX-BL-023-E1-8f7d172.json",
   "next_approved_stage": {
     "task_id": "HX-BL-056",
-    "role": "reviewer",
+    "role": "programmer",
     "pr": 510,
-    "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
-    "handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
-    "scope": "Приёмка F1.2 на четырёх примерах малых озёр, включая сохранение при удалении нового региона. В оценке применить действующую модель 1.3-rc8.",
-    "release_authorized": false,
-    "status": "review_ready",
-    "result_ref": "agent-work/results/2026-11-21T1500-programmer-HX-BL-056-F1.2.json"
+    "base_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "stage": "F1.2",
+    "finding_id": "HX056-RV11",
+    "scope": "Исправить восстановление слоя малых озёр при удалении последнего региона после независимой правки заметки, не стирая намеренную правку озёр.",
+    "acceptance": [
+      "На seed 1257875020 после создания восьмого региона, записи заметки в 0,1 и удаления восьмого региона восстанавливаются все семь регионов, озеро №24 с прежним берегом, nextId=34 и текст заметки.",
+      "Повторное добавление региона создаёт №34 и №35. Проверить, что намеренно удалённое мастером озеро не возвращается, а Undo/Redo остаётся точным.",
+      "Расширить существующую проверку контрольной точки, передать новый SHA и результаты независимому проверяющему."
+    ],
+    "replay_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/replay.mjs.txt",
+    "runtime_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/runtime.json",
+    "release_authorized": false
   },
-  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
+  "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
   "authorization_status": "Approved F1 implemented; independent review of exact SHA is next.",
   "completed_at": "2026-11-21T10:07:18.320Z",
   "score_changed": false,
-  "next_stage_id": "F1.2",
+  "next_stage_id": "F1.2-RV11",
   "score_evidence_updated": true,
   "current_stage_id": "F1",
   "implementation_started": true,
@@ -3918,7 +3930,7 @@
   },
   "current_stage_status": "review_ready",
   "current_stage_review_status": "accepted_exact_sha",
-  "accepted": true,
+  "accepted": false,
   "full_UI_pending": true,
   "latest_HX_BL_023_E5_persistence_20261104": {
     "run_id": "2026-11-04-developer-HX-BL-023-E5-persistence",
@@ -4150,7 +4162,7 @@
     "materials_commit_sha": "317189e45278245dfced11645c528b5bff8320a9",
     "result_ref": "agent-work/results/2026-11-04-developer-HX-BL-023-E5-solver.json"
   },
-  "stage_id": "F1",
+  "stage_id": "F1.2",
   "release_approved": false,
   "ui_actual_shown": true,
   "ui_actual_responsible": "programmer",
@@ -5071,7 +5083,7 @@
       }
     }
   ],
-  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/511",
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
   "active_claim_scope": null,
   "other_active_claims": [
     {
@@ -7473,7 +7485,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-21T1658-reviewer-PR511-closure.json",
+  "result_ref": "agent-work/results/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -8153,7 +8165,7 @@
     "handoff_ref": "agent-work/handoffs/2026-11-08-HX-BL-041-MC1-EN.json"
   },
   "previous_next_task_proposal_ref": "agent-work/proposals/2026-11-08-HX-BL-043-KNAVE2-PLACE1.json",
-  "next_task_handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
+  "next_task_handoff_ref": "agent-work/handoffs/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
   "latest_HX_BL_043_KNAVE2_CLASSIC1": {
     "run_id": "2026-11-08T1856-reviewer-HX-BL-043-KNC-REV-001",
     "status": "published_verified_score_completed",
@@ -8225,7 +8237,7 @@
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
   "role": "reviewer",
-  "latest_result_ref": "agent-work/results/2026-11-21T1658-reviewer-PR511-closure.json",
+  "latest_result_ref": "agent-work/results/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
   "checks": {
     "run_id": 44119549919,
     "status": "success",
@@ -8248,7 +8260,7 @@
     "artifact_id": 14344643335,
     "artifact_digest": "sha256:157f03aa21c3afb660823e97efa4059be85f4c2c89cfb102f2218ed3c94178c6"
   },
-  "score_assessment_status": "completed",
+  "score_assessment_status": "preliminary_changes_requested",
   "review_report_ref": "agent-work/evidence/review-ONE-MILE1-WR1-0900/independent-review.json",
   "reviewed_public_sha": "d41911b8d7c2248f115b182923350dc8d08c0a48",
   "closed_findings": [
@@ -8424,7 +8436,7 @@
     "public_url": "https://app.hexcrawl.ru/"
   },
   "overview_owner_direction_ref": "agent-work/proposals/2026-11-09-hex-scale-owner-direction.json",
-  "previous_result_ref": "agent-work/results/2026-11-21T1605-reviewer-PR511-rc8.json",
+  "previous_result_ref": "agent-work/results/2026-11-21T1658-reviewer-PR511-closure.json",
   "last_strategy_queue_extension": {
     "run_id": "2026-11-09T0304-strategist-BASE1-proposal",
     "result_ref": "agent-work/results/2026-11-09T0304-strategist-BASE1-proposal.json",
@@ -8709,7 +8721,7 @@
   "current_role_result": "agent-work/results/2026-11-20T1200-reviewer-HX-BL-056-F1.1.json",
   "current_stage_score_assessment_status": "completed_no_grade_transition",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
-  "execution_running": true,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -9162,12 +9174,12 @@
     },
     "Scribd_uploaded": false
   },
-  "task_id": "HX-BL-058",
+  "task_id": "HX-BL-056",
   "review_completed": true,
   "release_readiness": "not_ready",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "completed",
-  "next_handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
+  "next_handoff_ref": "agent-work/handoffs/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
   "open_validation_findings": [],
   "previous_execution_routing": {
     "status": "ready_for_business_analyst_claim",
@@ -11422,7 +11434,7 @@
     "product_routing_unchanged": true
   },
   "latest_PR496_CI_retry_claim_ref": "agent-work/claims/2026-11-11T1803-programmer-PR496-CI-retry.json",
-  "next_actor": "reviewer",
+  "next_actor": "programmer",
   "publication_authorized": false,
   "previous_root_release_approval_before_PR496": {
     "task_id": "HX-BL-054",
@@ -11920,7 +11932,18 @@
     "independent_accepted": false,
     "release_authorized": false
   },
-  "findings": [],
+  "findings": [
+    {
+      "id": "HX056-RV11",
+      "severity": "blocking",
+      "scope": "F1.2 / R04, AC03–AC04, контрольная точка генерации",
+      "seed": 1257875020,
+      "actual": "После восьмого региона и заметки в старом гексе 0,1 удаление последнего региона оставляет прежнее озеро №24 удалённым и nextId=36. Повторное расширение выдаёт №36,37.",
+      "expected": "При неизменном слое озёр удаление того же региона восстанавливает озеро №24, nextId=34 и сохраняет заметку. Повторная генерация выдаёт №34,35. Последующие намеренные изменения озёр обрабатывать отдельно.",
+      "cause": "src/App.tsx:14814–14824 определяет неизменённый слой через последнюю общую запись Undo. После записи заметки этот путь закрыт. Сравнение в src/smallLakes.ts:132–145 не может признать равенство при утрате прежнего озера.",
+      "evidence": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/runtime.json"
+    }
+  ],
   "owner_release_permission_required": true,
   "release_preview": {
     "task_id": "HX-BL-051",
@@ -12163,7 +12186,7 @@
     "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка."
   },
   "substage": "GEO2-scoped-river-removal",
-  "active_claim_ref": "agent-work/claims/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
+  "active_claim_ref": null,
   "bounded_implementation_complete": true,
   "score_evidence_ref": "agent-work/evidence/GEO2-lake-marker-contact-20261115-1156/score-evidence.json",
   "ui_actual_head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
@@ -12626,8 +12649,8 @@
   },
   "next_step_authorization": {
     "task_id": "HX-BL-056",
-    "role": "reviewer",
-    "review": true,
+    "role": "programmer",
+    "implementation": true,
     "publication": false
   },
   "activation": false,
@@ -14993,7 +15016,7 @@
     "old_queues_superseded": true,
     "updated_at": "2026-11-15T20:46:38.231Z"
   },
-  "execution_state": "completed",
+  "execution_state": "changes_requested",
   "latest_PR503_score": {
     "result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json",
     "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
@@ -15087,14 +15110,20 @@
   },
   "next_ready_work": {
     "task_id": "HX-BL-056",
-    "role": "reviewer",
+    "role": "programmer",
     "pr": 510,
-    "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
-    "handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
-    "scope": "Приёмка F1.2 на четырёх примерах малых озёр, включая сохранение при удалении нового региона. В оценке применить действующую модель 1.3-rc8.",
-    "release_authorized": false,
-    "status": "review_ready",
-    "result_ref": "agent-work/results/2026-11-21T1500-programmer-HX-BL-056-F1.2.json"
+    "base_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "stage": "F1.2",
+    "finding_id": "HX056-RV11",
+    "scope": "Исправить восстановление слоя малых озёр при удалении последнего региона после независимой правки заметки, не стирая намеренную правку озёр.",
+    "acceptance": [
+      "На seed 1257875020 после создания восьмого региона, записи заметки в 0,1 и удаления восьмого региона восстанавливаются все семь регионов, озеро №24 с прежним берегом, nextId=34 и текст заметки.",
+      "Повторное добавление региона создаёт №34 и №35. Проверить, что намеренно удалённое мастером озеро не возвращается, а Undo/Redo остаётся точным.",
+      "Расширить существующую проверку контрольной точки, передать новый SHA и результаты независимому проверяющему."
+    ],
+    "replay_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/replay.mjs.txt",
+    "runtime_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/runtime.json",
+    "release_authorized": false
   },
   "previous_primary_before_HX_BL_055": {
     "run_id": "2026-11-16T0403-interviewer-new-biomes-D1",
@@ -15970,7 +15999,7 @@
     }
   ],
   "task_status": "разработана",
-  "current_result_ref": "agent-work/results/2026-11-21T1658-reviewer-PR511-closure.json",
+  "current_result_ref": "agent-work/results/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
   "result_commit_sha": "4d535ee7db96aab1ae44879d5bee778df7e8476f",
   "independent_review_status": "accepted_exact_sha",
   "execution_locks_ref": "agent-work/execution-locks.json",
@@ -16261,8 +16290,8 @@
   },
   "review_status": "accepted_exact_sha",
   "prior_review_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
-  "review_ref": "agent-work/evidence/HX-BL-058-F1/review-d70366e/review.json",
-  "score_assessment_ref": "agent-work/evidence/HX-BL-058-F1/review-7ecf76c/score-assessment1.3-rc8.json",
+  "review_ref": "agent-work/results/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/score-assessment1.3-rc8.json",
   "publication_gate": {
     "task_id": "HX-BL-058",
     "stage_id": "F1",
@@ -17083,7 +17112,7 @@
     "owner_decisions_needed": []
   },
   "previous_programmer_result_ref": "agent-work/results/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
-  "current_score_assessment_ref": "agent-work/evidence/HX-BL-058-F1/review-7ecf76c/score-assessment1.3-rc8.json",
+  "current_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/score-assessment1.3-rc8.json",
   "latest_HX_BL_056_review": {
     "run_id": "2026-11-21T1100-reviewer-HX-BL-056-0e7e2be",
     "role": "reviewer",
@@ -17392,8 +17421,8 @@
     "handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
     "scope": "Приёмка F1.2 на четырёх примерах малых озёр, включая сохранение при удалении нового региона. В оценке применить действующую модель 1.3-rc8.",
     "release_authorized": false,
-    "status": "review_ready",
-    "result_ref": "agent-work/results/2026-11-21T1500-programmer-HX-BL-056-F1.2.json"
+    "status": "changes_requested",
+    "result_ref": "agent-work/results/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json"
   },
   "latest_PR511_rc8_review": {
     "release_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
@@ -17409,5 +17438,29 @@
     "L1": 185.5493024214987,
     "L2": null,
     "L3": null
-  }
+  },
+  "open_review_findings": [
+    {
+      "id": "HX056-RV11",
+      "severity": "blocking",
+      "scope": "F1.2 / R04, AC03–AC04, контрольная точка генерации",
+      "seed": 1257875020,
+      "actual": "После восьмого региона и заметки в старом гексе 0,1 удаление последнего региона оставляет прежнее озеро №24 удалённым и nextId=36. Повторное расширение выдаёт №36,37.",
+      "expected": "При неизменном слое озёр удаление того же региона восстанавливает озеро №24, nextId=34 и сохраняет заметку. Повторная генерация выдаёт №34,35. Последующие намеренные изменения озёр обрабатывать отдельно.",
+      "cause": "src/App.tsx:14814–14824 определяет неизменённый слой через последнюю общую запись Undo. После записи заметки этот путь закрыт. Сравнение в src/smallLakes.ts:132–145 не может признать равенство при утрате прежнего озера.",
+      "evidence": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/runtime.json"
+    }
+  ],
+  "review_findings": [
+    {
+      "id": "HX056-RV11",
+      "severity": "blocking",
+      "scope": "F1.2 / R04, AC03–AC04, контрольная точка генерации",
+      "seed": 1257875020,
+      "actual": "После восьмого региона и заметки в старом гексе 0,1 удаление последнего региона оставляет прежнее озеро №24 удалённым и nextId=36. Повторное расширение выдаёт №36,37.",
+      "expected": "При неизменном слое озёр удаление того же региона восстанавливает озеро №24, nextId=34 и сохраняет заметку. Повторная генерация выдаёт №34,35. Последующие намеренные изменения озёр обрабатывать отдельно.",
+      "cause": "src/App.tsx:14814–14824 определяет неизменённый слой через последнюю общую запись Undo. После записи заметки этот путь закрыт. Сравнение в src/smallLakes.ts:132–145 не может признать равенство при утрате прежнего озера.",
+      "evidence": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/runtime.json"
+    }
+  ]
 }
