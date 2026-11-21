@@ -1,0 +1,47 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {createGenerationHarness} from './helpers/generation-harness.mjs';
+const hash=v=>createHash('sha256').update(JSON.stringify(v,(k,o)=>Object.prototype.toString.call(o)==='[object Map]'?{'#map':[...o]}:Object.prototype.toString.call(o)==='[object Set]'?{'#set':[...o]}:o)).digest('hex');
+for(const lang of ['ru','en']) {
+ const h=createGenerationHarness(42,'',lang),ui=()=>h.render();
+ h.injectFunction('readTextFile',async file=>file.text);
+ const alerts=[],prompts=[];
+ let refuse=0,position=0,action='setup';
+ h.setWindow({alert:m=>alerts.push(m),confirm:m=>{prompts.push({action,message:m});return ++position!==refuse}});
+ const save=()=>{const d=JSON.parse(JSON.stringify(ui().createSaveData()));delete d.savedAt;return d};
+ await ui().handleImportJson({target:{files:[{text:fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url),'utf8')}],value:'file'}});
+ const ctx=h.geometry.buildManualRiverGeometryContext(ui().captureDocument().map);
+ const path=['-24.249,-98','-24.249,-70','0,-56','0,-28','24.249,-14','24.249,14','0,28','0,56','-24.249,70','-24.249,98'].map(k=>ctx.vertex(k));
+ assert.ok(ui().editRiverDocument({type:'create',regionId:1,path,fullness:1}));
+ const id=ui().rivers[0].id;
+ assert.ok(ui().safelyAddRegionToMap({q:3,r:3}).success);
+ assert.ok(ui().editRiverDocument({type:'remove',riverId:id,includeArms:true},{confirmed:true}));
+ ui().setGenSizeCategory('tract');
+ const before=save(),depth=ui().undoHistory.length;
+ for (const choice of ['reject-first','reject-second','accept-both']) {
+   const start=prompts.length;refuse={'reject-first':1,'reject-second':2,'accept-both':0}[choice];position=0;
+   const stacks=hash([ui().undoHistory,ui().redoHistory]);
+   action='regenerateLastRegion';ui().regenerateLastRegion();action='finishPendingRegeneration';ui().finishPendingRegeneration();
+   const after=save(),received=prompts.slice(start),delta=ui().undoHistory.length-depth;
+   assert.match(received[0].message,lang==='ru'?/Река 1/:/River 1/);
+   assert.equal(received.length,choice==='reject-first'?1:2);
+   if(received.length===2)assert.match(received[1].message,lang==='ru'?/малые озёра/:/small lakes/);
+   if(refuse){assert.deepEqual(after,before);assert.equal(delta,0);assert.equal(hash([ui().undoHistory,ui().redoHistory]),stacks);}
+   else {
+     assert.equal(delta,1);
+     const all=before.map.physicalGrid.smallLakes.lakes;
+     const result=after.map.physicalGrid.smallLakes.lakes;
+     const removed=all.filter(a=>result.every(b=>b.id!==a.id)).map(l=>l.id);
+     const listed=[...received[1].message.matchAll(/№(\d+)/g)].map(m=>Number(m[1]));
+     assert.deepEqual(listed,removed);
+     const retained=result.filter(b=>all.some(a=>a.id===b.id));
+     assert.deepEqual(retained.map(l=>l.id),[17,19]);assert.deepEqual(retained,all.filter(a=>retained.some(b=>b.id===a.id)));
+     assert.deepEqual(result.filter(l=>l.id>=25).map(l=>l.id),[25,26,27,28]);
+     assert.ok(after.map.rivers.some(r=>r.id===id));
+     ui().undoMap();assert.deepEqual(save(),before);ui().redoMap();assert.deepEqual(save(),after);
+   }
+   assert.deepEqual(alerts,[]);
+   console.log(JSON.stringify({lang,choice,prompts:received,depthDelta:delta,priorSaveHash:hash(before),afterSaveHash:hash(after),beforeIds:before.map.physicalGrid.smallLakes.lakes.map(l=>l.id),afterIds:after.map.physicalGrid.smallLakes.lakes.map(l=>l.id),exactHistoryOnCancel:refuse?true:null,undoRedoExact:refuse?null:true}));
+ }
+}

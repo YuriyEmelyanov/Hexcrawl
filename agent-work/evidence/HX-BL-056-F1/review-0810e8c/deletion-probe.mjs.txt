@@ -1,0 +1,75 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {createGenerationHarness} from './helpers/generation-harness.mjs';
+const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
+const rowkey=c=>[c.q,c.r].join(',');
+const encode=value=>JSON.stringify(value,(k,v)=>Object.prototype.toString.call(v)==='[object Map]'?{'#map':[...v]}:Object.prototype.toString.call(v)==='[object Set]'?{'#set':[...v]}:v);
+const digest=value=>createHash('sha256').update(encode(value)).digest('hex');
+const out=[];
+for (const lang of ['ru','en']) {
+  const h=createGenerationHarness(42,'',lang);
+  const ui=()=>h.render();
+  const alerts=[];
+  h.setWindow({alert:m=>alerts.push(m)});
+  h.injectFunction('readTextFile',async file=>file.text);
+  const load=data=>ui().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'file'}});
+  const save=()=>{const d=JSON.parse(JSON.stringify(ui().createSaveData()));delete d.savedAt;return d};
+  const pick=c=>{const a=ui();assert.ok(a.pickFine(c,false,a.getDocumentRevision()))};
+  const step=n=>assert.ok(ui().switchFineStep(n));
+  const note=(c,message)=>{ui().setSelectedHex(c);ui().changeNotesText(rowkey(c),message);ui().finishNotesGroup()};
+  await load(fixture);
+  step(1);pick({q:-21,r:-11});ui().startSmallLake();ui().commitSmallLake();assert.equal(ui().editError,null);step(6);
+  const legacy=save();
+  delete legacy.map.physicalGrid.smallLakes.lakes[0].shoreCells;
+  for(const scenario of ['lakes','note','fine','lake+note','lake+fine+note','no-loss']){
+    await load(legacy);
+    const wantsLakes=['lakes','lake+note','lake+fine+note'].includes(scenario);
+    const wantsFine=['fine','lake+fine+note'].includes(scenario);
+    const wantsNote=['note','lake+note','lake+fine+note'].includes(scenario);
+    const oldRegion=ui().regions[0];
+    note(oldRegion.hexes[0],'on retained area');
+    step(1);const firstCells=new Set(ui().fineCells.map(row=>rowkey(row.cell)));step(6);
+    if(wantsLakes) assert.ok(ui().safelyAddRegionToMap({q:3,r:3}).success);
+    else ui().addFallbackTractToMap(ui().candidateHexes[0]);
+    let lostFine;
+    if(wantsFine){
+      step(1);const rows=ui().fineCells;
+      const c=wantsLakes?save().map.physicalGrid.smallLakes.lakes.find(l=>l.origin==='automatic'&&l.cells.some(c=>!firstCells.has(rowkey(c)))).cells.find(c=>!firstCells.has(rowkey(c))):rows.find(row=>!firstCells.has(rowkey(row.cell))).cell;
+      lostFine=rowkey(c);pick(c);ui().setFineHover(null);ui().startFineDraft();assert.ok(ui().changeFineDraft({note:'on lost detail cell'},ui().fineDraft));assert.ok(ui().saveFineDraft(ui().fineDraft));step(6);
+    }
+    const c=ui().regions.at(-1).hexes[0];if(wantsNote)note(c,'on removed area');
+    // Give cancellation a genuine redo branch as well as an undo history.
+    note(c,'temporary extra edit');ui().undoMap();assert.ok(ui().redoHistory.length);
+    const before=save(), stacks=digest([ui().undoHistory,ui().redoHistory]), revision=ui().getDocumentRevision(), beforeDoc=digest(ui().captureDocument()), depth=ui().undoHistory.length;
+    const initialLakeIds=before.map.physicalGrid.smallLakes.lakes.map(l=>l.id);
+    const prompts=[];
+    const answer=b=>h.setWindow({alert:m=>alerts.push(m),confirm:m=>{prompts.push(m);return b}});
+    if(scenario!=='no-loss'){
+      answer(false);ui().deleteLastRegion();assert.equal(prompts.length,1,lang+' '+scenario);assert.equal(ui().getDocumentRevision(),revision);assert.equal(digest(ui().captureDocument()),beforeDoc);assert.deepEqual(save(),before);assert.equal(digest([ui().undoHistory,ui().redoHistory]),stacks);
+    }
+    answer(true);ui().deleteLastRegion();const after=save();
+    if(scenario!=='no-loss')assert.deepEqual(prompts,[prompts[0],prompts[0]]);
+    else assert.deepEqual(prompts,[]);
+    const message=prompts[0]??'';
+    assert.equal(/малые озёра|small lakes/.test(message),wantsLakes);
+    assert.equal(/заметки мастера|GM notes/.test(message),wantsNote);
+    assert.equal(/локальные правки|Local one-mile edits/.test(message),wantsFine);
+    if(wantsNote)assert.ok(message.includes(rowkey(c)));
+    if(wantsFine)assert.ok(message.includes(lostFine));
+    const ids=[...message.matchAll(/№(\d+)/g)].map(m=>Number(m[1]));
+    assert.deepEqual(ids,initialLakeIds.filter(i=>i!==1));
+    assert.equal(ui().undoHistory.length,depth+1);
+    assert.equal(after.map.regions.length,1);
+    assert.equal(after.map.gmNotesByHexKey[rowkey(oldRegion.hexes[0])],'on retained area');
+    assert.ok(!(rowkey(c) in after.map.gmNotesByHexKey));
+    assert.deepEqual(after.map.physicalGrid.smallLakes.lakes.map(l=>l.id),[1]);
+    assert.deepEqual(after.map.physicalGrid.smallLakes.lakes[0].cells,before.map.physicalGrid.smallLakes.lakes[0].cells);
+    if(wantsFine)assert.ok(!(lostFine in after.map.physicalGrid.fineCellEdits));
+    ui().undoMap();assert.deepEqual(save(),before);ui().redoMap();assert.deepEqual(save(),after);
+    assert.deepEqual(alerts,[]);
+    const result={lang,scenario,lost_ids:ids,note:wantsNote?rowkey(c):null,fine:lostFine??null,prompt:message,undo_delta:1,retained_lake:1,cancel_exact:scenario==='no-loss'?null:true,save_before:digest(before),save_after:digest(after),undo_redo_exact:true};
+    console.log(JSON.stringify(result));out.push(result);
+  }
+}
+fs.writeFileSync('/tmp/ind08-0810/independent-matrix.json',JSON.stringify(out,null,2)+'\n');

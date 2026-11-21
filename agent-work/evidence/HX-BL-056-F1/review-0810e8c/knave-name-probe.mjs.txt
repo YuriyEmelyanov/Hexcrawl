@@ -1,0 +1,34 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {createGenerationHarness} from './helpers/generation-harness.mjs';
+const hash=v=>createHash('sha256').update(JSON.stringify(v,(k,o)=>Object.prototype.toString.call(o)==='[object Map]'?{'#map':[...o]}:Object.prototype.toString.call(o)==='[object Set]'?{'#set':[...o]}:o)).digest('hex');
+for(const lang of ['en']) {
+ const h=createGenerationHarness(42,'',lang),ui=()=>h.render();
+ h.injectFunction('readTextFile',async file=>file.text);
+ const alerts=[],prompts=[];
+ let refuse=0,position=0,action='setup';
+ h.setWindow({alert:m=>alerts.push(m),confirm:m=>{prompts.push({action,message:m});return ++position!==refuse}});
+ const save=()=>{const d=JSON.parse(JSON.stringify(ui().createSaveData()));delete d.savedAt;return d};
+ await ui().handleImportJson({target:{files:[{text:fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url),'utf8')}],value:'file'}});
+ assert.ok(ui().chooseKnaveProfile(true));
+ const ctx=h.geometry.buildManualRiverGeometryContext(ui().captureDocument().map);
+ const path=['-24.249,-98','-24.249,-70','0,-56','0,-28','24.249,-14','24.249,14','0,28','0,56','-24.249,70','-24.249,98'].map(k=>ctx.vertex(k));
+ assert.ok(ui().editRiverDocument({type:'create',regionId:1,path,fullness:1}));
+ const id=ui().rivers[0].id;
+ assert.ok(ui().safelyAddRegionToMap({q:3,r:3}).success);
+ assert.ok(ui().editRiverDocument({type:'remove',riverId:id,includeArms:true},{confirmed:true}));
+ ui().setGenSizeCategory('tract');
+
+ const before=save(), depth=ui().undoHistory.length;
+ refuse=0;position=0;action='regenerateLastRegion';ui().regenerateLastRegion();
+ action='finishPendingRegeneration';ui().finishPendingRegeneration();
+ const received=prompts.slice();console.log(JSON.stringify({case:'Knave+river+lake',prompts:received,error:ui().editError,genError:ui().generationError,depthDelta:ui().undoHistory.length-depth}));
+ assert.equal(received.length,3);assert.match(received[0].message,/Knave/);assert.match(received[1].message,/River 1/);assert.match(received[2].message,/small lakes/);assert.equal(ui().undoHistory.length,depth+1);
+ ui().undoMap();assert.deepEqual(save(),before);
+ const target=ui().nameTargets.find(t=>t.key.startsWith('poi:2:'));assert.ok(target);
+ ui().showNameTarget(target.key);ui().changeNameDraft('Perennial landmark',ui().nameDraft);assert.ok(ui().saveNameDraft());
+ const withName=save(),n=prompts.length,stacks=hash([ui().undoHistory,ui().redoHistory]);
+ ui().regenerateLastRegion();assert.equal(ui().pendingRegen,null);assert.deepEqual(save(),withName);assert.equal(hash([ui().undoHistory,ui().redoHistory]),stacks);assert.equal(prompts.length,n);assert.ok(ui().editError);
+ console.log(JSON.stringify({case:'named POI blocks even combined losses',name:target.key,prompts:prompts.slice(n),error:ui().editError,saveAndStacksExact:true}));
+}
