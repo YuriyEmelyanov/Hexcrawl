@@ -1,20 +1,18 @@
 import {useId,useMemo} from 'react';
-import {roundedRoutes} from './routeBends';
+import {refinedRouteBends} from './refinedRouteBends';
 import type {Detail1State} from './detailModel';
 import type {WorldPoint} from './detailGrid';
-import {refinementRiverDisplayPaths} from './geometryRefinementBoundary';
 import type {normalizeRefinementRiverSource} from './geometryRefinementSource';
 import {refinementPolylineArc} from './geometryRefinementSource';
 import type {FineRoad,FineCrossing} from './oneMilePresentation';
 import {fineRoadPresentation,fineRefinedRoadPresentation,fineRiverStrokeWidth} from './oneMilePresentation';
-import {prepareRefinementWater} from './geometryRefinementWater';
 import {LakeWater} from './rendering/LakeWater';
 import type {LakeShape,NaturalLakeCell} from './rendering/lakeGeometry';
 import type {RefinementShore} from './geometryRefinementShore';
 
 type River={key:string;x1:number;y1:number;x2:number;y2:number;width:number;fullness:number};
 type Source=Extract<ReturnType<typeof normalizeRefinementRiverSource>,{status:'prepared'}>;
-type Props={state:Detail1State;source:Source;offset:WorldPoint;mode:'tiles'|'emoji'|'color';
+type Props={displayRoutes?:ReturnType<typeof refinedRouteBends>;state:Detail1State;source:Source;offset:WorldPoint;mode:'tiles'|'emoji'|'color';
  rivers:readonly River[];roads:readonly FineRoad[];crossings:readonly FineCrossing[];hiddenRiverEdgeKeys?:ReadonlySet<string>;smallLakeRiverMask?:string;
  rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number;edgeKey?:string}[];
  waterfalls:readonly {key:string;x:number;y:number}[];rotated:boolean};
@@ -49,28 +47,9 @@ export function RefinedGeographyArtwork(p:Props){
  const retained=new Set(refinement.roads.roads.map(r=>pair(r.roadId,r.sourceRoadSegmentKey)));
  const outsideRoads=p.roads.filter(r=>!retained.has(pair(r.roadId,r.segmentKey)));
  const retainedRapids=new Set(refinement.riverPlan.source.segments.map(s=>pair(s.riverId,s.edgeKey)));
- const {paintedPaths,visiblePaths,displayWater,roadPaint}=useMemo(()=>{
-   const {visible,painted}=refinementRiverDisplayPaths(p.source,refinement,p.hiddenRiverEdgeKeys);
-   const fixedRivers=new Set([
-     ...refinement.roads.crossings.map(c=>pair(c.riverId,c.riverEdgeKey)),
-     ...refinement.riverPlan.mouths.map(m=>pair(m.riverId,m.sourceEdgeKey)),
-   ]);
-   const riverPaths=roundedRoutes(visible.map(r=>({
-     key:pair(r.riverId,r.sourceEdgeKey),routeId:r.riverId,points:r.points,
-     fixed:fixedRivers.has(pair(r.riverId,r.sourceEdgeKey)),
-   })),refinement.riverPlan.waterfalls.map(w=>w.point));
-   const curved=visible.map(r=>({...r,points:riverPaths.get(pair(r.riverId,r.sourceEdgeKey))!}));
-   const widths=new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/factor]));
-   const water=prepareRefinementWater({paths:curved,widthByFullness:widths});
-   const paintKeys=new Set(painted.map(r=>pair(r.riverId,r.sourceEdgeKey)));
-   const shown=water.status==='prepared'?curved:visible;
-   const roadPaint=roundedRoutes(refinement.roads.roads.map(r=>({
-     key:pair(r.roadId,r.sourceRoadSegmentKey),routeId:r.roadId,points:r.points,
-     fixed:r.crossingKeys.length>0||r.linkedPoiIds.length>0||r.paint.some(part=>part.poiMaskIds.length>0),
-   })));
-   return {visiblePaths:shown,paintedPaths:shown.filter(r=>paintKeys.has(pair(r.riverId,r.sourceEdgeKey))),
-     displayWater:water.status==='prepared'?water:prepareRefinementWater({paths:visible,widthByFullness:widths}),roadPaint};
- },[p.source,refinement,p.hiddenRiverEdgeKeys,factor]);
+ const {paintedPaths,visiblePaths,displayWater,roadPaint}=useMemo(
+   ()=>p.displayRoutes??refinedRouteBends(p.source,refinement,p.hiddenRiverEdgeKeys),
+   [p.displayRoutes,p.source,refinement,p.hiddenRiverEdgeKeys]);
  const pathByRef=new Map(visiblePaths.map(path=>[pair(path.riverId,path.sourceEdgeKey),path]));
  const locations=[...visiblePaths.flatMap(path=>path.points.map(point)),...p.roads.flatMap(r=>[{x:r.x1,y:r.y1},{x:r.x2,y:r.y2}])];
  if(!locations.length)locations.push(p.offset);

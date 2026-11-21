@@ -1,3 +1,4 @@
+import {refinedRouteBends} from './refinedRouteBends';
 import {ends, roundedRoutes, svgPoints} from './routeBends';
 import {finePoiLabel} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage,OneMileGeometryConflict} from './automaticOneMileScene';
@@ -16152,7 +16153,12 @@ export function App() {
     const hits=Array.from(nodes).filter(node=>{const matrix=node.getScreenCTM();return matrix&&node.isPointInStroke(new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse()));});
     const choices=hits.flatMap(node=>{const hit=riverMapTargets.find(t=>`${t.riverId}:${t.edgeKey}`===node.dataset.riverMapEdge);return hit?[{riverId:hit.riverId,edgeKey:hit.edgeKey,hexKey:hit.hexKey}]:[];});
     const matrix=event.currentTarget.getScreenCTM(),point=matrix?new DOMPoint(event.clientX,event.clientY).matrixTransform(matrix.inverse()):null;
-    const roadHits=point?roadSegments.filter(s=>{const dx=s.x2-s.x1,dy=s.y2-s.y1,t=Math.max(0,Math.min(1,((point.x-s.x1)*dx+(point.y-s.y1)*dy)/(dx*dx+dy*dy)));return Math.hypot(point.x-s.x1-t*dx,point.y-s.y1-t*dy)<=22/mapScaleRef.current;}).map(s=>({roadId:s.roadId,pair:s.segmentKey})):[];
+    const roadHits=point?roadSegments.filter(s=>roadPaint.get(s.key)?.some((b,i,points)=>{
+      if (!i) return false;
+      const a=points[i-1],dx=b.x-a.x,dy=b.y-a.y;
+      const t=Math.max(0,Math.min(1,((point.x-a.x)*dx+(point.y-a.y)*dy)/(dx*dx+dy*dy||1)));
+      return Math.hypot(point.x-a.x-t*dx,point.y-a.y-t*dy)<=22/mapScaleRef.current;
+    })).map(s=>({roadId:s.roadId,pair:s.segmentKey})):[];
     if(choices.length>1||roadHits.length){setRiverHitChoices(choices);setRiverRoadHitChoices(roadHits);setIsSidePanelCollapsed(false);setEditError(language==='ru'?'Здесь несколько объектов. Выберите нужный участок.':'Several objects overlap. Choose the intended edge.');return;}
     if(choices[0])chooseMapRiver(choices[0]);
   };
@@ -16523,9 +16529,13 @@ export function App() {
   const fineReadCell=fineDraft?.target??fineHover??fineDisplay?.selectedCell??null;
   const fineRow=fineReadCell?fineCells.find(row=>isSameHex(row.cell,fineReadCell)):undefined;
   const fineValues=fineReadCell?fineDisplay?.fineCellEdits?.[hexKey(fineReadCell)]:undefined;
+  const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
+  const fineRoutes=useMemo(()=>fineDisplay?.viewStep===1 && fineDisplay.geometryRefinement && refinedSource?.status==='prepared'
+    ? refinedRouteBends(refinedSource,fineDisplay.geometryRefinement,hiddenRiverEdgeKeys) : undefined,
+    [fineDisplay?.viewStep,fineDisplay?.geometryRefinement,refinedSource,hiddenRiverEdgeKeys]);
   const fineSummary=useMemo(()=>fineDisplay&&fineReadCell?summarizeDetailCell({...fineDisplay,selectedWorldPoint:undefined},fineReadCell,
-    new Map(oneMileSources(captureMap()).map(row=>[hexKey(row.cell),row.water??row.landBiomeId!])),{roads,rivers:detailMapRiverGeometry(captureMap(),fineDisplay.grid.origin)}):null,
-    [fineDisplay,fineReadCell?.q,fineReadCell?.r,regions,hexTerrainByKey,biomeOverrideByHexKey,roads,rivers,crossings,riverFeatureOverrides]);
+    new Map(oneMileSources(captureMap()).map(row=>[hexKey(row.cell),row.water??row.landBiomeId!])),{roads,rivers:detailMapRiverGeometry(captureMap(),fineDisplay.grid.origin),displayRoutes:fineRoutes}):null,
+    [fineDisplay,fineRoutes,fineReadCell?.q,fineReadCell?.r,regions,hexTerrainByKey,biomeOverrideByHexKey,roads,rivers,crossings,riverFeatureOverrides]);
   const finePoi=(fp:Detail1State['poiFootprints'][number])=>{
     const alias=fp.legacyRef??'',parts=alias.split(':'),water=alias.startsWith('waterPoi:'),key=parts[water?1:2],hex=key?parseWaterHex(key):START_HEX;
     const region=regions.find(r=>r.id===Number(parts[1])),waterKind=waterPoiByKey.get(key),central=region&&hasCentralPoi(region)&&isSameHex(region.centerHex,hex);
@@ -16643,7 +16653,7 @@ export function App() {
     const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
   const acceptedSmallLakes=physicalGrid?.smallLakes;
-  const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
+
   const needsSmallLakeProtection=!!smallLakeDraft||!!acceptedSmallLakes?.lakes.length;
   const smallLakeProtection=useMemo(()=>needsSmallLakeProtection&&fineDisplay?.viewStep===1
     ?smallLakeProtectionForMap(captureMap(),fineDisplay):null,
@@ -16732,11 +16742,11 @@ export function App() {
   };
   const smallLakeCanStart=!!fineDisplay?.selectedCell&&hasFullDrySupport(fineCells.find(row=>isSameHex(row.cell,fineDisplay.selectedCell!)))&&
     !acceptedLakeArtwork.reserved.has(hexKey(fineDisplay.selectedCell));
-  const refinedArtwork=(state:Detail1State,smallLakeRiverMask?:string)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork state={state} source={refinedSource} smallLakeRiverMask={smallLakeRiverMask} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
+  const refinedArtwork=(state:Detail1State,smallLakeRiverMask?:string)=>state.geometryRefinement&&refinedSource?.status==='prepared'?<RefinedGeographyArtwork displayRoutes={fineRoutes} state={state} source={refinedSource} smallLakeRiverMask={smallLakeRiverMask} hiddenRiverEdgeKeys={hiddenRiverEdgeKeys} offset={riverOffset} mode='tiles' rivers={riverSegments} roads={roadSegments} crossings={renderedCrossings} rapids={riverRapidMarks} waterfalls={riverWaterfalls} rotated={isMapRotated}/>:undefined;
   const fineArtwork=useMemo(()=>fineDisplay?<OneMileArtwork state={fineDisplay} smallLakes={acceptedLakeArtwork.views} smallLakeDraft={paintSmallLake} smallLakeDraftCells={smallLakeDraft?.cells} cells={fineCells} candidates={fineCandidates} offset={riverOffset} rotation={mapRotationTransform} rotated={isMapRotated} revision={renderedDocumentRevision} coordinates={showHexCoordinates} busy={isImporting||!!pendingRegen||!!kingdomJob}
     geography={mask=>refinedArtwork(fineDisplay,mask)} poi={finePoi} rapids={riverRapidMarks} waterfalls={riverWaterfalls} crossings={renderedCrossings} roads={roadSegments} rivers={riverSegments}
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
-    [fineDisplay,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
+    [fineDisplay,fineRoutes,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
   const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}

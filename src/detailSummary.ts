@@ -9,6 +9,10 @@ export type DetailSummaryGeography=Readonly<{
  rivers?:readonly DetailLiveRiver[];
  roads?:readonly Readonly<{id:number;segments:readonly Readonly<{from:DetailCell;to:DetailCell;kind:'road'|'trail'}>[]} >[];
  notes?:ReadonlyMap<string,string>;
+ displayRoutes?:Readonly<{
+   riverPaint:ReadonlyMap<string,readonly WorldPoint[]>;
+   roadPaint:ReadonlyMap<string,readonly WorldPoint[]>;
+ }>;
 }>;
 const key=(cell:DetailCell)=>`${cell.q},${cell.r}`;
 const cross=(a:WorldPoint,b:WorldPoint,p:WorldPoint)=>(b.x-a.x)*(p.y-a.y)-(b.y-a.y)*(p.x-a.x);
@@ -85,7 +89,7 @@ export function summarizeDetailCell(state:Detail1State,anchor:DetailCell,terrain
    // within the source normalizer's tolerance: adjacent native hex corners
    // may have different raw floats despite the exact same vertex key.
    const adjusted=(p:WorldPoint)=>{const endpoint=edge.id.split('|').find(key=>{const node=sourceNodes.get(key);return node&&Math.hypot(node.x-p.x,node.y-p.y)<=1e-8;});return endpoint?ports.get(endpoint)??p:p;};
-   const points=path?.points??[adjusted(edge.segment.from),adjusted(edge.segment.to)];
+   const points=geography.displayRoutes?.riverPaint.get(pair(original.id,edge.id))??path?.points??[adjusted(edge.segment.from),adjusted(edge.segment.to)];
    const crossings=path?refinement.roads.crossings.filter(c=>c.riverId===original.id&&c.riverEdgeKey===edge.id).map(c=>({id:`crossing:${c.key}`,kind:c.kind,point:c.point})):edge.crossings;
    return points.slice(1).map((to,i)=>({...edge,segment:{from:points[i],to},crossings}));
   }),waterfalls:original.waterfalls.map(w=>({...w,point:refinement.riverPlan.waterfalls.find(p=>w.id===`vertex:${p.sourceNodeKey}`)?.point??w.point}))}:original;
@@ -103,10 +107,13 @@ export function summarizeDetailCell(state:Detail1State,anchor:DetailCell,terrain
   const hit=detailSegmentCellIntersection(grid,cell,{from:detailCellCenter(source,segment.from),to:detailCellCenter(source,segment.to)});if(!hit)continue;
   routeOwners.set(road.id,{id:road.id,kinds:[...new Set([...(existing?.kinds??[]),segment.kind])].sort(),segmentKeys:[...new Set([...(existing?.segmentKeys??[]),segmentKey])].sort(),boundaryOnly:(existing?.boundaryOnly??true)&&hit.boundaryOnly});
  }
- for(const road of refinement?.roads.roads??[])for(let i=1;i<road.points.length;i++){
-  const hit=detailSegmentCellIntersection(grid,cell,{from:road.points[i-1],to:road.points[i]});if(!hit)continue;
-  const existing=routeOwners.get(road.roadId);
-  routeOwners.set(road.roadId,{id:road.roadId,kinds:[...new Set([...(existing?.kinds??[]),road.kind])].sort(),segmentKeys:[...new Set([...(existing?.segmentKeys??[]),road.sourceRoadSegmentKey])].sort(),boundaryOnly:(existing?.boundaryOnly??true)&&hit.boundaryOnly});
+ for(const road of refinement?.roads.roads??[]){
+  const points=geography.displayRoutes?.roadPaint.get(pair(road.roadId,road.sourceRoadSegmentKey))??road.points;
+  for(let i=1;i<points.length;i++){
+   const hit=detailSegmentCellIntersection(grid,cell,{from:points[i-1],to:points[i]});if(!hit)continue;
+   const existing=routeOwners.get(road.roadId);
+   routeOwners.set(road.roadId,{id:road.roadId,kinds:[...new Set([...(existing?.kinds??[]),road.kind])].sort(),segmentKeys:[...new Set([...(existing?.segmentKeys??[]),road.sourceRoadSegmentKey])].sort(),boundaryOnly:(existing?.boundaryOnly??true)&&hit.boundaryOnly});
+  }
  }
  const localNote=state.fineCellEdits?.[key(cell)]?.note;
  const notes=localNote?[{key:key(cell),text:localNote,partial:false}]:[];
