@@ -1,0 +1,99 @@
+{
+  "run_id": "2026-11-21T1000-programmer-HX-BL-056-RV10",
+  "role": "programmer",
+  "role_selection_reason": "Подтверждён RV10 в утверждённой F1.1. Реестр свободен после сверки 515 claims и 578 результатов.",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1.1-RV10",
+  "status": "review_ready",
+  "review_ready": true,
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+  "head_tree_sha": "50aa4a65d25b27e808b3baafcdfedb8967162923",
+  "repair_base_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/review.json",
+  "completed_at": "2026-11-21T07:18:19.334Z",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44878436373",
+  "ci_jobs": [
+    {
+      "id": 136768203405,
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136768203627,
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136768203639,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136768204813,
+      "name": "engraved-map-comparison",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "checks": {
+    "node": [
+      "tests 443",
+      "pass 443",
+      "fail 0",
+      "skipped 0"
+    ],
+    "browser": {
+      "status": "passed",
+      "artifact_id": 14696984281
+    },
+    "world_random": "passed",
+    "focused": {
+      "passed": 1,
+      "executed": 1,
+      "skipped": 0
+    },
+    "temporary_probe": "Replayed Classic seed 42 on repair base and exact final tree, JSON reload and before/after RNG match"
+  },
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv10-0e7e2be/verification.json",
+  "visible_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv10-0e7e2be/before-after.json",
+  "result_ref": "agent-work/results/2026-11-21T1000-programmer-HX-BL-056-RV10.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1000-programmer-HX-BL-056-RV10.json",
+  "publication_authorized": false,
+  "published": false,
+  "next_role": "reviewer",
+  "next_step": "Проверяющему независимо принять пакет PR №510 на 0e7e2be4222d831f5b47ce34343215db11319d22, включая R03/AC04 и RV10, и записать score_assessment 1.2.",
+  "forecast": "Остаются независимая приёмка и выпуск после разрешения владельца, ориентир два запуска при успешной проверке.",
+  "owner_decisions_needed": [],
+  "test_change_summary": {
+    "base_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+    "head_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node mapTransactions",
+    "scenario": "Classic с профилем Knave, seed 42. После удаления №17 и №19 проверяются все клетки новых озёр относительно полной опоры принятой карты, наличие озёр на новой территории, состав единственного подтверждения и точная история.",
+    "reuse_or_new_reason": "Расширен существующий сквозной сценарий с этой картой и перегенерацией. Дополнительная проверка на прежнем SHA падает на (17,21).",
+    "source": "git diff dd83f39..0e7e2be4222d831f5b47ce34343215db11319d22 -- test/mapTransactions.test.mjs"
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T07:01:09.649Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T07:18:08.575Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
