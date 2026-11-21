@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-21T07:18:19.334Z",
+  "updated_at": "2026-11-21T08:03:33.365012Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -1026,7 +1026,7 @@
                 "pixelIdentical": false,
                 "raster": {
                   "maxDelta": 210,
-                  "changedFraction": 0.00007626561472715319
+                  "changedFraction": 7.626561472715319e-05
                 },
                 "scope": "diagnostic including unrelated controls"
               }
@@ -1921,6 +1921,30 @@
       "implementation_authorized": true,
       "release_authorized": false,
       "updated_at": "2026-11-20T22:03:31.497Z"
+    },
+    {
+      "task_id": "HX-BL-064",
+      "title": "Морской старт и продолжение карты от открытого моря",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/decisions/owner-request-2026-11-21-sea-frontier.json"
+      },
+      "score_criterion": "S01-C01",
+      "score_weight_share": 0.2,
+      "requirements": [
+        "В Classic мастер может начать региональную карту в открытом море и продолжать построение с морской стороны, даже когда рядом нет суши."
+      ],
+      "acceptance_outline": [
+        "Начать карту с моря. Дважды подряд расширить её от внешнего морского края, в том числе из области без соседней суши. Каждый выбранный пустой гекс становится частью карты, после каждого шага доступны точки следующего расширения.",
+        "На прибрежной карте выйти от берега в открытое море и продолжить к следующему острову. Ранее построенные морские и сухопутные гексы, POI и их координаты сохраняются.",
+        "Озеро внутри карты не предлагает продолжение в открытое море. После сохранения и повторного открытия совпадают карта и допустимые точки роста, отмена и повтор восстанавливают оба состояния."
+      ],
+      "next_step": "Рассмотрение кандидата владельцем.",
+      "ready_for_development": false,
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "updated_at": "2026-11-21T08:03:33.365012Z"
     }
   ],
   "retired_pr_packages": {
