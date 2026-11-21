@@ -1,0 +1,123 @@
+{
+  "run_id": "2026-11-21T0800-programmer-HX-BL-056-RV09",
+  "role": "programmer",
+  "role_selection_reason": "Зарегистрировано RV09 по утверждённой F1.1, задача и общий слот свободны после сверки 511 claims и 576 результатов.",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1.1-RV09",
+  "status": "review_ready",
+  "review_ready": true,
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+  "head_tree_sha": "b5cc7551a26689b199c50fb543d66acd1b3cec53",
+  "repair_base_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-0810e8c/review.json",
+  "completed_at": "2026-11-21T05:24:28.469Z",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44869354789",
+  "ci_jobs": [
+    {
+      "name": "check",
+      "id": 136740153112,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "world-random",
+      "id": 136740153251,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "browser",
+      "id": 136740153272,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "name": "engraved-map-comparison",
+      "id": 136740154750,
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "checks": {
+    "node": {
+      "log_summary": [
+        "tests 443",
+        "pass 443",
+        "fail 0",
+        "skipped 0"
+      ],
+      "status": "passed"
+    },
+    "typescript_build": "passed",
+    "browser": {
+      "status": "passed",
+      "artifacts": [
+        {
+          "id": 14693671918,
+          "name": "HX-BL-024-UI"
+        },
+        {
+          "id": 14693332785,
+          "name": "HX-BL-041-UI"
+        },
+        {
+          "id": 14693088636,
+          "name": "terrain-render-preview"
+        },
+        {
+          "id": 14693033945,
+          "name": "ONE-MILE1-UI"
+        }
+      ]
+    },
+    "world_random": "passed",
+    "focused_node": {
+      "executed": 2,
+      "passed": 2,
+      "skipped": 0
+    },
+    "temporary_probes": {
+      "bilingual": 4,
+      "knave_and_name": 2
+    }
+  },
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv09-dd83f39/verification.json",
+  "visible_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv09-dd83f39/regeneration.json",
+  "result_ref": "agent-work/results/2026-11-21T0800-programmer-HX-BL-056-RV09.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T0800-programmer-HX-BL-056-RV09.json",
+  "publication_authorized": false,
+  "published": false,
+  "next_role": "reviewer",
+  "next_step": "Проверяющему независимо принять пакет PR №510 на dd83f39e40e7baee90020a20a4b32d2a81085fe7, включая R04/AC03, и записать score_assessment 1.2.",
+  "forecast": "Остаются независимая приёмка и выпуск после разрешения владельца, ориентир два запуска при успешной проверке.",
+  "owner_decisions_needed": [],
+  "test_change_summary": {
+    "base_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
+    "head_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+    "added": 1,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node mapTransactions",
+    "scenario": "Совместная потеря Knave и озёр, восстановление реки. Отказ сохраняет оба стека и JSON, согласие занимает один шаг с точными Undo/Redo.",
+    "reuse_or_new_reason": "Существующая матрица одиночных ручных изменений теперь завершает перегенерацию до проверки диалога. Новый случай требует одновременных потерь Knave и озёр на конечной карте, которых в прежней матрице нет.",
+    "source": "git diff 0810e8c..dd83f39 -- test/mapTransactions.test.mjs"
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T05:03:03.942Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T05:24:18.497Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
