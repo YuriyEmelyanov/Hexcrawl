@@ -26,10 +26,10 @@
   },
   "lessons_path": "agent-work/lessons.md",
   "plan_id": "2026-11-08T1957-strategist-next-product",
-  "run_id": "2026-11-21T0302-reviewer-HX-BL-056-849854f",
+  "run_id": "2026-11-21T0400-programmer-HX-BL-056-RV07",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "changes_requested",
+  "status": "review_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -51,26 +51,26 @@
   "schedule_start_at": "2026-11-19T19:00:00+03:00",
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
-  "current_role": "reviewer",
-  "next_role": "programmer",
+  "current_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-056",
   "spec_path": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-21T0302-reviewer-HX-BL-056-849854f.json",
-  "handoff_commit_sha": "560e36ee8a79cbfbe8dc0f1f29cb024236b133e1",
+  "result_path": "agent-work/results/2026-11-21T0400-programmer-HX-BL-056-RV07.json",
+  "handoff_commit_sha": "0bf9e4ef744f083e7bbdbe4bf4ab6a24847f2354",
   "active_claim": null,
-  "next_step": "Исправить RV07 в PR №510. После удаления последнего региона без промежуточных правок старое сохранение должно вернуть прежний счётчик и выдать те же ID при повторной генерации. Сохранить поведение при настоящих промежуточных правках и исправление RV06. Передать новый SHA на независимую приёмку.",
+  "next_step": "Независимо проверить RV07 на 645ecf0 по F1.1, включая повторную генерацию, промежуточные ручные правки, сохранение берегов RV06, карту и PNG. Записать заключение и score_assessment 1.2.",
   "owner_decisions_needed": [],
   "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-056-F1/review-849854f/review.json",
+  "evidence_path": "agent-work/evidence/HX-BL-056-F1/rv07-645ecf0/verification.json",
   "branch_name": "agent/hx-bl-056-small-lakes-f1",
   "pr": 510,
-  "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
-  "tree_sha": "6f2d2132deede35a1e57cbbe89e0209992a1581a",
-  "checks_status": "CI passed; independent checkpoint regression RV07",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44833781688",
-  "review_verdict": "changes_requested",
+  "head_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+  "tree_sha": "914bc0646864a3403faf8cc5393c3995fddebd24",
+  "checks_status": "passed",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44847371238",
+  "review_verdict": "pending",
   "role_selection_mode": "readiness_and_current_owner_direction",
   "role_selection_source": "review_ready_exact_head_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -89,7 +89,7 @@
   "score_update_task_id": "HX-BL-021",
   "score_update_release_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "После исправления RV06 программист освободил слот и передал PR на независимую приёмку по F1.1.",
+  "role_selection_reason": "Подтверждённое замечание RV07 по утверждённой задаче, слот свободен.",
   "score_update_result_ref": "agent-work/results/2026-11-20T0000-strategist-score-PR509.json",
   "score_update_completed_at": "2026-11-19T21:04:32.717Z",
   "score_update_delta": null,
@@ -103,11 +103,11 @@
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-21T00:03:09.205Z",
+      "at": "2026-11-21T00:56:02.186Z",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-21T00:08:23.575Z",
+      "at": "2026-11-21T01:15:50.533Z",
       "is_enabled": true
     },
     "restored": false,
@@ -429,7 +429,9 @@
     "placements_scope": "Legacy preparation-slice DW2/FL9 retained; new campaign placements in campaign_vtt_revision.placements_among_calculated"
   },
   "previous_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
-  "addressed_findings_pending_review": [],
+  "addressed_findings_pending_review": [
+    "HX056-F11-RV07"
+  ],
   "verified_fixed_findings": [
     {
       "id": "OM-REV-001",
@@ -551,7 +553,7 @@
   "deployment_url": "https://app.hexcrawl.ru/",
   "next_task_execution_allowed": true,
   "last_release_pr": 507,
-  "last_material_result_path": "agent-work/results/2026-11-21T0302-reviewer-HX-BL-056-849854f.json",
+  "last_material_result_path": "agent-work/results/2026-11-21T0400-programmer-HX-BL-056-RV07.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -718,7 +720,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Чистовая спецификация готова. Публикация проверенного пакета согласуется отдельно.",
-  "updated_at": "2026-11-21T00:09:26.826Z",
+  "updated_at": "2026-11-21T01:16:41.975Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -856,16 +858,15 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
-    "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
-    "added": 1,
+    "base_sha": "849854f58edb1d824783599b9f72e888ee892556",
+    "head_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+    "added": 0,
     "removed": 0,
-    "modified": 0,
+    "modified": 1,
     "suite": "Node mapTransactions",
-    "scenario": "legacy shoreline after manual and source-water removal",
-    "reuse_or_new_reason": "Existing dry expansion and checkpoint tests never removed an adjacent blocking lake from a legacy document.",
-    "source": "git diff 1c37165..849854f по объявлениям node:test",
-    "reviewer_assessment": "Оправдана отдельная проверка двух путей удаления, перезагрузки и истории. Предыдущие проверки не удаляли соседа из совместимой карты."
+    "scenario": "Удалить последний регион и получить тот же слой озёр при повторной генерации на современном и совместимом JSON.",
+    "reuse_or_new_reason": "Расширен существующий тест двух форматов сохранения при добавлении того же региона. Он уже проверял принятый берег, историю и загрузку, но не нумерацию после удаления региона.",
+    "source": "git diff 849854f..645ecf06c664fead8964ec5ba1a9ba2634f93a53 -- test/mapTransactions.test.mjs, одно существующее объявление node:test"
   },
   "review_url": null,
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -912,7 +913,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-056-F1/review-849854f/review.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv07-645ecf0/verification.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1229,7 +1230,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-21T0302-reviewer-HX-BL-056-849854f.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T0400-programmer-HX-BL-056-RV07.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1373,11 +1374,11 @@
   "previous_automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-20T22:59:21.684Z",
+      "at": "2026-11-21T00:03:09.205Z",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-20T23:12:44.539Z",
+      "at": "2026-11-21T00:08:23.575Z",
       "is_enabled": true
     },
     "restored": false,
@@ -1559,8 +1560,8 @@
       "preserved": true
     }
   },
-  "previous_result_path": "agent-work/results/2026-11-21T0200-programmer-HX-BL-056-RV06.json",
-  "handoff_path": "agent-work/handoffs/2026-11-21T0302-reviewer-HX-BL-056-849854f.json",
+  "previous_result_path": "agent-work/results/2026-11-21T0302-reviewer-HX-BL-056-849854f.json",
+  "handoff_path": "agent-work/handoffs/2026-11-21T0400-programmer-HX-BL-056-RV07.json",
   "ui_actual_preview": {
     "kind": "runtime_exact_SHA",
     "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
@@ -2170,7 +2171,7 @@
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
   "test_change_summary_ref": "agent-work/evidence/HX-BL-059-F1-cc6e7d6/test-change-summary.json",
-  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-056-F1/checkpoint-shore-1c37165/verification.json",
+  "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv07-645ecf0/verification.json",
   "completed_claim_result_ref": "agent-work/results/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
   "review_evidence_ref": "agent-work/evidence/HX-BL-056-F1/review-849854f/review.json",
   "github_review_state": "COMMENT; operational acceptance by fresh independent non-implementer. Same GitHub identity owns PR; formal self-approval unavailable.",
@@ -2282,14 +2283,14 @@
   },
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-20T0100-analyst-HX-BL-056-final-programmer.json",
   "authorization_status": "Implementation within approved F1 and closed interview; no publication approval.",
-  "completed_at": "2026-11-21T00:08:30.145Z",
+  "completed_at": "2026-11-21T01:15:50.534Z",
   "score_changed": false,
   "next_stage_id": "F1_1_legacy_shore_before_neighbour_change",
   "score_evidence_updated": true,
   "current_stage_id": "F1.1-RV07",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "first_runtime_map_shown_final_matrix_pending",
   "completed_claim": "agent-work/claims/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
   "evidence_commit_sha": "a4ce553233ab9effa6b11202a89e3fa8b069b534",
@@ -3920,8 +3921,8 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "changes_requested",
-  "current_stage_review_status": "changes_requested",
+  "current_stage_status": "review_ready",
+  "current_stage_review_status": "pending",
   "accepted": false,
   "full_UI_pending": true,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -4160,7 +4161,23 @@
   "ui_actual_responsible": "programmer",
   "UI_proposal_already_shown": true,
   "authorization_ref": "agent-work/decisions/owner-correction-2026-11-09-HX-BL-043-OWNERFIX1.json",
-  "checks_summary": "eee794f/treef2b8c33: Node429/429, TypeScript/build, browser and RNG success; worker cancel/late-reply and actual RU/EN UI1500/390 pass. Whole F1 acceptance pending.",
+  "checks_summary": {
+    "node": {
+      "executed": 442,
+      "passed": 442,
+      "skipped": 0
+    },
+    "browser": {
+      "status": "passed",
+      "artifact": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44847371238/artifacts/14684805445"
+    },
+    "world_random": "passed",
+    "focused": {
+      "executed": 3,
+      "passed": 3,
+      "skipped": 0
+    }
+  },
   "full_E5_UI_pending": true,
   "materials_commit_sha": "52db9470580d10a3a4def6ccc70a05170f2a57b9",
   "latest_HX_BL_023_E5_features_ui_20261104": {
@@ -17149,44 +17166,75 @@
     "supersedes_spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.md"
   },
   "latest_HX_BL_056_implementation": {
-    "run_id": "2026-11-21T0200-programmer-HX-BL-056-RV06",
+    "run_id": "2026-11-21T0400-programmer-HX-BL-056-RV07",
     "role": "programmer",
     "task_id": "HX-BL-056",
-    "role_selection_reason": "Открытое замечание проверяющего RV06 и свободный слот программиста",
-    "status": "review_ready",
-    "review_ready": true,
-    "stage_id": "F1.1-RV06",
+    "stage_id": "F1.1-RV07",
+    "role_selection_reason": "Подтверждённое замечание RV07 по утверждённой задаче, слот свободен.",
     "branch": "agent/hx-bl-056-small-lakes-f1",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
-    "head_tree_sha": "6f2d2132deede35a1e57cbbe89e0209992a1581a",
-    "repair_base_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
+    "head_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+    "head_tree_sha": "914bc0646864a3403faf8cc5393c3995fddebd24",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "repair_base_sha": "849854f58edb1d824783599b9f72e888ee892556",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv06-849854f/verification.json",
-    "visible_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv06-849854f/comparison.svg",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44833781688",
+    "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-849854f/review.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-21T0400-programmer-HX-BL-056-RV07.json",
+    "result_ref": "agent-work/results/2026-11-21T0400-programmer-HX-BL-056-RV07.json",
+    "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv07-645ecf0/verification.json",
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44847371238",
+    "publication_authorized": false,
+    "score_update": "unpublished",
+    "test_change_summary": {
+      "base_sha": "849854f58edb1d824783599b9f72e888ee892556",
+      "head_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+      "added": 0,
+      "removed": 0,
+      "modified": 1,
+      "suite": "Node mapTransactions",
+      "scenario": "Удалить последний регион и получить тот же слой озёр при повторной генерации на современном и совместимом JSON.",
+      "reuse_or_new_reason": "Расширен существующий тест двух форматов сохранения при добавлении того же региона. Он уже проверял принятый берег, историю и загрузку, но не нумерацию после удаления региона.",
+      "source": "git diff 849854f..645ecf06c664fead8964ec5ba1a9ba2634f93a53 -- test/mapTransactions.test.mjs, одно существующее объявление node:test"
+    },
+    "forecast": "После исправления остаются независимая приёмка и выпуск по отдельному разрешению владельца. При новых замечаниях потребуется цикл исправления.",
+    "automation_health": {
+      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+      "start": {
+        "at": "2026-11-21T00:56:02.186Z",
+        "is_enabled": true
+      },
+      "end": {
+        "at": "2026-11-21T01:15:50.533Z",
+        "is_enabled": true
+      },
+      "restored": false,
+      "errors": []
+    },
+    "completed_at": "2026-11-21T01:15:50.534Z",
+    "review_ready": true,
+    "status": "review_ready",
     "ci_jobs": [
       {
-        "name": "check",
-        "status": "completed",
-        "conclusion": "success",
-        "steps": []
-      },
-      {
-        "name": "browser",
-        "status": "completed",
-        "conclusion": "success",
-        "steps": []
-      },
-      {
+        "id": 136670296528,
         "name": "world-random",
         "status": "completed",
-        "conclusion": "success",
-        "steps": []
+        "conclusion": "success"
       },
       {
+        "id": 136670296740,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136670296752,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 136670298523,
         "name": "engraved-map-comparison",
         "status": "completed",
         "conclusion": "skipped"
@@ -17198,42 +17246,20 @@
         "passed": 442,
         "skipped": 0
       },
-      "browser": "passed; job 136624970029",
-      "rng": "passed; job 136624970045",
-      "artifact_id": 14678345645
+      "browser": {
+        "status": "passed",
+        "artifact": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44847371238/artifacts/14684805445"
+      },
+      "world_random": "passed",
+      "focused": {
+        "executed": 3,
+        "passed": 3,
+        "skipped": 0
+      }
     },
-    "publication_authorized": false,
-    "score_update": "unpublished",
+    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44847371238/artifacts/14684805445",
     "next_role": "reviewer",
-    "next_step": "Проверяющему независимо проверить RV06 по F1.1 на 849854f, регрессии прежних исправлений, карту и PNG. Сохранить score_assessment 1.2 и заключение по всему пакету.",
-    "forecast": "При успешной независимой приёмке остаются приёмка и выпуск после отдельного согласования.",
-    "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-1c37165/review.json",
-    "result_ref": "agent-work/results/2026-11-21T0200-programmer-HX-BL-056-RV06.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-21T0200-programmer-HX-BL-056-RV06.json",
-    "test_change_summary": {
-      "base_sha": "1c37165eaeafe2352f1647d7698b39f38369214e",
-      "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
-      "added": 1,
-      "removed": 0,
-      "modified": 0,
-      "suite": "Node mapTransactions",
-      "scenario": "legacy shoreline after manual and source-water removal",
-      "reuse_or_new_reason": "Existing dry expansion and checkpoint tests never removed an adjacent blocking lake from a legacy document.",
-      "source": "git diff and node:test case declarations"
-    },
-    "automation_health": {
-      "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
-      "start": {
-        "at": "2026-11-20T22:59:21.684Z",
-        "is_enabled": true
-      },
-      "end": {
-        "at": "2026-11-20T23:12:44.539Z",
-        "is_enabled": true
-      },
-      "restored": false,
-      "errors": []
-    }
+    "next_step": "Независимо проверить RV07 на 645ecf0 по F1.1, включая повторную генерацию, промежуточные ручные правки, сохранение берегов RV06, карту и PNG. Записать заключение и score_assessment 1.2."
   },
   "previous_programmer_result_ref": "agent-work/results/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
   "current_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-849854f/score-assessment1.2.json",
@@ -17309,7 +17335,7 @@
       "errors": []
     }
   },
-  "head_tree_sha": "6f2d2132deede35a1e57cbbe89e0209992a1581a",
+  "head_tree_sha": "914bc0646864a3403faf8cc5393c3995fddebd24",
   "latest_independent_run": "2026-11-21-manual-HX-BL-058-final",
   "latest_HX_BL_063_intake": {
     "task_id": "HX-BL-063",
