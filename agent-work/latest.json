@@ -5222,21 +5222,21 @@
   },
   "research_agent": {
     "task_id": "HX-RSR-001",
-    "status": "checkpoint_reddit_author_ranking",
+    "status": "checkpoint_reddit_hex_market",
     "automation_id": "Automation_7690c42b2a7881919aaca4103dcd338f",
     "contract_ref": "agent-work/research/contract.md",
     "overview_ref": "agent-work/research/README.md",
     "state_ref": "agent-work/research/state.json",
     "method_ref": "agent-work/research/method.json",
     "proposals_ref": "agent-work/research/proposals.json",
-    "last_completed_run": "2026-11-21-reddit-dec-2230",
-    "result_ref": "agent-work/research/runs/2026-11-21-hex-only-owner-correction.json",
-    "previous_result_ref": "agent-work/research/runs/2026-11-21-reddit-rpg-nov-2130.json",
-    "checkpoint_ref": "agent-work/research/runs/2026-11-21-reddit-dec-2230.json",
-    "evidence_ref": "agent-work/research/reddit-map-tools/evidence.csv",
+    "last_completed_run": "2026-11-21-hex-reddit-2330",
+    "result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+    "previous_result_ref": "agent-work/research/runs/2026-11-21-hex-only-owner-correction.json",
+    "checkpoint_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+    "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
     "next_candidate": {
-      "id": "hex-only-registry-audit",
-      "scenario": "Сверить неразобранных кандидатов с первоисточниками, проверить варианты названий и независимость продукта, затем продолжить поиск до 200. Параллельно пересчитать Reddit из сохранённых сообщений строго по гекс-картам."
+      "id": "hex-market-archive-context",
+      "scenario": "Продолжить тот же архив. В audit.csv разобрать 38 needs_context по оригиналам/родителям/изображениям, затем 876 screened_only по изображениям и специализированным реестровым ID без слова hex; сопоставить авторов, проверить два одноимённых Hexer и новые карточки. Связанные строки под одним ID проверять один раз. До окончания ревизии не расширять выгрузку."
     },
     "active_ranking_ref": "agent-work/market/three-scenario-ranking-2026-11-15.json",
     "active_ranking_changed": false,
@@ -5319,15 +5319,15 @@
       }
     ],
     "authority_status": "owner_authorized_research",
-    "finalized_at": "2026-11-21T18:59:33.820Z",
+    "finalized_at": "2026-11-21T20:44:23.133Z",
     "program_id": "HX-RSR-001",
-    "run_id": "2026-11-21-reddit-dec-2230",
-    "last_result_ref": "agent-work/research/runs/2026-11-21-hex-only-owner-correction.json",
-    "updated_at": "2026-11-21T19:33:00.254Z",
+    "run_id": "2026-11-21-hex-reddit-2330",
+    "last_result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+    "updated_at": "2026-11-21T20:44:23.133Z",
     "active_rating_changed": false,
-    "last_run_id": "2026-11-21-hex-only-owner-correction",
-    "result_commit_sha": "8cd4877d9087910085c74ccee8762ba7a01078ee",
-    "last_run": "2026-11-21-reddit-dec-2230",
+    "last_run_id": "2026-11-21-hex-reddit-2330",
+    "result_commit_sha": "ce0bc97677ad8ba07b22166fdff5be4331b5713e",
+    "last_run": "2026-11-21-hex-reddit-2330",
     "new_owner_decisions_needed": [],
     "pending_product_proposal_refs": [
       "agent-work/proposals/2026-11-10-HX-BL-054-PF2-FILL1.json",
@@ -5336,7 +5336,7 @@
     "proposal_ref": null,
     "owner_work_policy_ref": "agent-work/decisions/owner-decision-2026-11-10-research-outcomes.json",
     "last_owner_instruction_applied": "Добавлять новые подтверждённые инструменты в общий реестр после 200. Вести помесячный рейтинг региональных карт по уникальным авторам Reddit.",
-    "summary_ref": "agent-work/research/reddit-map-tools/README.md",
+    "summary_ref": "agent-work/research/reddit-map-tools/hex-only/README.md",
     "resolved_product_owner_decisions": [
       {
         "proposal_id": "HX-BL-054-PF2-FILL1-v1",
@@ -5683,18 +5683,59 @@
     "claim": null,
     "active_task": null,
     "checkpoint": {
-      "run_id": "2026-11-21-hex-only-owner-correction",
-      "status": "checkpoint_hex_only_reclassification",
-      "confirmed": 81,
-      "remaining": 119,
-      "target": 200,
-      "result_ref": "agent-work/research/runs/2026-11-21-hex-only-owner-correction.json",
+      "run_id": "2026-11-21-hex-reddit-2330",
+      "status": "checkpoint_reddit_hex_market",
+      "stage": "regional_hex_evidence_reclassification",
+      "result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
       "registry_ref": "agent-work/research/competitors/registry.json",
-      "next_candidate": {
-        "id": "hex-only-registry-audit",
-        "scenario": "Сверить неразобранных кандидатов с первоисточниками, проверить варианты названий и независимость продукта, затем продолжить поиск до 200. Параллельно пересчитать Reddit из сохранённых сообщений строго по гекс-картам."
+      "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
+      "ranking_ref": "agent-work/research/reddit-map-tools/hex-only/ranking.csv",
+      "monthly_ref": "agent-work/research/reddit-map-tools/hex-only/monthly.csv",
+      "audit_ref": "agent-work/research/reddit-map-tools/hex-only/audit.csv",
+      "updated_at": "2026-11-21 20:42:50 UTC",
+      "registry": {
+        "confirmed_software": 89,
+        "confirmed_previous": 81,
+        "additions": 8,
+        "target": 200,
+        "remaining": 111,
+        "other_procedures_and_assets": 34,
+        "original_candidates_still_pending": 165
       },
-      "obsolete_broad_data_sha": "825988c8684bca9d245822aa327d11379f2ae291"
+      "coverage": {
+        "historical_blob_sha": "3203230b0ea6c71fcd3c75a22d013f3374e5a905",
+        "historical_pairs": 1037,
+        "screened": 1037,
+        "reviewed_flagged": 161,
+        "original_confirmed": 109,
+        "original_excluded": 14,
+        "needs_context": 38,
+        "screened_only": 876,
+        "new_pairs_from_reviewed_objects": 5,
+        "confirmed_pairs": 114,
+        "confirmed_objects": 95,
+        "confirmed_unique_authors": 70,
+        "ranked_total": 36,
+        "ranked_software": 23,
+        "archive_obtained": 96783,
+        "archive_control_total": 688423,
+        "new_reddit_download_objects": 0
+      },
+      "hexcrawl_ru": {
+        "distinct_authors": 2,
+        "all_rank": "8–18",
+        "software_rank": "6–13",
+        "july_all_rank": "2",
+        "july_software_rank": "2",
+        "self_authors": 1,
+        "other_authors": 1,
+        "other_months_with_evidence": 0
+      },
+      "next_candidate": {
+        "id": "hex-market-archive-context",
+        "scenario": "Продолжить тот же архив. В audit.csv разобрать 38 needs_context по оригиналам/родителям/изображениям, затем 876 screened_only по изображениям и специализированным реестровым ID без слова hex; сопоставить авторов, проверить два одноимённых Hexer и новые карточки. Связанные строки под одним ID проверять один раз. До окончания ревизии не расширять выгрузку."
+      },
+      "needs_owner_action": false
     },
     "latest_Eem_generator_workflow": {
       "ref": "agent-work/research/resources/Eem-generators-2026-11-14.json",
@@ -6530,9 +6571,9 @@
     "scope_audit_completed": true,
     "previous_checkpoint_retained": true,
     "scope_policy_prompt_verified": true,
-    "last_result_commit_sha": "1acde2ab622160f0966ec330c6a234ee13f6d4a7",
-    "last_checkpoint_commit_sha": "1acde2ab622160f0966ec330c6a234ee13f6d4a7",
-    "last_run_status": "checkpoint_reddit_author_ranking",
+    "last_result_commit_sha": "ce0bc97677ad8ba07b22166fdff5be4331b5713e",
+    "last_checkpoint_commit_sha": "ce0bc97677ad8ba07b22166fdff5be4331b5713e",
+    "last_run_status": "checkpoint_reddit_hex_market",
     "stage": "research_checkpoint_saved",
     "current_scope_audit_ref": "agent-work/research/requirements/SD-CORE-L1-shop-2026-11-20.json",
     "current_scope_counts": {
@@ -6871,7 +6912,7 @@
       "ref": "agent-work/research/requirements/MB-layer-baseline-2026-11-20.json",
       "followup": "Открыть сохранённый край MB с известным прибрежным владением, найти его без подсказки координат, переключить 6→1 милю, изменить название, экспортировать и открыть заново. Сверить идентичность владения и берег, записать время поиска и повторные действия."
     },
-    "last_completed_at": "2026-11-21T19:33:00.254Z",
+    "last_completed_at": "2026-11-21T20:44:23.133Z",
     "latest_SD_L1_static_hazard": {
       "ref": "agent-work/research/requirements/SD-CORE-L1-static-hazard-2026-11-20.json",
       "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
@@ -6923,24 +6964,68 @@
     "latest_MB_live_creation_ref": "agent-work/research/runs/2026-11-21-L1-game-profile-acceptance-0230.json",
     "latest_MB_desktop_timing_ref": "agent-work/research/runs/2026-11-21-L1-MB-generation-20.json",
     "current_research_checkpoint": {
-      "run_id": "2026-11-21-hex-only-owner-correction",
-      "status": "checkpoint_hex_only_reclassification",
-      "confirmed": 81,
-      "remaining": 119,
-      "target": 200,
-      "result_ref": "agent-work/research/runs/2026-11-21-hex-only-owner-correction.json",
+      "run_id": "2026-11-21-hex-reddit-2330",
+      "status": "checkpoint_reddit_hex_market",
+      "stage": "regional_hex_evidence_reclassification",
+      "result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
       "registry_ref": "agent-work/research/competitors/registry.json",
-      "next_candidate": {
-        "id": "hex-only-registry-audit",
-        "scenario": "Сверить неразобранных кандидатов с первоисточниками, проверить варианты названий и независимость продукта, затем продолжить поиск до 200. Параллельно пересчитать Reddit из сохранённых сообщений строго по гекс-картам."
+      "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
+      "ranking_ref": "agent-work/research/reddit-map-tools/hex-only/ranking.csv",
+      "monthly_ref": "agent-work/research/reddit-map-tools/hex-only/monthly.csv",
+      "audit_ref": "agent-work/research/reddit-map-tools/hex-only/audit.csv",
+      "updated_at": "2026-11-21 20:42:50 UTC",
+      "registry": {
+        "confirmed_software": 89,
+        "confirmed_previous": 81,
+        "additions": 8,
+        "target": 200,
+        "remaining": 111,
+        "other_procedures_and_assets": 34,
+        "original_candidates_still_pending": 165
       },
-      "obsolete_broad_data_sha": "825988c8684bca9d245822aa327d11379f2ae291"
+      "coverage": {
+        "historical_blob_sha": "3203230b0ea6c71fcd3c75a22d013f3374e5a905",
+        "historical_pairs": 1037,
+        "screened": 1037,
+        "reviewed_flagged": 161,
+        "original_confirmed": 109,
+        "original_excluded": 14,
+        "needs_context": 38,
+        "screened_only": 876,
+        "new_pairs_from_reviewed_objects": 5,
+        "confirmed_pairs": 114,
+        "confirmed_objects": 95,
+        "confirmed_unique_authors": 70,
+        "ranked_total": 36,
+        "ranked_software": 23,
+        "archive_obtained": 96783,
+        "archive_control_total": 688423,
+        "new_reddit_download_objects": 0
+      },
+      "hexcrawl_ru": {
+        "distinct_authors": 2,
+        "all_rank": "8–18",
+        "software_rank": "6–13",
+        "july_all_rank": "2",
+        "july_software_rank": "2",
+        "self_authors": 1,
+        "other_authors": 1,
+        "other_months_with_evidence": 0
+      },
+      "next_candidate": {
+        "id": "hex-market-archive-context",
+        "scenario": "Продолжить тот же архив. В audit.csv разобрать 38 needs_context по оригиналам/родителям/изображениям, затем 876 screened_only по изображениям и специализированным реестровым ID без слова hex; сопоставить авторов, проверить два одноимённых Hexer и новые карточки. Связанные строки под одним ID проверять один раз. До окончания ревизии не расширять выгрузку."
+      },
+      "needs_owner_action": false
     },
     "latest_reddit_rank_presentation": {
-      "result_ref": "agent-work/research/runs/2026-11-21-reddit-rank-ranges.json",
-      "sha": "535a3eb8a403225070fa3322b03c3b24695986b4",
-      "annual": "44–57",
-      "july": "13–17"
+      "result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+      "sha": "ce0bc97677ad8ba07b22166fdff5be4331b5713e",
+      "annual_all": "8–18",
+      "annual_software": "6–13",
+      "july_all": "2",
+      "july_software": "2",
+      "unit": "уникальные авторы по подтверждённому корпусу"
     }
   },
   "latest_ranking_activation": {
