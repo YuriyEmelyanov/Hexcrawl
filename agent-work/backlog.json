@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-21T13:32:37.713Z",
+  "updated_at": "2026-11-21T15:25:36.674Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -1062,7 +1062,7 @@
                 "pixelIdentical": false,
                 "raster": {
                   "maxDelta": 210,
-                  "changedFraction": 7.626561472715319e-05
+                  "changedFraction": 0.00007626561472715319
                 },
                 "scope": "diagnostic including unrelated controls"
               }
@@ -2161,6 +2161,84 @@
       "release_authorized": false,
       "ready_for_development": false,
       "updated_at": "2026-11-21T13:32:37.713Z"
+    },
+    {
+      "task_id": "HX-BL-070",
+      "title": "Построение целого региона Classic без запуска интерфейса",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/score/rules/S02-C04.md"
+      },
+      "score_criterion": "S02-C04",
+      "score_forecast_l1": {
+        "criterion": "S02-C04",
+        "rule": "CORE-02",
+        "share": 0.3,
+        "remaining_L1_points": 3.7037037037037037
+      },
+      "requirements": [
+        "Выделить команду построения региона, которая принимает исходную карту, выбранный гекс, настройки и состояние генератора. Classic вызывает ту же команду."
+      ],
+      "acceptance_outline": [
+        "На одинаковых входных данных прямой вызов без React и команда в Classic дают одинаковую карту и состояние генератора для следующего шага."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "ready_for_development": false,
+      "updated_at": "2026-11-21T15:25:36.674Z"
+    },
+    {
+      "task_id": "HX-BL-071",
+      "title": "Перенос правил генерации региона из интерфейса в ядро",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/score/rules/S02-C04.md"
+      },
+      "score_criterion": "S02-C04",
+      "score_forecast_l1": {
+        "criterion": "S02-C04",
+        "rule": "CORE-03",
+        "share": 0.2,
+        "remaining_L1_points": 2.4691358024691357
+      },
+      "requirements": [
+        "Перенести из App.tsx оставшиеся правила генерации Classic, включая выбор биома по высоте и соседям и построение речной сети."
+      ],
+      "acceptance_outline": [
+        "В интерфейсе остаются сбор параметров, запуск и показ результата. Правила вызываются из ядра, результаты генерации на контрольных картах сохраняются."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "ready_for_development": false,
+      "updated_at": "2026-11-21T15:25:36.674Z"
+    },
+    {
+      "task_id": "HX-BL-072",
+      "title": "Проверка зависимостей ядра генерации в CI",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/score/rules/S02-C04.md"
+      },
+      "score_criterion": "S02-C04",
+      "score_forecast_l1": {
+        "criterion": "S02-C04",
+        "rule": "CORE-04",
+        "share": 0.1,
+        "remaining_L1_points": 1.2345679012345678
+      },
+      "requirements": [
+        "Добавить в CI проверку, запрещающую ядру генерации зависеть от React и модулей интерфейса."
+      ],
+      "acceptance_outline": [
+        "Контрольный импорт React и контрольный импорт UI-модуля из ядра приводят к отказу проверки. После удаления каждого нарушения проверка проходит."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "ready_for_development": false,
+      "updated_at": "2026-11-21T15:25:36.674Z"
     }
   ],
   "retired_pr_packages": {
