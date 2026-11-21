@@ -1,0 +1,69 @@
+// Run with Node 24 as test/reviewer-checkpoint-probe.mjs in either checkout. Uses the unmodified generation harness.
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createGenerationHarness} from './helpers/generation-harness.mjs';
+const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
+const h=createGenerationHarness(42);h.render();
+const alerts=[],confirms=[];
+h.setWindow({alert:x=>alerts.push(x),confirm:m=>(confirms.push(m),true),matchMedia:()=>({matches:false})});
+h.injectFunction('readTextFile',async file=>file.text);
+const load=data=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'file'}});
+const snap=()=>JSON.parse(JSON.stringify(h.render().createSaveData()));
+const gate=()=>assert.deepEqual(alerts,[]);
+const pick=cell=>{const app=h.render();assert.ok(app.pickFine(cell,false,app.getDocumentRevision()));};
+const switchTo=n=>assert.ok(h.render().switchFineStep(n));
+const manual=cell=>{pick(cell);h.render().startSmallLake();h.render().commitSmallLake();assert.equal(h.render().editError,null);};
+ await load(fixture);gate();switchTo(1);manual({q:-21,r:-11});switchTo(6);
+ const modern=snap(),legacy=structuredClone(modern);delete legacy.map.physicalGrid.smallLakes.lakes[0].shoreCells;
+
+const layer=()=>snap().map.physicalGrid?.smallLakes;
+const clean=()=>{const d=snap();delete d.savedAt;return d;};
+const results=[];
+for (const action of ['remove-old','remove-generated','add-survivor','add-and-remove','note','mixed-format','no-layer']){
+ const data=structuredClone(legacy);
+ if(action==='no-layer')delete data.map.physicalGrid.smallLakes;
+ if(action==='mixed-format'){
+   await load(data);switchTo(1);manual({q:9,r:13});switchTo(6);
+   data.map.physicalGrid=structuredClone(snap().map.physicalGrid);
+   assert.equal(data.map.physicalGrid.smallLakes.lakes[0].shoreCells,undefined);
+   assert.ok(data.map.physicalGrid.smallLakes.lakes[1].shoreCells);
+ }
+ await load(data);gate();
+ assert.ok(h.render().safelyAddRegionToMap({q:3,r:3}).success);
+ const original=layer();
+ const initialIds=original.lakes.map(l=>l.id);
+ if (action==='remove-old'||action==='remove-generated'){
+   switchTo(1);pick(original.lakes[action==='remove-old'?0:1].cells[0]);h.render().removeSelectedSmallLake();switchTo(6);
+ }
+ if(action.startsWith('add-')){
+   switchTo(1);manual({q:9,r:13});
+   assert.equal(layer().nextId,original.nextId+1);
+   if(action==='add-and-remove')h.render().removeSelectedSmallLake();
+   switchTo(6);
+ }
+ if(action==='note'){
+   const c=data.map.regions[0].centerHex;h.render().setSelectedHex(c);h.render().changeNotesText(c.q+','+c.r,'intervening note');h.render().finishNotesGroup();
+ }
+ const pre=clean();if(action==='note')assert.ok(Object.values(pre.map.gmNotesByHexKey).includes('intervening note'));
+ let confirmation=true;
+ h.setWindow({alert:x=>alerts.push(x),confirm:m=>(confirms.push(m),confirmation),matchMedia:()=>({matches:false})});
+ confirmation=false;h.render().deleteLastRegion();assert.deepEqual(clean(),pre);
+ confirmation=true;h.render().deleteLastRegion();assert.equal(snap().map.regions.length,1);
+ const post=clean();
+ const postLayer=layer();
+ h.render().undoMap();assert.deepEqual(clean(),pre);h.render().redoMap();assert.deepEqual(clean(),post);
+ const idCounter=postLayer?.nextId??1;
+ if(action.startsWith('remove-')) assert.equal(idCounter,original.nextId);
+ if(action.startsWith('add-')) assert.equal(idCounter,original.nextId+1);
+ if(['mixed-format','no-layer','note'].includes(action)) assert.equal(idCounter,data.map.physicalGrid.smallLakes?.nextId??1);
+ if(action==='note')assert.ok(Object.values(post.map.gmNotesByHexKey).includes('intervening note'));
+ const survivorIds=postLayer?.lakes.map(l=>l.id)??[];
+ if(action==='remove-old')assert.deepEqual(survivorIds,[]);
+ if(action==='add-survivor')assert.deepEqual(survivorIds,[1,original.nextId]);
+ if(action==='add-and-remove'||action==='remove-generated')assert.deepEqual(survivorIds,[1]);
+ assert.ok(h.render().safelyAddRegionToMap({q:3,r:3}).success);
+ if(['mixed-format','no-layer','note'].includes(action))assert.deepEqual(layer(),original);
+ gate();
+ results.push({action,initialCount:initialIds.length,generatedNext:original.nextId,rollbackNext:idCounter,survivorIds,replayStart:layer().lakes.find(l=>!survivorIds.includes(l.id)).id,undoRedo:true,declineAtomic:true});
+ console.log(JSON.stringify(results.at(-1)));
+}

@@ -1,0 +1,43 @@
+// Run with Node 24 as test/reviewer-checkpoint-probe.mjs in either checkout. Uses the unmodified generation harness.
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createGenerationHarness} from './helpers/generation-harness.mjs';
+const fixture=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
+const h=createGenerationHarness(42);h.render();
+const alerts=[],confirms=[];
+h.setWindow({alert:x=>alerts.push(x),confirm:m=>(confirms.push(m),true),matchMedia:()=>({matches:false})});
+h.injectFunction('readTextFile',async file=>file.text);
+const load=data=>h.render().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:'file'}});
+const snap=()=>JSON.parse(JSON.stringify(h.render().createSaveData()));
+const gate=()=>assert.deepEqual(alerts,[]);
+const pick=cell=>{const app=h.render();assert.ok(app.pickFine(cell,false,app.getDocumentRevision()));};
+const switchTo=n=>assert.ok(h.render().switchFineStep(n));
+const manual=cell=>{pick(cell);h.render().startSmallLake();h.render().commitSmallLake();assert.equal(h.render().editError,null);};
+ await load(fixture);gate();switchTo(1);manual({q:-21,r:-11});switchTo(6);
+ const modern=snap(),legacy=structuredClone(modern);delete legacy.map.physicalGrid.smallLakes.lakes[0].shoreCells;
+
+await load(legacy);gate();switchTo(1);
+const key=c=>c.q+','+c.r;
+const oldCells=new Set(h.render().fineCells.map(row=>key(row.cell)));switchTo(6);
+assert.ok(h.render().safelyAddRegionToMap({q:3,r:3}).success);switchTo(1);
+const lake=snap().map.physicalGrid.smallLakes.lakes.find(l=>l.origin==='automatic'&&l.cells.some(c=>!oldCells.has(key(c))));
+const cell=lake.cells.find(c=>!oldCells.has(key(c)));pick(cell);
+h.render().setFineHover(null);h.render().startFineDraft();
+assert.ok(h.render().changeFineDraft({note:'sampler'},h.render().fineDraft));
+assert.ok(h.render().saveFineDraft(h.render().fineDraft));switchTo(6);
+assert.equal(snap().map.physicalGrid.fineCellEdits[key(cell)].note,'sampler');
+const stable=()=>{const d=snap();delete d.savedAt;return d;};
+const before=stable(),undo=h.render().undoHistory.length;
+for (const all of [false,true]){
+ const prompts=[];
+ h.setWindow({confirm:m=>(prompts.push(m),prompts.length===1||all),alert:x=>alerts.push(x),matchMedia:()=>({matches:false})});
+ h.render().deleteLastRegion();
+ if(!all){assert.deepEqual(stable(),before);assert.equal(h.render().undoHistory.length,undo);}
+ else {
+  const after=stable();
+  assert.equal(after.map.regions.length,1);assert.equal(h.render().undoHistory.length,undo+1);
+  h.render().undoMap();assert.deepEqual(stable(),before);h.render().redoMap();assert.deepEqual(stable(),after);
+ }
+ gate();
+ console.log(JSON.stringify({lakeId:lake.id,cell,prompts,accepted:all}));
+}
