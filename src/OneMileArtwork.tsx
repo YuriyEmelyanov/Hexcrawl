@@ -8,6 +8,7 @@ import {Engraving} from './rendering/EngravedTerrain';
 import {engravingFor, type TerrainKind} from './rendering/engravingAssets';
 import {terrainTextures} from './rendering/terrainBlend';
 import type {SmallLakeView} from './smallLakeShore';
+import {LakeWater} from './rendering/LakeWater';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 type Props={smallLakes?:readonly SmallLakeView[];smallLakeDraft?:SmallLakeView;smallLakeDraftCells?:readonly DetailCell[];rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
  poi:(p:DetailPoiFootprint)=>{label:string;image:string};geography?:(smallLakeRiverMask:string|undefined)=>ReactNode;interactive?:boolean;
@@ -85,12 +86,15 @@ export function OneMileArtwork(p:Props){
      <path d={path} transform={lakeTranslation} fill="black" fillRule="evenodd"/>
    </g>)}
   </mask></defs>}
-  {shorelines.map(({lake,path,maskCells})=>{
+  {shorelines.map(({lake,shape,maskCells})=>{
+    if(!shape)return null;
     const draft=lake===p.smallLakeDraft?.lake,clip=lakeClipId(lake.id);
     return <g key={lake.id} data-small-lake={draft?undefined:lake.id} data-editor-only={draft?'small-lake-draft':undefined} pointerEvents="none">
       <defs><clipPath id={clip}>{maskCells.map(cell=><polygon key={fineCellKey(cell)} points={polygon(cell)} data-small-lake-shore-cell={fineCellKey(cell)}/>)}</clipPath></defs>
       <g clipPath={`url(#${clip})`}>
-        <path data-small-lake-shore={draft?undefined:lake.id} d={path} transform={lakeTranslation} fill="#117f8c" fillRule="evenodd" stroke="#159dac" strokeWidth={radius*.09} opacity={draft ? .7 : 1}/>
+        <g transform={lakeTranslation} data-small-lake-water opacity={draft ? .7 : 1}>
+          <LakeWater cells={shape.cells} radius={radius} shapes={[{...shape,key:clip+'-water'}]}/>
+        </g>
       </g>
     </g>;
   })}

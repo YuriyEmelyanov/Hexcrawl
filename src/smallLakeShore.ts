@@ -1,7 +1,7 @@
 import {createDetailGrid,detailCellCenter,type DetailCell,type WorldPoint} from './detailGrid.ts';
 import {prepareRefinementShoreCells,prepareRefinementShorePath,refinementShoreIntervals,refinementShoreLocation,shoreCurvePoint,type RefinementShore,type ShoreCurve} from './geometryRefinementShore.ts';
 import {FINE_HEX_WIDTH} from './oneMilePresentation.ts';
-import {buildNaturalLakes} from './rendering/lakeGeometry.ts';
+import {buildNaturalLakes,type LakeShape} from './rendering/lakeGeometry.ts';
 import {fineCellKey,type OneMileCell} from './oneMile.ts';
 import {hasFullDrySupport,smallLakeNeighbours,type SmallLake} from './smallLakes.ts';
 
@@ -12,7 +12,7 @@ export type SmallLakeProtection=Readonly<{
 }>;
 
 /** Keep the seeded, rounded SVG path identical during validation, zoom and export. */
-export function smallLakeShorePath(lake:SmallLake,seed:number):string {
+function smallLakeShape(lake:SmallLake,seed:number):LakeShape|undefined {
   const grid=createDetailGrid(1);
   const cells=lake.cells.map(c=>{
     const p=detailCellCenter(grid,c);
@@ -21,7 +21,11 @@ export function smallLakeShorePath(lake:SmallLake,seed:number):string {
     return {...c,x:p.x*FINE_HEX_WIDTH,y:p.y*FINE_HEX_WIDTH,lakeId};
   });
   const [shape]=buildNaturalLakes(cells,28/6,seed);
-  return shape?.path??'';
+  return shape;
+}
+
+export function smallLakeShorePath(lake:SmallLake,seed:number):string {
+  return smallLakeShape(lake,seed)?.path??'';
 }
 
 type Arc={curve:ShoreCurve;lo:number;hi:number;reverse:boolean};
@@ -138,13 +142,13 @@ function shoreConflict(shore:RefinementShore,clip:RefinementShore,protection:Sma
   return null;
 }
 
-export type SmallLakeView=Readonly<{lake:SmallLake;path:string;maskCells:readonly DetailCell[]}>;
+export type SmallLakeView=Readonly<{lake:SmallLake;shape:LakeShape|undefined;path:string;maskCells:readonly DetailCell[]}>;
 
 /** Fringe cells never change the selected footprint. Reserve a fringe only
  * where the world supports dry land and no existing lake owns that area. */
 export function prepareSmallLakeShore(lake:SmallLake,seed:number,origin:WorldPoint,protection:SmallLakeProtection,
   coverage?:ReadonlyMap<string,OneMileCell>,reserved:ReadonlySet<string>=new Set()) {
-  const path=smallLakeShorePath(lake,seed),core={lake,path,maskCells:lake.cells};
+  const shape=smallLakeShape(lake,seed),path=shape?.path??'',core={lake,shape,path,maskCells:lake.cells};
   const shore=prepareRefinementShorePath(path,1/FINE_HEX_WIDTH,origin),clip=prepareRefinementShoreCells(lake.cells,origin,1);
   const finish=(view:SmallLakeView,conflict:ReturnType<typeof shoreConflict>|typeof invalidShape)=>({view,conflict});
   if(shore.status==='error'||clip.status==='error')return finish(core,invalidShape);
