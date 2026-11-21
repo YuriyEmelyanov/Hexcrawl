@@ -14,7 +14,8 @@ import {prepareGeometryRefinementBoundary,geometryMixedRiverPaths} from '../src/
 import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
 import {projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
 import {reconcileDetailGeography} from '../src/detailGeography.ts';
-import {hasFullDrySupport} from '../src/smallLakes.ts';
+import {projectOneMile} from '../src/oneMile.ts';
+import {hasFullDrySupport,hasFullOneMileSupport} from '../src/smallLakes.ts';
 import {synchronizeToponyms} from '../src/toponyms.ts';
 const serial=v=>JSON.parse(JSON.stringify(v));
 const stable=app=>{const d=serial(app.createSaveData());delete d.savedAt;return d;};
@@ -446,6 +447,16 @@ test('regeneration confirms checkpoint and replacement losses together',async()=
   assert.ok(app().editRiverDocument({type:'create',regionId:1,path,fullness:1}));
   assert.ok(app().safelyAddRegionToMap({q:3,r:3}).success);
   assert.ok(app().editRiverDocument({type:'remove',riverId:1,includeArms:true},{confirmed:true}));
+  assert.ok(app().switchFineStep(1));
+  for(const cell of [{q:29,r:7},{q:31,r:7}]){
+    assert.ok(app().pickFine(cell,false,app().getDocumentRevision()));
+    app().removeSelectedSmallLake();
+  }
+  assert.ok(app().switchFineStep(6));
+  const originalMap=app().captureDocument().map;
+  const key=({q,r})=>q+','+r;
+  const oldCoverage=new Set(projectOneMile(h.geometry.oneMileSources(originalMap),originalMap.physicalGrid.grid.origin)
+    .filter(hasFullOneMileSupport).map(row=>key(row.cell)));
   app().setGenSizeCategory('tract');
   const before=stable(app()), stacks=structuredClone([app().undoHistory,app().redoHistory]);
   for(const accept of [false,true]){
@@ -465,6 +476,13 @@ test('regeneration confirms checkpoint and replacement losses together',async()=
       const remaining=new Set(after.map.physicalGrid.smallLakes.lakes.map(lake=>lake.id));
       const lost=before.map.physicalGrid.smallLakes.lakes.filter(lake=>!remaining.has(lake.id));
       assert.deepEqual(Array.from(prompts[0].matchAll(/№(\d+)/g),m=>Number(m[1])),lost.map(lake=>lake.id));
+      const previous=before.map.physicalGrid.smallLakes;
+      assert.ok(previous.lakes.every(lake=>lake.id!==17&&lake.id!==19),'fixture lakes were deleted before regeneration');
+      const created=after.map.physicalGrid.smallLakes.lakes.filter(lake=>lake.id>=previous.nextId);
+      assert.ok(created.length>0,'newly covered area still receives lakes');
+      for(const lake of created)for(const cell of lake.cells){
+        assert.ok(!oldCoverage.has(key(cell)),'regeneration rolled an already covered cell '+key(cell));
+      }
       assert.equal(app().undoHistory.length,stacks[0].length+1);
       assertUndoRedo(h,before,after);
     }

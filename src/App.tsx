@@ -1337,10 +1337,10 @@ function retainAcceptedLakeShores(lakes:SmallLakeLayer['lakes'],before:MapSnapsh
 }
 
 /** Prepare the fine lake layer against the finished terrain, paths and POIs. */
-function prepareGeneratedSmallLakes(checkpoint:MapSnapshot,map:MapSnapshot,generated:readonly Region[],before:MapSnapshot=checkpoint){
+function prepareGeneratedSmallLakes(before:MapSnapshot,map:MapSnapshot,generated:readonly Region[]){
  const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
  const grid=createDetailGrid(1,origin),baseGrid=createDetailGrid(6,origin);
- const source=oneMileSources(map),previous=projectOneMile(oneMileSources(checkpoint),origin);
+ const source=oneMileSources(map),previous=projectOneMile(oneMileSources(before),origin);
  const coverage=new Map(projectOneMile(source,origin).map(row=>[hexKey(row.cell),row]));
  const previouslyCovered=new Set(previous.filter(hasFullOneMileSupport).map(row=>hexKey(row.cell)));
  const centers=new Set(map.regions.map(r=>hexKey(worldToDetailCell(grid,detailCellCenter(baseGrid,r.centerHex)))));
@@ -14271,7 +14271,7 @@ export function App() {
     let preparedScene:Detail1State|undefined;
     const lakeLosses=[...smallLakes?.losses??[]];
     if((lakeRegions.length||map.physicalGrid?.smallLakes?.lakes.length)&&(!kingdomJob||backup)){
-      const prepared=prepareGeneratedSmallLakes(checkpoint,map,lakeRegions,backup?.map??checkpoint);
+      const prepared=prepareGeneratedSmallLakes(backup?.map??checkpoint,map,lakeRegions);
       map=prepared.map;
       preparedScene=prepared.scene??undefined;
       lakeLosses.push(...prepared.losses);
@@ -14848,7 +14848,7 @@ export function App() {
     map.knave=retainedKnaveCheckpoint(map);
     try{
       // Check the roads and sites restored by the checkpoint as well as dry support.
-      const prepared=map.physicalGrid?.smallLakes?.lakes.length?prepareGeneratedSmallLakes(map,map,[],exactLakeRollback?map:before.map):null;
+      const prepared=map.physicalGrid?.smallLakes?.lakes.length?prepareGeneratedSmallLakes(exactLakeRollback?map:before.map,map,[]):null;
       lakeLosses.push(...prepared?.losses??[]);
       if(lakeLosses.length){
         const ids=lakeLosses.map(lake=>`№${lake.id}`).join(', ');
