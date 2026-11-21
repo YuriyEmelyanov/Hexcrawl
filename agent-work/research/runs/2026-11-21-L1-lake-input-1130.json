@@ -1,0 +1,463 @@
+{
+  "run_id": "2026-11-21-L1-lake-input-1130",
+  "status": "checkpoint_large_unfinished_corpus",
+  "result_ref": "agent-work/research/runs/2026-11-21-L1-lake-input-1130.json",
+  "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
+  "product_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "next": {
+    "id": "L1-ALL-ACCEPTANCE",
+    "layer": "L1",
+    "ledger_ref": "agent-work/research/acceptance/L1-PR509/ledger.json",
+    "ids": [
+      "S04-C04",
+      "S01-C03",
+      "S01-C02"
+    ],
+    "fixture": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+    "scenario": "Повторить выбор −3/3 касанием в портретной эмуляции, затем расширить через доступную точку −2/−3, экспортировать и повторно открыть. Ожидаются 4 региона и озеро № 1 на −3/3.",
+    "then": "Для S01-C02 G2 проверить сохранность русла, слияния и переправы при 6 → 1 → 6 миль по действующим аддитивным правилам."
+  },
+  "last_successful_step": "В Classic на карте 42 нажатие на озёрный гекс −3/3 открыло карточку Vargsjø. После экспорта и повторного открытия сохранились озеро № 1 и все три региона. При первом импорте список точек роста увеличился с 34 до 35 за счёт −3/3. Прямой вызов генератора из предыдущей проверки обходит выбор гекса на экране.",
+  "needs_owner_action": false,
+  "base_sha": "cf7cab5ec15d7615c67ce1caf76ee143369fdfbc",
+  "marker_commit": "22df0728cce17ed894fcab1ba8b70bc39682eb06",
+  "started_at": "2026-11-21T08:26:55.785Z",
+  "completed_at": "2026-11-21T08:32:16.271Z",
+  "stage": "desktop_browser_and_release_handler_verified",
+  "selection": "Проверка маршрута нажатия определяет, может ли ведущий потерять воду при обычном выборе. Эта открытая проверка из state предшествует следующей проверке рек. Рыночный поиск отложен по приоритету владельца.",
+  "disposition": "keep_L1",
+  "scope_basis": "Выбор и повторное открытие сохранённого водного объекта относятся к редактированию и сохранению карты.",
+  "operational_requirement": {
+    "trigger": "Импорт прибрежной карты Classic и нажатие на занятый водой гекс.",
+    "inputs": {
+      "fixture": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+      "seed": 42,
+      "scale_miles": 6,
+      "lake_id": 1,
+      "coordinate": [
+        -3,
+        3
+      ],
+      "separate_growth_control": [
+        -2,
+        -3
+      ]
+    },
+    "expected": "Открыта карточка озера. После экспорта и открытия озеро и три региона сохранены. Отдельное нажатие доступной точки роста добавляет четвёртый регион.",
+    "exception": "Прямой вызов расширения по координатам не воспроизводит выбор объекта через интерфейс."
+  },
+  "cases": [
+    {
+      "ids": [
+        "S04-C04",
+        "S01-C03"
+      ],
+      "profile": "Classic desktop 1348×936, app.hexcrawl.ru",
+      "steps": [
+        "Открыть fixture",
+        "Выбрать −3/2, затем −3/3",
+        "Экспортировать JSON",
+        "Импортировать экспорт и снова выбрать −3/3"
+      ],
+      "observed": [
+        "−3/2: Ulvdal, Lake Vargsjø",
+        "−3/3: Lake Vargsjø",
+        "После повторного открытия −3/3: Lake Vargsjø"
+      ],
+      "export_ref": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42-desktop-export.json",
+      "export_comparison": {
+        "input_sha256": "c7a41b41f6fcda0739a9ca286e1e7e0f9b702164837a42fcfb67113e99befa07",
+        "export_sha256": "965126b249c7bd622a92d946ae7f970c730cb0bd9a0daec50e418f1444ce9d6b",
+        "root_delta": [
+          "map",
+          "savedAt",
+          "ui"
+        ],
+        "map_delta": [
+          "candidateHexes"
+        ],
+        "regions_before": 3,
+        "regions_after": 3,
+        "candidate_count": [
+          34,
+          35
+        ],
+        "added": [
+          {
+            "q": -3,
+            "r": 3
+          }
+        ],
+        "removed": [],
+        "water": {
+          "terrainOverride": "lake",
+          "lakeId": 1
+        },
+        "generation_preserved": true
+      },
+      "release_attribution": "Live site observed separately. Same result independently reproduced on exact product SHA with the rendered hex and the shipped click handler.",
+      "status": "passed_selection_and_water_persistence"
+    },
+    {
+      "ids": [
+        "S04-C04"
+      ],
+      "profile": "Classic 6 miles same fixture",
+      "expected": "Состав точек роста сохраняется после открытия.",
+      "observed": "В map изменилось только candidateHexes. Добавлена −3/3. Отрисованный гекс остаётся region.",
+      "status": "failed_candidate_list_roundtrip"
+    },
+    {
+      "ids": [
+        "S04-C04",
+        "S01-C03"
+      ],
+      "profile": "Release App import → rendered hex → mapHexClickRef.current → export → import",
+      "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "observations": [
+        {
+          "key": "-3,3",
+          "kind": "region",
+          "selected": {
+            "q": -3,
+            "r": 3
+          },
+          "beforeRegions": 3,
+          "afterRegions": 3,
+          "water": {
+            "terrainOverride": "lake",
+            "lakeId": 1
+          },
+          "inputMapChanged": false,
+          "sourceToImportChanged": [
+            "candidateHexes"
+          ],
+          "rngChanged": false,
+          "roundtrip": true
+        },
+        {
+          "key": "-3,2",
+          "kind": "region",
+          "selected": {
+            "q": -3,
+            "r": 2
+          },
+          "beforeRegions": 3,
+          "afterRegions": 3,
+          "water": {
+            "terrainOverride": "lake",
+            "lakeId": 1
+          },
+          "inputMapChanged": false,
+          "sourceToImportChanged": [
+            "candidateHexes"
+          ],
+          "rngChanged": false,
+          "roundtrip": true
+        },
+        {
+          "key": "-2,-3",
+          "kind": "candidate",
+          "selected": {
+            "q": 2,
+            "r": -8
+          },
+          "beforeRegions": 3,
+          "afterRegions": 4,
+          "water": {
+            "terrainOverride": "lake",
+            "lakeId": 1
+          },
+          "inputMapChanged": true,
+          "sourceToImportChanged": [
+            "candidateHexes"
+          ],
+          "rngChanged": true,
+          "roundtrip": true
+        }
+      ],
+      "control": "−2/−3 даёт рост 3 → 4 и сохраняет озеро. На −3/3 и −3/2 сохраняются география и состояние генератора."
+    }
+  ],
+  "supersedes_interpretation": {
+    "previous": "agent-work/research/runs/2026-11-21-L1-classic-topology-1030.json",
+    "retained": "Три расхождения candidateHexes на 755 вторых ходов.",
+    "corrected": "Потеря озера при обычном нажатии на −3/3 опровергнута в настольном браузере."
+  },
+  "remaining": {
+    "classic_max_recorded": [],
+    "common_below_recorded_max": [
+      "S01-C01",
+      "S01-C02",
+      "S01-C03",
+      "S01-C04",
+      "S01-C05",
+      "S02-C01",
+      "S02-C02",
+      "S02-C03",
+      "S02-C04",
+      "S02-C05",
+      "S03-C01",
+      "S03-C02",
+      "S03-C03",
+      "S03-C04",
+      "S03-C05",
+      "S04-C01",
+      "S04-C02",
+      "S04-C03",
+      "S04-C04",
+      "S04-C05",
+      "S05-C01",
+      "S05-C03",
+      "S07-C01",
+      "S07-C03",
+      "S07-C04",
+      "S07-C05",
+      "S08-C01",
+      "S08-C04",
+      "S08-C05",
+      "S09-C01",
+      "S09-C02",
+      "S09-C03",
+      "S09-C04",
+      "S09-C05"
+    ],
+    "browser_game_credited": [
+      "DND5-2014-001-L1-v2-draft",
+      "DND5-2014-003-L1-v2-draft",
+      "PF2-RM-121-L1-v2",
+      "PF2-RM-126-L1-v2",
+      "PF2-RM-044-L1-v2",
+      "PF2-RM-ST-009-v2",
+      "KNAVE2-005-L1",
+      "KNAVE2-006-L1",
+      "SD-CORE-043-L1",
+      "MB-QS-002-L1",
+      "ROOT-TO-001-L1",
+      "ROOT-SCOPE-M01",
+      "ROOT-SCOPE-M02",
+      "ROOT-SCOPE-M03",
+      "ROOT-SCOPE-M04",
+      "ROOT-SCOPE-M05",
+      "ROOT-SCOPE-M06",
+      "ROOT-SCOPE-M07",
+      "OSE-ORR-2026-004-L1",
+      "OSE-ORR-2026-005-L1",
+      "OSE-ORR-2026-006-L1",
+      "CROWS-PT3-L1-001",
+      "AWN-obs-04",
+      "SWC-obs-01",
+      "SWC-obs-03",
+      "SALV-obs-02",
+      "DCC-obs-01"
+    ],
+    "browser_game_refused": [
+      "DND5-2014-008-L1-v2-draft",
+      "DND5-2014-020-L1-v2-draft",
+      "PF2-RM-002-L1-v2",
+      "PF2-RM-012-L1-v2",
+      "PF2-RM-013-L1-v2",
+      "PF2-RM-122-L1-v2",
+      "PF2-RM-005-L1-v2",
+      "KNAVE2-040-L1",
+      "KNAVE2-045-L1",
+      "SD-CORE-049-L1",
+      "SD-CORE-052-L1",
+      "WWN-RU-REG-008-L1",
+      "ROOT-CORE-002-L1",
+      "CAIRN2-SS-003-L1",
+      "CAIRN2-SS-008-L1",
+      "CAIRN2-SS-010-L1",
+      "CAIRN2-SS-013-L1",
+      "PIRATE-obs-03",
+      "CROWS-PT3-L1-005",
+      "CROWS-PT3-L1-009",
+      "CROWS-PT3-L1-017",
+      "VAARN-HF2024-001-L1",
+      "VAARN-HF2024-002-L1",
+      "PF1-UC-001-L1",
+      "PF1-UC-003-L1",
+      "PF1-UC-004-L1"
+    ],
+    "later_base_failures": [
+      "KNAVE2-010-L1",
+      "KNAVE2-037-L1"
+    ],
+    "browser_open_without_later_full_failure": [
+      "DND5-2014-002-L1-v2-draft",
+      "DND5-2014-004-L1-v2-draft",
+      "DND5-2014-005-L1-v2-draft",
+      "DND5-2014-006-L1-v2-draft",
+      "DND5-2014-007-L1-v2-draft",
+      "DND5-2014-009-L1-v2-draft",
+      "DND5-2014-011-L1-v2-draft",
+      "DND5-2014-013-L1-v2-draft",
+      "DND5-2014-014-L1-v2-draft",
+      "DND5-2014-015-L1-v2-draft",
+      "DND5-2014-016-L1-v2-draft",
+      "DND5-2014-017-L1-v2-draft",
+      "PF2-RM-003-L1-v2",
+      "PF2-RM-004-L1-v2",
+      "PF2-RM-010-L1-v2",
+      "PF2-RM-011-L1-v2",
+      "PF2-RM-029-L1-v2",
+      "PF2-RM-123-L1-v2",
+      "PF2-RM-124-L1-v2",
+      "PF2-RM-125-L1-v2",
+      "PF2-RM-127-L1-v2",
+      "PF2-RM-066-L1-v2",
+      "PF2-RM-067-L1-v2",
+      "PF2-RM-068-L1-v2",
+      "PF2-RM-069-L1-v2",
+      "PF2-RM-072-L1-v2",
+      "PF2-RM-074-L1-v2",
+      "PF2-RM-076-L1-v2",
+      "PF2-RM-ST-002-v2",
+      "PF2-RM-ST-004-v2",
+      "PF2-RM-ST-007-v2",
+      "PF2-RM-ST-008-v2",
+      "KNAVE2-020-L1",
+      "KNAVE2-051-L1",
+      "KNAVE2-070-L1",
+      "KNAVE2-071-L1",
+      "KNAVE2-072-L1",
+      "KNAVE2-073-L1",
+      "SD-CORE-001-L1",
+      "SD-CORE-002-L1",
+      "SD-CORE-031-L1",
+      "SD-CORE-041-L1",
+      "SD-CORE-046-L1",
+      "SD-CORE-047-L1",
+      "SD-CORE-048-L1",
+      "SD-CORE-050-L1",
+      "SD-CORE-051-L1",
+      "SD-CORE-053-L1",
+      "SD-CORE-058-L1",
+      "SD-CORE-059-L1",
+      "SD-CORE-063-L1",
+      "SD-CORE-074-L1",
+      "SD-CORE-079-L1",
+      "MB-REALM-001-L1",
+      "MB-REALM-002-L1",
+      "MB-REALM-003-L1",
+      "MB-REALM-004-L1",
+      "MB-REALM-005-L1",
+      "MB-REALM-006-L1",
+      "WWN-RU-REG-001-L1",
+      "WWN-RU-REG-002-L1",
+      "WWN-RU-REG-003-L1",
+      "WWN-RU-REG-004-L1",
+      "WWN-RU-REG-006-L1",
+      "WWN-RU-REG-007-L1",
+      "WWN-RU-KNG-001-L1",
+      "WWN-RU-KNG-002-L1",
+      "ROOT-CORE-001-L1",
+      "ROOT-CORE-003-L1",
+      "ROOT-CORE-004-L1",
+      "ROOT-TO-008-L1",
+      "ROOT-TO-009-L1",
+      "OSE-ORR-2026-001-L1",
+      "CAIRN2-PC-001-L1",
+      "CAIRN2-PC-002-L1",
+      "CAIRN2-SS-001-L1",
+      "CAIRN2-SS-002-L1",
+      "CAIRN2-SS-004-L1",
+      "CAIRN2-SS-005-L1",
+      "CAIRN2-SS-007-L1",
+      "CAIRN2-SS-009-L1",
+      "CAIRN2-SS-011-L1",
+      "CAIRN2-SS-012-L1",
+      "PIRATE-obs-01",
+      "PIRATE-obs-02",
+      "CROWS-PT3-L1-002",
+      "CROWS-PT3-L1-003",
+      "CROWS-PT3-L1-004",
+      "CROWS-PT3-L1-007",
+      "CROWS-PT3-L1-011",
+      "CROWS-PT3-L1-019",
+      "CROWS-PT3-L1-022",
+      "CROWS-PT3-L1-023",
+      "CROWS-PT3-L1-024",
+      "SI-obs-01",
+      "SI-obs-02",
+      "SI-obs-03",
+      "SI-obs-04",
+      "SI-obs-05",
+      "AWN-obs-01",
+      "AWN-obs-02",
+      "AWN-obs-03",
+      "BSH-obs-01",
+      "BSH-obs-02",
+      "PF1-UC-002-L1",
+      "PF1-UC-005-L1",
+      "PF1-UC-006-L1",
+      "PF1-UC-008-L1",
+      "PF1-UC-009-L1",
+      "PF1-UC-011-L1",
+      "PF1-UC-012-L1",
+      "PF1-UC-013-L1",
+      "PF1-UC-014-L1",
+      "PF1-UC-015-L1",
+      "SWC-obs-02",
+      "SWC-obs-04",
+      "MAUS-obs-01",
+      "MAUS-obs-02",
+      "MAUS-obs-03",
+      "MAUS-obs-04",
+      "MAUS-obs-05",
+      "SALV-obs-01"
+    ],
+    "this_case": [
+      "portrait_touch_select_and_export",
+      "desktop_browser_positive_growth_after_selection (handler positive control passed)",
+      "portrait_growth_after_selection"
+    ]
+  },
+  "score": {
+    "new_points": 0,
+    "market": 0,
+    "prior_browser_verdict": {
+      "at": "7a2546ad98001cb8da1120fbe817880282c5a150",
+      "ref": "agent-work/research/acceptance/L1-PR509/2026-11-21-browser/verdict.json",
+      "accepted": 104.52887363806904,
+      "core": 33.95061728395061,
+      "games": 70.57825635411842,
+      "market": 0
+    }
+  },
+  "failed_operation": {
+    "tool": "local Chromium",
+    "action": "start browser for portrait emulation",
+    "locator": "Chromium on acceptance runner"
+  },
+  "observed_error": "Check failed: . socket() failed: Operation not permitted (1)",
+  "cause_status": "confirmed",
+  "cause_evidence": "Отказ системного вызова socket при старте локального Chromium. Точная причина ограничения среды не установлена.",
+  "stop_reason": "Настольный сценарий завершён. Портретный сценарий этой карты пока открыт.",
+  "automation_health": {
+    "start": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ]
+  }
+}
