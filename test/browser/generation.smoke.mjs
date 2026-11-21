@@ -121,6 +121,13 @@ try {
   const completed = [];
   for (const mode of ['coast', 'auto', 'mainland']) {
     if (current) await page.getByRole('button', { name: 'Сбросить', exact: true }).click();
+    if(mode==='mainland'){
+      // This expansion removes an automatic lake on the earlier map. Deleting
+      // the region must restore the full original lake layer and ID counter.
+      const seedField=page.getByRole('textbox',{name:'Seed мира',exact:true});
+      await seedField.fill('1257875020');
+      await seedField.press('Tab');
+    }
     await selectSize();
     for (let i = 0; i < 6; i++) {
       // Coast may close an island completely. There is no candidate to click then.
@@ -194,6 +201,10 @@ try {
   await addRegion();
   assert.equal(await page.getByRole('alert').count(), 0);
   const beforeRegenFailure = await snapshot();
+  const earlierLakes=beforeFailure.map.physicalGrid.smallLakes.lakes;
+  const expandedLakes=beforeRegenFailure.map.physicalGrid.smallLakes.lakes;
+  assert.ok(earlierLakes.some(lake=>!expandedLakes.some(current=>current.id===lake.id)),
+    'the generated region invalidates a previously accepted lake');
   await injectFailure();
   await page.getByRole('button', { name: 'Перегенерировать регион', exact: true }).click();
   await page.getByRole('alert').waitFor();
