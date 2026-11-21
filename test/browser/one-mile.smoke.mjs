@@ -122,7 +122,15 @@ try{
    return svg.querySelector(`[data-hex-key="${key}"]`).parentElement.querySelector('image.terrain-blend')?.getAttribute('href');
  },lakeKey);
  assert.equal(coarseExport,coarseCoast,'PNG after the 6 → 1 → 6 round trip keeps the same lake blend');
- await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});assert.deepEqual(await classicSignature(),classicVisible);
+ await lang('ru');
+ await page.locator('.hex-coordinate-toggle').focus();
+ await page.keyboard.press('Tab');
+ assert.ok(await step.evaluate(node=>node===document.activeElement));
+ await page.keyboard.press('Alt+ArrowDown');
+ await page.keyboard.press('ArrowUp');
+ await page.keyboard.press('Enter');
+ await page.locator('[data-fine-world]').waitFor();
+ assert.deepEqual(await classicSignature(),classicVisible);
  for(const language of ['ru','en'])for(const width of [1500,390,320]){
   await lang(language);await page.setViewportSize({width,height:1000});await assertScaleOnly(page,language);
   await shot(`f2-classic42-1mi-${language}-${width}.jpg`);
@@ -199,8 +207,17 @@ try{
  execFileSync(process.execPath,[base+'/node_modules/vite/bin/vite.js','build'],{cwd:base,stdio:'inherit'});
  baselineServer=spawn(process.execPath,[base+'/node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4196','--strictPort'],{cwd:base,stdio:['ignore','pipe','inherit']});
  await new Promise((resolve,reject)=>{let text='';const timer=setTimeout(()=>reject(Error(text)),15000);baselineServer.stdout.on('data',b=>{text+=b;if(text.includes('4196')){clearTimeout(timer);resolve();}});baselineServer.on('error',reject);});
- const baselinePage=await browser.newPage({viewport:{width:1500,height:1000}});await baselinePage.route(/mc\.yandex/,r=>r.abort());await baselinePage.goto('http://127.0.0.1:4196/');await baselinePage.locator('input[type=file]').setInputFiles({name:'same-fine.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
- await baselinePage.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready'&&!document.querySelector('.controls--transfer > button').disabled);
+ // Give both builds the same initial camera, interaction history and browser cache.
+ const openComparisonPage=async port=>{
+   const target=await browser.newPage({viewport:{width:1500,height:1000}});
+   await target.route(/mc\.yandex/,route=>route.abort());
+   await target.goto(`http://127.0.0.1:${port}/`);
+   await target.locator('input[type=file]').setInputFiles({name:'same-fine.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(fixture))});
+   await target.waitForFunction(()=>document.querySelector('svg[data-render-phase]')?.getAttribute('data-render-phase')==='ready'&&!document.querySelector('.controls--transfer > button').disabled);
+   return target;
+ };
+ const baselinePage=await openComparisonPage(4196);
+ const candidatePage=await openComparisonPage(4195);
  const baselineProfiles=[];
  const compareRaster=async(before,after)=>page.evaluate(async([a,b])=>{
   const decode=async s=>{const bytes=Uint8Array.from(atob(s),c=>c.charCodeAt(0)),image=await createImageBitmap(new Blob([bytes],{type:'image/png'})),canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;const c=canvas.getContext('2d');c.drawImage(image,0,0);return {width:image.width,height:image.height,data:c.getImageData(0,0,image.width,image.height).data};};
@@ -208,8 +225,8 @@ try{
   for(let i=0;i<x.data.length;i+=4){let diff=0;for(let j=0;j<4;j++)diff=Math.max(diff,Math.abs(x.data[i+j]-y.data[i+j]));maxDelta=Math.max(maxDelta,diff);if(diff)changed++;}
   return {maxDelta,changedFraction:changed/(x.width*x.height)};
  },[before.toString('base64'),after.toString('base64')]);
- for(const width of [1500,390]){for(const p of [page,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.mouse.move(0,0);await p.evaluate(()=>{document.activeElement?.blur();document.querySelector('details.export-menu')?.removeAttribute('open');for(const n of document.querySelectorAll('.side-panel,.map-viewport')){n.scrollTop=0;n.scrollLeft=0;}window.scrollTo(0,0);return document.fonts.ready;});await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
- const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await page.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});
+ for(const width of [1500,390]){for(const p of [candidatePage,baselinePage]){await p.setViewportSize({width,height:1000});await p.waitForLoadState('networkidle');await p.mouse.move(0,0);await p.evaluate(()=>{document.activeElement?.blur();document.querySelector('details.export-menu')?.removeAttribute('open');for(const n of document.querySelectorAll('.side-panel,.map-viewport')){n.scrollTop=0;n.scrollLeft=0;}window.scrollTo(0,0);return document.fonts.ready;});await p.locator('.map-viewport').scrollIntoViewIfNeeded();}
+ const before=await baselinePage.screenshot({path:new URL(`native6-before-${width}.png`,out).pathname,fullPage:true,animations:'disabled'}),after=await candidatePage.screenshot({path:new URL(`native6-after-${width}.png`,out).pathname,fullPage:true,animations:'disabled'});
  // AC07/08 concern native map geography. Keep full UI captures as diagnostics:
  // Chromium can round the responsive collapse-chevron glyph one pixel apart.
  // Compare the actual map element strictly and the entire exported map below.
@@ -218,12 +235,30 @@ try{
  // UI captures above. No map pixels/objects or raster thresholds are changed.
  const wholeUIRaster=await compareRaster(before,after);
  const nativeMapCapture={animations:'disabled',style:'.side-panel-toggle { visibility:hidden !important; }'};
- const mapBefore=await baselinePage.locator('svg[data-render-phase]').screenshot({...nativeMapCapture,path:new URL(`native6-map-before-${width}.png`,out).pathname}),mapAfter=await page.locator('svg[data-render-phase]').screenshot({...nativeMapCapture,path:new URL(`native6-map-after-${width}.png`,out).pathname}),raster=await compareRaster(mapBefore,mapAfter);
+ const mapBefore=await baselinePage.locator('svg[data-render-phase]').screenshot({...nativeMapCapture,path:new URL(`native6-map-before-${width}.png`,out).pathname}),mapAfter=await candidatePage.locator('svg[data-render-phase]').screenshot({...nativeMapCapture,path:new URL(`native6-map-after-${width}.png`,out).pathname}),raster=await compareRaster(mapBefore,mapAfter);
  assert.ok(raster.maxDelta<=3&&raster.changedFraction<=.001,'P04 native6 map unchanged except bounded edge antialiasing '+width+' '+JSON.stringify(raster));baselineProfiles.push({width,mapPixelIdentical:mapBefore.equals(mapAfter),raster,wholeUI:{pixelIdentical:before.equals(after),raster:wholeUIRaster,scope:'diagnostic including unrelated controls'}});}
  const exportNativePng=async(p,name)=>{const menu=p.locator('details.export-menu');if(await menu.getAttribute('open')===null)await menu.locator('summary').click();const [download]=await Promise.all([p.waitForEvent('download'),p.getByRole('button',{name:'PNG',exact:true}).click()]);const bytes=await fs.readFile(await download.path());await fs.writeFile(new URL(name,out),bytes);return bytes;};
- const beforePng=await exportNativePng(baselinePage,'native6-export-before.png'),afterPng=await exportNativePng(page,'native6-export-after.png'),pngRaster=await compareRaster(beforePng,afterPng);
+ const beforePng=await exportNativePng(baselinePage,'native6-export-before.png'),afterPng=await exportNativePng(candidatePage,'native6-export-after.png'),pngRaster=await compareRaster(beforePng,afterPng);
  assert.ok(pngRaster.maxDelta<=3&&pngRaster.changedFraction<=.001,'AC05 native6 exported PNG unchanged '+JSON.stringify(pngRaster));
- manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles,png:{pixelIdentical:beforePng.equals(afterPng),raster:pngRaster}};await baselinePage.close();await page.setViewportSize({width:1500,height:1000});}
+ if(process.env.GITHUB_HEAD_REF==='agent/hx-bl-058-base-scale-f1'){
+   const profiles=[];
+   for(const [version,source] of [['before',baselinePage],['after',candidatePage]]){
+     const control=source.locator('[data-fine-step]');
+     const toggle=source.locator('.language-toggle');
+     if(await toggle.getAttribute('aria-label')==='Переключить на русский'){
+       if(!await toggle.isVisible())await source.locator('[aria-controls="header-links-actions"]').click();
+       await toggle.click();
+     }
+     for(const width of [1280,390,320]){
+       await source.setViewportSize({width,height:850});
+       const panel=source.locator('.controls--display');
+       await panel.screenshot({path:new URL(`base-scale-${version}-${width}.png`,out).pathname});
+       profiles.push({version,width,options:await control.locator('option').allTextContents()});
+     }
+   }
+   manifest.base_scale_comparison={baseline:baselineSha,profiles};
+ }
+ manifest.native6_baseline={sha:baselineSha,fixture:'same explicitF2ford variant',profiles:baselineProfiles,png:{pixelIdentical:beforePng.equals(afterPng),raster:pngRaster}};await baselinePage.close();await candidatePage.close();}
  await step.selectOption('1');await page.locator('[data-fine-scene-preparing]').waitFor({state:'detached'});await page.locator('[data-fine-world]').waitFor();
  const fineRiverPaint=await page.locator('[data-fine-world] .river-polyline').evaluateAll(nodes=>nodes.map(n=>({geometry:n.getAttribute('points'),width:Number(n.getAttribute('stroke-width')),fullness:Number(n.getAttribute('data-river-fullness'))})));
  const fineHexWidth=await page.locator('[data-fine-key] polygon').first().evaluate(n=>Math.max(...[...n.points].map(p=>p.x))-Math.min(...[...n.points].map(p=>p.x)));assert.ok(Math.abs(sourceHexWidth/fineHexWidth-6)<1e-9);

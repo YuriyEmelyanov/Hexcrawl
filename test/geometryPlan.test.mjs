@@ -51,7 +51,7 @@ for(const locale of ['ru','en'])test(`HX059 ${locale} import keeps a visible pre
  assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'automatic display zoom is saved in accepted source coordinates');
  const restore=h.injectFunction('prepareAutomaticOneMileScene',()=>{throw Error('fixture_no_fit detail-poi:7');});
  await load();restore();
- assert.match(h.render().automaticFineError??h.render().editError??'',locale==='ru'?/Не удалось подготовить/:/Could not prepare/);
+ assert.match(h.render().automaticFineError??h.render().editError??'',locale==='ru'?/^1-мильная карта не открылась\./:/^The 1-mile map did not open\./);
  assert.match(h.render().automaticFineError,/№7/);assert.match(h.render().automaticFineError,locale==='ru'?/не найдено допустимое/:/no legal route/);assert.doesNotMatch(h.render().automaticFineError,/fixture_no_fit|detail-poi/);
  assert.equal(h.render().fineDisplay?.viewStep??6,6);
  assert.equal(h.render().createSaveData().ui.mapScale,sourceScale,'failed preparation restores source camera scale');

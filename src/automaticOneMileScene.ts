@@ -13,7 +13,9 @@ export function automaticSceneFailureMessage(error:unknown,language:'ru'|'en',fa
   /crossing|road/.test(raw)?(ru?'не удалось согласовать дорогу и переправу':'the road and crossing cannot be connected consistently'):
   /bank|contact|no[_ -]?fit/.test(raw)?(ru?'не найдено допустимое русло или место у берега':'no legal route or bank placement was found'):
   (ru?'геометрия исходной карты несовместима с одномильной сеткой':'the source geometry is incompatible with the one-mile grid');
- return (ru?'Не удалось подготовить карту 1 миля: ':'Could not prepare the one-mile map: ')+object+reason+'. '+(fallback?(ru?'Открыта исходная карта 6 миль.':'Showing the six-mile source map.'):(ru?'Исходная карта сохранена.':'The source map is unchanged.'));
+ const summary=ru?'1-мильная карта не открылась.':'The 1-mile map did not open.';
+ const detail=(ru?'Причина — ':'Reason — ')+object+reason+'.';
+ return fallback ? summary+' '+detail : summary+' '+detail+' '+(ru?'Исходная карта сохранена.':'The source map is unchanged.');
 }
 
 /** Pure detached preparation shared by the controller and its worker. */
