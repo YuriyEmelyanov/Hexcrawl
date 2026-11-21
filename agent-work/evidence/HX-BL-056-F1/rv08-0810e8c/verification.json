@@ -1,0 +1,199 @@
+{
+  "task_id": "HX-BL-056",
+  "stage_id": "F1.1-RV08",
+  "run_id": "2026-11-21T0600-programmer-HX-BL-056-RV08",
+  "role": "programmer",
+  "role_selection_reason": "Свободный слот, подтверждённое замечание RV08 в утверждённой задаче.",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "head_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
+  "repair_base_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_tree_sha": "f23b659c64b5f5aae375ae15ae305bb479bca894",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-645ecf0/review.json",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv08-0810e8c/verification.json",
+  "visible_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv08-0810e8c/dialog.md",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T0600-programmer-HX-BL-056-RV08.json",
+  "result_ref": "agent-work/results/2026-11-21T0600-programmer-HX-BL-056-RV08.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44858968961",
+  "publication_authorized": false,
+  "published": false,
+  "test_change_summary": {
+    "base_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+    "head_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suites": [
+      {
+        "suite": "Node mapTransactions",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Утрата обеих заметок и двух озёр при сохранении третьего; число подтверждений, отмена и Undo/Redo."
+      },
+      {
+        "suite": "Browser generation smoke",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Распознать предупреждение о восстановлении реки даже когда в этом же окне перечислены озёра; сохранить проверку отказа."
+      }
+    ],
+    "source": "git diff 645ecf06c664fead8964ec5ba1a9ba2634f93a53..0810e8c7d7f64f9402d59fba2147c9a6a3de0e91 -- test; одно существующее объявление node:test и один существующий сценарий браузерного удаления.",
+    "reuse_or_new_reason": "В обоих наборах уже выполнялось штатное удаление региона. Расширены те же сценарии."
+  },
+  "forecast": "Остаются независимая приёмка и выпуск после согласования владельца.",
+  "criteria": [
+    "R04",
+    "AC03"
+  ],
+  "fixture": "test/fixtures/e6-water-editor.json",
+  "seed": 42,
+  "region": [
+    3,
+    3
+  ],
+  "before": [
+    {
+      "withNote": false,
+      "key": "3,3",
+      "prompts": [
+        "При удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28. «Отменить» восстановит регион и озёра. Удалить регион?"
+      ],
+      "transactions": 1
+    },
+    {
+      "withNote": true,
+      "key": "3,3",
+      "prompts": [
+        "Удалить заметки мастера (1) в гексах 3,3? Их можно восстановить отменой.",
+        "При удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28. «Отменить» восстановит регион и озёра. Удалить регион?"
+      ],
+      "transactions": 1
+    }
+  ],
+  "after": [
+    {
+      "withNote": false,
+      "key": "3,3",
+      "prompts": [
+        "При удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nУдалить регион? Отмена действия восстановит карту."
+      ],
+      "transactions": 1
+    },
+    {
+      "withNote": true,
+      "key": "3,3",
+      "prompts": [
+        "Будут удалены заметки мастера (1) в гексах 3,3.\n\nПри удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nУдалить регион? Отмена действия восстановит карту."
+      ],
+      "transactions": 1
+    }
+  ],
+  "fine": [
+    {
+      "lakeId": 2,
+      "cell": {
+        "q": 3,
+        "r": 26
+      },
+      "prompts": [
+        "Будут удалены локальные правки одномильных гексов (1): 3,26.\n\nПри удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nУдалить регион? Отмена действия восстановит карту."
+      ],
+      "accepted": false
+    },
+    {
+      "lakeId": 2,
+      "cell": {
+        "q": 3,
+        "r": 26
+      },
+      "prompts": [
+        "Будут удалены локальные правки одномильных гексов (1): 3,26.\n\nПри удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nУдалить регион? Отмена действия восстановит карту."
+      ],
+      "accepted": true
+    }
+  ],
+  "en": [
+    {
+      "withNote": false,
+      "key": "3,3",
+      "prompts": [
+        "Deleting the last region also removes small lakes №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nDelete the region? Undo restores the map."
+      ],
+      "transactions": 1
+    },
+    {
+      "withNote": true,
+      "key": "3,3",
+      "prompts": [
+        "GM notes will be removed (1) at 3,3.\n\nDeleting the last region also removes small lakes №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nDelete the region? Undo restores the map."
+      ],
+      "transactions": 1
+    }
+  ],
+  "checks_focused": {
+    "executed": 4,
+    "passed": 4,
+    "skipped": 0
+  },
+  "source_probes": [
+    "agent-work/evidence/HX-BL-056-F1/review-645ecf0/prompt-probe.mjs.txt",
+    "agent-work/evidence/HX-BL-056-F1/review-645ecf0/fine-note-probe.mjs.txt"
+  ],
+  "method": "Выполнены те же штатные обработчики. В варианте одномильной заметки ответ передан уже на единственное окно. Отказ проверен сравнением снимка и истории, принятие — одной записью и точным Undo/Redo.",
+  "score_evidence": {
+    "model_version": "1.2",
+    "criterion_id": "S03-C01",
+    "contract": "AC03",
+    "observed": "Один отказ сохраняет все слои. При согласии потери одного региона принимаются вместе.",
+    "limits": "Classic seed 42. Изменение grade оценивает независимый проверяющий."
+  },
+  "checks": {
+    "node": {
+      "tests": 442,
+      "pass": 442,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "status": "passed",
+      "artifact": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44858968961/artifacts/14689506874"
+    },
+    "world_random": "passed",
+    "focused": {
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0
+    }
+  },
+  "ci_jobs": [
+    {
+      "id": 136707675448,
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136707675595,
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136707675749,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136707676887,
+      "name": "engraved-map-comparison",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ]
+}

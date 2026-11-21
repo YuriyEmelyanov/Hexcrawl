@@ -1,0 +1,114 @@
+{
+  "task_id": "HX-BL-056",
+  "stage_id": "F1.1-RV08",
+  "run_id": "2026-11-21T0600-programmer-HX-BL-056-RV08",
+  "role": "programmer",
+  "role_selection_reason": "Свободный слот, подтверждённое замечание RV08 в утверждённой задаче.",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "head_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
+  "repair_base_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_tree_sha": "f23b659c64b5f5aae375ae15ae305bb479bca894",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-645ecf0/review.json",
+  "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv08-0810e8c/verification.json",
+  "visible_evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv08-0810e8c/dialog.md",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T0600-programmer-HX-BL-056-RV08.json",
+  "result_ref": "agent-work/results/2026-11-21T0600-programmer-HX-BL-056-RV08.json",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44858968961",
+  "publication_authorized": false,
+  "published": false,
+  "test_change_summary": {
+    "base_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
+    "head_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suites": [
+      {
+        "suite": "Node mapTransactions",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Утрата обеих заметок и двух озёр при сохранении третьего; число подтверждений, отмена и Undo/Redo."
+      },
+      {
+        "suite": "Browser generation smoke",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Распознать предупреждение о восстановлении реки даже когда в этом же окне перечислены озёра; сохранить проверку отказа."
+      }
+    ],
+    "source": "git diff 645ecf06c664fead8964ec5ba1a9ba2634f93a53..0810e8c7d7f64f9402d59fba2147c9a6a3de0e91 -- test; одно существующее объявление node:test и один существующий сценарий браузерного удаления.",
+    "reuse_or_new_reason": "В обоих наборах уже выполнялось штатное удаление региона. Расширены те же сценарии."
+  },
+  "forecast": "Остаются независимая приёмка и выпуск после согласования владельца.",
+  "completed_at": "2026-11-21T03:18:31.121Z",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T02:58:30.947Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T03:18:24.545Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "status": "review_ready",
+  "review_ready": true,
+  "next_role": "reviewer",
+  "next_step": "Независимо проверить PR №510 на 0810e8c по F1.1: RV08 на заметках обоих масштабов, отказ, Undo/Redo, отдельные потери, итоговую карту и PNG. Сохранить заключение и score_assessment 1.2.",
+  "checks": {
+    "node": {
+      "tests": 442,
+      "pass": 442,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "status": "passed",
+      "artifact": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44858968961/artifacts/14689506874"
+    },
+    "world_random": "passed",
+    "focused": {
+      "executed": 4,
+      "passed": 4,
+      "skipped": 0
+    }
+  },
+  "ci_jobs": [
+    {
+      "id": 136707675448,
+      "name": "world-random",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136707675595,
+      "name": "browser",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136707675749,
+      "name": "check",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 136707676887,
+      "name": "engraved-map-comparison",
+      "status": "completed",
+      "conclusion": "skipped"
+    }
+  ],
+  "owner_decisions_needed": [],
+  "from_role": "programmer",
+  "to_role": "reviewer"
+}
