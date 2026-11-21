@@ -1,0 +1,172 @@
+{
+  "run_id": "2026-11-21T1100-reviewer-HX-BL-056-0e7e2be",
+  "role": "reviewer",
+  "role_selection_reason": "Получена передача review_ready на точный SHA, свободный реестр, проверены 517 claims и 579 результатов.",
+  "task_id": "HX-BL-056",
+  "stage_id": "F1.1",
+  "status": "accepted_awaiting_owner_publication",
+  "accepted": true,
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "pr": 510,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+  "reviewed_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+  "head_tree_sha": "50aa4a65d25b27e808b3baafcdfedb8967162923",
+  "completed_at": "2026-11-21T08:09:31.632Z",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44878436373",
+  "checks": {
+    "jobs": [
+      {
+        "name": "world-random",
+        "id": 136768203405,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "browser",
+        "id": 136768203627,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "check",
+        "id": 136768203639,
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "id": 136768204813,
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "node": {
+      "executed": 443,
+      "passed": 443,
+      "skipped": 0
+    },
+    "browser_manifest": {
+      "cases_passed": 17,
+      "task_cases": 6
+    },
+    "local_focused_node": {
+      "executed": 11,
+      "passed": 11,
+      "skipped": 0
+    },
+    "temporary_reviewer_boundary": {
+      "four": [
+        {
+          "q": -21,
+          "r": -11
+        },
+        {
+          "q": -20,
+          "r": -11
+        },
+        {
+          "q": -19,
+          "r": -11
+        },
+        {
+          "q": -18,
+          "r": -11
+        }
+      ],
+      "partial": {
+        "q": -22,
+        "r": -10
+      },
+      "adjacent": {
+        "q": -21,
+        "r": -10
+      },
+      "duplicate_refused": true,
+      "undo_preserved": true,
+      "beforeHashable": 10
+    }
+  },
+  "acceptance_matrix": {
+    "AC01": "Classic 42, ручное озеро в (-4,-28): карточка, JSON, PNG, снимки до и после из текущего CI.",
+    "AC02": "Приняты четыре смежных гекса, частично поддержанная клетка и повтор ID отвергнуты. В CI дорога №1 вызывает отказ без изменения карты; проверены пересечение и касание защищённых объектов.",
+    "AC03": "При изменении участка перечисляются оба потерянных озера №1 и №4, №5 сохраняется. Единый диалог при перегенерации и точность отказа, Undo и Redo проверены текущим тестом и отдельным воспроизведением.",
+    "AC04": "На старом SHA повторно разыгрывалась клетка (17,21). На текущем SHA удалённые №17/19 не вернулись и все четыре клетки двух новых озёр впервые получили полное покрытие. Масштабы, RNG, повтор и JSON сверены.",
+    "AC05": "Текущий браузерный архив: 1500/390/320, RU/EN, готовый и конфликтный черновик, экспорт, при повороте река сохраняет вход и выход. Осмотрены снимки ручного озера и итоговые PNG.",
+    "AC06": "Node 24 и браузерные сценарии сохранения и ошибочного импорта пройдены. Манифест: Knave 4→5 регионов с точным Undo/Redo, Mythic — корректный отказ с сохранением карты.",
+    "AC07": "Ручное озеро пересекает река №1, автоматическое — №5. В манифесте сохранены подход, участок внутри и выход. Осмотрен повёрнутый PNG.",
+    "AC08": "На Classic seed 42 недопустимый кандидат пересекает дорогу №6. Ручное №1 сохранено и приняты 23 автоматических озера, повтор из того же состояния и загрузка JSON совпали."
+  },
+  "fresh_review": {
+    "agent": "accept_0e7e2be",
+    "accepted": true,
+    "findings": [],
+    "fixed": [
+      "HX056-F11-RV10"
+    ],
+    "method": "Свежий контекст. Полная опора вычислена независимо от функций приложения по геометрии сохранённых базовых гексов и воды, точной целочисленной проверкой пересечений.",
+    "result": "На dd83f39 шесть клеток новых озёр уже были полностью покрыты, включая места двух удалённых озёр. На 0e7e2be таких клеток ноль. Новые озёра №25 и №26 занимают четыре впервые полностью покрытые клетки. Потоки RNG совпали. В Classic и Knave одно предупреждение перечислило 22 потери. В Knave нетронутые №17 и №19 сохранились вместе с берегами. Отказ точен, подтверждение — один шаг Undo/Redo.",
+    "limits": "Mythic: финальное предупреждение, отказ и история проверены в королевстве без озёр. Независимая геометрическая проверка RV10 относится к конкретному seed и этим операциям.",
+    "local_focused": {
+      "executed": 4,
+      "passed": 4
+    },
+    "negative_control": "Расширенный ранее существовавший тест на dd83f39 падает на клетке (17,21)."
+  },
+  "open_findings": [],
+  "verified_fixed_findings": [
+    "HX056-F11-RV10"
+  ],
+  "visible_evidence": {
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44878436373/artifacts/14696984281",
+    "sha256": "sha256:9f300821cc2350b22873c3295631340e13b1ddebd57c26258fe3e4a3aa283d03",
+    "head_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+    "tree_sha": "50aa4a65d25b27e808b3baafcdfedb8967162923",
+    "checkout_sha": "f593ed6d3376c5a0639734d2115290f8bcf7a0e1",
+    "screens": [
+      "small-lake-before.jpg",
+      "small-lake-after.jpg",
+      "small-lake-river-rotated.png",
+      "automatic-small-lakes.png"
+    ]
+  },
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-0e7e2be/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-0e7e2be/score-assessment1.2.json",
+  "result_ref": "agent-work/results/2026-11-21T1100-reviewer-HX-BL-056-0e7e2be.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1100-reviewer-HX-BL-056-0e7e2be.json",
+  "release_authorized": false,
+  "published": false,
+  "next_role": "programmer",
+  "next_step": "Ожидается разрешение владельца на публикацию PR №510 на 0e7e2be при базе d6daa2c. После разрешения программист сверяет пакет и проверяет сайт. Пока ожидается решение, программисту доступна утверждённая HX-BL-058 по чистовой спецификации.",
+  "forecast": "После решения о публикации — один запуск на выпуск и проверку сайта.",
+  "owner_decisions_needed": [
+    "Разрешить публикацию PR №510 на 0e7e2be4222d831f5b47ce34343215db11319d22"
+  ],
+  "test_change_summary": {
+    "base_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+    "head_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node mapTransactions",
+    "scenario": "Перегенерация после удаления двух автоматических озёр; проверка существования новых озёр и всех их клеток относительно полного покрытия до команды, совместно с отказом и историей.",
+    "reuse_or_new_reason": "Расширен существующий сквозной сценарий Knave. Старый проверял только потери и историю, что пропускало повторную генерацию на прежней территории.",
+    "source": "git diff dd83f39..0e7e2be -- test/mapTransactions.test.mjs",
+    "negative_control": "Текущий тест на предыдущем дереве падает на повторно разыгранной клетке (17,21); на новом дереве проходит."
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T08:04:44.110Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T08:09:24.714Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}

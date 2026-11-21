@@ -1,0 +1,55 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+const {createGenerationHarness} = await import(process.cwd()+'/test/helpers/generation-harness.mjs');
+const h=createGenerationHarness(42,'','en'), ui=()=>h.render(),out=x=>console.log(JSON.stringify(x)), mode=process.argv[2]??'mythic';
+const stable=x=>{const doc=JSON.parse(JSON.stringify(x.createSaveData())); delete doc.savedAt;return doc;};
+const digest=x=>createHash('sha256').update(JSON.stringify(x,(k,v)=>v instanceof Map?['Map',...v]:v instanceof Set?['Set',...v]:v)).digest('hex');
+let phase='init',tick=0,prompts=[],decision=true;
+h.setWindow({confirm:m=>{prompts.push({phase,tick,m});return decision;},alert:m=>out({alert:m})});
+h.injectFunction('readTextFile', f=>f.text);
+await ui().handleImportJson({target:{files:[{text:fs.readFileSync('test/fixtures/e6-water-editor.json','utf8')}],value:'map'}});
+if(mode==='knave')assert.ok(ui().chooseKnaveProfile(true));
+const geometry=h.geometry.buildManualRiverGeometryContext(ui().captureDocument().map);
+const path=['-24.249,-98','-24.249,-70','0,-56','0,-28','24.249,-14','24.249,14','0,28','0,56','-24.249,70','-24.249,98'].map(k=>geometry.vertex(k));
+assert.ok(ui().editRiverDocument({type:'create',regionId:1,path,fullness:1}));
+const finish=()=>{let app=ui();for(tick=0;app.kingdomJob&&tick<306;tick++){app.advanceKingdom();app=ui();if(tick%12===11)out({progress:phase,tick});}assert.equal(app.kingdomJob,null);assert.equal(app.generationError,null,JSON.stringify(app.generationError));return tick;};
+if(mode==='mythic'){ui().changeGenerationMode('mythic');ui().startKingdom({q:3,r:3});out({initialTicks:finish()});}
+else {assert.ok(ui().safelyAddRegionToMap({q:3,r:3}).success);ui().setGenSizeCategory('tract');}
+assert.ok(ui().editRiverDocument({type:'remove',riverId:1,includeArms:true},{confirmed:true}));
+const deletions=[];
+if(mode==='classic'){ui().switchFineStep(1);for(const id of [17,19]){const lake=stable(ui()).map.physicalGrid.smallLakes.lakes.find(l=>l.id===id);assert.ok(lake);assert.ok(ui().pickFine(lake.cells[0],false,ui().getDocumentRevision()));ui().removeSelectedSmallLake();assert.ok(!stable(ui()).map.physicalGrid.smallLakes.lakes.some(l=>l.id===id));deletions.push(lake);}ui().switchFineStep(6);out({deletions});}
+const beforeMap=ui().captureDocument().map; const before=stable(ui()), beforeh=digest(before),ids=doc=>doc.map.physicalGrid?.smallLakes?.lakes.map(l=>l.id)??[];
+const full=app=>digest([app.captureDocument(),app.undoHistory,app.redoHistory]);
+const stacks=full(ui()),depth=ui().undoHistory.length;
+out({mode,beforeh,lakeCount:ids(before).length,regions:before.map.regions.length,depth});
+for(const accept of [false,true]){
+ prompts=[];decision=accept;phase='begin';tick=0;ui().regenerateLastRegion();assert.ok(ui().pendingRegen);assert.equal(prompts.length,0);
+ phase='finish';const stale=ui().finishPendingRegeneration;stale();stale();
+ if(mode==='mythic'){assert.equal(prompts.length,0);phase='tick';finish();}
+ const after=stable(ui()),ah=digest(after),lost=ids(before).filter(id=>!ids(after).includes(id));out({mode,accept,count:prompts.length,events:prompts.map(x=>({phase:x.phase,tick:x.tick,river:x.m.includes('River 1'),knave:x.m.includes('Knave'),lakeIds:[...x.m.matchAll(/№(\d+)/g)].map(m=>Number(m[1]))})),ah,lost,unchanged:full(ui())===stacks,delta:ui().undoHistory.length-depth});
+ assert.equal(prompts.length,1);assert.ok(prompts[0].m.includes('River 1'));
+ if(accept){
+const terrainSet=m=>new Set([...m.regions.flatMap(r=>r.hexes.map(c=>c.q+','+c.r)),...Object.entries(m.terrainByHexKey).filter(([k,t])=>['sea','lake'].includes(t.terrainOverride)).map(([k])=>k)]);
+const old=terrainSet(before.map),now=terrainSet(after.map);
+function support({q,r},set){
+  let hit=0;
+  for(let a=Math.floor(q/6)-2;a<=Math.ceil(q/6)+2;a++)
+    for(let b=Math.floor(r/6)-2;b<=Math.ceil(r/6)+2;b++){
+      const dx=2*q+r-(12*a+6*b),dy=3*r-18*b;
+      if(Math.abs(dx)>=7||Math.abs(dx+dy)>=14||Math.abs(dx-dy)>=14)continue;
+      hit++;
+      if(!set.has(a+','+b))return false;
+    }
+  if(!hit)throw Error('Invalid separating axes');return true;
+}
+const fresh=(after.map.physicalGrid?.smallLakes?.lakes??[]).filter(l=>l.id>=(before.map.physicalGrid?.smallLakes?.nextId??1));
+const oldFull=fresh.flatMap(l=>l.cells.filter(c=>support(c,old)).map(c=>[l.id,c.q,c.r]));
+assert.ok(fresh.every(l=>l.cells.every(c=>support(c,now))));
+const prev=new Map((before.map.physicalGrid?.smallLakes?.lakes??[]).map(l=>[l.id,l]));
+const retained=(after.map.physicalGrid?.smallLakes?.lakes??[]).filter(l=>prev.has(l.id));
+for(const l of retained)assert.deepEqual(l,prev.get(l.id));
+out({mode,oldFull,fresh:fresh.map(l=>[l.id,l.cells]),retained:retained.length,coreGen:digest(after.map.generation??after.generation)});
+assert.deepEqual([...prompts[0].m.matchAll(/№(\d+)/g)].map(m=>Number(m[1])),lost);assert.equal(ui().undoHistory.length,depth+1);ui().undoMap();assert.deepEqual(stable(ui()),before);ui().redoMap();assert.deepEqual(stable(ui()),after);out({mode,undoRedoExact:true});}
+ else {assert.deepEqual(after,before);assert.equal(full(ui()),stacks);}
+}
