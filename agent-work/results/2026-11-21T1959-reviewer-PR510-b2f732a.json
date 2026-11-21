@@ -1,0 +1,295 @@
+{
+  "run_id": "2026-11-21T1959-reviewer-PR510-b2f732a",
+  "task_id": "HX-BL-056",
+  "role": "reviewer",
+  "head_sha": "b2f732a57ae9ed18062d617039d127c27ba85b16",
+  "base_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "generation": 430,
+  "programmer_slot": false,
+  "acquired_at": "2026-11-21T17:00:11.427Z",
+  "heartbeat_at": "2026-11-21T17:00:11.427Z",
+  "claim_ref": "agent-work/claims/2026-11-21T1959-reviewer-PR510-b2f732a.json",
+  "pr": 510,
+  "stage": "F1.2",
+  "tree_sha": "4e8ba5ce82e6c4ec567e479d21bef13d40d8adb6",
+  "status": "changes_requested",
+  "accepted": false,
+  "published": false,
+  "release_authorized": false,
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44922703877",
+  "role_selection_reason": "PR510 передан на проверку точного SHA. Реестр свободен, просмотрены 535 claims и 588 файлов результатов. Учёт PR511 завершён.",
+  "independent_agent": "/root/accept_b2f732a",
+  "resolved_findings": [
+    "HX056-RV11"
+  ],
+  "open_review_findings": [
+    {
+      "id": "HX056-RV12",
+      "severity": "blocking",
+      "scope": "R04 / контрольные точки генерации, AC03–04",
+      "steps": [
+        "Открыть карту семи регионов seed 1257875020",
+        "Добавить восьмой регион в 0,-3 с размером locality",
+        "Один раз успешно перегенерировать восьмой регион с прежними настройками.",
+        "Удалить последний регион, подтвердить предупреждение о реке и сравнить семь оставшихся регионов с исходной картой."
+      ],
+      "expected": "На семи регионах вернулись прежние озёра, включая №24, и nextId=34. В этом сценарии пользователь не правил озёра.",
+      "actual": "Отсутствует №24, nextId=38. Из полей сохранённой карты отличается только physicalGrid. Undo/Redo точно воспроизводят эти состояния.",
+      "source": [
+        "src/App.tsx:14892",
+        "src/App.tsx:14730",
+        "src/App.tsx:13697",
+        "src/App.tsx:14299"
+      ],
+      "fixture_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/before-region-eight.json"
+    }
+  ],
+  "verification": {
+    "jobs": [
+      {
+        "name": "check",
+        "id": 136902081447,
+        "conclusion": "success"
+      },
+      {
+        "name": "world-random",
+        "id": 136902081783,
+        "conclusion": "success"
+      },
+      {
+        "name": "browser",
+        "id": 136902081810,
+        "conclusion": "success"
+      },
+      {
+        "name": "engraved-map-comparison",
+        "id": 136902082569,
+        "conclusion": "skipped"
+      }
+    ],
+    "node": {
+      "passed": 443,
+      "executed": 443,
+      "skipped": 0
+    },
+    "local_node": {
+      "passed": 3,
+      "executed": 3,
+      "skipped": 0,
+      "methods": [
+        "Удаление региона с озёрами",
+        "Конфликт тропы",
+        "Потеря опоры при правке воды, Undo/Redo"
+      ]
+    },
+    "one_mile_manifest": {
+      "passed": 17,
+      "executed": 17
+    },
+    "artifact_id": 14714946229,
+    "artifact_sha256": "cacdd5d32d467bf452868a02dfb4f69a49609a4133706e31eb8c9ff50de7e0ac",
+    "visual": "Сверены все четыре оригинальных PNG из артефакта по байтам. На снимке без выделения у малого озера присутствуют сглаженная кромка, тон и волны большого. Сэмпл 32×26 малого озера: пиксели каталожного цвета 0→56, прежнего глубокого цвета 240→0. На большом в контрольном фрагменте 585→585 пикселей каталожного цвета. Значок POI частично перекрывает воду. В многоклеточном примере общий берег. Вход и выход реки различимы.",
+    "behavior": {
+      "seed": 1257875020,
+      "anchor": {
+        "q": 0,
+        "r": -3
+      },
+      "cases": {
+        "note": {
+          "restored": [
+            24
+          ],
+          "next": 34,
+          "undoRedoExact": true,
+          "replay": [
+            34,
+            35
+          ],
+          "promptCount": 0
+        },
+        "delete1": {
+          "absentFromSeven": [
+            1,
+            24
+          ],
+          "unexpectedInSeven": [],
+          "allOtherObjectsIntact": true,
+          "next": 36,
+          "undoRedoExact": true,
+          "notePreserved": true,
+          "prompts": []
+        },
+        "delete34": {
+          "absentFromSeven": [
+            24
+          ],
+          "unexpectedInSeven": [],
+          "allOtherObjectsIntact": true,
+          "next": 36,
+          "undoRedoExact": true,
+          "notePreserved": true,
+          "prompts": []
+        }
+      }
+    },
+    "reroll": {
+      "lostOnExpand": [
+        24
+      ],
+      "afterRerollMissing": [
+        24
+      ],
+      "nextReroll": 38,
+      "priorLakesOnCheckpoint": null,
+      "afterDeletingRerolled": [
+        24
+      ],
+      "nextAfterDeletingRerolled": 38,
+      "extraAfterDeletingRerolled": [],
+      "mapChanges": [
+        "physicalGrid"
+      ],
+      "dialogs": [
+        "Original river state will be restored. Changed routes: Rabenach. Manual markers: retained. Undo restores this map exactly.\n\nDelete the region? Undo restores the map."
+      ]
+    },
+    "conflict": "Seed 42, один конфликт с дорогой №6, 23 пригодных автоматических озера и ручное №1 сохранились.",
+    "confirmation": {
+      "seed": 1257875020,
+      "anchor": {
+        "q": 0,
+        "r": -3
+      },
+      "startingRegions": 7,
+      "initialNextId": 34,
+      "lostOnExpansion": [
+        24
+      ],
+      "afterRerollMissing": [
+        24
+      ],
+      "nextIdAtReroll": 38,
+      "hasPhysicalGridInRerolledCheckpoint": false,
+      "hasSmallLakesInRerolledCheckpoint": false,
+      "regionsAfterDeletion": 7,
+      "afterDeletingRerolled": [
+        24
+      ],
+      "nextAfterDeletingRerolled": 38,
+      "extraAfterDeletingRerolled": [],
+      "mapChanges": [
+        "physicalGrid"
+      ],
+      "physicalGridChanges": [
+        "smallLakes"
+      ],
+      "oldLake": {
+        "id": 24,
+        "origin": "automatic",
+        "cells": [
+          {
+            "q": -5,
+            "r": -13
+          },
+          {
+            "q": -4,
+            "r": -13
+          },
+          {
+            "q": -3,
+            "r": -14
+          }
+        ],
+        "shoreCells": [
+          {
+            "q": -5,
+            "r": -12
+          },
+          {
+            "q": -4,
+            "r": -14
+          },
+          {
+            "q": -3,
+            "r": -13
+          }
+        ]
+      },
+      "unchangedSurvivors": true,
+      "undoRedoExact": true,
+      "dialogs": [
+        "Original river state will be restored. Changed routes: Rabenach. Manual markers: retained. Undo restores this map exactly.\n\nDelete the region? Undo restores the map."
+      ]
+    }
+  },
+  "replay_instructions": "Сохраните поле replay_source как файл .mjs в корень проверенной ветки рядом с fixture.json из fixture_ref, запустите node с установленными зависимостями проекта.",
+  "images": {
+    "commit": "000182584ef7ad5f349a4d0dedc2cc2bcbb1c2b3",
+    "paths": [
+      "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/example-inside-poi.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/example-near-large-lake.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/example-river.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-b2f732a/example-multi-cell.png"
+    ],
+    "blobs": [
+      "2c18f0c779c1c3008667cdc07c3a332c24f7fca2",
+      "14fbe1c154d2991cc364401c2770f4d64bb8c872",
+      "9eb1dccd4e6fbdccf4e0fe1b310061c8e0e36721",
+      "85f261f631eb344427987569b11a3b49a6db9bec"
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "head_sha": "b2f732a57ae9ed18062d617039d127c27ba85b16",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suite": [
+      {
+        "name": "Chromium generation.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "В существующий откат восьмого региона добавлена заметка на старом гексе, проверяется вся сохранённая карта."
+      },
+      {
+        "name": "Chromium one-mile.smoke.mjs / HX056-safe-shore-spill",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Карта и экспорт содержат один и тот же озёрный PNG; сверяются размеры рисунка и видимый базовый тон, сохранён сравнительный кадр без выделения."
+      }
+    ],
+    "scenario": "Откат с независимой правкой; регрессия вида малого озера рядом с большим.",
+    "reuse_or_new_reason": "Оба сценария уже создавали подходящую карту и выполняли нужное действие. Дополнены проверки результата в существующих сценариях.",
+    "source": "git diff 02aaa188031e0ad8c59dfc246420d1a093869a88 b2f732a57ae9ed18062d617039d127c27ba85b16 -- test/; сравнены логические сценарии каждого runner.",
+    "reviewer_assessment": "Две правки расширяют разные существующие сценарии. Первая ловит потерю озера при заметке, вторая проверяет соответствие видимого оформления и встроенного PNG. Сценарий успешной перегенерации перед удалением обе проверки пропускают."
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-b2f732a/score-assessment1.3-rc8.json",
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-b2f732a/review.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1959-reviewer-PR510-b2f732a.json",
+  "result_ref": "agent-work/results/2026-11-21T1959-reviewer-PR510-b2f732a.json",
+  "next_role": "programmer",
+  "next_step": "Исправить HX056-RV12: сохранить состояние семи регионов при перегенерации восьмого и вернуть исходный слой при его последующем удалении. На той же карте проверить ручные правки, Undo/Redo и повтор генерации.",
+  "forecast": "Один запуск на исправление и один на независимую перепроверку при успешном CI.",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T16:59:18.449Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T17:04:44.556Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-21T17:04:44.556Z",
+  "execution_running": false,
+  "score_delta": 0,
+  "score_delta_status": "preliminary_unpublished"
+}
