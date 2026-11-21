@@ -1,0 +1,356 @@
+{
+  "task_id": "HX-RSR-001",
+  "run_id": "2026-11-21-DND5-regional-scales-2030",
+  "status": "checkpoint_reddit_author_ranking",
+  "started_at": "2026-11-21T17:29:51.945Z",
+  "finished_at": "2026-11-21T18:14:12.062Z",
+  "stage": "Проверенный срез за 12 месяцев и пополнение общего реестра",
+  "last_successful_step": "11 файлов рейтинга прочитаны с закреплённого SHA и совпадают с исходными байтами.",
+  "failed_operation": {
+    "tool": "Arctic Shift HTTP API",
+    "action": "получение полной истории публикаций и комментариев по сообществу и месяцу",
+    "locator": "https://arctic-shift.photon-reddit.com/api/comments/search"
+  },
+  "observed_error": [
+    "HTTP Error 422: Unprocessable Entity",
+    "Timeout. Maybe slow down a bit",
+    "<urlopen error timed out>"
+  ],
+  "error_code": 422,
+  "stop_reason": "В архивной выборке остались необработанные интервалы. Ограниченные окна и выборка комментариев из отдельных веток частично их восстановили. Оставшиеся ячейки, курсоры и успешные интервалы сохранены.",
+  "cause_status": "unknown",
+  "secondary_source_event": {
+    "source": "PullPush",
+    "http_code": 429,
+    "outcome": "Сбор через этот источник остановлен."
+  },
+  "needs_owner_action": false,
+  "base_sha": "6119ce4f2013c999c223c2cdd724e300391e03f9",
+  "started_marker_sha": "351d6ffac00fbb47359393bd9e5b627515497322",
+  "claim_ref": "agent-work/claims/2026-11-21-DND5-regional-scales-2030.json",
+  "generation": 432,
+  "automation_health": {
+    "start": [
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ]
+    ],
+    "end": [
+      [
+        "Automation_7690c42b2a7881919aaca4103dcd338f",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261120T013000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=30;BYSECOND=0\nEND:VEVENT"
+      ],
+      [
+        "6ad9c2426c7481919bb9f3d2b289e9b9",
+        true,
+        "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT"
+      ]
+    ],
+    "checked_at": "2026-11-21T18:14:12.062Z"
+  },
+  "selection": "В ходе запуска владелец назначил приоритетом Reddit и попросил включать новые продукты сверх 200 в существующий список. Этот срез выбран перед продолжением DMG2014 и поиском игр для рейтинга.",
+  "checkpoint": {
+    "run_id": "2026-11-21-DND5-regional-scales-2030",
+    "status": "checkpoint_reddit_author_ranking",
+    "result_ref": "agent-work/research/runs/2026-11-21-DND5-regional-scales-2030.json",
+    "registry_ref": "agent-work/research/competitors/registry.json",
+    "added": 64,
+    "confirmed": 264,
+    "target": 200,
+    "remaining": 0,
+    "direct": 85,
+    "partial": 179,
+    "also_L2": 76,
+    "with_popularity_observation": 161,
+    "ranking_ref": "agent-work/research/reddit-map-tools/ranking.csv",
+    "monthly_ref": "agent-work/research/reddit-map-tools/monthly.csv",
+    "evidence_ref": "agent-work/research/reddit-map-tools/evidence.csv",
+    "coverage_ref": "agent-work/research/reddit-map-tools/coverage.json",
+    "evidence_sha": "0920d1769c9a9446ab7ad0cb44bb9f167fa1be6b",
+    "reddit": {
+      "period": [
+        "2025-11",
+        "2026-10"
+      ],
+      "tools": 93,
+      "distinct_authors_all_tools": 511,
+      "distinct_authors_per_tool_total": 728,
+      "unique_authors_any_tool_per_month": {
+        "2025-11": 71,
+        "2025-12": 28,
+        "2026-01": 56,
+        "2026-02": 47,
+        "2026-03": 48,
+        "2026-04": 41,
+        "2026-05": 40,
+        "2026-06": 36,
+        "2026-07": 64,
+        "2026-08": 66,
+        "2026-09": 52,
+        "2026-10": 54
+      },
+      "retrieved": 47503,
+      "archive": 688423,
+      "archive_gap": 640920,
+      "records": 988,
+      "objects": 747,
+      "hx_rank": 42,
+      "hx_tied": 14,
+      "hx_july": 13,
+      "queue": 1068,
+      "top": [
+        [
+          "Inkarnate",
+          "88"
+        ],
+        [
+          "Wonderdraft",
+          "59"
+        ],
+        [
+          "Adobe Photoshop",
+          "53"
+        ],
+        [
+          "GIMP",
+          "37"
+        ],
+        [
+          "Azgaar’s Fantasy Map Generator",
+          "32"
+        ],
+        [
+          "QGIS",
+          "28"
+        ],
+        [
+          "Worldographer",
+          "26"
+        ],
+        [
+          "Inkscape",
+          "24"
+        ],
+        [
+          "GPlates",
+          "22"
+        ],
+        [
+          "Adobe Illustrator",
+          "20"
+        ]
+      ],
+      "by_community": {
+        "osr": {
+          "posts": 7037,
+          "comments": 6793
+        },
+        "rpg": {
+          "posts": 13022,
+          "comments": 6866
+        },
+        "mapmaking": {
+          "posts": 5813,
+          "comments": 7972
+        }
+      }
+    },
+    "next_candidate": {
+      "id": "reddit-regional-map-authors-archive-recovery",
+      "scenario": "Взять комментарии r/rpg за ноябрь 2025 по разрывам coverage.json. Начать с ограниченных UTC-окон по несколько часов либо сопоставимой публичной выгрузки. Искать и в комментариях к более старым постам. Удалять уже полученные ID по source-ids.json, восстанавливать родителей коротких ответов. Затем те же действия для следующих месяцев и двух остальных сообществ. Добавлять найденные инструменты после сверки по первоисточнику. Пересчитать год и каждый месяц из evidence.csv."
+    }
+  },
+  "registry_added_ids": [
+    "photoshop",
+    "gimp",
+    "qgis",
+    "inkscape",
+    "gplates",
+    "illustrator",
+    "krita",
+    "blender",
+    "procreate",
+    "wilbur",
+    "ibis-paint",
+    "google-earth",
+    "g-projector",
+    "affinity-family",
+    "world-orogen",
+    "paint-net",
+    "sketchbook",
+    "clip-studio-paint",
+    "ms-paint",
+    "gaea",
+    "maptoglobe",
+    "gleba",
+    "merak-map-maker",
+    "figma",
+    "photopea",
+    "tectonic-rock3",
+    "mapchart",
+    "indesign",
+    "canva",
+    "tectolite",
+    "dungeondraft",
+    "excalidraw",
+    "torben-planet",
+    "projectionpasta",
+    "song-of-the-eons",
+    "world-creator",
+    "substance-designer",
+    "aseprite",
+    "coreldraw",
+    "dayside",
+    "dungeon-alchemist",
+    "dunier",
+    "fantasy-grounds",
+    "firealpaca",
+    "gdal",
+    "globe-mapper-chideas",
+    "globify",
+    "infinite-painter",
+    "mapshaper",
+    "medibang",
+    "miro",
+    "paint-tool-sai",
+    "project-r",
+    "tangram-heightmapper",
+    "world-climate-lab",
+    "wplace",
+    "xaero-world-map",
+    "nations-scenario-editor",
+    "hex-kit-fantasyland",
+    "2minute-world-map-hex-tiles",
+    "bfrpg-hexcrawl-adventures",
+    "kal-arath",
+    "omniarole",
+    "observe-map-editor"
+  ],
+  "owner_clarification": "Подтверждённые новые L1 включать в центральный список и после первоначальных 200. HexCrawl.ru измерять равноправно, сохраняя его как собственный продукт.",
+  "observed_sources": {
+    "reddit_journal": "agent-work/research/reddit-map-tools/evidence.csv",
+    "archive_denominators_and_partial_cursors": "agent-work/research/reddit-map-tools/coverage.json",
+    "id_manifest": "agent-work/research/reddit-map-tools/source-ids.json",
+    "producer_sources": "agent-work/research/competitors/registry.json",
+    "identity_cases": [
+      "Hexographer / Worldographer — одна семья; тарифы и версии объединены.",
+      "Tiled и Loremapper сверены с идентичностью проектов. Два ответа с одним словом Loremapper оставлены для уточнения.",
+      "Hex Kit и импортируемый художественный набор Fantasyland — отдельные продукты издателя. World Map Hex Tiles — самостоятельный набор 2-Minute Tabletop."
+    ]
+  },
+  "observed_scope": {
+    "score": false,
+    "market_share": false,
+    "active_game_ranking_change": false
+  },
+  "parked_task": {
+    "reason": "Смена приоритета владельцем после started marker; первоначальное имя запуска сохранено.",
+    "next_candidate": {
+      "id": "DND5-DMG2014-regional-scale-source-coverage",
+      "scenario": "Продолжить оцифровку D&D 5e по Dungeon Master’s Guide 2014. Взять раздел Mapping Your Campaign, сопоставить провинцию, королевство и континент с существующей матрицей и журналом покрытия. Для каждого масштаба проверить по доступному первоисточнику единицу гекса и картографируемые объекты. При недоступности нужной редакции сохранить открытый локатор и перейти к доступному источнику top5."
+    },
+    "source": "Dungeon Master’s Guide (2014), pp. 13–14, Mapping Your Campaign",
+    "implementation_probe": {
+      "main_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+      "blob_sha": "c5fb6f071dbc9a79d6ede7507909688fb2fb0067",
+      "observations": {
+        "results": [
+          {
+            "step": 6,
+            "count": 30,
+            "miles": 180,
+            "to": {
+              "x": 180,
+              "y": 0
+            }
+          },
+          {
+            "step": 1,
+            "count": 180,
+            "miles": 180,
+            "to": {
+              "x": 180,
+              "y": 0
+            }
+          }
+        ],
+        "step60": "Unknown detail grid"
+      }
+    }
+  },
+  "saved_results": [
+    "agent-work/research/reddit-map-tools/ranking.csv",
+    "agent-work/research/reddit-map-tools/monthly.csv",
+    "agent-work/research/reddit-map-tools/evidence.csv",
+    "agent-work/research/reddit-map-tools/tools.json",
+    "agent-work/research/reddit-map-tools/unconfirmed.csv",
+    "agent-work/research/reddit-map-tools/method.json",
+    "agent-work/research/reddit-map-tools/README.md",
+    "agent-work/research/reddit-map-tools/build_ranking.py",
+    "agent-work/research/reddit-map-tools/source-ids.json",
+    "agent-work/research/reddit-map-tools/summary.json",
+    "agent-work/research/reddit-map-tools/coverage.json",
+    "agent-work/research/competitors/registry.json",
+    "agent-work/research/state.json",
+    "agent-work/research/README.md"
+  ],
+  "remaining_archive_gap": 640920,
+  "exact_continuation": {
+    "id": "reddit-regional-map-authors-archive-recovery",
+    "scenario": "Взять комментарии r/rpg за ноябрь 2025 по разрывам coverage.json. Начать с ограниченных UTC-окон по несколько часов либо сопоставимой публичной выгрузки. Искать и в комментариях к более старым постам. Удалять уже полученные ID по source-ids.json, восстанавливать родителей коротких ответов. Затем те же действия для следующих месяцев и двух остальных сообществ. Добавлять найденные инструменты после сверки по первоисточнику. Пересчитать год и каждый месяц из evidence.csv."
+  },
+  "readback": [
+    [
+      "agent-work/research/reddit-map-tools/ranking.csv",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/monthly.csv",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/evidence.csv",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/tools.json",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/unconfirmed.csv",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/method.json",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/README.md",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/build_ranking.py",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/source-ids.json",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/summary.json",
+      true
+    ],
+    [
+      "agent-work/research/reddit-map-tools/coverage.json",
+      true
+    ]
+  ]
+}
