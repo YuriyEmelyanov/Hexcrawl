@@ -3,13 +3,10 @@ import argparse
 import csv
 import json
 from collections import defaultdict
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
-import sys
 
 ROOT = Path(__file__).resolve().parent
-sys.path.insert(0, str(ROOT.parent))
-from datetime import date
 
 def calendar_months(start, end):
     month = date.fromisoformat(start + '-01')
@@ -44,7 +41,14 @@ def main():
     months = list(calendar_months(args.start, args.end))
     tools = json.loads((ROOT/'catalog.json').read_text())
     registry = json.loads((ROOT.parent.parent/'competitors'/'registry.json').read_text())
-    eligible = {entry['id'] for entry in registry['entries']} | {'hexcrawl-ru'}
+    eligible = {'hexcrawl-ru'}
+    digital_types = {'editor', 'generator', 'module', 'functional_module'}
+    for entry in registry['entries']:
+        review = entry.get('digital_review') or {}
+        kinds = set(entry.get('product_types') or [])
+        if (kinds and kinds <= digital_types and entry.get('disposition') == 'keep_L1'
+                and review.get('decision') == 'keep_L1' and review.get('source')):
+            eligible.add(entry['id'])
     if any(t not in eligible or v.get('software') is not True for t,v in tools.items()):
         raise ValueError('Catalog contains ineligible products')
     by_period = defaultdict(lambda: defaultdict(set))
