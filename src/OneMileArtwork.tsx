@@ -37,10 +37,8 @@ export function OneMileArtwork(p:Props){
  const lakes=p.smallLakes??[];
  const shorelines=[...lakes,...(p.smallLakeDraft?[p.smallLakeDraft]:[])];
  const lakeCores=new Set(shorelines.flatMap(({lake})=>lake.cells.map(fineCellKey)));
- const lakeClipId=(id:number)=>`${clipPrefix}-small-lake-${id}`;
  const riverMaskId=`${clipPrefix}-small-lake-rivers`;
  const riverMask=lakes.length?`url(#${riverMaskId})`:undefined;
- const lakeTranslation=`translate(${p.offset.x} ${p.offset.y})`;
  const riverMaskBounds=useMemo(()=>{
    if(!riverMask)return undefined;
    let left=p.offset.x,right=p.offset.x,top=p.offset.y,bottom=p.offset.y;
@@ -61,7 +59,7 @@ export function OneMileArtwork(p:Props){
      [{cell:worldToDetailCell(grid,anchor),position:point(anchor)}];
    const markers=targets.filter(({cell})=>{
      const key=fineCellKey(cell);
-     if(occupied.has(key))return false;
+     if(lakeCores.has(key)||occupied.has(key))return false;
      occupied.add(key);
      return true;
    });
@@ -79,40 +77,23 @@ export function OneMileArtwork(p:Props){
     {!occupied.has(key)&&!lakeCores.has(key)&&<Engraving id={id} x={c.x} y={c.y} radius={radius} rotated={p.rotated}/>}
    </g>;
   })}</g>
-  {/* The same clipped shore paints the lake and hides the underlying river. */}
   {riverMask&&<defs><mask id={riverMaskId} maskUnits="userSpaceOnUse" {...riverMaskBounds} style={{maskType:'luminance'}} data-small-lake-river-mask>
    <rect {...riverMaskBounds} fill="white"/>
-   {lakes.map(({lake,path})=><g key={lake.id} clipPath={`url(#${lakeClipId(lake.id)})`}>
-     <path d={path} transform={lakeTranslation} fill="black" fillRule="evenodd"/>
-   </g>)}
+   {lakes.flatMap(({lake})=>lake.cells.map(cell=>
+     <polygon key={fineCellKey(cell)} data-lake-mask-cell={fineCellKey(cell)} points={polygon(cell)} fill="black"/>
+   ))}
   </mask></defs>}
-  {shorelines.map(({lake,shape,maskCells})=>{
+  {shorelines.map(({lake,shape})=>{
     if(!shape)return null;
-    const draft=lake===p.smallLakeDraft?.lake,clip=lakeClipId(lake.id);
-    return <g key={lake.id} data-small-lake={draft?undefined:lake.id} data-editor-only={draft?'small-lake-draft':undefined} pointerEvents="none">
-      <defs><clipPath id={clip}>{maskCells.map(cell=><polygon key={fineCellKey(cell)} points={polygon(cell)} data-small-lake-shore-cell={fineCellKey(cell)}/>)}</clipPath></defs>
-      <g clipPath={`url(#${clip})`}>
-        <g transform={lakeTranslation} data-small-lake-water opacity={draft ? .7 : 1}>
-          <g data-lake-shape={clip}>
-            <defs>
-              <clipPath id={clip+'-shape'}><path d={shape.path} clipRule="evenodd"/></clipPath>
-              <filter id={clip+'-soften'} filterUnits="userSpaceOnUse" {...shape.bounds}>
-                <feGaussianBlur stdDeviation={radius*.15}/>
-                <feComponentTransfer><feFuncA type="table" tableValues="0 0 0 0 0 0 .12 .38 .67 .92 1"/></feComponentTransfer>
-              </filter>
-              <mask id={clip+'-shore'} maskUnits="userSpaceOnUse" {...shape.bounds}>
-                <path d={shape.path} fill="white" fillRule="evenodd" filter={`url(#${clip}-soften)`}/>
-              </mask>
-            </defs>
-            <g clipPath={`url(#${clip}-shape)`}>
-              <rect {...shape.bounds} fill={engravingFor('lake')!.color} mask={`url(#${clip}-shore)`}/>
-              <g mask={`url(#${clip}-shore)`}>{shape.cells.map(cell=>
-                <Engraving key={fineCellKey(cell)} id="lake" x={cell.x} y={cell.y} radius={radius} rotated={p.rotated}/>
-              )}</g>
-            </g>
-          </g>
-        </g>
-      </g>
+    const draft=lake===p.smallLakeDraft?.lake;
+    return <g key={lake.id} data-small-lake={draft?undefined:lake.id} data-editor-only={draft?'small-lake-draft':undefined} pointerEvents="none" opacity={draft ? .7 : 1}>
+      {lake.cells.map(cell=>{
+        const key=fineCellKey(cell),c=center(cell);
+        return <g key={key}>
+          <polygon data-small-lake-shore-cell={key} points={polygon(cell)} fill={engravingFor('lake')!.color}/>
+          <Engraving id="lake" x={c.x} y={c.y} radius={radius} rotated={p.rotated}/>
+        </g>;
+      })}
     </g>;
   })}
   {p.smallLakeDraftCells?.length&&<g data-editor-only="small-lake-selection" pointerEvents="none">
