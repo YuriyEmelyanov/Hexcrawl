@@ -29,7 +29,7 @@
   "run_id": "2026-11-21T0900-reviewer-HX-BL-056-dd83f39",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "review_ready",
+  "status": "changes_requested",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -52,36 +52,25 @@
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
   "current_role": "reviewer",
-  "next_role": "reviewer",
+  "next_role": "programmer",
   "current_task_id": "HX-BL-056",
   "spec_path": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-21T0800-programmer-HX-BL-056-RV09.json",
-  "handoff_commit_sha": "619781f4cbdf287e5987712af286038e2ed2ee5d",
-  "active_claim": {
-    "task_id": "HX-BL-056",
-    "role": "reviewer",
-    "run_id": "2026-11-21T0900-reviewer-HX-BL-056-dd83f39",
-    "claim_ref": "agent-work/claims/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
-    "branch": "agent/hx-bl-056-small-lakes-f1",
-    "base_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
-    "acquired_at": "2026-11-21T05:57:13.285Z",
-    "heartbeat_at": "2026-11-21T05:57:13.285Z",
-    "generation": 382,
-    "programmer_slot": false
-  },
-  "next_step": "Проверяющему независимо принять пакет PR №510 на dd83f39e40e7baee90020a20a4b32d2a81085fe7, включая R04/AC03, и записать score_assessment 1.2.",
+  "result_path": "agent-work/results/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
+  "handoff_commit_sha": "0c20b8623e0748de1e6eae607eed95f8591b3d31",
+  "active_claim": null,
+  "next_step": "Программисту исправить HX056-F11-RV10 по R03: вычислять новое полное покрытие относительно принятой карты перед операцией. Проверить, что удалённые озёра не возвращаются на прежних клетках, новая территория по-прежнему получает озёра, а отказ, Undo/Redo, RNG и единое подтверждение остаются точными. Передать новый SHA на независимую проверку.",
   "owner_decisions_needed": [],
   "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-056-F1/rv09-dd83f39/verification.json",
+  "evidence_path": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/review.json",
   "branch_name": "agent/hx-bl-056-small-lakes-f1",
   "pr": 510,
   "head_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
   "tree_sha": "f23b659c64b5f5aae375ae15ae305bb479bca894",
   "checks_status": "passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44858968961",
-  "review_verdict": null,
+  "review_verdict": "changes_requested",
   "role_selection_mode": "readiness_and_current_owner_direction",
   "role_selection_source": "review_ready_exact_head_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -114,18 +103,20 @@
   "automation_health": {
     "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-21T05:03:03.942Z",
+      "at": "2026-11-21T05:56:14.358Z",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-21T05:24:18.497Z",
+      "at": "2026-11-21T06:01:28.413Z",
       "is_enabled": true
     },
     "restored": false,
     "errors": []
   },
-  "open_findings": [],
-  "current_review_score_assessment_status": "pending_independent_review",
+  "open_findings": [
+    "HX056-F11-RV10"
+  ],
+  "current_review_score_assessment_status": "completed_no_grade_transition",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -438,9 +429,7 @@
     "placements_scope": "Legacy preparation-slice DW2/FL9 retained; new campaign placements in campaign_vtt_revision.placements_among_calculated"
   },
   "previous_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
-  "addressed_findings_pending_review": [
-    "HX056-F11-RV09"
-  ],
+  "addressed_findings_pending_review": [],
   "verified_fixed_findings": [
     {
       "id": "OM-REV-001",
@@ -456,7 +445,8 @@
     },
     "HX056-F11-RV06",
     "HX056-F11-RV07",
-    "HX056-F11-RV08"
+    "HX056-F11-RV08",
+    "HX056-F11-RV09"
   ],
   "recovery_health": {
     "previous_start": {
@@ -564,7 +554,7 @@
   "deployment_url": "https://app.hexcrawl.ru/",
   "next_task_execution_allowed": true,
   "last_release_pr": 507,
-  "last_material_result_path": "agent-work/results/2026-11-21T0800-programmer-HX-BL-056-RV09.json",
+  "last_material_result_path": "agent-work/results/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
   "last_wait_check_at": "2026-11-11T12:00:43.353Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -630,8 +620,8 @@
     "completed_at": "2026-10-27T12:12:46.356Z"
   },
   "review_request": null,
-  "reviewed_sha": null,
-  "current_review_score_assessment_ref": null,
+  "reviewed_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+  "current_review_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/score-assessment1.2.json",
   "automatic_measurement_rerun_allowed": false,
   "repeat_review_requires": "Final full combined DETAIL1 exact SHA after import/activation/UI and required before/after presentation; no acceptance inherited from separate CLASSIFY1 review.",
   "blocked_task_handoffs": {
@@ -730,8 +720,8 @@
     "next_role": "strategist_manager",
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
-  "owner_decisions_note": "Проверяющему независимо принять пакет PR №510 на dd83f39e40e7baee90020a20a4b32d2a81085fe7, включая R04/AC03, и записать score_assessment 1.2.",
-  "updated_at": "2026-11-21T05:24:48.123Z",
+  "owner_decisions_note": "Программисту исправить HX056-F11-RV10 по R03: вычислять новое полное покрытие относительно принятой карты перед операцией. Проверить, что удалённые озёра не возвращаются на прежних клетках, новая территория по-прежнему получает озёра, а отказ, Undo/Redo, RNG и единое подтверждение остаются точными. Передать новый SHA на независимую проверку.",
+  "updated_at": "2026-11-21T06:01:57.957Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -875,9 +865,10 @@
     "removed": 0,
     "modified": 1,
     "suite": "Node mapTransactions",
-    "scenario": "Совместная потеря Knave и озёр, восстановление реки. Отказ сохраняет оба стека и JSON, согласие занимает один шаг с точными Undo/Redo.",
-    "reuse_or_new_reason": "Существующая матрица одиночных ручных изменений теперь завершает перегенерацию до проверки диалога. Новый случай требует одновременных потерь Knave и озёр на конечной карте, которых в прежней матрице нет.",
-    "source": "git diff 0810e8c..dd83f39 -- test/mapTransactions.test.mjs"
+    "scenario": "Один диалог при сочетании Knave, ручной правки реки и удаления озёр. Проверяются список ID, оба ответа и история. Прежняя матрица речных изменений теперь выполняет отложенный этап.",
+    "reuse_or_new_reason": "Новый сценарий проверяет совпадение перечня потерь с фактической картой при сочетании трёх причин. Прежний тест выделяет ручную правку реки. Оба востребованы.",
+    "source": "git diff 0810e8c..dd83f39 -- test/mapTransactions.test.mjs",
+    "negative_control": "Новый сценарий на предыдущем SHA 0810e8c завершился ошибкой: первый диалог содержал Knave, но не реку. На dd83f39 сценарий пройден."
   },
   "review_url": null,
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -924,7 +915,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-056-F1/rv09-dd83f39/verification.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/review.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -1241,7 +1232,7 @@
   "historical_unverified_weight": 70,
   "historical_score_model_version": "1.1",
   "score_update_awarded_points": 0,
-  "handoff_ref": "agent-work/handoffs/2026-11-21T0800-programmer-HX-BL-056-RV09.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
   "previous_feedback_handoff": {
     "task_id": "HX-FB-001",
     "register": "agent-work/feedback.json",
@@ -1571,8 +1562,8 @@
       "preserved": true
     }
   },
-  "previous_result_path": "agent-work/results/2026-11-21T0700-reviewer-HX-BL-056-0810e8c.json",
-  "handoff_path": "agent-work/handoffs/2026-11-21T0800-programmer-HX-BL-056-RV09.json",
+  "previous_result_path": "agent-work/results/2026-11-21T0800-programmer-HX-BL-056-RV09.json",
+  "handoff_path": "agent-work/handoffs/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
   "ui_actual_preview": {
     "kind": "runtime_exact_SHA",
     "head_sha": "eee794fd2ce835d7ac59f0c4a3b11d1606472b55",
@@ -2016,7 +2007,7 @@
     }
   },
   "full_editor_ready": false,
-  "current_task_score_assessment_status": "pending_independent_review",
+  "current_task_score_assessment_status": "completed_no_grade_transition",
   "published": false,
   "main_changed": true,
   "ui_actual": {
@@ -2074,7 +2065,7 @@
     "performance_measurement": false,
     "full_F1_accepted": false
   },
-  "review_result_ref": null,
+  "review_result_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/review.json",
   "previous_review_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-0810e8c/score-assessment1.2.json",
   "previous_independent_reviewer_automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
@@ -2177,7 +2168,7 @@
     "score_assessment_ref": "agent-work/evidence/review-HX-BL-023-E1-ui3-a265a78/score_assessment.json",
     "release_sha": "8f7d17266c53e31428da7c0da6dbbf1afe01d035"
   },
-  "spec_ref": "agent-work/specs/HX-BL-059-one-mile-river-edges-F1.md",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
   "spec_blob_sha": "584707ebe78516b39148315ffc7b0214f52cb6b6",
   "parent_spec_ref": "agent-work/specs/HX-BL-023.md",
   "parent_spec_version": "2.3",
@@ -2294,18 +2285,20 @@
   },
   "next_approved_stage_handoff_ref": "agent-work/handoffs/2026-11-20T0100-analyst-HX-BL-056-final-programmer.json",
   "authorization_status": "Implementation within approved F1 and closed interview; no publication approval.",
-  "completed_at": "2026-11-21T05:24:28.469Z",
+  "completed_at": "2026-11-21T06:01:37.392Z",
   "score_changed": false,
   "next_stage_id": "F1_1_legacy_shore_before_neighbour_change",
   "score_evidence_updated": true,
   "current_stage_id": "F1.1-RV09",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": true,
+  "review_ready": false,
   "current_stage_ui_status": "first_runtime_map_shown_final_matrix_pending",
   "completed_claim": "agent-work/claims/2026-11-20T1600-reviewer-HX-BL-056-1c37165.json",
   "evidence_commit_sha": "a4ce553233ab9effa6b11202a89e3fa8b069b534",
-  "finding_ids": [],
+  "finding_ids": [
+    "HX056-F11-RV10"
+  ],
   "current_release_package_ref": null,
   "current_stage_ui_preview": {
     "version": "FILL-UI1",
@@ -3930,8 +3923,8 @@
     "workspace_recovery": "Pruning removed old shared git metadata; fresh clone from GitHub succeeded, no request to user needed.",
     "materials_commit_sha": "64fa823e19f701817ff59d962d7b211e83aaa406"
   },
-  "current_stage_status": "review_ready",
-  "current_stage_review_status": "pending_independent_review",
+  "current_stage_status": "changes_requested",
+  "current_stage_review_status": "changes_requested",
   "accepted": false,
   "full_UI_pending": true,
   "latest_HX_BL_023_E5_persistence_20261104": {
@@ -8823,7 +8816,7 @@
     ]
   },
   "current_role_result": "agent-work/results/2026-11-20T1200-reviewer-HX-BL-056-F1.1.json",
-  "current_stage_score_assessment_status": "pending_independent_review",
+  "current_stage_score_assessment_status": "completed_no_grade_transition",
   "ui_actual_ref": "agent-work/evidence/ONE-MILE1-WR1-0701/actual/README.md",
   "execution_running": false,
   "latest_PR495_release": {
@@ -9279,7 +9272,7 @@
     "Scribd_uploaded": false
   },
   "task_id": "HX-BL-056",
-  "review_completed": false,
+  "review_completed": true,
   "release_readiness": "not_ready",
   "bounded_feature_accepted": false,
   "current_package_score_update_status": "completed",
@@ -14980,7 +14973,7 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-publication-hold.json",
     "retirement_decision_ref": "agent-work/decisions/owner-decision-2026-11-15-retire-uninterviewed-prs.json"
   },
-  "current_stage_blocker": null,
+  "current_stage_blocker": "HX056-F11-RV10",
   "source_work_remaining_confirmed_blockers": [],
   "scope_interview_gate": "Not required for the existing approved GEO2-v2 implementation under explicit owner direction; new release-boundary drafts were not adopted as a mandatory gate.",
   "release_ready": false,
@@ -16452,7 +16445,7 @@
   },
   "review_status": "changes_requested",
   "prior_review_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
-  "review_ref": "agent-work/evidence/HX-BL-021-F1/review-7b6f908/review.json",
+  "review_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/review.json",
   "score_assessment_ref": "agent-work/evidence/HX-BL-021-F1/review-7b6f908/score-assessment1.2.json",
   "publication_gate": {
     "status": "published",
@@ -17296,498 +17289,186 @@
     "owner_decisions_needed": []
   },
   "previous_programmer_result_ref": "agent-work/results/2026-11-20T1300-programmer-HX-BL-056-review-fixes.json",
-  "current_score_assessment_ref": null,
+  "current_score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/score-assessment1.2.json",
   "latest_HX_BL_056_review": {
+    "run_id": "2026-11-21T0900-reviewer-HX-BL-056-dd83f39",
     "task_id": "HX-BL-056",
-    "stage_id": "F1.1",
-    "run_id": "2026-11-21T0700-reviewer-HX-BL-056-0810e8c",
     "role": "reviewer",
-    "role_selection_reason": "Новый SHA из очереди review_ready после RV08. Проверка полного пакета и риска регрессии.",
+    "role_selection_reason": "Утверждённая F1.1 передана на независимую приёмку с новым SHA. Реестр свободен, проверены 513 claims и 577 результатов, три старые исследовательские записи уже согласованы в истории.",
+    "stage_id": "F1.1",
+    "status": "changes_requested",
+    "accepted": false,
+    "completed_at": "2026-11-21T06:01:37.392Z",
     "branch": "agent/hx-bl-056-small-lakes-f1",
     "pr": 510,
     "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/510",
-    "head_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
-    "reviewed_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
-    "head_tree_sha": "f23b659c64b5f5aae375ae15ae305bb479bca894",
+    "head_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+    "reviewed_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+    "head_tree_sha": "b5cc7551a26689b199c50fb543d66acd1b3cec53",
     "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
-    "repair_base_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
     "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.1.md",
-    "review_ref": "agent-work/evidence/HX-BL-056-F1/review-0810e8c/review.json",
-    "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-0810e8c/score-assessment1.2.json",
-    "result_ref": "agent-work/results/2026-11-21T0700-reviewer-HX-BL-056-0810e8c.json",
-    "handoff_ref": "agent-work/handoffs/2026-11-21T0700-reviewer-HX-BL-056-0810e8c.json",
-    "previous_review_ref": "agent-work/evidence/HX-BL-056-F1/review-645ecf0/review.json",
-    "verification_ref": "agent-work/evidence/HX-BL-056-F1/rv08-0810e8c/verification.json",
-    "visible_evidence_ref": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44858968961/artifacts/14689506874",
-    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44858968961",
-    "publication_authorized": false,
-    "published": false,
-    "release_approved": false,
-    "review_ready": false,
+    "review_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/review.json",
+    "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/score-assessment1.2.json",
+    "result_ref": "agent-work/results/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
+    "handoff_ref": "agent-work/handoffs/2026-11-21T0900-reviewer-HX-BL-056-dd83f39.json",
+    "fresh_review": {
+      "accepted": false,
+      "agent": "review_dd83",
+      "fixed": [
+        "HX056-F11-RV09"
+      ],
+      "findings": [
+        "HX056-F11-RV10"
+      ],
+      "method": "Отдельный агент со свежим контекстом, штатные обработчики, исходная карта e6-water-editor, seed 42. Повтор RV10 основным проверяющим на том же SHA.",
+      "rv09": "Classic и Knave: единый вопрос верно перечисляет 22 удаления. Оба ответа и Undo/Redo точны. Именованный POI блокирует потерю до вопроса. Mythic: 31 шаг построения, на перегенерации одно предупреждение о русле и отметках только на последнем шаге. Отказ и Undo/Redo точны, сохранились 24 озера. Одновременная потеря озера и реки в Mythic не наблюдалась.",
+      "finding": {
+        "id": "HX056-F11-RV10",
+        "requirement": "R03 / AC04",
+        "severity": "P2",
+        "before": "В Classic seed 42 на 1 миле явно удалить №17 (29,7) и №19 (31,7).",
+        "action": "Перегенерировать последний регион (3,3) с размером tract по прилагаемому сценарию.",
+        "after": "На прежних клетках и с теми же берегами появились №29 и №30. Даже без удаления №25 и №27 создаются целиком на прежних полностью поддержанных клетках. №26 и №28 — контроль новой опоры.",
+        "source": "src/App.tsx:1343 и :14274. До операции была доступна полная принятая карта, а исключение уже покрытых клеток вычисляется по контрольной точке до добавления региона.",
+        "evidence": "agent-work/evidence/HX-BL-056-F1/review-dd83f39/regeneration-rv10.json"
+      },
+      "next": "Программисту исправить HX056-F11-RV10 по R03: вычислять новое полное покрытие относительно принятой карты перед операцией. Проверить, что удалённые озёра не возвращаются на прежних клетках, новая территория по-прежнему получает озёра, а отказ, Undo/Redo, RNG и единое подтверждение остаются точными. Передать новый SHA на независимую проверку."
+    },
+    "open_findings": [
+      "HX056-F11-RV10"
+    ],
+    "verified_fixed_findings": [
+      "HX056-F11-RV09"
+    ],
+    "acceptance_matrix": {
+      "AC01": "Classic seed 42: ручное озеро в (-4,-28), карточка, JSON и экспорт; просмотрены снимки до и после.",
+      "AC02": "Локальная диагностика приняла четыре смежных гекса и отвергла неполную опору/повтор ID. Ограничения дорог, переправ и привязок проверены на точном дереве.",
+      "AC03": "Операции удаления, правки источника и перегенерации проверены по итоговым ID, отказу и Undo/Redo; подробности проверки RV09 в fresh_review.",
+      "AC04": "Два масштаба, паритет RNG, сохранение и продолжение, вероятности и рост озёр проверены браузерной и Node-матрицами. Не выполнен R03 при перегенерации: территория сравнивается с контрольной точкой до появления региона. Подтверждено повторное заполнение ранее полностью поддержанных клеток, в том числе на месте двух явно удалённых озёр.",
+      "AC05": "Манифест и снимки CI, экспорт PNG, поворот и оба масштаба, состояния черновика и ошибки, широкое и узкое окно.",
+      "AC06": "Успех Node и browser CI на проверенном дереве, отказ по ошибочному JSON без изменения документа/истории, старые сохранения. Совместимость игровых режимов ограничена указанными в evidence сценариями.",
+      "AC07": "Река пересекает ручное и автоматическое озеро; фактический PNG при повороте, исходная география, сохранение и продолжение проверены.",
+      "AC08": "Classic 42, конфликт с дорогой №6 в (-5,-1): ручное озеро №1 сохранено, 23 автоматических приняты, повтор операции и загрузка JSON совпали."
+    },
+    "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44869354789",
     "checks": {
       "jobs": [
         {
-          "id": 136707675448,
-          "name": "world-random",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 136707675595,
-          "name": "browser",
-          "status": "completed",
-          "conclusion": "success"
-        },
-        {
-          "id": 136707675749,
           "name": "check",
           "status": "completed",
-          "conclusion": "success"
+          "conclusion": "success",
+          "id": 136740153112
         },
         {
-          "id": 136707676887,
+          "name": "world-random",
+          "status": "completed",
+          "conclusion": "success",
+          "id": 136740153251
+        },
+        {
+          "name": "browser",
+          "status": "completed",
+          "conclusion": "success",
+          "id": 136740153272
+        },
+        {
           "name": "engraved-map-comparison",
           "status": "completed",
-          "conclusion": "skipped"
+          "conclusion": "skipped",
+          "id": 136740154750
         }
       ],
       "node": {
-        "executed": 442,
-        "passed": 442,
+        "executed": 443,
+        "passed": 443,
         "skipped": 0
       },
-      "browser": {
-        "manifest_cases": 17,
-        "passed": 17,
-        "hx056_cases": 6,
-        "artifact": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44858968961/artifacts/14689506874",
-        "checksum": "35709ebd8200d3488ec71ad9730a21c9abc6b2aaa16a25a67d4093333504c124",
-        "source_head_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
-        "checkout_tree": "f23b659c64b5f5aae375ae15ae305bb479bca894",
-        "checkout_sha": "231d8b6495134b9f4c40c8a56d9ecb5b9a9bcdeb",
-        "status": "passed"
+      "browser_manifest_cases": 17,
+      "browser_hx056": 6,
+      "local_focused": {
+        "logical_executed": 12,
+        "passed": 12,
+        "skipped": 0
       },
-      "rng": "passed in separate job",
-      "focused": {
-        "executed": 11,
-        "passed": 11,
-        "skipped": 0,
-        "method": "10 именованных сценариев по фильтру плюс отдельный тест прохода реки при расширении. Пустой результат фильтра на уровне файла исключён."
+      "local_boundary": {
+        "four": [
+          {
+            "q": -21,
+            "r": -11
+          },
+          {
+            "q": -20,
+            "r": -11
+          },
+          {
+            "q": -19,
+            "r": -11
+          },
+          {
+            "q": -18,
+            "r": -11
+          }
+        ],
+        "partial": {
+          "q": -22,
+          "r": -10
+        },
+        "adjacent": {
+          "q": -21,
+          "r": -10
+        },
+        "duplicate_refused": true,
+        "undo_preserved": true,
+        "beforeHashable": 10
       }
+    },
+    "visible_evidence": {
+      "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44869354789/artifacts/14693033945",
+      "sha256": "sha256:1021879273a838aec141569afb7e90bbcf6cacd7efdc60f32cade49deb1499f0",
+      "checkout_tree": "b5cc7551a26689b199c50fb543d66acd1b3cec53",
+      "paths": [
+        "small-lake-before.jpg",
+        "small-lake-after.jpg",
+        "small-lake-river-rotated.png",
+        "automatic-small-lakes.png"
+      ],
+      "viewports": [
+        320,
+        390,
+        1500
+      ]
     },
     "test_change_summary": {
-      "base_sha": "645ecf06c664fead8964ec5ba1a9ba2634f93a53",
-      "head_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
-      "added": 0,
+      "base_sha": "0810e8c7d7f64f9402d59fba2147c9a6a3de0e91",
+      "head_sha": "dd83f39e40e7baee90020a20a4b32d2a81085fe7",
+      "added": 1,
       "removed": 0,
-      "modified": 2,
-      "suites": [
-        {
-          "suite": "Node mapTransactions",
-          "added": 0,
-          "removed": 0,
-          "modified": 1,
-          "scenario": "Утрата обеих заметок и двух озёр при сохранении третьего; число подтверждений, отмена и Undo/Redo."
-        },
-        {
-          "suite": "Browser generation smoke",
-          "added": 0,
-          "removed": 0,
-          "modified": 1,
-          "scenario": "Распознать предупреждение о восстановлении реки даже когда в этом же окне перечислены озёра; сохранить проверку отказа."
-        }
-      ],
-      "source": "git diff 645ecf06c664fead8964ec5ba1a9ba2634f93a53..0810e8c7d7f64f9402d59fba2147c9a6a3de0e91 -- test; одно существующее объявление node:test и один существующий сценарий браузерного удаления.",
-      "reuse_or_new_reason": "В обоих наборах уже выполнялось штатное удаление региона. Расширены те же сценарии.",
-      "independent_assessment": "Diff 645ecf0..0810e8c изменяет один уже существующий Node-сценарий и обработку одного браузерного сценария. Первый ловит дополнительное окно и неполное перечисление потерь. Во втором подтверждение озёр не обходит проверку отказа при восстановлении реки. Оба изменения соответствуют наблюдаемому поведению."
+      "modified": 1,
+      "suite": "Node mapTransactions",
+      "scenario": "Один диалог при сочетании Knave, ручной правки реки и удаления озёр. Проверяются список ID, оба ответа и история. Прежняя матрица речных изменений теперь выполняет отложенный этап.",
+      "reuse_or_new_reason": "Новый сценарий проверяет совпадение перечня потерь с фактической картой при сочетании трёх причин. Прежний тест выделяет ручную правку реки. Оба востребованы.",
+      "source": "git diff 0810e8c..dd83f39 -- test/mapTransactions.test.mjs",
+      "negative_control": "Новый сценарий на предыдущем SHA 0810e8c завершился ошибкой: первый диалог содержал Knave, но не реку. На dd83f39 сценарий пройден."
     },
-    "acceptance_matrix": {
-      "AC01": "Classic 42, ручной гекс (-4,-28), JSON, PNG. Проверены фактическая карточка озера, снимки до/после и архив на точном дереве.",
-      "AC02": "Локально приняты четыре смежных гекса, неполная опора и повтор ID отвергнуты. Защита дороги, переправы и привязки проверена в Node; дорожный конфликт виден в браузере.",
-      "AC03": "При регенерации перечислены озёра 1 и 4, сохранено 5. Для удаления региона (3,3) в штатном обработчике проверен один диалог с заметкой и 27 озёрами. Отмена и Undo/Redo проверены отдельными сценариями. Остаётся RV09: при перегенерации с изменённой рекой и потерей малых озёр приложение запрашивает два согласия.",
-      "AC04": "Сверены автоматический слой и RNG в двух масштабах, рост по биому, детерминированное продолжение и восстановление старых сохранений с прежними ID.",
-      "AC05": "Архив текущего дерева: 1500/390/320, RU/EN, черновик, PNG в двух масштабах и поворот карты.",
-      "AC06": "442 Node-проверки; совместимые сохранения, ошибочный импорт без записи и выборочные профили Knave и Mythic. Для Mythic в матрице браузера наблюдался корректный отказ.",
-      "AC07": "При ручном и автоматическом озере проверены сохранение принятого русла, вход, внутренняя область и выход. Изучены геометрия в манифесте и фактический повёрнутый PNG.",
-      "AC08": "В Classic seed 42 конфликт с дорогой №6 изолирован, приняты 23 автоматических озера, сохранено ручное №1. Повтор и загрузка JSON совпали."
-    },
-    "limits": [
-      "Функциональная выборка Classic seed 42 и ограниченные сценарии Knave/Mythic. Интеграция будущего отдельного слоя ручьёв проверяется при HX-BL-057.",
-      "Независимо проверенный пакет ограничен указанными head, base и деревом. Глобальные оценки всей широты критериев не установлены."
-    ],
-    "ui": {
-      "before": "small-lake-before.jpg",
-      "after": "small-lake-after.jpg",
-      "rotated": "small-lake-river-rotated.png",
-      "dialog_ref": "agent-work/evidence/HX-BL-056-F1/rv08-0810e8c/dialog.md"
-    },
-    "local_footprint": {
-      "four": [
-        {
-          "q": -21,
-          "r": -11
-        },
-        {
-          "q": -20,
-          "r": -11
-        },
-        {
-          "q": -19,
-          "r": -11
-        },
-        {
-          "q": -18,
-          "r": -11
-        }
-      ],
-      "partial": {
-        "q": -22,
-        "r": -10
-      },
-      "adjacent": {
-        "q": -21,
-        "r": -10
-      },
-      "duplicate_refused": true,
-      "undo_preserved": true,
-      "beforeHashable": 10
-    },
-    "local_dialog": [
-      {
-        "withNote": false,
-        "key": "3,3",
-        "prompts": [
-          "При удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nУдалить регион? Отмена действия восстановит карту."
-        ],
-        "transactions": 1
-      },
-      {
-        "withNote": true,
-        "key": "3,3",
-        "prompts": [
-          "Будут удалены заметки мастера (1) в гексах 3,3.\n\nПри удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nУдалить регион? Отмена действия восстановит карту."
-        ],
-        "transactions": 1
-      }
-    ],
-    "local_replay": [
-      {
-        "version": "modern",
-        "replay": {
-          "firstIds": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28
-          ],
-          "secondIds": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28
-          ],
-          "sameGeography": true
-        },
-        "pre": {
-          "nextId": 2,
-          "lakes": [
-            {
-              "id": 1,
-              "cells": [
-                {
-                  "q": -21,
-                  "r": -11
-                }
-              ],
-              "origin": "manual",
-              "shoreCells": [
-                {
-                  "q": -20,
-                  "r": -11
-                }
-              ]
-            }
-          ]
-        },
-        "generatedCount": 28,
-        "next": 29,
-        "post": {
-          "nextId": 2,
-          "lakes": [
-            {
-              "id": 1,
-              "cells": [
-                {
-                  "q": -21,
-                  "r": -11
-                }
-              ],
-              "origin": "manual",
-              "shoreCells": [
-                {
-                  "q": -20,
-                  "r": -11
-                }
-              ]
-            }
-          ]
-        },
-        "regions": 1,
-        "confirm": "При удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nУдалить регион? Отмена действия восстановит карту.",
-        "error": null
-      },
-      {
-        "version": "legacy",
-        "replay": {
-          "firstIds": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28
-          ],
-          "secondIds": [
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28
-          ],
-          "sameGeography": true
-        },
-        "pre": {
-          "nextId": 2,
-          "lakes": [
-            {
-              "id": 1,
-              "cells": [
-                {
-                  "q": -21,
-                  "r": -11
-                }
-              ],
-              "origin": "manual"
-            }
-          ]
-        },
-        "generatedCount": 28,
-        "next": 29,
-        "post": {
-          "nextId": 2,
-          "lakes": [
-            {
-              "id": 1,
-              "cells": [
-                {
-                  "q": -21,
-                  "r": -11
-                }
-              ],
-              "origin": "manual",
-              "shoreCells": [
-                {
-                  "q": -20,
-                  "r": -11
-                }
-              ]
-            }
-          ]
-        },
-        "regions": 1,
-        "confirm": "При удалении последнего региона будут также удалены малые озёра №2, №3, №4, №5, №6, №7, №8, №9, №10, №11, №12, №13, №14, №15, №16, №17, №18, №19, №20, №21, №22, №23, №24, №25, №26, №27, №28.\n\nУдалить регион? Отмена действия восстановит карту.",
-        "error": null
-      }
-    ],
-    "status": "changes_requested",
-    "accepted": false,
-    "completed_at": "2026-11-21T04:07:39.328Z",
     "automation_health": {
       "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
       "start": {
-        "at": "2026-11-21T04:00:02.394Z",
+        "at": "2026-11-21T05:56:14.358Z",
         "is_enabled": true
       },
       "end": {
-        "at": "2026-11-21T04:07:37.056Z",
+        "at": "2026-11-21T06:01:28.413Z",
         "is_enabled": true
       },
       "restored": false,
       "errors": []
     },
-    "fresh_context_review": {
-      "accepted": false,
-      "agent": "review_0810e8c",
-      "method": "Свежий контекст, отдельная копия точного SHA, реальные обработчики карты seed 42. Независимый повтор замечания также выполнен основным проверяющим.",
-      "next": "Программисту исправить RV09 на пути «Перегенерировать последний регион»: собрать последствия восстановления из контрольной точки и фактической замены региона до общего подтверждения RU/EN. Отдельно проверить сочетания и одиночные предупреждения, нулевые потери, отказ, одну транзакцию и точные Undo/Redo. Сохранить запрет утраты авторского имени и защиту заметок при ошибке, не повторять броски RNG. Передать новый SHA на независимую приёмку.",
-      "findings": [
-        {
-          "id": "HX056-F11-RV09",
-          "severity": "P2",
-          "contract": [
-            "R04",
-            "AC03"
-          ],
-          "title": "Перегенерация после правки реки запрашивает два подтверждения для одной замены участка.",
-          "steps": [
-            "Открыть e6-water-editor.json в Classic seed 42 и добавить реку №1 в регион 1.",
-            "Создать регион (3,3), удалить реку, выбрать размер tract и перегенерировать последний регион.",
-            "Первое окно сообщает о восстановлении River 1. Только после согласия второе окно перечисляет 22 удаляемых озера и их клетки."
-          ],
-          "expected": "Все предупреждения о последствиях перегенерации представлены вместе до согласия на принятие результата.",
-          "observed": "При отказе во втором окне карта и глубина истории совпадают с исходными. При согласии создана одна транзакция: сохранены №17 и №19, созданы №25–28. Undo/Redo точны.",
-          "locations": [
-            "src/App.tsx:14873",
-            "src/App.tsx:14297"
-          ],
-          "scope": "В RU и EN проверены отказ на первом и втором шагах и согласие на оба. В Classic с включённым Knave та же операция потребовала три подтверждения: потеря данных Knave, восстановление реки и потеря озёр. При угрозе авторскому имени операция заблокирована до любых вопросов. Для Mythic непосредственный повтор не выполнялся.",
-          "evidence": [
-            "agent-work/evidence/HX-BL-056-F1/review-0810e8c/regeneration.json",
-            "agent-work/evidence/HX-BL-056-F1/review-0810e8c/regeneration-probe.mjs.txt",
-            "agent-work/evidence/HX-BL-056-F1/review-0810e8c/regeneration-bilingual.json",
-            "agent-work/evidence/HX-BL-056-F1/review-0810e8c/knave-name.json"
-          ]
-        }
-      ],
-      "deletion": {
-        "cases": 12,
-        "locales": [
-          "ru",
-          "en"
-        ],
-        "evidence": "agent-work/evidence/HX-BL-056-F1/review-0810e8c/deletion-matrix.json"
-      }
-    },
-    "open_findings": [
-      "HX056-F11-RV09"
-    ],
-    "findings": [
-      {
-        "id": "HX056-F11-RV09",
-        "severity": "P2",
-        "contract": [
-          "R04",
-          "AC03"
-        ],
-        "title": "Перегенерация после правки реки запрашивает два подтверждения для одной замены участка.",
-        "steps": [
-          "Открыть e6-water-editor.json в Classic seed 42 и добавить реку №1 в регион 1.",
-          "Создать регион (3,3), удалить реку, выбрать размер tract и перегенерировать последний регион.",
-          "Первое окно сообщает о восстановлении River 1. Только после согласия второе окно перечисляет 22 удаляемых озера и их клетки."
-        ],
-        "expected": "Все предупреждения о последствиях перегенерации представлены вместе до согласия на принятие результата.",
-        "observed": "При отказе во втором окне карта и глубина истории совпадают с исходными. При согласии создана одна транзакция: сохранены №17 и №19, созданы №25–28. Undo/Redo точны.",
-        "locations": [
-          "src/App.tsx:14873",
-          "src/App.tsx:14297"
-        ],
-        "scope": "В RU и EN проверены отказ на первом и втором шагах и согласие на оба. В Classic с включённым Knave та же операция потребовала три подтверждения: потеря данных Knave, восстановление реки и потеря озёр. При угрозе авторскому имени операция заблокирована до любых вопросов. Для Mythic непосредственный повтор не выполнялся.",
-        "evidence": [
-          "agent-work/evidence/HX-BL-056-F1/review-0810e8c/regeneration.json",
-          "agent-work/evidence/HX-BL-056-F1/review-0810e8c/regeneration-probe.mjs.txt",
-          "agent-work/evidence/HX-BL-056-F1/review-0810e8c/regeneration-bilingual.json",
-          "agent-work/evidence/HX-BL-056-F1/review-0810e8c/knave-name.json"
-        ]
-      }
-    ],
-    "verified_fixed_findings": [
-      "HX056-F11-RV06",
-      "HX056-F11-RV07",
-      "HX056-F11-RV08"
-    ],
+    "published": false,
+    "release_authorized": false,
+    "next_step": "Программисту исправить HX056-F11-RV10 по R03: вычислять новое полное покрытие относительно принятой карты перед операцией. Проверить, что удалённые озёра не возвращаются на прежних клетках, новая территория по-прежнему получает озёра, а отказ, Undo/Redo, RNG и единое подтверждение остаются точными. Передать новый SHA на независимую проверку.",
     "next_role": "programmer",
-    "next_step": "Программисту исправить RV09 на пути «Перегенерировать последний регион»: собрать последствия восстановления из контрольной точки и фактической замены региона до общего подтверждения RU/EN. Отдельно проверить сочетания и одиночные предупреждения, нулевые потери, отказ, одну транзакцию и точные Undo/Redo. Сохранить запрет утраты авторского имени и защиту заметок при ошибке, не повторять броски RNG. Передать новый SHA на независимую приёмку.",
     "owner_decisions_needed": [],
-    "forecast": "Исправление, независимая проверка и выпуск после разрешения владельца."
+    "forecast": "Исправление, проверка и выпуск после разрешения."
   },
   "head_tree_sha": "b5cc7551a26689b199c50fb543d66acd1b3cec53",
   "latest_independent_run": "2026-11-21-manual-HX-BL-058-final",
