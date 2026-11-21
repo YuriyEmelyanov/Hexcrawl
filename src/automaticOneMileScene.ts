@@ -14,7 +14,7 @@ export function automaticSceneFailureMessage(error:unknown,language:'ru'|'en',fa
   /bank|contact|no[_ -]?fit/.test(raw)?(ru?'не найдено допустимое русло или место у берега':'no legal route or bank placement was found'):
   (ru?'геометрия исходной карты несовместима с одномильной сеткой':'the source geometry is incompatible with the one-mile grid');
  const summary=ru?'1-мильная карта не открылась.':'The 1-mile map did not open.';
- const detail=object+reason+'.';
+ const detail=(ru?'Причина — ':'Reason — ')+object+reason+'.';
  return fallback ? summary+' '+detail : summary+' '+detail+' '+(ru?'Исходная карта сохранена.':'The source map is unchanged.');
 }
 
