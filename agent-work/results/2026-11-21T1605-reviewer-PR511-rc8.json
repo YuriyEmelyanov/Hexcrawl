@@ -1,0 +1,100 @@
+{
+  "run_id": "2026-11-21T1605-reviewer-PR511-rc8",
+  "role": "reviewer",
+  "task_id": "HX-BL-058",
+  "status": "completed",
+  "role_selection_reason": "Прямое поручение владельца по PR511 и две ожидающие строки в текущем срезе 1.3-rc8. Проверены 527 claims, 584 результата и свободный реестр, generation 413.",
+  "generation": 413,
+  "source_operations_sha": "92ae06d40a60b42a86efd023b5b9b84c7df51f0d",
+  "pr": 511,
+  "release_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+  "model_version": "1.3-rc8",
+  "level": "L1",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-058-F1/review-7ecf76c/score-assessment1.3-rc8.json",
+  "confirmed_delta": 0,
+  "rows": [
+    {
+      "criterion_id": "S04-C01",
+      "before": 0,
+      "after": 0,
+      "delta": 0
+    },
+    {
+      "criterion_id": "S04-C04",
+      "before": 3.7037037037037037,
+      "after": 3.7037037037037037,
+      "delta": 0
+    }
+  ],
+  "score_update_status": "pending_strategist_recording",
+  "test_change_summary": {
+    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "head_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+    "added": 0,
+    "removed": 0,
+    "modified": 5,
+    "suite": [
+      {
+        "name": "Node mapTransactions + geometryPlan",
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "scenario": "Один сценарий ошибки при переключении и два существующих параметризованных сценария импорта (ru/en) проверяют согласованную фразу, причину, восстановление исходной карты и историю."
+      },
+      {
+        "name": "Chromium engraved-map, one-mile",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "Изменены проверка компоновки поля и сквозное переключение Classic seed 42 с клавиатуры."
+      }
+    ],
+    "reuse_or_new_reason": "Расширены существующие сценарии в тех же runner. Три ширины и две локализации — параметры существующего сценария. Опциональные снимки для сравнения с базой — диагностические артефакты.",
+    "source": "git diff d6daa2c..7ecf76c -- test. Подтверждено совпадение дерева выпуска и принятого head.",
+    "review": "Три существующих Node-проверки защищают сообщение и сохранность карты при отказе. Две браузерные защищают расположение выбора гекса и переключение с клавиатуры в работающем интерфейсе.",
+    "execution_at_reviewed_tree": {
+      "node": {
+        "executed": 430,
+        "passed": 430,
+        "skipped": 0
+      },
+      "browser_scripts": {
+        "executed": 10,
+        "passed": 10,
+        "skipped": 0
+      },
+      "rng_scripts": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      }
+    }
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T13:05:28.678Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T13:12:03.714Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "next_role": "strategist-manager",
+  "next_step": "Зарегистрировать обе строки выпуска и их ключи в истории 1.3-rc8, проверить текущий срез и завершить событие PR511 в current-score.json и latest.json. Сохранить отдельную ранее принятую строку S01-C04 на этом SHA.",
+  "next_approved_stage": {
+    "task_id": "HX-BL-056",
+    "role": "reviewer",
+    "pr": 510,
+    "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "handoff_ref": "agent-work/handoffs/2026-11-21T1500-programmer-HX-BL-056-F1.2.json",
+    "scope": "Приёмка F1.2 на четырёх примерах малых озёр, включая сохранение при удалении нового региона. В оценке применить действующую модель 1.3-rc8.",
+    "release_authorized": false
+  },
+  "owner_decisions_needed": [],
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1605-reviewer-PR511-rc8.json",
+  "completed_at": "2026-11-21T13:12:03.714Z"
+}
