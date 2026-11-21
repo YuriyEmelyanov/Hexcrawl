@@ -14811,7 +14811,17 @@ export function App() {
       const smallLakes=state?.smallLakes?prepareSmallLakeSupport(state.smallLakes,accepted):undefined;
       const priorLayer=checkpoint.physicalGrid?.smallLakes;
       if(state?.smallLakes&&smallLakes){
-        exactLakeRollback=exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes);
+        // An expansion can remove an old lake as well as add new ones. Its
+        // saved transaction identifies the exact layer to restore even then.
+        const last=undoHistoryRef.current[undoHistoryRef.current.length-1];
+        const generatedCheckpoint=last?.after.generationHistory[history.length-1];
+        const uneditedExpansion=last!==undefined&&generatedCheckpoint!==undefined&&
+          last.before.generationHistory.length+1===history.length&&last.after.generationHistory.length===history.length&&
+          last.before.map.regions.length===checkpoint.regions.length&&last.after.map.regions.length===regions.length&&
+          JSON.stringify(generatedCheckpoint.generation)===JSON.stringify(checkpoint.generation)&&
+          JSON.stringify(last.before.map.physicalGrid?.smallLakes)===JSON.stringify(priorLayer)&&
+          JSON.stringify(last.after.map.physicalGrid?.smallLakes)===JSON.stringify(state.smallLakes);
+        exactLakeRollback=uneditedExpansion||exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes);
         // Generation records the visible shore of legacy lakes. Compare that
         // shore on its original map before treating the difference as an edit.
         if(!exactLakeRollback&&smallLakes.losses.length&&priorLayer?.lakes.some(lake=>lake.shoreCells===undefined)){
