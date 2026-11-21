@@ -68,6 +68,8 @@ A skipped candidate cannot enlarge the visible shoreline of another.
 Older saves without the optional fringe field still open. When expansion
 would add dry support beside one of those lakes, the accepted shore is taken
 from the map before expansion.
+Deleting the last region restores the pre-expansion lakes and ID counter when the
+lake layer is unchanged, including after a note on a surviving hex.
 Deleting the last region checks the restored paths and sites before committing.
 If restoring a checkpoint conflicts with a retained small lake, the editor
 removes it together with lakes that lose dry support in that operation.

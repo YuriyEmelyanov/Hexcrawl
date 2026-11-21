@@ -2159,10 +2159,14 @@ type MapSnapshot = {
   toponymSeed: number;
 };
 
+// Kept only for the lifetime of a generation checkpoint, independently of the
+// bounded Undo stack. Manual actions may add history without changing lakes.
+type GenerationCheckpoint = MapSnapshot & { generatedLakeLayer?: SmallLakeLayer };
+
 // Exact rollback state: unlike user undo, error recovery never recalculates names or roads.
 type DocumentSnapshot = {
   requiresFineAdaptation?:boolean;
-  map: MapSnapshot; generationHistory: MapSnapshot[]; selectedHex: AxialHex | null;
+  map: MapSnapshot; generationHistory: GenerationCheckpoint[]; selectedHex: AxialHex | null;
   generationMode: GenerationMode; knaveEnabled?: boolean; isMapRotated: boolean; mapScale: number;
 };
 type MapTransaction = { before: DocumentSnapshot; after: DocumentSnapshot };
@@ -2170,7 +2174,7 @@ type GenerationBackup = {
   checkpointWarnings?:string[];
   fineRegeneration?:Detail1State;
   fineRetainedPoiOwners?:string[];
-  map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null;
+  map: MapSnapshot; history: GenerationCheckpoint[]; selectedHex: AxialHex | null;
   document?: DocumentSnapshot; undo?: MapTransaction[]; redo?: MapTransaction[];
 };
 type GenerationActionContext = { action: 'add' | 'regenerate'; inputOptions: Record<string, unknown> };
@@ -12300,7 +12304,7 @@ export function App() {
   useEffect(() => { if (notesEditorKey) notesTextRef.current?.focus(); }, [notesEditorKey]);
   useEffect(() => () => { if (notesTimerRef.current !== null) clearTimeout(notesTimerRef.current); }, []);
   // Generation checkpoints are separate from the user's undo/redo timeline.
-  const [history, setHistory] = useState<MapSnapshot[]>([]);
+  const [history, setHistory] = useState<GenerationCheckpoint[]>([]);
   // Отложенная перегенерация: ставим заявку, ждём пока React применит
   // восстановленный снимок, и только потом генерируем регион заново.
   const [pendingRegen, setPendingRegen] = useState<{ anchorHex: AxialHex; options: GenerationOptions; backup: GenerationBackup; actionContext: GenerationActionContext } | null>(null);
@@ -12905,7 +12909,6 @@ export function App() {
       rivers: riversAfterTractGeneration, roads: tractRoadResult.roads, crossings: finalCrossings,
       hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
       nextLakeId: finalNextLakeId, nextRoadId: tractRoadResult.nextRoadId, nextRiverId:allocatedTractRivers.nextRiverId }, anchorHex, pendingRegen?.backup);
-    setHistory((current) => [...current, structuredClone(snapshot)]);
     setRegions(committedMap.regions);
     setCandidateHexes(finalCandidateHexes);
     setNextRiverId(allocatedTractRivers.nextRiverId);
@@ -13729,7 +13732,6 @@ export function App() {
         rivers: riversWithDeltas, roads: roadResult.roads, crossings: finalCrossings,
         hexTerrainByKey: finalHexTerrainByKey, waterPoiByKey: finalWaterPoi, toponyms: finalToponyms,
         nextLakeId: finalNextLakeId, nextRoadId: roadResult.nextRoadId, nextRiverId:allocatedRegionRivers.nextRiverId }, finalCenterHex, pendingRegen?.backup,history,[finalRegionWithPoiKinds]);
-      setHistory((current) => [...current, structuredClone(snapshot)]);
       setRegions(committedMap.regions);
       setCandidateHexes(finalCandidateHexes);
       setHexTerrainByKey(finalHexTerrainByKey);
@@ -14278,7 +14280,10 @@ export function App() {
     if(map.physicalGrid&&fineTarget&&projectOneMile(oneMileSources(map),map.physicalGrid.grid.origin).some(row=>isSameHex(row.cell,fineTarget.cell)))map={...map,physicalGrid:{...map.physicalGrid,selectedCell:fineTarget.cell,selectedWorldPoint:fineTarget.point}};
     checkedRiverMap(map);
     assertGeneratedIds(map);
-    if (kingdomJob && !backup) {updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);return map;} // internal kingdom steps form one transaction at finish
+    if (kingdomJob && !backup) {
+      setHistory(current => [...current, structuredClone(checkpoint)]);
+      updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);return map;
+    } // Internal kingdom steps form one transaction at finish.
     const before = backup?.document ?? { ...captureDocument(), map: { ...captureMap(), generation: cloneGenerationState(checkpoint.generation) } };
     const notes = before.map.gmNotesByHexKey ?? gmNotesByHexKey;
     const keys = actualHexKeys(map), missing = Object.keys(notes).filter(key => !keys.has(key));
@@ -14291,8 +14296,15 @@ export function App() {
       lossMessages.push(language==='ru'?'«Отменить» восстановит прежнюю карту. Продолжить?':'Undo restores the previous map. Continue?');
       if(!window.confirm(lossMessages.join('\n')))throw new FineRegenerationCancelled();
     }
-    recordTransaction(before, { ...captureDocument(), map, selectedHex: selection,
-      generationHistory: [...checkpoints, structuredClone(withLegacySeas(checkpoint))] },{preparedScene});
+    const savedCheckpoint: GenerationCheckpoint = structuredClone(withLegacySeas(checkpoint));
+    // Regeneration may carry forward authored edits from a different document.
+    // Only a fresh expansion can roll the entire generated layer back verbatim.
+    if (before.generationHistory.length === checkpoints.length && map.physicalGrid?.smallLakes) {
+      savedCheckpoint.generatedLakeLayer = structuredClone(map.physicalGrid.smallLakes);
+    }
+    const generationHistory = [...checkpoints, savedCheckpoint];
+    recordTransaction(before, { ...captureDocument(), map, selectedHex: selection, generationHistory }, {preparedScene});
+    setHistory(generationHistory);
     fineGenerationTargetRef.current=null;updateSeaIdentity(map);updatePhysicalGrid(map.physicalGrid);updateKnave(map.knave);updateTags(map.tags);updateNotesMap(map.gmNotesByHexKey);return map;
   };
 
@@ -14543,7 +14555,6 @@ export function App() {
     setWaterPoiByKey(water);
     setToponyms(synchronizeToponyms(toponyms,getToponymEntities(finalRegions,rivers,hexTerrainByKey),toponymSeed));
     setKingdoms([...kingdoms,kingdom]);setObstacles([...obstacles,...identifiedObstacles]);setNextObstacleId(finalNextObstacleId);
-    setHistory([...job.backup.history,structuredClone(job.backup.map)]);
     setSelectedHex(assigned.find(r=>r.centralPoiKind==='throne')!.centerHex);
     activeGenerationBefore.current = cloneGenerationState((job.failureBackup ?? job.backup).map.generation);
     generationProgress.action = job.failureBackup ? 'regenerate' : 'add';
@@ -14811,16 +14822,8 @@ export function App() {
       const smallLakes=state?.smallLakes?prepareSmallLakeSupport(state.smallLakes,accepted):undefined;
       const priorLayer=checkpoint.physicalGrid?.smallLakes;
       if(state?.smallLakes&&smallLakes){
-        // An expansion can remove an old lake as well as add new ones. Its
-        // saved transaction identifies the exact layer to restore even then.
-        const last=undoHistoryRef.current[undoHistoryRef.current.length-1];
-        const generatedCheckpoint=last?.after.generationHistory[history.length-1];
-        const uneditedExpansion=last!==undefined&&generatedCheckpoint!==undefined&&
-          last.before.generationHistory.length+1===history.length&&last.after.generationHistory.length===history.length&&
-          last.before.map.regions.length===checkpoint.regions.length&&last.after.map.regions.length===regions.length&&
-          JSON.stringify(generatedCheckpoint.generation)===JSON.stringify(checkpoint.generation)&&
-          JSON.stringify(last.before.map.physicalGrid?.smallLakes)===JSON.stringify(priorLayer)&&
-          JSON.stringify(last.after.map.physicalGrid?.smallLakes)===JSON.stringify(state.smallLakes);
+        const uneditedExpansion = checkpoint.generatedLakeLayer !== undefined &&
+          JSON.stringify(checkpoint.generatedLakeLayer) === JSON.stringify(state.smallLakes);
         exactLakeRollback=uneditedExpansion||exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes);
         // Generation records the visible shore of legacy lakes. Compare that
         // shore on its original map before treating the difference as an edit.

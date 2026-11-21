@@ -209,8 +209,17 @@ try {
   await page.getByRole('button', { name: 'Перегенерировать регион', exact: true }).click();
   await page.getByRole('alert').waitFor();
   assert.deepEqual(stable(await snapshot()), stable(beforeRegenFailure));
+  // A note on an older region must survive alongside the recovered lake and its counter.
+  const noteKey = '0,1', noteText = 'Lake checkpoint';
+  await page.locator(`polygon.hex[data-hex-key="${noteKey}"]`).dispatchEvent('click');
+  const edit = page.getByRole('button', {name:'Редактировать', exact:true});
+  if (await edit.count()) await edit.click();
+  await page.locator('.gm-notes .direct-value').click();
+  await page.locator('#gm-notes-text').fill(noteText);
+  await page.locator('#gm-notes-text').press('Escape');
   await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
-  assert.deepEqual((await snapshot()).map, beforeFailure.map);
+  assert.deepEqual((await snapshot()).map, {...beforeFailure.map,
+    gmNotesByHexKey:{...beforeFailure.map.gmNotesByHexKey, [noteKey]:noteText}});
   assert.equal(errors.length, 0, errors.join('\n'));
   assert.deepEqual(verboseLogs, [], 'ordinary mode must not emit debug console.log');
   // Regression: a sea-blocked pocket must generate atomically in the real UI.
