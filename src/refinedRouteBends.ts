@@ -1,3 +1,4 @@
+import {routeClearance} from './routeClearance.ts';
 import {roundedRoutes} from './routeBends.ts';
 import {refinementRiverDisplayPaths} from './geometryRefinementBoundary.ts';
 import {fineRiverStrokeWidth, FINE_HEX_WIDTH} from './oneMilePresentation.ts';
@@ -25,10 +26,11 @@ export function refinedRouteBends(source: NormalizedRefinementSource, refinement
       if (Math.hypot(c.x-a.x, c.y-a.y) + Math.hypot(b.x-c.x, b.y-c.y) <= span + 1e-8) pins.push(a,b);
     }
   }
+  const clearance=routeClearance(refinement.roads.roads.map(r=>r.points),visible.map(r=>r.points));
   const riverPaths = roundedRoutes(visible.map(r => ({
     key: pair(r.riverId, r.sourceEdgeKey), routeId: r.riverId, points: r.points,
     fixed: fixedRivers.has(pair(r.riverId, r.sourceEdgeKey)),
-  })), pins);
+  })), pins, (p,r)=>clearance(p,'river',r));
   const curved = visible.map(r => ({...r, points: riverPaths.get(pair(r.riverId,r.sourceEdgeKey))!}));
   const widths = new Map([1,2,3,4,5].map(f => [f, fineRiverStrokeWidth(f)/FINE_HEX_WIDTH]));
   const water = prepareRefinementWater({paths:curved, widthByFullness:widths});
@@ -37,7 +39,7 @@ export function refinedRouteBends(source: NormalizedRefinementSource, refinement
   const roadPaint = roundedRoutes(refinement.roads.roads.map(r => ({
     key: pair(r.roadId, r.sourceRoadSegmentKey), routeId: r.roadId, points: r.points,
     fixed: r.crossingKeys.length > 0 || r.linkedPoiIds.length > 0 || r.paint.some(part => part.poiMaskIds.length > 0),
-  })));
+  })), [], (p,r)=>clearance(p,'road',r));
   return {
     riverPaint: new Map(shown.map(r => [pair(r.riverId,r.sourceEdgeKey),r.points])),
     visiblePaths: shown, paintedPaths: shown.filter(r => paintKeys.has(pair(r.riverId,r.sourceEdgeKey))),

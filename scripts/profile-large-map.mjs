@@ -117,7 +117,7 @@ try{
      // the selected edge using a normal artwork change.
      await p.locator('.hex-coordinate-toggle').click();
      await p.waitForFunction(()=>!document.querySelector('.map-viewport').classList.contains('is-navigating'));await p.waitForFunction(()=>document.querySelector('.map-motion-buffer')?.dataset.cache==='ready');
-     const point=await river.evaluate(n=>new DOMPoint((n.x1.baseVal.value+n.x2.baseVal.value)/2,(n.y1.baseVal.value+n.y2.baseVal.value)/2).matrixTransform(n.getScreenCTM()).toJSON());
+     const point=await river.evaluate(n=>n.getPointAtLength(n.getTotalLength()/2).matrixTransform(n.getScreenCTM()).toJSON());
      await p.evaluate(()=>document.querySelector('.map-viewport').classList.add('is-navigating'));
      await p.waitForFunction(()=>document.querySelector('.map-viewport').classList.contains('has-motion-buffer'));
      assert.equal(await p.locator('.map-stage > svg').first().evaluate(s=>getComputedStyle(s).opacity),'0','River pointer test runs over the active raster');

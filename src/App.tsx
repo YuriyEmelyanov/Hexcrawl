@@ -1,3 +1,4 @@
+import {routeClearance} from './routeClearance';
 import {refinedRouteBends} from './refinedRouteBends';
 import {ends, roundedRoutes, svgPoints} from './routeBends';
 import {finePoiLabel} from './oneMilePresentation';
@@ -12560,11 +12561,17 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     return { x: (HEX_SIZE * SQRT3) / 2 - minBaseX, y: HEX_SIZE - minBaseY };
   }, [positionedHexes]);
+  const nativeClearance=useMemo(()=>routeClearance(roadSegments.map(ends),riverSegments.map(ends)),[roadSegments,riverSegments]);
   const riverPaint = useMemo(() => {
     const shore = lakeVertices.map(p => ({x:p.x+riverOffset.x,y:p.y+riverOffset.y}));
     const paths = riverSegments.map(s => ({key:s.riverId+':'+s.edgeKey, routeId:s.riverId, points:ends(s)}));
-    return roundedRoutes(paths,[...shore,...riverWaterfalls]);
-  }, [riverSegments,lakeVertices,riverOffset,riverWaterfalls]);
+    const boundaryKeys=new Set(rivers.flatMap(r=>r.sectors.flatMap(s=>[
+      ...(s.startReason==='region_boundary'?[s.startVertexKey]:[]),
+      ...(s.endReason==='region_boundary'?[s.endVertexKey]:[]),
+    ])));
+    const borders=rivers.flatMap(r=>r.vertexPath.filter(v=>boundaryKeys.has(v.key)).map(v=>({x:v.x+riverOffset.x,y:v.y+riverOffset.y})));
+    return roundedRoutes(paths,[...shore,...riverWaterfalls,...borders],(p,r)=>nativeClearance(p,'river',r));
+  }, [riverSegments,lakeVertices,riverOffset,riverWaterfalls,rivers,nativeClearance]);
   const roadPaint = useMemo(() => {
     const byRoad = new Map(renderedCrossings.map(c => [c.roadId+':'+c.roadSegmentKey,c]));
     const paths = roadSegments.map(s => {
@@ -12574,8 +12581,8 @@ export function App() {
     });
     const pins = regions.flatMap(r => hasCentralPoi(r) ? [r.centerHex,...r.pointsOfInterest] : r.pointsOfInterest)
       .map(h => toPixel(h.q,h.r)).map(p => ({x:p.x+riverOffset.x,y:p.y+riverOffset.y}));
-    return roundedRoutes(paths,pins);
-  }, [roadSegments,renderedCrossings,regions,riverOffset]);
+    return roundedRoutes(paths,pins,(p,r)=>nativeClearance(p,'road',r));
+  }, [roadSegments,renderedCrossings,regions,riverOffset,nativeClearance]);
   const lakeVerticesDebug = useMemo(
     () => drawLakeVerticesDebug(lakeVertices, riverOffset.x, riverOffset.y),
     [lakeVertices, riverOffset.x, riverOffset.y]

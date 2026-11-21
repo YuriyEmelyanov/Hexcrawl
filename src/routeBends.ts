@@ -1,4 +1,6 @@
+import {detailCrossingPoint} from './detailGeography.ts';
 import type {WorldPoint} from './detailGrid';
+import {bendNodeKey as pointKey} from './routeClearance.ts';
 
 type Point = WorldPoint;
 export type DisplayRoute = {
@@ -10,13 +12,12 @@ export type DisplayRoute = {
   trim?: number;
 };
 type Arm = {route: DisplayRoute; index: number; next: Point};
-const pointKey = (p: Point) => Math.round(p.x * 1e5) + ',' + Math.round(p.y * 1e5);
 const mix = (a: Point, b: Point, t: number) => ({x:a.x+(b.x-a.x)*t, y:a.y+(b.y-a.y)*t});
-type Corner = {first: Arm; last: Arm; samples: Point[]};
+type Corner = {first: Arm; last: Arm; samples: Point[]; scale:number};
 
 /** Build one quadratic at each eligible junction. Split it halfway between source
  * edges so painting and picking retain both original identities and widths. */
-export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Point[] = []) {
+export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Point[], clearance: (p:Point,radius:number)=>number) {
   const pinned = new Set(pins.map(pointKey));
   const nodes = new Map<string, Arm[]>();
   function add(p: Point, arm: Arm) {
@@ -43,14 +44,26 @@ export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Po
     const continuous = [...groups.values()].filter(g => g.length === 2);
     if (continuous.length !== 1) continue;
     const [first,last] = continuous[0], p = first.route.points[first.index];
-    const a = mix(p,first.next,first.route.trim ?? .38), b = mix(p,last.next,last.route.trim ?? .38);
+    const radius=Math.max(...arms.map(arm=>Math.hypot(arm.next.x-p.x,arm.next.y-p.y)*(arm.route.trim??.38)));
+    if (radius < 1e-8) continue;
+    const scale=clearance(p,radius);
+    if (scale < .02) continue;
+    const a = mix(p,first.next,(first.route.trim ?? .38)*scale), b = mix(p,last.next,(last.route.trim ?? .38)*scale);
     const ax = a.x-p.x, ay = a.y-p.y, bx = b.x-p.x, by = b.y-p.y;
     if (Math.abs(ax*by-ay*bx) < 1e-9) continue;
     const samples = Array.from({length:9}, (_,i) => {
       const t=i/8;
       return mix(mix(a,p,t),mix(p,b,t),t);
     });
-    corners.set(key,{first,last,samples});
+    // A side road that would cross the main curve before reaching its join
+    // keeps the original junction. All incident source IDs still meet there.
+    const sideArms=arms.filter(arm=>arm!==first && arm!==last);
+    const unsafe=sideArms.some(arm=>{
+      const start=mix(p,arm.next,(arm.route.trim??.38)*scale), end=samples[4];
+      return samples.some((b,i)=>i!==0 && i!==4 && i!==5 &&
+        detailCrossingPoint({from:start,to:end},{from:samples[i-1],to:b})!==null);
+    });
+    if (!unsafe) corners.set(key,{first,last,samples,scale});
   }
   const edge = (arm: Arm, route: DisplayRoute, index: number, next: Point) =>
     arm.route === route && arm.index === index && arm.next === next;
@@ -66,7 +79,7 @@ export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Po
       const half = (next: Point) => {
         if (edge(first,route,i,next)) return samples.slice(0,5);
         if (edge(last,route,i,next)) return samples.slice(4).reverse();
-        return [mix(p,next,.38),samples[4]];
+        return [mix(p,next,(route.trim??.38)*corner.scale),samples[4]];
       };
       if (incoming) points.push(...half(incoming));
       if (outgoing) points.push(...half(outgoing).reverse().slice(incoming ? 1 : 0));
