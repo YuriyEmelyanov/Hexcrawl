@@ -1,0 +1,29 @@
+// Copy to the checkout root as replay.mjs and run with Node 24.
+import { createGenerationHarness } from './test/helpers/generation-harness.mjs';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const h=createGenerationHarness(1257875020,'','en'),ui=()=>h.render(),prompts=[];
+h.setWindow({confirm:m=>(prompts.push(m),true),alert:m=>{throw Error(m)}});
+h.injectFunction('readTextFile',f=>f.text);
+const doc=()=>{const d=JSON.parse(JSON.stringify(ui().createSaveData()));delete d.savedAt;return d;};
+const ids=d=>d.map.physicalGrid?.smallLakes?.lakes.map(l=>l.id)??[];
+const layer=d=>d.map.physicalGrid?.smallLakes;
+const reo=async d=>{await ui().handleImportJson({target:{files:[{text:JSON.stringify(d)}],value:'f'}});};
+ui().setSeedInput('1257875020');ui().applyWorldSeed();ui().setGenSizeCategory('locality');
+const anchors=[];
+function add(){const start=ui().regions.length, live=ui(); const candidates=start?live.candidateHexes.filter(c=>!live.hexTerrainByKey.has(c.q+','+c.r)):[{q:0,r:0}];for(const c of candidates){ui().generateAt(c);if(ui().regions.length===start+1){anchors.push([c.q,c.r]);return c;}}throw Error('no candidate '+start);}
+for(let i=0;i<7;i++){add();console.log('regions',i+1,anchors.at(-1), 'ids',ids(doc()));if(i===5){const six=doc();await reo(six);assert.deepEqual(doc().map,six.map);}}
+const before=doc(),depth=ui().undoHistory.length;
+fs.writeFileSync(new URL("reviewer-before7.json",import.meta.url),JSON.stringify(before));
+const anchor=add(),after=doc(),lost=ids(before).filter(x=>!ids(after).includes(x)),gain=ids(after).filter(x=>!ids(before).includes(x));
+assert.equal(ui().undoHistory.length,depth+1);ui().undoMap();assert.deepEqual(doc(),before);ui().redoMap();assert.deepEqual(doc(),after);
+const evidence={seed:1257875020,anchors,loss:lost,gain,beforeNext:layer(before).nextId,afterNext:layer(after).nextId,expansionUndoRedoExact:true,oldLostLakes:layer(before).lakes.filter(l=>lost.includes(l.id)),cases:{}};
+ui().deleteLastRegion();let deleted=doc();assert.deepEqual(deleted.map,before.map);evidence.cases.immediate={regions:deleted.map.regions.length,next:layer(deleted).nextId,missing:ids(before).filter(id=>!ids(deleted).includes(id)),mapExact:true};ui().undoMap();assert.deepEqual(doc(),after);
+const c=before.map.regions[0].centerHex,key=c.q+','+c.r;
+ui().setSelectedHex(c);ui().changeNotesText(key,'Intervening note');ui().finishNotesGroup();const note=doc();assert.deepEqual(layer(note),layer(after));assert.equal(note.map.gmNotesByHexKey[key],'Intervening note');
+let count=ui().undoHistory.length;const promptCount=prompts.length;ui().deleteLastRegion();deleted=doc();assert.equal(ui().undoHistory.length,count+1);
+evidence.cases.afterNote={hex:key,regions:deleted.map.regions.length,next:layer(deleted).nextId,missing:ids(before).filter(id=>!ids(deleted).includes(id)),unexpected:ids(deleted).filter(id=>!ids(before).includes(id)),note:deleted.map.gmNotesByHexKey[key],changedMapKeys:Object.keys(before.map).filter(k=>JSON.stringify(before.map[k])!==JSON.stringify(deleted.map[k])),prompts:prompts.slice(promptCount)};
+ui().undoMap();assert.deepEqual(doc(),note);ui().redoMap();assert.deepEqual(doc(),deleted);evidence.cases.afterNote.undoRedoExact=true;
+ui().generateAt(anchor);const replay=doc();evidence.cases.replayAfterNote={newIds:ids(replay).filter(id=>!ids(deleted).includes(id)),next:layer(replay).nextId,sameLayer:JSON.stringify(layer(replay))===JSON.stringify(layer(after))};
+await reo(after);assert.deepEqual(doc().map,after.map);assert.equal(ui().history.length,0);const reopened=doc();ui().deleteLastRegion();assert.deepEqual(doc(),reopened);evidence.cases.reopen={regions:ui().regions.length,generationCheckpoints:ui().history.length,deleteNoOp:true};
+console.log(JSON.stringify(evidence,null,2));fs.writeFileSync(new URL('reviewer-seed-results.json',import.meta.url),JSON.stringify(evidence,null,2)+'\n');
