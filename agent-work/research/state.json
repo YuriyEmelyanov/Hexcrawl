@@ -65,12 +65,12 @@
     "record_alternatives": true
   },
   "next_candidate": {
-    "id": "hex-market-archive-context",
-    "scenario": "Продолжить тот же архив. В audit.csv разобрать 38 needs_context по оригиналам/родителям/изображениям, затем 876 screened_only по изображениям и специализированным реестровым ID без слова hex; сопоставить авторов, проверить два одноимённых Hexer и новые карточки. Связанные строки под одним ID проверять один раз. До окончания ревизии не расширять выгрузку."
+    "id": "regional_hex_context_remaining",
+    "scenario": "Продолжить 38 исторических needs_context с цифровых кандидатов. Уточнить идентичность Hexer, затем проверить изображения прежнего корпуса. Для четырёх отложенных программ нужен первичный пример. Следом пройти очередь цифровых кандидатов из предыдущего реестра."
   },
   "active_task": null,
   "claim": null,
-  "last_completed_run": "2026-11-21-hex-reddit-2330",
+  "last_completed_run": "2026-11-22-digital-registry-0030",
   "run_history_refs": [
     "agent-work/research/runs/2026-11-06-setup.json",
     "agent-work/research/runs/2026-11-06-map-creation-ranking.json",
@@ -302,7 +302,7 @@
     ],
     "checked_at": "2026-11-21T18:59:22.830Z"
   },
-  "last_result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+  "last_result_ref": "agent-work/research/runs/2026-11-22-digital-registry-0030.json",
   "blocked_source_work": [],
   "owner_scope_ref": "owner-decision-2026-11-06-knave-complete-rules-audit",
   "checkpoint_ref": "agent-work/research/runs/2026-11-21-hex-only-owner-correction.json",
@@ -1045,7 +1045,7 @@
     "runtime_verified": false,
     "new_knowledge": "Worldographer documents an actual blank-completion operation (Terrain Wizard),not only repaint. Geometric Shapes offer a different multiscale alternative from artwork resizing. This weakens unsupported uniqueness claims for empty-terrain completion; matching safe regeneration,automatic POI footprints and exactscale semantics remain unverified."
   },
-  "updated_at": "2026-11-21T20:43:50.173Z",
+  "updated_at": "2026-11-21T21:36:55.410Z",
   "latest_TW2000_creation_disposition": {
     "ref": "agent-work/research/market/TW2000-create-zero-2026-11-12.json",
     "checks_ref": "agent-work/research/market/TW2000-create-zero-2026-11-12-checks.json",
@@ -1187,7 +1187,7 @@
     "active_inputs_changed": false,
     "development_effect": "HX-BL-043 source-note-only workflow; no new game rule/binding/task."
   },
-  "last_run_id": "2026-11-21-hex-reddit-2330",
+  "last_run_id": "2026-11-22-digital-registry-0030",
   "latest_KNAVE2_handdrawn_map": {
     "evidence_ref": "agent-work/research/market/KNAVE2-handdrawn-disposition-2026-11-14.json",
     "prior_evidence_refs": [
@@ -1243,59 +1243,37 @@
     "ref": "agent-work/research/market/Foundry2026-2026-11-14.json",
     "active_numeric_method_changed": false
   },
-  "last_run": "2026-11-21-hex-reddit-2330",
+  "last_run": "2026-11-22-digital-registry-0030",
   "checkpoint": {
-    "run_id": "2026-11-21-hex-reddit-2330",
-    "status": "checkpoint_reddit_hex_market",
-    "stage": "regional_hex_evidence_reclassification",
-    "result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+    "run_id": "2026-11-22-digital-registry-0030",
+    "status": "completed_digital_cohort_revision",
+    "result_ref": "agent-work/research/runs/2026-11-22-digital-registry-0030.json",
     "registry_ref": "agent-work/research/competitors/registry.json",
-    "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
     "ranking_ref": "agent-work/research/reddit-map-tools/hex-only/ranking.csv",
     "monthly_ref": "agent-work/research/reddit-map-tools/hex-only/monthly.csv",
-    "audit_ref": "agent-work/research/reddit-map-tools/hex-only/audit.csv",
-    "updated_at": "2026-11-21 20:42:50 UTC",
-    "registry": {
-      "confirmed_software": 89,
-      "confirmed_previous": 81,
-      "additions": 8,
-      "target": 200,
-      "remaining": 111,
-      "other_procedures_and_assets": 34,
-      "original_candidates_still_pending": 165
-    },
-    "coverage": {
-      "historical_blob_sha": "3203230b0ea6c71fcd3c75a22d013f3374e5a905",
-      "historical_pairs": 1037,
-      "screened": 1037,
-      "reviewed_flagged": 161,
-      "original_confirmed": 109,
-      "original_excluded": 14,
-      "needs_context": 38,
-      "screened_only": 876,
-      "new_pairs_from_reviewed_objects": 5,
-      "confirmed_pairs": 114,
-      "confirmed_objects": 95,
-      "confirmed_unique_authors": 70,
-      "ranked_total": 36,
-      "ranked_software": 23,
-      "archive_obtained": 96783,
-      "archive_control_total": 688423,
-      "new_reddit_download_objects": 0
-    },
+    "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
+    "confirmed": 85,
+    "previous": 89,
+    "added": 0,
+    "pending_from_89": 4,
+    "remaining": 115,
+    "distinct_authors": 55,
+    "objects": 78,
+    "observations": 87,
+    "ranked_software": 22,
+    "months": 12,
     "hexcrawl_ru": {
-      "distinct_authors": 2,
-      "all_rank": "8–18",
-      "software_rank": "6–13",
-      "july_all_rank": "2",
-      "july_software_rank": "2",
-      "self_authors": 1,
-      "other_authors": 1,
-      "other_months_with_evidence": 0
+      "authors": 2,
+      "annual": "6–13",
+      "july": "2"
+    },
+    "archive": {
+      "retrieved": 96783,
+      "total": 688423
     },
     "next_candidate": {
-      "id": "hex-market-archive-context",
-      "scenario": "Продолжить тот же архив. В audit.csv разобрать 38 needs_context по оригиналам/родителям/изображениям, затем 876 screened_only по изображениям и специализированным реестровым ID без слова hex; сопоставить авторов, проверить два одноимённых Hexer и новые карточки. Связанные строки под одним ID проверять один раз. До окончания ревизии не расширять выгрузку."
+      "id": "regional_hex_context_remaining",
+      "scenario": "Продолжить 38 исторических needs_context с цифровых кандидатов. Уточнить идентичность Hexer, затем проверить изображения прежнего корпуса. Для четырёх отложенных программ нужен первичный пример. Следом пройти очередь цифровых кандидатов из предыдущего реестра."
     },
     "needs_owner_action": false
   },
@@ -4297,57 +4275,35 @@
     "owner_action": null
   },
   "current_research_checkpoint": {
-    "run_id": "2026-11-21-hex-reddit-2330",
-    "status": "checkpoint_reddit_hex_market",
-    "stage": "regional_hex_evidence_reclassification",
-    "result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+    "run_id": "2026-11-22-digital-registry-0030",
+    "status": "completed_digital_cohort_revision",
+    "result_ref": "agent-work/research/runs/2026-11-22-digital-registry-0030.json",
     "registry_ref": "agent-work/research/competitors/registry.json",
-    "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
     "ranking_ref": "agent-work/research/reddit-map-tools/hex-only/ranking.csv",
     "monthly_ref": "agent-work/research/reddit-map-tools/hex-only/monthly.csv",
-    "audit_ref": "agent-work/research/reddit-map-tools/hex-only/audit.csv",
-    "updated_at": "2026-11-21 20:42:50 UTC",
-    "registry": {
-      "confirmed_software": 89,
-      "confirmed_previous": 81,
-      "additions": 8,
-      "target": 200,
-      "remaining": 111,
-      "other_procedures_and_assets": 34,
-      "original_candidates_still_pending": 165
-    },
-    "coverage": {
-      "historical_blob_sha": "3203230b0ea6c71fcd3c75a22d013f3374e5a905",
-      "historical_pairs": 1037,
-      "screened": 1037,
-      "reviewed_flagged": 161,
-      "original_confirmed": 109,
-      "original_excluded": 14,
-      "needs_context": 38,
-      "screened_only": 876,
-      "new_pairs_from_reviewed_objects": 5,
-      "confirmed_pairs": 114,
-      "confirmed_objects": 95,
-      "confirmed_unique_authors": 70,
-      "ranked_total": 36,
-      "ranked_software": 23,
-      "archive_obtained": 96783,
-      "archive_control_total": 688423,
-      "new_reddit_download_objects": 0
-    },
+    "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
+    "confirmed": 85,
+    "previous": 89,
+    "added": 0,
+    "pending_from_89": 4,
+    "remaining": 115,
+    "distinct_authors": 55,
+    "objects": 78,
+    "observations": 87,
+    "ranked_software": 22,
+    "months": 12,
     "hexcrawl_ru": {
-      "distinct_authors": 2,
-      "all_rank": "8–18",
-      "software_rank": "6–13",
-      "july_all_rank": "2",
-      "july_software_rank": "2",
-      "self_authors": 1,
-      "other_authors": 1,
-      "other_months_with_evidence": 0
+      "authors": 2,
+      "annual": "6–13",
+      "july": "2"
+    },
+    "archive": {
+      "retrieved": 96783,
+      "total": 688423
     },
     "next_candidate": {
-      "id": "hex-market-archive-context",
-      "scenario": "Продолжить тот же архив. В audit.csv разобрать 38 needs_context по оригиналам/родителям/изображениям, затем 876 screened_only по изображениям и специализированным реестровым ID без слова hex; сопоставить авторов, проверить два одноимённых Hexer и новые карточки. Связанные строки под одним ID проверять один раз. До окончания ревизии не расширять выгрузку."
+      "id": "regional_hex_context_remaining",
+      "scenario": "Продолжить 38 исторических needs_context с цифровых кандидатов. Уточнить идентичность Hexer, затем проверить изображения прежнего корпуса. Для четырёх отложенных программ нужен первичный пример. Следом пройти очередь цифровых кандидатов из предыдущего реестра."
     },
     "needs_owner_action": false
   },
@@ -4868,57 +4824,35 @@
     }
   },
   "latest_reddit_author_ranking": {
-    "run_id": "2026-11-21-hex-reddit-2330",
-    "status": "checkpoint_reddit_hex_market",
-    "stage": "regional_hex_evidence_reclassification",
-    "result_ref": "agent-work/research/runs/2026-11-21-hex-reddit-2330.json",
+    "run_id": "2026-11-22-digital-registry-0030",
+    "status": "completed_digital_cohort_revision",
+    "result_ref": "agent-work/research/runs/2026-11-22-digital-registry-0030.json",
     "registry_ref": "agent-work/research/competitors/registry.json",
-    "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
     "ranking_ref": "agent-work/research/reddit-map-tools/hex-only/ranking.csv",
     "monthly_ref": "agent-work/research/reddit-map-tools/hex-only/monthly.csv",
-    "audit_ref": "agent-work/research/reddit-map-tools/hex-only/audit.csv",
-    "updated_at": "2026-11-21 20:42:50 UTC",
-    "registry": {
-      "confirmed_software": 89,
-      "confirmed_previous": 81,
-      "additions": 8,
-      "target": 200,
-      "remaining": 111,
-      "other_procedures_and_assets": 34,
-      "original_candidates_still_pending": 165
-    },
-    "coverage": {
-      "historical_blob_sha": "3203230b0ea6c71fcd3c75a22d013f3374e5a905",
-      "historical_pairs": 1037,
-      "screened": 1037,
-      "reviewed_flagged": 161,
-      "original_confirmed": 109,
-      "original_excluded": 14,
-      "needs_context": 38,
-      "screened_only": 876,
-      "new_pairs_from_reviewed_objects": 5,
-      "confirmed_pairs": 114,
-      "confirmed_objects": 95,
-      "confirmed_unique_authors": 70,
-      "ranked_total": 36,
-      "ranked_software": 23,
-      "archive_obtained": 96783,
-      "archive_control_total": 688423,
-      "new_reddit_download_objects": 0
-    },
+    "evidence_ref": "agent-work/research/reddit-map-tools/hex-only/evidence.csv",
+    "confirmed": 85,
+    "previous": 89,
+    "added": 0,
+    "pending_from_89": 4,
+    "remaining": 115,
+    "distinct_authors": 55,
+    "objects": 78,
+    "observations": 87,
+    "ranked_software": 22,
+    "months": 12,
     "hexcrawl_ru": {
-      "distinct_authors": 2,
-      "all_rank": "8–18",
-      "software_rank": "6–13",
-      "july_all_rank": "2",
-      "july_software_rank": "2",
-      "self_authors": 1,
-      "other_authors": 1,
-      "other_months_with_evidence": 0
+      "authors": 2,
+      "annual": "6–13",
+      "july": "2"
+    },
+    "archive": {
+      "retrieved": 96783,
+      "total": 688423
     },
     "next_candidate": {
-      "id": "hex-market-archive-context",
-      "scenario": "Продолжить тот же архив. В audit.csv разобрать 38 needs_context по оригиналам/родителям/изображениям, затем 876 screened_only по изображениям и специализированным реестровым ID без слова hex; сопоставить авторов, проверить два одноимённых Hexer и новые карточки. Связанные строки под одним ID проверять один раз. До окончания ревизии не расширять выгрузку."
+      "id": "regional_hex_context_remaining",
+      "scenario": "Продолжить 38 исторических needs_context с цифровых кандидатов. Уточнить идентичность Hexer, затем проверить изображения прежнего корпуса. Для четырёх отложенных программ нужен первичный пример. Следом пройти очередь цифровых кандидатов из предыдущего реестра."
     },
     "needs_owner_action": false
   }
