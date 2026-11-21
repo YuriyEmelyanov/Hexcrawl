@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-21T17:04:24.253Z",
+  "updated_at": "2026-11-21T17:13:48.188Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -2243,6 +2243,33 @@
       "release_authorized": false,
       "ready_for_development": false,
       "updated_at": "2026-11-21T15:25:36.674Z"
+    },
+    {
+      "task_id": "HX-BL-073",
+      "title": "Выявлять несвязные регионы при проверке карты",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/score/rules/S02-C05.md"
+      },
+      "score_criterion": "S02-C05",
+      "score_forecast_l1": {
+        "criterion": "S02-C05",
+        "rule": "VAL-04",
+        "share": 0.26666666666666666,
+        "remaining_L1_points": 0.9876543209876544
+      },
+      "requirements": [
+        "Проверять, что все гексы региона достижимы друг из друга по общим рёбрам внутри этого региона."
+      ],
+      "acceptance_outline": [
+        "В Classic проверить исходную карту с seed 42 и регионом из восьми смежных гексов. Она проходит проверку.",
+        "В копии добавить этому региону гекс 500,500 и обновить размер до девяти. Валидатор сообщает об ошибке связности с указанием региона."
+      ],
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "ready_for_development": false,
+      "updated_at": "2026-11-21T17:13:48.188Z"
     }
   ],
   "retired_pr_packages": {
