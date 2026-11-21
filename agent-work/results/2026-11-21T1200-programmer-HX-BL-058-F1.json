@@ -1,0 +1,175 @@
+{
+  "task_id": "HX-BL-058",
+  "stage_id": "F1",
+  "role": "programmer",
+  "run_id": "2026-11-21T1200-programmer-HX-BL-058-F1",
+  "spec_ref": "agent-work/specs/HX-BL-058-base-scale-F1.md",
+  "interview_ref": "agent-work/interviews/HX-BL-058/BASE-SCALE/decisions.json",
+  "branch": "agent/hx-bl-058-base-scale-f1",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+  "tree_sha": "53555ea73e7735c3f1ab1df9faa0086223272ba6",
+  "pr": 511,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/511",
+  "status": "review_ready",
+  "next_role": "reviewer",
+  "next_step": "Проверяющему независимо пройти AC1–AC5 по F1 на PR №511 (d70366e), сверить сохранения и PNG, затем записать score_assessment 1.2 по S04-C01 и S04-C04.",
+  "review_ready": true,
+  "accepted": false,
+  "published": false,
+  "publication_authorized": false,
+  "evidence_ref": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/verification.json",
+  "completed_at": "2026-11-21T09:38:16.263Z",
+  "role_selection_reason": "Готова утверждённая чистовая F1 после закрытого интервью. Принятая HX-BL-056 ожидает отдельного разрешения публикации. До получения слота сверены 519 claims, 580 результатов и история реестра.",
+  "authorization_status": "implementation approved; independent review due; publication requires separate owner decision",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1200-programmer-HX-BL-058-F1.json",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T08:59:54.951Z",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "error": null
+    },
+    "end": {
+      "at": "2026-11-21T09:38:16.263Z",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "error": null
+    },
+    "restored": false,
+    "errors": []
+  },
+  "test_change_summary": {
+    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+    "added": 0,
+    "removed": 0,
+    "modified": 5,
+    "suite": [
+      {
+        "name": "Node mapTransactions + geometryPlan",
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "scenario": "Один сценарий ошибки при переключении и два существующих параметризованных сценария импорта (ru/en) проверяют согласованную фразу, причину, восстановление исходной карты и историю."
+      },
+      {
+        "name": "Chromium engraved-map, one-mile",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "Изменены проверка компоновки поля и сквозное переключение Classic seed 42 с клавиатуры."
+      }
+    ],
+    "reuse_or_new_reason": "Расширены существующие сценарии в тех же runner. Три ширины и две локализации — параметры существующего сценария. Опциональные снимки для сравнения с базой — диагностические артефакты.",
+    "source": "git diff d6daa2c..d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6 -- test/mapTransactions.test.mjs test/geometryPlan.test.mjs test/browser/engraved-map.smoke.mjs test/browser/one-mile.smoke.mjs"
+  },
+  "checks": {
+    "jobs": [
+      {
+        "name": "check",
+        "id": 136802233299,
+        "status": "completed",
+        "conclusion": "success",
+        "step": null
+      },
+      {
+        "name": "browser",
+        "id": 136802233421,
+        "status": "completed",
+        "conclusion": "success",
+        "step": null
+      },
+      {
+        "name": "world-random",
+        "id": 136802233486,
+        "status": "completed",
+        "conclusion": "success",
+        "step": null
+      },
+      {
+        "name": "engraved-map-comparison",
+        "id": 136802234425,
+        "status": "completed",
+        "conclusion": "skipped",
+        "step": null
+      }
+    ],
+    "node": {
+      "tests": 430,
+      "pass": 430,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "browser": {
+      "scripts_executed": 10,
+      "passed": 10,
+      "skipped": 0,
+      "source": "package.json test:browser, sequential && chain; CI browser result"
+    },
+    "rng": {
+      "scripts_executed": 1,
+      "passed": 1,
+      "skipped": 0
+    },
+    "baseline_png": {
+      "pixelIdentical": true,
+      "raster": {
+        "maxDelta": 0,
+        "changedFraction": 0
+      }
+    },
+    "baseline_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "base_map_width_profiles": [
+      {
+        "width": 1500,
+        "mapPixelIdentical": true,
+        "raster": {
+          "maxDelta": 0,
+          "changedFraction": 0
+        },
+        "wholeUI": {
+          "pixelIdentical": false,
+          "raster": {
+            "maxDelta": 238,
+            "changedFraction": 0.025974666666666667
+          },
+          "scope": "diagnostic including unrelated controls"
+        }
+      },
+      {
+        "width": 390,
+        "mapPixelIdentical": true,
+        "raster": {
+          "maxDelta": 0,
+          "changedFraction": 0
+        },
+        "wholeUI": {
+          "pixelIdentical": false,
+          "raster": {
+            "maxDelta": 255,
+            "changedFraction": 1
+          },
+          "scope": "diagnostic including unrelated controls"
+        }
+      }
+    ],
+    "checkout_tree": "53555ea73e7735c3f1ab1df9faa0086223272ba6",
+    "source_head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+    "round_trip": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/round-trip.json",
+    "fallback": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/fallback.json",
+    "comparison_fix_result": "Both screen captures of the map at 1500 and 390 px and the exported native6 PNG were pixel-identical in fresh sessions."
+  },
+  "visible_progress": "На одной карте до изменения подпись предшествовала списку «6 миль», теперь после кнопки координат видны список «5–6 миль» и подпись справа. На 1 милю можно перейти клавиатурой.",
+  "forecast": "Один запуск на независимую проверку при отсутствии замечаний. После приёмки выпуск зависит от отдельного разрешения владельца.",
+  "remaining": "Независимая приёмка и согласование публикации.",
+  "separate_publication_decision": {
+    "task_id": "HX-BL-056",
+    "pr": 510,
+    "head_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+    "status": "accepted_awaiting_owner_publication"
+  }
+}

@@ -1,0 +1,264 @@
+{
+  "task_id": "HX-BL-058",
+  "role": "programmer",
+  "stage": "F1",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+  "tree_sha": "53555ea73e7735c3f1ab1df9faa0086223272ba6",
+  "pr": 511,
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44889572317",
+  "artifact": {
+    "id": 14701352959,
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44889572317/artifacts/14701352959",
+    "sha256": "a989706d9e8e0cd73b1118662db8afd08f13b51771aa9561d3d34e199fe23afb"
+  },
+  "actual_ui": {
+    "comparison_ref": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e",
+    "files": [
+      {
+        "width": 1280,
+        "before": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/base-scale-before-1280.png",
+        "after": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/base-scale-after-1280.png"
+      },
+      {
+        "width": 390,
+        "before": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/base-scale-before-390.png",
+        "after": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/base-scale-after-390.png"
+      },
+      {
+        "width": 320,
+        "before": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/base-scale-before-320.png",
+        "after": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/base-scale-after-320.png"
+      }
+    ],
+    "fixture": "road-entry-zigzags.json",
+    "comparison": {
+      "baseline": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+      "profiles": [
+        {
+          "version": "before",
+          "width": 1280,
+          "options": [
+            "1 миля",
+            "6 миль"
+          ]
+        },
+        {
+          "version": "before",
+          "width": 390,
+          "options": [
+            "1 миля",
+            "6 миль"
+          ]
+        },
+        {
+          "version": "before",
+          "width": 320,
+          "options": [
+            "1 миля",
+            "6 миль"
+          ]
+        },
+        {
+          "version": "after",
+          "width": 1280,
+          "options": [
+            "1 миля",
+            "5–6 миль"
+          ]
+        },
+        {
+          "version": "after",
+          "width": 390,
+          "options": [
+            "1 миля",
+            "5–6 миль"
+          ]
+        },
+        {
+          "version": "after",
+          "width": 320,
+          "options": [
+            "1 миля",
+            "5–6 миль"
+          ]
+        }
+      ]
+    }
+  },
+  "visible_progress": "На одной карте до изменения подпись предшествовала списку «6 миль», теперь после кнопки координат видны список «5–6 миль» и подпись справа. На 1 милю можно перейти клавиатурой.",
+  "test_change_summary": {
+    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+    "added": 0,
+    "removed": 0,
+    "modified": 5,
+    "suite": [
+      {
+        "name": "Node mapTransactions + geometryPlan",
+        "added": 0,
+        "removed": 0,
+        "modified": 3,
+        "scenario": "Один сценарий ошибки при переключении и два существующих параметризованных сценария импорта (ru/en) проверяют согласованную фразу, причину, восстановление исходной карты и историю."
+      },
+      {
+        "name": "Chromium engraved-map, one-mile",
+        "added": 0,
+        "removed": 0,
+        "modified": 2,
+        "scenario": "Изменены проверка компоновки поля и сквозное переключение Classic seed 42 с клавиатуры."
+      }
+    ],
+    "reuse_or_new_reason": "Расширены существующие сценарии в тех же runner. Три ширины и две локализации — параметры существующего сценария. Опциональные снимки для сравнения с базой — диагностические артефакты.",
+    "source": "git diff d6daa2c..d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6 -- test/mapTransactions.test.mjs test/geometryPlan.test.mjs test/browser/engraved-map.smoke.mjs test/browser/one-mile.smoke.mjs"
+  },
+  "checks": {
+    "jobs": [
+      {
+        "name": "check",
+        "id": 136802233299,
+        "status": "completed",
+        "conclusion": "success",
+        "step": null
+      },
+      {
+        "name": "browser",
+        "id": 136802233421,
+        "status": "completed",
+        "conclusion": "success",
+        "step": null
+      },
+      {
+        "name": "world-random",
+        "id": 136802233486,
+        "status": "completed",
+        "conclusion": "success",
+        "step": null
+      },
+      {
+        "name": "engraved-map-comparison",
+        "id": 136802234425,
+        "status": "completed",
+        "conclusion": "skipped",
+        "step": null
+      }
+    ],
+    "node": {
+      "tests": 430,
+      "pass": 430,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "browser": {
+      "scripts_executed": 10,
+      "passed": 10,
+      "skipped": 0,
+      "source": "package.json test:browser, sequential && chain; CI browser result"
+    },
+    "rng": {
+      "scripts_executed": 1,
+      "passed": 1,
+      "skipped": 0
+    },
+    "baseline_png": {
+      "pixelIdentical": true,
+      "raster": {
+        "maxDelta": 0,
+        "changedFraction": 0
+      }
+    },
+    "baseline_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "base_map_width_profiles": [
+      {
+        "width": 1500,
+        "mapPixelIdentical": true,
+        "raster": {
+          "maxDelta": 0,
+          "changedFraction": 0
+        },
+        "wholeUI": {
+          "pixelIdentical": false,
+          "raster": {
+            "maxDelta": 238,
+            "changedFraction": 0.025974666666666667
+          },
+          "scope": "diagnostic including unrelated controls"
+        }
+      },
+      {
+        "width": 390,
+        "mapPixelIdentical": true,
+        "raster": {
+          "maxDelta": 0,
+          "changedFraction": 0
+        },
+        "wholeUI": {
+          "pixelIdentical": false,
+          "raster": {
+            "maxDelta": 255,
+            "changedFraction": 1
+          },
+          "scope": "diagnostic including unrelated controls"
+        }
+      }
+    ],
+    "checkout_tree": "53555ea73e7735c3f1ab1df9faa0086223272ba6",
+    "source_head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+    "round_trip": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/round-trip.json",
+    "fallback": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/fallback.json",
+    "comparison_fix_result": "Both screen captures of the map at 1500 and 390 px and the exported native6 PNG were pixel-identical in fresh sessions."
+  },
+  "spec_trace": {
+    "AC1": "Значения и порядок списка на RU/EN. Два исходных числовых значения. Загрузка Classic и road-entry.",
+    "AC2": "1280, 390 и 320 CSS px, обе локализации, подпись фокусирует поле. Tab от кнопки координат и стрелка с Enter открывают одномильную карту.",
+    "AC3": "Сравнение сериализованного документа и сетки двух сборок в 24 состояниях на RU/EN, версии сохранений 2, 10, 15 и 16. Сравнение PNG на одной карте и ориентации в CI.",
+    "AC4": "Принудительный отказ при импорте проверен на RU/EN в fallback.json. Общие условия disabled не изменены. Задержанный импорт и занятая генерация проверены штатной browser suite. Отказ подготовки проверен Node с сохранением данных и истории.",
+    "AC5": "Общее имя Knave 2e в обеих локализациях. Существующий реальный сценарий включения/выключения, сохранения данных и режимов прошёл в test/browser/tags.smoke.mjs."
+  },
+  "score_evidence": {
+    "model": "1.2",
+    "S04-C01": {
+      "grade": "unknown",
+      "forecast": "score-neutral",
+      "evidence": [
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44889572317",
+        "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/base-scale-after-390.png"
+      ],
+      "method": "Переключение на реальной карте Classic, RU/EN."
+    },
+    "S04-C04": {
+      "grade": "unknown",
+      "forecast": "score-neutral",
+      "evidence": [
+        "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/round-trip.json",
+        "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44889572317/artifacts/14701352959"
+      ],
+      "method": "Одинаковая последовательность команд на базе и голове, JSON и PNG."
+    }
+  },
+  "limitations": [
+    "Chromium, фиксированные карты и ширины. Локальный Chromium завершился socket EPERM. Для браузерных результатов использован существующий CI.",
+    "Сопоставление PNG с опубликованной версией относится к базовому виду. Одномильный вид проверен штатным отдельным сквозным сценарием.",
+    "Заключение о приёмке и score_assessment ждут независимого проверяющего."
+  ],
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T08:59:54.951Z",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "error": null
+    },
+    "end": {
+      "at": "2026-11-21T09:38:16.263Z",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=Europe/Moscow:20261119T190000\nRRULE:FREQ=HOURLY;INTERVAL=1;BYMINUTE=0;BYSECOND=0\nEND:VEVENT",
+      "error": null
+    },
+    "restored": false,
+    "errors": []
+  },
+  "prior_findings_ref": "agent-work/evidence/HX-BL-058-F1/programmer-d70366e/prior-ci.json"
+}
