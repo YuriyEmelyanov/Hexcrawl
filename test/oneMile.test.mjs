@@ -1,9 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles, detailCellCenter} from '../src/detailGrid.ts';
-import {prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,smallLakeShoreConflict,smallLakeShorePath,smallLakeWaterConnected} from '../src/smallLakeShore.ts';
+import {prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,prepareAcceptedSmallLakeViews} from '../src/smallLakeShore.ts';
 import {parseSmallLakes,rollSmallLakeFootprints} from '../src/smallLakes.ts';
-import {prepareRefinementShoreCells,prepareRefinementShorePath} from '../src/geometryRefinementShore.ts';
 import {dominantFineBiome, projectOneMile, oneMileCandidates, chooseOneMileAnchor,
   fineCellKey, parseFineCellEdits, prepareFineCellEdit, prepareFineCellLoss} from '../src/oneMile.ts';
 
@@ -31,23 +30,11 @@ const valid=id=>['forest','hills','plain'].includes(id);
 const accepted=()=>projectOneMile([source(0,0)]);
 const neighbours=cell=>[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>c(cell.q+q,cell.r+r));
 
-test('a natural small-lake shore spills only onto unclaimed dry neighbours',()=>{
-  const lake={id:1,origin:'manual',cells:[c(0,0),c(1,0)]},origin={x:0,y:0};
-  const protection={roads:[],crossings:[],anchors:[]};
-  const coverage=new Map(accepted().map(row=>[fineCellKey(row.cell),row]));
-  const before=JSON.stringify(lake),open=prepareSmallLakeShore(lake,42,origin,protection,coverage);
-  assert.equal(open.conflict,null);
-  assert.ok(open.view.maskCells.some(cell=>fineCellKey(cell)==='2,0'),'a dry fringe preserves a natural outward bend');
-  const wet=new Map(coverage);wet.set('2,0',{...wet.get('2,0'),waterArea:.02});
-  const protectedFringe={...protection,anchors:[{ref:'point',point:{x:1.51,y:.12}}]};
-  for(const clipped of [prepareSmallLakeShore(lake,42,origin,protection,wet),
-    prepareSmallLakeShore(lake,42,origin,protection,coverage,new Set(['2,0'])),
-    prepareSmallLakeShore(lake,42,origin,protectedFringe,coverage)]){
-    assert.equal(clipped.conflict,null);
-    assert.equal(clipped.view.path,open.view.path);
-    assert.ok(!clipped.view.maskCells.some(cell=>fineCellKey(cell)==='2,0'));
-    assert.equal(JSON.stringify(clipped.view.lake),before,'spill does not enlarge the authored footprint');
-  }
+test('saved decorative shore cells do not occupy neighbouring land',()=>{
+  const lake={id:1,origin:'manual',cells:[c(0,0)],shoreCells:[c(1,0)]};
+  const neighbour={id:2,origin:'manual',cells:[c(1,0)]};
+  assert.deepEqual([...prepareAcceptedSmallLakeViews([lake]).reserved],['0,0']);
+  assert.deepEqual(parseSmallLakes({nextId:3,lakes:[lake,neighbour]}).lakes,[lake,neighbour]);
 });
 
 test('a skipped automatic lake leaves the neighbour’s visible shoreline intact after reload',()=>{
@@ -57,30 +44,21 @@ test('a skipped automatic lake leaves the neighbour’s visible shoreline intact
   const footprints=rollSmallLakeFootprints(candidates,15,.1),open={roads:[],crossings:[],anchors:[]};
   const earlier=[c(23,10),c(24,10)],later=[c(25,6),c(25,7),c(25,8)];
   const road={...open,roads:[{ref:'review-path',points:earlier.map(cell=>detailCellCenter(grid,cell))}]};
-  const generate=protection=>prepareAutomaticSmallLakeBatch(footprints,1,42,origin,protection,coverage,new Set());
+  const generate=protection=>prepareAutomaticSmallLakeBatch(footprints,1,origin,protection,new Set());
   const clear=generate(open),blocked=generate(road);
   const find=(layer,cells)=>layer.lakes.find(lake=>JSON.stringify(lake.cells)===JSON.stringify(cells));
-  assert.ok(find(clear,earlier).shoreCells.some(cell=>fineCellKey(cell)==='24,9'));
+  assert.ok(find(clear,earlier));
   assert.equal(find(blocked,earlier),undefined);
   assert.equal(blocked.lakes.length,clear.lakes.length-1);
   const mask=(layer,protection)=>{
     const lake=find(layer,later);
-    return prepareSmallLakeShore(lake,42,origin,protection,coverage).view.maskCells;
+    return prepareSmallLakeShore(lake,origin,protection).view.lake.cells;
   };
   assert.deepEqual(mask(clear,open),mask(blocked,road));
   const saved=parseSmallLakes(JSON.parse(JSON.stringify(blocked)));
   assert.deepEqual(mask(saved,road),mask(clear,open));
   assert.ok(mask(saved,road).every(cell=>fineCellKey(cell)!=='24,9'));
 });
-test('shore clipping distinguishes disconnected water from an island inside a connected lake',()=>{
-  const mask=prepareRefinementShoreCells([c(0,0)],{x:0,y:0},1);
-  const connected=prepareRefinementShorePath('M-.4 -.2 L.4 -.2 L.4 .2 L-.4 .2 Z M-.1 -.1 L.1 -.1 L.1 .1 L-.1 .1 Z');
-  const cut=prepareRefinementShorePath('M-.25 0 L-.15 0 L-.15 .65 L.15 .65 L.15 0 L.25 0 L.25 .8 L-.25 .8 Z');
-  assert.deepEqual([mask.status,connected.status,cut.status],['prepared','prepared','prepared']);
-  assert.equal(smallLakeWaterConnected(connected,mask),true,'the island is a hole, not additional disconnected water');
-  assert.equal(smallLakeWaterConnected(cut,mask),false,'clipping away the joining arm leaves separate pools');
-});
-
 test('small lake protects paths and anchors across the full water hex',()=>{
   const lake={id:1,origin:'manual',cells:[c(0,0)]},origin={x:10,y:-2};
   const point=(x,y)=>({x:x+origin.x,y:y+origin.y});
@@ -88,13 +66,11 @@ test('small lake protects paths and anchors across the full water hex',()=>{
   const through={ref:'through',points:[point(-1,0),point(1,0)]};
   const anchor={ref:'site',point:origin};
   const safe={roads:[],crossings:[],anchors:[{ref:'outside',point:point(.54,.28)}]};
-  assert.equal(smallLakeShoreConflict(lake,42,origin,safe),null);
-  assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,roads:[dryEdge,through]}),{kind:'road',ref:'edge'});
-  assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,crossings:[through]}),{kind:'crossing',ref:'through'});
-  assert.deepEqual(smallLakeShoreConflict(lake,42,origin,{...safe,anchors:[anchor]}),{kind:'anchor',ref:'site'});
-  const automatic={...lake,origin:'automatic'};
-  assert.equal(smallLakeShorePath(automatic,42),smallLakeShorePath({...automatic,id:2},42),
-    'rejecting an earlier automatic candidate does not change another basin’s contour');
+  assert.equal(prepareSmallLakeShore(lake,origin,safe).conflict,null);
+  assert.deepEqual(prepareSmallLakeShore(lake,origin,{...safe,roads:[dryEdge,through]}).conflict,{kind:'road',ref:'edge'});
+  assert.deepEqual(prepareSmallLakeShore(lake,origin,{...safe,crossings:[through]}).conflict,{kind:'crossing',ref:'through'});
+  assert.deepEqual(prepareSmallLakeShore(lake,origin,{...safe,anchors:[anchor]}).conflict,{kind:'anchor',ref:'site'});
+
 });
 
 test('partial fine display is full while accepted geography area stays exact',()=>{

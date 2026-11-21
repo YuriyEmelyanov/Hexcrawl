@@ -499,8 +499,7 @@ try{
  assert.equal(await smallLake.locator('[data-small-lake-shore-cell]').first().getAttribute('points'),lakePath);
  manifest.cases.push({id:'HX056-manual-small-lake-roundtrip-and-png',status:'pass',cells:['-4,-28','-3,-28'],pngBytes:smallLakeBytes.length,roadConflict,manualPass,rotatedPng:true});
 
- // A separate real shoreline witnesses actual spill and continuity across
- // save/reload. The large existing lake borders the selected fine hex.
+ // Compare the two water engravings where a large lake borders a fine hex.
  await loadWorld(Buffer.from(JSON.stringify(classicSource)));
  await showOneMile();
  await lakeCell('10,-9').scrollIntoViewIfNeeded();
@@ -517,7 +516,7 @@ try{
  await smallLake.waitFor();
  assert.deepEqual(await maskCells(smallLake),fringe);
  const shoreAccepted=await snap();
- assert.deepEqual(shoreAccepted.map.physicalGrid.smallLakes.lakes,[{id:1,origin:'manual',cells:[{q:10,r:-9}],shoreCells:[{q:11,r:-10}]}]);
+ assert.deepEqual(shoreAccepted.map.physicalGrid.smallLakes.lakes,[{id:1,origin:'manual',cells:[{q:10,r:-9}]}]);
  for(const key of ['terrainByHexKey','rivers','roads','crossings'])assert.deepEqual(shoreAccepted.map[key],shoreBefore.map[key]);
  await lakeCell('10,-9').scrollIntoViewIfNeeded();
  await shot('small-lake-spill-after.jpg');
@@ -549,6 +548,12 @@ try{
  await showOneMile();
  await smallLake.waitFor();
  assert.deepEqual(await maskCells(smallLake),fringe);
+
+ // This dry neighbour used to be reserved by a decorative shoreline.
+ await lakeCell('11,-10').press('Enter');
+ await button('Add small lake').click();
+ assert.equal(await saveLake.isEnabled(),true);
+ await page.locator('[data-small-lake-editor]').getByRole('button',{name:'Cancel',exact:true}).click();
 
  // R05: move the footprint onto the path with a structurally valid shore.
  // The geometry refusal must leave the open map and both timelines intact.

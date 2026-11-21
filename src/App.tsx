@@ -1,7 +1,7 @@
 import {finePoiLabel} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage,OneMileGeometryConflict} from './automaticOneMileScene';
 import {addManualSmallLake,exactAutomaticLakeRollback,hasFullDrySupport,hasFullOneMileSupport,prepareSmallLakeSupport,rollSmallLakeFootprints,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
-import {prepareAcceptedSmallLakeViews,prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,type SmallLakeProtection,type SmallLakeView} from './smallLakeShore';
+import {prepareAcceptedSmallLakeViews,prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,type SmallLakeProtection} from './smallLakeShore';
 import {OneMileArtwork} from './OneMileArtwork';
 import {RefinedGeographyArtwork} from './RefinedGeographyArtwork';
 import {normalizeRefinementRiverSource} from './geometryRefinementSource';
@@ -1317,25 +1317,6 @@ function smallLakeProtectionForMap(map:OneMileDocumentMap,state:Detail1State):Sm
  };
 }
 
-// Legacy records derive their fringe from the current terrain and neighbouring lakes.
-function retainAcceptedLakeShores(lakes:SmallLakeLayer['lakes'],before:MapSnapshot,visible?:readonly SmallLakeView[]){
- const state=before.physicalGrid;
- if(!state?.smallLakes||!lakes.some(lake=>lake.shoreCells===undefined))return lakes;
- if(!visible){
-  const origin=state.grid.origin;
-  const coverage=new Map(projectOneMile(oneMileSources(before),origin).map(row=>[hexKey(row.cell),row]));
-  let geometry=state;
-  try{geometry=prepareAutomaticOneMileScene(before);}
-  catch(error){if(!(error instanceof OneMileGeometryConflict&&localLakeGrid(state)))throw error;}
-  visible=prepareAcceptedSmallLakeViews(state.smallLakes.lakes,before.toponymSeed,origin,smallLakeProtectionForMap(before,geometry),coverage).views;
- }
- const shores=new Map(visible.map(view=>[view.lake.id,view.maskCells.slice(view.lake.cells.length)]));
- return lakes.map(lake=>{
-  const shoreCells=shores.get(lake.id);
-  return lake.shoreCells===undefined&&shoreCells?{...lake,shoreCells}:lake;
- });
-}
-
 /** Prepare the fine lake layer against the finished terrain, paths and POIs. */
 function prepareGeneratedSmallLakes(before:MapSnapshot,map:MapSnapshot,generated:readonly Region[]){
  const origin=map.physicalGrid?.grid.origin??{x:0,y:0};
@@ -1377,14 +1358,13 @@ function prepareGeneratedSmallLakes(before:MapSnapshot,map:MapSnapshot,generated
  // Retain each lake whose accepted terrain and protected features still permit it.
  const existing=support?.layer.lakes??[];
  const retained=existing.filter(lake=>{
-  const {conflict}=prepareSmallLakeShore(lake,map.toponymSeed,origin,protection);
+  const {conflict}=prepareSmallLakeShore(lake,origin,protection);
   if(conflict)losses.push(lake);
   return !conflict;
  });
- const retainedWithShores=retainAcceptedLakeShores(retained,before);
- const allocation=prepareAcceptedSmallLakeViews(retainedWithShores,map.toponymSeed,origin,protection,coverage);
- const batch=prepareAutomaticSmallLakeBatch(scene?footprints:[],layer?.nextId??1,map.toponymSeed,origin,protection,coverage,allocation.reserved);
- const lakes=[...retainedWithShores,...batch.lakes],{nextId}=batch;
+ const allocation=prepareAcceptedSmallLakeViews(retained);
+ const batch=prepareAutomaticSmallLakeBatch(scene?footprints:[],layer?.nextId??1,origin,protection,allocation.reserved);
+ const lakes=[...retained,...batch.lakes],{nextId}=batch;
  if(lakes.length===existing.length&&nextId===(layer?.nextId??1)&&lakes.every((lake,i)=>lake===existing[i]))return {map,scene,losses};
  const physicalGrid=map.physicalGrid??{schema:geometry.schema,version:3 as const,active:true as const,grid:geometry.grid,source:geometry.source,viewStep:6 as const,poiFootprints:[],fineCellEdits:{}};
  return {map:{...map,physicalGrid:{...physicalGrid,smallLakes:{nextId,lakes}}},scene,losses};
@@ -1760,8 +1740,7 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
     ?prepareSmallLakeSupport(physical.smallLakes,projectOneMile(oneMileSources(candidate),physical.grid.origin))
     :undefined;
   if(physical&&smallLakes){
-    const lakes=retainAcceptedLakeShores(smallLakes.layer.lakes,map);
-    candidate={...candidate,physicalGrid:{...physical,smallLakes:{...smallLakes.layer,lakes}}};
+    candidate={...candidate,physicalGrid:{...physical,smallLakes:smallLakes.layer}};
   }
   candidate=checkedRiverMap(prepareSourceTransition(map,{...candidate,editorNames:authored,toponyms:names,tags}));assertGeneratedIds(candidate);
   const unresolvedLosses=losses.filter(loss=>!options.acceptedLosses?.includes(loss.id));
@@ -14829,12 +14808,6 @@ export function App() {
         const uneditedExpansion = checkpoint.generatedLakeLayer !== undefined &&
           JSON.stringify(checkpoint.generatedLakeLayer) === JSON.stringify(state.smallLakes);
         exactLakeRollback=uneditedExpansion||exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes);
-        // Generation records the visible shore of legacy lakes. Compare that
-        // shore on its original map before treating the difference as an edit.
-        if(!exactLakeRollback&&smallLakes.losses.length&&priorLayer?.lakes.some(lake=>lake.shoreCells===undefined)){
-          const lakes=retainAcceptedLakeShores(priorLayer.lakes,checkpoint);
-          exactLakeRollback=exactAutomaticLakeRollback(state.smallLakes,{...priorLayer,lakes},smallLakes);
-        }
       }
       checkpoint=retainFineCheckpoint(checkpoint,losses.length>0,smallLakes?{layer:exactLakeRollback?priorLayer:smallLakes.layer}:undefined);
     }catch(error){setEditError(error instanceof Error?error.message:'Local edits cannot be retained');return;}
@@ -16655,12 +16628,7 @@ export function App() {
   const smallLakeProtection=useMemo(()=>needsSmallLakeProtection&&fineDisplay?.viewStep===1
     ?smallLakeProtectionForMap(captureMap(),fineDisplay):null,
     [needsSmallLakeProtection,fineDisplay,regions,rivers,roads,crossings,riverFeatureOverrides,hexTerrainByKey]);
-  const smallLakeCoverage=useMemo(()=>new Map(fineCells.map(cell=>[hexKey(cell.cell),cell])),[fineCells]);
-  const acceptedLakeArtwork=useMemo(()=>{
-    if(fineDisplay?.viewStep!==1||!acceptedSmallLakes?.lakes.length||!smallLakeProtection)
-      return {views:[] as SmallLakeView[],reserved:new Set<string>()};
-    return prepareAcceptedSmallLakeViews(acceptedSmallLakes.lakes,toponymSeed,fineDisplay.grid.origin,smallLakeProtection,smallLakeCoverage);
-  },[acceptedSmallLakes,smallLakeProtection,smallLakeCoverage,toponymSeed,fineDisplay]);
+  const acceptedLakeArtwork=useMemo(()=>prepareAcceptedSmallLakeViews(acceptedSmallLakes?.lakes??[]),[acceptedSmallLakes]);
   const overlapsSmallLake={kind:'small_lake' as const,ref:''};
   const smallLakeConflictText=(conflict:NonNullable<ReturnType<typeof prepareSmallLakeShore>['conflict']>|typeof overlapsSmallLake)=>{
     if(conflict.kind==='road')return language==='ru'?`Берег малого озера пересекает дорогу или тропу №${conflict.ref}.`:`The small lake crosses road or trail #${conflict.ref}.`;
@@ -16682,7 +16650,7 @@ export function App() {
     const geometry=scene??state;
     const protection=smallLakeProtectionForMap(map,geometry);
     for(const [index,lake] of lakes.entries()){
-      const {conflict}=prepareSmallLakeShore(lake,map.toponymSeed,geometry.grid.origin,protection);
+      const {conflict}=prepareSmallLakeShore(lake,geometry.grid.origin,protection);
       if(conflict)throw new SaveValidationError(`${path}.lakes[${index}].cells`,smallLakeConflictText(conflict));
     }
     return scene;
@@ -16693,10 +16661,10 @@ export function App() {
     if(!smallLakeDraft?.cells.length||!fineDisplay||!smallLakeProtection)return null;
     try{
       const layer=addManualSmallLake(acceptedSmallLakes,smallLakeDraft.cells,fineCells),lake=layer.lakes[layer.lakes.length-1];
-      const prepared=prepareSmallLakeShore(lake,toponymSeed,fineDisplay.grid.origin,smallLakeProtection,smallLakeCoverage,acceptedLakeArtwork.reserved);
+      const prepared=prepareSmallLakeShore(lake,fineDisplay.grid.origin,smallLakeProtection);
       return {...prepared,conflict:lake.cells.some(cell=>acceptedLakeArtwork.reserved.has(hexKey(cell)))?overlapsSmallLake:prepared.conflict};
     }catch{return null;}
-  },[acceptedSmallLakes,acceptedLakeArtwork,fineCells,smallLakeCoverage,smallLakeDraft,fineDisplay,smallLakeProtection,toponymSeed]);
+  },[acceptedSmallLakes,acceptedLakeArtwork,fineCells,smallLakeDraft,fineDisplay,smallLakeProtection]);
   const paintSmallLake=manualSmallLake?.view;
   const startSmallLake=()=>{
     const target=fineDisplay?.selectedCell;
@@ -16720,12 +16688,10 @@ export function App() {
     try{
       const before=copyDocument(captureDocument());
       const accepted=projectOneMile(oneMileSources(before.map),state.grid.origin);
-      const layer=addManualSmallLake(state.smallLakes,smallLakeDraft.cells,accepted),lake=layer.lakes[layer.lakes.length-1];
-      const coverage=new Map(accepted.map(cell=>[hexKey(cell.cell),cell]));
+      const smallLakes=addManualSmallLake(state.smallLakes,smallLakeDraft.cells,accepted),lake=smallLakes.lakes[smallLakes.lakes.length-1];
       if(lake.cells.some(cell=>acceptedLakeArtwork.reserved.has(hexKey(cell)))){setEditError(smallLakeConflictText(overlapsSmallLake));return;}
-      const {conflict,view}=prepareSmallLakeShore(lake,before.map.toponymSeed,state.grid.origin,smallLakeProtection,coverage,acceptedLakeArtwork.reserved);
+      const {conflict}=prepareSmallLakeShore(lake,state.grid.origin,smallLakeProtection);
       if(conflict){setEditError(smallLakeConflictText(conflict));return;}
-      const smallLakes={...layer,lakes:[...layer.lakes.slice(0,-1),{...lake,shoreCells:view.maskCells.slice(lake.cells.length)}]};
       const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes}}});
       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);
     }catch(error){
@@ -16739,7 +16705,7 @@ export function App() {
     try{
       const before=copyDocument(captureDocument());
       const survivors=layer.lakes.filter(lake=>lake.id!==selectedSmallLake.id);
-      const smallLakes={...layer,lakes:retainAcceptedLakeShores(survivors,before.map,acceptedLakeArtwork.views)};
+      const smallLakes={...layer,lakes:survivors};
       const after=copyDocument({...before,map:{...before.map,physicalGrid:{...state,smallLakes}}});
       recordTransaction(before,after);applyPreparedDocument(after);
     }catch(error){setEditError(error instanceof Error?error.message:'Could not remove small lake');}

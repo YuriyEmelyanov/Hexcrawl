@@ -86,8 +86,7 @@ export function OneMileArtwork(p:Props){
      return <path key={lake.id} data-lake-mask={lake.id} d={path} fill="black"/>;
    })}
   </mask></defs>}
-  {shorelines.map(({lake,shape})=>{
-    if(!shape)return null;
+  {shorelines.map(({lake})=>{
     const draft=lake===p.smallLakeDraft?.lake;
     return <g key={lake.id} data-small-lake={draft?undefined:lake.id} data-editor-only={draft?'small-lake-draft':undefined} pointerEvents="none" opacity={draft ? .7 : 1}>
       {lake.cells.map(cell=>{

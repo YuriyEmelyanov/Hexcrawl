@@ -55,11 +55,13 @@ export function parseSmallLakes(raw: unknown): SmallLakeLayer {
     const shore = Array.isArray(shoreCells) ? shoreCells.map(parseLakeCell) : undefined;
     if (shore?.length) {
       const adjacent = new Set(footprint.flatMap(smallLakeNeighbours).map(fineCellKey));
-      if (shore.some(cell => !adjacent.has(fineCellKey(cell)))) throw new Error('Invalid small lake shore');
+      const localKeys = [...footprint, ...shore].map(fineCellKey);
+      if (new Set(localKeys).size !== localKeys.length || shore.some(cell => !adjacent.has(fineCellKey(cell)))) throw new Error('Invalid small lake shore');
     }
-    for (const cell of [...footprint, ...(shore ?? [])]) {
+    // Older saves may describe decorative shore cells. Only water occupies a hex.
+    for (const cell of footprint) {
       const key = fineCellKey(cell);
-      if (occupied.has(key)) throw new Error('Small lake footprints or stored shores overlap');
+      if (occupied.has(key)) throw new Error('Small lake footprints overlap');
       occupied.add(key);
     }
     return {id, cells: footprint, origin, ...(shore ? {shoreCells: shore} : {})} as const;
@@ -137,10 +139,7 @@ export function exactAutomaticLakeRollback(current:SmallLakeLayer,previous:Small
   return supported.layer.lakes.length===prior.lakes.length&&supported.layer.lakes.every((lake,index)=>{
     const other=prior.lakes[index];
     return lake.id===other.id&&lake.origin===other.origin&&lake.cells.length===other.cells.length&&
-      lake.cells.every((cell,i)=>fineCellKey(cell)===fineCellKey(other.cells[i]))&&
-      (lake.shoreCells===undefined)===(other.shoreCells===undefined)&&
-      (lake.shoreCells?.length??0)===(other.shoreCells?.length??0)&&
-      (lake.shoreCells?.every((cell,i)=>fineCellKey(cell)===fineCellKey(other.shoreCells![i]))??true);
+      lake.cells.every((cell,i)=>fineCellKey(cell)===fineCellKey(other.cells[i]));
   });
 }
 

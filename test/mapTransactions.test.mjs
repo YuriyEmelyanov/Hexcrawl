@@ -526,7 +526,7 @@ test('removing a neighbouring lake preserves a legacy shoreline across deletion,
   const retained={id:1,origin:'manual',cells:[{q:-8,r:-3}]};
   const adjacent={id:2,origin:'manual',cells:[{q:-8,r:-4},{q:-7,r:-4},{q:-6,r:-4},{q:-6,r:-3}]};
   const pick=cell=>assert.ok(h.render().pickFine(cell,false,h.render().getDocumentRevision()));
-  const mask=()=>serial(h.render().acceptedLakeArtwork.views.find(view=>view.lake.id===1).maskCells);
+  const mask=()=>serial(h.render().acceptedLakeArtwork.views.find(view=>view.lake.id===1).lake.cells);
   assert.ok(h.render().switchFineStep(1));
   pick(retained.cells[0]);h.render().startSmallLake();h.render().commitSmallLake();
   assert.ok(h.render().switchFineStep(6));
@@ -545,7 +545,7 @@ test('removing a neighbouring lake preserves a legacy shoreline across deletion,
       assert.ok(h.render().finishWaterDraft());
     }
     const after=stable(h.render());
-    assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:3,lakes:[{...retained,shoreCells:[]}]});
+    assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:3,lakes:[retained]});
     h.render().undoMap();
     assert.deepEqual(stable(h.render()).map.physicalGrid.smallLakes,legacy.map.physicalGrid.smallLakes);
     h.render().redoMap();assert.deepEqual(stable(h.render()),after);
@@ -557,8 +557,8 @@ test('removing a neighbouring lake preserves a legacy shoreline across deletion,
 test('expanding into a dry neighbour keeps the accepted manual shore, including legacy saves',async()=>{
   const {h,alerts}=setup();
   const source=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
-  const shore=()=>serial(h.render().acceptedLakeArtwork.views[0].maskCells);
-  const acceptedCells=[{q:9,r:13},{q:10,r:12}];
+  const shore=()=>serial(h.render().acceptedLakeArtwork.views[0].lake.cells);
+  const acceptedCells=[{q:9,r:13}];
   await load(h,source);
   assert.equal(h.render().switchFineStep(1),true);
   const app=h.render();
@@ -568,7 +568,7 @@ test('expanding into a dry neighbour keeps the accepted manual shore, including 
   assert.equal(h.render().switchFineStep(6),true);
   const saved=stable(h.render());
   const legacy=structuredClone(saved);
-  delete legacy.map.physicalGrid.smallLakes.lakes[0].shoreCells;
+  legacy.map.physicalGrid.smallLakes.lakes[0].shoreCells=[{q:10,r:12}];
   for(const input of [saved,legacy]){
     await load(h,input);
     assert.deepEqual(stable(h.render()),input);
@@ -576,7 +576,7 @@ test('expanding into a dry neighbour keeps the accepted manual shore, including 
     assert.equal(generated.success,true);
     const result=stable(h.render());
     assert.equal(result.map.regions.length,2);
-    assert.deepEqual(result.map.physicalGrid.smallLakes.lakes.find(lake=>lake.id===1),saved.map.physicalGrid.smallLakes.lakes[0]);
+    assert.deepEqual(result.map.physicalGrid.smallLakes.lakes.find(lake=>lake.id===1),input.map.physicalGrid.smallLakes.lakes[0]);
     assertUndoRedo(h,input,result);
     h.setWindow({alert:m=>alerts.push(m),confirm:()=>true,matchMedia:()=>({matches:false})});
     h.render().deleteLastRegion();
