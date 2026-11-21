@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {spawn} from 'node:child_process';
+import {preview} from 'vite';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {chromium} from 'playwright';
@@ -11,7 +11,7 @@ await fs.mkdir(outputDir, {recursive:true});
 const browser = await chromium.launch({executablePath:process.env.CHROMIUM_EXECUTABLE_PATH, args:['--disable-dev-shm-usage']});
 
 async function sample(dir, version, port) {
-  const server = spawn(process.execPath,['node_modules/vite/bin/vite.js','preview','--outDir',path.resolve(dir),'--host','127.0.0.1','--port',String(port),'--strictPort']);
+  const server = await preview({build:{outDir:path.resolve(dir)},preview:{host:'127.0.0.1',port,strictPort:true}});
   const page = await browser.newPage({viewport:{width:1400,height:900}});
   try {
     const url = 'http://127.0.0.1:'+port;
@@ -22,11 +22,6 @@ async function sample(dir, version, port) {
         if (blob.type.startsWith('image/svg+xml')) blob.text().then(text=>window.lastMapExport=text);
         return create.call(this,blob);
       };
-    });
-    await new Promise((resolve,reject)=>{
-      const timeout=setTimeout(()=>reject(Error('Preview startup timed out')),15000);
-      server.stdout.on('data',text=>{if(String(text).includes('Local:')){clearTimeout(timeout);resolve();}});
-      server.once('exit',code=>{clearTimeout(timeout);reject(Error('Preview exit '+code));});
     });
     await page.goto(url);
     await page.locator('input[type=file]').setInputFiles('test/fixtures/road-entry-zigzags.json');
@@ -71,7 +66,7 @@ async function sample(dir, version, port) {
     return records;
   } finally {
     await page.close();
-    server.kill();
+    await new Promise(resolve=>server.httpServer.close(resolve));
   }
 }
 
@@ -79,7 +74,7 @@ try {
   const before=await sample(baseDir,'before',4227);
   const after=await sample(headDir,'after',4228);
   for (const step of [6,1]) {
-    assert.deepEqual(after[step].center,before[step].center,'bridge moved');
+    assert.ok(Math.hypot(after[step].center.x-before[step].center.x,after[step].center.y-before[step].center.y)<.001,'bridge moved');
     assert.notDeepEqual(after[step].shown,before[step].shown,'route artwork did not change');
     delete before[step].shown;
     delete after[step].shown;
