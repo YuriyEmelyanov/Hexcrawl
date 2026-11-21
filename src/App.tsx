@@ -2167,6 +2167,7 @@ type DocumentSnapshot = {
 };
 type MapTransaction = { before: DocumentSnapshot; after: DocumentSnapshot };
 type GenerationBackup = {
+  checkpointWarnings?:string[];
   fineRegeneration?:Detail1State;
   fineRetainedPoiOwners?:string[];
   map: MapSnapshot; history: MapSnapshot[]; selectedHex: AxialHex | null;
@@ -14286,7 +14287,7 @@ export function App() {
     if (missing.length) throw new NotesLossConflict(missing);
     map.tags=reconcileTags(map.tags??emptyTags(),map,checkpoint,generationRef.current.masterSeed,generationMode==='mythic'||!!kingdomJob);
     map.gmNotesByHexKey = {...notes};
-    const lossMessages:string[]=[];
+    const lossMessages=[...(backup?.checkpointWarnings??[])];
     if(fineLost.length)lossMessages.push(language==='ru'?`Будут удалены локальные правки одномильных гексов (${fineLost.length}): ${fineLost.join('; ')}.`:`Local one-mile edits will be removed (${fineLost.length}): ${fineLost.join('; ')}.`);
     if(lakeLosses.length){
       const lakes=lakeLosses.map(lake=>`№${lake.id} (${lake.cells.map(hexKey).join('; ')})`).join(', ');
@@ -14871,9 +14872,10 @@ export function App() {
     if (mutationBlocked()) return;
     if (regions.length === 0 || history.length === 0) return;
     const warnings=checkpointWarnings(history[history.length-1]);
-    if(!warnings||!warnings.every(message=>window.confirm(message)))return;
+    if(!warnings)return;
     documentRevision.current++;
     const backup = captureGenerationBackup();
+    backup.checkpointWarnings=warnings;
     const lastKingdom = kingdoms.find(k=>k.regionIds.includes(regions[regions.length-1].id));
     const lastAnchor = lastKingdom?.anchor ?? regions[regions.length - 1].anchorHex;
     const snapshot = history[history.length - 1];

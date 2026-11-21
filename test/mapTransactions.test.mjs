@@ -158,13 +158,16 @@ test('manual edits do not replace generation checkpoints, regenerate rollback re
       const current=h.render().captureDocument().map,checkpoint=h.render().history.at(-1);
       h.render().restoreSnapshot({...current,rivers:[...checkpoint.rivers,...current.rivers.filter(r=>!checkpoint.rivers.some(old=>old.id===r.id))],riverFeatures:checkpoint.riverFeatures});
       const dialogs=[];h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return true;}});
-      h.render()[command]();assert.equal(dialogs.length,0,'no retained manual river change');continue;
+      h.render()[command]();
+      if(command==='regenerateLastRegion')h.render().finishPendingRegeneration();
+      assert.equal(dialogs.length,0,'no retained manual river change');continue;
     }
     h.render().setSelectedHex(region.centerHex);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();assert.ok(h.render().redoHistory.length);
     const fullBefore=structuredClone(h.render().captureDocument());
     const before=serial(h.render().captureDocument()),beforeSave=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
     const dialogs=[];h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return false;},matchMedia:()=>({matches:false})});
     h.render()[command]();
+    if(command==='regenerateLastRegion')h.render().finishPendingRegeneration();
     assert.equal(dialogs.length,1,command+' warns before restoring '+kind);
     assert.ok(dialogs[0].includes((kind==='deleted'?`${language==='ru'?'Река':'River'} ${id}`:h.render().toponyms[`river:${id}`][language])),'preview names the affected river');
     assert.deepEqual(structuredClone(h.render().captureDocument()),fullBefore,'reject keeps complete Map/Set document');
@@ -214,6 +217,7 @@ for(const command of ['deleteLastRegion','regenerateLastRegion'])for(const langu
  const before=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]),dialogs=[];
  assert.ok(stacks[0].length&&stacks[1].length);
  h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return false;}});h.render()[command]();
+ if(command==='regenerateLastRegion')h.render().finishPendingRegeneration();
  assert.equal(dialogs.length,1,'R3 warns before losing retained sector');
  const label=h.render().toponyms[`river:${river.id}`]?.[language]??`${language==='ru'?'Река':'River'} ${river.id}`;
  assert.ok(dialogs[0].includes(label),'warning identifies affected river');
@@ -431,6 +435,40 @@ test('a new trail crossing a retained small lake is rejected before save and his
   await load(h,before);assert.deepEqual(alerts,[]);assert.deepEqual(stable(h.render()),before);
   h.render().undoMap();assert.deepEqual(stable(h.render()),before);
   h.render().redoMap();assert.deepEqual(stable(h.render()),before);
+});
+test('regeneration confirms checkpoint and replacement losses together',async()=>{
+  const {h}=setup(42), app=()=>h.render();
+  await load(h,JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url))));
+  assert.ok(app().chooseKnaveProfile(true));
+  const geometry=h.geometry.buildManualRiverGeometryContext(app().captureDocument().map);
+  const path=['-24.249,-98','-24.249,-70','0,-56','0,-28','24.249,-14','24.249,14','0,28','0,56','-24.249,70','-24.249,98']
+    .map(key=>geometry.vertex(key));
+  assert.ok(app().editRiverDocument({type:'create',regionId:1,path,fullness:1}));
+  assert.ok(app().safelyAddRegionToMap({q:3,r:3}).success);
+  assert.ok(app().editRiverDocument({type:'remove',riverId:1,includeArms:true},{confirmed:true}));
+  app().setGenSizeCategory('tract');
+  const before=stable(app()), stacks=structuredClone([app().undoHistory,app().redoHistory]);
+  for(const accept of [false,true]){
+    const prompts=[];
+    h.setWindow({confirm:message=>{prompts.push(message);return accept;}});
+    app().regenerateLastRegion();
+    app().finishPendingRegeneration();
+    assert.equal(prompts.length,1);
+    assert.match(prompts[0],/Knave/);
+    assert.match(prompts[0],/Река 1/);
+    assert.match(prompts[0],/малые озёра/);
+    if(!accept){
+      assert.deepEqual(stable(app()),before);
+      assert.deepEqual(structuredClone([app().undoHistory,app().redoHistory]),stacks);
+    }else{
+      const after=stable(app());
+      const remaining=new Set(after.map.physicalGrid.smallLakes.lakes.map(lake=>lake.id));
+      const lost=before.map.physicalGrid.smallLakes.lakes.filter(lake=>!remaining.has(lake.id));
+      assert.deepEqual(Array.from(prompts[0].matchAll(/№(\d+)/g),m=>Number(m[1])),lost.map(lake=>lake.id));
+      assert.equal(app().undoHistory.length,stacks[0].length+1);
+      assertUndoRedo(h,before,after);
+    }
+  }
 });
 test('restoring a region checkpoint confirms only lakes conflicting with the restored paths',async()=>{
   const {h,alerts}=setup();
