@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-21T08:49:43.134656+00:00",
+  "updated_at": "2026-11-21T09:00:28.804Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -1026,7 +1026,7 @@
                 "pixelIdentical": false,
                 "raster": {
                   "maxDelta": 210,
-                  "changedFraction": 7.626561472715319e-05
+                  "changedFraction": 0.00007626561472715319
                 },
                 "scope": "diagnostic including unrelated controls"
               }
@@ -2006,6 +2006,40 @@
       "implementation_authorized": false,
       "release_authorized": false,
       "updated_at": "2026-11-21T08:49:43.134656+00:00"
+    },
+    {
+      "task_id": "HX-BL-067",
+      "title": "Сохранять точный набор точек роста после открытия карты",
+      "status": "Кандидат",
+      "source": {
+        "kind": "owner",
+        "decision_ref": "agent-work/score/rules/S01-C01.md"
+      },
+      "related_task_ids": [
+        "HX-BL-064"
+      ],
+      "score_criterion": "S01-C01",
+      "score_weight_share": 0.017391304347826087,
+      "score_forecast_l1": {
+        "criterion": "S01-C01",
+        "rule": "REG-07",
+        "share": 0.017391304347826087,
+        "remaining_L1_points": 0.2147074610842727
+      },
+      "requirements": [
+        "При повторном открытии сохранённой карты Classic восстановить тот же набор координат, доступных для расширения."
+      ],
+      "acceptance_outline": [
+        "На контрольной карте Classic seed 42 зафиксировать все 34 точки роста до экспорта. После открытия JSON сравнить оба множества координат: совпадают все 34, гекс озера −3/3 отсутствует среди точек роста.",
+        "Выбор −3/3 по-прежнему открывает карточку озера Vargsjø. Эта ранее принятая часть REG-07 проверяется на регрессию."
+      ],
+      "reference_docs": [
+        "agent-work/research/runs/2026-11-21-L1-lake-input-1130.json"
+      ],
+      "ready_for_development": false,
+      "implementation_authorized": false,
+      "release_authorized": false,
+      "updated_at": "2026-11-21T09:00:28.804Z"
     }
   ],
   "retired_pr_packages": {
