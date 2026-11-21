@@ -3006,14 +3006,16 @@
           "finding": "У живой точки сохраняются режим «секрет через взаимодействие» и поле улики. Ввод секрета без улики отклоняется без изменения карты; введённая улика переживает импорт.",
           "quality": [
             0,
-            1
+            0
           ],
           "quality_cases": [
             {
               "case": "base",
-              "state": "unknown",
+              "state": "fail",
               "low": 0,
-              "high": 1
+              "high": 0,
+              "evidence": "agent-work/research/runs/2026-11-21-L1-Knave-clue-0730.json",
+              "reason": "Required player representation unavailable in both export formats; shared serialization is device independent."
             }
           ],
           "disposition": "keep_L1",
@@ -3021,7 +3023,16 @@
           "source_acceptance": "Given C связана с S; C открыта, S закрыт When Сформировать представление игрока Expected C видна; S и его секретные поля не переданы игроку.",
           "probe": "KNAVE2-L1-implementation-probe.mjs",
           "origin": "registered",
-          "binding": "KNAVE2-010-L1"
+          "binding": "KNAVE2-010-L1",
+          "live_acceptance": {
+            "ref": "agent-work/research/runs/2026-11-21-L1-Knave-clue-0730.json",
+            "disposition": "keep_L1",
+            "basis": "Подготовка раскрываемого содержимого конкретной точки на карте",
+            "gm_authoring": "pass",
+            "player_clue_only": "fail",
+            "measured_device": "desktop",
+            "shared_path": "src/App.tsx:15288–15320,16984–16990; PNG serializes map graphics, JSON serializes full map; common to both device profiles"
+          }
         },
         {
           "id": "KNAVE2-020-L1",
@@ -7395,7 +7406,7 @@
       }
     ]
   },
-  "current_run": "2026-11-21-L1-Knave-traversal-0630",
+  "current_run": "2026-11-21-L1-Knave-clue-0730",
   "next_batch": {
     "ids": [
       "S09-C01",
@@ -7405,6 +7416,6 @@
       "SWC-obs-01"
     ],
     "scenario": "На seed 42–61 повторить реальный ввод создания и расширения региона в портретном браузере, от действия до готовности к редактированию. Записать все задержки, результат, сохранение и восстановление. Проверить эквивалентность условий отдельно для каждой игры.",
-    "fallback": "KNAVE2-010-L1. В профиле Knave сохранить секрет с уликой, проверить отказ при пустой улике, затем проверить, что именно передаётся игроку при раскрытии улики."
+    "fallback": "Проверить KNAVE2-020-L1: создать место с результатами таблиц, ввести толкование мастера, перебросить отдельное значение, сохранить и открыть карту. Сравнить исходные броски, текст и привязку к месту."
   }
 }
