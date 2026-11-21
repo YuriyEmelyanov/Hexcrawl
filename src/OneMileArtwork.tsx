@@ -8,7 +8,6 @@ import {Engraving} from './rendering/EngravedTerrain';
 import {engravingFor, type TerrainKind} from './rendering/engravingAssets';
 import {terrainTextures} from './rendering/terrainBlend';
 import type {SmallLakeView} from './smallLakeShore';
-import {LakeWater} from './rendering/LakeWater';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
 type Props={smallLakes?:readonly SmallLakeView[];smallLakeDraft?:SmallLakeView;smallLakeDraftCells?:readonly DetailCell[];rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
  poi:(p:DetailPoiFootprint)=>{label:string;image:string};geography?:(smallLakeRiverMask:string|undefined)=>ReactNode;interactive?:boolean;
@@ -37,6 +36,7 @@ export function OneMileArtwork(p:Props){
  }))),[p.cells,terrain]);
  const lakes=p.smallLakes??[];
  const shorelines=[...lakes,...(p.smallLakeDraft?[p.smallLakeDraft]:[])];
+ const lakeCores=new Set(shorelines.flatMap(({lake})=>lake.cells.map(fineCellKey)));
  const lakeClipId=(id:number)=>`${clipPrefix}-small-lake-${id}`;
  const riverMaskId=`${clipPrefix}-small-lake-rivers`;
  const riverMask=lakes.length?`url(#${riverMaskId})`:undefined;
@@ -76,7 +76,7 @@ export function OneMileArtwork(p:Props){
     {texture&&<><defs><clipPath id={clip}><polygon points={points}/></clipPath></defs>
       <image className="terrain-blend" href={texture} clipPath={`url(#${clip})`}
         x={c.x-factor/2} y={c.y-radius} width={factor} height={radius*2} preserveAspectRatio="none" pointerEvents="none"/></>}
-    {!occupied.has(key)&&<Engraving id={id} x={c.x} y={c.y} radius={radius} rotated={p.rotated}/>}
+    {!occupied.has(key)&&!lakeCores.has(key)&&<Engraving id={id} x={c.x} y={c.y} radius={radius} rotated={p.rotated}/>}
    </g>;
   })}</g>
   {/* The same clipped shore paints the lake and hides the underlying river. */}
@@ -93,7 +93,24 @@ export function OneMileArtwork(p:Props){
       <defs><clipPath id={clip}>{maskCells.map(cell=><polygon key={fineCellKey(cell)} points={polygon(cell)} data-small-lake-shore-cell={fineCellKey(cell)}/>)}</clipPath></defs>
       <g clipPath={`url(#${clip})`}>
         <g transform={lakeTranslation} data-small-lake-water opacity={draft ? .7 : 1}>
-          <LakeWater cells={shape.cells} radius={radius} shapes={[{...shape,key:clip+'-water'}]}/>
+          <g data-lake-shape={clip}>
+            <defs>
+              <clipPath id={clip+'-shape'}><path d={shape.path} clipRule="evenodd"/></clipPath>
+              <filter id={clip+'-soften'} filterUnits="userSpaceOnUse" {...shape.bounds}>
+                <feGaussianBlur stdDeviation={radius*.15}/>
+                <feComponentTransfer><feFuncA type="table" tableValues="0 0 0 0 0 0 .12 .38 .67 .92 1"/></feComponentTransfer>
+              </filter>
+              <mask id={clip+'-shore'} maskUnits="userSpaceOnUse" {...shape.bounds}>
+                <path d={shape.path} fill="white" fillRule="evenodd" filter={`url(#${clip}-soften)`}/>
+              </mask>
+            </defs>
+            <g clipPath={`url(#${clip}-shape)`}>
+              <rect {...shape.bounds} fill={engravingFor('lake')!.color} mask={`url(#${clip}-shore)`}/>
+              <g mask={`url(#${clip}-shore)`}>{shape.cells.map(cell=>
+                <Engraving key={fineCellKey(cell)} id="lake" x={cell.x} y={cell.y} radius={radius} rotated={p.rotated}/>
+              )}</g>
+            </g>
+          </g>
         </g>
       </g>
     </g>;

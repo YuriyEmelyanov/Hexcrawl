@@ -498,13 +498,29 @@ try{
  for(const key of ['terrainByHexKey','rivers','roads','crossings'])assert.deepEqual(shoreAccepted.map[key],shoreBefore.map[key]);
  await lakeCell('10,-9').scrollIntoViewIfNeeded();
  await shot('small-lake-spill-after.jpg');
+ const smallWaves=smallLake.locator('image[data-engraving="lake"]');
+ const largeWaves=page.locator('[data-fine-terrain="lake"] image[data-engraving="lake"]').first();
+ assert.equal(await smallWaves.getAttribute('href'),await largeWaves.getAttribute('href'));
+ assert.equal(await smallWaves.getAttribute('width'),await largeWaves.getAttribute('width'));
+ assert.equal(await smallLake.locator('rect[mask]').getAttribute('fill'),
+   await largeWaves.locator('..').locator('polygon').first().getAttribute('fill'));
+ await lakeCell('0,0').press('Enter');
+ await page.mouse.move(0,0);
  await lakeExample('example-near-large-lake.png','10,-9');
+ if(await exportMenu.getAttribute('open')===null)await exportMenu.locator('summary').click();
  await page.evaluate(()=>window.__oneSvg=null);
  const [spillDownload]=await Promise.all([page.waitForEvent('download'),button('PNG').click()]);
  await fs.copyFile(await spillDownload.path(),new URL('small-lake-spill.png',out));
  await page.waitForFunction(()=>typeof window.__oneSvg==='string');
  const spillSvg=await page.evaluate(()=>window.__oneSvg);
  assert.match(spillSvg,/data-small-lake-shore-cell="11,-10"/);
+ const exportedWaves=await page.evaluate(svg=>{
+   const doc=new DOMParser().parseFromString(svg,'image/svg+xml');
+   const reference=doc.querySelector('[data-small-lake="1"] use')?.getAttribute('href');
+   const sameImage=[...doc.querySelectorAll('[data-fine-terrain="lake"] use')].some(use=>use.getAttribute('href')===reference);
+   return sameImage&&reference?doc.getElementById(reference.slice(1))?.getAttribute('href')?.split(',')[0]:null;
+ },spillSvg);
+ assert.match(exportedWaves??'',/^data:image\/png/);
  assert.doesNotMatch(spillSvg,/small-lake-draft/);
  await loadWorld(Buffer.from(JSON.stringify(shoreAccepted)));
  await showOneMile();

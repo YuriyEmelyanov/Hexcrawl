@@ -18,9 +18,7 @@ Manual water editing uses the same persisted cells/lake IDs and natural renderer
 
 The one-mile small-lake editor checks the seeded shoreline inside its selected
 cell mask against existing path centerlines, crossing approaches and protected
-point anchors. The map and PNG render the same path and mask. Inside that mask the one-mile
-view uses the base lake renderer at one-sixth radius. A connected lake has one
-continuous depth gradient across all of its cells. An intersection
+point anchors. The map and PNG render the same path and mask. The one-mile view uses the same lake colour and wave engraving as the surrounding one-mile lake tiles. The water blends into the land along one continuous shoreline for the whole group. The wave symbols follow the map orientation in the editor and in the exported PNG. An intersection
 identifies the existing feature in the draft and prevents the save. An area POI
 can contain a lake when its route and water attachment points stay dry.
 
