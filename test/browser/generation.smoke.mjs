@@ -209,6 +209,11 @@ try {
   await page.getByRole('button', { name: 'Перегенерировать регион', exact: true }).click();
   await page.getByRole('alert').waitFor();
   assert.deepEqual(stable(await snapshot()), stable(beforeRegenFailure));
+  // A successful reroll must retain the seven-region rollback point as well.
+  await page.getByRole('button', { name: 'Перегенерировать регион', exact: true }).click();
+  const rerolled = await snapshot();
+  assert.equal(rerolled.map.regions.length, beforeRegenFailure.map.regions.length);
+  assert.notDeepEqual(rerolled.generation, beforeRegenFailure.generation);
   // A note on an older region must survive alongside the recovered lake and its counter.
   const noteKey = '0,1', noteText = 'Lake checkpoint';
   await page.locator(`polygon.hex[data-hex-key="${noteKey}"]`).dispatchEvent('click');

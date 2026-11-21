@@ -14297,9 +14297,13 @@ export function App() {
       if(!window.confirm(lossMessages.join('\n')))throw new FineRegenerationCancelled();
     }
     const savedCheckpoint: GenerationCheckpoint = structuredClone(withLegacySeas(checkpoint));
-    // Regeneration may carry forward authored edits from a different document.
-    // Only a fresh expansion can roll the entire generated layer back verbatim.
-    if (before.generationHistory.length === checkpoints.length && map.physicalGrid?.smallLakes) {
+    // The reroll starts from a temporary map with its detailed grid detached.
+    // Keep the grid from before the region was first added, even across repeated rerolls.
+    const replaced = before.generationHistory[checkpoints.length];
+    if (replaced) savedCheckpoint.physicalGrid = structuredClone(replaced.physicalGrid);
+    const lakesUnedited = !replaced || (replaced.generatedLakeLayer !== undefined &&
+      JSON.stringify(replaced.generatedLakeLayer) === JSON.stringify(before.map.physicalGrid?.smallLakes));
+    if (lakesUnedited && map.physicalGrid?.smallLakes) {
       savedCheckpoint.generatedLakeLayer = structuredClone(map.physicalGrid.smallLakes);
     }
     const generationHistory = [...checkpoints, savedCheckpoint];
