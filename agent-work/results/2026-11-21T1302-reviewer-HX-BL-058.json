@@ -1,0 +1,114 @@
+{
+  "task_id": "HX-BL-058",
+  "stage_id": "F1",
+  "pr": 511,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/511",
+  "head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+  "tree_sha": "53555ea73e7735c3f1ab1df9faa0086223272ba6",
+  "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+  "branch": "agent/hx-bl-058-base-scale-f1",
+  "review_ref": "agent-work/evidence/HX-BL-058-F1/review-d70366e/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-058-F1/review-d70366e/score-assessment1.2.json",
+  "accepted": true,
+  "release_approved": false,
+  "published": false,
+  "status": "accepted_awaiting_owner_publication",
+  "role": "reviewer",
+  "run_id": "2026-11-21T1302-reviewer-HX-BL-058",
+  "completed_at": "2026-11-21T10:07:18.320Z",
+  "role_selection_reason": "PR 511 at exact SHA with green CI and handoff. Prior claims reconciled before independent review.",
+  "spec_ref": "agent-work/specs/HX-BL-058-base-scale-F1.md",
+  "independent_agent": "/root/review_511_exact",
+  "verdict": "accepted",
+  "findings": [],
+  "criteria": {
+    "AC1": "RU and EN options and original numeric values 1/6 verified in JSX and CI.",
+    "AC2": "Six before/after RU panels visually inspected at 320,390,1280, EN+RU automated layout and keyboard replay; switch and coordinates have separate handlers.",
+    "AC3": "Independent re-execution on both git trees: identical results at 24 stages across two maps, versions 2,10,15,16. PNG and both map screenshot pairs decoded and compared independently.",
+    "AC4": "Unchanged disabled conditions; 3 focused real handler checks passed. Approved first sentence and localized details preserve existing failure diagnostics.",
+    "AC5": "Exact Knave 2e visible label in shared RU/EN markup. On/off lifecycle covered by existing Chromium suite."
+  },
+  "scope_limitations": "Chromium evidence from CI. No independent local browser session; local socket EPERM. JSON evidence limited to two example maps. Joint release of 510 and 511 not reviewed.",
+  "checks": {
+    "ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44889572317",
+    "artifact_id": 14701352959,
+    "verified_archive_sha256": "a989706d9e8e0cd73b1118662db8afd08f13b51771aa9561d3d34e199fe23afb",
+    "checkout_tree": "53555ea73e7735c3f1ab1df9faa0086223272ba6",
+    "base_and_head_round_trip_sha256": "d6dfe4a643272d367e73f4bed72a14edf8867eb26e9e3e72c3f9d5ed3baec53e",
+    "png": {
+      "exact_bytes_and_pixels": true,
+      "size": [
+        1455,
+        1288
+      ],
+      "sha256": "c9d42eabacb947ebf18020051438a1f03c1db1191d521a039a0a05c7c34f24f5"
+    },
+    "map_screenshots_identical_at_widths": [
+      1500,
+      390
+    ]
+  },
+  "test_change_summary": {
+    "base_sha": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
+    "head_sha": "d70366ed1fef4fc59d7b4bda7ea66d89ccb284f6",
+    "added": 0,
+    "removed": 0,
+    "modified": 5,
+    "suite": [
+      {
+        "suite": "Node geometryPlan and mapTransactions",
+        "modified": 3,
+        "scenario": "Two import locales and failed switch preserving history; approved headline plus diagnostics."
+      },
+      {
+        "suite": "Chromium engraved-map and one-mile",
+        "modified": 2,
+        "scenario": "Visible order, focus, locale and native keyboard switch on same map."
+      }
+    ],
+    "reuse_or_new_reason": "Existing scenarios cover separate input paths. Same-session setup was corrected for paired screenshot comparison without relaxing thresholds. Branch-specific image capture is diagnostic.",
+    "source": "git diff d6daa2c..d70366e -- test",
+    "ci": {
+      "node": {
+        "executed": 430,
+        "passed": 430,
+        "skipped": 0
+      },
+      "browser": {
+        "scripts": 10,
+        "passed": 10
+      },
+      "rng": {
+        "scripts": 1,
+        "passed": 1
+      }
+    },
+    "reviewer_targeted_node": {
+      "executed": 3,
+      "passed": 3,
+      "skipped": 0
+    }
+  },
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T10:02:37.899Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T10:07:18.320Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "next_role": "programmer",
+  "next_step": "Программист исправляет HX-BL-056 в PR №510 по F1.2 и предъявляет четыре примера озёр на реальной карте. Отдельно ожидается разрешение владельца на публикацию PR №511 на d70366e при базе d6daa2c.",
+  "decision_needed": "Разрешение публикации PR №511 на проверенном SHA и базе",
+  "superseded_PR510_approval": {
+    "reason": "Owner returned small lakes to development under F1.2",
+    "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
+    "decision_commit": "d09d0b4c00e0a355d5b2804d8bff2e445c49c4f0"
+  },
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1302-reviewer-HX-BL-058.json"
+}
