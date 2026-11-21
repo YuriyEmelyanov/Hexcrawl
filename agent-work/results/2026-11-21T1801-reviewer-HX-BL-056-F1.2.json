@@ -1,0 +1,121 @@
+{
+  "run_id": "2026-11-21T1801-reviewer-HX-BL-056-F1.2",
+  "task_id": "HX-BL-056",
+  "role": "reviewer",
+  "branch": "agent/hx-bl-056-small-lakes-f1",
+  "base_sha": "7ecf76c5c71724e1d810ba34480e4962c98b444e",
+  "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+  "generation": 421,
+  "programmer_slot": false,
+  "acquired_at": "2026-11-21T15:02:35.662Z",
+  "heartbeat_at": "2026-11-21T15:02:35.662Z",
+  "claim_ref": "agent-work/claims/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
+  "role_selection_reason": "PR511 закрыт; чистовая спецификация F1.2 и review_ready PR510 на точном SHA. Сверены 531 claim и 586 результатов.",
+  "status": "changes_requested",
+  "pr": 510,
+  "tree_sha": "9869c190d61bf04e4f83e4711b64c1efc8449b1d",
+  "spec_ref": "agent-work/specs/HX-BL-056-one-mile-small-lakes-F1.2.md",
+  "findings": [
+    {
+      "id": "HX056-RV11",
+      "severity": "blocking",
+      "scope": "F1.2 / R04, AC03–AC04, контрольная точка генерации",
+      "seed": 1257875020,
+      "actual": "После восьмого региона и заметки в старом гексе 0,1 удаление последнего региона оставляет прежнее озеро №24 удалённым и nextId=36. Повторное расширение выдаёт №36,37.",
+      "expected": "При неизменном слое озёр удаление того же региона восстанавливает озеро №24, nextId=34 и сохраняет заметку. Повторная генерация выдаёт №34,35. Последующие намеренные изменения озёр обрабатывать отдельно.",
+      "cause": "src/App.tsx:14814–14824 определяет неизменённый слой через последнюю общую запись Undo. После записи заметки этот путь закрыт. Сравнение в src/smallLakes.ts:132–145 не может признать равенство при утрате прежнего озера.",
+      "evidence": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/runtime.json"
+    }
+  ],
+  "independent_agent": "/root/fresh_lake_acceptance",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/score-assessment1.3-rc8.json",
+  "fixture_ref": "agent-work/evidence/HX-BL-056-F1/review-02aaa188/before-region-eight.json",
+  "checks": {
+    "ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44903422383",
+    "node": {
+      "passed": 443,
+      "executed": 443,
+      "skipped": 0
+    },
+    "world_random": "success",
+    "browser": "success",
+    "one_mile_cases": {
+      "executed": 17,
+      "passed": 17
+    },
+    "engraved_map_comparison": "skipped",
+    "targeted_node_runner": {
+      "passed": 7,
+      "failed": 0,
+      "includes_one_file_without_matching_case": true
+    },
+    "independent_replay": "Two real App handler replays produced byte-identical reports; sha256 57f39e8ecc0e51d5eeab9eb75123b8694d79815bcf6c72bce0788e944ff73cbb",
+    "browser_limit": "Новый отрицательный сценарий проверен через обработчики App. Chromium локально остановлен средой при запуске. В браузерном CI проверено немедленное удаление региона."
+  },
+  "coverage": {
+    "visual": "4/4 original CI PNG byte-matched, inspected; immutable image URLs HTTP 200 image/png",
+    "support_loss": "Изменение воды и перегенерация seed 42 убирают только неподдержанные озёра, Undo/Redo возвращают точные снимки.",
+    "river_conflict": "Один конфликт не убрал 23 пригодных автоматических озера, ручное озеро сохранилось. Проточное озеро видно в PNG со входом и выходом."
+  },
+  "images": {
+    "commit": "75b3992a7e8c09b52293ecdb9cb57709becfa5ba",
+    "paths": [
+      "agent-work/evidence/HX-BL-056-F1/F1.2-02aaa18/example-inside-poi.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-02aaa18/example-near-large-lake.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-02aaa18/example-river.png",
+      "agent-work/evidence/HX-BL-056-F1/F1.2-02aaa18/example-multi-cell.png"
+    ],
+    "manifest": {
+      "source_head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+      "checkout_tree": "9869c190d61bf04e4f83e4711b64c1efc8449b1d",
+      "checkout_sha": "f4f84fcbd9fa390da6a06e7ac0dc995090ab913a",
+      "status": "passed"
+    }
+  },
+  "test_change_summary": {
+    "base_sha": "0e7e2be4222d831f5b47ce34343215db11319d22",
+    "head_sha": "02aaa188031e0ad8c59dfc246420d1a093869a88",
+    "comparison_base_tree": "42435b99b7c523b4ef4a5cb7c972a1504842686c",
+    "added": 1,
+    "removed": 0,
+    "modified": 13,
+    "suite": [
+      {
+        "name": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 7,
+        "scenario": "Пять случаев mapTransactions, один saveSafety и один mythicKingdom. Удаление только неподдержанных озёр, сохранение других предупреждений, старого берега, данных, Undo/Redo."
+      },
+      {
+        "name": "Chromium",
+        "added": 1,
+        "removed": 0,
+        "modified": 6,
+        "scenario": "Добавлен сценарий внутри крупного POI. Расширены пять существующих проверок одномильной карты (река, соседство базового озера, правка воды, перегенерация, автоматическая группа) и сценарий точного восстановления после генерации."
+      }
+    ],
+    "reuse_or_new_reason": "Переиспользованы существующие реальные карты, транзакции, CI и браузерные сценарии. Отдельное размещение внутри 13-гексового POI проверяет ранее не предъявленное требование. В существующий сценарий восстановления подставлен seed обнаруженной ошибки.",
+    "count_source": "git diff 42435b99b7c523b4ef4a5cb7c972a1504842686c 02aaa188031e0ad8c59dfc246420d1a093869a88 -- test: дерево прежнего PR вместе с опубликованным PR511; число сценариев, без повторного счёта общих вспомогательных функций, кадров и запусков.",
+    "reviewer_evaluation": "Один отдельный сценарий проверяет озеро в крупном POI. Изменения существующих проверок соответствуют F1.2. В проверке удаления пропущено промежуточное действие с заметкой."
+  },
+  "release_authorized": false,
+  "published": false,
+  "next_role": "programmer",
+  "handoff_ref": "agent-work/handoffs/2026-11-21T1801-reviewer-HX-BL-056-F1.2.json",
+  "forecast": "1 запуск на исправление и 1 на повторную приёмку при успешном CI; выпуск по отдельному разрешению.",
+  "automation_health": {
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-21T15:01:51.780Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-21T15:06:18.413Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "completed_at": "2026-11-21T15:06:18.413Z"
+}
