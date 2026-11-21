@@ -373,20 +373,23 @@ try{
    const cells=[...el.querySelectorAll('[data-small-lake-shore-cell]')];
    const riverMask=world.querySelector('[data-small-lake-river-mask]');
    if(!riverMask)return null;
+   const channels=[...riverMask.querySelectorAll(`[data-lake-channel="${el.dataset.smallLake}"]`)];
+   const wet=point=>cells.some(cell=>cell.isPointInFill(point))||channels.some(line=>line.isPointInStroke(point));
+   const contacts=[];
    for(const river of world.querySelectorAll(`[data-refined-river="${riverId}"]`)){
-     const isMasked=river.closest(`[mask="url(#${riverMask.id})"]`);
-     if(!isMasked)continue;
+     if(!river.closest(`[mask="url(#${riverMask.id})"]`))continue;
      const length=river.getTotalLength();
-     const samples=Array.from({length:Math.ceil(length*10)+1},(_,i)=>{
-       const point=river.getPointAtLength(Math.min(i/10,length));
-       return {x:point.x,y:point.y,inside:cells.some(cell=>cell.isPointInFill(point))};
-     });
-     const first=samples.findIndex(p=>p.inside),last=samples.findLastIndex(p=>p.inside);
-     if(first>0&&last<samples.length-1){
-       return {shore:riverMask.querySelector(`[data-lake-mask-cell="${cells[0].getAttribute('data-small-lake-shore-cell')}"]`)?.getAttribute('points'),
-         riverId,edge:river.getAttribute('data-source-edge'),approach:samples[Math.max(0,first-10)],inside:samples[Math.round((first+last)/2)],exit:samples[Math.min(samples.length-1,last+10)]};
+     let previous=wet(river.getPointAtLength(0));
+     for(let i=1;i<=Math.ceil(length*10);i++){
+       const point=river.getPointAtLength(Math.min(i/10,length)),current=wet(point);
+       if(current!==previous)contacts.push({x:point.x,y:point.y,edge:river.dataset.sourceEdge,entering:current});
+       previous=current;
      }
    }
+   // One source-edge polyline can end in the lake and the next start there.
+   const entry=contacts.find(c=>c.entering);
+   const exit=entry&&contacts.find(c=>!c.entering&&Math.hypot(c.x-entry.x,c.y-entry.y)>1);
+   if(entry&&exit)return {entry,exit,shore:riverMask.querySelector(`[data-lake-mask-cell="${cells[0].dataset.smallLakeShoreCell}"]`)?.getAttribute('points')};
    return null;
  },riverId);
  await lakeCell('-4,-28').scrollIntoViewIfNeeded();
@@ -424,7 +427,7 @@ try{
  assert.deepEqual(savedLakeWorld.map.physicalGrid.smallLakes.lakes[0].cells,[{q:-4,r:-28}]);
  assert.deepEqual(savedLakeWorld.generation,classicSource.generation,'manual water edit does not change RNG');
  const manualPass=await throughLakeSamples(smallLake,1);
- assert.ok(manualPass?.inside.inside&&manualPass.shore===lakePath,'river 1 has distinct entry and exit at the same accepted contour');
+ assert.ok(manualPass&&manualPass.shore===lakePath,'river 1 has distinct entry and exit at the same accepted contour');
  assert.deepEqual((await classicSignature()).rivers,beforeLakeRivers,'lake does not reroute or renumber the refined rivers');
  assert.deepEqual(savedLakeWorld.map.rivers,classicSource.map.rivers);
  await lakeCell('-4,-28').scrollIntoViewIfNeeded();
@@ -444,7 +447,7 @@ try{
  assert.match(renderedLakeSvg,/mask="url\(#[^"]+-small-lake-rivers\)"/);
  await page.getByRole('button',{name:/^Rotate map/}).click();
  assert.match(await page.locator('[data-fine-world]').getAttribute('transform'),/rotate/);
- assert.equal((await throughLakeSamples(smallLake,1))?.edge,manualPass.edge);
+ assert.deepEqual(await throughLakeSamples(smallLake,1),manualPass);
  await lakeCell('-4,-28').scrollIntoViewIfNeeded();
  await shot('small-lake-river-rotated.jpg');
  await page.evaluate(()=>window.__oneSvg=null);
@@ -465,7 +468,7 @@ try{
  await smallLake.waitFor();
  assert.equal(await smallLake.locator('[data-small-lake-shore-cell]').first().getAttribute('points'),lakePath);
  assert.deepEqual(await smallLake.locator('[data-small-lake-shore-cell]').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('data-small-lake-shore-cell'))),visibleLakeCells);
- assert.equal((await throughLakeSamples(smallLake,1))?.edge,manualPass.edge);
+ assert.deepEqual(await throughLakeSamples(smallLake,1),manualPass);
  await lakeCell('-4,-28').press('Enter');
  await button('Remove small lake').click();
  await smallLake.waitFor({state:'detached'});
@@ -671,7 +674,7 @@ try{
  const riverLake=autoLayer.lakes.find(lake=>lake.cells.some(cell=>cell.q===-28&&cell.r===-14));
  assert.ok(riverLake);
  const automaticPass=await throughLakeSamples(page.locator(`[data-small-lake="${riverLake.id}"]`),5);
- assert.ok(automaticPass?.inside.inside,'the ordinary generator accepted a lake with a through-flow');
+ assert.ok(automaticPass,'the ordinary generator accepted a lake with a through-flow');
  await lakeCell('-31,-14').scrollIntoViewIfNeeded();
  if(await pngMenu.getAttribute('open')===null)await pngMenu.locator('summary').click();
  await shot('automatic-small-lakes-after.jpg');
