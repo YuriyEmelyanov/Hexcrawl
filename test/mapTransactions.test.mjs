@@ -519,6 +519,14 @@ test('expanding into a dry neighbour keeps the accepted manual shore, including 
     assert.equal(result.map.regions.length,2);
     assert.deepEqual(result.map.physicalGrid.smallLakes.lakes.find(lake=>lake.id===1),saved.map.physicalGrid.smallLakes.lakes[0]);
     assertUndoRedo(h,input,result);
+    h.setWindow({alert:m=>alerts.push(m),confirm:()=>true,matchMedia:()=>({matches:false})});
+    h.render().deleteLastRegion();
+    const restored=stable(h.render());
+    assert.equal(restored.map.regions.length,input.map.regions.length);
+    assert.equal(restored.map.physicalGrid.smallLakes.nextId,input.map.physicalGrid.smallLakes.nextId);
+    assert.ok(result.map.physicalGrid.smallLakes.lakes.length>1);
+    assert.ok(h.render().safelyAddRegionToMap({q:3,r:3}).success);
+    assert.deepEqual(stable(h.render()).map.physicalGrid.smallLakes,result.map.physicalGrid.smallLakes);
     await load(h,result);
     assert.equal(h.render().switchFineStep(1),true);
     assert.ok(h.render().fineCells.some(row=>row.cell.q===8&&row.cell.r===14&&hasFullDrySupport(row)));

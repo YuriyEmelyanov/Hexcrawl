@@ -14801,7 +14801,15 @@ export function App() {
       const smallLakes=state?.smallLakes?prepareSmallLakeSupport(state.smallLakes,accepted):undefined;
       lakeLosses.push(...smallLakes?.losses??[]);
       const priorLayer=checkpoint.physicalGrid?.smallLakes;
-      exactLakeRollback=!!(state?.smallLakes&&smallLakes&&exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes));
+      if(state?.smallLakes&&smallLakes){
+        exactLakeRollback=exactAutomaticLakeRollback(state.smallLakes,priorLayer,smallLakes);
+        // Generation records the visible shore of legacy lakes. Compare that
+        // shore on its original map before treating the difference as an edit.
+        if(!exactLakeRollback&&smallLakes.losses.length&&priorLayer?.lakes.some(lake=>lake.shoreCells===undefined)){
+          const lakes=retainAcceptedLakeShores(priorLayer.lakes,checkpoint);
+          exactLakeRollback=exactAutomaticLakeRollback(state.smallLakes,{...priorLayer,lakes},smallLakes);
+        }
+      }
       checkpoint=retainFineCheckpoint(checkpoint,losses.length>0,smallLakes?{layer:exactLakeRollback?priorLayer:smallLakes.layer}:undefined);
     }catch(error){setEditError(error instanceof Error?error.message:'Local edits cannot be retained');return;}
     if(!checkPoiNameCheckpoint(checkpoint)||!confirmRiverCheckpointLoss(checkpoint))return;
