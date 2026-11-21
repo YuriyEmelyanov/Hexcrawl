@@ -12,6 +12,7 @@ const finite=(p:WorldPoint)=>Number.isFinite(p.x)&&Number.isFinite(p.y);
 const lexical=(a:string,b:string)=>a<b?-1:a>b?1:0;
 const refKey=(r:Ref)=>JSON.stringify([r.riverId,r.sourceEdgeKey,r.stepIndex]);
 const fail=(code:'invalid_water'|'invalid_query'|'capacity',refs:string[]=[])=>Object.freeze({status:'error' as const,code,refs:freeze(refs),completeGeometryPlan:false as const});
+
 export function prepareRefinementWater(input:Readonly<{paths:readonly Path[];widthByFullness:ReadonlyMap<number,number>;consumeWork?:(units:number)=>void}>){
  if(input.paths.length>4096||input.paths.reduce((n,p)=>n+Math.max(0,p.points.length-1),0)>24576)return fail('capacity');
  const seen=new Set<string>(),capsules:Capsule[]=[];

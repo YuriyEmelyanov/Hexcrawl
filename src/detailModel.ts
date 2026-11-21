@@ -1,3 +1,4 @@
+import {parseSmallLakes,type SmallLakeLayer} from './smallLakes.ts';
 import {parseFineCellEdits,type FineCellEdits} from './oneMile.ts';
 import {parseDetailPoiIdentities,assertDetailPoiOwners,type DetailPoiIdentities} from './detailIdentity.ts';
 import {createDetailGrid,detailPolygonArea,detailCellCenter,detailCellPolygon,worldToDetailCell,validateDetailFootprint,type DetailCell,type DetailStep,type WorldPoint} from './detailGrid.ts';
@@ -17,6 +18,7 @@ export type DetailPoiFootprint=Readonly<{poiId:string;legacyRef:string|null;worl
 export type Detail1State=Readonly<{
   schema:'hexcrawl.detail1';version:1|2|3|4;active:true;
   fineCellEdits?:FineCellEdits;
+  smallLakes?:SmallLakeLayer;
   geometryRefinement?:GeometryRefinement;
   // A scoped refinement keeps its original authored inputs separately from
   // the complete global source, including newly generated unrefined owners.
@@ -86,12 +88,14 @@ function attachment(value:unknown):DetailAttachmentRef {
  * outer15/physical3 or outer16/physical4. Spatial refs and biome IDs require
  * the candidate map. Persisted refinement is validated without rerouting. */
 export function parseDetail1StateV11(value:unknown):Detail1State {
-  const extra=['poiIdentities','selectedCell','selectedWorldPoint','fineCellEdits','geometryRefinement','globalAuthoredState'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
+  const extra=['poiIdentities','selectedCell','selectedWorldPoint','fineCellEdits','smallLakes','geometryRefinement','globalAuthoredState'].filter(k=>value&&typeof value==='object'&&Object.prototype.hasOwnProperty.call(value,k));
   const root=object(value,'DETAIL1 state',['schema','version','active','grid','source','viewStep','poiFootprints',...extra]);
   const poiIdentities=extra.includes('poiIdentities')?parseDetailPoiIdentities(root.poiIdentities):undefined;
   if(root.schema!=='hexcrawl.detail1'||![1,2,3,4].includes(root.version as number)||root.active!==true||![1,6,12,24].includes(root.viewStep as number)||!Array.isArray(root.poiFootprints)) throw Error('Invalid DETAIL1 state');
   const isPhysical=root.version===3||root.version===4;
   if(isPhysical&&(!extra.includes('fineCellEdits')||![1,6].includes(root.viewStep as number)))throw Error('Invalid ONE-MILE1 state');
+  if(!isPhysical&&extra.includes('smallLakes'))throw Error('Small lakes require physical version3 or4');
+  const smallLakes=extra.includes('smallLakes')?parseSmallLakes(root.smallLakes):undefined;
   if(!isPhysical&&extra.includes('fineCellEdits'))throw Error('Fine edits require physical version3 or4');
   if((root.version===4)!==extra.includes('geometryRefinement'))throw Error('Geometry refinement requires physical version4');
   if(extra.includes('globalAuthoredState')&&root.version!==4)throw Error('Global authored source requires physical version4');
@@ -154,7 +158,7 @@ export function parseDetail1StateV11(value:unknown):Detail1State {
     if(!source||typeof source!=='object'||source.version!==3||Object.prototype.hasOwnProperty.call(source,'geometryRefinement')||Object.prototype.hasOwnProperty.call(source,'globalAuthoredState'))throw Error('Global authored source requires a nonrecursive physical3 snapshot');
     globalAuthoredState=parseDetail1StateV11(source);
   }
-  const state:Detail1State=Object.freeze({...(globalAuthoredState?{globalAuthoredState}:{}),...(geometryRefinement?{geometryRefinement}:{}),...(fineCellEdits?{fineCellEdits}:{}),...(selectedCell?{selectedCell}:{}),...(selectedWorldPoint?{selectedWorldPoint}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:root.version as 1|2|3|4,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
+  const state:Detail1State=Object.freeze({...(smallLakes?{smallLakes}:{}),...(globalAuthoredState?{globalAuthoredState}:{}),...(geometryRefinement?{geometryRefinement}:{}),...(fineCellEdits?{fineCellEdits}:{}),...(selectedCell?{selectedCell}:{}),...(selectedWorldPoint?{selectedWorldPoint}:{}),...(poiIdentities?{poiIdentities}:{}),schema:'hexcrawl.detail1',version:root.version as 1|2|3|4,active:true,grid:Object.freeze({origin,orientation:'pointy',convention:'across_flats'}),source:Object.freeze({stepMiles:6,physicalConvention:rawSource.physicalConvention as 'known_across_flats'|'unknown',displayAssumption:'project_across_flats_6mi'}),viewStep:root.viewStep as DetailStep,poiFootprints});
   if(geometryRefinement){
     const authored=globalAuthoredState??geometryRefinement.sourceState;
     if(globalAuthoredState)assertScopedAuthoredState(globalAuthoredState,geometryRefinement.sourceState);

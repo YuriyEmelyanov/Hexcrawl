@@ -1,3 +1,4 @@
+import {isSmallLakeLossConfirmation} from './small-lake-confirmations.mjs';
 import {createGenerationState} from '../../src/worldRandom.ts';
 import { spawn } from 'node:child_process';
 import { chromium } from 'playwright';
@@ -49,7 +50,12 @@ try {
   page.on('console', msg => { if (msg.type() === 'error') diagnostic.push(msg.text()); });
   page.on('pageerror', error => errors.push(error.message));
   let acceptCheckpointLoss=true,riverCheckpointPrompt='';
-  page.on('dialog',async d=>{assert.match(d.message(),/Будет восстановлено исходное состояние рек|Original river state will be restored|Будет восстановлена вода и берег|The checkpoint water and shore/);riverCheckpointPrompt=d.message();if(acceptCheckpointLoss)await d.accept();else await d.dismiss();});
+  page.on('dialog',async d=>{
+    const riverWarning=/Будет восстановлено исходное состояние рек|Original river state will be restored|Будет восстановлена вода и берег|The checkpoint water and shore/;
+    if(!riverWarning.test(d.message())&&isSmallLakeLossConfirmation(d)){await d.accept();return;}
+    assert.match(d.message(),riverWarning);
+    riverCheckpointPrompt=d.message();if(acceptCheckpointLoss)await d.accept();else await d.dismiss();
+  });
   await page.addInitScript(() => {
     window.__smokeEvents = [];
     for (const type of ['pointerdown', 'pointerup', 'click']) document.addEventListener(type, event => {
@@ -115,6 +121,13 @@ try {
   const completed = [];
   for (const mode of ['coast', 'auto', 'mainland']) {
     if (current) await page.getByRole('button', { name: 'Сбросить', exact: true }).click();
+    if(mode==='mainland'){
+      // This expansion removes an automatic lake on the earlier map. Deleting
+      // the region must restore the full original lake layer and ID counter.
+      const seedField=page.getByRole('textbox',{name:'Seed мира',exact:true});
+      await seedField.fill('1257875020');
+      await seedField.press('Tab');
+    }
     await selectSize();
     for (let i = 0; i < 6; i++) {
       // Coast may close an island completely. There is no candidate to click then.
@@ -188,12 +201,30 @@ try {
   await addRegion();
   assert.equal(await page.getByRole('alert').count(), 0);
   const beforeRegenFailure = await snapshot();
+  const earlierLakes=beforeFailure.map.physicalGrid.smallLakes.lakes;
+  const expandedLakes=beforeRegenFailure.map.physicalGrid.smallLakes.lakes;
+  assert.ok(earlierLakes.some(lake=>!expandedLakes.some(current=>current.id===lake.id)),
+    'the generated region invalidates a previously accepted lake');
   await injectFailure();
   await page.getByRole('button', { name: 'Перегенерировать регион', exact: true }).click();
   await page.getByRole('alert').waitFor();
   assert.deepEqual(stable(await snapshot()), stable(beforeRegenFailure));
+  // A successful reroll must retain the seven-region rollback point as well.
+  await page.getByRole('button', { name: 'Перегенерировать регион', exact: true }).click();
+  const rerolled = await snapshot();
+  assert.equal(rerolled.map.regions.length, beforeRegenFailure.map.regions.length);
+  assert.notDeepEqual(rerolled.generation, beforeRegenFailure.generation);
+  // A note on an older region must survive alongside the recovered lake and its counter.
+  const noteKey = '0,1', noteText = 'Lake checkpoint';
+  await page.locator(`polygon.hex[data-hex-key="${noteKey}"]`).dispatchEvent('click');
+  const edit = page.getByRole('button', {name:'Редактировать', exact:true});
+  if (await edit.count()) await edit.click();
+  await page.locator('.gm-notes .direct-value').click();
+  await page.locator('#gm-notes-text').fill(noteText);
+  await page.locator('#gm-notes-text').press('Escape');
   await page.getByRole('button', { name: 'Удалить последний регион', exact: true }).click();
-  assert.deepEqual((await snapshot()).map, beforeFailure.map);
+  assert.deepEqual((await snapshot()).map, {...beforeFailure.map,
+    gmNotesByHexKey:{...beforeFailure.map.gmNotesByHexKey, [noteKey]:noteText}});
   assert.equal(errors.length, 0, errors.join('\n'));
   assert.deepEqual(verboseLogs, [], 'ordinary mode must not emit debug console.log');
   // Regression: a sea-blocked pocket must generate atomically in the real UI.

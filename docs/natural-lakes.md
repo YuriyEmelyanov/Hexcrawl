@@ -15,3 +15,66 @@ Validation: Node.js 24 `npm run check` covers type checking, 154 regression test
 
 
 Manual water editing uses the same persisted cells/lake IDs and natural renderer; see [water-editing.md](water-editing.md). E6 prepares water edits before committing, invalidates contour/mouth inputs through the actual geometry, and preserves local land biomes beneath water. It does not change the seeded shoreline style or the existing Color/Tiles/Emoji distinction.
+
+The one-mile small-lake editor checks the seeded shoreline inside its selected
+cell mask against existing path centerlines, crossing approaches and protected
+point anchors. The map and PNG render the same path and mask. The one-mile view uses the same lake colour and wave engraving as the surrounding one-mile lake tiles. The water blends into the land along one continuous shoreline for the whole group. The wave symbols follow the map orientation in the editor and in the exported PNG. An intersection
+identifies the existing feature in the draft and prevents the save. An area POI
+can contain a lake when its route and water attachment points stay dry.
+
+An accepted one-mile river can feed and leave a small lake. The accepted shore
+and its cell mask also mask the river artwork, so the river meets the shore at
+its actual entry and exit and the lake fill shows between them. The surface
+area, upstream and downstream river path, direction and ID are preserved.
+A bank contact needs no new source or outlet. The six-mile map keeps its
+existing river display.
+
+A small lake keeps its selected cells in the document. Its natural shore may
+extend into an adjacent cell with full dry support when the visible spill avoids
+protected features and existing small-lake masks. The same derived mask is
+used in the draft, the accepted map, and PNG. Clipping must leave one connected
+body of water. Interior islands are permitted.
+
+Edits and import check each stored small-lake shoreline against the resulting
+one-mile geometry even when the six-mile map is open. A conflict identifies
+the saved footprint and leaves the open map and both history stacks intact.
+
+Ordinary region generation rolls small lakes on newly supported dry one-mile
+cells outside region centers, even from the six-mile view. The owning region's
+biome supplies the initial chance (0% sand, 4% swamp and swamp forest, 2%
+elsewhere). Original seeds can recruit adjacent new cells once at 10%.
+The same world seed and placement produce the same rolls without advancing
+the geography and POI streams. A protected feature or an invalid shore rejects only the affected automatic
+candidate. Other accepted candidates keep their own shore geometry. Where an existing detail-geometry conflict prevents the one-mile
+scene from being prepared, the source region can still be generated while
+the unverified small lakes are skipped. Existing local-only lake overlays on
+those maps are checked against the source rivers, paths, crossings and points
+on import. The automatic layer does not persist generated point geometry.
+Fallback tracts make no lake rolls.
+
+Region generation checks existing small lakes against its finished water,
+paths and sites before committing. If a previously valid lake conflicts
+with that geometry, the same transaction removes the affected lake. Undo
+restores both the map and its lakes. Unrelated authored edits retain their
+usual loss confirmations.
+
+Manual and automatic lakes keep the permitted fringe cells with their saved
+footprint, so accepted water does not expand when neighbouring land is added.
+The generator allocates shared fringe to the ordered batch before checking
+which candidates conflict with roads, crossings or protected points.
+A skipped candidate cannot enlarge the visible shoreline of another.
+Older saves without the optional fringe field still open. When expansion
+would add dry support beside one of those lakes, the accepted shore is taken
+from the map before expansion.
+Deleting the last region restores the pre-expansion lakes and ID counter when the
+lake layer is unchanged, including after a note on a surviving hex.
+Deleting the last region checks the restored paths and sites before committing.
+If restoring a checkpoint conflicts with a retained small lake, the editor
+removes it together with lakes that lose dry support in that operation.
+An incompatible edit to a road or point is rejected before recording history.
+The editor keeps the selected hexes outlined when a draft fails validation.
+
+For compatible saves without stored shore cells, deleting a small lake or
+editing source water captures each surviving lake's visible fringe before
+changing its neighbours. Empty fringes are stored explicitly. Undo restores
+the original records, and redo or reloading the edited map preserves the coast.

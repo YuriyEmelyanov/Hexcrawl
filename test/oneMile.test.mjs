@@ -1,8 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createDetailGrid, detailCellPolygon, detailCellAreaSquareMiles, detailCellCenter} from '../src/detailGrid.ts';
+import {prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,prepareAcceptedSmallLakeViews} from '../src/smallLakeShore.ts';
+import {parseSmallLakes,rollSmallLakeFootprints} from '../src/smallLakes.ts';
 import {dominantFineBiome, projectOneMile, oneMileCandidates, chooseOneMileAnchor,
   fineCellKey, parseFineCellEdits, prepareFineCellEdit, prepareFineCellLoss} from '../src/oneMile.ts';
+
+test('automatic small lakes use keyed cell odds and grow only from original seeds',()=>{
+  const cells=Array.from({length:256},(_,q)=>({q,r:2}));
+  const seeded=chance=>rollSmallLakeFootprints(cells.map(cell=>({cell,chance})),42,0);
+  assert.deepEqual(seeded(0),[]);
+  assert.equal(seeded(.02).flat().length,8);
+  assert.equal(seeded(.04).flat().length,14);
+  assert.deepEqual(rollSmallLakeFootprints(cells.toReversed().map(cell=>({cell,chance:.04})),42,0),seeded(.04));
+
+  const line=cells.slice(0,4).map((cell,index)=>({cell,chance:index===0?1:0}));
+  assert.deepEqual(rollSmallLakeFootprints(line,42,1),[cells.slice(0,2)]);
+  assert.deepEqual(rollSmallLakeFootprints(line.filter((_,index)=>index!==1),42,1),[[cells[0]]],
+    'growth cannot cross an excluded cell');
+});
 
 // This is the first fine-address domain seam on main. Existing mapTransactions
 // tests exercise source-six fields and cannot detect a fine-to-source overwrite.
@@ -13,6 +29,49 @@ const area=detailCellAreaSquareMiles(createDetailGrid(1));
 const valid=id=>['forest','hills','plain'].includes(id);
 const accepted=()=>projectOneMile([source(0,0)]);
 const neighbours=cell=>[[1,0],[0,1],[-1,1],[-1,0],[0,-1],[1,-1]].map(([q,r])=>c(cell.q+q,cell.r+r));
+
+test('saved decorative shore cells do not occupy neighbouring land',()=>{
+  const lake={id:1,origin:'manual',cells:[c(0,0)],shoreCells:[c(1,0)]};
+  const neighbour={id:2,origin:'manual',cells:[c(1,0)]};
+  assert.deepEqual([...prepareAcceptedSmallLakeViews([lake]).reserved],['0,0']);
+  assert.deepEqual(parseSmallLakes({nextId:3,lakes:[lake,neighbour]}).lakes,[lake,neighbour]);
+});
+
+test('a skipped automatic lake leaves the neighbour’s visible shoreline intact after reload',()=>{
+  const grid=createDetailGrid(1),origin=grid.origin;
+  const candidates=Array.from({length:28*28},(_,i)=>({cell:c(i%28,Math.floor(i/28)),chance:.02}));
+  const coverage=new Map(candidates.map(({cell})=>[fineCellKey(cell),{cell,landBiomeId:'forest',acceptedArea:area,waterArea:0}]));
+  const footprints=rollSmallLakeFootprints(candidates,15,.1),open={roads:[],crossings:[],anchors:[]};
+  const earlier=[c(23,10),c(24,10)],later=[c(25,6),c(25,7),c(25,8)];
+  const road={...open,roads:[{ref:'review-path',points:earlier.map(cell=>detailCellCenter(grid,cell))}]};
+  const generate=protection=>prepareAutomaticSmallLakeBatch(footprints,1,origin,protection,new Set());
+  const clear=generate(open),blocked=generate(road);
+  const find=(layer,cells)=>layer.lakes.find(lake=>JSON.stringify(lake.cells)===JSON.stringify(cells));
+  assert.ok(find(clear,earlier));
+  assert.equal(find(blocked,earlier),undefined);
+  assert.equal(blocked.lakes.length,clear.lakes.length-1);
+  const mask=(layer,protection)=>{
+    const lake=find(layer,later);
+    return prepareSmallLakeShore(lake,origin,protection).view.lake.cells;
+  };
+  assert.deepEqual(mask(clear,open),mask(blocked,road));
+  const saved=parseSmallLakes(JSON.parse(JSON.stringify(blocked)));
+  assert.deepEqual(mask(saved,road),mask(clear,open));
+  assert.ok(mask(saved,road).every(cell=>fineCellKey(cell)!=='24,9'));
+});
+test('small lake protects paths and anchors across the full water hex',()=>{
+  const lake={id:1,origin:'manual',cells:[c(0,0)]},origin={x:10,y:-2};
+  const point=(x,y)=>({x:x+origin.x,y:y+origin.y});
+  const dryEdge={ref:'edge',points:[point(.48,.28),point(.49,.29)]};
+  const through={ref:'through',points:[point(-1,0),point(1,0)]};
+  const anchor={ref:'site',point:origin};
+  const safe={roads:[],crossings:[],anchors:[{ref:'outside',point:point(.54,.28)}]};
+  assert.equal(prepareSmallLakeShore(lake,origin,safe).conflict,null);
+  assert.deepEqual(prepareSmallLakeShore(lake,origin,{...safe,roads:[dryEdge,through]}).conflict,{kind:'road',ref:'edge'});
+  assert.deepEqual(prepareSmallLakeShore(lake,origin,{...safe,crossings:[through]}).conflict,{kind:'crossing',ref:'through'});
+  assert.deepEqual(prepareSmallLakeShore(lake,origin,{...safe,anchors:[anchor]}).conflict,{kind:'anchor',ref:'site'});
+
+});
 
 test('partial fine display is full while accepted geography area stays exact',()=>{
   const input=[source(0,0)], before=JSON.stringify(input), rows=projectOneMile(input);
@@ -121,6 +180,7 @@ test('destructive support loss requires consent and leaves an exact undo snapsho
 import {FINE_HEX_WIDTH, finePoiLabel, fineRefinedRoadPresentation, fineRoadPresentation, fineRiverStrokeWidth} from '../src/oneMilePresentation.ts';
 import {prepareRefinementWater} from '../src/geometryRefinementWater.ts';
 const displayWater=(paths,scale=1)=>{const water=prepareRefinementWater({paths,widthByFullness:new Map([1,2,3,4,5].map(f=>[f,fineRiverStrokeWidth(f)/scale]))});assert.equal(water.status,'prepared');return water;};
+
 test('fine POI label retains localized type and explicit name without fallback duplication',()=>{
  assert.equal(finePoiLabel('Городок','Айхенхайм'),'Городок Айхенхайм');
  assert.equal(finePoiLabel('Town','Eichenheim'),'Town Eichenheim');

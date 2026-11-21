@@ -14,6 +14,8 @@ import {prepareGeometryRefinementBoundary,geometryMixedRiverPaths} from '../src/
 import {normalizeRefinementRiverSource} from '../src/geometryRefinementSource.ts';
 import {projectGeometryRefinementEdit} from '../src/geometryRefinementScope.ts';
 import {reconcileDetailGeography} from '../src/detailGeography.ts';
+import {projectOneMile} from '../src/oneMile.ts';
+import {hasFullDrySupport,hasFullOneMileSupport} from '../src/smallLakes.ts';
 import {synchronizeToponyms} from '../src/toponyms.ts';
 const serial=v=>JSON.parse(JSON.stringify(v));
 const stable=app=>{const d=serial(app.createSaveData());delete d.savedAt;return d;};
@@ -157,13 +159,16 @@ test('manual edits do not replace generation checkpoints, regenerate rollback re
       const current=h.render().captureDocument().map,checkpoint=h.render().history.at(-1);
       h.render().restoreSnapshot({...current,rivers:[...checkpoint.rivers,...current.rivers.filter(r=>!checkpoint.rivers.some(old=>old.id===r.id))],riverFeatures:checkpoint.riverFeatures});
       const dialogs=[];h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return true;}});
-      h.render()[command]();assert.equal(dialogs.length,0,'no retained manual river change');continue;
+      h.render()[command]();
+      if(command==='regenerateLastRegion')h.render().finishPendingRegeneration();
+      assert.equal(dialogs.length,0,'no retained manual river change');continue;
     }
     h.render().setSelectedHex(region.centerHex);h.render().setSelectedHexBiomeOverride('open_hills');h.render().undoMap();assert.ok(h.render().redoHistory.length);
     const fullBefore=structuredClone(h.render().captureDocument());
     const before=serial(h.render().captureDocument()),beforeSave=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
     const dialogs=[];h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return false;},matchMedia:()=>({matches:false})});
     h.render()[command]();
+    if(command==='regenerateLastRegion')h.render().finishPendingRegeneration();
     assert.equal(dialogs.length,1,command+' warns before restoring '+kind);
     assert.ok(dialogs[0].includes((kind==='deleted'?`${language==='ru'?'Река':'River'} ${id}`:h.render().toponyms[`river:${id}`][language])),'preview names the affected river');
     assert.deepEqual(structuredClone(h.render().captureDocument()),fullBefore,'reject keeps complete Map/Set document');
@@ -213,6 +218,7 @@ for(const command of ['deleteLastRegion','regenerateLastRegion'])for(const langu
  const before=structuredClone(h.render().captureDocument()),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]),dialogs=[];
  assert.ok(stacks[0].length&&stacks[1].length);
  h.setWindow({alert(){},confirm:m=>{dialogs.push(m);return false;}});h.render()[command]();
+ if(command==='regenerateLastRegion')h.render().finishPendingRegeneration();
  assert.equal(dialogs.length,1,'R3 warns before losing retained sector');
  const label=h.render().toponyms[`river:${river.id}`]?.[language]??`${language==='ru'?'Река':'River'} ${river.id}`;
  assert.ok(dialogs[0].includes(label),'warning identifies affected river');
@@ -359,6 +365,233 @@ test('import replaces notes exactly and legacy imports clear them; malformed not
   const data=stable(h.render()), stacks=serial([h.render().undoHistory,h.render().redoHistory]);
   b.map.gmNotesByHexKey[key]=null;await load(h,b);assert.equal(alerts.length,1);assert.deepEqual(stable(h.render()),data);assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
   await load(h,fixture);assert.deepEqual(stable(h.render()).map.gmNotesByHexKey,{});h.render().undoMap();assert.deepEqual(stable(h.render()),data);
+});
+test('deleting a real region removes unsupported small lakes and undo restores all of them',()=>{
+  const {h}=setup();
+  h.render().addFallbackTractToMap({q:0,r:0});
+  assert.equal(h.render().switchFineStep(1),true);
+  const dryRows=()=>h.render().fineCells.filter(hasFullDrySupport);
+  const key=({q,r})=>`${q},${r}`;
+  const originalFine=new Set(h.render().fineCells.map(row=>key(row.cell)));
+  const first=dryRows(), firstKeys=new Set(first.map(row=>key(row.cell)));
+  h.render().switchFineStep(6);
+  h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+  assert.equal(h.render().regions.length,2);
+  assert.equal(h.render().switchFineStep(1),true);
+  const added=dryRows().filter(row=>!firstKeys.has(key(row.cell)));
+  assert.ok(first.length&&added.length>=2);
+  for(const {cell} of [added[0],added[1],first[0]]){
+    const app=h.render();
+    assert.equal(app.pickFine(cell,false,app.getDocumentRevision()),true);
+    h.render().startSmallLake();
+    h.render().commitSmallLake();
+    assert.equal(h.render().editError,null);
+  }
+  const fine=added.find(row=>!originalFine.has(key(row.cell))).cell;
+  const app=h.render();
+  assert.ok(app.pickFine(fine,false,app.getDocumentRevision()));
+  h.render().setFineHover(null);h.render().startFineDraft();
+  assert.ok(h.render().changeFineDraft({note:'lake note'},h.render().fineDraft));
+  assert.ok(h.render().saveFineDraft(h.render().fineDraft));
+  assert.equal(h.render().switchFineStep(6),true);
+  const coarse=h.render().regions.at(-1).hexes[0];
+  h.render().setSelectedHex(coarse);
+  h.render().changeNotesText(key(coarse),'region note');h.render().finishNotesGroup();
+  const before=stable(h.render()), count=h.render().undoHistory.length, prompts=[];
+  h.setWindow({confirm:prompt=>{prompts.push(prompt);return false;}});
+  h.render().deleteLastRegion();
+  assert.deepEqual(stable(h.render()),before);
+  assert.equal(h.render().undoHistory.length,count);
+  assert.doesNotMatch(prompts.at(-1),/малые озёра/);
+  assert.doesNotMatch(prompts.at(-1),/№3/);
+  assert.equal(prompts.length,1);
+  assert.ok(prompts[0].includes(key(fine))&&prompts[0].includes(key(coarse)));
+  assert.match(prompts[0],/локальные правки/);
+  assert.match(prompts[0],/заметки мастера/);
+  h.setWindow({confirm:prompt=>{prompts.push(prompt);return true;}});
+  h.render().deleteLastRegion();
+  const after=stable(h.render());
+  assert.deepEqual(prompts,[prompts[0],prompts[0]]);
+  assert.equal(after.map.regions.length,1);
+  assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:4,lakes:[before.map.physicalGrid.smallLakes.lakes[2]]});
+  assert.equal(h.render().undoHistory.length,count+1);
+  assertUndoRedo(h,before,after);
+});
+test('a new trail crossing a retained small lake is rejected before save and history',async()=>{
+  const {h,alerts}=setup();
+  await load(h,JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url))));
+  assert.equal(h.render().switchFineStep(1),true);
+  const {pickFine,getDocumentRevision}=h.render();
+  assert.equal(pickFine({q:3,r:-12},false,getDocumentRevision()),true);
+  h.render().startSmallLake();h.render().commitSmallLake();
+  assert.equal(h.render().editError,null);
+  assert.equal(h.render().switchFineStep(6),true);
+  const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  assert.equal(before.map.physicalGrid.smallLakes.lakes.length,1);
+  const trail={type:'create',path:[{q:0,r:-2},{q:1,r:-2}],kind:'trail'};
+  assert.equal(h.render().editRoadDocument(trail),false);
+  assert.match(h.render().editError,/Берег малого озера пересекает дорогу или тропу №1/);
+  assert.deepEqual(stable(h.render()),before);
+  assert.deepEqual(serial([h.render().undoHistory,h.render().redoHistory]),stacks);
+  await load(h,before);assert.deepEqual(alerts,[]);assert.deepEqual(stable(h.render()),before);
+  h.render().undoMap();assert.deepEqual(stable(h.render()),before);
+  h.render().redoMap();assert.deepEqual(stable(h.render()),before);
+});
+test('regeneration confirms checkpoint and replacement losses together',async()=>{
+  const {h}=setup(42), app=()=>h.render();
+  await load(h,JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url))));
+  assert.ok(app().chooseKnaveProfile(true));
+  const geometry=h.geometry.buildManualRiverGeometryContext(app().captureDocument().map);
+  const path=['-24.249,-98','-24.249,-70','0,-56','0,-28','24.249,-14','24.249,14','0,28','0,56','-24.249,70','-24.249,98']
+    .map(key=>geometry.vertex(key));
+  assert.ok(app().editRiverDocument({type:'create',regionId:1,path,fullness:1}));
+  assert.ok(app().safelyAddRegionToMap({q:3,r:3}).success);
+  assert.ok(app().editRiverDocument({type:'remove',riverId:1,includeArms:true},{confirmed:true}));
+  assert.ok(app().switchFineStep(1));
+  for(const cell of [{q:29,r:7},{q:31,r:7}]){
+    assert.ok(app().pickFine(cell,false,app().getDocumentRevision()));
+    app().removeSelectedSmallLake();
+  }
+  assert.ok(app().switchFineStep(6));
+  const originalMap=app().captureDocument().map;
+  const key=({q,r})=>q+','+r;
+  const oldCoverage=new Set(projectOneMile(h.geometry.oneMileSources(originalMap),originalMap.physicalGrid.grid.origin)
+    .filter(hasFullOneMileSupport).map(row=>key(row.cell)));
+  app().setGenSizeCategory('tract');
+  const before=stable(app()), stacks=structuredClone([app().undoHistory,app().redoHistory]);
+  for(const accept of [false,true]){
+    const prompts=[];
+    h.setWindow({confirm:message=>{prompts.push(message);return accept;}});
+    app().regenerateLastRegion();
+    app().finishPendingRegeneration();
+    assert.equal(prompts.length,1);
+    assert.match(prompts[0],/Knave/);
+    assert.match(prompts[0],/Река 1/);
+    assert.doesNotMatch(prompts[0],/малые озёра/);
+    if(!accept){
+      assert.deepEqual(stable(app()),before);
+      assert.deepEqual(structuredClone([app().undoHistory,app().redoHistory]),stacks);
+    }else{
+      const after=stable(app());
+      const remaining=new Set(after.map.physicalGrid.smallLakes.lakes.map(lake=>lake.id));
+      const lost=before.map.physicalGrid.smallLakes.lakes.filter(lake=>!remaining.has(lake.id));
+      assert.ok(lost.length>0);
+      const previous=before.map.physicalGrid.smallLakes;
+      assert.ok(previous.lakes.every(lake=>lake.id!==17&&lake.id!==19),'fixture lakes were deleted before regeneration');
+      const created=after.map.physicalGrid.smallLakes.lakes.filter(lake=>lake.id>=previous.nextId);
+      assert.ok(created.length>0,'newly covered area still receives lakes');
+      for(const lake of created)for(const cell of lake.cells){
+        assert.ok(!oldCoverage.has(key(cell)),'regeneration rolled an already covered cell '+key(cell));
+      }
+      assert.equal(app().undoHistory.length,stacks[0].length+1);
+      assertUndoRedo(h,before,after);
+    }
+  }
+});
+test('restoring a region checkpoint automatically removes lakes conflicting with the restored paths',async()=>{
+  const {h,alerts}=setup();
+  const source=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
+  const trail={id:1,regionId:1,segments:[{from:{q:0,r:-1},to:{q:1,r:-1},kind:'trail'}]};
+  source.map.roads=[trail];source.map.nextRoadId=2;
+  await load(h,source);
+  h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+  assert.equal(h.render().regions.length,2);
+  assert.equal(h.render().editRoadDocument({type:'remove',roadId:trail.id}),true);
+  assert.equal(h.render().switchFineStep(1),true);
+  for(const cell of [{q:3,r:-6},{q:9,r:13}]){
+    const app=h.render();
+    assert.equal(app.pickFine(cell,false,app.getDocumentRevision()),true);
+    h.render().startSmallLake();
+    h.render().commitSmallLake();
+    assert.equal(h.render().editError,null);
+  }
+  assert.equal(h.render().switchFineStep(6),true);
+  const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+  h.setWindow({alert:m=>alerts.push(m),confirm:()=>assert.fail('Unexpected confirmation for a lake loss')});
+  h.render().deleteLastRegion();
+  const after=stable(h.render());
+  assert.equal(after.map.regions.length,1);
+  assert.deepEqual(after.map.roads,[trail]);
+  assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:3,lakes:[before.map.physicalGrid.smallLakes.lakes[1]]});
+  assert.equal(h.render().undoHistory.length,stacks[0].length+1);
+  assertUndoRedo(h,before,after);
+  await load(h,after);
+  assert.deepEqual(alerts,[]);
+  assert.deepEqual(stable(h.render()),after);
+});
+test('removing a neighbouring lake preserves a legacy shoreline across deletion, water editing and reload',async()=>{
+  const {h,alerts}=setup();
+  h.render().addFallbackTractToMap({q:0,r:0});
+  h.render().addFallbackTractToMap(h.render().candidateHexes[0]);
+  const retained={id:1,origin:'manual',cells:[{q:-8,r:-3}]};
+  const adjacent={id:2,origin:'manual',cells:[{q:-8,r:-4},{q:-7,r:-4},{q:-6,r:-4},{q:-6,r:-3}]};
+  const pick=cell=>assert.ok(h.render().pickFine(cell,false,h.render().getDocumentRevision()));
+  const mask=()=>serial(h.render().acceptedLakeArtwork.views.find(view=>view.lake.id===1).lake.cells);
+  assert.ok(h.render().switchFineStep(1));
+  pick(retained.cells[0]);h.render().startSmallLake();h.render().commitSmallLake();
+  assert.ok(h.render().switchFineStep(6));
+  const legacy=stable(h.render());
+  legacy.map.physicalGrid.smallLakes={nextId:3,lakes:[retained,adjacent]};
+  for(const action of ['remove','water']){
+    await load(h,legacy);
+    assert.ok(h.render().switchFineStep(1));
+    assert.deepEqual(mask(),retained.cells);
+    if(action==='remove'){
+      pick(adjacent.cells[0]);h.render().removeSelectedSmallLake();
+    }else{
+      assert.ok(h.render().switchFineStep(6));
+      h.render().setEditMode(true);h.render().setSelectedHex({q:-1,r:0});
+      assert.ok(h.render().startWaterDraft('lake'));
+      assert.ok(h.render().finishWaterDraft());
+    }
+    const after=stable(h.render());
+    assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:3,lakes:[retained]});
+    h.render().undoMap();
+    assert.deepEqual(stable(h.render()).map.physicalGrid.smallLakes,legacy.map.physicalGrid.smallLakes);
+    h.render().redoMap();assert.deepEqual(stable(h.render()),after);
+    await load(h,after);
+    assert.ok(h.render().switchFineStep(1));assert.deepEqual(mask(),retained.cells);
+    assert.deepEqual(alerts,[]);
+  }
+});
+test('expanding into a dry neighbour keeps the accepted manual shore, including legacy saves',async()=>{
+  const {h,alerts}=setup();
+  const source=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
+  const shore=()=>serial(h.render().acceptedLakeArtwork.views[0].lake.cells);
+  const acceptedCells=[{q:9,r:13}];
+  await load(h,source);
+  assert.equal(h.render().switchFineStep(1),true);
+  const app=h.render();
+  assert.equal(app.pickFine({q:9,r:13},false,app.getDocumentRevision()),true);
+  h.render().startSmallLake();h.render().commitSmallLake();
+  assert.deepEqual(shore(),acceptedCells);
+  assert.equal(h.render().switchFineStep(6),true);
+  const saved=stable(h.render());
+  const legacy=structuredClone(saved);
+  legacy.map.physicalGrid.smallLakes.lakes[0].shoreCells=[{q:10,r:12}];
+  for(const input of [saved,legacy]){
+    await load(h,input);
+    assert.deepEqual(stable(h.render()),input);
+    const generated=h.render().safelyAddRegionToMap({q:3,r:3});
+    assert.equal(generated.success,true);
+    const result=stable(h.render());
+    assert.equal(result.map.regions.length,2);
+    assert.deepEqual(result.map.physicalGrid.smallLakes.lakes.find(lake=>lake.id===1),input.map.physicalGrid.smallLakes.lakes[0]);
+    assertUndoRedo(h,input,result);
+    h.setWindow({alert:m=>alerts.push(m),confirm:()=>true,matchMedia:()=>({matches:false})});
+    h.render().deleteLastRegion();
+    const restored=stable(h.render());
+    assert.equal(restored.map.regions.length,input.map.regions.length);
+    assert.equal(restored.map.physicalGrid.smallLakes.nextId,input.map.physicalGrid.smallLakes.nextId);
+    assert.ok(result.map.physicalGrid.smallLakes.lakes.length>1);
+    assert.ok(h.render().safelyAddRegionToMap({q:3,r:3}).success);
+    assert.deepEqual(stable(h.render()).map.physicalGrid.smallLakes,result.map.physicalGrid.smallLakes);
+    await load(h,result);
+    assert.equal(h.render().switchFineStep(1),true);
+    assert.ok(h.render().fineCells.some(row=>row.cell.q===8&&row.cell.r===14&&hasFullDrySupport(row)));
+    assert.deepEqual(shore(),acceptedCells);
+    assert.deepEqual(alerts,[]);
+  }
 });
 test('delete retains latest surviving notes, confirms loss, undo restores; generation conflict is rejected before commit',async()=>{
   const {h}=setup();h.setWindow({alert(){},confirm:()=>false,matchMedia:()=>({matches:false})});
@@ -639,6 +872,31 @@ test('E5 river draft guards writes, preserves invalid and cancelled work and com
 // and identity cases live in manualWater; this lifecycle catches setter wiring.
 const waterFixture=JSON.parse(fs.readFileSync(new URL('./fixtures/e6-water-editor.json',import.meta.url)));
 async function waterSetup(data=waterFixture){const {h,alerts}=setup();await load(h,data);assert.deepEqual(alerts,[]);h.render().setEditMode(true);h.render().setSelectedHex({q:0,r:0});return h;}
+test('source water edit removes unsupported lakes in one action with exact undo and redo',async()=>{
+ const h=await waterSetup();
+ assert.equal(h.render().switchFineStep(1),true);
+ for(const cell of [{q:0,r:0},{q:1,r:0},{q:6,r:0}]){
+  const app=h.render();
+  assert.ok(hasFullDrySupport(app.fineCells.find(row=>row.cell.q===cell.q&&row.cell.r===cell.r)));
+  assert.equal(app.pickFine(cell,false,app.getDocumentRevision()),true);
+  h.render().startSmallLake();
+  h.render().commitSmallLake();
+  assert.equal(h.render().editError,null);
+ }
+ assert.equal(h.render().switchFineStep(6),true);
+ h.render().setEditMode(true);
+ h.render().setSelectedHex({q:0,r:0});
+ const before=stable(h.render()),stacks=serial([h.render().undoHistory,h.render().redoHistory]);
+ assert.equal(h.render().startWaterDraft('lake'),true);
+ assert.equal(h.render().finishWaterDraft(),true);
+ const after=stable(h.render());
+ assert.equal(after.map.terrainByHexKey['0,0'].terrainOverride,'lake');
+ assert.deepEqual(after.map.physicalGrid.smallLakes,{nextId:4,lakes:[before.map.physicalGrid.smallLakes.lakes[2]]});
+ assert.equal(h.render().undoHistory.length,stacks[0].length+1);
+ assertUndoRedo(h,before,after);
+ await load(h,after);
+ assert.deepEqual(stable(h.render()),after);
+});
 test('E6 real water transaction preserves dormant biome, notes, RNG, exact history and v7 roundtrip',async()=>{
  const h=await waterSetup(),before=stable(h.render()),oldGeneration=serial(before.generation),count=h.render().undoHistory.length;
  assert.equal(h.render().startWaterDraft('lake'),true);assert.equal(h.render().finishWaterDraft(),true);
