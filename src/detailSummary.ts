@@ -104,8 +104,10 @@ export function summarizeDetailCell(state:Detail1State,anchor:DetailCell,terrain
  for(const road of geography.roads??[])for(const segment of road.segments){
   const existing=routeOwners.get(road.id),segmentKey=[key(segment.from),key(segment.to)].sort().join('|');
   if(retainedRoads.has(pair(road.id,segmentKey)))continue;
-  const hit=detailSegmentCellIntersection(grid,cell,{from:detailCellCenter(source,segment.from),to:detailCellCenter(source,segment.to)});if(!hit)continue;
-  routeOwners.set(road.id,{id:road.id,kinds:[...new Set([...(existing?.kinds??[]),segment.kind])].sort(),segmentKeys:[...new Set([...(existing?.segmentKeys??[]),segmentKey])].sort(),boundaryOnly:(existing?.boundaryOnly??true)&&hit.boundaryOnly});
+  const points=geography.displayRoutes?.roadPaint.get(pair(road.id,segmentKey))??[detailCellCenter(source,segment.from),detailCellCenter(source,segment.to)];
+  const hits=points.slice(1).map((b,i)=>detailSegmentCellIntersection(grid,cell,{from:points[i],to:b})).filter(hit=>hit!==null);
+  if(!hits.length)continue;
+  routeOwners.set(road.id,{id:road.id,kinds:[...new Set([...(existing?.kinds??[]),segment.kind])].sort(),segmentKeys:[...new Set([...(existing?.segmentKeys??[]),segmentKey])].sort(),boundaryOnly:(existing?.boundaryOnly??true)&&hits.every(hit=>hit.boundaryOnly)});
  }
  for(const road of refinement?.roads.roads??[]){
   const points=geography.displayRoutes?.roadPaint.get(pair(road.roadId,road.sourceRoadSegmentKey))??road.points;

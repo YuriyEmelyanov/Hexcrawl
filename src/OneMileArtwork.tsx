@@ -1,3 +1,4 @@
+import {svgPoints} from './routeBends';
 import {fineRoadPresentation,fineRiverStrokeWidth,type FineRoad,type FineCrossing} from './oneMilePresentation';
 import {useId,useMemo,type ReactNode,type MouseEvent,type KeyboardEvent} from 'react';
 import {createDetailGrid,detailCellCenter,detailCellPolygon,detailFootprintBoundary,worldToDetailCell,type DetailCell,type WorldPoint} from './detailGrid';
@@ -9,9 +10,10 @@ import {engravingFor, type TerrainKind} from './rendering/engravingAssets';
 import {terrainTextures} from './rendering/terrainBlend';
 import type {SmallLakeView} from './smallLakeShore';
 import {ColorHexGrid} from './rendering/ColorHexGrid';
-type Props={smallLakes?:readonly SmallLakeView[];smallLakeDraft?:SmallLakeView;smallLakeDraftCells?:readonly DetailCell[];rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
+type Paint=ReadonlyMap<string,readonly WorldPoint[]>;
+type Props={nativeRiverPaint?:Paint;nativeRoadPaint?:Paint;smallLakes?:readonly SmallLakeView[];smallLakeDraft?:SmallLakeView;smallLakeDraftCells?:readonly DetailCell[];rapids:readonly {key:string;x1:number;y1:number;x2:number;y2:number}[];waterfalls:readonly {key:string;x:number;y:number}[];crossings:readonly FineCrossing[];state:Detail1State;cells:readonly OneMileCell[];candidates:readonly FineCandidate[];offset:WorldPoint;rotation?:string;rotated:boolean;revision:number;coordinates:boolean;
  poi:(p:DetailPoiFootprint)=>{label:string;image:string};geography?:(smallLakeRiverMask:string|undefined)=>ReactNode;interactive?:boolean;
- rivers:readonly {key:string;x1:number;y1:number;x2:number;y2:number;width:number;fullness:number}[];
+ rivers:readonly {key:string;riverId?:number;edgeKey?:string;x1:number;y1:number;x2:number;y2:number;width:number;fullness:number}[];
  roads:readonly FineRoad[];
  onHover:(cell:DetailCell|null)=>void;onPick:(cell:DetailCell,candidate:boolean,revision:number,event?:MouseEvent<SVGGElement>)=>void;busy:boolean};
 /** All geometry uses the original world frame. Full visual cells never become
@@ -101,9 +103,13 @@ export function OneMileArtwork(p:Props){
   {p.smallLakeDraftCells?.length&&<g data-editor-only="small-lake-selection" pointerEvents="none">
    {p.smallLakeDraftCells.map(cell=><polygon key={fineCellKey(cell)} data-small-lake-selected-cell={fineCellKey(cell)} points={polygon(cell)} fill="none" stroke="#f7dc6f" strokeWidth={.3} strokeDasharray=".7 .5"/>)}
   </g>}
-  {p.geography?.(riverMask)??<><g className="rivers-layer" mask={riverMask} pointerEvents="none">{p.rivers.map(r=><line key={r.key} data-river-fullness={r.fullness} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className="river-polyline" strokeWidth={fineRiverStrokeWidth(r.fullness)}/>)}</g>
+  {p.geography?.(riverMask)??<><g className="rivers-layer" mask={riverMask} pointerEvents="none">{p.rivers.map(r=>p.nativeRiverPaint?.has(r.riverId+':'+r.edgeKey)
+    ? <polyline key={r.key} points={svgPoints(p.nativeRiverPaint.get(r.riverId+':'+r.edgeKey)!)} data-river-fullness={r.fullness} className="river-polyline" strokeWidth={fineRiverStrokeWidth(r.fullness)}/>
+    : <line key={r.key} data-river-fullness={r.fullness} x1={r.x1} y1={r.y1} x2={r.x2} y2={r.y2} className="river-polyline" strokeWidth={fineRiverStrokeWidth(r.fullness)}/>)}</g>
   <g className="roads-layer" pointerEvents="none">{p.roads.map(r=>{const plan=fineRoadPresentation(r,p.crossings,p.rivers);return <g key={r.key} data-fine-road={r.key}>
-   {plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>)}
+   {p.nativeRoadPaint?.has(r.key)&&(!plan.crossings.length||plan.crossings.every(c=>c.kind==='bridge'))
+    ? <polyline points={svgPoints(p.nativeRoadPaint.get(r.key)!)} fill="none" stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>
+    : plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>)}
    {plan.rails.map(rail=><polyline key={rail.key} points={rail.points} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
    {plan.crossings.map(c=><g key={c.key} data-fine-crossing={c.key} data-crossing-kind={c.kind}><title>{c.kind}</title></g>)}
   </g>;})}</g>

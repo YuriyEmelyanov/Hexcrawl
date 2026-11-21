@@ -9,7 +9,7 @@ export const fineRiverStrokeWidth=(fullness:number,hexWidth=FINE_HEX_WIDTH)=>
  Number.isInteger(fullness)&&fullness>=1&&fullness<=5&&Number.isFinite(hexWidth)&&hexWidth>0?hexWidth*fullness/10:0;
 type Line={key:string;x1:number;y1:number;x2:number;y2:number};
 export type FineRoad=Line&{roadId:number;segmentKey:string;kind:string};
-export type FineCrossing={key:string;roadId:number;roadSegmentKey:string;riverId:number;x:number;y:number;kind:string};
+export type FineCrossing={key:string;riverEdgeKey?:string;roadId:number;roadSegmentKey:string;riverId:number;x:number;y:number;kind:string};
 type River=Line&{width:number;fullness:number};
 export function fineRoadPresentation(road:FineRoad,crossings:readonly FineCrossing[],rivers:readonly River[]){
  const dx=road.x2-road.x1,dy=road.y2-road.y1,length=Math.hypot(dx,dy);
