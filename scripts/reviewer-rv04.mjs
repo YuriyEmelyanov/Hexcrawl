@@ -23,6 +23,7 @@ await fs.writeFile(out+'/after.json',JSON.stringify(after));
 const browser=await chromium.launch();
 try {
  const page=await browser.newPage({viewport:{width:1500,height:1000},acceptDownloads:true});
+ page.on('dialog', dialog => dialog.accept());
  await page.route(/mc\.yandex/,route=>route.abort());
  await page.goto('http://127.0.0.1:4219');
  if(await page.getByRole('button',{name:'Переключить на русский',exact:true}).count())await page.getByRole('button',{name:'Переключить на русский',exact:true}).click();
