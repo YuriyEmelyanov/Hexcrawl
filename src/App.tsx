@@ -14711,6 +14711,11 @@ export function App() {
     coastalPreference: genCoastal === 'auto' ? undefined : genCoastal
   });
 
+  const retainedDiscoveryCheckpoint=(snapshot:MapSnapshot):DiscoveryMap=>{
+    const owners=poiNameLocators(snapshot);
+    const modes={...snapshot.poiDiscovery,...discoveries.current};
+    return Object.fromEntries(Object.entries(modes).filter(([owner])=>owners.has(owner)));
+  };
   const retainedKnaveCheckpoint=(snapshot:MapSnapshot)=>{
     const current=knaveRef.current;if(!current)return snapshot.knave;
     const layer=structuredClone(current),target=knaveMapContext(snapshot);
@@ -14750,7 +14755,7 @@ export function App() {
   const restoreSnapshot = (snapshot: MapSnapshot, exactWater=false, deferFineRegeneration=false) => {
     snapshot = withLegacySeas(structuredClone({...snapshot,riverFeatures:snapshot.riverFeatures??emptyRiverFeatures(),nextRiverId:snapshot.nextRiverId??migrateRiverEditing(snapshot.rivers).nextRiverId}));
     snapshot=deferFineRegeneration?{...snapshot,physicalGrid:undefined}:retainFineCheckpoint(snapshot);
-    snapshot={...snapshot,knave:retainedKnaveCheckpoint(snapshot)};
+    snapshot={...snapshot,poiDiscovery:retainedDiscoveryCheckpoint(snapshot),knave:retainedKnaveCheckpoint(snapshot)};
     checkedRiverMap(snapshot);
     if(exactWater){applyExactMap(snapshot);return;}
     updateSeaIdentity(snapshot);discoveries.current=snapshot.poiDiscovery??{};updateKnave(snapshot.knave);updatePhysicalGrid(snapshot.physicalGrid);
@@ -14866,6 +14871,7 @@ export function App() {
       toponyms: synchronizeToponyms(retainedNames,entities,checkpoint.toponymSeed ?? toponymSeed),
       roads: pruneRoadsToRegionHexes(cloneRoads(checkpoint.roads),checkpoint.regions) };
     const before = captureDocument();
+    map.poiDiscovery=retainedDiscoveryCheckpoint(map);
     map.knave=retainedKnaveCheckpoint(map);
     try{
       // Check the roads and sites restored by the checkpoint as well as dry support.
