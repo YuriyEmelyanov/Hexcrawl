@@ -1,0 +1,288 @@
+{
+  "task_id": "HX-BL-062",
+  "stage_id": "DISC",
+  "round_id": "round-001",
+  "draft_spec_ref": "agent-work/specs/HX-BL-062-discovery-D1.md",
+  "draft_spec_version": "D1",
+  "draft_blob_sha": "eedb0333c6e8467afe33bc50152dde2c86ea9669",
+  "trigger": "independent_draft_review",
+  "source_owner_decision_refs": [
+    "agent-work/decisions/owner-decision-2026-11-20-classic-poi-discovery.json",
+    "agent-work/decisions/owner-decision-2026-11-14-interviewer-role.json"
+  ],
+  "preview_ref": "agent-work/previews/HX-BL-062-D1/card.svg",
+  "questions": [
+    {
+      "question_id": "DISC-Q01",
+      "topic": "Таблица типов",
+      "requirement_refs": "R2, AC2, AC5",
+      "question": "Какие места заметны сразу, а какие можно скрыть?",
+      "why": "Одно правило для каждого типа на суше и воде делает карту предсказуемой.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Принять таблицу D1. Поселения и укрепления заметны сразу, фермы и скалы видны в пути или при исследовании, пещеры и логова требуют исследования или раскрытия секрета; руины и кораблекрушения допускают все три исхода."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "Принять таблицу с исключениями: указать тип и допустимые исходы."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Даёт водным и сухопутным местам объяснимые различия.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": [
+        "DISC-Q02",
+        "DISC-Q03",
+        "DISC-Q04"
+      ]
+    },
+    {
+      "question_id": "DISC-Q02",
+      "topic": "Частоты при создании",
+      "requirement_refs": "R2–R3, AC2",
+      "question": "Как часто выбирать каждый разрешённый исход?",
+      "why": "Например, секретными могут оказаться треть порталов или только десятая часть.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Для двух вариантов — поровну, для трёх — по одной трети."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "Для двух — 70/30, для трёх — 60/30/10. Порядок от более заметного к более скрытому среди допустимых."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Равные доли проще проверить и объяснить до появления пожеланий к редкости.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": []
+    },
+    {
+      "question_id": "DISC-Q03",
+      "topic": "Самостоятельное место на карте в одну милю",
+      "requirement_refs": "R1–R3, AC3, AC5",
+      "question": "Как назначать режим одномильному месту, которое мастер создал отдельно от крупной карты?",
+      "why": "У такого места может не быть типа из региональной таблицы. При смене масштаба у одной и той же точки значение уже определено.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Тип из таблицы получает её правило. Для места без такого типа назначать «При исследовании»."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "При добавлении отдельного одномильного места мастер выбирает один из трёх режимов; исходный выбор — «При исследовании»."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Автоматическое назначение работает без дополнительного шага.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": []
+    },
+    {
+      "question_id": "DISC-Q04",
+      "topic": "Ручное редактирование",
+      "requirement_refs": "R1, R4, AC1, AC5",
+      "question": "Какие режимы доступны мастеру после создания?",
+      "why": "Это определяет, может ли мастер сделать видимый по умолчанию город секретным.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Для всех типов, кроме столицы, разрешить любой из трёх режимов. У столицы оставить «При прохождении»."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "Разрешить только режимы из строки типа. Столица и другие типы с одним режимом остаются фиксированными."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Поддерживает авторские исключения и сохраняет правило столицы.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": [
+        "DISC-Q05"
+      ]
+    },
+    {
+      "question_id": "DISC-Q05",
+      "topic": "Смена типа",
+      "requirement_refs": "R4–R5, AC3, AC5",
+      "question": "Что происходит при превращении, например, пещеры в башню?",
+      "why": "Автоматическая замена может скрыть ручную настройку и написанную улику.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Сохранить значение, если оно допустимо для ручной правки нового типа; иначе применить правило нового типа."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "Каждый раз назначать значение по таблице нового типа."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Сохраняет замысел мастера при совместимых типах.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": []
+    },
+    {
+      "question_id": "DISC-Q06",
+      "topic": "Текст улики после смены режима",
+      "requirement_refs": "R4, R6, AC3–AC5",
+      "question": "Что делать с авторским текстом при выходе из секретного режима?",
+      "why": "Мастер может захотеть вернуть секрет после дальнейших правок, когда отмена уже неудобна.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Сохранить текст за точкой, скрыть его в обычной карточке и вернуть при повторном выборе секрета."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "Предупредить до удаления текста. Отмена смены или команда отмены восстанавливает его."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Снижает риск потери подготовленного текста.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": []
+    },
+    {
+      "question_id": "DISC-Q07",
+      "topic": "Секрет без текста в Classic",
+      "requirement_refs": "R1, R6, AC1, AC4",
+      "question": "Нужно ли мастеру писать улику для автоматически назначенного секрета?",
+      "why": "От этого зависит, можно ли сразу сохранить сгенерированный регион.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Улика в Classic необязательна и может быть добавлена позже."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "Автоматические секреты получают готовую редактируемую улику по типу; для ручного секрета нужен непустой текст."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Мастер может сначала создать карту, затем подготовить условия для игры.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": [
+        "DISC-Q08"
+      ]
+    },
+    {
+      "question_id": "DISC-Q08",
+      "topic": "Classic и Knave",
+      "requirement_refs": "R5–R6, AC4",
+      "question": "Что показывает одна точка при переключении профиля?",
+      "why": "Старое сохранение Knave может содержать авторскую улику, а Classic допускает иную запись.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Держать записи раздельно. В своём профиле мастер видит свой режим и улику. Переключение ничего не записывает."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "Использовать общую запись для совместимых значений. При конфликте показывать обе и предложить выбор при редактировании. Пока выбор не сделан, каждый профиль читает свою запись. Секрет Classic без текста можно перенести в Knave после ввода улики."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Сохраняет прежний секрет Knave и исключает потери при переключении.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": []
+    },
+    {
+      "question_id": "DISC-Q09",
+      "topic": "Старые карты Classic",
+      "requirement_refs": "R5–R6, AC3–AC4",
+      "question": "Как показывать прежнюю точку без сохранённого режима?",
+      "why": "Если показать случайный режим при открытии, мастер может принять его за прежнее авторское решение.",
+      "options": [
+        {
+          "id": "A",
+          "effect_and_limits": "Показывать «Не задано», пока мастер явно не назначит режим."
+        },
+        {
+          "id": "B",
+          "effect_and_limits": "Показывать «Не задано» и дать команду заполнить все пропуски по таблице типов с возможностью отмены."
+        }
+      ],
+      "recommended_option": "A",
+      "rationale": "Старую карту можно открыть и пересохранить без изменения её содержимого.",
+      "always_allow_free_text": true,
+      "owner_answer": null,
+      "answer_source": null,
+      "answer_date": null,
+      "interpretation": null,
+      "dependent_question_ids": []
+    }
+  ],
+  "presented_in_chat_at": null,
+  "presented_in_chat_ref": null,
+  "owner_answers": [],
+  "interpretation": null,
+  "open_question_ids": [
+    "DISC-Q01",
+    "DISC-Q02",
+    "DISC-Q03",
+    "DISC-Q04",
+    "DISC-Q05",
+    "DISC-Q06",
+    "DISC-Q07",
+    "DISC-Q08",
+    "DISC-Q09"
+  ],
+  "new_question_ids": [
+    "DISC-Q01",
+    "DISC-Q02",
+    "DISC-Q03",
+    "DISC-Q04",
+    "DISC-Q05",
+    "DISC-Q06",
+    "DISC-Q07",
+    "DISC-Q08",
+    "DISC-Q09"
+  ],
+  "status": "prepared",
+  "next_role": "interviewer",
+  "next_step": "Собрать ответы владельца, проверить их совместимость и передать решения аналитику для F1.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-22T05:00:19.984Z",
+      "is_enabled": true
+    },
+    "end": null,
+    "restored": false,
+    "errors": []
+  }
+}
