@@ -51,6 +51,12 @@ def main():
             eligible.add(entry['id'])
     if any(t not in eligible or v.get('software') is not True for t,v in tools.items()):
         raise ValueError('Catalog contains ineligible products')
+    # A valid product can still have individual comments ruled out by the source review.
+    with (ROOT/'context-review.csv').open(newline='') as stream:
+        excluded = {
+            (row['tool'], row['kind'], row['id'])
+            for row in csv.DictReader(stream) if row['decision'] != 'confirmed'
+        }
     by_period = defaultdict(lambda: defaultdict(set))
     seen = set()
     with (ROOT/'evidence.csv').open(newline='') as stream:
@@ -64,6 +70,8 @@ def main():
             assert row['subreddit'] in {'osr','rpg','mapmaking'} and row['kind'] in {'posts','comments'}
             key = tool, row['kind'], row['id']
             assert key not in seen and tool in tools
+            if key in excluded:
+                raise ValueError(f'Observation excluded by source review: {key}')
             seen.add(key)
             if month in months:
                 by_period[month][tool].add(author)
