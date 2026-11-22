@@ -1231,6 +1231,9 @@ function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuation
 function prepareAutomaticOneMileScene(map:MapSnapshot):Detail1State {
  checkedRiverMap(map);
  const scene=prepareAutomaticSceneCandidate({...geometryPlanInput(map),scopePolicy:'automatic_presentation'});
+ return finishAutomaticOneMileScene(map,scene);
+}
+function finishAutomaticOneMileScene(map:MapSnapshot,scene:Detail1State):Detail1State {
  const state=map.physicalGrid?.fineCellEdits ? {...scene,fineCellEdits:map.physicalGrid.fineCellEdits} : scene;
  validateOneMileMap(map,state);
  const local=localLakeGrid(map.physicalGrid)?map.physicalGrid:undefined;
@@ -16642,7 +16645,7 @@ export function App() {
           if(automaticFineJob.current!==job)return;
           if(documentRevision.current!==job.revision){cancelAutomaticFinePreparation();return;}
           cancelAutomaticFinePreparation();
-          try{validateOneMileMap(map,next);showFineScene(1,next);}catch(error){fail(error);}
+          try{showFineScene(1,finishAutomaticOneMileScene(map,next));}catch(error){fail(error);}
         },error=>{if(automaticFineJob.current!==job)return;cancelAutomaticFinePreparation();if(documentRevision.current===job.revision)fail(error);});
       }).catch(error=>{if(automaticFineJob.current!==job)return;cancelAutomaticFinePreparation();if(documentRevision.current===job.revision)fail(error);});
       return true;
