@@ -1,0 +1,129 @@
+{
+  "run_id": "2026-11-22T0602-reviewer-HX061",
+  "task_id": "HX-BL-061",
+  "role": "reviewer",
+  "generation": 489,
+  "claim_ref": "agent-work/claims/2026-11-22T0602-reviewer-HX061.json",
+  "branch": "feature/hx-bl-061-smooth-bends",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "head_sha": "0a5526a22ad2815a6d9df9d3a57babbd8f523d24",
+  "tree_sha": "1396adb393a3a65885f9d0982707f94136bf7122",
+  "ci_checkout": "e5a1f57c7ea8f45a4c61a06a5a39c50ba8d59b55",
+  "pr_number": 512,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/512",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44974016910",
+  "previous_review_ref": "agent-work/evidence/HX-BL-061-F1/review-3c577a0/review.json",
+  "spec_ref": "agent-work/specs/HX-BL-061-smooth-bends-F1.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-061-F1/review-0a5526a/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-061-F1/review-0a5526a/score-assessment1.3-rc8.json",
+  "measurements_ref": "agent-work/evidence/HX-BL-061-F1/review-0a5526a/measurements.json",
+  "visual_ref": "agent-work/evidence/HX-BL-061-F1/0a5526a/mobile.png",
+  "result_ref": "agent-work/results/2026-11-22T0602-reviewer-HX061.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-22T0602-reviewer-HX061.json",
+  "published": false,
+  "release_authorized": false,
+  "role_selection_reason": "Очередь review_ready на точном SHA, действующего владельца задачи нет. Проверены 558 claims и 598 результатов.",
+  "status": "accepted_awaiting_owner_publication",
+  "execution_state": "accepted_awaiting_owner_publication",
+  "review_verdict": "accepted",
+  "accepted": true,
+  "review_ready": false,
+  "next_role": "business-analyst",
+  "next_task_id": "HX-BL-062",
+  "next_step": "До решения о выпуске аналитик готовит черновик утверждённой HX-BL-062 «Обнаружение точек интереса в классическом режиме». При разрешении программист выпускает проверенный пакет PR №512.",
+  "owner_decisions_needed": [
+    "Согласовать публикацию PR №512 на 0a5526a22ad2815a6d9df9d3a57babbd8f523d24."
+  ],
+  "reviewed_at": "2026-11-22T03:10:06.952Z",
+  "independent_review": "Отдельный проверяющий со свежим контекстом воспроизвёл на точном SHA совпадение вершины с обоими рёбрами (0 SVG), общей дороги в прямом и обратном порядке (0 SVG) и проверил фотографии экрана из архива CI по хешу. Все три замечания RV1 закрыты.",
+  "criteria": {
+    "AC1": "Та же река №1, дорога №1 и мост. При 5–6 милях скруглены 5 участков дороги и 15 реки, при 1 миле — 3 и 15. Мост на прежнем ребре.",
+    "AC2": "На двух сохранениях сохранены пары, координаты и число пересечений (7 и 2) в обоих масштабах. В пяти дорожных узлах и четырёх речных соединениях зазор нулевой. Проверены прибрежная мельница и вход, устье, метки водопада и порога, вид брода и переправы.",
+    "AC3": "По архиву CI подтверждены одинаковые координаты мостов, геометрия линий в SVG экрана и экспорта. Фотографии повёрнутого окна 390×900 содержат карту и мост в обеих версиях/масштабах. Обзорные масштабы покрыты предыдущей приёмкой; изменения RV1 относятся к отрисовке и выбору.",
+    "AC4": "Подтверждены отмена и возврат замены моста на переправу. Штатный CI проверил сохранение и повторный импорт, состояние генерации, 100 операций undo/redo. Базовая сборка отдельно воспроизвела ограничение специального варианта с общей дорогой; исходный документ сохранён."
+  },
+  "closed_findings": [
+    "HX061-RV1-01",
+    "HX061-RV1-02",
+    "HX061-RV1-03"
+  ],
+  "findings": [],
+  "limitations": [
+    "Синтетический вариант старого сохранения с дополнительной дорогой №8 воспроизводит прежний конфликт переправы при переходе к 1 миле. Исходная карта сохраняется. Оригинальное сохранение прошло при обоих масштабах.",
+    "Физический телефон не использовался. Эмуляция Chromium 390×900; одномильный фрагмент экспортированного PNG при увеличении выглядит менее резким."
+  ],
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "0a5526a22ad2815a6d9df9d3a57babbd8f523d24",
+    "source": "git diff base_sha..head_sha по логическим сценариям. Масштабы и ориентации одного сравнения не складываются.",
+    "added": 2,
+    "removed": 0,
+    "modified": 8,
+    "suites": [
+      {
+        "suite": "node:test / oneMile.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Локальное уменьшение дуги у ручья и сохранение свободного изгиба",
+        "reuse_or_new_reason": "Изолированный риск нового пересечения"
+      },
+      {
+        "suite": "Chromium / route-bends.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Один мост на двух сборках и в экспортированных картах",
+        "reuse_or_new_reason": "Проверяет исходное ребро, видимость в узком окне, неизменность данных после экспорта"
+      },
+      {
+        "suite": "Chromium / save-history.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 7,
+        "scenario": "Физический выбор в Classic/Mythic (2), выбор реки в месте наложения (1), совпадающих дорог (1), речного участка (1), речной вершины (1), всех отрезков при удалении пути (1)",
+        "reuse_or_new_reason": "Расширены существующие сценарии; проверяют принадлежность геометрии выбранному объекту и точность подсветки"
+      },
+      {
+        "suite": "Chromium / profile-large-map.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Физический выбор участка после поворота карты",
+        "reuse_or_new_reason": "Использует координаты реального отрисованного пути"
+      }
+    ],
+    "increment_since_previous_review": {
+      "base_sha": "3c577a034125d2c3d117347a0fdebe1b2f212ae7",
+      "added": 0,
+      "removed": 0,
+      "modified": 3
+    },
+    "executed": {
+      "node": {
+        "executed": 443,
+        "passed": 443,
+        "skipped": 0
+      },
+      "browser_scripts": {
+        "executed": 10,
+        "passed": 10,
+        "skipped": 0
+      },
+      "comparison": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "rng_job": {
+        "executed": 1,
+        "passed": 1,
+        "skipped": 0
+      },
+      "unrelated_pr506_job": "skipped",
+      "reviewer_diagnostics": "temporary; see measurements"
+    }
+  },
+  "test_review": "Новые проверки покрывают разные ошибки: пересечение дуги с ручьём и сравнение опубликованной карты с кандидатом, включая мобильный кадр. Расширения редактора проверяют видимую геометрию, доступность выбора и владельца линии. Оснований удалять или дублировать эти проверки нет.",
+  "preliminary_L1_delta": 1.2098765432098775
+}
