@@ -1230,7 +1230,8 @@ function geometryPlanInput(map:MapSnapshot,boundaryMap?:MapSnapshot,continuation
  * Every dependent layer is prepared before the controller replaces the scene. */
 function prepareAutomaticOneMileScene(map:MapSnapshot):Detail1State {
  checkedRiverMap(map);
- const state=prepareAutomaticSceneCandidate({...geometryPlanInput(map),scopePolicy:'automatic_presentation'});
+ const scene=prepareAutomaticSceneCandidate({...geometryPlanInput(map),scopePolicy:'automatic_presentation'});
+ const state=map.physicalGrid?.fineCellEdits ? {...scene,fineCellEdits:map.physicalGrid.fineCellEdits} : scene;
  validateOneMileMap(map,state);
  const local=localLakeGrid(map.physicalGrid)?map.physicalGrid:undefined;
  return {...state,viewStep:1,...(local?.selectedCell?{selectedCell:local.selectedCell,selectedWorldPoint:local.selectedWorldPoint}:{})};

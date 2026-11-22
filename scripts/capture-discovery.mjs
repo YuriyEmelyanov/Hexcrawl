@@ -20,7 +20,7 @@ assert.equal(map.map.regions[0].pointOfInterestKinds['0,0'], 'portal');
 const out = 'reports/HX-BL-062';
 await fs.mkdir(out, {recursive: true});
 const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4217', '--strictPort']);
-let browser;
+let browser, page;
 try {
   await new Promise((resolve, reject) => {
     server.stdout.on('data', data => { if (data.toString().includes('Local')) resolve(); });
@@ -28,7 +28,7 @@ try {
     server.once('exit', code => reject(Error('Preview exited with code ' + code)));
   });
   browser = await chromium.launch({headless: true});
-  const page = await browser.newPage({viewport: {width: 1500, height: 1000}, acceptDownloads: true});
+  page = await browser.newPage({viewport: {width: 1500, height: 1000}, acceptDownloads: true});
   await page.route(/mc\.yandex/, route => route.abort());
   await page.goto('http://127.0.0.1:4217/');
   await page.getByRole('button', {name: 'Переключить на русский', exact: true}).click();
@@ -91,6 +91,12 @@ try {
   await fine.getByRole('button',{name:'Edit'}).click();
   assert.equal(await fine.getByLabel('Untyped place discovery').inputValue(),'exploration');
   await fine.screenshot({path:out+'/Local-place-editor-mobile.png'});
+ } catch (error) {
+  if (page) {
+    console.error(await page.locator('.info-block--hex').allTextContents());
+    await page.screenshot({path:out+'/failure.png'}).catch(()=>{});
+  }
+  throw error;
 } finally {
   await browser?.close();
   server.kill();
