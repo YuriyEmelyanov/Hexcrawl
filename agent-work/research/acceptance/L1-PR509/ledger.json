@@ -630,8 +630,8 @@
     },
     {
       "id": "S03-C02",
-      "title": "Гранулярный reroll",
-      "weight": 25,
+      "title": "Выборочная перегенерация с закреплением объектов и слоёв",
+      "weight": 45,
       "legacy_G4": "Отдельно reroll: поле, POI, гекс, регион, слой или весь мир",
       "route": "common",
       "levels": [
@@ -639,8 +639,8 @@
       ],
       "witnesses": [],
       "diagnostic_grade": 1,
-      "observation": "Есть переброс отдельных значений и перегенерация региона. Отмена восстанавливает состояние генератора.",
-      "open": "Исчерпывающая проверка отдельных POI, гексов, слоёв и всего мира.",
+      "observation": "Подтверждён новый вариант последнего региона на 5 из 5 карт. Внешняя правка пропала на каждой карте.",
+      "open": "HX-BL-075, включая HX-BL-069 для RER-16",
       "evidence": [
         "test/tags.test.mjs",
         "test/worldContinuation.test.mjs"
@@ -663,44 +663,17 @@
           "low": 0,
           "high": 1
         }
-      ]
-    },
-    {
-      "id": "S03-C03",
-      "title": "Lock / pin",
-      "weight": 20,
-      "legacy_G4": "Любую сущность или слой можно защитить от перегенерации",
-      "route": "common",
-      "levels": [
-        1
       ],
-      "witnesses": [],
-      "diagnostic_grade": null,
-      "observation": "Обнаружена защита от отдельных потерь при восстановлении контрольной точки. Пользовательская блокировка произвольно выбранной сущности пока не подтверждена.",
-      "open": "Выбрать объект, закрепить его, перегенерировать окружение и проверить сохранение блокировки.",
-      "evidence": [
-        "test/saveSafety.test.mjs",
-        "src/App.tsx"
+      "merged_from": [
+        "S03-C02",
+        "S03-C03"
       ],
-      "quality": [
-        0,
-        1
-      ],
-      "quality_cases": [
-        {
-          "id": "S03-C03-prototype",
-          "cases": [
-            {
-              "case": "base",
-              "state": "unknown",
-              "low": 0,
-              "high": 1
-            }
-          ],
-          "low": 0,
-          "high": 1
-        }
-      ]
+      "weighted_acceptance": {
+        "rule_ref": "agent-work/score/rules/S03-C02.md",
+        "points": 0.5925925925925926,
+        "accepted_share": 0.026666666666666665,
+        "release_sha": "b887422b6b05663124f0ce431953f863350e4a86"
+      }
     },
     {
       "id": "S03-C04",
@@ -7527,16 +7500,16 @@
     "release": "d6daa2cdbc1c17b942d51fe050fac51752cf9fee",
     "core_ref": "agent-work/research/acceptance/L1-PR509/classic-common/README.md",
     "game_ref": "agent-work/research/acceptance/L1-PR509/2026-11-21-browser/verdict.json",
-    "published_total_rounded": 190.08,
+    "published_total_rounded": 187.59,
     "market": 0,
-    "version": "L1-24-S02-C05",
+    "version": "L1-24-S03-C02-merged",
     "prior_browser_total": 104.52887363806904,
     "prior_browser_scope": "34 common + 177 game rows; use Classic review for updated common points",
-    "new_score_awarded": 6.419753086419753,
-    "published_total_scope": "Срез PR509 с обновлением S01-C04 и S01-C05 по PR511. S02-C01 обновлён по PR511. S02-C02 принят по PR511. S02-C03 принят по PR511. S02-C04 оценён по PR511. В игровом блоке L1 20 игр и 4 равновесных масштаба. Доли приёмки масштабов ожидают определения. S02-C05 принят по четырём правилам L1 на PR511.",
-    "core_points": 131.26734236367653,
+    "new_score_awarded": 0.5925925925925926,
+    "published_total_scope": "Срез PR509 с обновлением S01-C04 и S01-C05 по PR511. S02-C01 обновлён по PR511. S02-C02 принят по PR511. S02-C03 принят по PR511. S02-C04 оценён по PR511. В игровом блоке L1 20 игр и 4 равновесных масштаба. Доли приёмки масштабов ожидают определения. S02-C05 принят по четырём правилам L1 на PR511. S03-C02 включает S03-C03, 29 правил, общий вес ядра 675.",
+    "core_points": 128.7735152031827,
     "game_points": 58.81521362843202,
-    "total_points": 190.08255599210855,
+    "total_points": 187.58872883161473,
     "scale_points": 0
   },
   "game_block": {
