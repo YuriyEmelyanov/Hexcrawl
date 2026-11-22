@@ -1,0 +1,188 @@
+{
+  "task_id": "HX-BL-062",
+  "role": "reviewer",
+  "run_id": "2026-11-22T1556-reviewer-HX062",
+  "head_sha": "5f600d559a7461c600a887aa5c6e5c939832ef3a",
+  "tree_sha": "f1c20dbd2374f1ae9e05077679fb9cb1ae30a6a0",
+  "branch": "feat/hx062-discovery",
+  "pr": 513,
+  "spec_ref": "agent-work/specs/HX-BL-062-discovery-F1.md",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "verdict": "changes_requested",
+  "release_ready": false,
+  "published": false,
+  "release_authorized": false,
+  "review_ready": false,
+  "findings": [
+    {
+      "id": "HX062-RV04",
+      "severity": "blocking",
+      "requirement": "F1 R1 / AC2",
+      "input": "test/fixtures/import-v2/baseline-mythic.json",
+      "seed": 1792059816,
+      "steps": "Open fixture in Classic. In old region 1, add a new cave on empty land 2/6, or in a separate copy add an underwater cave in empty lake 0/5. Read, export, reopen. Repeat in Knave and with an appended Classic region 28.",
+      "actual": "New type exists, stored discovery absent. Read-only card shows passage before and after reopening. This outcome has zero probability for each type.",
+      "samples": [
+        {
+          "owner": "poi:1:2,6",
+          "kind": "cave",
+          "roll": 64,
+          "expected": "exploration",
+          "save": "agent-work/evidence/HX-BL-062-F1/review-5f600d5/classic-cave-save.json"
+        },
+        {
+          "owner": "waterPoi:0,5",
+          "kind": "water:underwater_cave",
+          "roll": 69,
+          "expected": "interaction",
+          "save": "agent-work/evidence/HX-BL-062-F1/review-5f600d5/underwater-cave-save.json"
+        }
+      ],
+      "cause": "src/App.tsx:1265 uses original region generationMode to filter new manually added places even when active editing profile is Classic.",
+      "screenshot": "agent-work/evidence/HX-BL-062-F1/review-5f600d5/classic-cave-2-6.png",
+      "scope": "Choose eligibility from the creation operation, protect existing legacy and authored values. Verify both selected profiles, land and water, with and without appended Classic region, exact Undo/Redo and fresh import. Preserve true Mythic generation."
+    }
+  ],
+  "closed_original_reproductions": {
+    "RV01": "64 POIs, four seeds, two profiles, two adjacent regions. Final Knave dungeon at 1/3 on seed 1 received exploration after creation/reopen.",
+    "RV02": "All five newly generated region 28 owners valid. Added and deleted cave has no orphan; map restored identically by Undo, Redo and reload. 27 old regions retained. Separate RV04 concerns edits on those old regions.",
+    "RV03": "Declining reset retains migrated secret and both history stacks; accepting reset clears map and Undo restores authored document; Redo clears it again."
+  },
+  "acceptance": {
+    "AC1": "Real manual portal creation at rolls 19/20/54/55 matched passage/exploration/exploration/interaction; export/reload retained values. Seed42 normal capital and portal in CI fixture.",
+    "AC2": "All 41 rows × 100 outcomes and six real water additions matched. One-mile creation and projections verified by PR CI. Manual creation on an old region fails RV04.",
+    "AC3": "Ordinary POI moved from region 1 to 2, changed discovery across profiles, deletion and Undo/Redo matched complete saved states. Transfer/deletion of the central capital itself awaits explicit owner decision.",
+    "AC4": "Old Knave secret imported into both profiles with empty or exact two-line whitespace comment; clue absent on roundtrip. Bad mode and dangling reference rejected with document and both stacks unchanged.",
+    "AC5": "Repeat two successive generated regions in both profiles vs b887422. Non-feature document fields and RNG match, assigned modes repeat. RU and EN, desktop and 390 px shown in existing CI."
+  },
+  "reviewer_independence": {
+    "fresh_agent": "fresh_5f600",
+    "method": "Independent real App handlers for 8/8 scenarios (2 profiles × 2 map shapes × land/water), independently reproduced on root and then in Chromium."
+  },
+  "fresh_agent_automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-22T12:59:01Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-22T13:01:35Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "ci": {
+    "pr_run": 45020338894,
+    "checked_tree": "f1c20dbd2374f1ae9e05077679fb9cb1ae30a6a0",
+    "node": {
+      "ran": 444,
+      "passed": 444,
+      "skipped": 0
+    },
+    "focused_node": {
+      "ran": 3,
+      "passed": 3,
+      "skipped": 0
+    },
+    "typecheck": "passed",
+    "build": "passed",
+    "browser": {
+      "smoke": 10,
+      "passed": 10,
+      "skipped": 0,
+      "feature_capture": 1
+    },
+    "world_rng": {
+      "ran": 1,
+      "passed": 1
+    },
+    "conditional_engraving_comparison": "skipped",
+    "feature_artifact": 14753731107
+  },
+  "reviewer_browser": {
+    "workflow_run": 45025380266,
+    "job_id": 137217156437,
+    "artifact_id": 14755032799,
+    "artifact_sha256": "1012a959a5d1a80f0d977f92cacd42b03e47816befab9adfff71c555a8741e51",
+    "source_sha": "5f600d559a7461c600a887aa5c6e5c939832ef3a",
+    "diagnostic_commit": "92f7187af472c5026c146fdc935c20581e48e095",
+    "branch": "review/hx062-rv04-5f600d5",
+    "browser": "Chromium 151.0.7922.34",
+    "procedure": "Build after git diff against candidate for app sources/public/manifest/Vite config/fixtures. Imported handler save for screenshot, then separately clicked Add point/Cave in real UI, downloaded JSON, reopened and observed same card.",
+    "local_browser": "socket EPERM; snapshot and browser JSON obtained from existing GitHub Actions environment",
+    "repeat": {
+      "passed_run": 45025567881,
+      "commit": "6afff570d75b98fbbb09755e21e8c06708175a28",
+      "previous_attempt": 45025443780,
+      "previous_failure": "comparison SHA missing in shallow checkout; fetched full comparison history in repeat"
+    }
+  },
+  "score_assessment": {
+    "model_version": "1.3-rc8",
+    "level": "L1",
+    "criterion_id": "S05-C03",
+    "baseline_ref": "agent-work/research/experiments/score-model-1.3/rc8-levels/L1-PR509-functional-review/core.md",
+    "raw_weight": 20,
+    "total_weight": 675,
+    "maximum_points": 9.876543209876543,
+    "before": {
+      "grade": "G1",
+      "points": 2.4691358024691357
+    },
+    "after_provisional": {
+      "grade": "G2",
+      "points": 4.938271604938271
+    },
+    "delta": 2.4691358024691357,
+    "posted_delta": 0,
+    "head_sha": "5f600d559a7461c600a887aa5c6e5c939832ef3a",
+    "status": "preliminary_unpublished_changes_requested",
+    "evidence": "agent-work/evidence/HX-BL-062-F1/review-5f600d5/review.json",
+    "method": "Grade common L1 preparation against ordinary Classic workflows. Creating, editing, exporting and reopening modes works in ordinary Classic and Knave maps. Baseline G1 covered Knave only. No credit for player visibility or other games.",
+    "limitations": "RV04 restricts manual creation in old Mythic regions. Capital relocation/deletion is awaiting the owner. G3 user validation absent. Reassess new SHA; verify published build before posting once. L2/L3 unassessed."
+  },
+  "test_change_summary": {
+    "base_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
+    "head_sha": "5f600d559a7461c600a887aa5c6e5c939832ef3a",
+    "added": 2,
+    "removed": 0,
+    "modified": 1,
+    "suite": "node:test",
+    "scenario_risk": "Final Knave kind; accepted/deleted Classic record in new region 28 on mixed map; cancel reset of migrated Knave secret.",
+    "reuse_or_new_reason": "One existing generation case extended. Two distinct stateful save-safety regressions justify new cases. The mixed-map case never creates a POI on an older region. Extend that case with these two locations.",
+    "source": "git diff -U0 449e6fe..5f600d5 -- test; logical cases"
+  },
+  "full_pr_test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "5f600d559a7461c600a887aa5c6e5c939832ef3a",
+    "added": 3,
+    "removed": 0,
+    "modified": 10,
+    "suites": [
+      {
+        "suite": "node:test",
+        "added": 2,
+        "removed": 0,
+        "modified": 8
+      },
+      {
+        "suite": "browser",
+        "added": 1,
+        "removed": 0,
+        "modified": 2
+      }
+    ],
+    "source": "git diff b887422..5f600d5; previous exact-SHA rubric plus distinct Knave generation case and two new Node cases"
+  },
+  "github_review": {
+    "id": 6012411175,
+    "action": "COMMENT",
+    "disposition": "changes_requested",
+    "url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513#pullrequestreview-6012411175"
+  },
+  "evidence_commit": "a5a963f65255e4dfffff7cd24aec08ac0e212636",
+  "next_role": "programmer",
+  "next_step": "Программисту исправить HX062-RV04: назначать режим новым местам, вручную добавленным в Classic/Knave в прежний регион Mythic. Сверить на суше 2/6 и воде 0/5, проверить экспорт, открытие и Undo/Redo, передать новый SHA проверяющему.",
+  "forecast": "Один ограниченный цикл исправления и один независимой проверки. Срок выпуска зависит от решения по AC3, исправления и разрешения на публикацию."
+}
