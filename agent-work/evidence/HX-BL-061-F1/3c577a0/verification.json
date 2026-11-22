@@ -1,0 +1,201 @@
+{
+  "task_id": "HX-BL-061",
+  "stage_id": "BENDS",
+  "spec_ref": "agent-work/specs/HX-BL-061-smooth-bends-F1.md",
+  "role": "programmer",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "head_sha": "3c577a034125d2c3d117347a0fdebe1b2f212ae7",
+  "tree_sha": "1c9158df4d381be33bdb6d4d94bd569943e7f4cf",
+  "branch": "feature/hx-bl-061-smooth-bends",
+  "pr_number": 512,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/512",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44963546732",
+  "model_version": "1.3-rc8",
+  "criteria_evidence": [
+    {
+      "criterion_id": "S01-C02",
+      "row": "G4",
+      "level": "L1",
+      "evidence": "AC1, AC2, AC3: речные изгибы, непрерывность притоков, совпадение берегового контакта и положения мостов."
+    },
+    {
+      "criterion_id": "S01-C04",
+      "row": "PATH-10",
+      "level": "L1",
+      "evidence": "AC1, AC2, AC3: дуги дорог, развилки, пересечения, береговые подходы, совпадение карты и PNG."
+    }
+  ],
+  "score_assessment_status": "awaiting_independent_reviewer",
+  "product_score_changed": false,
+  "implementation": "На базовой и одномильной карте свободные повороты следуют фактическому углу. В тесном месте длина дуги уменьшается вплоть до исходной формы. Карта, выделение, пространственная сводка и PNG используют одни и те же видимые участки.",
+  "visuals": {
+    "before_after": "agent-work/evidence/HX-BL-061-F1/3c577a0/map-before-after.png",
+    "junctions": "agent-work/evidence/HX-BL-061-F1/3c577a0/junctions.png",
+    "measurements": "agent-work/evidence/HX-BL-061-F1/3c577a0/measurements.json",
+    "comparison_artifact_id": 14730760755,
+    "comparison_zip_sha256": "526ba852fa0fa9e17732d327dc3c5c59fea040812c6570d3e9851003790a4bc2",
+    "form_references": [
+      "agent-work/interviews/HX-BL-061/BENDS/tee.png",
+      "agent-work/interviews/HX-BL-061/BENDS/cross.png",
+      "agent-work/interviews/HX-BL-061/BENDS/tributary.png",
+      "agent-work/interviews/HX-BL-061/BENDS/sharp.png",
+      "agent-work/interviews/HX-BL-061/BENDS/mouth.png"
+    ],
+    "classic_artifact_id": 14731445203,
+    "classic_archive_sha256": "f262fbee1673d41b0dbbcbe915a542bd8566956297653fca084687531c0075cd",
+    "github_operations_commit": "66deb30d79c6577eb546cf9718c86bf8a150b2a3"
+  },
+  "acceptance_evidence": {
+    "AC1": "Chromium сравнил исходную и рабочую сборки на road-entry-zigzags.json. Река №1, дорога №1 и мост на ребре 0,56|24.249,70: центр моста и исходное ребро совпали в четырёх представлениях. На базовой карте скруглены 5 участков дороги №1 и 15 реки №1, на одномильной — 3 и 15.",
+    "AC2": "Реальные геометрии развилки, перекрёстка, притока и острого поворота без зазора. На второй карте Classic проверено впадение реки №1 в озеро №1. После скругления сохранены прежние пары, число и координаты 7 и 2 пересечений на двух картах при каждом масштабе. Проверены брод, смена моста на переправу, привязки ручного водопада и порога, принадлежность видимой дуги прежним ID в одномильной сводке. В допустимом варианте Knave тропа №8 до мельницы сохранила вход port:-7,3|-8,4:-45,21 и всю принятую геометрию подхода. Отдельный браузерный сценарий подтвердил выбор мельницы у реки и PNG в окнах 1500 и 390 пикселей.",
+    "AC3": "Реальный Chromium, обычное окно 1400×900 и поворот 90° в окне 390×900. Экспорт в обоих масштабах совпал по геометрии линий, ширинам, штрихам и положениям моста. В архиве отдельные PNG и снимки экрана по каждой комбинации. Сводки 12 и 24 миль побайтно эквивалентны при сериализации для четырёх выбранных ячеек каждого масштаба.",
+    "AC4": "После переключения масштаба, поворота и экспортов совпали сохранённая карта и счётчики. После повторного импорта JSON совпала карта. Замена моста на переправу, отмена и возврат воспроизвели соответствующую геометрию. В Node проверен местный возврат к прямой около ручья при сохранении соседнего свободного изгиба."
+  },
+  "scope_limits": [
+    "Программная проверка и настоящие снимки Chromium. Общая независимая приёмка, визуальная сверка с пятью эталонами F1 и предварительная оценка остаются у проверяющего.",
+    "На старых примерах sea-pocket-map и lake-reentry-map одномильный режим сообщает о несовместимой исходной геометрии на обеих версиях. Оригинал сохранён на обеих.",
+    "В интерфейсе обеих сборок доступны 5–6 и 1 миля. Пространственные сводки совместимых форматов 12 и 24 миль сравнены с опубликованной базой на четырёх координатах каждого масштаба."
+  ],
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "3c577a034125d2c3d117347a0fdebe1b2f212ae7",
+    "added": 2,
+    "removed": 0,
+    "modified": 7,
+    "source": "Сопоставление логических сценариев в diff b887422b6b05663124f0ce431953f863350e4a86...3c577a034125d2c3d117347a0fdebe1b2f212ae7 по каждому runner. Повороты и размеры экрана в одном сквозном случае не суммируются.",
+    "suites": [
+      {
+        "suite": "node:test / test/oneMile.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Свободная дуга и близкий ручей. Ограничение скругления действует только у конфликтующего участка.",
+        "reuse_or_new_reason": "Прежние проверки реки и брода не обнаруживали нового пересечения на самом изгибе."
+      },
+      {
+        "suite": "Chromium / test/browser/route-bends.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Одна карта до/после: мост на исходном речном ребре, два масштаба и ориентации, PNG и повторное открытие JSON.",
+        "reuse_or_new_reason": "Существующий прогон проверял одномильную сцену, но не сравнивал отрисовку изгиба с опубликованной базой."
+      },
+      {
+        "suite": "Chromium / test/browser/save-history.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 6,
+        "scenario": "Физический выбор реки в Classic и Mythic (2), выбор среди совпадающих речных участков (1). Выделение одного из совпадающих дорожных участков (1), выбранного русла (1) и полного пути при подтверждении удаления (1).",
+        "reuse_or_new_reason": "Существующие сценарии проверяют физический клик и подсветку выбранного пути с учётом новой формы линии."
+      },
+      {
+        "suite": "Chromium / scripts/profile-large-map.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Выбор видимого речного участка на повёрнутой растровой карте.",
+        "reuse_or_new_reason": "Сохранены прежние критерии сценария, координаты извлекаются из SVGGeometryElement."
+      }
+    ]
+  },
+  "verification_methods": {
+    "geometric_samples": "Приложение открыло два реальных JSON. Для каждого исходного ID сравнивались все пары видимых участков дороги и реки по количеству и положению пересечений в каждом масштабе. У развилок отдельно измерялись зазоры концов всех присоединённых участков.",
+    "user_operations": "Временная диагностика использовала штатные обработчики карты и историю. Браузерные тесты работали с реальным DOM, поворотом, кликом, загрузкой и сохранением файлов.",
+    "gallery_source": "Фрагменты PNG без дорисовки. Четыре первых кадра — road-entry-zigzags при 5–6 милях, последний — classic-six-regions-seed42 при 1 миле.",
+    "legacy_imports": "При выборе 1 мили старые sea-pocket-map.json и lake-reentry-map.json отклонены на базе и кандидате с тем же сообщением. Оба исходных документа сохранены."
+  },
+  "road_to_bank_poi": {
+    "fixture": "road-entry-zigzags",
+    "variant": "Допустимый вариант сохранения road-entry-zigzags с береговой мельницей Knave и тропой №8 от (−8,4) к мельнице (−7,3).",
+    "id": 8,
+    "source": "-7,3|-8,4",
+    "poi": "detail-poi:8",
+    "river": 3,
+    "native_pinned": true,
+    "fine_retained": true,
+    "access": [
+      {
+        "routeId": "road:8",
+        "accessNodeId": "port:-7,3|-8,4:-45,21",
+        "oldEntry": {
+          "x": -34.75,
+          "y": 18.619546181365433
+        },
+        "newEntry": {
+          "x": -34.949999999999996,
+          "y": 18.273136019851655
+        }
+      }
+    ],
+    "validated": true
+  },
+  "run_counts": {
+    "browser_runner_scripts": {
+      "executed": 10,
+      "passed": 10,
+      "skipped": 0
+    },
+    "comparison_scenario": {
+      "executed": 1,
+      "passed": 1,
+      "skipped": 0
+    },
+    "one_mile_manifest_cases": {
+      "executed": 17,
+      "passed": 17,
+      "skipped": 0,
+      "within_browser_runner": true
+    },
+    "world_rng_logged_scenario_groups": {
+      "executed": 15,
+      "passed": 15,
+      "skipped": 0
+    },
+    "local_affected_node": {
+      "executed": 32,
+      "passed": 32,
+      "skipped": 0
+    },
+    "browser_log": [
+      " E5_ACTIVE_RASTER_POINTER {\"hexes\":1200,\"rotated\":true,\"actualPointer\":true,\"riverId\":1}",
+      " E5 full editor: Classic/Mythic, Find/map/rotation, native F, deep ford and marker choices both directions, reverse/replacement/delete, PNG/JSON exclusion, roundtrip/undo, RU/EN1500/390 passed.",
+      " HX023 direct edit: five types/two locales, legacy preservation, Enter/Escape/invalid/fault, language completion, actual desktop/390 passed.",
+      " Save/history acceptance passed in 151.0.7922.34: full corpus, manual families, 100 mixed UI undo/redo, failures, serialization, classic/Mythic checkpoints, RU/EN."
+    ],
+    "full_node": {
+      "executed": 443,
+      "passed": 443,
+      "skipped": 0,
+      "failed": 0
+    }
+  },
+  "checks": [
+    [
+      "world-random",
+      137027464367,
+      "completed",
+      "success"
+    ],
+    [
+      "browser",
+      137027464553,
+      "completed",
+      "success"
+    ],
+    [
+      "check",
+      137027464623,
+      "completed",
+      "success"
+    ],
+    [
+      "engraved-map-comparison",
+      137027465160,
+      "completed",
+      "skipped"
+    ]
+  ],
+  "ci_checkout_sha": "6f14c118a4e1a549e77285da52ac081fd6d656f9",
+  "ci_checkout_tree": "1c9158df4d381be33bdb6d4d94bd569943e7f4cf",
+  "status": "review_ready"
+}
