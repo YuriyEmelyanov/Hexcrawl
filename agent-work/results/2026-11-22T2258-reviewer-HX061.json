@@ -1,0 +1,111 @@
+{
+  "task_id": "HX-BL-061",
+  "run_id": "2026-11-22T2258-reviewer-HX061",
+  "role": "reviewer",
+  "generation": 569,
+  "status": "changes_requested",
+  "review_verdict": "changes_requested",
+  "head_sha": "a9253b2adc7a2dce2816666baa874e5d1e2cd640",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "previous_head_sha": "0a5526a22ad2815a6d9df9d3a57babbd8f523d24",
+  "pr_number": 512,
+  "reason": "Новый пакет review_ready по замечаниям у моста и устья. HX062 имеет отдельного владельца.",
+  "accepted": false,
+  "release_authorized": false,
+  "published": false,
+  "findings": [
+    {
+      "id": "HX061-RV2-01",
+      "title": "Карточка гекса расходится с видимой дорогой на карте без рек",
+      "input": "road-only.json",
+      "action": "Импортировать JSON, перейти на 1 милю, посмотреть гексы -1/1 и 0/0.",
+      "actual": [
+        {
+          "hex": "-1/1",
+          "visible": true,
+          "card": false
+        },
+        {
+          "hex": "0/0",
+          "visible": false,
+          "card": true
+        }
+      ],
+      "method": "Импорт и штатное переключение через createGenerationHarness. Сопоставлены сегменты roadPaint в мировых координатах с fineSummary.routes на каждом гексе.",
+      "expected": "В обоих гексах карточка соответствует отображаемой линии. Проверить ту же геометрию после повторного открытия."
+    },
+    {
+      "id": "HX061-RV2-02",
+      "title": "Береговой POI теряет контакт с водой после отрисовки дуги",
+      "input": "Вариант road-entry-zigzags из test/geometryPlan.test.mjs с правилом Knave structures row 96",
+      "poi": "detail-poi:7",
+      "river": 3,
+      "edge": "-218.238,154|-242.487,140",
+      "contact": [
+        -29.4133974596,
+        16.9818329411
+      ],
+      "before_clearance_miles": -5.55e-17,
+      "painted_clearance_miles": 0.00985671890916,
+      "expected": "Сохранённая точка контакта остаётся на фактическом видимом берегу. Проверить привязанный дорожный подход."
+    }
+  ],
+  "review_scope": "Сверены все src, test и package blob с деревом кандидата. Независимый повтор на двух картах. Проверены CI и два замечания обсуждения PR.",
+  "independent_agent": "independent_a925",
+  "geometry": {
+    "bridges": 6,
+    "bridge_centerline_max_error_miles": 4.45e-16,
+    "inlet_outlet_mode_records": 12,
+    "shore_max_error_miles": 7.11e-15
+  },
+  "image": "agent-work/evidence/HX-BL-061-F1/a9253b2/bridge-mouth.jpg",
+  "image_blob": "ba05ed54ce65009e9b0e3d9d86934c0f64064769",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45057643156",
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "a9253b2adc7a2dce2816666baa874e5d1e2cd640",
+    "added": 4,
+    "removed": 0,
+    "modified": 7,
+    "suite": "Node и браузер",
+    "scenario": "Одна проверка сближения с ручьём, два параметрических случая стыка, один браузерный сценарий до/после. Уточнены семь существующих проверок выбора и редактирования.",
+    "reuse_or_new_reason": "Два новых случая различают мост и устье и обнаруживают чрезмерное выпрямление у каждого контакта.",
+    "source": "GitHub diff base..head, test/browser/save-history.smoke.mjs, route-bends.mjs, oneMile.test.mjs, refinedBendContacts.test.mjs",
+    "increment_since_prior": {
+      "base_sha": "0a5526a22ad2815a6d9df9d3a57babbd8f523d24",
+      "added": 2,
+      "removed": 0,
+      "modified": 0
+    },
+    "executed": {
+      "targeted_node": {
+        "executed": 2,
+        "passed": 2,
+        "skipped": 0
+      },
+      "ci": {
+        "check": "success",
+        "browser": "success",
+        "world_random": "success",
+        "engraved_map_comparison": "skipped"
+      },
+      "reviewer_diagnostics": "Геометрия на двух сохранениях и отдельная карта без рек. Локальный Chromium не запустился из-за запрета socket; для показа использован проверенный сохранённый снимок."
+    }
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-061-F1/review-a9253b2/score-assessment.json",
+  "next_role": "programmer",
+  "next_step": "Программисту исправить карточки на картах без рек и сохранить контакт берегового POI со сглаженным руслом. Передать новый SHA на повторную приёмку.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "at": "2026-11-22T19:58:21.272Z"
+    },
+    "end": {
+      "is_enabled": true,
+      "at": "2026-11-22T20:02:38.025Z"
+    },
+    "restored": false,
+    "errors": []
+  }
+}
