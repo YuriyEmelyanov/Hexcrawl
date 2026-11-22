@@ -1247,7 +1247,7 @@ function scopedGeometryBoundary(map:OneMileDocumentMap,state:Detail1State){
  // This outward envelope changes no road/rail width or physical calibration.
  return prepareGeometryRefinementBoundary({...refinementSourceInput(map,state,refinement.riverPlan),widths,lakeInputs:geometryLakeInputs(map,state.grid.origin),roadPaddingMiles:detailSourcePixelToWorld({x:14,y:0}).x},refinement);
 }
-function withPoiDiscovery(before: MapSnapshot, after: MapSnapshot, moves: ReadonlyMap<string,string|null> = new Map()): MapSnapshot {
+function withPoiDiscovery(before: MapSnapshot, after: MapSnapshot, moves: ReadonlyMap<string,string|null> = new Map(), creationMode?: GenerationMode): MapSnapshot {
   const previous = poiNameLocators(before);
   const live = poiNameLocators(after);
   const values: DiscoveryMap = {};
@@ -1259,10 +1259,14 @@ function withPoiDiscovery(before: MapSnapshot, after: MapSnapshot, moves: Readon
     if (existing) values[owner] = existing;
     else if (!previous.has(source)) {
       const [prefix, id, cell] = owner.split(':');
-      const region = prefix === 'waterPoi'
-        ? after.regions.find(r => r.hexes.some(h => hexKey(h) === id))
-        : regions.get(Number(id));
-      if (region?.generationMode === 'mythic' || (!region && after.regions.every(r => r.generationMode === 'mythic'))) continue;
+      const region = prefix === 'waterPoi' ? undefined : regions.get(Number(id));
+      // Manual edits follow the active profile even inside imported regions.
+      // Other transitions may reconcile places from several region profiles.
+      if (creationMode === 'mythic') continue;
+      if (creationMode === undefined) {
+        const origin = prefix === 'waterPoi' ? after.regions.find(r => r.hexes.some(h => hexKey(h) === id)) : region;
+        if (origin?.generationMode === 'mythic' || (!origin && after.regions.every(r => r.generationMode === 'mythic'))) continue;
+      }
       const kind = prefix === 'waterPoi' ? 'water:' + after.waterPoiByKey.get(id)
         : region && hasCentralPoi(region) && hexKey(region.centerHex) === cell ? region.centralPoiKind
         : region?.pointOfInterestKinds?.[cell];
@@ -1273,8 +1277,8 @@ function withPoiDiscovery(before: MapSnapshot, after: MapSnapshot, moves: Readon
   return {...after, poiDiscovery: values};
 }
 
-function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map(),permittedScopeRemovals:GeometryScopeRemovalIntent={}):MapSnapshot{
- candidate=withPoiDiscovery(before,candidate,moves);
+function prepareSourceTransition(before:MapSnapshot,candidate:MapSnapshot,moves:ReadonlyMap<string,string|null>=new Map(),permittedScopeRemovals:GeometryScopeRemovalIntent={},creationMode?:GenerationMode):MapSnapshot{
+ candidate=withPoiDiscovery(before,candidate,moves,creationMode);
  const layer=before.physicalGrid;
  if(!layer?.geometryRefinement)return candidate;
  const accepted=candidate.physicalGrid??layer;
@@ -14036,7 +14040,7 @@ export function App() {
       if(map.knave){const losses=knaveLosses(map.knave,knaveMapContext(map));
         if(losses.length){if(!window.confirm(language==='ru'?`Изменение удалит содержимое точек и данные проходимости/обнаружения Knave (${losses.length}). Отмена вернёт их.`:`This edit removes Knave point content and terrain/discovery data (${losses.length}). Undo can restore it.`))return false;
           const layer=structuredClone(map.knave);for(const loss of losses){dropKnaveLoss(layer,loss);}map={...map,knave:layer};}}
-      map=prepareSourceTransition(captureMap(),map,new Map(),permittedScopeRemovals);
+      map=prepareSourceTransition(captureMap(),map,new Map(),permittedScopeRemovals,generationMode);
       checkedRiverMap(map);
       validateAcceptedLakeShores(map);
       const prepared = structuredClone({ ...map, toponyms: reconcileNames ? synchronizeToponyms(map.toponyms,

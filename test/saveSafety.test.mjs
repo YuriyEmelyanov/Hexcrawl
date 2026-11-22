@@ -465,6 +465,19 @@ test('Classic places on mixed maps retain valid discovery records through deleti
  assert.equal(app().safelyAddRegionToMap(app().candidateHexes[0],{targetSize:18,landType:'wild',coastalPreference:'mainland'}).success,true);
  const modes=()=>app().createSaveData().map.poiDiscovery;
  assert.ok(['exploration','interaction'].includes(modes()['poi:28:-4,16']));
+ // Region 1 came from Mythic, but the current editor is Classic.
+ app().setEditMode(true);
+ app().setSelectedHex({q:2,r:6});
+ app().setSelectedPoiKind('cave');
+ assert.equal(modes()['poi:1:2,6'],'exploration');
+ app().setSelectedHex({q:0,r:5});
+ app().setSelectedWaterPoiKind('underwater_cave');
+ assert.equal(modes()['waterPoi:0,5'],'interaction');
+ app().undoMap();
+ assert.equal(modes()['waterPoi:0,5'],undefined);
+ assert.equal(modes()['poi:1:2,6'],'exploration');
+ app().redoMap();
+ assert.equal(modes()['waterPoi:0,5'],'interaction');
  const owner='poi:28:-2,12';
  app().setEditMode(true);app().setSelectedHex({q:-2,r:12});app().setSelectedPoiKind('cave');
  assert.ok(['exploration','interaction'].includes(modes()[owner]));
