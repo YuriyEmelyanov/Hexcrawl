@@ -6,8 +6,8 @@
     "2026-11-01"
   ],
   "archive_objects": 688423,
-  "retrieved_unique": 138658,
-  "outstanding_archive_count_minus_retrieved": 549765,
+  "retrieved_unique": 139119,
+  "outstanding_archive_count_minus_retrieved": 549304,
   "cells": {
     "osr/posts/2025-11": {
       "archive_count": 731,
@@ -91,7 +91,7 @@
     },
     "osr/posts/2025-12": {
       "archive_count": 661,
-      "retrieved_unique": 409,
+      "retrieved_unique": 661,
       "count_source": "https://arctic-shift.photon-reddit.com/api/time_series?key=r%2Fosr%2Fposts%2Fcount&precision=month&after=2025-11-01&before=2026-11-01",
       "last_cursor_pass": {
         "sub": "osr",
@@ -175,7 +175,49 @@
           "hi": 1764979200,
           "error": "HTTP Error 429: Too Many Requests"
         }
-      ]
+      ],
+      "reconciled_by_run": "agent-work/research/runs/2026-11-22-osr-december-1330.json",
+      "status": "complete_against_archive_count",
+      "last_daily_reconciliation": {
+        "utc_days": 31,
+        "counts": [
+          24,
+          28,
+          28,
+          25,
+          20,
+          27,
+          32,
+          19,
+          18,
+          21,
+          30,
+          22,
+          19,
+          21,
+          18,
+          17,
+          17,
+          23,
+          20,
+          21,
+          20,
+          14,
+          27,
+          18,
+          11,
+          24,
+          16,
+          13,
+          21,
+          19,
+          28
+        ],
+        "prior_unique": 409,
+        "new_ids": 252,
+        "all_prior_ids_recovered": true,
+        "reference": "agent-work/research/runs/2026-11-22-osr-december-1330.json"
+      }
     },
     "osr/posts/2026-01": {
       "archive_count": 747,
@@ -667,7 +709,7 @@
     },
     "osr/comments/2025-12": {
       "archive_count": 11316,
-      "retrieved_unique": 205,
+      "retrieved_unique": 412,
       "count_source": "https://arctic-shift.photon-reddit.com/api/time_series?key=r%2Fosr%2Fcomments%2Fcount&precision=month&after=2025-11-01&before=2026-11-01",
       "last_cursor_pass": {
         "sub": "osr",
@@ -690,11 +732,15 @@
         ],
         "access_level": "public",
         "date": "2026-11-22"
+      },
+      "latest_thread_supplement": {
+        "ref": "agent-work/research/runs/2026-11-22-osr-december-1330.json",
+        "added": 207
       }
     },
     "osr/comments/2026-01": {
       "archive_count": 12470,
-      "retrieved_unique": 1376,
+      "retrieved_unique": 1378,
       "count_source": "https://arctic-shift.photon-reddit.com/api/time_series?key=r%2Fosr%2Fcomments%2Fcount&precision=month&after=2025-11-01&before=2026-11-01",
       "last_cursor_pass": {
         "sub": "osr",
@@ -706,7 +752,11 @@
         "error": "HTTP Error 422: Unprocessable Entity"
       },
       "successful_additional_utc_windows": [],
-      "failed_additional_windows": []
+      "failed_additional_windows": [],
+      "latest_thread_supplement": {
+        "ref": "agent-work/research/runs/2026-11-22-osr-december-1330.json",
+        "added": 2
+      }
     },
     "osr/comments/2026-02": {
       "archive_count": 9071,
@@ -3993,5 +4043,5 @@
     }
   ],
   "assessment": "Границы окон и идентификаторы восстановленных записей приведены отдельно. Число в архивном ряду сравнивается с полученными уникальными ID. Расхождения могут включать удалённые или недоступные записи. Просмотр выдачи по словам не обеспечивает сплошной переписи.",
-  "next": "Сверить декабрьские посты r/osr по дням и проверить источники для недостающих ID. Индекс содержит 409 постов при архивном счётчике 661."
+  "next": "Декабрь 2025, r/osr/comments: сверить текущие 412 ID с дневными окнами, начиная с 1 декабря UTC. Запрашивать меньшие окна при достижении лимита страницы, объединять по ID. Учесть 23 уже прочитанные ветки. Отдельный остаток исторических кандидатов — 110."
 }
