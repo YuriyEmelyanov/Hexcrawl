@@ -35,6 +35,8 @@ export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Po
   const corners = new Map<string, Corner>();
   for (const [key, arms] of nodes) {
     if (arms.length < 2 || pinned.has(key) || arms.some(a => a.route.fixed)) continue;
+    // Overlapping source spans must follow the same line for every owner.
+    if (arms.length > 2 && new Set(arms.map(arm => pointKey(arm.next))).size < arms.length) continue;
     const groups = new Map<number, Arm[]>();
     for (const arm of arms) {
       const group = groups.get(arm.route.routeId);

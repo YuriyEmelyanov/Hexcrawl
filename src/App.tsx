@@ -16153,6 +16153,21 @@ export function App() {
   const riverMapTargets=editMode?rivers.flatMap(r=>r.vertexPath.slice(1).flatMap((b,i)=>{const a=r.vertexPath[i],key=edgeKey(a,b),hex=regions.flatMap(r=>r.hexes).find(h=>getHexEdgeKeys(h).has(key));return hex?[{riverId:r.id,hexKey:hexKey(hex),edgeKey:key,a,b}]:[];})):[];
   const riverEdgePoints = (id:number,a:RiverVertex,b:RiverVertex) => svgPoints(riverPaint.get(id+':'+edgeKey(a,b))
     ?? [a,b].map(p=>({x:p.x+riverOffset.x,y:p.y+riverOffset.y})));
+  function selectedRiverVertexPoint(target: RiverFeatureTarget) {
+    const river = rivers.find(r => r.id === target.riverId);
+    if (!river || !target.vertexKey) return;
+    const index = river.vertexPath.findIndex(v => v.key === target.vertexKey);
+    if (index < 0) return;
+    const vertex = river.vertexPath[index];
+    const previous = river.vertexPath[index - 1];
+    const next = river.vertexPath[index + 1];
+    const paintedEdge = (neighbor: RiverVertex) => riverPaint.get(river.id + ':' + edgeKey(vertex, neighbor));
+    const incoming = previous && paintedEdge(previous);
+    return (incoming && incoming[incoming.length - 1]) ?? (next && paintedEdge(next)?.[0])
+      ?? { x: vertex.x + riverOffset.x, y: vertex.y + riverOffset.y };
+  }
+  const selectedRiverVertex = editMode && riverFeatureTarget?.vertexKey
+    ? selectedRiverVertexPoint(riverFeatureTarget) : undefined;
   const activateMapRiver=(event:React.MouseEvent<SVGPolylineElement>,target:RiverFeatureTarget)=>{
     event.stopPropagation();if(riverDraftGesture.current?.moved)return;
     if(event.detail===0){chooseMapRiver(target);return;}
@@ -17699,7 +17714,7 @@ export function App() {
             </g>}
             {editMode&&riverFeatureTarget&&riverFeatureTarget.hexKey===selectedHexKey&&!roadDraft&&!obstacleDraft&&<g data-editor-only="river-feature" transform={mapRotationTransform} pointerEvents="none">
               {rivers.filter(r=>r.id===riverFeatureTarget.riverId).flatMap(r=>r.vertexPath.slice(1).map((v,i)=>({a:r.vertexPath[i],b:v}))).filter(e=>riverFeatureTarget.edgeKey?riverReachKeys.has(edgeKey(e.a,e.b)):false).map(e=><polyline fill="none" data-river-reach-edge={edgeKey(e.a,e.b)} key={edgeKey(e.a,e.b)} points={riverEdgePoints(riverFeatureTarget.riverId,e.a,e.b)} stroke="#f7dc6f" strokeWidth={4} strokeDasharray="6 3" />)}
-              {riverFeatureTarget.vertexKey&&rivers.find(r=>r.id===riverFeatureTarget.riverId)?.vertexPath.filter(v=>v.key===riverFeatureTarget.vertexKey).map(v=><circle key={v.key} cx={v.x+riverOffset.x} cy={v.y+riverOffset.y} r={6} fill="#f7dc6f" />)}
+              {selectedRiverVertex && <circle cx={selectedRiverVertex.x} cy={selectedRiverVertex.y} r={6} fill="#f7dc6f" />}
             </g>}
             {(riverCommandPreview||riverDraft?.riverId!==undefined)&&<g data-editor-only="river-preview" transform={mapRotationTransform} pointerEvents="none">
               <defs><marker id="river-preview-arrow" viewBox="0 0 10 10" refX={9} refY={5} markerWidth={4} markerHeight={4} orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f7dc6f" /></marker></defs>

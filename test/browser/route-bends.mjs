@@ -75,8 +75,32 @@ async function sample(dir, version, port) {
         assert.ok(records[label].sameExport,'screen and exported geometry differ');
         assert.ok(records[label].onRiver,'bridge no longer meets river');
         await menu.evaluate(el=>el.open=false);
+        if (rotated) {
+          const toggle=page.locator('.side-panel-toggle');
+          if (await toggle.getAttribute('aria-expanded')==='true') await toggle.click();
+          await page.waitForFunction(()=>document.querySelector('.map-viewport').clientHeight >= innerHeight-2);
+          const viewport=page.locator('.map-viewport');
+          await viewport.evaluate(el=>el.scrollIntoView({block:'center',behavior:'instant'}));
+          const center=records[label].center;
+          await viewport.evaluate((el,c)=>{
+            const svg=el.querySelector('svg'),box=el.getBoundingClientRect();
+            const p=new DOMPoint(c.x,c.y).matrixTransform(svg.getScreenCTM());
+            el.scrollBy({left:p.x-box.left-box.width/2,top:p.y-box.top-box.height/2,behavior:'instant'});
+          },center);
+          records[label].screen=await viewport.evaluate((el,c)=>{
+            const svg=el.querySelector('svg'),matrix=svg.getScreenCTM();
+            const p=new DOMPoint(c.x,c.y).matrixTransform(matrix);
+            // A whole patch around the bridge must show the map, including its approaches.
+            const radius=48;
+            for (const dx of [-radius,0,radius]) for (const dy of [-radius,0,radius]) {
+              if (!svg.contains(document.elementFromPoint(p.x+dx,p.y+dy))) throw Error('Bridge and approaches outside visible map');
+            }
+            return {x:p.x,y:p.y,scale:Math.hypot(matrix.a,matrix.b),radius};
+          },center);
+        }
         await page.screenshot({path:path.join(outputDir,version+'-'+label+'-screen.jpg'),type:'jpeg',quality:80});
         if (rotated) {
+          await page.locator('.side-panel-toggle').click();
           await page.locator('.rotate-map-button').click();
           await page.setViewportSize({width:1400,height:900});
         }

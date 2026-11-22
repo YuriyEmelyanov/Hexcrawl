@@ -474,11 +474,15 @@ try {
  await button('Отменить').click();assert.deepEqual(await snapshot(),draftBefore);await button('Повторить').click();assert.deepEqual(await snapshot(),draftAfter);
  // R2/R3: extend this runner with overlapping legacy identity and real keyboard activation.
  const overlap=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
- const original=overlap.map.roads[0],shared=original.segments[0],copyId=Math.max(...overlap.map.roads.map(r=>r.id))+1;
+ const original=overlap.map.roads.find(r=>r.id===2);
+ const shared=original.segments.find(s=>s.from.q===-2 && s.from.r===0 && s.to.q===-3 && s.to.r===0);
+ const copyId=Math.max(...overlap.map.roads.map(r=>r.id))+1;
  overlap.map.roads.push({...structuredClone(original),id:copyId,segments:[structuredClone(shared)]});overlap.counters.nextRoadId=copyId+1;
  await load(overlap);await select(`${shared.from.q},${shared.from.r}`);
  if(await button('Редактировать').count())await button('Редактировать').click();
  const pair=[`${shared.from.q},${shared.from.r}`,`${shared.to.q},${shared.to.r}`].sort().join('|');
+ const paintedShared=id=>page.locator(`[data-road-id="${id}"][data-source-segment="${pair}"]`).getAttribute('points');
+ assert.equal(await paintedShared(copyId),await paintedShared(original.id),'both owners paint a single shared line');
  for(const id of [original.id,copyId]){
   const actual=page.getByRole('button',{name:`Участок ${id}: ${pair}`,exact:true});
   await actual.focus();await actual.press('Enter');
@@ -531,6 +535,20 @@ try {
  if(vertexKey===selectedRiver.vertexPath[0].key)assert.ok(await waterfallSelect.locator('option[value="on"]').isDisabled(),'source waterfall forbidden');
  await waterfallSelect.selectOption('off');
  assert.ok((await snapshot()).map.riverFeatures.waterfalls.some(e=>e.vertexKey===vertexKey&&e.state==='off'));
+ await select('-5,0');
+ await page.locator('[data-river-choice="5"]').click();
+ const bendKey='-266.736,-14';
+ await page.locator(`[data-river-vertex-choice="${bendKey}"]`).click();
+ const distances=await page.locator('[data-editor-only="river-feature"] circle').evaluate((circle,key)=>{
+  const x=circle.cx.baseVal.value,y=circle.cy.baseVal.value;
+  return [...document.querySelectorAll('[data-river-id="5"][data-source-edge]')]
+   .filter(line=>line.dataset.sourceEdge.split('|').includes(key))
+   .map(line=>Math.min(...[0,line.points.length-1].map(i=>{
+    const p=line.points.getItem(i);return Math.hypot(x-p.x,y-p.y);
+   })));
+ },bendKey);
+ assert.equal(distances.length,2);
+ assert.ok(distances.every(d=>d<.001),'selected vertex meets both painted river edges');
  // Restore the input fixture and selection for the existing E3 checks below.
  await load(roadMap);await select(`${seg.from.q},${seg.from.r}`);await ensureEdit();
  const roadLabel=`Участок ${road.id}: ${seg.from.q},${seg.from.r} → ${seg.to.q},${seg.to.r}`;
