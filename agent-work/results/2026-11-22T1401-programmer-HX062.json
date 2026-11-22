@@ -1,0 +1,143 @@
+{
+  "task_id": "HX-BL-062",
+  "role": "programmer",
+  "run_id": "2026-11-22T1401-programmer-HX062",
+  "scope": "HX-BL-062 F1",
+  "generation": 526,
+  "role_selection_reason": "Утверждённая F1 и свободный слот программиста. Предыдущая передача запрашивала одномильное место и проверку жизненного цикла. PR512 ожидает отдельного разрешения выпуска. Учёт PR511 по 1.3-rc8 ранее завершён.",
+  "spec_ref": "agent-work/specs/HX-BL-062-discovery-F1.md",
+  "branch": "feat/hx062-discovery",
+  "base_sha": "8da7853e9bd9ecaf9f8ebe8a61f96f6a18f386fe",
+  "head_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
+  "tree_sha": "8895531d0b0e8cdc9ef779030e4ec9da4cc4943d",
+  "pr_number": 513,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45016252232",
+  "evidence_ref": "agent-work/evidence/HX-BL-062-F1/449e6fe/verification.json",
+  "images_commit": "4d5635d2dca6c0e5cafd36d75ea4cea6b9470849",
+  "images": [
+    "agent-work/evidence/HX-BL-062-F1/449e6fe/Local-place-desktop.png",
+    "agent-work/evidence/HX-BL-062-F1/449e6fe/Local-place-editor-mobile.png"
+  ],
+  "save_ref": "agent-work/evidence/HX-BL-062-F1/449e6fe/local-place.json",
+  "visible_progress": "В гексе 0/0 независимо сохранены секретный портал и исследуемое одномильное место. После открытия того же JSON значения видны в английском редакторе при 390 px.",
+  "next_role": "interviewer",
+  "next_step": "Интервьюеру уточнить только F1 AC3: достаточно ли подтвердить изменение режима, типа и имени у столицы, а перенос, удаление и Undo/Redo — у перемещаемой точки. Проверяющий может независимо проверить остальной F1 на SHA 449e6fe4871f3148da0fbd3bcd573be997890557.",
+  "question_scope": "F1 AC3, только перемещение и удаление центра региона",
+  "owner_question": "Сохраняем правило, что столица привязана к центру региона, и принимаем перенос и удаление по обычной точке, или требуется отдельная возможность переносить и удалять сам центр?",
+  "independent_review_scope": "AC1, AC2, AC4, AC5 и неоспариваемые части AC3",
+  "bounded_review_ready": true,
+  "review_ready": false,
+  "publication_authorized": false,
+  "published": false,
+  "score_model": "1.3-rc8",
+  "criterion_id": "S05-C03",
+  "score_forecast": "unknown",
+  "score_update_status": "not_due_unpublished",
+  "test_change_summary": {
+    "base_sha": "8da7853e9bd9ecaf9f8ebe8a61f96f6a18f386fe",
+    "head_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "suites": [
+      {
+        "suite": "node:test",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "path": "test/saveSafety.test.mjs",
+        "scenario_risk": "ONE-MILE1 local transaction preserves the other language, neighbouring source and RNG; добавлено свойство localPlace, проверены локализация и история."
+      },
+      {
+        "suite": "Playwright",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "path": "scripts/capture-discovery.mjs",
+        "scenario_risk": "Существующая проверка той же карты seed 42 продолжена до двух независимых значений в одной клетке, экспорта, повторного открытия и редактирования при 390 px."
+      }
+    ],
+    "reuse_or_new_reason": "Расширены существующие сквозной сценарий и транзакционный случай с теми же входами.",
+    "source": "Diff 8da7853..449e6fe, logical cases and preexisting Playwright capture."
+  },
+  "status": "completed",
+  "stage": "bounded_implementation_complete",
+  "finished_at": "2026-11-22T11:30:16.149Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-22T11:01:00.411Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-22T11:30:09.034Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "checks": {
+    "full": true,
+    "j": [
+      {
+        "id": 137189162860,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "bad": []
+      },
+      {
+        "id": 137189163000,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "bad": []
+      },
+      {
+        "id": 137189163088,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "bad": []
+      },
+      {
+        "id": 137189163638,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "node_counts": [
+      "tests 442",
+      "pass 442",
+      "fail 0",
+      "skipped 0"
+    ],
+    "browser_steps": [
+      [
+        "Capture HX-BL-062 Classic and Knave discovery",
+        "success"
+      ],
+      [
+        "Run npm run test:browser",
+        "success"
+      ]
+    ],
+    "browser_suites": {
+      "smoke_run": 10,
+      "smoke_pass": 10,
+      "smoke_skipped": 0,
+      "feature_capture_run": 1,
+      "feature_capture_pass": 1
+    },
+    "world_random": {
+      "run": 1,
+      "passed": 1,
+      "skipped": 0
+    }
+  },
+  "score_evidence": "agent-work/evidence/HX-BL-062-F1/449e6fe/verification.json",
+  "question_presented_in_chat": true,
+  "remaining_forecast": "1–3 рабочих запуска при сохранении правила центра. Ожидание решений владельца отдельно."
+}
