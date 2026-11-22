@@ -1248,7 +1248,6 @@ function scopedGeometryBoundary(map:OneMileDocumentMap,state:Detail1State){
  return prepareGeometryRefinementBoundary({...refinementSourceInput(map,state,refinement.riverPlan),widths,lakeInputs:geometryLakeInputs(map,state.grid.origin),roadPaddingMiles:detailSourcePixelToWorld({x:14,y:0}).x},refinement);
 }
 function withPoiDiscovery(before: MapSnapshot, after: MapSnapshot, moves: ReadonlyMap<string,string|null> = new Map()): MapSnapshot {
-  if (after.regions.some(region => region.generationMode === 'mythic')) return after;
   const previous = poiNameLocators(before);
   const live = poiNameLocators(after);
   const values: DiscoveryMap = {};
@@ -1260,13 +1259,17 @@ function withPoiDiscovery(before: MapSnapshot, after: MapSnapshot, moves: Readon
     if (existing) values[owner] = existing;
     else if (!previous.has(source)) {
       const [prefix, id, cell] = owner.split(':');
-      const region = regions.get(Number(id));
+      const region = prefix === 'waterPoi'
+        ? after.regions.find(r => r.hexes.some(h => hexKey(h) === id))
+        : regions.get(Number(id));
+      if (region?.generationMode === 'mythic' || (!region && after.regions.every(r => r.generationMode === 'mythic'))) continue;
       const kind = prefix === 'waterPoi' ? 'water:' + after.waterPoiByKey.get(id)
         : region && hasCentralPoi(region) && hexKey(region.centerHex) === cell ? region.centralPoiKind
         : region?.pointOfInterestKinds?.[cell];
       values[owner] = assignDiscovery(kind ?? 'none', after.generation.masterSeed, owner);
     }
   }
+  if (!after.poiDiscovery && !Object.keys(values).length) return after;
   return {...after, poiDiscovery: values};
 }
 
@@ -14268,11 +14271,11 @@ export function App() {
   };
   const recordGenerated = (checkpoint: MapSnapshot, map: MapSnapshot, selection: AxialHex,
     backup?: GenerationBackup, checkpoints = history, lakeRegions:readonly Region[] = []) => {
-    if(generationMode==='classic'&&!kingdomJob)map=withPoiDiscovery(checkpoint,map);
     if(map.knave&&knaveEnabledRef.current&&!kingdomJob&&generationMode==='classic'){
       let catalog:KnaveCatalog;try{catalog=knaveGenerationCatalog();}catch{throw Error(language==='ru'?'Не удалось загрузить данные Knave 2e. Карта не изменена.':'Knave 2e data could not be loaded. Your map is unchanged.');}
       map=prepareKnaveGeneratedMap(map,catalog,poiNameLocators(checkpoint));
     }
+    if(generationMode==='classic'&&!kingdomJob)map=withPoiDiscovery(checkpoint,map);
     const sea=prepareSeaIdentity(captureMap(),map.hexTerrainByKey);
     if(sea.unresolved.length)throw new WaterEditError('sea_name_choice',...sea.unresolved.map(c=>c.key));
     for(const id of sea.removedSeaIds){const pair=map.editorNames[`sea:${id}`];if(pair)throw new AuthoredNameConflict(`sea:${id}`,pair);}
@@ -14667,7 +14670,7 @@ export function App() {
       && nextRiverId===1 && !riverFeatureOverrides.rapids.length && !riverFeatureOverrides.waterfalls.length
       && !knaveRef.current && !physicalGridRef.current && selectedHex?.q===START_HEX.q && selectedHex?.r===START_HEX.r) return;
     if(Object.keys(editorNamesRef.current).length){setEditError(language==='ru'?`Сброс удалит авторское имя «${Object.values(editorNamesRef.current)[0]?.ru}». Сначала очистите его явно.`:`Reset would remove the authored name “${Object.values(editorNamesRef.current)[0]?.en}”. Clear it explicitly first.`);return;}
-    if(knaveRef.current&&(Object.keys(knaveRef.current.difficultyByHex).length||Object.keys(knaveRef.current.discoveryByPoi).length||Object.keys(knaveRef.current.content?.byPoi??{}).length)&&!window.confirm(language==='ru'?'Сброс удалит содержимое точек, проходимость и данные обнаружения Knave. Отмена вернёт их.':'Reset removes Knave point content, terrain and discovery data. Undo can restore them.'))return;
+    if(knaveRef.current&&(Object.keys(knaveRef.current.difficultyByHex).length||Object.keys(discoveries.current).length||Object.keys(knaveRef.current.content?.byPoi??{}).length)&&!window.confirm(language==='ru'?'Сброс удалит содержимое точек, проходимость и данные обнаружения Knave. Отмена вернёт их.':'Reset removes Knave point content, terrain and discovery data. Undo can restore them.'))return;
     if (!confirmNotesRemoval({})) return;
     const before=captureDocument();
     if(Object.keys(physicalGridRef.current?.fineCellEdits??{}).length&&!window.confirm(language==='ru'?'Удалить локальные правки одномильных гексов? Отмена вернёт их.':'Remove local one-mile edits? Undo restores them.'))return;

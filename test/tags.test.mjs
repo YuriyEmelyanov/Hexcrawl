@@ -116,9 +116,15 @@ test('Knave real generation commits content with its map, preserves world RNG an
  const serialized=m=>JSON.parse(JSON.stringify(m,(_key,value)=>value instanceof Map?{entries:[...value]}:value));
  // The fine layer can legitimately differ when the profile provides other
  // site anchors. Compare base geography here and keep the exact reload check.
- const physical=m=>{const out=structuredClone(m);delete out.knave;delete out.physicalGrid;for(const r of out.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return out;};
+ const physical=m=>{const out=structuredClone(m);delete out.knave;delete out.poiDiscovery;delete out.physicalGrid;for(const r of out.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return out;};
  const generate=(h,anchor)=>assert.equal(h.render().safelyAddRegionToMap(anchor,options).success,true);
  const empty=map(knave);generate(plain,{q:0,r:0});generate(knave,{q:0,r:0});
+ const real = createGenerationHarness(1);
+ real.render().chooseKnaveProfile(true);
+ generate(real,{q:0,r:0});
+ const generated = map(real);
+ assert.equal(generated.regions[0].pointOfInterestKinds['1,3'],'dungeon');
+ assert.equal(generated.poiDiscovery['poi:1:1,3'],'exploration');
  const first=map(knave),facts=knave.geometry.knaveFactsForMap(first);assert.ok(facts.length>=2);assert.deepEqual(physical(first),physical(map(plain)));
  assert.deepEqual(first.generation,map(plain).generation);assert.equal(Object.keys(first.knave.content.byPoi).length,facts.length);
  // The preference controls future Classic generation; retained snapshots stay

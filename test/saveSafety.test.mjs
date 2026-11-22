@@ -455,3 +455,37 @@ test('ONE-MILE1 Mythic accepts fine geography only after a complete kingdom and 
  g.render().startKingdom(g.render().candidateHexes[0]);finish();const expanded=fineSave(g);assert.equal(g.render().generationError,null);assert.equal(expanded.map.kingdoms.length,after.map.kingdoms.length+1);assert.deepEqual(expanded.map.physicalGrid.fineCellEdits,after.map.physicalGrid.fineCellEdits);for(const [alias,id]of Object.entries(after.map.physicalGrid.poiIdentities.byLegacyRef))assert.equal(expanded.map.physicalGrid.poiIdentities.byLegacyRef[alias],id);
  g.render().undoMap();assert.deepEqual(fineSave(g),after);g.render().redoMap();assert.deepEqual(fineSave(g),expanded);
 });
+
+test('Classic places on mixed maps retain valid discovery records through deletion and reload',async()=>{
+ const h=createGenerationHarness(42),app=()=>h.render(),alerts=[];
+ h.setWindow({alert:message=>alerts.push(message),matchMedia:()=>({matches:false})});
+ h.injectFunction('readTextFile',async file=>file.text);
+ const load=data=>app().handleImportJson({target:{files:[{text:JSON.stringify(data)}],value:''}});
+ await load(JSON.parse(fs.readFileSync(new URL('./fixtures/import-v2/baseline-mythic.json',import.meta.url))));
+ assert.equal(app().safelyAddRegionToMap(app().candidateHexes[0],{targetSize:18,landType:'wild',coastalPreference:'mainland'}).success,true);
+ const modes=()=>app().createSaveData().map.poiDiscovery;
+ assert.ok(['exploration','interaction'].includes(modes()['poi:28:-4,16']));
+ const owner='poi:28:-2,12';
+ app().setEditMode(true);app().setSelectedHex({q:-2,r:12});app().setSelectedPoiKind('cave');
+ assert.ok(['exploration','interaction'].includes(modes()[owner]));
+ assert.equal(app().changeKnaveDraft({mode:'exploration'}),true);assert.equal(app().finishKnaveDraft(),true);
+ app().deleteSelectedPoi();assert.equal(modes()[owner],undefined);
+ app().undoMap();assert.equal(modes()[owner],'exploration');
+ app().redoMap();const saved=app().createSaveData();await load(saved);
+ assert.deepEqual(alerts,[]);assert.deepEqual(JSON.parse(JSON.stringify(app().createSaveData().map)),JSON.parse(JSON.stringify(saved.map)));
+});
+
+test('a migrated Knave secret can veto reset and undo an accepted reset',async()=>{
+ const {g,data,key}=await loadAuthoredMap();
+ const app=()=>g.render(),source=structuredClone(data);
+ source.version=10;source.map.knave=newKnaveLayer();source.map.knave.discoveryByPoi[key]={mode:'interaction',clueText:'old'};
+ source.map.editorNames={};source.map.gmNotesByHexKey={};
+ let consent=false,prompts=0;
+ g.setWindow({alert:message=>assert.fail(message),confirm:()=>{prompts++;return consent},matchMedia:()=>({matches:false})});
+ await app().handleImportJson({target:{files:[{text:JSON.stringify(source)}],value:''}});
+ const before=structuredClone(app().createSaveData().map),depth=app().undoHistory.length;
+ assert.equal(before.poiDiscovery[key],'interaction');app().resetMap();
+ assert.equal(prompts,1);assert.deepEqual(structuredClone(app().createSaveData().map),before);assert.equal(app().undoHistory.length,depth);
+ consent=true;app().resetMap();assert.equal(app().regions.length,0);
+ app().undoMap();assert.deepEqual(structuredClone(app().createSaveData().map),before);
+});
