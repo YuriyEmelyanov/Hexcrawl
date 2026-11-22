@@ -31,7 +31,12 @@ for(const mode of ['classic','mythic'])test(`E7 App transfer keeps full POI iden
  expectedTags.rollCounters=Object.fromEntries(Object.entries(expectedTags.rollCounters).map(([k,v])=>[k.replace(/^poi:1:2,0\|/,'poi:2:2,0|'),v]));
  assert.deepEqual(after.map.tags,expectedTags);
  assert.deepEqual(after.map.editorNames,{'poi:2:2,0':before.map.editorNames['poi:1:2,0']});
- if(mode==='classic'){assert.deepEqual(after.map.knave.discoveryByPoi,{'poi:2:2,0':before.map.knave.discoveryByPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.difficultyByHex,{'2,0':'difficult'});const nextOwner=Object.keys(after.map.knave.discoveryByPoi)[0];assert.deepEqual(after.map.knave.content.byPoi,{[nextOwner]:before.map.knave.content.byPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.content.rollCounters,{[nextOwner]:before.map.knave.content.rollCounters['poi:1:2,0']});}
+ if(mode==='classic'){
+  const nextOwner='poi:2:2,0';
+  assert.equal(before.map.poiDiscovery['poi:1:2,0'],'interaction');
+  assert.equal(after.map.poiDiscovery[nextOwner],'interaction');
+  assert.equal(after.map.poiDiscovery['poi:1:2,0'],undefined);
+  assert.deepEqual(after.map.knave.difficultyByHex,{'2,0':'difficult'});assert.deepEqual(after.map.knave.content.byPoi,{[nextOwner]:before.map.knave.content.byPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.content.rollCounters,{[nextOwner]:before.map.knave.content.rollCounters['poi:1:2,0']});}
  for(const k of ['biomeOverrideByHexKey','terrainByHexKey','gmNotesByHexKey','roads','crossings','riverFeatures'])assert.deepEqual(after.map[k],before.map[k]);
  assert.deepEqual(after.map.candidateHexes,before.map.candidateHexes,'accepted frontier entries and order remain literal');
  assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);
@@ -143,7 +148,12 @@ for(const mode of ['classic','mythic'])test(`E8 real POI move is one exact trans
  const draft=g.render().poiDraft;assert.ok(g.render().poiPreview.plan);assert.equal(g.render().finishPoiDraft(draft),true);const after=save(g);
  assert.equal(g.render().undoHistory.length,history[0].length+1);assert.deepEqual(after.map.regions[1].pointsOfInterest,[{q:3,r:0}]);assert.deepEqual(after.map.editorNames,{'poi:2:3,0':named.map.editorNames['poi:1:2,0']});
  const expectedTags=structuredClone(before.map.tags);for(const t of expectedTags.instances)if(t.owner.kind==='poi'&&t.owner.regionId===1&&t.owner.hexKey==='2,0')t.owner={kind:'poi',regionId:2,hexKey:'3,0'};expectedTags.rollCounters=Object.fromEntries(Object.entries(expectedTags.rollCounters).map(([k,v])=>[k.replace(/^poi:1:2,0\|/,'poi:2:3,0|'),v]));assert.deepEqual(after.map.tags,expectedTags);
- if(mode==='classic'){assert.deepEqual(after.map.knave.discoveryByPoi,{'poi:2:3,0':before.map.knave.discoveryByPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.difficultyByHex,{'2,0':'difficult'});const nextOwner=Object.keys(after.map.knave.discoveryByPoi)[0];assert.deepEqual(after.map.knave.content.byPoi,{[nextOwner]:before.map.knave.content.byPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.content.rollCounters,{[nextOwner]:before.map.knave.content.rollCounters['poi:1:2,0']});}
+ if(mode==='classic'){
+  const nextOwner='poi:2:3,0';
+  assert.equal(before.map.poiDiscovery['poi:1:2,0'],'interaction');
+  assert.equal(after.map.poiDiscovery[nextOwner],'interaction');
+  assert.equal(after.map.poiDiscovery['poi:1:2,0'],undefined);
+  assert.deepEqual(after.map.knave.difficultyByHex,{'2,0':'difficult'});assert.deepEqual(after.map.knave.content.byPoi,{[nextOwner]:before.map.knave.content.byPoi['poi:1:2,0']});assert.deepEqual(after.map.knave.content.rollCounters,{[nextOwner]:before.map.knave.content.rollCounters['poi:1:2,0']});}
  assert.deepEqual(after.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(after.generation,before.generation);assert.deepEqual(after.counters,before.counters);assert.deepEqual(after.ui.selectedHex,{q:3,r:0});
  assert.equal(g.render().finishPoiDraft(draft),false,'captured doubleDone cannot create another operation');g.render().undoMap();assert.deepEqual(save(g),before);g.render().redoMap();assert.deepEqual(save(g),after);
  const reloaded=await setup(mode,after);assert.deepEqual(save(reloaded),after);

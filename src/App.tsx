@@ -1547,6 +1547,7 @@ function prepareRegionMapEdit(map:MapSnapshot,edit:RegionEdit):MapSnapshot{
   if(geometry.regions===map.regions)return map;
   checkedRiverMap(map);
   let candidate:MapSnapshot={...map,regions:geometry.regions};
+  const poiMoves = new Map<string,string>();
   if(geometry.poiTransfer){
     const identity=prepareRegionPoiIdentity(map.toponyms,map.tags??emptyTags(),geometry.poiTransfer);
     const transfer=geometry.poiTransfer,from=`poi:${transfer.fromRegionId}:${transfer.hexKey}`,to=`poi:${transfer.toRegionId}:${transfer.hexKey}`;
@@ -1554,7 +1555,8 @@ function prepareRegionMapEdit(map:MapSnapshot,edit:RegionEdit):MapSnapshot{
     if(Object.prototype.hasOwnProperty.call(authored,to))throw new RegionEditError('identity_conflict',to);
     const editorNames=Object.fromEntries(Object.entries(authored).map(([key,v])=>[key===from?to:key,v]));
     candidate={...candidate,...identity,editorNames};
-    if(map.knave)candidate.knave=remapKnavePois(map.knave,knaveMapContext(map),knaveMapContext(candidate),new Map([[from,to]]));
+    poiMoves.set(from,to);
+    if(map.knave)candidate.knave=remapKnavePois(map.knave,knaveMapContext(map),knaveMapContext(candidate),poiMoves);
   }
   // A road keeps its origin regionId even when a cell underneath it changes
   // owner. Size changes cannot silently invent another road or waive a minimum.
@@ -1610,7 +1612,7 @@ function prepareRegionMapEdit(map:MapSnapshot,edit:RegionEdit):MapSnapshot{
   if(rapid)throw new RegionEditError('river_marker',`river:${rapid.riverId}`,rapid.edgeKey);
   const waterfall=map.riverFeatures.waterfalls.find(e=>e.state==='on'&&!eligibility.waterfall(e.vertexKey));
   if(waterfall)throw new RegionEditError('river_marker',waterfall.vertexKey);
-  candidate=prepareSourceTransition(map,candidate);
+  candidate=prepareSourceTransition(map,candidate,poiMoves);
   checkedRiverMap(candidate);
   validateTags(candidate.tags??emptyTags(),new Set(tagOwners(candidate).keys()),mythicDefinitions);
   return candidate;
@@ -1646,7 +1648,7 @@ function prepareRiverMapEdit(map:MapSnapshot,edit:RiverEdit,options:RiverEditOpt
 }
 
 type WaterEditOptions=SeaChoices&{acceptedLosses?:string[];featureEdits?:FeatureEdit[];crossingKinds?:Record<string,RiverCrossingKind>};
-type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'obstacle'|'knave';key:string;value:unknown};
+type WaterLoss={id:string;type:'lake'|'poi'|'name'|'tag'|'waterPoi'|'crossing'|'obstacle'|'knave'|'discovery';key:string;value:unknown};
 /** Full E6 detached preparation. Staged preview answers never reach a setter. */
 function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOptions={}){
   const geometry=prepareWaterGeometry(map,edit);
@@ -1760,6 +1762,9 @@ function prepareWaterMapEdit(map:MapSnapshot,edit:WaterEdit,options:WaterEditOpt
   candidate={...candidate,seas:sea.seas,nextSeaId:sea.nextSeaId};
   const livePoi=editorNameLocators(candidate),authored:EditorNames={};
   for(const [key,name]of Object.entries(map.editorNames??{})){if(livePoi.has(key))authored[key]=name;else {const seaId=key.startsWith('sea:')?Number(key.slice(4)):undefined;const old=seaId===undefined?undefined:map.seas.find(s=>s.id===seaId);const into=old?sea.seas.filter(s=>s.hexKeys.some(k=>old.hexKeys.includes(k))).map(s=>s.id):undefined;losses.push({id:`editorName:${key}`,type:'name',key,value:into?{...name,seaInto:into}:name});}}
+  for(const [key,mode] of Object.entries(map.poiDiscovery??{})){
+    if(!livePoi.has(key))losses.push({id:`discovery:${key}`,type:'discovery',key,value:mode});
+  }
   if(map.knave){
     const removed=knaveLosses(map.knave,knaveMapContext(candidate));
     const layer=structuredClone(map.knave);
@@ -15908,7 +15913,8 @@ export function App() {
   </div>:null;
   const waterLossText=(loss:WaterLoss):string=>{
     const ru=language==='ru';
-    if(loss.type==='knave'){const v=loss.value as {kind:string;data:{mode?:string;clueText?:string}|string};return `${ru?'Удалить':'Delete'} ${v.kind==='difficulty'?(ru?'отметку проходимости':'terrain difficulty'):v.kind==='content'?(ru?'содержимое точки':'point content'):(ru?'способ обнаружения и улику':'discovery and clue')} · ${loss.key}`;}
+    if(loss.type==='discovery')return (ru?'Удалить способ обнаружения':'Delete discovery mode')+' · '+loss.key;
+    if(loss.type==='knave'){const v=loss.value as {kind:string;data:{mode?:string;clueText?:string}|string};return `${ru?'Удалить':'Delete'} ${v.kind==='difficulty'?(ru?'отметку проходимости':'terrain difficulty'):v.kind==='content'?(ru?'содержимое точки':'point content'):(ru?'способ обнаружения':'discovery mode')} · ${loss.key}`;}
     if(loss.type==='lake')return `${ru?'Озеро исчезнет':'Lake will be removed'}: ${waterName(loss.key)}`;
     if(loss.type==='name'){const v=loss.value as {ru:string;en:string;seaInto?:number[]};return `${ru?'Удалить название':'Delete name'}${loss.key.startsWith('sea:')?` · ${ru?'море':'sea'} #${loss.key.slice(4)}`:''}: ${ru?`${v.ru} / ${v.en}`:v.en}${v.seaInto?(v.seaInto.length?` · ${ru?'слияние в':'merged into'} ${v.seaInto.map(id=>`${waterName(`sea:${id}`)} (#${id})`).join(', ')}`:` · ${ru?'морской объект исчезнет':'no sea remains'}`):''}`;}
     if(loss.type==='tag'){const v=loss.value as TagState['instances'][number],def=mythicDefinitions[v.definitionId];const text=ru?v.texts.map((t,i)=>Object.entries({...t,...v.overrides?.[i]}).map(([l,s])=>`${l}: ${s}`).join(' / ')).join(' · '):v.texts.map((_,i)=>localizedTagText(v,def,i,language)).join(' · ');return `${ru?'Удалить тег':'Delete tag'} ${def?.label[language]??v.definitionId}: ${text} (${v.values.map(v=>v.join('+')).join(' / ')})`;}
