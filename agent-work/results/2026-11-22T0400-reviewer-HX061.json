@@ -1,0 +1,92 @@
+{
+  "run_id": "2026-11-22T0400-reviewer-HX061",
+  "task_id": "HX-BL-061",
+  "role": "reviewer",
+  "programmer_slot": false,
+  "generation": 478,
+  "claim_ref": "agent-work/claims/2026-11-22T0400-reviewer-HX061.json",
+  "acquired_at": "2026-11-22T01:01:22.929Z",
+  "head_sha": "3c577a034125d2c3d117347a0fdebe1b2f212ae7",
+  "heartbeat_at": "2026-11-22T01:01:22.929Z",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "pr_number": 512,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/512",
+  "review_ready": false,
+  "accepted": false,
+  "published": false,
+  "release_authorized": false,
+  "execution_state": "changes_requested",
+  "review_verdict": "changes_requested",
+  "next_role": "programmer",
+  "spec_ref": "agent-work/specs/HX-BL-061-smooth-bends-F1.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-061-F1/review-3c577a0/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-061-F1/review-3c577a0/score-assessment1.3-rc8.json",
+  "result_ref": "agent-work/results/2026-11-22T0400-reviewer-HX061.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-22T0400-reviewer-HX061.json",
+  "next_step": "HX-BL-061 RV1: совместить выделение вершины с руслом, сохранить единый вид совпадающих дорожных участков и показать повёрнутую карту на экране 390 px рядом с PNG. Передать новый SHA на независимую приёмку.",
+  "role_selection_reason": "Очередь передала проверяющему PR512. Проверены 554 claims, 596 результатов и реестр исполнителей. Учёт PR511 завершён.",
+  "status": "completed",
+  "completed_at": "2026-11-22T01:06:29.834Z",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-22T01:00:46.055Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-22T01:06:29.834Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "3c577a034125d2c3d117347a0fdebe1b2f212ae7",
+    "added": 2,
+    "removed": 0,
+    "modified": 7,
+    "source": "Сопоставление логических сценариев в diff b887422b6b05663124f0ce431953f863350e4a86...3c577a034125d2c3d117347a0fdebe1b2f212ae7 по каждому runner. Повороты и размеры экрана в одном сквозном случае не суммируются.",
+    "suites": [
+      {
+        "suite": "node:test / test/oneMile.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Свободная дуга и близкий ручей. Ограничение скругления действует только у конфликтующего участка.",
+        "reuse_or_new_reason": "Прежние проверки реки и брода не обнаруживали нового пересечения на самом изгибе."
+      },
+      {
+        "suite": "Chromium / test/browser/route-bends.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Одна карта до/после: мост на исходном речном ребре, два масштаба и ориентации, PNG и повторное открытие JSON.",
+        "reuse_or_new_reason": "Существующий прогон проверял одномильную сцену, но не сравнивал отрисовку изгиба с опубликованной базой."
+      },
+      {
+        "suite": "Chromium / test/browser/save-history.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 6,
+        "scenario": "Физический выбор реки в Classic и Mythic (2), выбор среди совпадающих речных участков (1). Выделение одного из совпадающих дорожных участков (1), выбранного русла (1) и полного пути при подтверждении удаления (1).",
+        "reuse_or_new_reason": "Существующие сценарии проверяют физический клик и подсветку выбранного пути с учётом новой формы линии."
+      },
+      {
+        "suite": "Chromium / scripts/profile-large-map.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Выбор видимого речного участка на повёрнутой растровой карте.",
+        "reuse_or_new_reason": "Сохранены прежние критерии сценария, координаты извлекаются из SVGGeometryElement."
+      }
+    ]
+  },
+  "result": "Два воспроизведённых дефекта и недостаток мобильного доказательства. Требуется новый SHA.",
+  "preliminary_delta_L1": 0.5925925925925926,
+  "score_update_status": "not_due_unpublished",
+  "execution_running": false,
+  "owner_decision_required_now": false,
+  "github_review_note": "Заключение и handoff сохранены в agent-operations. Отдельный комментарий в PR не зарегистрирован: GitHub connector rejected review arguments."
+}
