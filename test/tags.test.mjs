@@ -382,13 +382,13 @@ test('Knave actual reroll command is one reversible transaction preserving autho
  clock+=350;assert.equal(h.render().mutateKnaveContent(key,'both'),true);const both=stable(h),content=both.map.knave.content.byPoi[key],counters=both.map.knave.content.rollCounters[key];
  assert.equal(counters.category,1);assert.equal(counters.primary,2);assert.equal(counters.trait,3);assert.equal(content.category,before.map.knave.content.byPoi[key].category);
  assert.equal(both.map.regions[0].pointOfInterestKinds['2,0'],content.site.representation);
- assert.deepEqual(both.map.editorNames,before.map.editorNames);assert.deepEqual(both.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(both.map.knave.discoveryByPoi,before.map.knave.discoveryByPoi);assert.deepEqual(both.map.knave.difficultyByHex,before.map.knave.difficultyByHex);assert.deepEqual(both.map.generation,before.map.generation);
+ assert.deepEqual(both.map.editorNames,before.map.editorNames);assert.deepEqual(both.map.gmNotesByHexKey,before.map.gmNotesByHexKey);assert.deepEqual(both.map.poiDiscovery,before.map.poiDiscovery);assert.deepEqual(both.map.knave.difficultyByHex,before.map.knave.difficultyByHex);assert.deepEqual(both.map.generation,before.map.generation);
  const physical=doc=>{const copy=structuredClone(doc);delete copy.map.knave;for(const r of copy.map.regions){delete r.centralPoiKind;delete r.pointOfInterestKinds;}return copy;};assert.deepEqual(physical(both),physical(before));
  h.render().undoMap();assert.deepEqual(stable(h),trait);h.render().redoMap();assert.deepEqual(stable(h),both);
  const save=h.render().createSaveData();assert.equal(save.version,10);h.geometry.assertHexcrawlSaveData(save);
  const restored=createGenerationHarness(42);await load(restored,save);restored.injectFunction('knaveGenerationCatalog',knaveCatalogFixture);clock+=350;
  assert.equal(h.render().mutateKnaveContent(key,'primary'),true);assert.equal(restored.render().mutateKnaveContent(key,'primary'),true);assert.deepEqual(stable(h),stable(restored));
- clock+=350;h.render().setEditMode(true);assert.equal(h.render().changeKnaveDraft({clueText:'Незавершённая улика'}),true);const draft=stable(h),draftHistory=h.render().undoHistory.length;
+ clock+=350;h.render().setEditMode(true);assert.equal(h.render().changeKnaveDraft({mode:'exploration'}),true);const draft=stable(h),draftHistory=h.render().undoHistory.length;
  assert.equal(h.render().mutateKnaveContent(key,'trait'),false);assert.deepEqual(stable(h),draft);assert.equal(h.render().undoHistory.length,draftHistory);h.render().resetKnaveDraft();
  const missing=h.injectFunction('knaveGenerationCatalog',()=>{throw Error('Missing catalog');}),unchanged=stable(h),stacks=structuredClone([h.render().undoHistory,h.render().redoHistory]);assert.equal(h.render().mutateKnaveContent(key,'both'),false);assert.deepEqual(stable(h),unchanged);assert.deepEqual(structuredClone([h.render().undoHistory,h.render().redoHistory]),stacks);missing();
 });

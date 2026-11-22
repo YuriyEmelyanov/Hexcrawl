@@ -160,22 +160,23 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  knave.map.knave.difficultyByHex[key.split(':')[2]]='difficult';
  await g.render().handleImportJson({target:{files:[{text:JSON.stringify(knave)}],value:''}});assert.deepEqual(alerts,[]);
  const accepted=structuredClone(g.render().captureDocument());
- assert.deepEqual(structuredClone(g.render().createSaveData().map.knave),knave.map.knave);
+ assert.deepEqual(structuredClone(g.render().createSaveData().map.knave),{...knave.map.knave,discoveryByPoi:{}});
+ assert.equal(g.render().createSaveData().map.poiDiscovery[key],'interaction');
  g.render().undoMap();assert.equal(g.render().createSaveData().map.knave,undefined);
  g.render().redoMap();assert.deepEqual(structuredClone(g.render().captureDocument()),accepted);
  // Extend this lifecycle case: UI drafts must not enter accepted JSON/history,
  // and stale closures must never retarget a clue to another document.
  g.render().setEditMode(true);g.render().setSelectedHex(Object.fromEntries(['q','r'].map((axis,i)=>[axis,Number(key.split(':')[2].split(',')[i])])));
  const uiBefore=structuredClone(g.render().createSaveData().map),uiHistory=g.render().undoHistory.length;
- assert.equal(g.render().changeKnaveDraft({mode:'interaction',clueText:''}),true);
+ assert.equal(g.render().changeKnaveDraft({mode:'exploration'}),true);
  const stale=g.render().knaveDraft;
- assert.equal(g.render().finishKnaveDraft(),false);assert.ok(g.render().knaveError);
+
  assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);assert.equal(g.render().undoHistory.length,uiHistory);
  g.render().undoMap();g.render().resetMap();assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);
- assert.equal(g.render().changeKnaveDraft({clueText:'  <Authored UI clue>  '}),true);
- assert.equal(g.render().changeKnaveDraft({clueText:'stale'},stale),false);
+ assert.equal(g.render().changeKnaveDraft({mode:'passage'}),true);
+ assert.equal(g.render().changeKnaveDraft({mode:'exploration'},stale),false);
  assert.equal(g.render().finishKnaveDraft(),true);
- assert.equal(g.render().createSaveData().map.knave.discoveryByPoi[key].clueText,'<Authored UI clue>');
+ assert.equal(g.render().createSaveData().map.poiDiscovery[key],'passage');
  g.render().undoMap();assert.deepEqual(structuredClone(g.render().createSaveData().map),uiBefore);
  const noOpHistory=g.render().undoHistory.length;
  assert.equal(g.render().changeKnaveDraft({mode:'interaction'}),true);assert.equal(g.render().finishKnaveDraft(),true);assert.equal(g.render().undoHistory.length,noOpHistory);
@@ -183,7 +184,7 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  assert.equal(g.render().finishKnaveDraft(stale),false);
  g.render().applyDocument(accepted);g.render();
  const history=structuredClone([g.render().undoHistory,g.render().redoHistory]);
- for(const mutate of [d=>d.version=9,d=>delete d.generation,d=>d.ui.knaveEnabled='yes',d=>{d.ui.knaveEnabled=true;delete d.map.knave;},d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.content=null,d=>d.map.knave.content.byPoi[key].catalogVersion='future',d=>d.map.knave.discoveryByPoi[key].clueText='',d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
+ for(const mutate of [d=>d.version=9,d=>delete d.generation,d=>d.ui.knaveEnabled='yes',d=>{d.ui.knaveEnabled=true;delete d.map.knave;},d=>d.map.knave=null,d=>d.map.knave.profile.physicalHex.measurementConvention='vertices',d=>d.map.knave.content=null,d=>d.map.knave.content.byPoi[key].catalogVersion='future',d=>d.map.poiDiscovery={[key]:'invalid'},d=>d.map.poiDiscovery={orphan:'passage'},d=>d.map.knave.discoveryByPoi['poi:999:0,0']={mode:'passage',clueText:''}]){
   const invalid=structuredClone(knave);mutate(invalid);await g.render().handleImportJson({target:{files:[{text:JSON.stringify(invalid)}],value:''}});
   assert.equal(alerts.length,1);alerts.pop();assert.deepEqual(structuredClone(g.render().captureDocument()),accepted);assert.deepEqual(structuredClone([g.render().undoHistory,g.render().redoHistory]),history);
  }
@@ -212,7 +213,8 @@ test('E8 v8 authored POI names use real import,exact export and UndoRedo without
  profile.render().changeGenerationMode('mythic');assert.equal(profile.render().generationMode,'mythic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),kept);assert.equal(profile.render().undoHistory.length,modeHistory);
  profile.geometry.assertHexcrawlSaveData(JSON.parse(JSON.stringify(profile.render().createSaveData())));
  const mixed=structuredClone(knave);mixed.ui.generationMode='mythic';
- await g.render().handleImportJson({target:{files:[{text:JSON.stringify(mixed)}],value:''}});assert.deepEqual(alerts,[]);assert.equal(g.render().generationMode,'mythic');assert.deepEqual(structuredClone(g.render().createSaveData().map.knave),knave.map.knave);
+ await g.render().handleImportJson({target:{files:[{text:JSON.stringify(mixed)}],value:''}});assert.deepEqual(alerts,[]);assert.equal(g.render().generationMode,'mythic');assert.deepEqual(structuredClone(g.render().createSaveData().map.knave),{...knave.map.knave,discoveryByPoi:{}});
+ assert.equal(g.render().createSaveData().map.poiDiscovery[key],'interaction');
  profile.render().changeGenerationMode('classic');assert.deepEqual(structuredClone(profile.render().createSaveData().map),kept);assert.equal(profile.render().undoHistory.length,modeHistory);
 });
 test('E8 malformed,orphan and older-version authored names refuse atomically in the real importer',async()=>{
