@@ -29,7 +29,7 @@
   "run_id": "2026-11-22T1500-programmer-HX062",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "changes_requested",
+  "status": "bounded_review_ready",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -50,27 +50,27 @@
   "schedule_frequency": "every_hour",
   "process_path": "agent-work/process.md",
   "current_role": "programmer",
-  "next_role": "programmer",
+  "next_role": "reviewer",
   "current_task_id": "HX-BL-062",
   "spec_path": "agent-work/specs/HX-BL-062-discovery-F1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-22T1433-reviewer-HX062.json",
+  "result_path": "agent-work/results/2026-11-22T1500-programmer-HX062.json",
   "handoff_commit_sha": "a215c3fc34bb59fab6c53751726887e7ff550e5a",
-  "active_claim": "agent-work/claims/2026-11-22T1500-programmer-HX062.json",
-  "next_step": "Программисту исправить назначение режима после выбора окончательного типа Knave, обработку новых Classic-точек на смешанной карте и сброс старой карты Knave. Затем передать новый SHA на независимую проверку. Вопрос AC3 о переносе столицы остаётся отдельным.",
+  "active_claim": null,
+  "next_step": "Проверяющему независимо проверить исправления RV01–RV03 на 5f600d559a7461c600a887aa5c6e5c939832ef3a, уже проверяемые части F1 и подготовить предварительную оценку S05-C03. Отдельно открыт пункт AC3 о переносе и удалении столицы.",
   "owner_decisions_needed": [
     "Согласовать публикацию PR №512 на 0a5526a22ad2815a6d9df9d3a57babbd8f523d24."
   ],
   "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
-  "evidence_path": "agent-work/evidence/HX-BL-062-F1/449e6fe/verification.json",
+  "evidence_path": "agent-work/evidence/HX-BL-062-F1/fix-5f600d5/verification.json",
   "branch_name": "feature/hx-bl-061-smooth-bends",
   "pr": 513,
-  "head_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
-  "tree_sha": "8895531d0b0e8cdc9ef779030e4ec9da4cc4943d",
+  "head_sha": "5f600d559a7461c600a887aa5c6e5c939832ef3a",
+  "tree_sha": "f1c20dbd2374f1ae9e05077679fb9cb1ae30a6a0",
   "checks_status": "success",
-  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45016252232",
-  "review_verdict": "changes_requested",
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45020338894",
+  "review_verdict": "pending_new_sha",
   "role_selection_mode": "readiness",
   "role_selection_source": "approved_queue_and_execution_registry",
   "process_decision_ref": "owner-decision-2026-10-24-dynamic-roles",
@@ -85,7 +85,7 @@
   "score_update_task_id": "HX-BL-056",
   "score_update_release_sha": "b887422b6b05663124f0ce431953f863350e4a86",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Независимая часть F1 готова на точном SHA, вопрос AC3 обособлен.",
+  "role_selection_reason": "После независимой проверки PR513 остаются три исправления в утверждённой HX062. Слот программиста и task_id свободны. PR511 ранее учтён на 1.3-rc8.",
   "score_update_result_ref": "agent-work/results/2026-11-21-reviewer-PR510-publication.json",
   "score_update_completed_at": "2026-11-21T22:55:44.882Z",
   "score_update_delta": 0,
@@ -99,11 +99,11 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-22T11:33:53.244Z",
+      "at": "2026-11-22T12:00:50.169Z",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-22T11:40:58.200Z",
+      "at": "2026-11-22T12:18:58.194Z",
       "is_enabled": true
     },
     "restored": false,
@@ -114,7 +114,7 @@
     "HX062-RV02",
     "HX062-RV03"
   ],
-  "current_review_score_assessment_status": "preliminary_unpublished",
+  "current_review_score_assessment_status": "awaiting_reassessment_on_new_sha",
   "target_audience_research": {
     "model_version": "1.1",
     "model_max_points": 25,
@@ -427,7 +427,11 @@
     "placements_scope": "Legacy preparation-slice DW2/FL9 retained; new campaign placements in campaign_vtt_revision.placements_among_calculated"
   },
   "previous_score_assessment_ref": "agent-work/evidence/review-ONE-MILE1-2ad-1000/score-assessment1.2.json",
-  "addressed_findings_pending_review": [],
+  "addressed_findings_pending_review": [
+    "HX062-RV01",
+    "HX062-RV02",
+    "HX062-RV03"
+  ],
   "verified_fixed_findings": [
     {
       "id": "OM-REV-001",
@@ -553,7 +557,7 @@
   "deployment_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44894704937",
   "next_task_execution_allowed": true,
   "last_release_pr": 511,
-  "last_material_result_path": "agent-work/results/2026-11-22T1433-reviewer-HX062.json",
+  "last_material_result_path": "agent-work/results/2026-11-22T1500-programmer-HX062.json",
   "last_wait_check_at": "2026-11-22T06:59:13.314Z",
   "spec_status": "ready_for_development",
   "previous_task_release_approval": {
@@ -705,7 +709,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-22T12:01:30.897Z",
+  "updated_at": "2026-11-22T12:19:14.380Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -843,29 +847,19 @@
     "handoff_ref": "agent-work/handoffs/2026-10-27-HX-FB-002-audit.json"
   },
   "test_change_summary": {
-    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
-    "head_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
-    "added": 1,
+    "base_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
+    "head_sha": "5f600d559a7461c600a887aa5c6e5c939832ef3a",
+    "added": 2,
     "removed": 0,
-    "modified": 9,
-    "suites": [
-      {
-        "suite": "node:test",
-        "added": 0,
-        "removed": 0,
-        "modified": 7,
-        "scenario_risk": "E6 water losses, Classic E7 transfer, Classic E8 move, E8 import, local edits, legacy Knave clue, Knave reroll identity."
-      },
-      {
-        "suite": "Playwright",
-        "added": 1,
-        "removed": 0,
-        "modified": 2,
-        "scenario_risk": "One new real-map two-profile roundtrip capture, and changes to existing Knave lifecycle and one-mile projection."
-      }
+    "modified": 1,
+    "suite": "node:test",
+    "source": "git diff 449e6fe..5f600d559a7461c600a887aa5c6e5c939832ef3a -- test; logical test cases",
+    "scenario_risk": [
+      "Новое: Classic places on mixed maps retain valid discovery records through deletion and reload (saveSafety.test.mjs).",
+      "Новое: a migrated Knave secret can veto reset and undo an accepted reset (saveSafety.test.mjs).",
+      "Расширено: Knave real generation commits content with its map, preserves world RNG and replays exact accepted snapshots (tags.test.mjs)."
     ],
-    "source": "git diff b887422..449e6fe: logical test cases, rename counted as one modification; only Classic branches of parameterized E7/E8 changed.",
-    "reuse_or_new_reason": "Existing cases exercise distinct lifecycles; the new capture checks real-map UI and exported values. Gaps: final Knave type, mixed regions and declining reset of migrated data. Extend corresponding existing cases where possible."
+    "reuse_or_new_reason": "Использована существующая проверка реальной генерации. Для смешанного жизненного цикла и изолированного отказа от сброса нужны две отдельные исходные карты: прежние случаи либо не содержали Classic-мест на карте с регионами Mythic, либо имели другие причины показывать подтверждение."
   },
   "review_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513#pullrequestreview-6012022793",
   "coordination_handoff": "agent-work/handoffs/2026-11-10-HX-BL-051-remaining-UI-evidence.json",
@@ -912,7 +906,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-062-F1/review-449e6fe/review.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-062-F1/fix-5f600d5/verification.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -2285,7 +2279,7 @@
   "current_stage_id": "DISC",
   "implementation_started": true,
   "current_stage_release_approved": false,
-  "review_ready": false,
+  "review_ready": true,
   "current_stage_ui_status": "actual_map_and_png_shown",
   "completed_claim": "agent-work/claims/2026-11-22T0400-reviewer-HX061.json",
   "evidence_commit_sha": "4d5635d2dca6c0e5cafd36d75ea4cea6b9470849",
@@ -7767,7 +7761,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-22T1433-reviewer-HX062.json",
+  "result_ref": "agent-work/results/2026-11-22T1500-programmer-HX062.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -9096,7 +9090,7 @@
   "current_role_result": "agent-work/results/2026-11-22T1103-analyst-HX062-F1.json",
   "current_stage_score_assessment_status": "preliminary_unpublished",
   "ui_actual_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/map-before-after.png",
-  "execution_running": true,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -9737,7 +9731,7 @@
     "ci_run": 42736194155,
     "checks": "all_passed"
   },
-  "pr_head_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
+  "pr_head_sha": "5f600d559a7461c600a887aa5c6e5c939832ef3a",
   "pr_updated": false,
   "execution_routing": {
     "schema_version": 1,
@@ -10058,7 +10052,7 @@
     "Owner review and separate publication/deployment verification pending; finite corpus limitations and unassessed full product/game breadth recorded in package-review."
   ],
   "full_package_review_ready": false,
-  "bounded_review_ready": false,
+  "bounded_review_ready": true,
   "ui_actual_shown_for_new_sha": true,
   "owner_decision_required_for_next_step": false,
   "independent_accepted": false,
@@ -12207,7 +12201,7 @@
     "release_approved": false,
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-11-PR496-unified-grid-correction.json"
   },
-  "completed_claim_ref": "agent-work/claims/2026-11-22T1433-reviewer-HX062.json",
+  "completed_claim_ref": "agent-work/claims/2026-11-22T1500-programmer-HX062.json",
   "actual_UI": {
     "head_sha": "3344159406c3619bc3903e7185f7b0a5c4d13de5",
     "shown_in_chat": true,
@@ -12788,7 +12782,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-22T1433-reviewer-HX062.json",
+  "last_result_ref": "agent-work/results/2026-11-22T1500-programmer-HX062.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -15191,8 +15185,8 @@
   "draft_clarification_review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
   "draft_clarifications_closed": true,
   "unchanged_draft_rewrite_needed": false,
-  "task_next_role": "programmer",
-  "task_next_step": "Программисту исправить назначение режима после выбора окончательного типа Knave, обработку новых Classic-точек на смешанной карте и сброс старой карты Knave. Затем передать новый SHA на независимую проверку. Вопрос AC3 о переносе столицы остаётся отдельным.",
+  "task_next_role": "reviewer",
+  "task_next_step": "Проверяющему независимо проверить исправления RV01–RV03 на 5f600d559a7461c600a887aa5c6e5c939832ef3a, уже проверяемые части F1 и подготовить предварительную оценку S05-C03. Отдельно открыт пункт AC3 о переносе и удалении столицы.",
   "last_visible_release_D2_confirmation": {
     "run_id": "2026-11-15T1701-interviewer-GEO2-visible-D2",
     "review_ref": "agent-work/interviews/HX-BL-051/GEO2-visible-release/draft-review-D2.json",
@@ -15401,7 +15395,7 @@
     "old_queues_superseded": true,
     "updated_at": "2026-11-15T20:46:38.231Z"
   },
-  "execution_state": "ready_for_programmer_fixes",
+  "execution_state": "review_ready_fixes",
   "latest_PR503_score": {
     "result_ref": "agent-work/results/2026-11-16T0004-strategist-score-PR503.json",
     "release_sha": "b7d0a5637ac5980efc8b91ed425dd7bab5577c8f",
@@ -16387,12 +16381,12 @@
       "release_authorized": false
     }
   ],
-  "task_status": "changes_requested",
-  "current_result_ref": "agent-work/results/2026-11-22T1433-reviewer-HX062.json",
-  "result_commit_sha": "c65c37072113483bd3ab883f9d41c7e07b4fa1a0",
+  "task_status": "review_ready_fixes",
+  "current_result_ref": "agent-work/results/2026-11-22T1500-programmer-HX062.json",
+  "result_commit_sha": "936f12c19d553f0eeed3ddd55e99f63200c07321",
   "independent_review_status": "completed_changes_requested",
   "execution_locks_ref": "agent-work/execution-locks.json",
-  "execution_lock_generation": 529,
+  "execution_lock_generation": 532,
   "execution_lock_released": true,
   "acceptance_trace_ref": "agent-work/evidence/HX-BL-021-F1/review-7b6f908/review.json",
   "accepted_sha": null,
@@ -16677,10 +16671,10 @@
     "decision_ref": "agent-work/decisions/owner-decision-2026-11-18-HX-BL-021-snow-biomes.json",
     "recorded_at": "2026-11-18T10:44:51.514Z"
   },
-  "review_status": "changes_requested",
+  "review_status": "independent_review_pending",
   "prior_review_ref": "agent-work/evidence/HX-BL-021-F1/review-fff2dfa/review.json",
   "review_ref": "agent-work/evidence/HX-BL-062-F1/review-449e6fe/review.json",
-  "score_assessment_ref": "agent-work/evidence/HX-BL-062-F1/review-449e6fe/review.json",
+  "score_assessment_ref": null,
   "publication_gate": {
     "task_id": "HX-BL-058",
     "stage_id": "F1",
@@ -17578,7 +17572,7 @@
     },
     "result_ref": "agent-work/results/2026-11-21T0102-strategist-HX-BL-063.json"
   },
-  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45016252232",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45020338894",
   "visible_evidence_ref": "agent-work/evidence/HX-BL-062-F1/449e6fe/verification.json",
   "latest_HX_BL_058_review": {
     "task_id": "HX-BL-058",
@@ -17797,7 +17791,7 @@
     "HX062-RV03"
   ],
   "review_findings": [],
-  "previous_review_ref": "agent-work/evidence/HX-BL-061-F1/review-3c577a0/review.json",
+  "previous_review_ref": "agent-work/evidence/HX-BL-062-F1/review-449e6fe/review.json",
   "ui_actual_delivery": {
     "channel": "existing_task_chat",
     "images": [
@@ -17918,7 +17912,7 @@
     "open_question_ids": []
   },
   "last_result_commit_sha": "b8b3441b8e6b0b47a9332bb3c903bc42e39a0439",
-  "visible_progress": "Воспроизведён нечитаемый экспорт после удаления пещеры на смешанной карте, невозможный режим подземелья Knave и пропуск подтверждения сброса. В GitHub сохранены карты и три замечания.",
+  "visible_progress": "На исправленном SHA смешанная карта после удаления пещеры экспортируется и открывается; режим подземелья соответствует таблице, отказ от сброса сохраняет старый секрет.",
   "latest_HX_BL_062_bounded_review": {
     "run_id": "2026-11-22T1433-reviewer-HX062",
     "head_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
