@@ -1,0 +1,140 @@
+{
+  "task_id": "HX-BL-062",
+  "spec_ref": "agent-work/specs/HX-BL-062-discovery-F1.md",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "head_sha": "cbf6fc06302a63061a28cae4861acb4c6fda89a8",
+  "tree_sha": "d484df7eed728fa9cdbb5ffa35a376c245266644",
+  "role": "programmer",
+  "run_id": "2026-11-22T1204-programmer-HX062",
+  "stage": "regional_discovery",
+  "pr": 513,
+  "ui": {
+    "method": "Playwright Chromium, production build, native JSON download and file upload in fresh page; switched to Knave after import.",
+    "seed": 42,
+    "capital": {
+      "q": 3,
+      "r": -2,
+      "mode": "passage"
+    },
+    "portal": {
+      "q": 0,
+      "r": 0,
+      "initial": "passage",
+      "manually_saved": "interaction",
+      "after_knave_reload": "interaction"
+    },
+    "desktop": {
+      "viewport": [
+        1500,
+        1000
+      ],
+      "path": "agent-work/evidence/HX-BL-062-F1/cbf6fc0/Classic-desktop.png"
+    },
+    "mobile": {
+      "viewport": [
+        390,
+        844
+      ],
+      "image": [
+        358,
+        527
+      ],
+      "path": "agent-work/evidence/HX-BL-062-F1/cbf6fc0/Knave-mobile.png"
+    },
+    "export": "agent-work/evidence/HX-BL-062-F1/cbf6fc0/seed42.json",
+    "artifact_id": 14749110420,
+    "artifact_sha256": "57acd51c787c95b94f6ae5da9103c306e735ef8bc457cb88779051cf2a408709",
+    "actions_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45007928155"
+  },
+  "frequency_check": {
+    "types": 41,
+    "integer_rolls_per_type": 100,
+    "matched": 4100,
+    "portal_ranges": [
+      [
+        0,
+        19,
+        "passage"
+      ],
+      [
+        20,
+        54,
+        "exploration"
+      ],
+      [
+        55,
+        99,
+        "interaction"
+      ]
+    ],
+    "source": "F1 R1; each actual discoveryForRoll result checked against the F1 partition."
+  },
+  "same_seed_comparison": {
+    "base": "b887422b6b05663124f0ce431953f863350e4a86",
+    "source_tree_head": "97e25ab8f9f8b4dc3265ff3d154e99eb1c3f4fa7",
+    "head_change_since_probe": "CSS only",
+    "ignored_fields": [
+      "savedAt",
+      "map.poiDiscovery"
+    ],
+    "stages": [
+      {
+        "regions": 1,
+        "roads": 4,
+        "rivers": 2,
+        "remaining_document_equal": true
+      },
+      {
+        "regions": 2,
+        "roads": 5,
+        "rivers": 3,
+        "remaining_document_equal": true
+      }
+    ]
+  },
+  "legacy_and_errors": [
+    "Миграция старого secret с пустой уликой сохранила режим и дословный комментарий. Остальные старые точки не получили случайных записей.",
+    "Некорректное значение или отсутствующий владелец отклонены до замены карты. Существующий Redo восстановил принятую карту."
+  ],
+  "limitations": [
+    "Самостоятельное одномильное место без типа и его редактирование остаются в работе.",
+    "Независимая приёмка F1 и подтверждение баллов не проводились."
+  ],
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "cbf6fc06302a63061a28cae4861acb4c6fda89a8",
+    "added": 1,
+    "removed": 0,
+    "modified": 8,
+    "suites": [
+      {
+        "suite": "node:test",
+        "added": 0,
+        "removed": 0,
+        "modified": 6,
+        "scenario_risk": [
+          "Импорт и история сохранений (E8)",
+          "Необязательная улика старого Knave",
+          "Переброс Knave сохраняет обнаружение",
+          "Перенос гекса в другой регион (Classic)",
+          "Перемещение точки (Classic)",
+          "Затопление и явное подтверждение потери режима"
+        ],
+        "reuse_or_new_reason": "Расширены существующие проверки тех же операций. В параметризованных случаях E7/E8 изменены только проверки Classic."
+      },
+      {
+        "suite": "Playwright",
+        "added": 1,
+        "removed": 0,
+        "modified": 2,
+        "scenario_risk": [
+          "Карта seed 42, Classic → ручное изменение в браузере → экспорт → импорт в Knave, desktop и 390 px",
+          "Существующий цикл редактирования Knave без отдельного поля улики",
+          "Карточка проекции одномильной точки с режимом правильного владельца"
+        ],
+        "reuse_or_new_reason": "Добавлен один проход через оба профиля на сгенерированной карте с артефактами. Две существующие проверки DOM уточнены в месте проверки исходного пользовательского сценария."
+      }
+    ],
+    "source": "git diff b887422..cbf6fc0 по scripts/capture-discovery.mjs и test/, подсчёт по логическим сценариям. Броски 41 × 100 и разовая диагностика импорта исключены."
+  }
+}
