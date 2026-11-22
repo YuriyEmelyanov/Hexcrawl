@@ -64,8 +64,18 @@ def main():
             author = row['author'].strip().casefold()
             tool = row['tool']
             month = row['month_utc']
-            when = datetime.fromisoformat(row['published_utc'].replace('Z','+00:00'))
-            assert when.astimezone(timezone.utc).strftime('%Y-%m') == month
+            published = row['published_utc']
+            if len(published) == 10:
+                utc_day = date.fromisoformat(published)
+            else:
+                timestamp = datetime.fromisoformat(published.replace('Z', '+00:00'))
+                if timestamp.tzinfo is None:
+                    raise ValueError(f'Missing UTC offset: {published}')
+                utc_day = timestamp.astimezone(timezone.utc).date()
+            if utc_day.strftime('%Y-%m') != month:
+                raise ValueError(f'Inconsistent calendar month: {row["id"]}')
+            if not row['permalink'].strip() or not row['decision_basis_ru'].strip():
+                raise ValueError(f'Missing primary evidence: {row["id"]}')
             assert author and author not in {'[removed]', '[deleted]', 'automoderator'}
             assert row['subreddit'] in {'osr','rpg','mapmaking'} and row['kind'] in {'posts','comments'}
             key = tool, row['kind'], row['id']
