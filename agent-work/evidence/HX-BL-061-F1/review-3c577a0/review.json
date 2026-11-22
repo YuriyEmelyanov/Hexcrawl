@@ -1,0 +1,227 @@
+{
+  "run_id": "2026-11-22T0400-reviewer-HX061",
+  "task_id": "HX-BL-061",
+  "role": "reviewer",
+  "programmer_slot": false,
+  "generation": 478,
+  "claim_ref": "agent-work/claims/2026-11-22T0400-reviewer-HX061.json",
+  "acquired_at": "2026-11-22T01:01:22.929Z",
+  "head_sha": "3c577a034125d2c3d117347a0fdebe1b2f212ae7",
+  "heartbeat_at": "2026-11-22T01:01:22.929Z",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "pr_number": 512,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/512",
+  "review_ready": false,
+  "accepted": false,
+  "published": false,
+  "release_authorized": false,
+  "execution_state": "changes_requested",
+  "review_verdict": "changes_requested",
+  "next_role": "programmer",
+  "spec_ref": "agent-work/specs/HX-BL-061-smooth-bends-F1.md",
+  "evidence_ref": "agent-work/evidence/HX-BL-061-F1/review-3c577a0/review.json",
+  "score_assessment_ref": "agent-work/evidence/HX-BL-061-F1/review-3c577a0/score-assessment1.3-rc8.json",
+  "result_ref": "agent-work/results/2026-11-22T0400-reviewer-HX061.json",
+  "handoff_ref": "agent-work/handoffs/2026-11-22T0400-reviewer-HX061.json",
+  "next_step": "HX-BL-061 RV1: совместить выделение вершины с руслом, сохранить единый вид совпадающих дорожных участков и показать повёрнутую карту на экране 390 px рядом с PNG. Передать новый SHA на независимую приёмку.",
+  "findings": [
+    {
+      "id": "HX061-RV1-01",
+      "type": "defect",
+      "requirement": "R5/AC2",
+      "fixture": "road-entry-zigzags.json",
+      "reproduce": "5–6 миль, редактирование, гекс (−5,0), река №5, выбрать вершину -266.736,-14.",
+      "actual": {
+        "fixture": "road-entry-zigzags.json",
+        "target": {
+          "hexKey": "-5,0",
+          "riverId": 5,
+          "vertexKey": "-266.736,-14"
+        },
+        "center": {
+          "x": 218.23840175367854,
+          "y": 224
+        },
+        "incident": [
+          {
+            "edge": "-266.736,-14|-290.985,-28",
+            "join": {
+              "x": 215.93477417961194,
+              "y": 225.32999999999998
+            },
+            "distance": 2.659999999999995,
+            "halfWidth": 1.8186533479473215
+          },
+          {
+            "edge": "-266.736,-14|-266.736,14",
+            "join": {
+              "x": 215.93477417961194,
+              "y": 225.32999999999998
+            },
+            "distance": 2.659999999999995,
+            "halfWidth": 1.8186533479473215
+          }
+        ]
+      },
+      "expected": "Центр круга совпадает с изображённым стыком двух рёбер; команда редактирует прежнюю вершину.",
+      "location": "src/App.tsx:17702",
+      "baseline_distance": 0
+    },
+    {
+      "id": "HX061-RV1-02",
+      "type": "defect",
+      "requirement": "R4–R5/AC2 и AC4",
+      "fixture": "road-entry-zigzags.json",
+      "reproduce": "Копировать в этом сохранении отрезок дороги №2 (-2,0) → (-3,0) как отдельную дорогу №8 с одним исходным сегментом, обновить nextRoadId до 9. Сохранение прошло штатный валидатор. Открыть в базовом масштабе.",
+      "actual": {
+        "road": 2,
+        "copy": 8,
+        "seg": {
+          "from": {
+            "q": -2,
+            "r": 0
+          },
+          "to": {
+            "q": -3,
+            "r": 0
+          },
+          "kind": "road"
+        },
+        "ways": [
+          {
+            "id": 2,
+            "pts": [
+              {
+                "x": 387.9793808954285,
+                "y": 238
+              },
+              {
+                "x": 350.68208717108416,
+                "y": 238
+              },
+              {
+                "x": 347.91851370207735,
+                "y": 238.2399639670623
+              },
+              {
+                "x": 345.22785773884914,
+                "y": 238.95985586824924
+              },
+              {
+                "x": 342.6101192813994,
+                "y": 240.15967570356074
+              },
+              {
+                "x": 340.06529832972825,
+                "y": 241.83942347299688
+              }
+            ]
+          },
+          {
+            "id": 8,
+            "pts": [
+              {
+                "x": 387.9793808954285,
+                "y": 238
+              },
+              {
+                "x": 357.21549568884166,
+                "y": 238
+              },
+              {
+                "x": 340.06529832972825,
+                "y": 241.83942347299688
+              }
+            ]
+          }
+        ],
+        "gap": 1.796878636301778
+      },
+      "expected": "Один общий ход отрезка между теми же концами, выбор обоих ID остаётся доступен.",
+      "location": "src/routeBends.ts:82"
+    },
+    {
+      "id": "HX061-RV1-03",
+      "type": "missing_evidence",
+      "requirement": "AC3",
+      "actual": "На снимках обычного окна карта видна. В окне 390×900 при повороте на снимке панель, карта вне кадра. Соответствующие before/after JPG попарно идентичны. SVG/PNG и выбор проверялись отдельно.",
+      "expected": "Показать один и тот же видимый изгиб и мост на повёрнутом экране 390 px и в экспортированном PNG при обоих масштабах."
+    }
+  ],
+  "independence": "Отдельный агент со свежим контекстом повторил выбор вершины на опубликованной базе и в PR через React JSX и штатный обработчик. Основной проверяющий независимо измерил расхождение дублированного дорожного участка и проверил артефакты.",
+  "criteria": {
+    "AC1": "passed. Мост на исходном ребре в четырёх комбинациях; просмотрены реальные PNG.",
+    "AC2": "changes_requested: RV1-01/02. Воспроизведено сохранение 7+2+1 пересечений и их координат на трёх картах в каждом масштабе. Контакт береговой мельницы с рекой сохранился.",
+    "AC3": "partial: геометрия экрана и SVG экспорта совпала, визуальное сопоставление узкого повёрнутого экрана открыто.",
+    "AC4": "Проверки сохранения и отмены прошли. Совместимое сохранение с перекрывающимися путями выявило RV1-02."
+  },
+  "ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44963546732",
+  "actual_checks": {
+    "node_CI": {
+      "passed": 443,
+      "skipped": 0
+    },
+    "local_node": {
+      "passed": 27,
+      "skipped": 0
+    },
+    "browser": {
+      "scripts_passed": 10
+    },
+    "rng": {
+      "status": "success"
+    },
+    "engraved_map_comparison": "skipped_PR506_only"
+  },
+  "artifact_sha256": "526ba852fa0fa9e17732d327dc3c5c59fea040812c6570d3e9851003790a4bc2",
+  "changed_png_pixels": {
+    "base": 16075,
+    "fine": 10825,
+    "base_rotated": 15667,
+    "fine_rotated": 10460
+  },
+  "ui_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/map-before-after.png",
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "3c577a034125d2c3d117347a0fdebe1b2f212ae7",
+    "added": 2,
+    "removed": 0,
+    "modified": 7,
+    "source": "Сопоставление логических сценариев в diff b887422b6b05663124f0ce431953f863350e4a86...3c577a034125d2c3d117347a0fdebe1b2f212ae7 по каждому runner. Повороты и размеры экрана в одном сквозном случае не суммируются.",
+    "suites": [
+      {
+        "suite": "node:test / test/oneMile.test.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Свободная дуга и близкий ручей. Ограничение скругления действует только у конфликтующего участка.",
+        "reuse_or_new_reason": "Прежние проверки реки и брода не обнаруживали нового пересечения на самом изгибе."
+      },
+      {
+        "suite": "Chromium / test/browser/route-bends.mjs",
+        "added": 1,
+        "removed": 0,
+        "modified": 0,
+        "scenario": "Одна карта до/после: мост на исходном речном ребре, два масштаба и ориентации, PNG и повторное открытие JSON.",
+        "reuse_or_new_reason": "Существующий прогон проверял одномильную сцену, но не сравнивал отрисовку изгиба с опубликованной базой."
+      },
+      {
+        "suite": "Chromium / test/browser/save-history.smoke.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 6,
+        "scenario": "Физический выбор реки в Classic и Mythic (2), выбор среди совпадающих речных участков (1). Выделение одного из совпадающих дорожных участков (1), выбранного русла (1) и полного пути при подтверждении удаления (1).",
+        "reuse_or_new_reason": "Существующие сценарии проверяют физический клик и подсветку выбранного пути с учётом новой формы линии."
+      },
+      {
+        "suite": "Chromium / scripts/profile-large-map.mjs",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Выбор видимого речного участка на повёрнутой растровой карте.",
+        "reuse_or_new_reason": "Сохранены прежние критерии сценария, координаты извлекаются из SVGGeometryElement."
+      }
+    ]
+  },
+  "test_review": "В diff проверены два новых самостоятельных сценария (геометрия рядом с ручьём и сравнение с базовой сборкой) и семь изменённых случаев выбора/выделения. Проверки чувствительны к ошибкам ID и смещению моста; мобильный снимок требует изменения существующего сценария по RV1-03. Первый сценарий сравнения запускается в CI на ветке задачи."
+}
