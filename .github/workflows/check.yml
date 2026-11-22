@@ -1,116 +1,31 @@
-name: Check
+name: HX062 reviewer reproduction
 on:
-  pull_request:
-  workflow_dispatch:
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  push:
+    branches: ['review/hx062-capital-987fbaf']
 permissions:
   contents: read
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - run: npm ci
-      - run: npm run check
-
   browser:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 24
+      - run: git diff --exit-code 987fbaf6563576635d5fd9e533ae475acd4dd8a3 -- src public index.html package.json package-lock.json vite.config.ts test/helpers test/fixtures
       - run: npm ci
       - run: npm run build
       - run: npx playwright install --with-deps chromium
-      - name: Capture HX-BL-062 Classic and Knave discovery
-        if: github.head_ref == 'feat/hx062-discovery'
-        run: node scripts/capture-discovery.mjs
-      - uses: actions/upload-artifact@v4
-        if: always() && github.head_ref == 'feat/hx062-discovery'
-        with:
-          name: HX-BL-062-discovery
-          path: reports/HX-BL-062/
-          if-no-files-found: ignore
-      - run: npm run test:browser
-        if: success() || failure()
-        env:
-          # Bounded same-input native6 acceptance against the published parent.
-          ONE_MILE_NATIVE6_BASELINE: ${{ github.head_ref == 'agent/hx-bl-058-base-scale-f1' && github.event.pull_request.base.sha || github.event.pull_request.number == 505 && '7c0eb9f3c9baabc01d63356845c1372df9fc9da5' || github.event.pull_request.number == 504 && 'b7d0a5637ac5980efc8b91ed425dd7bab5577c8f' || github.event.pull_request.number == 503 && 'd41911b8d7c2248f115b182923350dc8d08c0a48' || '' }}
+      - run: |
+          node node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 4219 --strictPort > /tmp/server.log 2>&1 &
+          for i in {1..30}; do curl -fsS http://127.0.0.1:4219 > /dev/null && break; sleep 1; done
+          node scripts/review-capital.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: terrain-render-preview
-          path: reports/terrain-v2-*.png
-          if-no-files-found: ignore
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: HX-BL-024-UI
-          path: reports/HX-BL-024/
-          if-no-files-found: ignore
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: HX-BL-041-UI
-          path: reports/HX-BL-041/
-          if-no-files-found: ignore
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ONE-MILE1-UI
-          path: reports/ONE-MILE1-UI/
-          if-no-files-found: ignore
-
-  world-random:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - run: npm ci
-      - run: npm run build
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:browser:rng
-
-  engraved-map-comparison:
-    if: github.event.pull_request.number == 506
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      HX060_BASE_SHA: 292428e970dbe66e2146d8f9528dd6f97f32666d
-      HX060_SOURCE_HEAD: ${{ github.event.pull_request.head.sha }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-      - run: npm ci
-      - run: npm run build
-      - name: Build published baseline
-        run: |
-          git fetch --depth=1 origin "$HX060_BASE_SHA"
-          git worktree add --detach "$RUNNER_TEMP/hx060-base" "$HX060_BASE_SHA"
-          ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/hx060-base/node_modules"
-          npm --prefix "$RUNNER_TEMP/hx060-base" run build
-          echo "HX060_BASELINE_DIR=$RUNNER_TEMP/hx060-base/dist" >> "$GITHUB_ENV"
-      - run: npx playwright install --with-deps chromium
-      - run: node scripts/profile-engraved-map.mjs
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: HX-BL-060-comparison
-          path: reports/HX-BL-060/
-          if-no-files-found: ignore
+          name: HX062-capital
+          path: reports/capital/
+          if-no-files-found: error
