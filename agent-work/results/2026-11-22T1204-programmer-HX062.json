@@ -1,0 +1,152 @@
+{
+  "task_id": "HX-BL-062",
+  "role": "programmer",
+  "run_id": "2026-11-22T1204-programmer-HX062",
+  "generation": 516,
+  "spec_ref": "agent-work/specs/HX-BL-062-discovery-F1.md",
+  "branch": "feat/hx062-discovery",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "head_sha": "8da7853e9bd9ecaf9f8ebe8a61f96f6a18f386fe",
+  "pr_number": 513,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513",
+  "review_ready": false,
+  "published": false,
+  "release_authorized": false,
+  "accepted": false,
+  "evidence_ref": "agent-work/evidence/HX-BL-062-F1/8da7853/verification.json",
+  "next_role": "programmer",
+  "next_step": "В PR №513 добавить создание и редактирование самостоятельного места без типа на масштабе 1 миля, проверить сохранение режима и проекцию регионального портала. Затем завершить сценарии переноса, удаления и Undo/Redo по F1 и передать точный SHA на независимую приёмку.",
+  "forecast": "Ориентир до выпуска — ещё 2–4 рабочих запуска при одном цикле исправлений. Ожидание решения о публикации считается отдельно.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-22T09:04:20.311Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-22T10:03:17.113Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  },
+  "status": "completed",
+  "task_status": "implementation_in_progress",
+  "stage": "regional_discovery_verified",
+  "role_selection_reason": "Программист взял утверждённую HX-BL-062 по готовой спецификации F1 после завершения DISC. PR512 отдельно ожидает решения о выпуске.",
+  "result": "В Classic столица и портал получили режим. В браузере портал 0/0 вручную переведён в «Секретное место» и сохранён в JSON. После открытия в Knave режим сохранился. Проверены перенос, затопление, откат региона и сохранение комментария.",
+  "score_model": "1.3-rc8",
+  "score_criterion": "S05-C03",
+  "score_update_status": "not_due_unpublished",
+  "score_forecast": "unknown",
+  "score_evidence": "agent-work/evidence/HX-BL-062-F1/8da7853/verification.json",
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "8da7853e9bd9ecaf9f8ebe8a61f96f6a18f386fe",
+    "added": 1,
+    "removed": 0,
+    "modified": 8,
+    "suites": [
+      {
+        "suite": "node:test",
+        "added": 0,
+        "removed": 0,
+        "modified": 6,
+        "scenario_risk": [
+          "Импорт и история сохранений (E8)",
+          "Необязательная улика старого Knave",
+          "Переброс Knave сохраняет обнаружение",
+          "Перенос гекса в другой регион (Classic)",
+          "Перемещение точки (Classic)",
+          "Затопление и явное подтверждение потери режима"
+        ],
+        "reuse_or_new_reason": "Расширены существующие проверки тех же операций. В параметризованных случаях E7/E8 изменены только проверки Classic."
+      },
+      {
+        "suite": "Playwright",
+        "added": 1,
+        "removed": 0,
+        "modified": 2,
+        "scenario_risk": [
+          "Карта seed 42, Classic → ручное изменение в браузере → экспорт → импорт в Knave, desktop и 390 px",
+          "Существующий цикл редактирования Knave без отдельного поля улики",
+          "Карточка проекции одномильной точки с режимом правильного владельца"
+        ],
+        "reuse_or_new_reason": "Добавлен один проход через оба профиля на сгенерированной карте с артефактами. Две существующие проверки DOM уточнены в месте проверки исходного пользовательского сценария."
+      }
+    ],
+    "source": "git diff b887422..8da7853 по scripts/capture-discovery.mjs и test/, подсчёт по логическим сценариям. Броски 41 × 100 и разовая диагностика импорта исключены."
+  },
+  "checks": {
+    "ci_run": 45009115168,
+    "head_sha": "8da7853e9bd9ecaf9f8ebe8a61f96f6a18f386fe",
+    "jobs": [
+      {
+        "id": 137167236260,
+        "name": "world-random",
+        "status": "completed",
+        "conclusion": "success",
+        "bad": []
+      },
+      {
+        "id": 137167236452,
+        "name": "browser",
+        "status": "completed",
+        "conclusion": "success",
+        "bad": []
+      },
+      {
+        "id": 137167236469,
+        "name": "check",
+        "status": "completed",
+        "conclusion": "success",
+        "bad": []
+      },
+      {
+        "id": 137167237578,
+        "name": "engraved-map-comparison",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ],
+    "node": {
+      "tests": 442,
+      "pass": 442,
+      "fail": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "smoke_commands_run": 10,
+      "passed": 10,
+      "skipped": 0,
+      "feature_capture_run": 1,
+      "feature_capture_passed": 1
+    },
+    "world_random": {
+      "commands_run": 1,
+      "passed": 1,
+      "skipped": 0
+    },
+    "other": {
+      "job": "engraved-map-comparison",
+      "skipped": "PR506-specific workflow"
+    },
+    "focused_prior_runs": {
+      "save_and_tags": 64,
+      "move_and_water": 12,
+      "checkpoint_recovery": 6
+    },
+    "local_attempt_limits": [
+      "Локальный Chromium не смог создать сокет. Браузерные доказательства получены в GitHub Actions.",
+      "Ранний локальный полный прогон завершился сбоями в 16 файлах. Итоговый полный прогон на текущем SHA выполнен в GitHub Actions."
+    ]
+  },
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45009115168",
+  "remaining": [
+    "Реализовать самостоятельное одномильное место без типа и доступ к его режиму в редакторе.",
+    "Завершить все сценарии F1 и передать проверяющему проверенный SHA."
+  ],
+  "owner_decision_needed_for_this_step": false,
+  "implementation_authorized": true,
+  "finished_at": "2026-11-22T10:03:27.437Z"
+}
