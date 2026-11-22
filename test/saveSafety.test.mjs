@@ -307,8 +307,8 @@ test('ONE-MILE1 local transaction preserves the other language, neighbouring sou
  const {g}=fineSetup();fineActivate(g);
  const doc=g.render().captureDocument();doc.map.physicalGrid={...doc.map.physicalGrid,selectedCell:{q:0,r:0},fineCellEdits:{'0,0':{name:{ru:'Лес',en:'Forest'}},'1,0':{note:'neighbour'}}};g.render().applyDocument(doc);
  const before=fineSave(g), count=g.render().undoHistory.length, revision=g.render().getDocumentRevision();
- assert.equal(g.render().editOneMileCell({q:0,r:0},{name:'Опушка',note:'local'},revision,'ru'),true);
- const after=fineSave(g);assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].name.en,'Forest');assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].name.ru,'Опушка');
+ assert.equal(g.render().editOneMileCell({q:0,r:0},{name:'Опушка',note:'local',localPlace:'interaction'},revision,'ru'),true);
+ const after=fineSave(g);assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].localPlace,'interaction');assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].name.en,'Forest');assert.equal(after.map.physicalGrid.fineCellEdits['0,0'].name.ru,'Опушка');
  assert.deepEqual(after.map.physicalGrid.fineCellEdits['1,0'],before.map.physicalGrid.fineCellEdits['1,0']);
  const expected=structuredClone(before);expected.map.physicalGrid=after.map.physicalGrid;assert.deepEqual(after,expected,'no source-six or RNG mutation');assert.equal(g.render().undoHistory.length,count+1);
  assert.equal(g.render().editOneMileCell({q:0,r:0},{note:'stale'},revision,'ru'),false);assert.deepEqual(fineSave(g),after);

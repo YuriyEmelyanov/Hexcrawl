@@ -13910,15 +13910,25 @@ export function App() {
     }catch(error){setEditError(error instanceof Error?error.message:'Invalid one-mile adaptation');return false;}
   };
   const cancelOneMilePreview = () => {oneMilePreviewRef.current=null;};
-  const editOneMileCell = (target:AxialHex,values:{name?:string;note?:string;landBiomeId?:string},revision:number,locale:Language) => {
+  const editOneMileCell = (target:AxialHex,values:{name?:string;note?:string;landBiomeId?:string;localPlace?:Discovery|null;projected?:DiscoveryMap},revision:number,locale:Language) => {
     const display=automaticFineSceneRef.current??physicalGridRef.current;
     const state=physicalGridRef.current??display?.geometryRefinement?.sourceState??display;
     if(!state||!display?.selectedCell||display.selectedCell.q!==target.q||display.selectedCell.r!==target.r||mutationBlocked())return false;
-    if(!values||typeof values!=='object'||Array.isArray(values)||Object.keys(values).some(key=>!['name','note','landBiomeId'].includes(key)))return false;
+    if(!values||typeof values!=='object'||Array.isArray(values)||Object.keys(values).some(key=>!['name','note','landBiomeId','localPlace','projected'].includes(key)))return false;
     try{
       const map=captureMap(),edits=prepareFineCellEdit({edits:state.fineCellEdits??{},target,revision:documentRevision.current,expectedRevision:revision,
-        accepted:projectOneMile(oneMileSources(map),state.grid.origin),language:locale,name:values.name,note:values.note,landBiomeId:values.landBiomeId},id=>Object.prototype.hasOwnProperty.call(BIOMES,id));
-      const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:{...map,physicalGrid:{...state,fineCellEdits:edits}}});
+        accepted:projectOneMile(oneMileSources(map),state.grid.origin),language:locale,localPlace:values.localPlace,name:values.name,note:values.note,landBiomeId:values.landBiomeId},id=>Object.prototype.hasOwnProperty.call(BIOMES,id));
+      const projected=Object.entries(values.projected??{});
+      if (projected.length) {
+        const places=summarizeDetailCell({...display,selectedWorldPoint:undefined},target,new Map()).pois;
+        const owners=new Set(places.map(place=>place.legacyRef));
+        if(projected.some(([owner])=>!owners.has(owner)))return false;
+      }
+      const poiDiscovery={...map.poiDiscovery};
+      for(const [owner,mode] of projected){
+        if((poiDiscovery[owner]??'passage')!==mode)poiDiscovery[owner]=mode;
+      }
+      const before=copyDocument(captureDocument()),after=copyDocument({...captureDocument(),map:{...map,poiDiscovery,physicalGrid:{...state,fineCellEdits:edits}}});
       assertHexcrawlSaveData(createSaveData(after));recordTransaction(before,after);applyPreparedDocument(after);return true;
     }catch(error){setEditError(error instanceof Error?error.message:'Invalid one-mile edit');return false;}
   };
@@ -16566,23 +16576,23 @@ export function App() {
   };
   const focusFine=()=>{const key=(automaticFineSceneRef.current??physicalGridRef.current)?.selectedCell;setTimeout(()=>{if(key)mapSvgRef.current?.querySelector<SVGGElement>(`[data-fine-key="${hexKey(key)}"]`)?.focus();},0);};
   const cancelFineDraft=(expected=fineDraft)=>{if(expected&&fineDraftRef.current!==expected)return false;fineDraftRef.current=null;setFineDraft(null);setFineExit(null);fineComposing.current=false;setEditError(null);focusFine();};
-  const changeFineDraft=(fields:Partial<Pick<FineDraft,'name'|'note'|'biome'>>,expected=fineDraft)=>{
+  const changeFineDraft=(fields:Partial<Pick<FineDraft,'name'|'note'|'biome'|'localPlace'|'projected'>>,expected=fineDraft)=>{
     if(!expected||fineDraftRef.current!==expected||expected.revision!==documentRevision.current)return false;
     const next={...expected,...fields};fineDraftRef.current=next;setFineDraft(next);return true;
   };
   const saveFineDraft=(expected=fineDraft)=>{
     const d=fineDraftRef.current;if(!d||d!==expected||fineComposing.current)return false;
     if(d.revision!==documentRevision.current){setEditError(language==='ru'?'Карта изменилась. Отмените черновик и выберите гекс заново.':'The map changed. Cancel this draft and select the cell again.');return false;}
-    if(JSON.stringify([d.name,d.note,d.biome])===d.baseline){cancelFineDraft(d);return true;}
+    if(JSON.stringify([d.name,d.note,d.biome,d.localPlace,d.projected])===d.baseline){cancelFineDraft(d);return true;}
     fineDraftRef.current=null;
-    const ok=editOneMileCell(d.target,{name:d.name||undefined,note:d.note||undefined,landBiomeId:d.biome||undefined},d.revision,d.language);
+    const ok=editOneMileCell(d.target,{name:d.name||undefined,note:d.note||undefined,landBiomeId:d.biome||undefined,localPlace:d.localPlace,projected:d.projected},d.revision,d.language);
     if(ok){setFineDraft(null);fineComposing.current=false;focusFine();}else fineDraftRef.current=d;
     return ok;
   };
   const fineGate=(event:{target:EventTarget|null;preventDefault:()=>void;stopPropagation:()=>void;type:string;clientX?:number;clientY?:number})=>{
     const draft=fineDraftRef.current,target=event.target as HTMLElement;
     if(!draft||target.closest('[data-fine-editor],[data-fine-exit]'))return true;
-    if(JSON.stringify([draft.name,draft.note,draft.biome])===draft.baseline){fineDraftRef.current=null;setFineDraft(null);return true;}
+    if(JSON.stringify([draft.name,draft.note,draft.biome,draft.localPlace,draft.projected])===draft.baseline){fineDraftRef.current=null;setFineDraft(null);return true;}
     event.preventDefault();event.stopPropagation();
     const element=target.closest('button,a,select,input,[role="button"]') as HTMLElement|null;
     const value=element instanceof HTMLSelectElement||element instanceof HTMLInputElement&&element.type!=='file'?element.value:null;
@@ -16666,10 +16676,14 @@ export function App() {
     documentRevision.current++;updateAutomaticFineScene({...state,selectedCell:cell,selectedWorldPoint:pointer??center});setFineHover(null);if(source)setSelectedHex(source);return true;
   };
   const finePickRef=useRef(pickFine);finePickRef.current=pickFine;
+  const projectedPlaces=(fineSummary?.pois??[]).flatMap(p=>{
+    const fp=fineDisplay?.poiFootprints.find(f=>f.poiId===p.poiId);
+    return fp?.legacyRef?[{owner:fp.legacyRef,label:finePoi(fp).label}]:[];
+  });
   const startFineDraft=()=>{
     const state=automaticFineSceneRef.current??physicalGridRef.current,cell=state?.selectedCell;
     if(!cell||smallLakeDraft||mutationBlocked())return;const value=state.fineCellEdits?.[hexKey(cell)];
-    const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
+    const d:FineDraft={target:cell,revision:documentRevision.current,language,name:value?.name?.[language]??'',note:value?.note??'',biome:value?.landBiomeId??'',localPlace:value?.localPlace??null,projected:Object.fromEntries(summarizeDetailCell({...state,selectedWorldPoint:undefined},cell,new Map()).pois.flatMap(p=>p.legacyRef?[[p.legacyRef,discoveries.current[p.legacyRef]??'passage']]:[])),baseline:''};d.baseline=JSON.stringify([d.name,d.note,d.biome,d.localPlace,d.projected]);fineDraftRef.current=d;setFineDraft(d);setFineHover(null);setEditError(null);
   };
   const acceptedSmallLakes=physicalGrid?.smallLakes;
   const refinedSource=useMemo(()=>fineDisplay?.geometryRefinement?normalizeRefinementRiverSource({rivers,marks:regionMarkKeys(captureMap()),origin:fineDisplay.grid.origin}):null,[fineDisplay,rivers,regions,crossings,riverFeatureOverrides]);
@@ -16767,7 +16781,7 @@ export function App() {
     onHover={cell=>{if(!fineDraftRef.current)setFineHover(cell);}} onPick={(cell,candidate,revision,event)=>finePickRef.current(cell,candidate,revision,event)}/>:null,
     [fineDisplay,fineCells,fineCandidates,acceptedLakeArtwork,paintSmallLake,smallLakeDraft?.cells,riverOffset,mapRotationTransform,renderedDocumentRevision,showHexCoordinates,isImporting,pendingRegen,kingdomJob,language,roadSegments,riverSegments,riverRapidMarks,riverWaterfalls,renderedCrossings,nameTargets,waterPoiByKey,regions]);
   const fineWaterLabel=(fineSummary?.terrains??[]).filter(row=>row.terrain==='lake'||row.terrain==='sea').map(row=>row.terrain==='lake'?t.lake:t.sea).join('/');
-  const finePanel=<OneMilePanel language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
+  const finePanel=<OneMilePanel classic={generationMode==='classic'} discoveryLabels={discoveryLabels} localPlace={fineValues?.localPlace} projectedPlaces={projectedPlaces} newPlaceMode={assignDiscovery('none',generationRef.current.masterSeed,'fine:'+ (fineReadCell?hexKey(fineReadCell):''))} language={fineDraft?.language??language} cell={fineReadCell} name={fineValues?.name?.[language]} biome={fineRow?.landBiomeId?getBiomeLabel((fineValues?.landBiomeId??fineRow.landBiomeId) as BiomeId,language):fineRow?.waterArea?fineWaterLabel:undefined} note={fineValues?.note}
     roads={(fineSummary?.routes??[]).map(r=>`${editorNames[`road:${r.id}`]?.[language]??`${r.kinds.map(k=>k==='road'?t.road:t.trail).join('/')} ${r.id}`}${r.boundaryOnly?(language==='ru'?' · у границы':' · at boundary'):''}`)}
     rivers={(fineSummary?.rivers??[]).map(r=>`${editorNames[`river:${r.id}`]?.[language]??toponyms[`river:${r.id}`]?.[language]??`${t.river} ${r.id}`}${r.crossingIds.length?` · ${r.crossingIds.map(id=>crossings.find(c=>`crossing:${c.key}`===id)?.kind).filter(Boolean).map(k=>t[k as 'bridge'|'ferry'|'ford']).join(', ')}`:''}`)}
     pois={(fineSummary?.pois??[]).map(p=>{
