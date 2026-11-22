@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-11-22",
-  "branch": "feature/hx-bl-061-smooth-bends",
+  "branch": "feat/hx062-discovery",
   "plan_json": "agent-work/proposals/2026-11-09-HX-BL-051-OVERVIEW1.json",
   "plan_md": null,
   "strategy_branch": "main",
@@ -29,7 +29,7 @@
   "run_id": "2026-11-22T1204-programmer-HX062",
   "plan_revision": 1,
   "baseline_sha": "b8a78c7f4063f429932841206d939382a7f3f789",
-  "status": "ready_for_development",
+  "status": "implementation_checkpoint",
   "planning_for": "2026-11-08",
   "plan_commit_sha": "9ae114cd046ed8dad0b2a11e2148fc46eb6f088f",
   "last_reviewed_on": "2026-11-11",
@@ -54,10 +54,10 @@
   "current_task_id": "HX-BL-062",
   "spec_path": "agent-work/specs/HX-BL-062-discovery-F1.md",
   "spec_version": "F1",
-  "result_path": "agent-work/results/2026-11-22T1103-analyst-HX062-F1.json",
+  "result_path": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
   "handoff_commit_sha": "a215c3fc34bb59fab6c53751726887e7ff550e5a",
-  "active_claim": "agent-work/claims/2026-11-22T1204-programmer-HX062.json",
-  "next_step": "Программист реализует F1. Сначала на одной карте Classic создать столицу и портал, изменить режим, сохранить и открыть карту, затем проверить общий режим в Knave.",
+  "active_claim": null,
+  "next_step": "В PR №513 добавить создание и редактирование самостоятельного места без типа на масштабе 1 миля, проверить сохранение режима и проекцию регионального портала. Затем завершить сценарии переноса, удаления и Undo/Redo по F1 и передать точный SHA на независимую приёмку.",
   "owner_decisions_needed": [
     "Согласовать публикацию PR №512 на 0a5526a22ad2815a6d9df9d3a57babbd8f523d24."
   ],
@@ -65,8 +65,8 @@
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
   "evidence_path": "agent-work/previews/HX-BL-062-D1/card.svg",
   "branch_name": "feature/hx-bl-061-smooth-bends",
-  "pr": null,
-  "head_sha": null,
+  "pr": 513,
+  "head_sha": "8da7853e9bd9ecaf9f8ebe8a61f96f6a18f386fe",
   "tree_sha": "1396adb393a3a65885f9d0982707f94136bf7122",
   "checks_status": "passed",
   "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44974016910",
@@ -85,7 +85,7 @@
   "score_update_task_id": "HX-BL-056",
   "score_update_release_sha": "b887422b6b05663124f0ce431953f863350e4a86",
   "score_process_decision_ref": "owner-decision-2026-10-24-score-responsibilities",
-  "role_selection_reason": "Завершённое интервью DISC позволило подготовить F1.",
+  "role_selection_reason": "Согласованная HX-BL-062 получила чистовую F1 после DISC; текущий этап программиста независим от публикации PR512.",
   "score_update_result_ref": "agent-work/results/2026-11-21-reviewer-PR510-publication.json",
   "score_update_completed_at": "2026-11-21T22:55:44.882Z",
   "score_update_delta": 0,
@@ -99,11 +99,11 @@
   "automation_health": {
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
-      "at": "2026-11-22T08:04:13.145Z",
+      "at": "2026-11-22T09:04:20.311Z",
       "is_enabled": true
     },
     "end": {
-      "at": "2026-11-22T08:07:39.859Z",
+      "at": "2026-11-22T10:03:17.113Z",
       "is_enabled": true
     },
     "restored": false,
@@ -703,7 +703,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-22T08:08:01.548Z",
+  "updated_at": "2026-11-22T10:03:41.150Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -896,7 +896,7 @@
     "failed": 0,
     "skipped": 0
   },
-  "evidence_ref": "agent-work/evidence/HX-BL-061-F1/review-0a5526a/review.json",
+  "evidence_ref": "agent-work/evidence/HX-BL-062-F1/8da7853/verification.json",
   "static_diagnosis_handoff": {
     "status": "coordinated_nextstage_proposed",
     "result_ref": "agent-work/results/2026-10-27-developer-HX-BL-003-static-diagnosis.json",
@@ -2170,7 +2170,7 @@
   "parent_spec_version": "2.3",
   "test_change_summary_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/verification.json",
   "programmer_score_evidence_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/verification.json",
-  "completed_claim_result_ref": "agent-work/results/2026-11-22T0201-programmer-HX061.json",
+  "completed_claim_result_ref": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
   "review_evidence_ref": "agent-work/evidence/HX-BL-056-F1/review-0810e8c/review.json",
   "github_review_state": "operational_changes_requested",
   "independent_reviewer_automation_health_ref": "agent-work/evidence/PR496-owner-corrections-0838/reviewer/3aff650/automation.json",
@@ -5178,7 +5178,7 @@
       }
     }
   ],
-  "pr_url": null,
+  "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513",
   "active_claim_scope": null,
   "other_active_claims": [
     {
@@ -7745,7 +7745,7 @@
     "canonical_interrupted_claim_preserved": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json"
   },
   "recovery_resolution_ref": "agent-work/claims/2026-11-08-developer-HX-BL-041-MYTH-CARD1-recovery.json",
-  "result_ref": "agent-work/results/2026-11-22T1103-analyst-HX062-F1.json",
+  "result_ref": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
   "latest_PR493_recovery": {
     "status": "accepted_source_free_core_unpublished",
     "head_sha": "2f11a4b608a7ed66f5786b3a0e151362f82d0ad8",
@@ -8506,7 +8506,7 @@
   "next_programmer_step_ref": "agent-work/handoffs/2026-11-15-manual-programmer-GEO2-mixed-seams.json",
   "review_request_ref": null,
   "programmer_complete": true,
-  "current_programmer_result_ref": "agent-work/results/2026-11-22T0201-programmer-HX061.json",
+  "current_programmer_result_ref": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
   "reviewed_private_sha": null,
   "ui_review_result": {
     "status": "independent_passed_exact_SHA",
@@ -8526,8 +8526,8 @@
     "actual_UI_shown_in_chat": true
   },
   "fix_handoff_ref": "agent-work/handoffs/2026-11-12T1000-ONE-MILE1-fixes.json",
-  "role": "business-analyst",
-  "latest_result_ref": "agent-work/results/2026-11-22T0400-reviewer-HX061.json",
+  "role": "programmer",
+  "latest_result_ref": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
   "checks": {
     "workflow_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44933460877",
     "jobs": [
@@ -9074,7 +9074,7 @@
   "current_role_result": "agent-work/results/2026-11-22T1103-analyst-HX062-F1.json",
   "current_stage_score_assessment_status": "preliminary_unpublished",
   "ui_actual_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/map-before-after.png",
-  "execution_running": true,
+  "execution_running": false,
   "latest_PR495_release": {
     "run_id": "2026-11-09T0539-programmer-release-PR495",
     "status": "published_verified_score_completed",
@@ -11390,7 +11390,7 @@
   },
   "checkpoint_ref": "agent-work/results/2026-11-11T0838-programmer-PR496-canonical.json",
   "working_branch": "feature/hx-bl-061-smooth-bends",
-  "pr_number": null,
+  "pr_number": 513,
   "latest_PR496_owner_corrections": {
     "run_id": "2026-11-11T0838-programmer-PR496-canonical",
     "task_id": "HX-BL-051",
@@ -11741,7 +11741,7 @@
   },
   "updated_on": "2026-11-20",
   "claim_ref": "agent-work/claims/2026-11-22T0602-reviewer-HX061.json",
-  "latest_programmer_result_ref": "agent-work/results/2026-11-22T0201-programmer-HX061.json",
+  "latest_programmer_result_ref": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
   "source_sha": "3c577a034125d2c3d117347a0fdebe1b2f212ae7",
   "source_pr": 512,
   "owner_decision_required": false,
@@ -12766,7 +12766,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-22T1103-analyst-HX062-F1.json",
+  "last_result_ref": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -15809,7 +15809,7 @@
     },
     "publication_authorized": false
   },
-  "forecast": "Исправление и независимая перепроверка — ориентировочно два рабочих запуска.",
+  "forecast": "Ориентир до выпуска — ещё 2–4 рабочих запуска при одном цикле исправлений. Ожидание решения о публикации считается отдельно.",
   "actual_ui": {
     "head_sha": "849854f58edb1d824783599b9f72e888ee892556",
     "artifact_id": 14678345645,
@@ -16366,7 +16366,7 @@
     }
   ],
   "task_status": "спецификация",
-  "current_result_ref": "agent-work/results/2026-11-22T0400-reviewer-HX061.json",
+  "current_result_ref": "agent-work/results/2026-11-22T1204-programmer-HX062.json",
   "result_commit_sha": "a424c34f96cbc59e833442c301e80bd12aaaddc4",
   "independent_review_status": "changes_requested",
   "execution_locks_ref": "agent-work/execution-locks.json",
@@ -17556,7 +17556,7 @@
     },
     "result_ref": "agent-work/results/2026-11-21T0102-strategist-HX-BL-063.json"
   },
-  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/44963546732",
+  "ci_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45009115168",
   "visible_evidence_ref": "agent-work/evidence/HX-BL-061-F1/3c577a0/verification.json",
   "latest_HX_BL_058_review": {
     "task_id": "HX-BL-058",
@@ -17575,7 +17575,7 @@
     "status": "accepted_awaiting_owner_publication"
   },
   "score_current_level_ref": "agent-work/score/current-score.json",
-  "stage": "DISC",
+  "stage": "regional_discovery",
   "prior_review_superseded": true,
   "images": {
     "commit": "000182584ef7ad5f349a4d0dedc2cc2bcbb1c2b3",
@@ -17901,5 +17901,7 @@
     "interview_ref": "agent-work/interviews/HX-BL-062/DISC/decisions.json",
     "interview_round_ref": "agent-work/interviews/HX-BL-062/DISC/round-001.json",
     "open_question_ids": []
-  }
+  },
+  "last_result_commit_sha": "b8b3441b8e6b0b47a9332bb3c903bc42e39a0439",
+  "visible_progress": "Портал 0/0 после ручного редактирования в Classic и загрузки в Knave сохранил «Секретное место». Снимки и JSON доступны на точном SHA."
 }
