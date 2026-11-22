@@ -176,9 +176,9 @@ test('Knave difficulty is sparse and detached; accepted submerged flags survive 
  assert.deepEqual(setKnaveDifficulty(difficult,context,'0,0','unspecified').difficultyByHex,{});
  assert.deepEqual(difficult.discoveryByPoi,{});
 });
-test('Knave interaction requires a bounded separate clue and mode changes preserve authored text',()=>{
+test('Legacy Knave accepts secrets without a clue and validates optional authored text',()=>{
  const context=knaveContext(),initial=newKnaveLayer(),key='poi:1:0,0';
- assert.throws(()=>setKnaveDiscovery(initial,context,key,'interaction','  '));
+ assert.deepEqual(setKnaveDiscovery(initial,context,key,'interaction','  ').discoveryByPoi[key], {mode:'interaction',clueText:''});
  assert.throws(()=>setKnaveDiscovery(initial,context,key,'interaction','x'.repeat(513)));
  const secret=setKnaveDiscovery(initial,context,key,'interaction','  Authored test clue <not HTML>  ');
  assert.deepEqual(initial.discoveryByPoi,{});assert.equal(secret.discoveryByPoi[key].clueText,'Authored test clue <not HTML>');

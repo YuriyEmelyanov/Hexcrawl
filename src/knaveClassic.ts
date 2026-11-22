@@ -61,7 +61,6 @@ export function validateKnaveLayer(value: unknown, context: KnaveContext, saveVe
     if (!poiKey(key) || !context.pois.has(key) || !record(discovery) || !exactKeys(discovery, ['mode','clueText'])) fail('knave_discovery_owner');
     const d = discovery as Record<string, unknown>;
     if (!['passage','exploration','interaction'].includes(String(d.mode)) || typeof d.mode !== 'string' || !validClue(d.clueText)) fail('knave_discovery');
-    if (d.mode === 'interaction' && d.clueText === '') fail('knave_secret_requires_clue');
   }
 }
 
