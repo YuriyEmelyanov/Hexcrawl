@@ -12532,9 +12532,10 @@ export function App() {
     const minBaseY = Math.min(...all.map((h) => toPixel(h.q, h.r).y));
     const offsetX = (HEX_SIZE * SQRT3) / 2 - minBaseX;
     const offsetY = HEX_SIZE - minBaseY;
+    const crossingEdges = new Set(crossings.map(crossing => crossing.riverEdgeKey));
     return rivers.flatMap((river) => renderRiverDirectionArrows(river, offsetX, offsetY, hiddenRiverEdgeKeys))
-      .filter((arrow) => !rapidRiverEdgeKeys.has(arrow.edgeKey));
-  }, [positionedHexes, rivers, hiddenRiverEdgeKeys, rapidRiverEdgeKeys]);
+      .filter(arrow => !rapidRiverEdgeKeys.has(arrow.edgeKey) && !crossingEdges.has(arrow.edgeKey));
+  }, [positionedHexes, rivers, hiddenRiverEdgeKeys, rapidRiverEdgeKeys, crossings]);
   const riverRapidMarks = useMemo(() => {
     const all = positionedHexes.hexes;
     if (all.length === 0) return [];
