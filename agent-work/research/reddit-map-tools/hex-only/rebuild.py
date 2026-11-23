@@ -49,8 +49,10 @@ def main():
         if (kinds and kinds <= digital_types and entry.get('disposition') == 'keep_L1'
                 and review.get('decision') == 'keep_L1' and review.get('source')):
             eligible.add(entry['id'])
-    if any(t not in eligible or v.get('software') is not True for t,v in tools.items()):
-        raise ValueError('Catalog contains ineligible products')
+    for tool_id, item in tools.items():
+        kinds = set(item.get('types') or [])
+        if tool_id not in eligible or item.get('software') is not True or not kinds or not kinds <= digital_types:
+            raise ValueError(f'Ineligible product or non-digital catalog category: {tool_id}')
     # A valid product can still have individual comments ruled out by the source review.
     with (ROOT/'context-review.csv').open(newline='') as stream:
         excluded = {
@@ -76,10 +78,13 @@ def main():
                 raise ValueError(f'Inconsistent calendar month: {row["id"]}')
             if not row['permalink'].strip() or not row['decision_basis_ru'].strip():
                 raise ValueError(f'Missing primary evidence: {row["id"]}')
-            assert author and author not in {'[removed]', '[deleted]', 'automoderator'}
-            assert row['subreddit'] in {'osr','rpg','mapmaking'} and row['kind'] in {'posts','comments'}
+            if not author or author in {'[removed]', '[deleted]', 'automoderator'}:
+                raise ValueError(f"Missing identifiable author: {row['id']}")
+            if row['subreddit'] not in {'osr', 'rpg', 'mapmaking'} or row['kind'] not in {'posts', 'comments'}:
+                raise ValueError(f"Invalid source collection: {row['id']}")
             key = tool, row['kind'], row['id']
-            assert key not in seen and tool in tools
+            if key in seen or tool not in tools:
+                raise ValueError(f'Duplicate or ineligible observation: {key}')
             if key in excluded:
                 raise ValueError(f'Observation excluded by source review: {key}')
             seen.add(key)
