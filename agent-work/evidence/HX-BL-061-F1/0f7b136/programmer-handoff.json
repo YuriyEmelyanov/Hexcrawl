@@ -1,0 +1,50 @@
+{
+  "task_id": "HX-BL-061",
+  "pr": 512,
+  "head_sha": "0f7b13682cbbcddd1d97f25152108ce39a2f9422",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "previous_head_sha": "a9253b2adc7a2dce2816666baa874e5d1e2cd640",
+  "spec_ref": "agent-work/specs/HX-BL-061-smooth-bends-F1.md",
+  "owner_transfer_exception": "Передача слота 563 → 659 по прямому ответу на вопрос о переключении. Ветка №513 сохранена.",
+  "fixes": [
+    {
+      "id": "HX061-RV2-01",
+      "observed": "Обычная отрисовка дорог передаёт свои точки в мировых координатах расчёту карточек. На road-only в обеих сессиях (-1,1) true/true и (0,0) false/false.",
+      "before": "agent-work/evidence/HX-BL-061-F1/review-a9253b2/road-card-reopen.svg",
+      "after": "agent-work/evidence/HX-BL-061-F1/0f7b136/road-card-fixed.svg"
+    },
+    {
+      "id": "HX061-RV2-02",
+      "observed": "Сохранены концы опорного отрезка берега у привязанного объекта. Хижина gap −5.55e−17 мили, тропа достигает точки объекта. Импортируемая мельница gap 1.416e−15 мили и конец тропы в точке объекта."
+    }
+  ],
+  "checks_url": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45237288874",
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "0f7b13682cbbcddd1d97f25152108ce39a2f9422",
+    "added": 4,
+    "removed": 0,
+    "modified": 7,
+    "suite": "Node и браузер",
+    "scenario": "Одна проверка сближения с ручьём, два параметрических случая стыка, один браузерный сценарий до/после. Уточнены семь существующих проверок выбора и редактирования.",
+    "reuse_or_new_reason": "Два новых случая различают мост и устье и обнаруживают чрезмерное выпрямление у каждого контакта.",
+    "source": "GitHub diff base..head, test/browser/save-history.smoke.mjs, route-bends.mjs, oneMile.test.mjs, refinedBendContacts.test.mjs",
+    "increment_since_prior": {
+      "base_sha": "a9253b2adc7a2dce2816666baa874e5d1e2cd640",
+      "head_sha": "0f7b13682cbbcddd1d97f25152108ce39a2f9422",
+      "added": 0,
+      "removed": 0,
+      "modified": 0
+    },
+    "executed": {
+      "targeted_node": {
+        "executed": 2,
+        "passed": 2,
+        "skipped": 0
+      },
+      "diagnostic": "Две карточки до/после открытия JSON, береговая хижина, импортируемая мельница"
+    }
+  },
+  "next_role": "reviewer",
+  "release_authorized": false
+}
