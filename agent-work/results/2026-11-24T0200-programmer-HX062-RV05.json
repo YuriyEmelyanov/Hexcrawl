@@ -1,0 +1,106 @@
+{
+  "run_id": "2026-11-24T0200-programmer-HX062-RV05",
+  "task_id": "HX-BL-062",
+  "role": "programmer",
+  "reason": "Reviewer finding HX062-RV05 on approved F1",
+  "status": "review_ready",
+  "implementation_head_sha": "192aa57e2dc2ee0f19590d69386f496bc450023f",
+  "execution_state": "review_ready",
+  "review_status": "pending_independent_acceptance",
+  "review_ready": true,
+  "full_package_review_ready": true,
+  "next_role": "reviewer",
+  "next_step": "Проверяющий независимо принимает весь PR №513 на 192aa57e2dc2ee0f19590d69386f496bc450023f, включая выбор портала у исходной столицы в обоих профилях, правила создания и центральные объекты других типов. Обновить предварительную оценку S05-C03 по 1.3-rc8.",
+  "review_fix_ref": "agent-work/results/2026-11-24T0200-programmer-HX062-RV05.json",
+  "publication_authorized": false,
+  "branch": "feat/hx062-discovery",
+  "base_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+  "head_sha": "192aa57e2dc2ee0f19590d69386f496bc450023f",
+  "pr": 513,
+  "completed_at": "2026-11-23T23:19:18.672Z",
+  "finding": "HX062-RV05",
+  "evidence_dir": "agent-work/evidence/HX-BL-062-F1/fix-192aa57",
+  "verification": [
+    "Seed42 3,-2 original capital converts directly to portal; UI option farm also present; Classic and Knave screenshots.",
+    "Old version failed direct portal assertion; expanded existing AC3 test passes in Classic and Knave including RU/EN authored name, discovery, center, JSON reimport and Undo.",
+    "Initial local browser capture had an import timing race; final capture waits for restored capital and passed."
+  ],
+  "ci": {
+    "run_id": 45285836747,
+    "jobs": [
+      [
+        "browser",
+        138081935916,
+        "completed",
+        "success"
+      ],
+      [
+        "check",
+        138081936311,
+        "completed",
+        "success"
+      ],
+      [
+        "world-random",
+        138081936385,
+        "completed",
+        "success"
+      ],
+      [
+        "engraved-map-comparison",
+        138081938437,
+        "completed",
+        "skipped"
+      ]
+    ]
+  },
+  "score_evidence": {
+    "model": "1.3-rc8",
+    "criterion_id": "S05-C03",
+    "status": "reassessment_on_new_sha_pending",
+    "booked_delta": 0
+  },
+  "test_change_summary": {
+    "base_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
+    "head_sha": "192aa57e2dc2ee0f19590d69386f496bc450023f",
+    "added": 0,
+    "removed": 0,
+    "modified": 2,
+    "source": "Diff from rejected head to corrected PR head, logical cases by runner",
+    "suite": [
+      {
+        "suite": "Node",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "executed": 448,
+        "passed": 448,
+        "skipped": 0,
+        "scenario": "AC3 direct type replacement, Classic and Knave, bilingual name, discovery and undo/reload"
+      },
+      {
+        "suite": "Browser",
+        "added": 0,
+        "removed": 0,
+        "modified": 1,
+        "scenario": "Seed42 discovery capture opens original capital menu, checks farm, selects portal and captures the panel",
+        "capture_executed": 1,
+        "capture_passed": 1
+      }
+    ],
+    "reuse_or_new_reason": "Extend the existing capital AC3 case and existing browser capture because the defect spans handlers and the UI catalog."
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-23T22:59:59.631Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-23T23:19:18.672Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
