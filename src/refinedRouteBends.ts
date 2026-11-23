@@ -33,6 +33,16 @@ export function refinedRouteBends(source: NormalizedRefinementSource, refinement
     ...refinement.riverPlan.waterfalls.map(w => w.point),
     ...refinement.riverPlan.boundaries.filter(b => b.reason === 'region_boundary').map(b => b.point),
   ];
+  // Keep the centerline span supporting each required bank contact straight.
+  // This also preserves a contact on the round cap of either endpoint.
+  for (const poi of refinement.pois.pois) {
+    const contact = poi.contact;
+    if (!contact) continue;
+    const path = byEdge.get(pair(contact.riverId, contact.sourceEdgeKey));
+    if (path && path[contact.stepIndex + 1]) {
+      pins.push(path[contact.stepIndex], path[contact.stepIndex + 1]);
+    }
+  }
   const world=(x:number,y:number)=>({x:(x-native!.offset.x)/FINE_HEX_WIDTH+native!.origin.x,y:(y-native!.offset.y)/FINE_HEX_WIDTH+native!.origin.y});
   const retained=new Set(refinement.roads.roads.map(r=>pair(r.roadId,r.sourceRoadSegmentKey)));
   const outside=(native?.roads??[]).filter(r=>!retained.has(pair(r.roadId,r.segmentKey)));

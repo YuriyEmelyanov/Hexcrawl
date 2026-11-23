@@ -1,7 +1,7 @@
 import {routeClearance} from './routeClearance';
 import {refinedRouteBends} from './refinedRouteBends';
 import {ends, roundedRoutes, svgPoints} from './routeBends';
-import {finePoiLabel} from './oneMilePresentation';
+import {FINE_HEX_WIDTH, finePoiLabel} from './oneMilePresentation';
 import {prepareAutomaticSceneCandidate,automaticSceneFailureMessage,OneMileGeometryConflict} from './automaticOneMileScene';
 import {addManualSmallLake,exactAutomaticLakeRollback,hasFullDrySupport,hasFullOneMileSupport,prepareSmallLakeSupport,rollSmallLakeFootprints,validateSmallLakeSupport,type SmallLakeLayer} from './smallLakes';
 import {prepareAcceptedSmallLakeViews,prepareAutomaticSmallLakeBatch,prepareSmallLakeShore,type SmallLakeProtection} from './smallLakeShore';
@@ -16555,9 +16555,22 @@ export function App() {
   const fineRoutes=useMemo(()=>fineDisplay?.viewStep===1 && fineDisplay.geometryRefinement && refinedSource?.status==='prepared'
     ? refinedRouteBends(refinedSource,fineDisplay.geometryRefinement,hiddenRiverEdgeKeys,{roads:roadSegments,crossings:renderedCrossings,origin:fineDisplay.grid.origin,offset:riverOffset,waterfalls:riverWaterfalls,roadPins}) : undefined,
     [fineDisplay?.viewStep,fineDisplay?.geometryRefinement,refinedSource,hiddenRiverEdgeKeys,roadSegments,renderedCrossings,riverOffset,riverWaterfalls,roadPins]);
+  const summaryRoutes = useMemo(() => {
+    if (fineRoutes || fineDisplay?.viewStep !== 1) return fineRoutes;
+    const origin = fineDisplay.grid.origin;
+    const nativeRoads = new Map<string, {x:number; y:number}[]>();
+    for (const segment of roadSegments) {
+      const points = roadPaint.get(segment.key);
+      if (points) nativeRoads.set(JSON.stringify([segment.roadId, segment.segmentKey]), points.map(p => ({
+        x: (p.x - riverOffset.x) / FINE_HEX_WIDTH + origin.x,
+        y: (p.y - riverOffset.y) / FINE_HEX_WIDTH + origin.y,
+      })));
+    }
+    return {roadPaint: nativeRoads, riverPaint: new Map()};
+  }, [fineRoutes, fineDisplay?.viewStep, fineDisplay?.grid.origin, roadSegments, roadPaint, riverOffset]);
   const fineSummary=useMemo(()=>fineDisplay&&fineReadCell?summarizeDetailCell({...fineDisplay,selectedWorldPoint:undefined},fineReadCell,
-    new Map(oneMileSources(captureMap()).map(row=>[hexKey(row.cell),row.water??row.landBiomeId!])),{roads,rivers:detailMapRiverGeometry(captureMap(),fineDisplay.grid.origin),displayRoutes:fineRoutes}):null,
-    [fineDisplay,fineRoutes,fineReadCell?.q,fineReadCell?.r,regions,hexTerrainByKey,biomeOverrideByHexKey,roads,rivers,crossings,riverFeatureOverrides]);
+    new Map(oneMileSources(captureMap()).map(row=>[hexKey(row.cell),row.water??row.landBiomeId!])),{roads,rivers:detailMapRiverGeometry(captureMap(),fineDisplay.grid.origin),displayRoutes:summaryRoutes}):null,
+    [fineDisplay,summaryRoutes,fineReadCell?.q,fineReadCell?.r,regions,hexTerrainByKey,biomeOverrideByHexKey,roads,rivers,crossings,riverFeatureOverrides]);
   const finePoi=(fp:Detail1State['poiFootprints'][number])=>{
     const alias=fp.legacyRef??'',parts=alias.split(':'),water=alias.startsWith('waterPoi:'),key=parts[water?1:2],hex=key?parseWaterHex(key):START_HEX;
     const region=regions.find(r=>r.id===Number(parts[1])),waterKind=waterPoiByKey.get(key),central=region&&hasCentralPoi(region)&&isSameHex(region.centerHex,hex);
