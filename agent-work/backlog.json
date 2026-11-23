@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-11-22T18:05:26.262Z",
+  "updated_at": "2026-11-23T04:07:53.080Z",
   "policy_ref": "agent-work/decisions/owner-decision-2026-11-15-backlog-reset.json",
   "archive_ref": "agent-work/archive/backlog-before-owner-reset-2026-11-15.json",
   "allowed_sources": [
@@ -2159,7 +2159,36 @@
       "ready_for_development": false,
       "implementation_authorized": false,
       "release_authorized": false,
-      "updated_at": "2026-11-21T09:00:28.804Z"
+      "updated_at": "2026-11-23T04:07:53.080Z",
+      "proposal_status": "proposed",
+      "strategy_proposal": {
+        "status": "proposed",
+        "prepared_at": "2026-11-23T04:07:53.080Z",
+        "scope": "Classic, JSON карты. Восстановить исходное множество доступных координат расширения; сохранить выбор водного гекса и работоспособность действительной точки расширения. Морской старт и новые правила генерации вынесены в HX-BL-064.",
+        "user_benefit": "Мастер, открыв сохранённую карту, получает те же точки продолжения, что были до сохранения.",
+        "basis": "Карта 42 на текущем main: при первом открытии к 34 точкам добавляется гекс озера −3/3; при втором открытии остаются 35. Выбор этого гекса и три региона сохраняются. Основание конкретнее, чем у более широких изменений генерации моря HX-BL-064. Для HX-BL-063 владелец снял согласование.",
+        "estimate": "Ориентир 5–8 почасовых запусков, включая спецификацию, интервью, исправление, независимую проверку и выпуск при своевременных ответах.",
+        "dependencies": "Утверждение начала, затем спецификация и интервью. Реализация после освобождения общего слота. До публикации — отдельное разрешение на проверенный SHA.",
+        "acceptance": "На исходном JSON Classic seed 42 сравнить множества координат после двух открытий: все 34 совпадают; −3/3 открывает озеро, расширение через −2/−3 добавляет четвёртый регион. Уточнить обработку ранее пересохранённых файлов на интервью.",
+        "score": {
+          "model": "1.3-rc8",
+          "level": "L1",
+          "criterion_id": "S01-C01",
+          "rule": "REG-07",
+          "forecast_max": 0.2147074610842727,
+          "confirmed_delta": null
+        },
+        "source_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+        "fixture_ref": "agent-work/research/acceptance/L1-PR509/classic-common/coastal-lake-seed42.json",
+        "evidence_refs": [
+          "agent-work/results/2026-11-23T0703-strategist-HX067.json",
+          "agent-work/evidence/HX-BL-067/seed42-growth.svg",
+          "agent-work/research/runs/2026-11-21-L1-lake-input-1130.json",
+          "agent-work/score/rules/S01-C01.md"
+        ],
+        "owner_question": "Утверждаете старт HX-BL-067 в границах сохранения точек расширения при открытии карты Classic из JSON?"
+      },
+      "next_step": "Ожидается утверждение владельцем задачи HX-BL-067"
     },
     {
       "task_id": "HX-BL-068",
