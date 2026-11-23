@@ -15055,11 +15055,11 @@ export function App() {
   const selectedKingdom = selectedRegion ? kingdoms.find(k=>k.regionIds.includes(selectedRegion.id)) : undefined;
   const selectedObstacles = selectedHex ? obstacles.filter(o=>hexKey(o.hex)===hexKey(selectedHex)||hexKey(o.neighborHex)===hexKey(selectedHex)) : [];
   const editableCentralKinds = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',true) : ['capital','city','town','village','lair','ruins','cursed_place','holy_place',...(knave?['natural_place','structure','dungeon']:[])];
-  const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : [...EDITABLE_POI_KIND_ORDER.filter(k=>!(k in MYTHIC_POI)||k==='ruins'),...(knave?['natural_place','structure'] as PoiKind[]:[])];
+  const selectedPoiKind = selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
+  const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : [...EDITABLE_POI_KIND_ORDER.filter(k=>(k!=='capital'||selectedPoiKind==='capital')&&(!(k in MYTHIC_POI)||k==='ruins')),...(knave?['natural_place','structure'] as PoiKind[]:[])];
   const selectedHexBiomeOverride = selectedHexKey ? biomeOverrideByHexKey.get(selectedHexKey) : undefined;
   const selectedEffectiveBiomeId = selectedHexBiomeOverride ?? selectedRegion?.biomeId;
   const isEditingSelectedHexBiome = selectedHexKey !== null && editingHexBiomeKey === selectedHexKey;
-  const selectedPoiKind = selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
   const isEditingSelectedPoi = selectedHexKey !== null && editingPoiHexKey === selectedHexKey;
   // Geometry remains protected by E7 even when a legacy region has no central POI.
   const selectedHasCentralPoi = Boolean(selectedMeta?.isCenter && selectedRegion && hasCentralPoi(selectedRegion));
