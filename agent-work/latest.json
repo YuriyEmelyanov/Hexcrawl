@@ -56,19 +56,8 @@
   "spec_version": "F1",
   "result_path": "agent-work/results/2026-11-22T2104-interviewer-HX069.json",
   "handoff_commit_sha": "a215c3fc34bb59fab6c53751726887e7ff550e5a",
-  "active_claim": {
-    "run_id": "2026-11-23-owner-marked-bends-512",
-    "generation": 663,
-    "task_id": "HX-BL-061",
-    "role": "programmer",
-    "branch": "feature/hx-bl-061-smooth-bends",
-    "base_sha": "0f7b13682cbbcddd1d97f25152108ce39a2f9422",
-    "programmer_slot": true,
-    "acquired_at": "2026-11-23T18:52:43.472Z",
-    "heartbeat_at": "2026-11-23T18:52:43.472Z",
-    "claim_ref": "agent-work/claims/2026-11-23-owner-marked-bends-512.json"
-  },
-  "next_step": "Программисту исправить прохождение дорог через середины сторон с направлением к центру гекса. На том же повороте проверить обе стороны и направление дороги, показать фактический вид и повторно передать SHA проверяющему.",
+  "active_claim": null,
+  "next_step": "Исправить вход дороги в одномильный гекс на road-only.json, проверить середины и направление касательной с двух сторон, повторное открытие карты и её карточки; показать тот же участок до и после.",
   "owner_decisions_needed": [],
   "release_approval": null,
   "historical_plan_status": "План23.10 сохранён как история; его блокировки и предложенный процесс заменены decisions24.10 в approvals/process/budget и текущим handoff.",
@@ -109,11 +98,11 @@
     "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
     "start": {
       "is_enabled": true,
-      "at": "2026-11-23T18:38:46.212Z"
+      "at": "2026-11-23T18:52:40.289Z"
     },
     "end": {
       "is_enabled": true,
-      "at": "2026-11-23T18:39:10.496Z"
+      "at": "2026-11-23T19:13:50.685Z"
     },
     "restored": false,
     "errors": []
@@ -719,7 +708,7 @@
     "next_step": "Решить отдельно узкий cleanup AUD-02/03/04; готовую спецификацию024 не задерживать."
   },
   "owner_decisions_note": "Для независимой проверки PR512 всё готово. После приёмки потребуется отдельное разрешение публикации.",
-  "updated_at": "2026-11-23T18:39:11.888Z",
+  "updated_at": "2026-11-23T19:13:50.685Z",
   "authorized_validation_handoff": {
     "task_id": "HX-BL-003",
     "stage_id": "V3",
@@ -10496,7 +10485,7 @@
   },
   "current_role_completed": true,
   "previous_approved_local_head_sha": "3e00851a9247d35e535b4439e35f64b30f5b1dc8",
-  "last_completed_run_id": "2026-11-23-programmer-PR512-finish",
+  "last_completed_run_id": "2026-11-23-owner-marked-bends-512",
   "storage_verification": {
     "materials_commit_sha": "c87d02f7fd7fe7c5ed3117bb790cbf40ecd91ae0",
     "result_readback": true,
@@ -12840,7 +12829,7 @@
     "next_step": "Программист в следующем штатном запуске исправляет только визуальные типы переходов OM-C02 и тип перед именем POI OM-C05 по OM-C-PRESENT1 в PR503/отдельной ветке отd419. Без изменения русел/ширины/размеров/якорей/сохранений. Не закрывать весь HX-FB-023: C01/03/04/06/07/08 и геометрическая частьC02 остаются на отдельном аналитическом этапе; публикация запрещена. После новогоSHA — независимая проверка."
   },
   "substage": "GEO2-scoped-river-removal",
-  "active_claim_ref": "agent-work/claims/2026-11-23-owner-marked-bends-512.json",
+  "active_claim_ref": null,
   "bounded_implementation_complete": true,
   "score_evidence_ref": "agent-work/evidence/HX-BL-056-F1/RV12-bb29552/verification.json",
   "ui_actual_head_sha": "449e6fe4871f3148da0fbd3bcd573be997890557",
@@ -13057,7 +13046,7 @@
     "result_ref": "agent-work/results/2026-11-13T0701-programmer-ONE-MILE1-WR1.json",
     "next_role": "reviewer"
   },
-  "last_result_ref": "agent-work/results/2026-11-23-owner-PR512-road-midpoint.json",
+  "last_result_ref": "agent-work/results/2026-11-23-owner-marked-bends-512.json",
   "latest_ONE_MILE1_WR1_review": {
     "run_id": "2026-11-13T0900-reviewer-ONE-MILE1-WR1",
     "task_id": "HX-BL-051",
@@ -18152,7 +18141,7 @@
     "interview_round_ref": "agent-work/interviews/HX-BL-062/DISC/round-001.json",
     "open_question_ids": []
   },
-  "last_result_commit_sha": "24fd447bf2b07be6016babd3a8190c6683a76716",
+  "last_result_commit_sha": "18636965c0dff902ea2c4aa414f76da9da24830c",
   "visible_progress": "На исправленном SHA смешанная карта после удаления пещеры экспортируется и открывается; режим подземелья соответствует таблице, отказ от сброса сохраняет старый секрет.",
   "latest_HX_BL_062_bounded_review": {
     "run_id": "2026-11-22T1433-reviewer-HX062",
@@ -18237,13 +18226,17 @@
   "latest_HX_BL_061_review": {
     "task_id": "HX-BL-061",
     "pr": 512,
-    "head_sha": "0f7b13682cbbcddd1d97f25152108ce39a2f9422",
+    "head_sha": "5fba76e25da8c9d47c48580208d495b47dda6ab2",
     "accepted": false,
     "review_ref": "agent-work/evidence/HX-BL-061-F1/0f7b136/independent-review.json",
     "score_assessment_ref": "agent-work/evidence/HX-BL-061-F1/0f7b136/score-assessment.json",
     "release_authorized": false,
     "status": "changes_requested",
-    "owner_feedback_ref": "agent-work/results/2026-11-23-owner-PR512-road-midpoint.json"
+    "owner_feedback_ref": "agent-work/results/2026-11-23-owner-PR512-road-midpoint.json",
+    "open_findings": [
+      "HX061-PO-road-midpoint"
+    ],
+    "six_mile_review_ref": "agent-work/evidence/HX-BL-061-F1/5fba76e/marked-bends-review.json"
   },
   "latest_reviewer_result_ref": "agent-work/results/2026-11-22T2258-reviewer-HX061.json",
   "latest_HX_BL_069_acceptance_preparation": {
@@ -18439,9 +18432,9 @@
   },
   "latest_PR512_six_mile_work": {
     "task_id": "HX-BL-061",
-    "run_id": "2026-11-23-owner-marked-bends-512",
+    "state": "six_mile_corrections_verified",
     "head_sha": "5fba76e25da8c9d47c48580208d495b47dda6ab2",
-    "evidence_ref": "agent-work/evidence/HX-BL-061-F1/5fba76e/comparison.png",
-    "state": "ci_running"
+    "review_ref": "agent-work/evidence/HX-BL-061-F1/5fba76e/marked-bends-review.json",
+    "result_ref": "agent-work/results/2026-11-23-owner-marked-bends-512.json"
   }
 }
