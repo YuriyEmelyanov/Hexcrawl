@@ -1986,8 +1986,8 @@
         }
       },
       "execution_state": "paused",
-      "next_role": "reviewer",
-      "next_step": "Независимая приёмка всего PR №513 на 60771c0ece2bd44d3871e2186fd9a03495c5c872, в том числе AC3 со столицей в центре: перенос, удаление, смена типа, Undo/Redo и повторное открытие. Рассчитать предварительную оценку S05-C03 по 1.3-rc8.",
+      "next_role": "programmer",
+      "next_step": "Исправить HX062-RV05: для уже существующей столицы в центре использовать обычный выбор и обработчик смены типа POI. Сохранить правила создания, каталог деревни и поведение остальных центральных типов. Передать новый SHA на независимую приёмку.",
       "draft_spec_ref": "agent-work/specs/HX-BL-062-discovery-D1.md",
       "spec_ref": "agent-work/specs/HX-BL-062-discovery-F1.md",
       "acceptance_ref": null,
@@ -2023,18 +2023,37 @@
       "implementation_head_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
       "pr_number": 513,
       "pr_url": "https://github.com/YuriyEmelyanov/Hexcrawl/pull/513",
-      "review_ready": true,
+      "review_ready": false,
       "visible_progress": "Classic seed 42, Лагевейк. The linked capital at 3/-2 reports its paths. In a separate road-free save of the same map, the capital moves to 1/0, retains its name and discovery and leaves the region center intact. Deleting the central capital, changing its type to town and moving its secret are verified via application commands and full JSON reload.",
       "implementation_evidence_ref": "agent-work/evidence/HX-BL-062-F1/capital-242a7cf/replay.mjs",
-      "review_ref": "agent-work/evidence/HX-BL-062-F1/review-987fbaf/review.json",
-      "review_status": "pending_independent_acceptance",
-      "open_review_findings": [],
-      "full_package_review_ready": true,
+      "review_ref": "agent-work/results/2026-11-24T0100-reviewer-HX062.json",
+      "review_status": "changes_requested",
+      "open_review_findings": [
+        {
+          "id": "HX062-RV05",
+          "criterion": "AC3",
+          "severity": "blocking",
+          "location": "src/App.tsx (central type selector and handler)",
+          "profiles": [
+            "Classic",
+            "Knave"
+          ],
+          "fixture": "seed 42, road-free copy, region 1",
+          "reproduction": "At 3,-2 portal/farm are absent from the central capital selector; both type-change handlers refuse portal. Move the same secret, RU/EN-named capital to 1,0 and back to 3,-2. At this identical coordinate selecting portal now succeeds. The region center, name and discovery value are preserved.",
+          "expected": "The owner defined the capital as an ordinary POI with no additional conditions. Type changes for an existing capital must not require a round trip.",
+          "evidence": [
+            "agent-work/evidence/HX-BL-062-F1/review-60771c0/same-capital.mjs",
+            "agent-work/evidence/HX-BL-062-F1/review-60771c0/contract-probes.log"
+          ]
+        }
+      ],
+      "full_package_review_ready": false,
       "review_fix_ref": "agent-work/evidence/HX-BL-062-F1/fix-987fbaf/verification.json",
-      "reviewed_sha": "987fbaf6563576635d5fd9e533ae475acd4dd8a3",
+      "reviewed_sha": "60771c0ece2bd44d3871e2186fd9a03495c5c872",
       "pending_acceptance_scope": "F1 full package including AC3 central capital correction",
       "pause_reason": null,
-      "checkpoint_ref": "agent-work/results/2026-11-24T0000-programmer-HX062-capital.json"
+      "checkpoint_ref": "agent-work/results/2026-11-24T0000-programmer-HX062-capital.json",
+      "publication_authorized": false
     },
     {
       "task_id": "HX-BL-063",
