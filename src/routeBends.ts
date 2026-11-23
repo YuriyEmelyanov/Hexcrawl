@@ -17,8 +17,8 @@ type Corner = {first: Arm; last: Arm; samples: Point[]; scale:number};
 
 /** Build one quadratic at each eligible junction. Split it halfway between source
  * edges so painting and picking retain both original identities and widths. */
-export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Point[], clearance: (p:Point,radius:number)=>number, through: readonly Point[] = []) {
-  const anchored = new Set(through.map(pointKey));
+export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Point[], clearance: (p:Point,radius:number)=>number, options: {through?: readonly Point[]; halfSteps?: number; joinRouteEnds?: boolean} = {}) {
+  const anchored = new Set(options.through?.map(pointKey));
   const pinned = new Set(pins.map(pointKey));
   const nodes = new Map<string, Arm[]>();
   function add(p: Point, arm: Arm) {
@@ -45,7 +45,7 @@ export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Po
       else groups.set(arm.route.routeId, [arm]);
     }
     const continuous = [...groups.values()].filter(g => g.length === 2);
-    if (continuous.length !== 1 && arms.length !== 2) continue;
+    if (continuous.length !== 1 && !(options.joinRouteEnds && arms.length === 2)) continue;
     const [first,last] = continuous[0] ?? arms, p = first.route.points[first.index];
     const radius=Math.max(...arms.map(arm=>Math.hypot(arm.next.x-p.x,arm.next.y-p.y)*(arm.route.trim??.38)));
     if (radius < 1e-8) continue;
@@ -55,7 +55,7 @@ export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Po
     const ax = a.x-p.x, ay = a.y-p.y, bx = b.x-p.x, by = b.y-p.y;
     if (Math.abs(ax*by-ay*bx) < 1e-9) continue;
     const passesThroughVertex = anchored.has(key);
-    const halfSteps = passesThroughVertex ? 8 : 4;
+    const halfSteps = options.halfSteps ?? 4;
     let sample = (t:number) => mix(mix(a,p,t),mix(p,b,t),t);
     // A continuous river can turn at a regional seam, but must pass through
     // its accepted vertex. Join two cubic halves there with a shared tangent.

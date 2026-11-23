@@ -12570,7 +12570,7 @@ export function App() {
       ...(s.endReason==='region_boundary'?[s.endVertexKey]:[]),
     ])));
     const borders=rivers.flatMap(r=>r.vertexPath.filter(v=>boundaryKeys.has(v.key)).map(v=>({x:v.x+riverOffset.x,y:v.y+riverOffset.y})));
-    return roundedRoutes(paths,[...shore,...riverWaterfalls],(p,r)=>nativeClearance(p,'river',r),borders);
+    return roundedRoutes(paths,[...shore,...riverWaterfalls],(p,r)=>nativeClearance(p,'river',r),{through:borders,halfSteps:24});
   }, [riverSegments,lakeVertices,riverOffset,riverWaterfalls,rivers,nativeClearance]);
   const roadPins=useMemo(()=>regions.flatMap(r => hasCentralPoi(r) ? [r.centerHex,...r.pointsOfInterest] : r.pointsOfInterest)
       .map(h => toPixel(h.q,h.r)).map(p => ({x:p.x+riverOffset.x,y:p.y+riverOffset.y})),[regions,riverOffset]);
@@ -12581,7 +12581,7 @@ export function App() {
       return {key:s.key,routeId:s.roadId,points:ends(s),fixed:!!crossing && crossing.kind!=='bridge',
         trim:crossing ? .24 : .38};
     });
-    return roundedRoutes(paths,roadPins,(p,r)=>nativeClearance(p,'road',r));
+    return roundedRoutes(paths,roadPins,(p,r)=>nativeClearance(p,'road',r),{halfSteps:24,joinRouteEnds:true});
   }, [roadSegments,renderedCrossings,roadPins,nativeClearance]);
   const lakeVerticesDebug = useMemo(
     () => drawLakeVerticesDebug(lakeVertices, riverOffset.x, riverOffset.y),
