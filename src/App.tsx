@@ -17031,7 +17031,7 @@ export function App() {
                 const size = HEX_SIZE * .62;
                 return <g key={`poi-${hex.key}`} data-engraved-poi={hex.key} pointerEvents="none">
                   <circle cx={position.x} cy={position.y} r={HEX_SIZE*.425} fill={engravingFor(id)!.poiColor}
-                    stroke="#f4ecd5" strokeWidth={1}/>
+                    stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1}/>
                   <image className="poi-marker" href={getPoiSvgHref(kind, !!waterKind)}
                     x={position.x-size/2} y={position.y-size/2} width={size} height={size}
                     role="img" aria-label={title}/>

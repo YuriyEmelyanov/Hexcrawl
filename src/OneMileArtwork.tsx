@@ -127,7 +127,7 @@ export function OneMileArtwork(p:Props){
       const terrainKind=terrain.get(key);
       return <g key={key} data-engraved-poi={key}>
         <circle cx={c.x} cy={c.y} r={radius*.425} fill={terrainKind?engravingFor(terrainKind)!.poiColor:'#d8cfad'}
-          stroke="#f4ecd5" strokeWidth={1/6}/>
+          stroke="#f4ecd5" strokeOpacity={0.75} strokeWidth={1/6}/>
         <image transform={p.rotated?`rotate(-90 ${c.x} ${c.y})`:undefined} className="poi-marker" href={v.image}
           x={c.x-size/2} y={c.y-size/2} width={size} height={size} role="img" aria-label={v.label}/>
       </g>;
