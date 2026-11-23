@@ -1,0 +1,66 @@
+{
+  "task_id": "HX-BL-061",
+  "role": "strategist-manager",
+  "run_id": "2026-11-23T0803-strategist-HX061",
+  "generation": 605,
+  "claim_ref": "agent-work/claims/2026-11-23T0803-strategist-HX061.json",
+  "branch": "agent-operations",
+  "base_sha": "e62c9bf37459397b3aff9af64f9736d1b59bb568",
+  "programmer_slot": false,
+  "acquired_at": "2026-11-23T05:04:00.683Z",
+  "heartbeat_at": "2026-11-23T05:04:00.683Z",
+  "status": "completed",
+  "completed_at": "2026-11-23T05:04:47.263Z",
+  "selection_reason": "PR512 ошибочно оставался на публикацию старого SHA, а PR513 — на повторный ответ о столице. Сверены PR, комментарии, последний вердикт, бэклог, решение владельца и реестр исполнения.",
+  "review_ref": "agent-work/results/2026-11-22T2258-reviewer-HX061.json",
+  "pr": 512,
+  "head_sha": "a9253b2adc7a2dce2816666baa874e5d1e2cd640",
+  "previous_head_sha": "0a5526a22ad2815a6d9df9d3a57babbd8f523d24",
+  "release_authorized": false,
+  "next_role": "programmer",
+  "next_step": "Программисту исправить карточки на картах без рек и сохранить контакт берегового POI со сглаженным руслом. Передать новый SHA на повторную приёмку.",
+  "start_condition": "После сохранения результата и освобождения программистом HX-BL-062 общего слота.",
+  "handoff": [
+    {
+      "id": "HX061-RV2-01",
+      "input": "agent-work/evidence/HX-BL-061-F1/review-a9253b2/road-only.json",
+      "location": "src/App.tsx#L16555",
+      "finding": "fineSummary получает displayRoutes только при подготовленной речной геометрии, тогда как OneMileArtwork отдельно получает nativeRoadPaint. Обеспечить общий видимый путь для карточки и карты при отсутствии рек.",
+      "acceptance": "В масштабе 1 миля на −1/1 карточка включает видимую дорогу, на 0/0 отсутствующая линия не попадает в карточку. Повторить после сохранения и открытия."
+    },
+    {
+      "id": "HX061-RV2-02",
+      "input": "test/geometryPlan.test.mjs: road-entry-zigzags, Knave structures row 96, detail-poi:7, река №3",
+      "location": "src/refinedRouteBends.ts#L28",
+      "finding": "Ограничение скругления учитывает устья и переправы. Здесь отсутствует аналогичная обработка точки контакта берегового POI.",
+      "acceptance": "Устранить зазор 0,00986 мили на видимом берегу, сохранить дорожный подход к POI, скругление соседних участков и проверенные мосты и устья."
+    }
+  ],
+  "verification": "Сверены Git blob App.tsx и refinedRouteBends.ts с деревом PR512. Наблюдения на карте взяты из независимой приёмки. Следующий проверяющий получает новый SHA после исправлений.",
+  "related": {
+    "PR513": {
+      "head_sha": "987fbaf6563576635d5fd9e533ae475acd4dd8a3",
+      "claim_ref": "agent-work/claims/2026-11-22T2204-programmer-HX062.json",
+      "decision": {
+        "decision": "Столица — обычная точка интереса. Её можно перемещать и удалять по общим правилам точек интереса, включая случай, когда она находится в центре региона.",
+        "next_role": "programmer",
+        "next_step": "Программисту проверить перемещение и удаление самой столицы обычными командами POI и устранить особое ограничение центра, если оно мешает. Проверяющему пройти AC3 со столицей, включая Undo/Redo и повторное открытие карты.",
+        "spec_ref": "agent-work/specs/HX-BL-062-discovery-F1.md"
+      }
+    },
+    "HX067": "Ожидается утверждение владельцем задачи HX-BL-067"
+  },
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "at": "2026-11-23T05:03:09.841Z"
+    },
+    "end": {
+      "is_enabled": true,
+      "at": "2026-11-23T05:04:47.263Z"
+    },
+    "restored": false,
+    "errors": []
+  }
+}
