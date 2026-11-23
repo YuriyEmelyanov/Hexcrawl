@@ -182,3 +182,36 @@ test('E8 actual path refusal and snapshot fault leave document and both historie
  h.render().resetPoiDraft();const doc=h.render().captureDocument();doc.map.roads=[{id:88,regionId:1,segments:[{from:{q:1,r:0},to:{q:2,r:0},kind:'trail'}]}];doc.map.nextRoadId=89;h.render().applyDocument(doc);h.render().setEditMode(true);
  h.render().startPoiDraft({kind:'land',regionId:1,hexKey:'2,0'});h.render().changePoiTarget('3','0');assert.equal(h.render().poiPreview.code,'poi_path_dependency');assert.equal(h.render().finishPoiDraft(),false);
 });
+
+test('Discovery AC3 edits a central capital with ordinary POI history and reload',async()=>{
+ const fixture=regionFixture();
+ const center={q:0,r:0};
+ Object.assign(fixture.map.regions[0],{centralPoiKind:'capital',suppressCentralPoi:false});
+ fixture.ui.selectedHex=center;
+ const h=await setup('classic',fixture);
+ h.render().setEditMode(true);
+ const source={kind:'land',regionId:1,hexKey:'0,0'};
+ const before=save(h);
+ assert.equal(h.render().startPoiDraft(source),true);
+ h.render().changePoiTarget('3','0');
+ assert.equal(h.render().finishPoiDraft(),true);
+ const moved=save(h);
+ assert.deepEqual(moved.map.regions[0].centerHex,center);
+ assert.equal(moved.map.regions[0].suppressCentralPoi,true);
+ assert.equal(moved.map.regions[1].pointOfInterestKinds['3,0'],'capital');
+ assert.deepEqual(moved.map.toponyms.names['settlement:2:3,0'],before.map.toponyms.names['settlement:1:0,0']);
+ assert.deepEqual(save(await setup('classic',moved)),moved);
+ h.render().undoMap();assert.deepEqual(save(h),before);
+ h.render().redoMap();assert.deepEqual(save(h),moved);
+ h.render().undoMap();h.render().setEditMode(true);
+ h.render().deleteSelectedPoi();
+ const deleted=save(h);
+ assert.deepEqual(deleted.map.regions[0].centerHex,center);
+ assert.equal(deleted.map.regions[0].centralPoiKind,undefined);
+ assert.equal(deleted.map.regions[0].suppressCentralPoi,true);
+ assert.deepEqual(deleted.map.regions[0].pointsOfInterest,before.map.regions[0].pointsOfInterest);
+ assert.equal(deleted.map.toponyms.names['settlement:1:0,0'],undefined);
+ assert.deepEqual(save(await setup('classic',deleted)),deleted);
+ h.render().undoMap();assert.deepEqual(save(h),before);
+ h.render().redoMap();assert.deepEqual(save(h),deleted);
+});

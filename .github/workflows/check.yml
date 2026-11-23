@@ -39,6 +39,22 @@ jobs:
           name: HX-BL-062-discovery
           path: reports/HX-BL-062/
           if-no-files-found: ignore
+      - name: Compare river 1 and road 1 on the same map
+        if: github.head_ref == 'feature/hx-bl-061-smooth-bends'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git fetch --depth=1 origin "$BASE_SHA"
+          git worktree add --detach "$RUNNER_TEMP/bends-base" "$BASE_SHA"
+          ln -s "$GITHUB_WORKSPACE/node_modules" "$RUNNER_TEMP/bends-base/node_modules"
+          npm --prefix "$RUNNER_TEMP/bends-base" run build
+          node test/browser/route-bends.mjs "$RUNNER_TEMP/bends-base/dist" dist reports/HX-BL-061
+      - uses: actions/upload-artifact@v4
+        if: always() && github.head_ref == 'feature/hx-bl-061-smooth-bends'
+        with:
+          name: HX-BL-061-map-comparison
+          path: reports/HX-BL-061/
+          if-no-files-found: ignore
       - run: npm run test:browser
         if: success() || failure()
         env:

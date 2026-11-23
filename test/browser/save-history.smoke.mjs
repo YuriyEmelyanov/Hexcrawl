@@ -105,7 +105,7 @@ try {
    const line=page.locator('[data-river-map-edge]').first();await line.press('Enter');assert.equal(await page.locator('[data-river-command-editor="1"]').count(),1,'keyboard map selection');
    // Physical pointer uses the current transform, including rotation and zoom.
    await button('Повернуть карту на 90 градусов').click();
-   const point=await line.evaluate(node=>new DOMPoint((node.x1.baseVal.value+node.x2.baseVal.value)/2,(node.y1.baseVal.value+node.y2.baseVal.value)/2).matrixTransform(node.getScreenCTM()).toJSON());
+   const point=await line.evaluate(node=>{const {x,y}=node.getPointAtLength(node.getTotalLength()/2).matrixTransform(node.getScreenCTM());return {x,y};});
    await page.mouse.click(point.x,point.y);assert.ok(await page.locator('[data-river-road-hit-choice]').count(),'crossing does not hide the road target');await page.locator('[data-river-hit-choice]').first().press('Enter');assert.equal(await page.locator('[data-river-command-editor="1"]').count(),1);await button('Вернуть исходный поворот карты').click();
    if(mode==='classic')for(const width of [1500,390]){await page.setViewportSize({width,height:1100});await page.locator('[data-river-command-editor]').scrollIntoViewIfNeeded();await screen(`edit-ru-${width}`);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}
    const before=await snapshot();await page.getByRole('combobox',{name:'Полноводность',exact:true}).selectOption('3');assert.equal(await page.locator('[data-river-preview]').count(),1);assert.ok(await page.locator('[data-river-confirm]').isDisabled());assert.deepEqual(await snapshot(),before,'unresolved ford preview has no document write');
@@ -134,7 +134,7 @@ try {
  }
  // A physical junction has more than one 44px hit; an explicit list selects it.
  const overlap=structuredClone(editorFixture),joined=structuredClone(overlap.map.rivers[0]);joined.id=2;joined.vertexPath=[joined.vertexPath[1],{x:0,y:28,key:'0,28'}];const joinedEdge=joined.vertexPath.map(v=>v.key).sort().join('|');joined.sectors=joined.sectors.map(s=>({...s,id:'overlap:2',riverId:2,vertexPath:joined.vertexPath,edgeKeys:[joinedEdge],startVertexKey:joined.vertexPath[0].key,endVertexKey:joined.vertexPath[1].key}));overlap.map.rivers.push(joined);overlap.counters.nextRiverId=3;overlap.ui.mapScale=1.5;await page.setViewportSize({width:1500,height:1100});await load(overlap);await ensureEdit();
- const edgeTarget=page.locator('[data-river-map-edge]').first();await edgeTarget.scrollIntoViewIfNeeded();const joint=await edgeTarget.evaluate(n=>new DOMPoint(n.x2.baseVal.value,n.y2.baseVal.value).matrixTransform(n.getScreenCTM()).toJSON());await page.mouse.click(joint.x,joint.y);assert.ok(await page.locator('[data-river-hit-choice]').count()>=2,'overlap must present all physical river hits');await page.locator('[data-river-hit-choice]').last().press('Enter');assert.equal(await page.locator('[data-river-command-editor="2"]').count(),1,'explicit overlap choice identifies river2');
+ const edgeTarget=page.locator('[data-river-map-edge]').first();await edgeTarget.scrollIntoViewIfNeeded();const joint=await edgeTarget.evaluate(n=>{const {x,y}=n.getPointAtLength(n.getTotalLength()).matrixTransform(n.getScreenCTM());return {x,y};});await page.mouse.click(joint.x,joint.y);assert.ok(await page.locator('[data-river-hit-choice]').count()>=2,'overlap must present all physical river hits');await page.locator('[data-river-hit-choice]').last().press('Enter');assert.equal(await page.locator('[data-river-command-editor="2"]').count(),1,'explicit overlap choice identifies river2');
  await page.setViewportSize({width:390,height:1100});await load(editorFixture);await select('0,0');await findRiver();if(await page.locator('.header-links').evaluate(el=>el.classList.contains('is-collapsed')))await page.locator('.header-links-toggle').click();await button('Switch to English').click();await page.locator('[data-river-choice="1"]').click();await page.locator('[data-river-edge-choice]').first().click();await page.locator('[data-river-command-editor]').scrollIntoViewIfNeeded();await screen('edit-en-390');assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await button('Переключить на русский').click();await page.setViewportSize({width:1500,height:1100});
  if(await button('Найти объект').getAttribute('aria-expanded')==='true')await button('Найти объект').click();
  console.log('E5 full editor: Classic/Mythic, Find/map/rotation, native F, deep ford and marker choices both directions, reverse/replacement/delete, PNG/JSON exclusion, roundtrip/undo, RU/EN1500/390 passed.');
@@ -474,16 +474,22 @@ try {
  await button('Отменить').click();assert.deepEqual(await snapshot(),draftBefore);await button('Повторить').click();assert.deepEqual(await snapshot(),draftAfter);
  // R2/R3: extend this runner with overlapping legacy identity and real keyboard activation.
  const overlap=JSON.parse(await fs.readFile(new URL('../fixtures/road-entry-zigzags.json',import.meta.url)));
- const original=overlap.map.roads[0],shared=original.segments[0],copyId=Math.max(...overlap.map.roads.map(r=>r.id))+1;
+ const original=overlap.map.roads.find(r=>r.id===2);
+ const shared=original.segments.find(s=>s.from.q===-2 && s.from.r===0 && s.to.q===-3 && s.to.r===0);
+ const copyId=Math.max(...overlap.map.roads.map(r=>r.id))+1;
  overlap.map.roads.push({...structuredClone(original),id:copyId,segments:[structuredClone(shared)]});overlap.counters.nextRoadId=copyId+1;
  await load(overlap);await select(`${shared.from.q},${shared.from.r}`);
  if(await button('Редактировать').count())await button('Редактировать').click();
  const pair=[`${shared.from.q},${shared.from.r}`,`${shared.to.q},${shared.to.r}`].sort().join('|');
+ const paintedShared=id=>page.locator(`[data-road-id="${id}"][data-source-segment="${pair}"]`).getAttribute('points');
+ assert.equal(await paintedShared(copyId),await paintedShared(original.id),'both owners paint a single shared line');
  for(const id of [original.id,copyId]){
   const actual=page.getByRole('button',{name:`Участок ${id}: ${pair}`,exact:true});
   await actual.focus();await actual.press('Enter');
   assert.equal(await page.locator('.road-editor__item > button[aria-pressed="true"]').count(),1);
-  assert.equal(await page.locator('[data-editor-only="roads"] line[stroke="#7dd3fc"]').count(),1);
+  const highlight=page.locator('[data-editor-only="roads"] [stroke="#7dd3fc"][stroke-dasharray]');
+  assert.equal(await highlight.count(),1);
+  assert.equal(await highlight.getAttribute('points'),await actual.getAttribute('points'),'highlight follows the selected road segment');
   assert.ok(await actual.evaluate(el=>parseFloat(getComputedStyle(el).strokeWidth)*el.getScreenCTM().a>=43.9),'map target44px at normal rotation');
  }
  // E3 existing-path controls: exact crossing identity, confirmation preview and history.
@@ -502,7 +508,8 @@ try {
  const edgeChoice=page.locator('[data-river-edge-choice]').first();
  const featureEdge=await edgeChoice.getAttribute('data-river-edge-choice');
  await edgeChoice.press('Space');
- assert.ok(await page.locator('[data-editor-only="river-feature"] line').count()>=1);assert.ok(await page.locator(`[data-river-reach-edge="${featureEdge}"]`).count());
+ const reach=page.locator(`[data-editor-only="river-feature"] [data-river-reach-edge="${featureEdge}"]`).first();
+ assert.ok(await reach.evaluate(n=>n.getTotalLength()>0),'selected river reach has visible geometry');
  const beforeFeature=await snapshot();
  const rapidSelect=page.getByRole('combobox',{name:'пороги',exact:true});
  await rapidSelect.selectOption('off');
@@ -528,6 +535,20 @@ try {
  if(vertexKey===selectedRiver.vertexPath[0].key)assert.ok(await waterfallSelect.locator('option[value="on"]').isDisabled(),'source waterfall forbidden');
  await waterfallSelect.selectOption('off');
  assert.ok((await snapshot()).map.riverFeatures.waterfalls.some(e=>e.vertexKey===vertexKey&&e.state==='off'));
+ await select('-5,0');
+ await page.locator('[data-river-choice="5"]').click();
+ const bendKey='-266.736,-14';
+ await page.locator(`[data-river-vertex-choice="${bendKey}"]`).click();
+ const distances=await page.locator('[data-editor-only="river-feature"] circle').evaluate((circle,key)=>{
+  const x=circle.cx.baseVal.value,y=circle.cy.baseVal.value;
+  return [...document.querySelectorAll('[data-river-id="5"][data-source-edge]')]
+   .filter(line=>line.dataset.sourceEdge.split('|').includes(key))
+   .map(line=>Math.min(...[0,line.points.length-1].map(i=>{
+    const p=line.points.getItem(i);return Math.hypot(x-p.x,y-p.y);
+   })));
+ },bendKey);
+ assert.equal(distances.length,2);
+ assert.ok(distances.every(d=>d<.001),'selected vertex meets both painted river edges');
  // Restore the input fixture and selection for the existing E3 checks below.
  await load(roadMap);await select(`${seg.from.q},${seg.from.r}`);await ensureEdit();
  const roadLabel=`Участок ${road.id}: ${seg.from.q},${seg.from.r} → ${seg.to.q},${seg.to.r}`;
@@ -544,7 +565,7 @@ try {
  await button('Отменить').click();assert.deepEqual(await snapshot(),oldRoad);
  await button('Повторить').click();assert.deepEqual(await snapshot(),changedRoad);
  await button(roadLabel).click();await button('Удалить весь выделенный путь').click();
- assert.equal(await page.locator('[data-editor-only] line[stroke="#7dd3fc"]').count(),road.segments.length);
+ assert.equal(await page.locator('[data-editor-only="roads"] [stroke="#7dd3fc"][stroke-dasharray]').count(),road.segments.length);
  for(const width of [1500,390]) {
    await page.setViewportSize({width,height:1100});
    const confirmation=page.getByRole('group',{name:'Подтверждение удаления',exact:true});

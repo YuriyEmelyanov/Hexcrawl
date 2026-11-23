@@ -49,6 +49,42 @@ try {
   const file = out + '/seed42.json';
   await (await downloading).saveAs(file);
   assert.equal(JSON.parse(await fs.readFile(file, 'utf8')).map.poiDiscovery['poi:1:0,0'], 'interaction');
+  // The generated capital shares its source cell with roads. Remove the
+  // touching routes explicitly on this disposable copy before relocating it.
+  const button = name => page.getByRole('button', {name, exact:true});
+  const select = key => page.locator(`polygon.hex[data-hex-key="${key}"]`).dispatchEvent('click');
+  const ensureEdit = async () => { if(await button('Редактировать').count())await button('Редактировать').click(); };
+  if(await menu.getAttribute('open')!==null)await menu.locator('summary').click();
+  await select('3,-2');
+  await ensureEdit();
+  const info = page.locator('.info-block--hex');
+  await info.locator('[data-poi-move]').waitFor();
+  await info.screenshot({path:out+'/capital-before.png'});
+  const touchesCapital = h => h.q===3 && h.r===-2;
+  for(const road of map.map.roads.filter(r=>r.segments.some(s=>touchesCapital(s.from)||touchesCapital(s.to)))){
+    await select('3,-2');
+    await ensureEdit();
+    await page.getByRole('button',{name:new RegExp('^Участок '+road.id+':')}).first().click();
+    await button('Удалить весь выделенный путь').click();
+    await page.getByRole('group',{name:'Подтверждение удаления'}).getByRole('button',{name:'Удалить',exact:true}).click();
+  }
+  await select('3,-2');
+  await ensureEdit();
+  await info.locator('[data-poi-move]').click();
+  await info.getByRole('textbox',{name:'Новый гекс q',exact:true}).fill('1');
+  await info.getByRole('textbox',{name:'Новый гекс r',exact:true}).fill('0');
+  await button('Готово').click();
+  await ensureEdit();
+  await info.locator('[data-poi-move]').filter({hasText:'1/0'}).waitFor();
+  await info.screenshot({path:out+'/capital-after.png'});
+  if(await menu.getAttribute('open')===null)await menu.locator('summary').click();
+  const capitalDownload=page.waitForEvent('download');
+  await button('JSON').click();
+  const capitalFile=out+'/capital-moved.json';
+  await (await capitalDownload).saveAs(capitalFile);
+  const moved=JSON.parse(await fs.readFile(capitalFile,'utf8')).map;
+  assert.equal(moved.regions[0].pointOfInterestKinds['1,0'],'capital');
+  assert.equal(moved.poiDiscovery['poi:1:1,0'],map.map.poiDiscovery['poi:1:3,-2']);
   await page.reload();
   // App may restore the language preference after reload.
   if (await page.locator('.language-toggle').innerText() === 'EN') await page.locator('.language-toggle').click();
