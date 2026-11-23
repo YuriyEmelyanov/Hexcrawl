@@ -1,0 +1,90 @@
+{
+  "run_id": "2026-11-23T1903-analyst-HX069",
+  "task_id": "HX-BL-069",
+  "role": "business-analyst",
+  "claim_ref": "agent-work/claims/2026-11-23T1903-analyst-HX069.json",
+  "programmer_slot": false,
+  "branch": "agent-operations",
+  "base_sha": "007c1e5172b3079c82111ae441dfb15a2550a15c",
+  "generation": 649,
+  "acquired_at": "2026-11-23T16:04:11.769Z",
+  "heartbeat_at": "2026-11-23T16:04:11.769Z",
+  "status": "completed",
+  "completed_at": "2026-11-23T16:05:26.889Z",
+  "selection_reason": "В утверждённом D1 требуется различать состояние перед командой и старый снимок генерации. Предыдущие примеры показывали конечную потерю, но не её этап. HX062 владеет слотом; новых SHA PR512/513 нет.",
+  "spec_ref": "agent-work/specs/HX-BL-069-classic-reroll-acceptance-D1.md",
+  "source_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "observations": {
+    "before": {
+      "regions": 2,
+      "type": "ruins",
+      "biome": "snow_plains",
+      "note": "Проводник",
+      "name": {
+        "en": "Stone Sentinel",
+        "ru": "Каменный страж"
+      }
+    },
+    "checkpoint": {
+      "regions": 1,
+      "type": "statue",
+      "biome": null,
+      "note": null,
+      "name": null
+    },
+    "backup": {
+      "regions": 2,
+      "type": "ruins",
+      "biome": "snow_plains",
+      "note": "Проводник",
+      "name": {
+        "en": "Stone Sentinel",
+        "ru": "Каменный страж"
+      }
+    },
+    "staged": {
+      "regions": 1,
+      "type": "statue",
+      "biome": null,
+      "note": "Проводник",
+      "name": {
+        "en": "Stone Sentinel",
+        "ru": "Каменный страж"
+      }
+    },
+    "after": {
+      "regions": 2,
+      "type": "statue",
+      "biome": null,
+      "note": "Проводник",
+      "name": {
+        "en": "Stone Sentinel",
+        "ru": "Каменный страж"
+      }
+    }
+  },
+  "result": "Утрата типа внешнего места и ручного биома уже наблюдается между restoreSnapshot и finishPendingRegeneration. Резервная копия содержит обе правки; имя и заметка сохраняются в рабочем состоянии.",
+  "source_locations": [
+    "src/App.tsx:14355 captureGenerationBackup",
+    "src/App.tsx:14711 restoreSnapshot",
+    "src/App.tsx:14846 regenerateLastRegion",
+    "src/App.tsx:14879 finishPendingRegeneration"
+  ],
+  "method": "Classic seed 1, два региона по восемь гексов; чтение исходного снимка истории, captureDocument и pendingRegen.backup между штатными вызовами. Проверены Git blob App.tsx и generation-harness. Одна карта, UI промежуточного состояния не оценивался.",
+  "next_role": "interviewer",
+  "next_step": "После решений RR-Q01–RR-Q03 передать аналитику для чистовой версии; использовать документ перед командой для проверки сохранности внешних правок.",
+  "release_authorized": false,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": true,
+      "at": "2026-11-23T16:03:24.083Z"
+    },
+    "end": {
+      "is_enabled": true,
+      "at": "2026-11-23T16:05:26.889Z"
+    },
+    "restored": false,
+    "errors": []
+  }
+}
