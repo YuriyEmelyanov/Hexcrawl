@@ -93,8 +93,8 @@ try {
   assert.equal(moved.poiDiscovery['poi:1:1,0'],map.map.poiDiscovery['poi:1:3,-2']);
   // Reopen the original center and change its type directly, before moving it.
   await input.setInputFiles({name:'rv05.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(roadFreeMap))});
-  await select('3,-2');
-  await ensureEdit();
+  await info.getByText(/Столица/).first().waitFor();
+  await button('Редактировать').click();
   const editType=info.getByRole('button',{name:'Редактировать точку интереса',exact:true});
   await editType.click();
   const types=info.getByRole('combobox',{name:'Выберите точку интереса',exact:true});
