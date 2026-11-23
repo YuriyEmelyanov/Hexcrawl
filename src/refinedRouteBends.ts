@@ -29,10 +29,7 @@ export function refinedRouteBends(source: NormalizedRefinementSource, refinement
     const path = byEdge.get(pair(mouth.riverId, mouth.sourceEdgeKey));
     if (path) protectSpan(path[mouth.stepIndex], path[mouth.stepIndex + 1], mouth.point);
   }
-  const pins: WorldPoint[] = [
-    ...refinement.riverPlan.waterfalls.map(w => w.point),
-    ...refinement.riverPlan.boundaries.filter(b => b.reason === 'region_boundary').map(b => b.point),
-  ];
+  const pins: WorldPoint[] = refinement.riverPlan.waterfalls.map(w => w.point);
   // Keep the centerline span supporting each required bank contact straight.
   // This also preserves a contact on the round cap of either endpoint.
   for (const poi of refinement.pois.pois) {

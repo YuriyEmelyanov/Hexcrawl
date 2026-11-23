@@ -17,8 +17,7 @@ type Corner = {first: Arm; last: Arm; samples: Point[]; scale:number};
 
 /** Build one quadratic at each eligible junction. Split it halfway between source
  * edges so painting and picking retain both original identities and widths. */
-export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Point[], clearance: (p:Point,radius:number)=>number, options: {through?: readonly Point[]; halfSteps?: number; joinRouteEnds?: boolean} = {}) {
-  const anchored = new Set(options.through?.map(pointKey));
+export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Point[], clearance: (p:Point,radius:number)=>number, options: {halfSteps?: number; joinRouteEnds?: boolean} = {}) {
   const pinned = new Set(pins.map(pointKey));
   const nodes = new Map<string, Arm[]>();
   function add(p: Point, arm: Arm) {
@@ -54,24 +53,11 @@ export function roundedRoutes(routes: readonly DisplayRoute[], pins: readonly Po
     const a = mix(p,first.next,(first.route.trim ?? .38)*scale), b = mix(p,last.next,(last.route.trim ?? .38)*scale);
     const ax = a.x-p.x, ay = a.y-p.y, bx = b.x-p.x, by = b.y-p.y;
     if (Math.abs(ax*by-ay*bx) < 1e-9) continue;
-    const passesThroughVertex = anchored.has(key);
     const halfSteps = options.halfSteps ?? 4;
-    let sample = (t:number) => mix(mix(a,p,t),mix(p,b,t),t);
-    // A continuous river can turn at a regional seam, but must pass through
-    // its accepted vertex. Join two cubic halves there with a shared tangent.
-    if (passesThroughVertex && arms.length !== 2) continue;
-    if (passesThroughVertex) {
-      const la = Math.hypot(ax, ay), lb = Math.hypot(bx, by);
-      const tx = bx/lb - ax/la, ty = by/lb - ay/la;
-      const handle = Math.min(la, lb) / (3 * Math.hypot(tx, ty));
-      const left = {x:p.x-tx*handle, y:p.y-ty*handle};
-      const right = {x:p.x+tx*handle, y:p.y+ty*handle};
-      const cubic = (a:Point, b:Point, c:Point, d:Point, t:number) =>
-        mix(mix(mix(a,b,t),mix(b,c,t),t),mix(mix(b,c,t),mix(c,d,t),t),t);
-      sample = t => t <= 0.5 ? cubic(a,mix(a,p,1/3),left,p,2*t)
-        : cubic(p,right,mix(b,p,1/3),b,2*t-1);
-    }
-    const samples = Array.from({length:2*halfSteps+1}, (_,i) => sample(i/(2*halfSteps)));
+    const samples = Array.from({length:2*halfSteps+1}, (_,i) => {
+      const t = i / (2*halfSteps);
+      return mix(mix(a,p,t),mix(p,b,t),t);
+    });
     // A side road that would cross the main curve before reaching its join
     // keeps the original junction. All incident source IDs still meet there.
     const sideArms=arms.filter(arm=>arm!==first && arm!==last);

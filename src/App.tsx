@@ -12565,13 +12565,8 @@ export function App() {
   const riverPaint = useMemo(() => {
     const shore = lakeVertices.map(p => ({x:p.x+riverOffset.x,y:p.y+riverOffset.y}));
     const paths = riverSegments.map(s => ({key:s.riverId+':'+s.edgeKey, routeId:s.riverId, points:ends(s)}));
-    const boundaryKeys=new Set(rivers.flatMap(r=>r.sectors.flatMap(s=>[
-      ...(s.startReason==='region_boundary'?[s.startVertexKey]:[]),
-      ...(s.endReason==='region_boundary'?[s.endVertexKey]:[]),
-    ])));
-    const borders=rivers.flatMap(r=>r.vertexPath.filter(v=>boundaryKeys.has(v.key)).map(v=>({x:v.x+riverOffset.x,y:v.y+riverOffset.y})));
-    return roundedRoutes(paths,[...shore,...riverWaterfalls],(p,r)=>nativeClearance(p,'river',r),{through:borders,halfSteps:24});
-  }, [riverSegments,lakeVertices,riverOffset,riverWaterfalls,rivers,nativeClearance]);
+    return roundedRoutes(paths,[...shore,...riverWaterfalls],(p,r)=>nativeClearance(p,'river',r),{halfSteps:24});
+  }, [riverSegments,lakeVertices,riverOffset,riverWaterfalls,nativeClearance]);
   const roadPins=useMemo(()=>regions.flatMap(r => hasCentralPoi(r) ? [r.centerHex,...r.pointsOfInterest] : r.pointsOfInterest)
       .map(h => toPixel(h.q,h.r)).map(p => ({x:p.x+riverOffset.x,y:p.y+riverOffset.y})),[regions,riverOffset]);
   const roadPaint = useMemo(() => {
