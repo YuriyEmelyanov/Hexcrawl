@@ -1,0 +1,70 @@
+{
+  "task_id": "HX-BL-061",
+  "role": "programmer",
+  "run_id": "PR512-crossing-arrows-713-20261123195623",
+  "pr": 512,
+  "base_sha": "fd160f87f1df7935302753f421c35f444821a08e",
+  "head_sha": "edbcd9cdfa22b86cd87d501ef4add9ce1e631cca",
+  "status": "review_ready",
+  "owner_requests": [
+    "Hide river arrows at crossings",
+    "Trail width = 3/4 road",
+    "Soften POI ring"
+  ],
+  "evidence": {
+    "map": "Classic seed 713, 14 regions, 6 mile",
+    "arrows_before": 53,
+    "arrows_after": 48,
+    "crossings": {
+      "bridge": 4,
+      "ford": 1,
+      "overlap_after": 0,
+      "ferry_variant": "one bridge changed to ferry, zero overlaps"
+    },
+    "rings": 26,
+    "ring_stroke_opacity": 0.75,
+    "trail_width": 2.25,
+    "road_width": 3,
+    "visual": "agent-work/evidence/HX-BL-061-F1/edbcd9c/classic-713-before-after.png",
+    "ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45255164173",
+    "checks": [
+      "check success",
+      "browser success",
+      "world-random success",
+      "tsc/build local passed",
+      "Independent review found no defects in requested delta"
+    ],
+    "local_limitations": "Local Chromium socket EPERM. Earlier local suite 444/445, coastalRetries passed in separate rerun. Exact final CI successful."
+  },
+  "test_change_summary": {
+    "base_sha": "fd160f87f1df7935302753f421c35f444821a08e",
+    "head_sha": "edbcd9cdfa22b86cd87d501ef4add9ce1e631cca",
+    "added": 0,
+    "removed": 0,
+    "modified": 1,
+    "suite": "Node mapTransactions",
+    "scenario": "Crossing edges exclude river flow marks, other edges retain them",
+    "reuse_or_new_reason": "Extended existing road crossing edit scenario",
+    "source": "git diff fd160f87..edbcd9cd"
+  },
+  "next_role": "reviewer",
+  "next_step": "Final package acceptance on updated SHA and score assessment",
+  "release_authorized": false,
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "is_enabled": null,
+      "status": "unchecked",
+      "error": "Start peek was called but its boolean was not retained"
+    },
+    "confirmed": {
+      "at": "2026-11-23T20:05:14.172Z",
+      "is_enabled": true
+    },
+    "end": {
+      "is_enabled": true,
+      "at": "2026-11-23T20:14:27.295Z"
+    },
+    "restored": false
+  }
+}
