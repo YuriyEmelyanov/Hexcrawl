@@ -58,12 +58,13 @@ def main():
     months = list(calendar_months(args.start, args.end))
     tools = json.loads((ROOT/'catalog.json').read_text())
     registry = json.loads((ROOT.parent.parent/'competitors'/'registry.json').read_text())
-    eligible = {'hexcrawl-ru'}
+    eligible = set()
     digital_types = {'editor', 'generator', 'module', 'functional_module'}
-    for entry in registry['entries']:
+    for entry in [*registry['entries'], registry['owner_product']]:
         review = entry.get('digital_review') or {}
         kinds = set(entry.get('product_types') or [])
         if (kinds and kinds <= digital_types and entry.get('disposition') == 'keep_L1'
+                and 'L1' in entry.get('layers', [])
                 and review.get('decision') == 'keep_L1' and review.get('source')):
             eligible.add(entry['id'])
     for tool_id, item in tools.items():
