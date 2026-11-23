@@ -73,12 +73,12 @@ export function RefinedGeographyArtwork(p:Props){
   <g className="roads-layer" mask={`url(#${id}-roads)`}>
    {outsideRoads.map(r=>{const plan=fineRoadPresentation(r,p.crossings,p.rivers);return <g key={r.key} data-fine-road={r.key}>
     {roadPaint.has(pair(r.roadId,r.segmentKey))&&!plan.crossings.length
-      ? <polyline points={points(roadPaint.get(pair(r.roadId,r.segmentKey))!)} fill="none" stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>
-      : plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?1.5/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>)}
+      ? <polyline points={points(roadPaint.get(pair(r.roadId,r.segmentKey))!)} fill="none" stroke="#8b6a3f" strokeWidth={r.kind==='trail'?2.25/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>
+      : plan.pieces.map((part,i)=><line key={i} {...part} stroke="#8b6a3f" strokeWidth={r.kind==='trail'?2.25/6:3/6} strokeDasharray={r.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined}/>)}
     {plan.rails.map(rail=><polyline key={rail.key} points={rail.points} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>)}
    </g>;})}
    {refinement.roads.roads.map(road=>{const plan=displayWater.status==='prepared'?fineRefinedRoadPresentation({...road,points:roadPaint.get(pair(road.roadId,road.sourceRoadSegmentKey))!},refinement.roads.crossings,factor,displayWater):{pieces:[],rails:[]};return <g key={pair(road.roadId,road.sourceRoadSegmentKey)} data-refined-road={road.roadId}>
-    {plan.pieces.map((part,i)=>{const a=point(part.from),b=point(part.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} strokeDashoffset={-part.startDistance*factor} opacity={part.opacity} stroke="#8b6a3f" strokeWidth={road.kind==='trail'?1.5/6:3/6} strokeDasharray={road.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>;})}
+    {plan.pieces.map((part,i)=>{const a=point(part.from),b=point(part.to);return <line key={i} x1={a.x} y1={a.y} x2={b.x} y2={b.y} strokeDashoffset={-part.startDistance*factor} opacity={part.opacity} stroke="#8b6a3f" strokeWidth={road.kind==='trail'?2.25/6:3/6} strokeDasharray={road.kind==='trail'?`${4.04145/6} ${4.04145/6}`:undefined} strokeLinecap="butt"/>;})}
     {plan.rails.map(rail=><polyline key={rail.key} points={points(rail.points)} fill="none" stroke="#4f3922" strokeWidth={1.1/6}/>) }
    </g>;})}
    {refinement.roads.crossings.map(c=><g key={c.key} data-fine-crossing={c.key} data-crossing-kind={c.kind}><title>{c.kind}</title></g>)}
