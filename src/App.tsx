@@ -9171,11 +9171,6 @@ function getPoiKindForHex(region: Region | undefined, hex: AxialHex): PoiKind | 
   return region?.pointOfInterestKinds?.[hexKey(hex)];
 }
 
-function getPoiEmojiForHex(region: Region | undefined, hex: AxialHex): string {
-  const kind = getPoiKindForHex(region, hex);
-  return kind ? POI_DETAILS[kind].emoji : POI_EMOJI;
-}
-
 function getPoiLabelForHex(region: Region, hex: AxialHex, language: Language): string {
   const kind = getPoiKindForHex(region, hex);
   return kind ? POI_DETAILS[kind].label[language] : UI_TEXT[language].poi;
@@ -15055,8 +15050,6 @@ export function App() {
   const selectedKingdom = selectedRegion ? kingdoms.find(k=>k.regionIds.includes(selectedRegion.id)) : undefined;
   const selectedObstacles = selectedHex ? obstacles.filter(o=>hexKey(o.hex)===hexKey(selectedHex)||hexKey(o.neighborHex)===hexKey(selectedHex)) : [];
   const editableCentralKinds = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',true) : ['capital','city','town','village','lair','ruins','cursed_place','holy_place',...(knave?['natural_place','structure','dungeon']:[])];
-  const selectedPoiKind = selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
-  const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : [...EDITABLE_POI_KIND_ORDER.filter(k=>(k!=='capital'||selectedPoiKind==='capital')&&(!(k in MYTHIC_POI)||k==='ruins')),...(knave?['natural_place','structure'] as PoiKind[]:[])];
   const selectedHexBiomeOverride = selectedHexKey ? biomeOverrideByHexKey.get(selectedHexKey) : undefined;
   const selectedEffectiveBiomeId = selectedHexBiomeOverride ?? selectedRegion?.biomeId;
   const isEditingSelectedHexBiome = selectedHexKey !== null && editingHexBiomeKey === selectedHexKey;
@@ -15065,6 +15058,8 @@ export function App() {
   const selectedHasCentralPoi = Boolean(selectedMeta?.isCenter && selectedRegion && hasCentralPoi(selectedRegion));
   const selectedCentralCapital = selectedHasCentralPoi && generationMode === 'classic' && selectedRegion?.centralPoiKind === 'capital';
   const editableCapital = selectedCentralCapital && !selectedRegion!.pointsOfInterest.some(h => hexKey(h) === selectedHexKey);
+  const selectedPoiKind = editableCapital ? 'capital' : selectedRegion && selectedHex ? getPoiKindForHex(selectedRegion, selectedHex) : undefined;
+  const editablePoiKinds: PoiKind[] = generationMode === 'mythic' ? mythicPoiChoices(selectedRegion?.biomeLandType==='settled',false) : [...EDITABLE_POI_KIND_ORDER.filter(k=>(k!=='capital'||selectedPoiKind==='capital')&&(!(k in MYTHIC_POI)||k==='ruins')),...(knave?['natural_place','structure'] as PoiKind[]:[])];
   const isEditingSelectedCentralPoi = selectedHasCentralPoi && editingCentralPoiRegionId === selectedRegion?.id;
   const canEditSelectedPoi = Boolean(selectedRegion && selectedHex && !isSelectedLake && !isSelectedSea);
   const waterPoiKindOrder = generationMode === 'mythic' ? [] : getWaterPoiKindPool(isSelectedSea ? 'sea' : selectedRegion?.biomeLandType ?? 'wild');
@@ -15081,21 +15076,18 @@ export function App() {
     commitManualMap({...captureMap(), biomeOverrideByHexKey:layer}, false);
   };
   const setSelectedPoiKind = (poiKind: PoiKind) => {
-    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editablePoiKinds.includes(poiKind) || !canEditSelectedPoi || selectedHasCentralPoi || !selectedRegion || !selectedHex || !selectedHexKey) return;
-    const hasPoi=selectedRegion.pointsOfInterest.some(h=>hexKey(h)===selectedHexKey);
-    if(hasPoi && selectedRegion.pointOfInterestKinds?.[selectedHexKey]===poiKind) { closeEditors(); return; }
-    commitManualMap({...captureMap(), regions:regions.map(r=>r.id!==selectedRegion.id?r:{...r,
-      pointsOfInterest:hasPoi?r.pointsOfInterest:[...r.pointsOfInterest,selectedHex],
-      pointOfInterestKinds:{...r.pointOfInterestKinds,[selectedHexKey]:poiKind}})});
+    if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editablePoiKinds.includes(poiKind) || !canEditSelectedPoi || (selectedHasCentralPoi && !editableCapital) || !selectedRegion || !selectedHex || !selectedHexKey) return;
+    if(selectedPoiKind===poiKind) { closeEditors(); return; }
+    const region=editableCapital ? detachCapital(selectedRegion) : selectedRegion;
+    const hasPoi=region.pointsOfInterest.some(h=>hexKey(h)===selectedHexKey);
+    commitManualMap({...captureMap(), regions:regions.map(r=>r.id!==region.id?r:{...region,
+      pointsOfInterest:hasPoi?region.pointsOfInterest:[...region.pointsOfInterest,selectedHex],
+      pointOfInterestKinds:{...region.pointOfInterestKinds,[selectedHexKey]:poiKind}})});
   };
   const setSelectedCentralPoiKind = (poiKind: CentralPoiKind) => {
+    if(editableCapital) { setSelectedPoiKind(poiKind as PoiKind); return; }
     if(mutationBlocked() || notesSelectionRef.current !== selectedHexKey || !editableCentralKinds.includes(poiKind as MythicPoi) || !selectedRegion || !selectedHasCentralPoi) return;
     if(selectedRegion.centralPoiKind===poiKind) { closeEditors(); return; }
-    if(editableCapital && selectedHexKey && editablePoiKinds.includes(poiKind as PoiKind)){
-      const region=detachCapital(selectedRegion);
-      commitManualMap({...captureMap(),regions:regions.map(r=>r===selectedRegion?{...region,pointOfInterestKinds:{...region.pointOfInterestKinds,[selectedHexKey]:poiKind as PoiKind}}:r)});
-      return;
-    }
     commitManualMap({...captureMap(),regions:regions.map(r=>r.id===selectedRegion.id?{...r,centralPoiKind:poiKind}:r)});
   };
   const setSelectedWaterPoiKind = (poiKind: WaterPoiKind) => {
@@ -17534,20 +17526,19 @@ export function App() {
                         : (language === 'ru' ? 'как в регионе' : 'inherit region'), () => setEditingHexBiomeKey(selectedHexKey))}
                     </div> : null}
                     <p>{selectedRegion.biomeLandType === 'settled' ? t.settledRegion : t.wildArea}</p>
-                    {selectedHasCentralPoi ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
+                    {selectedHasCentralPoi && !editableCapital ? <div className="direct-line">⭐ {isEditingSelectedCentralPoi && editMode ? <select autoFocus aria-label={t.choosePoi}
                       value={selectedRegion.centralPoiKind ?? ''} onChange={e => e.target.value ? setSelectedCentralPoiKind(e.target.value as CentralPoiKind) : deleteSelectedPoi()} onBlur={() => setEditingCentralPoiRegionId(null)}>
-                      {editableCapital && <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>}
                       {Object.entries(CENTRAL_POI_DETAILS).filter(([kind]) => editableCentralKinds.includes(kind as MythicPoi)).map(([kind,details]) => <option key={kind} value={kind}>{details.emoji} {details.label[language]}</option>)}
                     </select> : editableValue(t.editPoi, `${getCentralPoiEmoji(selectedRegion)} ${getCentralPoiLabel(selectedRegion, language)}`, () => setEditingCentralPoiRegionId(selectedRegion.id))}
                       {' '}{renderToponym(`settlement:${selectedRegion.id}:${hexKey(selectedRegion.centerHex)}`)}{renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:hexKey(selectedRegion.centerHex)},selectedRegion.centralPoiKind??'')}</div> : null}
                     {isSelectedLake ? <div className="direct-line">{renderWaterPoi()}</div> : null}
-                    {canEditSelectedPoi && selectedHex && !selectedHasCentralPoi ? <div className="direct-line">
+                    {canEditSelectedPoi && selectedHex && (!selectedHasCentralPoi || editableCapital) ? <div className="direct-line">
                       {isEditingSelectedPoi && editMode ? <select autoFocus aria-label={t.choosePoi} value={selectedPoiKind ?? ''}
                         onChange={e => e.target.value ? setSelectedPoiKind(e.target.value as PoiKind) : deleteSelectedPoi()} onBlur={() => setEditingPoiHexKey(null)}>
                         <option value="">{language === 'ru' ? 'Нет точки' : 'No point'}</option>
                         {editablePoiKinds.map(kind => <option key={kind} value={kind}>{POI_DETAILS[kind].emoji} {POI_DETAILS[kind].label[language]}</option>)}
                       </select> : selectedPoiKind || editMode ? editableValue(t.editPoi, selectedPoiKind
-                        ? `${getPoiEmojiForHex(selectedRegion, selectedHex)} ${getPoiLabelForHex(selectedRegion, selectedHex, language)}` : t.addPoi,
+                        ? `${POI_DETAILS[selectedPoiKind].emoji} ${POI_DETAILS[selectedPoiKind].label[language]}` : t.addPoi,
                         () => setEditingPoiHexKey(selectedHexKey)) : null}
                       {' '}{selectedPoiKind ? renderToponym(`settlement:${selectedRegion.id}:${selectedHexKey}`) : null}{selectedPoiKind?renderTags({kind:'poi',regionId:selectedRegion.id,hexKey:selectedHexKey!},selectedPoiKind):null}
                     </div> : null}

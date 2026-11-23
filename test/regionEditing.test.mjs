@@ -192,6 +192,25 @@ test('Discovery AC3 edits a central capital with ordinary POI history and reload
  h.render().setEditMode(true);
  const source={kind:'land',regionId:1,hexKey:'0,0'};
  const before=save(h);
+ for(const knave of [false,true]){
+   const edit=await setup('classic',fixture);
+   edit.render().chooseKnaveProfile(knave);
+   edit.render().setEditMode(true);
+   const target=edit.render().nameTargets.find(t=>t.poiLocator==='poi:1:0,0');
+   edit.render().showNameTarget(target.key);
+   edit.render().changeNameDraft('Исток',edit.render().nameDraft);
+   edit.render().changeOtherNameDraft('Headwaters',edit.render().nameDraft);
+   assert.equal(edit.render().saveNameDraft(),true);
+   const initial=save(edit);
+   edit.render().setSelectedPoiKind('portal');
+   const changed=save(edit);
+   assert.equal(changed.map.regions[0].pointOfInterestKinds['0,0'],'portal');
+   assert.deepEqual(changed.map.regions[0].centerHex,center);
+   assert.deepEqual(changed.map.poiDiscovery,initial.map.poiDiscovery);
+   assert.deepEqual(changed.map.editorNames['poi:1:0,0'],{ru:'Исток',en:'Headwaters'});
+   assert.deepEqual(save(await setup('classic',changed)),changed);
+   edit.render().undoMap();assert.deepEqual(save(edit),initial);
+ }
  assert.equal(h.render().startPoiDraft(source),true);
  h.render().changePoiTarget('3','0');
  assert.equal(h.render().finishPoiDraft(),true);
