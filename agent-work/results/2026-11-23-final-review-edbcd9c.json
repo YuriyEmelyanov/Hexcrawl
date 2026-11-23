@@ -1,0 +1,84 @@
+{
+  "task_id": "HX-BL-061",
+  "run_id": "2026-11-23-final-review-edbcd9c",
+  "role": "reviewer",
+  "pr": 512,
+  "head_sha": "edbcd9cdfa22b86cd87d501ef4add9ce1e631cca",
+  "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+  "verdict": "changes_requested",
+  "accepted": false,
+  "release_authorized": false,
+  "review_scope": "whole PR; F1 and owner's subsequent visual corrections",
+  "blocking_finding": {
+    "id": "HX061-PO-road-midpoint",
+    "fixture": "agent-work/evidence/HX-BL-061-F1/review-a9253b2/road-only.json",
+    "steps": "Import then switch directly to one mile; inspect native painted road #1 through (-1,1). Intersect displayed polylines with the six sides from detailCellPolygon; independently reproduced.",
+    "expected": {
+      "fractions": [
+        0.5,
+        0.5
+      ],
+      "centerward_deviation_deg": 0
+    },
+    "actual": {
+      "fractions": [
+        0.8262222222,
+        0.1737777778
+      ],
+      "centerward_deviation_deg": [
+        36.1784,
+        36.1784
+      ]
+    },
+    "visual": "agent-work/evidence/HX-BL-061-F1/edbcd9c/road-midpoint.png"
+  },
+  "passed": {
+    "ci": "https://github.com/YuriyEmelyanov/Hexcrawl/actions/runs/45255164173",
+    "ci_jobs": [
+      "check",
+      "browser including route comparison and PNG",
+      "world-random"
+    ],
+    "local_targeted_node": {
+      "executed": 22,
+      "passed": 22,
+      "skipped": 0
+    },
+    "seed713": {
+      "arrows": 48,
+      "overlaps": 0,
+      "bridge": 4,
+      "ford": 1,
+      "waterfalls": 2
+    },
+    "joins_seed42": "Zero gap at three marked river joins and two road joins",
+    "scope": "independent agent fresh context; source inspected and actual geometry exercised"
+  },
+  "score_assessment_ref": "agent-work/evidence/HX-BL-061-F1/edbcd9c/score-assessment.json",
+  "test_change_summary": {
+    "base_sha": "b887422b6b05663124f0ce431953f863350e4a86",
+    "head_sha": "edbcd9cdfa22b86cd87d501ef4add9ce1e631cca",
+    "added": 4,
+    "removed": 0,
+    "modified": 8,
+    "suite": "Node / browser",
+    "scenario": "Local obstacle clearance, bridge/inlet contact, comparative PNG, updated hit/selection and crossing visibility",
+    "reuse_or_new_reason": "New cases address distinct contact risks; existing hit and edit scenarios extended. Green suite misses one-mile midpoint.",
+    "source": "git diff base..head; browser matrix counted as one comparison scenario; seven earlier updated browser scenarios plus one Node crossing edit"
+  },
+  "next_role": "programmer",
+  "next_step": "Correct native one-mile road entry through midpoints toward fine-cell centers, keep smooth interior turns and crossings; rerun road-only including JSON reload, selection and PNG. Return new SHA to reviewer.",
+  "automation_health": {
+    "jawbone_id": "6ad9c2426c7481919bb9f3d2b289e9b9",
+    "start": {
+      "at": "2026-11-23T20:17:59.175Z",
+      "is_enabled": true
+    },
+    "end": {
+      "at": "2026-11-23T20:21:49.057Z",
+      "is_enabled": true
+    },
+    "restored": false,
+    "errors": []
+  }
+}
